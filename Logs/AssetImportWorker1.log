@@ -1,0 +1,1003 @@
+Unity Editor version:    2021.3.21f1 (1b156197d683)
+Branch:                  2021.3/staging
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 14.6.1 (Build 23G93)
+Darwin version:          23.6.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+Using pre-set license
+Pro License: YES
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/MacOS/Unity
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker1
+-projectPath
+/Users/thomasantonakis/Documents/Projects/CA from Chatgpt
+-logFile
+Logs/AssetImportWorker1.log
+-srvPort
+63226
+Successfully changed project path to: /Users/thomasantonakis/Documents/Projects/CA from Chatgpt
+/Users/thomasantonakis/Documents/Projects/CA from Chatgpt
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Player connection [8513523520] Host "[IP] 192.168.90.116 [Port] 0 [Flags] 2 [Guid] 628633964 [EditorId] 628633964 [Version] 1048832 [Id] OSXEditor(0,Thomass-MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
+
+Player connection [8513523520] Host "[IP] 192.168.90.116 [Port] 0 [Flags] 2 [Guid] 628633964 [EditorId] 628633964 [Version] 1048832 [Id] OSXEditor(0,Thomass-MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
+
+Refreshing native plugins compatible for Editor in 58.75 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.3.21f1 (1b156197d683)
+[Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /Users/thomasantonakis/Documents/Projects/CA from Chatgpt/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+ preferred device: Apple M2 (high power)
+Metal devices available: 1
+0: Apple M2 (high power)
+Using device Apple M2 (high power)
+Initializing Metal device caps: Apple M2
+Initialize mono
+Mono path[0] = '/Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/Managed'
+Mono path[1] = '/Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityjit-macos'
+Mono config path = '/Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56485
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.21f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Registered in 0.001546 seconds.
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 56.45 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.433 seconds
+Domain Reload Profiling:
+	ReloadAssembly (433ms)
+		BeginReloadAssembly (95ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (0ms)
+		EndReloadAssembly (284ms)
+			LoadAssemblies (96ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (69ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (19ms)
+			SetupLoadedEditorAssemblies (169ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (4ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (56ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (85ms)
+				ProcessInitializeOnLoadMethodAttributes (23ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.004672 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image /Users/thomasantonakis/Documents/Projects/CA from Chatgpt/Library/PackageCache/com.unity.visualscripting@1.8.0/Editor/VisualScripting.Core/Dependencies/YamlDotNet/Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image /Users/thomasantonakis/Documents/Projects/CA from Chatgpt/Library/PackageCache/com.unity.visualscripting@1.8.0/Editor/VisualScripting.Core/Dependencies/DotNetZip/Unity.VisualScripting.IonicZip.dll
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.62 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.569 seconds
+Domain Reload Profiling:
+	ReloadAssembly (570ms)
+		BeginReloadAssembly (64ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (3ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (15ms)
+		EndReloadAssembly (446ms)
+			LoadAssemblies (54ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (157ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (31ms)
+			SetupLoadedEditorAssemblies (184ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (3ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (44ms)
+				ProcessInitializeOnLoadAttributes (127ms)
+				ProcessInitializeOnLoadMethodAttributes (9ms)
+				AfterProcessingInitializeOnLoad (1ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (2ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launching external process: /Applications/Unity/Hub/Editor/2021.3.21f1/Unity.app/Contents/Tools/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 0.27 seconds
+Refreshing native plugins compatible for Editor in 0.36 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3067 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 24 unused Assets / (213.0 KB). Loaded Objects now: 3532.
+Memory consumption went from 105.7 MB to 105.5 MB.
+Total: 2.315625 ms (FindLiveObjects: 0.130625 ms CreateObjectMapping: 0.054000 ms MarkObjects: 2.038208 ms  DeleteObjects: 0.092167 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 108460.683571 seconds.
+  path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat
+  artifactKey: Guid(e73a58f6e2794ae7b1b7e50b7fb811b0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat using Guid(e73a58f6e2794ae7b1b7e50b7fb811b0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '4c0b63042e61efdf2276b3d97edd0ec1') in 0.844188 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc
+  artifactKey: Guid(c334973cef89a9840b0b0c507e0377ab) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc using Guid(c334973cef89a9840b0b0c507e0377ab) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '65e7a650749ce3e0087514be54eae658') in 0.077973 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000090 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex20.fbx
+  artifactKey: Guid(e78e9e9e77f1fd34b932bf555a8735a7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex20.fbx using Guid(e78e9e9e77f1fd34b932bf555a8735a7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'b5ea5f1657f371d4aca2ee7f1140d8bd') in 0.056789 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000042 seconds.
+  path: Assets/Prefabs/HexagonalCell.prefab
+  artifactKey: Guid(f78181e779d674d1a80601a352fff9e9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Prefabs/HexagonalCell.prefab using Guid(f78181e779d674d1a80601a352fff9e9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '82fa4de899c1d65f14a9bdba7ca2a848') in 0.038104 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000043 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMPro.cginc
+  artifactKey: Guid(407bc68d299748449bbf7f48ee690f8d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMPro.cginc using Guid(407bc68d299748449bbf7f48ee690f8d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '92ac672ecb663191c9aa3be9b7ab415a') in 0.003164 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Resources/circle.png
+  artifactKey: Guid(232846c4cf8d947df91c451747d0b5df) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Resources/circle.png using Guid(232846c4cf8d947df91c451747d0b5df) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'dc7294f37f1e9b3de56075989f4e4612') in 0.259503 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000056 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex13.fbx
+  artifactKey: Guid(ca9e0f6616063104d839cea15011588f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex13.fbx using Guid(ca9e0f6616063104d839cea15011588f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'bc08cebceb51c5cb45af94336279fb32') in 0.010481 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000035 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Flowers.fbx
+  artifactKey: Guid(dcadbc0f2d7e2964e91f8be5365ff0e3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Flowers.fbx using Guid(dcadbc0f2d7e2964e91f8be5365ff0e3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '0f714651c6a510dc994b4cc8074bfaef') in 0.011912 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000040 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Factory.fbx
+  artifactKey: Guid(7b6877e76b3882549bdac7c390b0efd8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Factory.fbx using Guid(7b6877e76b3882549bdac7c390b0efd8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '01fab63fc85bd0c45b44285b8a4bcd3e') in 0.010521 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000030 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/SelectionRed.fbx
+  artifactKey: Guid(3473d0131f929c8498dd62c83ef0056e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/SelectionRed.fbx using Guid(3473d0131f929c8498dd62c83ef0056e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '013032b90b3fc38da4a559ecd1bb8e3e') in 0.009343 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/TextMesh Pro/Sprites/EmojiOne.png
+  artifactKey: Guid(dffef66376be4fa480fb02b19edbe903) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Sprites/EmojiOne.png using Guid(dffef66376be4fa480fb02b19edbe903) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'ab33f66a413af9ac7a9ced75d9599135') in 0.015285 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000030 seconds.
+  path: Assets/Materials/HexBorderShader.shader
+  artifactKey: Guid(1c159ab25e12d4808a29a9fc43aa5e25) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Materials/HexBorderShader.shader using Guid(1c159ab25e12d4808a29a9fc43aa5e25) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '58d075d4159bc01c05467e06f5897b64') in 0.036861 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000038 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Desert2.fbx
+  artifactKey: Guid(733a5877dfd4c884cbf06292ffe18ab1) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Desert2.fbx using Guid(733a5877dfd4c884cbf06292ffe18ab1) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'c090fb1b328efdafaf90b2f451275dd3') in 0.011045 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000069 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/RocksInWater.fbx
+  artifactKey: Guid(8864a906f2c5a814c8329c41f396b148) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/RocksInWater.fbx using Guid(8864a906f2c5a814c8329c41f396b148) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '740fb018bf9112a2ddead74886490127') in 0.010235 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000048 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/DigSite.fbx
+  artifactKey: Guid(b066cbce47052904ebb41e4a1dc0b4da) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/DigSite.fbx using Guid(b066cbce47052904ebb41e4a1dc0b4da) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'd57fff25bc349248ae0e89f340948920') in 0.011351 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex32.fbx
+  artifactKey: Guid(95f164187b159cb4ab72ef930698a4d6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex32.fbx using Guid(95f164187b159cb4ab72ef930698a4d6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '5176def31fa9312a10009f79bc6ba69a') in 0.010648 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Mountain.fbx
+  artifactKey: Guid(86e82c81de2a4a74da13c3984957a116) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Mountain.fbx using Guid(86e82c81de2a4a74da13c3984957a116) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'ba0bac721a70608f2e70fd34a6332d59') in 0.009805 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000059 seconds.
+  path: Assets/Scripts/HexCell.cs
+  artifactKey: Guid(2c8d00dd3454043428a367d20f801b12) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Scripts/HexCell.cs using Guid(2c8d00dd3454043428a367d20f801b12) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a2dbbcd3b57e508779043537a6394d8e') in 0.064936 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000038 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/PalmTrees.fbx
+  artifactKey: Guid(fa4b2ff13c344434b8094e8784f48439) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/PalmTrees.fbx using Guid(fa4b2ff13c344434b8094e8784f48439) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'bc343cdf392991bda4d3a3ce429e4c98') in 0.011956 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000057 seconds.
+  path: Assets/Scripts/CameraController.cs
+  artifactKey: Guid(f4aeb23d3ed3d4cb28b03f9ef24ca7ea) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Scripts/CameraController.cs using Guid(f4aeb23d3ed3d4cb28b03f9ef24ca7ea) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'afeea8218f283d2c18505af663d49935') in 0.002713 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000032 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Forest2.fbx
+  artifactKey: Guid(30b8fddb9d59fdc4482ca80c2650ea55) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Forest2.fbx using Guid(30b8fddb9d59fdc4482ca80c2650ea55) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'f929aeceba16f7fda762fae2dd59d5e8') in 0.012874 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000045 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex5.fbx
+  artifactKey: Guid(4a24775f9001dee459bd8d96cd04b4f3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex5.fbx using Guid(4a24775f9001dee459bd8d96cd04b4f3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'c95c3225ad6be1203f91941b1d72d696') in 0.010802 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000064 seconds.
+  path: Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf
+  artifactKey: Guid(1b8d251f9af63b746bf2f7ffe00ebb9b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf using Guid(1b8d251f9af63b746bf2f7ffe00ebb9b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '521c4a5f91f424ce7b5fdc4813c00303') in 0.282020 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000052 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadStraight.prefab
+  artifactKey: Guid(a47c8b52f45b32a4fbcbca6f0ac092b9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadStraight.prefab using Guid(a47c8b52f45b32a4fbcbca6f0ac092b9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'b72b4495c492b841434b76e9d8a57ee5') in 0.009225 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedWhite.prefab
+  artifactKey: Guid(8effb652d925a8947a0336edc54e27ad) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedWhite.prefab using Guid(8effb652d925a8947a0336edc54e27ad) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '83f3456369b0037b26426dcb42638e47') in 0.008026 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000033 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Glaciers.prefab
+  artifactKey: Guid(4eff434b792317140a2f08fcfdcb297b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Glaciers.prefab using Guid(4eff434b792317140a2f08fcfdcb297b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '41e8e37f547a1263bb11190623b36a86') in 0.005896 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000069 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadCorner.prefab
+  artifactKey: Guid(e9e98512497ad1a4d9e8e0ed30608ebe) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadCorner.prefab using Guid(e9e98512497ad1a4d9e8e0ed30608ebe) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '67062e41ab248b7b751112f53de55104') in 0.004764 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000081 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/DigSite.prefab
+  artifactKey: Guid(faf4b4ec0cbbb3840a5ba44685c18d99) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/DigSite.prefab using Guid(faf4b4ec0cbbb3840a5ba44685c18d99) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '83fd0f2df218c9a7834fc8090b015b1c') in 0.006152 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Snowmen.prefab
+  artifactKey: Guid(d409ed034f6b71449ac8ad8934964ab4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Snowmen.prefab using Guid(d409ed034f6b71449ac8ad8934964ab4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'ab126f5772a9db1ac6ae8b947de9fa12') in 0.006810 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000031 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Pyramids.prefab
+  artifactKey: Guid(b7700b61320aa4d488a12039baacd2e2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Pyramids.prefab using Guid(b7700b61320aa4d488a12039baacd2e2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '875bfc381a2a52bbbf00623b9680b92f') in 0.006579 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000042 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/CandyLand2.prefab
+  artifactKey: Guid(d5a4d3be5994202429e418d54b51db69) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/CandyLand2.prefab using Guid(d5a4d3be5994202429e418d54b51db69) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '6fe5d1cfada4219d8fb85c6f40df3448') in 0.005250 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000069 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/FencedLand.prefab
+  artifactKey: Guid(cb61a3b5c7a1c434fa1a9a5bec7b2a41) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/FencedLand.prefab using Guid(cb61a3b5c7a1c434fa1a9a5bec7b2a41) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'dc1b6c74268d24d8c6e9a1ab7f941e88') in 0.006529 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000033 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RockyEdge.prefab
+  artifactKey: Guid(d2c7ed6d9dcb93748ac807810622ecc9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RockyEdge.prefab using Guid(d2c7ed6d9dcb93748ac807810622ecc9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '7cb0f1d27537624d50a764f3eab73029') in 0.005651 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000069 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellSpikes.prefab
+  artifactKey: Guid(3bc77662e4f05fb41948030e26fb4708) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellSpikes.prefab using Guid(3bc77662e4f05fb41948030e26fb4708) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '9737087e986831d7a33f2d901ecdb62c') in 0.005595 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000027 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedRed.prefab
+  artifactKey: Guid(626db4159ad5e0a458fdf88991a248e8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedRed.prefab using Guid(626db4159ad5e0a458fdf88991a248e8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '842e66005ab60c71c8e257a676e7641f') in 0.004631 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000032 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/ForestCutDown.prefab
+  artifactKey: Guid(665f2d1def9c35b42b8e86da6403ead4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/ForestCutDown.prefab using Guid(665f2d1def9c35b42b8e86da6403ead4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'fc9948fc0998e32aa9b7f13b7c4a7132') in 0.006759 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000040 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellTrees.prefab
+  artifactKey: Guid(46aabe81c014e774d8e7104bc6ce9335) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellTrees.prefab using Guid(46aabe81c014e774d8e7104bc6ce9335) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'c9c583ee8481bba2c2d6fa71b6db80ff') in 0.004391 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000057 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/CandyLand1.prefab
+  artifactKey: Guid(1a26dce1969a2f04babab44007f57939) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/CandyLand1.prefab using Guid(1a26dce1969a2f04babab44007f57939) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '0c8c1c7f600bd9c49aa441c9cc32f6c8') in 0.006787 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertSkulRock.prefab
+  artifactKey: Guid(60e77467a81160140b6dd83e291db008) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertSkulRock.prefab using Guid(60e77467a81160140b6dd83e291db008) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '79bb5ac98716a6515023e76248ccd60d') in 0.004884 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000050 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SnowyForest.prefab
+  artifactKey: Guid(d81f640118a683b44979ca3293d0ef32) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SnowyForest.prefab using Guid(d81f640118a683b44979ca3293d0ef32) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'aa373281804ccedff70f1d2831697d36') in 0.006799 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000042 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Flowers.prefab
+  artifactKey: Guid(724d1dba07b41c34282d4078db00274d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Flowers.prefab using Guid(724d1dba07b41c34282d4078db00274d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a9958cb098982c8cfb284e780cb5be3a') in 0.005700 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RocksInWater.prefab
+  artifactKey: Guid(ba18ad1c2b7e68644b186f04055c20f2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RocksInWater.prefab using Guid(ba18ad1c2b7e68644b186f04055c20f2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'e3a9c66bdd6777af6ad004368221cb59') in 0.006459 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000065 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertMountain.prefab
+  artifactKey: Guid(1c1d07a4036f32e4db71385ea172b294) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertMountain.prefab using Guid(1c1d07a4036f32e4db71385ea172b294) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '616b6200dbfb335fa2171462ae3e252f') in 0.005177 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest.prefab
+  artifactKey: Guid(71be69e7a312bc844ad384574d3624fe) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest.prefab using Guid(71be69e7a312bc844ad384574d3624fe) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '91c553a1203b8f84534cd369a982f500') in 0.006592 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/BeachShore.prefab
+  artifactKey: Guid(71199765df3f9d147bc10d0b8c6f4af7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/BeachShore.prefab using Guid(71199765df3f9d147bc10d0b8c6f4af7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '907fc14993e992832bb8fc16499bbd2e') in 0.005037 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000046 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Factory.prefab
+  artifactKey: Guid(845f30f44a7d6914c8bc17b0221ab5fd) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Factory.prefab using Guid(845f30f44a7d6914c8bc17b0221ab5fd) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'edd005892aadfad927cfcb93b64655ef') in 0.006068 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000070 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest2.prefab
+  artifactKey: Guid(39b499a5c4069b14f9642f978230eb46) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest2.prefab using Guid(39b499a5c4069b14f9642f978230eb46) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'fce803b118659b1d85c8f919f6cc460b') in 0.004850 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000067 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader
+  artifactKey: Guid(128e987d567d4e2c824d754223b3f3b0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader using Guid(128e987d567d4e2c824d754223b3f3b0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '448ed13e362e26a388e506ed0daf653f') in 0.005653 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000072 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/RoadRoundabout.fbx
+  artifactKey: Guid(9506a8b63914f464d8847b4808103f22) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/RoadRoundabout.fbx using Guid(9506a8b63914f464d8847b4808103f22) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '49629511e943ea14f8066b41c91cc9d4') in 0.009637 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000090 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader
+  artifactKey: Guid(dd89cf5b9246416f84610a006f916af7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader using Guid(dd89cf5b9246416f84610a006f916af7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'd10cc9e69b0a80755e39969e782ceca8') in 0.005241 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000052 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Snowmen.fbx
+  artifactKey: Guid(e5521764c522f9b4bb62b1f9687bffad) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Snowmen.fbx using Guid(e5521764c522f9b4bb62b1f9687bffad) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '69cde86b1119c33d11124c7784c26b6d') in 0.022906 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000042 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex12.fbx
+  artifactKey: Guid(a594cd8ba6e867f4699aa3d16d755581) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex12.fbx using Guid(a594cd8ba6e867f4699aa3d16d755581) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '0f92c5c58295794de3f4a0e479d98ff5') in 0.011040 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000031 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader
+  artifactKey: Guid(fe393ace9b354375a9cb14cdbbc28be4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader using Guid(fe393ace9b354375a9cb14cdbbc28be4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'b361afe7834db04d0b626446b19b2aa3') in 0.004879 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000046 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadRoundabout.prefab
+  artifactKey: Guid(7eaf1c4dcf628634a96f13978c14efb6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadRoundabout.prefab using Guid(7eaf1c4dcf628634a96f13978c14efb6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'bd79bc99236da3889eeadf32378756f6') in 0.007606 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000156 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader
+  artifactKey: Guid(c8d12adcee749c344b8117cf7c7eb912) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader using Guid(c8d12adcee749c344b8117cf7c7eb912) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '45eee3d64412361762eaa4b095659af2') in 0.004827 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/TextMesh Pro/Resources/TMP Settings.asset
+  artifactKey: Guid(3f5b5dff67a942289a9defa416b206f3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Resources/TMP Settings.asset using Guid(3f5b5dff67a942289a9defa416b206f3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'bc5c9bd4c24be72919d1165f1c42ea0e') in 0.073551 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000044 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex7.fbx
+  artifactKey: Guid(684e6ab60cee3124aac8540619e13d9d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex7.fbx using Guid(684e6ab60cee3124aac8540619e13d9d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'e8967064948728d69dd8809666a0e884') in 0.015312 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000070 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex30.fbx
+  artifactKey: Guid(dfbb1424bca38a94aa3a24e45b00f2e2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex30.fbx using Guid(dfbb1424bca38a94aa3a24e45b00f2e2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'fd4aaba79b357e02da11883b1ff73659') in 0.017871 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000086 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Materials/HexagonsShared.mat
+  artifactKey: Guid(cf051fba995609b459f0eb4baf4bb478) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Materials/HexagonsShared.mat using Guid(cf051fba995609b459f0eb4baf4bb478) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'dab13344bc8c83cbb6cf9ac8b74cecd7') in 0.025943 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000080 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex12.prefab
+  artifactKey: Guid(e451c469d5daa4e46aac7a3b9de0c3a4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex12.prefab using Guid(e451c469d5daa4e46aac7a3b9de0c3a4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '29df6cd2994afa42833614b0b04589e9') in 0.007827 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000941 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex6.prefab
+  artifactKey: Guid(2e0f1312996d68349933ef1d0445cd09) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex6.prefab using Guid(2e0f1312996d68349933ef1d0445cd09) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a74b01847136afb9d242ead1aa8915f2') in 0.007597 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex3.prefab
+  artifactKey: Guid(b4ad4e21329130e4a99ffc8cefe46816) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex3.prefab using Guid(b4ad4e21329130e4a99ffc8cefe46816) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'f236611f8c779304b64391ecbca44617') in 0.010786 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000070 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex8.prefab
+  artifactKey: Guid(4f49c09706dbf4a4e99dc6a51fab25cc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex8.prefab using Guid(4f49c09706dbf4a4e99dc6a51fab25cc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'dc7a86a3d71cdac36c2779adc3f7a94e') in 0.010603 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000331 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Crops.prefab
+  artifactKey: Guid(1b13308cf0c0f6b4fb4f182c3fd921f1) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Crops.prefab using Guid(1b13308cf0c0f6b4fb4f182c3fd921f1) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '3cf6310b8f2a17412f150c5cc8efcd11') in 0.012459 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000087 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex29.prefab
+  artifactKey: Guid(f2360a07b6cee064aad307fa66e6f8f8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex29.prefab using Guid(f2360a07b6cee064aad307fa66e6f8f8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'fb22eb50487de46a75ce4b5cbf193e65') in 0.006784 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000042 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Castle.prefab
+  artifactKey: Guid(aa767870062b50b4c9cd1f7d02bde55c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Castle.prefab using Guid(aa767870062b50b4c9cd1f7d02bde55c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'f5dc6fc940de47286be908705484a8bf') in 0.006686 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000067 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex15.prefab
+  artifactKey: Guid(6d34a82773c25b44a97610f246fb01f7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex15.prefab using Guid(6d34a82773c25b44a97610f246fb01f7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '79a0d8632ea2255268eec2292238862e') in 0.007762 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000634 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Desert.prefab
+  artifactKey: Guid(7adcc5ca25de8e543ad11014ec7de3d3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Desert.prefab using Guid(7adcc5ca25de8e543ad11014ec7de3d3) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '00f12d8b1a3a1ff466fc1002d4cc3c49') in 0.004736 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005267 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex30.prefab
+  artifactKey: Guid(c4ebe42ebb2ebe64e8119790524c9852) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex30.prefab using Guid(c4ebe42ebb2ebe64e8119790524c9852) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'e813d463f28aa1d5e79b22e7294f701f') in 0.007567 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000483 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex9.prefab
+  artifactKey: Guid(b6b0c220ebe042b498958eadf1f52fa4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex9.prefab using Guid(b6b0c220ebe042b498958eadf1f52fa4) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '5486334c6f49a029b2de9f31e71d3a6c') in 0.005951 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000050 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex11.prefab
+  artifactKey: Guid(8d65fe10dbb32e34aa703943ab85d9c0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex11.prefab using Guid(8d65fe10dbb32e34aa703943ab85d9c0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '7baa42cf8c6977b0f3e20d19c28fe58b') in 0.005227 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000038 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex17.prefab
+  artifactKey: Guid(72272eac6433e404190af80658766b51) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex17.prefab using Guid(72272eac6433e404190af80658766b51) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'ee6d81dfc7e5a558d9ee93a2984d4de9') in 0.005370 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex14.prefab
+  artifactKey: Guid(92b694c77a8f5d64eb88d747e08f1905) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex14.prefab using Guid(92b694c77a8f5d64eb88d747e08f1905) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '22a026625db4f43f4eb5e5c270d5f2f7') in 0.007320 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000056 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex7.prefab
+  artifactKey: Guid(1e37ca3e943829a479e4ff6d29c23d73) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex7.prefab using Guid(1e37ca3e943829a479e4ff6d29c23d73) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '060d39e8d78d91bc94fc4afdf11fd713') in 0.006926 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex20.prefab
+  artifactKey: Guid(cd4f2cbde7d033f45a5d96afb77a69e1) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex20.prefab using Guid(cd4f2cbde7d033f45a5d96afb77a69e1) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a1c8a19449678a3416dbb112056a0e47') in 0.005610 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000128 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex4.prefab
+  artifactKey: Guid(2ee43f6acf07a194eb588a7dd5bc1c5b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex4.prefab using Guid(2ee43f6acf07a194eb588a7dd5bc1c5b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'be26881f3526112aa8d490f5fba22170') in 0.010651 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000045 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex25.prefab
+  artifactKey: Guid(d4f75f0ac34d85a43a92e749133c074f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex25.prefab using Guid(d4f75f0ac34d85a43a92e749133c074f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '228380ab25012acb0b106fdf2d4c9831') in 0.009657 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.002216 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex2.prefab
+  artifactKey: Guid(ba54e0f64ad505c4fa5521c008dc356e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex2.prefab using Guid(ba54e0f64ad505c4fa5521c008dc356e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '76070d205e693e77f87603c8249139e3') in 0.008497 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.003721 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex16.prefab
+  artifactKey: Guid(3ff8e5a24d6f833468acc35eed032df7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex16.prefab using Guid(3ff8e5a24d6f833468acc35eed032df7) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '047bda6b6dc2be721e00fda463c98caf') in 0.011000 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.003038 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Lake.prefab
+  artifactKey: Guid(d8deb0d5cca03814e8f5cd71fb9e7a1e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Lake.prefab using Guid(d8deb0d5cca03814e8f5cd71fb9e7a1e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'e72d1b331d80924bd9490437e802e514') in 0.007326 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000140 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex28.prefab
+  artifactKey: Guid(4dfdc0faa2101104796fb91f4c9b60ce) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex28.prefab using Guid(4dfdc0faa2101104796fb91f4c9b60ce) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '1d1143824d453d07c00171b5e45e128e') in 0.004711 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.001037 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex29.fbx
+  artifactKey: Guid(1fcc1f73108fef449a622d99f23f1abc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex29.fbx using Guid(1fcc1f73108fef449a622d99f23f1abc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '21490a66293313e8a6d887a3b1a2d229') in 0.020101 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.002555 seconds.
+  path: Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt
+  artifactKey: Guid(fade42e8bc714b018fac513c043d323b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt using Guid(fade42e8bc714b018fac513c043d323b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a65e5bd62d6d5ddecf0cfff94df31e14') in 0.052857 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000051 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/DesertMountain.fbx
+  artifactKey: Guid(7eeda7af5f1bf7248aa25cadf7804e79) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/DesertMountain.fbx using Guid(7eeda7af5f1bf7248aa25cadf7804e79) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '445f058ff410d2dad35cebc72c0aec03') in 0.010517 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000035 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader
+  artifactKey: Guid(14eb328de4b8eb245bb7cea29e4ac00b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader using Guid(14eb328de4b8eb245bb7cea29e4ac00b) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '0df8d74c297b5446a2466e074540e90a') in 0.008503 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Swamp.fbx
+  artifactKey: Guid(30b38218aa154f045b0df6d51bde641d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Swamp.fbx using Guid(30b38218aa154f045b0df6d51bde641d) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '43cdebc4b17c7e8989262b772976e479') in 0.011850 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000049 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadEnd.prefab
+  artifactKey: Guid(5916afaf7faf4d443b70012b2d4f7f33) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RoadEnd.prefab using Guid(5916afaf7faf4d443b70012b2d4f7f33) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '489e324ff81604b8137d032984aad7ec') in 0.004739 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000043 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex26.prefab
+  artifactKey: Guid(d3c74397fa533914f914ecf70ad28d73) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex26.prefab using Guid(d3c74397fa533914f914ecf70ad28d73) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '8757078a66cf522ebf48091d54d3b050') in 0.004770 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000044 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex5.prefab
+  artifactKey: Guid(beebce36c61d60f42b22b153abcfd9b0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex5.prefab using Guid(beebce36c61d60f42b22b153abcfd9b0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '8da9552da21fe725c2eed8633dbfeef6') in 0.004827 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000043 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex4.fbx
+  artifactKey: Guid(91a2aeb1386bff241ab23bb98d4f9bba) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex4.fbx using Guid(91a2aeb1386bff241ab23bb98d4f9bba) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '9f95414f98cb65b890167fa89264297d') in 0.009923 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset
+  artifactKey: Guid(f952c082cb03451daed3ee968ac6c63e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset using Guid(f952c082cb03451daed3ee968ac6c63e) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'c5fdd386a97371534ccd8e5ab2f76ae1') in 0.003209 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000050 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Textures/HexagonsShared.png
+  artifactKey: Guid(3c9ddbf33d21b404fba476535adde435) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Textures/HexagonsShared.png using Guid(3c9ddbf33d21b404fba476535adde435) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'ebbd9c79def19a5eab801d1add5fbbbf') in 0.008768 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000038 seconds.
+  path: Assets/Scripts/GameInputManager.cs
+  artifactKey: Guid(3948e492c90b44418bf01d8075435373) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Scripts/GameInputManager.cs using Guid(3948e492c90b44418bf01d8075435373) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '36f9a346b2a19bcdf0bca5cf8dee80c7') in 0.002763 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000048 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex9.fbx
+  artifactKey: Guid(1341def1465b9ee42ab1a58327fc3676) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex9.fbx using Guid(1341def1465b9ee42ab1a58327fc3676) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '658fa0dac6ef57ba001df0f71d2b888c') in 0.009541 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000094 seconds.
+  path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset
+  artifactKey: Guid(8f586378b4e144a9851e7b34d9b748ee) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset using Guid(8f586378b4e144a9851e7b34d9b748ee) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '4c69d1a96a7af545562cd12418877586') in 0.036963 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000067 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/HellTrees.prefab
+  artifactKey: Guid(64b05e6988afdb8499597c7de3f9b858) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/HellTrees.prefab using Guid(64b05e6988afdb8499597c7de3f9b858) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '3781446fc2b4d0cecdd2f47934d6d244') in 0.005347 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000040 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/ForestCutDown.prefab
+  artifactKey: Guid(b159f5b54446f7c49bfcfa4a84c81cda) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/ForestCutDown.prefab using Guid(b159f5b54446f7c49bfcfa4a84c81cda) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '65161287bf2e450580293ee61c4bfade') in 0.005231 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000075 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Pyramids.prefab
+  artifactKey: Guid(aa9ea7f7464180c49917654695328b13) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Pyramids.prefab using Guid(aa9ea7f7464180c49917654695328b13) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '180f2590113525a436907540d3cb8f29') in 0.006202 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/PalmTrees.prefab
+  artifactKey: Guid(d5537417fa62a0a4aad3eade94ed1a03) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/PalmTrees.prefab using Guid(d5537417fa62a0a4aad3eade94ed1a03) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '22504f276ebd98ad0bf001dbe0a2b539') in 0.005182 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000072 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RockyEdge.prefab
+  artifactKey: Guid(8346eaba119a746469efae8bae2110c6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RockyEdge.prefab using Guid(8346eaba119a746469efae8bae2110c6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'b18746621df9c6361dd48e796e503a0f') in 0.006566 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionWhite.prefab
+  artifactKey: Guid(b9c5ab851b762b74f8bcba314257140c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionWhite.prefab using Guid(b9c5ab851b762b74f8bcba314257140c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '3dc4d6bc831bdff8bec6064f2edd9751') in 0.006445 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000070 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Village.prefab
+  artifactKey: Guid(4fbd252196892684286e1d961b54195f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Village.prefab using Guid(4fbd252196892684286e1d961b54195f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '94db49e4831e0e6e1d918c12bc2f5f2f') in 0.005161 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000048 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Forest2.prefab
+  artifactKey: Guid(40ffbe342e4e9084ba744fe2d7f087c2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Forest2.prefab using Guid(40ffbe342e4e9084ba744fe2d7f087c2) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a3be84deacad1d2d2ad299dae77fdc69') in 0.005566 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000044 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Flowers.prefab
+  artifactKey: Guid(968dca314c3171b418050fd10fee5fc6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Flowers.prefab using Guid(968dca314c3171b418050fd10fee5fc6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '69b2bac86998803550c78459e4d8ff3c') in 0.005092 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000043 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SnowyForest.prefab
+  artifactKey: Guid(0f7fc4a9fcc3541408fa7639f0342de0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SnowyForest.prefab using Guid(0f7fc4a9fcc3541408fa7639f0342de0) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'af5af65f64208e38b093e977820b24fe') in 0.006272 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000070 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionYellow.prefab
+  artifactKey: Guid(dd5543970ad8a7742b587b37412bdeea) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionYellow.prefab using Guid(dd5543970ad8a7742b587b37412bdeea) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'f8d35aad122443300a8351e93169d3ba') in 0.004966 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000045 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Town.prefab
+  artifactKey: Guid(97a674fe99515b7419d2e12a90ee388f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Town.prefab using Guid(97a674fe99515b7419d2e12a90ee388f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'f23627a16eaf9f65707ff6c3150f9232') in 0.005266 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000065 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex27.prefab
+  artifactKey: Guid(779906fa38069b447b328c7912776cb9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex27.prefab using Guid(779906fa38069b447b328c7912776cb9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'bbfb9463ed5b4710cfebdc10dbdcf374') in 0.005477 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000057 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/HellSpikes.fbx
+  artifactKey: Guid(f77157ff8b3b15c40b45b76ceb09fbcc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/HellSpikes.fbx using Guid(f77157ff8b3b15c40b45b76ceb09fbcc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '51de7c9fe288e1bcd27b8c72ebdfef0a') in 0.012955 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000035 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex11.fbx
+  artifactKey: Guid(ec55075d188c17f409c030e2fa6d4ebf) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex11.fbx using Guid(ec55075d188c17f409c030e2fa6d4ebf) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '98a29edd26ce0845973c57750ed8dc33') in 0.010595 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000039 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex28.fbx
+  artifactKey: Guid(afea607c0ddd7564e84d074e1879e2b5) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex28.fbx using Guid(afea607c0ddd7564e84d074e1879e2b5) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '314f3f6e336c4b8a3b2d7a88b986c869') in 0.010294 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Lake.fbx
+  artifactKey: Guid(1a6dcb961b8ee2a4eb42b0b33c1f8769) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Lake.fbx using Guid(1a6dcb961b8ee2a4eb42b0b33c1f8769) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '26670e7ece65ae867ff577d68ee7ae8b') in 0.010905 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000080 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Town.prefab
+  artifactKey: Guid(86ecd374d18a24841bb8d7ea4a14c0eb) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Town.prefab using Guid(86ecd374d18a24841bb8d7ea4a14c0eb) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '9bb5e61737e9dc7d2a6f632d41983508') in 0.004559 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000075 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Crops.fbx
+  artifactKey: Guid(aa92d7499b0a4b643945a413fc6d6391) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Crops.fbx using Guid(aa92d7499b0a4b643945a413fc6d6391) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'ca8f3e3a56a18f767c098d740dd61405') in 0.011303 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex22.prefab
+  artifactKey: Guid(cc0b6d4b15530d942bffb81f838c93fc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex22.prefab using Guid(cc0b6d4b15530d942bffb81f838c93fc) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '54cc476e9b5bd423b8b8ba78d143e4a1') in 0.004065 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000065 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/GlaciersOnWater.fbx
+  artifactKey: Guid(1d59c68e50152a7469718524c718b591) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/GlaciersOnWater.fbx using Guid(1d59c68e50152a7469718524c718b591) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'bb830f30693307dc7d0370e761d22e70') in 0.011804 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/Forest.fbx
+  artifactKey: Guid(26be381455f4a274c8688dd8ff4f5893) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/Forest.fbx using Guid(26be381455f4a274c8688dd8ff4f5893) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '6a1d8541cecfb27d7a7b7c83b2fed2da') in 0.011165 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex22.fbx
+  artifactKey: Guid(66a66b512f78d3d4f81ed74fd8e3963a) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex22.fbx using Guid(66a66b512f78d3d4f81ed74fd8e3963a) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '4cff2017d6f0742cd0584df3cfd0f5ee') in 0.008890 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Objects/SnowyForest.fbx
+  artifactKey: Guid(cc1ce4a5dea32ed468e94f11f637f10f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Objects/SnowyForest.fbx using Guid(cc1ce4a5dea32ed468e94f11f637f10f) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '4f6c74a36c0dc25fd664ddc248067af0') in 0.009038 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000055 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex31.fbx
+  artifactKey: Guid(66c95755fe17bd7479da5154e7a6f309) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex31.fbx using Guid(66c95755fe17bd7479da5154e7a6f309) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '48483c88eb88a8a2ca1843b1cd014b12') in 0.011733 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000094 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc
+  artifactKey: Guid(3997e2241185407d80309a82f9148466) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc using Guid(3997e2241185407d80309a82f9148466) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '70bcc6db02ed4f5b7c9e8534f4f62841') in 0.002576 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000074 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex24.prefab
+  artifactKey: Guid(c6f768877d23ae843aec051dd03e03e6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex24.prefab using Guid(c6f768877d23ae843aec051dd03e03e6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '7592d5b82895c6a6e2dc14f26d867bdc') in 0.006344 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt
+  artifactKey: Guid(6e59c59b81ab47f9b6ec5781fa725d2c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt using Guid(6e59c59b81ab47f9b6ec5781fa725d2c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'a0787587363a77d2fd8cd35dbfaf2b2f') in 0.003292 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000054 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex8.fbx
+  artifactKey: Guid(9191f7b022d593c41ac7300bac249d06) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex8.fbx using Guid(9191f7b022d593c41ac7300bac249d06) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'fc186ef3e1d703dcbedaaaca922015d4') in 0.007993 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex14.fbx
+  artifactKey: Guid(af5b57b852ef0394780de2f3f4b82968) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex14.fbx using Guid(af5b57b852ef0394780de2f3f4b82968) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'e1a5dce3416ae022ce8b6aca0334b3f0') in 0.010518 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000046 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_SDF.shader
+  artifactKey: Guid(68e6db2ebdc24f95958faec2be5558d6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_SDF.shader using Guid(68e6db2ebdc24f95958faec2be5558d6) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'c1dd473873bf341657c2651ca338cc45') in 0.004454 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000049 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Crops.prefab
+  artifactKey: Guid(e4113aa56a03cf64eba4ae136ef1ac74) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Crops.prefab using Guid(e4113aa56a03cf64eba4ae136ef1ac74) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '2fbf1b4bdddc1ea11e9a22ed85912525') in 0.004967 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Desert2.prefab
+  artifactKey: Guid(3384ab3a2854b1344ac4ff79c4386138) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Desert2.prefab using Guid(3384ab3a2854b1344ac4ff79c4386138) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'b821fa68025e8dcb313e16b56379065f') in 0.005121 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex16.fbx
+  artifactKey: Guid(5f4e29955b19f8e479537386c62931c9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex16.fbx using Guid(5f4e29955b19f8e479537386c62931c9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '02425c1b4da83482a8d784be939d9059') in 0.015125 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000078 seconds.
+  path: Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader
+  artifactKey: Guid(85187c2149c549c5b33f0cdb02836b17) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader using Guid(85187c2149c549c5b33f0cdb02836b17) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '3ec3fda7039a873b0f63dcb52a82a620') in 0.009476 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000072 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex3.fbx
+  artifactKey: Guid(32bf8e89e0e369540a99872076a7ead9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Models/Hexagons/Hex3.fbx using Guid(32bf8e89e0e369540a99872076a7ead9) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'e6d0e575f195e03f0646103e298daa92') in 0.013109 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000103 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/PalmTrees.prefab
+  artifactKey: Guid(6aa6d57464e3a7742b51561c98bf11c8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/PalmTrees.prefab using Guid(6aa6d57464e3a7742b51561c98bf11c8) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '3eb09cd9667d584dcfd6c24bedc95431') in 0.009269 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000052 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Fence.prefab
+  artifactKey: Guid(2a506530c723d3a429773b86bf8ab9ca) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Fence.prefab using Guid(2a506530c723d3a429773b86bf8ab9ca) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: 'd7a809c9c60111dcc1c4bd9f89c733cf') in 0.006433 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/HellLake.prefab
+  artifactKey: Guid(0c9cd282647074244950d07c3846fa0c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/HellLake.prefab using Guid(0c9cd282647074244950d07c3846fa0c) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '70dc58bc30e904c5a32100bdfce35e88') in 0.004642 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000031 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex13.prefab
+  artifactKey: Guid(9c6353c0a6f5e524b8c947bc6aa1c756) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex13.prefab using Guid(9c6353c0a6f5e524b8c947bc6aa1c756) Importer(2089858483,0ecaa5967403d082aa24f35e1b516d23)  -> (artifact id: '7d488ff2353fedafd83479a7d3707252') in 0.003848 seconds 
+========================================================================
+Received Prepare
+Refreshing native plugins compatible for Editor in 5.05 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 17 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 17 unused Assets / (64.8 KB). Loaded Objects now: 3532.
+Memory consumption went from 84.8 MB to 84.8 MB.
+Total: 24.870083 ms (FindLiveObjects: 0.152000 ms CreateObjectMapping: 0.058208 ms MarkObjects: 24.581125 ms  DeleteObjects: 0.077875 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:SearchIndexIgnoredProperties: e643bd26f0fe6173181afceb89e7c659 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
