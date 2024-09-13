@@ -78,7 +78,7 @@ public class HexCell : MonoBehaviour
             corners[i] = transform.position + rotation * corner;  // Apply rotation and add to hex's center position
 
             // Log each corner for debugging
-            Debug.Log($"Hex ({coordinates.x}, {coordinates.z}) - Corner [{i}] found at ({corners[i].x}, {corners[i].y}, {corners[i].z})");
+            // Debug.Log($"Hex ({coordinates.x}, {coordinates.z}) - Corner [{i}] found at ({corners[i].x}, {corners[i].y}, {corners[i].z})");
         }
         return corners;
     }
@@ -109,7 +109,7 @@ public class HexCell : MonoBehaviour
         Vector3 center = transform.position;
 
         // Log the center for debugging purposes
-        Debug.Log($"Hex ({coordinates.x}, {coordinates.z}) - Center found at ({center.x}, {center.y}, {center.z})");
+        // Debug.Log($"Hex ({coordinates.x}, {coordinates.z}) - Center found at ({center.x}, {center.y}, {center.z})");
 
         return center;
     }

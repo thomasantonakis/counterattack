@@ -64,7 +64,7 @@ public class HexGrid : MonoBehaviour
         if (arrayX >= 0 && arrayX < width && arrayZ >= 0 && arrayZ < height)
         {
             cells[arrayX, arrayZ] = cell;
-            Debug.Log($"HexCell created at array position [{arrayX}, {arrayZ}] with world position {position}");
+            // Debug.Log($"HexCell created at array position [{arrayX}, {arrayZ}] with world position {position}");
         }
         else
         {

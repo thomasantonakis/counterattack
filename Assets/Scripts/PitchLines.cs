@@ -183,6 +183,7 @@ public class PitchLines : MonoBehaviour
           , 180 // start angle integer
           , 270 // end angle integer
           , "Top Right Corner");
+        Debug.Log("Lines Drawn...");
     }
     
     // Draw a line between two points with a given thickness
@@ -221,7 +222,7 @@ public class PitchLines : MonoBehaviour
         renderer.material = new Material(Shader.Find("Unlit/Color"));
         renderer.material.color = Color.white;  // Set the color of the line (white in this case)
 
-        Debug.Log($"Quad line drawn from {start} to {end} with thickness {thickness}");
+        // Debug.Log($"Quad line drawn from {start} to {end} with thickness {thickness}");
     }
 
     public Vector3[] GetCirclePoints(Vector3 center, float radius, int segmentCount, float startAngle = 0, float endAngle = 360)
@@ -243,7 +244,7 @@ public class PitchLines : MonoBehaviour
             );
 
             // Log each point for debugging
-            Debug.Log($"Circle point [{i}] at ({circlePoints[i].x}, {circlePoints[i].y}, {circlePoints[i].z})");
+            // Debug.Log($"Circle point [{i}] at ({circlePoints[i].x}, {circlePoints[i].y}, {circlePoints[i].z})");
         }
 
         return circlePoints;
@@ -299,6 +300,6 @@ public class PitchLines : MonoBehaviour
         // Rotate the sprite to lie flat on the XZ plane
         dot.transform.rotation = Quaternion.Euler(90, 0, 0);  // Rotate the sprite to lie flat
 
-        Debug.Log($"Sprite dot drawn at ({position.x}, {position.y}, {position.z}) with radius {radius}");
+        // Debug.Log($"Sprite dot drawn at ({position.x}, {position.y}, {position.z}) with radius {radius}");
     }
 }
