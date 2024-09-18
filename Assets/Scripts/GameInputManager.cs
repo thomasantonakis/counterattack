@@ -151,8 +151,6 @@ public class GameInputManager : MonoBehaviour
 
         Vector3Int startCoords = startHex.coordinates;
         Vector3Int endCoords = endHex.coordinates;
-        // Add start hex to the path
-        path.Add(startHex);
         // Calculate the straight-line path (Bresenham-like line algorithm for hexes)
         int dx = endCoords.x - startCoords.x;
         int dz = endCoords.z - startCoords.z;
@@ -161,6 +159,8 @@ public class GameInputManager : MonoBehaviour
         float stepZ = dz / (float)steps;
         float currentX = startCoords.x;
         float currentZ = startCoords.z;
+        // Add start hex to the path
+        path.Add(startHex);
         // Walk through the line from start to end hex
         for (int i = 1; i <= steps; i++)
         {
@@ -171,10 +171,22 @@ public class GameInputManager : MonoBehaviour
             Vector3Int roundedCoords = new Vector3Int(Mathf.RoundToInt(currentX), 0, Mathf.RoundToInt(currentZ));
             HexCell nextHex = hexGrid.GetHexCellAt(roundedCoords);
 
-            if (nextHex != null && !path.Contains(nextHex))
+        if (nextHex != null && !path.Contains(nextHex))
+        {
+            path.Add(nextHex);
+
+            // Check neighbors of the current hex and add them if they intersect the ball's radius
+            foreach (HexCell neighbor in nextHex.GetNeighbors(hexGrid))
             {
-                path.Add(nextHex);
+                if (Vector3.Distance(neighbor.transform.position, nextHex.transform.position) <= ball.ballRadius)
+                {
+                    if (!path.Contains(neighbor))
+                    {
+                        path.Add(neighbor);  // Add hexes "touched" by the ball's radius
+                    }
+                }
             }
+        }
         }
         return path;
     }
