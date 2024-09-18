@@ -112,9 +112,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coordinates: {x: 0, y: 0, z: 0}
+  hexRadius: 0.5
   isKickOff: 0
   isOutOfBounds: 0
   isInPenaltyBox: 0
   isInFinalThird: 0
   isDifficultShotPosition: 0
+  isDark: 0
   coordinatesText: {fileID: 0}
+  hexBorderMaterial: {fileID: 0}
+  hoverColor: {r: 1, g: 0.18039216, b: 0.2509804, a: 1}

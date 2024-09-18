@@ -5,17 +5,25 @@ using TMPro;  // Import TextMeshPro namespace
 public class HexCell : MonoBehaviour
 {
     public Vector3Int coordinates;
+    public float hexRadius = 0.5f;
     // Hex features for the soccer pitch
     public bool isKickOff = false;
     public bool isOutOfBounds = false;
     public bool isInPenaltyBox = false;
     public bool isInFinalThird = false;
     public bool isDifficultShotPosition = false;
+    public bool isDark = false;
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
+
+    // Design of the Hexes
+    // public Material hexBorderMaterial;  // Drag the new HexBorderMaterial into this field in the inspector
     private Renderer hexRenderer;
-    public float hexRadius = 0.5f;
     private Color originalColor;
-    private Color highlightColor = Color.black;  // Color to highlight the hex
+    // private Color highlightColor = new Color(0 / 255f, 0 / 255f, 0 / 255f, 255f / 255f) ;
+    // private Color originalBorderColor;
+    // private float originalBorderThickness;
+    
+
     private static readonly Vector3Int[] directions = {
         new Vector3Int(0, 0, 1),   // Top
         new Vector3Int(1, 0, 0),   // Top-right
@@ -29,8 +37,32 @@ public class HexCell : MonoBehaviour
     {
         // Store the renderer and the original material color
         hexRenderer = GetComponent<Renderer>();
+        hexRenderer.material = new Material(hexRenderer.material);  // Clone the material
         originalColor = hexRenderer.material.color;
+        // if (hexBorderMaterial != null)
+        // {
+        //     hexRenderer.material = hexBorderMaterial;
+        //     Debug.Log("Hex border material assigned!");
+        // }
+        // else
+        // {
+        //     Debug.LogError("Hex border material is not assigned!");
+        // }
+        // // Store the original colors and border thickness for hover/unhover logic
+        // originalColor = hexRenderer.material.GetColor("_MainColor");
+        // originalBorderColor = hexRenderer.material.GetColor("_BorderColor");
+        // originalBorderThickness = hexRenderer.material.GetFloat("_BorderThickness");
+
     }
+
+    // Method to change the color and border dynamically
+    // public void SetHexColor(Color hexColor)
+    // {
+    //     hexRenderer.material.color = hexColor;
+    //     // hexRenderer.material.SetColor("_MainColor", hexColor);
+    //     // hexRenderer.material.SetColor("_BorderColor", borderColor);
+    //     // hexRenderer.material.SetFloat("_BorderThickness", borderThickness);
+    // }
 
     public void SetCoordinates(int x, int z)
     {
@@ -43,12 +75,17 @@ public class HexCell : MonoBehaviour
     public void HighlightHex()
     {
         // Set a highlight color (black outline)
-        hexRenderer.material.color = highlightColor;
+        // hexRenderer.material.color = highlightColor;
+        hexRenderer.material.color = originalColor * 0.5f;
+        // hexRenderer.material.color = Color.black;
+        // hexRenderer.material.color = new Color(255 / 255f, 46 / 255f, 64 / 255f, 255f / 255f) ;;
+        // SetHexColor(hoverColor, hoverBorderColor, originalBorderThickness);
     }
 
     public void ResetHighlight()
     {
         // Reset to the original color
+        // SetHexColor(originalColor);
         hexRenderer.material.color = originalColor;
     }
 

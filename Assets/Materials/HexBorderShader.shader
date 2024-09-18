@@ -2,13 +2,13 @@ Shader "Custom/HexBorderShader"
 {
     Properties
     {
-        _Color ("Main Color", Color) = (1,1,1,1)
-        _BorderColor ("Border Color", Color) = (0,0,0,1)
-        _BorderThickness ("Border Thickness", Range(0.01, 0.1)) = 0.05
+        _MainColor ("Main Color", Color) = (0.5, 1, 0.5, 1) // Color of the hexagon
+        _BorderColor ("Border Color", Color) = (0, 0, 0, 1) // Color of the border
+        _BorderThickness ("Border Thickness", Range(0, 0.2)) = 0.05 // Thickness of the border
     }
     SubShader
     {
-        Tags {"RenderType"="Opaque"}
+        Tags { "RenderType" = "Opaque" }
         LOD 200
 
         Pass
@@ -16,7 +16,6 @@ Shader "Custom/HexBorderShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
 
             struct appdata
             {
@@ -30,8 +29,9 @@ Shader "Custom/HexBorderShader"
                 float4 vertex : SV_POSITION;
             };
 
-            fixed4 _Color;
-            fixed4 _BorderColor;
+            // Uniforms (properties) to be set in Unity
+            float4 _MainColor;
+            float4 _BorderColor;
             float _BorderThickness;
 
             v2f vert (appdata v)
@@ -42,20 +42,36 @@ Shader "Custom/HexBorderShader"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            // Calculate the distance from the center of the hexagon (flat-topped)
+            float hexagonDistance(float2 uv)
             {
-                // Distance from center (for border detection)
-                float dist = length(i.uv - 0.5);
-                if (dist > (0.5 - _BorderThickness)) 
+                // Center the UV coordinates
+                float2 p = 2.0 * uv - 1.0;
+                // Shrink horizontally to fit hex grid
+                p.x *= 1.1547;
+
+                // Hexagon distance calculation
+                p = abs(p);
+                return max(p.x * 0.866 + p.y * 0.5, p.y);
+            }
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                // Get the distance from the hexagon center
+                float dist = hexagonDistance(i.uv);
+
+                // Apply the border color near the edges
+                if (dist > 0.5 - _BorderThickness)
                 {
-                    return _BorderColor;  // Border color
+                    return _BorderColor;
                 }
-                else 
+                else
                 {
-                    return _Color;  // Main hex color
+                    return _MainColor;
                 }
             }
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }

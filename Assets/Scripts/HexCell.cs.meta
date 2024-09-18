@@ -3,7 +3,9 @@ guid: 2c8d00dd3454043428a367d20f801b12
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - coordinatesText: {instanceID: 0}
+  - hexBorderMaterial: {fileID: 2100000, guid: 9d5bd3f92078644d39770a0c35a3b8ee, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

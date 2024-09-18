@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007da863a509e477c983287312a18ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hexGrid: {fileID: 1405702520}
 --- !u!64 &390494643
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -325,6 +326,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraController: {fileID: 963194229}
   ball: {fileID: 390494642}
+  hexGrid: {fileID: 1405702520}
+  dragThreshold: 10
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,6 +552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2337e1abf04141cdbfc893187fa6825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridCenter: {x: 0, y: 0, z: 0}
   hexCellPrefab: {fileID: -428787755409983856, guid: f78181e779d674d1a80601a352fff9e9, type: 3}
 --- !u!4 &1405702521
 Transform:

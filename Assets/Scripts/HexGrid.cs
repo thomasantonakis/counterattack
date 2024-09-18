@@ -5,7 +5,7 @@ public class HexGrid : MonoBehaviour
     private bool gridInitialized = false;  // Track if the grid is fully created
     private int width = 48;  // Number of hex tiles in the grid's width
     private int height = 36; // Number of hex tiles in the grid's heightb
-    Vector3 gridCenter = new Vector3(0, 0, 0);  // Center of your grid
+    public Vector3 gridCenter = new Vector3(0, 0, 0);  // Center of your grid
     float hexRadius = 0.5f;
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab
     // [SerializeField] public HexCell hexCellPrefab;  // Reference to hex cell prefab
@@ -26,6 +26,11 @@ public class HexGrid : MonoBehaviour
         CreateOutOfBoundsPlanes(this);
     }
 
+    void Update()
+    {
+        DetectHexUnderMouse();
+    }
+
     void CreateGrid()
     {
         for (int z = -height / 2; z < height / 2; z++)
@@ -43,7 +48,6 @@ public class HexGrid : MonoBehaviour
         return gridInitialized;
     }
 
-
     void CreateCell(int x, int z)
     {
         // Adjust for proper horizontal and vertical spacing based on the hexagon's size
@@ -57,6 +61,7 @@ public class HexGrid : MonoBehaviour
         // Instantiate the hex cell at the calculated position
         HexCell cell = Instantiate(hexCellPrefab, position, Quaternion.identity, transform);
         cell.coordinates = new Vector3Int(x, 0, z);
+        cell.name = $"HexCell [{x}, {z}]";  // Assign the name to the GameObject
 
         // Check array bounds and log the creation of each cell
         int arrayX = x + width / 2;
@@ -105,7 +110,7 @@ public class HexGrid : MonoBehaviour
         }
 
         // Example: Set final thirds
-        if ( (x <= 18 && x >= 8) && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)) || (x >= -18 && x <= -8) && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)) )
+        if ( x <= 18 && x >= 8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)) || x >= -18 && x <= -8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)) )
         {
             cell.isInFinalThird = true;
         }
@@ -120,12 +125,21 @@ public class HexGrid : MonoBehaviour
             cell.isDifficultShotPosition = true;
         }
 
+        // Dark Green Hexes
+        if ((x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0))
+        {
+            cell.isDark = true;
+        }
+
         // Debug to visually differentiate hexes in Unity (optional)
-        if (cell.isKickOff) cell.GetComponent<Renderer>().material.color = Color.red;
-        else if (cell.isOutOfBounds) cell.GetComponent<Renderer>().material.color = Color.blue;
-        else if (cell.isDifficultShotPosition) cell.GetComponent<Renderer>().material.color = Color.magenta;
-        else if (cell.isInPenaltyBox) cell.GetComponent<Renderer>().material.color = Color.yellow;
-        else if (cell.isInFinalThird) cell.GetComponent<Renderer>().material.color = Color.green;
+        // if (cell.isDark) cell.GetComponent<Renderer>().material.color = new Color(84 / 255f, 207 / 255f, 76 / 255f, 255f / 255f);
+        if (cell.isDark) cell.GetComponent<Renderer>().material.color = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
+        // if (cell.isDark) cell.GetComponent<Renderer>().material.color = Color.blue;
+        // else if (cell.isKickOff) cell.GetComponent<Renderer>().material.color = Color.red;
+        // else if (cell.isOutOfBounds) cell.GetComponent<Renderer>().material.color = Color.blue;
+        // else if (cell.isDifficultShotPosition) cell.GetComponent<Renderer>().material.color = Color.magenta;
+        // else if (cell.isInPenaltyBox) cell.GetComponent<Renderer>().material.color = Color.yellow;
+        // else if (cell.isInFinalThird) cell.GetComponent<Renderer>().material.color = Color.green;
     }
 
     // Method to get the HexCell based on its coordinates
@@ -146,7 +160,6 @@ public class HexGrid : MonoBehaviour
         return null;  // Return null if out of bounds
     }
 
-    // public void CreateOutOfBoundsPlanes(Vector3 gridCenter, float gridWidth, float gridHeight, float planeHeight = 0.02f)
     public void CreateOutOfBoundsPlanes(HexGrid grid, float planeHeight = 0.05f)
     {
         // Get the outermost hex cells from the grid
@@ -204,11 +217,7 @@ public class HexGrid : MonoBehaviour
         topPlane.transform.parent = outOfBoundsParent.transform;
         bottomPlane.transform.parent = outOfBoundsParent.transform;
     }
-    void Update()
-    {
-        DetectHexUnderMouse();
-    }
-
+    
     void DetectHexUnderMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -229,7 +238,7 @@ public class HexGrid : MonoBehaviour
                     }
 
                     hex.HighlightHex();  // Highlight the current hex
-                    Debug.Log($"Hovering over hex at: {hex.coordinates}");
+                    // Debug.Log($"Hovering over hex at: {hex.coordinates}");
                     lastHoveredHex = hex;
                 }
             }
