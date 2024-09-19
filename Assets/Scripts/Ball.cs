@@ -9,7 +9,7 @@ public class Ball : MonoBehaviour
     private float moveSpeed = 2f;  // Speed: 2 hexes per second
     private bool isBallSelected = false;  // Track if the ball is selected
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
-    public float ballRadius = 0.35f;
+    public float ballRadius = 0.5f;
 
 
     // Coroutine to ensure ball is placed after grid initialization

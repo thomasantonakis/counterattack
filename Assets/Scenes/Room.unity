@@ -266,6 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexGrid: {fileID: 1405702520}
+  ballRadius: 0.5
 --- !u!64 &390494643
 MeshCollider:
   m_ObjectHideFlags: 0

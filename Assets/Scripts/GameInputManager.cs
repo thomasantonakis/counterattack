@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 public class GameInputManager : MonoBehaviour
 {
     public CameraController cameraController;  // Reference to the camera controller
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Add a reference to the HexGrid
-
 
     // List to store highlighted hexes
     private List<HexCell> highlightedHexes = new List<HexCell>();
@@ -17,11 +17,10 @@ public class GameInputManager : MonoBehaviour
     private Vector3 mouseDownPosition;  // Where the mouse button was pressed
     private bool isDragging = false;    // Whether a drag is happening
     public float dragThreshold = 10f;   // Sensitivity to detect dragging vs. clicking (in pixels)
+    
 
-    void Start()
-    {
+    void Start(){}
 
-    }
     void Update()
     {
         // Always handle camera movement with the keyboard, regardless of mouse input
@@ -113,8 +112,9 @@ public class GameInputManager : MonoBehaviour
             Debug.LogError("Ball's current hex is null! Ensure the ball has a valid hex.");
             return;
         }
+        float ballRadius = ball.ballRadius;  // Get the ball's radius
         ClearHighlightedHexes();
-        List<HexCell> pathHexes = CalculateHexPath(ballHex, targetHex);  // Calculate the path between the ball and the target hex
+        List<HexCell> pathHexes = CalculateHexPathWithRadius(ballHex, targetHex, ballRadius);  // Calculate the path between the ball and the target hex
         // Prepare a string to hold the coordinates for logging
         string hexCoordinatesLog = "Highlighted Path: ";
         foreach (HexCell hex in pathHexes)
@@ -138,57 +138,125 @@ public class GameInputManager : MonoBehaviour
 
     }
 
-    List<HexCell> CalculateHexPath(HexCell startHex, HexCell endHex)
+    public List<HexCell> CalculateHexPathWithRadius(HexCell startHex, HexCell endHex, float ballRadius)
     {
         List<HexCell> path = new List<HexCell>();
+        string logContent = $"Ball Radius: {ballRadius}\n";
+        string startHexCoordinates = $"({startHex.coordinates.x}, {startHex.coordinates.z})";
+        string endHexCoordinates = $"({endHex.coordinates.x}, {endHex.coordinates.z})";
+        logContent += $"Starting Hex: {startHexCoordinates}, Target Hex: {endHexCoordinates}\n";
 
-        // Ensure both start and end hexes are valid
-        if (startHex == null || endHex == null)
+        // Calculate the straight-line path between start and end
+        List<HexCell> initialPath = CalculateHexPath(startHex, endHex);
+
+        // First, add the main path
+        foreach (HexCell hex in initialPath)
         {
-            Debug.LogError("Start or End hex is null in path calculation!");
-            return path;
+            if (!path.Contains(hex))
+            {
+                path.Add(hex);
+                logContent += $"Added Hex: ({hex.coordinates.x}, {hex.coordinates.z}) from main path\n";
+            }
         }
 
-        Vector3Int startCoords = startHex.coordinates;
-        Vector3Int endCoords = endHex.coordinates;
-        // Calculate the straight-line path (Bresenham-like line algorithm for hexes)
-        int dx = endCoords.x - startCoords.x;
-        int dz = endCoords.z - startCoords.z;
-        int steps = Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dz));
-        float stepX = dx / (float)steps;
-        float stepZ = dz / (float)steps;
-        float currentX = startCoords.x;
-        float currentZ = startCoords.z;
-        // Add start hex to the path
-        path.Add(startHex);
-        // Walk through the line from start to end hex
-        for (int i = 1; i <= steps; i++)
+        // Convert hex coordinates to world space for the distance calculation
+        Vector3 startPos = startHex.GetHexCenter();
+        Vector3 endPos = endHex.GetHexCenter();
+
+        // Now explore neighbors of the hexes in the initial path
+        Queue<HexCell> hexQueue = new Queue<HexCell>(initialPath); // Add all hexes in the initial path to the queue for neighbor exploration
+
+        while (hexQueue.Count > 0)
         {
-            currentX += stepX;
-            currentZ += stepZ;
+            HexCell currentHex = hexQueue.Dequeue();
+            logContent += $"Finding Neighbours of ({currentHex.coordinates.x}, {currentHex.coordinates.z})\n";
 
-            // Round to the nearest hex cell coordinates
-            Vector3Int roundedCoords = new Vector3Int(Mathf.RoundToInt(currentX), 0, Mathf.RoundToInt(currentZ));
-            HexCell nextHex = hexGrid.GetHexCellAt(roundedCoords);
-
-        if (nextHex != null && !path.Contains(nextHex))
-        {
-            path.Add(nextHex);
-
-            // Check neighbors of the current hex and add them if they intersect the ball's radius
-            foreach (HexCell neighbor in nextHex.GetNeighbors(hexGrid))
+            // Get the neighbors of the current hex
+            foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                if (Vector3.Distance(neighbor.transform.position, nextHex.transform.position) <= ball.ballRadius)
+                if (neighbor == null || path.Contains(neighbor)) // Skip invalid or already added hexes
                 {
-                    if (!path.Contains(neighbor))
+                    if (neighbor != null && path.Contains(neighbor))
                     {
-                        path.Add(neighbor);  // Add hexes "touched" by the ball's radius
+                        logContent += $"Exists in path ({neighbor.coordinates.x}, {neighbor.coordinates.z}), skipping\n";
                     }
+                    continue;
+                }
+
+                // Calculate the distance from the neighbor's center to the line (startPos to endPos)
+                float distanceToLine = DistanceFromPointToLine(neighbor.GetHexCenter(), startPos, endPos);
+
+                // If the distance to the line is within the ball radius, add the neighbor to the path
+                if (distanceToLine <= ballRadius)
+                {
+                    path.Add(neighbor);  // Add neighbor to the path
+                    hexQueue.Enqueue(neighbor);  // Enqueue the neighbor for further exploration
+                    logContent += $"Added Hex: ({neighbor.coordinates.x}, {neighbor.coordinates.z}), Distance to Line: {distanceToLine}, Radius: {ballRadius}\n";
+                }
+                else
+                {
+                    logContent += $"Not Added: ({neighbor.coordinates.x}, {neighbor.coordinates.z}), Distance: {distanceToLine} exceeds Ball Radius: {ballRadius}\n";
                 }
             }
         }
+
+        // Log the final highlighted path to the file
+        string highlightedPath = "Highlighted Path: ";
+        foreach (HexCell hex in path)
+        {
+            highlightedPath += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
         }
+        highlightedPath = highlightedPath.TrimEnd(new char[] { ',', ' ' });
+        logContent += highlightedPath;
+
+        // Save the log to a file
+        SaveLogToFile(logContent, startHexCoordinates, endHexCoordinates);
+
         return path;
+    }
+
+    public List<HexCell> CalculateHexPath(HexCell startHex, HexCell endHex)
+    {
+        List<HexCell> path = new List<HexCell>();
+
+        Vector3Int startCoords = startHex.coordinates;
+        Vector3Int endCoords = endHex.coordinates;
+
+        int steps = Mathf.Max(Mathf.Abs(endCoords.x - startCoords.x), Mathf.Abs(endCoords.z - startCoords.z));
+
+        for (int i = 0; i <= steps; i++)
+        {
+            float t = steps == 0 ? 0 : (float)i / steps;
+            
+            // Call the axial interpolation and rounding from HexGridUtils
+            Vector3 interpolatedAxial = HexGridUtils.AxialLerp(startCoords, endCoords, t);
+            Vector3Int roundedAxial = HexGridUtils.AxialRound(interpolatedAxial);
+
+            HexCell hex = hexGrid.GetHexCellAt(roundedAxial);
+            if (hex != null && !path.Contains(hex))
+            {
+                path.Add(hex); // Add the hex to the path
+            }
+        }
+
+        return path;
+    }
+
+
+    float DistanceFromPointToLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+    {
+        Vector3 lineDirection = lineEnd - lineStart;
+        float lineLength = lineDirection.magnitude;
+        lineDirection.Normalize();
+
+        // Project the point onto the line, clamping between the start and end of the line
+        float projectedLength = Mathf.Clamp(Vector3.Dot(point - lineStart, lineDirection), 0, lineLength);
+
+        // Calculate the closest point on the line
+        Vector3 closestPoint = lineStart + lineDirection * projectedLength;
+
+        // Return the distance from the point to the closest point on the line
+        return Vector3.Distance(point, closestPoint);
     }
 
     void ClearHighlightedHexes()
@@ -203,5 +271,22 @@ public class GameInputManager : MonoBehaviour
     bool IsPointerOverToken()
     {
         return false;  // Placeholder until tokens are implemented
+    }
+
+    void SaveLogToFile(string logText, string startHex, string endHex)
+    {
+        // Define the file path (you can customize this path)
+        string filePath = Application.dataPath + $"/Logs/HexPath_{startHex}_to_{endHex}.txt";
+
+        // Ensure the directory exists
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+        // Write the log text to the file (append mode)
+        using (StreamWriter writer = new StreamWriter(filePath, true))
+        {
+            writer.WriteLine(logText);
+        }
+
+        Debug.Log($"Log saved to: {filePath}");
     }
 }

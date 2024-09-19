@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class HexGrid : MonoBehaviour
 {
@@ -160,6 +161,29 @@ public class HexGrid : MonoBehaviour
         return null;  // Return null if out of bounds
     }
 
+    public List<HexCell> GetHexesInRange(HexCell centerHex, int range)
+    {
+        List<HexCell> hexesInRange = new List<HexCell>();
+
+        Vector3Int centerCoords = centerHex.coordinates;
+
+        for (int dx = -range; dx <= range; dx++)
+        {
+            for (int dz = Mathf.Max(-range, -dx - range); dz <= Mathf.Min(range, -dx + range); dz++)
+            {
+                int dy = -dx - dz;
+                Vector3Int currentCoords = new Vector3Int(centerCoords.x + dx, centerCoords.y + dy, centerCoords.z + dz);
+
+                HexCell hex = GetHexCellAt(currentCoords);
+                if (hex != null)
+                {
+                    hexesInRange.Add(hex);
+                }
+            }
+        }
+
+        return hexesInRange;
+    }
     public void CreateOutOfBoundsPlanes(HexGrid grid, float planeHeight = 0.05f)
     {
         // Get the outermost hex cells from the grid
