@@ -8,6 +8,7 @@ public class GameInputManager : MonoBehaviour
     public CameraController cameraController;  // Reference to the camera controller
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Add a reference to the HexGrid
+    public MatchManager matchManager;
 
     // List to store highlighted hexes
     private List<HexCell> highlightedHexes = new List<HexCell>();
@@ -27,8 +28,42 @@ public class GameInputManager : MonoBehaviour
     {
         // Always handle camera movement with the keyboard, regardless of mouse input
         cameraController.HandleCameraInput();
-
         HandleMouseInput();
+        // Handle game-specific inputs based on the current match state
+        if (MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
+        {
+            MatchManager.Instance.StartMatch();
+        }
+        // Listen for input to trigger a standard pass
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            MatchManager.Instance.TriggerStandardPass();
+        }
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            MatchManager.Instance.TriggerMovement();
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            MatchManager.Instance.TriggerHighPass();
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            MatchManager.Instance.TriggerLongPass();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            MatchManager.Instance.TriggerShot();
+        }
+        else if (Input.GetKeyDown(KeyCode.H))
+        {
+            MatchManager.Instance.TriggerHeader();
+        }
+        else if (Input.GetKeyDown(KeyCode.F))
+        {
+            MatchManager.Instance.TriggerFTP();
+        }
+
     }
 
     void HandleMouseInput()
