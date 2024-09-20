@@ -167,10 +167,15 @@ public class HexCell : MonoBehaviour
     public HexCell[] GetNeighbors(HexGrid grid)
     {
         HexCell[] neighbors = new HexCell[6];
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < HexGridUtils.hexDirections.Length; i++)
         {
-            Vector3Int neighborCoords = coordinates + directions[i];
-            neighbors[i] = grid.GetHexCellAt(neighborCoords);
+            Vector3Int neighborCoords = coordinates + HexGridUtils.hexDirections[i];
+            HexCell neighborHex = grid.GetHexCellAt(neighborCoords);
+
+            if (neighborHex != null && !neighborHex.isOutOfBounds)  // Ignore out-of-bounds hexes
+            {
+                neighbors[i] = neighborHex;  // Assign valid neighbors
+            }
         }
         return neighbors;
     }

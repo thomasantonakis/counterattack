@@ -54,4 +54,21 @@ public static class HexGridUtils
         return new Vector2Int(col, row);  // This converts cube (q, r, s) back to even-q offset
     }
 
+    // Define the six directions in cube coordinates for a pointy-topped hex grid
+    public static readonly Vector3Int[] hexDirections = new Vector3Int[]
+    {
+        new Vector3Int(1, -1, 0),   // Direction 1
+        new Vector3Int(1, 0, -1),   // Direction 2
+        new Vector3Int(0, 1, -1),   // Direction 3
+        new Vector3Int(-1, 1, 0),   // Direction 4
+        new Vector3Int(-1, 0, 1),   // Direction 5
+        new Vector3Int(0, -1, 1),   // Direction 6
+    };
+
+    // Function to get the neighbor in a specific direction
+    public static Vector3Int GetNeighbor(Vector3Int hexCoords, int direction)
+    {
+        return hexCoords + hexDirections[direction];
+    }
+
 }

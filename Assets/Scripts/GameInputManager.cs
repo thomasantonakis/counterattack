@@ -21,7 +21,9 @@ public class GameInputManager : MonoBehaviour
     public float dragThreshold = 10f;   // Sensitivity to detect dragging vs. clicking (in pixels)
     
 
-    void Start(){
+    void Start()
+    {
+        TestHexConversions();
     }
 
     void Update()
@@ -62,7 +64,6 @@ public class GameInputManager : MonoBehaviour
         {
             MatchManager.Instance.TriggerFTP();
         }
-
     }
 
     void HandleMouseInput()
@@ -424,4 +425,15 @@ public class GameInputManager : MonoBehaviour
 
         // Debug.Log($"Log saved to: {filePath}");
     }
+
+    public void TestHexConversions()
+    {
+        Vector3Int cubeCoords = new Vector3Int(3, -3, 0); // Example cube coordinates
+        Vector2Int offsetCoords = HexGridUtils.CubeToOffset(cubeCoords);  // Convert cube to offset (even-q)
+        Vector3Int convertedBackToCube = HexGridUtils.OffsetToCube(offsetCoords.x, offsetCoords.y);  // Convert offset back to cube
+
+        Debug.Log($"Cube: {cubeCoords}, Offset: {offsetCoords}, Converted Back to Cube: {convertedBackToCube}");
+    }
+
+
 }
