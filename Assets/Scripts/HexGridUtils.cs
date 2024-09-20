@@ -71,4 +71,20 @@ public static class HexGridUtils
         return hexCoords + hexDirections[direction];
     }
 
+    public static List<Vector3Int> HexRing(Vector3Int center, int radius)
+    {
+        List<Vector3Int> results = new List<Vector3Int>();
+        Vector3Int hex = center + hexDirections[4] * radius;
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < radius; j++)
+            {
+                results.Add(hex);
+                hex = GetNeighbor(hex, i);
+            }
+        }
+        return results;
+    }
+
+
 }
