@@ -83,19 +83,30 @@ public class GameInputManager : MonoBehaviour
                     Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
                     return;
                 }
+                // Calculate the number of steps between the ball and the clicked hex
+                int steps = HexGridUtils.GetStepsBetweenHexes(ballHex, clickedHex);
+                Debug.Log($"Steps from ball to target hex: {steps}");
 
-                if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+                // Reject the input if the number of steps exceeds 11
+                if (steps > 11)
                 {
-                    // Double click on the same hex: confirm the move
-                    StartCoroutine(ClearHighlightsAfterMove(currentTargetHex));
-                    ball.DeselectBall();
+                    Debug.LogWarning("Target hex is too far! The maximum range is 11 steps.");
+                    return;
                 }
-                else
-                {
-                    // First or new click on a different hex: highlight the path
-                    ClearHighlightedHexes();
-                    HighlightPathToHex(clickedHex);
-                    currentTargetHex = clickedHex;
+                else {
+                    if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+                    {
+                        // Double click on the same hex: confirm the move
+                        StartCoroutine(ClearHighlightsAfterMove(currentTargetHex));
+                        ball.DeselectBall();
+                    }
+                    else
+                    {
+                        // First or new click on a different hex: highlight the path
+                        ClearHighlightedHexes();
+                        HighlightPathToHex(clickedHex);
+                        currentTargetHex = clickedHex;
+                    }
                 }
 
                 lastClickedHex = clickedHex;  // Track the last clicked hex

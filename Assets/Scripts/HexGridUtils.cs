@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+
 public static class HexGridUtils
 {
     // Convert axial coordinates (x, z) to cube coordinates (x, y, z)
@@ -11,59 +13,42 @@ public static class HexGridUtils
         return new Vector3Int(x, y, z);
     }
 
-    // Convert cube coordinates (x, y, z) to axial coordinates (x, z)
-    // We ignore the y coordinate since it's derived from x and z
-    public static Vector3Int CubeToAxial(Vector3Int cubeCoords)
+    // Function to calculate distance between two hexes in cube coordinates
+    public static int CalculateHexDistance(Vector3Int hexA, Vector3Int hexB)
     {
-        int x = cubeCoords.x;
-        int z = cubeCoords.z;
-        return new Vector3Int(x, 0, z); // Return only axial coordinates
+        // The distance between two hexes is the maximum of the differences in their cube coordinates
+        return Mathf.Max(Mathf.Abs(hexA.x - hexB.x), Mathf.Abs(hexA.y - hexB.y), Mathf.Abs(hexA.z - hexB.z));
     }
 
-    // Linear interpolation between two axial points
-    public static Vector3 AxialLerp(Vector3Int startCoords, Vector3Int endCoords, float t)
+    // Function to get all hexes within a certain number of steps from a start hex
+    public static List<HexCell> GetHexesInRange(HexGrid hexGrid, HexCell startHex, int range)
     {
-        Vector3 startCube = AxialToCube(startCoords);
-        Vector3 endCube = AxialToCube(endCoords);
+        List<HexCell> hexesInRange = new List<HexCell>();
+        Vector3Int startCoords = startHex.coordinates;
 
-        float x = Mathf.Lerp(startCube.x, endCube.x, t);
-        float y = Mathf.Lerp(startCube.y, endCube.y, t);
-        float z = Mathf.Lerp(startCube.z, endCube.z, t);
+        for (int dx = -range; dx <= range; dx++)
+        {
+            for (int dy = Mathf.Max(-range, -dx - range); dy <= Mathf.Min(range, -dx + range); dy++)
+            {
+                int dz = -dx - dy;
+                Vector3Int currentCoords = new Vector3Int(startCoords.x + dx, startCoords.y + dy, startCoords.z + dz);
 
-        return new Vector3(x, y, z);
+                HexCell hex = hexGrid.GetHexCellAt(currentCoords);
+                if (hex != null)
+                {
+                    hexesInRange.Add(hex);
+                }
+            }
+        }
+
+        return hexesInRange;
     }
 
-    // Rounds floating-point cube coordinates to integer cube coordinates
-    public static Vector3Int AxialRound(Vector3 axialCoords)
+    // Function to calculate the number of steps (hexes) between two hexes
+    public static int GetStepsBetweenHexes(HexCell startHex, HexCell targetHex)
     {
-        int rx = Mathf.RoundToInt(axialCoords.x);
-        int ry = Mathf.RoundToInt(axialCoords.y);
-        int rz = Mathf.RoundToInt(axialCoords.z);
-
-        float xDiff = Mathf.Abs(rx - axialCoords.x);
-        float yDiff = Mathf.Abs(ry - axialCoords.y);
-        float zDiff = Mathf.Abs(rz - axialCoords.z);
-
-        // Correct rounding errors by adjusting the coordinate with the largest difference
-        if (xDiff > yDiff && xDiff > zDiff)
-        {
-            rx = -ry - rz;
-        }
-        else if (yDiff > zDiff)
-        {
-            ry = -rx - rz;
-        }
-        else
-        {
-            rz = -rx - ry;
-        }
-
-        return new Vector3Int(rx, ry, rz);
-    }
-
-    // Gets the distance between two hex cells using cube coordinates
-    public static int CubeDistance(Vector3Int a, Vector3Int b)
-    {
-        return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y), Mathf.Abs(a.z - b.z));
+        Vector3Int startCoords = startHex.coordinates;
+        Vector3Int targetCoords = targetHex.coordinates;
+        return CalculateHexDistance(startCoords, targetCoords);
     }
 }
