@@ -122,9 +122,12 @@ public class GameInputManager : MonoBehaviour
                     Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
                     return;
                 }
+                // Convert the hex coordinates to cube coordinates
+                Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
+                Vector3Int clickedCubeCoords = HexGridUtils.OffsetToCube(clickedHex.coordinates.x, clickedHex.coordinates.z);
                 // Calculate the number of steps between the ball and the clicked hex
-                int steps = HexGridUtils.GetStepsBetweenHexes(ballHex, clickedHex);
-                Debug.Log($"Steps from ball to target hex: {steps}");
+                int steps = HexGridUtils.GetHexDistance(ballCubeCoords, clickedCubeCoords);
+                Debug.Log($"Steps from {ballHex} to {clickedHex} hex: {steps}");
                 // Reject the input if the number of steps exceeds 11
                 if (steps > 11)
                 {

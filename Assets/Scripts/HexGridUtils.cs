@@ -14,19 +14,16 @@ public static class HexGridUtils
     }
 
     // Function to calculate distance between two hexes in cube coordinates
-    public static int CalculateHexDistance(Vector3Int hexA, Vector3Int hexB)
+    public static int GetHexDistance(Vector3Int cubeA, Vector3Int cubeB)
     {
-        // The distance between two hexes is the maximum of the differences in their cube coordinates
-        return Mathf.Max(Mathf.Abs(hexA.x - hexB.x), Mathf.Abs(hexA.y - hexB.y), Mathf.Abs(hexA.z - hexB.z));
+        // Calculate the distance using cube coordinates
+        return Mathf.Max(
+            Mathf.Abs(cubeA.x - cubeB.x), 
+            Mathf.Abs(cubeA.y - cubeB.y), 
+            Mathf.Abs(cubeA.z - cubeB.z)
+        );
     }
 
-    // Function to calculate the number of steps (hexes) between two hexes
-    public static int GetStepsBetweenHexes(HexCell startHex, HexCell targetHex)
-    {
-        Vector3Int startCoords = startHex.coordinates;
-        Vector3Int targetCoords = targetHex.coordinates;
-        return CalculateHexDistance(startCoords, targetCoords);
-    }
     public static Vector3Int[] directions = new Vector3Int[]
     {
         new Vector3Int(1, -1, 0),  // Right
