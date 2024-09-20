@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 
 public class GameInputManager : MonoBehaviour
@@ -70,49 +71,61 @@ public class GameInputManager : MonoBehaviour
 
     void HandleBallPath()
     {
-        // Cast a ray to detect the clicked hex
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             HexCell clickedHex = hit.collider.GetComponent<HexCell>();
             if (clickedHex != null)
             {
-                // Get ball's current hex and handle null cases
                 HexCell ballHex = ball.GetCurrentHex();
                 if (ballHex == null)
                 {
                     Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
                     return;
                 }
+
                 if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
                 {
                     // Double click on the same hex: confirm the move
-                    ball.MoveToCell(currentTargetHex);  // Start ball movement with animation
-                    ClearHighlightedHexes();            // Clear highlights
-                    ball.DeselectBall();                // Deselect the ball after the move
+                    StartCoroutine(ClearHighlightsAfterMove(currentTargetHex));
+                    ball.DeselectBall();
                 }
                 else
                 {
                     // First or new click on a different hex: highlight the path
-                    ClearHighlightedHexes();            // Clear previous highlights
-                    HighlightPathToHex(clickedHex);     // Highlight new path
-                    currentTargetHex = clickedHex;      // Set the new target hex
+                    ClearHighlightedHexes();
+                    HighlightPathToHex(clickedHex);
+                    currentTargetHex = clickedHex;
                 }
-                // Update the last clicked hex for tracking double-clicks
-                lastClickedHex = clickedHex;
+
+                lastClickedHex = clickedHex;  // Track the last clicked hex
             }
         }
     }
-    // private IEnumerator MoveBallAndHighlight(HexCell targetHex)
-    // {
-    //     // Start moving the ball to the target cell
-    //     yield return StartCoroutine(ball.MoveToCell(targetHex));
 
-    //     // After movement finishes, handle highlighting
-    //     ClearHighlightedHexes();
-    //     HighlightPathToHex(targetHex);
-    // }
-    
+    private IEnumerator ClearHighlightsAfterMove(HexCell targetHex)
+    {
+        // Ensure the ball and targetHex are valid
+        if (ball == null)
+        {
+            Debug.LogError("Ball reference is null!");
+            yield break;
+        }
+
+        if (targetHex == null)
+        {
+            Debug.LogError("Target Hex is null in ClearHighlightsAfterMove!");
+            yield break;
+        }
+
+        // Wait for the ball movement to complete
+        yield return StartCoroutine(ball.MoveToCell(targetHex));
+
+        // Now clear the highlights after the movement
+        ClearHighlightedHexes();
+        Debug.Log("Highlights cleared after ball movement.");
+    }
+
     void HighlightPathToHex(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
@@ -271,8 +284,8 @@ public class GameInputManager : MonoBehaviour
         // Ensure the directory exists
         Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-        // Write the log text to the file (append mode)
-        using (StreamWriter writer = new StreamWriter(filePath, true))
+        // Write the log text to the file (overwrite mode)
+        using (StreamWriter writer = new StreamWriter(filePath))
         {
             writer.WriteLine(logText);
         }

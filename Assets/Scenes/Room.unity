@@ -265,8 +265,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007da863a509e477c983287312a18ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMoving: 0
+  moveSpeed: 0.5
   hexGrid: {fileID: 1405702520}
-  ballRadius: 0.5
+  ballRadius: 0.7
 --- !u!64 &390494643
 MeshCollider:
   m_ObjectHideFlags: 0

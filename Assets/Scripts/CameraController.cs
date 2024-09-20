@@ -25,8 +25,8 @@ public class CameraController : MonoBehaviour
         presetPositions[1] = new Vector3(0f, 60f, 0f);  // Slot 2
         presetRotations[1] = Quaternion.Euler(90f, 0f, 0f);  // Slot 2
 
-        presetPositions[2] = new Vector3(0f, 0.1f, -5f);  // Slot 3
-        presetRotations[2] = Quaternion.Euler(0f, 0f, 0f);  // Slot 3
+        presetPositions[2] = new Vector3(-4f, 33f, -5f);  // Slot 3
+        presetRotations[2] = Quaternion.Euler(90f, 0f, 0f);  // Slot 3
 
         presetPositions[3] = new Vector3(8f, 12f, -4f);  // Slot 4
         presetRotations[3] = Quaternion.Euler(55f, -60f, 0f);  // Slot 4
