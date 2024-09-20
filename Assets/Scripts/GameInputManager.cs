@@ -275,8 +275,8 @@ public class GameInputManager : MonoBehaviour
     public void HighlightLongPassArea(HexCell targetHex)
     {
         // Get hexes within a radius (e.g., 6 hexes) around the targetHex
-        int radius = 2;  // You can tweak this value as needed
-        List<HexCell> hexesInRange = hexGrid.GetHexesInRange(targetHex, radius);
+        int radius = 6;  // You can tweak this value as needed
+        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);
 
         // Loop through the hexes and highlight each one
         foreach (HexCell hex in hexesInRange)

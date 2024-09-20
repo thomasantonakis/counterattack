@@ -161,41 +161,29 @@ public class HexGrid : MonoBehaviour
         return null;  // Return null if out of bounds
     }
 
-    public List<HexCell> GetHexesInRange(HexCell startHex, int range)
+    public static List<HexCell> GetHexesInRange(HexGrid hexGrid, HexCell startHex, int range)
     {
         List<HexCell> hexesInRange = new List<HexCell>();
-        Vector3Int startCoords = startHex.coordinates;
+        Vector3Int startCubeCoords = HexGridUtils.OffsetToCube(startHex.coordinates.x, startHex.coordinates.z);  // Convert offset to cube
 
-        string logContent = $"Hexes in range {range} from ({startCoords.x}, {startCoords.z}): ";
-
-        // Add the starting hex
-        hexesInRange.Add(startHex);
-        
-        // Generate hexes in rings up to the desired range
-        for (int r = 1; r <= range; r++)
+        for (int dx = -range; dx <= range; dx++)
         {
-            Vector3Int hexCoords = new Vector3Int(startCoords.x + r, startCoords.y - r, startCoords.z);
-            for (int i = 0; i < 6; i++)  // There are 6 directions in hexagonal grids
+            for (int dy = Mathf.Max(-range, -dx - range); dy <= Mathf.Min(range, -dx + range); dy++)
             {
-                for (int j = 0; j < r; j++)
+                int dz = -dx - dy;
+                Vector3Int currentCubeCoords = new Vector3Int(startCubeCoords.x + dx, startCubeCoords.y + dy, startCubeCoords.z + dz);
+                // Convert cube coords back to offset (to pass in as input)
+                Vector2Int offsetCoords = HexGridUtils.CubeToOffset(currentCubeCoords);
+                // Create a Vector3Int from offset coordinates
+                Vector3Int offsetCoordsVec3 = new Vector3Int(offsetCoords.x, 0, offsetCoords.y);
+                // Get the hex at the current coordinates using GetHexCellAt(Vector3Int)
+                HexCell hex = hexGrid.GetHexCellAt(offsetCoordsVec3);
+                if (hex != null)
                 {
-                    // Move in the current direction
-                    hexCoords += HexGridUtils.GetDirection(i);  // Move in one of 6 hexagonal directions
-                    
-                    // Get the hex at the current coordinates
-                    HexCell hex = GetHexCellAt(hexCoords);
-                    if (hex != null)
-                    {
-                        logContent += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
-                        hexesInRange.Add(hex);
-                    }
+                    hexesInRange.Add(hex);
                 }
             }
         }
-
-        logContent = logContent.TrimEnd(',', ' ');
-        Debug.Log(logContent);
-
         return hexesInRange;
     }
 
