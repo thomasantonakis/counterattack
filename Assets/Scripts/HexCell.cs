@@ -72,14 +72,24 @@ public class HexCell : MonoBehaviour
             coordinatesText.text = $"{x}, {z}";  // Set the text to display the coordinates
         }
     }
-    public void HighlightHex()
+    public void HighlightHex(string reason)
     {
-        // Set a highlight color (black outline)
-        // hexRenderer.material.color = highlightColor;
-        hexRenderer.material.color = originalColor * 0.5f;
-        // hexRenderer.material.color = Color.black;
-        // hexRenderer.material.color = new Color(255 / 255f, 46 / 255f, 64 / 255f, 255f / 255f) ;;
-        // SetHexColor(hoverColor, hoverBorderColor, originalBorderThickness);
+        // Apply the color to the hex based on the reason
+        switch (reason)
+        {
+            case "hover":
+                hexRenderer.material.color = originalColor * 0.5f;  // Darken the hex on hover
+                break;
+
+            case "ballPath":
+                hexRenderer.material.color = Color.blue;  // Use the provided color for the ball path
+                break;
+
+            // Add other cases if needed
+            default:
+                hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason
+                break;
+        }
     }
 
     public void ResetHighlight()

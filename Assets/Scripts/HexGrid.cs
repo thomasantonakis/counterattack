@@ -261,7 +261,7 @@ public class HexGrid : MonoBehaviour
                         lastHoveredHex.ResetHighlight();  // Reset the last hovered hex
                     }
 
-                    hex.HighlightHex();  // Highlight the current hex
+                    hex.HighlightHex("hover");  // Highlight the current hex
                     // Debug.Log($"Hovering over hex at: {hex.coordinates}");
                     lastHoveredHex = hex;
                 }

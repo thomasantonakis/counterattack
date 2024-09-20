@@ -147,7 +147,7 @@ public class GameInputManager : MonoBehaviour
                 Debug.LogError("A hex in the path is null! Check the path calculation.");
                 continue;
             }
-            hex.HighlightHex();    // Assuming there's a method in HexCell to highlight the hex
+            hex.HighlightHex("ballPath");    // Assuming there's a method in HexCell to highlight the hex
             highlightedHexes.Add(hex);  // Keep track of highlighted hexes
             // Append the hex coordinates to the log string
             hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
