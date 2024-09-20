@@ -76,6 +76,28 @@ public class Ball : MonoBehaviour
         targetCell = newHex;
         isMoving = true;  // Start the movement
     }
+    // public IEnumerator MoveToCell(HexCell targetHex)
+    // {
+    //     if (targetHex == null)
+    //     {
+    //         Debug.LogError("Target Hex is null in MoveToCell!");
+    //         yield break;
+    //     }
+
+    //     targetCell = targetHex;
+    //     isMoving = true;
+
+    //     while (Vector3.Distance(transform.position, targetCell.GetHexCenter()) > 0.01f)
+    //     {
+    //         transform.position = Vector3.MoveTowards(transform.position, targetCell.GetHexCenter(), moveSpeed * Time.deltaTime);
+    //         yield return null;
+    //     }
+
+    //     // Once the ball reaches the target
+    //     currentCell = targetCell;
+    //     targetCell = null;
+    //     isMoving = false;
+    // }
 
     // Handles the movement towards the target hex
     void MoveTowardsTarget()

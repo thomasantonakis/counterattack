@@ -19,7 +19,8 @@ public class GameInputManager : MonoBehaviour
     public float dragThreshold = 10f;   // Sensitivity to detect dragging vs. clicking (in pixels)
     
 
-    void Start(){}
+    void Start(){
+    }
 
     void Update()
     {
@@ -102,7 +103,16 @@ public class GameInputManager : MonoBehaviour
             }
         }
     }
+    // private IEnumerator MoveBallAndHighlight(HexCell targetHex)
+    // {
+    //     // Start moving the ball to the target cell
+    //     yield return StartCoroutine(ball.MoveToCell(targetHex));
 
+    //     // After movement finishes, handle highlighting
+    //     ClearHighlightedHexes();
+    //     HighlightPathToHex(targetHex);
+    // }
+    
     void HighlightPathToHex(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
@@ -114,7 +124,7 @@ public class GameInputManager : MonoBehaviour
         }
         float ballRadius = ball.ballRadius;  // Get the ball's radius
         ClearHighlightedHexes();
-        List<HexCell> pathHexes = CalculateHexPathWithRadius(ballHex, targetHex, ballRadius);  // Calculate the path between the ball and the target hex
+        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ballRadius);  // Calculate the path between the ball and the target hex
         // Prepare a string to hold the coordinates for logging
         string hexCoordinatesLog = "Highlighted Path: ";
         foreach (HexCell hex in pathHexes)
@@ -138,7 +148,7 @@ public class GameInputManager : MonoBehaviour
 
     }
 
-    public List<HexCell> CalculateHexPathWithRadius(HexCell startHex, HexCell endHex, float ballRadius)
+    public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)
     {
         List<HexCell> path = new List<HexCell>();
         string logContent = $"Ball Radius: {ballRadius}\n";
@@ -146,57 +156,33 @@ public class GameInputManager : MonoBehaviour
         string endHexCoordinates = $"({endHex.coordinates.x}, {endHex.coordinates.z})";
         logContent += $"Starting Hex: {startHexCoordinates}, Target Hex: {endHexCoordinates}\n";
 
-        // Calculate the straight-line path between start and end
-        List<HexCell> initialPath = CalculateHexPath(startHex, endHex);
-
-        // First, add the main path
-        foreach (HexCell hex in initialPath)
-        {
-            if (!path.Contains(hex))
-            {
-                path.Add(hex);
-                logContent += $"Added Hex: ({hex.coordinates.x}, {hex.coordinates.z}) from main path\n";
-            }
-        }
-
-        // Convert hex coordinates to world space for the distance calculation
+        // Get world positions of the start and end hex centers
         Vector3 startPos = startHex.GetHexCenter();
         Vector3 endPos = endHex.GetHexCenter();
 
-        // Now explore neighbors of the hexes in the initial path
-        Queue<HexCell> hexQueue = new Queue<HexCell>(initialPath); // Add all hexes in the initial path to the queue for neighbor exploration
+        // Step 2: Get a list of candidate hexes based on the bounding box
+        List<HexCell> candidateHexes = GetCandidateHexes(startHex, endHex, ballRadius);
 
-        while (hexQueue.Count > 0)
+        // Step 3: Loop through the candidate hexes and check distances to the parallel lines
+        foreach (HexCell candidateHex in candidateHexes)
         {
-            HexCell currentHex = hexQueue.Dequeue();
-            logContent += $"Finding Neighbours of ({currentHex.coordinates.x}, {currentHex.coordinates.z})\n";
+            Vector3 candidatePos = candidateHex.GetHexCenter();
 
-            // Get the neighbors of the current hex
-            foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
+            // Check the distance from the candidate hex to the main line
+            float distanceToLine = DistanceFromPointToLine(candidatePos, startPos, endPos);
+
+            if (distanceToLine <= ballRadius)
             {
-                if (neighbor == null || path.Contains(neighbor)) // Skip invalid or already added hexes
+                // Hex is within the thick path
+                if (!path.Contains(candidateHex))
                 {
-                    if (neighbor != null && path.Contains(neighbor))
-                    {
-                        logContent += $"Exists in path ({neighbor.coordinates.x}, {neighbor.coordinates.z}), skipping\n";
-                    }
-                    continue;
+                    path.Add(candidateHex);
+                    logContent += $"Added Hex: ({candidateHex.coordinates.x}, {candidateHex.coordinates.z}), Distance to Line: {distanceToLine}, Radius: {ballRadius}\n";
                 }
-
-                // Calculate the distance from the neighbor's center to the line (startPos to endPos)
-                float distanceToLine = DistanceFromPointToLine(neighbor.GetHexCenter(), startPos, endPos);
-
-                // If the distance to the line is within the ball radius, add the neighbor to the path
-                if (distanceToLine <= ballRadius)
-                {
-                    path.Add(neighbor);  // Add neighbor to the path
-                    hexQueue.Enqueue(neighbor);  // Enqueue the neighbor for further exploration
-                    logContent += $"Added Hex: ({neighbor.coordinates.x}, {neighbor.coordinates.z}), Distance to Line: {distanceToLine}, Radius: {ballRadius}\n";
-                }
-                else
-                {
-                    logContent += $"Not Added: ({neighbor.coordinates.x}, {neighbor.coordinates.z}), Distance: {distanceToLine} exceeds Ball Radius: {ballRadius}\n";
-                }
+            }
+            else
+            {
+                logContent += $"Not Added: ({candidateHex.coordinates.x}, {candidateHex.coordinates.z}), Distance: {distanceToLine} exceeds Ball Radius: {ballRadius}\n";
             }
         }
 
@@ -215,33 +201,37 @@ public class GameInputManager : MonoBehaviour
         return path;
     }
 
-    public List<HexCell> CalculateHexPath(HexCell startHex, HexCell endHex)
+    public List<HexCell> GetCandidateHexes(HexCell startHex, HexCell endHex, float ballRadius)
     {
-        List<HexCell> path = new List<HexCell>();
+        List<HexCell> candidates = new List<HexCell>();
 
+        // Get the axial coordinates of the start and end hexes
         Vector3Int startCoords = startHex.coordinates;
         Vector3Int endCoords = endHex.coordinates;
 
-        int steps = Mathf.Max(Mathf.Abs(endCoords.x - startCoords.x), Mathf.Abs(endCoords.z - startCoords.z));
+        // Determine the bounds (min and max x and z)
+        int minX = Mathf.Min(startCoords.x, endCoords.x) - 1;
+        int maxX = Mathf.Max(startCoords.x, endCoords.x) + 1;
+        int minZ = Mathf.Min(startCoords.z, endCoords.z) - 1;
+        int maxZ = Mathf.Max(startCoords.z, endCoords.z) + 1;
 
-        for (int i = 0; i <= steps; i++)
+        // Loop through all hexes in the bounding box
+        for (int x = minX; x <= maxX; x++)
         {
-            float t = steps == 0 ? 0 : (float)i / steps;
-            
-            // Call the axial interpolation and rounding from HexGridUtils
-            Vector3 interpolatedAxial = HexGridUtils.AxialLerp(startCoords, endCoords, t);
-            Vector3Int roundedAxial = HexGridUtils.AxialRound(interpolatedAxial);
-
-            HexCell hex = hexGrid.GetHexCellAt(roundedAxial);
-            if (hex != null && !path.Contains(hex))
+            for (int z = minZ; z <= maxZ; z++)
             {
-                path.Add(hex); // Add the hex to the path
+                Vector3Int coords = new Vector3Int(x, 0, z);
+                HexCell hex = hexGrid.GetHexCellAt(coords);
+
+                if (hex != null)
+                {
+                    candidates.Add(hex);
+                }
             }
         }
 
-        return path;
-    }
-
+        return candidates;
+}
 
     float DistanceFromPointToLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
     {
