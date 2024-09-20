@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class MatchManager : MonoBehaviour
 {
@@ -6,16 +7,24 @@ public class MatchManager : MonoBehaviour
     public enum GameState
     {
         KickOffSetup, // Free movements of Players in each own Half
-        KickoffBlown, // Generic state to show that we are accepting
+        KickoffBlown, // Only a Standard Pass is available
         StandardPassAttempt, // Attacking Team calls a Standard Pass-11
-        // Add other game states as needed
-        // e.g., GoalScored, FreeKick, EndMatch, etc.
+        StandardPassMoving, // Ball is moving to either the intercepting Def or the Destination
+        StandardPassCompleted,
+        LongBallAttempt,
+        LongPassMoving, // Ball is moving to either the intercepting Def or the Destination
+        LongPassCompleted,
     }
 
     public GameState currentState; // Tracks the current state of the match
 
     // Singleton instance for easy access
     public static MatchManager Instance;
+    public Ball ball;  // Reference to the ball
+    public HexGrid hexGrid;  // Reference to the ball
+    // public int difficulty_level = 1; // low
+    // public int difficulty_level = 2; // medium
+    public int difficulty_level; // high
 
     // // Define other match-specific variables here (e.g., time, score, teams)
     // private int homeScore = 0;
@@ -34,8 +43,10 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    IEnumerator Start()
     {
+        // Wait until the grid is fully initialized
+        yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
         // Initialize the match in the KickOffSetup state
         currentState = GameState.KickOffSetup;
         Debug.Log("Game initialized in KickOffSetup state.");
@@ -43,17 +54,17 @@ public class MatchManager : MonoBehaviour
 
     private void Update()
     {
-        // Handle state transitions or global inputs, like starting the match
-        if (currentState == GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
-        {
-            StartMatch();
-        }
+        // // Handle state transitions or global inputs, like starting the match
+        // if (currentState == GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     StartMatch();
+        // }
 
-        if (currentState == GameState.StandardPassAttempt)
-        {
-            // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
-            // You can also trigger transitions between game states based on player actions
-        }
+        // if (currentState == GameState.StandardPassAttempt)
+        // {
+        //     // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
+        //     // You can also trigger transitions between game states based on player actions
+        // }
     }
 
     // Example method to start the match
@@ -68,24 +79,39 @@ public class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass()
     {
-        if (currentState == GameState.KickoffBlown)
+        if (
+            currentState == GameState.StandardPassMoving ||
+            currentState == GameState.StandardPassAttempt ||
+            // currentState == GameState.StandardPassCompleted || // Development Mode
+            currentState == GameState.KickOffSetup
+        ) // in not available
         {
-            currentState = GameState.StandardPassAttempt;
-            Debug.Log("Standard pass attempt mode activated.");
+            Debug.LogWarning("Cannot start pass attempt from current state: " + currentState);
         }
         else
         {
-            Debug.LogWarning("Cannot start pass attempt from current state: " + currentState);
+            currentState = GameState.StandardPassAttempt;
+            ball.SelectBall();
+            Debug.Log("Standard pass attempt mode activated.");
         }
     }
     public void TriggerMovement()
     {
-        // if (currentState == GameState.KickoffBlown)
-        if (true)
+        if (
+            currentState == GameState.StandardPassMoving ||
+            currentState == GameState.KickOffSetup ||
+            currentState == GameState.KickoffBlown
+        )  // Not available in current situation
         {
+            Debug.LogWarning("Cannot start Movement Phase from current state: " + currentState);
         }
-        else
+        else if ( currentState == GameState.StandardPassCompleted ) // High diff and Something Else is selected
         {
+            Debug.LogWarning("Movement Not Available. You have already called something else");
+        }
+        else // low diff
+        {
+            Debug.LogWarning("Movement Phase Activated");
         }
     }
     public void TriggerHighPass()
@@ -100,9 +126,11 @@ public class MatchManager : MonoBehaviour
     }
     public void TriggerLongPass()
     {
-        // if (currentState == GameState.KickoffBlown)
         if (true)
         {
+            currentState = GameState.LongBallAttempt;
+            ball.SelectBall();
+            Debug.Log("Long ball attempt mode activated.");
         }
         else
         {

@@ -34,7 +34,6 @@ public class GameInputManager : MonoBehaviour
         {
             MatchManager.Instance.StartMatch();
         }
-        // Listen for input to trigger a standard pass
         if (Input.GetKeyDown(KeyCode.P))
         {
             MatchManager.Instance.TriggerStandardPass();
@@ -94,17 +93,22 @@ public class GameInputManager : MonoBehaviour
         // When the left mouse button is released
         if (Input.GetMouseButtonUp(0))
         {
-            if (!isDragging && ball.IsBallSelected())
+            if (!isDragging && ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
             {
                 // Handle ball movement or path highlighting
-                HandleBallPath();
+                HandleGroundBallPath();
+            }
+            if (!isDragging && ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
+            {
+                // Handle ball movement or path highlighting
+                HandleLongBallPath();
             }
             // Reset dragging state
             isDragging = false;
         }
     }
 
-    void HandleBallPath()
+    void HandleGroundBallPath()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -121,7 +125,6 @@ public class GameInputManager : MonoBehaviour
                 // Calculate the number of steps between the ball and the clicked hex
                 int steps = HexGridUtils.GetStepsBetweenHexes(ballHex, clickedHex);
                 Debug.Log($"Steps from ball to target hex: {steps}");
-
                 // Reject the input if the number of steps exceeds 11
                 if (steps > 11)
                 {
@@ -132,24 +135,60 @@ public class GameInputManager : MonoBehaviour
                     if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
                     {
                         // Double click on the same hex: confirm the move
-                        StartCoroutine(ClearHighlightsAfterMove(currentTargetHex));
+                        StartCoroutine(HandleGroundBallMovement(currentTargetHex));
                         ball.DeselectBall();
                     }
                     else
                     {
                         // First or new click on a different hex: highlight the path
                         ClearHighlightedHexes();
-                        HighlightPathToHex(clickedHex);
+                        HighlightGroundPathToHex(clickedHex);
                         currentTargetHex = clickedHex;
                     }
                 }
-
                 lastClickedHex = clickedHex;  // Track the last clicked hex
             }
         }
     }
 
-    private IEnumerator ClearHighlightsAfterMove(HexCell targetHex)
+    void HandleLongBallPath()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+            if (clickedHex != null)
+            {
+                HexCell ballHex = ball.GetCurrentHex();
+                if (ballHex == null)
+                {
+                    Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
+                    return;
+                }
+                else {
+                    if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+                    {
+                        // Double click on the same hex: confirm the move
+                        StartCoroutine(HandleAirBallMovement(currentTargetHex));
+                        ball.DeselectBall();
+                    }
+                    else
+                    {
+                        // First or new click on a different hex: highlight the path
+                        ClearHighlightedHexes();
+                        // Highlight only the Target Hex
+                        // TODO: Highlight 6 hexes the Target Hex
+                        HighlightLongPassArea(clickedHex);
+                        // clickedHex.HighlightHex("ballPath");
+                        currentTargetHex = clickedHex;
+                    }
+                }
+                lastClickedHex = clickedHex;  // Track the last clicked hex
+            }
+        }
+    }
+
+    private IEnumerator HandleGroundBallMovement(HexCell targetHex)
     {
         // Ensure the ball and targetHex are valid
         if (ball == null)
@@ -160,19 +199,45 @@ public class GameInputManager : MonoBehaviour
 
         if (targetHex == null)
         {
-            Debug.LogError("Target Hex is null in ClearHighlightsAfterMove!");
+            Debug.LogError("Target Hex is null in HandleGroundBallMovement!");
+            yield break;
+        }
+        // Set thegame status to StandardPassMoving
+        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
+        // Wait for the ball movement to complete
+        yield return StartCoroutine(ball.MoveToCell(targetHex));
+        // Set the game status to StandardPassCompleted
+        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompleted;
+        // Now clear the highlights after the movement
+        ClearHighlightedHexes();
+        Debug.Log("Highlights cleared after ball movement.");
+    }
+    private IEnumerator HandleAirBallMovement(HexCell targetHex)
+    {
+        // Ensure the ball and targetHex are valid
+        if (ball == null)
+        {
+            Debug.LogError("Ball reference is null!");
             yield break;
         }
 
+        if (targetHex == null)
+        {
+            Debug.LogError("Target Hex is null in HandleAirBallMovement!");
+            yield break;
+        }
+        // Set thegame status to StandardPassMoving
+        MatchManager.Instance.currentState = MatchManager.GameState.LongPassMoving;
         // Wait for the ball movement to complete
         yield return StartCoroutine(ball.MoveToCell(targetHex));
-
+        // Set the game status to StandardPassCompleted
+        MatchManager.Instance.currentState = MatchManager.GameState.LongPassCompleted;
         // Now clear the highlights after the movement
         ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");
     }
 
-    void HighlightPathToHex(HexCell targetHex)
+    void HighlightGroundPathToHex(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         // Null check for ballHex
@@ -205,6 +270,24 @@ public class GameInputManager : MonoBehaviour
             Debug.Log(hexCoordinatesLog);
         }
 
+    }
+
+    public void HighlightLongPassArea(HexCell targetHex)
+    {
+        // Get hexes within a radius (e.g., 6 hexes) around the targetHex
+        int radius = 2;  // You can tweak this value as needed
+        List<HexCell> hexesInRange = hexGrid.GetHexesInRange(targetHex, radius);
+
+        // Loop through the hexes and highlight each one
+        foreach (HexCell hex in hexesInRange)
+        {
+            // Highlight hexes (pass a specific color for Long Pass)
+            hex.HighlightHex("longPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
+            highlightedHexes.Add(hex);  // Track the highlighted hexes for later clearing
+        }
+
+        // Log the highlighted hexes if needed (optional)
+        Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
     }
 
     public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)
@@ -324,18 +407,18 @@ public class GameInputManager : MonoBehaviour
 
     void SaveLogToFile(string logText, string startHex, string endHex)
     {
-        // Define the file path (you can customize this path)
-        string filePath = Application.dataPath + $"/Logs/HexPath_{startHex}_to_{endHex}.txt";
+        // // Define the file path (you can customize this path)
+        // string filePath = Application.dataPath + $"/Logs/HexPath_{startHex}_to_{endHex}.txt";
 
-        // Ensure the directory exists
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+        // // Ensure the directory exists
+        // Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-        // Write the log text to the file (overwrite mode)
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            writer.WriteLine(logText);
-        }
+        // // Write the log text to the file (overwrite mode)
+        // using (StreamWriter writer = new StreamWriter(filePath))
+        // {
+        //     writer.WriteLine(logText);
+        // }
 
-        Debug.Log($"Log saved to: {filePath}");
+        // Debug.Log($"Log saved to: {filePath}");
     }
 }

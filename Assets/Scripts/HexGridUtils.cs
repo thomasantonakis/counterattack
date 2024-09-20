@@ -20,35 +20,25 @@ public static class HexGridUtils
         return Mathf.Max(Mathf.Abs(hexA.x - hexB.x), Mathf.Abs(hexA.y - hexB.y), Mathf.Abs(hexA.z - hexB.z));
     }
 
-    // Function to get all hexes within a certain number of steps from a start hex
-    public static List<HexCell> GetHexesInRange(HexGrid hexGrid, HexCell startHex, int range)
-    {
-        List<HexCell> hexesInRange = new List<HexCell>();
-        Vector3Int startCoords = startHex.coordinates;
-
-        for (int dx = -range; dx <= range; dx++)
-        {
-            for (int dy = Mathf.Max(-range, -dx - range); dy <= Mathf.Min(range, -dx + range); dy++)
-            {
-                int dz = -dx - dy;
-                Vector3Int currentCoords = new Vector3Int(startCoords.x + dx, startCoords.y + dy, startCoords.z + dz);
-
-                HexCell hex = hexGrid.GetHexCellAt(currentCoords);
-                if (hex != null)
-                {
-                    hexesInRange.Add(hex);
-                }
-            }
-        }
-
-        return hexesInRange;
-    }
-
     // Function to calculate the number of steps (hexes) between two hexes
     public static int GetStepsBetweenHexes(HexCell startHex, HexCell targetHex)
     {
         Vector3Int startCoords = startHex.coordinates;
         Vector3Int targetCoords = targetHex.coordinates;
         return CalculateHexDistance(startCoords, targetCoords);
+    }
+    public static Vector3Int[] directions = new Vector3Int[]
+    {
+        new Vector3Int(1, -1, 0),  // Right
+        new Vector3Int(1, 0, -1),  // Top-right
+        new Vector3Int(0, 1, -1),  // Top-left
+        new Vector3Int(-1, 1, 0),  // Left
+        new Vector3Int(-1, 0, 1),  // Bottom-left
+        new Vector3Int(0, -1, 1)   // Bottom-right
+    };
+
+    public static Vector3Int GetDirection(int index)
+    {
+        return directions[index % 6];  // Ensure index is within bounds
     }
 }

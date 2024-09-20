@@ -161,29 +161,45 @@ public class HexGrid : MonoBehaviour
         return null;  // Return null if out of bounds
     }
 
-    public List<HexCell> GetHexesInRange(HexCell centerHex, int range)
+    public List<HexCell> GetHexesInRange(HexCell startHex, int range)
     {
         List<HexCell> hexesInRange = new List<HexCell>();
+        Vector3Int startCoords = startHex.coordinates;
 
-        Vector3Int centerCoords = centerHex.coordinates;
+        string logContent = $"Hexes in range {range} from ({startCoords.x}, {startCoords.z}): ";
 
-        for (int dx = -range; dx <= range; dx++)
+        // Add the starting hex
+        hexesInRange.Add(startHex);
+        
+        // Generate hexes in rings up to the desired range
+        for (int r = 1; r <= range; r++)
         {
-            for (int dz = Mathf.Max(-range, -dx - range); dz <= Mathf.Min(range, -dx + range); dz++)
+            Vector3Int hexCoords = new Vector3Int(startCoords.x + r, startCoords.y - r, startCoords.z);
+            for (int i = 0; i < 6; i++)  // There are 6 directions in hexagonal grids
             {
-                int dy = -dx - dz;
-                Vector3Int currentCoords = new Vector3Int(centerCoords.x + dx, centerCoords.y + dy, centerCoords.z + dz);
-
-                HexCell hex = GetHexCellAt(currentCoords);
-                if (hex != null)
+                for (int j = 0; j < r; j++)
                 {
-                    hexesInRange.Add(hex);
+                    // Move in the current direction
+                    hexCoords += HexGridUtils.GetDirection(i);  // Move in one of 6 hexagonal directions
+                    
+                    // Get the hex at the current coordinates
+                    HexCell hex = GetHexCellAt(hexCoords);
+                    if (hex != null)
+                    {
+                        logContent += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
+                        hexesInRange.Add(hex);
+                    }
                 }
             }
         }
 
+        logContent = logContent.TrimEnd(',', ' ');
+        Debug.Log(logContent);
+
         return hexesInRange;
     }
+
+
     public void CreateOutOfBoundsPlanes(HexGrid grid, float planeHeight = 0.05f)
     {
         // Get the outermost hex cells from the grid

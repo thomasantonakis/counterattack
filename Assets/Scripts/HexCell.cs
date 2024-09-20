@@ -84,6 +84,9 @@ public class HexCell : MonoBehaviour
             case "ballPath":
                 hexRenderer.material.color = Color.blue;  // Use the provided color for the ball path
                 break;
+            case "longPass":
+                hexRenderer.material.color = Color.blue * 2f;  // Use the provided color for the ball path
+                break;
 
             // Add other cases if needed
             default:

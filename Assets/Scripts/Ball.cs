@@ -100,6 +100,11 @@ public class Ball : MonoBehaviour
     }
 
     // Call this to manually deselect the ball
+    public void SelectBall()
+    {
+        isBallSelected = true;
+    }
+    // Call this to manually deselect the ball
     public void DeselectBall()
     {
         isBallSelected = false;
