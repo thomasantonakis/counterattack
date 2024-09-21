@@ -181,7 +181,6 @@ public class HexGrid : MonoBehaviour
         // else if (cell.isInPenaltyBox) cell.GetComponent<Renderer>().material.color = Color.yellow;
         // else if (cell.isInFinalThird) cell.GetComponent<Renderer>().material.color = Color.green;
     }
-
     private bool ShouldBeDarkHex(int x, int z)
     {
         // Define your logic to determine which hexes should be dark
@@ -231,7 +230,56 @@ public class HexGrid : MonoBehaviour
         return hexesInRange;
     }
 
+    public List<HexCell> GetDefenderHexes()
+    {
+        List<HexCell> defenderHexes = new List<HexCell>();
 
+        // Loop through all hex cells in the grid
+        foreach (HexCell cell in cells)
+        {
+            if (cell != null && cell.isDefenseOccupied)
+            {
+                defenderHexes.Add(cell);
+            }
+        }
+
+        return defenderHexes;
+    }
+
+    public List<HexCell> GetDefenderNeighbors(List<HexCell> defenderHexes)
+    {
+        List<HexCell> defenderNeighbors = new List<HexCell>();
+
+        foreach (HexCell defenderHex in defenderHexes)
+        {
+            HexCell[] neighbors = defenderHex.GetNeighbors(this);  // Assuming GetNeighbors already works
+            foreach (HexCell neighbor in neighbors)
+            {
+                if (neighbor != null && !defenderNeighbors.Contains(neighbor))
+                {
+                    defenderNeighbors.Add(neighbor);
+                }
+            }
+        }
+
+        return defenderNeighbors;
+    }
+
+    public bool IsPassDangerous(List<HexCell> path, List<HexCell> defenderNeighbors)
+    {
+        int dangerCount = 0;
+
+        foreach (HexCell pathHex in path)
+        {
+            if (defenderNeighbors.Contains(pathHex))
+            {
+                dangerCount++;
+            }
+        }
+
+        // Define how many neighboring hexes make the pass dangerous
+        return dangerCount > 0;  // Example threshold
+    }
     public void CreateOutOfBoundsPlanes(HexGrid grid, float planeHeight = 0.05f)
     {
         // Get the outermost hex cells from the grid

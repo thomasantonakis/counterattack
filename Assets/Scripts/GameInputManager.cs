@@ -20,7 +20,6 @@ public class GameInputManager : MonoBehaviour
     private bool isDragging = false;    // Whether a drag is happening
     public float dragThreshold = 10f;   // Sensitivity to detect dragging vs. clicking (in pixels)
     
-
     void Start()
     {
         TestHexConversions();
@@ -253,7 +252,12 @@ public class GameInputManager : MonoBehaviour
         float ballRadius = ball.ballRadius;  // Get the ball's radius
         ClearHighlightedHexes();
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ballRadius);  // Calculate the path between the ball and the target hex
-        bool isValidPath = true;  // Assume the path is valid initially
+        // Get all the hexes occupied by defenders
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        // Get the neighbors of those defender hexes
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+        // Assume the path is valid initially
+        bool isValidPath = true;
         foreach (HexCell hex in pathHexes)
         {
             // Check if any hex is defense-occupied
@@ -264,6 +268,8 @@ public class GameInputManager : MonoBehaviour
                 break;
             }
         }
+        // Check if the path is dangerous
+        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
         if (isValidPath)
         {
             // Prepare a string to hold the coordinates for logging
@@ -275,7 +281,13 @@ public class GameInputManager : MonoBehaviour
                     Debug.LogError("A hex in the path is null! Check the path calculation.");
                     continue;
                 }
-                hex.HighlightHex("ballPath");    // Assuming there's a method in HexCell to highlight the hex
+                if (isDangerous)
+                {
+                  hex.HighlightHex("dangerousPass");
+                }
+                else {
+                  hex.HighlightHex("ballPath");
+                }
                 highlightedHexes.Add(hex);  // Keep track of highlighted hexes
                 // Append the hex coordinates to the log string
                 hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
@@ -287,7 +299,6 @@ public class GameInputManager : MonoBehaviour
                 Debug.Log(hexCoordinatesLog);
             }
         }
-
     }
 
     public void HighlightLongPassArea(HexCell targetHex)
@@ -345,6 +356,7 @@ public class GameInputManager : MonoBehaviour
                 logContent += $"Not Added: ({candidateHex.coordinates.x}, {candidateHex.coordinates.z}), Distance: {distanceToLine} exceeds Ball Radius: {ballRadius}\n";
             }
         }
+
 
         // Log the final highlighted path to the file
         string highlightedPath = "Highlighted Path: ";

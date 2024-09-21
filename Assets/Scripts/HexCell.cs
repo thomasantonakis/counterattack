@@ -15,16 +15,8 @@ public class HexCell : MonoBehaviour
     public bool isDark = false;
     public bool isDefenseOccupied = false;
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
-
-    // Design of the Hexes
-    // public Material hexBorderMaterial;  // Drag the new HexBorderMaterial into this field in the inspector
     private Renderer hexRenderer;
     private Color originalColor;
-    
-    // private Color highlightColor = new Color(0 / 255f, 0 / 255f, 0 / 255f, 255f / 255f) ;
-    // private Color originalBorderColor;
-    // private float originalBorderThickness;
-    
 
     private static readonly Vector3Int[] directions = {
         new Vector3Int(0, 0, 1),   // Top
@@ -76,11 +68,14 @@ public class HexCell : MonoBehaviour
             case "ballPath":
                 hexRenderer.material.color = Color.blue;  // Use the provided color for the ball path
                 break;
+            case "dangerousPass":
+                hexRenderer.material.color = Color.magenta;  // Use the provided color for the ball path
+                break;
             case "longPass":
-                hexRenderer.material.color = Color.blue * 2f;  // Use the provided color for the ball path
+                hexRenderer.material.color = Color.blue * 2f;
                 break;
             case "isDefenseOccupied":
-                hexRenderer.material.color = Color.red;  // Use the provided color for the ball path
+                hexRenderer.material.color = Color.red;
                 break;
             // Add other cases if needed
             default:
@@ -106,7 +101,6 @@ public class HexCell : MonoBehaviour
             hexRenderer.material.color = originalColor;  // Reset to either light or dark green
         }
     }
-
 
     // Get world coordinates of the 6 corners of this hex
     public Vector3[] GetHexCorners()
