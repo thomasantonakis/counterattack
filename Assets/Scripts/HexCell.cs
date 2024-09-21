@@ -13,12 +13,14 @@ public class HexCell : MonoBehaviour
     public bool isInFinalThird = false;
     public bool isDifficultShotPosition = false;
     public bool isDark = false;
+    public bool isDefenseOccupied = false;
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
 
     // Design of the Hexes
     // public Material hexBorderMaterial;  // Drag the new HexBorderMaterial into this field in the inspector
     private Renderer hexRenderer;
     private Color originalColor;
+    
     // private Color highlightColor = new Color(0 / 255f, 0 / 255f, 0 / 255f, 255f / 255f) ;
     // private Color originalBorderColor;
     // private float originalBorderThickness;
@@ -33,36 +35,27 @@ public class HexCell : MonoBehaviour
         new Vector3Int(-1, 0, 0)   // Top-left
     };
 
-    void Start()
+    void Awake()
     {
         // Store the renderer and the original material color
         hexRenderer = GetComponent<Renderer>();
-        hexRenderer.material = new Material(hexRenderer.material);  // Clone the material
-        originalColor = hexRenderer.material.color;
-        // if (hexBorderMaterial != null)
-        // {
-        //     hexRenderer.material = hexBorderMaterial;
-        //     Debug.Log("Hex border material assigned!");
-        // }
-        // else
-        // {
-        //     Debug.LogError("Hex border material is not assigned!");
-        // }
-        // // Store the original colors and border thickness for hover/unhover logic
-        // originalColor = hexRenderer.material.GetColor("_MainColor");
-        // originalBorderColor = hexRenderer.material.GetColor("_BorderColor");
-        // originalBorderThickness = hexRenderer.material.GetFloat("_BorderThickness");
-
     }
 
-    // Method to change the color and border dynamically
-    // public void SetHexColor(Color hexColor)
-    // {
-    //     hexRenderer.material.color = hexColor;
-    //     // hexRenderer.material.SetColor("_MainColor", hexColor);
-    //     // hexRenderer.material.SetColor("_BorderColor", borderColor);
-    //     // hexRenderer.material.SetFloat("_BorderThickness", borderThickness);
-    // }
+    public void InitializeHex(Color initialColor)
+    {
+        if (hexRenderer == null)
+        {
+            hexRenderer = GetComponent<Renderer>();
+        }
+        else
+        {
+            Debug.LogError("HexCell Renderer is not assigned or missing!");
+        }
+
+        // Set the original color and apply it to the hex
+        originalColor = initialColor;
+        hexRenderer.material.color = originalColor;
+    }
 
     public void SetCoordinates(int x, int z)
     {
@@ -80,14 +73,15 @@ public class HexCell : MonoBehaviour
             case "hover":
                 hexRenderer.material.color = originalColor * 0.5f;  // Darken the hex on hover
                 break;
-
             case "ballPath":
                 hexRenderer.material.color = Color.blue;  // Use the provided color for the ball path
                 break;
             case "longPass":
                 hexRenderer.material.color = Color.blue * 2f;  // Use the provided color for the ball path
                 break;
-
+            case "isDefenseOccupied":
+                hexRenderer.material.color = Color.red;  // Use the provided color for the ball path
+                break;
             // Add other cases if needed
             default:
                 hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason
@@ -97,10 +91,22 @@ public class HexCell : MonoBehaviour
 
     public void ResetHighlight()
     {
-        // Reset to the original color
-        // SetHexColor(originalColor);
-        hexRenderer.material.color = originalColor;
+        if (hexRenderer == null)
+        {
+            return;
+        }
+
+        // If the hex is defense-occupied, reset it to red, else reset to the original color
+        if (isDefenseOccupied)
+        {
+            hexRenderer.material.color = Color.red;
+        }
+        else
+        {
+            hexRenderer.material.color = originalColor;  // Reset to either light or dark green
+        }
     }
+
 
     // Get world coordinates of the 6 corners of this hex
     public Vector3[] GetHexCorners()

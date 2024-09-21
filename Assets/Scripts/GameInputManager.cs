@@ -253,25 +253,39 @@ public class GameInputManager : MonoBehaviour
         float ballRadius = ball.ballRadius;  // Get the ball's radius
         ClearHighlightedHexes();
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ballRadius);  // Calculate the path between the ball and the target hex
-        // Prepare a string to hold the coordinates for logging
-        string hexCoordinatesLog = "Highlighted Path: ";
+        bool isValidPath = true;  // Assume the path is valid initially
         foreach (HexCell hex in pathHexes)
         {
-            if (hex == null)
+            // Check if any hex is defense-occupied
+            if (hex.isDefenseOccupied)
             {
-                Debug.LogError("A hex in the path is null! Check the path calculation.");
-                continue;
+                isValidPath = false;
+                Debug.LogWarning($"Invalid path! Hex at {hex.coordinates} is occupied by defense.");
+                break;
             }
-            hex.HighlightHex("ballPath");    // Assuming there's a method in HexCell to highlight the hex
-            highlightedHexes.Add(hex);  // Keep track of highlighted hexes
-            // Append the hex coordinates to the log string
-            hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
         }
-        // Remove the trailing comma and space, and log the coordinates in one line
-        if (hexCoordinatesLog.Length > 0)
+        if (isValidPath)
         {
-            hexCoordinatesLog = hexCoordinatesLog.TrimEnd(new char[] { ',', ' ' });
-            Debug.Log(hexCoordinatesLog);
+            // Prepare a string to hold the coordinates for logging
+            string hexCoordinatesLog = "Highlighted Path: ";
+            foreach (HexCell hex in pathHexes)
+            {
+                if (hex == null)
+                {
+                    Debug.LogError("A hex in the path is null! Check the path calculation.");
+                    continue;
+                }
+                hex.HighlightHex("ballPath");    // Assuming there's a method in HexCell to highlight the hex
+                highlightedHexes.Add(hex);  // Keep track of highlighted hexes
+                // Append the hex coordinates to the log string
+                hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
+            }
+            // Remove the trailing comma and space, and log the coordinates in one line
+            if (hexCoordinatesLog.Length > 0)
+            {
+                hexCoordinatesLog = hexCoordinatesLog.TrimEnd(new char[] { ',', ' ' });
+                Debug.Log(hexCoordinatesLog);
+            }
         }
 
     }

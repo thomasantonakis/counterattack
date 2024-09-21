@@ -11,6 +11,8 @@ public class HexGrid : MonoBehaviour
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab
     // [SerializeField] public HexCell hexCellPrefab;  // Reference to hex cell prefab
     private HexCell[,] cells;  // 2D array to hold the cells
+    private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
+    private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
 
     private void Start()
@@ -25,6 +27,39 @@ public class HexGrid : MonoBehaviour
         }
         // Create out-of-bounds planes around the grid
         CreateOutOfBoundsPlanes(this);
+        InitializeDefenseObstacles(20);
+    }
+
+    public void InitializeDefenseObstacles(int obstacleCount)
+    {
+        int totalHexes = cells.Length;
+        List<HexCell> potentialObstacles = new List<HexCell>();
+
+        foreach (HexCell hex in cells)
+        {
+            if (hex == null)
+            {
+                Debug.LogError("HexCell is null in the grid. Ensure grid initialization is correct.");
+                continue;
+            }
+            
+            if (!hex.isOutOfBounds)
+            {
+                potentialObstacles.Add(hex);
+            }
+        }
+
+        // Shuffle and pick random hexes for obstacles
+        for (int i = 0; i < obstacleCount && potentialObstacles.Count > 0; i++)
+        {
+            int randomIndex = Random.Range(0, potentialObstacles.Count);
+            HexCell defenseHex = potentialObstacles[randomIndex];
+            defenseHex.isDefenseOccupied = true;  // Mark this hex as an obstacle
+            defenseHex.HighlightHex("isDefenseOccupied");
+            potentialObstacles.RemoveAt(randomIndex);  // Remove it from the list
+        }
+
+        Debug.Log($"{obstacleCount} defense-occupied hexes initialized.");
     }
 
     void Update()
@@ -63,7 +98,14 @@ public class HexGrid : MonoBehaviour
         HexCell cell = Instantiate(hexCellPrefab, position, Quaternion.identity, transform);
         cell.coordinates = new Vector3Int(x, 0, z);
         cell.name = $"HexCell [{x}, {z}]";  // Assign the name to the GameObject
-
+        // Assign dark hex status here
+        if (ShouldBeDarkHex(x, z))
+        {
+            cell.isDark = true;
+        }
+        // Apply either lightColor or darkColor when initializing the hex
+        Color hexColor = cell.isDark ? darkColor : lightColor;
+        cell.InitializeHex(hexColor);
         // Check array bounds and log the creation of each cell
         int arrayX = x + width / 2;
         int arrayZ = z + height / 2;
@@ -126,16 +168,13 @@ public class HexGrid : MonoBehaviour
             cell.isDifficultShotPosition = true;
         }
 
-        // Dark Green Hexes
-        if ((x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0))
-        {
-            cell.isDark = true;
-        }
+        // // Dark Green Hexes
+        // if ((x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0))
+        // {
+        //     cell.isDark = true;
+        // }
 
         // Debug to visually differentiate hexes in Unity (optional)
-        // if (cell.isDark) cell.GetComponent<Renderer>().material.color = new Color(84 / 255f, 207 / 255f, 76 / 255f, 255f / 255f);
-        if (cell.isDark) cell.GetComponent<Renderer>().material.color = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
-        // if (cell.isDark) cell.GetComponent<Renderer>().material.color = Color.blue;
         // else if (cell.isKickOff) cell.GetComponent<Renderer>().material.color = Color.red;
         // else if (cell.isOutOfBounds) cell.GetComponent<Renderer>().material.color = Color.blue;
         // else if (cell.isDifficultShotPosition) cell.GetComponent<Renderer>().material.color = Color.magenta;
@@ -143,6 +182,11 @@ public class HexGrid : MonoBehaviour
         // else if (cell.isInFinalThird) cell.GetComponent<Renderer>().material.color = Color.green;
     }
 
+    private bool ShouldBeDarkHex(int x, int z)
+    {
+        // Define your logic to determine which hexes should be dark
+        return (x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0);  // Example: every other hex is dark
+    }
     // Method to get the HexCell based on its coordinates
     public HexCell GetHexCellAt(Vector3Int coords)
     {
