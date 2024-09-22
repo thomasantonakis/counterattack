@@ -122,38 +122,77 @@ public class GameInputManager : MonoBehaviour
                     Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
                     return;
                 }
-                // Convert the hex coordinates to cube coordinates
-                Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-                Vector3Int clickedCubeCoords = HexGridUtils.OffsetToCube(clickedHex.coordinates.x, clickedHex.coordinates.z);
-                // Calculate the number of steps between the ball and the clicked hex
-                int steps = HexGridUtils.GetHexDistance(ballCubeCoords, clickedCubeCoords);
-                Debug.Log($"Steps from {ballHex} to {clickedHex} hex: {steps}");
-                // Reject the input if the number of steps exceeds 11
-                if (steps > 11)
+                else
                 {
-                    Debug.LogWarning("Target hex is too far! The maximum range is 11 steps.");
-                    return;
+                    // Now handle the pass based on difficulty
+                    HandlePassBasedOnDifficulty(clickedHex);
+                }   
+            }
+        }
+    }
+
+    void HandlePassBasedOnDifficulty(HexCell clickedHex)
+    {
+        int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null)
+        {
+            Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
+            return;
+        }
+        // Convert the hex coordinates to cube coordinates
+        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
+        Vector3Int clickedCubeCoords = HexGridUtils.OffsetToCube(clickedHex.coordinates.x, clickedHex.coordinates.z);
+        // Calculate the number of steps between the ball and the clicked hex
+        int steps = HexGridUtils.GetHexDistance(ballCubeCoords, clickedCubeCoords);
+        Debug.Log($"Steps from {ballHex} to {clickedHex} hex: {steps}");
+        // Reject the input if the number of steps exceeds 11
+        if (steps > 11)
+        {
+            Debug.LogWarning("Target hex is too far! The maximum range is 11 steps.");
+            return;
+        }
+        else
+        {
+            List<HexCell> pathHexes = CalculateThickPath(ball.GetCurrentHex(), clickedHex, ball.ballRadius);
+            if (IsPassValid(clickedHex, pathHexes))  // Validate the pass
+            {
+                if (difficulty == 3)  // Difficult Level: No path visualization
+                {
+                    StartCoroutine(HandleGroundBallMovement(clickedHex));  // Execute the pass with movement
+                    ball.DeselectBall();
                 }
-                else {
+                else if (difficulty == 2 || difficulty == 1)  // Medium & Easy levels
+                {
+                    HighlightGroundPathToHex(clickedHex);  // Highlight the path based on difficulty
                     if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
                     {
-                        // Double click on the same hex: confirm the move
                         StartCoroutine(HandleGroundBallMovement(currentTargetHex));
                         ball.DeselectBall();
                     }
                     else
                     {
-                        // First or new click on a different hex: highlight the path
-                        ClearHighlightedHexes();
-                        HighlightGroundPathToHex(clickedHex);
-                        currentTargetHex = clickedHex;
+                        currentTargetHex = clickedHex;  // Set target for the first click
+                        lastClickedHex = clickedHex;    // Track the last clicked hex
                     }
                 }
-                lastClickedHex = clickedHex;  // Track the last clicked hex
             }
         }
     }
 
+    bool IsPassValid(HexCell targetHex, List<HexCell> pathHexes)
+    {
+        // Check if the pass is blocked by any defense-occupied hex in the path
+        foreach (HexCell hex in pathHexes)
+        {
+            if (hex.isDefenseOccupied)
+            {
+                Debug.LogWarning($"Invalid path! Hex at {hex.coordinates} is occupied by defense.");
+                return false; // The path is blocked by a defender
+            }
+        }
+        return true;
+    }
     void HandleLongBallPath()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -240,7 +279,7 @@ public class GameInputManager : MonoBehaviour
         Debug.Log("Highlights cleared after ball movement.");
     }
 
-    void HighlightGroundPathToHex(HexCell targetHex)
+    public void HighlightGroundPathToHex(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         // Null check for ballHex
@@ -251,56 +290,113 @@ public class GameInputManager : MonoBehaviour
         }
         float ballRadius = ball.ballRadius;  // Get the ball's radius
         ClearHighlightedHexes();
-        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ballRadius);  // Calculate the path between the ball and the target hex
-        // Get all the hexes occupied by defenders
-        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
-        // Get the neighbors of those defender hexes
-        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-        // Assume the path is valid initially
-        bool isValidPath = true;
-        foreach (HexCell hex in pathHexes)
+        // Convert the hex coordinates to cube coordinates
+        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
+        Vector3Int clickedCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
+        // Calculate the number of steps between the ball and the clicked hex
+        int steps = HexGridUtils.GetHexDistance(ballCubeCoords, clickedCubeCoords);
+        Debug.Log($"Steps from {ballHex} to {targetHex} hex: {steps}");
+        // Reject the input if the number of steps exceeds 11
+        if (steps > 11)
         {
-            // Check if any hex is defense-occupied
-            if (hex.isDefenseOccupied)
-            {
-                isValidPath = false;
-                Debug.LogWarning($"Invalid path! Hex at {hex.coordinates} is occupied by defense.");
-                break;
-            }
+            Debug.LogWarning("Target hex is too far! The maximum range is 11 steps.");
+            return;
         }
-        // Check if the path is dangerous
-        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
-        if (isValidPath)
-        {
-            // Prepare a string to hold the coordinates for logging
-            string hexCoordinatesLog = "Highlighted Path: ";
+        else {
+            // Step 1: Calculate the path between the ball and the target hex
+            List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ballRadius);
+            // Get difficulty level from MatchManager
+            int difficultyLevel = MatchManager.Instance.difficulty_level;
+            // Step 2: Get all the hexes occupied by defenders
+            List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+            // Step 3: Get the neighbors of those defender hexes
+            List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+            
+            // Step 4: Assume the path is valid initially
+            bool isValidPath = true;
             foreach (HexCell hex in pathHexes)
             {
-                if (hex == null)
+                // Skip defense-occupied hexes or invalid hexes from the path
+                if (hex.isDefenseOccupied)
                 {
-                    Debug.LogError("A hex in the path is null! Check the path calculation.");
-                    continue;
+                    isValidPath = false;
+                    Debug.LogWarning($"Invalid path! Hex at {hex.coordinates} is blocked or too far.");
+                    break;
                 }
-                if (isDangerous)
-                {
-                  hex.HighlightHex("dangerousPass");
-                }
-                else {
-                  hex.HighlightHex("ballPath");
-                }
-                highlightedHexes.Add(hex);  // Keep track of highlighted hexes
-                // Append the hex coordinates to the log string
-                hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
             }
-            // Remove the trailing comma and space, and log the coordinates in one line
-            if (hexCoordinatesLog.Length > 0)
-            {
-                hexCoordinatesLog = hexCoordinatesLog.TrimEnd(new char[] { ',', ' ' });
-                Debug.Log(hexCoordinatesLog);
+            // Step 5: Check if the path is dangerous
+            bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
+            // Medium Difficulty: Show valid paths and notify of dangerous passes
+            // Easy Difficulty: Highlight all reachable hexes
+            if (isValidPath) {
+                if (difficultyLevel == 2 || difficultyLevel == 1)
+                {
+                        HighlightMediumMode(pathHexes, isDangerous);
+                }
+                // Hard Difficulty: No path preview, just move if valid
+                else if (difficultyLevel == 3)
+                {
+                        ball.MoveToCell(targetHex);  // Move immediately with no confirmation
+                        Debug.Log("Path selected. Moving the ball.");
+                }
             }
         }
     }
 
+    // Handles Easy Mode: Highlights all hexes in range and provides full visual feedback
+    void HighlightEasyMode(HexCell targetHex, List<HexCell> pathHexes, HexCell ballHex)
+    {
+        // Highlight all hexes in range
+        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, ballHex, 11);
+        foreach (HexCell hex in hexesInRange)
+        {
+            if (hex.isDefenseOccupied)
+            {
+                hex.HighlightHex("impossible");  // Very dark color
+            }
+            else if (hex == targetHex)
+            {
+                hex.HighlightHex("ballPath");  // Normal path color
+            }
+            else
+            {
+                hex.HighlightHex("ballPath");  // Normal highlight for reachable hexes
+            }
+            highlightedHexes.Add(hex);
+        }
+    }
+
+    // Handles Medium Mode: Highlights only valid paths and warns of danger
+    void HighlightMediumMode(List<HexCell> pathHexes, bool isDangerous)
+    {
+        string hexCoordinatesLog = "Highlighted Path: ";
+        foreach (HexCell hex in pathHexes)
+        {
+            if (hex == null)
+            {
+                Debug.LogError("A hex in the path is null! Check the path calculation.");
+                continue;
+            }
+
+            // Highlight hex based on danger status
+            if (isDangerous)
+            {
+                hex.HighlightHex("dangerousPass");  // Orange for dangerous pass
+            }
+            else
+            {
+                hex.HighlightHex("ballPath");  // Regular path highlight
+            }
+
+            // Track highlighted hexes
+            highlightedHexes.Add(hex);  
+            hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
+        }
+
+        // Log the path coordinates for debugging purposes
+        hexCoordinatesLog = hexCoordinatesLog.TrimEnd(new char[] { ',', ' ' });
+        Debug.Log(hexCoordinatesLog);
+    }
     public void HighlightLongPassArea(HexCell targetHex)
     {
         // Get hexes within a radius (e.g., 6 hexes) around the targetHex

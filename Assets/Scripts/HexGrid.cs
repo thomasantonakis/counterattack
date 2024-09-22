@@ -14,6 +14,8 @@ public class HexGrid : MonoBehaviour
     private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
+    public Ball ball;
+
 
     private void Start()
     {
@@ -343,6 +345,7 @@ public class HexGrid : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
+
         if (Physics.Raycast(ray, out hit))
         {
             HexCell hex = hit.collider.GetComponent<HexCell>();
@@ -360,6 +363,29 @@ public class HexGrid : MonoBehaviour
                     hex.HighlightHex("hover");  // Highlight the current hex
                     // Debug.Log($"Hovering over hex at: {hex.coordinates}");
                     lastHoveredHex = hex;
+                }
+                // Check if we are in Standard Pass mode
+                if (MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
+                {
+                    // Assuming GameInputManager is attached to a GameObject in the scene
+                    GameInputManager gameInputManager = FindObjectOfType<GameInputManager>();
+
+                    if (gameInputManager != null)
+                    {
+                        // Highlight the path to the hovered hex if in Easy Mode
+                        if (MatchManager.Instance.difficulty_level == 1)
+                        {
+                            HexCell ballHex = ball.GetCurrentHex();
+                            if (ballHex != null)
+                            {
+                                gameInputManager.HighlightGroundPathToHex(hex);  // Call the method in GameInputManager
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("GameInputManager not found in the scene!");
+                    }
                 }
             }
         }

@@ -22,8 +22,6 @@ public class MatchManager : MonoBehaviour
     public static MatchManager Instance;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
-    // public int difficulty_level = 1; // low
-    // public int difficulty_level = 2; // medium
     public int difficulty_level; // high
 
     // // Define other match-specific variables here (e.g., time, score, teams)

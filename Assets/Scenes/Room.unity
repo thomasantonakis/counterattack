@@ -605,6 +605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridCenter: {x: 0, y: 0, z: 0}
   hexCellPrefab: {fileID: -428787755409983856, guid: f78181e779d674d1a80601a352fff9e9, type: 3}
+  ball: {fileID: 390494642}
 --- !u!4 &1405702521
 Transform:
   m_ObjectHideFlags: 0

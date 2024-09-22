@@ -71,6 +71,9 @@ public class HexCell : MonoBehaviour
             case "dangerousPass":
                 hexRenderer.material.color = Color.magenta;  // Use the provided color for the ball path
                 break;
+            case "impossiblePass":
+                hexRenderer.material.color = Color.magenta * 0.5f;  // Use the provided color for the ball path
+                break;
             case "longPass":
                 hexRenderer.material.color = Color.blue * 2f;
                 break;
