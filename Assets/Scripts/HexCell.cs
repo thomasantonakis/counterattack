@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 using TMPro;  // Import TextMeshPro namespace
 
 [ExecuteInEditMode]
@@ -170,16 +171,28 @@ public class HexCell : MonoBehaviour
     public HexCell[] GetNeighbors(HexGrid grid)
     {
         HexCell[] neighbors = new HexCell[6];
-        for (int i = 0; i < HexGridUtils.hexDirections.Length; i++)
+        Vector2Int[] offsetDirections = new Vector2Int[]
         {
-            Vector3Int neighborCoords = coordinates + HexGridUtils.hexDirections[i];
-            HexCell neighborHex = grid.GetHexCellAt(neighborCoords);
+            new Vector2Int(1, 0),   // NorthEast
+            new Vector2Int(1, -1),  // SouthEast
+            new Vector2Int(0, -1), // South
+            new Vector2Int(-1, -1), // SouthWest
+            new Vector2Int(-1, 0), // Northwest
+            new Vector2Int(0, 1)   // North
+        };
+        for (int i = 0; i < offsetDirections.Length; i++)
+        {
+            int newX = coordinates.x + offsetDirections[i].x;
+            int newZ = coordinates.z + offsetDirections[i].y;
 
-            if (neighborHex != null && !neighborHex.isOutOfBounds)  // Ignore out-of-bounds hexes
+            HexCell neighborHex = grid.GetHexCellAt(new Vector3Int(newX, 0, newZ));  // Fetch neighbor in offset coords
+            if (neighborHex != null && !neighborHex.isOutOfBounds)
             {
-                neighbors[i] = neighborHex;  // Assign valid neighbors
+                neighbors[i] = neighborHex;
             }
         }
+        // Debug log the neighbors for this hex
+        // Debug.Log($"Neighbors of hex ({coordinates.x}, {coordinates.z}): {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
         return neighbors;
     }
 }

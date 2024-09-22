@@ -363,7 +363,7 @@ MonoBehaviour:
   currentState: 0
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
-  difficulty_level: 3
+  difficulty_level: 1
 --- !u!4 &622907911
 Transform:
   m_ObjectHideFlags: 0
