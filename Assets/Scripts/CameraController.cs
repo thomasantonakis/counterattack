@@ -88,12 +88,30 @@ public class CameraController : MonoBehaviour
 
     void HandleMovement()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        Vector3 moveDirection = Vector3.zero;
 
-        Vector3 horizontalMove = transform.right * moveX + transform.forward * moveZ;
-        horizontalMove.y = 0;
-        transform.position += horizontalMove * moveSpeed * Time.deltaTime;
+        // Move along Z-axis (forward/backward) regardless of camera rotation
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            moveDirection += new Vector3(0, 0, moveSpeed * Time.deltaTime);  // Move forward along Z-axis
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            moveDirection += new Vector3(0, 0, -moveSpeed * Time.deltaTime);  // Move backward along Z-axis
+        }
+
+        // Move left/right based on camera's local right direction (X-axis movement)
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveDirection -= transform.right * moveSpeed * Time.deltaTime;  // Move left
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            moveDirection += transform.right * moveSpeed * Time.deltaTime;  // Move right
+        }
+
+        // Apply the movement to the camera's position
+        transform.position += moveDirection;
     }
 
     void HandleZoom()
