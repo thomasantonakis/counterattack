@@ -330,10 +330,9 @@ public class GameInputManager : MonoBehaviour
         {
             // Get the neighbors of the hex and log them for debugging purposes
             HexCell[] neighbors = hex.GetNeighbors(hexGrid);
-            // Check if a defender's neighbor is in the path
-            if (defenderNeighbors.Contains(hex))
+            // Check if a defender's neighbor is in the path excluding Attacking occupied Hexes
+            if (defenderNeighbors.Contains(hex) && !hex.isAttackOccupied)
             {
-                // HexCell defender = defenderHexes.Find(d => HexCell.GetNeighbors(hexGrid).Contains(hex));
                 HexCell defender = defenderHexes.Find(d => d.GetNeighbors(hexGrid).Any(n => n == hex));
 
                 // Only add the defender and interception hex if the defender hasn't already been processed

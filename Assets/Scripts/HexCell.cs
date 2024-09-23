@@ -15,6 +15,7 @@ public class HexCell : MonoBehaviour
     public bool isDifficultShotPosition = false;
     public bool isDark = false;
     public bool isDefenseOccupied = false;
+    public bool isAttackOccupied = false;
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
     private Renderer hexRenderer;
     private Color originalColor;
@@ -72,6 +73,9 @@ public class HexCell : MonoBehaviour
             case "isDefenseOccupied":
                 hexRenderer.material.color = Color.red;
                 break;
+            case "isAttackOccupied":
+                hexRenderer.material.color = Color.green;
+                break;
             // Add other cases if needed
             default:
                 hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason
@@ -90,6 +94,10 @@ public class HexCell : MonoBehaviour
         if (isDefenseOccupied)
         {
             hexRenderer.material.color = Color.red;
+        }
+        else if (isAttackOccupied)
+        {
+            hexRenderer.material.color = Color.green;
         }
         else
         {

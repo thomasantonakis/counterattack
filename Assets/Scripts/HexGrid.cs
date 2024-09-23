@@ -29,56 +29,67 @@ public class HexGrid : MonoBehaviour
         }
         // Create out-of-bounds planes around the grid
         CreateOutOfBoundsPlanes(this);
-        InitializeDefenseObstacles(20);
+        InitializePlayers(10, 10);
     }
 
-    public void InitializeDefenseObstacles(int obstacleCount)
+    public void InitializePlayers(int defenderCount, int attackerCount)
     {
-        int totalHexes = cells.Length;
-        List<HexCell> potentialObstacles = new List<HexCell>();
+        List<HexCell> potentialSpawns = new List<HexCell>();
 
+        // Gather inbound hexes for potential spawning locations
         foreach (HexCell hex in cells)
         {
-            if (hex == null)
+            if (!hex.isOutOfBounds)  // Skip out-of-bounds hexes
             {
-                Debug.LogError("HexCell is null in the grid. Ensure grid initialization is correct.");
-                continue;
-            }
-            
-            if (!hex.isOutOfBounds)
-            {
-                potentialObstacles.Add(hex);
+                potentialSpawns.Add(hex);
             }
         }
-        AddManualDefender(4,2);
-        AddManualDefender(4,-3);
-        AddManualDefender(8,2);
-        AddManualDefender(7,5);
-        // Shuffle and pick random hexes for obstacles
-        for (int i = 0; i < obstacleCount-4 && potentialObstacles.Count > 0; i++)
+        // Shuffle and spawn defenders
+        for (int i = 0; i < defenderCount && potentialSpawns.Count > 0; i++)
         {
-            int randomIndex = Random.Range(0, potentialObstacles.Count);
-            HexCell defenseHex = potentialObstacles[randomIndex];
-            defenseHex.isDefenseOccupied = true;  // Mark this hex as an obstacle
+            int randomIndex = Random.Range(0, potentialSpawns.Count);
+            HexCell defenseHex = potentialSpawns[randomIndex];
+            defenseHex.isDefenseOccupied = true;  // Mark as defender
             defenseHex.HighlightHex("isDefenseOccupied");
-            potentialObstacles.RemoveAt(randomIndex);  // Remove it from the list
+            potentialSpawns.RemoveAt(randomIndex);
         }
-
-        Debug.Log($"{obstacleCount} defense-occupied hexes initialized.");
+        AddManualPlayer(0, 0, "attack");
+        // Shuffle and spawn attackers
+        for (int i = 0; i < attackerCount-1 && potentialSpawns.Count > 0; i++)
+        {
+            int randomIndex = Random.Range(0, potentialSpawns.Count);
+            HexCell attackHex = potentialSpawns[randomIndex];
+            attackHex.isAttackOccupied = true;  // Mark as attacker
+            attackHex.HighlightHex("isAttackOccupied");  // Optional: you can use a different color for attackers
+            potentialSpawns.RemoveAt(randomIndex);
+        }
     }
 
     // Helper method to manually place defenders at specific coordinates
-    private void AddManualDefender(int x, int z)
+    private void AddManualPlayer(int x, int z, string team)
     {
         // Convert x, z coordinates to Vector3Int (if needed by your grid structure)
         Vector3Int coordinates = new Vector3Int(x, 0, z);  // Assuming y-coordinate is 0 in your grid
         // Get the HexCell at the specific coordinates
         HexCell manualHex = GetHexCellAt(coordinates);
-        if (manualHex != null && !manualHex.isOutOfBounds && !manualHex.isDefenseOccupied) // Check if the hex is valid
+        if (manualHex != null && !manualHex.isOutOfBounds && !manualHex.isDefenseOccupied && !manualHex.isAttackOccupied) // Check if the hex is valid
         {
-            manualHex.isDefenseOccupied = true;  // Mark this hex as an obstacle
-            manualHex.HighlightHex("isDefenseOccupied");  // Optional: Highlight it to visualize the obstacle
-            Debug.Log($"Manually placed defender at ({x}, {z})");
+            if (team == "attack")
+            {
+                manualHex.isAttackOccupied = true;  // Mark this hex as an obstacle
+                manualHex.HighlightHex("isAttackOccupied");  // Optional: Highlight it to visualize the obstacle
+                Debug.Log($"Manually placed Attacker at ({x}, {z})");
+            }
+            else if (team == "defense")
+            {
+                manualHex.isDefenseOccupied = true;  // Mark this hex as an obstacle
+                manualHex.HighlightHex("isDefenseOccupied");  // Optional: Highlight it to visualize the obstacle
+                Debug.Log($"Manually placed defender at ({x}, {z})");
+            }
+            else
+            {
+                return;
+            }
         }
         else
         {
@@ -293,7 +304,7 @@ public class HexGrid : MonoBehaviour
         // Check if any of the path hexes are in the defender's ZOI (neighbors)
         foreach (HexCell pathHex in pathHexes)
         {
-            if (defenderNeighbors.Contains(pathHex))
+            if (defenderNeighbors.Contains(pathHex) && !pathHex.isAttackOccupied)
             {
                 // Debug.Log($"Hex {pathHex.coordinates} is within a defender's ZOI, making the pass dangerous.");
                 return true;
