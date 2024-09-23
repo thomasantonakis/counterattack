@@ -267,21 +267,20 @@ public class HexGrid : MonoBehaviour
         return defenderNeighbors;
     }
 
-    public bool IsPassDangerous(List<HexCell> path, List<HexCell> defenderNeighbors)
+    public bool IsPassDangerous(List<HexCell> pathHexes, List<HexCell> defenderNeighbors)
     {
-        int dangerCount = 0;
-
-        foreach (HexCell pathHex in path)
+        // Check if any of the path hexes are in the defender's ZOI (neighbors)
+        foreach (HexCell pathHex in pathHexes)
         {
             if (defenderNeighbors.Contains(pathHex))
             {
-                dangerCount++;
+                Debug.Log($"Hex {pathHex.coordinates} is within a defender's ZOI, making the pass dangerous.");
+                return true;
             }
         }
-
-        // Define how many neighboring hexes make the pass dangerous
-        return dangerCount > 0;  // Example threshold
+        return false;
     }
+    
     public void CreateOutOfBoundsPlanes(HexGrid grid, float planeHeight = 0.05f)
     {
         // Get the outermost hex cells from the grid
@@ -379,6 +378,8 @@ public class HexGrid : MonoBehaviour
                             if (ballHex != null)
                             {
                                 gameInputManager.HighlightGroundPathToHex(hex);  // Call the method in GameInputManager
+                                // Check if the pass is dangerous
+                                gameInputManager.CheckForDangerousPath(hex);
                             }
                         }
                     }
