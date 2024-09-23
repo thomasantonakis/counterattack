@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public static class HexGridUtils
 {
-    // Convert axial coordinates (x, z) to cube coordinates (x, y, z)
-    // Remember that y = -x - z in cube coordinates
     public static Vector3Int AxialToCube(Vector3Int axialCoords)
     {
         int x = axialCoords.x;
@@ -13,8 +11,8 @@ public static class HexGridUtils
         return new Vector3Int(x, y, z);
     }
 
-    // Function to calculate distance between two hexes in cube coordinates
     public static int GetHexDistance(Vector3Int cubeA, Vector3Int cubeB)
+    // Function to calculate distance between two hexes in cube coordinates
     {
         // Calculate the distance using cube coordinates
         return Mathf.Max(
@@ -38,21 +36,5 @@ public static class HexGridUtils
         int row = cubeCoords.z + (cubeCoords.x - (cubeCoords.x & 1)) / 2;
         return new Vector2Int(col, row);  // This converts cube (q, r, s) back to even-q offset
     }
-
-    // public static List<Vector3Int> HexRing(Vector3Int center, int radius)
-    // {
-    //     List<Vector3Int> results = new List<Vector3Int>();
-    //     Vector3Int hex = center + hexDirections[4] * radius;
-    //     for (int i = 0; i < 6; i++)
-    //     {
-    //         for (int j = 0; j < radius; j++)
-    //         {
-    //             results.Add(hex);
-    //             hex = GetNeighbor(hex, i);
-    //         }
-    //     }
-    //     return results;
-    // }
-
 
 }

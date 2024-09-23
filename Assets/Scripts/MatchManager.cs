@@ -17,7 +17,6 @@ public class MatchManager : MonoBehaviour
     }
 
     public GameState currentState; // Tracks the current state of the match
-
     // Singleton instance for easy access
     public static MatchManager Instance;
     public Ball ball;  // Reference to the ball

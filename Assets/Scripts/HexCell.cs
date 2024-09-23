@@ -6,8 +6,7 @@ using TMPro;  // Import TextMeshPro namespace
 public class HexCell : MonoBehaviour
 {
     public Vector3Int coordinates;
-    public float hexRadius = 0.5f;
-    // Hex features for the soccer pitch
+    public float hexRadius;
     public bool isKickOff = false;
     public bool isOutOfBounds = false;
     public bool isInPenaltyBox = false;
@@ -50,6 +49,7 @@ public class HexCell : MonoBehaviour
             coordinatesText.text = $"{x}, {z}";  // Set the text to display the coordinates
         }
     }
+    
     public void HighlightHex(string reason)
     {
         // Apply the color to the hex based on the reason
@@ -105,7 +105,6 @@ public class HexCell : MonoBehaviour
         }
     }
 
-    // Get world coordinates of the 6 corners of this hex
     public Vector3[] GetHexCorners()
     {
         Vector3[] corners = new Vector3[6];

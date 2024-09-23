@@ -6,15 +6,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed = 15f;
     [SerializeField] private float dragSpeed = 30f;
     [SerializeField] private float rotationSpeed = 1000f;
-
     private Vector3 dragOrigin;
     private bool isRotating = false;
-
     // Arrays to store position and rotation for 4 camera presets
     private Vector3[] presetPositions = new Vector3[4];
     private Quaternion[] presetRotations = new Quaternion[4];
 
-    // Initial setup in Start method
     void Start()
     {
         // Initialize preset 1 as the starting position (tabletop view)
@@ -35,7 +32,6 @@ public class CameraController : MonoBehaviour
         SetCameraToPreset(1);
     }
 
-    // Public method to be called by GameInputManager
     public void HandleCameraInput()
     {
         HandleMovement();
@@ -45,7 +41,6 @@ public class CameraController : MonoBehaviour
         HandlePresetKeys();
     }
 
-     // Handle saving and loading camera presets
     void HandlePresetKeys()
     {
         // Check if Shift is held
@@ -69,7 +64,6 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    // Set camera position and rotation to a preset slot
     void SetCameraToPreset(int presetIndex)
     {
         if (presetIndex < 1 || presetIndex > 4) return;  // Safety check
@@ -77,7 +71,6 @@ public class CameraController : MonoBehaviour
         transform.rotation = presetRotations[presetIndex - 1];
     }
 
-    // Save the current camera position and rotation to a preset slot
     void SaveCurrentCameraToPreset(int presetIndex)
     {
         if (presetIndex < 1 || presetIndex > 4) return;  // Safety check
@@ -89,7 +82,6 @@ public class CameraController : MonoBehaviour
     void HandleMovement()
     {
         Vector3 moveDirection = Vector3.zero;
-
         // Move along Z-axis (forward/backward) regardless of camera rotation
         if (Input.GetKey(KeyCode.UpArrow))
         {
@@ -99,7 +91,6 @@ public class CameraController : MonoBehaviour
         {
             moveDirection += new Vector3(0, 0, -moveSpeed * Time.deltaTime);  // Move backward along Z-axis
         }
-
         // Move left/right based on camera's local right direction (X-axis movement)
         if (Input.GetKey(KeyCode.LeftArrow))
         {
@@ -109,7 +100,6 @@ public class CameraController : MonoBehaviour
         {
             moveDirection += transform.right * moveSpeed * Time.deltaTime;  // Move right
         }
-
         // Apply the movement to the camera's position
         transform.position += moveDirection;
     }

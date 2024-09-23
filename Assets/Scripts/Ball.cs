@@ -7,12 +7,10 @@ public class Ball : MonoBehaviour
     private HexCell targetCell;
     public bool isMoving = false;
     private float moveSpeed = 2f;  // Speed: 2 hexes per second
-    // [SerializeField] private float moveSpeed = 0.5f;
     private bool isBallSelected = false;  // Track if the ball is selected
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
     [SerializeField] public float ballRadius = 0.6474f;
 
-    // Coroutine to ensure ball is placed after grid initialization
     IEnumerator Start()
     {
         // Wait until the grid is fully initialized
@@ -32,7 +30,6 @@ public class Ball : MonoBehaviour
         }
     }
 
-    // Place the ball at the initial cell
     public void PlaceAtCell(HexCell cell)
     {
         if (cell == null)
@@ -45,7 +42,6 @@ public class Ball : MonoBehaviour
         transform.position = cell.GetHexCenter();  // Place at the center of the hex
     }
 
-    // Coroutine to move the ball to a new hex smoothly
     public IEnumerator MoveToCell(HexCell newHex)
     {
         if (newHex == null)
@@ -77,13 +73,11 @@ public class Ball : MonoBehaviour
         targetCell = null;         // Clear target cell
     }
 
-    // Method to get the ball's current hex
     public HexCell GetCurrentHex()
     {
         return currentCell;
     }
 
-    // OnMouseDown event for selecting the ball
     private void OnMouseDown()
     {
         if (!isBallSelected)
@@ -93,20 +87,19 @@ public class Ball : MonoBehaviour
         }
     }
 
-    // Check if the ball is currently selected
     public bool IsBallSelected()
     {
         return isBallSelected;
     }
 
-    // Call this to manually deselect the ball
     public void SelectBall()
     {
         isBallSelected = true;
     }
-    // Call this to manually deselect the ball
+    
     public void DeselectBall()
     {
         isBallSelected = false;
     }
+
 }

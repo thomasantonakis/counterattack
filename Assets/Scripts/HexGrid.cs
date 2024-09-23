@@ -33,6 +33,11 @@ public class HexGrid : MonoBehaviour
         InitializePlayers(10, 10);
     }
 
+    void Update()
+    {
+        DetectHexUnderMouse();
+    }
+    
     public void InitializePlayers(int defenderCount, int attackerCount)
     {
         List<HexCell> potentialSpawns = new List<HexCell>();
@@ -66,7 +71,6 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    // Helper method to manually place defenders at specific coordinates
     private void AddManualPlayer(int x, int z, string team)
     {
         // Convert x, z coordinates to Vector3Int (if needed by your grid structure)
@@ -98,10 +102,6 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        DetectHexUnderMouse();
-    }
 
     void CreateGrid()
     {
@@ -163,7 +163,7 @@ public class HexGrid : MonoBehaviour
 
         AssignHexFeatures(cell);
     }
-    
+
     void AssignHexFeatures(HexCell cell)
     {
         int x = cell.coordinates.x;
@@ -217,12 +217,13 @@ public class HexGrid : MonoBehaviour
         // else if (cell.isInPenaltyBox) cell.GetComponent<Renderer>().material.color = Color.yellow;
         // else if (cell.isInFinalThird) cell.GetComponent<Renderer>().material.color = Color.green;
     }
+    
     private bool ShouldBeDarkHex(int x, int z)
     {
         // Define your logic to determine which hexes should be dark
         return (x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0);  // Example: every other hex is dark
     }
-    // Method to get the HexCell based on its coordinates
+    
     public HexCell GetHexCellAt(Vector3Int coords)
     {
         int x = coords.x + width / 2;  // Offset to positive index
