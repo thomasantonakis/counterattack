@@ -15,7 +15,8 @@ public class HexGrid : MonoBehaviour
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
     public Ball ball;
-    public GameInputManager gameInputManager;
+    // public GameInputManager gameInputManager;
+    public GroundBallManager groundBallManager;
 
     private void Start()
     {
@@ -391,11 +392,11 @@ public class HexGrid : MonoBehaviour
                 )
                 {
                     // HighlightGroundPathToHex(hoveredHex);
-                    var (isValid, isDangerous, pathHexes) = gameInputManager.ValidatePath(hoveredHex); // Use GameInputManager logic
+                    var (isValid, isDangerous, pathHexes) = groundBallManager.ValidatePath(hoveredHex); // Use GameInputManager logic
                     if (isValid)
                     {
-                        gameInputManager.ClearHighlightedHexes();
-                        gameInputManager.HighlightValidPath(pathHexes, isDangerous); // Highlight based on danger
+                        groundBallManager.ClearHighlightedHexes();
+                        groundBallManager.HighlightValidPath(pathHexes, isDangerous); // Highlight based on danger
                     }
                 }
             }
