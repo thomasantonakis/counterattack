@@ -166,30 +166,39 @@ public class HexCell : MonoBehaviour
         return center;
     }
 
+    // Directions for odd and even columns
+    private static readonly Vector2Int[] evenColumnDirections = new Vector2Int[]
+    {
+        new Vector2Int(0, -1),  // South
+        new Vector2Int(-1, -1), // Southwest
+        new Vector2Int(-1, 0),  // Northwest
+        new Vector2Int(0, 1),    // North
+        new Vector2Int(1, 0),   // Northeast
+        new Vector2Int(1, -1)  // Southeast
+    };
+
+    private static readonly Vector2Int[] oddColumnDirections = new Vector2Int[]
+    {
+        new Vector2Int(0, -1),  // South
+        new Vector2Int(-1, 0),  // Southwest
+        new Vector2Int(-1, 1),  // Northwest
+        new Vector2Int(0, 1),    // North
+        new Vector2Int(1, 1),   // Northeast
+        new Vector2Int(1, 0)   // Southeast
+    };
+
+    // Function to return the proper direction set based on the x coordinate (even or odd)
+    public Vector2Int[] GetDirectionVectors()
+    {
+        // Return the appropriate direction vectors based on the x coordinate
+        return (coordinates.x % 2 == 0) ? evenColumnDirections : oddColumnDirections;
+    }
+
     public HexCell[] GetNeighbors(HexGrid grid)
     {
         HexCell[] neighbors = new HexCell[6];
-        Vector2Int[] evenRowDirections = new Vector2Int[]
-        {
-            new Vector2Int(1, 0),   // Northeast
-            new Vector2Int(1, -1),  // Southeast
-            new Vector2Int(0, -1),  // South
-            new Vector2Int(-1, -1), // Southwest
-            new Vector2Int(-1, 0),  // Northwest
-            new Vector2Int(0, 1)    // North
-        };
-
-        Vector2Int[] oddRowDirections = new Vector2Int[]
-        {
-            new Vector2Int(1, 1),   // Northeast
-            new Vector2Int(1, 0),   // Southeast
-            new Vector2Int(0, -1),  // South
-            new Vector2Int(-1, 0),  // Southwest
-            new Vector2Int(-1, 1),  // Northwest
-            new Vector2Int(0, 1)    // North
-        };
         // Choose directions based on whether the row (z) is even or odd
-        Vector2Int[] offsetDirections = (coordinates.x % 2 == 0) ? evenRowDirections : oddRowDirections;
+        Vector2Int[] offsetDirections = GetDirectionVectors();  // Get appropriate directions
 
         for (int i = 0; i < offsetDirections.Length; i++)
         {
