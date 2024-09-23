@@ -15,7 +15,7 @@ public class HexGrid : MonoBehaviour
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
     public Ball ball;
-
+    public GameInputManager gameInputManager;
 
     private void Start()
     {
@@ -50,9 +50,12 @@ public class HexGrid : MonoBehaviour
                 potentialObstacles.Add(hex);
             }
         }
-
+        AddManualDefender(4,2);
+        AddManualDefender(4,-3);
+        AddManualDefender(8,2);
+        AddManualDefender(7,5);
         // Shuffle and pick random hexes for obstacles
-        for (int i = 0; i < obstacleCount && potentialObstacles.Count > 0; i++)
+        for (int i = 0; i < obstacleCount-4 && potentialObstacles.Count > 0; i++)
         {
             int randomIndex = Random.Range(0, potentialObstacles.Count);
             HexCell defenseHex = potentialObstacles[randomIndex];
@@ -62,6 +65,25 @@ public class HexGrid : MonoBehaviour
         }
 
         Debug.Log($"{obstacleCount} defense-occupied hexes initialized.");
+    }
+
+    // Helper method to manually place defenders at specific coordinates
+    private void AddManualDefender(int x, int z)
+    {
+        // Convert x, z coordinates to Vector3Int (if needed by your grid structure)
+        Vector3Int coordinates = new Vector3Int(x, 0, z);  // Assuming y-coordinate is 0 in your grid
+        // Get the HexCell at the specific coordinates
+        HexCell manualHex = GetHexCellAt(coordinates);
+        if (manualHex != null && !manualHex.isOutOfBounds && !manualHex.isDefenseOccupied) // Check if the hex is valid
+        {
+            manualHex.isDefenseOccupied = true;  // Mark this hex as an obstacle
+            manualHex.HighlightHex("isDefenseOccupied");  // Optional: Highlight it to visualize the obstacle
+            Debug.Log($"Manually placed defender at ({x}, {z})");
+        }
+        else
+        {
+            Debug.LogWarning($"Unable to place defender at ({x}, {z}) - Invalid or occupied hex.");
+        }
     }
 
     void Update()
@@ -235,7 +257,6 @@ public class HexGrid : MonoBehaviour
     public List<HexCell> GetDefenderHexes()
     {
         List<HexCell> defenderHexes = new List<HexCell>();
-
         // Loop through all hex cells in the grid
         foreach (HexCell cell in cells)
         {
@@ -257,7 +278,7 @@ public class HexGrid : MonoBehaviour
             HexCell[] neighbors = defenderHex.GetNeighbors(this);  // Assuming GetNeighbors already works
             foreach (HexCell neighbor in neighbors)
             {
-                if (neighbor != null && !defenderNeighbors.Contains(neighbor))
+                if (neighbor != null && !defenderNeighbors.Contains(neighbor) && !neighbor.isOutOfBounds)
                 {
                     defenderNeighbors.Add(neighbor);
                 }
@@ -274,7 +295,7 @@ public class HexGrid : MonoBehaviour
         {
             if (defenderNeighbors.Contains(pathHex))
             {
-                Debug.Log($"Hex {pathHex.coordinates} is within a defender's ZOI, making the pass dangerous.");
+                // Debug.Log($"Hex {pathHex.coordinates} is within a defender's ZOI, making the pass dangerous.");
                 return true;
             }
         }
@@ -344,59 +365,36 @@ public class HexGrid : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-
         if (Physics.Raycast(ray, out hit))
         {
-            HexCell hex = hit.collider.GetComponent<HexCell>();
-
-            if (hex != null)
+            HexCell hoveredHex = hit.collider.GetComponent<HexCell>();
+            if (hoveredHex != null && hoveredHex != lastHoveredHex)
             {
-                // Only highlight when the mouse moves to a new hex
-                if (hex != lastHoveredHex)
+                if (lastHoveredHex != null)
                 {
-                    if (lastHoveredHex != null)
-                    {
-                        lastHoveredHex.ResetHighlight();  // Reset the last hovered hex
-                    }
-
-                    hex.HighlightHex("hover");  // Highlight the current hex
-                    // Debug.Log($"Hovering over hex at: {hex.coordinates}");
-                    lastHoveredHex = hex;
+                    lastHoveredHex.ResetHighlight();
                 }
-                // Check if we are in Standard Pass mode
-                if (MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
+                if (hoveredHex != null 
+                    && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt
+                    && MatchManager.Instance.difficulty_level == 1
+                )
                 {
-                    // Assuming GameInputManager is attached to a GameObject in the scene
-                    GameInputManager gameInputManager = FindObjectOfType<GameInputManager>();
-
-                    if (gameInputManager != null)
+                    // HighlightGroundPathToHex(hoveredHex);
+                    var (isValid, isDangerous, pathHexes) = gameInputManager.ValidatePath(hoveredHex); // Use GameInputManager logic
+                    if (isValid)
                     {
-                        // Highlight the path to the hovered hex if in Easy Mode
-                        if (MatchManager.Instance.difficulty_level == 1)
-                        {
-                            HexCell ballHex = ball.GetCurrentHex();
-                            if (ballHex != null)
-                            {
-                                gameInputManager.HighlightGroundPathToHex(hex);  // Call the method in GameInputManager
-                                // Check if the pass is dangerous
-                                gameInputManager.CheckForDangerousPath(hex);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError("GameInputManager not found in the scene!");
+                        gameInputManager.ClearHighlightedHexes();
+                        gameInputManager.HighlightValidPath(pathHexes, isDangerous); // Highlight based on danger
                     }
                 }
             }
-        }
-        else
-        {
-            // Reset the last hovered hex when the mouse is not over any hex
-            if (lastHoveredHex != null)
+            else
             {
-                lastHoveredHex.ResetHighlight();
-                lastHoveredHex = null;
+                if (lastHoveredHex != null)
+                {
+                    lastHoveredHex.ResetHighlight();
+                    lastHoveredHex = null;
+                }
             }
         }
     }

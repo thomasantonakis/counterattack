@@ -19,15 +19,6 @@ public class HexCell : MonoBehaviour
     private Renderer hexRenderer;
     private Color originalColor;
 
-    private static readonly Vector3Int[] directions = {
-        new Vector3Int(0, 0, 1),   // Top
-        new Vector3Int(1, 0, 0),   // Top-right
-        new Vector3Int(1, 0, -1),  // Bottom-right
-        new Vector3Int(0, 0, -1),  // Bottom
-        new Vector3Int(-1, 0, -1), // Bottom-left
-        new Vector3Int(-1, 0, 0)   // Top-left
-    };
-
     void Awake()
     {
         // Store the renderer and the original material color
@@ -171,15 +162,28 @@ public class HexCell : MonoBehaviour
     public HexCell[] GetNeighbors(HexGrid grid)
     {
         HexCell[] neighbors = new HexCell[6];
-        Vector2Int[] offsetDirections = new Vector2Int[]
+        Vector2Int[] evenRowDirections = new Vector2Int[]
         {
-            new Vector2Int(1, 0),   // NorthEast
-            new Vector2Int(1, -1),  // SouthEast
-            new Vector2Int(0, -1), // South
-            new Vector2Int(-1, -1), // SouthWest
-            new Vector2Int(-1, 0), // Northwest
-            new Vector2Int(0, 1)   // North
+            new Vector2Int(1, 0),   // Northeast
+            new Vector2Int(1, -1),  // Southeast
+            new Vector2Int(0, -1),  // South
+            new Vector2Int(-1, -1), // Southwest
+            new Vector2Int(-1, 0),  // Northwest
+            new Vector2Int(0, 1)    // North
         };
+
+        Vector2Int[] oddRowDirections = new Vector2Int[]
+        {
+            new Vector2Int(1, 1),   // Northeast
+            new Vector2Int(1, 0),   // Southeast
+            new Vector2Int(0, -1),  // South
+            new Vector2Int(-1, 0),  // Southwest
+            new Vector2Int(-1, 1),  // Northwest
+            new Vector2Int(0, 1)    // North
+        };
+        // Choose directions based on whether the row (z) is even or odd
+        Vector2Int[] offsetDirections = (coordinates.x % 2 == 0) ? evenRowDirections : oddRowDirections;
+
         for (int i = 0; i < offsetDirections.Length; i++)
         {
             int newX = coordinates.x + offsetDirections[i].x;

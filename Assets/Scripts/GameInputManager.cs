@@ -145,99 +145,167 @@ public class GameInputManager : MonoBehaviour
     void HandlePassBasedOnDifficulty(HexCell clickedHex)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
-        HexCell ballHex = ball.GetCurrentHex();
-        if (ballHex == null)
+        
+        // This was not here.
+        // List<HexCell> pathHexes = CalculateThickPath(ball.GetCurrentHex(), clickedHex, ball.ballRadius);
+        
+        // Centralized path validation and danger assessment
+        var (isValid, isDangerous, pathHexes) = ValidatePath(clickedHex);
+        if (!isValid)
         {
-            Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
-            return;
+            // Debug.LogWarning("Invalid pass. Path rejected.");
+            return; // Reject invalid paths
         }
-        // Convert the hex coordinates to cube coordinates
-        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-        Vector3Int clickedCubeCoords = HexGridUtils.OffsetToCube(clickedHex.coordinates.x, clickedHex.coordinates.z);
-        // Calculate the number of steps between the ball and the clicked hex
-        int steps = HexGridUtils.GetHexDistance(ballCubeCoords, clickedCubeCoords);
-        // Debug.Log($"Steps from {ballHex} to {clickedHex} hex: {steps}");
-        // Reject the input if the number of steps exceeds 11
-        if (steps > 11)
+        currentTargetHex = clickedHex;  // Assign the current target hex
+        // Handle each difficulty's behavior
+        if (difficulty == 3) // Hard Mode
         {
-            Debug.LogWarning("Target hex is too far! The maximum range is 11 steps.");
-            return;
-        }
-        else
-        {
-            List<HexCell> pathHexes = CalculateThickPath(ball.GetCurrentHex(), clickedHex, ball.ballRadius);
-            if (IsPassValid(clickedHex, pathHexes))  // Validate the pass
+            CheckForDangerousPath(clickedHex);
+            if (passIsDangerous)
             {
-                if (difficulty == 3)  // Difficult Level: No path visualization
+                diceRollsPending = defendingHexes.Count; // is this relevant here?
+                Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                StartDiceRollSequence();
+            }
+            else
+            {
+                Debug.Log("Pass is not dangerous, moving ball.");
+                StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+            }
+            ball.DeselectBall();
+        }
+        else if (difficulty == 2)
+        {
+            ClearHighlightedHexes();
+            HighlightValidPath(pathHexes, isDangerous);
+            CheckForDangerousPath(clickedHex);
+            diceRollsPending = defendingHexes.Count; // is this relevant here?
+            Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+            // Medium Mode: Wait for a second click for confirmation
+            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+            {
+                CheckForDangerousPath(clickedHex);
+                if (passIsDangerous)
                 {
-                    CheckForDangerousPath(clickedHex);  // Check if the pass is dangerous
-                    currentTargetHex = clickedHex;  // Make sure the target hex is set
-                    if (passIsDangerous)
-                    {
-                        Debug.Log("Dangerous pass detected. Waiting for dice rolls...");
-                        diceRollsPending = defendingHexes.Count;  // Set number of dice rolls based on defenders involved
-                        StartDiceRollSequence();
-                    }
-                    else
-                    {
-                        Debug.Log("Pass is not dangerous, moving ball.");
-                        // Ensure currentTargetHex is set before movement
-                        if (currentTargetHex == null)
-                        {
-                            Debug.LogError("currentTargetHex is null despite the pass being valid.");
-                        }
-                        StartCoroutine(HandleGroundBallMovement(clickedHex));  // Execute the pass with movement
-                    }
-                    ball.DeselectBall();
+                    diceRollsPending = defendingHexes.Count; // is this relevant here?
+                    Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                    StartDiceRollSequence();
                 }
-                else if (difficulty == 2 || difficulty == 1)  // Medium & Easy levels
+                else
                 {
-                    HighlightGroundPathToHex(clickedHex);  // Highlight the path based on difficulty
-                    if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
-                    {
-                        CheckForDangerousPath(clickedHex);  // Check if the pass is dangerous
-                        if (passIsDangerous)
-                        {
-                            Debug.Log("Dangerous pass detected. Waiting for dice rolls...");
-                            diceRollsPending = defendingHexes.Count;
-                            StartDiceRollSequence();
-                        }
-                        else
-                        {
-                            Debug.Log("Pass is not dangerous, moving ball.");
-                            // Ensure currentTargetHex is set before movement
-                            if (currentTargetHex == null)
-                            {
-                                Debug.LogError("currentTargetHex is null despite the pass being valid.");
-                            }
-                            StartCoroutine(HandleGroundBallMovement(currentTargetHex));
-                        }
-                        ball.DeselectBall();
-                    }
-                    else
-                    {
-                        currentTargetHex = clickedHex;  // Set target for the first click
-                        lastClickedHex = clickedHex;    // Track the last clicked hex
-                    }
+                    Debug.Log("Pass is not dangerous, moving ball.");
+                    StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
                 }
+                ball.DeselectBall();
+            }
+            else
+            {
+                ClearHighlightedHexes();
+                HighlightValidPath(pathHexes, isDangerous);
+                currentTargetHex = clickedHex;
+                lastClickedHex = clickedHex;  // Set for confirmation click
+            }
+        }
+        else if (difficulty == 1) // Easy Mode: Handle hover and clicks with immediate highlights
+        {
+            CheckForDangerousPath(clickedHex);
+            diceRollsPending = defendingHexes.Count; // is this relevant here?
+            Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+            {
+                // Second click on the same hex: confirm the pass
+                Debug.Log("Second click detected, confirming pass...");
+                CheckForDangerousPath(clickedHex);
+                if (passIsDangerous)
+                {
+                    diceRollsPending = defendingHexes.Count; // is this relevant here?
+                    Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                    StartDiceRollSequence();
+                }
+                else
+                {
+                    Debug.Log("Pass is not dangerous, moving ball.");
+                    StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                }
+                ball.DeselectBall();
+            }
+            else
+            {
+                ClearHighlightedHexes();
+                HighlightValidPath(pathHexes, isDangerous);
+                currentTargetHex = clickedHex; // Set this as the current target hex
+                lastClickedHex = clickedHex; // Track the last clicked hex
             }
         }
     }
 
-    bool IsPassValid(HexCell targetHex, List<HexCell> pathHexes)
+    // bool IsPassValid(HexCell targetHex, List<HexCell> pathHexes)
+    // {
+    //     // Check if the pass is blocked by any defense-occupied hex in the path
+    //     foreach (HexCell hex in pathHexes)
+    //     {
+    //         if (hex.isDefenseOccupied)
+    //         {
+    //             Debug.LogWarning($"Invalid path! Hex at {hex.coordinates} is occupied by defense.");
+    //             return false; // The path is blocked by a defender
+    //         }
+    //     }
+    //     return true;
+    // }
+    
+    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidatePath(HexCell targetHex)
     {
-        // Check if the pass is blocked by any defense-occupied hex in the path
+        HexCell ballHex = ball.GetCurrentHex();
+        // Step 1: Ensure the ballHex and targetHex are valid
+        if (ballHex == null || targetHex == null)
+        {
+            Debug.LogError("Ball or target hex is null!");
+            return (false, false, null);
+        }
+        // Step 2: Calculate the path between the ball and the target hex
+        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        // Get the distance in hex steps
+        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
+        Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
+        int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+        // Check the distance limit
+        if (distance > 11)
+        {
+            Debug.LogWarning($"Pass is out of range. Maximum steps allowed: 11. Current steps: {distance}");
+            return (false, false, pathHexes);
+        }
+        // Step 3: Check if the path is valid by ensuring no defense-occupied hexes block the path
         foreach (HexCell hex in pathHexes)
         {
             if (hex.isDefenseOccupied)
             {
-                Debug.LogWarning($"Invalid path! Hex at {hex.coordinates} is occupied by defense.");
-                return false; // The path is blocked by a defender
+                Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
+                return (false, false, pathHexes); // Invalid path
             }
         }
-        return true;
+
+        // Step 4: Get defenders and their ZOI
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+
+        // Step 5: Determine if the path is dangerous by checking if it passes through any defender's ZOI
+        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
+
+        // Debug.Log($"Path to {targetHex.coordinates}: Valid={true}, Dangerous={isDangerous}");
+
+        return (true, isDangerous, pathHexes);
     }
-    
+
+    public void HighlightValidPath(List<HexCell> pathHexes, bool isDangerous)
+    {
+        foreach (HexCell hex in pathHexes)
+        {
+            if (hex == null) continue; // to next hex (loop)
+            hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
+            highlightedHexes.Add(hex);  // Track the highlighted hexes
+        }
+    }
+
     public void CheckForDangerousPath(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
@@ -285,22 +353,23 @@ public class GameInputManager : MonoBehaviour
             highlightedHexes.Add(hex);
         }
     }
-
     void StartDiceRollSequence()
     {
-        // Sort defendingHexes by distance from ballHex
-        defendingHexes = defendingHexes.OrderBy(d => HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.coordinates)).ToList();
-        // Start the dice roll process for each defender
+        Debug.Log($"Defenders with interception chances: {defendingHexes.Count}");
         if (defendingHexes.Count > 0)
         {
+            // Start the dice roll process for each defender
             Debug.Log("Starting dice roll sequence...");
-            isWaitingForDiceRoll = true;
+            // Sort defendingHexes by distance from ballHex
+            defendingHexes = defendingHexes.OrderBy(d => HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.coordinates)).ToList();
             currentDefenderHex = defendingHexes[0];  // Start with the closest defender
+            isWaitingForDiceRoll = true;
         }
         else
         {
-            Debug.LogWarning("No defenders found for interception.");
-            StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // No defenders, move ball to target
+            Debug.LogWarning("No defenders in ZOI. This should never appear unless the path is clear.");
+            StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // Move ball to the target hex
+            return;
         }
     }
 
@@ -353,6 +422,7 @@ public class GameInputManager : MonoBehaviour
         diceRollsPending = 0;
         currentDefenderHex = null;
     }
+    
     void HandleLongBallPath()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -395,7 +465,7 @@ public class GameInputManager : MonoBehaviour
         // Ensure the ball and targetHex are valid
         if (ball == null)
         {
-            Debug.LogError("Ball reference is null!");
+            Debug.LogError("Ball reference is null in HandleGroundBallMovement!");
             yield break;
         }
         if (targetHex == null)
@@ -509,89 +579,52 @@ public class GameInputManager : MonoBehaviour
     }
 
     public void HighlightEasyMode(HexCell hoveredHex)
-{
-    // Retrieve the current hex where the ball is located
-    HexCell ballHex = ball.GetCurrentHex();
-
-    // Null check for ballHex to avoid further issues
-    if (ballHex == null)
     {
-        Debug.LogError("Ball's current hex is null! Ensure the ball has a valid hex.");
-        return;
-    }
+        // Retrieve the current hex where the ball is located
+        HexCell ballHex = ball.GetCurrentHex();
 
-    // Clear any previously highlighted hexes
-    ClearHighlightedHexes();
-
-    // Get hexes within valid range (11 hexes from the ball's position)
-    List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, ballHex, 11);
-    Debug.Log($"Hexes in range (11 steps): {string.Join(", ", hexesInRange.Select(h => h.coordinates.ToString()))}");
-
-    // Check if hovered hex is within the valid range
-    if (!hexesInRange.Contains(hoveredHex))
-    {
-        Debug.LogWarning($"Hovered hex ({hoveredHex.coordinates}) is out of range.");
-        return;  // Exit if hovered hex is out of range
-    }
-
-    // Calculate the path from the ball's position to the hovered hex
-    List<HexCell> pathHexes = CalculateThickPath(ballHex, hoveredHex, ball.ballRadius);
-
-    Debug.Log($"Hovered hex ({hoveredHex.coordinates}) is within range. Calculated path: {string.Join(", ", pathHexes.Select(h => h.coordinates.ToString()))}");
-
-    // Get defender hexes and their neighbors (for ZOI check)
-    List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
-    List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-
-    Debug.Log($"Defender hexes: {string.Join(", ", defenderHexes.Select(h => h.coordinates.ToString()))}");
-    Debug.Log($"Defender neighbors (ZOI): {string.Join(", ", defenderNeighbors.Select(h => h.coordinates.ToString()))}");
-
-    // Check if the path is dangerous (intersects with a defender's ZOI)
-    bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
-
-    Debug.Log($"Is pass dangerous: {isDangerous}");
-
-    // Highlight the path based on whether it's dangerous or not
-    HighlightValidPath(pathHexes, isDangerous);
-}
-
-
-
-private void HighlightValidPath(List<HexCell> pathHexes, bool isDangerous)
-{
-    string hexCoordinatesLog = "Highlighted Path: ";
-
-    foreach (HexCell hex in pathHexes)
-    {
-        if (hex == null)
+        // Null check for ballHex to avoid further issues
+        if (ballHex == null)
         {
-            Debug.LogError("A hex in the path is null! Check the path calculation.");
-            continue;
+            Debug.LogError("Ball's current hex is null! Ensure the ball has a valid hex.");
+            return;
         }
 
-        // Highlight based on danger status
-        if (isDangerous)
+        // Clear any previously highlighted hexes
+        ClearHighlightedHexes();
+
+        // Get hexes within valid range (11 hexes from the ball's position)
+        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, ballHex, 11);
+        Debug.Log($"Hexes in range (11 steps): {string.Join(", ", hexesInRange.Select(h => h.coordinates.ToString()))}");
+
+        // Check if hovered hex is within the valid range
+        if (!hexesInRange.Contains(hoveredHex))
         {
-            hex.HighlightHex("dangerousPass");  // Orange for dangerous pass
-        }
-        else
-        {
-            hex.HighlightHex("ballPath");  // Regular path highlight
+            Debug.LogWarning($"Hovered hex ({hoveredHex.coordinates}) is out of range.");
+            return;  // Exit if hovered hex is out of range
         }
 
-        // Track highlighted hexes for future clearing
-        highlightedHexes.Add(hex);
+        // Calculate the path from the ball's position to the hovered hex
+        List<HexCell> pathHexes = CalculateThickPath(ballHex, hoveredHex, ball.ballRadius);
 
-        // Log the highlighted hexes for debugging
-        hexCoordinatesLog += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
+        Debug.Log($"Hovered hex ({hoveredHex.coordinates}) is within range. Calculated path: {string.Join(", ", pathHexes.Select(h => h.coordinates.ToString()))}");
+
+        // Get defender hexes and their neighbors (for ZOI check)
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+
+        Debug.Log($"Defender hexes: {string.Join(", ", defenderHexes.Select(h => h.coordinates.ToString()))}");
+        Debug.Log($"Defender neighbors (ZOI): {string.Join(", ", defenderNeighbors.Select(h => h.coordinates.ToString()))}");
+
+        // Check if the path is dangerous (intersects with a defender's ZOI)
+        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
+
+        Debug.Log($"Is pass dangerous: {isDangerous}");
+
+        // Highlight the path based on whether it's dangerous or not
+        HighlightValidPath(pathHexes, isDangerous);
     }
 
-    // Remove the last comma and log the final path
-    hexCoordinatesLog = hexCoordinatesLog.TrimEnd(',', ' ');
-    Debug.Log(hexCoordinatesLog);
-}
-
-    // Handles Medium Mode: Highlights only valid paths and warns of danger
     void HighlightMediumMode(List<HexCell> pathHexes, bool isDangerous)
     {
         string hexCoordinatesLog = "Highlighted Path: ";
@@ -740,7 +773,7 @@ private void HighlightValidPath(List<HexCell> pathHexes, bool isDangerous)
         return Vector3.Distance(point, closestPoint);
     }
 
-    void ClearHighlightedHexes()
+    public void ClearHighlightedHexes()
     {
         foreach (HexCell hex in highlightedHexes)
         {
@@ -756,19 +789,19 @@ private void HighlightValidPath(List<HexCell> pathHexes, bool isDangerous)
 
     void SaveLogToFile(string logText, string startHex, string endHex)
     {
-        // // Define the file path (you can customize this path)
-        // string filePath = Application.dataPath + $"/Logs/HexPath_{startHex}_to_{endHex}.txt";
+        // Define the file path (you can customize this path)
+        string filePath = Application.dataPath + $"/Logs/HexPath_{startHex}_to_{endHex}.txt";
 
-        // // Ensure the directory exists
-        // Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+        // Ensure the directory exists
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-        // // Write the log text to the file (overwrite mode)
-        // using (StreamWriter writer = new StreamWriter(filePath))
-        // {
-        //     writer.WriteLine(logText);
-        // }
+        // Write the log text to the file (overwrite mode)
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine(logText);
+        }
 
-        // Debug.Log($"Log saved to: {filePath}");
+        Debug.Log($"Log saved to: {filePath}");
     }
 
     public void TestHexConversions()
