@@ -23,7 +23,7 @@ public class GroundBallManager : MonoBehaviour
         // Check if waiting for dice rolls and the D key is pressed
         if (isWaitingForDiceRoll && Input.GetKeyDown(KeyCode.D))
         {
-            PerformDiceRoll();  // Trigger the dice roll when D is pressed
+            PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when D is pressed
         }
     }
     public void HandleGroundBallPath()
@@ -43,13 +43,13 @@ public class GroundBallManager : MonoBehaviour
                 else
                 {
                     // Now handle the pass based on difficulty
-                    HandlePassBasedOnDifficulty(clickedHex);
+                    HandleGroundPassBasedOnDifficulty(clickedHex);
                 }   
             }
         }
     }
 
-    void HandlePassBasedOnDifficulty(HexCell clickedHex)
+    void HandleGroundPassBasedOnDifficulty(HexCell clickedHex)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         
@@ -57,7 +57,7 @@ public class GroundBallManager : MonoBehaviour
         // List<HexCell> pathHexes = CalculateThickPath(ball.GetCurrentHex(), clickedHex, ball.ballRadius);
         
         // Centralized path validation and danger assessment
-        var (isValid, isDangerous, pathHexes) = ValidatePath(clickedHex);
+        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex);
         if (!isValid)
         {
             // Debug.LogWarning("Invalid pass. Path rejected.");
@@ -67,12 +67,12 @@ public class GroundBallManager : MonoBehaviour
         // Handle each difficulty's behavior
         if (difficulty == 3) // Hard Mode
         {
-            CheckForDangerousPath(clickedHex);
+            PopulateGroundPathInterceptions(clickedHex);
             if (passIsDangerous)
             {
                 diceRollsPending = defendingHexes.Count; // is this relevant here?
                 Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-                StartDiceRollSequence();
+                StartGroundPassInterceptionDiceRollSequence();
             }
             else
             {
@@ -84,19 +84,19 @@ public class GroundBallManager : MonoBehaviour
         else if (difficulty == 2)
         {
             ClearHighlightedHexes();
-            HighlightValidPath(pathHexes, isDangerous);
-            CheckForDangerousPath(clickedHex);
+            HighlightValidGroundPassPath(pathHexes, isDangerous);
+            PopulateGroundPathInterceptions(clickedHex);
             diceRollsPending = defendingHexes.Count; // is this relevant here?
             Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
             // Medium Mode: Wait for a second click for confirmation
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
-                CheckForDangerousPath(clickedHex);
+                PopulateGroundPathInterceptions(clickedHex);
                 if (passIsDangerous)
                 {
                     diceRollsPending = defendingHexes.Count; // is this relevant here?
                     Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-                    StartDiceRollSequence();
+                    StartGroundPassInterceptionDiceRollSequence();
                 }
                 else
                 {
@@ -108,26 +108,26 @@ public class GroundBallManager : MonoBehaviour
             else
             {
                 ClearHighlightedHexes();
-                HighlightValidPath(pathHexes, isDangerous);
+                HighlightValidGroundPassPath(pathHexes, isDangerous);
                 currentTargetHex = clickedHex;
                 lastClickedHex = clickedHex;  // Set for confirmation click
             }
         }
         else if (difficulty == 1) // Easy Mode: Handle hover and clicks with immediate highlights
         {
-            CheckForDangerousPath(clickedHex);
+            PopulateGroundPathInterceptions(clickedHex);
             diceRollsPending = defendingHexes.Count; // is this relevant here?
             Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
                 // Second click on the same hex: confirm the pass
                 Debug.Log("Second click detected, confirming pass...");
-                CheckForDangerousPath(clickedHex);
+                PopulateGroundPathInterceptions(clickedHex);
                 if (passIsDangerous)
                 {
                     diceRollsPending = defendingHexes.Count; // is this relevant here?
                     Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-                    StartDiceRollSequence();
+                    StartGroundPassInterceptionDiceRollSequence();
                 }
                 else
                 {
@@ -139,14 +139,14 @@ public class GroundBallManager : MonoBehaviour
             else
             {
                 ClearHighlightedHexes();
-                HighlightValidPath(pathHexes, isDangerous);
+                HighlightValidGroundPassPath(pathHexes, isDangerous);
                 currentTargetHex = clickedHex; // Set this as the current target hex
                 lastClickedHex = clickedHex; // Track the last clicked hex
             }
         }
     }
 
-    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidatePath(HexCell targetHex)
+    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();
         // Step 1: Ensure the ballHex and targetHex are valid
@@ -189,7 +189,7 @@ public class GroundBallManager : MonoBehaviour
         return (true, isDangerous, pathHexes);
     }
 
-    public void HighlightValidPath(List<HexCell> pathHexes, bool isDangerous)
+    public void HighlightValidGroundPassPath(List<HexCell> pathHexes, bool isDangerous)
     {
         foreach (HexCell hex in pathHexes)
         {
@@ -208,7 +208,7 @@ public class GroundBallManager : MonoBehaviour
         highlightedHexes.Clear();  // Clear the list of highlighted hexes
     }
 
-    public void CheckForDangerousPath(HexCell targetHex)
+    public void PopulateGroundPathInterceptions(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
@@ -255,7 +255,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    void StartDiceRollSequence()
+    void StartGroundPassInterceptionDiceRollSequence()
     {
         Debug.Log($"Defenders with interception chances: {defendingHexes.Count}");
         if (defendingHexes.Count > 0)
@@ -275,7 +275,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void PerformDiceRoll()
+    public void PerformGroundInterceptionDiceRoll()
     {
         if (currentDefenderHex != null)
         {
@@ -289,7 +289,7 @@ public class GroundBallManager : MonoBehaviour
                 Debug.Log($"Pass intercepted by defender at {currentDefenderHex.coordinates}!");
                 StartCoroutine(HandleGroundBallMovement(currentDefenderHex));  // Move the ball to the defender's hex
                 isWaitingForDiceRoll = false;
-                ResetDiceRolls();
+                ResetGroundPassInterceptionDiceRolls();
             }
             else
             {
@@ -316,7 +316,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    void ResetDiceRolls()
+    void ResetGroundPassInterceptionDiceRolls()
     {
         // Reset variables after the dice roll sequence
         defendingHexes.Clear();
@@ -363,7 +363,7 @@ public class GroundBallManager : MonoBehaviour
         Vector3 endPos = endHex.GetHexCenter();
 
         // Step 2: Get a list of candidate hexes based on the bounding box
-        List<HexCell> candidateHexes = GetCandidateHexes(startHex, endHex, ballRadius);
+        List<HexCell> candidateHexes = GetCandidateGroundPathHexes(startHex, endHex, ballRadius);
 
         // Step 3: Loop through the candidate hexes and check distances to the parallel lines
         foreach (HexCell candidateHex in candidateHexes)
@@ -403,7 +403,7 @@ public class GroundBallManager : MonoBehaviour
         return path;
     }
 
-    public List<HexCell> GetCandidateHexes(HexCell startHex, HexCell endHex, float ballRadius)
+    public List<HexCell> GetCandidateGroundPathHexes(HexCell startHex, HexCell endHex, float ballRadius)
     {
         List<HexCell> candidates = new List<HexCell>();
         // Get the axial coordinates of the start and end hexes

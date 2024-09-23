@@ -393,11 +393,11 @@ public class HexGrid : MonoBehaviour
                 )
                 {
                     // HighlightGroundPathToHex(hoveredHex);
-                    var (isValid, isDangerous, pathHexes) = groundBallManager.ValidatePath(hoveredHex); // Use GameInputManager logic
+                    var (isValid, isDangerous, pathHexes) = groundBallManager.ValidateGroundPassPath(hoveredHex); // Use GameInputManager logic
                     if (isValid)
                     {
                         groundBallManager.ClearHighlightedHexes();
-                        groundBallManager.HighlightValidPath(pathHexes, isDangerous); // Highlight based on danger
+                        groundBallManager.HighlightValidGroundPassPath(pathHexes, isDangerous); // Highlight based on danger
                     }
                 }
             }
