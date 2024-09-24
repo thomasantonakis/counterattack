@@ -212,12 +212,37 @@ public class LongBallManager : MonoBehaviour
         return finalHex;
     }
 
-
     private IEnumerator HandleLongBallMovement(HexCell targetHex)
     {
-        Debug.Log($"Moving ball to target hex: {targetHex.coordinates}");
-        yield break;
+        Vector3 startPosition = ball.transform.position;
+        Vector3 targetPosition = targetHex.GetHexCenter();  // Assuming GetHexCenter returns the center point of the hex
+        float travelDuration = 1.5f;  // Duration of the ball's flight
+        float arcHeight = 2.5f;  // Height of the arc for the aerial trajectory
+        float elapsedTime = 0;
+
+        while (elapsedTime < travelDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / travelDuration;
+
+            // Lerp position along the straight line
+            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+
+            // Add the arc (use a sine curve to create the arc)
+            float heightOffset = Mathf.Sin(Mathf.PI * progress) * arcHeight;
+
+            // Combine the flat position with the height offset to create the arc
+            ball.transform.position = new Vector3(flatPosition.x, flatPosition.y + heightOffset, flatPosition.z);
+
+            yield return null;  // Wait for the next frame
+        }
+
+        // Ensure the ball ends exactly on the target hex
+        ball.transform.position = targetPosition;
+
+        Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
     }
+
 
     // public void HighlightLongPassArea(HexCell targetHex)
     // {
