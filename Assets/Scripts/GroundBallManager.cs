@@ -52,10 +52,6 @@ public class GroundBallManager : MonoBehaviour
     void HandleGroundPassBasedOnDifficulty(HexCell clickedHex)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
-        
-        // This was not here.
-        // List<HexCell> pathHexes = CalculateThickPath(ball.GetCurrentHex(), clickedHex, ball.ballRadius);
-        
         // Centralized path validation and danger assessment
         var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex);
         if (!isValid)
@@ -87,7 +83,14 @@ public class GroundBallManager : MonoBehaviour
             HighlightValidGroundPassPath(pathHexes, isDangerous);
             PopulateGroundPathInterceptions(clickedHex);
             diceRollsPending = defendingHexes.Count; // is this relevant here?
-            Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+            if (diceRollsPending == 0)
+            {
+                Debug.Log($"The Stanard pass cannot be intercepted. Click again to confirm or elsewhere to try another path.");
+            }
+            else 
+            {
+                Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+            }
             // Medium Mode: Wait for a second click for confirmation
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
@@ -283,7 +286,7 @@ public class GroundBallManager : MonoBehaviour
             int diceRoll = Random.Range(1, 7);
             Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
 
-            if (diceRoll == 10)
+            if (diceRoll == 6)
             {
                 // Defender successfully intercepts the pass
                 Debug.Log($"Pass intercepted by defender at {currentDefenderHex.coordinates}!");
