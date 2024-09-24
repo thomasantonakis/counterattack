@@ -9,13 +9,14 @@ public class GameInputManager : MonoBehaviour
 {
     public CameraController cameraController;  // Reference to the camera controller
     public GroundBallManager groundBallManager;
+    public LongBallManager longBallManager;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Add a reference to the HexGrid
     public MatchManager matchManager;
     // List to store highlighted hexes
     private List<HexCell> highlightedHexes = new List<HexCell>();
-    private HexCell currentTargetHex = null;   // The currently selected target hex
-    private HexCell lastClickedHex = null;     // The last hex that was clicked
+    // private HexCell currentTargetHex = null;   // The currently selected target hex
+    // private HexCell lastClickedHex = null;     // The last hex that was clicked
     // Variables to track mouse movement for dragging
     private Vector3 mouseDownPosition;  // Where the mouse button was pressed
     private bool isDragging = false;    // Whether a drag is happening
@@ -100,91 +101,11 @@ public class GameInputManager : MonoBehaviour
             if (!isDragging && ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
             {
                 // Handle ball movement or path highlighting
-                HandleLongBallPath();
+                longBallManager.HandleLongBallProcess();
             }
             // Reset dragging state
             isDragging = false;
         }
-    }
-    
-    void HandleLongBallPath()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-            if (clickedHex != null)
-            {
-                HexCell ballHex = ball.GetCurrentHex();
-                if (ballHex == null)
-                {
-                    Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
-                    return;
-                }
-                else {
-                    if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
-                    {
-                        // Double click on the same hex: confirm the move
-                        StartCoroutine(HandleAirBallMovement(currentTargetHex));
-                        ball.DeselectBall();
-                    }
-                    else
-                    {
-                        // First or new click on a different hex: highlight the path
-                        // ClearHighlightedHexes();
-                        // Highlight only the Target Hex
-                        // TODO: Highlight 6 hexes the Target Hex
-                        HighlightLongPassArea(clickedHex);
-                        // clickedHex.HighlightHex("ballPath");
-                        currentTargetHex = clickedHex;
-                    }
-                }
-                lastClickedHex = clickedHex;  // Track the last clicked hex
-            }
-        }
-    }
-    
-    private IEnumerator HandleAirBallMovement(HexCell targetHex)
-    {
-        // Ensure the ball and targetHex are valid
-        if (ball == null)
-        {
-            Debug.LogError("Ball reference is null!");
-            yield break;
-        }
-
-        if (targetHex == null)
-        {
-            Debug.LogError("Target Hex is null in HandleAirBallMovement!");
-            yield break;
-        }
-        // Set thegame status to StandardPassMoving
-        MatchManager.Instance.currentState = MatchManager.GameState.LongPassMoving;
-        // Wait for the ball movement to complete
-        yield return StartCoroutine(ball.MoveToCell(targetHex));
-        // Set the game status to StandardPassCompleted
-        MatchManager.Instance.currentState = MatchManager.GameState.LongPassCompleted;
-        // Now clear the highlights after the movement
-        // ClearHighlightedHexes();
-        Debug.Log("Highlights cleared after ball movement.");
-    }
-    
-    public void HighlightLongPassArea(HexCell targetHex)
-    {
-        // Get hexes within a radius (e.g., 6 hexes) around the targetHex
-        int radius = 5;  // You can tweak this value as needed
-        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);
-
-        // Loop through the hexes and highlight each one
-        foreach (HexCell hex in hexesInRange)
-        {
-            // Highlight hexes (pass a specific color for Long Pass)
-            hex.HighlightHex("longPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
-            highlightedHexes.Add(hex);  // Track the highlighted hexes for later clearing
-        }
-
-        // Log the highlighted hexes if needed (optional)
-        Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
     }
 
     public void TestHexConversions()
