@@ -60,6 +60,8 @@ public class HexGrid : MonoBehaviour
             potentialSpawns.RemoveAt(randomIndex);
         }
         AddManualPlayer(0, 0, "attack");
+        AddManualPlayer(0, 1, "defense");
+        AddManualPlayer(0, -1, "defense");
         // Shuffle and spawn attackers
         for (int i = 0; i < attackerCount-1 && potentialSpawns.Count > 0; i++)
         {
@@ -282,6 +284,20 @@ public class HexGrid : MonoBehaviour
         return defenderHexes;
     }
 
+    public List<HexCell> GetAttackerHexes()
+    {
+        List<HexCell> attackerHexes = new List<HexCell>();
+        // Loop through all hex cells in the grid
+        foreach (HexCell cell in cells)
+        {
+            if (cell != null && cell.isAttackOccupied)
+            {
+                attackerHexes.Add(cell);
+            }
+        }
+        return attackerHexes;
+    }
+
     public List<HexCell> GetDefenderNeighbors(List<HexCell> defenderHexes)
     {
         List<HexCell> defenderNeighbors = new List<HexCell>();
@@ -297,8 +313,25 @@ public class HexGrid : MonoBehaviour
                 }
             }
         }
-
         return defenderNeighbors;
+    }
+
+    public List<HexCell> GetAttackerHexesinRange(List<HexCell> attackerHexes, int range)
+    {
+        List<HexCell> hexesInRangeofAttackers = new List<HexCell>();
+
+        foreach (HexCell attackerHex in attackerHexes)
+        {
+            List<HexCell> rangeOfAttackerHex = GetHexesInRange(this, attackerHex, range);
+            foreach (HexCell rangeHex in rangeOfAttackerHex) // get me a more meaningful name to iterate on
+            {
+                if (rangeHex != null && !hexesInRangeofAttackers.Contains(rangeHex) && !rangeHex.isOutOfBounds)
+                {
+                    hexesInRangeofAttackers.Add(rangeHex);
+                }
+            }
+        }
+        return hexesInRangeofAttackers;
     }
 
     public bool IsPassDangerous(List<HexCell> pathHexes, List<HexCell> defenderNeighbors)

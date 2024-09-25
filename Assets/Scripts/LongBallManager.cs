@@ -8,6 +8,7 @@ public class LongBallManager : MonoBehaviour
 {
     public Ball ball;
     public HexGrid hexGrid;
+    public GroundBallManager groundBallManager;
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
@@ -72,7 +73,7 @@ public class LongBallManager : MonoBehaviour
         bool isValid = ValidateLongBallTarget(clickedHex);
         if (!isValid)
         {
-            Debug.LogWarning("Long Pass target is invalid");
+            // Debug.LogWarning("Long Pass target is invalid");
             return; // Reject invalid targets
         }
         currentTargetHex = clickedHex;  // Assign the current target hex
@@ -89,8 +90,45 @@ public class LongBallManager : MonoBehaviour
         // }
     }
 
-    private bool ValidateLongBallTarget(HexCell hexCell)
+    private bool ValidateLongBallTarget(HexCell targetHex)
     {
+        HexCell ballHex = ball.GetCurrentHex();
+        // Step 1: Ensure the ballHex and targetHex are valid
+        if (ballHex == null || targetHex == null)
+        {
+            Debug.LogError("Ball or target hex is null!");
+            return false;
+        }
+        // Step 2: Calculate the path between the ball and the target hex
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        // Step 3: Check if the path is valid by ensuring no defense-occupied hexes block the path
+        foreach (HexCell hex in pathHexes) // add here "and in the ball's neighbors"
+        {
+            if (hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
+            {
+                Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
+                return false; // Invalid path
+            }
+        }
+        // Step 4: Get defenders and their ZOI
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+        // add something here to exclude all defenderHexes and defenderNeighbors above from valid targets
+        List<HexCell> attackerHexes = hexGrid.GetAttackerHexes();
+        List<HexCell> invalidHexesinRangeOfAttackers = hexGrid.GetAttackerHexesinRange(attackerHexes, 5);
+        // Maybe remove from defenderNeighbors all Hexes that exist in defenderHexes
+        // Maybe remove from invalidHexesinRangeOfAttackers all Hexes that exist in attackerHexes
+        // So that the below debugs make sense.
+        if (defenderHexes.Contains(targetHex) || defenderNeighbors.Contains(targetHex))
+        {
+            Debug.Log("You cannot target a Long Ball on a Defender or in their ZOI");
+            return false; // Invalid path
+        }
+        if (attackerHexes.Contains(targetHex) || invalidHexesinRangeOfAttackers.Contains(targetHex))
+        {
+            Debug.Log("You cannot target a Long Ball on an Attacker or 5 Hexes away from any Attacker");
+            return false; // Invalid path
+        }
         return true;
     }
 
@@ -99,7 +137,8 @@ public class LongBallManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         // Debug.Log("Performing accuracy roll for Long Pass.");
         // Roll the dice (1 to 6)
-        int diceRoll = Random.Range(1, 2);
+        // int diceRoll = Random.Range(1, 2); // Melina Mode
+        int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         if (diceRoll > 4)
         {
@@ -119,7 +158,8 @@ public class LongBallManager : MonoBehaviour
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int diceRoll = Random.Range(1, 2);
+        // int diceRoll = Random.Range(1, 2); // Melina Mode
+        int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
         string rolledDirection = TranslateRollToDirection(diceRoll);
@@ -153,7 +193,8 @@ public class LongBallManager : MonoBehaviour
     void PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int distanceRoll = Random.Range(6, 7);
+        // int distanceRoll = Random.Range(1, 2); // gi Mode
+        int distanceRoll = Random.Range(1, 7);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance
@@ -214,11 +255,17 @@ public class LongBallManager : MonoBehaviour
 
     private IEnumerator HandleLongBallMovement(HexCell targetHex)
     {
+        if (targetHex == null)
+        {
+            Debug.LogError("Target Hex is null in HandleLongBallMovement!");
+            yield break;
+        }
         Vector3 startPosition = ball.transform.position;
-        Vector3 targetPosition = targetHex.GetHexCenter();  // Assuming GetHexCenter returns the center point of the hex
-        float travelDuration = 1.5f;  // Duration of the ball's flight
-        float arcHeight = 2.5f;  // Height of the arc for the aerial trajectory
+        Vector3 targetPosition = targetHex.GetHexCenter();
+        float travelDuration = 2.0f;  // Duration of the ball's flight
         float elapsedTime = 0;
+        float height = 10f;// Height of the arc for the aerial trajectory
+        // isMoving = true;
 
         while (elapsedTime < travelDuration)
         {
@@ -228,18 +275,18 @@ public class LongBallManager : MonoBehaviour
             // Lerp position along the straight line
             Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
 
-            // Add the arc (use a sine curve to create the arc)
-            float heightOffset = Mathf.Sin(Mathf.PI * progress) * arcHeight;
-
-            // Combine the flat position with the height offset to create the arc
-            ball.transform.position = new Vector3(flatPosition.x, flatPosition.y + heightOffset, flatPosition.z);
+            // // Add the arc (use a sine curve to create the arc)
+            // float heightOffset = Mathf.Sin(Mathf.PI * progress) * arcHeight;
+            // // Combine the flat position with the height offset to create the arc
+            // ball.transform.position = new Vector3(flatPosition.x, flatPosition.y + heightOffset, flatPosition.z);
+            flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
+            ball.transform.position = flatPosition;
 
             yield return null;  // Wait for the next frame
         }
-
+        // isMoving = false;  // Stop the movement
         // Ensure the ball ends exactly on the target hex
-        ball.transform.position = targetPosition;
-
+        ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
     }
 
