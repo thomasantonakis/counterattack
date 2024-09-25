@@ -1,14 +1,23 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PitchLines : MonoBehaviour
 {
     public HexGrid hexGrid;  // Reference to the hex grid to get hex positions
-    // private bool gridReady = false;  // Ensure grid is ready before drawing lines
+    private int ignoreRaycastLayer; // Declare this at the class level
+    List<GameObject> pitchObjects = new List<GameObject>();
+
 
     void Start()
     {
         // Wait for the grid to initialize, then draw lines
         StartCoroutine(WaitForGridAndDrawLines());
+        // Example: Assuming "lineObjects" is an array/list of the line objects
+        ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
+        foreach (GameObject pitchObject in pitchObjects)
+        {
+            pitchObject.layer = ignoreRaycastLayer;
+        }
     }
 
     // Coroutine to wait until the grid is ready, then draw lines
@@ -22,176 +31,225 @@ public class PitchLines : MonoBehaviour
         // DrawLineAsQuad(new Vector3(0, 0, 0), new Vector3(10, 0, 0), 0.15f);
         
         // Pitch boundaries
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5]
-          , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0]
-          , 0.05f
-          , "Bottom Side Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0]
-          , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2]
-          , 0.05f
-          , "Right Goal Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2]
-          , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3]
-          , 0.05f
-          , "Top Side Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3]
-          , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5]
-          , 0.05f
-          , "Left Goal Line");
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5]
+            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0]
+            , 0.05f
+            , "Bottom Side Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0]
+            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2]
+            , 0.05f
+            , "Right Goal Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2]
+            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3]
+            , 0.05f
+            , "Top Side Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3]
+            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5]
+            , 0.05f
+            , "Left Goal Line")
+        );
         // Half Court Line
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(0, 0, 12)).GetHexEdgeMidpoints()[2]
-          , hexGrid.GetHexCellAt(new Vector3Int(0, 0, -12)).GetHexEdgeMidpoints()[5]
-          , 0.05f
-          , "Half Court Line");
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(0, 0, 12)).GetHexEdgeMidpoints()[2]
+            , hexGrid.GetHexCellAt(new Vector3Int(0, 0, -12)).GetHexEdgeMidpoints()[5]
+            , 0.05f
+            , "Half Court Line")
+        );
         // Left Penalty Box
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-12, 0, -7)).GetHexEdgeMidpoints()[5]
-          , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2]
-          , 0.05f
-          , "Left Pen Box Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -7)).GetHexCorners()[5]
-          , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, -7)).GetHexEdgeMidpoints()[5]
-          , 0.05f
-          , "Left Pen Bottom Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 7)).GetHexCorners()[3]
-          , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2]
-          , 0.05f
-          , "Left Pen Top Line");
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-12, 0, -7)).GetHexEdgeMidpoints()[5]
+            , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2]
+            , 0.05f
+            , "Left Pen Box Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -7)).GetHexCorners()[5]
+            , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, -7)).GetHexEdgeMidpoints()[5]
+            , 0.05f
+            , "Left Pen Bottom Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 7)).GetHexCorners()[3]
+            , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2]
+            , 0.05f
+            , "Left Pen Top Line")
+        );
         // Right Penalty Box
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5]
-          , hexGrid.GetHexCellAt(new Vector3Int(12, 0, 7)).GetHexEdgeMidpoints()[2]
-          , 0.05f
-          , "Right Pen Box Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(18, 0, -7)).GetHexCorners()[0]
-          , hexGrid.GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5]
-          , 0.05f
-          , "Right Pen Bottom Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(18, 0, 7)).GetHexCorners()[2]
-          , hexGrid.GetHexCellAt(new Vector3Int(12, 0, 7)).GetHexEdgeMidpoints()[2]
-          , 0.05f
-          , "Right Pen Top Line");
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5]
+            , hexGrid.GetHexCellAt(new Vector3Int(12, 0, 7)).GetHexEdgeMidpoints()[2]
+            , 0.05f
+            , "Right Pen Box Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(18, 0, -7)).GetHexCorners()[0]
+            , hexGrid.GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5]
+            , 0.05f
+            , "Right Pen Bottom Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(18, 0, 7)).GetHexCorners()[2]
+            , hexGrid.GetHexCellAt(new Vector3Int(12, 0, 7)).GetHexEdgeMidpoints()[2]
+            , 0.05f
+            , "Right Pen Top Line")
+        );
         // Left 6-yard Box
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-16, 0, -5)).GetHexCenter()
-          , hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 5)).GetHexCenter()
-          , 0.05f
-          , "Left 6yB Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-16, 0, -5)).GetHexCenter()
-          , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -5)).GetHexCorners()[4]
-          , 0.05f
-          , "Left 6yB Bottom");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 5)).GetHexCenter()
-          , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 5)).GetHexCorners()[4]
-          , 0.05f
-          , "Left 6yB Top");
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, -5)).GetHexCenter()
+            , hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 5)).GetHexCenter()
+            , 0.05f
+            , "Left 6yB Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, -5)).GetHexCenter()
+            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -5)).GetHexCorners()[4]
+            , 0.05f
+            , "Left 6yB Bottom")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 5)).GetHexCenter()
+            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 5)).GetHexCorners()[4]
+            , 0.05f
+            , "Left 6yB Top")
+        );
         // Right 6-yard Box
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(16, 0, -5)).GetHexCenter()
-          , hexGrid.GetHexCellAt(new Vector3Int(16, 0, 5)).GetHexCenter()
-          , 0.05f
-          , "Right 6yB Line");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(16, 0, -5)).GetHexCenter()
-          , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -5)).GetHexCorners()[1]
-          , 0.05f
-          , "Right 6yB Bottom");
-        DrawLineAsQuad(
-          hexGrid.GetHexCellAt(new Vector3Int(16, 0, 5)).GetHexCenter()
-          , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 5)).GetHexCorners()[1]
-          , 0.05f
-          , "Right 6yB Top");
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(16, 0, -5)).GetHexCenter()
+            , hexGrid.GetHexCellAt(new Vector3Int(16, 0, 5)).GetHexCenter()
+            , 0.05f
+            , "Right 6yB Line")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(16, 0, -5)).GetHexCenter()
+            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -5)).GetHexCorners()[1]
+            , 0.05f
+            , "Right 6yB Bottom")
+        );
+        pitchObjects.Add(
+          DrawLineAsQuad(
+            hexGrid.GetHexCellAt(new Vector3Int(16, 0, 5)).GetHexCenter()
+            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 5)).GetHexCorners()[1]
+            , 0.05f
+            , "Right 6yB Top")
+        );
         // Load Sprite for Ball Spots
         Sprite circleSprite = Resources.Load<Sprite>("circle");
         // Kick Off Point
-        DrawDot(hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)).GetHexCenter(), 0.08f, circleSprite, "Kick Off");
+        pitchObjects.Add(DrawDot(hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)).GetHexCenter(), 0.08f, circleSprite, "Kick Off"));
         // Right Pen Spot
-        DrawDot(hexGrid.GetHexCellAt(new Vector3Int(14, 0, 0)).GetHexCenter(), 0.08f, circleSprite ,"Right Pen Spot");
+        pitchObjects.Add(DrawDot(hexGrid.GetHexCellAt(new Vector3Int(14, 0, 0)).GetHexCenter(), 0.08f, circleSprite ,"Right Pen Spot"));
         // Left Pen Spot
-        DrawDot(hexGrid.GetHexCellAt(new Vector3Int(-14, 0, 0)).GetHexCenter(), 0.08f, circleSprite, "Left Pen Spot");
+        pitchObjects.Add(DrawDot(hexGrid.GetHexCellAt(new Vector3Int(-14, 0, 0)).GetHexCenter(), 0.08f, circleSprite, "Left Pen Spot"));
         // Half court circle
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)).GetHexCenter() //center
-          , 3f // radius float
-          , 360 // segment integer
-          , 0.05f // thichness float
-          , 0 // start angle integer
-          , 360 // end angle integer
-          , "Half Court Circle");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)).GetHexCenter() //center
+            , 3f // radius float
+            , 360 // segment integer
+            , 0.05f // thichness float
+            , 0 // start angle integer
+            , 360 // end angle integer
+            , "Half Court Circle")
+        );
         // Right Penalty Arc
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(14, 0, 0)).GetHexCenter() //center
-          , 3f // radius float
-          , 360 // segment integer
-          , 0.05f // thichness float
-          , 120 // start angle integer
-          , 240 // end angle integer
-          , "Right Penalty Arc");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(14, 0, 0)).GetHexCenter() //center
+            , 3f // radius float
+            , 360 // segment integer
+            , 0.05f // thichness float
+            , 120 // start angle integer
+            , 240 // end angle integer
+            , "Right Penalty Arc")
+        );
         // Left Penalty Arc
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(-14, 0, 0)).GetHexCenter() //center
-          , 3f // radius float
-          , 360 // segment integer
-          , 0.05f // thichness float
-          , 300 // start angle integer
-          , 420 // end angle integer
-          , "Left Penalty Arc");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(-14, 0, 0)).GetHexCenter() //center
+            , 3f // radius float
+            , 360 // segment integer
+            , 0.05f // thichness float
+            , 300 // start angle integer
+            , 420 // end angle integer
+            , "Left Penalty Arc")
+        );
         // Bottom Left Corner Arc
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5] //center
-          , .3f // radius float
-          , 360 // segment integer
-          , 0.03f // thichness float
-          , 0 // start angle integer
-          , 90 // end angle integer
-          , "Bottom Left Corner");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5] //center
+            , .3f // radius float
+            , 360 // segment integer
+            , 0.03f // thichness float
+            , 0 // start angle integer
+            , 90 // end angle integer
+            , "Bottom Left Corner")
+        );
         // Top Left Corner Arc
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3] //center
-          , .3f // radius float
-          , 360 // segment integer
-          , 0.03f // thichness float
-          , 270 // start angle integer
-          , 360 // end angle integer
-          , "Top Left Corner");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3] //center
+            , .3f // radius float
+            , 360 // segment integer
+            , 0.03f // thichness float
+            , 270 // start angle integer
+            , 360 // end angle integer
+            , "Top Left Corner")
+        );
         // Bottom Right Corner Arc
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0] //center
-          , .3f // radius float
-          , 360 // segment integer
-          , 0.03f // thichness float
-          , 90 // start angle integer
-          , 180 // end angle integer
-          , "Bottom Right Corner");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0] //center
+            , .3f // radius float
+            , 360 // segment integer
+            , 0.03f // thichness float
+            , 90 // start angle integer
+            , 180 // end angle integer
+            , "Bottom Right Corner")
+        );
         // Top Right Corner Arc
-        DrawCircleOrArc(
-          hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2] //center
-          , .3f // radius float
-          , 360 // segment integer
-          , 0.03f // thichness float
-          , 180 // start angle integer
-          , 270 // end angle integer
-          , "Top Right Corner");
+        pitchObjects.Add(
+          DrawCircleOrArc(
+            hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2] //center
+            , .3f // radius float
+            , 360 // segment integer
+            , 0.03f // thichness float
+            , 180 // start angle integer
+            , 270 // end angle integer
+            , "Top Right Corner")
+        );
         Debug.Log("Lines Drawn...");
     }
     
     // Draw a line between two points with a given thickness
-    void DrawLineAsQuad(Vector3 start, Vector3 end, float thickness, string lineName = "Line", Transform parent = null)
+    public GameObject DrawLineAsQuad(Vector3 start, Vector3 end, float thickness, string lineName = "Line", Transform parent = null)
     {
         // Create a new GameObject with a Quad
         GameObject line = GameObject.CreatePrimitive(PrimitiveType.Quad);
         line.name = lineName;  // Assign the name to the GameObject
+        line.layer = ignoreRaycastLayer; // Ignore from RayCasts
         // Set the parent to the specified parent, or keep it unparented if parent is null
         if (parent != null)
         {
@@ -223,6 +281,7 @@ public class PitchLines : MonoBehaviour
         renderer.material.color = Color.white;  // Set the color of the line (white in this case)
 
         // Debug.Log($"Quad line drawn from {start} to {end} with thickness {thickness}");
+        return line;
     }
 
     public Vector3[] GetCirclePoints(Vector3 center, float radius, int segmentCount, float startAngle = 0, float endAngle = 360)
@@ -250,7 +309,7 @@ public class PitchLines : MonoBehaviour
         return circlePoints;
     }
 
-    public void DrawCircleOrArc(Vector3 center, float radius, int segmentCount, float thickness, float startAngle = 0, float endAngle = 360, string circleName = "Circle")
+    public GameObject DrawCircleOrArc(Vector3 center, float radius, int segmentCount, float thickness, float startAngle = 0, float endAngle = 360, string circleName = "Circle")
     {
         // Create a parent GameObject for the circle
         GameObject circleParent = new GameObject(circleName);  // The parent object for the entire circle
@@ -269,13 +328,15 @@ public class PitchLines : MonoBehaviour
         }
         // // Optionally set the entire circle parent object as a child of another object, like PitchLines
         circleParent.transform.parent = GameObject.Find("PitchLines").transform;
+        return circleParent;
     }
 
-    public void DrawDot(Vector3 position, float radius, Sprite circleSprite, string lineName = "Unnamed Dot")
+    public GameObject DrawDot(Vector3 position, float radius, Sprite circleSprite, string lineName = "Unnamed Dot")
     {
         // Create a new GameObject to hold the SpriteRenderer
         GameObject dot = new GameObject("Dot");
         dot.name = lineName;  // Assign the name to the GameObject
+        dot.layer = ignoreRaycastLayer; // Ignore from RayCasts
         dot.transform.parent = transform;  // Set the parent to PitchLines or any other game object
 
         // Add a SpriteRenderer component to the GameObject
@@ -288,7 +349,6 @@ public class PitchLines : MonoBehaviour
         else
         {
             Debug.LogError("Circle sprite not assigned.");
-            return;
         }
 
         // Set the position of the sprite (slightly above the ground)
@@ -301,5 +361,6 @@ public class PitchLines : MonoBehaviour
         dot.transform.rotation = Quaternion.Euler(90, 0, 0);  // Rotate the sprite to lie flat
 
         // Debug.Log($"Sprite dot drawn at ({position.x}, {position.y}, {position.z}) with radius {radius}");
+        return dot;
     }
 }

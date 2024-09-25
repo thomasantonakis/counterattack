@@ -104,7 +104,6 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-
     void CreateGrid()
     {
         for (int z = -height / 2; z < height / 2; z++)
@@ -360,7 +359,7 @@ public class HexGrid : MonoBehaviour
         float horizontalOffset = width * hexRadius;
         float verticalOffset = height * hexRadius;
         // Layer index for the "IgnoreRaycast" layer
-        int ignoreRaycastLayer = LayerMask.NameToLayer("IgnoreRaycast");
+        int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
 
         // Left Plane (to the left of the grid)
         GameObject leftPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
