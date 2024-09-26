@@ -12,11 +12,14 @@ public class LongBallManager : MonoBehaviour
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
-    // private bool isAccuracySuccessful = false;    // Track if the pass was accurate
+    private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
     private HexCell currentTargetHex;
     private HexCell clickedHex;
     private int directionIndex;
     private int distance;
+    private HexCell finalHex;
+    private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
+    private List<HexCell> interceptingDefenders;
 
 
     // Step 1: Handle the input for starting the long pass (initial logic)
@@ -37,6 +40,11 @@ public class LongBallManager : MonoBehaviour
         {
             // Debug.Log("Distance roll triggered by D key.");
             PerformDistanceRoll(); // Handle distance roll
+        }
+        else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.D))
+        {
+            // Debug.Log("Interception roll triggered by D key.");
+            StartCoroutine(PerformInterceptionCheck(finalHex)); 
         }
     }
     
@@ -137,8 +145,8 @@ public class LongBallManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         // Debug.Log("Performing accuracy roll for Long Pass.");
         // Roll the dice (1 to 6)
-        // int diceRoll = Random.Range(1, 2); // Melina Mode
-        int diceRoll = Random.Range(1, 7);
+        int diceRoll = Random.Range(1, 2); // Melina Mode
+        // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         if (diceRoll > 4)
         {
@@ -158,8 +166,8 @@ public class LongBallManager : MonoBehaviour
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        // int diceRoll = Random.Range(1, 2); // Melina Mode
-        int diceRoll = Random.Range(0, 6);
+        int diceRoll = Random.Range(0, 1); // Melina Mode
+        // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
         string rolledDirection = TranslateRollToDirection(diceRoll);
@@ -193,8 +201,8 @@ public class LongBallManager : MonoBehaviour
     void PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        // int distanceRoll = Random.Range(1, 2); // gi Mode
-        int distanceRoll = Random.Range(1, 7);
+        int distanceRoll = Random.Range(3, 4); // Melina Mode
+        // int distanceRoll = Random.Range(1, 7);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance
@@ -228,18 +236,14 @@ public class LongBallManager : MonoBehaviour
             // Use the GetDirectionVectors() method to get the correct direction for the current position
             Vector2Int[] directionVectors = hexGrid.GetHexCellAt(currentPosition).GetDirectionVectors();
             Vector2Int direction2D = directionVectors[directionIndex];
-
             // Move one step in the selected direction
             int newX = currentPosition.x + direction2D.x;
             int newZ = currentPosition.z + direction2D.y;
-
             // Update the current position
             currentPosition = new Vector3Int(newX, 0, newZ);
         }
-
         // Find the final hex based on the calculated position
         HexCell finalHex = hexGrid.GetHexCellAt(currentPosition);
-
         // Log the final hex for debugging
         if (finalHex != null)
         {
@@ -249,7 +253,6 @@ public class LongBallManager : MonoBehaviour
         {
             Debug.LogWarning("Final hex is null or out of bounds!");
         }
-
         return finalHex;
     }
 
@@ -271,25 +274,104 @@ public class LongBallManager : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / travelDuration;
-
             // Lerp position along the straight line
             Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
-
             // // Add the arc (use a sine curve to create the arc)
-            // float heightOffset = Mathf.Sin(Mathf.PI * progress) * arcHeight;
-            // // Combine the flat position with the height offset to create the arc
-            // ball.transform.position = new Vector3(flatPosition.x, flatPosition.y + heightOffset, flatPosition.z);
             flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
+            // // Combine the flat position with the height offset to create the arc
             ball.transform.position = flatPosition;
-
             yield return null;  // Wait for the next frame
         }
         // isMoving = false;  // Stop the movement
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
+
+        // Ball has landed, check for defender's ZOI interception
+        CheckForLongBallInterception(targetHex);
+        // Allow GK Movement
+        // And Check Again
+        // CheckForLongBallInterception(targetHex);
     }
 
+    private void CheckForLongBallInterception(HexCell landingHex)
+    {
+        // Get all defenders and their ZOIs (neighbors)
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+        // Initialize the interceptingDefenders list to avoid null reference
+        interceptingDefenders = new List<HexCell>();
+
+        // Check if the landing hex is in any defender's ZOI (neighbors)
+        if (defenderNeighbors.Contains(landingHex))
+        {
+                // Log for debugging: Confirm the landing hex and defender neighbors
+            Debug.Log($"Landing hex {landingHex.coordinates} is in defender ZOI. Checking eligible defenders...");
+
+            // Get defenders who have the landing hex in their ZOI
+            foreach (HexCell defender in defenderHexes)
+            {
+                HexCell[] neighbors = defender.GetNeighbors(hexGrid);
+                // Debug.Log($"Defender at {defender.coordinates} has neighbors: {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
+
+                if (neighbors.Contains(landingHex))
+                {
+                    Debug.Log($"Defender at {defender.coordinates} can intercept at {landingHex.coordinates}");
+                    interceptingDefenders.Add(defender);  // Add the eligible defender to the list
+                }
+            }
+            // Check if there are any intercepting defenders
+            if (interceptingDefenders.Count > 0)
+            {
+                Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for interception.");
+                isWaitingForInterceptionRoll = true;
+            }
+            else
+            {
+                Debug.Log("No defenders eligible for interception. Ball lands without interception.");
+            }
+        }
+        else
+        {
+            Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
+        }
+    }
+
+
+    /// Perform the dice roll sequence for each defender in the interception hex// Perform the dice roll sequence for each defender in the interception hex
+    private IEnumerator PerformInterceptionCheck(HexCell landingHex)
+    {
+        if (interceptingDefenders == null || interceptingDefenders.Count == 0)
+        {
+            Debug.Log("No defenders available for interception.");
+            yield break;
+        }
+
+        foreach (HexCell defenderHex in interceptingDefenders)
+        {
+            Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
+            // Roll the dice (1 to 6)
+            int diceRoll = Random.Range(6, 7); // Ensure proper range (1-6)
+            Debug.Log($"Dice roll for defender at {defenderHex.coordinates}: {diceRoll}");
+
+            if (diceRoll == 6)
+            {
+                Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
+                isWaitingForInterceptionRoll = false;
+                // Move the ball to the defender's hex and change possession
+                StartCoroutine(ball.MoveToCell(defenderHex));
+                MatchManager.Instance.ChangePossession();
+                yield break;  // Stop the sequence once an interception is successful
+            }
+            else
+            {
+                Debug.Log($"Defender at {defenderHex.coordinates} failed to intercept the ball.");
+            }
+        }
+
+        // If no defender intercepts, the ball stays at the original hex
+        Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
+    }
 
     // public void HighlightLongPassArea(HexCell targetHex)
     // {

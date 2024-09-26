@@ -250,8 +250,6 @@ public class GroundBallManager : MonoBehaviour
                     defendingHexes.Add(defender);  // Add the defender responsible
                     alreadyProcessedDefenders.Add(defender);  // Mark this defender as processed
                     passIsDangerous = true;  // Mark the pass as dangerous
-                    // Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}");
-                    // Debug.Log($"Neighbors of hex ({hex.coordinates.x}, {hex.coordinates.z}): {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
                     Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}. Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}");
                 }
             }
