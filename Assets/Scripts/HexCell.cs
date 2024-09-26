@@ -9,8 +9,8 @@ public class HexCell : MonoBehaviour
     public float hexRadius;
     public bool isKickOff = false;
     public bool isOutOfBounds = false;
-    public bool isInPenaltyBox = false;
-    public bool isInFinalThird = false;
+    public int isInPenaltyBox = 0; // -1 Left, 0 No, 1 Right
+    public int isInFinalThird = 0; // -1 Left, 0 No, 1 Right
     public bool isDifficultShotPosition = false;
     public bool isDark = false;
     public bool isDefenseOccupied = false;

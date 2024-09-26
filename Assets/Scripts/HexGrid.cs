@@ -183,16 +183,23 @@ public class HexGrid : MonoBehaviour
         }
 
         // Example: Set penalty boxes (hard-coded positions for now)
-        if ((x >= -18 && x <= -12 && ((x % 2 == 0) ? z > -8 && z < 8 : z >= -8 && z < 7 )) ||  // Left penalty box
-            (x >= 12 && x <= 18 && ((x % 2 == 0) ? z > -8 && z < 8 : z >= -8 && z <= 7 )))  // Right penalty box
+        if (x >= 12 && x <= 18 && ((x % 2 == 0) ? z > -8 && z < 8 : z >= -8 && z <= 7 ))  
         {
-            cell.isInPenaltyBox = true;
+            cell.isInPenaltyBox = 1;
+        }
+        if (x >= -18 && x <= -12 && ((x % 2 == 0) ? z > -8 && z < 8 : z >= -8 && z < 7 ))  
+        {
+            cell.isInPenaltyBox = -1;
         }
 
         // Example: Set final thirds
-        if ( x <= 18 && x >= 8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)) || x >= -18 && x <= -8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)) )
+        if ( x <= 18 && x >= 8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)))
         {
-            cell.isInFinalThird = true;
+            cell.isInFinalThird = 1;
+        }
+        if (x >= -18 && x <= -8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)))
+        {
+            cell.isInFinalThird = -1;
         }
 
         // Example: Set difficult shot positions (arbitrary, near the corners)
@@ -204,12 +211,6 @@ public class HexGrid : MonoBehaviour
         {
             cell.isDifficultShotPosition = true;
         }
-
-        // // Dark Green Hexes
-        // if ((x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0))
-        // {
-        //     cell.isDark = true;
-        // }
 
         // Debug to visually differentiate hexes in Unity (optional)
         // else if (cell.isKickOff) cell.GetComponent<Renderer>().material.color = Color.red;
