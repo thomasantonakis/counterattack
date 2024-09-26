@@ -60,8 +60,8 @@ public class HexGrid : MonoBehaviour
             potentialSpawns.RemoveAt(randomIndex);
         }
         AddManualPlayer(0, 0, "attack");
-        AddManualPlayer(0, 1, "defense");
-        AddManualPlayer(0, -1, "defense");
+        // AddManualPlayer(0, 1, "defense");
+        // AddManualPlayer(0, -1, "defense");
         // Shuffle and spawn attackers
         for (int i = 0; i < attackerCount-1 && potentialSpawns.Count > 0; i++)
         {

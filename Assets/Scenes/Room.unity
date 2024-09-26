@@ -362,7 +362,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81c66d05aed6a47c09c02afd08cb783a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  homeTeamDirection: 0
+  awayTeamDirection: 0
   currentState: 0
+  teamInAttack: 0
+  attackHasPossession: 0
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   difficulty_level: 2

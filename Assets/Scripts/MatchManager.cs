@@ -23,6 +23,14 @@ public class MatchManager : MonoBehaviour
         Home,
         Away
     }
+    public enum TeamAttackingDirection
+    {
+        LeftToRight,
+        RightToLeft
+    }
+
+    public TeamAttackingDirection homeTeamDirection;
+    public TeamAttackingDirection awayTeamDirection;
 
     public GameState currentState; // Tracks the current state of the match
     public TeamInAttack teamInAttack; // Tracks which team is in Attack
@@ -57,6 +65,10 @@ public class MatchManager : MonoBehaviour
         // Initialize the match in the KickOffSetup state
         currentState = GameState.KickOffSetup;
         Debug.Log("Game initialized in KickOffSetup state.");
+        // Initialize the attacking team and direction
+        teamInAttack = TeamInAttack.Home;  // Home team starts with the ball
+        homeTeamDirection = TeamAttackingDirection.LeftToRight;  // Set home team attacking direction to LeftToRight
+        awayTeamDirection = TeamAttackingDirection.RightToLeft;  // Away team will attack in the opposite direction
     }
 
     private void Update()
@@ -81,6 +93,24 @@ public class MatchManager : MonoBehaviour
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team to call an action");
         // Logic to start the game, such as showing the ball, enabling inputs, etc.
+    }
+
+    public void SwitchSides()
+    {
+        // Swap the attacking directions for both teams
+        if (homeTeamDirection == TeamAttackingDirection.LeftToRight)
+        {
+            homeTeamDirection = TeamAttackingDirection.RightToLeft;
+            awayTeamDirection = TeamAttackingDirection.LeftToRight;
+        }
+        else
+        {
+            homeTeamDirection = TeamAttackingDirection.LeftToRight;
+            awayTeamDirection = TeamAttackingDirection.RightToLeft;
+        }
+
+        // Log the switch for debugging
+        Debug.Log("Sides switched. Home team is now attacking " + homeTeamDirection + " and away team is attacking " + awayTeamDirection);
     }
 
     public void ChangePossession()
