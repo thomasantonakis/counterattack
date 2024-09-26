@@ -15,11 +15,13 @@ public class LongBallManager : MonoBehaviour
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
     private HexCell currentTargetHex;
     private HexCell clickedHex;
+    private HexCell lastClickedHex;
     private int directionIndex;
     private int distance;
     private HexCell finalHex;
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
+    private List<HexCell> highlightedLongBallHexes = new List<HexCell>();
 
 
     // Step 1: Handle the input for starting the long pass (initial logic)
@@ -78,24 +80,59 @@ public class LongBallManager : MonoBehaviour
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Debug.Log("Hello from HandleLongBallBasedOnDifficulty");
         // Centralized target validation
+        ClearHighlightedHexes();
         bool isValid = ValidateLongBallTarget(clickedHex);
         if (!isValid)
         {
             // Debug.LogWarning("Long Pass target is invalid");
             return; // Reject invalid targets
         }
-        currentTargetHex = clickedHex;  // Assign the current target hex
-        // Generic behavior
-        isWaitingForAccuracyRoll = true;
-        Debug.Log("Waiting for accuracy roll... Please Press D key.");
-        // A D is expected to roll for accuracy.
-        
-        
-        
-        // // Handle each difficulty's behavior
-        // if (difficulty == 3) // Hard Mode
-        // {
-        // }
+        // Difficulty-based handling
+        if (difficulty == 3) // Hard Mode: Immediate action
+        {
+            currentTargetHex = clickedHex;  // Assign the current target hex
+            isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
+            Debug.Log("Waiting for accuracy roll... Please Press D key.");
+            // A D is expected to roll for accuracy.
+        }
+        else if (difficulty == 2) // Medium Mode: Require confirmation with a second click
+        {
+            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
+            {
+                Debug.Log("Long Ball confirmed by second click. Waiting for accuracy roll.");
+                isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
+            }
+            else
+            {
+                // First click: Set the target, highlight the path, and wait for confirmation
+                currentTargetHex = clickedHex;
+                lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
+                ClearHighlightedHexes();
+
+                // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
+                HighlightLongPassArea(clickedHex);  // Optional: Visual feedback
+                Debug.Log("First click registered. Click again to confirm the Long Ball.");
+            }
+        }
+        else if (difficulty == 1) // Easy Mode: Require confirmation with a second click
+        {
+            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
+            {
+                Debug.Log("Long Ball confirmed by second click. Waiting for accuracy roll.");
+                isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
+            }
+            else
+            {
+                // First click: Set the target, highlight the path, and wait for confirmation
+                currentTargetHex = clickedHex;
+                lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
+                ClearHighlightedHexes();
+
+                // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
+                HighlightAllValidLongPassTargets();  // Optional: Visual feedback
+                Debug.Log("First click registered. Click again to confirm the Long Ball.");
+            }
+        }
     }
 
     private bool ValidateLongBallTarget(HexCell targetHex)
@@ -373,23 +410,83 @@ public class LongBallManager : MonoBehaviour
         Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
     }
 
-    // public void HighlightLongPassArea(HexCell targetHex)
-    // {
-    //     // Get hexes within a radius (e.g., 6 hexes) around the targetHex
-    //     int radius = 5;  // You can tweak this value as needed
-    //     List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);
+    public void HighlightLongPassArea(HexCell targetHex)
+    {
+        ClearHighlightedHexes();
+        if (targetHex == null)
+        {
+            Debug.LogError("Target hex is null in HighlightLongPassArea!");
+            return;
+        }
+        // Initialize highlightedHexes to ensure it's ready for use
+        highlightedLongBallHexes = new List<HexCell>();
+        // Get hexes within a radius (e.g., 6 hexes) around the targetHex
+        int radius = 5;  // You can tweak this value as needed
+        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);
+        if (hexesInRange == null || hexesInRange.Count == 0)
+        {
+            Debug.LogError("No hexes found in range for highlighting.");
+            return;
+        }
 
-    //     // Loop through the hexes and highlight each one
-    //     foreach (HexCell hex in hexesInRange)
-    //     {
-    //         // Highlight hexes (pass a specific color for Long Pass)
-    //         hex.HighlightHex("longPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
-    //         highlightedHexes.Add(hex);  // Track the highlighted hexes for later clearing
-    //     }
+        // Loop through the hexes and highlight each one
+        foreach (HexCell hex in hexesInRange)
+        {
+            if (hex == null)
+            {
+                Debug.LogWarning("Encountered a null hex while highlighting, skipping this hex.");
+                continue;  // Skip null hexes
+            }
 
-    //     // Log the highlighted hexes if needed (optional)
-    //     Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
-    // }
+            if (hex.isOutOfBounds || hex.isDefenseOccupied)
+            {
+                Debug.LogWarning($"Hex {hex.coordinates} is out of bounds, skipping highlight.");
+                continue;  // Skip out of bounds hexes
+            }
+
+            // Highlight hexes (use a specific color for Long Pass)
+            hex.HighlightHex("longPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
+            highlightedLongBallHexes.Add(hex);  // Track the highlighted hexes for later clearing
+
+            Debug.Log($"Highlighted Hex at coordinates: ({hex.coordinates.x}, {hex.coordinates.z})");
+        }
+
+        // Log the highlighted hexes if needed (optional)
+        Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
+    }
+
+    public void HighlightAllValidLongPassTargets()
+    {
+        // Clear the previous highlights
+        ClearHighlightedHexes();
+
+        // Loop through all hexes on the grid
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex == null  || hex.isOutOfBounds) continue;  // Skip null hexes
+
+            // Check if the hex is a valid target
+            bool isValid = ValidateLongBallTarget(hex);
+
+            if (isValid)
+            {
+                hex.HighlightHex("longPass");  // Highlight the valid hexes
+                highlightedLongBallHexes.Add(hex);  // Track highlighted hexes for later clearing
+            }
+        }
+
+        Debug.Log($"Successfully highlighted {highlightedLongBallHexes.Count} valid hexes for Long Pass.");
+    }
+
+    private void ClearHighlightedHexes()
+    {
+        foreach (HexCell hex in highlightedLongBallHexes)
+        {
+            hex.ResetHighlight();  // Assuming there's a method in HexCell to reset the highlight
+        }
+        highlightedLongBallHexes.Clear();  // Clear the list of highlighted hexes
+    }
+
 
     // Implement other methods for handling the long pass
 }
