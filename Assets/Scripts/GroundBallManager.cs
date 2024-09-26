@@ -74,6 +74,7 @@ public class GroundBallManager : MonoBehaviour
             {
                 Debug.Log("Pass is not dangerous, moving ball.");
                 StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
             }
             ball.DeselectBall();
         }
@@ -105,6 +106,7 @@ public class GroundBallManager : MonoBehaviour
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
                     StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                 }
                 ball.DeselectBall();
             }
@@ -136,6 +138,7 @@ public class GroundBallManager : MonoBehaviour
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
                     StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                 }
                 ball.DeselectBall();
             }
@@ -293,6 +296,8 @@ public class GroundBallManager : MonoBehaviour
                 StartCoroutine(HandleGroundBallMovement(currentDefenderHex));  // Move the ball to the defender's hex
                 isWaitingForDiceRoll = false;
                 ResetGroundPassInterceptionDiceRolls();
+                MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
+                MatchManager.Instance.UpdatePossessionAfterPass(currentDefenderHex); // Maybe Unnecessary
             }
             else
             {
@@ -314,6 +319,7 @@ public class GroundBallManager : MonoBehaviour
                     }
                     StartCoroutine(HandleGroundBallMovement(currentTargetHex));
                     isWaitingForDiceRoll = false;
+                    MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
                 }
             }
         }

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class MatchManager : MonoBehaviour
 {
@@ -16,7 +18,15 @@ public class MatchManager : MonoBehaviour
         LongPassCompleted,
     }
 
+    public enum TeamInAttack
+    {
+        Home,
+        Away
+    }
+
     public GameState currentState; // Tracks the current state of the match
+    public TeamInAttack teamInAttack; // Tracks which team is in Attack
+    public bool attackHasPossession; 
     // Singleton instance for easy access
     public static MatchManager Instance;
     public Ball ball;  // Reference to the ball
@@ -71,6 +81,60 @@ public class MatchManager : MonoBehaviour
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team to call an action");
         // Logic to start the game, such as showing the ball, enabling inputs, etc.
+    }
+
+    public void ChangePossession()
+    {
+        // Switch the team in attack
+        if (teamInAttack == TeamInAttack.Home)
+        {
+            teamInAttack = TeamInAttack.Away;
+        }
+        else
+        {
+            teamInAttack = TeamInAttack.Home;
+        }
+        // Loop through all hexes and swap attacker/defender status
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            // Swap isAttackOccupied and isDefenseOccupied
+            bool temp = hex.isAttackOccupied;
+            hex.isAttackOccupied = hex.isDefenseOccupied;
+            hex.isDefenseOccupied = temp;
+
+            // Update the highlights during development
+            if (hex.isAttackOccupied)
+            {
+                hex.HighlightHex("isAttackOccupied");  // Use a distinct color for attackers
+            }
+            else if (hex.isDefenseOccupied)
+            {
+                hex.HighlightHex("isDefenseOccupied");  // Use a distinct color for defenders
+            }
+            else
+            {
+                hex.ResetHighlight();  // Reset to normal if neither
+            }
+        }
+
+        Debug.Log($"Possession changed! {teamInAttack} now is the Attacking Team.");
+    }
+
+    public void UpdatePossessionAfterPass(HexCell ballHex)
+    {
+        List<HexCell> attackerHexes = hexGrid.GetAttackerHexes();
+
+        // Check if the ball is on an attacker's hex
+        if (attackerHexes.Contains(ballHex))
+        {
+            attackHasPossession = true;
+            Debug.Log("Attacking team retains possession.");
+        }
+        else
+        {
+            attackHasPossession = false;
+            Debug.Log("Attacking team lost possession.");
+        }
     }
 
     // Method to trigger the standard pass attempt mode (on key press, like "P")

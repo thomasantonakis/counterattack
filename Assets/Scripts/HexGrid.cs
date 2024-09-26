@@ -10,7 +10,7 @@ public class HexGrid : MonoBehaviour
     float hexRadius = 0.5f;
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab
     // [SerializeField] public HexCell hexCellPrefab;  // Reference to hex cell prefab
-    private HexCell[,] cells;  // 2D array to hold the cells
+    public HexCell[,] cells;  // 2D array to hold the cells
     private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
