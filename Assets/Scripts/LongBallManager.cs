@@ -10,6 +10,7 @@ public class LongBallManager : MonoBehaviour
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
+    private bool isDangerous = false;  // Flag for difficult pass
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
@@ -81,7 +82,7 @@ public class LongBallManager : MonoBehaviour
         // Debug.Log("Hello from HandleLongBallBasedOnDifficulty");
         // Centralized target validation
         ClearHighlightedHexes();
-        bool isValid = ValidateLongBallTarget(clickedHex);
+        var (isValid, isDangerous) = ValidateLongBallTarget(clickedHex);
         if (!isValid)
         {
             // Debug.LogWarning("Long Pass target is invalid");
@@ -135,14 +136,14 @@ public class LongBallManager : MonoBehaviour
         }
     }
 
-    private bool ValidateLongBallTarget(HexCell targetHex)
+    public (bool isValid, bool isDangerous) ValidateLongBallTarget(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();
         // Step 1: Ensure the ballHex and targetHex are valid
         if (ballHex == null || targetHex == null)
         {
             Debug.LogError("Ball or target hex is null!");
-            return false;
+            return (false, false);
         }
         // Step 2: Calculate the path between the ball and the target hex
         List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
@@ -152,7 +153,7 @@ public class LongBallManager : MonoBehaviour
             if (hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
             {
                 Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
-                return false; // Invalid path
+                return (false, false); // Invalid path
             }
         }
         // Step 4: Get defenders and their ZOI
@@ -167,14 +168,18 @@ public class LongBallManager : MonoBehaviour
         if (defenderHexes.Contains(targetHex) || defenderNeighbors.Contains(targetHex))
         {
             Debug.Log("You cannot target a Long Ball on a Defender or in their ZOI");
-            return false; // Invalid path
+            return (false, false); // Invalid path
         }
         if (attackerHexes.Contains(targetHex) || invalidHexesinRangeOfAttackers.Contains(targetHex))
         {
             Debug.Log("You cannot target a Long Ball on an Attacker or 5 Hexes away from any Attacker");
-            return false; // Invalid path
+            return (false, false); // Invalid path
         }
-        return true;
+        if (targetHex.isInFinalThird * ballHex.isInFinalThird == -1)
+        {
+          return (true, true);
+        }
+        else return (true, false);
     }
 
     private void PerformAccuracyRoll()
@@ -185,7 +190,9 @@ public class LongBallManager : MonoBehaviour
         int diceRoll = Random.Range(1, 2); // Melina Mode
         // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
-        if (diceRoll > 4)
+        // Adjust threshold based on difficulty
+        int accuracyThreshold = isDangerous ? 6 : 5;
+        if (diceRoll >= accuracyThreshold)
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
@@ -466,11 +473,18 @@ public class LongBallManager : MonoBehaviour
             if (hex == null  || hex.isOutOfBounds) continue;  // Skip null hexes
 
             // Check if the hex is a valid target
-            bool isValid = ValidateLongBallTarget(hex);
+            var (isValid, isDangerous) = ValidateLongBallTarget(hex);
 
             if (isValid)
             {
-                hex.HighlightHex("longPass");  // Highlight the valid hexes
+                if (isDangerous)
+                {
+                    hex.HighlightHex("longPassDifficult");  // Highlight the Difficult hexes
+                }
+                else
+                {
+                    hex.HighlightHex("longPass"); // Highlight the valid hexes
+                }
                 highlightedLongBallHexes.Add(hex);  // Track highlighted hexes for later clearing
             }
         }

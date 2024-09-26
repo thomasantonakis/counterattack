@@ -128,12 +128,12 @@ public class MatchManager : MonoBehaviour
         if (attackerHexes.Contains(ballHex))
         {
             attackHasPossession = true;
-            Debug.Log("Attacking team retains possession.");
+            // Debug.Log("Attacking team retains possession.");
         }
         else
         {
             attackHasPossession = false;
-            Debug.Log("Attacking team lost possession.");
+            // Debug.Log("Attacking team lost possession.");
         }
     }
 
