@@ -10,7 +10,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void PlayHotSeatGame()
     {
-        SceneManager.LoadScene("Room"); // Replace with your game scene name
+        SceneManager.LoadScene("HotSeat"); // Replace with your game scene name
     }
 
     public void PlayMultiPlayerGame()
@@ -38,7 +38,7 @@ public class MainMenuManager : MonoBehaviour
         Debug.Log("Credits Opened!");
     }
 
-    public void ExitGame()
+    public void ExitGameFromMainMenu()
     {
         Debug.Log("Game Quit!");
         Application.Quit(); // This will close the application
