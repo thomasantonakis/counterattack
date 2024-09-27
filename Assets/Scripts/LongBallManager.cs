@@ -29,22 +29,22 @@ public class LongBallManager : MonoBehaviour
     void Update()
     {   
         // If waiting for accuracy roll
-        if (isWaitingForAccuracyRoll && Input.GetKeyDown(KeyCode.D))
+        if (isWaitingForAccuracyRoll && Input.GetKeyDown(KeyCode.R))
         {
             // Debug.Log("Accuracy roll triggered by D key.");
             PerformAccuracyRoll(); // Handle accuracy roll
         }
-        else if (isWaitingForDirectionRoll && Input.GetKeyDown(KeyCode.D))
+        else if (isWaitingForDirectionRoll && Input.GetKeyDown(KeyCode.R))
         {
             // Debug.Log("Direction roll triggered by D key.");
             PerformDirectionRoll(); // Handle direction roll
         }
-        else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.D))
+        else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
         {
             // Debug.Log("Distance roll triggered by D key.");
             PerformDistanceRoll(); // Handle distance roll
         }
-        else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.D))
+        else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.R))
         {
             // Debug.Log("Interception roll triggered by D key.");
             StartCoroutine(PerformInterceptionCheck(finalHex)); 
@@ -93,7 +93,7 @@ public class LongBallManager : MonoBehaviour
         {
             currentTargetHex = clickedHex;  // Assign the current target hex
             isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
-            Debug.Log("Waiting for accuracy roll... Please Press D key.");
+            Debug.Log("Waiting for accuracy roll... Please Press R key.");
         }
         else if (difficulty == 2) // Medium Mode: Require confirmation with a second click
         {
@@ -186,7 +186,7 @@ public class LongBallManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         // Debug.Log("Performing accuracy roll for Long Pass.");
         // Roll the dice (1 to 6)
-        int diceRoll = Random.Range(1, 2); // Melina Mode
+        int diceRoll = 1; // Melina Mode
         // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         // Adjust threshold based on difficulty
@@ -196,20 +196,21 @@ public class LongBallManager : MonoBehaviour
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
             StartCoroutine(HandleLongBallMovement(clickedHex));
+            MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
             ResetLongPassRolls();  // Reset flags to finish long pass
         }
         else
         {
             Debug.Log($"Long Ball is NOT accurate, passer roll: {diceRoll}");
             isWaitingForDirectionRoll = true;
-            Debug.Log("Waiting for Direction roll... Please Press D key.");
+            Debug.Log("Waiting for Direction roll... Please Press R key.");
         }
     }
 
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int diceRoll = 4; // Melina Mode
+        int diceRoll = 0; // Melina Mode
         // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
@@ -217,7 +218,7 @@ public class LongBallManager : MonoBehaviour
         Debug.Log($"Rolled {diceRollLabel}: Moving in {rolledDirection} direction");
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
-        Debug.Log("Waiting for Distance roll... Please Press D key.");
+        Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
 
     string TranslateRollToDirection(int direction)
@@ -244,7 +245,7 @@ public class LongBallManager : MonoBehaviour
     void PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int distanceRoll = Random.Range(6, 7); // Melina Mode
+        int distanceRoll = 6; // Melina Mode
         // int distanceRoll = Random.Range(1, 7);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
@@ -339,9 +340,24 @@ public class LongBallManager : MonoBehaviour
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
-
-        // Ball has landed, check for defender's ZOI interception
-        CheckForLongBallInterception(targetHex);
+        if (targetHex.isDefenseOccupied)
+        {
+            // Ball Landed directly on a Defender
+            MatchManager.Instance.ChangePossession();
+            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+            MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+        }
+        else if (targetHex.isAttackOccupied)
+        {
+            // Ball has landed on an attacker 
+            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+            MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
+        }
+        else {
+            // Landed neither on Def or Attacker. Check for defender's ZOI interception
+            CheckForLongBallInterception(targetHex);
+            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+        }
         // Allow GK Movement
         // And Check Again
         // CheckForLongBallInterception(targetHex);
@@ -376,7 +392,7 @@ public class LongBallManager : MonoBehaviour
             // Check if there are any intercepting defenders
             if (interceptingDefenders.Count > 0)
             {
-                Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for interception.");
+                Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for interception. Please Press R key..");
                 isWaitingForInterceptionRoll = true;
             }
             else
@@ -402,7 +418,8 @@ public class LongBallManager : MonoBehaviour
         {
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
-            int diceRoll = Random.Range(6, 7); // Ensure proper range (1-6)
+            int diceRoll = 6; // Ensure proper range (1-6)
+            // int diceRoll = Random.Range(1, 7); // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender at {defenderHex.coordinates}: {diceRoll}");
 
             if (diceRoll == 6)
@@ -412,6 +429,8 @@ public class LongBallManager : MonoBehaviour
                 // Move the ball to the defender's hex and change possession
                 StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();
+                MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
+                MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
                 yield break;  // Stop the sequence once an interception is successful
             }
             else
@@ -422,6 +441,7 @@ public class LongBallManager : MonoBehaviour
 
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
+        MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
     }
 
     public void HighlightLongPassArea(HexCell targetHex)
@@ -539,8 +559,7 @@ public class LongBallManager : MonoBehaviour
             case "Top Throw-In":
             case "Bottom Throw-In":
                 Debug.Log("Handling a Throw-In.");
-                StartCoroutine(ball.MoveToCell(lastInboundsHex));
-                MatchManager.Instance.ChangePossession();
+                HandleThrowIn(lastInboundsHex);
                 break;
             default:
                 Debug.LogWarning("Unknown out of bounds scenario.");
@@ -580,6 +599,13 @@ public class LongBallManager : MonoBehaviour
         return "unknown";  // Fallback case (this shouldn't happen if the boundaries are properly checked)
     }
 
+    private void HandleThrowIn(HexCell lastInboundsHex)
+    {
+        StartCoroutine(ball.MoveToCell(lastInboundsHex));
+        MatchManager.Instance.ChangePossession();
+        MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
+    }
+    
     private void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide)
     {
         // Get the attacking team's direction
@@ -599,11 +625,13 @@ public class LongBallManager : MonoBehaviour
             {
                 Debug.Log("Left Side: Corner kick from the top-left corner.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12))));
+                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
             }
             else
             {
                 Debug.Log("Left Side: Corner kick from the bottom-left corner.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12))));
+                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
             }
         }
         else if (outOfBoundsSide == "RightGoal" && attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft)
@@ -613,11 +641,13 @@ public class LongBallManager : MonoBehaviour
             {
                 Debug.Log("Right Side: Corner kick from the top-right corner.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12))));
+                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
             }
             else
             {
                 Debug.Log("Right Side: Corner kick from the bottom-right corner.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12))));
+                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
             }
         }
         else
@@ -628,14 +658,14 @@ public class LongBallManager : MonoBehaviour
             {
                 Debug.Log("Right Side: Goal kick from center Hex at the 6-yard-box.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0))));
+                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
             }
             else
             {
                 Debug.Log("Left Side: Goal kick from center Hex at the 6-yard-box.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 0))));
+                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
             }
-            // Move the ball to the nearest goal kick position
-            StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0))));  // Adjust this for goal kicks
         }
 
         // Change possession when a goal kick or corner kick occurs

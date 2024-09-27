@@ -20,8 +20,8 @@ public class GroundBallManager : MonoBehaviour
 
     void Update()
     {
-        // Check if waiting for dice rolls and the D key is pressed
-        if (isWaitingForDiceRoll && Input.GetKeyDown(KeyCode.D))
+        // Check if waiting for dice rolls and the R key is pressed
+        if (isWaitingForDiceRoll && Input.GetKeyDown(KeyCode.R))
         {
             PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when D is pressed
         }
@@ -75,6 +75,13 @@ public class GroundBallManager : MonoBehaviour
                 Debug.Log("Pass is not dangerous, moving ball.");
                 StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
                 MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
+                if (clickedHex.isAttackOccupied)
+                {
+                    MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+                }
+                else {
+                    MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+                }
             }
             ball.DeselectBall();
         }
@@ -107,6 +114,13 @@ public class GroundBallManager : MonoBehaviour
                     Debug.Log("Pass is not dangerous, moving ball.");
                     StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
+                    if (clickedHex.isAttackOccupied)
+                    {
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+                    }
+                    else {
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+                    }
                 }
                 ball.DeselectBall();
             }
@@ -139,6 +153,13 @@ public class GroundBallManager : MonoBehaviour
                     Debug.Log("Pass is not dangerous, moving ball.");
                     StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
+                    if (clickedHex.isAttackOccupied)
+                    {
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+                    }
+                    else {
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+                    }
                 }
                 ball.DeselectBall();
             }
@@ -265,7 +286,7 @@ public class GroundBallManager : MonoBehaviour
         if (defendingHexes.Count > 0)
         {
             // Start the dice roll process for each defender
-            Debug.Log("Starting dice roll sequence...");
+            Debug.Log("Starting dice roll sequence... Press R key.");
             // Sort defendingHexes by distance from ballHex
             defendingHexes = defendingHexes.OrderBy(d => HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.coordinates)).ToList();
             currentDefenderHex = defendingHexes[0];  // Start with the closest defender
@@ -274,7 +295,15 @@ public class GroundBallManager : MonoBehaviour
         else
         {
             Debug.LogWarning("No defenders in ZOI. This should never appear unless the path is clear.");
-            StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // Move ball to the target hex
+            // StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // Move ball to the target hex
+            // MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
+            // if (currentTargetHex.isAttackOccupied)
+            // {
+            //     MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+            // }
+            // else {
+            //     MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+            // }
             return;
         }
     }
@@ -284,18 +313,16 @@ public class GroundBallManager : MonoBehaviour
         if (currentDefenderHex != null)
         {
             // Roll the dice (1 to 6)
-            int diceRoll = Random.Range(1, 7);
+            int diceRoll = 6; // God Mode
+            // int diceRoll = Random.Range(1, 7);
             Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
-
+            isWaitingForDiceRoll = false;
             if (diceRoll == 6)
             {
                 // Defender successfully intercepts the pass
                 Debug.Log($"Pass intercepted by defender at {currentDefenderHex.coordinates}!");
-                StartCoroutine(HandleGroundBallMovement(currentDefenderHex));  // Move the ball to the defender's hex
-                isWaitingForDiceRoll = false;
+                StartCoroutine(HandleBallInterception(currentDefenderHex));
                 ResetGroundPassInterceptionDiceRolls();
-                MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
-                MatchManager.Instance.UpdatePossessionAfterPass(currentDefenderHex); // Maybe Unnecessary
             }
             else
             {
@@ -316,11 +343,28 @@ public class GroundBallManager : MonoBehaviour
                         Debug.LogError("currentTargetHex is null despite the pass being valid.");
                     }
                     StartCoroutine(HandleGroundBallMovement(currentTargetHex));
-                    isWaitingForDiceRoll = false;
                     MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
+                    if (currentTargetHex.isAttackOccupied)
+                    {
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+                    }
+                    else {
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+                    }
                 }
             }
         }
+    }
+
+    // Create a new coroutine to handle ball movement and update possession after the ball moves
+    private IEnumerator HandleBallInterception(HexCell defenderHex)
+    {
+        yield return StartCoroutine(HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
+
+        // Call UpdatePossessionAfterPass after the ball has moved to the defender's hex
+        MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
+        MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+        MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
     }
 
     void ResetGroundPassInterceptionDiceRolls()
@@ -350,8 +394,6 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
         // Wait for the ball movement to complete
         yield return StartCoroutine(ball.MoveToCell(targetHex));
-        // Set the game status to StandardPassCompleted
-        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompleted;
         // Now clear the highlights after the movement
         ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");

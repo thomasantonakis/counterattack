@@ -12,10 +12,15 @@ public class MatchManager : MonoBehaviour
         KickoffBlown, // Only a Standard Pass is available
         StandardPassAttempt, // Attacking Team calls a Standard Pass-11
         StandardPassMoving, // Ball is moving to either the intercepting Def or the Destination
-        StandardPassCompleted,
+        StandardPassCompletedToPlayer, // A standard Pass was not intercepted and is on an Attacker
+        StandardPassCompletedToSpace, // A standard Pass was not intercepted and is on on a Free Hex
         LongBallAttempt,
-        LongPassMoving, // Ball is moving to either the intercepting Def or the Destination
-        LongPassCompleted,
+        LongPassMoving,
+        LongBallCompleted,
+        WaitingForThrowInTaker, // An attacker must be chosen to take the throw in
+        WaitingForCornerTaker, // An attacker must be chosen to take the Corner Kick
+        WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
+        LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
     }
 
     public enum TeamInAttack
@@ -196,7 +201,7 @@ public class MatchManager : MonoBehaviour
         {
             Debug.LogWarning("Cannot start Movement Phase from current state: " + currentState);
         }
-        else if ( currentState == GameState.StandardPassCompleted ) // High diff and Something Else is selected
+        else if ( currentState != GameState.KickoffBlown ) // High diff and Something Else is selected
         {
             Debug.LogWarning("Movement Not Available. You have already called something else");
         }
