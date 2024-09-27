@@ -24,7 +24,7 @@ public class SplashScreenManager : MonoBehaviour
         if (Input.anyKeyDown)
         {
             // Trigger scene transition (replace "NextSceneName" with the actual scene name)
-            SceneManager.LoadScene("Room");
+            SceneManager.LoadScene("MainMenu");
         }
     }
 

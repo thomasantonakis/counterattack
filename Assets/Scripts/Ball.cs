@@ -68,7 +68,6 @@ public class Ball : MonoBehaviour
 
             yield return null;  // Wait for the next frame
         }
-
         currentCell = targetCell;  // Update current cell
         targetCell = null;         // Clear target cell
     }
