@@ -193,11 +193,11 @@ public class HexGrid : MonoBehaviour
         }
 
         // Example: Set final thirds
-        if ( x <= 18 && x >= 8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)))
+        if ( x <= 18 && x >= 8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z >= -13)))
         {
             cell.isInFinalThird = 1;
         }
-        if (x >= -18 && x <= -8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z > -13)))
+        if (x >= -18 && x <= -8 && ((x % 2 == 0) ? (z < 13 && z > -13) : (z < 13 && z >= -13)))
         {
             cell.isInFinalThird = -1;
         }
