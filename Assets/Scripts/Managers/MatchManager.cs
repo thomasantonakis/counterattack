@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.IO;
+using Newtonsoft.Json;  // For JsonConvert
 
 public class MatchManager : MonoBehaviour
 {
@@ -44,7 +45,20 @@ public class MatchManager : MonoBehaviour
     public static MatchManager Instance;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
-    public int difficulty_level; // high
+    public class GameData
+    {
+        public GameSettings gameSettings;
+    }
+
+    public class GameSettings
+    {
+        public string gameMode;
+        public string homeTeamName;
+        public string awayTeamName;
+        public int playerAssistance;
+        // Add other game settings properties as needed
+    }
+    public int difficulty_level;
 
     // // Define other match-specific variables here (e.g., time, score, teams)
     // private int homeScore = 0;
@@ -65,6 +79,7 @@ public class MatchManager : MonoBehaviour
 
     IEnumerator Start()
     {
+        LoadGameSettingsFromJson();
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
         // Initialize the match in the KickOffSetup state
@@ -264,4 +279,30 @@ public class MatchManager : MonoBehaviour
     }
 
     // Add other match-related methods here (like handling goals, score updates, etc.)
+
+    public void LoadGameSettingsFromJson()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "2024-09-29_02-48__Hot Seat__AS Roma__Aurora FC.json");
+
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            // Deserialize into the GameData class, which has the gameSettings group
+            GameData loadedData = JsonConvert.DeserializeObject<GameData>(json);
+            // Now you can access the game settings like this
+            GameSettings settings = loadedData.gameSettings;
+            // // Log loaded settings or assign them back to the UI or game
+            // Debug.Log($"Loaded Game Mode: {settings.gameMode}");
+            // Debug.Log($"Loaded Home Team: {settings.homeTeamName}");
+            // Debug.Log($"Loaded Away Team: {settings.awayTeamName}");
+            // Debug.Log($"Loaded Difficulty: {settings.playerAssistance}");
+            // Comment this in and out to use JSON or Inspector difficulty..
+            difficulty_level = settings.playerAssistance;
+        }
+        else
+        {
+            Debug.LogWarning("Game settings file not found.");
+        }
+    }
+
 }

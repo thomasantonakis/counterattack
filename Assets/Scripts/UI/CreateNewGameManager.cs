@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using TMPro;  // Import TextMeshPro namespace
 using UnityEngine.SceneManagement;
+using Newtonsoft.Json; // Now it will recognize JsonConvert
 
 public class CreateNewGameManager : MonoBehaviour
 {
@@ -162,8 +163,15 @@ public class CreateNewGameManager : MonoBehaviour
         settings.playerDeck = playerDeckDropdown.options[playerDeckDropdown.value].text;
         settings.includeInternationals = includeInternationalsToggle.isOn;
 
-        // Convert to JSON
-        string json = JsonUtility.ToJson(settings, true);
+        var gameData = new
+        {
+            gameSettings = settings  // Grouped under "gameSettings"
+        };
+
+        string json = JsonConvert.SerializeObject(gameData, Formatting.Indented);
+
+        // // Convert to JSON
+        // string json = JsonUtility.ToJson(settings, true);
 
         // Get current timestamp
         string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
