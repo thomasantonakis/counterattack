@@ -29,25 +29,24 @@ public class LongBallManager : MonoBehaviour
     void Update()
     {   
         // If waiting for accuracy roll
-        if (isWaitingForAccuracyRoll && Input.GetKeyDown(KeyCode.R))
+        if (MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
         {
-            // Debug.Log("Accuracy roll triggered by D key.");
-            PerformAccuracyRoll(); // Handle accuracy roll
-        }
-        else if (isWaitingForDirectionRoll && Input.GetKeyDown(KeyCode.R))
-        {
-            // Debug.Log("Direction roll triggered by D key.");
-            PerformDirectionRoll(); // Handle direction roll
-        }
-        else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
-        {
-            // Debug.Log("Distance roll triggered by D key.");
-            PerformDistanceRoll(); // Handle distance roll
-        }
-        else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.R))
-        {
-            // Debug.Log("Interception roll triggered by D key.");
-            StartCoroutine(PerformInterceptionCheck(finalHex)); 
+            if (isWaitingForAccuracyRoll && Input.GetKeyDown(KeyCode.R))
+            {
+                PerformAccuracyRoll(); // Handle accuracy roll
+            }
+            else if (isWaitingForDirectionRoll && Input.GetKeyDown(KeyCode.R))
+            {
+                PerformDirectionRoll(); // Handle direction roll
+            }
+            else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
+            {
+                PerformDistanceRoll(); // Handle distance roll
+            }
+            else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.R))
+            {
+                StartCoroutine(PerformInterceptionCheck(finalHex)); 
+            }
         }
     }
     
@@ -184,7 +183,7 @@ public class LongBallManager : MonoBehaviour
     private void PerformAccuracyRoll()
     {
         // Placeholder for dice roll logic (will be expanded in later steps)
-        // Debug.Log("Performing accuracy roll for Long Pass.");
+        Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Roll the dice (1 to 6)
         int diceRoll = 1; // Melina Mode
         // int diceRoll = Random.Range(1, 7);
@@ -397,12 +396,14 @@ public class LongBallManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("No defenders eligible for interception. Ball lands without interception.");
+                Debug.Log("No defenders eligible for interception. Ball lands without interception. Number one");
+                MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
             }
         }
         else
         {
-            Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
+            Debug.Log("Landing hex is not in any defender's ZOI. No interception needed. Number two ");
+            MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
         }
     }
 
