@@ -1,7 +1,8 @@
 using UnityEngine;
+using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;  // For JsonConvert
 
 public class MatchManager : MonoBehaviour
@@ -23,7 +24,7 @@ public class MatchManager : MonoBehaviour
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
     }
-
+    public event Action OnGameSettingsLoaded;
     public enum TeamInAttack
     {
         Home,
@@ -34,7 +35,6 @@ public class MatchManager : MonoBehaviour
         LeftToRight,
         RightToLeft
     }
-
     public TeamAttackingDirection homeTeamDirection;
     public TeamAttackingDirection awayTeamDirection;
 
@@ -45,19 +45,7 @@ public class MatchManager : MonoBehaviour
     public static MatchManager Instance;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
-    public class GameData
-    {
-        public GameSettings gameSettings;
-    }
-
-    public class GameSettings
-    {
-        public string gameMode;
-        public string homeTeamName;
-        public string awayTeamName;
-        public int playerAssistance;
-        // Add other game settings properties as needed
-    }
+    public GameData gameData;
     public int difficulty_level;
 
     // // Define other match-specific variables here (e.g., time, score, teams)
@@ -75,11 +63,17 @@ public class MatchManager : MonoBehaviour
         {
             Destroy(gameObject); // Ensure there is only one MatchManager
         }
+        // Initialize gameData if it's not set already
+        gameData ??= new GameData();
     }
 
     IEnumerator Start()
     {
         LoadGameSettingsFromJson();
+        if (gameData != null && gameData.gameSettings != null)
+        {
+            difficulty_level = gameData.gameSettings.playerAssistance;
+        }
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
         // Initialize the match in the KickOffSetup state
@@ -287,22 +281,40 @@ public class MatchManager : MonoBehaviour
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
-            // Deserialize into the GameData class, which has the gameSettings group
-            GameData loadedData = JsonConvert.DeserializeObject<GameData>(json);
-            // Now you can access the game settings like this
-            GameSettings settings = loadedData.gameSettings;
-            // // Log loaded settings or assign them back to the UI or game
-            // Debug.Log($"Loaded Game Mode: {settings.gameMode}");
-            // Debug.Log($"Loaded Home Team: {settings.homeTeamName}");
-            // Debug.Log($"Loaded Away Team: {settings.awayTeamName}");
-            // Debug.Log($"Loaded Difficulty: {settings.playerAssistance}");
-            // Comment this in and out to use JSON or Inspector difficulty..
-            difficulty_level = settings.playerAssistance;
+            
+            // Deserialize the JSON into the GameData class
+            gameData = JsonConvert.DeserializeObject<GameData>(json);
+
+            if (gameData != null && gameData.gameSettings != null)
+            {
+                Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
+                Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
+                // Trigger event or call LoadTeamNames after settings are loaded
+                OnGameSettingsLoaded?.Invoke();
+            }
+            else
+            {
+                Debug.LogError("Failed to load game settings from the file!");
+            }
         }
         else
         {
             Debug.LogWarning("Game settings file not found.");
         }
+    }
+
+    public class GameData
+    {
+        public GameSettings gameSettings;
+    }
+
+    public class GameSettings
+    {
+        public string gameMode;
+        public string homeTeamName;
+        public string awayTeamName;
+        public int playerAssistance;
+        // Add other game settings properties as needed
     }
 
 }
