@@ -21,21 +21,21 @@ public class HexCell : MonoBehaviour
 
     void Awake()
     {
-        // Store the renderer and the original material color
-        hexRenderer = GetComponent<Renderer>();
+        // Use MeshRenderer directly instead of a generic Renderer
+        hexRenderer = GetComponent<MeshRenderer>();
+        if (hexRenderer == null)
+        {
+            Debug.LogError("HexCell MeshRenderer is missing! Check this cell's prefab or components.");
+        }
     }
 
     public void InitializeHex(Color initialColor)
     {
         if (hexRenderer == null)
         {
-            hexRenderer = GetComponent<Renderer>();
+            Debug.LogError("HexCell MeshRenderer is still missing during InitializeHex! Initialization skipped for this cell.");
+            return;  // Exit if no MeshRenderer is found
         }
-        else
-        {
-            Debug.LogError("HexCell Renderer is not assigned or missing!");
-        }
-
         // Set the original color and apply it to the hex
         originalColor = initialColor;
         hexRenderer.material.color = originalColor;
