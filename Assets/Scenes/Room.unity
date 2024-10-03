@@ -619,8 +619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46483603949c4b7ca2218b3e38b79cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  homePlayerPrefab: {fileID: 1212142691663447783, guid: 0d1a57e89f72f417f8dfe7ccc2d20ac3, type: 3}
-  awayPlayerPrefab: {fileID: 1212142691663447783, guid: 2f62232d1ef944599b5037c38e58ab50, type: 3}
+  redKitPrefab: {fileID: 1212142691663447783, guid: 0d1a57e89f72f417f8dfe7ccc2d20ac3, type: 3}
+  blueKitPrefab: {fileID: 1212142691663447783, guid: 2f62232d1ef944599b5037c38e58ab50, type: 3}
 --- !u!4 &501380954
 Transform:
   m_ObjectHideFlags: 0
@@ -2516,7 +2516,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -426, y: 209}
+  m_AnchoredPosition: {x: 270, y: 168}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2042322979
@@ -2651,7 +2651,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -426, y: 273}
+  m_AnchoredPosition: {x: -246, y: 168}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2071675947

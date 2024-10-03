@@ -276,7 +276,8 @@ public class MatchManager : MonoBehaviour
 
     public void LoadGameSettingsFromJson()
     {
-        string path = Path.Combine(Application.persistentDataPath, "2024-09-29_02-48__Hot Seat__AS Roma__Aurora FC.json");
+        // string path = Path.Combine(Application.persistentDataPath, "2024-09-29_02-48__Hot Seat__AS Roma__Aurora FC.json");
+        string path = Path.Combine(Application.persistentDataPath, "2024-10-01_00-10__Hot Seat__AS Roma__Aurora FC.json");
 
         if (File.Exists(path))
         {
@@ -289,6 +290,8 @@ public class MatchManager : MonoBehaviour
             {
                 Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
                 Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
+                Debug.Log($"Loaded Home Kit: {gameData.gameSettings.homeKit}");
+                Debug.Log($"Loaded Away Kit: {gameData.gameSettings.awayKit}");
                 // Trigger event or call LoadTeamNames after settings are loaded
                 OnGameSettingsLoaded?.Invoke();
             }
@@ -313,6 +316,8 @@ public class MatchManager : MonoBehaviour
         public string gameMode;
         public string homeTeamName;
         public string awayTeamName;
+        public string homeKit;
+        public string awayKit;
         public int playerAssistance;
         // Add other game settings properties as needed
     }

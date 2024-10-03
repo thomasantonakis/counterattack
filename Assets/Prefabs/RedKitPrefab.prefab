@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1212142691663447781}
   - component: {fileID: 1212142691663447782}
   m_Layer: 0
-  m_Name: AwayPlayerTokenPrefab
+  m_Name: RedKitPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 73dae70003b8c4e88b0e178390f88d8c, type: 2}
+  - {fileID: 2100000, guid: 3ef96fd61848446cbb9db1d132594738, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

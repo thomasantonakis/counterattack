@@ -25,6 +25,8 @@ public class CreateNewGameManager : MonoBehaviour
     public TMP_Dropdown weatherDropdown;
     public TMP_Dropdown ballColorDropdown;
     public TMP_Dropdown playerDeckDropdown;
+    public TMP_Dropdown homeKitDropdown;
+    public TMP_Dropdown awayKitDropdown;
     public TMP_InputField homeTeamInputField;
     public TMP_InputField awayTeamInputField;
     public Toggle includeInternationalsToggle;
@@ -105,7 +107,6 @@ public class CreateNewGameManager : MonoBehaviour
         List<string> playerDeckOptions = new List<string> { "Base Game", "Tabletopia", "All Extras" };  // Define options
         playerDeckDropdown.ClearOptions();  // Clear any existing options
         playerDeckDropdown.AddOptions(playerDeckOptions);  // Add the default options
-        // Set the toggle's default state to ON
     }
 
     // Adjust the squad size dropdown based on match type selection
@@ -162,6 +163,8 @@ public class CreateNewGameManager : MonoBehaviour
         settings.awayTeamName = awayTeamInputField.text;
         settings.playerDeck = playerDeckDropdown.options[playerDeckDropdown.value].text;
         settings.includeInternationals = includeInternationalsToggle.isOn;
+        settings.homeKit = homeKitDropdown.options[homeKitDropdown.value].text;
+        settings.awayKit = awayKitDropdown.options[awayKitDropdown.value].text;
 
         var gameData = new
         {
@@ -227,6 +230,6 @@ public class GameSettings
     public bool includeInternationals;
     public string homeTeamName;
     public string awayTeamName;
-    // public string homeTeamKit;
-    // public string awayTeamKit;
+    public string homeKit;
+    public string awayKit;
 }
