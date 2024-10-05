@@ -82,23 +82,51 @@ public class CameraController : MonoBehaviour
     void HandleMovement()
     {
         Vector3 moveDirection = Vector3.zero;
-        // Move along Z-axis (forward/backward) regardless of camera rotation
-        if (Input.GetKey(KeyCode.UpArrow))
+        // Check if the camera is in vertical view (looking straight down)
+        bool isVerticalView = Mathf.Approximately(transform.rotation.eulerAngles.x, 90f);
+
+        if (isVerticalView)
         {
-            moveDirection += new Vector3(0, 0, moveSpeed * Time.deltaTime);  // Move forward along Z-axis
+            // Handle movement differently for vertical view (top-down camera)
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDirection += new Vector3(0, 0, moveSpeed * Time.deltaTime);  // Move "up" on the Z-axis
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDirection -= new Vector3(0, 0, moveSpeed * Time.deltaTime);  // Move "down" on the Z-axis
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDirection -= new Vector3(moveSpeed * Time.deltaTime, 0, 0);  // Move "left" on the X-axis
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDirection += new Vector3(moveSpeed * Time.deltaTime, 0, 0);  // Move "right" on the X-axis
+            }
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        else
         {
-            moveDirection += new Vector3(0, 0, -moveSpeed * Time.deltaTime);  // Move backward along Z-axis
-        }
-        // Move left/right based on camera's local right direction (X-axis movement)
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            moveDirection -= transform.right * moveSpeed * Time.deltaTime;  // Move left
-        }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            moveDirection += transform.right * moveSpeed * Time.deltaTime;  // Move right
+            // For other camera views, use forward and right directions on the XZ plane
+            Vector3 forward = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
+            Vector3 right = new Vector3(transform.right.x, 0, transform.right.z).normalized;
+
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                moveDirection += forward * moveSpeed * Time.deltaTime;  // Move forward
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                moveDirection -= forward * moveSpeed * Time.deltaTime;  // Move backward
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                moveDirection -= right * moveSpeed * Time.deltaTime;  // Move left
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                moveDirection += right * moveSpeed * Time.deltaTime;  // Move right
+            }
         }
         // Apply the movement to the camera's position
         transform.position += moveDirection;

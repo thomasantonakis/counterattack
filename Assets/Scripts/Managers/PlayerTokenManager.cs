@@ -152,6 +152,7 @@ public class PlayerTokenManager : MonoBehaviour
             numberText.text = (i + 2).ToString();  // Assign jersey numbers starting from 2
             numberText.fontSize = 3;  // Set font size, tweak as needed
             numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
+            numberText.GetComponent<MeshRenderer>().sortingOrder = 10;  // Ensure the number is rendered on top
         }
     }
 }
