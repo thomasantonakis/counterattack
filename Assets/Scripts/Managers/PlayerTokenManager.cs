@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;  // Import TextMeshPro namespace
+
 
 public class PlayerTokenManager : MonoBehaviour
 {
     public GameObject redKitPrefab;
     public GameObject blueKitPrefab;
     public HexGrid hexgrid;
-    
+    public GameObject textPrefab; // A prefab for TextMeshPro object for jersey numbers (you'll create this prefab)
     
     // // Spawn positions for the players
     // private Vector3[] homeTeamPositions = new Vector3[]
@@ -104,22 +106,52 @@ public class PlayerTokenManager : MonoBehaviour
     }
     void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes)
     {
+        // Find or create the "Player Tokens" parent object in the scene
+        GameObject parentObject = GameObject.Find("Player Tokens");
+        // If the parent object doesn't exist, create it
+        if (parentObject == null)
+        {
+            Debug.Log("Parent object not found, creating a new 'Player Tokens' object.");
+            parentObject = new GameObject("Player Tokens");
+        }
+        if (textPrefab == null)
+        {
+            Debug.LogError("Text prefab is not assigned! Please assign the TextMeshPro prefab.");
+            return;  // Prevent further execution
+        }
         for (int i = 0; i < spawnHexes.Count; i++)  // Assuming each hex in spawnHexes corresponds to a player
         {
+            if (spawnHexes[i] == null)
+            {
+                Debug.LogError($"Hex at index {i} is null!");
+                continue;
+            }
             Vector3 hexCenter = spawnHexes[i].GetHexCenter();
             Vector3 playerPosition = new Vector3(hexCenter.x, 0.2f, hexCenter.z);  // Position snapped to the hex center, y set to -0.2
-            GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity);
+            GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity, parentObject.transform);
             player.name = $"{teamType}Player{i+2}";
+            // Instantiate the TextMeshPro object for the jersey number
+            GameObject numberTextObj = Instantiate(textPrefab, playerPosition, Quaternion.identity, player.transform);  // Make the text a child of the player
+            if (numberTextObj == null)
+            {
+                Debug.LogError("Failed to instantiate the TextMeshPro object for jersey numbers.");
+                continue;
+            }
+            // Adjust position of the text slightly above the player token
+            numberTextObj.transform.position = new Vector3(playerPosition.x, 0.41f, playerPosition.z);  // Adjust Y position to sit on top
+            // Rotate the text to face upwards
+            numberTextObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
+
+            // Get the TextMeshPro component and assign the jersey number
+            TextMeshPro numberText = numberTextObj.GetComponent<TextMeshPro>();
+            if (numberText == null)
+            {
+                Debug.LogError("Failed to get TextMeshPro component from instantiated jersey number prefab.");
+                continue;
+            }
+            numberText.text = (i + 2).ToString();  // Assign jersey numbers starting from 2
+            numberText.fontSize = 3;  // Set font size, tweak as needed
+            numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
         }
     }
-
-    // void CreateTeam(GameObject kitPrefab, string teamType, Vector3[] positions)
-    // {
-    //     for (int i = 0; i < 10; i++)  // Assuming 10 players per team
-    //     {
-    //         GameObject player = Instantiate(kitPrefab, positions[i], Quaternion.identity);
-    //         // Set player positions, name them, and assign them to the team
-    //         player.name = $"{teamType}Player{i+1}";
-    //     }
-    // }
 }
