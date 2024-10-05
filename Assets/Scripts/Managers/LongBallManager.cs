@@ -22,8 +22,6 @@ public class LongBallManager : MonoBehaviour
     private HexCell finalHex;
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
-    private List<HexCell> highlightedLongBallHexes = new List<HexCell>();
-
 
     // Step 1: Handle the input for starting the long pass (initial logic)
     void Update()
@@ -80,7 +78,7 @@ public class LongBallManager : MonoBehaviour
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Debug.Log("Hello from HandleLongBallBasedOnDifficulty");
         // Centralized target validation
-        ClearHighlightedHexes();
+        hexGrid.ClearHighlightedHexes();
         var (isValid, isDangerous) = ValidateLongBallTarget(clickedHex);
         if (!isValid)
         {
@@ -106,7 +104,7 @@ public class LongBallManager : MonoBehaviour
                 // First click: Set the target, highlight the path, and wait for confirmation
                 currentTargetHex = clickedHex;
                 lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
-                ClearHighlightedHexes();
+                hexGrid.ClearHighlightedHexes();
 
                 // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
                 HighlightLongPassArea(clickedHex);  // Optional: Visual feedback
@@ -125,7 +123,7 @@ public class LongBallManager : MonoBehaviour
                 // First click: Set the target, highlight the path, and wait for confirmation
                 currentTargetHex = clickedHex;
                 lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
-                ClearHighlightedHexes();
+                hexGrid.ClearHighlightedHexes();
 
                 // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
                 HighlightAllValidLongPassTargets();  // Takes a couple of seconds
@@ -447,14 +445,14 @@ public class LongBallManager : MonoBehaviour
 
     public void HighlightLongPassArea(HexCell targetHex)
     {
-        ClearHighlightedHexes();
+        hexGrid.ClearHighlightedHexes();
         if (targetHex == null)
         {
             Debug.LogError("Target hex is null in HighlightLongPassArea!");
             return;
         }
         // Initialize highlightedHexes to ensure it's ready for use
-        highlightedLongBallHexes = new List<HexCell>();
+       hexGrid.highlightedHexes = new List<HexCell>();
         // Get hexes within a radius (e.g., 6 hexes) around the targetHex
         int radius = 5;  // You can tweak this value as needed
         List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);
@@ -481,7 +479,7 @@ public class LongBallManager : MonoBehaviour
 
             // Highlight hexes (use a specific color for Long Pass)
             hex.HighlightHex("longPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
-            highlightedLongBallHexes.Add(hex);  // Track the highlighted hexes for later clearing
+           hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes for later clearing
 
             Debug.Log($"Highlighted Hex at coordinates: ({hex.coordinates.x}, {hex.coordinates.z})");
         }
@@ -493,7 +491,7 @@ public class LongBallManager : MonoBehaviour
     public void HighlightAllValidLongPassTargets()
     {
         // Clear the previous highlights
-        ClearHighlightedHexes();
+        hexGrid.ClearHighlightedHexes();
 
         // Loop through all hexes on the grid
         foreach (HexCell hex in hexGrid.cells)
@@ -513,21 +511,21 @@ public class LongBallManager : MonoBehaviour
                 {
                     hex.HighlightHex("longPass"); // Highlight the valid hexes
                 }
-                highlightedLongBallHexes.Add(hex);  // Track highlighted hexes for later clearing
+               hexGrid.highlightedHexes.Add(hex);  // Track highlighted hexes for later clearing
             }
         }
 
-        Debug.Log($"Successfully highlighted {highlightedLongBallHexes.Count} valid hexes for Long Pass.");
+        Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for Long Pass.");
     }
 
-    private void ClearHighlightedHexes()
-    {
-        foreach (HexCell hex in highlightedLongBallHexes)
-        {
-            hex.ResetHighlight();  // Assuming there's a method in HexCell to reset the highlight
-        }
-        highlightedLongBallHexes.Clear();  // Clear the list of highlighted hexes
-    }
+    // private void ClearHighlightedHexes()
+    // {
+    //     foreach (HexCell hex inhexGrid.highlightedHexes)
+    //     {
+    //         hex.ResetHighlight();  // Assuming there's a method in HexCell to reset the highlight
+    //     }
+    //    hexGrid.highlightedHexes.Clear();  // Clear the list of highlighted hexes
+    // }
 
     public void HandleOutOfBoundsFromInaccuracy()
     {

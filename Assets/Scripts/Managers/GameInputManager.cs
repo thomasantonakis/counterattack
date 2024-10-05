@@ -13,10 +13,6 @@ public class GameInputManager : MonoBehaviour
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Add a reference to the HexGrid
     public MatchManager matchManager;
-    // List to store highlighted hexes
-    private List<HexCell> highlightedHexes = new List<HexCell>();
-    // private HexCell currentTargetHex = null;   // The currently selected target hex
-    // private HexCell lastClickedHex = null;     // The last hex that was clicked
     // Variables to track mouse movement for dragging
     private Vector3 mouseDownPosition;  // Where the mouse button was pressed
     private bool isDragging = false;    // Whether a drag is happening
@@ -39,6 +35,7 @@ public class GameInputManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
+            hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerStandardPass();
         }
         else if (Input.GetKeyDown(KeyCode.M))
@@ -47,22 +44,27 @@ public class GameInputManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.C))
         {
+            hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerHighPass();
         }
         else if (Input.GetKeyDown(KeyCode.L))
         {
+            hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerLongPass();
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
+            hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerShot();
         }
         else if (Input.GetKeyDown(KeyCode.H))
         {
+            hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerHeader();
         }
         else if (Input.GetKeyDown(KeyCode.F))
         {
+            hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerFTP();
         }
     }

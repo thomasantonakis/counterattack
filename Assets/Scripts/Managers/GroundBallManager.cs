@@ -10,7 +10,6 @@ public class GroundBallManager : MonoBehaviour
     public HexGrid hexGrid;
     private HexCell currentTargetHex = null;   // The currently selected target hex
     private HexCell lastClickedHex = null;     // The last hex that was clicked
-    private List<HexCell> highlightedHexes = new List<HexCell>();
     private bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     private bool passIsDangerous = false;      // To check if the pass is dangerous
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
@@ -87,7 +86,7 @@ public class GroundBallManager : MonoBehaviour
         }
         else if (difficulty == 2)
         {
-            ClearHighlightedHexes();
+            hexGrid.ClearHighlightedHexes();
             HighlightValidGroundPassPath(pathHexes, isDangerous);
             PopulateGroundPathInterceptions(clickedHex);
             diceRollsPending = defendingHexes.Count; // is this relevant here?
@@ -126,7 +125,7 @@ public class GroundBallManager : MonoBehaviour
             }
             else
             {
-                ClearHighlightedHexes();
+                hexGrid.ClearHighlightedHexes();
                 HighlightValidGroundPassPath(pathHexes, isDangerous);
                 currentTargetHex = clickedHex;
                 lastClickedHex = clickedHex;  // Set for confirmation click
@@ -165,7 +164,7 @@ public class GroundBallManager : MonoBehaviour
             }
             else
             {
-                ClearHighlightedHexes();
+                hexGrid.ClearHighlightedHexes();
                 HighlightValidGroundPassPath(pathHexes, isDangerous);
                 currentTargetHex = clickedHex; // Set this as the current target hex
                 lastClickedHex = clickedHex; // Track the last clicked hex
@@ -222,24 +221,15 @@ public class GroundBallManager : MonoBehaviour
         {
             if (hex == null) continue; // to next hex (loop)
             hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
-            highlightedHexes.Add(hex);  // Track the highlighted hexes
+            hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes
         }
-    }
-
-    public void ClearHighlightedHexes()
-    {
-        foreach (HexCell hex in highlightedHexes)
-        {
-            hex.ResetHighlight();  // Assuming there's a method in HexCell to reset the highlight
-        }
-        highlightedHexes.Clear();  // Clear the list of highlighted hexes
     }
 
     public void PopulateGroundPathInterceptions(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
-        ClearHighlightedHexes();
+        hexGrid.ClearHighlightedHexes();
         // Remove the ball's current hex from the path
         pathHexes.Remove(ballHex);
 
@@ -276,7 +266,7 @@ public class GroundBallManager : MonoBehaviour
             }
 
             hex.HighlightHex("ballPath");  // Highlight the path
-            highlightedHexes.Add(hex);
+            hexGrid.highlightedHexes.Add(hex);
         }
     }
 
@@ -397,7 +387,7 @@ public class GroundBallManager : MonoBehaviour
         // Adjust the ball's height based on occupancy (after movement is completed)
         ball.AdjustBallHeightBasedOnOccupancy();  // Ensure this method is public in Ball.cs
         // Now clear the highlights after the movement
-        ClearHighlightedHexes();
+        hexGrid.ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");
     }
 

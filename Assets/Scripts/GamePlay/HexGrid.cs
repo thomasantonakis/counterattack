@@ -17,6 +17,7 @@ public class HexGrid : MonoBehaviour
     public Ball ball;
     // public GameInputManager gameInputManager;
     public GroundBallManager groundBallManager;
+    public List<HexCell> highlightedHexes = new List<HexCell>();
 
     private void Start()
     {
@@ -37,72 +38,6 @@ public class HexGrid : MonoBehaviour
     {
         DetectHexUnderMouse();
     }
-    
-    // public void InitializePlayers(int defenderCount, int attackerCount)
-    // {
-    //     List<HexCell> potentialSpawns = new List<HexCell>();
-
-    //     // Gather inbound hexes for potential spawning locations
-    //     foreach (HexCell hex in cells)
-    //     {
-    //         if (!hex.isOutOfBounds)  // Skip out-of-bounds hexes
-    //         {
-    //             potentialSpawns.Add(hex);
-    //         }
-    //     }
-    //     // Shuffle and spawn defenders
-    //     for (int i = 0; i < defenderCount && potentialSpawns.Count > 0; i++)
-    //     {
-    //         int randomIndex = Random.Range(0, potentialSpawns.Count);
-    //         HexCell defenseHex = potentialSpawns[randomIndex];
-    //         defenseHex.isDefenseOccupied = true;  // Mark as defender
-    //         defenseHex.HighlightHex("isDefenseOccupied");
-    //         potentialSpawns.RemoveAt(randomIndex);
-    //     }
-    //     AddManualPlayer(0, 0, "attack");
-    //     // AddManualPlayer(0, 1, "defense");
-    //     // AddManualPlayer(0, -1, "defense");
-    //     // Shuffle and spawn attackers
-    //     for (int i = 0; i < attackerCount-1 && potentialSpawns.Count > 0; i++)
-    //     {
-    //         int randomIndex = Random.Range(0, potentialSpawns.Count);
-    //         HexCell attackHex = potentialSpawns[randomIndex];
-    //         attackHex.isAttackOccupied = true;  // Mark as attacker
-    //         attackHex.HighlightHex("isAttackOccupied");  // Optional: you can use a different color for attackers
-    //         potentialSpawns.RemoveAt(randomIndex);
-    //     }
-    // }
-
-    // private void AddManualPlayer(int x, int z, string team)
-    // {
-    //     // Convert x, z coordinates to Vector3Int (if needed by your grid structure)
-    //     Vector3Int coordinates = new Vector3Int(x, 0, z);  // Assuming y-coordinate is 0 in your grid
-    //     // Get the HexCell at the specific coordinates
-    //     HexCell manualHex = GetHexCellAt(coordinates);
-    //     if (manualHex != null && !manualHex.isOutOfBounds && !manualHex.isDefenseOccupied && !manualHex.isAttackOccupied) // Check if the hex is valid
-    //     {
-    //         if (team == "attack")
-    //         {
-    //             manualHex.isAttackOccupied = true;  // Mark this hex as an obstacle
-    //             manualHex.HighlightHex("isAttackOccupied");  // Optional: Highlight it to visualize the obstacle
-    //             Debug.Log($"Manually placed Attacker at ({x}, {z})");
-    //         }
-    //         else if (team == "defense")
-    //         {
-    //             manualHex.isDefenseOccupied = true;  // Mark this hex as an obstacle
-    //             manualHex.HighlightHex("isDefenseOccupied");  // Optional: Highlight it to visualize the obstacle
-    //             Debug.Log($"Manually placed defender at ({x}, {z})");
-    //         }
-    //         else
-    //         {
-    //             return;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         Debug.LogWarning($"Unable to place defender at ({x}, {z}) - Invalid or occupied hex.");
-    //     }
-    // }
 
     void CreateGrid()
     {
@@ -405,6 +340,18 @@ public class HexGrid : MonoBehaviour
         topPlane.transform.parent = outOfBoundsParent.transform;
         bottomPlane.transform.parent = outOfBoundsParent.transform;
     }
+
+    public void ClearHighlightedHexes()
+    {
+        foreach (HexCell hex in highlightedHexes)
+        {
+            if (hex != null) 
+            {
+                hex.ResetHighlight();  // Assuming this method resets the color of the hex
+            }
+        }
+        highlightedHexes.Clear();  // Clear the list after resetting
+    }
     
     void DetectHexUnderMouse()
     {
@@ -429,7 +376,7 @@ public class HexGrid : MonoBehaviour
                     var (isValid, isDangerous, pathHexes) = groundBallManager.ValidateGroundPassPath(hoveredHex); // Use GameInputManager logic
                     if (isValid)
                     {
-                        groundBallManager.ClearHighlightedHexes();
+                        ClearHighlightedHexes();
                         groundBallManager.HighlightValidGroundPassPath(pathHexes, isDangerous); // Highlight based on danger
                     }
                 }
