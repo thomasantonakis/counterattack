@@ -394,6 +394,8 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
         // Wait for the ball movement to complete
         yield return StartCoroutine(ball.MoveToCell(targetHex));
+        // Adjust the ball's height based on occupancy (after movement is completed)
+        ball.AdjustBallHeightBasedOnOccupancy();  // Ensure this method is public in Ball.cs
         // Now clear the highlights after the movement
         ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");

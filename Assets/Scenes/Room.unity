@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 501380954}
   - component: {fileID: 501380953}
   m_Layer: 0
-  m_Name: PlayerTokerManger
+  m_Name: Player Tokens
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

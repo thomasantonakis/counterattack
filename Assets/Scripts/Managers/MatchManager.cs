@@ -25,6 +25,7 @@ public class MatchManager : MonoBehaviour
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
     }
     public event Action OnGameSettingsLoaded;
+    public event Action OnPlayersInstantiated;
     public enum TeamInAttack
     {
         Home,
@@ -98,6 +99,15 @@ public class MatchManager : MonoBehaviour
         //     // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
         //     // You can also trigger transitions between game states based on player actions
         // }
+    }
+
+    // Call this when players are fully instantiated
+    public void NotifyPlayersInstantiated()
+    {
+        if (OnPlayersInstantiated != null)
+        {
+            OnPlayersInstantiated.Invoke();
+        }
     }
 
     // Example method to start the match

@@ -10,12 +10,17 @@ public class Ball : MonoBehaviour
     private bool isBallSelected = false;  // Track if the ball is selected
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
     [SerializeField] public float ballRadius = 0.6474f;
+    private bool playersInstantiated = false;  // New flag to track when players are ready
 
     IEnumerator Start()
     {
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
+        // Subscribe to the event to know when players are instantiated
+        MatchManager.Instance.OnPlayersInstantiated += PlayersReady;  // Subscribe to event
 
+        // Wait for the players to be instantiated
+        yield return new WaitUntil(() => playersInstantiated);
         // Now the grid is initialized, place the ball at the initial hex
         HexCell startingHex = hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0));
 
@@ -28,6 +33,33 @@ public class Ball : MonoBehaviour
         {
             Debug.LogError("Starting hex is null!");
         }
+        AdjustBallHeightBasedOnOccupancy();
+    }
+
+    // This method is called when players are ready
+    private void PlayersReady()
+    {
+        playersInstantiated = true;  // Set the flag to true when players are ready
+    }
+
+    // Adjust the ball height based on player occupancy
+    public void AdjustBallHeightBasedOnOccupancy()
+    {
+        if (currentCell == null)
+        {
+            return; // No current cell to check
+        }
+
+        // Check if the hex is occupied by a player (attacker or defender)
+        float yOffset = 0.2f;  // Default height on the ground
+        if (currentCell.isAttackOccupied || currentCell.isDefenseOccupied)
+        {
+            yOffset = 0.5f;  // Lift the ball when it's on a player token
+        }
+
+        // Set the ball's position
+        Vector3 newPosition = new Vector3(currentCell.GetHexCenter().x, yOffset, currentCell.GetHexCenter().z);
+        transform.position = newPosition;
     }
 
     public void PlaceAtCell(HexCell cell)
@@ -39,7 +71,8 @@ public class Ball : MonoBehaviour
         }
 
         currentCell = cell;  // Set the current hex to the given cell
-        transform.position = cell.GetHexCenter();  // Place at the center of the hex
+        // transform.position = cell.GetHexCenter();  // Place at the center of the hex
+        AdjustBallHeightBasedOnOccupancy();
     }
 
     public IEnumerator MoveToCell(HexCell newHex)

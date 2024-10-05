@@ -103,6 +103,8 @@ public class PlayerTokenManager : MonoBehaviour
         {
             CreateTeam(blueKitPrefab, "Away", awayTeamHexes);
         }
+        // After players are instantiated
+        MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
     void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes)
     {
