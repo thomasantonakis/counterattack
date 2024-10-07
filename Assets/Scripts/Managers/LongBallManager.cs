@@ -48,28 +48,22 @@ public class LongBallManager : MonoBehaviour
         }
     }
     
-    public void HandleLongBallProcess()
+    public void HandleLongBallProcess(HexCell clickedHex)
     {
-        // Debug.Log("Processing long ball...");
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            clickedHex = hit.collider.GetComponent<HexCell>();
-            if (clickedHex != null)
-            { 
-                Debug.Log($"Clicked hex: {clickedHex.coordinates}");
-                HexCell ballHex = ball.GetCurrentHex();
-                if (ballHex == null)
-                {
-                    Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
-                    return;
-                }
-                else
-                {
-                    // Now handle the pass based on difficulty
-                    HandleLongBallBasedOnDifficulty(clickedHex);
-                }   
+        if (clickedHex != null)
+        { 
+            Debug.Log($"Clicked hex: {clickedHex.coordinates}");
+            HexCell ballHex = ball.GetCurrentHex();
+            if (ballHex == null)
+            {
+                Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
+                return;
             }
+            else
+            {
+                // Now handle the pass based on difficulty
+                HandleLongBallBasedOnDifficulty(clickedHex);
+            }   
         }
     }
 

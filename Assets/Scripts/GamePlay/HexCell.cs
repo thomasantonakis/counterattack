@@ -84,6 +84,20 @@ public class HexCell : MonoBehaviour
                 hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason
                 break;
         }
+        // // Apply the color to the hex based on the reason
+        // hexRenderer.material.color = reason switch
+        // {
+        //   "hover" => originalColor * 0.5f,// Darken the hex on hover
+        //   "ballPath" => Color.blue,// Use the provided color for the ball path
+        //   "dangerousPass" => Color.magenta,// Use the provided color for the ball path
+        //   "impossiblePass" => Color.magenta * 0.5f,// Use the provided color for the ball path
+        //   "longPass" => Color.blue * 3f,
+        //   "longPassDifficult" => Color.blue * 2f,
+        //   "isDefenseOccupied" => Color.red,
+        //   "isAttackOccupied" => Color.green,
+        //   // Add other cases if needed
+        //   _ => originalColor,// Reset to original color if no valid reason
+        // };
     }
 
     public void ResetHighlight()

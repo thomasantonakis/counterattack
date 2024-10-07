@@ -70,6 +70,8 @@ public class HexGrid : MonoBehaviour
         HexCell cell = Instantiate(hexCellPrefab, position, Quaternion.identity, transform);
         cell.coordinates = new Vector3Int(x, 0, z);
         cell.name = $"HexCell [{x}, {z}]";  // Assign the name to the GameObject
+        // Assign the layer to the GameObject
+        cell.gameObject.layer = LayerMask.NameToLayer("HexGrid");
         // Assign dark hex status here
         if (ShouldBeDarkHex(x, z))
         {

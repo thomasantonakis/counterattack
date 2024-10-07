@@ -7,32 +7,40 @@ using System.Linq;
 
 public class GameInputManager : MonoBehaviour
 {
-    public CameraController cameraController;  // Reference to the camera controller
+    public CameraController cameraController;  
     public GroundBallManager groundBallManager;
     public LongBallManager longBallManager;
-    public Ball ball;  // Reference to the ball
-    public HexGrid hexGrid;  // Add a reference to the HexGrid
+    public Ball ball;  
+    public HexGrid hexGrid; 
     public MatchManager matchManager;
-    // Variables to track mouse movement for dragging
-    private Vector3 mouseDownPosition;  // Where the mouse button was pressed
-    private bool isDragging = false;    // Whether a drag is happening
-    public float dragThreshold = 10f;   // Sensitivity to detect dragging vs. clicking (in pixels)
-    
+
+    public LayerMask tokenLayerMask;  // Layer for player tokens
+    public LayerMask hexLayerMask;    // Layer for hex grid
+
+    private Vector3 mouseDownPosition;  
+    private bool isDragging = false;    
+    public float dragThreshold = 10f;   
+
     void Start()
     {
-        TestHexConversions();
+        // TestHexConversions();
     }
 
     void Update()
     {
-        // Always handle camera movement with the keyboard, regardless of mouse input
         cameraController.HandleCameraInput();
         HandleMouseInput();
-        // Handle game-specific inputs based on the current match state
+
         if (MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
         {
             MatchManager.Instance.StartMatch();
         }
+
+        HandleSpecialInputs();
+    }
+
+    void HandleSpecialInputs()
+    {
         if (Input.GetKeyDown(KeyCode.P))
         {
             hexGrid.ClearHighlightedHexes(); 
@@ -52,71 +60,92 @@ public class GameInputManager : MonoBehaviour
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerLongPass();
         }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            hexGrid.ClearHighlightedHexes(); 
-            MatchManager.Instance.TriggerShot();
-        }
-        else if (Input.GetKeyDown(KeyCode.H))
-        {
-            hexGrid.ClearHighlightedHexes(); 
-            MatchManager.Instance.TriggerHeader();
-        }
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            hexGrid.ClearHighlightedHexes(); 
-            MatchManager.Instance.TriggerFTP();
-        }
     }
 
     void HandleMouseInput()
     {
-        // When the left mouse button is pressed down
         if (Input.GetMouseButtonDown(0))
         {
-            mouseDownPosition = Input.mousePosition;  // Store the initial mouse position
-            isDragging = false;  // Reset dragging flag
+            mouseDownPosition = Input.mousePosition;
+            isDragging = false;
         }
-        // While the left mouse button is held down
+        
         if (Input.GetMouseButton(0))
         {
-            // Check if mouse movement exceeds the drag threshold
             if (!isDragging && Vector3.Distance(mouseDownPosition, Input.mousePosition) > dragThreshold)
             {
-                isDragging = true;  // Consider this a drag
+                isDragging = true;
             }
 
-            // If dragging, handle camera movement
             if (isDragging)
             {
-                cameraController.HandleCameraInput();  // Move the camera
+                cameraController.HandleCameraInput();
             }
         }
-        // When the left mouse button is released
+
         if (Input.GetMouseButtonUp(0))
         {
-            if (!isDragging && ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
+            if (!isDragging)
             {
-                // Handle ball movement or path highlighting
-                groundBallManager.HandleGroundBallPath();
+                HandleClick();
             }
-            if (!isDragging && ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
-            {
-                // Handle ball movement or path highlighting
-                longBallManager.HandleLongBallProcess();
-            }
-            // Reset dragging state
             isDragging = false;
         }
     }
 
-    public void TestHexConversions()
+    // This method handles the click logic for tokens and hexes
+    void HandleClick()
     {
-        Vector3Int cubeCoords = new Vector3Int(3, -3, 0); // Example cube coordinates
-        Vector2Int offsetCoords = HexGridUtils.CubeToOffset(cubeCoords);  // Convert cube to offset (even-q)
-        Vector3Int convertedBackToCube = HexGridUtils.OffsetToCube(offsetCoords.x, offsetCoords.y);  // Convert offset back to cube
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-        Debug.Log($"Cube: {cubeCoords}, Offset: {offsetCoords}, Converted Back to Cube: {convertedBackToCube}");
+        // Check if we hit a token first
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, tokenLayerMask))
+        {
+            Ray hexRay = new Ray(hit.point + Vector3.up * 0.1f, Vector3.down);
+            RaycastHit hexHit;
+
+            // Raycast down to detect the hex beneath the token
+            if (Physics.Raycast(hexRay, out hexHit, Mathf.Infinity, hexLayerMask))
+            {
+                HexCell clickedHex = hexHit.collider.GetComponent<HexCell>();
+                if (clickedHex != null)
+                {
+                    HandleHexClick(clickedHex);
+                }
+            }
+        }
+        else if (Physics.Raycast(ray, out hit, Mathf.Infinity, hexLayerMask))
+        {
+            HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+            if (clickedHex != null)
+            {
+                HandleHexClick(clickedHex);
+            }
+        }
     }
 
+    private void HandleHexClick(HexCell hex)
+    {
+        Debug.Log($"Hex clicked: {hex.name}");
+
+        // Check for Ground Ball and Long Ball state handling
+        if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
+        {
+            groundBallManager.HandleGroundBallPath(hex);
+        }
+        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
+        {
+            longBallManager.HandleLongBallProcess(hex);
+        }
+    }
+
+    // public void TestHexConversions()
+    // {
+    //     Vector3Int cubeCoords = new Vector3Int(3, -3, 0); 
+    //     Vector2Int offsetCoords = HexGridUtils.CubeToOffset(cubeCoords);
+    //     Vector3Int convertedBackToCube = HexGridUtils.OffsetToCube(offsetCoords.x, offsetCoords.y);
+
+    //     Debug.Log($"Cube: {cubeCoords}, Offset: {offsetCoords}, Converted Back to Cube: {convertedBackToCube}");
+    // }
 }

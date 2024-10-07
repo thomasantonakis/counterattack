@@ -467,6 +467,12 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   matchManager: {fileID: 622907910}
+  tokenLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  hexLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   dragThreshold: 10
 --- !u!1 &480623213
 GameObject:

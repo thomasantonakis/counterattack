@@ -25,26 +25,21 @@ public class GroundBallManager : MonoBehaviour
             PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when D is pressed
         }
     }
-    public void HandleGroundBallPath()
+    public void HandleGroundBallPath(HexCell clickedHex)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (clickedHex != null)
         {
-            HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-            if (clickedHex != null)
+            HexCell ballHex = ball.GetCurrentHex();
+            if (ballHex == null)
             {
-                HexCell ballHex = ball.GetCurrentHex();
-                if (ballHex == null)
-                {
-                    Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
-                    return;
-                }
-                else
-                {
-                    // Now handle the pass based on difficulty
-                    HandleGroundPassBasedOnDifficulty(clickedHex);
-                }   
+                Debug.LogError("Ball's current hex is null! Ensure the ball has been placed on the grid.");
+                return;
             }
+            else
+            {
+                // Now handle the pass based on difficulty
+                HandleGroundPassBasedOnDifficulty(clickedHex);
+            }   
         }
     }
 
@@ -174,6 +169,7 @@ public class GroundBallManager : MonoBehaviour
 
     public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex)
     {
+        hexGrid.ClearHighlightedHexes();
         HexCell ballHex = ball.GetCurrentHex();
         // Step 1: Ensure the ballHex and targetHex are valid
         if (ballHex == null || targetHex == null)
