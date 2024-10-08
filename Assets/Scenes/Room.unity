@@ -538,6 +538,8 @@ MonoBehaviour:
   isMoving: 0
   hexGrid: {fileID: 1405702520}
   ballRadius: 0.6474
+  groundHeightOffset: 0.2
+  playerHeightOffset: 0.5
 --- !u!64 &390494643
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1999,6 +2001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
   movementRange: 5
 --- !u!1 &1393973651
 GameObject:

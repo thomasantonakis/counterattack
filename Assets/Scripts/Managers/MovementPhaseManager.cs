@@ -6,6 +6,7 @@ public class MovementPhaseManager : MonoBehaviour
 {
     private PlayerToken selectedToken;
     public HexGrid hexGrid;  // Reference to the HexGrid
+    public Ball ball;
     public int movementRange = 5;  // Maximum range of movement for a player
 
     // This method will be called when a player token is clicked
@@ -58,6 +59,12 @@ public class MovementPhaseManager : MonoBehaviour
     {
         bool isValid = hexGrid.highlightedHexes.Contains(hex);  // Check if the clicked hex is in the list of valid hexes
         Debug.Log($"IsHexValidForMovement called for {hex.name}: {isValid}");
+        // If the hex is not valid, clear all highlights
+        if (!isValid)
+        {
+            hexGrid.ClearHighlightedHexes();  // Clear the highlights if an invalid hex is clicked
+            Debug.Log("Invalid hex clicked. All highlights cleared.");
+        }
         return isValid;
     }
 
@@ -69,22 +76,22 @@ public class MovementPhaseManager : MonoBehaviour
             return;
         }
 
-        // // Find the path from the current hex to the target hex
-        // List<HexCell> path = HexGridUtils.FindPath(selectedToken.GetCurrentHex(), targetHex, hexGrid);
+        // Find the path from the current hex to the target hex
+        List<HexCell> path = HexGridUtils.FindPath(selectedToken.GetCurrentHex(), targetHex, hexGrid);
 
-        // if (path == null || path.Count == 0)
-        // {
-        //     Debug.LogError("No valid path found to the target hex.");
-        //     return;
-        // }
+        if (path == null || path.Count == 0)
+        {
+            Debug.LogError("No valid path found to the target hex.");
+            return;
+        }
 
 
         // Start the token movement across the hexes (this can be animated)
-        StartCoroutine(MoveTokenAlongPath(selectedToken, targetHex));
+        StartCoroutine(MoveTokenAlongPath(selectedToken, path));
     }
 
     // Coroutine to move the token one hex at a time
-    private IEnumerator MoveTokenAlongPath(PlayerToken token, HexCell targetHex)
+    private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)
     // private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)
     {
         // Get the current Y position of the token (to maintain it during the movement)
@@ -103,23 +110,55 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogError("Previous hex is null. Token might not be assigned to a valid hex.");
         }
         // Loop through each hex in the path
-        // foreach (HexCell step in path)
+        foreach (HexCell step in path)
+        {
+            Vector3 startPosition = token.transform.position;  // Starting position for the current hex
+            Vector3 targetPosition = new Vector3(step.GetHexCenter().x, originalY, step.GetHexCenter().z);  // Target position for the next hex
+            float t = 0;  // Timer for smooth transition
+            float moveDuration = 0.3f;  // Duration of the movement between hexes
+            // Smoothly move the token between hexes
+            while (t < 1f)
+            {
+                t += Time.deltaTime / moveDuration;
+                token.transform.position = Vector3.Lerp(startPosition, targetPosition, t);  // Interpolate the position
+                // If the player is carrying the ball, move the ball alongside the player
+                if (ball.GetCurrentHex() == previousHex)
+                {
+                    // Move the ball alongside the player, keeping the correct Y offset
+                    Vector3 ballPosition = new Vector3(token.transform.position.x, ball.playerHeightOffset, token.transform.position.z);
+                    ball.transform.position = ballPosition;  // Move the ball along with the token
+                }
+                yield return null;  // Wait for the next frame
+            }
+            // Update the token's hex after reaching the next hex
+            token.SetCurrentHex(step);
+
+            // If the player is carrying the ball, move the ball along with the player
+            if (ball.GetCurrentHex() == previousHex)
+            {
+                ball.SetCurrentHex(step);  // Update ball's hex to the current step
+                ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's height
+            }
+
+            previousHex = step;  // Set the previous hex to the current step for the next iteration
+        }
+        // // If the player is carrying the ball (ball is on their previous hex), move the ball
+        // if (ball.GetCurrentHex() == previousHex)
         // {
-        //     Vector3 newPosition = new Vector3(step.GetHexCenter().x, originalY, step.GetHexCenter().z);
-        //     token.transform.position = newPosition;
-        //     yield return new WaitForSeconds(0.3f);  // Delay to simulate movement
+        //     ball.SetCurrentHex(targetHex);  // Update the ball's hex to the new player hex
+        //     ball.AdjustBallHeightBasedOnOccupancy();  // Adjust the ball's height automatically
         // }
-        // // Move the token directly to the target hex's X and Z, while keeping the Y constant
-        Vector3 newPosition = new Vector3(targetHex.GetHexCenter().x, originalY, targetHex.GetHexCenter().z);
-        token.transform.position = newPosition;  // Move the token to the target hex's center
-        yield return new WaitForSeconds(0.3f);  // Delay to simulate movement
-        // Set the token's new position to the final hex and update the occupation status
-        // HexCell finalHex = path[path.Count - 1];
-        HexCell finalHex = targetHex;
+        // Mark the final hex as occupied after the token reaches the destination
+        HexCell finalHex = path[path.Count - 1];
         // Set the token's new position to the final hex
-        token.SetCurrentHex(finalHex);
+        // token.SetCurrentHex(finalHex);
         finalHex.isAttackOccupied = true;  // Mark the target hex as occupied
-        Debug.Log($"Token arrived at hex: {finalHex.name}");
+        // Debug.Log($"Token arrived at hex: {finalHex.name}");
+        // Check if the player landed on the ball hex, adjust the ball height if necessary
+        if (finalHex == ball.GetCurrentHex())
+        {
+            ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's position based on occupancy
+        }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();
     }

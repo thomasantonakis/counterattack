@@ -11,6 +11,8 @@ public class Ball : MonoBehaviour
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
     [SerializeField] public float ballRadius = 0.6474f;
     private bool playersInstantiated = false;  // New flag to track when players are ready
+    public float groundHeightOffset = 0.2f;  // Height when ball is on the ground
+    public float playerHeightOffset = 0.5f;  // Height when ball is on a player
 
     IEnumerator Start()
     {
@@ -51,10 +53,10 @@ public class Ball : MonoBehaviour
         }
 
         // Check if the hex is occupied by a player (attacker or defender)
-        float yOffset = 0.2f;  // Default height on the ground
+        float yOffset = groundHeightOffset;  // Default height on the ground
         if (currentCell.isAttackOccupied || currentCell.isDefenseOccupied)
         {
-            yOffset = 0.5f;  // Lift the ball when it's on a player token
+            yOffset = playerHeightOffset;  // Lift the ball when it's on a player token
         }
 
         // Set the ball's position
@@ -108,6 +110,10 @@ public class Ball : MonoBehaviour
     public HexCell GetCurrentHex()
     {
         return currentCell;
+    }
+    public HexCell SetCurrentHex(HexCell newHex)
+    {
+        return currentCell = newHex;
     }
 
     private void OnMouseDown()
