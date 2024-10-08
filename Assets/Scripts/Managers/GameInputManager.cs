@@ -10,6 +10,7 @@ public class GameInputManager : MonoBehaviour
     public CameraController cameraController;  
     public GroundBallManager groundBallManager;
     public LongBallManager longBallManager;
+    public MovementPhaseManager movementPhaseManager;
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
@@ -59,6 +60,11 @@ public class GameInputManager : MonoBehaviour
         {
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerLongPass();
+        }
+        // Only handle movement phase inputs if the game is in the Movement Phase
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        {
+            HandleMouseInputForMovement();
         }
     }
 
@@ -127,7 +133,7 @@ public class GameInputManager : MonoBehaviour
 
     private void HandleHexClick(HexCell hex)
     {
-        Debug.Log($"Hex clicked: {hex.name}");
+        // Debug.Log($"Hex clicked: {hex.name}");
 
         // Check for Ground Ball and Long Ball state handling
         if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
@@ -137,6 +143,34 @@ public class GameInputManager : MonoBehaviour
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
         {
             longBallManager.HandleLongBallProcess(hex);
+        }
+    }
+
+    void HandleMouseInputForMovement()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                if (token != null)
+                {
+                    // Token was clicked, pass it to the MovementPhaseManager
+                    movementPhaseManager.HandleTokenSelection(token);
+                }
+            }
+            else
+            {
+                // Only print the clicked hex if it's not a token
+                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                if (clickedHex != null)
+                {
+                    Debug.Log($"Hex clicked: {clickedHex.name}");
+                }
+            }
         }
     }
 

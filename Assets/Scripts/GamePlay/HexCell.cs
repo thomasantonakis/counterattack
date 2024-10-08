@@ -53,6 +53,7 @@ public class HexCell : MonoBehaviour
     public void HighlightHex(string reason)
     {
         // Apply the color to the hex based on the reason
+        // Debug.Log($"Highlighting hex {name} for reason: {reason}");
         switch (reason)
         {
             case "hover":
@@ -78,6 +79,9 @@ public class HexCell : MonoBehaviour
                 break;
             case "isAttackOccupied":
                 hexRenderer.material.color = Color.green;
+                break;
+            case "PaceAvailable":
+                hexRenderer.material.color = Color.yellow;
                 break;
             // Add other cases if needed
             default:

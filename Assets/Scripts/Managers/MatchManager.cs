@@ -23,6 +23,7 @@ public class MatchManager : MonoBehaviour
         WaitingForCornerTaker, // An attacker must be chosen to take the Corner Kick
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
+        MovementPhaseAttack,
     }
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
@@ -220,13 +221,14 @@ public class MatchManager : MonoBehaviour
         {
             Debug.LogWarning("Cannot start Movement Phase from current state: " + currentState);
         }
-        else if ( currentState != GameState.KickoffBlown ) // High diff and Something Else is selected
-        {
-            Debug.LogWarning("Movement Not Available. You have already called something else");
-        }
+        // else if ( currentState != GameState.KickoffBlown ) // High diff and Something Else is selected
+        // {
+        //     Debug.LogWarning("Movement Not Available. You have already called something else");
+        // }
         else // low diff
         {
-            Debug.LogWarning("Movement Phase Activated");
+            currentState = GameState.MovementPhaseAttack;
+            Debug.Log("Movement Phase Activated");
         }
     }
     public void TriggerHighPass()

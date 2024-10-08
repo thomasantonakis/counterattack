@@ -393,4 +393,23 @@ public class HexGrid : MonoBehaviour
             }
         }
     }
+
+    // This method returns a list of valid movement hexes within the given range
+    public List<HexCell> GetValidMovementHexes(HexCell startHex, int range)
+    {
+        List<HexCell> validHexes = new List<HexCell>();
+
+        // Loop through all hexes in the grid to find valid hexes
+        foreach (HexCell hex in cells)
+        {
+            int distance = HexGridUtils.GetHexDistance(startHex.coordinates, hex.coordinates);
+            if (distance <= range && !hex.isAttackOccupied && !hex.isDefenseOccupied)
+            {
+                validHexes.Add(hex);
+                Debug.Log($"Valid hex found: {hex.name}");
+            }
+        }
+        Debug.Log($"Total valid hexes: {validHexes.Count}");
+        return validHexes;
+    }
 }

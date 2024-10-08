@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1212142691663447780}
   - component: {fileID: 1212142691663447781}
   - component: {fileID: 1212142691663447782}
+  - component: {fileID: 4395230147897122104}
   m_Layer: 0
   m_Name: RedKitPrefab
   m_TagString: Untagged
@@ -98,3 +99,17 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &4395230147897122104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212142691663447783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 577882303b9bf43b98dd9c733ce90be1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAttacker: 0
+  hasMoved: 0
