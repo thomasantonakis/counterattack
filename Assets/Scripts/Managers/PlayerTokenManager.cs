@@ -11,22 +11,22 @@ public class PlayerTokenManager : MonoBehaviour
     public HexGrid hexgrid;
     public GameObject textPrefab; // A prefab for TextMeshPro object for jersey numbers (you'll create this prefab)
     
-    // // Spawn positions for the players
-    // private Vector3[] homeTeamPositions = new Vector3[]
-    // {
-    //     new Vector3(-5, 0.2f, 0), new Vector3(-6, 0.2f, 1), new Vector3(-7, 0.2f, -1),
-    //     new Vector3(-8, 0.2f, 2), new Vector3(-9, 0.2f, -2), new Vector3(-10, 0.2f, 1),
-    //     new Vector3(-11, 0.2f, -1), new Vector3(-12, 0.2f, 0), new Vector3(-13, 0.2f, 1),
-    //     new Vector3(-14, 0.2f, -1)
-    // };
+    // Spawn positions for the players
+    private Vector3Int[] homeTeamPositions = new Vector3Int[]
+    {
+        new Vector3Int(0, 0, 0), new Vector3Int(6, 0, 6), new Vector3Int(8, 0, 8),
+        new Vector3Int(12, 0, 12), new Vector3Int(4, 0, 4), new Vector3Int(10, 0, 10),
+        new Vector3Int(-2, 0, -2), new Vector3Int(-4, 0, -4), new Vector3Int(-6, 0, -6),
+        new Vector3Int(-8, 0, -8)
+    };
 
-    // private Vector3[] awayTeamPositions = new Vector3[]
-    // {
-    //     new Vector3(5, 0.2f, 0), new Vector3(6, 0.2f, 1), new Vector3(7, 0.2f, -1),
-    //     new Vector3(8, 0.2f, 2), new Vector3(9, 0.2f, -2), new Vector3(10, 0.2f, 1),
-    //     new Vector3(11, 0.2f, -1), new Vector3(12, 0.2f, 0), new Vector3(13, 0.2f, 1),
-    //     new Vector3(14, 0.2f, -1)
-    // };
+    private Vector3Int[] awayTeamPositions = new Vector3Int[]
+    {
+        new Vector3Int(1, 0, 0), new Vector3Int(1, 0, -1), new Vector3Int(1, 0, 1),
+        new Vector3Int(1, 0, 2), new Vector3Int(3, 0, 3), new Vector3Int(4, 0, 3),
+        new Vector3Int(4, 0, 5), new Vector3Int(5, 0, 5), new Vector3Int(6, 0, 5),
+        new Vector3Int(7, 0, 6)
+    };
 
     void Start()
     {
@@ -40,10 +40,52 @@ public class PlayerTokenManager : MonoBehaviour
         yield return new WaitUntil(() => hexgrid != null && hexgrid.IsGridInitialized());  // Check if grid is ready
 
         // Now proceed to instantiate teams
-        InstantiateTeams(homeTeamCount, awayTeamCount);
+        InstantiateTeams(homeTeamPositions, awayTeamPositions);
+        // InstantiateRandomTeams(homeTeamCount, awayTeamCount);
     }
 
-    private void InstantiateTeams(int homeTeamCount, int awayTeamCount)
+    private void InstantiateTeams(Vector3Int[] home, Vector3Int[] away)
+    {
+        // Load GameSettings data from the MatchManager
+        string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
+        string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        List<HexCell> homeTeamHexes = new List<HexCell>();
+        List<HexCell> awayTeamHexes = new List<HexCell>();
+        foreach (Vector3Int vector in home)
+        {
+            HexCell hex = hexgrid.GetHexCellAt(vector); 
+            hex.isAttackOccupied = true;  // Mark as defender
+            hex.HighlightHex("isAttackOccupied");
+            homeTeamHexes.Add(hex);
+        } 
+        foreach (Vector3Int vector in away)
+        {
+            HexCell hex = hexgrid.GetHexCellAt(vector); 
+            hex.isDefenseOccupied = true;  // Mark as defender
+            hex.HighlightHex("isDefenseOccupied");
+            awayTeamHexes.Add(hex);
+        } 
+        if (homeKit == "R&W")
+        {
+            CreateTeam(redKitPrefab, "Home", homeTeamHexes);
+        }
+        else if (homeKit == "Bluw")
+        {
+            CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
+        }
+        // Do the same for Away team
+        if (awayKit == "R&W")
+        {
+            CreateTeam(redKitPrefab, "Away", awayTeamHexes);
+        }
+        else if (awayKit == "Blue")
+        {
+            CreateTeam(blueKitPrefab, "Away", awayTeamHexes);
+        }
+        // After players are instantiated
+        MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
+    }
+    private void InstantiateRandomTeams(int homeTeamCount, int awayTeamCount)
     {
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;

@@ -84,6 +84,9 @@ public class HexCell : MonoBehaviour
                 // Debug.Log($"Highlighting hex {name} for reason: {reason}");
                 hexRenderer.material.color = Color.yellow;
                 break;
+            case "DefenderZOI":
+                hexRenderer.material.color = Color.yellow * 0.5f;
+                break;
             // Add other cases if needed
             default:
                 hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason

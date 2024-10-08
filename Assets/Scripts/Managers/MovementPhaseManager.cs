@@ -39,17 +39,28 @@ public class MovementPhaseManager : MonoBehaviour
 
         // Clear any previously highlighted hexes before highlighting new ones
         hexGrid.ClearHighlightedHexes();
-        // Get valid movement hexes (based on movement range and occupation status)
-        List<HexCell> validHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, movementRange);
 
-        foreach (HexCell hex in validHexes)
+        // Get valid movement hexes and their distance/ZOI data
+        var (reachableHexes, distanceData) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
+
+        foreach (HexCell hex in reachableHexes)
         {
-            // Check if the hex is occupied
             if (!hex.isAttackOccupied && !hex.isDefenseOccupied)
             {
                 hexGrid.highlightedHexes.Add(hex);  // Store the valid hex directly in HexGrid's highlightedHexes list
-                // If the hex is not occupied, highlight it as available for movement
-                hex.HighlightHex("PaceAvailable");  // Use your existing highlighting logic
+
+                // Retrieve the distance and ZOI data for the current hex
+                var (hexDistance, enteredZOI) = distanceData[hex];
+
+                // Highlight the hex based on ZOI entry and range
+                if (hexDistance <= movementRange)
+                {
+                    hex.HighlightHex("PaceAvailable");  // Normal color for reachable hexes
+                }
+                else
+                {
+                    hex.HighlightHex("OutOfRange");  // Mark as out of range
+                }
             }
         }
     }
