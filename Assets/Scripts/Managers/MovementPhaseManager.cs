@@ -8,24 +8,84 @@ public class MovementPhaseManager : MonoBehaviour
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public int movementRange = 5;  // Maximum range of movement for a player
+    private int attackersMoved = 0;
+    private int defendersMoved = 0;
+    private int maxAttackerMoves = 4;  // Max moves allowed for attackers
+    private int maxDefenderMoves = 5;  // Max moves allowed for defenders
+    private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
+    private int attackersMovedIn2f2 = 0;
+    private int maxAttackerMovesIn2f2 = 2;
+    private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
+
 
     // This method will be called when a player token is clicked
     public void HandleTokenSelection(PlayerToken token)
     {
         // Clear previous highlights
         hexGrid.ClearHighlightedHexes();
-        if (selectedToken != null)
+
+        // Ensure the token can move in this phase and hasn't already moved
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
         {
-            // If a token is already selected, deselect it first
-            DeselectToken();
+            if (!token.isAttacker || movedTokens.Contains(token))
+            {
+                Debug.Log("Cannot move this token. Either it's not an attacker or it has already moved.");
+                return;  // Reject defender clicks or already moved tokens
+            }
         }
+        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+        {
+            if (token.isAttacker || movedTokens.Contains(token))
+            {
+                Debug.Log("Cannot move this token. Either it's not a defender or it has already moved.");
+                return;  // Reject attacker clicks or already moved tokens
+            }
+        }
+        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        {
+            // Only allow attackers who haven't moved yet in MovementPhaseAtt
+            if (!token.isAttacker || movedTokens.Contains(token))
+            {
+                Debug.Log("This token has already moved or is not an attacker.");
+                return;
+            }
 
+            // Limit the movement range to 2 hexes
+            selectedToken = token;
+            Debug.Log($"Selected Token for 2f2: {selectedToken.name}");
+
+            // Highlight valid movement hexes for the selected token with a range of 2 hexes
+            HighlightValidMovementHexes(selectedToken, movementRange2f2);
+            return;
+        }
+        // Select the token
         selectedToken = token;
-        Debug.Log($"Selected Token: {selectedToken.name}");
-
-        // Highlight valid movement hexes
+        // Highlight valid movement hexes for the selected token
         HighlightValidMovementHexes(selectedToken, movementRange);
     }
+    
+    public void StartMovementPhaseAtt()
+    {
+        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
+        attackersMoved = 0;
+        movedTokens.Clear();  // Clear the list of moved tokens
+        Debug.Log("Attacking Movement Phase started.");
+    }
+
+    public void StartMovementPhaseDef()
+    {
+        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseDef;
+        defendersMoved = 0;
+        movedTokens.Clear();  // Clear the list of moved tokens
+        Debug.Log("Defensive Movement Phase started.");
+    }
+
+    private void EndMovementPhase()
+    {
+        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
+        Debug.Log("Movement phase is over.");
+    }
+
 
     // This method will highlight valid movement hexes for the selected token
     private void HighlightValidMovementHexes(PlayerToken token, int movementRange)
@@ -96,10 +156,47 @@ public class MovementPhaseManager : MonoBehaviour
             return;
         }
 
-
         // Start the token movement across the hexes (this can be animated)
         StartCoroutine(MoveTokenAlongPath(selectedToken, path));
+        
+        // Movement for MovementPhase2f2 (the special phase for two attackers)
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        {
+            attackersMovedIn2f2++;
+            movedTokens.Add(selectedToken);  // Track this token as moved
+
+            if (attackersMovedIn2f2 >= maxAttackerMovesIn2f2)
+            {
+                Debug.Log("All two attackers have moved in 2f2 phase. Ending Movement Phase.");
+                EndMovementPhase();
+            }
+        }
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+        {
+            defendersMoved++;
+            movedTokens.Add(selectedToken);  // Track this token as moved
+
+            // Check if we should end the movement phase after defenders move
+            if (defendersMoved >= maxDefenderMoves)
+            {
+                Debug.Log("All defenders have moved. Redy for Movement Phase 2f2.");
+                MatchManager.Instance.StartMovementPhase2f2();
+            }
+        }
+        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        {
+            attackersMoved++;
+            movedTokens.Add(selectedToken);  // Track this token as moved
+
+            // Check if we should transition to defender phase
+            if (attackersMoved >= maxAttackerMoves)
+            {
+                Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
+                MatchManager.Instance.StartMovementPhaseDef();
+            }
+        }
     }
+
 
     // Coroutine to move the token one hex at a time
     private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)

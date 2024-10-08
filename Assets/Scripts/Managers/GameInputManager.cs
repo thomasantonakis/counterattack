@@ -61,8 +61,10 @@ public class GameInputManager : MonoBehaviour
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerLongPass();
         }
-        // Only handle movement phase inputs if the game is in the Movement Phase
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        // MovementPhase input handling
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
+            MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
+            MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
         {
             HandleMouseInputForMovement();
         }
@@ -164,7 +166,7 @@ public class GameInputManager : MonoBehaviour
                 if (token != null)
                 {
                     Debug.Log("Player token clicked");
-                    movementPhaseManager.HandleTokenSelection(token);
+                    movementPhaseManager.HandleTokenSelection(token);  // Select the token first
                 }
                 else
                 {
@@ -176,7 +178,7 @@ public class GameInputManager : MonoBehaviour
                         // Only move the token if it's a valid hex for movement
                         if (movementPhaseManager.IsHexValidForMovement(clickedHex))
                         {
-                            movementPhaseManager.MoveTokenToHex(clickedHex);
+                            movementPhaseManager.MoveTokenToHex(clickedHex);  // Move the selected token to the hex
                         }
                     }
                 }

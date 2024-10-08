@@ -24,6 +24,9 @@ public class MatchManager : MonoBehaviour
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
         MovementPhaseAttack,
+        MovementPhaseDef,
+        MovementPhase2f2,
+        MovementPhaseEnded,
     }
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
@@ -228,9 +231,22 @@ public class MatchManager : MonoBehaviour
         else // low diff
         {
             currentState = GameState.MovementPhaseAttack;
-            Debug.Log("Movement Phase Activated");
+            Debug.Log("Attacking Movement Phase started.");
         }
     }
+
+    public void StartMovementPhaseDef()
+    {
+        currentState = GameState.MovementPhaseDef;
+        Debug.Log("Defensive Movement Phase Activated");
+    }
+
+    public void StartMovementPhase2f2()
+    {
+        currentState = GameState.MovementPhase2f2;
+        Debug.Log("Movement Phase 2f2 Activated. Two attackers can move up to 2 hexes.");
+    }
+
     public void TriggerHighPass()
     {
         // if (currentState == GameState.KickoffBlown)
