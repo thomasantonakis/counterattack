@@ -129,7 +129,7 @@ public class PlayerTokenManager : MonoBehaviour
                 continue;
             }
 
-            Debug.Log($"Spawning player at hex: {spawnHexes[i].name}");
+            // Debug.Log($"Spawning player at hex: {spawnHexes[i].name}");
             Vector3 hexCenter = spawnHexes[i].GetHexCenter();
             Vector3 playerPosition = new Vector3(hexCenter.x, 0.2f, hexCenter.z);  // Position snapped to the hex center, y set to -0.2
             GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity, parentObject.transform);
@@ -139,10 +139,10 @@ public class PlayerTokenManager : MonoBehaviour
             // Attach PlayerToken component and set the current hex
             PlayerToken token = player.GetComponent<PlayerToken>();
             // Log the hex before assigning it
-            Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
+            // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
             // After assignment, confirm it was assigned
-            Debug.Log($"{player.name} assigned hex: {token.GetCurrentHex()?.name}");
+            // Debug.Log($"{player.name} assigned hex: {token.GetCurrentHex()?.name}");
             // Instantiate the TextMeshPro object for the jersey number
             GameObject numberTextObj = Instantiate(textPrefab, playerPosition, Quaternion.identity, player.transform);  // Make the text a child of the player
             if (numberTextObj == null)

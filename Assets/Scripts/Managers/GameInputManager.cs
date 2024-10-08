@@ -148,31 +148,42 @@ public class GameInputManager : MonoBehaviour
 
     void HandleMouseInputForMovement()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
         {
+            Debug.Log("HandleMouseInputForMovement called on click");
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
+                Debug.Log("Raycast hit something");
+
+                // Check if the player token was clicked
                 PlayerToken token = hit.collider.GetComponent<PlayerToken>();
                 if (token != null)
                 {
-                    // Token was clicked, pass it to the MovementPhaseManager
+                    Debug.Log("Player token clicked");
                     movementPhaseManager.HandleTokenSelection(token);
                 }
-            }
-            else
-            {
-                // Only print the clicked hex if it's not a token
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                if (clickedHex != null)
+                else
                 {
-                    Debug.Log($"Hex clicked: {clickedHex.name}");
+                    // Check if a valid hex was clicked
+                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                    if (clickedHex != null)
+                    {
+                        Debug.Log($"Hex clicked: {clickedHex.name}");
+                        // Only move the token if it's a valid hex for movement
+                        if (movementPhaseManager.IsHexValidForMovement(clickedHex))
+                        {
+                            movementPhaseManager.MoveTokenToHex(clickedHex);
+                        }
+                    }
                 }
             }
         }
     }
+
 
     // public void TestHexConversions()
     // {

@@ -81,6 +81,7 @@ public class HexCell : MonoBehaviour
                 hexRenderer.material.color = Color.green;
                 break;
             case "PaceAvailable":
+                // Debug.Log($"Highlighting hex {name} for reason: {reason}");
                 hexRenderer.material.color = Color.yellow;
                 break;
             // Add other cases if needed

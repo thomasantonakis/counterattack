@@ -34,7 +34,7 @@ public class PlayerToken : MonoBehaviour
             return;
         }
         currentHex = hex;
-        Debug.Log($"Token {name} assigned to Hex {currentHex.name}");
+        // Debug.Log($"Token {name} assigned to Hex {currentHex.name}");
         UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
     }
 
