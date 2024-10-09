@@ -27,7 +27,10 @@ public class MatchManager : MonoBehaviour
         MovementPhaseDef,
         MovementPhase2f2,
         MovementPhaseEnded,
-        SuccessfulTackle
+        SuccessfulTackle,
+        HighPassAttempt,
+        HighPassMoving,
+        HighPassCompleted
     }
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
@@ -252,9 +255,11 @@ public class MatchManager : MonoBehaviour
 
     public void TriggerHighPass()
     {
-        // if (currentState == GameState.KickoffBlown)
         if (true)
         {
+            currentState = GameState.HighPassAttempt;
+            ball.SelectBall();
+            Debug.Log("High Pass attempt mode activated.");
         }
         else
         {

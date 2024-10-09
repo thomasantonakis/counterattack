@@ -10,6 +10,7 @@ public class GameInputManager : MonoBehaviour
     public CameraController cameraController;  
     public GroundBallManager groundBallManager;
     public LongBallManager longBallManager;
+    public HighPassManager highPassManager;
     public MovementPhaseManager movementPhaseManager;
     public Ball ball;  
     public HexGrid hexGrid; 
@@ -150,6 +151,10 @@ public class GameInputManager : MonoBehaviour
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
         {
             longBallManager.HandleLongBallProcess(hex);
+        }
+        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttempt)
+        {
+            highPassManager.HandleHighPassProcess(hex);
         }
     }
 

@@ -169,6 +169,7 @@ public class GroundBallManager : MonoBehaviour
 
     public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex)
     {
+        // TODO: 0.0 -> 2.-9 seems valid
         hexGrid.ClearHighlightedHexes();
         HexCell ballHex = ball.GetCurrentHex();
         // Step 1: Ensure the ballHex and targetHex are valid
@@ -299,7 +300,8 @@ public class GroundBallManager : MonoBehaviour
         if (currentDefenderHex != null)
         {
             // Roll the dice (1 to 6)
-            int diceRoll = 6; // God Mode
+            // int diceRoll = 6; // God Mode
+            int diceRoll = 1; // Stupid Mode
             // int diceRoll = Random.Range(1, 7);
             Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
             isWaitingForDiceRoll = false;
