@@ -18,6 +18,7 @@ public class HexCell : MonoBehaviour
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
     private Renderer hexRenderer;
     private Color originalColor;
+    public PlayerToken occupyingToken;
 
     void Awake()
     {
@@ -240,4 +241,10 @@ public class HexCell : MonoBehaviour
         // Debug.Log($"Neighbors of hex ({coordinates.x}, {coordinates.z}): {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
         return neighbors;
     }
+
+    public PlayerToken GetOccupyingToken()
+    {
+        return occupyingToken;
+    }
+
 }

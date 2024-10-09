@@ -27,6 +27,7 @@ public class MatchManager : MonoBehaviour
         MovementPhaseDef,
         MovementPhase2f2,
         MovementPhaseEnded,
+        SuccessfulTackle
     }
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;

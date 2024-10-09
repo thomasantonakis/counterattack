@@ -180,6 +180,10 @@ public class PlayerTokenManager : MonoBehaviour
             player.layer = LayerMask.NameToLayer("Token");
             // Attach PlayerToken component and set the current hex
             PlayerToken token = player.GetComponent<PlayerToken>();
+            if (token == null)
+            {
+                token = player.AddComponent<PlayerToken>();
+            }
             // Log the hex before assigning it
             // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status

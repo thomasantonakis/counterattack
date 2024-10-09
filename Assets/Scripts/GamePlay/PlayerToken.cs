@@ -27,15 +27,21 @@ public class PlayerToken : MonoBehaviour
     }
 
     // Set the hex where the token will be located
-    public void SetCurrentHex(HexCell hex)
+    public void SetCurrentHex(HexCell newHex)
     {
-        if (hex == null)
+        if (currentHex != null)
         {
-            Debug.LogError("Hex is null, cannot set current hex for token.");
-            return;
+            // Clear the occupying token from the previous hex
+            currentHex.occupyingToken = null;
         }
-        currentHex = hex;
-        // Debug.Log($"Token {name} assigned to Hex {currentHex.name}");
+
+        if (newHex != null)
+        {
+            // Set the occupying token in the new hex
+            newHex.occupyingToken = this;
+        }
+
+        currentHex = newHex;  // Assign the new hex to the token
         UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
     }
 
