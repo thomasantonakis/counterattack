@@ -279,12 +279,22 @@ public class MovementPhaseManager : MonoBehaviour
             finalHex.isDefenseOccupied = true;  // Mark the target hex as occupied by a defender
         }
         // Debug.Log($"Token arrived at hex: {finalHex.name}");
-        // Check if the defender can intercept the ball if they are close
-        if (!token.isAttacker)  // Only defenders can intercept the ball
+        // Check if the defender has moved onto the ball's hex
+        if (!token.isAttacker && ball.GetCurrentHex() == finalHex && !MatchManager.Instance.attackHasPossession)
         {
+            // Defender picks up the loose ball
+            Debug.Log("Defender has picked up the loose ball!");
+            ball.SetCurrentHex(finalHex);  // Move the ball to the defender's hex
+            MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
+            MatchManager.Instance.UpdatePossessionAfterPass(finalHex);  // Update possession
+            MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;  // Update game state
+            ResetMovementPhase();  // End the movement phase
+        }
+        else
+        {
+            // If the ball is not picked up directly, check for nearby interception or tackle possibility
             HexCell ballHex = ball.GetCurrentHex();
-            
-            if (ballHex != null && ballHex != finalHex)
+            if (!token.isAttacker && ballHex != null && ballHex != finalHex)
             {
                 HexCell[] neighbors = finalHex.GetNeighbors(hexGrid);
 
