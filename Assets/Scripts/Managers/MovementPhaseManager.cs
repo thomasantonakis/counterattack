@@ -12,6 +12,11 @@ public class MovementPhaseManager : MonoBehaviour
     public int movementRange = 5;  // Maximum range of movement for a player
     private bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
     private bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
+    private bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
+    private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
+    private bool tackleAttackerRolled = false;  // Whether we're waiting for a dice roll
+    private int defenderDiceRoll;
+    private int attackerDiceRoll;
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
     private int attackersMoved = 0;
     private int defendersMoved = 0;
@@ -30,18 +35,31 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log("R key detected for interception dice roll.");
             PerformBallInterceptionDiceRoll();  // Trigger the dice roll when R is pressed
         }
+        // Handle tackle decision (either Tackle or No Tackle)
         else if (isWaitingForTackleDecision)
         {
-            if (Input.GetKeyDown(KeyCode.N))
+            if (Input.GetKeyDown(KeyCode.N))  // No tackle
             {
-                Debug.Log("Defender chose not to tackle.");
-                isWaitingForTackleDecision = false;  // End tackle decision waiting
+                Debug.Log("No tackle chosen.");
+                ResetTacklePhase();  // Reset tackle phase if no tackle is chosen
             }
-            else if (Input.GetKeyDown(KeyCode.T))
+            else if (Input.GetKeyDown(KeyCode.T))  // Tackle chosen
             {
-                Debug.Log("Defender chose to tackle.");
-                PerformTackle(selectedDefender);  // Perform the tackle attempt
-                isWaitingForTackleDecision = false;  // End tackle decision waiting
+                Debug.Log("Tackle chosen. Starting tackle dice rolls...");
+                isWaitingForTackleDecision = false;
+                StartTackleDiceRollSequence();  // Start the dice roll sequence for tackling
+            }
+        }
+        // Check for defender or attacker dice roll
+        else if (isWaitingForTackleRoll && Input.GetKeyDown(KeyCode.R))
+        {
+            if (!tackleDefenderRolled)
+            {
+                PerformTackleDiceRoll(isDefender: true);  // Defender rolls first
+            }
+            else if (!tackleAttackerRolled)
+            {
+                PerformTackleDiceRoll(isDefender: false);  // Attacker rolls second
             }
         }
     }
@@ -392,28 +410,84 @@ public class MovementPhaseManager : MonoBehaviour
         ResetMovementPhase();  // Reset the movement phase after interception
     }
 
-    private void PerformTackle(PlayerToken defender)
+    private void PerformTackleDiceRoll(bool isDefender)
     {
-        // Roll a dice (or implement your logic) to see if the tackle is successful
-        int attackerDiceRoll = Random.Range(1, 7);
-        int defenderDiceRoll = Random.Range(1, 7);
-        Debug.Log($"Tackle attempt: Defender roll = {defenderDiceRoll}, Attacker roll = {attackerDiceRoll}");
+        int diceRoll = Random.Range(1, 7);  // Roll a dice (1 to 6)
+        
+        // Rigged
+        if (isDefender)
+        {
+            defenderDiceRoll = 5;
+            tackleDefenderRolled = true;
+            Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
+        }
+        else
+        {
+            attackerDiceRoll = 2;
+            tackleAttackerRolled = true;
+            Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
+            StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
+        }
+        // Random
+        // if (isDefender)
+        // {
+        //     defenderDiceRoll = diceRoll;
+        //     tackleDefenderRolled = true;
+        //     Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
+        // }
+        // else
+        // {
+        //     attackerDiceRoll = diceRoll;
+        //     tackleAttackerRolled = true;
+        //     Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
+        //     StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
+        // }
+    }
 
-        if (defenderDiceRoll > attackerDiceRoll)  // Example: Successful tackle on roll of 5 or 6
+    private IEnumerator CompareTackleRolls()
+    {
+        isWaitingForTackleRoll = false;  // Stop waiting for rolls
+
+        if (defenderDiceRoll > attackerDiceRoll)
         {
             Debug.Log("Tackle successful! Defender wins possession of the ball.");
-            ball.SetCurrentHex(defender.GetCurrentHex());
-            MatchManager.Instance.ChangePossession();  // Change possession to defender's team
-            MatchManager.Instance.UpdatePossessionAfterPass(defender.GetCurrentHex());  // Update possession
-            ResetMovementPhase();
+            ball.SetCurrentHex(selectedDefender.GetCurrentHex());
+            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(selectedDefender.GetCurrentHex()));  // Move the ball to the defender's hex
+            MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
+            MatchManager.Instance.UpdatePossessionAfterPass(selectedDefender.GetCurrentHex());  // Update possession
+            ResetMovementPhase();  // End the movement phase after successful tackle
             MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
             Debug.Log("Movement phase ended due to successful tackle.");
         }
         else
         {
-            Debug.Log("Tackle failed. Attacker retains possession of the ball.");
+            Debug.Log("Tackle failed. Attacker retains possession.");
         }
+
+        ResetTacklePhase();  // Reset tackle phase after handling results
     }
+
+    private void StartTackleDiceRollSequence()
+    {
+        // Reset the tackle dice roll flags
+        tackleDefenderRolled = false;
+        tackleAttackerRolled = false;
+
+        // Set flag to wait for dice rolls
+        isWaitingForTackleRoll = true;
+
+        Debug.Log("Press R to roll the dice for tackle. Defender rolls first.");
+    }
+
+    private void ResetTacklePhase()
+    {
+        isWaitingForTackleDecision = false;
+        isWaitingForTackleRoll = false;
+        tackleDefenderRolled = false;
+        tackleAttackerRolled = false;
+        Debug.Log("Tackle phase reset.");
+    }
+
 
     private void ResetMovementPhase()
     {
