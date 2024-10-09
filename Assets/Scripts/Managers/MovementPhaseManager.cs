@@ -26,6 +26,8 @@ public class MovementPhaseManager : MonoBehaviour
     private int maxAttackerMovesIn2f2 = 2;
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
+    public bool isPlayerMoving = false;  // Tracks if a player is currently moving
+
 
     void Update()
     {
@@ -222,6 +224,7 @@ public class MovementPhaseManager : MonoBehaviour
     // Coroutine to move the token one hex at a time
     private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)
     {
+        isPlayerMoving = true;  // Player starts moving
         // Get the current Y position of the token (to maintain it during the movement)
         float originalY = token.transform.position.y;
         HexCell previousHex = token.GetCurrentHex();
@@ -327,6 +330,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();
+        isPlayerMoving = false;  // Player finished moving
     }
 
     private void StartBallInterceptionDiceRollSequence(HexCell defenderHex)

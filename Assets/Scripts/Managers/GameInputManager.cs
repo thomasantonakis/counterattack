@@ -62,9 +62,14 @@ public class GameInputManager : MonoBehaviour
             MatchManager.Instance.TriggerLongPass();
         }
         // MovementPhase input handling
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
-            MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
-            MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        if
+        (!movementPhaseManager.isPlayerMoving &&
+            (
+                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
+                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
+                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2
+            )
+        )
         {
             HandleMouseInputForMovement();
         }
