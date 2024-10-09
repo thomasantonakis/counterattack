@@ -174,6 +174,8 @@ public class MatchManager : MonoBehaviour
                 hex.ResetHighlight();  // Reset to normal if neither
             }
         }
+        // Now update the PlayerTokens to reflect the new possession
+        UpdatePlayerTokensAfterPossessionChange();
 
         Debug.Log($"Possession changed! {teamInAttack} now is the Attacking Team.");
     }
@@ -298,6 +300,28 @@ public class MatchManager : MonoBehaviour
         else
         {
         }
+    }
+
+    private void UpdatePlayerTokensAfterPossessionChange()
+    {
+        // Loop through all tokens in the game
+        PlayerToken[] allTokens = FindObjectsOfType<PlayerToken>();  // Find all tokens in the scene
+
+        foreach (PlayerToken token in allTokens)
+        {
+            // Determine if the token is now an attacker or a defender
+            if ((teamInAttack == TeamInAttack.Home && token.isHomeTeam) ||
+                (teamInAttack == TeamInAttack.Away && !token.isHomeTeam))
+            {
+                token.isAttacker = true;  // Set to attacker if the token's team is now in attack
+            }
+            else
+            {
+                token.isAttacker = false;  // Set to defender otherwise
+            }
+        }
+
+        Debug.Log("Player tokens updated after possession change.");
     }
 
     // Add other match-related methods here (like handling goals, score updates, etc.)

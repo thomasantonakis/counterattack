@@ -183,6 +183,7 @@ public class PlayerTokenManager : MonoBehaviour
             // Log the hex before assigning it
             // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
+            token.isHomeTeam = teamType == "Home";  // Set isHomeTeam based on team type
             // After assignment, confirm it was assigned
             // Debug.Log($"{player.name} assigned hex: {token.GetCurrentHex()?.name}");
             // Instantiate the TextMeshPro object for the jersey number

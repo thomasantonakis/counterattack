@@ -362,7 +362,7 @@ public class GroundBallManager : MonoBehaviour
         currentDefenderHex = null;
     }
 
-    private IEnumerator HandleGroundBallMovement(HexCell targetHex)
+    public IEnumerator HandleGroundBallMovement(HexCell targetHex)
     {
         // Ensure the ball and targetHex are valid
         if (ball == null)

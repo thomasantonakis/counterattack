@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerToken : MonoBehaviour
 {
     public bool isAttacker;   // Flag to identify if this is an attacker
+    public bool isHomeTeam;  // Whether the token belongs to the home team
     public bool hasMoved = false;  // Tracks if the player has moved this turn
 
     private HexCell currentHex;   // Reference to the current hex this token occupies

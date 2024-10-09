@@ -7,6 +7,7 @@ public class MovementPhaseManager : MonoBehaviour
     private PlayerToken selectedToken;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
+    public GroundBallManager groundBallManager;
     public int movementRange = 5;  // Maximum range of movement for a player
     private int attackersMoved = 0;
     private int defendersMoved = 0;
@@ -16,7 +17,18 @@ public class MovementPhaseManager : MonoBehaviour
     private int attackersMovedIn2f2 = 0;
     private int maxAttackerMovesIn2f2 = 2;
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
+    private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
+    private HexCell currentDefenderHex;  // Current defender hex to roll for
+    private bool isWaitingForDiceRoll = false;  // Whether we're waiting for a dice roll
 
+    void Update()
+    {
+        // Check if waiting for dice rolls and the R key is pressed
+        if (isWaitingForDiceRoll && Input.GetKeyDown(KeyCode.R))
+        {
+            PerformBallInterceptionDiceRoll();  // Trigger the dice roll when R is pressed
+        }
+    }
 
     // This method will be called when a player token is clicked
     public void HandleTokenSelection(PlayerToken token)
@@ -64,25 +76,26 @@ public class MovementPhaseManager : MonoBehaviour
         HighlightValidMovementHexes(selectedToken, movementRange);
     }
     
-    public void StartMovementPhaseAtt()
-    {
-        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
-        attackersMoved = 0;
-        movedTokens.Clear();  // Clear the list of moved tokens
-        Debug.Log("Attacking Movement Phase started.");
-    }
+    // public void StartMovementPhaseAtt()
+    // {
+    //     MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
+    //     attackersMoved = 0;
+    //     movedTokens.Clear();  // Clear the list of moved tokens
+    //     Debug.Log("Attacking Movement Phase started.");
+    // }
 
-    public void StartMovementPhaseDef()
-    {
-        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseDef;
-        defendersMoved = 0;
-        movedTokens.Clear();  // Clear the list of moved tokens
-        Debug.Log("Defensive Movement Phase started.");
-    }
+    // public void StartMovementPhaseDef()
+    // {
+    //     MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseDef;
+    //     defendersMoved = 0;
+    //     movedTokens.Clear();  // Clear the list of moved tokens
+    //     Debug.Log("Defensive Movement Phase started.");
+    // }
 
     private void EndMovementPhase()
     {
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
+        ResetMovementPhase();  // Reset the moved tokens and phase counters
         Debug.Log("Movement phase is over.");
     }
 
@@ -197,10 +210,8 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-
     // Coroutine to move the token one hex at a time
     private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)
-    // private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)
     {
         // Get the current Y position of the token (to maintain it during the movement)
         float originalY = token.transform.position.y;
@@ -208,7 +219,6 @@ public class MovementPhaseManager : MonoBehaviour
         if (previousHex != null)
         {
             // Debug.Log($"Token leaving hex: {previousHex.name}");
-            // Update the previous hex to no longer be occupied
             previousHex.isAttackOccupied = false;
             previousHex.isDefenseOccupied = false;
             previousHex.ResetHighlight();
@@ -240,7 +250,6 @@ public class MovementPhaseManager : MonoBehaviour
             }
             // Update the token's hex after reaching the next hex
             token.SetCurrentHex(step);
-
             // If the player is carrying the ball, move the ball along with the player
             if (ball.GetCurrentHex() == previousHex)
             {
@@ -250,25 +259,134 @@ public class MovementPhaseManager : MonoBehaviour
 
             previousHex = step;  // Set the previous hex to the current step for the next iteration
         }
-        // // If the player is carrying the ball (ball is on their previous hex), move the ball
-        // if (ball.GetCurrentHex() == previousHex)
-        // {
-        //     ball.SetCurrentHex(targetHex);  // Update the ball's hex to the new player hex
-        //     ball.AdjustBallHeightBasedOnOccupancy();  // Adjust the ball's height automatically
-        // }
         // Mark the final hex as occupied after the token reaches the destination
         HexCell finalHex = path[path.Count - 1];
-        // Set the token's new position to the final hex
-        // token.SetCurrentHex(finalHex);
-        finalHex.isAttackOccupied = true;  // Mark the target hex as occupied
+        if (token.isAttacker)
+        {
+            finalHex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
+        }
+        else
+        {
+            finalHex.isDefenseOccupied = true;  // Mark the target hex as occupied by a defender
+        }
         // Debug.Log($"Token arrived at hex: {finalHex.name}");
+        // Check if the defender can intercept the ball if they are close
+        if (!token.isAttacker)  // Only defenders can intercept the ball
+        {
+            HexCell ballHex = ball.GetCurrentHex();
+            
+            if (ballHex != null && ballHex != finalHex)
+            {
+                HexCell[] neighbors = finalHex.GetNeighbors(hexGrid);
+
+                foreach (HexCell neighbor in neighbors)
+                {
+                    if (neighbor == ballHex)
+                    {
+                        Debug.Log("Defender near the ball! Starting dice roll for interception.");
+                        StartBallInterceptionDiceRollSequence(finalHex);  // Start the interception dice roll sequence
+                        break;
+                    }
+                }
+            }
+        }
         // Check if the player landed on the ball hex, adjust the ball height if necessary
         if (finalHex == ball.GetCurrentHex())
         {
-            ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's position based on occupancy
+            ball.AdjustBallHeightBasedOnOccupancy();
         }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();
+    }
+
+    private void StartBallInterceptionDiceRollSequence(HexCell defenderHex)
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+
+        // Find all defenders near the ball
+        defenderHexesNearBall.Clear();
+        HexCell[] neighbors = ballHex.GetNeighbors(hexGrid);
+
+        foreach (HexCell neighbor in neighbors)
+        {
+            if (neighbor.isDefenseOccupied)
+            {
+                defenderHexesNearBall.Add(neighbor);
+            }
+        }
+
+        if (defenderHexesNearBall.Count > 0)
+        {
+            Debug.Log("Starting ball interception dice roll sequence... Press R to roll.");
+            currentDefenderHex = defenderHexesNearBall[0];  // Start with the first defender
+            isWaitingForDiceRoll = true;
+        }
+        else
+        {
+            Debug.LogWarning("No defenders near the ball for interception.");
+        }
+    }
+
+    public void PerformBallInterceptionDiceRoll()
+    {
+        if (currentDefenderHex != null)
+        {
+            // Roll the dice (1 to 6)
+            int diceRoll = 6; // God Mode
+            // int diceRoll = Random.Range(1, 7);
+            Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
+            isWaitingForDiceRoll = false;
+
+            if (diceRoll == 6)
+            {
+                // Defender successfully intercepts the ball
+                Debug.Log($"Ball intercepted by defender at {currentDefenderHex.coordinates}!");
+                StartCoroutine(HandleBallInterception(currentDefenderHex));
+                ResetBallInterceptionDiceRolls();
+            }
+            else
+            {
+                Debug.Log($"Defender at {currentDefenderHex.coordinates} failed to intercept.");
+                // Move to the next defender, if any
+                defenderHexesNearBall.Remove(currentDefenderHex);
+                if (defenderHexesNearBall.Count > 0)
+                {
+                    currentDefenderHex = defenderHexesNearBall[0];  // Move to the next defender
+                }
+                else
+                {
+                    Debug.Log("No more defenders to roll.");
+                }
+            }
+        }
+    }
+
+    private IEnumerator HandleBallInterception(HexCell defenderHex)
+    {
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
+
+        // Change possession to the defending team
+        MatchManager.Instance.ChangePossession();  
+        MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
+        MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+        // Reset the movement phase after interception
+        ResetMovementPhase();
+    }
+
+    private void ResetBallInterceptionDiceRolls()
+    {
+        defenderHexesNearBall.Clear();
+        currentDefenderHex = null;
+        isWaitingForDiceRoll = false;
+    }
+
+    private void ResetMovementPhase()
+    {
+        movedTokens.Clear();  // Reset the list of moved tokens
+        attackersMoved = 0;    // Reset the number of attackers that have moved
+        defendersMoved = 0;    // Reset the number of defenders that have moved
+        attackersMovedIn2f2 = 0;  // Reset the 2f2 phase counter
+        Debug.Log("Movement phase has been reset.");
     }
 
 
