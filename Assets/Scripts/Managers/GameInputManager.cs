@@ -168,18 +168,40 @@ public class GameInputManager : MonoBehaviour
                     Debug.Log("Player token clicked");
                     movementPhaseManager.HandleTokenSelection(token);  // Select the token first
                 }
-                else
+                // Check if the ball was clicked
+                Ball clickedBall = hit.collider.GetComponent<Ball>();
+                if (clickedBall != null)
                 {
-                    // Check if a valid hex was clicked
-                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                    if (clickedHex != null)
+                    Debug.Log("Ball clicked");
+                    HexCell ballHex = clickedBall.GetCurrentHex();  // Get the hex the ball is on
+                    PlayerToken ballToken = ballHex?.GetOccupyingToken();  // Check if a token occupies the hex where the ball is
+
+                    if (ballToken != null)
                     {
-                        Debug.Log($"Hex clicked: {clickedHex.name}");
-                        // Only move the token if it's a valid hex for movement
-                        if (movementPhaseManager.IsHexValidForMovement(clickedHex))
-                        {
-                            movementPhaseManager.MoveTokenToHex(clickedHex);  // Move the selected token to the hex
-                        }
+                        Debug.Log("Selecting the token carrying the ball");
+                        movementPhaseManager.HandleTokenSelection(ballToken);  // Select the token carrying the ball
+                        return;  // Stop further checks if the ball was clicked and token found
+                    }
+                }
+                // Check if a valid hex was clicked
+                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                if (clickedHex != null)
+                {
+                    Debug.Log($"Hex clicked: {clickedHex.name}");
+
+                    // Check if the hex is occupied by a token
+                    PlayerToken occupyingToken = clickedHex.GetOccupyingToken();
+                    if (occupyingToken != null)
+                    {
+                        Debug.Log("Hex is occupied by a token. Selecting the token instead.");
+                        movementPhaseManager.HandleTokenSelection(occupyingToken);  // Select the token on the clicked hex
+                        return;  // Stop further checks if the hex is occupied by a token
+                    }
+
+                    // If the hex is not occupied, check if it's valid for movement
+                    if (movementPhaseManager.IsHexValidForMovement(clickedHex))
+                    {
+                        movementPhaseManager.MoveTokenToHex(clickedHex);  // Move the selected token to the hex
                     }
                 }
             }
