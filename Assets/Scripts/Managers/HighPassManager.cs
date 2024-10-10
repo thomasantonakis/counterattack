@@ -10,8 +10,7 @@ public class HighPassManager : MonoBehaviour
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
     public GameInputManager gameInputManager;
-    private PlayerToken selectedTokenForHighPass;  // Store selected token during High Pass phase
-
+    public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
     public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
@@ -98,6 +97,12 @@ public class HighPassManager : MonoBehaviour
                 isWaitingForConfirmation = false;  // Allow token selection after confirmation
                 // Clear selected token to prevent auto-selection of the attacker on the target hex
                 selectedToken = null;
+                // Lock the attacker on the target hex, so they cannot move during the movement phase
+                if (clickedHex.isAttackOccupied)
+                {
+                    lockedAttacker = clickedHex.GetOccupyingToken(); // Lock the attacker
+                    Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
+                }
                 // Start attacker movement phase
                 StartAttackerMovementPhase();  // New method to trigger attacker movement
             }
@@ -271,6 +276,7 @@ public class HighPassManager : MonoBehaviour
         isWaitingForAccuracyRoll = false;
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = false;
+        lockedAttacker = null;  // Unlock the attacker after the HP is done
     }
 
     private HexCell CalculateInaccurateTarget(HexCell startHex, int directionIndex, int distance)
@@ -688,6 +694,11 @@ public class HighPassManager : MonoBehaviour
         {
             Debug.LogError("Selected token does not have a valid hex!");
             return;
+        }
+        if (token == lockedAttacker)
+        {
+            Debug.Log("Locked attacker, no movement available.");
+            return;  // Skip highlighting movement hexes for this token
         }
 
         // Clear any previously highlighted hexes before highlighting new ones

@@ -242,7 +242,12 @@ public class GameInputManager : MonoBehaviour
                     // Ensure token is an attacker for the attacker phase, or defender for the defender phase
                     if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
                     {
-                        highPassManager.selectedToken = token;
+                        if (token == highPassManager.lockedAttacker)
+                        {
+                            Debug.LogWarning("This attacker is locked and cannot be moved.");
+                            return;  // Prevent the locked attacker from moving
+                        }
+                        highPassManager.selectedToken = token;  // Select a movable attacker
                     }
                     else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)
                     {
