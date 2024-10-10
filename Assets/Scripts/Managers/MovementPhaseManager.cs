@@ -163,16 +163,17 @@ public class MovementPhaseManager : MonoBehaviour
         return isValid;
     }
 
-    public void MoveTokenToHex(HexCell targetHex)
+    public void MoveTokenToHex(HexCell targetHex, PlayerToken token = null)
     {
-        if (selectedToken == null)
+        PlayerToken movingToken = token ?? selectedToken;
+        if (movingToken == null)
         {
             Debug.LogError("No token selected to move.");
             return;
         }
 
         // Find the path from the current hex to the target hex
-        List<HexCell> path = HexGridUtils.FindPath(selectedToken.GetCurrentHex(), targetHex, hexGrid);
+        List<HexCell> path = HexGridUtils.FindPath(movingToken.GetCurrentHex(), targetHex, hexGrid);
 
         if (path == null || path.Count == 0)
         {
@@ -181,13 +182,13 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         // Start the token movement across the hexes (this can be animated)
-        StartCoroutine(MoveTokenAlongPath(selectedToken, path));
+        StartCoroutine(MoveTokenAlongPath(movingToken, path));
         
         // Movement for MovementPhase2f2 (the special phase for two attackers)
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
         {
             attackersMovedIn2f2++;
-            movedTokens.Add(selectedToken);  // Track this token as moved
+            movedTokens.Add(movingToken);  // Track this token as moved
 
             if (attackersMovedIn2f2 >= maxAttackerMovesIn2f2)
             {
@@ -198,7 +199,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
         {
             defendersMoved++;
-            movedTokens.Add(selectedToken);  // Track this token as moved
+            movedTokens.Add(movingToken);  // Track this token as moved
 
             // Check if we should end the movement phase after defenders move
             if (defendersMoved >= maxDefenderMoves)
@@ -210,7 +211,7 @@ public class MovementPhaseManager : MonoBehaviour
         else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
         {
             attackersMoved++;
-            movedTokens.Add(selectedToken);  // Track this token as moved
+            movedTokens.Add(movingToken);  // Track this token as moved
 
             // Check if we should transition to defender phase
             if (attackersMoved >= maxAttackerMoves)

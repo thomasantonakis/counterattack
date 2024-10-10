@@ -74,6 +74,13 @@ public class GameInputManager : MonoBehaviour
         {
             HandleMouseInputForMovement();
         }
+        if (
+                MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
+                MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement
+        )
+        {
+            HandleMouseInputForHighPassMovement();
+        }
     }
 
     void HandleMouseInput()
@@ -218,6 +225,72 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
+    public void SelectPlayerTokenForHighPass()
+    {
+        if (Input.GetMouseButtonDown(0) && !highPassManager.isWaitingForConfirmation)  // Only allow movement input after confirmation
+        {
+            Debug.Log("SelectPlayerTokenForHighPass called on click");
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                // Check if a player token was clicked
+                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                if (token != null)
+                {
+                    // Ensure token is an attacker for the attacker phase, or defender for the defender phase
+                    if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
+                    {
+                        highPassManager.selectedToken = token;
+                    }
+                    else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)
+                    {
+                        highPassManager.selectedToken = token;
+                    }
+                }
+            }
+        }
+    }
+
+    void HandleMouseInputForHighPassMovement()
+    {
+        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+        {
+            Debug.Log("HandleMouseInputForHighPassMovement called on click");
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("Raycast hit something");
+                // Check if a valid hex was clicked
+                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                if (clickedHex != null)
+                {
+                    Debug.Log($"Hex clicked: {clickedHex.name}");
+                    // Check if the clicked hex is within the highlighted valid movement hexes
+                    if (hexGrid.highlightedHexes.Contains(clickedHex))
+                    {
+                        // Move the selected token to the valid hex (use the highPassManager's selectedToken)
+                        movementPhaseManager.MoveTokenToHex(clickedHex, highPassManager.selectedToken);  // Pass the selected token
+                        highPassManager.selectedToken = null;  // Reset after movement
+                        if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement)
+                        {
+                            highPassManager.StartDefenderMovementPhase();  // Transition to defender movement after attacker moves
+                        }
+                        else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement)
+                        {
+                            // End the HP movement phase or trigger the accuracy roll after the defender moves
+                            highPassManager.isWaitingForAccuracyRoll = true;
+                            Debug.Log("Waiting for accuracy roll... Please Press R key.");
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // public void TestHexConversions()
     // {

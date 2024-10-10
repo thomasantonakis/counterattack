@@ -9,7 +9,10 @@ public class HighPassManager : MonoBehaviour
     public Ball ball;
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
-    private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
+    public GameInputManager gameInputManager;
+    private PlayerToken selectedTokenForHighPass;  // Store selected token during High Pass phase
+
+    public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
@@ -17,16 +20,19 @@ public class HighPassManager : MonoBehaviour
     private HexCell clickedHex;
     private HexCell lastClickedHex;
     private int directionIndex;
-    private int distanceRoll;
     private HexCell finalHex;
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
+    public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
+
+    public PlayerToken selectedToken;  // To store the selected attacker or defender token
+
 
     // Step 1: Handle the input for starting the long pass (initial logic)
     void Update()
     {   
         // If waiting for accuracy roll
-        if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttempt)
+        if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement)
         {
             if (isWaitingForAccuracyRoll && Input.GetKeyDown(KeyCode.R))
             {
@@ -38,7 +44,7 @@ public class HighPassManager : MonoBehaviour
             }
             else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
             {
-                PerformDistanceRoll(); // Handle distance roll
+                StartCoroutine(PerformDistanceRoll()); // Handle distance roll
             }
             else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.R))
             {
@@ -69,7 +75,6 @@ public class HighPassManager : MonoBehaviour
     private void HandleHighPassBasedOnDifficulty(HexCell clickedHex)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
-        // Debug.Log("Hello from HandleLongBallBasedOnDifficulty");
         // Centralized target validation
         hexGrid.ClearHighlightedHexes();
         bool isValid = ValidateHighPassTarget(clickedHex);
@@ -85,21 +90,24 @@ public class HighPassManager : MonoBehaviour
             isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
             Debug.Log("Waiting for accuracy roll... Please Press R key.");
         }
-        else if (difficulty == 2) // Medium Mode: Require confirmation with a second click
+        else if (difficulty == 2)  // Medium Mode: Require confirmation with a second click
         {
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
             {
-                Debug.Log("High Pass confirmed by second click. Waiting for accuracy roll.");
-                isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
+                Debug.Log("High Pass confirmed by second click.");
+                isWaitingForConfirmation = false;  // Allow token selection after confirmation
+                // Clear selected token to prevent auto-selection of the attacker on the target hex
+                selectedToken = null;
+                // Start attacker movement phase
+                StartAttackerMovementPhase();  // New method to trigger attacker movement
             }
             else
             {
                 // First click: Set the target, highlight the path, and wait for confirmation
                 currentTargetHex = clickedHex;
-                lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
+                lastClickedHex = clickedHex;
                 hexGrid.ClearHighlightedHexes();
-
-                // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
+                // You can highlight the path here for Medium mode
                 HighlightHighPassArea(clickedHex);
                 Debug.Log("First click registered. Click again to confirm the High Pass.");
             }
@@ -225,7 +233,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    void PerformDistanceRoll()
+    IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         int distanceRoll = 6; // Melina Mode
@@ -237,9 +245,10 @@ public class HighPassManager : MonoBehaviour
         // Check if the final hex is valid (not out of bounds or blocked)
         if (finalHex != null)
         {
+            // TODO: wait for this coroutine to finish, before checking if it is out of bounds.
             // Move the ball to the inaccurate final hex
-            StartCoroutine(HandleHighPassMovement(finalHex));
-             // After movement completes, check if the ball is out of bounds
+            yield return StartCoroutine(HandleHighPassMovement(finalHex));
+            // After movement completes, check if the ball is out of bounds
             if (finalHex.isOutOfBounds)
             {
                 Debug.Log("Ball landed out of bounds!");
@@ -454,13 +463,13 @@ public class HighPassManager : MonoBehaviour
         {
             if (hex == null)
             {
-                Debug.LogWarning("Encountered a null hex while highlighting, skipping this hex.");
+                // Debug.LogWarning("Encountered a null hex while highlighting, skipping this hex.");
                 continue;  // Skip null hexes
             }
 
             if (hex.isOutOfBounds || hex.isDefenseOccupied)
             {
-                Debug.LogWarning($"Hex {hex.coordinates} is out of bounds, skipping highlight.");
+                // Debug.LogWarning($"Hex {hex.coordinates} is out of bounds, skipping highlight.");
                 continue;  // Skip out of bounds hexes
             }
 
@@ -472,7 +481,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         // Log the highlighted hexes if needed (optional)
-        Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
+        // Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
     }
 
     public void HighlightAllValidHighPassTargets()
@@ -574,8 +583,11 @@ public class HighPassManager : MonoBehaviour
     private void HandleThrowIn(HexCell lastInboundsHex)
     {
         StartCoroutine(ball.MoveToCell(lastInboundsHex));
+        Debug.Log("Moved the ball to last inboundHex, Changing Possession");
         MatchManager.Instance.ChangePossession();
+        Debug.Log("Changed Possession, setting the GameState to WaitingForThrowInTaker");
         MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
+        Debug.Log("Set the GameState to WaitingForThrowInTaker");
     }
     
     private void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide)
@@ -642,6 +654,106 @@ public class HighPassManager : MonoBehaviour
 
         // Change possession when a goal kick or corner kick occurs
         MatchManager.Instance.ChangePossession();
+    }
+
+    private void StartAttackerMovementPhase()
+    {
+        Debug.Log("Attacker movement phase started. Move one attacker up to 3 hexes.");
+        isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
+        selectedToken = null;  // Ensure no token is auto-selected
+        // Set game state to reflect we are in the attacker’s movement phase
+        MatchManager.Instance.currentState = MatchManager.GameState.HighPassAttackerMovement;
+        // Allow attackers to move one token up to 3 hexes
+        StartCoroutine(WaitForAttackerSelection());
+        // Wait for player to move an attacker
+    }
+
+    private IEnumerator WaitForAttackerSelection()
+    {
+        Debug.Log("Waiting for attacker selection...");
+        while (selectedToken == null || !selectedToken.isAttacker)
+        {
+            gameInputManager.SelectPlayerTokenForHighPass();
+            yield return null;  // Wait until a valid attacker is selected
+        }
+
+        // Once an attacker is selected, highlight valid movement hexes
+        HighlightValidAttackerMovementHexes(selectedToken, 3);  // Limit the range to 3 hexes
+    }
+
+    private void HighlightValidAttackerMovementHexes(PlayerToken token, int movementRange)
+    {
+        HexCell currentHex = token.GetCurrentHex();
+        if (currentHex == null)
+        {
+            Debug.LogError("Selected token does not have a valid hex!");
+            return;
+        }
+
+        // Clear any previously highlighted hexes before highlighting new ones
+        hexGrid.ClearHighlightedHexes();
+
+        // Get valid movement hexes within the specified range (3 hexes)
+        List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, movementRange);
+
+        foreach (HexCell hex in reachableHexes)
+        {
+            if (!hex.isAttackOccupied && !hex.isDefenseOccupied)  // Ensure hex is not occupied
+            {
+                hexGrid.highlightedHexes.Add(hex);  // Add to the highlighted hexes list
+                hex.HighlightHex("PaceAvailable");  // Use your highlighting logic for valid movement
+            }
+        }
+    }
+
+    public void StartDefenderMovementPhase()
+    {
+        Debug.Log("Defender movement phase started. Move one defender up to 3 hexes.");
+        isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
+        selectedToken = null;  // Ensure no token is auto-selected
+        // Set game state to reflect we are in the defender’s movement phase
+        MatchManager.Instance.currentState = MatchManager.GameState.HighPassDefenderMovement;
+        // Allow defenders to move one token up to 3 hexes
+        StartCoroutine(WaitForDefenderSelection());
+        // Wait for player to move a defender
+    }
+
+    private IEnumerator WaitForDefenderSelection()
+    {
+        Debug.Log("Waiting for defender selection...");
+        while (selectedToken == null || selectedToken.isAttacker)
+        {
+            gameInputManager.SelectPlayerTokenForHighPass();
+            yield return null;  // Wait until a valid defender is selected
+        }
+
+        // Once a defender is selected, highlight valid movement hexes
+        HighlightValidDefenderMovementHexes(selectedToken, 3);  // Limit the range to 3 hexes
+    }
+
+    private void HighlightValidDefenderMovementHexes(PlayerToken token, int movementRange)
+    {
+        HexCell currentHex = token.GetCurrentHex();
+        if (currentHex == null)
+        {
+            Debug.LogError("Selected token does not have a valid hex!");
+            return;
+        }
+
+        // Clear any previously highlighted hexes before highlighting new ones
+        hexGrid.ClearHighlightedHexes();
+
+        // Get valid movement hexes within the specified range (3 hexes)
+        List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, movementRange);
+
+        foreach (HexCell hex in reachableHexes)
+        {
+            if (!hex.isAttackOccupied && !hex.isDefenseOccupied)  // Ensure hex is not occupied
+            {
+                hexGrid.highlightedHexes.Add(hex);  // Add to the highlighted hexes list
+                hex.HighlightHex("PaceAvailable");  // Use your highlighting logic for valid movement
+            }
+        }
     }
 
 }

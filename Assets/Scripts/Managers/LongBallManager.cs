@@ -39,7 +39,7 @@ public class LongBallManager : MonoBehaviour
             }
             else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
             {
-                PerformDistanceRoll(); // Handle distance roll
+                StartCoroutine(PerformDistanceRoll()); // Handle distance roll
             }
             else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.R))
             {
@@ -233,7 +233,7 @@ public class LongBallManager : MonoBehaviour
         }
     }
 
-    void PerformDistanceRoll()
+    IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         int distanceRoll = 6; // Melina Mode
@@ -246,7 +246,7 @@ public class LongBallManager : MonoBehaviour
         if (finalHex != null)
         {
             // Move the ball to the inaccurate final hex
-            StartCoroutine(HandleLongBallMovement(finalHex));
+            yield return StartCoroutine(HandleLongBallMovement(finalHex));
              // After movement completes, check if the ball is out of bounds
             if (finalHex.isOutOfBounds)
             {

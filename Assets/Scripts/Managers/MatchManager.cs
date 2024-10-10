@@ -30,7 +30,9 @@ public class MatchManager : MonoBehaviour
         SuccessfulTackle,
         HighPassAttempt,
         HighPassMoving,
-        HighPassCompleted
+        HighPassCompleted,
+        HighPassAttackerMovement,
+        HighPassDefenderMovement
     }
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
