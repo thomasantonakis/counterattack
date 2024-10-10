@@ -297,28 +297,32 @@ public class MovementPhaseManager : MonoBehaviour
         else
         {
             // If the ball is not picked up directly, check for nearby interception or tackle possibility
-            HexCell ballHex = ball.GetCurrentHex();
-            if (!token.isAttacker && ballHex != null && ballHex != finalHex)
+            // Add the condition to check if we're in the MovementPhaseDef state
+            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
             {
-                HexCell[] neighbors = finalHex.GetNeighbors(hexGrid);
-
-                foreach (HexCell neighbor in neighbors)
+                HexCell ballHex = ball.GetCurrentHex();
+                if (!token.isAttacker && ballHex != null && ballHex != finalHex)
                 {
-                    if (neighbor == ballHex)
+                    HexCell[] neighbors = finalHex.GetNeighbors(hexGrid);
+
+                    foreach (HexCell neighbor in neighbors)
                     {
-                        // If attackHasPossession is false, try interception
-                        if (!MatchManager.Instance.attackHasPossession)
+                        if (neighbor == ballHex)
                         {
-                            Debug.Log("Defender near the ball! Starting dice roll for interception.");
-                            StartBallInterceptionDiceRollSequence(finalHex);  // Start the interception dice roll sequence
+                            // If attackHasPossession is false, try interception
+                            if (!MatchManager.Instance.attackHasPossession)
+                            {
+                                Debug.Log("Defender near the ball! Starting dice roll for interception.");
+                                StartBallInterceptionDiceRollSequence(finalHex);  // Start the interception dice roll sequence
+                            }
+                            else
+                            {
+                                Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
+                                selectedDefender = token;  // Store the selected defender
+                                isWaitingForTackleDecision = true;  // Activate tackle decision listener
+                            }
+                            break;
                         }
-                        else
-                        {
-                            Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
-                            selectedDefender = token;  // Store the selected defender
-                            isWaitingForTackleDecision = true;  // Activate tackle decision listener
-                        }
-                        break;
                     }
                 }
             }

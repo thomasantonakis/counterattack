@@ -2840,6 +2840,10 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
+  gameInputManager: {fileID: 417053521}
+  isWaitingForAccuracyRoll: 0
+  isWaitingForConfirmation: 0
+  selectedToken: {fileID: 0}
 --- !u!4 &1859472973
 Transform:
   m_ObjectHideFlags: 0
