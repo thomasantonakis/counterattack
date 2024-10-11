@@ -77,10 +77,21 @@ public class HighPassManager : MonoBehaviour
         // Centralized target validation
         hexGrid.ClearHighlightedHexes();
         bool isValid = ValidateHighPassTarget(clickedHex);
+        // If the clicked hex is not valid, reset everything and reject the click
         if (!isValid)
         {
-            // Debug.LogWarning("Long Pass target is invalid");
-            return; // Reject invalid targets
+            Debug.LogWarning("High Pass target is invalid.");
+
+            // Reset the previous target and clicked hex
+            currentTargetHex = null;
+            lastClickedHex = null;
+
+            // Clear the selected token and highlights
+            selectedToken = null;
+            lockedAttacker = null;  // Make sure no attacker is locked
+            hexGrid.ClearHighlightedHexes();
+
+            return;  // Reject invalid targets
         }
         // Difficulty-based handling
         if (difficulty == 3) // Hard Mode: Immediate action
@@ -91,30 +102,40 @@ public class HighPassManager : MonoBehaviour
         }
         else if (difficulty == 2)  // Medium Mode: Require confirmation with a second click
         {
-            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
+            // If a new hex is clicked, reset the previous target and highlights
+            if (clickedHex != currentTargetHex)
             {
-                Debug.Log("High Pass confirmed by second click.");
-                isWaitingForConfirmation = false;  // Allow token selection after confirmation
-                // Clear selected token to prevent auto-selection of the attacker on the target hex
-                selectedToken = null;
-                // Lock the attacker on the target hex, so they cannot move during the movement phase
-                if (clickedHex.isAttackOccupied)
-                {
-                    lockedAttacker = clickedHex.GetOccupyingToken(); // Lock the attacker
-                    Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
-                }
-                // Start attacker movement phase
-                StartAttackerMovementPhase();  // New method to trigger attacker movement
-            }
-            else
-            {
-                // First click: Set the target, highlight the path, and wait for confirmation
+                // Reset everything if a new hex is clicked
+                Debug.Log("New hex clicked, resetting previous target.");
+
                 currentTargetHex = clickedHex;
                 lastClickedHex = clickedHex;
+
+                // Clear any previous highlights and selections
                 hexGrid.ClearHighlightedHexes();
-                // You can highlight the path here for Medium mode
+                selectedToken = null;  // Reset selected token if a new hex is clicked
+                lockedAttacker = null;  // Reset locked attacker, as we're selecting a new hex
+
+                // Highlight the new high pass area (optional, for visual feedback)
                 HighlightHighPassArea(clickedHex);
+
                 Debug.Log("First click registered. Click again to confirm the High Pass.");
+            }
+            else if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
+            {
+                Debug.Log("High Pass confirmed by second click.");
+                isWaitingForConfirmation = false;  // Confirmation is done, allow token selection
+                selectedToken = null;  // Clear selected token to avoid auto-selecting the attacker on the target
+
+                // Lock the attacker on the target hex (if it’s occupied by an attacker)
+                if (clickedHex.isAttackOccupied)
+                {
+                    lockedAttacker = clickedHex.GetOccupyingToken();  // Lock the attacker in place
+                    Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
+                }
+
+                // Proceed to start the attacker movement phase
+                StartAttackerMovementPhase();
             }
         }
         else if (difficulty == 1) // Easy Mode: Require confirmation with a second click
