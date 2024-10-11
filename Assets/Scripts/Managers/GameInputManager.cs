@@ -225,11 +225,65 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
+    // Hard Mode
+    // public void SelectPlayerTokenForHighPass()
+    // {
+    //     if (Input.GetMouseButtonDown(0) && !highPassManager.isWaitingForConfirmation)  // Only allow movement input after confirmation
+    //     {
+    //         Debug.Log("SelectPlayerTokenForHighPass called on click");
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         RaycastHit hit;
+
+    //         if (Physics.Raycast(ray, out hit))
+    //         {
+    //             // Check if a player token was clicked
+    //             PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+    //             if (token != null)
+    //             {
+    //                 // Ensure token is an attacker for the attacker phase
+    //                 if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
+    //                 {
+    //                     // **Check if it's the locked attacker** (one on the target)
+    //                     if (token == highPassManager.lockedAttacker)
+    //                     {
+    //                         Debug.LogWarning("This attacker is locked and cannot be moved.");
+    //                         return;  // Prevent locked attacker from being selected
+    //                     }
+
+    //                     // **Allow changing the selection**: Clear previous highlights if a new attacker is clicked
+    //                     hexGrid.ClearHighlightedHexes();
+
+    //                     // Set the selected token to the new attacker
+    //                     highPassManager.selectedToken = token;
+
+    //                     // Highlight valid hexes within 3 hexes for this selected attacker
+    //                     highPassManager.HighlightValidAttackerMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
+
+    //                     Debug.Log($"Attacker {token.name} selected. Highlighting reachable hexes.");
+    //                 }
+
+    //                 // Ensure token is a defender for the defender phase
+    //                 else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)
+    //                 {
+    //                     // Clear previous highlights and reset selected token
+    //                     hexGrid.ClearHighlightedHexes();
+
+    //                     // Set the selected token to the new defender
+    //                     highPassManager.selectedToken = token;
+
+    //                     // Highlight valid hexes within 3 hexes for this selected defender
+    //                     highPassManager.HighlightValidDefenderMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
+
+    //                     Debug.Log($"Defender {token.name} selected. Highlighting reachable hexes.");
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     public void SelectPlayerTokenForHighPass()
     {
         if (Input.GetMouseButtonDown(0) && !highPassManager.isWaitingForConfirmation)  // Only allow movement input after confirmation
         {
-            Debug.Log("SelectPlayerTokenForHighPass called on click");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -239,19 +293,47 @@ public class GameInputManager : MonoBehaviour
                 PlayerToken token = hit.collider.GetComponent<PlayerToken>();
                 if (token != null)
                 {
-                    // Ensure token is an attacker for the attacker phase, or defender for the defender phase
+                    // **Attacker Phase**: Allow switching between different attackers during movement phase
                     if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
                     {
                         if (token == highPassManager.lockedAttacker)
                         {
                             Debug.LogWarning("This attacker is locked and cannot be moved.");
-                            return;  // Prevent the locked attacker from moving
+                            return;  // Prevent locked attacker from being selected
                         }
-                        highPassManager.selectedToken = token;  // Select a movable attacker
+
+                        // **If selecting a different attacker**, clear previous highlights and switch selection
+                        if (highPassManager.selectedToken != null && highPassManager.selectedToken != token)
+                        {
+                            hexGrid.ClearHighlightedHexes();  // Clear previous highlights
+                            Debug.Log($"Switching attacker selection to {token.name}.");
+                        }
+
+                        // Set the selected token to the new attacker
+                        highPassManager.selectedToken = token;
+
+                        // Highlight valid hexes for movement (3 hexes away)
+                        highPassManager.HighlightValidAttackerMovementHexes(token, 3);
+
+                        Debug.Log($"Attacker {token.name} selected. Highlighting reachable hexes.");
                     }
+                    // **Defender Phase**: Allow switching between different defenders during movement phase
                     else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)
                     {
+                        // **If selecting a different defender**, clear previous highlights and switch selection
+                        if (highPassManager.selectedToken != null && highPassManager.selectedToken != token)
+                        {
+                            hexGrid.ClearHighlightedHexes();  // Clear previous highlights
+                            Debug.Log($"Switching defender selection to {token.name}.");
+                        }
+
+                        // Set the selected token to the new defender
                         highPassManager.selectedToken = token;
+
+                        // Highlight valid hexes for movement (3 hexes away)
+                        highPassManager.HighlightValidDefenderMovementHexes(token, 3);
+
+                        Debug.Log($"Defender {token.name} selected. Highlighting reachable hexes.");
                     }
                 }
             }
@@ -262,33 +344,48 @@ public class GameInputManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
         {
-            Debug.Log("HandleMouseInputForHighPassMovement called on click");
-
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log("Raycast hit something");
+                // Check if a player token was clicked
+                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                if (token != null && MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
+                {
+                    if (token != highPassManager.lockedAttacker)
+                    {
+                        // **Switching attacker during the movement phase**
+                        SelectPlayerTokenForHighPass();  // Allow switching to a different attacker
+                    }
+                    return;  // Prevent further action until an attacker is fully selected
+                }
+
+                // **Defender Phase Switching**: Check if defender is clicked during defender movement phase
+                if (token != null && MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)
+                {
+                    // Allow switching to a different defender during the movement phase
+                    SelectPlayerTokenForHighPass();  // Allow switching to a different defender
+                    return;  // Prevent further action until a defender is fully selected
+                }
+
                 // Check if a valid hex was clicked
                 HexCell clickedHex = hit.collider.GetComponent<HexCell>();
                 if (clickedHex != null)
                 {
-                    Debug.Log($"Hex clicked: {clickedHex.name}");
-                    // Check if the clicked hex is within the highlighted valid movement hexes
                     if (hexGrid.highlightedHexes.Contains(clickedHex))
                     {
-                        // Move the selected token to the valid hex (use the highPassManager's selectedToken)
+                        // **Move the selected token to the valid hex**
                         movementPhaseManager.MoveTokenToHex(clickedHex, highPassManager.selectedToken);  // Pass the selected token
                         highPassManager.selectedToken = null;  // Reset after movement
+
                         if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement)
                         {
                             highPassManager.StartDefenderMovementPhase();  // Transition to defender movement after attacker moves
                         }
                         else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement)
                         {
-                            // End the HP movement phase or trigger the accuracy roll after the defender moves
-                            highPassManager.isWaitingForAccuracyRoll = true;
+                            highPassManager.isWaitingForAccuracyRoll = true;  // Trigger the accuracy roll phase
                             Debug.Log("Waiting for accuracy roll... Please Press R key.");
                         }
                     }

@@ -23,7 +23,7 @@ public class HighPassManager : MonoBehaviour
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
     public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
-
+    public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
 
 
@@ -168,14 +168,54 @@ public class HighPassManager : MonoBehaviour
                 return false; // Invalid path
             }
         }
-        // Step 5: Check that the target hex is occupied by an attacker
-        if (!targetHex.isAttackOccupied)
+        // Step 5: Check if the target hex is occupied by an attacker
+        if (targetHex.isAttackOccupied)
         {
-            Debug.LogWarning("High Pass target must be an attacker.");
-            return false; // Target must be occupied by an attacker
+            return true;  // If occupied by an attacker, the target is valid
         }
-        return true;
+        // Step 6: If the target is not occupied, check if any attacker can reach it within 3 moves
+        List<PlayerToken> attackersWithinRange = GetAttackersWithinRangeOfHex(targetHex, 3);
+        if (attackersWithinRange.Count > 0)
+        {
+            Debug.Log("Empty hex is valid for High Pass, at least one attacker can reach it.");
+            // Store these attackers for movement phase
+            eligibleAttackers = attackersWithinRange;
+            return true;
+        }
+        else
+        {
+            Debug.LogWarning("No attackers can reach the target hex. High Pass is invalid.");
+            return false;
+        }
     }
+    public List<PlayerToken> GetAttackersWithinRangeOfHex(HexCell targetHex, int range)
+    {
+        List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
+        List<HexCell> reachableHexes;
+
+        // Get all attackers currently on the field
+        List<HexCell> attackerHexes = hexGrid.GetAttackerHexes();
+
+        foreach (HexCell attackerHex in attackerHexes)
+        {
+            PlayerToken attackerToken = attackerHex.GetOccupyingToken();  // Get the token occupying the attacker hex
+
+            if (attackerToken != null)
+            {
+                // Calculate reachable hexes for this attacker
+                reachableHexes = HexGridUtils.GetReachableHexes(hexGrid, attackerHex, range).Item1;
+
+                // If the target hex is within their reachable hexes, add them to the eligible list
+                if (reachableHexes.Contains(targetHex))
+                {
+                    eligibleAttackers.Add(attackerToken);
+                }
+            }
+        }
+
+        return eligibleAttackers;
+    }
+
 
     private void PerformAccuracyRoll()
     {
@@ -670,6 +710,27 @@ public class HighPassManager : MonoBehaviour
         // Set game state to reflect we are in the attacker’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.HighPassAttackerMovement;
         // Allow attackers to move one token up to 3 hexes
+        // Check if the target hex is unoccupied, and find attackers that can reach it
+        if (!currentTargetHex.isAttackOccupied)
+        {
+            List<PlayerToken> eligibleAttackers = GetAttackersWithinRangeOfHex(currentTargetHex, 3);
+
+            if (eligibleAttackers.Count == 0)
+            {
+                Debug.LogError("No attackers can reach the target hex.");
+                // Handle case where no attackers can move to the target (potentially cancel the High Pass or retry)
+                return;
+            }
+            else
+            {
+                Debug.Log($"Found {eligibleAttackers.Count} attackers who can reach the target hex.");
+                // Highlight hexes that are valid for each eligible attacker
+                foreach (PlayerToken attacker in eligibleAttackers)
+                {
+                    HighlightValidAttackerMovementHexes(attacker, 3);  // Highlights their movement range
+                }
+            }
+        }
         StartCoroutine(WaitForAttackerSelection());
         // Wait for player to move an attacker
     }
@@ -687,7 +748,7 @@ public class HighPassManager : MonoBehaviour
         HighlightValidAttackerMovementHexes(selectedToken, 3);  // Limit the range to 3 hexes
     }
 
-    private void HighlightValidAttackerMovementHexes(PlayerToken token, int movementRange)
+    public void HighlightValidAttackerMovementHexes(PlayerToken token, int movementRange)
     {
         HexCell currentHex = token.GetCurrentHex();
         if (currentHex == null)
@@ -742,7 +803,7 @@ public class HighPassManager : MonoBehaviour
         HighlightValidDefenderMovementHexes(selectedToken, 3);  // Limit the range to 3 hexes
     }
 
-    private void HighlightValidDefenderMovementHexes(PlayerToken token, int movementRange)
+    public void HighlightValidDefenderMovementHexes(PlayerToken token, int movementRange)
     {
         HexCell currentHex = token.GetCurrentHex();
         if (currentHex == null)
