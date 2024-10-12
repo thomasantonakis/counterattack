@@ -113,7 +113,7 @@ public class MovementPhaseManager : MonoBehaviour
     }
     
     // This method will highlight valid movement hexes for the selected token
-    private void HighlightValidMovementHexes(PlayerToken token, int movementRange)
+    public void HighlightValidMovementHexes(PlayerToken token, int movementRange)
     {
         HexCell currentHex = token.GetCurrentHex();  // Get the hex the token is currently on
         if (currentHex == null)

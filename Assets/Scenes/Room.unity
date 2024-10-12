@@ -2841,8 +2841,12 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
   gameInputManager: {fileID: 417053521}
+  movementPhaseManager: {fileID: 1390513032}
+  lockedAttacker: {fileID: 0}
   isWaitingForAccuracyRoll: 0
+  currentTargetHex: {fileID: 0}
   isWaitingForConfirmation: 0
+  eligibleAttackers: []
   selectedToken: {fileID: 0}
 --- !u!4 &1859472973
 Transform:

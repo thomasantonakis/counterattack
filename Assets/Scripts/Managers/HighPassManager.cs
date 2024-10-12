@@ -134,7 +134,6 @@ public class HighPassManager : MonoBehaviour
                     lockedAttacker = clickedHex.GetOccupyingToken();  // Lock the attacker in place
                     Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
                 }
-
                 // Proceed to start the attacker movement phase
                 StartAttackerMovementPhase();
             }
@@ -776,37 +775,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         // Once an attacker is selected, highlight valid movement hexes
-        HighlightValidAttackerMovementHexes(selectedToken, 3);  // Limit the range to 3 hexes
-    }
-
-    public void HighlightValidAttackerMovementHexes(PlayerToken token, int movementRange)
-    {
-        HexCell currentHex = token.GetCurrentHex();
-        if (currentHex == null)
-        {
-            Debug.LogError("Selected token does not have a valid hex!");
-            return;
-        }
-        if (token == lockedAttacker)
-        {
-            Debug.Log("Locked attacker, no movement available.");
-            return;  // Skip highlighting movement hexes for this token
-        }
-
-        // Clear any previously highlighted hexes before highlighting new ones
-        hexGrid.ClearHighlightedHexes();
-
-        // Get valid movement hexes within the specified range (3 hexes)
-        List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, movementRange);
-
-        foreach (HexCell hex in reachableHexes)
-        {
-            if (!hex.isAttackOccupied && !hex.isDefenseOccupied)  // Ensure hex is not occupied
-            {
-                hexGrid.highlightedHexes.Add(hex);  // Add to the highlighted hexes list
-                hex.HighlightHex("PaceAvailable");  // Use your highlighting logic for valid movement
-            }
-        }
+        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 3);  // Highlight movement options
     }
 
     public void StartDefenderMovementPhase()
@@ -831,32 +800,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         // Once a defender is selected, highlight valid movement hexes
-        HighlightValidDefenderMovementHexes(selectedToken, 3);  // Limit the range to 3 hexes
-    }
-
-    public void HighlightValidDefenderMovementHexes(PlayerToken token, int movementRange)
-    {
-        HexCell currentHex = token.GetCurrentHex();
-        if (currentHex == null)
-        {
-            Debug.LogError("Selected token does not have a valid hex!");
-            return;
-        }
-
-        // Clear any previously highlighted hexes before highlighting new ones
-        hexGrid.ClearHighlightedHexes();
-
-        // Get valid movement hexes within the specified range (3 hexes)
-        List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, movementRange);
-
-        foreach (HexCell hex in reachableHexes)
-        {
-            if (!hex.isAttackOccupied && !hex.isDefenseOccupied)  // Ensure hex is not occupied
-            {
-                hexGrid.highlightedHexes.Add(hex);  // Add to the highlighted hexes list
-                hex.HighlightHex("PaceAvailable");  // Use your highlighting logic for valid movement
-            }
-        }
+        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 3);  // Highlight movement options
     }
 
 }

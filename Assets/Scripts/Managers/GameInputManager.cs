@@ -264,7 +264,7 @@ public class GameInputManager : MonoBehaviour
                                 // Trying to move anyone BUT the locked Player, Accept, Highlight and wait for click on Hex
                                 Debug.Log($"Selecting attacker {token.name}. Highlighting reachable hexes.");
                                 highPassManager.selectedToken = token;  // Set selected token
-                                highPassManager.HighlightValidAttackerMovementHexes(token, 3);  // Highlight movement options
+                                movementPhaseManager.HighlightValidMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
                                 return;
                             }
                         }
@@ -295,7 +295,7 @@ public class GameInputManager : MonoBehaviour
                         }
 
                         highPassManager.selectedToken = token;  // Set the selected defender token
-                        highPassManager.HighlightValidDefenderMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
+                        movementPhaseManager.HighlightValidMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
                         return;  // Ensure no further processing for this click
                     }
                 }
