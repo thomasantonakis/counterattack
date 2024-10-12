@@ -771,7 +771,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log("Waiting for attacker selection...");
         while (selectedToken == null || !selectedToken.isAttacker)
         {
-            gameInputManager.SelectPlayerTokenForHighPass();
+            gameInputManager.HandleMouseInputForHighPassMovement();
             yield return null;  // Wait until a valid attacker is selected
         }
 
@@ -826,7 +826,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log("Waiting for defender selection...");
         while (selectedToken == null || selectedToken.isAttacker)
         {
-            gameInputManager.SelectPlayerTokenForHighPass();
+            gameInputManager.HandleMouseInputForHighPassMovement();
             yield return null;  // Wait until a valid defender is selected
         }
 
