@@ -368,21 +368,43 @@ public class GameInputManager : MonoBehaviour
                     // Attacker Phase: Ensure the token is an attacker
                     if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
                     {
-                        if (token == highPassManager.lockedAttacker)
-                        {
-                            Debug.LogWarning($"This attacker {token.name} is locked and cannot be moved.");
-                            // Clear previous highlights if locked attacker is clicked
-                            hexGrid.ClearHighlightedHexes();
-                            highPassManager.selectedToken = null;  // Reset selected token
-                            return;  // Exit to avoid selecting a locked attacker
+                        // ** Targeting a Player
+                        if (highPassManager.lockedAttacker != null)
+                        { 
+                            // Trying to move the locked Player Reject
+                            if (token == highPassManager.lockedAttacker)
+                            {
+                                Debug.LogWarning($"This attacker {token.name} is locked and cannot be moved.");
+                                // Clear previous highlights if locked attacker is clicked
+                                hexGrid.ClearHighlightedHexes();
+                                highPassManager.selectedToken = null;  // Reset selected token
+                                return;  // Exit to avoid selecting a locked attacker
+                            }
+                            else
+                            {
+                                // Trying to move anyone BUT the locked Player, Accept, Highlight and wait for click on Hex
+                                Debug.Log($"Selecting attacker {token.name}. Highlighting reachable hexes.");
+                                highPassManager.selectedToken = token;  // Set selected token
+                                highPassManager.HighlightValidAttackerMovementHexes(token, 3);  // Highlight movement options
+                                return;
+                            }
                         }
-                        
-                        // Clear previous highlights and allow switching selection
-                        Debug.Log("New attacker selected, clearing previous highlights");
-                        hexGrid.ClearHighlightedHexes();
-                        highPassManager.selectedToken = token;  // Set the selected attacker token
-                        highPassManager.HighlightValidAttackerMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
-                        return;  // Ensure no further processing for this click
+                        // ** Targeting a Hex Near One or more Players
+                        // **Check if there are multiple eligible attackers**
+                        if (highPassManager.eligibleAttackers != null && highPassManager.eligibleAttackers.Contains(token))
+                        {
+                            Debug.Log($"Eligible attacker {token.name} selected. Moving to the target hex.");
+                            movementPhaseManager.MoveTokenToHex(highPassManager.currentTargetHex, token);  // Move attacker to target hex
+                            highPassManager.StartDefenderMovementPhase();  // Transition to defender phase
+                            return;  // Exit after attacker has moved
+                        }
+                        else if (highPassManager.eligibleAttackers != null && !highPassManager.eligibleAttackers.Contains(token))
+                        {
+                            Debug.LogWarning($"Ineligible attacker {token.name} clicked. Rejecting.");
+                            hexGrid.ClearHighlightedHexes();
+                            highPassManager.selectedToken = null;
+                            return;  // Exit after rejecting the ineligible attacker
+                        }
                     }
                     // Defender Phase: Ensure the token is a defender
                     else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)

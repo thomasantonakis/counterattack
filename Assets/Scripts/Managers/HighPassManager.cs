@@ -10,12 +10,13 @@ public class HighPassManager : MonoBehaviour
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
     public GameInputManager gameInputManager;
+    public MovementPhaseManager movementPhaseManager;
     public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
     public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
-    private HexCell currentTargetHex;
+    public HexCell currentTargetHex;
     private HexCell clickedHex;
     private HexCell lastClickedHex;
     private int directionIndex;
@@ -742,17 +743,26 @@ public class HighPassManager : MonoBehaviour
                 // Handle case where no attackers can move to the target (potentially cancel the High Pass or retry)
                 return;
             }
+            else if (eligibleAttackers.Count == 1)
+            {
+                // **Automatic move for single eligible attacker**
+                selectedToken = eligibleAttackers[0];
+                Debug.Log($"Automatically moving attacker {selectedToken.name} to target hex.");
+
+                // Automatically move the attacker to the target hex
+                movementPhaseManager.MoveTokenToHex(currentTargetHex, selectedToken);
+
+                // Directly proceed to the defender movement phase after the attacker moves
+                StartDefenderMovementPhase();
+                return;  // Skip further input handling
+            }
             else
             {
+                // **Multiple eligible attackers - no highlights, just allow user to click on one**
                 Debug.Log($"Found {eligibleAttackers.Count} attackers who can reach the target hex.");
-                // Highlight hexes that are valid for each eligible attacker
-                foreach (PlayerToken attacker in eligibleAttackers)
-                {
-                    HighlightValidAttackerMovementHexes(attacker, 3);  // Highlights their movement range
-                }
+                StartCoroutine(WaitForAttackerSelection());
             }
         }
-        StartCoroutine(WaitForAttackerSelection());
         // Wait for player to move an attacker
     }
 
