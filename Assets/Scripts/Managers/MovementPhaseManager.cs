@@ -253,7 +253,7 @@ public class MovementPhaseManager : MonoBehaviour
                 t += Time.deltaTime / moveDuration;
                 token.transform.position = Vector3.Lerp(startPosition, targetPosition, t);  // Interpolate the position
                 // If the player is carrying the ball, move the ball alongside the player
-                if (ball.GetCurrentHex() == previousHex)
+                if (MatchManager.Instance.currentState != MatchManager.GameState.HighPassDefenderMovement && ball.GetCurrentHex() == previousHex)
                 {
                     // Move the ball alongside the player, keeping the correct Y offset
                     Vector3 ballPosition = new Vector3(token.transform.position.x, ball.playerHeightOffset, token.transform.position.z);
@@ -264,7 +264,7 @@ public class MovementPhaseManager : MonoBehaviour
             // Update the token's hex after reaching the next hex
             token.SetCurrentHex(step);
             // If the player is carrying the ball, move the ball along with the player
-            if (ball.GetCurrentHex() == previousHex)
+            if (MatchManager.Instance.currentState != MatchManager.GameState.HighPassDefenderMovement && ball.GetCurrentHex() == previousHex)
             {
                 ball.SetCurrentHex(step);  // Update ball's hex to the current step
                 ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's height
@@ -330,11 +330,11 @@ public class MovementPhaseManager : MonoBehaviour
         // Check if the player landed on the ball hex, adjust the ball height if necessary
         if (finalHex == ball.GetCurrentHex())
         {
-            ball.AdjustBallHeightBasedOnOccupancy();
             MatchManager.Instance.UpdatePossessionAfterPass(finalHex);
         }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();
+        ball.AdjustBallHeightBasedOnOccupancy();
         isPlayerMoving = false;  // Player finished moving
     }
 
