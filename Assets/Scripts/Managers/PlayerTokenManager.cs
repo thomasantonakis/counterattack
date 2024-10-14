@@ -16,7 +16,7 @@ public class PlayerTokenManager : MonoBehaviour
     {
         new Vector3Int(0, 0, 0), new Vector3Int(6, 0, 6), new Vector3Int(8, 0, 8),
         new Vector3Int(12, 0, 12), new Vector3Int(4, 0, 4), new Vector3Int(10, 0, 10),
-        new Vector3Int(-2, 0, -2), new Vector3Int(-4, 0, -4), new Vector3Int(-6, 0, -6),
+        new Vector3Int(-2, 0, -1), new Vector3Int(-4, 0, -4), new Vector3Int(-6, 0, -6),
         new Vector3Int(-8, 0, -8)
     };
 

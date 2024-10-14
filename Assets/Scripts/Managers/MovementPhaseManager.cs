@@ -163,13 +163,13 @@ public class MovementPhaseManager : MonoBehaviour
         return isValid;
     }
 
-    public void MoveTokenToHex(HexCell targetHex, PlayerToken token = null)
+    public Coroutine MoveTokenToHex(HexCell targetHex, PlayerToken token = null)
     {
         PlayerToken movingToken = token ?? selectedToken;
         if (movingToken == null)
         {
             Debug.LogError("No token selected to move.");
-            return;
+            return null;
         }
 
         // Find the path from the current hex to the target hex
@@ -178,11 +178,11 @@ public class MovementPhaseManager : MonoBehaviour
         if (path == null || path.Count == 0)
         {
             Debug.LogError("No valid path found to the target hex.");
-            return;
+            return null;
         }
 
         // Start the token movement across the hexes (this can be animated)
-        StartCoroutine(MoveTokenAlongPath(movingToken, path));
+        Coroutine moveCoroutine = StartCoroutine(MoveTokenAlongPath(movingToken, path));
         
         // Movement for MovementPhase2f2 (the special phase for two attackers)
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
@@ -194,6 +194,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("Last two attackers have moved in 2f2 phase. Ending Movement Phase.");
                 EndMovementPhase();
+                return null;
             }
         }
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
@@ -206,6 +207,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
                 MatchManager.Instance.StartMovementPhase2f2();
+                return null;
             }
         }
         else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
@@ -218,8 +220,11 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
                 MatchManager.Instance.StartMovementPhaseDef();
+                return null;
             }
         }
+        // Return the coroutine that moves the token
+        return moveCoroutine;
     }
 
     // Coroutine to move the token one hex at a time

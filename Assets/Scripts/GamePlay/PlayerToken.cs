@@ -17,11 +17,11 @@ public class PlayerToken : MonoBehaviour
     {
         if (currentHex == null)
         {
-            Debug.LogError($"Token {name} has no current hex assigned!");
+            // Debug.LogError($"Token {name} has no current hex assigned!");
         }
         else
         {
-            Debug.Log($"Token {name} is on Hex {currentHex.name}");
+            // Debug.Log($"Token {name} is on Hex {currentHex.name}");
         }
         return currentHex;
     }
@@ -39,17 +39,11 @@ public class PlayerToken : MonoBehaviour
         {
             // Set the occupying token in the new hex
             newHex.occupyingToken = this;
+            // Debug.Log($"Token {name} is on Hex {newHex.name}");
         }
 
         currentHex = newHex;  // Assign the new hex to the token
         UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
-    }
-
-    // Move the token to the new hex
-    public void MoveToHex(HexCell hex)
-    {
-        SetCurrentHex(hex);
-        transform.position = hex.transform.position;  // Move the GameObject to the hex's position
     }
 
     // Update isAttacker based on the current hex state

@@ -600,6 +600,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraController: {fileID: 963194229}
   groundBallManager: {fileID: 1703800862}
+  firstTimePassManager: {fileID: 886834329}
   longBallManager: {fileID: 748552023}
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
@@ -1355,6 +1356,54 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
+--- !u!1 &886834327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 886834328}
+  - component: {fileID: 886834329}
+  m_Layer: 0
+  m_Name: FirstTimePassManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &886834328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886834327}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 570.8386, y: 425.4026, z: -3.5510273}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &886834329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 886834327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20b977a5800834edab760b49be0c7a6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ball: {fileID: 390494642}
+  hexGrid: {fileID: 1405702520}
+  movementPhaseManager: {fileID: 1390513032}
+  gameInputManager: {fileID: 417053521}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
