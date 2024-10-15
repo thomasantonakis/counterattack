@@ -1,0 +1,470 @@
+Name,Nationality,Pace,Dribbling,Heading,High Pass,Resilience,Shooting,Tackling,Type
+Baez,Paraguay,5,5,5,6,3,5,3,TableTopia
+Alex Alves,Brazil,5,3,5,5,6,3,6,Not TableTopia
+Aguayo,Chile,4,5,5,5,4,5,3,TableTopia
+Kanaras,Greece,6,4,3,6,5,4,4,TableTopia
+Vladoiu,Romania,5,4,4,6,4,5,3,TableTopia
+Joon-ho,South Korea,6,4,2,6,6,5,4,Not TableTopia
+Kolbaek,Denmark,5,3,3,5,2,5,5,Not TableTopia
+Littlewood,England,4,4,4,6,5,4,4,TableTopia
+Rzehaczek,Germany,4,3,5,6,5,2,6,Not TableTopia
+Gortz,Germany,4,5,4,6,5,5,2,TableTopia
+Praml,Argentina,5,6,2,6,4,4,2,World Cup
+Manolis,Australia,4,2,5,6,6,3,5,TableTopia
+Drabits,Austria,5,3,5,5,6,2,5,Not TableTopia
+Melckenbeeck,Belgium,5,3,2,6,4,4,5,World Cup
+Willems,Belgium,5,3,5,5,5,3,4,TableTopia
+Teppers,Belgium,4,4,3,6,5,4,4,Not TableTopia
+Terto,Brazil,5,5,4,5,4,5,1,TableTopia
+Zózimo,Brazil,4,6,3,6,3,4,2,World Cup
+Laws,England,5,4,4,5,5,6,1,World Cup
+Dillon,England,6,3,5,5,2,5,1,Not TableTopia
+Delpech,France,4,5,4,5,4,5,2,TableTopia
+M'barek,France,5,4,4,5,4,5,2,World Cup
+Sauer,Germany,5,4,3,6,5,3,4,Not TableTopia
+Schröder,Germany,5,5,2,6,5,5,2,World Cup
+Antonakis,Greece,5,2,5,6,6,1,6,World Cup
+Savvakis,Greece,5,4,3,6,5,4,3,TableTopia
+O'Leary,Ireland,5,2,6,6,6,1,5,World Cup
+Barbieri,Italy,3,5,3,6,5,3,5,World Cup
+Rizzo,Italy,4,1,6,6,5,2,6,Not TableTopia
+Bamba,Ivory Coast,5,3,3,6,4,4,4,Not TableTopia
+Yéyé,Ivory Coast,6,3,4,6,4,5,1,World Cup
+Sato,Japan,6,5,2,6,5,4,2,World Cup
+de los Cobos,Mexico,5,4,4,5,3,6,1,World Cup
+Brandén,Netherlands,5,2,5,6,6,2,5,World Cup
+Werdekker,Netherlands,4,3,3,6,4,4,5,TableTopia
+Troost,Netherlands,6,3,4,5,4,4,3,Not TableTopia
+Ekpenyong,Nigeria,6,2,5,6,5,1,5,World Cup
+João Santos,Portugal,5,6,3,6,5,3,2,World Cup
+Spence,Scotland,4,4,6,5,5,4,2,Not TableTopia
+Piper,Scotland,5,2,5,6,4,1,6,World Cup
+Juantegui,Spain,4,4,3,6,6,4,4,World Cup
+Nylin,Sweden,4,5,5,5,6,4,2,Not TableTopia
+Thoma,Switzerland,5,2,5,6,6,2,5,Not TableTopia
+Lombardo,Uruguay,5,3,5,5,5,1,6,Not TableTopia
+Batista,Uruguay,5,4,5,5,5,5,1,Not TableTopia
+Nguyen,USA,4,5,6,4,6,5,1,World Cup
+Walton,USA,6,3,3,6,3,4,3,TableTopia
+Musta,Albania,5,1,5,5,4,2,6,Not TableTopia
+Gaham,Algeria,4,4,6,5,4,4,1,TableTopia
+Menendez,Argentina,5,6,1,5,4,4,3,World Cup
+Cometti,Argentina,5,6,2,5,2,5,1,World Cup
+Meloni,Argentina,4,2,4,6,6,3,5,TableTopia
+Van Innis,Belgium,5,3,5,5,6,1,5,World Cup
+Philippaerts,Belgium,4,4,5,5,5,5,1,World Cup
+Denier,Belgium,4,1,5,6,5,2,6,TableTopia
+Jurandir,Brazil,5,6,2,6,5,4,1,World Cup
+Adevaldo,Brazil,5,6,2,5,4,5,1,World Cup
+Taylor,Canada,5,2,4,6,3,2,5,TableTopia
+Buzek,England,5,2,5,5,4,2,5,TableTopia
+Parnaby,England,4,4,4,6,5,5,1,World Cup
+Ellwood,England,5,4,1,6,3,5,3,World Cup
+Goaley,England,4,4,3,6,5,4,3,TableTopia
+Gilbert,England,4,4,3,6,4,4,3,TableTopia
+Césaire,France,5,5,2,6,5,4,2,World Cup
+Grumiaux,France,4,5,3,6,5,3,3,World Cup
+Schmitt,Germany,4,5,3,5,5,5,2,World Cup
+Tokaç ,Germany,4,5,3,4,4,6,2,World Cup
+Tilias,Greece,4,4,3,5,5,2,6,World Cup
+McNulty,Ireland,5,4,4,5,1,5,1,TableTopia
+Farrell,Ireland,4,3,6,5,4,5,1,World Cup
+Carminucci,Italy,4,3,4,5,6,5,3,World Cup
+Di Capua,Italy,4,2,5,6,5,1,6,World Cup
+Kuya,Ivory Coast,6,4,3,6,4,4,1,World Cup
+Okada,Japan,6,4,3,5,6,2,4,World Cup
+Kamekawa,Japan,6,3,3,6,5,5,1,World Cup
+Pavez,Mexico,4,5,1,6,5,5,3,World Cup
+De Sil,Netherlands,4,4,3,6,5,3,4,World Cup
+Lemmens,Netherlands,5,5,2,6,4,4,2,World Cup
+Afolabi,Nigeria,6,2,4,6,6,2,4,World Cup
+Yekini,Nigeria,6,4,3,6,5,3,2,World Cup
+Devine,Northern Ireland,5,5,3,5,5,4,2,Not TableTopia
+Infante,Portugal,4,6,2,6,5,3,3,World Cup
+Teixeira,Portugal,5,6,2,5,4,4,2,World Cup
+Soares,Portugal,5,5,3,6,4,4,1,TableTopia
+Cuzman,Romania,4,4,3,5,6,5,3,TableTopia
+Kimble,Scotland,5,4,3,4,6,3,5,World Cup
+McGrevey,Scotland,5,1,5,5,6,2,6,World Cup
+Stewart,Scotland,5,4,3,5,5,4,3,TableTopia
+Arabolaza,Spain,5,2,5,6,6,1,5,World Cup
+Queralt,Spain,5,4,4,5,6,5,1,World Cup
+Urbieta,Spain,6,2,4,6,4,2,4,Not TableTopia
+Ekström,Sweden,5,2,4,5,6,3,5,TableTopia
+Ihsan,Turkey,5,5,4,5,4,4,1,Not TableTopia
+Brooks,USA,4,5,6,4,6,3,2,World Cup
+Sinnott,USA,5,2,6,6,6,1,4,World Cup
+Young,USA,4,5,3,5,6,6,1,Not TableTopia
+Nazef,Algeria,5,2,4,6,4,3,3,TableTopia
+Ruiz,Argentina,6,5,2,5,3,4,1,TableTopia
+Langdon,Australia,5,4,3,5,4,4,2,TableTopia
+Mayer,Austria,4,3,3,6,6,4,3,Not TableTopia
+Lessa,Brazil,5,2,4,5,6,2,5,TableTopia
+André Noruega,Brazil,4,6,3,5,5,4,1,TableTopia
+Morais,Brazil,4,3,4,6,5,5,1,Not TableTopia
+Piskov,Bulgaria,5,4,1,6,6,5,2,Not TableTopia
+Zhao,China,4,3,5,5,6,5,1,TableTopia
+Barisic,Croatia,4,5,3,4,5,5,2,TableTopia
+Vrabec,Czech Rep,5,1,6,4,6,2,5,TableTopia
+Petersen,Denmark,4,2,4,5,6,2,6,TableTopia
+Fruin,England,4,3,6,4,6,5,1,TableTopia
+Iwu,France,5,3,4,4,6,4,3,TableTopia
+Kucklick,Germany,5,5,3,5,5,3,2,TableTopia
+McIntyre,Ireland,5,2,6,3,6,2,5,Not TableTopia
+Murphy,Ireland,5,1,3,5,6,4,5,TableTopia
+Byrne,Ireland,4,3,5,6,6,1,4,TableTopia
+Longo,Italy,4,2,6,3,6,2,6,TableTopia
+Ferraro,Italy,6,2,4,4,5,3,4,TableTopia
+Allou,Ivory Coast,5,3,3,5,4,5,2,TableTopia
+van de Kerkhof,Netherlands,5,5,2,6,4,4,1,TableTopia
+Jansen,Netherlands,4,5,3,6,3,4,1,TableTopia
+Spearman,New Zealand,5,3,4,4,4,5,2,TableTopia
+Budge,New Zealand,5,6,2,5,2,4,1,Not TableTopia
+Silva,Portugal,4,2,6,4,4,4,3,Not TableTopia
+Ulisses,Portugal,5,3,2,6,4,5,2,TableTopia
+Rusu,Romania,4,4,4,4,5,6,1,TableTopia
+Volkova,Russia,4,3,5,4,5,3,4,TableTopia
+Kuzmina,Slovakia,4,4,3,4,5,5,3,TableTopia
+Jung,South Korea,4,2,5,4,6,3,5,TableTopia
+Yun,South Korea,5,2,4,6,4,3,3,Not TableTopia
+Sang,South Korea,5,2,4,6,6,1,5,TableTopia
+Delgado,Spain,5,4,4,5,5,2,3,TableTopia
+Vizcaino,Spain,5,1,5,4,4,2,6,Not TableTopia
+Albihn,Sweden,5,1,4,6,5,2,5,Not TableTopia
+Marchenko,Ukraine,4,5,3,5,6,4,2,Not TableTopia
+Dionte,USA,4,2,6,4,5,3,4,TableTopia
+Yaneva,Bulgaria,6,3,3,4,5,3,3,TableTopia
+Abenkou,Cameroon,5,3,4,4,5,5,1,Not TableTopia
+Parkes,England,5,2,6,3,5,2,4,Not TableTopia
+Gravis,France,4,2,6,4,6,2,4,Not TableTopia
+Diallo,France,4,3,4,5,5,3,3,Not TableTopia
+Kalla,Germany,5,3,3,6,5,1,4,TableTopia
+Attah,Ghana,5,2,4,3,5,3,5,TableTopia
+Mengolini,Italy,4,2,4,5,6,2,5,Not TableTopia
+D'Amico,Italy,4,3,4,5,5,3,3,Not TableTopia
+Bertans,Latvia,4,4,3,4,4,5,2,TableTopia
+Toothnail,Mongolia,5,2,4,5,6,2,4,TableTopia
+Marell,Netherlands,4,1,6,4,6,2,5,TableTopia
+Baas,Netherlands,4,3,5,5,3,4,1,TableTopia
+Lawal,Nigeria,5,5,2,4,6,4,2,Not TableTopia
+Kelati,Poland,5,2,4,6,6,1,4,Not TableTopia
+Firlej,Poland,4,2,5,6,4,3,2,Not TableTopia
+Paterson,Scotland,5,3,5,4,5,4,1,TableTopia
+Robbie,Scotland,6,4,1,5,4,4,2,TableTopia
+Moody,Scotland,4,3,3,5,4,4,3,Not TableTopia
+Faye,Senegal,4,3,4,5,5,1,5,TableTopia
+Gueye,Senegal,4,2,3,6,4,3,4,Not TableTopia
+Pavlovic,Serbia,4,2,6,4,5,5,1,TableTopia
+Aguilar,Spain,5,2,4,5,5,2,4,Not TableTopia
+Elduayen,Spain,6,3,3,4,5,1,5,Not TableTopia
+Ramirez,USA,4,2,4,6,5,3,3,Not TableTopia
+Gowman,Wales,4,2,5,4,4,4,3,TableTopia
+Bidoglio,Argentina,5,2,4,4,6,1,5,World Cup
+Díaz,Argentina,4,2,4,5,6,1,5,World Cup
+Evaristo,Argentina,5,2,3,6,6,1,4,World Cup
+Romano,Argentina,4,4,4,3,6,5,1,World Cup
+Blanco,Argentina,4,5,1,5,5,4,2,World Cup
+Cherro,Argentina,5,4,2,5,5,2,3,World Cup
+Juncos,Argentina,4,3,2,5,5,4,3,World Cup
+Luis Barreto,Argentina,4,4,3,5,5,2,3,World Cup
+Saldías,Argentina,5,3,1,6,5,5,1,World Cup
+Zarich,Argentina,5,5,2,5,5,3,1,World Cup
+Cafferata,Argentina,5,1,4,6,6,1,4,TableTopia
+Canivet,Belgium,4,1,5,5,6,1,5,World Cup
+D'hoedt,Belgium,5,5,1,5,6,4,1,World Cup
+Dahouk,Belgium,4,3,4,4,6,2,4,World Cup
+Mbenga,Belgium,4,2,4,4,5,6,1,TableTopia
+Mpane,Belgium,5,2,3,5,6,5,1,World Cup
+Vekemans,Belgium,5,1,4,5,6,1,5,World Cup
+Bruggeman,Belgium,5,3,3,5,5,2,3,World Cup
+Lafortune,Belgium,5,5,3,3,5,3,2,World Cup
+Vanspringel,Belgium,4,5,2,4,5,5,1,World Cup
+Ramaekers,Belgium,4,3,3,6,4,4,1,World Cup
+Zagré,Belgium,5,4,2,5,3,4,1,World Cup
+Tião,Brazil,3,4,5,3,6,5,1,World Cup
+Edmar,Brazil,4,5,3,5,5,2,2,World Cup
+Ibañez,Brazil,5,4,3,5,5,3,1,World Cup
+Íris,Brazil,5,5,3,4,5,3,1,World Cup
+Ivan Brondi,Brazil,5,3,3,6,5,1,3,World Cup
+Nelinho Jr,Brazil,4,5,2,4,5,5,1,Not TableTopia
+Nonô,Brazil,5,4,3,5,5,2,2,World Cup
+Passarinho,Brazil,5,3,3,6,5,2,2,World Cup
+Plínio,Brazil,5,4,2,4,5,5,1,World Cup
+Tildo,Brazil,4,4,4,6,5,1,2,World Cup
+Zé Luiz,Brazil,5,3,2,6,5,4,1,World Cup
+Bosilj,Croatia,4,1,6,4,4,1,5,Not TableTopia
+Hrstkova,Czech Rep,5,2,3,4,5,4,3,TableTopia
+Poulsen,Denmark,4,5,2,5,4,4,1,TableTopia
+Beale,England,4,3,3,6,6,4,1,World Cup
+Eaglestone,England,5,1,5,4,6,1,5,World Cup
+Lambert,England,5,1,4,5,6,2,4,World Cup
+Munks,England,4,2,3,4,6,4,4,World Cup
+Bell,England,4,3,3,4,5,6,1,World Cup
+Khan,England,5,2,2,5,5,3,4,World Cup
+Marriner,England,5,2,2,6,5,5,1,World Cup
+Nichols,England,5,3,3,3,5,4,3,World Cup
+S. Young,England,4,1,5,5,5,1,5,World Cup
+Elliott,England,5,2,2,5,4,6,1,World Cup
+Wilson,England,4,5,2,5,4,4,1,TableTopia
+Diogu,France,5,3,3,4,6,4,2,TableTopia
+Bézy,France,5,4,2,4,6,5,1,World Cup
+Couvreur,France,5,1,5,4,6,1,5,World Cup
+d'Hughes,France,5,4,4,4,6,3,1,World Cup
+Jeanvoix,France,4,3,4,4,6,5,1,World Cup
+Mérignac,France,4,3,2,6,6,3,3,World Cup
+Bastin,France,4,2,3,6,5,2,4,World Cup
+Gakou,France,5,2,4,5,5,2,3,World Cup
+Yacoubou,France,4,5,3,5,5,3,1,World Cup
+Touquet,France,5,4,2,5,4,3,2,World Cup
+Le Nimois,France,4,1,5,5,3,1,5,World Cup
+Kostoski,Germany,4,4,1,5,6,6,1,World Cup
+Poengsen,Germany,5,3,2,5,6,2,4,World Cup
+Awerbuch,Germany,4,4,2,6,5,4,1,World Cup
+Jäger,Germany,4,2,4,5,5,3,3,World Cup
+Konrad,Germany,4,3,2,5,5,4,3,World Cup
+Studnicka ,Germany,4,2,2,6,5,4,3,World Cup
+Urban,Germany,4,1,5,4,5,4,3,World Cup
+von Liebe,Germany,3,3,5,3,5,6,1,World Cup
+Zeitler,Germany,4,3,3,6,5,4,1,World Cup
+Förderer,Germany,4,2,3,6,4,2,4,World Cup
+Repasi,Hungary,4,4,2,6,6,3,2,Not TableTopia
+Bianchetto,Italy,4,2,3,6,6,2,4,World Cup
+Di Lorenzo,Italy,4,1,5,4,6,1,6,World Cup
+Ferraz,Italy,4,2,4,6,6,2,3,World Cup
+Gasparini,Italy,5,1,4,4,6,1,6,World Cup
+Pupa,Italy,3,2,4,6,6,1,5,World Cup
+La Macchia,Italy,4,2,5,4,5,5,1,World Cup
+Santelli,Italy,4,4,2,5,5,3,3,World Cup
+Vettori,Italy,4,3,4,4,5,3,3,World Cup
+Giacomelli,Italy,4,5,2,3,3,4,3,World Cup
+Piemonte,Italy,4,3,1,5,3,4,4,World Cup
+Tajiri,Japan,5,5,1,4,6,5,1,World Cup
+Choshu,Japan,5,2,3,6,5,2,3,World Cup
+Ichiyanagi,Japan,6,4,2,5,5,2,2,World Cup
+Ito,Japan,6,3,2,4,5,3,3,World Cup
+Kobayashi,Japan,6,2,2,6,5,1,4,World Cup
+Nakamura,Japan,5,3,2,5,5,4,2,World Cup
+Tanahashi,Japan,4,3,4,4,5,5,1,World Cup
+Yamaguchi,Japan,5,5,2,4,5,3,2,World Cup
+Yoshino,Japan,6,3,1,5,5,4,2,World Cup
+Inoki,Japan,5,2,2,6,4,2,4,World Cup
+Moriuchi,Japan,6,3,2,6,5,3,1,TableTopia
+Cruz,Mexico,4,2,6,5,2,2,2,Not TableTopia
+Barnouw,Netherlands,5,1,4,5,6,1,5,World Cup
+Naber,Netherlands,3,1,5,6,6,1,5,World Cup
+Smulders,Netherlands,4,3,4,4,6,3,3,World Cup
+Bastiaanse,Netherlands,5,1,4,5,5,2,4,World Cup
+Hooijkaas,Netherlands,5,4,3,5,5,3,1,World Cup
+Ravenswaaij,Netherlands,5,4,2,5,5,4,1,World Cup
+Vijent,Netherlands,4,4,4,3,5,5,1,World Cup
+Zonderland,Netherlands,5,4,2,4,5,5,1,World Cup
+de Nooijer,Netherlands,5,3,3,4,4,5,1,World Cup
+van Vleuten,Netherlands,5,5,2,5,3,3,1,World Cup
+Ndanusa,Nigeria,6,3,2,6,6,1,3,World Cup
+Obafemi,Nigeria,5,4,2,6,6,1,3,World Cup
+Okosa,Nigeria,4,3,1,4,6,5,4,Not TableTopia
+Akinremi,Nigeria,5,1,4,6,5,1,4,World Cup
+Sesay,Nigeria,6,2,2,4,3,5,2,TableTopia
+Ezinwa,Nigeria,5,3,3,6,5,1,3,World Cup
+Fofana,Nigeria,5,5,4,3,5,3,1,World Cup
+Ikpeba,Nigeria,6,5,2,4,5,3,1,World Cup
+Tombiri,Nigeria,5,3,3,5,5,1,4,World Cup
+Ugwu,Nigeria,4,2,5,5,5,1,4,World Cup
+Akpan,Nigeria,5,1,4,5,4,1,5,World Cup
+Odoi,Nigeria,5,5,2,4,3,3,2,World Cup
+Lopez,Paraguay,5,3,3,4,4,4,2,TableTopia
+Wardach,Poland,4,3,3,5,4,4,2,Not TableTopia
+Frédérico,Portugal,5,2,4,4,6,1,5,World Cup
+Liberto,Portugal,5,5,1,6,6,2,2,World Cup
+Simões,Portugal,5,3,3,6,6,1,3,World Cup
+Calapez,Portugal,4,2,4,6,5,1,4,World Cup
+de Carvalho,Portugal,5,2,4,5,5,1,4,World Cup
+Encarnação,Portugal,5,4,4,6,5,1,1,World Cup
+Porfírio,Portugal,5,3,3,6,5,1,3,World Cup
+Ricardo Lopes,Portugal,4,3,5,5,5,1,3,World Cup
+Vítor,Portugal,4,2,5,4,4,1,5,World Cup
+Augusto,Portugal,5,3,5,3,3,1,4,World Cup
+Forest,Scotland,4,1,5,5,6,1,5,World Cup
+Hoeflich,Scotland,3,3,5,4,6,5,1,World Cup
+Caddis,Scotland,5,2,3,5,5,2,4,World Cup
+Findlay,Scotland,4,3,3,5,5,3,3,World Cup
+MacLeod,Scotland,5,1,4,5,5,1,5,World Cup
+Roxburgh,Scotland,5,1,4,5,5,2,4,World Cup
+Weir,Scotland,4,2,3,5,5,4,3,World Cup
+Hamilton,Scotland,5,2,3,4,4,5,2,World Cup
+Mackinnon,Scotland,5,3,2,5,4,3,3,World Cup
+Mair,Scotland,5,2,2,6,4,2,4,World Cup
+Bratoz,Slovenia,5,3,2,6,5,4,1,TableTopia
+Eizaguirre,Spain,4,1,5,5,6,1,5,World Cup
+Franco-Henao,Spain,5,3,3,4,6,5,1,World Cup
+Vallana,Spain,5,1,4,5,6,1,5,World Cup
+Cholín,Spain,5,4,2,5,5,4,1,World Cup
+Félix,Spain,5,2,3,6,5,1,4,World Cup
+Monjardín,Spain,5,3,4,3,5,3,3,World Cup
+Quincoces,Spain,5,4,3,4,5,4,1,World Cup
+Vázquez,Spain,4,3,2,6,5,2,4,World Cup
+Kiriki,Spain,5,3,3,6,4,3,1,World Cup
+Perez Garcia,Spain,4,1,5,6,4,2,3,Not TableTopia
+Zaldúa,Spain,4,4,3,4,3,4,2,World Cup
+Nilsson,Sweden,4,3,3,5,5,4,2,TableTopia
+K Ozcan,Turkey,4,1,6,5,6,2,3,TableTopia
+Akers,USA,5,1,5,5,5,1,4,World Cup
+Donelli,USA,5,4,2,5,5,4,1,World Cup
+Forcier,USA,5,3,2,6,5,4,1,World Cup
+Goedhals,USA,5,1,5,5,5,1,4,World Cup
+Patenaude,USA,5,5,2,5,5,3,1,World Cup
+Šutevski,USA,4,3,5,3,5,5,1,World Cup
+Winkler,USA,4,3,4,5,5,3,2,World Cup
+O'Riordan,USA,5,4,3,5,4,3,1,World Cup
+Sayce,USA,5,3,3,4,4,5,1,World Cup
+Wolffe,USA,4,4,3,5,4,3,2,World Cup
+Orlandini,Argentina,5,3,2,5,6,1,4,World Cup
+Luna,Argentina,5,3,3,4,5,1,4,World Cup
+Zumelzú,Argentina,4,3,2,6,5,2,3,World Cup
+Kern,Austria,4,2,4,5,5,2,3,Not TableTopia
+Novikov,Belarus,3,2,2,5,4,6,2,Not TableTopia
+Hallet,Belgium,5,2,3,5,5,2,3,World Cup
+De Smet,Belgium,5,2,3,6,4,1,3,World Cup
+Grégoire,Belgium,4,2,3,6,4,1,4,World Cup
+Yele,Belgium,5,2,3,4,4,4,2,Not TableTopia
+Humberto,Brazil,5,1,5,4,6,1,4,World Cup
+Vavá,Brazil,4,2,4,4,6,2,4,World Cup
+Toquinho,Brazil,5,1,4,5,5,1,4,World Cup
+Hikal,Egypt,4,2,2,6,6,4,2,Not TableTopia
+Foyle,England,6,1,5,4,5,1,3,TableTopia
+Carey,England,5,1,4,5,5,2,3,World Cup
+Nnachetta,England,4,1,3,6,5,2,4,World Cup
+O.Young,England,5,1,3,5,4,2,4,World Cup
+Kuitunen,Finland,4,2,3,6,6,4,1,Not TableTopia
+Blériot,France,5,1,3,5,5,1,5,World Cup
+Rok,France,5,2,2,6,5,2,3,World Cup
+Despotovic,France,5,2,3,4,4,2,4,World Cup
+Vernet,France,4,3,2,6,4,4,1,Not TableTopia
+Feldinger,Germany,4,1,4,5,5,1,5,World Cup
+Gollnhuber,Germany,3,1,5,5,5,1,5,World Cup
+Hochleitner,Germany,4,1,5,4,5,1,5,World Cup
+Drossos,Greece,4,2,3,6,6,1,4,World Cup
+Goulios,Greece,5,5,1,4,6,2,3,World Cup
+Gouvedaris,Greece,4,1,5,4,6,1,5,World Cup
+Katsachnias,Greece,4,3,4,4,6,4,1,World Cup
+Diakos,Greece,4,1,4,5,5,1,5,World Cup
+Hasapis,Greece,5,1,2,6,5,1,5,World Cup
+Raftopoulos,Greece,5,1,3,6,5,1,4,World Cup
+Zirinis,Greece,5,3,3,6,5,1,2,World Cup
+Delavinias,Greece,3,3,4,6,4,1,3,World Cup
+Kermitsis,Greece,5,3,2,4,4,4,2,World Cup
+Liagas,Greece,4,5,1,5,4,3,2,World Cup
+Kalafatis,Greece,4,4,4,4,3,2,2,World Cup
+McDonagh,Ireland,4,4,2,5,6,4,1,World Cup
+McEachern,Ireland,3,3,4,4,6,3,3,World Cup
+Shanahan,Ireland,4,2,4,5,6,2,3,World Cup
+Christie,Ireland,5,2,4,3,5,5,1,World Cup
+Dooley,Ireland,4,3,4,4,5,4,1,World Cup
+Lucken,Ireland,4,1,5,5,5,1,4,World Cup
+McGettigan,Ireland,5,4,2,5,5,3,1,World Cup
+O'Grady,Ireland,5,2,3,5,5,2,3,World Cup
+Yeats,Ireland,5,1,4,4,5,1,5,World Cup
+Finn,Ireland,5,1,3,6,4,1,4,World Cup
+Hilliard,Ireland,5,3,3,5,4,3,1,World Cup
+Kinsella,Ireland,4,1,4,6,3,1,4,World Cup
+Crispi,Italy,4,5,1,5,5,3,2,World Cup
+D'Annunzio,Italy,4,4,1,5,5,4,2,World Cup
+Stagliano,Italy,5,2,2,6,3,3,2,World Cup
+Hie Toh,Ivory Coast,5,2,2,6,6,2,3,World Cup
+Junior,Ivory Coast,5,4,2,4,6,4,1,World Cup
+Kouadio,Ivory Coast,5,3,2,6,6,3,1,World Cup
+Bahtobe,Ivory Coast,5,5,1,6,5,2,1,World Cup
+Komenan,Ivory Coast,5,4,3,4,5,3,1,World Cup
+Koné,Ivory Coast,5,1,4,5,5,1,4,World Cup
+N'Dri,Ivory Coast,5,2,3,6,5,2,2,World Cup
+Pokou,Ivory Coast,5,2,3,4,5,5,1,World Cup
+Tiacoh,Ivory Coast,5,1,5,4,5,1,4,World Cup
+Cisse,Ivory Coast,6,1,5,3,4,1,4,World Cup
+Clément,Ivory Coast,5,2,3,5,4,2,3,World Cup
+Konan,Ivory Coast,5,5,3,3,4,3,1,World Cup
+Abraham,Ivory Coast,5,1,4,6,4,1,3,TableTopia
+Michiki,Japan,6,1,4,3,6,1,5,World Cup
+Shirai,Japan,5,2,2,5,5,1,5,World Cup
+Endo,Japan,5,1,3,6,3,1,4,World Cup
+El Gadi,Libya,4,1,4,5,4,1,5,Not TableTopia
+Castañeda,Mexico,5,1,4,4,6,2,4,World Cup
+Fuentes,Mexico,3,3,3,5,6,3,3,World Cup
+Germán Jr.,Mexico,4,4,1,6,6,4,1,World Cup
+Guadarrama,Mexico,5,2,3,5,6,2,3,World Cup
+Joaquín,Mexico,4,3,1,6,6,5,1,World Cup
+Arteaga,Mexico,4,1,4,5,5,1,5,World Cup
+Davinho,Mexico,4,2,3,4,5,6,1,World Cup
+Palencia,Mexico,4,5,1,5,5,3,2,World Cup
+Pineda,Mexico,5,2,2,5,5,3,3,World Cup
+Rotllán,Mexico,5,1,3,4,5,3,4,World Cup
+Hernández,Mexico,5,2,3,4,4,1,5,World Cup
+Sol,Mexico,5,3,1,6,3,4,1,World Cup
+Ezzine,Morocco,4,1,5,6,5,1,3,TableTopia
+Gardien,Netherlands,5,3,2,5,6,1,4,World Cup
+Hasnoe,Netherlands,4,2,3,6,5,2,3,World Cup
+Fromberg,Netherlands,5,2,3,5,4,1,4,World Cup
+Anieke,Nigeria,6,3,1,5,6,4,1,World Cup
+Azuka,Nigeria,6,4,2,4,6,2,2,World Cup
+Effiong,Nigeria,6,1,5,3,3,4,1,World Cup
+Mitchell,Northern Ireland,4,3,3,5,4,4,1,TableTopia
+Andersen,Norway,5,1,5,4,5,2,3,TableTopia
+Fabio Bento,Portugal,4,5,3,3,6,4,1,World Cup
+César,Portugal,4,5,1,5,5,3,2,World Cup
+Óscar,Portugal,5,4,2,4,5,4,1,World Cup
+Rodrigues,Portugal,5,3,2,5,5,4,1,Not TableTopia
+Noon,Scotland,5,2,4,4,6,1,4,TableTopia
+Muirhead,Scotland,5,2,4,4,5,2,3,TableTopia
+Kerr,Scotland,5,2,3,4,4,3,3,TableTopia
+Fyffe,Scotland,5,3,1,5,5,4,2,World Cup
+Gallacher,Scotland,4,2,2,6,5,4,2,World Cup
+Leckie,Scotland,5,3,1,5,5,3,3,World Cup
+Zietsch,Slovakia,6,1,2,6,5,3,2,Not TableTopia
+Peña,Spain,4,3,3,5,5,2,3,World Cup
+Sagarzazu,Spain,4,5,1,5,4,3,2,World Cup
+Ramón,Spain,5,2,3,5,3,2,3,World Cup
+Rohdin,Sweden,5,1,5,5,6,1,3,Not TableTopia
+P. Ozcan,Turkey,5,2,2,6,4,3,2,Not TableTopia
+Agos,Uruguay,5,1,5,5,4,2,2,Not TableTopia
+Álvarez,USA,5,2,3,6,5,2,2,World Cup
+Austin,USA,5,1,4,6,5,1,3,World Cup
+Hanzelman,USA,4,2,5,6,5,1,2,World Cup
+Phillips,Wales,4,3,3,3,5,5,2,Not TableTopia
+Orresta,Argentina,4,2,2,5,5,4,2,TableTopia
+Mora,Costa Rica,5,1,3,6,5,2,2,Not TableTopia
+Shengelia,Georgia,4,2,3,5,6,2,3,Not TableTopia
+Kapias,Greece,4,4,1,4,5,4,2,World Cup
+Nikolaidis,Greece,5,2,1,5,5,3,3,World Cup
+Heaney,Ireland,4,2,2,6,6,4,1,World Cup
+O'Toole,Ireland,4,1,4,6,5,1,3,World Cup
+Achy Assi,Ivory Coast,5,2,3,6,6,1,2,World Cup
+Yoyaga,Ivory Coast,5,3,1,6,6,2,2,World Cup
+Lemus,Mexico,4,4,2,4,5,4,1,World Cup
+Macías,Mexico,4,2,2,6,5,2,3,World Cup
+Lahiafi,Morocco,5,1,5,3,5,1,4,Not TableTopia
+Selengue,Netherlands,4,4,1,4,4,3,3,Not TableTopia
+Narovec,Slovakia,4,2,1,5,6,3,4,Not TableTopia
+Keenan,USA,4,1,4,5,6,1,4,Not TableTopia
+Siami,Algeria,5,2,1,4,6,3,3,TableTopia
+Da Silva,Australia,4,1,5,4,5,3,1,Not TableTopia
+Ricardo,Brazil,4,1,3,6,5,1,3,Not TableTopia
+Calderon,Colombia,4,1,4,4,6,2,3,Not TableTopia
+Benic,Croatia,4,1,4,5,2,1,3,Not TableTopia
+Bank,Czech Rep,4,2,3,4,4,3,2,TableTopia
+Okabi,Japan,4,2,2,6,6,2,2,Not TableTopia
+Patras,Moldova,5,1,3,4,4,3,2,TableTopia
+Ogunleye,Nigeria,5,1,5,3,5,1,3,Not TableTopia
+Villacorta,Peru,4,1,6,5,5,1,1,Not TableTopia
+Polyakov,Russia,3,1,6,4,5,2,2,TableTopia
+Bogdanov,Russia,4,1,4,6,5,1,2,Not TableTopia
+Thompson,Scotland,5,1,4,3,3,2,3,Not TableTopia
+Ivkovic,Serbia,5,1,2,4,6,4,2,Not TableTopia
+Rupnik,Slovenia,4,2,2,6,6,1,3,TableTopia
+Hardy,USA,4,1,3,6,4,2,2,TableTopia
+Yugar,Bolivia,4,1,3,6,5,2,1,TableTopia
+Humphrey,England,4,2,1,6,5,1,3,TableTopia
+Kivi,Estonia,4,2,3,4,5,2,2,Not TableTopia
+Hinz,Germany,4,1,4,4,4,1,3,Not TableTopia
+O'Connor,Ireland,5,1,3,4,4,1,2,TableTopia
+Kolodko,Russia,3,1,3,5,5,2,2,Not TableTopia
+Lunde,Switzerland,4,2,3,4,6,1,2,Not TableTopia
+Ribeiro,Portugal,3,3,1,5,4,2,1,TableTopia
