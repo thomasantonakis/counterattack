@@ -17,9 +17,12 @@ public class PlayerCard : MonoBehaviour
     // Optionally add Image for country flags if you plan to use them
     // public Image flagImage;
 
+    public Player assignedPlayer;
+
     // Method to update the card with player data
     public void UpdatePlayerCard(Player player)
     {
+        assignedPlayer = player;  // Store the player data
         playerNameText.text = player.Name;
         countryText.text = player.Country;
         paceValueText.text = player.Pace.ToString();

@@ -21,8 +21,8 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             PlayerCard card = cardDragHandler.GetComponent<PlayerCard>();
             UpdateSlot(card);
 
-            // After assigning the card, notify DraftManager
-            draftManager.CardAssignedToSlot();  // Call to DraftManager
+            // Notify DraftManager that the card has been assigned
+            draftManager.CardAssignedToSlot(card);  // Pass the card as an argument
             Destroy(card.gameObject);  // This removes the card after it's dropped in the slot
         }
     }

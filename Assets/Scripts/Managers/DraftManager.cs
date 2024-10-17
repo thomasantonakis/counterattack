@@ -8,21 +8,24 @@ using TMPro;
 public class DraftManager : MonoBehaviour
 {
     public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
+    public List<Player> selectedDeck;   // To hold shuffled players
     public List<Player> draftPool;   // To hold shuffled players
-    public int cardsPerRound = 4;    // Number of player cards shown per draft round
     public GameObject playerCardPrefab;
     public GameObject draftPanel;
-    public int squadsize = 2;
+    public GameObject homeTeamPanel;  // The panel where slots will be instantiated
+    public GameObject awayTeamPanel;
     public GameObject playerSlotPrefab;  // Assign this in the Inspector
-    public Transform homeTeamPanel;  // The panel where slots will be instantiated
-    private int cardsAssigned = 0;
+    private readonly int squadSize = 16;
+    private int cardsAssignedThisRound = 0;
+
 
     void Start()
     {
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
-        ShuffleDraftPool();  // Shuffle the player pool for drafting
-        StartDraftRound();   // Start the first draft round
-        CreateTeamSlots();
+        CreateDraftPool();  // Create the draft pool
+        DealNewDraftCards();  // Start the first draft round
+        CreateTeamSlots(homeTeamPanel);
+        CreateTeamSlots(awayTeamPanel);
     }
 
     void LoadPlayersFromCSV(string fileName)
@@ -68,16 +71,27 @@ public class DraftManager : MonoBehaviour
         }
     }
 
-    void ShuffleDraftPool()
+    void CreateDraftPool()
     {
-        draftPool = allPlayers.OrderBy(p => Random.value).Take(squadsize).ToList();  // Shuffle and take 18 players for the draft
-    }
+        // Initialize selectedDeck and draftPool
+        selectedDeck = new List<Player>(allPlayers);
 
-    void StartDraftRound()
+        // Shuffle the selectedDeck and limit it to squadSize * 2 cards
+        ShuffleDeck(selectedDeck);
+        selectedDeck = selectedDeck.GetRange(0, squadSize * 2);  // Limit to squadSize * 2 players
+
+        // Set the draftPool to hold the entire selectedDeck initially
+        draftPool = new List<Player>(selectedDeck);
+    }
+    void ShuffleDeck(List<Player> deck)
     {
-        // Display 4 cards (players) to draft in the UI
-        List<Player> currentRoundPlayers = draftPool.Take(cardsPerRound).ToList();
-        DisplayDraftCards(currentRoundPlayers);
+        for (int i = 0; i < deck.Count; i++)
+        {
+            Player temp = deck[i];
+            int randomIndex = Random.Range(i, deck.Count);
+            deck[i] = deck[randomIndex];
+            deck[randomIndex] = temp;
+        }
     }
 
     public void DisplayDraftCards(List<Player> playersToShow)
@@ -91,37 +105,64 @@ public class DraftManager : MonoBehaviour
     }
 
     // Method to be called each time a card is assigned to a slot
-    public void CardAssignedToSlot()
+    public void CardAssignedToSlot(PlayerCard card)
     {
-        cardsAssigned++;
+        // Remove the drafted player from the draft pool
+        draftPool.Remove(card.assignedPlayer);
 
-        // When 4 cards are assigned, deal the next 4 cards
-        if (cardsAssigned == 4)
+        // Increment cards assigned in this round
+        cardsAssignedThisRound++;
+
+        // When 4 cards have been assigned, deal new ones
+        if (cardsAssignedThisRound >= 4)
         {
-            DealNewCards();  // Function to deal new cards
-            cardsAssigned = 0;  // Reset the counter for the next round
+            DealNewDraftCards();
         }
     }
 
-    // Method to deal new cards
-    private void DealNewCards()
+    void DealNewDraftCards()
     {
-        // Destroy the old cards in the draft panel
+        // Debug.Log($"Starting round. Cards in draft pool: {draftPool.Count}");
+        // Clear current draft cards from the panel
         foreach (Transform child in draftPanel.transform)
         {
-            Destroy(child.gameObject);  // Remove existing cards
+            Destroy(child.gameObject);
+        }
+        // If there are no more cards to deal, do nothing
+        if (draftPool.Count == 0)
+        {
+            Debug.Log("No more cards to deal. Draft pool is empty.");
+            return;
+        }
+        
+        // Make sure we still have enough cards in the draft pool
+        int cardsToDeal = Mathf.Min(4, draftPool.Count);
+        // Debug.Log($"Dealing {cardsToDeal} cards.");
+
+        // Deal new cards
+        for (int i = 0; i < cardsToDeal; i++)
+        {
+            Player nextPlayer = draftPool[i];
+            GameObject newCard = Instantiate(playerCardPrefab, draftPanel.transform);
+            PlayerCard playerCard = newCard.GetComponent<PlayerCard>();
+            playerCard.UpdatePlayerCard(nextPlayer);
+            // Debug.Log($"Dealt card for player: {nextPlayer.Name}");
         }
 
-        // Now deal 4 new cards
-        StartDraftRound();
+        // Remove the dealt cards from the draft pool
+        draftPool.RemoveRange(0, cardsToDeal);
+        // Debug.Log($"After round. Cards remaining in draft pool: {draftPool.Count}");
+
+        // Reset the round
+        cardsAssignedThisRound = 0;
     }
 
-    void CreateTeamSlots()
+    void CreateTeamSlots(GameObject rosterPanel)
     {
-        for (int i = 1; i <= squadsize; i++)
+        for (int i = 1; i <= squadSize; i++)
         {
             // Instantiate a new slot
-            GameObject newSlot = Instantiate(playerSlotPrefab, homeTeamPanel.transform);
+            GameObject newSlot = Instantiate(playerSlotPrefab, rosterPanel.transform);
             
             // Check if instantiation was successful
             if (newSlot == null)
