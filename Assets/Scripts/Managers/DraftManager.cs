@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using TMPro;
 
 public class DraftManager : MonoBehaviour
 {
@@ -11,13 +12,17 @@ public class DraftManager : MonoBehaviour
     public int cardsPerRound = 4;    // Number of player cards shown per draft round
     public GameObject playerCardPrefab;
     public GameObject draftPanel;
-    public int squadsize = 16;
+    public int squadsize = 2;
+    public GameObject playerSlotPrefab;  // Assign this in the Inspector
+    public Transform homeTeamPanel;  // The panel where slots will be instantiated
+    private int cardsAssigned = 0;
 
     void Start()
     {
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
         ShuffleDraftPool();  // Shuffle the player pool for drafting
         StartDraftRound();   // Start the first draft round
+        CreateTeamSlots();
     }
 
     void LoadPlayersFromCSV(string fileName)
@@ -84,4 +89,60 @@ public class DraftManager : MonoBehaviour
             cardScript.UpdatePlayerCard(player);
         }
     }
+
+    // Method to be called each time a card is assigned to a slot
+    public void CardAssignedToSlot()
+    {
+        cardsAssigned++;
+
+        // When 4 cards are assigned, deal the next 4 cards
+        if (cardsAssigned == 4)
+        {
+            DealNewCards();  // Function to deal new cards
+            cardsAssigned = 0;  // Reset the counter for the next round
+        }
+    }
+
+    // Method to deal new cards
+    private void DealNewCards()
+    {
+        // Destroy the old cards in the draft panel
+        foreach (Transform child in draftPanel.transform)
+        {
+            Destroy(child.gameObject);  // Remove existing cards
+        }
+
+        // Now deal 4 new cards
+        StartDraftRound();
+    }
+
+    void CreateTeamSlots()
+    {
+        for (int i = 1; i <= squadsize; i++)
+        {
+            // Instantiate a new slot
+            GameObject newSlot = Instantiate(playerSlotPrefab, homeTeamPanel.transform);
+            
+            // Check if instantiation was successful
+            if (newSlot == null)
+            {
+                Debug.LogError($"Failed to instantiate player slot #{i}");
+                continue;
+            }
+
+            // Navigate to the ContentWrapper before accessing the text
+            Transform contentWrapper = newSlot.transform.Find("ContentWrapper");
+            if (contentWrapper == null)
+            {
+                Debug.LogError($"ContentWrapper not found in PlayerSlot prefab");
+                continue;
+            }
+
+            // Set the jersey number in the slot (assuming the text is inside the ContentWrapper)
+            contentWrapper.Find("Jersey#").GetComponent<TMP_Text>().text = i.ToString();
+
+            // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
+        }
+    }
+
 }
