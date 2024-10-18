@@ -163,7 +163,8 @@ public class DraftManager : MonoBehaviour
         {
             // Instantiate a new slot
             GameObject newSlot = Instantiate(playerSlotPrefab, rosterPanel.transform);
-            
+            string rosterType = rosterPanel.name.Contains("Home") ? "Home" : "Away";
+            newSlot.name = $"{rosterType}-{i}";  // This will name it "Home-1", "Away-1", etc.
             // Check if instantiation was successful
             if (newSlot == null)
             {
