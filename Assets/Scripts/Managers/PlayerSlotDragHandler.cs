@@ -9,6 +9,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     private int originalSiblingIndex;
     private Vector3 originalPosition;
     private GameObject placeholder;
+    private Vector3 mouseOffset;  // To store the offset between the mouse and the slot's position
 
     // Add this for valid roster panel name
     public string validRosterName;  // To check against HomeRoster or AwayRoster
@@ -24,6 +25,14 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         originalParent = transform.parent;
         originalPosition = transform.position;
         originalSiblingIndex = transform.GetSiblingIndex();
+        // Calculate the offset between the mouse position and the slot's position
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            GetComponent<RectTransform>(),
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector3 globalMousePos
+        );
+        mouseOffset = transform.position - globalMousePos;
 
         // Set the valid roster name to the name of the original parent (HomeRoster or AwayRoster)
         validRosterName = originalParent.name;
@@ -61,8 +70,14 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnDrag(PointerEventData eventData)
     {
-        // Update the slot's position to follow the pointer
-        transform.position = Input.mousePosition;
+        // Update the slot's position to follow the pointer, maintaining the offset
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            GetComponent<RectTransform>(),
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector3 globalMousePos
+        );
+        transform.position = globalMousePos + mouseOffset;
     }
 
     public void OnEndDrag(PointerEventData eventData)

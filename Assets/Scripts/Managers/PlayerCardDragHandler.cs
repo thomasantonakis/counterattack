@@ -8,7 +8,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     private LayoutElement layoutElement;
     private Transform originalParent;
     private Vector3 originalPosition;
-
+    private Vector3 mouseOffset;  // To store the offset between the mouse and the slot's position
     // Placeholder to keep the grid structure while dragging
     private GameObject placeholder;
 
@@ -23,6 +23,14 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         // Save original parent and position
         originalParent = transform.parent;
         originalPosition = transform.position;
+        // Calculate the offset between the mouse position and the slot's position
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            GetComponent<RectTransform>(),
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector3 globalMousePos
+        );
+        mouseOffset = transform.position - globalMousePos;
 
         // Create a placeholder in the grid to maintain the structure
         placeholder = new GameObject("Placeholder");
@@ -47,8 +55,14 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnDrag(PointerEventData eventData)
     {
-        // Update the card's position to follow the pointer
-        transform.position = Input.mousePosition;
+        // Update the slot's position to follow the pointer, maintaining the offset
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            GetComponent<RectTransform>(),
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector3 globalMousePos
+        );
+        transform.position = globalMousePos + mouseOffset;
     }
 
     public void OnEndDrag(PointerEventData eventData)
