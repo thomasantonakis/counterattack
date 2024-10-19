@@ -14,8 +14,6 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log($"OnDrop called for {gameObject.name}");
-        // Handle the dropped card
-        PlayerCardDragHandler cardDragHandler = eventData.pointerDrag.GetComponent<PlayerCardDragHandler>();
         // Check if we are dropping a Player Slot instead of a card
         PlayerSlotDragHandler draggedSlot = eventData.pointerDrag.GetComponent<PlayerSlotDragHandler>();
         if (draggedSlot != null && draggedSlot != this)
@@ -34,16 +32,79 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             }
         }
         
+        // Handle the dropped card
+        PlayerCardDragHandler cardDragHandler = eventData.pointerDrag.GetComponent<PlayerCardDragHandler>();
         if (cardDragHandler != null)
         {
             // Debug.Log("Dropping Cards in SlotDropManager");
             PlayerCard card = cardDragHandler.GetComponent<PlayerCard>();
-            UpdateSlot(card);
+            // Check if the slot is already populated
+            if (IsSlotPopulated())
+            {
+                Debug.Log($"Slot {gameObject.name} is already populated. Finding the next available slot.");
+                // Find the next available slot and update that one
+                PlayerSlotDropHandler nextAvailableSlot = FindNextAvailableSlot();
+                if (nextAvailableSlot != null)
+                {
+                    nextAvailableSlot.UpdateSlot(card);  // Populate the next available slot
+                    draftManager.CardAssignedToSlot(card);  // Pass the card as an argument
+                    Destroy(card.gameObject);  // This removes the card after it's dropped in the slot
+                }
+                else
+                {
+                    Debug.LogWarning("No available slots left to assign the card.");
+                }
+            }
+            else
+            {
+                // Update this slot if it's not populated
+                UpdateSlot(card);
+                // Notify DraftManager that the card has been assigned
+                draftManager.CardAssignedToSlot(card);  // Pass the card as an argument
+                Destroy(card.gameObject);  // This removes the card after it's dropped in the slot
+            }
 
-            // Notify DraftManager that the card has been assigned
-            draftManager.CardAssignedToSlot(card);  // Pass the card as an argument
-            Destroy(card.gameObject);  // This removes the card after it's dropped in the slot
         }
+    }
+
+    private bool IsSlotPopulated()
+    {
+        // Log the slot name to confirm what's being checked
+        Debug.Log($"Checking if slot '{gameObject.name}' is populated by analyzing its name.");
+
+        // Split the slot's name by '-' and check if it contains more than two parts (indicating it's renamed with player info)
+        string[] nameParts = gameObject.name.Split('-');
+
+        // If the slot has more than two parts, it's populated with a player's name
+        return nameParts.Length > 2;  // More than 2 parts means it's named something like "Away-6-PlayerName"
+    }
+
+    private PlayerSlotDropHandler FindNextAvailableSlot()
+    {
+        // Get the parent roster (either HomeRoster or AwayRoster)
+        Transform rosterParent = transform.parent;
+        // Start searching from the next sibling (slot) in the panel
+        int siblingIndex = transform.GetSiblingIndex();
+        int totalSlots = rosterParent.childCount;
+        // First search below the current slot
+        for (int i = siblingIndex + 1; i < totalSlots; i++)
+        {
+            PlayerSlotDropHandler nextSlot = rosterParent.GetChild(i).GetComponent<PlayerSlotDropHandler>();
+            if (nextSlot != null && !nextSlot.IsSlotPopulated())
+            {
+                return nextSlot;  // Return the next available slot
+            }
+        }
+        // If no empty slots below, search from the top
+        for (int i = 0; i < siblingIndex; i++)
+        {
+            PlayerSlotDropHandler nextSlot = rosterParent.GetChild(i).GetComponent<PlayerSlotDropHandler>();
+            if (nextSlot != null && !nextSlot.IsSlotPopulated())
+            {
+                return nextSlot;  // Return the first available slot found from the top
+            }
+        }
+        return null;  // No available slot found
     }
 
     private void SwapSlotData(GameObject draggedSlot)
