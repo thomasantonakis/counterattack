@@ -73,7 +73,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         }
     }
 
-    private bool IsSlotPopulated()
+    public bool IsSlotPopulated()
     {
         // Log the slot name to confirm what's being checked
         // Debug.Log($"Checking if slot '{gameObject.name}' is populated by analyzing its name.");
@@ -156,7 +156,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         // Debug.Log($"Slot data swap completed between {gameObject.name} and {draggedSlot.name}");
     }
 
-    private void UpdateSlot(PlayerCard card)
+    public void UpdateSlot(PlayerCard card)
     {
         // Navigate to the ContentWrapper before accessing the text fields
         Transform contentWrapper = transform.Find("ContentWrapper");

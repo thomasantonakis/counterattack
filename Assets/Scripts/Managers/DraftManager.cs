@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Linq;
 using System.IO;
 using TMPro;
@@ -205,6 +206,31 @@ public class DraftManager : MonoBehaviour
         // Reset the round
         cardsAssignedThisRound = 0;
     }
+
+    public PlayerSlotDropHandler FindNextAvailableSlot(string rosterPanelName)
+{
+    // Get the roster panel (HomeRoster or AwayRoster) by name
+    GameObject rosterPanel = GameObject.Find(rosterPanelName);
+
+    if (rosterPanel == null)
+    {
+        Debug.LogError($"Roster panel '{rosterPanelName}' not found!");
+        return null;
+    }
+
+    // Iterate through the child slots to find the next available slot
+    foreach (Transform child in rosterPanel.transform)
+    {
+        PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
+        if (slot != null && !slot.IsSlotPopulated())  // Check if slot is not populated
+        {
+            return slot;  // Return the first available slot
+        }
+    }
+
+    Debug.LogWarning($"No available slots found in {rosterPanelName}.");
+    return null;  // No available slots found
+}
 
     void CreateTeamSlots(GameObject rosterPanel)
     {
