@@ -17,15 +17,18 @@ public class DraftManager : MonoBehaviour
     public GameObject playerSlotPrefab;  // Assign this in the Inspector
     private readonly int squadSize = 16;
     private int cardsAssignedThisRound = 0;
+    private string currentTeamTurn;  // Track which team's turn it is
+    private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
 
 
     void Start()
     {
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
         CreateDraftPool();  // Create the draft pool
-        DealNewDraftCards();  // Start the first draft round
         CreateTeamSlots(homeTeamPanel);
         CreateTeamSlots(awayTeamPanel);
+        PerformCoinFlip();
+        DealNewDraftCards();  // Start the first draft round
     }
 
     void LoadPlayersFromCSV(string fileName)
@@ -94,6 +97,25 @@ public class DraftManager : MonoBehaviour
         }
     }
 
+    // Simulate the coin flip
+    private void PerformCoinFlip()
+    {
+        int coinFlip = Random.Range(0, 2);  // 0 = Tails (Away), 1 = Heads (Home)
+
+        if (coinFlip == 1)
+        {
+            Debug.Log("Coin flip result: Heads, Home team picks first.");
+            currentTeamTurn = "Home";
+        }
+        else
+        {
+            Debug.Log("Coin flip result: Tails, Away team picks first.");
+            currentTeamTurn = "Away";
+        }
+        // Initialize first-round team based on the coin flip result
+        isHomeFirstInNextRound = currentTeamTurn == "Home";
+    }
+
     public void DisplayDraftCards(List<Player> playersToShow)
     {
         foreach (Player player in playersToShow)
@@ -109,15 +131,42 @@ public class DraftManager : MonoBehaviour
     {
         // Remove the drafted player from the draft pool
         draftPool.Remove(card.assignedPlayer);
-
         // Increment cards assigned in this round
         cardsAssignedThisRound++;
+        // Alternate the current team turn after each card assignment
+        currentTeamTurn = currentTeamTurn == "Home" ? "Away" : "Home";
 
-        // When 4 cards have been assigned, deal new ones
-        if (cardsAssignedThisRound >= 4)
+        // Alternate between teams after each card is assigned
+        if (cardsAssignedThisRound >= 4 && draftPool.Count()>0)
         {
+            // When 4 cards have been assigned, deal new ones
             DealNewDraftCards();
+            cardsAssignedThisRound = 0;  // Reset for the next round
+            isHomeFirstInNextRound = !isHomeFirstInNextRound;  // Alternate which team starts
+            // Set current team for the next round's first pick
+            currentTeamTurn = isHomeFirstInNextRound ? "Home" : "Away";
+            Debug.Log($"New round started. {currentTeamTurn} picks first.");
         }
+        else if (draftPool.Count == 0)
+        {
+            Debug.Log("No more cards to deal. Draft pool is empty.");
+        }
+    }
+
+    public string GetCurrentTeamTurn()
+    {
+        Debug.Log($"Now it's {currentTeamTurn}'s turn.");
+        return currentTeamTurn;
+    }
+
+    // Validate the target panel based on the current team's turn
+    public bool IsValidTeamPanel(string rosterName)
+    {
+        // Allow only the current team's roster as a valid drop target
+        bool panelWhereACardWasDropped = (currentTeamTurn == "Home" && rosterName == "HomeRoster") ||
+               (currentTeamTurn == "Away" && rosterName == "AwayRoster");
+        Debug.Log($"Dropped Card in {rosterName}, isValidTeamPanel: {panelWhereACardWasDropped}.");
+        return panelWhereACardWasDropped;
     }
 
     void DealNewDraftCards()
@@ -131,7 +180,7 @@ public class DraftManager : MonoBehaviour
         // If there are no more cards to deal, do nothing
         if (draftPool.Count == 0)
         {
-            Debug.Log("No more cards to deal. Draft pool is empty.");
+            Debug.Log("No more cards to deal. Draft pool is empty. Should not appear.");
             return;
         }
         

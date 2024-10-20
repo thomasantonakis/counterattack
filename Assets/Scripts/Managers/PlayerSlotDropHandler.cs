@@ -36,6 +36,12 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         PlayerCardDragHandler cardDragHandler = eventData.pointerDrag.GetComponent<PlayerCardDragHandler>();
         if (cardDragHandler != null)
         {
+            // Check if the drop is valid based on the current team's turn
+            if (!draftManager.IsValidTeamPanel(transform.parent.name))
+            {
+                Debug.LogWarning($"Invalid drop: {transform.parent.name} is not a valid target for {draftManager.GetCurrentTeamTurn()}.");
+                return;  // Reject the drop if it's not a valid team panel
+            }
             // Debug.Log("Dropping Cards in SlotDropManager");
             PlayerCard card = cardDragHandler.GetComponent<PlayerCard>();
             // Check if the slot is already populated
@@ -70,7 +76,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
     private bool IsSlotPopulated()
     {
         // Log the slot name to confirm what's being checked
-        Debug.Log($"Checking if slot '{gameObject.name}' is populated by analyzing its name.");
+        // Debug.Log($"Checking if slot '{gameObject.name}' is populated by analyzing its name.");
 
         // Split the slot's name by '-' and check if it contains more than two parts (indicating it's renamed with player info)
         string[] nameParts = gameObject.name.Split('-');
