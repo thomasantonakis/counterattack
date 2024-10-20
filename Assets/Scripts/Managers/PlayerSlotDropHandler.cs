@@ -156,6 +156,21 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         // Debug.Log($"Slot data swap completed between {gameObject.name} and {draggedSlot.name}");
     }
 
+    private Color GetAttributeColor(int value)
+    {
+        if (value >= 5)
+        {
+            return new Color(0f, 0.5f, 0f);  // Dark Green
+        }
+        else if (value >= 3)
+        {
+            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+        }
+        else
+        {
+            return new Color(0.5f, 0f, 0f);  // Dark Red
+        }
+    }
     public void UpdateSlot(PlayerCard card)
     {
         // Navigate to the ContentWrapper before accessing the text fields
@@ -168,17 +183,39 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         }
 
         // Update the text fields inside the ContentWrapper
-        contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text = card.playerNameText.text;  // Name
-        contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>().text = card.paceValueText.text;  // Pace
-        contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>().text = card.dribblingValueText.text;  // Dribbling
-        contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>().text = card.headingValueText.text;  // Heading
-        contentWrapper.Find("HighPassInSlot").GetComponent<TMP_Text>().text = card.highPassValueText.text;  // High Pass
-        contentWrapper.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = card.resilienceValueText.text;  // Resilience
-        contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>().text = card.shootingValueText.text;  // Shooting
-        contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>().text = card.tacklingValueText.text;  // Tackling
+        TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
+        TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
+        TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
+        TMP_Text headingText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();
+        TMP_Text highPassText = contentWrapper.Find("HighPassInSlot").GetComponent<TMP_Text>();
+        TMP_Text resilienceText = contentWrapper.Find("ResilienceInSlot").GetComponent<TMP_Text>();
+        TMP_Text shootingText = contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>();
+        TMP_Text tacklingText = contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>();
+
+        // Set text
+        playerNameText.text = card.playerNameText.text;
+        paceText.text = card.paceValueText.text;
+        dribblingText.text = card.dribblingValueText.text;
+        headingText.text = card.headingValueText.text;
+        highPassText.text = card.highPassValueText.text;
+        resilienceText.text = card.resilienceValueText.text;
+        shootingText.text = card.shootingValueText.text;
+        tacklingText.text = card.tacklingValueText.text;
+
+        // Set default black color for the player's name
+        playerNameText.color = Color.black;
+
+        // Apply dynamic colors based on the attribute values
+        paceText.color = GetAttributeColor(int.Parse(card.paceValueText.text));
+        dribblingText.color = GetAttributeColor(int.Parse(card.dribblingValueText.text));
+        headingText.color = GetAttributeColor(int.Parse(card.headingValueText.text));
+        highPassText.color = GetAttributeColor(int.Parse(card.highPassValueText.text));
+        resilienceText.color = GetAttributeColor(int.Parse(card.resilienceValueText.text));
+        shootingText.color = GetAttributeColor(int.Parse(card.shootingValueText.text));
+        tacklingText.color = GetAttributeColor(int.Parse(card.tacklingValueText.text));
+
         // Rename the slot by appending the player's name
-        string originalSlotName = gameObject.name;  // Keep only the "Home-#" or "Away-#"
-        gameObject.name = $"{originalSlotName}-{card.playerNameText.text}";  // Append player name to the slot name
+        gameObject.name = $"{gameObject.name}-{card.playerNameText.text}";  // Append player name to the slot name
         Debug.Log($"Slot renamed to: {gameObject.name}");
     }
 
