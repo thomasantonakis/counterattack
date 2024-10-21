@@ -12,6 +12,7 @@ public class DraftManager : MonoBehaviour
     public List<Player> selectedDeck;   // To hold shuffled players
     public List<Player> draftPool;   // To hold shuffled players
     public GameObject playerCardPrefab;
+    public List<Goalkeeper> allGks;  // Change the list to Player objects, not dictionaries
     public GameObject draftPanel;
     public GameObject homeTeamPanel;  // The panel where slots will be instantiated
     public GameObject awayTeamPanel;
@@ -27,6 +28,7 @@ public class DraftManager : MonoBehaviour
     void Start()
     {
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
+        LoadGKFromCSV("goalkeepers");  // Load players from the CSV
         CreateDraftPool();  // Create the draft pool
         CreateTeamSlots(homeTeamPanel, homeAveragePanel);
         CreateTeamSlots(awayTeamPanel, awayAveragePanel);
@@ -69,6 +71,48 @@ public class DraftManager : MonoBehaviour
                 // Create a Player object from the dictionary
                 Player player = new Player(playerData);
                 allPlayers.Add(player);  // Add the player to the list
+            }
+        }
+        else
+        {
+            Debug.LogError($"CSV file not found in Resources: {fileName}");
+        }
+    }
+    void LoadGKFromCSV(string fileName)
+    {
+        allGks = new List<Goalkeeper>();
+        TextAsset csvFile = Resources.Load<TextAsset>(fileName);  // Load from Resources
+
+        if (csvFile != null)
+        {
+            string[] lines = csvFile.text.Split('\n');  // Split the content by line
+
+            // First line is the header, so we skip it
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] fields = lines[i].Split(',');
+
+                // Log for debugging purposes
+                // Debug.Log($"Parsing player: {fields[0]} from {fields[1]} with Pace {fields[2]}");
+
+                // Create a dictionary from the CSV line
+                Dictionary<string, string> gkData = new Dictionary<string, string>
+                {
+                    { "Name", fields[0] },
+                    { "Nationality", fields[1] },
+                    { "Aerial", fields[2] },
+                    { "Dribbling", fields[3] },
+                    { "Pace", fields[4] },
+                    { "Resilience", fields[5] },
+                    { "Saving", fields[6] },
+                    { "Handling", fields[7] },
+                    { "HighPass", fields[8] },
+                    { "Type", fields[9] }
+                };
+
+                // Create a Goalkeeper object from the dictionary
+                Goalkeeper goalkeeper = new Goalkeeper(gkData);
+                allGks.Add(goalkeeper);  // Add the player to the list
             }
         }
         else
