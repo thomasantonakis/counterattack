@@ -104,16 +104,6 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
             // Destroy the card from the draft panel after assigning to the slot
             Destroy(card.gameObject);
-
-            // // Update the slot with the card info
-            // PlayerCard playerCard = GetComponent<PlayerCard>();
-            // nextAvailableSlot.UpdateSlot(playerCard);
-
-            // // Notify the DraftManager that a card has been assigned
-            // draftManager.CardAssignedToSlot(playerCard);
-
-            // // Destroy the card since it's been assigned
-            // Destroy(gameObject);
         }
         else
         {
@@ -135,9 +125,12 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // Reset transparency
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;  // Enable raycasts again
+        // Reset transparency and raycast settings
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.blocksRaycasts = true;
+        }
 
         // Check if dropped on a valid slot
         if (transform.parent == transform.root)

@@ -115,7 +115,8 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
 
     private void SwapSlotData(GameObject draggedSlot)
     {
-        // Debug.Log($"Swapping slot data between {gameObject.name} and {draggedSlot.name}");
+        Debug.Log($"Swapping slot data between {gameObject.name} and {draggedSlot.name}");
+        
         // Get TMP_Text components from both slots (current and dragged)
         Transform currentSlotWrapper = transform.Find("ContentWrapper");
         Transform draggedSlotWrapper = draggedSlot.transform.Find("ContentWrapper");
@@ -137,24 +138,54 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         for (int i = 1; i < draggedSlotFields.Length; i++)  // Starting from index 1 to skip Jersey Number
         {
             draggedData[i] = draggedSlotFields[i].text;
-            // Debug.Log($"Storing data from {draggedSlot.name}: {draggedSlotFields[i].text}");
         }
 
         // Swap: Move current slot data to dragged slot
         for (int i = 1; i < currentSlotFields.Length; i++)  // Starting from index 1 to skip Jersey Number
         {
             draggedSlotFields[i].text = currentSlotFields[i].text;
-            // Debug.Log($"Moving data to dragged slot {draggedSlot.name}: {currentSlotFields[i].text}");
+
+            if (i > 1) // Assuming index 1 is the player name, which doesn't need color coding
+            {
+                if (int.TryParse(currentSlotFields[i].text, out int attributeValue))
+                {
+                    draggedSlotFields[i].color = GetAttributeColor(attributeValue);  // Apply correct color coding for attributes
+                }
+            }
+            else
+            {
+                draggedSlotFields[i].color = Color.black;  // Set player name to black
+            }
         }
 
         // Move dragged slot data to the current slot
         for (int i = 1; i < draggedData.Length; i++)  // Starting from index 1 to skip Jersey Number
         {
             currentSlotFields[i].text = draggedData[i];
-            // Debug.Log($"Moving data to current slot {gameObject.name}: {draggedData[i]}");
+
+            if (i > 1) // Assuming index 1 is the player name, which doesn't need color coding
+            {
+                if (int.TryParse(draggedData[i], out int attributeValue))
+                {
+                    currentSlotFields[i].color = GetAttributeColor(attributeValue);  // Apply correct color coding for attributes
+                }
+            }
+            else
+            {
+                currentSlotFields[i].color = Color.black;  // Set player name to black
+            }
         }
-        // Debug.Log($"Slot data swap completed between {gameObject.name} and {draggedSlot.name}");
+
+        // Rename both slots in the hierarchy to reflect the swapped player names
+        // Ensure that the jersey number (e.g., "Home-1" or "Home-7") is preserved
+        string currentSlotBaseName = gameObject.name.Split('-')[0] + "-" + gameObject.name.Split('-')[1];  // e.g., "Home-1"
+        string draggedSlotBaseName = draggedSlot.name.Split('-')[0] + "-" + draggedSlot.name.Split('-')[1];  // e.g., "Home-7"
+        // Handle renaming for an empty slot (no player name)
+        gameObject.name = string.IsNullOrWhiteSpace(currentSlotFields[1].text) ? currentSlotBaseName : $"{currentSlotBaseName}-{currentSlotFields[1].text}";
+        draggedSlot.name = string.IsNullOrWhiteSpace(draggedSlotFields[1].text) ? draggedSlotBaseName : $"{draggedSlotBaseName}-{draggedSlotFields[1].text}";
+        Debug.Log($"Slot renaming completed: {gameObject.name} and {draggedSlot.name}");
     }
+
 
     private Color GetAttributeColor(int value)
     {
@@ -181,9 +212,12 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             Debug.LogError("ContentWrapper not found in PlayerSlot prefab");
             return;
         }
-
         // Update the text fields inside the ContentWrapper
         TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
+        playerNameText.text = card.playerNameText.text;
+        playerNameText.color = Color.black;  // Set default color to black for player name
+
+        // Update the text fields inside the ContentWrapper
         TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
         TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
         TMP_Text headingText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();

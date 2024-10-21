@@ -15,6 +15,8 @@ public class DraftManager : MonoBehaviour
     public GameObject draftPanel;
     public GameObject homeTeamPanel;  // The panel where slots will be instantiated
     public GameObject awayTeamPanel;
+    public GameObject homeAveragePanel;
+    public GameObject awayAveragePanel;
     public GameObject playerSlotPrefab;  // Assign this in the Inspector
     private readonly int squadSize = 16;
     private int cardsAssignedThisRound = 0;
@@ -26,8 +28,8 @@ public class DraftManager : MonoBehaviour
     {
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
         CreateDraftPool();  // Create the draft pool
-        CreateTeamSlots(homeTeamPanel);
-        CreateTeamSlots(awayTeamPanel);
+        CreateTeamSlots(homeTeamPanel, homeAveragePanel);
+        CreateTeamSlots(awayTeamPanel, awayAveragePanel);
         PerformCoinFlip();
         DealNewDraftCards();  // Start the first draft round
     }
@@ -130,6 +132,9 @@ public class DraftManager : MonoBehaviour
     // Method to be called each time a card is assigned to a slot
     public void CardAssignedToSlot(PlayerCard card)
     {
+        // Convert the GameObjects to Transforms and update averages
+        UpdateTeamAverages(homeTeamPanel.transform, homeAveragePanel.transform);
+        UpdateTeamAverages(awayTeamPanel.transform, awayAveragePanel.transform);
         // Remove the drafted player from the draft pool
         draftPool.Remove(card.assignedPlayer);
         // Increment cards assigned in this round
@@ -232,7 +237,7 @@ public class DraftManager : MonoBehaviour
     return null;  // No available slots found
 }
 
-    void CreateTeamSlots(GameObject rosterPanel)
+    void CreateTeamSlots(GameObject rosterPanel, GameObject averagePanel)
     {
         for (int i = 1; i <= squadSize; i++)
         {
@@ -259,6 +264,229 @@ public class DraftManager : MonoBehaviour
             contentWrapper.Find("Jersey#").GetComponent<TMP_Text>().text = i.ToString();
 
             // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
+        }
+        CreateAverageSlot(averagePanel, rosterPanel.name.Contains("Home") ? "Home" : "Away");
+    }
+    void CreateAverageSlot(GameObject averagePanel, string teamType)
+    {
+        // Create the "Starting XI" slot
+        GameObject startingXISlot = Instantiate(playerSlotPrefab, averagePanel.transform);
+        startingXISlot.name = $"{teamType}-XI";
+
+        // Navigate to the ContentWrapper and set the appropriate text
+        Transform contentWrapperXI = startingXISlot.transform.Find("ContentWrapper");
+        if (contentWrapperXI != null)
+        {
+            contentWrapperXI.Find("Jersey#").GetComponent<TMP_Text>().text = "XI";
+            contentWrapperXI.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text = "Starting XI";
+        }
+        else
+        {
+            Debug.LogError("ContentWrapper not found in Starting XI slot prefab");
+        }
+
+        // Create the "Team Average" slot
+        GameObject teamAverageSlot = Instantiate(playerSlotPrefab, averagePanel.transform);
+        teamAverageSlot.name = $"{teamType}-TeamAverage";
+
+        Transform contentWrapperAvg = teamAverageSlot.transform.Find("ContentWrapper");
+        if (contentWrapperAvg != null)
+        {
+            contentWrapperAvg.Find("Jersey#").GetComponent<TMP_Text>().text = "";
+            contentWrapperAvg.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text = "Team Average";
+        }
+        else
+        {
+            Debug.LogError("ContentWrapper not found in Team Average slot prefab");
+        }
+    }
+
+
+    public void UpdateTeamAverages(Transform rosterPanel, Transform averagePanel)
+    {
+        // Debug.Log("Updating Slot with Card");
+        // The sums and counts for calculating averages
+        int startXICount = 0, teamAverageCount = 0;
+        int startXISumPace = 0, teamAverageSumPace = 0;
+        int startXISumDribbling = 0, teamAverageSumDribbling = 0;
+        int startXISumHeading = 0, teamAverageSumHeading = 0;
+        int startXISumHighPass = 0, teamAverageSumHighPass = 0;
+        int startXISumResilience = 0, teamAverageSumResilience = 0;
+        int startXISumShooting = 0, teamAverageSumShooting = 0;
+        int startXISumTackling = 0, teamAverageSumTackling = 0;
+
+        // Loop through the roster panel and calculate averages
+        for (int i = 1; i <= squadSize; i++)
+        {
+            // Debug.Log($"Get from {rosterPanel}, slot number {i}");
+            Transform slot = rosterPanel.GetChild(i-1);
+            PlayerSlotDropHandler slotHandler = slot.GetComponent<PlayerSlotDropHandler>();
+            // Find the ContentWrapper first
+
+            if (slotHandler != null && slotHandler.IsSlotPopulated())
+            {
+                Transform contentWrapper = slot.Find("ContentWrapper");
+                if (contentWrapper == null)
+                {
+                    Debug.LogError($"ContentWrapper not found in roster slot '{slot.name}'");
+                    continue;
+                }
+                // Debug.Log("Updating Slot with Card");
+                // Retrieve the attributes from the slot (Pace, Dribbling, etc.)
+                TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
+                TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
+                TMP_Text headingText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();
+                TMP_Text highPassText = contentWrapper.Find("HighPassInSlot").GetComponent<TMP_Text>();
+                TMP_Text resilienceText = contentWrapper.Find("ResilienceInSlot").GetComponent<TMP_Text>();
+                TMP_Text shootingText = contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>();
+                TMP_Text tacklingText = contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>();
+
+                int pace, dribbling, heading, highpass, resilience, shooting, tackling;
+                // Try to parse each attribute, if parsing fails, set it to 0
+                pace = int.TryParse(paceText.text, out pace) ? pace : 0;
+                dribbling = int.TryParse(dribblingText.text, out dribbling) ? dribbling : 0;
+                heading = int.TryParse(headingText.text, out heading) ? heading : 0;
+                highpass = int.TryParse(highPassText.text, out highpass) ? highpass : 0;
+                resilience = int.TryParse(resilienceText.text, out resilience) ? resilience : 0;
+                shooting = int.TryParse(shootingText.text, out shooting) ? shooting : 0;
+                tackling = int.TryParse(tacklingText.text, out tackling) ? tackling : 0;
+
+                // For Starting XI (slots 2 to 11)
+                if (i >= 2 && i <= 11)
+                {
+                    startXISumPace += pace;
+                    startXISumDribbling += dribbling;
+                    startXISumHeading += heading;
+                    startXISumHighPass += highpass;
+                    startXISumResilience += resilience;
+                    startXISumShooting += shooting;
+                    startXISumTackling += tackling;
+                    startXICount++;
+                }
+
+                // For Team Average (slots 2 to 11 and 13 to 16)
+                if ((i >= 2 && i <= 11) || (i >= 13 && i <= 16))
+                {
+                    teamAverageSumPace += pace;
+                    teamAverageSumDribbling += dribbling;
+                    teamAverageSumHeading += heading;
+                    teamAverageSumHighPass += highpass;
+                    teamAverageSumResilience += resilience;
+                    teamAverageSumShooting += shooting;
+                    teamAverageSumTackling += tackling;
+                    teamAverageCount++;
+                }
+            }
+        }
+
+        // Calculate the averages, ensuring no division by zero
+        float avgPaceXI = startXICount > 0 ? (float)startXISumPace / startXICount : 0;
+        float avgDribblingXI = startXICount > 0 ? (float)startXISumDribbling / startXICount : 0;
+        float avgHeadingXI = startXICount > 0 ? (float)startXISumHeading / startXICount : 0;
+        float avgHighPassXI = startXICount > 0 ? (float)startXISumHighPass / startXICount : 0;
+        float avgResilienceXI = startXICount > 0 ? (float)startXISumResilience / startXICount : 0;
+        float avgShootingXI = startXICount > 0 ? (float)startXISumShooting / startXICount : 0;
+        float avgTacklingXI = startXICount > 0 ? (float)startXISumTackling / startXICount : 0;
+
+        float avgPaceTeam = teamAverageCount > 0 ? (float)teamAverageSumPace / teamAverageCount : 0;
+        float avgDribblingTeam = teamAverageCount > 0 ? (float)teamAverageSumDribbling / teamAverageCount : 0;
+        float avgHeadingTeam = teamAverageCount > 0 ? (float)teamAverageSumHeading / teamAverageCount : 0;
+        float avgHighPassTeam = teamAverageCount > 0 ? (float)teamAverageSumHighPass / teamAverageCount : 0;
+        float avgResilienceTeam = teamAverageCount > 0 ? (float)teamAverageSumResilience / teamAverageCount : 0;
+        float avgShootingTeam = teamAverageCount > 0 ? (float)teamAverageSumShooting / teamAverageCount : 0;
+        float avgTacklingTeam = teamAverageCount > 0 ? (float)teamAverageSumTackling / teamAverageCount : 0;
+
+
+        // Update the UI for Starting XI and Team Average slots
+        Transform startingXISlot = averagePanel.Find("Away-XI") ?? averagePanel.Find("Home-XI");
+        Transform teamAverageSlot = averagePanel.Find("Away-TeamAverage") ?? averagePanel.Find("Home-TeamAverage");
+
+        if (startingXISlot != null)
+        {
+            Transform contentWrapperXI = startingXISlot.Find("ContentWrapper");
+
+            if (contentWrapperXI == null)
+            {
+                Debug.LogError("ContentWrapper not found in Team Average slot");
+                return;
+            }
+            // Update text with 1 decimal point and apply color coding
+            contentWrapperXI.Find("PaceInSlot").GetComponent<TMP_Text>().text = avgPaceXI.ToString("F1");
+            contentWrapperXI.Find("PaceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgPaceXI);
+
+            contentWrapperXI.Find("DribblingInSlot").GetComponent<TMP_Text>().text = avgDribblingXI.ToString("F1");
+            contentWrapperXI.Find("DribblingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgDribblingXI);
+
+            contentWrapperXI.Find("HeadingInSlot").GetComponent<TMP_Text>().text = avgHeadingXI.ToString("F1");
+            contentWrapperXI.Find("HeadingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHeadingXI);
+
+            contentWrapperXI.Find("HighPassInSlot").GetComponent<TMP_Text>().text = avgHighPassXI.ToString("F1");
+            contentWrapperXI.Find("HighPassInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHighPassXI);
+
+            contentWrapperXI.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = avgResilienceXI.ToString("F1");
+            contentWrapperXI.Find("ResilienceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgResilienceXI);
+
+            contentWrapperXI.Find("ShootingInSlot").GetComponent<TMP_Text>().text = avgShootingXI.ToString("F1");
+            contentWrapperXI.Find("ShootingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgShootingXI);
+
+            contentWrapperXI.Find("TacklingInSlot").GetComponent<TMP_Text>().text = avgTacklingXI.ToString("F1");
+            contentWrapperXI.Find("TacklingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgTacklingXI);
+        }
+        else
+        {
+            Debug.LogError($"{rosterPanel.name}-XI not found");
+        }
+
+        if (teamAverageSlot != null)
+        {
+            Transform contentWrapperAvg = teamAverageSlot.Find("ContentWrapper");
+
+            if (contentWrapperAvg == null)
+            {
+                Debug.LogError("ContentWrapper not found in Team Average slot");
+                return;
+            }
+            // Update text with 1 decimal point and apply color coding
+            contentWrapperAvg.Find("PaceInSlot").GetComponent<TMP_Text>().text = avgPaceTeam.ToString("F1");
+            contentWrapperAvg.Find("PaceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgPaceTeam);
+
+            contentWrapperAvg.Find("DribblingInSlot").GetComponent<TMP_Text>().text = avgDribblingTeam.ToString("F1");
+            contentWrapperAvg.Find("DribblingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgDribblingTeam);
+
+            contentWrapperAvg.Find("HeadingInSlot").GetComponent<TMP_Text>().text = avgHeadingTeam.ToString("F1");
+            contentWrapperAvg.Find("HeadingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHeadingTeam);
+
+            contentWrapperAvg.Find("HighPassInSlot").GetComponent<TMP_Text>().text = avgHighPassTeam.ToString("F1");
+            contentWrapperAvg.Find("HighPassInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHighPassTeam);
+
+            contentWrapperAvg.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = avgResilienceTeam.ToString("F1");
+            contentWrapperAvg.Find("ResilienceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgResilienceTeam);
+
+            contentWrapperAvg.Find("ShootingInSlot").GetComponent<TMP_Text>().text = avgShootingTeam.ToString("F1");
+            contentWrapperAvg.Find("ShootingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgShootingTeam);
+
+            contentWrapperAvg.Find("TacklingInSlot").GetComponent<TMP_Text>().text = avgTacklingTeam.ToString("F1");
+            contentWrapperAvg.Find("TacklingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgTacklingTeam);
+        }
+        else
+        {
+            Debug.LogError($"{rosterPanel.name}-TeamAverage not found");
+        }
+    }
+
+    private Color GetAttributeColor(float value)
+    {
+        if (value >= 5f)
+        {
+            return new Color(0f, 0.5f, 0f);  // Dark Green
+        }
+        else if (value >= 3f)
+        {
+            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+        }
+        else
+        {
+            return new Color(0.5f, 0f, 0f);  // Dark Red
         }
     }
 
