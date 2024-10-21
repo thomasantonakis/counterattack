@@ -13,6 +13,7 @@ public class DraftManager : MonoBehaviour
     public List<Player> draftPool;   // To hold shuffled players
     public GameObject playerCardPrefab;
     public List<Goalkeeper> allGks;  // Change the list to Player objects, not dictionaries
+    public List<Goalkeeper> selectedGks;  // Change the list to Player objects, not dictionaries
     public GameObject draftPanel;
     public GameObject homeTeamPanel;  // The panel where slots will be instantiated
     public GameObject awayTeamPanel;
@@ -28,10 +29,12 @@ public class DraftManager : MonoBehaviour
     void Start()
     {
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
-        LoadGKFromCSV("goalkeepers");  // Load players from the CSV
         CreateDraftPool();  // Create the draft pool
+        LoadGKFromCSV("goalkeepers");  // Load players from the CSV
+        FilterAndShuffleGoalkeepers();
         CreateTeamSlots(homeTeamPanel, homeAveragePanel);
         CreateTeamSlots(awayTeamPanel, awayAveragePanel);
+        AssignGoalkeepersToSlots();  // Assign GKs before dealing player cards
         PerformCoinFlip();
         DealNewDraftCards();  // Start the first draft round
     }
@@ -128,7 +131,7 @@ public class DraftManager : MonoBehaviour
 
         // Shuffle the selectedDeck and limit it to squadSize * 2 cards
         ShuffleDeck(selectedDeck);
-        selectedDeck = selectedDeck.GetRange(0, squadSize * 2);  // Limit to squadSize * 2 players
+        selectedDeck = selectedDeck.GetRange(0, (squadSize-2) * 2);  // Limit to squadSize * 2 players - excluding GKs
 
         // Set the draftPool to hold the entire selectedDeck initially
         draftPool = new List<Player>(selectedDeck);
@@ -141,6 +144,72 @@ public class DraftManager : MonoBehaviour
             int randomIndex = Random.Range(i, deck.Count);
             deck[i] = deck[randomIndex];
             deck[randomIndex] = temp;
+        }
+    }
+
+    private void FilterAndShuffleGoalkeepers()
+    {
+        // Copy allGks into selectedGks (no filter for now)
+        selectedGks = new List<Goalkeeper>(allGks);
+
+        // Shuffle the selectedGks list
+        ShuffleGKDeck(selectedGks);
+    }
+
+    private void ShuffleGKDeck(List<Goalkeeper> deck)
+    {
+        for (int i = 0; i < deck.Count; i++)
+        {
+            Goalkeeper temp = deck[i];
+            int randomIndex = Random.Range(i, deck.Count);
+            deck[i] = deck[randomIndex];
+            deck[randomIndex] = temp;
+        }
+    }
+
+    private void AssignGoalkeepersToSlots()
+    {
+        // Sort the first two goalkeepers for Home by Saving, Handling, and Pace
+        var topTwoHome = selectedGks.Take(2).OrderByDescending(gk => gk.Saving)
+                                        .ThenByDescending(gk => gk.Handling)
+                                        .ThenByDescending(gk => gk.Pace)
+                                        .ToList();
+                                        
+        // Assign the first one to Home-1 and the second one to Home-12
+        AssignGoalkeeperToSlot(topTwoHome[0], "Home-1");
+        AssignGoalkeeperToSlot(topTwoHome[1], "Home-12");
+
+        // Remove them from selectedGks
+        selectedGks.RemoveRange(0, 2);
+
+        // Sort the next two goalkeepers for Away
+        var topTwoAway = selectedGks.Take(2).OrderByDescending(gk => gk.Saving)
+                                        .ThenByDescending(gk => gk.Handling)
+                                        .ThenByDescending(gk => gk.Pace)
+                                        .ToList();
+                                        
+        // Assign the first one to Away-1 and the second one to Away-12
+        AssignGoalkeeperToSlot(topTwoAway[0], "Away-1");
+        AssignGoalkeeperToSlot(topTwoAway[1], "Away-12");
+
+        // Remove them from selectedGks
+        selectedGks.RemoveRange(0, 2);
+    }
+
+    // Helper method to assign goalkeeper to the correct slot
+    private void AssignGoalkeeperToSlot(Goalkeeper gk, string slotName)
+    {
+        GameObject slot = GameObject.Find(slotName);
+        if (slot == null)
+        {
+            Debug.LogError($"Slot {slotName} not found!");
+            return;
+        }
+
+        PlayerSlotDropHandler slotHandler = slot.GetComponent<PlayerSlotDropHandler>();
+        if (slotHandler != null)
+        {
+            slotHandler.UpdateGoalkeeperSlot(gk);
         }
     }
 
@@ -257,29 +326,29 @@ public class DraftManager : MonoBehaviour
     }
 
     public PlayerSlotDropHandler FindNextAvailableSlot(string rosterPanelName)
-{
-    // Get the roster panel (HomeRoster or AwayRoster) by name
-    GameObject rosterPanel = GameObject.Find(rosterPanelName);
-
-    if (rosterPanel == null)
     {
-        Debug.LogError($"Roster panel '{rosterPanelName}' not found!");
-        return null;
-    }
+        // Get the roster panel (HomeRoster or AwayRoster) by name
+        GameObject rosterPanel = GameObject.Find(rosterPanelName);
 
-    // Iterate through the child slots to find the next available slot
-    foreach (Transform child in rosterPanel.transform)
-    {
-        PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
-        if (slot != null && !slot.IsSlotPopulated())  // Check if slot is not populated
+        if (rosterPanel == null)
         {
-            return slot;  // Return the first available slot
+            Debug.LogError($"Roster panel '{rosterPanelName}' not found!");
+            return null;
         }
-    }
 
-    Debug.LogWarning($"No available slots found in {rosterPanelName}.");
-    return null;  // No available slots found
-}
+        // Iterate through the child slots to find the next available slot
+        foreach (Transform child in rosterPanel.transform)
+        {
+            PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
+            if (slot != null && !slot.IsSlotPopulated())  // Check if slot is not populated
+            {
+                return slot;  // Return the first available slot
+            }
+        }
+
+        Debug.LogWarning($"No available slots found in {rosterPanelName}.");
+        return null;  // No available slots found
+    }
 
     void CreateTeamSlots(GameObject rosterPanel, GameObject averagePanel)
     {
@@ -306,11 +375,21 @@ public class DraftManager : MonoBehaviour
 
             // Set the jersey number in the slot (assuming the text is inside the ContentWrapper)
             contentWrapper.Find("Jersey#").GetComponent<TMP_Text>().text = i.ToString();
+            // Dynamically adjust labels for Goalkeeper slots (1 and 12)
+            if (i == 1 || i == 12)
+            {
+                // Change labels for goalkeeper stats
+                contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>().text = "AerialInSlot";
+                contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>().text = "SavingInSlot";
+                contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>().text = "HandlingInSlot";
+            }
 
             // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
         }
+        
         CreateAverageSlot(averagePanel, rosterPanel.name.Contains("Home") ? "Home" : "Away");
     }
+
     void CreateAverageSlot(GameObject averagePanel, string teamType)
     {
         // Create the "Starting XI" slot

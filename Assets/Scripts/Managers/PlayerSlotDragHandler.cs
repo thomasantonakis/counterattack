@@ -126,6 +126,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         {
             if (parent.name == "HomeRoster" || parent.name == "AwayRoster")
             {
+            // Check if it's a valid roster and return true if it matches
                 Debug.Log($"IsDroppedInValidRosterPanel: Slot '{droppedTransform.name}' is dropped in valid roster '{parent.name}'. Result: True");
                 return parent.name == validRosterName;
             }

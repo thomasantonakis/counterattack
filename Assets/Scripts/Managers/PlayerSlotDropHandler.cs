@@ -22,9 +22,27 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             string droppedRosterName = transform.parent.name;
             if (draggedSlot.validRosterName == droppedRosterName)
             {
-                Debug.Log($"Valid drop: {draggedSlot.name} and {gameObject.name} are in the same roster panel.");
-                // Swap slot data as the drop is valid
-                SwapSlotData(draggedSlot.gameObject);
+                // Determine if the target slot is a GK slot (either 1 or 12)
+                bool isCurrentSlotGK = gameObject.name.Contains("-1-") || gameObject.name.Contains("-12-");
+                bool isDraggedSlotGK = draggedSlot.gameObject.name.Contains("-1-") || draggedSlot.gameObject.name.Contains("-12-");
+
+                if (isCurrentSlotGK && isDraggedSlotGK)
+                {
+                    // Allow the swap since both slots are goalkeeper slots
+                    Debug.Log($"Valid GK swap: {draggedSlot.name} and {gameObject.name}.");
+                    SwapSlotData(draggedSlot.gameObject);
+                }
+                else if (!isCurrentSlotGK && !isDraggedSlotGK)
+                {
+                    // Allow normal player swapping for non-GK slots
+                    Debug.Log($"Valid player swap: {draggedSlot.name} and {gameObject.name}.");
+                    SwapSlotData(draggedSlot.gameObject);
+                }
+                else
+                {
+                    // Invalid drop: Goalkeeper can only be swapped with another goalkeeper
+                    Debug.LogWarning($"Invalid drop: '{draggedSlot.name}' and '{gameObject.name}' are not both GK or non-GK slots.");
+                }
             }
             else
             {
@@ -41,6 +59,13 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             {
                 Debug.LogWarning($"Invalid drop: {transform.parent.name} is not a valid target for {draftManager.GetCurrentTeamTurn()}.");
                 return;  // Reject the drop if it's not a valid team panel
+            }
+            // Prevent dropping a player card into a goalkeeper slot
+            bool isCurrentSlotGK = gameObject.name.Contains("-1-") || gameObject.name.Contains("-12-");
+            if (isCurrentSlotGK)
+            {
+                Debug.LogWarning($"Invalid drop: Cannot place a player card in a goalkeeper slot {gameObject.name}.");
+                return;  // Reject the drop if it's a GK slot
             }
             // Debug.Log("Dropping Cards in SlotDropManager");
             PlayerCard card = cardDragHandler.GetComponent<PlayerCard>();
@@ -186,22 +211,54 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         Debug.Log($"Slot renaming completed: {gameObject.name} and {draggedSlot.name}");
     }
 
-
-    private Color GetAttributeColor(int value)
+    public void UpdateGoalkeeperSlot(Goalkeeper gk)
     {
-        if (value >= 5)
+        // Navigate to the ContentWrapper before accessing the text fields
+        Transform contentWrapper = transform.Find("ContentWrapper");
+
+        if (contentWrapper == null)
         {
-            return new Color(0f, 0.5f, 0f);  // Dark Green
+            Debug.LogError("ContentWrapper not found in PlayerSlot prefab");
+            return;
         }
-        else if (value >= 3)
-        {
-            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
-        }
-        else
-        {
-            return new Color(0.5f, 0f, 0f);  // Dark Red
-        }
+
+        // Update the text fields inside the ContentWrapper
+        TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
+        playerNameText.text = gk.Name;
+        playerNameText.color = Color.black;  // Set default color to black for player name
+
+        TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
+        TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
+        TMP_Text aerialText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();  // Reuse "Heading" for "Aerial"
+        TMP_Text highPassText = contentWrapper.Find("HighPassInSlot").GetComponent<TMP_Text>();
+        TMP_Text resilienceText = contentWrapper.Find("ResilienceInSlot").GetComponent<TMP_Text>();
+        TMP_Text savingText = contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>();  // Reuse "Shooting" for "Saving"
+        TMP_Text handlingText = contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>();  // Reuse "Tackling" for "Handling"
+
+        // Set text
+        playerNameText.text = gk.Name;
+        paceText.text = gk.Pace.ToString();
+        dribblingText.text = gk.Dribbling.ToString();
+        aerialText.text = gk.Aerial.ToString();
+        highPassText.text = gk.HighPass.ToString();
+        resilienceText.text = gk.Resilience.ToString();
+        savingText.text = gk.Saving.ToString();
+        handlingText.text = gk.Handling.ToString();
+
+        // Apply dynamic colors based on the attribute values
+        paceText.color = GetAttributeColor(gk.Pace);
+        dribblingText.color = GetAttributeColor(gk.Dribbling);
+        aerialText.color = GetAttributeColor(gk.Aerial);
+        highPassText.color = GetAttributeColor(gk.HighPass);
+        resilienceText.color = GetAttributeColor(gk.Resilience);
+        savingText.color = GetAttributeColor(gk.Saving);
+        handlingText.color = GetAttributeColor(gk.Handling);
+
+        // Rename the slot by appending the goalkeeper's name
+        gameObject.name = $"{gameObject.name}-{gk.Name}";  // Append GK name to the slot name
+        Debug.Log($"Slot renamed to: {gameObject.name}");
     }
+
     public void UpdateSlot(PlayerCard card)
     {
         // Navigate to the ContentWrapper before accessing the text fields
@@ -236,9 +293,6 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         shootingText.text = card.shootingValueText.text;
         tacklingText.text = card.tacklingValueText.text;
 
-        // Set default black color for the player's name
-        playerNameText.color = Color.black;
-
         // Apply dynamic colors based on the attribute values
         paceText.color = GetAttributeColor(int.Parse(card.paceValueText.text));
         dribblingText.color = GetAttributeColor(int.Parse(card.dribblingValueText.text));
@@ -251,6 +305,22 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         // Rename the slot by appending the player's name
         gameObject.name = $"{gameObject.name}-{card.playerNameText.text}";  // Append player name to the slot name
         Debug.Log($"Slot renamed to: {gameObject.name}");
+    }
+
+    private Color GetAttributeColor(int value)
+    {
+        if (value >= 5)
+        {
+            return new Color(0f, 0.5f, 0f);  // Dark Green
+        }
+        else if (value >= 3)
+        {
+            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+        }
+        else
+        {
+            return new Color(0.5f, 0f, 0f);  // Dark Red
+        }
     }
 
 }
