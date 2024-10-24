@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/CreateNewHSGameScene.unity
     guid: b2acf841e3ce64342b24b684bb4c064b
   - enabled: 1
+    path: Assets/Scenes/Draft.unity
+    guid: f7cb27efde848415289105a485474efe
+  - enabled: 1
     path: Assets/Scenes/Room.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
