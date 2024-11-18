@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using System.IO;
 using TMPro;
+using Newtonsoft.Json; // Now it will recognize JsonConvert
 
 public class DraftManager : MonoBehaviour
 {
+    private GameSettings currentSettings; // Class-level variable
     public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
     public List<Player> selectedDeck;   // To hold shuffled players
     public List<Player> draftPool;   // To hold shuffled players
@@ -20,7 +22,13 @@ public class DraftManager : MonoBehaviour
     public GameObject homeAveragePanel;
     public GameObject awayAveragePanel;
     public GameObject playerSlotPrefab;  // Assign this in the Inspector
-    private readonly int squadSize = 16;
+    private int squadSize;
+    private bool useTableTopia = true; 
+    private bool useNonTableTopia = false; 
+    private bool useInternationals = false; 
+    private bool useTableTopiaGK = true; 
+    private bool useNonTableTopiaGK = false; 
+    private bool useInternationalsGK = false; 
     private int cardsAssignedThisRound = 0;
     private string currentTeamTurn;  // Track which team's turn it is
     private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
@@ -28,6 +36,8 @@ public class DraftManager : MonoBehaviour
 
     void Start()
     {
+        LoadGameSettings();
+        ApplySettingsToDraft();
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
         CreateDraftPool();  // Create the draft pool
         LoadGKFromCSV("goalkeepers");  // Load players from the CSV
@@ -37,6 +47,76 @@ public class DraftManager : MonoBehaviour
         AssignGoalkeepersToSlots();  // Assign GKs before dealing player cards
         PerformCoinFlip();
         DealNewDraftCards();  // Start the first draft round
+    }
+
+    private void LoadGameSettings()
+    {
+        string folderPath = Application.persistentDataPath;
+
+        // Get all JSON files in the persistent data path
+        string[] files = Directory.GetFiles(folderPath, "*.json");
+
+        if (files.Length == 0)
+        {
+            Debug.LogError("No game settings files found in the persistent data path!");
+            return;
+        }
+
+        // Sort files by creation time, descending (newest first)
+        var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
+
+        // Select the most recent file
+        string mostRecentFile = sortedFiles[0];
+        Debug.Log($"Most recent file found: {mostRecentFile}");
+
+        // Read the content of the most recent file
+        string json = File.ReadAllText(mostRecentFile);
+
+        // Parse the "gameSettings" node into the currentSettings object
+        var root = JsonConvert.DeserializeObject<RootGameSettings>(json);
+
+        if (root != null && root.gameSettings != null)
+        {
+            currentSettings = root.gameSettings; // Populate currentSettings from the nested node
+            Debug.Log("Game settings loaded successfully!");
+            Debug.Log($"Loaded Settings: {JsonConvert.SerializeObject(currentSettings, Formatting.Indented)}");
+        }
+        else
+        {
+            Debug.LogError("Failed to parse game settings from JSON file.");
+        }
+    }
+
+
+    private void ApplySettingsToDraft()
+    {
+        if (currentSettings == null)
+        {
+            Debug.LogError("Cannot apply settings because they are null!");
+            return;
+        }
+
+        // Parse squad size from settings
+        if (int.TryParse(currentSettings.squadSize, out int parsedSquadSize))
+        {
+            squadSize = parsedSquadSize;
+            Debug.Log($"Squad size applied: {squadSize}");
+        }
+        else
+        {
+            Debug.LogWarning("Invalid squad size in settings. Defaulting to 16.");
+            squadSize = 16;
+        }
+
+        // Apply the 'includeInternationals' setting
+        useTableTopia = currentSettings.includeTabletopia;
+        useNonTableTopia = currentSettings.includeNonTabletopia;
+        useInternationals = currentSettings.includeInternationals;
+        useTableTopiaGK = currentSettings.includeTabletopiaGK;
+        useNonTableTopiaGK = currentSettings.includeNonTabletopiaGK;
+        useInternationalsGK = currentSettings.includeInternationalsGK;
+        Debug.Log($"Outfielders: Include TableTopia: {useTableTopia}, NonTableTopia: {useNonTableTopia}, internationals: {useInternationals}");
+        Debug.Log($"GKs: Include TableTopia: {useTableTopiaGK}, NonTableTopia: {useNonTableTopiaGK}, internationals: {useInternationalsGK}");
     }
 
     void LoadPlayersFromCSV(string fileName)
@@ -75,6 +155,9 @@ public class DraftManager : MonoBehaviour
                 Player player = new Player(playerData);
                 allPlayers.Add(player);  // Add the player to the list
             }
+            Debug.Log($"Total players in allPlayers: {allPlayers.Count}");
+            // var uniqueTypes = allPlayers.Select(player => player.Type?.Trim()).Distinct().ToList();
+            // Debug.Log($"Unique Types: {string.Join(", ", uniqueTypes)}");
         }
         else
         {
@@ -126,16 +209,44 @@ public class DraftManager : MonoBehaviour
 
     void CreateDraftPool()
     {
-        // Initialize selectedDeck and draftPool
-        selectedDeck = new List<Player>(allPlayers);
+        // Filter players based on the three boolean settings
+        selectedDeck = allPlayers.Where(player =>
+        {
+            // Exclude players based on their Type and the respective toggle settings
+            if (!string.IsNullOrEmpty(player.Type))
+            {
+                string type = player.Type.Trim();
+
+                // Exclude "World Cup" if 'useInternationals' is false
+                if (!useInternationals && type.Equals("World Cup", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                // Exclude "TableTopia" if 'useTableTopia' is false
+                if (!useTableTopia && type.Equals("TableTopia", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                // Exclude "Not TableTopia" if 'useNonTableTopia' is false
+                if (!useNonTableTopia && type.Equals("Not TableTopia", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            // Include players if none of the exclusions apply
+            return true;
+        }).ToList();
+        Debug.Log($"Filtered players based on settings. Total players in selectedDeck: {selectedDeck.Count}");
 
         // Shuffle the selectedDeck and limit it to squadSize * 2 cards
         ShuffleDeck(selectedDeck);
-        selectedDeck = selectedDeck.GetRange(0, (squadSize-2) * 2);  // Limit to squadSize * 2 players - excluding GKs
-
-        // Set the draftPool to hold the entire selectedDeck initially
-        draftPool = new List<Player>(selectedDeck);
+        draftPool = selectedDeck.GetRange(0, (squadSize-2) * 2);  // Limit to squadSize * 2 players - excluding GKs
+        Debug.Log($"Total players in draftpool: {draftPool.Count}");
     }
+
     void ShuffleDeck(List<Player> deck)
     {
         for (int i = 0; i < deck.Count; i++)
@@ -149,9 +260,36 @@ public class DraftManager : MonoBehaviour
 
     private void FilterAndShuffleGoalkeepers()
     {
-        // Copy allGks into selectedGks (no filter for now)
-        selectedGks = new List<Goalkeeper>(allGks);
+        // Filter players based on the three boolean settings
+        selectedGks = allGks.Where(player =>
+        {
+            // Exclude players based on their Type and the respective toggle settings
+            if (!string.IsNullOrEmpty(player.Type))
+            {
+                string type = player.Type.Trim();
 
+                // Exclude "World Cup" if 'useInternationals' is false
+                if (!useInternationalsGK && type.Equals("World Cup", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                // Exclude "TableTopia" if 'useTableTopia' is false
+                if (!useTableTopiaGK && type.Equals("TableTopia", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                // Exclude "Not TableTopia" if 'useNonTableTopia' is false
+                if (!useNonTableTopiaGK && type.Equals("Not TableTopia", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            // Include players if none of the exclusions apply
+            return true;
+        }).ToList();
+        Debug.Log($"Filtered GKs based on settings. Total players in selectedDeck: {selectedGks.Count}");
         // Shuffle the selectedGks list
         ShuffleGKDeck(selectedGks);
     }
@@ -619,4 +757,11 @@ public class DraftManager : MonoBehaviour
         }
     }
 
+}
+
+// Helper class to match the JSON structure
+[System.Serializable]
+public class RootGameSettings
+{
+    public GameSettings gameSettings; // This matches the "gameSettings" node in the JSON
 }

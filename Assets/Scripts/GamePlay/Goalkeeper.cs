@@ -20,6 +20,7 @@ public class Goalkeeper
     {
         Name = playerData["Name"];
         Country = playerData["Nationality"];
+        Type = playerData["Type"];
 
         // Local variables for parsing
         int pace, dribbling, aerial, highPass, resilience, saving, handling;

@@ -20,6 +20,7 @@ public class Player
     {
         Name = playerData["Name"];
         Country = playerData["Nationality"];
+        Type = playerData["Type"];
 
         // Local variables for parsing
         int pace, dribbling, heading, highPass, resilience, shooting, tackling;

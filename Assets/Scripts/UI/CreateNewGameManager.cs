@@ -24,12 +24,17 @@ public class CreateNewGameManager : MonoBehaviour
     public TMP_Dropdown refereeDropdown;
     public TMP_Dropdown weatherDropdown;
     public TMP_Dropdown ballColorDropdown;
-    public TMP_Dropdown playerDeckDropdown;
+    // public TMP_Dropdown playerDeckDropdown;
     public TMP_Dropdown homeKitDropdown;
     public TMP_Dropdown awayKitDropdown;
     public TMP_InputField homeTeamInputField;
     public TMP_InputField awayTeamInputField;
+    public Toggle includeTabletopiaToggle;
+    public Toggle includeNonTabletopiaToggle;
     public Toggle includeInternationalsToggle;
+    public Toggle includeTabletopiaGKToggle;
+    public Toggle includeNonTabletopiaGKToggle;
+    public Toggle includeInternationalsGKToggle;
     public Button createGameButton;
 
     void Start()
@@ -45,7 +50,12 @@ public class CreateNewGameManager : MonoBehaviour
         playerAssistanceSlider.maxValue = 3;  // Hard Mode
         playerAssistanceSlider.wholeNumbers = true;
         playerAssistanceSlider.value = 2;  // Default to Medium
-        includeInternationalsToggle.isOn = true;
+        includeTabletopiaToggle.isOn = true;
+        includeNonTabletopiaToggle.isOn = false;
+        includeInternationalsToggle.isOn = false;
+        includeTabletopiaGKToggle.isOn = true;
+        includeNonTabletopiaGKToggle.isOn = false;
+        includeInternationalsGKToggle.isOn = false;
 
         // Update the text when the slider is moved
         halfDurationSlider.onValueChanged.AddListener(UpdateHalfDurationSliderText);
@@ -58,7 +68,17 @@ public class CreateNewGameManager : MonoBehaviour
         SetDropDownOptions();
         // Subscribe to field changes, which dynamically adjusts other fields' options
         matchTypeDropdown.onValueChanged.AddListener(delegate { AdjustSquadSizeOptionsBasedOnMatchType(); });
+        matchTypeDropdown.onValueChanged.AddListener(delegate { OnMatchTypeChanged(); });
         weatherDropdown.onValueChanged.AddListener(delegate { AdjustBallColorBasedOnWeather(); });
+        // Add listeners to each checkbox
+        includeTabletopiaToggle.onValueChanged.AddListener(delegate { ValidateCheckboxes(includeTabletopiaToggle); });
+        includeNonTabletopiaToggle.onValueChanged.AddListener(delegate { ValidateCheckboxes(includeNonTabletopiaToggle); });
+        includeInternationalsToggle.onValueChanged.AddListener(delegate { ValidateCheckboxes(includeInternationalsToggle); });
+        includeTabletopiaGKToggle.onValueChanged.AddListener(delegate { ValidateCheckboxesGK(includeTabletopiaGKToggle); });
+        includeNonTabletopiaGKToggle.onValueChanged.AddListener(delegate { ValidateCheckboxesGK(includeNonTabletopiaGKToggle); });
+        includeInternationalsGKToggle.onValueChanged.AddListener(delegate { ValidateCheckboxesGK(includeInternationalsGKToggle); });
+        // Initial setup
+        AdjustSquadSizeOptionsBasedOnMatchType();
     }
 
     // Update the displayed text for the slider value
@@ -69,6 +89,38 @@ public class CreateNewGameManager : MonoBehaviour
     public void UpdatePlayerAssistanceSliderText(float value)
     {
         playerAssistanceText.text = value.ToString(); // Show the slider's current value
+    }
+
+    private void ValidateCheckboxes(Toggle changedToggle)
+    {
+        // Ensure at least one checkbox remains checked
+        if (!includeTabletopiaToggle.isOn && !includeNonTabletopiaToggle.isOn && !includeInternationalsToggle.isOn)
+        {
+            // Revert the last changed checkbox to ON
+            changedToggle.isOn = true;
+
+            Debug.Log("At least one checkbox must be selected.");
+        }
+    }
+    private void ValidateCheckboxesGK(Toggle changedToggle)
+    {
+        // Ensure at least one checkbox remains checked
+        if (!includeTabletopiaGKToggle.isOn && !includeNonTabletopiaGKToggle.isOn && !includeInternationalsGKToggle.isOn)
+        {
+            // Revert the last changed checkbox to ON
+            changedToggle.isOn = true;
+
+            Debug.Log("At least one checkbox must be selected.");
+        }
+
+        // Ensure that includeNonTabletopiaToggle is not the only one selected
+        if (includeNonTabletopiaGKToggle.isOn && !includeTabletopiaGKToggle.isOn && !includeInternationalsGKToggle.isOn)
+        {
+            // Revert the last changed checkbox to OFF
+            changedToggle.isOn = true;
+
+            Debug.Log("includeNonTabletopiaToggle cannot be the only selected option.");
+        }
     }
 
     // Set the default squad size options when the scene loads
@@ -104,9 +156,6 @@ public class CreateNewGameManager : MonoBehaviour
         List<string> refereeOptions = new List<string> { "Random", "Webster - 2", "Castolo - 3", "Bakker - 4", "Read - 5" };  // Define options
         refereeDropdown.ClearOptions();  // Clear any existing options
         refereeDropdown.AddOptions(refereeOptions);  // Add the default options
-        List<string> playerDeckOptions = new List<string> { "Base Game", "Tabletopia", "All Extras" };  // Define options
-        playerDeckDropdown.ClearOptions();  // Clear any existing options
-        playerDeckDropdown.AddOptions(playerDeckOptions);  // Add the default options
     }
 
     // Adjust the squad size dropdown based on match type selection
@@ -143,6 +192,48 @@ public class CreateNewGameManager : MonoBehaviour
         ballColorDropdown.RefreshShownValue();  // Force UI update to reflect changes
     }
 
+    // Update checkboxes and squad size options when match type changes
+    void OnMatchTypeChanged()
+    {
+        AdjustSquadSizeOptionsBasedOnMatchType();  // Update squad size dropdown
+
+        if (matchTypeDropdown.value == 1)  // International
+        {
+            // Update checkboxes
+            includeInternationalsToggle.isOn = true;
+            includeInternationalsToggle.interactable = false;
+
+            includeTabletopiaToggle.isOn = false;
+            includeTabletopiaToggle.interactable = false;
+
+            includeNonTabletopiaToggle.isOn = false;
+            includeNonTabletopiaToggle.interactable = false;
+            // Update GK checkboxes
+            includeInternationalsGKToggle.isOn = true;
+            includeInternationalsGKToggle.interactable = false;
+
+            includeTabletopiaGKToggle.isOn = false;
+            includeTabletopiaGKToggle.interactable = false;
+
+            includeNonTabletopiaGKToggle.isOn = false;
+            includeNonTabletopiaGKToggle.interactable = false;
+
+            Debug.Log("Match type is International. Adjusted checkboxes and squad size.");
+        }
+        else
+        {
+            // Regular or other match types - make all checkboxes interactive again
+            includeTabletopiaToggle.interactable = true;
+            includeNonTabletopiaToggle.interactable = true;
+            includeInternationalsToggle.interactable = true;
+            includeTabletopiaGKToggle.interactable = true;
+            includeNonTabletopiaGKToggle.interactable = true;
+            includeInternationalsGKToggle.interactable = true;
+
+            Debug.Log("Match type is Regular or other. Reset checkboxes.");
+        }
+    }
+
     public void SaveGameSettingsToJson()
     {
         // Create a GameSettings object and populate it from the UI input fields
@@ -161,7 +252,9 @@ public class CreateNewGameManager : MonoBehaviour
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamInputField.text;
         settings.awayTeamName = awayTeamInputField.text;
-        settings.playerDeck = playerDeckDropdown.options[playerDeckDropdown.value].text;
+        // settings.playerDeck = playerDeckDropdown.options[playerDeckDropdown.value].text;
+        settings.includeTabletopia = includeTabletopiaToggle.isOn;
+        settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
         settings.homeKit = homeKitDropdown.options[homeKitDropdown.value].text;
         settings.awayKit = awayKitDropdown.options[awayKitDropdown.value].text;
@@ -170,12 +263,10 @@ public class CreateNewGameManager : MonoBehaviour
         {
             gameSettings = settings  // Grouped under "gameSettings"
         };
-
         string json = JsonConvert.SerializeObject(gameData, Formatting.Indented);
 
-        // // Convert to JSON
-        // string json = JsonUtility.ToJson(settings, true);
-
+        // Generate random alphanumeric prefix
+        string randomPrefix = GenerateRandomString(16);
         // Get current timestamp
         string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
 
@@ -185,7 +276,7 @@ public class CreateNewGameManager : MonoBehaviour
         string gameMode = SanitizeFileName(gameModeDropdown.options[gameModeDropdown.value].text);
 
         // Construct dynamic filename
-        string fileName = $"{timestamp}__{gameMode}__{homeTeam}__{awayTeam}.json";
+        string fileName = $"{randomPrefix}_{timestamp}__{gameMode}__{homeTeam}__{awayTeam}.json";
 
         // Path where you want to save the file
         string path = Path.Combine(Application.persistentDataPath, fileName);
@@ -196,7 +287,20 @@ public class CreateNewGameManager : MonoBehaviour
         // Log where the file was saved
         Debug.Log($"Game settings saved to {path}");
         // Load the Room scene
-        SceneManager.LoadScene("Room");
+
+        // Check the draft and gkDraft settings to determine the scene to load
+        if (settings.draft == "Regular" && settings.gkDraft == "Deal")
+        {
+            Debug.Log("Loading the Regular Draft Scene...");
+            PlayerPrefs.SetString("currentGameSettings", fileName); // Save the file name for the Draft scene to use
+            SceneManager.LoadScene("Draft"); // Load the current Draft scene
+        }
+        else
+        {
+            Debug.Log("Non-regular draft selected. Loading the Free Draft Scene...");
+            PlayerPrefs.SetString("currentGameSettings", fileName); // Save the file name for the future Free Draft scene
+            SceneManager.LoadScene("FreeDraft"); // Placeholder for a new scene
+        }
     }
 
     // Helper function to sanitize file names by removing invalid characters
@@ -208,6 +312,19 @@ public class CreateNewGameManager : MonoBehaviour
             input = input.Replace(c, '_');
         }
         return input;
+    }
+
+    // Generate a random alphanumeric string of format xxxx-xxxx-xxxx-xxxx
+    private string GenerateRandomString(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz0123456789";
+        string randomString = "";
+        for (int i = 0; i < length; i++)
+        {
+            if (i > 0 && i % 4 == 0) randomString += "-";
+            randomString += chars[UnityEngine.Random.Range(0, chars.Length)];
+        }
+        return randomString;
     }
 }
 
@@ -226,8 +343,13 @@ public class GameSettings
     public string referee;
     public string weatherConditions;
     public string ballColor;
-    public string playerDeck;
+    // public string playerDeck;
+    public bool includeTabletopia;
+    public bool includeNonTabletopia;
     public bool includeInternationals;
+    public bool includeTabletopiaGK;
+    public bool includeNonTabletopiaGK;
+    public bool includeInternationalsGK;
     public string homeTeamName;
     public string awayTeamName;
     public string homeKit;
