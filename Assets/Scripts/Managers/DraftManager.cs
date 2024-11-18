@@ -9,7 +9,8 @@ using Newtonsoft.Json; // Now it will recognize JsonConvert
 
 public class DraftManager : MonoBehaviour
 {
-    private GameSettings currentSettings; // Class-level variable
+    public GameSettings currentSettings; // Class-level variable
+    public string mostRecentFilePath; // Stores the path of the most recent settings file
     public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
     public List<Player> selectedDeck;   // To hold shuffled players
     public List<Player> draftPool;   // To hold shuffled players
@@ -32,7 +33,6 @@ public class DraftManager : MonoBehaviour
     private int cardsAssignedThisRound = 0;
     private string currentTeamTurn;  // Track which team's turn it is
     private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
-
 
     void Start()
     {
@@ -66,11 +66,11 @@ public class DraftManager : MonoBehaviour
         var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
 
         // Select the most recent file
-        string mostRecentFile = sortedFiles[0];
-        Debug.Log($"Most recent file found: {mostRecentFile}");
+        mostRecentFilePath = sortedFiles[0];
+        Debug.Log($"Most recent file found: {mostRecentFilePath}");
 
         // Read the content of the most recent file
-        string json = File.ReadAllText(mostRecentFile);
+        string json = File.ReadAllText(mostRecentFilePath);
 
         // Parse the "gameSettings" node into the currentSettings object
         var root = JsonConvert.DeserializeObject<RootGameSettings>(json);
@@ -86,7 +86,6 @@ public class DraftManager : MonoBehaviour
             Debug.LogError("Failed to parse game settings from JSON file.");
         }
     }
-
 
     private void ApplySettingsToDraft()
     {
@@ -567,7 +566,6 @@ public class DraftManager : MonoBehaviour
             Debug.LogError("ContentWrapper not found in Team Average slot prefab");
         }
     }
-
 
     public void UpdateTeamAverages(Transform rosterPanel, Transform averagePanel)
     {
