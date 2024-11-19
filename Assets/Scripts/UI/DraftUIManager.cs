@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
 
 public class DraftUIManager : MonoBehaviour
 {
@@ -34,12 +35,6 @@ public class DraftUIManager : MonoBehaviour
     }
 
     // Method to load the game room scene
-    // public void OnStartGameButtonPressed()
-    // {
-    //     // Assuming "GameRoomScene" is the name of the next scene
-    //     SceneManager.LoadScene("Room");
-    // }
-
     public void OnStartGameButtonPressed()
     {
         // Ensure DraftManager has loaded the current game settings
@@ -64,11 +59,11 @@ public class DraftUIManager : MonoBehaviour
         string json = File.ReadAllText(filePath);
         var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 
-        // Add rosters to the JSON data
-        var rosters = new Dictionary<string, Dictionary<string, string>>
+        // Add rosters to JSON
+        var rosters = new
         {
-            { "home", homeRoster },
-            { "away", awayRoster }
+            home = homeRoster,
+            away = awayRoster
         };
 
         jsonData["rosters"] = rosters;
@@ -80,12 +75,12 @@ public class DraftUIManager : MonoBehaviour
         Debug.Log($"Rosters saved to JSON: {filePath}");
 
         // Proceed to the game scene
-        // SceneManager.LoadScene("Room");
+        SceneManager.LoadScene("Room");
     }
 
-    private Dictionary<string, string> GatherRosterData(GameObject teamPanel)
+    private Dictionary<string, Dictionary<string, object>> GatherRosterData(GameObject teamPanel)
     {
-        var rosterData = new Dictionary<string, string>();
+        var rosterData = new Dictionary<string, Dictionary<string, object>>();
 
         foreach (Transform slot in teamPanel.transform)
         {
@@ -95,7 +90,6 @@ public class DraftUIManager : MonoBehaviour
                 Debug.LogWarning($"ContentWrapper not found for slot {slot.name}");
                 continue;
             }
-
             // Retrieve jersey number and player name
             var jerseyNumberText = contentWrapper.Find("Jersey#").GetComponent<TMP_Text>();
             var playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
@@ -105,8 +99,57 @@ public class DraftUIManager : MonoBehaviour
                 string jerseyNumber = jerseyNumberText.text.Trim();
                 string playerName = playerNameText.text.Trim();
 
-                // Add to roster data
-                rosterData[jerseyNumber] = playerName;
+                // Check if the slot is for a goalkeeper
+                if (jerseyNumber == "1" || jerseyNumber == "12")
+                {
+                    // Find the goalkeeper in the allGks list
+                    var goalkeeper = draftManager.allGks.FirstOrDefault(gk => gk.Name == playerName);
+
+                    if (goalkeeper != null)
+                    {
+                        // Add goalkeeper data to the roster
+                        rosterData[jerseyNumber] = new Dictionary<string, object>
+                        {
+                            { "name", playerName },
+                            { "aerial", goalkeeper.Aerial },
+                            { "saving", goalkeeper.Saving },
+                            { "handling", goalkeeper.Handling },
+                            { "pace", goalkeeper.Pace },
+                            { "dribbling", goalkeeper.Dribbling },
+                            { "highPass", goalkeeper.HighPass },
+                            { "resilience", goalkeeper.Resilience }
+                        };
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Goalkeeper '{playerName}' not found in allGks list.");
+                    }
+                }
+                else
+                {
+                    // Find the player in the allPlayers list
+                    var player = draftManager.allPlayers.FirstOrDefault(p => p.Name == playerName);
+
+                    if (player != null)
+                    {
+                        // Add player data to the roster
+                        rosterData[jerseyNumber] = new Dictionary<string, object>
+                        {
+                            { "name", playerName },
+                            { "pace", player.Pace },
+                            { "dribbling", player.Dribbling },
+                            { "heading", player.Heading },
+                            { "highPass", player.HighPass },
+                            { "resilience", player.Resilience },
+                            { "shooting", player.Shooting },
+                            { "tackling", player.Tackling }
+                        };
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Player '{playerName}' not found in allPlayers list.");
+                    }
+                }
             }
         }
 

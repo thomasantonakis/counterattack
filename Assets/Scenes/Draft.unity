@@ -1656,6 +1656,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startGameButton: {fileID: 1951128411}
+  homeTeamPanel: {fileID: 2088706774}
+  awayTeamPanel: {fileID: 403447426}
 --- !u!4 &1469768338
 Transform:
   m_ObjectHideFlags: 0
@@ -2760,6 +2762,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28dbce37c774403f8f2963650665373, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentSettings:
+    gameMode: 
+    halfDuration: 0
+    numberOfHalfs: 0
+    tiebreaker: 
+    playerAssistance: 0
+    matchType: 
+    squadSize: 
+    draft: 
+    gkDraft: 
+    referee: 
+    weatherConditions: 
+    ballColor: 
+    includeTabletopia: 0
+    includeNonTabletopia: 0
+    includeInternationals: 0
+    includeTabletopiaGK: 0
+    includeNonTabletopiaGK: 0
+    includeInternationalsGK: 0
+    homeTeamName: 
+    awayTeamName: 
+    homeKit: 
+    awayKit: 
+  mostRecentFilePath: 
   playerCardPrefab: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
   draftPanel: {fileID: 1934990774}
   homeTeamPanel: {fileID: 2088706774}

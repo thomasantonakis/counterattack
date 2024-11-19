@@ -252,10 +252,12 @@ public class CreateNewGameManager : MonoBehaviour
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamInputField.text;
         settings.awayTeamName = awayTeamInputField.text;
-        // settings.playerDeck = playerDeckDropdown.options[playerDeckDropdown.value].text;
         settings.includeTabletopia = includeTabletopiaToggle.isOn;
         settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
+        settings.includeTabletopiaGK = includeTabletopiaGKToggle.isOn;
+        settings.includeNonTabletopiaGK = includeNonTabletopiaGKToggle.isOn;
+        settings.includeInternationalsGK = includeInternationalsGKToggle.isOn;
         settings.homeKit = homeKitDropdown.options[homeKitDropdown.value].text;
         settings.awayKit = awayKitDropdown.options[awayKitDropdown.value].text;
 
