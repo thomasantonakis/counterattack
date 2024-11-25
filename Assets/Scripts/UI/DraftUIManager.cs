@@ -47,15 +47,15 @@ public class DraftUIManager : MonoBehaviour
         // Gather rosters
         var homeRoster = GatherRosterData(homeTeamPanel);
         var awayRoster = GatherRosterData(awayTeamPanel);
+        string filePath = ApplicationManager.Instance.LastSavedFileName;
 
         // Ensure the file path is available
-        if (string.IsNullOrEmpty(draftManager.mostRecentFilePath) || !File.Exists(draftManager.mostRecentFilePath))
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
         {
             Debug.LogError("Failed to locate the game settings file to update.");
             return;
         }
 
-        string filePath = draftManager.mostRecentFilePath;
         string json = File.ReadAllText(filePath);
         var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 

@@ -10,7 +10,6 @@ using Newtonsoft.Json; // Now it will recognize JsonConvert
 public class DraftManager : MonoBehaviour
 {
     public GameSettings currentSettings; // Class-level variable
-    public string mostRecentFilePath; // Stores the path of the most recent settings file
     public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
     public List<Player> selectedDeck;   // To hold shuffled players
     public List<Player> draftPool;   // To hold shuffled players
@@ -51,7 +50,11 @@ public class DraftManager : MonoBehaviour
 
     private void LoadGameSettings()
     {
-        string folderPath = Application.persistentDataPath;
+        // Get the folder path from ApplicationManager
+        // string folderPath = Application.persistentDataPath;
+        ApplicationManager.EnsureInstanceExists();
+        string folderPath = ApplicationManager.Instance.GetSaveFolderPath();
+
 
         // Get all JSON files in the persistent data path
         string[] files = Directory.GetFiles(folderPath, "*.json");
@@ -66,7 +69,8 @@ public class DraftManager : MonoBehaviour
         var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
 
         // Select the most recent file
-        mostRecentFilePath = sortedFiles[0];
+        string mostRecentFilePath = sortedFiles[0];
+        ApplicationManager.Instance.LastSavedFileName = mostRecentFilePath; // Set the file path
         Debug.Log($"Most recent file found: {mostRecentFilePath}");
 
         // Read the content of the most recent file

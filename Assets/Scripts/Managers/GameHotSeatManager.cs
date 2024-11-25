@@ -5,7 +5,7 @@ public class GameHotSeatManager : MonoBehaviour
 {
     public void CreateNewHotSeat()
     {
-        SceneManager.LoadScene("Room"); // Replace with your game scene name
+        SceneManager.LoadScene("CreateNewHSGameScene"); // Replace with your game scene name
     }
 
     public void LoadHotSeat()

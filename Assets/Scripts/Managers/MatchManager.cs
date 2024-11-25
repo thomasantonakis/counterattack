@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;  // For JsonConvert
+using System.Linq;
 
 public class MatchManager : MonoBehaviour
 {
@@ -38,6 +39,63 @@ public class MatchManager : MonoBehaviour
         FirstTimePassDefenderMovement,
         FTPCompleted
     }
+    public class GameData
+    {
+        public GameSettings gameSettings;
+        public Rosters rosters;
+    }
+
+    [Serializable]
+    public class GameSettings
+    {
+        public string gameMode;
+        public string homeTeamName;
+        public string awayTeamName;
+        public string homeKit;
+        public string awayKit;
+        public int playerAssistance;
+        public string matchType;
+        public string ballColor;
+        public string draft;
+        public string gkDraft;
+        public int halfDuration;
+        public int numberOfHalfs;
+        public string tiebreaker;
+        public string referee;
+        public string weatherConditions;
+        public bool includeTabletopia;
+        public bool includeNonTabletopia;
+        public bool includeInternationals;
+        public bool includeTabletopiaGK;
+        public bool includeNonTabletopiaGK;
+        public bool includeInternationalsGK;
+        public int squadSize;
+        // Add other game settings properties as needed
+    }
+
+    [Serializable]
+    public class Rosters
+    {
+        public Dictionary<string, RosterPlayer> home;
+        public Dictionary<string, RosterPlayer> away;
+    }
+
+    [Serializable]
+    public class RosterPlayer
+    {
+        public string name;
+        public int pace;
+        public int dribbling;
+        public int heading; // For outfielders
+        public int highPass;
+        public int resilience;
+        public int shooting; // For outfielders
+        public int tackling; // For outfielders
+        public int aerial; // For goalkeepers
+        public int saving; // For goalkeepers
+        public int handling; // For goalkeepers
+    }
+
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
     public enum TeamInAttack
@@ -343,23 +401,117 @@ public class MatchManager : MonoBehaviour
 
     public void LoadGameSettingsFromJson()
     {
-        // string path = Path.Combine(Application.persistentDataPath, "2024-09-29_02-48__Hot Seat__AS Roma__Aurora FC.json");
-        string path = Path.Combine(Application.persistentDataPath, "2024-10-01_00-10__Hot Seat__AS Roma__Aurora FC.json");
-
-        if (File.Exists(path))
-        {
-            string json = File.ReadAllText(path);
+        // // string path = Path.Combine(Application.persistentDataPath, "2024-09-29_02-48__Hot Seat__AS Roma__Aurora FC.json");
+        // string path = Path.Combine(Application.persistentDataPath, "2024-10-01_00-10__Hot Seat__AS Roma__Aurora FC.json");
+        
+        // if (File.Exists(path))
+        // {
+        //     string json = File.ReadAllText(path);
             
+        //     // Deserialize the JSON into the GameData class
+        //     gameData = JsonConvert.DeserializeObject<GameData>(json);
+
+        //     if (gameData != null && gameData.gameSettings != null)
+        //     {
+        //         Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
+        //         Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
+        //         Debug.Log($"Loaded Home Kit: {gameData.gameSettings.homeKit}");
+        //         Debug.Log($"Loaded Away Kit: {gameData.gameSettings.awayKit}");
+        //         // Trigger event or call LoadTeamNames after settings are loaded
+        //         OnGameSettingsLoaded?.Invoke();
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError("Failed to load game settings from the file!");
+        //     }
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("Game settings file not found.");
+        // }
+        // // // // // // // // 
+        string filePath;
+        // Retrieve the most recent file from ApplicationManager or fallback to finding it directly
+        if (ApplicationManager.Instance != null && !string.IsNullOrEmpty(ApplicationManager.Instance.LastSavedFileName))
+        {
+            filePath = Path.Combine(Application.persistentDataPath, ApplicationManager.Instance.LastSavedFileName);
+        }
+        else
+        {
+            string folderPath = Application.persistentDataPath;
+            string[] files = Directory.GetFiles(folderPath, "*.json");
+
+            if (files.Length == 0)
+            {
+                Debug.LogWarning("No game settings files found in the persistent data path!");
+                return;
+            }
+
+            // Get the most recent file
+            var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
+            filePath = sortedFiles[0];
+        }
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+
             // Deserialize the JSON into the GameData class
             gameData = JsonConvert.DeserializeObject<GameData>(json);
 
             if (gameData != null && gameData.gameSettings != null)
             {
-                Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
-                Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
-                Debug.Log($"Loaded Home Kit: {gameData.gameSettings.homeKit}");
-                Debug.Log($"Loaded Away Kit: {gameData.gameSettings.awayKit}");
-                // Trigger event or call LoadTeamNames after settings are loaded
+                Debug.Log("Game settings loaded successfully!");
+                // Debug Game Settings
+                if (gameData.gameSettings != null)
+                {
+                    Debug.Log("Game Settings:");
+                    Debug.Log(JsonConvert.SerializeObject(gameData.gameSettings, Formatting.Indented));
+                }
+                else
+                {
+                    Debug.LogError("Game settings are missing in the JSON file!");
+                }
+
+                // Debug Rosters
+                if (gameData.rosters != null)
+                {
+                    Debug.Log("Rosters:");
+                    Debug.Log("Home Team Roster:");
+                    foreach (var player in gameData.rosters.home)
+                    {
+                        Debug.Log($"Jersey {player.Key}. {player.Value.name}");
+                        Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
+
+                        if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
+                        {
+                            Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
+                        }
+                    }
+
+                    Debug.Log("Away Team Roster:");
+                    foreach (var player in gameData.rosters.away)
+                    {
+                        Debug.Log($"Jersey {player.Key}: {player.Value.name}");
+                        Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
+
+                        if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
+                        {
+                            Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Rosters are missing in the JSON file!");
+                }
+
+                // // Debugging loaded data
+                // Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
+                // Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
+                // Debug.Log($"Loaded Home Kit: {gameData.gameSettings.homeKit}");
+                // Debug.Log($"Loaded Away Kit: {gameData.gameSettings.awayKit}");
+
+                // Trigger event or call methods to initialize gameplay settings
                 OnGameSettingsLoaded?.Invoke();
             }
             else
@@ -371,22 +523,6 @@ public class MatchManager : MonoBehaviour
         {
             Debug.LogWarning("Game settings file not found.");
         }
-    }
-
-    public class GameData
-    {
-        public GameSettings gameSettings;
-    }
-
-    public class GameSettings
-    {
-        public string gameMode;
-        public string homeTeamName;
-        public string awayTeamName;
-        public string homeKit;
-        public string awayKit;
-        public int playerAssistance;
-        // Add other game settings properties as needed
     }
 
 }
