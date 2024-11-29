@@ -32,8 +32,52 @@ public class PlayerTokenManager : MonoBehaviour
     {
         // Start the coroutine to wait for the grid to initialize before creating teams
         StartCoroutine(InitializeTeamsAfterGridIsReady(10, 10));
-    }
+        var matchManager = FindObjectOfType<MatchManager>();
+        if (matchManager == null)
+        {
+            Debug.LogError("MatchManager not found. Cannot subscribe to game settings load event.");
+            return;
+        }
 
+        // Subscribe to the OnGameSettingsLoaded event
+        matchManager.OnGameSettingsLoaded += InitializeTokens;
+    }
+    private void OnDestroy()
+    {
+        var matchManager = FindObjectOfType<MatchManager>();
+        if (matchManager != null)
+        {
+            // Unsubscribe to avoid memory leaks
+            matchManager.OnGameSettingsLoaded -= InitializeTokens;
+        }
+    }
+    private void InitializeTokens()
+    {
+        Debug.Log("Game settings loaded. Initializing tokens...");
+        var matchManager = FindObjectOfType<MatchManager>();
+        if (matchManager == null || matchManager.gameData == null || matchManager.gameData.rosters == null)
+        {
+            Debug.LogError("MatchManager or rosters not found. Cannot initialize tokens.");
+            return;
+        }
+
+        // Access the parsed home and away rosters directly
+        var homeRoster = matchManager.gameData.rosters.home;
+        var awayRoster = matchManager.gameData.rosters.away;
+
+        Debug.Log("Initializing Home and Away Tokens:");
+        foreach (var player in homeRoster)
+        {
+            Debug.Log($"Home {player.Key}: {player.Value.name}");
+            // Call token creation methods as shown earlier
+        }
+
+        foreach (var player in awayRoster)
+        {
+            Debug.Log($"Away {player.Key}: {player.Value.name}");
+            // Call token creation methods as shown earlier
+        }
+    }
     private IEnumerator InitializeTeamsAfterGridIsReady(int homeTeamCount, int awayTeamCount)
     {
         // Wait until the HexGrid has finished creating cells
@@ -163,6 +207,24 @@ public class PlayerTokenManager : MonoBehaviour
             Debug.LogError("Text prefab is not assigned! Please assign the TextMeshPro prefab.");
             return;  // Prevent further execution
         }
+        // Load settings from Match Manager on the lineups
+        var matchManager = FindObjectOfType<MatchManager>();
+        if (matchManager == null || matchManager.gameData == null || matchManager.gameData.rosters == null)
+        {
+            Debug.LogError("MatchManager or rosters not found. Cannot initialize tokens.");
+            return;
+        }
+
+        // Access the parsed home and away rosters directly
+        var homeRoster = matchManager.gameData.rosters.home;
+        var awayRoster = matchManager.gameData.rosters.away;
+        // Debug.Log("Initializing Home and Away Tokens:");
+        // foreach (var player in homeRoster)
+        // {
+        //     Debug.Log($"Home {player.Key}: {player.Value.name}");
+        //     // Call token creation methods as shown earlier
+        // }
+
         for (int i = 0; i < spawnHexes.Count; i++)  // Assuming each hex in spawnHexes corresponds to a player
         {
             if (spawnHexes[i] == null)
@@ -175,7 +237,14 @@ public class PlayerTokenManager : MonoBehaviour
             Vector3 hexCenter = spawnHexes[i].GetHexCenter();
             Vector3 playerPosition = new Vector3(hexCenter.x, 0.2f, hexCenter.z);  // Position snapped to the hex center, y set to -0.2
             GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity, parentObject.transform);
-            player.name = $"{teamType}Player{i+2}";
+            // player.name = $"{teamType}Player{i+2}";
+            // Set GameObject name based on roster and jersey number
+            string jerseyNumber = (i + 2).ToString();
+            string playerName = teamType == "Home"
+                ? homeRoster.ContainsKey(jerseyNumber) ? homeRoster[jerseyNumber].name : "Unknown"
+                : awayRoster.ContainsKey(jerseyNumber) ? awayRoster[jerseyNumber].name : "Unknown";
+
+            player.name = $"{jerseyNumber}. {playerName}";
             // Ensure this player token is assigned the correct layer
             player.layer = LayerMask.NameToLayer("Token");
             // Attach PlayerToken component and set the current hex
@@ -184,6 +253,16 @@ public class PlayerTokenManager : MonoBehaviour
             {
                 token = player.AddComponent<PlayerToken>();
             }
+            MatchManager.RosterPlayer rosterPlayer = teamType == "Home"
+                ? homeRoster.ContainsKey(jerseyNumber) ? homeRoster[jerseyNumber] : null
+                : awayRoster.ContainsKey(jerseyNumber) ? awayRoster[jerseyNumber] : null;
+
+            if (rosterPlayer == null)
+            {
+                Debug.LogWarning($"RosterPlayer not found for jersey {jerseyNumber} in {teamType} roster.");
+                continue;  // Skip this token if no roster data is found
+            }
+            token.InitializeAttributesFromRoster(rosterPlayer, int.Parse(jerseyNumber));
             // Log the hex before assigning it
             // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
@@ -210,6 +289,7 @@ public class PlayerTokenManager : MonoBehaviour
                 continue;
             }
             numberText.text = (i + 2).ToString();  // Assign jersey numbers starting from 2
+            // TODO: add a '.' after 6 and 9.
             numberText.fontSize = 3;  // Set font size, tweak as needed
             numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
             numberText.GetComponent<MeshRenderer>().sortingOrder = 10;  // Ensure the number is rendered on top

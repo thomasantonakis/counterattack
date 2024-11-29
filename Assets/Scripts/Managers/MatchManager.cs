@@ -96,6 +96,9 @@ public class MatchManager : MonoBehaviour
         public int handling; // For goalkeepers
     }
 
+    // public Dictionary<string, RosterPlayer> HomeRoster { get; private set; }
+    // public Dictionary<string, RosterPlayer> AwayRoster { get; private set; }
+
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
     public enum TeamInAttack
@@ -401,35 +404,6 @@ public class MatchManager : MonoBehaviour
 
     public void LoadGameSettingsFromJson()
     {
-        // // string path = Path.Combine(Application.persistentDataPath, "2024-09-29_02-48__Hot Seat__AS Roma__Aurora FC.json");
-        // string path = Path.Combine(Application.persistentDataPath, "2024-10-01_00-10__Hot Seat__AS Roma__Aurora FC.json");
-        
-        // if (File.Exists(path))
-        // {
-        //     string json = File.ReadAllText(path);
-            
-        //     // Deserialize the JSON into the GameData class
-        //     gameData = JsonConvert.DeserializeObject<GameData>(json);
-
-        //     if (gameData != null && gameData.gameSettings != null)
-        //     {
-        //         Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
-        //         Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
-        //         Debug.Log($"Loaded Home Kit: {gameData.gameSettings.homeKit}");
-        //         Debug.Log($"Loaded Away Kit: {gameData.gameSettings.awayKit}");
-        //         // Trigger event or call LoadTeamNames after settings are loaded
-        //         OnGameSettingsLoaded?.Invoke();
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("Failed to load game settings from the file!");
-        //     }
-        // }
-        // else
-        // {
-        //     Debug.LogWarning("Game settings file not found.");
-        // }
-        // // // // // // // // 
         string filePath;
         // Retrieve the most recent file from ApplicationManager or fallback to finding it directly
         if (ApplicationManager.Instance != null && !string.IsNullOrEmpty(ApplicationManager.Instance.LastSavedFileName))
@@ -492,10 +466,11 @@ public class MatchManager : MonoBehaviour
                     foreach (var player in gameData.rosters.away)
                     {
                         Debug.Log($"Jersey {player.Key}: {player.Value.name}");
+                        // TODO: Add everything here
                         Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
-
                         if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
                         {
+                            // TODO: Add everything here
                             Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
                         }
                     }
