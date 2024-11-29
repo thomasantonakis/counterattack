@@ -254,14 +254,29 @@ public class GroundBallManager : MonoBehaviour
                 // Only add the defender and interception hex if the defender hasn't already been processed
                 if (defender != null && !alreadyProcessedDefenders.Contains(defender))
                 {
-                    interceptionHexes.Add(hex);  // Add the interceptable hex
-                    defendingHexes.Add(defender);  // Add the defender responsible
-                    alreadyProcessedDefenders.Add(defender);  // Mark this defender as processed
-                    passIsDangerous = true;  // Mark the pass as dangerous
-                    Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}. Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}");
+                    PlayerToken defenderToken = defender.occupyingToken; // Get the token
+                    if (defenderToken != null)
+                    {
+                        string defenderName = defenderToken.playerName;
+                        int defenderTackling = defenderToken.tackling;
+                        int defenderJersey = defenderToken.jerseyNumber;
+
+                        // Calculate required roll
+                        int requiredRoll = defenderTackling >= 4 ? 10 - defenderTackling : 6;
+                        string rollDescription = requiredRoll == 6 ? "6" : $"{requiredRoll}+";
+
+                        Debug.Log(
+                            $"{defenderJersey}. {defenderName} at {defender.coordinates} with a tackling of {defenderTackling} can intercept with a roll of {rollDescription} at {hex.coordinates}. " +
+                            $"Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}"
+                        );
+                        interceptionHexes.Add(hex);  // Add the interceptable hex
+                        defendingHexes.Add(defender);  // Add the defender responsible
+                        alreadyProcessedDefenders.Add(defender);  // Mark this defender as processed
+                        passIsDangerous = true;  // Mark the pass as dangerous
+                        // Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}. Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}");
+                    }
                 }
             }
-
             hex.HighlightHex("ballPath");  // Highlight the path
             hexGrid.highlightedHexes.Add(hex);
         }
@@ -282,15 +297,6 @@ public class GroundBallManager : MonoBehaviour
         else
         {
             Debug.LogWarning("No defenders in ZOI. This should never appear unless the path is clear.");
-            // StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // Move ball to the target hex
-            // MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
-            // if (currentTargetHex.isAttackOccupied)
-            // {
-            //     MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-            // }
-            // else {
-            //     MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
-            // }
             return;
         }
     }
@@ -301,25 +307,36 @@ public class GroundBallManager : MonoBehaviour
         {
             // Roll the dice (1 to 6)
             // int diceRoll = 6; // God Mode
-            int diceRoll = 1; // Stupid Mode
-            // int diceRoll = Random.Range(1, 7);
-            Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
+            // int diceRoll = 5; // Stupid Mode
+            int diceRoll = Random.Range(1, 7);
+            // Retrieve the defender token
+            PlayerToken defenderToken = currentDefenderHex.occupyingToken;
+            if (defenderToken == null)
+            {
+                Debug.LogError($"No PlayerToken found on defender's hex at {currentDefenderHex.coordinates}. This should not happen.");
+                return;
+            }
+            Debug.Log($"Dice roll by {defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates}: {diceRoll}");
+            // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
             isWaitingForDiceRoll = false;
-            if (diceRoll == 6)
+            // if (diceRoll == 6)
+            if (diceRoll == 6 || diceRoll + defenderToken.tackling >= 10)
             {
                 // Defender successfully intercepts the pass
-                Debug.Log($"Pass intercepted by defender at {currentDefenderHex.coordinates}!");
+                Debug.Log($"Pass intercepted by {defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates}!");
                 StartCoroutine(HandleBallInterception(currentDefenderHex));
                 ResetGroundPassInterceptionDiceRolls();
             }
             else
             {
-                Debug.Log($"Defender at {currentDefenderHex.coordinates} failed to intercept.");
+                Debug.Log($"{defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates} failed to intercept.");
                 // Move to the next defender, if any
                 defendingHexes.Remove(currentDefenderHex);
                 if (defendingHexes.Count > 0)
                 {
                     currentDefenderHex = defendingHexes[0];  // Move to the next defender
+                    Debug.Log("Starting next dice roll sequence... Press R key.");
+                    isWaitingForDiceRoll = true; // Wait for the next dice roll
                 }
                 else
                 {
