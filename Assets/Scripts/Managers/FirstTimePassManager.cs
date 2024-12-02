@@ -357,48 +357,52 @@ public class FirstTimePassManager : MonoBehaviour
         if (currentDefenderHex != null)
         {
             // Find the current defender's entry in the list of defenders
-            Debug.Log($"onPathDefendersList count: {onPathDefendersList.Count}");
-            foreach (var entry in onPathDefendersList)
-            {
-                Debug.Log($"Defender: {entry.defender.name}, Hex: {entry.defender.GetCurrentHex().coordinates}, CausingInvalidity: {entry.isCausingInvalidity}");
-            }
-            var currentDefenderEntry = onPathDefendersList.Find(d => d.defender.GetCurrentHex() == currentDefenderHex || d.defender.GetCurrentHex().Equals(currentDefenderHex));
+            var currentDefenderEntry = onPathDefendersList
+                .Find(d => d.defender.GetCurrentHex() == currentDefenderHex);
 
             if (currentDefenderEntry.defender != null)
             {
-                // Roll the dice (1 to 6)
-                // int diceRoll = Random.Range(1, 7);  // Uncomment this for actual rolling
-                int diceRoll = 5; // For testing purposes
-                Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
-                isWaitingForDiceRoll = false;
-                // **Check if the current defender caused invalidity (higher chances)**.
+                // Retrieve defender attributes
+                PlayerToken defenderToken = currentDefenderEntry.defender;
+                int tackling = defenderToken.tackling;
+                string defenderName = defenderToken.playerName;
+                int jerseyNumber = defenderToken.jerseyNumber;
+
+                // Roll the dice
+                // int diceRoll = Random.Range(1, 7);
+                int diceRoll = 4;
+                Debug.Log($"Dice roll by {jerseyNumber}. {defenderName} at {currentDefenderHex.coordinates}: {diceRoll}");
+
+                // Calculate interception conditions
                 bool isCausingInvalidity = currentDefenderEntry.isCausingInvalidity;
+                int requiredRoll = isCausingInvalidity ? 5 : 6; // Base roll requirement
+                bool successfulInterception = diceRoll >= requiredRoll || diceRoll + tackling >= 10;
 
-                // Assign success thresholds based on whether the defender caused invalidity
-                int interceptionThreshold = isCausingInvalidity ? 5 : 6;  // Higher chance if causing invalidity
-
-                if (diceRoll >= interceptionThreshold)
+                if (successfulInterception)
                 {
-                    // Defender successfully intercepts the pass
-                    Debug.Log($"Pass intercepted by defender at {currentDefenderHex.coordinates}!");
+                    Debug.Log($"Pass intercepted by {jerseyNumber}. {defenderName} at {currentDefenderHex.coordinates}!");
                     StartCoroutine(HandleBallInterception(currentDefenderHex));
-                    ResetFTPInterceptionDiceRolls();  // Reset after interception
+                    ResetFTPInterceptionDiceRolls(); // Reset interception process
                 }
                 else
                 {
-                    Debug.Log($"Defender at {currentDefenderHex.coordinates} failed to intercept.");
-                    defendingHexes.Remove(currentDefenderHex);  // Remove this defender from the list
+                    Debug.Log($"{jerseyNumber}. {defenderName} at {currentDefenderHex.coordinates} failed to intercept.");
 
-                    // Move to the next defender, if any
-                    if (defendingHexes.Count > 0)
+                    // Remove this defender and move to the next
+                    onPathDefendersList.Remove(currentDefenderEntry);
+
+                    if (onPathDefendersList.Count > 0)
                     {
-                        currentDefenderHex = defendingHexes[0];  // Move to the next defender
-                        isWaitingForDiceRoll = true;  // Wait for the next roll
+                        // Move to the next defender
+                        currentDefenderHex = onPathDefendersList[0].defender.GetCurrentHex();
+                        Debug.Log("Starting next dice roll sequence... Press R key.");
+                        isWaitingForDiceRoll = true; // Wait for the next roll
                     }
                     else
                     {
+                        // No more defenders, pass is successful
                         Debug.Log("Pass successful! No more defenders to roll.");
-                        StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // Move ball to the target hex
+                        StartCoroutine(HandleGroundBallMovement(currentTargetHex));
                         MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
                         MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
                     }
