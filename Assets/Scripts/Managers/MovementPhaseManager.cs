@@ -390,12 +390,17 @@ public class MovementPhaseManager : MonoBehaviour
         if (selectedDefender != null)
         {
             // Roll the dice (1 to 6)
-            int diceRoll = 6; // God Mode
-            // int diceRoll = Random.Range(1, 7);
+            // int diceRoll = 5; // God Mode
+            int diceRoll = Random.Range(1, 7);
             Debug.Log($"Dice roll by defender at {selectedDefender.GetCurrentHex().coordinates}: {diceRoll}");
             isWaitingForInterceptionDiceRoll = false;
 
-            if (diceRoll == 6)
+            // Get the defender's tackling attribute
+            int defenderTackling = selectedDefender.tackling;
+            Debug.Log($"Defender: {selectedDefender.name}, Tackling: {defenderTackling}, Dice Roll: {diceRoll}");
+
+            // Check interception condition: either roll a 6 or roll + tackling >= 10
+            if (diceRoll == 6 || (diceRoll + defenderTackling >= 10))
             {
                 // Defender successfully intercepts the ball
                 Debug.Log($"Ball intercepted by defender at {selectedDefender.GetCurrentHex().coordinates}!");
@@ -439,33 +444,33 @@ public class MovementPhaseManager : MonoBehaviour
         int diceRoll = Random.Range(1, 7);  // Roll a dice (1 to 6)
         
         // Rigged
-        if (isDefender)
-        {
-            defenderDiceRoll = 5;
-            tackleDefenderRolled = true;
-            Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
-        }
-        else
-        {
-            attackerDiceRoll = 2;
-            tackleAttackerRolled = true;
-            Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
-            StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
-        }
-        // Random
         // if (isDefender)
         // {
-        //     defenderDiceRoll = diceRoll;
+        //     defenderDiceRoll = 5;
         //     tackleDefenderRolled = true;
         //     Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         // }
         // else
         // {
-        //     attackerDiceRoll = diceRoll;
+        //     attackerDiceRoll = 2;
         //     tackleAttackerRolled = true;
         //     Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
         //     StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
         // }
+        // Random
+        if (isDefender)
+        {
+            defenderDiceRoll = diceRoll;
+            tackleDefenderRolled = true;
+            Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
+        }
+        else
+        {
+            attackerDiceRoll = diceRoll;
+            tackleAttackerRolled = true;
+            Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
+            StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
+        }
     }
 
     private IEnumerator CompareTackleRolls()
