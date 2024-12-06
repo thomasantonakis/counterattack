@@ -471,8 +471,27 @@ public class MovementPhaseManager : MonoBehaviour
     private IEnumerator CompareTackleRolls()
     {
         isWaitingForTackleRoll = false;  // Stop waiting for rolls
+        // Ensure selected tokens are valid
+        if (selectedDefender == null)
+        {
+            Debug.LogError("Error: Defender token is not set!");
+            yield break;
+        }
+        PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        if (attackerToken == null)
+        {
+            Debug.LogError("Error: No attacker token found on the ball's hex!");
+            yield break;
+        }
+        // Retrieve the dribbling and tackling values
+        int defenderTackling = selectedDefender.tackling;
+        int attackerDribbling = attackerToken.dribbling;
 
-        if (defenderDiceRoll > attackerDiceRoll)
+        Debug.Log($"Defender Name: {selectedDefender.name}, Attacker Dribbling: {attackerToken.name}");
+        Debug.Log($"Defender Tackling: {defenderTackling}, Attacker Dribbling: {attackerDribbling}");
+
+        // if (defenderDiceRoll > attackerDiceRoll)
+        if (defenderDiceRoll + defenderTackling > attackerDiceRoll + attackerDribbling)
         {
             Debug.Log("Tackle successful! Defender wins possession of the ball.");
             ball.SetCurrentHex(selectedDefender.GetCurrentHex());
