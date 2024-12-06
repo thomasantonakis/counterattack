@@ -179,10 +179,22 @@ public class LongBallManager : MonoBehaviour
         // Roll the dice (1 to 6)
         int diceRoll = 1; // Melina Mode
         // int diceRoll = Random.Range(1, 7);
+        Debug.Log($"Accuracy dice roll: {diceRoll}");
         isWaitingForAccuracyRoll = false;
+        // Get the passer's highPass attribute
+        PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        if (attackerToken == null)
+        {
+            Debug.LogError("Error: No attacker token found on the ball's hex!");
+            return;
+        }
+
+        int highPassAttribute = attackerToken.highPass;
+        Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
-        int accuracyThreshold = isDangerous ? 6 : 5;
-        if (diceRoll >= accuracyThreshold)
+        int accuracyThreshold = isDangerous ? 10 : 9 ;
+        int totalAccuracy = diceRoll + highPassAttribute;
+        if (totalAccuracy >= accuracyThreshold)
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
@@ -409,13 +421,21 @@ public class LongBallManager : MonoBehaviour
 
         foreach (HexCell defenderHex in interceptingDefenders)
         {
+            PlayerToken defenderToken = defenderHex.GetOccupyingToken();
+            if (defenderToken == null)
+            {
+                Debug.LogWarning($"No valid token found at defender's hex {defenderHex.coordinates}.");
+                continue;
+            }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
             int diceRoll = 6; // Ensure proper range (1-6)
             // int diceRoll = Random.Range(1, 7); // Ensure proper range (1-6)
-            Debug.Log($"Dice roll for defender at {defenderHex.coordinates}: {diceRoll}");
+            Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
+            int totalInterceptionScore = diceRoll + defenderToken.tackling;
+            Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");
 
-            if (diceRoll == 6)
+            if (diceRoll == 6 || totalInterceptionScore >= 10)
             {
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
                 isWaitingForInterceptionRoll = false;
@@ -511,15 +531,6 @@ public class LongBallManager : MonoBehaviour
 
         Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for Long Pass.");
     }
-
-    // private void ClearHighlightedHexes()
-    // {
-    //     foreach (HexCell hex inhexGrid.highlightedHexes)
-    //     {
-    //         hex.ResetHighlight();  // Assuming there's a method in HexCell to reset the highlight
-    //     }
-    //    hexGrid.highlightedHexes.Clear();  // Clear the list of highlighted hexes
-    // }
 
     public void HandleOutOfBoundsFromInaccuracy()
     {
