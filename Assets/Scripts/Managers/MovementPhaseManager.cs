@@ -109,7 +109,7 @@ public class MovementPhaseManager : MonoBehaviour
         // Select the token
         selectedToken = token;
         // Highlight valid movement hexes for the selected token
-        HighlightValidMovementHexes(selectedToken, movementRange);
+        HighlightValidMovementHexes(selectedToken, token.pace);
     }
     
     // This method will highlight valid movement hexes for the selected token
