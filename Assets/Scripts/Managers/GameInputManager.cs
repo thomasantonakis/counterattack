@@ -77,7 +77,8 @@ public class GameInputManager : MonoBehaviour
             )
         )
         {
-            HandleMouseInputForMovement();
+            // Debug.Log("HandleMouseInputForMovement block entered in Update.");
+            StartCoroutine(HandleMouseInputForMovement());
         }
         if (
                 MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
