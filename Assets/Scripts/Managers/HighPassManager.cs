@@ -27,7 +27,6 @@ public class HighPassManager : MonoBehaviour
     public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
 
-
     // Step 1: Handle the input for starting the long pass (initial logic)
     void Update()
     {   
@@ -237,18 +236,27 @@ public class HighPassManager : MonoBehaviour
         return eligibleAttackers;
     }
 
-
     private void PerformAccuracyRoll()
     {
+        // TODO: Rifine order and logs
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
-        int diceRoll = 1; // Melina Mode
+        int diceRoll = 2; // Melina Mode
         // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
+        PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        if (attackerToken == null)
+        {
+            Debug.LogError("Error: No attacker token found on the ball's hex!");
+            return;
+        }
+
+        int highPassAttribute = attackerToken.highPass;
+        Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
-        int accuracyThreshold = 5;
-        if (diceRoll >= accuracyThreshold)
+        int accuracyThreshold = 8;
+        if (diceRoll + highPassAttribute >= accuracyThreshold)
         {
             Debug.Log($"High Pass is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
@@ -574,7 +582,6 @@ public class HighPassManager : MonoBehaviour
 
         Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for High Pass.");
     }
-
 
     public void HandleOutOfBoundsFromInaccuracy()
     {
