@@ -19,6 +19,8 @@ public class HighPassManager : MonoBehaviour
     public HexCell currentTargetHex;
     private HexCell clickedHex;
     private HexCell lastClickedHex;
+    private HexCell intendedTargetHex; // New variable to store the intended target hex
+
     private int directionIndex;
     private HexCell finalHex;
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
@@ -97,6 +99,7 @@ public class HighPassManager : MonoBehaviour
         if (difficulty == 3) // Hard Mode: Immediate action
         {
             currentTargetHex = clickedHex;  // Assign the current target hex
+            intendedTargetHex = clickedHex; // Save the intended target hex
             isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
             Debug.Log("Waiting for accuracy roll... Please Press R key.");
         }
@@ -110,7 +113,6 @@ public class HighPassManager : MonoBehaviour
 
                 currentTargetHex = clickedHex;
                 lastClickedHex = clickedHex;
-
                 // Clear any previous highlights and selections
                 hexGrid.ClearHighlightedHexes();
                 selectedToken = null;  // Reset selected token if a new hex is clicked
@@ -124,6 +126,8 @@ public class HighPassManager : MonoBehaviour
             else if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
             {
                 Debug.Log("High Pass confirmed by second click.");
+                currentTargetHex = clickedHex;
+                intendedTargetHex = clickedHex; // Save the intended target hex
                 isWaitingForConfirmation = false;  // Confirmation is done, allow token selection
                 selectedToken = null;  // Clear selected token to avoid auto-selecting the attacker on the target
 
@@ -238,12 +242,13 @@ public class HighPassManager : MonoBehaviour
 
     private void PerformAccuracyRoll()
     {
-        // TODO: Rifine order and logs
+        // TODO: Refine order and logs
+        lockedAttacker = null;
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
-        int diceRoll = 2; // Melina Mode
-        // int diceRoll = Random.Range(1, 7);
+        // int diceRoll = 2; // Melina Mode
+        int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -260,7 +265,7 @@ public class HighPassManager : MonoBehaviour
         {
             Debug.Log($"High Pass is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
-            StartCoroutine(HandleHighPassMovement(clickedHex));
+            StartCoroutine(HandleHighPassMovement(intendedTargetHex));
             MatchManager.Instance.currentState = MatchManager.GameState.HighPassCompleted;
             ResetHighPassRolls();  // Reset flags to finish long pass
         }

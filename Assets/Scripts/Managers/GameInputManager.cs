@@ -287,19 +287,22 @@ public class GameInputManager : MonoBehaviour
                         }
                         // ** Targeting a Hex Near One or more Players
                         // **Check if there are multiple eligible attackers**
-                        if (highPassManager.eligibleAttackers != null && highPassManager.eligibleAttackers.Contains(token))
+                        else
                         {
-                            Debug.Log($"Eligible attacker {token.name} selected. Moving to the target hex.");
-                            yield return movementPhaseManager.MoveTokenToHex(highPassManager.currentTargetHex, token);  // Move attacker to target hex
-                            highPassManager.StartDefenderMovementPhase();  // Transition to defender phase
-                            yield return null;  // Exit after attacker has moved
-                        }
-                        else if (highPassManager.eligibleAttackers != null && !highPassManager.eligibleAttackers.Contains(token))
-                        {
-                            Debug.LogWarning($"Ineligible attacker {token.name} clicked. Rejecting.");
-                            hexGrid.ClearHighlightedHexes();
-                            highPassManager.selectedToken = null;
-                            yield return null;  // Exit after rejecting the ineligible attacker
+                            if (highPassManager.eligibleAttackers != null && highPassManager.eligibleAttackers.Contains(token))
+                            {
+                                Debug.Log($"Eligible attacker {token.name} selected. Moving to the target hex.");
+                                yield return movementPhaseManager.MoveTokenToHex(highPassManager.currentTargetHex, token);  // Move attacker to target hex
+                                highPassManager.StartDefenderMovementPhase();  // Transition to defender phase
+                                yield return null;  // Exit after attacker has moved
+                            }
+                            else if (highPassManager.eligibleAttackers != null && !highPassManager.eligibleAttackers.Contains(token))
+                            {
+                                Debug.LogWarning($"Ineligible attacker {token.name} clicked. Rejecting.");
+                                hexGrid.ClearHighlightedHexes();
+                                highPassManager.selectedToken = null;
+                                yield return null;  // Exit after rejecting the ineligible attacker
+                            }
                         }
                     }
                     // Defender Phase: Ensure the token is a defender
