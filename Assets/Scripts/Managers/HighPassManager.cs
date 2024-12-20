@@ -317,12 +317,12 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance
-        HexCell finalHex = CalculateInaccurateTarget(currentTargetHex, directionIndex, distanceRoll);
+        HexCell inaccurateTargetHex = outOfBoundsManager.CalculateInaccurateTarget(currentTargetHex, directionIndex, distanceRoll);
         // Check if the final hex is valid (not out of bounds or blocked)
-        if (finalHex != null)
+        if (inaccurateTargetHex != null)
         {
             // Move the ball to the inaccurate final hex
-            yield return StartCoroutine(HandleHighPassMovement(finalHex));            
+            yield return StartCoroutine(HandleHighPassMovement(inaccurateTargetHex));            
         }
         else
         {
@@ -337,35 +337,6 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = false;
         lockedAttacker = null;  // Unlock the attacker after the HP is done
-    }
-
-    public HexCell CalculateInaccurateTarget(HexCell startHex, int directionIndex, int distance)
-    {
-        Vector3Int currentPosition = startHex.coordinates;  // Start from the current hex
-        
-        for (int i = 0; i < distance; i++)
-        {
-            // Use the GetDirectionVectors() method to get the correct direction for the current position
-            Vector2Int[] directionVectors = hexGrid.GetHexCellAt(currentPosition).GetDirectionVectors();
-            Vector2Int direction2D = directionVectors[directionIndex];
-            // Move one step in the selected direction
-            int newX = currentPosition.x + direction2D.x;
-            int newZ = currentPosition.z + direction2D.y;
-            // Update the current position
-            currentPosition = new Vector3Int(newX, 0, newZ);
-        }
-        // Find the final hex based on the calculated position
-        HexCell finalHex = hexGrid.GetHexCellAt(currentPosition);
-        // Log the final hex for debugging
-        if (finalHex != null)
-        {
-            Debug.Log($"Inaccurate final hex: ({finalHex.coordinates.x}, {finalHex.coordinates.z})");
-        }
-        else
-        {
-            Debug.LogWarning("Final hex is null or out of bounds!");
-        }
-        return finalHex;
     }
 
     private IEnumerator HandleHighPassMovement(HexCell targetHex)
@@ -402,6 +373,7 @@ public class HighPassManager : MonoBehaviour
         if (targetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");
+            Debug.Log($"Passing targetHex to HandleOutOfBoundsFromInaccuracy: {currentTargetHex.coordinates}");
             outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(currentTargetHex, directionIndex);
         }
         else
@@ -421,7 +393,7 @@ public class HighPassManager : MonoBehaviour
             return;
         }
         // Initialize highlightedHexes to ensure it's ready for use
-       hexGrid.highlightedHexes = new List<HexCell>();
+        hexGrid.highlightedHexes = new List<HexCell>();
         // Get hexes within a radius (e.g., 6 hexes) around the targetHex
         int radius = 5;  // You can tweak this value as needed
         List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);

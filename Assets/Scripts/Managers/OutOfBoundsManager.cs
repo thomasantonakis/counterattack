@@ -6,7 +6,6 @@ public class OutOfBoundsManager : MonoBehaviour
 {
     public Ball ball;
     public HexGrid hexGrid;
-    public HighPassManager highPassManager;
     public void HandleOutOfBoundsFromInaccuracy(HexCell currentTargetHex, int directionIndex)
     {
         if (currentTargetHex == null)
@@ -14,16 +13,14 @@ public class OutOfBoundsManager : MonoBehaviour
             Debug.LogWarning("currentTargetHex is null. Cannot handle out-of-bounds scenario.");
             return;
         }
+        Debug.Log($"HandleOutOfBoundsFromInaccuracy called with currentTargetHex: {currentTargetHex.coordinates}");
 
-        // We need to find the last inbounds hex along the trajectory
         HexCell lastInboundsHex = currentTargetHex;
-
-        // Move along the trajectory, using the inaccuracy direction vector
         HexCell currentHex = currentTargetHex;
         while (currentHex != null && !currentHex.isOutOfBounds)
         {
             lastInboundsHex = currentHex;  // Update the last valid inbounds hex
-            currentHex = highPassManager.CalculateInaccurateTarget(currentHex, directionIndex, 1);
+            currentHex = CalculateInaccurateTarget(currentHex, directionIndex, 1);
         }
 
         Debug.Log($"Last inbounds hex before ball went out of bounds: {lastInboundsHex.coordinates}");
@@ -56,6 +53,35 @@ public class OutOfBoundsManager : MonoBehaviour
         Debug.Log($"Ball went out from the {outOfBoundsSide}");
     }
 
+    public HexCell CalculateInaccurateTarget(HexCell startHex, int directionIndex, int distance)
+    {
+        Vector3Int currentPosition = startHex.coordinates;  // Start from the current hex
+        
+        for (int i = 0; i < distance; i++)
+        {
+            // Use the GetDirectionVectors() method to get the correct direction for the current position
+            Vector2Int[] directionVectors = hexGrid.GetHexCellAt(currentPosition).GetDirectionVectors();
+            Vector2Int direction2D = directionVectors[directionIndex];
+            // Move one step in the selected direction
+            int newX = currentPosition.x + direction2D.x;
+            int newZ = currentPosition.z + direction2D.y;
+            // Update the current position
+            currentPosition = new Vector3Int(newX, 0, newZ);
+        }
+        // Find the final hex based on the calculated position
+        HexCell finalHex = hexGrid.GetHexCellAt(currentPosition);
+        // Log the final hex for debugging
+        if (finalHex != null)
+        {
+            Debug.Log($"Inaccurate final hex: ({finalHex.coordinates.x}, {finalHex.coordinates.z})");
+        }
+        else
+        {
+            Debug.LogWarning("Final hex is null or out of bounds!");
+        }
+        return finalHex;
+    }
+
     private string DetermineOutOfBoundsSide(HexCell lastInboundsHex, int directionIndex)
     {
         if ((directionIndex == 1 || directionIndex == 2) && lastInboundsHex.coordinates.x == -18)
@@ -86,7 +112,7 @@ public class OutOfBoundsManager : MonoBehaviour
         return "unknown";  // Fallback case (this shouldn't happen if the boundaries are properly checked)
     }
 
-     private void HandleThrowIn(HexCell lastInboundsHex)
+    private void HandleThrowIn(HexCell lastInboundsHex)
     {
         StartCoroutine(ball.MoveToCell(lastInboundsHex));
         Debug.Log("Moved the ball to last inboundHex, Changing Possession");
