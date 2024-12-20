@@ -34,10 +34,15 @@ public class MatchManager : MonoBehaviour
         HighPassCompleted,
         HighPassAttackerMovement,
         HighPassDefenderMovement,
-        FirstTimPassAttempt,
+        HeaderGeneric,
+        HeaderAttackerSelection,
+        HeaderDefenderSelection,
+        HeaderChallengeResolved,
+        HeaderCompleted,
+        FirstTimePassAttempt,
         FirstTimePassAttackerMovement,
         FirstTimePassDefenderMovement,
-        FTPCompleted
+        FTPCompleted,
     }
     public class GameData
     {
@@ -369,7 +374,7 @@ public class MatchManager : MonoBehaviour
         // if (currentState == GameState.KickoffBlown)
         if (true)
         {
-            currentState = GameState.FirstTimPassAttempt;
+            currentState = GameState.FirstTimePassAttempt;
             ball.SelectBall();
             Debug.Log("First Time Pass attempt mode activated.");
         }

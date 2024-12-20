@@ -13,6 +13,7 @@ public class GameInputManager : MonoBehaviour
     public LongBallManager longBallManager;
     public HighPassManager highPassManager;
     public MovementPhaseManager movementPhaseManager;
+    public HeaderManager headerManager;
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
@@ -25,7 +26,7 @@ public class GameInputManager : MonoBehaviour
 
     void Start()
     {
-        // TestHexConversions();
+
     }
 
     void Update()
@@ -77,7 +78,6 @@ public class GameInputManager : MonoBehaviour
             )
         )
         {
-            // Debug.Log("HandleMouseInputForMovement block entered in Update.");
             StartCoroutine(HandleMouseInputForMovement());
         }
         if (
@@ -93,6 +93,14 @@ public class GameInputManager : MonoBehaviour
         )
         {
             StartCoroutine(HandleMouseInputForFTPMovement());
+        }
+        if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderAttackerSelection)
+        {
+            HandleAttackerHeaderSelectionInput();
+        }
+        else if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderDefenderSelection)
+        {
+            HandleDefenderHeaderSelectionInput();
         }
     }
 
@@ -168,7 +176,7 @@ public class GameInputManager : MonoBehaviour
         {
             groundBallManager.HandleGroundBallPath(hex);
         }
-        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimPassAttempt)
+        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
         {
             firstTimePassManager.HandleFTPBallPath(hex);
         }
@@ -459,13 +467,55 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
+    private void HandleAttackerHeaderSelectionInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                if (token != null && token.isAttacker && headerManager.attEligibleToHead.Contains(token) && !headerManager.attackerWillJump.Contains(token))
+                {
+                    StartCoroutine(headerManager.HandleAttackerHeaderSelection(token));
+                }
+                else
+                {
+                    Debug.Log("Invalid attacker selected for header challenge.");
+                }
+            }
+        }
 
-    // public void TestHexConversions()
-    // {
-    //     Vector3Int cubeCoords = new Vector3Int(3, -3, 0); 
-    //     Vector2Int offsetCoords = HexGridUtils.CubeToOffset(cubeCoords);
-    //     Vector3Int convertedBackToCube = HexGridUtils.OffsetToCube(offsetCoords.x, offsetCoords.y);
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            headerManager.ConfirmAttackerHeaderSelection();
+        }
+    }
 
-    //     Debug.Log($"Cube: {cubeCoords}, Offset: {offsetCoords}, Converted Back to Cube: {convertedBackToCube}");
-    // }
+    private void HandleDefenderHeaderSelectionInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                if (token != null && !token.isAttacker && headerManager.defEligibleToHead.Contains(token) && !headerManager.defenderWillJump.Contains(token))
+                {
+                    StartCoroutine(headerManager.HandleDefenderHeaderSelection(token));
+                }
+                else
+                {
+                    Debug.Log("Invalid defender selected for header challenge.");
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            headerManager.ConfirmDefenderHeaderSelection();
+        }
+    }
+
+
 }

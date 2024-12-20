@@ -11,23 +11,23 @@ public class HighPassManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public GameInputManager gameInputManager;
     public MovementPhaseManager movementPhaseManager;
+    public OutOfBoundsManager outOfBoundsManager;
+    public HeaderManager headerManager;
     public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
     public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
-    private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
     public HexCell currentTargetHex;
-    private HexCell clickedHex;
     private HexCell lastClickedHex;
     private HexCell intendedTargetHex; // New variable to store the intended target hex
-
     private int directionIndex;
-    private HexCell finalHex;
-    private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
-    private List<HexCell> interceptingDefenders;
     public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
     public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
+
+    private const int MAX_PASS_DISTANCE = 15;
+    private const int ATTACKER_MOVE_RANGE = 3;
+    private const int DEFENDER_MOVE_RANGE = 3;
 
     // Step 1: Handle the input for starting the long pass (initial logic)
     void Update()
@@ -46,10 +46,6 @@ public class HighPassManager : MonoBehaviour
             else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
             {
                 StartCoroutine(PerformDistanceRoll()); // Handle distance roll
-            }
-            else if (isWaitingForInterceptionRoll && Input.GetKeyDown(KeyCode.R))
-            {
-                StartCoroutine(PerformInterceptionCheck(finalHex)); 
             }
         }
     }
@@ -176,9 +172,9 @@ public class HighPassManager : MonoBehaviour
         Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
         int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
         // Check the distance limit
-        if (distance > 15)
+        if (distance > MAX_PASS_DISTANCE)
         {
-            Debug.LogWarning($"High Pass is out of range. Maximum steps allowed: 15. Current steps: {distance}");
+            Debug.LogWarning($"High Pass is out of range. Maximum steps allowed: {MAX_PASS_DISTANCE}. Current steps: {distance}");
             return false;
         }
         // Step 2: Calculate the path between the ball and the target hex
@@ -198,7 +194,7 @@ public class HighPassManager : MonoBehaviour
             return true;  // If occupied by an attacker, the target is valid
         }
         // Step 6: If the target is not occupied, check if any attacker can reach it within 3 moves
-        List<PlayerToken> attackersWithinRange = GetAttackersWithinRangeOfHex(targetHex, 3);
+        List<PlayerToken> attackersWithinRange = GetAttackersWithinRangeOfHex(targetHex, ATTACKER_MOVE_RANGE);
         if (attackersWithinRange.Count > 0)
         {
             Debug.Log("Empty hex is valid for High Pass, at least one attacker can reach it.");
@@ -212,6 +208,7 @@ public class HighPassManager : MonoBehaviour
             return false;
         }
     }
+    
     public List<PlayerToken> GetAttackersWithinRangeOfHex(HexCell targetHex, int range)
     {
         List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
@@ -247,8 +244,8 @@ public class HighPassManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
-        // int diceRoll = 2; // Melina Mode
-        int diceRoll = Random.Range(1, 7);
+        int diceRoll = 1; // Melina Mode
+        // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -280,7 +277,7 @@ public class HighPassManager : MonoBehaviour
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int diceRoll = 0; // Melina Mode
+        int diceRoll = 0; // South Mode
         // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
@@ -315,7 +312,7 @@ public class HighPassManager : MonoBehaviour
     IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int distanceRoll = 6; // Melina Mode
+        int distanceRoll = 5; // Melina Mode
         // int distanceRoll = Random.Range(1, 7);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
@@ -331,7 +328,7 @@ public class HighPassManager : MonoBehaviour
             if (finalHex.isOutOfBounds)
             {
                 Debug.Log("Ball landed out of bounds!");
-                HandleOutOfBoundsFromInaccuracy();
+                outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(currentTargetHex, directionIndex);
             }
             else
             {
@@ -353,7 +350,7 @@ public class HighPassManager : MonoBehaviour
         lockedAttacker = null;  // Unlock the attacker after the HP is done
     }
 
-    private HexCell CalculateInaccurateTarget(HexCell startHex, int directionIndex, int distance)
+    public HexCell CalculateInaccurateTarget(HexCell startHex, int directionIndex, int distance)
     {
         Vector3Int currentPosition = startHex.coordinates;  // Start from the current hex
         
@@ -412,110 +409,7 @@ public class HighPassManager : MonoBehaviour
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
-        // TODO
-        if (targetHex.isDefenseOccupied)
-        {
-            // Ball Landed directly on a Defender
-            MatchManager.Instance.ChangePossession();
-            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-            MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
-        }
-        else if (targetHex.isAttackOccupied)
-        {
-            // Ball has landed on an attacker 
-            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-            MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
-        }
-        else {
-            // Landed neither on Def or Attacker. Check for defender's ZOI interception
-            CheckForHighPassInterception(targetHex);
-            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-        }
-    }
-
-    private void CheckForHighPassInterception(HexCell landingHex)
-    {   
-        // TODO
-        // Get all defenders and their ZOIs (neighbors)
-        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
-        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-        // Initialize the interceptingDefenders list to avoid null reference
-        interceptingDefenders = new List<HexCell>();
-
-        // Check if the landing hex is in any defender's ZOI (neighbors)
-        if (defenderNeighbors.Contains(landingHex))
-        {
-            // Log for debugging: Confirm the landing hex and defender neighbors
-            Debug.Log($"Landing hex {landingHex.coordinates} is in defender ZOI. Checking eligible defenders...");
-
-            // Get defenders who have the landing hex in their ZOI
-            foreach (HexCell defender in defenderHexes)
-            {
-                HexCell[] neighbors = defender.GetNeighbors(hexGrid);
-                // Debug.Log($"Defender at {defender.coordinates} has neighbors: {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
-
-                if (neighbors.Contains(landingHex))
-                {
-                    Debug.Log($"Defender at {defender.coordinates} can intercept at {landingHex.coordinates}");
-                    interceptingDefenders.Add(defender);  // Add the eligible defender to the list
-                }
-            }
-            // Check if there are any intercepting defenders
-            if (interceptingDefenders.Count > 0)
-            {
-                Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for interception. Please Press R key..");
-                isWaitingForInterceptionRoll = true;
-            }
-            else
-            {
-                Debug.Log("No defenders eligible for interception. Ball lands without interception. Number one");
-                MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
-            }
-        }
-        else
-        {
-            Debug.Log("Landing hex is not in any defender's ZOI. No interception needed. Number two ");
-            MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
-        }
-    }
-
-    private IEnumerator PerformInterceptionCheck(HexCell landingHex)
-    {
-        // TODO
-        if (interceptingDefenders == null || interceptingDefenders.Count == 0)
-        {
-            Debug.Log("No defenders available for interception.");
-            yield break;
-        }
-
-        foreach (HexCell defenderHex in interceptingDefenders)
-        {
-            Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
-            // Roll the dice (1 to 6)
-            int diceRoll = 6; // Ensure proper range (1-6)
-            // int diceRoll = Random.Range(1, 7); // Ensure proper range (1-6)
-            Debug.Log($"Dice roll for defender at {defenderHex.coordinates}: {diceRoll}");
-
-            if (diceRoll == 6)
-            {
-                Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
-                isWaitingForInterceptionRoll = false;
-                // Move the ball to the defender's hex and change possession
-                StartCoroutine(ball.MoveToCell(defenderHex));
-                MatchManager.Instance.ChangePossession();
-                MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
-                MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
-                yield break;  // Stop the sequence once an interception is successful
-            }
-            else
-            {
-                Debug.Log($"Defender at {defenderHex.coordinates} failed to intercept the ball.");
-            }
-        }
-
-        // If no defender intercepts, the ball stays at the original hex
-        Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
-        MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
+        headerManager.FindEligibleHeaderTokens(targetHex);
     }
 
     public void HighlightHighPassArea(HexCell targetHex)
@@ -588,153 +482,6 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for High Pass.");
     }
 
-    public void HandleOutOfBoundsFromInaccuracy()
-    {
-        // We need to find the last inbounds hex along the trajectory
-        HexCell lastInboundsHex = currentTargetHex;
-
-        // Move along the trajectory, using the inaccuracy direction vector
-        HexCell currentHex = currentTargetHex;
-        while (currentHex != null && !currentHex.isOutOfBounds)
-        {
-            lastInboundsHex = currentHex;  // Update the last valid inbounds hex
-            currentHex = CalculateInaccurateTarget(currentHex, directionIndex, 1);
-        }
-        Debug.Log($"Last inbounds hex before ball went out of bounds: {lastInboundsHex.coordinates}");
-        
-        // Now determine where the ball went out
-        string outOfBoundsSide = DetermineOutOfBoundsSide(lastInboundsHex, directionIndex);
-
-        // Handle based on out of bounds type
-        switch (outOfBoundsSide)
-        {
-            case "LeftGoal":
-                Debug.Log("Goal Kick or Corner Kick for Left Side.");
-                HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide);
-                break;
-            case "RightGoal":
-                Debug.Log("Goal Kick or Corner Kick for Right Side.");
-                HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide);
-                break;
-            case "Top Throw-In":
-            case "Bottom Throw-In":
-                Debug.Log("Handling a Throw-In.");
-                HandleThrowIn(lastInboundsHex);
-                break;
-            default:
-                Debug.LogWarning("Unknown out of bounds scenario.");
-                break;
-        }
-
-        // Log or handle out-of-bounds scenario based on the side
-        Debug.Log($"Ball went out from the {outOfBoundsSide}");
-    }
-
-    private string DetermineOutOfBoundsSide(HexCell lastInboundsHex, int directionIndex)
-    {
-        if ((directionIndex == 1 || directionIndex == 2) && lastInboundsHex.coordinates.x == -18)
-        {
-            return "LeftGoal";
-        }
-        else if ((directionIndex == 4 || directionIndex == 5) && lastInboundsHex.coordinates.x == 18)
-        {
-            return "RightGoal";
-        }
-        else if (
-            directionIndex == 0 // South
-            || (directionIndex == 1 && lastClickedHex.coordinates.x > -18) // SouthWest 
-            || (directionIndex == 5 && lastClickedHex.coordinates.x < 18) // SouthEast 
-        )
-        {
-            return "Bottom Throw-In";
-        }
-        else if (
-            directionIndex == 3 // North
-            || (directionIndex == 2 && lastClickedHex.coordinates.x > -18) // NorthWest 
-            || (directionIndex == 4 && lastClickedHex.coordinates.x < 18) // NorthEast 
-        )
-        {
-            return "Top Throw-In";
-        }
-        return "unknown";  // Fallback case (this shouldn't happen if the boundaries are properly checked)
-    }
-
-    private void HandleThrowIn(HexCell lastInboundsHex)
-    {
-        StartCoroutine(ball.MoveToCell(lastInboundsHex));
-        Debug.Log("Moved the ball to last inboundHex, Changing Possession");
-        MatchManager.Instance.ChangePossession();
-        Debug.Log("Changed Possession, setting the GameState to WaitingForThrowInTaker");
-        MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
-        Debug.Log("Set the GameState to WaitingForThrowInTaker");
-    }
-    
-    private void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide)
-    {
-        // Get the attacking team's direction
-        MatchManager.TeamAttackingDirection attackingDirection;
-        if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
-        {
-            attackingDirection = MatchManager.Instance.homeTeamDirection;
-        }
-        else
-        {
-            attackingDirection = MatchManager.Instance.awayTeamDirection;
-        }
-        if (outOfBoundsSide == "LeftGoal" && attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight)
-        {
-            // It is a Corner
-            if (lastInboundsHex.coordinates.z > 0)  // Top half of the pitch
-            {
-                Debug.Log("Left Side: Corner kick from the top-left corner.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12))));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
-            }
-            else
-            {
-                Debug.Log("Left Side: Corner kick from the bottom-left corner.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12))));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
-            }
-        }
-        else if (outOfBoundsSide == "RightGoal" && attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft)
-        {
-            // It is a Corner
-            if (lastInboundsHex.coordinates.z > 0)  // Top half of the pitch
-            {
-                Debug.Log("Right Side: Corner kick from the top-right corner.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12))));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
-            }
-            else
-            {
-                Debug.Log("Right Side: Corner kick from the bottom-right corner.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12))));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
-            }
-        }
-        else
-        {
-            // It is a Goal Kick
-            Debug.Log("It's a Goal Kick.");
-            if (outOfBoundsSide == "RightGoal")  // Top half of the pitch
-            {
-                Debug.Log("Right Side: Goal kick from center Hex at the 6-yard-box.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0))));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
-            }
-            else
-            {
-                Debug.Log("Left Side: Goal kick from center Hex at the 6-yard-box.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 0))));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
-            }
-        }
-
-        // Change possession when a goal kick or corner kick occurs
-        MatchManager.Instance.ChangePossession();
-    }
-
     private void StartAttackerMovementPhase()
     {
         Debug.Log("Attacker movement phase started. Move one attacker up to 3 hexes.");
@@ -746,7 +493,7 @@ public class HighPassManager : MonoBehaviour
         // Check if the target hex is unoccupied, and find attackers that can reach it
         if (!currentTargetHex.isAttackOccupied)
         {
-            List<PlayerToken> eligibleAttackers = GetAttackersWithinRangeOfHex(currentTargetHex, 3);
+            List<PlayerToken> eligibleAttackers = GetAttackersWithinRangeOfHex(currentTargetHex, ATTACKER_MOVE_RANGE);
 
             if (eligibleAttackers.Count == 0)
             {
@@ -787,7 +534,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         // Once an attacker is selected, highlight valid movement hexes
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 3);  // Highlight movement options
+        movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);  // Highlight movement options
     }
 
     public void StartDefenderMovementPhase()
@@ -812,7 +559,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         // Once a defender is selected, highlight valid movement hexes
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 3);  // Highlight movement options
+        movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);  // Highlight movement options
     }
 
 }

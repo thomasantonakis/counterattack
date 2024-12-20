@@ -14,17 +14,29 @@ public class PlayerTokenManager : MonoBehaviour
     // Spawn positions for the players
     private Vector3Int[] homeTeamPositions = new Vector3Int[]
     {
-        new Vector3Int(0, 0, 0), new Vector3Int(6, 0, 6), new Vector3Int(8, 0, 8),
-        new Vector3Int(12, 0, 12), new Vector3Int(4, 0, 4), new Vector3Int(10, 0, 10),
-        new Vector3Int(-2, 0, -1), new Vector3Int(-4, 0, -4), new Vector3Int(-6, 0, -6),
+        new Vector3Int(0, 0, 0),
+        new Vector3Int(6, 0, 6),
+        new Vector3Int(8, 0, 8),
+        new Vector3Int(12, 0, 12),
+        new Vector3Int(4, 0, 4),
+        new Vector3Int(10, 0, 10),
+        new Vector3Int(-2, 0, -1),
+        new Vector3Int(-4, 0, -4),
+        new Vector3Int(-6, 0, -6),
         new Vector3Int(-8, 0, -8)
     };
 
     private Vector3Int[] awayTeamPositions = new Vector3Int[]
     {
-        new Vector3Int(1, 0, 0), new Vector3Int(1, 0, -1), new Vector3Int(1, 0, 1),
-        new Vector3Int(1, 0, 2), new Vector3Int(3, 0, 3), new Vector3Int(4, 0, 3),
-        new Vector3Int(4, 0, 5), new Vector3Int(5, 0, 5), new Vector3Int(6, 0, 5),
+        new Vector3Int(2, 0, 0), // 2
+        new Vector3Int(1, 0, -1),
+        new Vector3Int(1, 0, 1),
+        new Vector3Int(1, 0, 2),
+        new Vector3Int(3, 0, 3),
+        new Vector3Int(4, 0, 3),
+        new Vector3Int(4, 0, 5),
+        new Vector3Int(5, 0, 5),
+        new Vector3Int(6, 0, 5),
         new Vector3Int(7, 0, 6)
     };
 

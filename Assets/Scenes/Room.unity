@@ -604,6 +604,7 @@ MonoBehaviour:
   longBallManager: {fileID: 748552023}
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
+  headerManager: {fileID: 2071234817}
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   matchManager: {fileID: 622907910}
@@ -1404,6 +1405,8 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   movementPhaseManager: {fileID: 1390513032}
   gameInputManager: {fileID: 417053521}
+  isWaitingForDiceRoll: 0
+  selectedToken: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1884,6 +1887,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208893758}
   m_CullTransparentMesh: 1
+--- !u!1 &1326402185
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1326402187}
+  - component: {fileID: 1326402186}
+  m_Layer: 0
+  m_Name: OutOfBoundsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1326402186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326402185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5420c9b5212f148ea89fb31cd91faf6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ball: {fileID: 390494642}
+  hexGrid: {fileID: 1405702520}
+  highPassManager: {fileID: 1859472972}
+--- !u!4 &1326402187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326402185}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 594.6773, y: 538.6873, z: -1.5795232}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1354388926
 GameObject:
   m_ObjectHideFlags: 0
@@ -2891,6 +2941,8 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   gameInputManager: {fileID: 417053521}
   movementPhaseManager: {fileID: 1390513032}
+  outOfBoundsManager: {fileID: 1326402186}
+  headerManager: {fileID: 2071234817}
   lockedAttacker: {fileID: 0}
   isWaitingForAccuracyRoll: 0
   currentTargetHex: {fileID: 0}
@@ -2911,6 +2963,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2071234816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2071234818}
+  - component: {fileID: 2071234817}
+  m_Layer: 0
+  m_Name: HeaderManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2071234817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071234816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ffe5d478c6f44fbb572d02638934bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ball: {fileID: 390494642}
+  hexGrid: {fileID: 1405702520}
+  matchManager: {fileID: 622907910}
+  highPassManager: {fileID: 1859472972}
+  attEligibleToHead: []
+  defEligibleToHead: []
+  attackerWillJump: []
+  defenderWillJump: []
+--- !u!4 &2071234818
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071234816}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 594.6773, y: 538.6873, z: -1.5795232}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2071675947
 GameObject:
