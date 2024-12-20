@@ -321,19 +321,8 @@ public class HighPassManager : MonoBehaviour
         // Check if the final hex is valid (not out of bounds or blocked)
         if (finalHex != null)
         {
-            // TODO: wait for this coroutine to finish, before checking if it is out of bounds.
             // Move the ball to the inaccurate final hex
-            yield return StartCoroutine(HandleHighPassMovement(finalHex));
-            // After movement completes, check if the ball is out of bounds
-            if (finalHex.isOutOfBounds)
-            {
-                Debug.Log("Ball landed out of bounds!");
-                outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(currentTargetHex, directionIndex);
-            }
-            else
-            {
-                Debug.Log("Ball landed within bounds.");
-            }
+            yield return StartCoroutine(HandleHighPassMovement(finalHex));            
         }
         else
         {
@@ -409,7 +398,17 @@ public class HighPassManager : MonoBehaviour
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
-        headerManager.FindEligibleHeaderTokens(targetHex);
+        // After movement completes, check if the ball is out of bounds
+        if (targetHex.isOutOfBounds)
+        {
+            Debug.Log("Ball landed out of bounds!");
+            outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(currentTargetHex, directionIndex);
+        }
+        else
+        {
+            Debug.Log("Ball landed within bounds.");
+            headerManager.FindEligibleHeaderTokens(targetHex);
+        }
     }
 
     public void HighlightHighPassArea(HexCell targetHex)

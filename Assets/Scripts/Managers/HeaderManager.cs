@@ -98,7 +98,6 @@ public class HeaderManager : MonoBehaviour
         {
             Debug.Log($"Please select up to 2 attackers to jump for the header, or press 'X' to confirm selection.");
             MatchManager.Instance.currentState = MatchManager.GameState.HeaderAttackerSelection;
-            // StartCoroutine(HandleAttackerHeaderSelection());
         }
     }
 
@@ -205,7 +204,7 @@ public class HeaderManager : MonoBehaviour
         // **Scenario: Only Attackers are Jumping**
         if (attackerWillJump.Count > 0 && defenderWillJump.Count == 0)
         {
-            if (offeredControl)
+            if (offeredControl) 
             {
                 Debug.Log("Attackers win the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
@@ -230,61 +229,64 @@ public class HeaderManager : MonoBehaviour
             yield return WaitForHeaderTargetSelection(true);
             yield break;
         }
-        // Both attackers and defenders are jumping
-        Debug.Log("Header challenge started. Rolling for attackers and defenders.");
-        Dictionary<PlayerToken, (int roll, int totalScore)> tokenScores = new Dictionary<PlayerToken, (int, int)>();
-        // Roll for attackers
-        foreach (PlayerToken attacker in attackerWillJump)
+        if (attackerWillJump.Count > 0 && defenderWillJump.Count > 0)
         {
-            int roll = Random.Range(1, 7);
-            int totalScore = roll + attacker.heading;
-            tokenScores[attacker] = (roll, totalScore);
-            Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading} = {totalScore}");
-        }
-        // Roll for defenders
-        foreach (PlayerToken defender in defenderWillJump)
-        {
-            int roll = Random.Range(1, 7);
-            int totalScore = roll + defender.heading;
-            tokenScores[defender] = (roll, totalScore);
-            Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading} = {totalScore}");
-        }
-        
-        PlayerToken bestAttacker = attackerWillJump
-            .OrderByDescending(token => tokenScores[token].totalScore) // Sort by total score
-            .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll
-            .First();
-        PlayerToken bestDefender = defenderWillJump
-            .OrderByDescending(token => tokenScores[token].totalScore) // Sort by total score
-            .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll
-            .First();
+            // Both attackers and defenders are jumping
+            Debug.Log("Header challenge started. Rolling for attackers and defenders.");
+            Dictionary<PlayerToken, (int roll, int totalScore)> tokenScores = new Dictionary<PlayerToken, (int, int)>();
+            // Roll for attackers
+            foreach (PlayerToken attacker in attackerWillJump)
+            {
+                int roll = Random.Range(1, 7);
+                int totalScore = roll + attacker.heading;
+                tokenScores[attacker] = (roll, totalScore);
+                Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading} = {totalScore}");
+            }
+            // Roll for defenders
+            foreach (PlayerToken defender in defenderWillJump)
+            {
+                int roll = Random.Range(1, 7);
+                int totalScore = roll + defender.heading;
+                tokenScores[defender] = (roll, totalScore);
+                Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading} = {totalScore}");
+            }
+            
+            PlayerToken bestAttacker = attackerWillJump
+                .OrderByDescending(token => tokenScores[token].totalScore) // Sort by total score
+                .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll
+                .First();
+            PlayerToken bestDefender = defenderWillJump
+                .OrderByDescending(token => tokenScores[token].totalScore) // Sort by total score
+                .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll
+                .First();
 
-        int bestAttackerScore = tokenScores[bestAttacker].totalScore;
-        int bestAttackerRoll = tokenScores[bestAttacker].roll;
-        Debug.Log($"Best Attacker: {bestAttacker.name} with a score of {bestAttackerScore} (roll = {bestAttackerRoll})");
-        int bestDefenderScore = tokenScores[bestDefender].totalScore;
-        int bestDefenderRoll = tokenScores[bestDefender].roll;
-        Debug.Log($"Best Defender: {bestDefender.name} with a score of {bestDefenderScore} (roll = {bestDefenderRoll})");
+            int bestAttackerScore = tokenScores[bestAttacker].totalScore;
+            int bestAttackerRoll = tokenScores[bestAttacker].roll;
+            Debug.Log($"Best Attacker: {bestAttacker.name} with a score of {bestAttackerScore} (roll = {bestAttackerRoll})");
+            int bestDefenderScore = tokenScores[bestDefender].totalScore;
+            int bestDefenderRoll = tokenScores[bestDefender].roll;
+            Debug.Log($"Best Defender: {bestDefender.name} with a score of {bestDefenderScore} (roll = {bestDefenderRoll})");
 
-        if (bestAttackerScore > bestDefenderScore)
-        {
-            // TODO: Check if it is a header at goal and if it is a roll of 1
-            Debug.Log("Attack wins the header. Highlighting target hexes.");
-            HighlightHexesForHeader(ball.GetCurrentHex(), 6);
-            MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
-            yield return WaitForHeaderTargetSelection(false);
-        }
-        else if (bestDefenderScore > bestAttackerScore)
-        {
-            Debug.Log("Defense wins the header. Switching possession.");
-            MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
-            matchManager.ChangePossession();
-            HighlightHexesForHeader(ball.GetCurrentHex(), 6);
-            yield return WaitForHeaderTargetSelection(true);
-        }
-        else
-        {
-            Debug.Log("Loose ball from header challenge.");
+            if (bestAttackerScore > bestDefenderScore)
+            {
+                // TODO: Check if it is a header at goal and if it is a roll of 1
+                Debug.Log("Attack wins the header. Highlighting target hexes.");
+                HighlightHexesForHeader(ball.GetCurrentHex(), 6);
+                MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
+                yield return WaitForHeaderTargetSelection(false);
+            }
+            else if (bestDefenderScore > bestAttackerScore)
+            {
+                Debug.Log("Defense wins the header. Switching possession.");
+                MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
+                matchManager.ChangePossession();
+                HighlightHexesForHeader(ball.GetCurrentHex(), 6);
+                yield return WaitForHeaderTargetSelection(true);
+            }
+            else
+            {
+                Debug.Log("Loose ball from header challenge.");
+            }
         }
     }
 
@@ -301,16 +303,12 @@ public class HeaderManager : MonoBehaviour
                 Debug.Log("Header option selected.");
                 inputReceived = true;
                 StartAttackHeaderSelection();
-                // yield return StartCoroutine(HandleAttackerHeaderSelection(1));
-                // HighlightHexesForHeader(ball.GetCurrentHex(), 6);
-                // yield return WaitForHeaderTargetSelection(false);
             }
             else if (Input.GetKeyDown(KeyCode.B))
             {
                 Debug.Log("Attempting to bring the ball down.");
                 inputReceived = true;
-                // yield return StartCoroutine(HandleAttackerHeaderSelection(1));
-                // HandleBallControlAttempt();
+                // TODO: Implement the logic for bringing the ball down
             }
 
             yield return null;
@@ -357,7 +355,7 @@ public class HeaderManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarning("Invalid hex selected. Please choose another hex.");
+                        Debug.LogWarning("Invalid hex selected. Please select a hex not occupied by the defense.");
                     }
                 }
             }
@@ -366,4 +364,14 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
+    public void ResetHeader()
+    {
+      attEligibleToHead.Clear();
+      defEligibleToHead.Clear();
+      attackerWillJump.Clear();
+      defenderWillJump.Clear();
+      hasEligibleAttackers = false;
+      hasEligibleDefenders = false;
+      offeredControl = false;
+    }
 }

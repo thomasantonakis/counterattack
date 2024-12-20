@@ -9,7 +9,7 @@ public class MovementPhaseManager : MonoBehaviour
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public GroundBallManager groundBallManager;
-    public int movementRange = 5;  // Maximum range of movement for a player
+    public HeaderManager headerManager;
     private bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
     private bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
     private bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
@@ -75,26 +75,26 @@ public class MovementPhaseManager : MonoBehaviour
         // Ensure the token can move in this phase and hasn't already moved
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
         {
-            if (!token.isAttacker || movedTokens.Contains(token))
+            if (!token.isAttacker || movedTokens.Contains(token) || headerManager.attackerWillJump.Contains(token) || headerManager.defenderWillJump.Contains(token))
             {
-                Debug.Log("Cannot move this token. Either it's not an attacker or it has already moved.");
+                Debug.Log("Cannot move this token. Either it's not an attacker or it has already moved or is frozen due to previous header challenge.");
                 return;  // Reject defender clicks or already moved tokens
             }
         }
         else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
         {
-            if (token.isAttacker || movedTokens.Contains(token))
+            if (token.isAttacker || movedTokens.Contains(token) || headerManager.attackerWillJump.Contains(token) || headerManager.defenderWillJump.Contains(token))
             {
-                Debug.Log("Cannot move this token. Either it's not a defender or it has already moved.");
+                Debug.Log("Cannot move this token. Either it's not a defender or it has already moved or is frozen due to previous header challenge.");
                 return;  // Reject attacker clicks or already moved tokens
             }
         }
         else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
         {
             // Only allow attackers who haven't moved yet in MovementPhaseAtt
-            if (!token.isAttacker || movedTokens.Contains(token))
+            if (!token.isAttacker || movedTokens.Contains(token) || headerManager.attackerWillJump.Contains(token) || headerManager.defenderWillJump.Contains(token))
             {
-                Debug.Log("This token has already moved or is not an attacker.");
+                Debug.Log("This token has already moved or is not an attacker or it has already moved or is frozen due to previous header challenge.");
                 return;
             }
 
@@ -536,7 +536,6 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Tackle phase reset.");
     }
 
-
     private void ResetMovementPhase()
     {
         movedTokens.Clear();  // Reset the list of moved tokens
@@ -557,6 +556,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
         ResetMovementPhase();  // Reset the moved tokens and phase counters
+        headerManager.ResetHeader();  // Reset the header to free up unmovable players
         Debug.Log("Movement phase is over.");
     }
 
