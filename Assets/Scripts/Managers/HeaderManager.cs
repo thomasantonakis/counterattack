@@ -10,6 +10,7 @@ public class HeaderManager : MonoBehaviour
     public HexGrid hexGrid;
     public MatchManager matchManager;
     public HighPassManager highPassManager; // Reference to the HighPassManager
+    public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
 
     [Header("Header States")]
     public List<PlayerToken> attEligibleToHead = new List<PlayerToken>();
@@ -237,18 +238,38 @@ public class HeaderManager : MonoBehaviour
             // Roll for attackers
             foreach (PlayerToken attacker in attackerWillJump)
             {
-                int roll = Random.Range(1, 7);
-                int totalScore = roll + attacker.heading;
-                tokenScores[attacker] = (roll, totalScore);
-                Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading} = {totalScore}");
+                isWaitingForHeaderRoll = true;
+                Debug.Log($"Waiting for roll for attacker: {attacker.name}. Press 'R' to roll.");
+                while (isWaitingForHeaderRoll)
+                {
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        int roll = Random.Range(1, 7);
+                        int totalScore = roll + attacker.heading;
+                        tokenScores[attacker] = (roll, totalScore);
+                        Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading} = {totalScore}");
+                        isWaitingForHeaderRoll = false; // Proceed to the next token
+                    }
+                    yield return null;
+                }
             }
             // Roll for defenders
             foreach (PlayerToken defender in defenderWillJump)
             {
-                int roll = Random.Range(1, 7);
-                int totalScore = roll + defender.heading;
-                tokenScores[defender] = (roll, totalScore);
-                Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading} = {totalScore}");
+                isWaitingForHeaderRoll = true;
+                Debug.Log($"Waiting for roll for attacker: {defender.name}. Press 'R' to roll.");
+                while (isWaitingForHeaderRoll)
+                {
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        int roll = Random.Range(1, 7);
+                        int totalScore = roll + defender.heading;
+                        tokenScores[defender] = (roll, totalScore);
+                        Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading} = {totalScore}");
+                        isWaitingForHeaderRoll = false; // Proceed to the next token
+                    }
+                    yield return null;
+                }
             }
             
             PlayerToken bestAttacker = attackerWillJump
