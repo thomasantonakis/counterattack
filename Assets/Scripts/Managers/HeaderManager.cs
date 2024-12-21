@@ -230,24 +230,33 @@ public class HeaderManager : MonoBehaviour
             yield return WaitForHeaderTargetSelection(true);
             yield break;
         }
+        // **Scenario: Both Attackers & Defenders are Jumping**
         if (attackerWillJump.Count > 0 && defenderWillJump.Count > 0)
         {
             // Both attackers and defenders are jumping
             Debug.Log("Header challenge started. Rolling for attackers and defenders.");
             Dictionary<PlayerToken, (int roll, int totalScore)> tokenScores = new Dictionary<PlayerToken, (int, int)>();
+            // Get the ball's current hex and its neighbors
+            HexCell ballHex = ball.GetCurrentHex();
+            HexCell[] ballNeighbors = ballHex.GetNeighbors(hexGrid);
             // Roll for attackers
             foreach (PlayerToken attacker in attackerWillJump)
             {
                 isWaitingForHeaderRoll = true;
-                Debug.Log($"Waiting for roll for attacker: {attacker.name}. Press 'R' to roll.");
+                // Check if the attacker is on the ball hex or a neighboring hex
+                HexCell attackerHex = attacker.GetCurrentHex();
+                bool hasHeadingPenalty = attackerHex != ballHex && !ballNeighbors.Contains(attackerHex);
+                string penaltyInfo = hasHeadingPenalty ? ", with penalty (-1)" : "";
+                Debug.Log($"Press 'R' to roll for attacker: {attacker.name} (heading: {attacker.heading}{penaltyInfo}).");
+
                 while (isWaitingForHeaderRoll)
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
                         int roll = Random.Range(1, 7);
-                        int totalScore = roll + attacker.heading;
+                        int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[attacker] = (roll, totalScore);
-                        Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading} = {totalScore}");
+                        Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading}{penaltyInfo} = {totalScore}");
                         isWaitingForHeaderRoll = false; // Proceed to the next token
                     }
                     yield return null;
@@ -257,15 +266,20 @@ public class HeaderManager : MonoBehaviour
             foreach (PlayerToken defender in defenderWillJump)
             {
                 isWaitingForHeaderRoll = true;
-                Debug.Log($"Waiting for roll for attacker: {defender.name}. Press 'R' to roll.");
+                // Check if the attacker is on the ball hex or a neighboring hex
+                HexCell defenderHex = defender.GetCurrentHex();
+                bool hasHeadingPenalty = defenderHex != ballHex && !ballNeighbors.Contains(defenderHex);
+                string penaltyInfo = hasHeadingPenalty ? ", with penalty (-1)" : "";
+                Debug.Log($"Press 'R' to roll for attacker: {defender.name} (heading: {defender.heading}{penaltyInfo}).");
+
                 while (isWaitingForHeaderRoll)
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
                         int roll = Random.Range(1, 7);
-                        int totalScore = roll + defender.heading;
+                        int totalScore = roll + defender.heading + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[defender] = (roll, totalScore);
-                        Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading} = {totalScore}");
+                        Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading}{penaltyInfo} = {totalScore}");
                         isWaitingForHeaderRoll = false; // Proceed to the next token
                     }
                     yield return null;
