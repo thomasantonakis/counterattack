@@ -129,6 +129,7 @@ public class MatchManager : MonoBehaviour
     public HexGrid hexGrid;  // Reference to the ball
     public GameData gameData;
     public int difficulty_level;
+    public int refereeLeniency;
 
     // // Define other match-specific variables here (e.g., time, score, teams)
     // private int homeScore = 0;
@@ -155,6 +156,10 @@ public class MatchManager : MonoBehaviour
         if (gameData != null && gameData.gameSettings != null)
         {
             difficulty_level = gameData.gameSettings.playerAssistance;
+        }
+        if (gameData != null && gameData.gameSettings != null)
+        {
+            refereeLeniency = int.Parse(gameData.gameSettings.referee[^1].ToString());
         }
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());

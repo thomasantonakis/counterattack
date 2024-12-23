@@ -18,7 +18,8 @@ public class PlayerToken : MonoBehaviour
     public int aerial; // Only for goalkeepers
     public int saving; // Only for goalkeepers
     public int handling; // Only for goalkeepers
-
+    public bool isBooked { get; private set; } = false;
+    public bool isInjured { get; private set; } = false;
     void Awake()
     {
         // Debug.Log($"{name}: PlayerToken Awake called");
@@ -90,5 +91,99 @@ public class PlayerToken : MonoBehaviour
         saving = rosterPlayer.saving;
         handling = rosterPlayer.handling;
         Debug.Log($"Initialized attributes for {playerName} (Jersey {jerseyNumber}): Pace: {pace}, Dribbling: {dribbling}, HighPass: {highPass}, Resilience: {resilience}");
+        // TestBookAndInjureTokens();  // Test booking and injuring tokens
+    }
+
+    /// <summary>
+    /// Method to handle booking the player with a yellow card.
+    /// </summary>
+    public void ReceiveYellowCard()
+    {
+        if (!isBooked)
+        {
+            isBooked = true;
+            Debug.Log($"{name} has been booked with a yellow card.");
+        }
+        else
+        {
+            Debug.LogWarning($"{name} is already booked. Consider further actions (e.g., red card).");
+        }
+    }
+
+    /// <summary>
+    /// Method to handle when the player is injured.
+    /// </summary>
+    public void ReceiveInjury()
+    {
+        if (!isInjured)
+        {
+            isInjured = true;
+            Debug.Log($"{name} has been injured.");
+            // Optional: Disable token movement or remove the player from the field
+            HandleInjury();
+        }
+        else
+        {
+            Debug.LogWarning($"{name} is already injured.");
+        }
+    }
+
+    /// <summary>
+    /// Handles the consequences of injury (e.g., disabling movement or substituting the player).
+    /// </summary>
+    private void HandleInjury()
+    {
+        // Example logic for injury (customize as needed)
+        pace = Mathf.Max(0, pace - 1);
+        dribbling = Mathf.Max(0, dribbling - 1);
+        heading = Mathf.Max(0, heading - 1);
+        highPass = Mathf.Max(0, highPass - 1);
+        resilience = Mathf.Max(0, resilience - 1);
+        shooting = Mathf.Max(0, shooting - 1);
+        tackling = Mathf.Max(0, tackling - 1);
+        Debug.Log($"{name}'s attributes after injury: Heading={heading}, Dribbling={dribbling}, Tackling={tackling}, Pace={pace}, HighPass={highPass}, Shooting={shooting}, Resilience={resilience}");
+    }
+
+    public void TestBookAndInjureTokens()
+    {
+        PlayerToken cafferata = FindPlayerTokenByNameOrID("2. Cafferata"); // Adjust this to your token identification logic
+        PlayerToken nazef = FindPlayerTokenByNameOrID("6. Nazef");
+
+        // Check if the tokens were found
+        if (cafferata == null)
+        {
+            Debug.LogError("Token 2. Cafferata not found!");
+            return;
+        }
+
+        if (nazef == null)
+        {
+            Debug.LogError("Token 6. Nazef not found!");
+            return;
+        }
+
+        // Book Cafferata
+        Debug.Log($"Booking {cafferata.name}...");
+        cafferata.ReceiveYellowCard();
+        Debug.Log($"{cafferata.name} is now booked: {cafferata.isBooked}");
+
+        // Injure Nazef
+        Debug.Log($"Injuring {nazef.name}...");
+        nazef.ReceiveInjury();
+        Debug.Log($"{nazef.name} is now injured: {nazef.isInjured}");
+    }
+
+    // Helper method to find a token (example implementation, adjust to your game's logic)
+    private PlayerToken FindPlayerTokenByNameOrID(string nameOrID)
+    {
+        PlayerToken[] allTokens = FindObjectsOfType<PlayerToken>();
+        foreach (var token in allTokens)
+        {
+            if (token.name == nameOrID) // Adjust based on your identifier
+            {
+                return token;
+            }
+        }
+        return null;
     }
 }

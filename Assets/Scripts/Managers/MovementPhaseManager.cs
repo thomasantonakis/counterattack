@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading;
 
 public class MovementPhaseManager : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
     public bool isPlayerMoving = false;  // Tracks if a player is currently moving
-
+    private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
 
     void Update()
     {
@@ -494,9 +495,15 @@ public class MovementPhaseManager : MonoBehaviour
 
         Debug.Log($"Defender Name: {selectedDefender.name}, Attacker Dribbling: {attackerToken.name}");
         Debug.Log($"Defender Tackling: {defenderTackling}, Attacker Dribbling: {attackerDribbling}");
-
+        if (defenderDiceRoll <= FOUL_THRESHOLD)
+        {
+            Debug.Log("Defender committed a foul.");
+            Debug.Log("Defender rolled a foul. Tackle failed.");
+            yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
+            yield break;  // End tackle resolution as the foul process takes over
+        }
         // if (defenderDiceRoll > attackerDiceRoll)
-        if (defenderDiceRoll + defenderTackling > attackerDiceRoll + attackerDribbling)
+        else if (defenderDiceRoll + defenderTackling > attackerDiceRoll + attackerDribbling)
         {
             Debug.Log("Tackle successful! Defender wins possession of the ball.");
             ball.SetCurrentHex(selectedDefender.GetCurrentHex());
@@ -514,6 +521,62 @@ public class MovementPhaseManager : MonoBehaviour
 
         ResetTacklePhase();  // Reset tackle phase after handling results
     }
+
+    private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
+    {
+        Debug.Log("Handling foul resolution process...");
+
+        // Yellow card decision
+        Debug.Log("Press 'R' to roll for a Booking.");
+        bool isWaitingForYellowCardRoll = true;
+        while (isWaitingForYellowCardRoll)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                int roll = Random.Range(1, 7);  // Roll a dice (1 to 6)
+                Debug.Log($"Yellow card roll: {roll}");
+                if (roll >= MatchManager.Instance.refereeLeniency)
+                {
+                    Debug.Log($"Defender {defenderToken.name} receives a yellow card!");
+                    defenderToken.ReceiveYellowCard();  // Assume a method exists to handle this
+                }
+                else
+                {
+                    Debug.Log($"Defender {defenderToken.name} escapes a yellow card.");
+                }
+                isWaitingForYellowCardRoll = false;
+            }
+            yield return null;  // Wait for the next frame
+        }
+
+        // Injury decision
+        Debug.Log("Press 'R' to roll for attacker injury.");
+        bool isWaitingForInjuryRoll = true;
+        while (isWaitingForInjuryRoll)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                int roll = Random.Range(1, 7);  // Roll a dice (1 to 6)
+                Debug.Log($"Injury roll: {roll}");
+                if (roll >= attackerToken.resilience)
+                {
+                    Debug.Log($"Attacker {attackerToken.name} is injured!");
+                    attackerToken.ReceiveInjury();  // Assume a method exists to handle this
+                }
+                else
+                {
+                    Debug.Log($"Attacker {attackerToken.name} avoids injury.");
+                }
+                isWaitingForInjuryRoll = false;
+            }
+            yield return null;  // Wait for the next frame
+        }
+
+        // End foul resolution process
+        ResetTacklePhase();  // Reset tackle phase
+        Debug.Log("Foul process completed. Back to game flow.");
+    }
+
 
     private void StartTackleDiceRollSequence()
     {
@@ -577,6 +640,6 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         return token;
-}
+    }
 
 }
