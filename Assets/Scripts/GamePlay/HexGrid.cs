@@ -235,8 +235,14 @@ public class HexGrid : MonoBehaviour
         return attackerHexes;
     }
 
+    /// <summary>
+    /// Retrieves a list of neighboring hex cells for the given list of defender hex cells.
+    /// </summary>
+    /// <param name="defenderHexes">A list of hex cells representing the defenders.</param>
+    /// <returns>A list of hex cells that are neighbors to the given defender hex cells.</returns>
     public List<HexCell> GetDefenderNeighbors(List<HexCell> defenderHexes)
     {
+
         List<HexCell> defenderNeighbors = new List<HexCell>();
 
         foreach (HexCell defenderHex in defenderHexes)

@@ -38,7 +38,8 @@ public class MatchManager : MonoBehaviour
         HeaderAttackerSelection,
         HeaderDefenderSelection,
         HeaderChallengeResolved,
-        HeaderCompleted,
+        HeaderCompletedToPlayer,
+        HeaderCompletedToSpace,
         FirstTimePassAttempt,
         FirstTimePassAttackerMovement,
         FirstTimePassDefenderMovement,
@@ -250,10 +251,10 @@ public class MatchManager : MonoBehaviour
                 hex.ResetHighlight();  // Reset to normal if neither
             }
         }
+        Debug.Log($"Possession changed! {teamInAttack} now is the Attacking Team.");
         // Now update the PlayerTokens to reflect the new possession
         UpdatePlayerTokensAfterPossessionChange();
 
-        Debug.Log($"Possession changed! {teamInAttack} now is the Attacking Team.");
     }
 
     public void UpdatePossessionAfterPass(HexCell ballHex)
@@ -271,6 +272,7 @@ public class MatchManager : MonoBehaviour
             attackHasPossession = false;
             // Debug.Log("Attacking team lost possession.");
         }
+        Debug.Log($"Attacking team has possession: {attackHasPossession}.");
     }
 
     // Method to trigger the standard pass attempt mode (on key press, like "P")

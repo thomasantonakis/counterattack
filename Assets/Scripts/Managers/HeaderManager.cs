@@ -22,7 +22,20 @@ public class HeaderManager : MonoBehaviour
     private bool hasEligibleDefenders = false;
     private const int HEADER_SELECTION_RANGE = 2;
     private bool offeredControl = false;
+    
+    List<HexCell> interceptingDefenders = new List<HexCell>();
+    private bool isWaitingForInterceptionRoll = false;
 
+    public void Update()
+    {
+        if (isWaitingForInterceptionRoll)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                StartCoroutine(PerformInterceptionCheck(ball.GetCurrentHex()));
+            }
+        }
+    }
     public void FindEligibleHeaderTokens(HexCell landingHex)
     {
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
@@ -63,7 +76,6 @@ public class HeaderManager : MonoBehaviour
         else if (!hasEligibleAttackers)
         {
             Debug.Log("No attackers eligible to head the ball. Defense wins the header automatically.");
-            // TODO: switch possession
             StartDefenseHeaderSelection();
         }
         else if (!hasEligibleDefenders)
@@ -236,7 +248,7 @@ public class HeaderManager : MonoBehaviour
                 Debug.Log("Attackers win the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
-                yield return WaitForHeaderTargetSelection(false);
+                yield return WaitForHeaderTargetSelection();
             }
             else
             {
@@ -253,7 +265,7 @@ public class HeaderManager : MonoBehaviour
             Debug.Log("Only defenders are jumping. Defense wins the header automatically. Switching possession.");
             matchManager.ChangePossession();
             HighlightHexesForHeader(ball.GetCurrentHex(), 6);
-            yield return WaitForHeaderTargetSelection(true);
+            yield return WaitForHeaderTargetSelection();
             yield break;
         }
         // **Scenario: Both Attackers & Defenders are Jumping**
@@ -334,7 +346,7 @@ public class HeaderManager : MonoBehaviour
                 Debug.Log("Attack wins the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
-                yield return WaitForHeaderTargetSelection(false);
+                yield return WaitForHeaderTargetSelection();
             }
             else if (bestDefenderScore > bestAttackerScore)
             {
@@ -342,7 +354,7 @@ public class HeaderManager : MonoBehaviour
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
                 matchManager.ChangePossession();
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
-                yield return WaitForHeaderTargetSelection(true);
+                yield return WaitForHeaderTargetSelection();
             }
             else
             {
@@ -392,7 +404,7 @@ public class HeaderManager : MonoBehaviour
     }
 
     // Coroutine to wait for header target selection
-    private IEnumerator WaitForHeaderTargetSelection(bool defensePossession)
+    private IEnumerator WaitForHeaderTargetSelection()
     {
         bool targetSelected = false;
 
@@ -404,14 +416,22 @@ public class HeaderManager : MonoBehaviour
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
                     HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                    // TODO: Exclude from valid targets the Hexes of Jumped Tokens
                     if (clickedHex != null && !clickedHex.isDefenseOccupied)
                     {
                         yield return StartCoroutine(ball.MoveToCell(clickedHex));
-                        MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompleted;
                         Debug.Log($"Ball moved to {clickedHex.coordinates}");
-                        ball.AdjustBallHeightBasedOnOccupancy();
-                        matchManager.UpdatePossessionAfterPass(clickedHex);
-                        hexGrid.ClearHighlightedHexes();
+                        if (clickedHex.isAttackOccupied)
+                        {
+                            MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToPlayer;
+                            matchManager.UpdatePossessionAfterPass(clickedHex);
+                            ball.AdjustBallHeightBasedOnOccupancy();
+                            hexGrid.ClearHighlightedHexes();
+                        }
+                        else
+                        {
+                            CheckForHeaderInterception(clickedHex); // calling check for interceptions here
+                        }
                         targetSelected = true;
                     }
                     else
@@ -423,6 +443,102 @@ public class HeaderManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private void CheckForHeaderInterception(HexCell landingHex)
+    {
+        // Get all defenders and their ZOIs (neighbors)
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        List<HexCell> filteredDefenderHexes = defenderHexes
+            .Where(hex => !defenderWillJump.Any(defender => defender.GetCurrentHex() == hex))
+            .ToList();
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(filteredDefenderHexes);
+        // Initialize the interceptingDefenders list to avoid null reference
+        interceptingDefenders = new List<HexCell>();
+
+        // Check if the landing hex is in any defender's ZOI (neighbors)
+        if (defenderNeighbors.Contains(landingHex))
+        {
+            // Log for debugging: Confirm the landing hex and defender neighbors
+            Debug.Log($"Landing hex {landingHex.coordinates} is in defender ZOI. Checking eligible defenders...");
+
+            // Get defenders who have the landing hex in their ZOI
+            foreach (HexCell defender in filteredDefenderHexes)
+            {
+                HexCell[] neighbors = defender.GetNeighbors(hexGrid);
+                // Debug.Log($"Defender at {defender.coordinates} has neighbors: {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
+
+                if (neighbors.Contains(landingHex))
+                {
+                    Debug.Log($"Defender at {defender.coordinates} can intercept at {landingHex.coordinates}");
+                    interceptingDefenders.Add(defender);  // Add the eligible defender to the list
+                }
+            }
+            // Check if there are any intercepting defenders
+            if (interceptingDefenders.Count > 0)
+            {
+                Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for interception. Please Press R key..");
+                isWaitingForInterceptionRoll = true;
+            }
+            else
+            {
+                Debug.Log("No defenders eligible for interception. Header goes without interception. Should not appear");
+                MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+            }
+        }
+        else
+        {
+            Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
+            MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+        }
+    }
+
+    private IEnumerator PerformInterceptionCheck(HexCell landingHex)
+    {
+        if (interceptingDefenders == null || interceptingDefenders.Count == 0)
+        {
+            Debug.Log("No defenders available for interception.");
+            yield break;
+        }
+
+        foreach (HexCell defenderHex in interceptingDefenders)
+        {
+            PlayerToken defenderToken = defenderHex.GetOccupyingToken();
+            if (defenderToken == null)
+            {
+                Debug.LogWarning($"No valid token found at defender's hex {defenderHex.coordinates}.");
+                continue;
+            }
+            Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
+            // Roll the dice (1 to 6)
+            int diceRoll = 6; // Ensure proper range (1-6)
+            // int diceRoll = Random.Range(1, 7); // Ensure proper range (1-6)
+            Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
+            int totalInterceptionScore = diceRoll + defenderToken.tackling;
+            Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");
+
+            if (diceRoll == 6 || totalInterceptionScore >= 10)
+            {
+                Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
+                isWaitingForInterceptionRoll = false;
+                // Move the ball to the defender's hex and change possession
+                yield return StartCoroutine(ball.MoveToCell(defenderHex));
+                MatchManager.Instance.ChangePossession();
+                MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
+                // ball.AdjustBallHeightBasedOnOccupancy();
+                ball.PlaceAtCell(defenderHex);
+                MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+                yield break;  // Stop the sequence once an interception is successful
+            }
+            else
+            {
+                Debug.Log($"Defender at {defenderHex.coordinates} failed to intercept the ball.");
+            }
+        }
+
+        // If no defender intercepts, the ball stays at the original hex
+        Debug.Log("All defenders failed to intercept. Ball remains at the landing hex.");
+        MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
     }
 
     public void ResetHeader()

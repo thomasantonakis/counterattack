@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+// using System.Diagnostics;
 
 public class Ball : MonoBehaviour
 {
@@ -54,6 +55,7 @@ public class Ball : MonoBehaviour
 
         // Check if the hex is occupied by a player (attacker or defender)
         float yOffset = groundHeightOffset;  // Default height on the ground
+        // Debug.Log("Ball Cell isAttackOccupied: " + currentCell.isAttackOccupied + " or  isDefenseOccupied: " + currentCell.isDefenseOccupied);
         if (currentCell.isAttackOccupied || currentCell.isDefenseOccupied)
         {
             yOffset = playerHeightOffset;  // Lift the ball when it's on a player token
@@ -62,6 +64,8 @@ public class Ball : MonoBehaviour
         // Set the ball's position
         Vector3 newPosition = new Vector3(currentCell.GetHexCenter().x, yOffset, currentCell.GetHexCenter().z);
         transform.position = newPosition;
+        // Debug.Log("Ball position adjusted to: " + yOffset);
+
     }
 
     public void PlaceAtCell(HexCell cell)
@@ -111,6 +115,7 @@ public class Ball : MonoBehaviour
     {
         return currentCell;
     }
+    
     public HexCell SetCurrentHex(HexCell newHex)
     {
         return currentCell = newHex;

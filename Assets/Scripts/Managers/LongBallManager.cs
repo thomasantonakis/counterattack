@@ -311,7 +311,7 @@ public class LongBallManager : MonoBehaviour
         if (targetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");
-            Debug.Log($"Passing currentTargetHex to HandleOutOfBoundsFromInaccuracy: {currentTargetHex.coordinates}");
+            // Debug.Log($"Passing currentTargetHex to HandleOutOfBoundsFromInaccuracy: {currentTargetHex.coordinates}");
             outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(currentTargetHex, directionIndex);
         }
         else
@@ -416,7 +416,7 @@ public class LongBallManager : MonoBehaviour
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
                 isWaitingForInterceptionRoll = false;
                 // Move the ball to the defender's hex and change possession
-                StartCoroutine(ball.MoveToCell(defenderHex));
+                yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
