@@ -490,6 +490,10 @@ public class GameInputManager : MonoBehaviour
         {
             headerManager.ConfirmAttackerHeaderSelection();
         }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            headerManager.SelectAllAvailableAttackers();
+        }
     }
 
     private void HandleDefenderHeaderSelectionInput()
@@ -514,6 +518,10 @@ public class GameInputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             headerManager.ConfirmDefenderHeaderSelection();
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            headerManager.SelectAllAvailableDefenders();
         }
     }
 

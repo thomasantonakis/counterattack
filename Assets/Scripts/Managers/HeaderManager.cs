@@ -35,6 +35,7 @@ public class HeaderManager : MonoBehaviour
         foreach (HexCell hex in nearbyHexes)
         {
             PlayerToken token = hex.GetOccupyingToken();
+            // TODO: Exclude kicker from the list of eligible attackers
             if (token != null)
             {
                 Debug.Log($"Eligible to head: {token.name} at {hex.coordinates}");
@@ -97,31 +98,22 @@ public class HeaderManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Please select up to 2 attackers to jump for the header, or press 'X' to confirm selection.");
+            Debug.Log($"Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'X' to confirm selection.");
             MatchManager.Instance.currentState = MatchManager.GameState.HeaderAttackerSelection;
         }
     }
 
     public IEnumerator HandleAttackerHeaderSelection(PlayerToken token)
     {
-        Debug.Log($"Please select up to 2 attackers to jump for the header, or press 'X' to confirm selection.");
-
-        while (attackerWillJump.Count < 2)
+        if (attackerWillJump.Count < 2)
         {
             AddAttackerToHeaderSelection(token);
+            // Check if there are eligible defenders
+            if (attackerWillJump.Count == 2)
+            {
+                ConfirmAttackerHeaderSelection();
+            }
             yield return null; // Yield to wait for input handled by GIM
-        }
-
-        Debug.Log("Attack header selection completed.");
-
-        // Check if there are eligible defenders
-        if (hasEligibleDefenders)
-        {
-            StartDefenseHeaderSelection();
-        }
-        else
-        {
-            StartCoroutine(ResolveHeaderChallenge());
         }
     }
 
@@ -136,14 +128,39 @@ public class HeaderManager : MonoBehaviour
 
     public void ConfirmAttackerHeaderSelection()
     {
-        Debug.Log("Attack header selection confirmed.");
-        if (hasEligibleDefenders)
+        if (attackerWillJump.Count > 0)
         {
-            StartDefenseHeaderSelection();
+            Debug.Log("Attack header selection confirmed.");
+            if (hasEligibleDefenders && !offeredControl)
+            {
+                StartDefenseHeaderSelection();
+            }
+            else
+            {
+                StartCoroutine(ResolveHeaderChallenge());
+            }
         }
         else
         {
-            StartCoroutine(ResolveHeaderChallenge());
+            Debug.LogWarning("Attack cannot choose to not jump. Please select attackers and then press 'X' to confirm selection.");
+        }
+    }
+
+    public void SelectAllAvailableAttackers()
+    {
+        if (attEligibleToHead.Count <= 2)
+        {
+            attackerWillJump.Clear();
+            foreach (PlayerToken token in attEligibleToHead)
+            {
+                AddAttackerToHeaderSelection(token);
+            }
+            Debug.Log("All available attackers selected to jump for the header.");
+            ConfirmAttackerHeaderSelection();
+        }
+        else
+        {
+            Debug.LogWarning("Too many attackers to select automatically. Please click on attackers to select them or press 'X' to confirm selection.");
         }
     }
 
@@ -152,30 +169,21 @@ public class HeaderManager : MonoBehaviour
     {
         defenderWillJump.Clear();
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderDefenderSelection;
-        if (defEligibleToHead.Count == 1)
-        {
-            defenderWillJump.Add(defEligibleToHead[0]);
-            Debug.Log($"Automatically selected Defender: {defEligibleToHead[0].name}");
-            StartCoroutine(ResolveHeaderChallenge());
-        }
-        else
-        {
-            Debug.Log($"Please select up to 2 defenders to jump for the header, or press 'X' to confirm selection.");
-            MatchManager.Instance.currentState = MatchManager.GameState.HeaderDefenderSelection;
-        }
+        Debug.Log($"Please 1-2 defenders to jump for the header. Press 'A' to select all available, or press 'X' to confirm selection.");
     }
 
     // Coroutine for handling defender header selection
     public IEnumerator HandleDefenderHeaderSelection(PlayerToken token)
     {
-        while (defenderWillJump.Count < 2)
+        if (defenderWillJump.Count < 2)
         {
             AddDefenderToHeaderSelection(token);
+            if (defenderWillJump.Count == 2)
+            {
+                ConfirmDefenderHeaderSelection();
+            }
             yield return null; // Yield to wait for input handled by GIM
         }
-        Debug.Log("Defender header selection completed.");
-
-        StartCoroutine(ResolveHeaderChallenge());
     }
 
     public void AddDefenderToHeaderSelection(PlayerToken token)
@@ -191,6 +199,24 @@ public class HeaderManager : MonoBehaviour
     {
         Debug.Log("Defender header selection confirmed.");
         StartCoroutine(ResolveHeaderChallenge());
+    }
+
+    public void SelectAllAvailableDefenders()
+    {
+        if (defEligibleToHead.Count <= 2)
+        {
+            defenderWillJump.Clear();
+            foreach (PlayerToken token in defEligibleToHead)
+            {
+                AddDefenderToHeaderSelection(token);
+            }
+            Debug.Log("All available defenders selected to jump for the header.");
+            ConfirmDefenderHeaderSelection();
+        }
+        else
+        {
+            Debug.LogWarning("Too many defenders to select automatically. Please click on defenders to select them or press 'X' to confirm selection.");
+        }
     }
 
     // Coroutine to resolve the header challenge
