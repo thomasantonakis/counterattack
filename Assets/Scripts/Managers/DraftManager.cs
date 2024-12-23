@@ -32,6 +32,10 @@ public class DraftManager : MonoBehaviour
     private int cardsAssignedThisRound = 0;
     private string currentTeamTurn;  // Track which team's turn it is
     private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
+    public TMP_Text refereeText; // Reference to the TMP_Text for the referee
+    public TMP_Text homeTeamName; // Reference to the TMP_Text for the Home Team
+    public TMP_Text awayTeamName; // Reference to the TMP_Text for the Away Team
+
 
     void Start()
     {
@@ -110,6 +114,10 @@ public class DraftManager : MonoBehaviour
             Debug.LogWarning("Invalid squad size in settings. Defaulting to 16.");
             squadSize = 16;
         }
+        // Apply the referee setting
+        refereeText.text = $"{currentSettings.referee}";
+        homeTeamName.text = $"{currentSettings.homeTeamName}";
+        awayTeamName.text = $"{currentSettings.awayTeamName}";
 
         // Apply the 'includeInternationals' setting
         useTableTopia = currentSettings.includeTabletopia;
@@ -356,6 +364,8 @@ public class DraftManager : MonoBehaviour
 
     // Simulate the coin flip
     private void PerformCoinFlip()
+    // TODO: Press R for this, or click a button.
+    // TODO: Select Kick Off or Sides.
     {
         int coinFlip = Random.Range(0, 2);  // 0 = Tails (Away), 1 = Heads (Home)
 
