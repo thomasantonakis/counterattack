@@ -246,7 +246,18 @@ public class CreateNewGameManager : MonoBehaviour
         settings.squadSize = squadSizeDropdown.options[squadSizeDropdown.value].text;
         settings.draft = draftDropdown.options[draftDropdown.value].text;
         settings.gkDraft = gkDraftDropdown.options[gkDraftDropdown.value].text;
-        settings.referee = refereeDropdown.options[refereeDropdown.value].text;
+        string selectedReferee = refereeDropdown.options[refereeDropdown.value].text;
+        // Check if the selected referee is "Random"
+        if (selectedReferee == "Random")
+        {
+            // Create a list of referees excluding "Random"
+            List<string> nonRandomReferees = new List<string> { "Webster - 2", "Castolo - 3", "Bakker - 4", "Read - 5" };
+            // Randomly select one of the non-random referees
+            System.Random rng = new System.Random();
+            selectedReferee = nonRandomReferees[rng.Next(nonRandomReferees.Count)];
+            Debug.Log($"Random referee chosen: {selectedReferee}");
+        }
+        settings.referee = selectedReferee;
         settings.playerAssistance = (int)playerAssistanceSlider.value;
         settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;

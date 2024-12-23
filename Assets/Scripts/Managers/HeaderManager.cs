@@ -237,7 +237,7 @@ public class HeaderManager : MonoBehaviour
         // If both lists are empty, do nothing
         if (attackerWillJump.Count == 0 && defenderWillJump.Count == 0)
         {
-            Debug.Log("No attackers or defenders jumping. Ball drops to the ground. This should not happen.");
+            Debug.LogError("No attackers or defenders jumping. Ball drops to the ground. This should not happen.");
             yield break;
         }
         // **Scenario: Only Attackers are Jumping**
