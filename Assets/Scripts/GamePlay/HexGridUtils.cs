@@ -187,5 +187,4 @@ public static class HexGridUtils
         return (reachableHexes, distance);  // Return both the list of reachable hexes and the distance data
     }
 
-
 }

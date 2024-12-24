@@ -1,7 +1,7 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
 
 public class MovementPhaseManager : MonoBehaviour
 {
@@ -11,9 +11,10 @@ public class MovementPhaseManager : MonoBehaviour
     public Ball ball;
     public GroundBallManager groundBallManager;
     public HeaderManager headerManager;
-    private bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
-    private bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
-    private bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
+    public bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
+    public bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
+    public bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
+    public bool isWaitingForReposition = false;  // Whether we're waiting for a dice roll
     private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
     private bool tackleAttackerRolled = false;  // Whether we're waiting for a dice roll
     private int defenderDiceRoll;
@@ -155,7 +156,7 @@ public class MovementPhaseManager : MonoBehaviour
     public bool IsHexValidForMovement(HexCell hex)
     {
         bool isValid = hexGrid.highlightedHexes.Contains(hex);  // Check if the clicked hex is in the list of valid hexes
-        Debug.Log($"IsHexValidForMovement called for {hex.name}: {isValid}");
+        // Debug.Log($"IsHexValidForMovement called for {hex.name}: {isValid}");
         if (!isValid)
         {
             hexGrid.ClearHighlightedHexes();  // Clear the highlights if an invalid hex is clicked
@@ -164,13 +165,13 @@ public class MovementPhaseManager : MonoBehaviour
         return isValid;
     }
 
-    public Coroutine MoveTokenToHex(HexCell targetHex, PlayerToken token = null)
+    public IEnumerator MoveTokenToHex(HexCell targetHex, PlayerToken token = null)
     {
         PlayerToken movingToken = token ?? selectedToken;
         if (movingToken == null)
         {
             Debug.LogError("No token selected to move.");
-            return null;
+            yield break;
         }
 
         // Find the path from the current hex to the target hex
@@ -179,11 +180,12 @@ public class MovementPhaseManager : MonoBehaviour
         if (path == null || path.Count == 0)
         {
             Debug.LogError("No valid path found to the target hex.");
-            return null;
+            yield break;
         }
 
         // Start the token movement across the hexes (this can be animated)
-        Coroutine moveCoroutine = StartCoroutine(MoveTokenAlongPath(movingToken, path));
+        // Coroutine moveCoroutine = StartCoroutine(MoveTokenAlongPath(movingToken, path));
+        yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
         
         // Movement for MovementPhase2f2 (the special phase for two attackers)
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
@@ -195,7 +197,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("Last two attackers have moved in 2f2 phase. Ending Movement Phase.");
                 EndMovementPhase();
-                return null;
+                yield break;
             }
         }
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
@@ -208,7 +210,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
                 MatchManager.Instance.StartMovementPhase2f2();
-                return null;
+                yield break;
             }
         }
         else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
@@ -221,11 +223,11 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
                 MatchManager.Instance.StartMovementPhaseDef();
-                return null;
+                yield break;
             }
         }
         // Return the coroutine that moves the token
-        return moveCoroutine;
+        // return moveCoroutine;
     }
 
     // Coroutine to move the token one hex at a time
@@ -326,6 +328,7 @@ public class MovementPhaseManager : MonoBehaviour
                                 Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
                                 selectedDefender = token;  // Store the selected defender
                                 isWaitingForTackleDecision = true;  // Activate tackle decision listener
+                                // TODO: 5th defender doesnt have time to decide for T ot N
                             }
                             break;
                         }
@@ -444,34 +447,34 @@ public class MovementPhaseManager : MonoBehaviour
     {
         int diceRoll = Random.Range(1, 7);  // Roll a dice (1 to 6)
         
-        // Rigged
-        // if (isDefender)
-        // {
-        //     defenderDiceRoll = 5;
-        //     tackleDefenderRolled = true;
-        //     Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
-        // }
-        // else
-        // {
-        //     attackerDiceRoll = 2;
-        //     tackleAttackerRolled = true;
-        //     Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
-        //     StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
-        // }
-        // Random
+        // // Rigged
         if (isDefender)
         {
-            defenderDiceRoll = diceRoll;
+            defenderDiceRoll = 2;
             tackleDefenderRolled = true;
             Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         }
         else
         {
-            attackerDiceRoll = diceRoll;
+            attackerDiceRoll = 6;
             tackleAttackerRolled = true;
             Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
             StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
         }
+        // // Random
+        // if (isDefender)
+        // {
+        //     defenderDiceRoll = diceRoll;
+        //     tackleDefenderRolled = true;
+        //     Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
+        // }
+        // else
+        // {
+        //     attackerDiceRoll = diceRoll;
+        //     tackleAttackerRolled = true;
+        //     Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
+        //     StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
+        // }
     }
 
     private IEnumerator CompareTackleRolls()
@@ -493,33 +496,104 @@ public class MovementPhaseManager : MonoBehaviour
         int defenderTackling = selectedDefender.tackling;
         int attackerDribbling = attackerToken.dribbling;
 
-        Debug.Log($"Defender Name: {selectedDefender.name}, Attacker Dribbling: {attackerToken.name}");
-        Debug.Log($"Defender Tackling: {defenderTackling}, Attacker Dribbling: {attackerDribbling}");
+        Debug.Log($"Defender Name: {selectedDefender.name} with tackling: {defenderTackling}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}");
         if (defenderDiceRoll <= FOUL_THRESHOLD)
         {
             Debug.Log("Defender committed a foul.");
-            Debug.Log("Defender rolled a foul. Tackle failed.");
             yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
         }
         // if (defenderDiceRoll > attackerDiceRoll)
         else if (defenderDiceRoll + defenderTackling > attackerDiceRoll + attackerDribbling)
         {
-            Debug.Log("Tackle successful! Defender wins possession of the ball.");
+            Debug.Log($"Tackle successful! {selectedDefender.name} roll({defenderDiceRoll})+Tackling({defenderTackling}) beats {attackerToken.name}'s roll({attackerDiceRoll})+Dribbling({attackerDribbling}) ad wins possession of the ball.");
             ball.SetCurrentHex(selectedDefender.GetCurrentHex());
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(selectedDefender.GetCurrentHex()));  // Move the ball to the defender's hex
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(selectedDefender.GetCurrentHex());  // Update possession
+            yield return StartCoroutine(HandlePostTackleReposition(selectedDefender, attackerToken));
             ResetMovementPhase();  // End the movement phase after successful tackle
             MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
             Debug.Log("Movement phase ended due to successful tackle.");
         }
-        else
+        else if (defenderDiceRoll + defenderTackling <= attackerDiceRoll + attackerDribbling)
         {
-            Debug.Log("Tackle failed. Attacker retains possession.");
+            Debug.Log($"Tackle failed! {selectedDefender.name} roll({defenderDiceRoll})+Tackling({defenderTackling}) loses to {attackerToken.name}'s roll({attackerDiceRoll})+Dribbling({attackerDribbling}) and {attackerToken.name} retains possession of the ball.");
+            yield return StartCoroutine(HandlePostTackleReposition(attackerToken, selectedDefender));
+        }
+        else // In case of a tie
+        {
+            Debug.Log("Tackle results in a tie. Loose ball situation.");
+            // TODO: Handle loose ball situation
         }
 
         ResetTacklePhase();  // Reset tackle phase after handling results
+    }
+
+    private IEnumerator HandlePostTackleReposition(PlayerToken winner, PlayerToken loser)
+    {
+        Debug.Log($"{winner.name} won the tackle and is repositioning around {loser.name}.");
+        // Get the loser's hex and neighboring hexes
+        HexCell loserHex = loser.GetCurrentHex();
+        HexCell[] repositionHexesArray = loserHex.GetNeighbors(hexGrid);
+        List<HexCell> repositionHexes = new List<HexCell>(repositionHexesArray); // Convert array to list
+        repositionHexes.Where(hex => 
+            hex != loserHex && !hex.isDefenseOccupied && !hex.isAttackOccupied).ToList();
+
+
+        // Highlight repositioning options
+        foreach (HexCell hex in repositionHexes)
+        {
+            if (!hex.isDefenseOccupied && !hex.isAttackOccupied)
+            {
+                hex.HighlightHex("reposition");
+                hexGrid.highlightedHexes.Add(hex);
+            }
+        }
+
+        isWaitingForReposition = true;
+
+        while (isWaitingForReposition)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                    if (clickedHex != null
+                        && repositionHexes.Contains(clickedHex)
+                        && clickedHex != loser.GetCurrentHex()
+                        && !clickedHex.isDefenseOccupied
+                        && !clickedHex.isAttackOccupied
+                    )
+                    {
+                        Debug.Log($"{winner.name} repositioning to {clickedHex.coordinates}.");
+                        HexCell winnerHex = winner.GetCurrentHex();
+                        // the check seems to be redundant as before the call of this method, the Possession has been changed if needed
+                        if (winner.isAttacker)
+                        {
+                            winnerHex.isAttackOccupied = false;
+                            winnerHex.ResetHighlight();
+                            clickedHex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
+                        }
+                        else
+                        {
+                            winnerHex.isDefenseOccupied = false;
+                            winnerHex.ResetHighlight();
+                            clickedHex.isDefenseOccupied = true;  // Mark the target hex as occupied by an attacker
+                        }
+                        hexGrid.ClearHighlightedHexes();
+                        yield return StartCoroutine(winner.JumpToHex(clickedHex)); // Move the token
+                        isWaitingForReposition = false;
+                        ball.PlaceAtCell(clickedHex); // Move the ball
+                        clickedHex.HighlightHex("isAttackOccupied");
+                        Debug.Log("Repositioning complete.");
+                    }
+                }
+            }
+            yield return null;
+        }
     }
 
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
@@ -575,8 +649,8 @@ public class MovementPhaseManager : MonoBehaviour
         // End foul resolution process
         ResetTacklePhase();  // Reset tackle phase
         Debug.Log("Foul process completed. Back to game flow.");
+        // TODO: Offer options to take free kick or play on
     }
-
 
     private void StartTackleDiceRollSequence()
     {

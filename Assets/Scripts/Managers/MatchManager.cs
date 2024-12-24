@@ -27,6 +27,7 @@ public class MatchManager : MonoBehaviour
         MovementPhaseAttack,
         MovementPhaseDef,
         MovementPhase2f2,
+        // Repositioning,
         MovementPhaseEnded,
         SuccessfulTackle,
         HighPassAttempt,

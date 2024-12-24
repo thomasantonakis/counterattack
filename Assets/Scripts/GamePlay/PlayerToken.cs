@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerToken : MonoBehaviour
 {
@@ -43,15 +44,26 @@ public class PlayerToken : MonoBehaviour
     {
         if (currentHex != null)
         {
-            // Clear the occupying token from the previous hex
-            currentHex.occupyingToken = null;
+            if (currentHex.occupyingToken == this) // Ensure it only clears itself
+            {
+                currentHex.occupyingToken = null;
+            }
+            else
+            {
+                Debug.LogWarning($"Hex {currentHex.coordinates} does not have {name} as its occupying token!");
+            }
         }
 
         if (newHex != null)
         {
-            // Set the occupying token in the new hex
-            newHex.occupyingToken = this;
-            // Debug.Log($"Token {name} is on Hex {newHex.name}");
+            if (newHex.occupyingToken == null) // Check if the new hex is empty
+            {
+                newHex.occupyingToken = this;
+            }
+            else
+            {
+                Debug.LogWarning($"Hex {newHex.coordinates} is already occupied by {newHex.occupyingToken.name}!");
+            }
         }
 
         currentHex = newHex;  // Assign the new hex to the token
@@ -186,4 +198,50 @@ public class PlayerToken : MonoBehaviour
         }
         return null;
     }
+
+    public IEnumerator JumpToHex(HexCell targetHex)
+    {
+        if (targetHex == null)
+        {
+            Debug.LogError("Target Hex is null. Cannot move token.");
+            yield break;
+        }
+
+        // Get starting and target positions
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = targetHex.GetHexCenter();
+
+        // Adjust target Y to ensure consistent ground level
+        targetPosition.y = Mathf.Max(targetPosition.y, startPosition.y);
+
+        Debug.Log($"Starting movement. Initial Y: {startPosition.y}, Target Y: {targetPosition.y}");
+
+        float travelDuration = 1.0f;
+        float elapsedTime = 0;
+        float jumpHeight = 1.0f;
+
+        while (elapsedTime < travelDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / travelDuration;
+
+            // Linear movement
+            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+
+            // Add jump effect
+            flatPosition.y += jumpHeight * Mathf.Sin(Mathf.PI * progress);
+
+            transform.position = flatPosition;
+            yield return null;
+        }
+
+        // Snap to target position
+        transform.position = targetPosition;
+        // currentHex = targetHex;
+        SetCurrentHex(targetHex);
+
+        // Debug.Log($"{name} moved to {targetHex.coordinates}, final position: {transform.position}");
+    }
+
+
 }

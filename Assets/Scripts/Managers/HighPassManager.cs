@@ -134,7 +134,7 @@ public class HighPassManager : MonoBehaviour
                     Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
                 }
                 // Proceed to start the attacker movement phase
-                StartAttackerMovementPhase();
+                StartCoroutine(StartAttackerMovementPhase());
             }
         }
         else if (difficulty == 1) // Easy Mode: Require confirmation with a second click
@@ -453,7 +453,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for High Pass.");
     }
 
-    private void StartAttackerMovementPhase()
+    private IEnumerator StartAttackerMovementPhase()
     {
         Debug.Log("Attacker movement phase started. Move one attacker up to 3 hexes.");
         isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
@@ -470,7 +470,7 @@ public class HighPassManager : MonoBehaviour
             {
                 Debug.LogError("No attackers can reach the target hex.");
                 // Handle case where no attackers can move to the target (potentially cancel the High Pass or retry)
-                return;
+                yield break;
             }
             else if (eligibleAttackers.Count == 1)
             {
@@ -479,11 +479,11 @@ public class HighPassManager : MonoBehaviour
                 Debug.Log($"Automatically moving attacker {selectedToken.name} to target hex.");
 
                 // Automatically move the attacker to the target hex
-                movementPhaseManager.MoveTokenToHex(currentTargetHex, selectedToken);
+                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(currentTargetHex, selectedToken));
 
                 // Directly proceed to the defender movement phase after the attacker moves
                 StartDefenderMovementPhase();
-                return;  // Skip further input handling
+                yield break;  // Skip further input handling
             }
             else
             {

@@ -88,6 +88,9 @@ public class HexCell : MonoBehaviour
             case "DefenderZOI":
                 hexRenderer.material.color = Color.yellow * 0.5f;
                 break;
+            case "reposition":
+                hexRenderer.material.color = Color.gray;// * 0.5f;
+                break;
             // Add other cases if needed
             default:
                 hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason
