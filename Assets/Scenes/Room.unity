@@ -438,6 +438,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 238722947}
   m_CullTransparentMesh: 1
+--- !u!1 &363527589
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 363527590}
+  m_Layer: 0
+  m_Name: AutomatedGameActions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &363527590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363527589}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 532.8804, y: 395.47388, z: -2.495472}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &390494637
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,6 +988,7 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   difficulty_level: 2
+  refereeLeniency: 0
 --- !u!4 &622907911
 Transform:
   m_ObjectHideFlags: 0
@@ -1919,7 +1951,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
-  highPassManager: {fileID: 1859472972}
 --- !u!4 &1326402187
 Transform:
   m_ObjectHideFlags: 0
@@ -2105,6 +2136,10 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   groundBallManager: {fileID: 1703800862}
   headerManager: {fileID: 2071234817}
+  isWaitingForInterceptionDiceRoll: 0
+  isWaitingForTackleDecision: 0
+  isWaitingForTackleRoll: 0
+  isWaitingForReposition: 0
   isPlayerMoving: 0
 --- !u!1 &1393973651
 GameObject:
@@ -2998,6 +3033,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   matchManager: {fileID: 622907910}
   highPassManager: {fileID: 1859472972}
+  isWaitingForHeaderRoll: 0
   attEligibleToHead: []
   defEligibleToHead: []
   attackerWillJump: []

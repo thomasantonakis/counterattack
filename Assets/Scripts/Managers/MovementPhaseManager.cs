@@ -20,6 +20,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int defenderDiceRoll;
     private int attackerDiceRoll;
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
+    private List<PlayerToken> eligibleDefenders = new List<PlayerToken>();  // To track defenders eligible for interception
     private int attackersMoved = 0;
     private int defendersMoved = 0;
     private int maxAttackerMoves = 4;  // Max moves allowed for attackers
@@ -30,6 +31,7 @@ public class MovementPhaseManager : MonoBehaviour
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
     public bool isPlayerMoving = false;  // Tracks if a player is currently moving
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
+    private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
 
     void Update()
     {
@@ -308,31 +310,25 @@ public class MovementPhaseManager : MonoBehaviour
             // Add the condition to check if we're in the MovementPhaseDef state
             if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
             {
-                HexCell ballHex = ball.GetCurrentHex();
-                if (!token.isAttacker && ballHex != null && ballHex != finalHex)
+                // If attackHasPossession is false, try interception
+                if (!MatchManager.Instance.attackHasPossession)
                 {
-                    HexCell[] neighbors = finalHex.GetNeighbors(hexGrid);
-
-                    foreach (HexCell neighbor in neighbors)
+                    HexCell ballHex = ball.GetCurrentHex();
+                    eligibleDefenders = GetEligibleDefendersForInterception(ballHex);
+                    if (eligibleDefenders.Contains(token))
                     {
-                        if (neighbor == ballHex)
-                        {
-                            // If attackHasPossession is false, try interception
-                            if (!MatchManager.Instance.attackHasPossession)
-                            {
-                                Debug.Log("Defender near the ball! Starting dice roll for interception.");
-                                StartBallInterceptionDiceRollSequence(finalHex);  // Start the interception dice roll sequence
-                            }
-                            else
-                            {
-                                Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
-                                selectedDefender = token;  // Store the selected defender
-                                isWaitingForTackleDecision = true;  // Activate tackle decision listener
-                                // TODO: 5th defender doesnt have time to decide for T ot N
-                            }
-                            break;
-                        }
+                        List<PlayerToken> defenderToIntercept = new List<PlayerToken>();
+                        defenderToIntercept.Add(token);
+                        Debug.Log("Defender near the ball! Starting dice roll for interception.");
+                        StartBallInterceptionDiceRollSequence(ballHex, defenderToIntercept);
                     }
+                }
+                else
+                {
+                    Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
+                    selectedDefender = token;  // Store the selected defender
+                    isWaitingForTackleDecision = true;  // Activate tackle decision listener
+                    // TODO: 5th defender doesnt have time to decide for T ot N
                 }
             }
         }
@@ -347,45 +343,44 @@ public class MovementPhaseManager : MonoBehaviour
         isPlayerMoving = false;  // Player finished moving
     }
 
-    private void StartBallInterceptionDiceRollSequence(HexCell defenderHex)
+    private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
     {
-        HexCell ballHex = ball.GetCurrentHex();
-
-        // Find all defenders near the ball
-        // defenderHexesNearBall.Clear();
-        List<HexCell> defenderHexesNearBall = new List<HexCell>();
-        HexCell[] neighbors = ballHex.GetNeighbors(hexGrid);
+        List<PlayerToken> eligibleDefenders = new List<PlayerToken>();
+        HexCell[] neighbors = targetHex.GetNeighbors(hexGrid);
 
         foreach (HexCell neighbor in neighbors)
         {
-            if (neighbor.isDefenseOccupied)
+            PlayerToken token = neighbor.GetOccupyingToken();
+            if (token != null && neighbor.isDefenseOccupied && 
+                !movedTokens.Contains(token) && 
+                !headerManager.defenderWillJump.Contains(token) &&
+                !headerManager.attackerWillJump.Contains(token) &&
+                !eligibleDefenders.Contains(token)
+            )  // Avoid duplicates
             {
-                defenderHexesNearBall.Add(neighbor);
+                eligibleDefenders.Add(token);
             }
         }
 
-        if (defenderHexesNearBall.Count > 0)
+        return eligibleDefenders;
+    }
+
+    private void StartBallInterceptionDiceRollSequence(HexCell targetHex, List<PlayerToken> eligibleDefenders)
+    {
+        if (eligibleDefenders == null || eligibleDefenders.Count == 0)
         {
-            Debug.Log("Starting ball interception dice roll sequence... Press R to roll.");
-            // currentDefenderHex = defenderHexesNearBall[0];  // Start with the first defender
-            // Assign the correct defender token from the neighboring hexes
-            // Use FindPlayerTokenOnHex to assign the correct defender
-            selectedDefender = FindPlayerTokenOnHex(defenderHexesNearBall[0]);
-            if (selectedDefender == null)
-            {
-                Debug.LogError("Failed to find PlayerToken on the defender hex.");
-            }
-            else
-            {
-                Debug.Log($"Selected defender for interception: {selectedDefender.name}");
-                isWaitingForInterceptionDiceRoll = true;  // Activate the dice roll listener
-            }
-            Debug.Log($"isWaitingForInterceptionDiceRoll set to {isWaitingForInterceptionDiceRoll}");
+            Debug.LogWarning("No eligible defenders for interception. Interception sequence aborted.");
+            return;
         }
-        else
+        selectedDefender = eligibleDefenders[0];
+        if (selectedDefender == null)
         {
-            Debug.LogWarning("No defenders near the ball for interception.");
+            Debug.LogError("Failed to assign a valid defender from the eligible defenders list.");
+            return;
         }
+        Debug.Log($"Selected defender for interception: {selectedDefender.name}. Press R to roll...");
+        // Set the flag to wait for interception dice roll
+        isWaitingForInterceptionDiceRoll = true;
     }
 
     public void PerformBallInterceptionDiceRoll()
@@ -394,9 +389,9 @@ public class MovementPhaseManager : MonoBehaviour
         if (selectedDefender != null)
         {
             // Roll the dice (1 to 6)
-            // int diceRoll = 5; // God Mode
-            int diceRoll = Random.Range(1, 7);
-            Debug.Log($"Dice roll by defender at {selectedDefender.GetCurrentHex().coordinates}: {diceRoll}");
+            int diceRoll = 1; // God Mode
+            // int diceRoll = Random.Range(1, 7);
+            // Debug.Log($"Dice roll by defender at {selectedDefender.GetCurrentHex().coordinates}: {diceRoll}");
             isWaitingForInterceptionDiceRoll = false;
 
             // Get the defender's tackling attribute
@@ -404,7 +399,7 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log($"Defender: {selectedDefender.name}, Tackling: {defenderTackling}, Dice Roll: {diceRoll}");
 
             // Check interception condition: either roll a 6 or roll + tackling >= 10
-            if (diceRoll == 6 || (diceRoll + defenderTackling >= 10))
+            if (diceRoll == 6 || (diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD))
             {
                 // Defender successfully intercepts the ball
                 Debug.Log($"Ball intercepted by defender at {selectedDefender.GetCurrentHex().coordinates}!");
@@ -415,10 +410,13 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log($"Defender at {selectedDefender.GetCurrentHex().coordinates} failed to intercept.");
                 // Move to the next defender, if any
-                defenderHexesNearBall.Remove(selectedDefender.GetCurrentHex());
-                if (defenderHexesNearBall.Count > 0)
+                eligibleDefenders.Remove(selectedDefender);
+                if (eligibleDefenders.Count > 0)
                 {
-                    selectedDefender = defenderHexesNearBall[0].GetComponentInChildren<PlayerToken>();  // Move to the next defender
+                    selectedDefender = eligibleDefenders[0];  // Move to the next defender
+                    isWaitingForInterceptionDiceRoll = true;
+                    Debug.Log($"Selected defender for interception: {selectedDefender.name}. Press R to roll...");
+                    // PerformBallInterceptionDiceRoll();  // Roll for the next defender
                 }
                 else
                 {
@@ -479,7 +477,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator CompareTackleRolls()
     {
-        isWaitingForTackleRoll = false;  // Stop waiting for rolls
+        ResetTacklePhase();  // Reset tackle phase after handling results
         // Ensure selected tokens are valid
         if (selectedDefender == null)
         {
@@ -527,7 +525,7 @@ public class MovementPhaseManager : MonoBehaviour
             // TODO: Handle loose ball situation
         }
 
-        ResetTacklePhase();  // Reset tackle phase after handling results
+        
     }
 
     private IEnumerator HandlePostTackleReposition(PlayerToken winner, PlayerToken loser)
@@ -589,6 +587,12 @@ public class MovementPhaseManager : MonoBehaviour
                         ball.PlaceAtCell(clickedHex); // Move the ball
                         clickedHex.HighlightHex("isAttackOccupied");
                         Debug.Log("Repositioning complete.");
+                        eligibleDefenders = GetEligibleDefendersForInterception(clickedHex);
+                        if (eligibleDefenders.Count > 0)
+                        {
+                            Debug.Log($"Eligible defenders for interception: {string.Join(", ", eligibleDefenders.Select(d => d.name))}");
+                            StartBallInterceptionDiceRollSequence(clickedHex, eligibleDefenders);
+                        }
                     }
                 }
             }
@@ -686,6 +690,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         defenderHexesNearBall.Clear();
         selectedDefender = null;
+        eligibleDefenders.Clear();
         isWaitingForInterceptionDiceRoll = false;
     }
 
