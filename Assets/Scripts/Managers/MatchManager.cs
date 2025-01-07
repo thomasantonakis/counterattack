@@ -447,60 +447,15 @@ public class MatchManager : MonoBehaviour
 
             if (gameData != null && gameData.gameSettings != null)
             {
-                Debug.Log("Game settings loaded successfully!");
-                // Debug Game Settings
-                if (gameData.gameSettings != null)
-                {
-                    Debug.Log("Game Settings:");
-                    Debug.Log(JsonConvert.SerializeObject(gameData.gameSettings, Formatting.Indented));
-                }
-                else
-                {
-                    Debug.LogError("Game settings are missing in the JSON file!");
-                }
-
-                // Debug Rosters
-                if (gameData.rosters != null)
-                {
-                    Debug.Log("Rosters:");
-                    Debug.Log("Home Team Roster:");
-                    foreach (var player in gameData.rosters.home)
-                    {
-                        Debug.Log($"Jersey {player.Key}. {player.Value.name}");
-                        Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
-
-                        if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
-                        {
-                            Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
-                        }
-                    }
-
-                    Debug.Log("Away Team Roster:");
-                    foreach (var player in gameData.rosters.away)
-                    {
-                        Debug.Log($"Jersey {player.Key}: {player.Value.name}");
-                        // TODO: Add everything here
-                        Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
-                        if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
-                        {
-                            // TODO: Add everything here
-                            Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Rosters are missing in the JSON file!");
-                }
-
+                Debug.Log("Game settings loaded successfully! Invoking OnGameSettingsLoaded!");
+                // Trigger event or call methods to initialize gameplay settings
+                OnGameSettingsLoaded?.Invoke();
+                DebugGameSettings();
                 // // Debugging loaded data
                 // Debug.Log($"Loaded Home Team: {gameData.gameSettings.homeTeamName}");
                 // Debug.Log($"Loaded Away Team: {gameData.gameSettings.awayTeamName}");
                 // Debug.Log($"Loaded Home Kit: {gameData.gameSettings.homeKit}");
                 // Debug.Log($"Loaded Away Kit: {gameData.gameSettings.awayKit}");
-
-                // Trigger event or call methods to initialize gameplay settings
-                OnGameSettingsLoaded?.Invoke();
             }
             else
             {
@@ -510,6 +465,54 @@ public class MatchManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Game settings file not found.");
+        }
+    }
+
+    private void DebugGameSettings()
+    {
+        // Debug Game Settings
+        if (gameData.gameSettings != null)
+        {
+            Debug.Log("Game Settings:");
+            Debug.Log(JsonConvert.SerializeObject(gameData.gameSettings, Formatting.Indented));
+        }
+        else
+        {
+            Debug.LogError("Game settings are missing in the JSON file!");
+        }
+
+        // Debug Rosters
+        if (gameData.rosters != null)
+        {
+            Debug.Log("Rosters:");
+            Debug.Log("Home Team Roster:");
+            foreach (var player in gameData.rosters.home)
+            {
+                Debug.Log($"Jersey {player.Key}. {player.Value.name}");
+                Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
+
+                if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
+                {
+                    Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
+                }
+            }
+
+            Debug.Log("Away Team Roster:");
+            foreach (var player in gameData.rosters.away)
+            {
+                Debug.Log($"Jersey {player.Key}: {player.Value.name}");
+                // TODO: Add everything here
+                Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
+                if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
+                {
+                    // TODO: Add everything here
+                    Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("Rosters are missing in the JSON file!");
         }
     }
 
