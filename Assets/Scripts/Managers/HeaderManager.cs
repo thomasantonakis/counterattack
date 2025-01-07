@@ -10,6 +10,7 @@ public class HeaderManager : MonoBehaviour
     public HexGrid hexGrid;
     public MatchManager matchManager;
     public HighPassManager highPassManager; // Reference to the HighPassManager
+    public MovementPhaseManager movementPhaseManager; // Reference to the MovementPhaseManager
     public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
 
     [Header("Header States")]
@@ -70,6 +71,7 @@ public class HeaderManager : MonoBehaviour
         if (!hasEligibleAttackers && !hasEligibleDefenders)
         {
             Debug.Log("No players eligible to head the ball. Ball drops to the ground.");
+            movementPhaseManager.ResetMovementPhase();
             MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             // TODO: start movement phase
         }

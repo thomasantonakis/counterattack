@@ -338,7 +338,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -575.32, y: 315}
+  m_AnchoredPosition: {x: -508.32, y: 279}
   m_SizeDelta: {x: 124.5086, y: 35.321}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &238722949
@@ -566,6 +566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007da863a509e477c983287312a18ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentCell: {fileID: 0}
   isMoving: 0
   hexGrid: {fileID: 1405702520}
   ballRadius: 0.6474
@@ -681,7 +682,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -590, y: 340}
+  m_AnchoredPosition: {x: -523, y: 304}
   m_SizeDelta: {x: 95.1508, y: 35.3211}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &421809153
@@ -2142,6 +2143,10 @@ MonoBehaviour:
   isWaitingForTackleDecisionWithoutMoving: 0
   isWaitingForTackleRoll: 0
   isWaitingForReposition: 0
+  movedTokens: []
+  attackersMoved: 0
+  defendersMoved: 0
+  attackersMovedIn2f2: 0
   isPlayerMoving: 0
 --- !u!1 &1393973651
 GameObject:
@@ -3036,6 +3041,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   matchManager: {fileID: 622907910}
   highPassManager: {fileID: 1859472972}
+  movementPhaseManager: {fileID: 1390513032}
   isWaitingForHeaderRoll: 0
   attEligibleToHead: []
   defEligibleToHead: []

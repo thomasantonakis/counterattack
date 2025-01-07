@@ -763,7 +763,7 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Tackle phase reset.");
     }
 
-    private void ResetMovementPhase()
+    public void ResetMovementPhase()
     {
         movedTokens.Clear();  // Reset the list of moved tokens
         attackersMoved = 0;    // Reset the number of attackers that have moved

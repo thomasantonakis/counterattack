@@ -73,7 +73,7 @@ public class GameInputManager : MonoBehaviour
         (!movementPhaseManager.isPlayerMoving &&
             !movementPhaseManager.isWaitingForTackleRoll &&
             !movementPhaseManager.isWaitingForTackleDecision &&
-            !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving &&
+            // !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving &&
             !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
             !movementPhaseManager.isWaitingForReposition &&
             (
