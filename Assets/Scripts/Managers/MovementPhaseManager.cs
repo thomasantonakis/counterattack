@@ -5,7 +5,7 @@ using System.Linq;
 
 public class MovementPhaseManager : MonoBehaviour
 {
-    private PlayerToken selectedToken;
+    public PlayerToken selectedToken;
     private PlayerToken selectedDefender;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
@@ -13,19 +13,24 @@ public class MovementPhaseManager : MonoBehaviour
     public HeaderManager headerManager;
     public bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
+    public bool isWaitingForTackleDecisionWithoutMoving = false; // Flag to check if waiting for tackle decision
     public bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForReposition = false;  // Whether we're waiting for a dice roll
     private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
     private bool tackleAttackerRolled = false;  // Whether we're waiting for a dice roll
     private int defenderDiceRoll;
     private int attackerDiceRoll;
+    [SerializeField]
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
     private List<PlayerToken> eligibleDefenders = new List<PlayerToken>();  // To track defenders eligible for interception
+    [SerializeField]
     private int attackersMoved = 0;
+    [SerializeField]
     private int defendersMoved = 0;
+    [SerializeField]
+    private int attackersMovedIn2f2 = 0;
     private int maxAttackerMoves = 4;  // Max moves allowed for attackers
     private int maxDefenderMoves = 5;  // Max moves allowed for defenders
-    private int attackersMovedIn2f2 = 0;
     private int maxAttackerMovesIn2f2 = 2;
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
@@ -53,6 +58,18 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log("Tackle chosen. Starting tackle dice rolls...");
                 isWaitingForTackleDecision = false;
+                StartTackleDiceRollSequence();  // Start the dice roll sequence for tackling
+            }
+        }
+        else if (isWaitingForTackleDecisionWithoutMoving)
+        {
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                // Defender chooses to tackle
+                Debug.Log($"{selectedToken.name} initiates a tackle without moving. Starting Dice Rolls...");
+                movedTokens.Add(selectedToken); // Mark defender as having moved
+                isWaitingForTackleDecisionWithoutMoving = false; // Reset tackle decision flag
+                isWaitingForTackleDecision = false;  // Reset tackle decision flag
                 StartTackleDiceRollSequence();  // Start the dice roll sequence for tackling
             }
         }
@@ -112,6 +129,23 @@ public class MovementPhaseManager : MonoBehaviour
         }
         // Select the token
         selectedToken = token;
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef && !selectedToken.isAttacker && !movedTokens.Contains(selectedToken))
+        {
+            PlayerToken ballHolder = ball.GetCurrentHex()?.GetOccupyingToken();
+            if (ballHolder != null && ballHolder.isAttacker)
+            {
+                // Check if defender is adjacent to the attacker with the ball
+                HexCell[] neighbors = ballHolder.GetCurrentHex().GetNeighbors(hexGrid);
+                if (neighbors.Contains(selectedToken.GetCurrentHex()))
+                {
+                    // Defender is adjacent, enable tackle decision
+                    Debug.Log($"{selectedToken.name} is adjacent to {ballHolder.name}. Press 'T' to tackle or select a hex to move.");
+                    isWaitingForTackleDecisionWithoutMoving = true;
+                }
+
+            }
+        }
+
         // Highlight valid movement hexes for the selected token
         HighlightValidMovementHexes(selectedToken, token.pace);
     }
@@ -188,48 +222,8 @@ public class MovementPhaseManager : MonoBehaviour
         // Start the token movement across the hexes (this can be animated)
         // Coroutine moveCoroutine = StartCoroutine(MoveTokenAlongPath(movingToken, path));
         yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
-        
-        // Movement for MovementPhase2f2 (the special phase for two attackers)
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
-        {
-            attackersMovedIn2f2++;
-            movedTokens.Add(movingToken);  // Track this token as moved
-
-            if (attackersMovedIn2f2 >= maxAttackerMovesIn2f2)
-            {
-                Debug.Log("Last two attackers have moved in 2f2 phase. Ending Movement Phase.");
-                EndMovementPhase();
-                yield break;
-            }
-        }
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
-        {
-            defendersMoved++;
-            movedTokens.Add(movingToken);  // Track this token as moved
-
-            // Check if we should end the movement phase after defenders move
-            if (defendersMoved >= maxDefenderMoves)
-            {
-                Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
-                MatchManager.Instance.StartMovementPhase2f2();
-                yield break;
-            }
-        }
-        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
-        {
-            attackersMoved++;
-            movedTokens.Add(movingToken);  // Track this token as moved
-
-            // Check if we should transition to defender phase
-            if (attackersMoved >= maxAttackerMoves)
-            {
-                Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
-                MatchManager.Instance.StartMovementPhaseDef();
-                yield break;
-            }
-        }
-        // Return the coroutine that moves the token
-        // return moveCoroutine;
+        movedTokens.Add(movingToken);  // Track this token as moved
+        AdvanceMovementPhase(); // Basic check to advance the movement phase
     }
 
     // Coroutine to move the token one hex at a time
@@ -282,6 +276,8 @@ public class MovementPhaseManager : MonoBehaviour
 
             previousHex = step;  // Set the previous hex to the current step for the next iteration
         }
+        token.SetCurrentHex(path.Last());  // Update the token's hex to the final step
+        Debug.Log($"Token arrived at hex: {path.Last().name}");
         // Mark the final hex as occupied after the token reaches the destination
         HexCell finalHex = path[path.Count - 1];
         if (token.isAttacker)
@@ -317,17 +313,26 @@ public class MovementPhaseManager : MonoBehaviour
                     eligibleDefenders = GetEligibleDefendersForInterception(ballHex);
                     if (eligibleDefenders.Contains(token))
                     {
-                        List<PlayerToken> defenderToIntercept = new List<PlayerToken>();
-                        defenderToIntercept.Add(token);
+                        List<PlayerToken> defenderToIntercept = new List<PlayerToken>{token};
                         Debug.Log("Defender near the ball! Starting dice roll for interception.");
                         StartBallInterceptionDiceRollSequence(ballHex, defenderToIntercept);
                     }
                 }
                 else
                 {
-                    Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
-                    selectedDefender = token;  // Store the selected defender
-                    isWaitingForTackleDecision = true;  // Activate tackle decision listener
+                    // Ensure the defender is adjacent to the attacker with the ball
+                    HexCell ballHex = ball.GetCurrentHex();
+                    HexCell[] ballNeighbors = ballHex.GetNeighbors(hexGrid);
+                    if (ballNeighbors.Contains(token.GetCurrentHex()))
+                    {
+                        Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
+                        selectedDefender = token;  // Store the selected defender
+                        isWaitingForTackleDecision = true;  // Activate tackle decision listener
+                    }
+                    else
+                    {
+                        Debug.Log("Defender is not close enough to tackle. No prompt shown.");
+                    }
                     // TODO: 5th defender doesnt have time to decide for T ot N
                 }
             }
@@ -341,6 +346,65 @@ public class MovementPhaseManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         ball.AdjustBallHeightBasedOnOccupancy();
         isPlayerMoving = false;  // Player finished moving
+    }
+
+    private void AdvanceMovementPhase()
+    {
+        if (!isWaitingForInterceptionDiceRoll
+            && !isWaitingForTackleDecisionWithoutMoving
+            && !isWaitingForTackleDecision
+            && !isWaitingForTackleRoll
+            && !isWaitingForReposition
+        )
+        {
+            Debug.Log("AdvanceMovementPhase: Checking movement phase transitions.");
+
+            // Check for the 2f2 special phase
+            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+            {
+                attackersMovedIn2f2++;
+                // movedTokens.Add(selectedToken);  // Track this token as moved
+
+                if (attackersMovedIn2f2 >= maxAttackerMovesIn2f2)
+                {
+                    Debug.Log("Last two attackers have moved in 2f2 phase. Ending Movement Phase.");
+                    EndMovementPhase();
+                    return;
+                }
+            }
+
+            // Check for defender movement phase
+            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+            {
+                defendersMoved++;
+                // movedTokens.Add(selectedToken);  // Track this token as moved
+
+                if (defendersMoved >= maxDefenderMoves)
+                {
+                    Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
+                    MatchManager.Instance.StartMovementPhase2f2();
+                    return;
+                }
+            }
+
+            // Check for attacker movement phase
+            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+            {
+                attackersMoved++;
+                // movedTokens.Add(selectedToken);  // Track this token as moved
+
+                if (attackersMoved >= maxAttackerMoves)
+                {
+                    Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
+                    MatchManager.Instance.StartMovementPhaseDef();
+                    return;
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("AdvanceMovementPhase: Waiting for dice rolls or repositioning.");
+        }
     }
 
     private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
@@ -402,13 +466,13 @@ public class MovementPhaseManager : MonoBehaviour
             if (diceRoll == 6 || (diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD))
             {
                 // Defender successfully intercepts the ball
-                Debug.Log($"Ball intercepted by defender at {selectedDefender.GetCurrentHex().coordinates}!");
+                Debug.Log($"Ball intercepted by {selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates}!");
                 StartCoroutine(HandleBallInterception(selectedDefender.GetCurrentHex()));
                 ResetBallInterceptionDiceRolls();
             }
             else
             {
-                Debug.Log($"Defender at {selectedDefender.GetCurrentHex().coordinates} failed to intercept.");
+                Debug.Log($"{selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates} failed to intercept.");
                 // Move to the next defender, if any
                 eligibleDefenders.Remove(selectedDefender);
                 if (eligibleDefenders.Count > 0)
@@ -421,6 +485,7 @@ public class MovementPhaseManager : MonoBehaviour
                 else
                 {
                     Debug.Log("No more defenders to roll.");
+                    AdvanceMovementPhase();
                 }
             }
         }
@@ -501,7 +566,6 @@ public class MovementPhaseManager : MonoBehaviour
             yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
         }
-        // if (defenderDiceRoll > attackerDiceRoll)
         else if (defenderDiceRoll + defenderTackling > attackerDiceRoll + attackerDribbling)
         {
             Debug.Log($"Tackle successful! {selectedDefender.name} roll({defenderDiceRoll})+Tackling({defenderTackling}) beats {attackerToken.name}'s roll({attackerDiceRoll})+Dribbling({attackerDribbling}) ad wins possession of the ball.");
@@ -593,6 +657,11 @@ public class MovementPhaseManager : MonoBehaviour
                             Debug.Log($"Eligible defenders for interception: {string.Join(", ", eligibleDefenders.Select(d => d.name))}");
                             StartBallInterceptionDiceRollSequence(clickedHex, eligibleDefenders);
                         }
+                        else
+                        {
+                          // Repositioned in a safe Hex
+                          AdvanceMovementPhase();
+                        }
                     }
                 }
             }
@@ -683,6 +752,7 @@ public class MovementPhaseManager : MonoBehaviour
         attackersMoved = 0;    // Reset the number of attackers that have moved
         defendersMoved = 0;    // Reset the number of defenders that have moved
         attackersMovedIn2f2 = 0;  // Reset the 2f2 phase counter
+        selectedToken = null;  // Reset the selected token
         Debug.Log("Movement phase has been reset.");
     }
 

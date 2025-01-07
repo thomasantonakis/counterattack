@@ -170,4 +170,6 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetMouseButtonUp(1)) isRotating = false;
     }
+
+    // TODO: restrict camera position to not drop under the table
 }
