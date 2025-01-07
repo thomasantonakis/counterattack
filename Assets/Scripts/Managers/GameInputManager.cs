@@ -73,6 +73,7 @@ public class GameInputManager : MonoBehaviour
         (!movementPhaseManager.isPlayerMoving &&
             !movementPhaseManager.isWaitingForTackleRoll &&
             !movementPhaseManager.isWaitingForTackleDecision &&
+            !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving &&
             !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
             !movementPhaseManager.isWaitingForReposition &&
             (
@@ -82,7 +83,10 @@ public class GameInputManager : MonoBehaviour
             )
         )
         {
-            // Debug.Log($"{movementPhaseManager.isPlayerMoving}");
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                movementPhaseManager.ForfeitTeamMovementPhase();
+            }
             StartCoroutine(HandleMouseInputForMovement());
         }
         if (
@@ -195,7 +199,7 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    IEnumerator HandleMouseInputForMovement()
+    public IEnumerator HandleMouseInputForMovement()
     {
         if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
         {

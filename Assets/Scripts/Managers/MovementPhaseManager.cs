@@ -358,13 +358,10 @@ public class MovementPhaseManager : MonoBehaviour
         )
         {
             Debug.Log("AdvanceMovementPhase: Checking movement phase transitions.");
-
             // Check for the 2f2 special phase
             if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
             {
                 attackersMovedIn2f2++;
-                // movedTokens.Add(selectedToken);  // Track this token as moved
-
                 if (attackersMovedIn2f2 >= maxAttackerMovesIn2f2)
                 {
                     Debug.Log("Last two attackers have moved in 2f2 phase. Ending Movement Phase.");
@@ -372,13 +369,10 @@ public class MovementPhaseManager : MonoBehaviour
                     return;
                 }
             }
-
             // Check for defender movement phase
             if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
             {
                 defendersMoved++;
-                // movedTokens.Add(selectedToken);  // Track this token as moved
-
                 if (defendersMoved >= maxDefenderMoves)
                 {
                     Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
@@ -386,13 +380,10 @@ public class MovementPhaseManager : MonoBehaviour
                     return;
                 }
             }
-
             // Check for attacker movement phase
             if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
             {
                 attackersMoved++;
-                // movedTokens.Add(selectedToken);  // Track this token as moved
-
                 if (attackersMoved >= maxAttackerMoves)
                 {
                     Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
@@ -407,6 +398,24 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
+    public void ForfeitTeamMovementPhase()
+    {
+        Debug.Log("Movement phase forfeited. No further moves for this team.");
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        {
+            EndMovementPhase();
+        }
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+        {
+            defendersMoved = maxDefenderMoves-1;
+            AdvanceMovementPhase();  // Reset the movement phase
+        }
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        {
+            attackersMoved = maxAttackerMoves-1;
+            AdvanceMovementPhase();  // Reset the movement phase
+        }
+    }
     private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
     {
         List<PlayerToken> eligibleDefenders = new List<PlayerToken>();
@@ -617,6 +626,14 @@ public class MovementPhaseManager : MonoBehaviour
 
         while (isWaitingForReposition)
         {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                Debug.Log($"{winner.name} forfeits repositioning and stays at current position.");
+                isWaitingForReposition = false;
+                hexGrid.ClearHighlightedHexes();
+                AdvanceMovementPhase(); // Skip repositioning and move to the next phase
+                yield break;
+            }
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
