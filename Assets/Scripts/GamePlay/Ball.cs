@@ -4,6 +4,7 @@ using System.Collections;
 
 public class Ball : MonoBehaviour
 {
+    [SerializeField]
     private HexCell currentCell;
     private HexCell targetCell;
     public bool isMoving = false;

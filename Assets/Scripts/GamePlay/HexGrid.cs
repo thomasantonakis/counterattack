@@ -15,7 +15,6 @@ public class HexGrid : MonoBehaviour
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
     public Ball ball;
-    // public GameInputManager gameInputManager;
     public GroundBallManager groundBallManager;
     public List<HexCell> highlightedHexes = new List<HexCell>();
 

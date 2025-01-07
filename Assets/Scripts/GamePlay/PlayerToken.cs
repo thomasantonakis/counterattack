@@ -5,7 +5,11 @@ public class PlayerToken : MonoBehaviour
 {
     public bool isAttacker;   // Flag to identify if this is an attacker
     public bool isHomeTeam;  // Whether the token belongs to the home team
-    private HexCell currentHex;   // Reference to the current hex this token occupies
+    public HexCell currentHex { get; private set; }   // Reference to the current hex this token occupies
+    private bool IsDribbler => isAttacker && currentHex == ball?.GetCurrentHex();
+    [SerializeField] private bool isDribblerDebug;
+    [SerializeField] private HexCell occupiedHexDebug;
+    private static Ball ball;
     public string playerName;
     public int jerseyNumber;
     public int pace;
@@ -23,6 +27,16 @@ public class PlayerToken : MonoBehaviour
     void Awake()
     {
         // Debug.Log($"{name}: PlayerToken Awake called");
+    }
+    private void Update()
+    {
+        isDribblerDebug = IsDribbler;
+        occupiedHexDebug = currentHex;
+    }
+    public static void SetBallReference(Ball ballReference)
+    {
+        ball = ballReference;
+        Debug.Log($"Ball reference set in PlayerToken. Ball Hex: {ball?.GetCurrentHex()?.coordinates}");
     }
     // Get the current hex the token is on
     public HexCell GetCurrentHex()
@@ -67,6 +81,13 @@ public class PlayerToken : MonoBehaviour
 
         currentHex = newHex;  // Assign the new hex to the token
         UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
+        UpdateDribblerStatus(); // Ensure dribbler status is recalculated
+    }
+
+    public void UpdateDribblerStatus()
+    {
+        isDribblerDebug = isAttacker && currentHex == ball?.GetCurrentHex();
+        Debug.Log($"{name}: IsAttacker = {isAttacker}, OccupiedHex = {currentHex?.coordinates}, BallHex = {ball?.GetCurrentHex()?.coordinates}, IsDribbler = {isDribblerDebug}");
     }
 
     // Update isAttacker based on the current hex state
@@ -241,6 +262,5 @@ public class PlayerToken : MonoBehaviour
 
         // Debug.Log($"{name} moved to {targetHex.coordinates}, final position: {transform.position}");
     }
-
 
 }
