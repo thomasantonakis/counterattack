@@ -6,7 +6,7 @@ public class PlayerToken : MonoBehaviour
     public bool isAttacker;   // Flag to identify if this is an attacker
     public bool isHomeTeam;  // Whether the token belongs to the home team
     public HexCell currentHex { get; private set; }   // Reference to the current hex this token occupies
-    private bool IsDribbler => isAttacker && currentHex == ball?.GetCurrentHex();
+    public bool IsDribbler => isAttacker && currentHex == ball?.GetCurrentHex();
     [SerializeField] private bool isDribblerDebug;
     [SerializeField] private HexCell occupiedHexDebug;
     private static Ball ball;

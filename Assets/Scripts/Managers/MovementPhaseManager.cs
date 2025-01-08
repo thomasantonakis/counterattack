@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine.Analytics;
 
 public class MovementPhaseManager : MonoBehaviour
 {
@@ -18,6 +20,9 @@ public class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForReposition = false;  // Whether we're waiting for a dice roll
     private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
     private bool tackleAttackerRolled = false;  // Whether we're waiting for a dice roll
+    private int remainingDribblerPace; // Temporary variable for dribbler's pace
+    private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
+    private bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
     private int defenderDiceRoll;
     private int attackerDiceRoll;
     [SerializeField]
@@ -145,9 +150,19 @@ public class MovementPhaseManager : MonoBehaviour
 
             }
         }
-
-        // Highlight valid movement hexes for the selected token
-        HighlightValidMovementHexes(selectedToken, token.pace);
+        if (token.IsDribbler)
+        {
+            Debug.Log($"{token.name} selected as dribbler. Starting dribble movement.");
+            remainingDribblerPace = token.pace; // Initialize remaining pace
+            defendersTriedToIntercept.Clear(); // Reset defenders list
+            isDribblerRunning = true;
+            HighlightValidMovementHexes(token, 1); // Highlight immediate neighbors
+        }
+        else
+        {
+            // Highlight valid movement hexes for the selected token
+            HighlightValidMovementHexes(selectedToken, token.pace);
+        }
     }
     
     // This method will highlight valid movement hexes for the selected token
@@ -219,11 +234,38 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
 
-        // Start the token movement across the hexes (this can be animated)
-        // Coroutine moveCoroutine = StartCoroutine(MoveTokenAlongPath(movingToken, path));
+        // Start the token movement across the hexes in the path
         yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
-        movedTokens.Add(movingToken);  // Track this token as moved
-        AdvanceMovementPhase(); // Basic check to advance the movement phase
+        if (movingToken.IsDribbler && isDribblerRunning)
+        {
+            remainingDribblerPace -= 1; // Reduce remaining dribbler pace
+            Debug.Log($"{movingToken.name} has {remainingDribblerPace} remaining pace.");
+            // Check for interceptions
+            eligibleDefenders = GetEligibleDefendersForInterception(targetHex);
+            eligibleDefenders = eligibleDefenders.Except(defendersTriedToIntercept).ToList(); // Remove defenders already tried
+            if (eligibleDefenders.Count > 0)
+            {
+                Debug.Log($"Eligible defenders for interception: {string.Join(", ", eligibleDefenders.Select(d => d.name))}");
+                defendersTriedToIntercept.AddRange(eligibleDefenders); // Mark as tried
+                StartBallInterceptionDiceRollSequence(targetHex, eligibleDefenders);
+            }
+            else if (remainingDribblerPace > 0)
+            {
+                // Highlight valid movement hexes for the selected token
+                HighlightValidMovementHexes(movingToken, 1);
+            }
+            else
+            {
+                Debug.Log($"{movingToken.name} has exhausted their pace. Dribbling complete.");
+                isDribblerRunning = false;
+                AdvanceMovementPhase(); // End dribbler's movement
+            }
+        }
+        else
+        {
+          movedTokens.Add(movingToken);  // Track this token as moved
+          AdvanceMovementPhase(); // Basic check to advance the movement phase
+        }
     }
 
     // Coroutine to move the token one hex at a time
@@ -416,6 +458,7 @@ public class MovementPhaseManager : MonoBehaviour
             AdvanceMovementPhase();  // Reset the movement phase
         }
     }
+    
     private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
     {
         List<PlayerToken> eligibleDefenders = new List<PlayerToken>();
@@ -494,7 +537,16 @@ public class MovementPhaseManager : MonoBehaviour
                 else
                 {
                     Debug.Log("No more defenders to roll.");
-                    AdvanceMovementPhase();
+                    if (remainingDribblerPace > 0)
+                    {
+                        // Highlight valid movement hexes for the selected token
+                        HighlightValidMovementHexes(selectedToken, 1);
+                    }
+                    else
+                    {
+                        Debug.Log($"{selectedToken.name} has no remaining pace. Ending dribble.");
+                        AdvanceMovementPhase();
+                    }
                 }
             }
         }
