@@ -18,8 +18,11 @@ public class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForTackleDecisionWithoutMoving = false; // Flag to check if waiting for tackle decision
     public bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForReposition = false;  // Whether we're waiting for a dice roll
-    private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
     private bool tackleAttackerRolled = false;  // Whether we're waiting for a dice roll
+    private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
+    private bool isWaitingForYellowCardRoll = false;  // Whether we're waiting for a dice roll
+    private bool isWaitingForInjuryRoll = false;  // Whether we're waiting for a dice roll
+    private bool isWaitingForFoulDecision = false;  // Whether we're waiting for a dice roll
     private int remainingDribblerPace; // Temporary variable for dribbler's pace
     private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
     private bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
@@ -574,7 +577,7 @@ public class MovementPhaseManager : MonoBehaviour
         // // Rigged
         if (isDefender)
         {
-            defenderDiceRoll = 2;
+            defenderDiceRoll = 1;
             tackleDefenderRolled = true;
             Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         }
@@ -649,13 +652,12 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log("Tackle results in a tie. Loose ball situation.");
             // TODO: Handle loose ball situation
         }
-
-        
+ 
     }
 
     private IEnumerator HandlePostTackleReposition(PlayerToken winner, PlayerToken loser)
     {
-        Debug.Log($"{winner.name} won the tackle and is repositioning around {loser.name}.");
+        Debug.Log($"{winner.name} won the tackle and is repositioning around {loser.name}. Click a Highlighted Hex to move there or Press X to stay put.");
         // Get the loser's hex and neighboring hexes
         HexCell loserHex = loser.GetCurrentHex();
         HexCell[] repositionHexesArray = loserHex.GetNeighbors(hexGrid);
@@ -742,9 +744,11 @@ public class MovementPhaseManager : MonoBehaviour
     {
         Debug.Log("Handling foul resolution process...");
 
-        // Yellow card decision
+        // Phase 1: Yellow card decision
         Debug.Log("Press 'R' to roll for a Booking.");
-        bool isWaitingForYellowCardRoll = true;
+        isWaitingForYellowCardRoll = true;
+        // Introduce a brief delay to ensure previous keypresses are ignored
+        yield return null;
         while (isWaitingForYellowCardRoll)
         {
             if (Input.GetKeyDown(KeyCode.R))
@@ -765,9 +769,10 @@ public class MovementPhaseManager : MonoBehaviour
             yield return null;  // Wait for the next frame
         }
 
-        // Injury decision
+        // Phase 2: Injury decision
         Debug.Log("Press 'R' to roll for attacker injury.");
-        bool isWaitingForInjuryRoll = true;
+        isWaitingForInjuryRoll = true;
+        yield return null;   // Delay to avoid immediate triggering
         while (isWaitingForInjuryRoll)
         {
             if (Input.GetKeyDown(KeyCode.R))
@@ -787,12 +792,33 @@ public class MovementPhaseManager : MonoBehaviour
             }
             yield return null;  // Wait for the next frame
         }
+        Debug.Log("Foul process completed.");
 
-        // End foul resolution process
-        ResetTacklePhase();  // Reset tackle phase
-        Debug.Log("Foul process completed. Back to game flow.");
-        // TODO: Offer options to take free kick or play on
+        // Phase 3: Foul decision (Play On or Take the Foul)
+        Debug.Log("Press 'A' to Play On or 'Z' to Take the Foul.");
+        isWaitingForFoulDecision = true;
+        while (isWaitingForFoulDecision)
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                Debug.Log("Attacker chooses to play on. Reposition process starts.");
+                isWaitingForFoulDecision = false;  // Cancel the decision phase
+                yield return StartCoroutine(HandlePostTackleReposition(attackerToken, defenderToken));  // Start repositioning
+            }
+            else if (Input.GetKeyDown(KeyCode.Z))
+            {
+                Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
+                isWaitingForFoulDecision = false;  // Cancel the decision phase
+
+                // End the movement phase and start the free kick process
+                EndMovementPhase();  // End the movement phase
+                MatchManager.Instance.currentState = MatchManager.GameState.FreeKickKickerSelect;  // Update state
+            }
+            yield return null;  // Wait for the next frame
+        }
+
     }
+
 
     private void StartTackleDiceRollSequence()
     {

@@ -45,6 +45,7 @@ public class MatchManager : MonoBehaviour
         FirstTimePassAttackerMovement,
         FirstTimePassDefenderMovement,
         FTPCompleted,
+        FreeKickKickerSelect,
     }
     public class GameData
     {
@@ -311,6 +312,7 @@ public class MatchManager : MonoBehaviour
             Debug.Log("Standard pass attempt mode activated.");
         }
     }
+    
     public void TriggerMovement()
     {
         if (
@@ -356,6 +358,7 @@ public class MatchManager : MonoBehaviour
         {
         }
     }
+    
     public void TriggerLongPass()
     {
         if (true)
@@ -368,6 +371,7 @@ public class MatchManager : MonoBehaviour
         {
         }
     }
+    
     public void TriggerShot()
     {
         // if (currentState == GameState.KickoffBlown)
@@ -378,6 +382,7 @@ public class MatchManager : MonoBehaviour
         {
         }
     }
+    
     public void TriggerHeader()
     {
         // if (currentState == GameState.KickoffBlown)
@@ -388,6 +393,7 @@ public class MatchManager : MonoBehaviour
         {
         }
     }
+    
     public void TriggerFTP()
     {
         // if (currentState == GameState.KickoffBlown)
@@ -425,7 +431,6 @@ public class MatchManager : MonoBehaviour
     }
 
     // Add other match-related methods here (like handling goals, score updates, etc.)
-
     public void LoadGameSettingsFromJson()
     {
         string filePath;
