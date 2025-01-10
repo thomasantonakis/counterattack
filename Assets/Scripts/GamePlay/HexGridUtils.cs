@@ -107,7 +107,6 @@ public static class HexGridUtils
         return new List<HexCell>();  // Return an empty list if no path is found
     }
 
-
     private static List<HexCell> ReconstructPath(Dictionary<HexCell, HexCell> cameFrom, HexCell currentHex)
     {
         List<HexCell> totalPath = new List<HexCell>();

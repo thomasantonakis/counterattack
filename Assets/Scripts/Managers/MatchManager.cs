@@ -46,6 +46,13 @@ public class MatchManager : MonoBehaviour
         FirstTimePassDefenderMovement,
         FTPCompleted,
         FreeKickKickerSelect,
+        FreeKickAtt1,
+        FreeKickAtt2,
+        FreeKickAtt3,
+        FreeKickDef1,
+        FreeKickDef2,
+        FreeKickDef3,
+        FreeKickExecution,
     }
     public class GameData
     {

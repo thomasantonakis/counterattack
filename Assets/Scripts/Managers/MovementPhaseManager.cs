@@ -13,6 +13,7 @@ public class MovementPhaseManager : MonoBehaviour
     public Ball ball;
     public GroundBallManager groundBallManager;
     public HeaderManager headerManager;
+    public FreeKickManager freeKickManager;
     public bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForTackleDecisionWithoutMoving = false; // Flag to check if waiting for tackle decision
@@ -812,7 +813,7 @@ public class MovementPhaseManager : MonoBehaviour
 
                 // End the movement phase and start the free kick process
                 EndMovementPhase();  // End the movement phase
-                MatchManager.Instance.currentState = MatchManager.GameState.FreeKickKickerSelect;  // Update state
+                freeKickManager.StartFreeKickPreparation();
             }
             yield return null;  // Wait for the next frame
         }

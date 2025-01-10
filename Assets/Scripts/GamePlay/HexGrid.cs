@@ -9,7 +9,6 @@ public class HexGrid : MonoBehaviour
     public Vector3 gridCenter = new Vector3(0, 0, 0);  // Center of your grid
     float hexRadius = 0.5f;
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab
-    // [SerializeField] public HexCell hexCellPrefab;  // Reference to hex cell prefab
     public HexCell[,] cells;  // 2D array to hold the cells
     private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
