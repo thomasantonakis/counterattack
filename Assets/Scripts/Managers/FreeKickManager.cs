@@ -226,7 +226,7 @@ public class FreeKickManager : MonoBehaviour
             // if we let the forfeit happen, then 2 - movesUsed will be forfeited
             // so the remaining defender moves will be (remainingDefenderMoves - (2 - movesUsed))
             // This should be checked against the number of defenders that need to move.
-            && remainingDefenderMoves - (2 - movesUsed) <= shouldDefMoveTokens.Count
+            && remainingDefenderMoves - (2 - movesUsed) < shouldDefMoveTokens.Count
             // AND there are defenders close to the ball.
             && shouldDefMoveTokens.Count > 0
         )
@@ -291,6 +291,7 @@ public class FreeKickManager : MonoBehaviour
                 matchManager.currentState = MatchManager.GameState.FreeKickExecution;
                 ResetMoves();
                 Debug.Log("Free Kick Preparation completed. Ready for execution.");
+                Debug.Log("Available Options are: [P], [L], [C], [S]");
                 isWaitingForSetupPhase = false;
                 isWaitingForExecution = true;
                 break;
