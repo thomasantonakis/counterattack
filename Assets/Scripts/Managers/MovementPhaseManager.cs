@@ -8,6 +8,7 @@ using UnityEngine.Analytics;
 public class MovementPhaseManager : MonoBehaviour
 {
     public PlayerToken selectedToken;
+    [SerializeField]
     private PlayerToken selectedDefender;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
@@ -32,6 +33,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int attackerDiceRoll;
     [SerializeField]
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
+    [SerializeField]
     private List<PlayerToken> eligibleDefenders = new List<PlayerToken>();  // To track defenders eligible for interception
     [SerializeField]
     private int attackersMoved = 0;
@@ -54,7 +56,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isWaitingForInterceptionDiceRoll && Input.GetKeyDown(KeyCode.R))
         {
             Debug.Log("R key detected for interception dice roll.");
-            PerformBallInterceptionDiceRoll();  // Trigger the dice roll when R is pressed
+            StartCoroutine(PerformBallInterceptionDiceRoll());  // Trigger the dice roll when R is pressed
         }
         // Handle tackle decision (either Tackle or No Tackle)
         else if (isWaitingForTackleDecision)
@@ -525,7 +527,7 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForInterceptionDiceRoll = true;
     }
 
-    public void PerformBallInterceptionDiceRoll()
+    public IEnumerator PerformBallInterceptionDiceRoll()
     {
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
@@ -540,8 +542,15 @@ public class MovementPhaseManager : MonoBehaviour
             int defenderTackling = selectedDefender.tackling;
             Debug.Log($"Defender: {selectedDefender.name}, Tackling: {defenderTackling}, Dice Roll: {diceRoll}");
 
+            // Check if there was a foul
+            if (isDribblerRunning && diceRoll <= FOUL_THRESHOLD)
+            {
+                Debug.Log("Defender committed a foul.");
+                eligibleDefenders.Remove(selectedDefender);
+                yield return StartCoroutine(HandleFoulProcess(selectedToken, selectedDefender));
+            }
             // Check interception condition: either roll a 6 or roll + tackling >= 10
-            if (diceRoll == 6 || (diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD))
+            else if (diceRoll == 6 || (diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD))
             {
                 // Defender successfully intercepts the ball
                 Debug.Log($"Ball intercepted by {selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates}!");
@@ -800,12 +809,14 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                int roll = Random.Range(1, 7);  // Roll a dice (1 to 6)
+                // int roll = Random.Range(1, 7);  // Roll a dice (1 to 6)
+                int roll = 6;
                 Debug.Log($"Injury roll: {roll}");
                 if (roll >= attackerToken.resilience)
                 {
                     Debug.Log($"Attacker {attackerToken.name} is injured!");
                     attackerToken.ReceiveInjury();  // Assume a method exists to handle this
+                    remainingDribblerPace -= 1;
                 }
                 else
                 {
@@ -824,15 +835,38 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
-                Debug.Log("Attacker chooses to play on. Reposition process starts.");
-                isWaitingForFoulDecision = false;  // Cancel the decision phase
-                yield return StartCoroutine(HandlePostTackleReposition(attackerToken, defenderToken));  // Start repositioning
+                if (isDribblerRunning)
+                {
+                    // If the dribbler is dribbling, do not offer repositioning.
+                    isWaitingForFoulDecision = false;
+                    if (eligibleDefenders.Count > 0)
+                    {
+                        StartBallInterceptionDiceRollSequence(selectedToken.GetCurrentHex(), eligibleDefenders);
+                    }
+                    else if (remainingDribblerPace > 0)
+                    {
+                        // Highlight valid movement hexes for the selected token
+                        HighlightValidMovementHexes(selectedToken, 1);
+                    }
+                    else
+                    {
+                        Debug.Log($"{selectedToken.name} has exhausted their pace. Dribbling complete.");
+                        isDribblerRunning = false;
+                        movedTokens.Add(selectedToken);
+                        AdvanceMovementPhase(); // End dribbler's movement
+                    }
+                }
+                else
+                {
+                    Debug.Log("Attacker chooses to play on. Reposition process starts.");
+                    isWaitingForFoulDecision = false;  // Cancel the decision phase
+                    yield return StartCoroutine(HandlePostTackleReposition(attackerToken, defenderToken));  // Start repositioning
+                }
             }
             else if (Input.GetKeyDown(KeyCode.Z))
             {
                 Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
                 isWaitingForFoulDecision = false;  // Cancel the decision phase
-
                 // End the movement phase and start the free kick process
                 EndMovementPhase();  // End the movement phase
                 freeKickManager.StartFreeKickPreparation();
@@ -841,7 +875,6 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
     }
-
 
     private void StartTackleDiceRollSequence()
     {
