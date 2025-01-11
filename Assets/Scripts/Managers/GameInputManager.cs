@@ -86,6 +86,7 @@ public class GameInputManager : MonoBehaviour
         )
         {
             if (Input.GetKeyDown(KeyCode.X))
+            // TODO: if the dribbler is dribbling just forfeit the remaining Pace, not the whole movement phase.
             {
                 movementPhaseManager.ForfeitTeamMovementPhase();
             }
@@ -113,13 +114,40 @@ public class GameInputManager : MonoBehaviour
         {
             HandleDefenderHeaderSelectionInput();
         }
-        if (MatchManager.Instance.currentState == MatchManager.GameState.FreeKickKickerSelect)
+        if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKick"))
         {
-            HandleFreeKickKickerSelection();
-        }
-        if (freeKickManager.isWaitingForSetupPhase)
-        {
-            HandleFreeKickSetupPhaseInput();
+            if (freeKickManager.isWaitingForKickerSelection)
+            {
+                HandleFreeKickKickerSelection();
+            }
+            else if (freeKickManager.isWaitingForSetupPhase)
+            {
+                HandleFreeKickSetupPhaseInput();
+            }
+            else if (freeKickManager.isWaitingForExecution)
+            {
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerLongPass();
+                }
+                else if (Input.GetKeyDown(KeyCode.C))
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerHighPass();
+                }
+                else if (Input.GetKeyDown(KeyCode.P))
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerStandardPass();
+                }
+                else if (Input.GetKeyDown(KeyCode.S))
+                {
+                    hexGrid.ClearHighlightedHexes();
+                    Debug.Log("Free Kick Shoot triggered."); 
+                    // TODO: Implement Free Kick Shoot
+                }
+            }
         }
     }
 
