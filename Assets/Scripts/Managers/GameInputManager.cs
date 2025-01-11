@@ -648,7 +648,6 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    // GameInputManager.cs
     private void HandleFreeKickSetupPhaseInput()
     {
         if (freeKickManager.isWaitingForSetupPhase)
@@ -764,57 +763,5 @@ public class GameInputManager : MonoBehaviour
             }
         }
     }
-
-    // private void HandleFreeKickSetupPhaseInput()
-    // {
-    //     if (Input.GetMouseButtonDown(0))
-    //     {
-    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //         if (Physics.Raycast(ray, out RaycastHit hit))
-    //         {
-    //             HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-    //             PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
-    //             Ball clickedBall = hit.collider.GetComponent<Ball>();
-
-    //             if (freeKickManager.selectedToken != null)
-    //             {
-    //                 // Token is already selected; handle hex selection
-    //                 if (clickedHex != null)
-    //                 {
-    //                     StartCoroutine(freeKickManager.HandleSetupHexSelection(clickedHex));
-    //                 }
-    //             }
-    //             else if (clickedToken != null)
-    //             {
-    //                 // Handle token selection
-    //                 freeKickManager.HandleSetupTokenSelection(clickedToken);
-    //             }
-    //             else if (clickedBall != null)
-    //             {
-    //                 // Handle ball click to select token on ball
-    //                 HexCell ballHex = clickedBall.GetCurrentHex();
-    //                 PlayerToken ballToken = ballHex?.GetOccupyingToken();
-
-    //                 if (ballToken != null)
-    //                 {
-    //                     freeKickManager.HandleSetupTokenSelection(ballToken);
-    //                 }
-    //                 else
-    //                 {
-    //                     Debug.LogWarning("No token on the ball. Input rejected.");
-    //                 }
-    //             }
-    //             else
-    //             {
-    //                 Debug.LogWarning("Click ignored. No valid object detected.");
-    //             }
-    //         }
-    //     }
-    //     else if (Input.GetKeyDown(KeyCode.X))
-    //     {
-    //         Debug.Log("Player forfeited the remaining moves for this phase.");
-    //         freeKickManager.AdvanceToNextPhase(MatchManager.Instance.currentState);
-    //     }
-    // }
 
 }

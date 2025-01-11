@@ -26,6 +26,7 @@ public class MovementPhaseManager : MonoBehaviour
     private bool isWaitingForFoulDecision = false;  // Whether we're waiting for a dice roll
     private int remainingDribblerPace; // Temporary variable for dribbler's pace
     private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
+    [SerializeField]
     private bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
     private int defenderDiceRoll;
     private int attackerDiceRoll;
@@ -262,6 +263,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log($"{movingToken.name} has exhausted their pace. Dribbling complete.");
                 isDribblerRunning = false;
+                movedTokens.Add(movingToken);
                 AdvanceMovementPhase(); // End dribbler's movement
             }
         }
@@ -449,7 +451,17 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Movement phase forfeited. No further moves for this team.");
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
         {
-            EndMovementPhase();
+            if (isDribblerRunning)
+            {
+                isDribblerRunning = false;
+                hexGrid.ClearHighlightedHexes();
+                movedTokens.Add(selectedToken);
+                AdvanceMovementPhase(); // End dribbler's movement
+            }
+            else 
+            {
+                EndMovementPhase();
+            }
         }
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
         {
@@ -458,8 +470,18 @@ public class MovementPhaseManager : MonoBehaviour
         }
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
         {
-            attackersMoved = maxAttackerMoves-1;
-            AdvanceMovementPhase();  // Reset the movement phase
+            if (isDribblerRunning)
+            {
+                isDribblerRunning = false;
+                hexGrid.ClearHighlightedHexes();
+                movedTokens.Add(selectedToken);
+                AdvanceMovementPhase(); // End dribbler's movement
+            }
+            else
+            {
+                attackersMoved = maxAttackerMoves-1;
+                AdvanceMovementPhase();  // Reset the movement phase
+            }
         }
     }
     
