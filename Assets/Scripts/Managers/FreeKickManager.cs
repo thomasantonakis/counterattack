@@ -72,6 +72,7 @@ public class FreeKickManager : MonoBehaviour
     
     public IEnumerator HandleKickerSelection(PlayerToken clickedToken = null)
     {
+        yield return null; // to separate the X from Kicker Selection
         // If a token was pre-selected (e.g., passed from GIM), handle it immediately
         Debug.Log($"Handling kicker selection for {clickedToken?.name}...");
         if (clickedToken != null)
