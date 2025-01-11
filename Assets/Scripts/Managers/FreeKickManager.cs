@@ -11,18 +11,14 @@ public class FreeKickManager : MonoBehaviour
     [SerializeField]
     private List<PlayerToken> shouldDefMoveTokens = new List<PlayerToken>();
     [SerializeField]
-    private int movesUsed;
+    private List<PlayerToken> potentialKickers = new List<PlayerToken>();
     [SerializeField]
-    private int remainingDefenderMoves;
-    private int maxDefenderMoves = 6; // Total moves allowed for defenders in Free Kick Preparation
-    private int maxAttackerMoves = 7; // Total moves allowed for attackers (Att1: 2, Att2: 2, Att3: 3)
-
-    private int attackerMovesUsed;
-    private int defenderMovesUsed;
-
+    private int movesUsed;
+    public int remainingDefenderMoves;
+    public int attackerMovesUsed;
+    public int defenderMovesUsed;
     public bool isWaitingForKickerSelection = false;
     public bool isWaitingForSetupPhase = false;
-
     private PlayerToken selectedKicker;
     public PlayerToken selectedToken;
     public HexCell targetHex;
@@ -32,8 +28,47 @@ public class FreeKickManager : MonoBehaviour
         Debug.Log("Starting Free Kick Preparation...");
         matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
         isWaitingForKickerSelection = true;
+        remainingDefenderMoves = 6;
+        attackerMovesUsed = 0;
+        defenderMovesUsed = 0;
+        CalculateDefendersThatNeedToMove();
     }
 
+    public void CalculatePotentialKickers()
+    {
+        potentialKickers.Clear();
+        // Debug.Log("Calculating potential kickers...");
+        HexCell ballHex = ball.GetCurrentHex();
+        List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 1);
+        foreach (HexCell hex in nearbyHexes)
+        {
+            Debug.Log($"Checking hex {hex.coordinates} for potential kickers. Is attack occupied? {hex.isAttackOccupied} By which Token? {hex.GetOccupyingToken()?.name}");
+            if (hex.isAttackOccupied)
+            {
+                Debug.Log($"Attacker found on the ball or around it: {hex.GetOccupyingToken().name}");
+                potentialKickers.Add(hex.GetOccupyingToken());
+            }
+            else 
+            {
+              Debug.Log($"No attacker on the ball or around it. Please select an attacker.");
+            }
+        }
+    }
+
+    public void CalculateDefendersThatNeedToMove()
+      {
+          shouldDefMoveTokens.Clear();
+          HexCell ballHex = ball.GetCurrentHex();
+          List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 2);
+          foreach (HexCell hex in nearbyHexes)
+          {
+              if (hex.isDefenseOccupied)
+              {
+                  shouldDefMoveTokens.Add(hex.GetOccupyingToken());
+              }
+          }
+      }
+    
     public IEnumerator HandleKickerSelection(PlayerToken clickedToken = null)
     {
         // If a token was pre-selected (e.g., passed from GIM), handle it immediately
@@ -42,61 +77,19 @@ public class FreeKickManager : MonoBehaviour
         {
             Debug.Log($"Selected {clickedToken.name} as the kicker.");
             selectedKicker = clickedToken;
-
             HexCell targetHex = GetClosestAvailableHexToBall();
             if (targetHex != null)
             {
                 yield return StartCoroutine(MoveTokenToHex(clickedToken, targetHex));
             }
-
-            isWaitingForKickerSelection = false;
-
-            // Transition to the first phase
-            StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt1, 2));
-            yield break;  // Exit early since we already handled the token
         }
-        // Otherwise, wait for user input
-        isWaitingForKickerSelection = true;
-        while (isWaitingForKickerSelection)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                    PlayerToken token = clickedHex?.GetOccupyingToken();
-
-                    if (token != null && token.isAttacker)
-                    {
-                        Debug.Log($"Selected {token.name} Moving close to the ball to become a potential kicker.");
-                        selectedKicker = token;
-
-                        HexCell targetHex = GetClosestAvailableHexToBall();
-                        if (targetHex != null)
-                        {
-                            yield return StartCoroutine(MoveTokenToHex(token, targetHex));
-                        }
-
-                        isWaitingForKickerSelection = false;
-                        break;
-                    }
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.X))
-            {
-                Debug.Log("Skipping kicker selection. Using victim as kicker.");
-                selectedKicker = ball.GetCurrentHex().GetOccupyingToken();
-                isWaitingForKickerSelection = false;
-                break;
-            }
-
-            yield return null;
-        }
+        isWaitingForKickerSelection = false;
         hexGrid.ClearHighlightedHexes();
-
-        // Transition to first phase
+        Debug.Log("HandleKicker Selection: Calculating potential kickers...");
+        CalculatePotentialKickers();
+        // Transition to the first phase
         StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt1, 2));
+        yield break;  // Exit early since we already handled the token            
     }
 
     private HexCell GetClosestAvailableHexToBall()
@@ -139,12 +132,28 @@ public class FreeKickManager : MonoBehaviour
             Debug.LogWarning($"Token {token.name} is not a defender. Invalid selection for this phase.");
             return;
         }
-        // // Validate token for the current phase
-        // if (!IsValidTokenForPhase(MatchManager.Instance.currentState, token))
-        // {
-        //     Debug.LogWarning($"Token {token.name} is not valid for {MatchManager.Instance.currentState}.");
-        //     return;
-        // }
+        if
+        (
+            matchManager.currentState.ToString().StartsWith("FreeKickDef") // During DefX state
+            && !token.isAttacker // Clicked token is a defender
+            && !shouldDefMoveTokens.Contains(token) // Clicked token is not in the list of defenders that need to move
+            && shouldDefMoveTokens.Count >= remainingDefenderMoves // Defenders that need to move are as many as the remaining moves.
+        )
+        {
+            Debug.LogWarning($"There are as many defenders that need to move ({shouldDefMoveTokens.Count}) as remaining defender moves ({remainingDefenderMoves}). Please select defender close to the ball");
+            return;
+        }
+        if
+        (
+            matchManager.currentState.ToString().StartsWith("FreeKickAtt") // During AttX state
+            && token.isAttacker // Clicked token is an attacker
+            && potentialKickers.Contains(token) // Clicked token is in the list potential kickers.
+            && shouldDefMoveTokens.Count == 1 // There is only one attacker as a potential kicker
+        )
+        {
+            Debug.LogWarning($"There must be at least one attacker on the ball or around it. Please select another attacker.");
+            return;
+        }
         // Clear targetHex if switching tokens mid-selection
         targetHex = null;
         selectedToken = token;
@@ -176,74 +185,98 @@ public class FreeKickManager : MonoBehaviour
         targetHex = hex;
         Debug.Log($"Token {selectedToken.name} moving to hex {hex.coordinates}.");
         yield return StartCoroutine(MoveTokenToHex(selectedToken, hex));
+        if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef"))
+        {
+            Debug.Log("We are in Defensive move, Cheking if we need to remove the token from the list of defenders that need to move.");
+            if (selectedToken == null)
+            {
+                Debug.LogWarning("No token selected. Please select a valid token first.");
+                yield break;
+            }
+            if (shouldDefMoveTokens.Contains(selectedToken))
+            {
+                Debug.Log($"Token {selectedToken.name} moved to hex {hex.coordinates}. Removing from list of defenders that need to move.");
+                shouldDefMoveTokens.Remove(selectedToken);
+            }
+            else
+            {
+                Debug.LogWarning($"Token {selectedToken.name} moved to hex {hex.coordinates}. Not in the list of defenders that need to move.");
+            }
+            defenderMovesUsed++;
+            remainingDefenderMoves--;
+        }
+        else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt"))
+        {
+            Debug.Log("HandleSetupHexSelection: Calculating potential kickers...");
+            CalculatePotentialKickers();
+            attackerMovesUsed++;
+        }
         // Clear selections for next move
         selectedToken = null;
         targetHex = null;
         movesUsed++;
         Debug.Log($"Move {movesUsed} just performed");
-        // Notify phase logic to track the move
-        // targetHex = hex; // Set for phase tracking
     }
 
-    private bool IsValidTokenForPhase(MatchManager.GameState phaseState, PlayerToken token)
-    {
-        if (phaseState.ToString().StartsWith("FreeKickAtt"))
-            return token.isAttacker;
-        else if (phaseState.ToString().StartsWith("FreeKickDef"))
-        {
-            if (shouldDefMoveTokens.Contains(token))
-                return true;
-            if (!IsTokenViolatingDefenseRule(token))
-                return true;
-        }
-        return false;
-    }
+    // private bool IsValidTokenForPhase(MatchManager.GameState phaseState, PlayerToken token)
+    // {
+    //     if (phaseState.ToString().StartsWith("FreeKickAtt"))
+    //         return token.isAttacker;
+    //     else if (phaseState.ToString().StartsWith("FreeKickDef"))
+    //     {
+    //         if (shouldDefMoveTokens.Contains(token))
+    //             return true;
+    //         if (!IsTokenViolatingDefenseRule(token))
+    //             return true;
+    //     }
+    //     return false;
+    // }
 
-    private HexCell GetValidTargetHexForToken(PlayerToken token)
-    {
-        HexCell currentHex = token.GetCurrentHex();
-        if (currentHex == null)
-        {
-            Debug.LogError($"Token {token.name} does not have a valid hex!");
-            return null;
-        }
-        // Get all hexes within a reasonable range (e.g., the entire grid or a specific range)
-        List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, 48); // Adjust range as needed
+    // private HexCell GetValidTargetHexForToken(PlayerToken token)
+    // {
+    //     HexCell currentHex = token.GetCurrentHex();
+    //     if (currentHex == null)
+    //     {
+    //         Debug.LogError($"Token {token.name} does not have a valid hex!");
+    //         return null;
+    //     }
+    //     // Get all hexes within a reasonable range (e.g., the entire grid or a specific range)
+    //     List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, 48); // Adjust range as needed
 
-        return reachableHexes
-            .Where(hex => !hex.isDefenseOccupied && !hex.isAttackOccupied)
-            .OrderBy(hex => HexGridUtils.GetHexDistance(currentHex.coordinates, hex.coordinates))
-            .FirstOrDefault();
-        }
+    //     return reachableHexes
+    //         .Where(hex => !hex.isDefenseOccupied && !hex.isAttackOccupied)
+    //         .OrderBy(hex => HexGridUtils.GetHexDistance(currentHex.coordinates, hex.coordinates))
+    //         .FirstOrDefault();
+    //     }
 
-    private bool IsTokenViolatingDefenseRule(PlayerToken token)
-    {
-        // Check if the token is null or not a defender
-        if (token == null || token.isAttacker)
-        {
-            Debug.LogWarning($"Token {token?.name} is not a defender or is null. Ignoring for defense rule check.");
-            return false;
-        }
+    // private bool IsTokenViolatingDefenseRule(PlayerToken token)
+    // {
+    //     // Check if the token is null or not a defender
+    //     if (token == null || token.isAttacker)
+    //     {
+    //         Debug.LogWarning($"Token {token?.name} is not a defender or is null. Ignoring for defense rule check.");
+    //         return false;
+    //     }
 
-        HexCell tokenHex = token.GetCurrentHex();
+    //     HexCell tokenHex = token.GetCurrentHex();
 
-        if (tokenHex == null)
-        {
-            Debug.LogError($"Token {token.name} does not occupy a valid hex!");
-            return false;
-        }
-        // Check if the token is within 2 hexes of the ball
-        HexCell ballHex = ball.GetCurrentHex();
-        int distanceFromBall = HexGridUtils.GetHexDistance(tokenHex.coordinates, ballHex.coordinates);
+    //     if (tokenHex == null)
+    //     {
+    //         Debug.LogError($"Token {token.name} does not occupy a valid hex!");
+    //         return false;
+    //     }
+    //     // Check if the token is within 2 hexes of the ball
+    //     HexCell ballHex = ball.GetCurrentHex();
+    //     int distanceFromBall = HexGridUtils.GetHexDistance(tokenHex.coordinates, ballHex.coordinates);
 
-        if (distanceFromBall <= 2)
-        {
-            Debug.Log($"Token {token.name} is within 2 hexes of the ball. Violating defense rule.");
-            return true;
-        }
+    //     if (distanceFromBall <= 2)
+    //     {
+    //         Debug.Log($"Token {token.name} is within 2 hexes of the ball. Violating defense rule.");
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     public void AdvanceToNextPhase(MatchManager.GameState currentPhase)
     {
@@ -273,15 +306,29 @@ public class FreeKickManager : MonoBehaviour
                 break;
             case MatchManager.GameState.FreeKickDef3:
                 matchManager.currentState = MatchManager.GameState.FreeKickExecution;
+                ResetMoves();
                 Debug.Log("Free Kick Preparation completed. Ready for execution.");
                 break;
         }
     }
 
+    private void ResetMoves()
+    {
+        remainingDefenderMoves = 6;
+        attackerMovesUsed = 0;
+        defenderMovesUsed = 0;
+        selectedToken = null;
+        targetHex = null;
+        shouldDefMoveTokens.Clear();
+        potentialKickers.Clear();
+    }
+
     public IEnumerator MoveTokenToHex(PlayerToken token, HexCell targetHex)
     {
+        // TODO: update PREVIOUS hex.IsAttack or isDefense Occupied, and fix highlights
         token.transform.position = targetHex.GetHexCenter(); // Teleport token for now
         token.SetCurrentHex(targetHex); 
+        // TODO: Update Highlights
         yield return null; // Placeholder for animation
     }
 }

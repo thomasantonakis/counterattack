@@ -648,7 +648,7 @@ public class GameInputManager : MonoBehaviour
                             Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {clickedDestinationHex.coordinates}");
                             // freeKickManager.MoveTokenToHex(freeKickManager.selectedToken, clickedDestinationHex);
                             StartCoroutine(freeKickManager.HandleSetupHexSelection(clickedDestinationHex));
-                            freeKickManager.selectedToken = null; // Reset the selected token
+                            // freeKickManager.selectedToken = null; // Reset the selected token
                         }
                         else
                         {
