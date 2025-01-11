@@ -19,6 +19,7 @@ public class FreeKickManager : MonoBehaviour
     public int defenderMovesUsed;
     public bool isWaitingForKickerSelection = false;
     public bool isWaitingForSetupPhase = false;
+    public bool isWaitingForExecution = false;
     private PlayerToken selectedKicker;
     public PlayerToken selectedToken;
     public HexCell targetHex;
@@ -42,15 +43,15 @@ public class FreeKickManager : MonoBehaviour
         List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 1);
         foreach (HexCell hex in nearbyHexes)
         {
-            Debug.Log($"Checking hex {hex.coordinates} for potential kickers. Is attack occupied? {hex.isAttackOccupied} By which Token? {hex.GetOccupyingToken()?.name}");
+            // Debug.Log($"Checking hex {hex.coordinates} for potential kickers. Is attack occupied? {hex.isAttackOccupied} By which Token? {hex.GetOccupyingToken()?.name}");
             if (hex.isAttackOccupied)
             {
-                Debug.Log($"Attacker found on the ball or around it: {hex.GetOccupyingToken().name}");
+                // Debug.Log($"Attacker found on the ball or around it: {hex.GetOccupyingToken().name}");
                 potentialKickers.Add(hex.GetOccupyingToken());
             }
             else 
             {
-              Debug.Log($"No attacker on the ball or around it. Please select an attacker.");
+              // Debug.Log($"No attacker on the ball or around it. Please select an attacker.");
             }
         }
     }
@@ -211,72 +212,53 @@ public class FreeKickManager : MonoBehaviour
             CalculatePotentialKickers();
             attackerMovesUsed++;
         }
-        // Clear selections for next move
         selectedToken = null;
         targetHex = null;
         movesUsed++;
         Debug.Log($"Move {movesUsed} just performed");
     }
 
-    // private bool IsValidTokenForPhase(MatchManager.GameState phaseState, PlayerToken token)
-    // {
-    //     if (phaseState.ToString().StartsWith("FreeKickAtt"))
-    //         return token.isAttacker;
-    //     else if (phaseState.ToString().StartsWith("FreeKickDef"))
-    //     {
-    //         if (shouldDefMoveTokens.Contains(token))
-    //             return true;
-    //         if (!IsTokenViolatingDefenseRule(token))
-    //             return true;
-    //     }
-    //     return false;
-    // }
-
-    // private HexCell GetValidTargetHexForToken(PlayerToken token)
-    // {
-    //     HexCell currentHex = token.GetCurrentHex();
-    //     if (currentHex == null)
-    //     {
-    //         Debug.LogError($"Token {token.name} does not have a valid hex!");
-    //         return null;
-    //     }
-    //     // Get all hexes within a reasonable range (e.g., the entire grid or a specific range)
-    //     List<HexCell> reachableHexes = HexGrid.GetHexesInRange(hexGrid, currentHex, 48); // Adjust range as needed
-
-    //     return reachableHexes
-    //         .Where(hex => !hex.isDefenseOccupied && !hex.isAttackOccupied)
-    //         .OrderBy(hex => HexGridUtils.GetHexDistance(currentHex.coordinates, hex.coordinates))
-    //         .FirstOrDefault();
-    //     }
-
-    // private bool IsTokenViolatingDefenseRule(PlayerToken token)
-    // {
-    //     // Check if the token is null or not a defender
-    //     if (token == null || token.isAttacker)
-    //     {
-    //         Debug.LogWarning($"Token {token?.name} is not a defender or is null. Ignoring for defense rule check.");
-    //         return false;
-    //     }
-
-    //     HexCell tokenHex = token.GetCurrentHex();
-
-    //     if (tokenHex == null)
-    //     {
-    //         Debug.LogError($"Token {token.name} does not occupy a valid hex!");
-    //         return false;
-    //     }
-    //     // Check if the token is within 2 hexes of the ball
-    //     HexCell ballHex = ball.GetCurrentHex();
-    //     int distanceFromBall = HexGridUtils.GetHexDistance(tokenHex.coordinates, ballHex.coordinates);
-
-    //     if (distanceFromBall <= 2)
-    //     {
-    //         Debug.Log($"Token {token.name} is within 2 hexes of the ball. Violating defense rule.");
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
+    public void AttemptToAdvanceToNextPhase()
+    {
+        if (
+            MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
+            // if we let the forfeit happen, then 2 - movesUsed will be forfeited
+            // so the remaining defender moves will be (remainingDefenderMoves - (2 - movesUsed))
+            // This should be checked against the number of defenders that need to move.
+            && remainingDefenderMoves - (2 - movesUsed) <= shouldDefMoveTokens.Count
+            // AND there are defenders close to the ball.
+            && shouldDefMoveTokens.Count > 0
+        )
+        {
+            // Debug.Log($"{MatchManager.Instance.currentState}");
+            // Debug.Log($"{MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")}");
+            // Debug.Log($"{remainingDefenderMoves - (2 - movesUsed) <= shouldDefMoveTokens.Count}");
+            // Debug.Log($"{shouldDefMoveTokens.Count == 0}");
+            // Debug.Log($"{remainingDefenderMoves} - (2 - {movesUsed}) = {remainingDefenderMoves - (2 - movesUsed)} <= {shouldDefMoveTokens.Count}");
+            Debug.LogWarning("You cannot forfeit current move, as the remaining moves will be less than the defenders that need to move.");
+            return;
+        }
+        else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef"))
+        {
+            Debug.Log("Forfeiting current Defensive move.");
+            remainingDefenderMoves -= 2 - movesUsed;
+            defenderMovesUsed += 2 - movesUsed;
+            movesUsed = 2;
+        }
+        else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt3"))
+        {
+            Debug.Log("Forfeiting current Attacking move.");
+            attackerMovesUsed += 3 - movesUsed;
+            movesUsed = 3;
+        }
+        else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt"))
+        {
+            Debug.Log("Forfeiting current Attacking move.");
+            attackerMovesUsed += 2 - movesUsed;
+            movesUsed = 2;
+        }
+        // AdvanceToNextPhase(MatchManager.Instance.currentState);
+    }
 
     public void AdvanceToNextPhase(MatchManager.GameState currentPhase)
     {
@@ -308,6 +290,8 @@ public class FreeKickManager : MonoBehaviour
                 matchManager.currentState = MatchManager.GameState.FreeKickExecution;
                 ResetMoves();
                 Debug.Log("Free Kick Preparation completed. Ready for execution.");
+                isWaitingForSetupPhase = false;
+                isWaitingForExecution = true;
                 break;
         }
     }
@@ -317,10 +301,11 @@ public class FreeKickManager : MonoBehaviour
         remainingDefenderMoves = 6;
         attackerMovesUsed = 0;
         defenderMovesUsed = 0;
+        movesUsed = 0;
         selectedToken = null;
         targetHex = null;
         shouldDefMoveTokens.Clear();
-        potentialKickers.Clear();
+        // potentialKickers.Clear();
     }
 
     public IEnumerator MoveTokenToHex(PlayerToken token, HexCell targetHex)

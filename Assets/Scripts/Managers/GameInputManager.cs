@@ -623,113 +623,117 @@ public class GameInputManager : MonoBehaviour
     // GameInputManager.cs
     private void HandleFreeKickSetupPhaseInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (freeKickManager.isWaitingForSetupPhase)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log($"Raycast hit: {hit.collider.name}");
-                // Check if a token is already selected
-                if (freeKickManager.selectedToken != null)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    // Handle destination Hex selection
-                    HexCell clickedDestinationHex = hit.collider.GetComponent<HexCell>();
-                    PlayerToken newClickedToken = hit.collider.GetComponent<PlayerToken>();
-                    if (newClickedToken != null && newClickedToken != freeKickManager.selectedToken)
+                    Debug.Log($"Raycast hit: {hit.collider.name}");
+                    // Check if a token is already selected
+                    if (freeKickManager.selectedToken != null)
                     {
-                      Debug.Log($"New Clicked token during free kick setup: {newClickedToken.name}");
-                      freeKickManager.HandleSetupTokenSelection(newClickedToken);
-                      return;
-                    }
-                    if (clickedDestinationHex != null)
-                    {
-                        if (!clickedDestinationHex.isDefenseOccupied && !clickedDestinationHex.isAttackOccupied)
+                        // Handle destination Hex selection
+                        HexCell clickedDestinationHex = hit.collider.GetComponent<HexCell>();
+                        PlayerToken newClickedToken = hit.collider.GetComponent<PlayerToken>();
+                        if (newClickedToken != null && newClickedToken != freeKickManager.selectedToken)
                         {
-                            Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {clickedDestinationHex.coordinates}");
-                            // freeKickManager.MoveTokenToHex(freeKickManager.selectedToken, clickedDestinationHex);
-                            StartCoroutine(freeKickManager.HandleSetupHexSelection(clickedDestinationHex));
-                            // freeKickManager.selectedToken = null; // Reset the selected token
+                          Debug.Log($"New Clicked token during free kick setup: {newClickedToken.name}");
+                          freeKickManager.HandleSetupTokenSelection(newClickedToken);
+                          return;
+                        }
+                        if (clickedDestinationHex != null)
+                        {
+                            if (!clickedDestinationHex.isDefenseOccupied && !clickedDestinationHex.isAttackOccupied)
+                            {
+                                Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {clickedDestinationHex.coordinates}");
+                                // freeKickManager.MoveTokenToHex(freeKickManager.selectedToken, clickedDestinationHex);
+                                StartCoroutine(freeKickManager.HandleSetupHexSelection(clickedDestinationHex));
+                                // freeKickManager.selectedToken = null; // Reset the selected token
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Hex {clickedDestinationHex.coordinates} is occupied. Select an unoccupied Hex.");
+                            }
                         }
                         else
                         {
-                            Debug.LogWarning($"Hex {clickedDestinationHex.coordinates} is occupied. Select an unoccupied Hex.");
+                            Debug.LogWarning("Please click on a valid Hex to move the selected token.");
                         }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Please click on a valid Hex to move the selected token.");
-                    }
-                    return;
-                }
-
-                PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
-                if (clickedToken != null)
-                {
-                    Debug.Log($"Clicked token during free kick setup: {clickedToken.name}");
-                    freeKickManager.HandleSetupTokenSelection(clickedToken);
-                    return;
-                }
-
-                // Check if the clicked object is a HexCell
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                if (clickedHex != null)
-                {
-                    Debug.Log($"Clicked on hex: {clickedHex.coordinates}");
-
-                    // If there's a token on the clicked hex, treat it as clicking the token
-                    PlayerToken occupyingToken = clickedHex.GetOccupyingToken();
-                    if (occupyingToken != null)
-                    {
-                        Debug.Log($"Hex {clickedHex.coordinates} is occupied by token: {occupyingToken.name}");
-                        freeKickManager.HandleSetupTokenSelection(occupyingToken);
                         return;
                     }
-                    else
+
+                    PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
+                    if (clickedToken != null)
                     {
-                        Debug.LogWarning($"Hex {clickedHex.coordinates} is unoccupied. Please select a valid token.");
+                        Debug.Log($"Clicked token during free kick setup: {clickedToken.name}");
+                        freeKickManager.HandleSetupTokenSelection(clickedToken);
                         return;
                     }
-                }
-                // Check if the clicked object is the Ball
-                Ball clickedBall = hit.collider.GetComponent<Ball>();
-                if (clickedBall != null)
-                {
-                    Debug.Log("Clicked on the ball.");
 
-                    // Get the Hex where the ball is located
-                    HexCell ballHex = clickedBall.GetCurrentHex();
-                    if (ballHex != null)
+                    // Check if the clicked object is a HexCell
+                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                    if (clickedHex != null)
                     {
-                        PlayerToken ballToken = ballHex.GetOccupyingToken();
-                        if (ballToken != null)
+                        Debug.Log($"Clicked on hex: {clickedHex.coordinates}");
+
+                        // If there's a token on the clicked hex, treat it as clicking the token
+                        PlayerToken occupyingToken = clickedHex.GetOccupyingToken();
+                        if (occupyingToken != null)
                         {
-                            Debug.Log($"Ball is on hex {ballHex.coordinates}, occupied by token: {ballToken.name}");
-                            freeKickManager.HandleSetupTokenSelection(ballToken);
+                            Debug.Log($"Hex {clickedHex.coordinates} is occupied by token: {occupyingToken.name}");
+                            freeKickManager.HandleSetupTokenSelection(occupyingToken);
                             return;
                         }
                         else
                         {
-                            Debug.LogWarning($"Ball is on hex {ballHex.coordinates}, but no token is present. Input rejected.");
+                            Debug.LogWarning($"Hex {clickedHex.coordinates} is unoccupied. Please select a valid token.");
                             return;
                         }
                     }
-                    else
+                    // Check if the clicked object is the Ball
+                    Ball clickedBall = hit.collider.GetComponent<Ball>();
+                    if (clickedBall != null)
                     {
-                        Debug.LogError("Ball is not on a valid Hex. Input rejected.");
-                        return;
+                        Debug.Log("Clicked on the ball.");
+
+                        // Get the Hex where the ball is located
+                        HexCell ballHex = clickedBall.GetCurrentHex();
+                        if (ballHex != null)
+                        {
+                            PlayerToken ballToken = ballHex.GetOccupyingToken();
+                            if (ballToken != null)
+                            {
+                                Debug.Log($"Ball is on hex {ballHex.coordinates}, occupied by token: {ballToken.name}");
+                                freeKickManager.HandleSetupTokenSelection(ballToken);
+                                return;
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Ball is on hex {ballHex.coordinates}, but no token is present. Input rejected.");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogError("Ball is not on a valid Hex. Input rejected.");
+                            return;
+                        }
                     }
                 }
+                else
+                {
+                    Debug.Log("Raycast did not hit any collider.");
+                }
             }
-            else
+            else if (Input.GetKeyDown(KeyCode.X))
             {
-                Debug.Log("Raycast did not hit any collider.");
+                Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
+                freeKickManager.selectedToken = null;  // Reset the selected token
+                freeKickManager.AttemptToAdvanceToNextPhase();
+                // return;
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            Debug.Log("Player forfeited the remaining moves for this phase.");
-            freeKickManager.selectedToken = null;  // Reset the selected token
-            freeKickManager.AdvanceToNextPhase(MatchManager.Instance.currentState);
         }
     }
 
