@@ -148,7 +148,7 @@ public class FreeKickManager : MonoBehaviour
             matchManager.currentState.ToString().StartsWith("FreeKickAtt") // During AttX state
             && token.isAttacker // Clicked token is an attacker
             && potentialKickers.Contains(token) // Clicked token is in the list potential kickers.
-            && shouldDefMoveTokens.Count == 1 // There is only one attacker as a potential kicker
+            && potentialKickers.Count == 1 // There is only one attacker as a potential kicker
         )
         {
             Debug.LogWarning($"There must be at least one attacker on the ball or around it. Please select another attacker.");
@@ -325,10 +325,29 @@ public class FreeKickManager : MonoBehaviour
 
     public IEnumerator MoveTokenToHex(PlayerToken token, HexCell targetHex)
     {
-        // TODO: update PREVIOUS hex.IsAttack or isDefense Occupied, and fix highlights
-        token.transform.position = targetHex.GetHexCenter(); // Teleport token for now
-        token.SetCurrentHex(targetHex); 
-        // TODO: Update Highlights
-        yield return null; // Placeholder for animation
+        hexGrid.ClearHighlightedHexes();
+        HexCell tokenHex = token.GetCurrentHex();
+        if (token.isAttacker)
+        {
+            tokenHex.isAttackOccupied = false;
+            tokenHex.ResetHighlight();
+            targetHex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
+        }
+        else
+        {
+            tokenHex.isDefenseOccupied = false;
+            tokenHex.ResetHighlight();
+            targetHex.isDefenseOccupied = true;  // Mark the target hex as occupied by an attacker
+        }
+        yield return StartCoroutine(token.JumpToHex(targetHex));
+        if (token.isAttacker)
+        {
+            targetHex.HighlightHex("isAttackOccupied");
+        }
+        else
+        {
+            targetHex.HighlightHex("isDefenseOccupied");
+        }
+        yield return null;
     }
 }
