@@ -294,10 +294,25 @@ public class GameInputManager : MonoBehaviour
                         {
                           movementPhaseManager.isWaitingForTackleDecisionWithoutMoving = false;
                         }
+                        bool temp_check = ball.GetCurrentHex() == clickedHex;
+                        if (temp_check)
+                        {
+                            movementPhaseManager.someonePickedUpBall = true;
+                        }
                         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex));  // Move the selected token to the hex
+                        if (temp_check)
+                        {
+                          movementPhaseManager.isBallPickable = false;
+                        }
                     }
                 }
             }
+        }
+        else if (movementPhaseManager.isBallPickable && Input.GetKeyDown(KeyCode.V))
+        {
+            movementPhaseManager.someonePickedUpBall = true;
+            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(ball.GetCurrentHex()));
+            movementPhaseManager.isBallPickable = false;
         }
     }
 

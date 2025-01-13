@@ -39,72 +39,43 @@ public static class HexGridUtils
 
     public static List<HexCell> FindPath(HexCell startHex, HexCell targetHex, HexGrid hexGrid)
     {
-        List<HexCell> openList = new List<HexCell>();
-        HashSet<HexCell> closedList = new HashSet<HexCell>();
+        if (startHex == null || targetHex == null || hexGrid == null)
+        {
+            Debug.LogError("StartHex, TargetHex, or HexGrid is null!");
+            return new List<HexCell>();
+        }
 
-        Dictionary<HexCell, float> gCosts = new Dictionary<HexCell, float>();
+        Queue<HexCell> frontier = new Queue<HexCell>();
+        HashSet<HexCell> visited = new HashSet<HexCell>();
         Dictionary<HexCell, HexCell> cameFrom = new Dictionary<HexCell, HexCell>();
 
-        openList.Add(startHex);
-        gCosts[startHex] = 0;
+        frontier.Enqueue(startHex);
+        visited.Add(startHex);
 
-        while (openList.Count > 0)
+        while (frontier.Count > 0)
         {
-            // Sort openList by the lowest gCost (shortest distance so far)
-            openList.Sort((a, b) => gCosts[a].CompareTo(gCosts[b]));
-            HexCell currentHex = openList[0];
+            HexCell currentHex = frontier.Dequeue();
 
-            // If we reached the target hex, reconstruct the path
+            // If we reached the target, reconstruct the path
             if (currentHex == targetHex)
             {
                 return ReconstructPath(cameFrom, currentHex);
             }
 
-            openList.Remove(currentHex);
-            closedList.Add(currentHex);
-
-            // Loop through neighbors of the current hex
             foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                if (neighbor == null || closedList.Contains(neighbor) || neighbor.isAttackOccupied || neighbor.isDefenseOccupied)
+                if (neighbor == null || visited.Contains(neighbor) || neighbor.isAttackOccupied || neighbor.isDefenseOccupied)
                 {
-                    continue;  // Skip null, occupied, or already processed hexes
+                    continue;
                 }
 
-                // Check if stepping into a ZOI is required
-                bool requiresZOI = false;
-                foreach (HexCell neighborOfNeighbor in neighbor.GetNeighbors(hexGrid))
-                {
-                    if (neighborOfNeighbor != null && neighborOfNeighbor.isDefenseOccupied)
-                    {
-                        requiresZOI = true;
-                        break;
-                    }
-                }
-
-                // Calculate gCost based on ZOI
-                float tentativeGCost = gCosts[currentHex] + HexGridUtils.GetHexDistance(currentHex.coordinates, neighbor.coordinates);
-
-                // If this path requires stepping into a ZOI, increase the cost
-                if (requiresZOI)
-                {
-                    tentativeGCost += 1.0f;  // Arbitrary extra cost for stepping into ZOI
-                }
-
-                // If the neighbor isn't in the open list or this path is cheaper, update path
-                if (!openList.Contains(neighbor))
-                {
-                    openList.Add(neighbor);
-                }
-                if (!gCosts.ContainsKey(neighbor) || tentativeGCost < gCosts[neighbor])
-                {
-                    gCosts[neighbor] = tentativeGCost;
-                    cameFrom[neighbor] = currentHex;
-                }
+                frontier.Enqueue(neighbor);
+                visited.Add(neighbor);
+                cameFrom[neighbor] = currentHex;
             }
         }
 
-        return new List<HexCell>();  // Return an empty list if no path is found
+        return new List<HexCell>(); // Return an empty list if no path is found
     }
 
     private static List<HexCell> ReconstructPath(Dictionary<HexCell, HexCell> cameFrom, HexCell currentHex)
@@ -123,67 +94,52 @@ public static class HexGridUtils
     {
         if (startHex == null || hexGrid == null)
         {
-            Debug.LogError("HexGrid or StartHex is null!");  // Additional debug for clarity
-            return (new List<HexCell>(), new Dictionary<HexCell, (int, bool)>());  // Return empty collections
+            Debug.LogError("HexGrid or StartHex is null!");
+            return (new List<HexCell>(), new Dictionary<HexCell, (int, bool)>());
         }
 
         List<HexCell> reachableHexes = new List<HexCell>();
-        Queue<HexCell> frontier = new Queue<HexCell>();  // Frontier for exploring hexes
-        Dictionary<HexCell, (int distance, bool enteredZOI)> distance = new Dictionary<HexCell, (int, bool)>();  // Track distance and ZOI entry
+        Queue<HexCell> frontier = new Queue<HexCell>();
+        Dictionary<HexCell, int> distance = new Dictionary<HexCell, int>();
 
         frontier.Enqueue(startHex);
-        distance[startHex] = (0, false);  // Start hex has 0 distance and no ZOI entry
+        distance[startHex] = 0;
 
         while (frontier.Count > 0)
         {
             HexCell currentHex = frontier.Dequeue();
-            var (currentDistance, enteredZOI) = distance[currentHex];
+            int currentDistance = distance[currentHex];
 
-            // Add the hex to the reachable list if it's within range
             if (currentDistance <= range)
             {
                 reachableHexes.Add(currentHex);
             }
 
-            // Explore neighbors of the current hex
             foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                // Ensure neighbor is not null and has not been processed yet
-                if (neighbor == null || neighbor.isAttackOccupied || distance.ContainsKey(neighbor))
+                if (neighbor == null || neighbor.isAttackOccupied || neighbor.isDefenseOccupied || distance.ContainsKey(neighbor))
                 {
-                    continue;  // Skip null hexes, occupied hexes, or already processed ones
+                    continue;
                 }
 
-                // Check if the neighbor is blocked by other players (attackers or defenders)
-                if (neighbor.isAttackOccupied || neighbor.isDefenseOccupied)
-                {
-                    continue;  // Skip hexes blocked by other players
-                }
+                int neighborDistance = currentDistance + 1;
 
-                // Check if this neighbor is within a ZOI (Zone of Influence)
-                bool inDefenderZOI = false;
-                foreach (HexCell neighborOfNeighbor in neighbor.GetNeighbors(hexGrid))
-                {
-                    if (neighborOfNeighbor != null && neighborOfNeighbor.isDefenseOccupied)
-                    {
-                        inDefenderZOI = true;  // This hex is within the ZOI of a defender
-                        break;
-                    }
-                }
-
-                // Determine if entering this neighbor would step into ZOI
-                bool willEnterZOI = enteredZOI || inDefenderZOI;
-
-                // If the current distance + 1 is within range, explore the neighbor
-                if (currentDistance + 1 <= range)
+                if (neighborDistance <= range)
                 {
                     frontier.Enqueue(neighbor);
-                    distance[neighbor] = (currentDistance + 1, willEnterZOI);
+                    distance[neighbor] = neighborDistance;
                 }
             }
         }
 
-        return (reachableHexes, distance);  // Return both the list of reachable hexes and the distance data
+        // Convert distance to include a dummy `enteredZOI` flag for compatibility
+        Dictionary<HexCell, (int distance, bool enteredZOI)> finalDistance = new Dictionary<HexCell, (int, bool)>();
+        foreach (var pair in distance)
+        {
+            finalDistance[pair.Key] = (pair.Value, false);
+        }
+
+        return (reachableHexes, finalDistance);
     }
 
 }

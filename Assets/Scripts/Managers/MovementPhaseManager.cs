@@ -15,6 +15,7 @@ public class MovementPhaseManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
+    public bool isBallPickable = false;
     public bool isWaitingForInterceptionDiceRoll = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForTackleDecisionWithoutMoving = false; // Flag to check if waiting for tackle decision
@@ -25,6 +26,8 @@ public class MovementPhaseManager : MonoBehaviour
     private bool isWaitingForYellowCardRoll = false;  // Whether we're waiting for a dice roll
     private bool isWaitingForInjuryRoll = false;  // Whether we're waiting for a dice roll
     private bool isWaitingForFoulDecision = false;  // Whether we're waiting for a dice roll
+    public bool someonePickedUpBall = false;
+    [SerializeField]
     private int remainingDribblerPace; // Temporary variable for dribbler's pace
     private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
     [SerializeField]
@@ -46,6 +49,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int maxAttackerMovesIn2f2 = 2;
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
+    public HexCell ballHex;
     public bool isPlayerMoving = false;  // Tracks if a player is currently moving
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
@@ -160,7 +164,10 @@ public class MovementPhaseManager : MonoBehaviour
         if (token.IsDribbler)
         {
             Debug.Log($"{token.name} selected as dribbler. Starting dribble movement.");
-            remainingDribblerPace = token.pace; // Initialize remaining pace
+            if(!someonePickedUpBall)
+            {
+                remainingDribblerPace = token.pace; // Initialize remaining pace
+            }
             defendersTriedToIntercept.Clear(); // Reset defenders list
             isDribblerRunning = true;
             HighlightValidMovementHexes(token, 1); // Highlight immediate neighbors
@@ -187,7 +194,7 @@ public class MovementPhaseManager : MonoBehaviour
 
         // Get valid movement hexes and their distance/ZOI data
         var (reachableHexes, distanceData) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
-
+        ballHex = ball.GetCurrentHex();
         foreach (HexCell hex in reachableHexes)
         {
             if (!hex.isAttackOccupied && !hex.isDefenseOccupied)
@@ -205,6 +212,10 @@ public class MovementPhaseManager : MonoBehaviour
                 else
                 {
                     hex.HighlightHex("OutOfRange");  // Mark as out of range
+                }
+                if (hex == ballHex)
+                {
+                    isBallPickable = true;
                 }
             }
         }
@@ -240,10 +251,33 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogError("No valid path found to the target hex.");
             yield break;
         }
-
+        bool isMovingTokenAttacker = movingToken.isAttacker;
         // Start the token movement across the hexes in the path
         yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
-        if (movingToken.IsDribbler && isDribblerRunning)
+        // Calculate remaining pace if moving to the ball's hex
+        if (movingToken.IsDribbler && isMovingTokenAttacker && someonePickedUpBall)
+        {
+            int distanceTraveled = path.Count; // Path includes the starting hex, so subtract 1
+            remainingDribblerPace = movingToken.pace - distanceTraveled;
+
+            Debug.Log($"{movingToken.name} moved {distanceTraveled} steps to the ball. Remaining pace: {remainingDribblerPace}");
+            if (remainingDribblerPace > 0)
+            {
+                // Highlight remaining reachable hexes based on the remaining pace
+                HighlightValidMovementHexes(movingToken, 1);
+                someonePickedUpBall = false;
+                isDribblerRunning = true;
+            }
+            else
+            {
+                Debug.Log($"{movingToken.name} has exhausted their pace after reaching the ball.");
+                isDribblerRunning = false;
+                movedTokens.Add(movingToken);
+                AdvanceMovementPhase(); // End dribbler's movement
+            }
+            someonePickedUpBall = false;
+        }
+        else if (movingToken.IsDribbler && isDribblerRunning)
         {
             remainingDribblerPace -= 1; // Reduce remaining dribbler pace
             Debug.Log($"{movingToken.name} has {remainingDribblerPace} remaining pace.");
@@ -266,12 +300,17 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"{movingToken.name} has exhausted their pace. Dribbling complete.");
                 isDribblerRunning = false;
                 movedTokens.Add(movingToken);
+                Debug.Log("this");
                 AdvanceMovementPhase(); // End dribbler's movement
             }
         }
         else
         {
-          movedTokens.Add(movingToken);  // Track this token as moved
+          Debug.Log("that");
+          if( MatchManager.Instance.currentState != MatchManager.GameState.LooseBallPickedUp)
+          {
+              movedTokens.Add(movingToken);  // Track this token as moved
+          }
           AdvanceMovementPhase(); // Basic check to advance the movement phase
         }
     }
@@ -391,6 +430,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (finalHex == ball.GetCurrentHex())
         {
             MatchManager.Instance.UpdatePossessionAfterPass(finalHex);
+            isBallPickable = false;
         }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();
@@ -904,6 +944,9 @@ public class MovementPhaseManager : MonoBehaviour
         defendersMoved = 0;    // Reset the number of defenders that have moved
         attackersMovedIn2f2 = 0;  // Reset the 2f2 phase counter
         selectedToken = null;  // Reset the selected token
+        isBallPickable = false;
+        isDribblerRunning = false;
+        someonePickedUpBall = false;
         Debug.Log("Movement phase has been reset.");
     }
 
