@@ -195,6 +195,20 @@ public class MovementPhaseManager : MonoBehaviour
         // Get valid movement hexes and their distance/ZOI data
         var (reachableHexes, distanceData) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
         ballHex = ball.GetCurrentHex();
+        // Check if ball hex is reachable
+        if (reachableHexes.Contains(ballHex) && !token.isAttacker)
+        {
+            Debug.Log("Ball is reachable, recalculating Reachable without using ballHex");
+            // Temporarily mark the ball hex as occupied and recalculate
+            ballHex.isDefenseOccupied = true;
+            var (reachableWithoutBall, _) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
+            ballHex.isDefenseOccupied = false;
+
+            // Add the ball hex back to reachable hexes
+            reachableWithoutBall.Add(ballHex);
+            reachableHexes = reachableWithoutBall;
+        }
+
         foreach (HexCell hex in reachableHexes)
         {
             if (!hex.isAttackOccupied && !hex.isDefenseOccupied)
@@ -244,7 +258,18 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         // Find the path from the current hex to the target hex
-        List<HexCell> path = HexGridUtils.FindPath(movingToken.GetCurrentHex(), targetHex, hexGrid);
+        List<HexCell> path;
+        HexCell ballHex= ball.GetCurrentHex();
+        if (targetHex != ballHex)
+        {
+            ballHex.isDefenseOccupied = true;
+            path = HexGridUtils.FindPath(movingToken.GetCurrentHex(), targetHex, hexGrid);
+            ballHex.isDefenseOccupied = false;
+        }
+        else
+        {
+            path = HexGridUtils.FindPath(movingToken.GetCurrentHex(), targetHex, hexGrid);
+        }
 
         if (path == null || path.Count == 0)
         {
