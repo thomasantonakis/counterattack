@@ -252,7 +252,7 @@ public class GameInputManager : MonoBehaviour
 
                 // Check if the player token was clicked
                 PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                if (token != null)
+                if (token != null && !movementPhaseManager.isDribblerRunning)
                 {
                     Debug.Log("Player token clicked");
                     movementPhaseManager.HandleTokenSelection(token);  // Select the token first
@@ -265,7 +265,7 @@ public class GameInputManager : MonoBehaviour
                     PlayerToken ballToken = ballHex?.GetOccupyingToken();  // Check if a token occupies the hex where the ball is
                     Debug.Log($"Ball clicked, and it's on hex {ballHex.coordinates}, carried by {ballToken?.name}");
 
-                    if (ballToken != null)
+                    if (ballToken != null && !movementPhaseManager.isDribblerRunning)
                     {
                         Debug.Log("Selecting the token carrying the ball");
                         movementPhaseManager.HandleTokenSelection(ballToken);  // Select the token carrying the ball

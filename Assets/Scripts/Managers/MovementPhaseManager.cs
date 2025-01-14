@@ -31,7 +31,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int remainingDribblerPace; // Temporary variable for dribbler's pace
     private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
     [SerializeField]
-    private bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
+    public bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
     private int defenderDiceRoll;
     private int attackerDiceRoll;
     [SerializeField]
@@ -161,7 +161,7 @@ public class MovementPhaseManager : MonoBehaviour
 
             }
         }
-        if (token.IsDribbler)
+        if (token.IsDribbler && !isDribblerRunning)
         {
             Debug.Log($"{token.name} selected as dribbler. Starting dribble movement.");
             if(!someonePickedUpBall)
