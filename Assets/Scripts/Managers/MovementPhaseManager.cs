@@ -11,6 +11,7 @@ public class MovementPhaseManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
+    public LooseBallManager looseBallManager;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public HexCell ballHex;
@@ -800,13 +801,13 @@ public class MovementPhaseManager : MonoBehaviour
         // // Rigged
         if (isDefender)
         {
-            defenderDiceRoll = 1;
+            defenderDiceRoll = 4;
             tackleDefenderRolled = true;
             Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         }
         else
         {
-            attackerDiceRoll = 6;
+            attackerDiceRoll = 4;
             tackleAttackerRolled = true;
             Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
             StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
@@ -880,16 +881,16 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
             Debug.Log("Movement phase ended due to successful tackle.");
         }
-        else if (defenderTotalScore <= attackerTotalScore) // TODO: Remove equality when LooseBall is being Developed
+        else if (defenderTotalScore < attackerTotalScore) // TODO: Remove equality when LooseBall is being Developed
         {
             // Defender Loses and gets stunned
             Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} loses to {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, who retains possession of the ball.");
             yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
         }
-        else // In case of a tie
+        else if (defenderTotalScore == attackerTotalScore)
         {
             Debug.Log("Tackle results in a tie. Loose ball situation.");
-            // TODO: Handle loose ball situation
+            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "thomas"));
         }
  
     }

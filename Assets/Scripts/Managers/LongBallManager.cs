@@ -225,7 +225,7 @@ public class LongBallManager : MonoBehaviour
         Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
 
-    string TranslateRollToDirection(int direction)
+    public string TranslateRollToDirection(int direction)
     {
         switch (direction)
         {
@@ -242,7 +242,7 @@ public class LongBallManager : MonoBehaviour
           case 5:
             return "SouthEast";
           default:
-            return "Invalid direction";  // This han
+            return "Invalid direction";  // This should never Happen
         }
     }
 

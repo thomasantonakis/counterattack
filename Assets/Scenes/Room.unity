@@ -1392,6 +1392,56 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
   outOfBoundsManager: {fileID: 1326402186}
+--- !u!1 &757768960
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 757768962}
+  - component: {fileID: 757768961}
+  m_Layer: 0
+  m_Name: LooseBallManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &757768961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757768960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff2ec568d2c04d71bfff3aff5b6ada5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
+  outOfBoundsManager: {fileID: 1326402186}
+  longBallManager: {fileID: 748552023}
+  groundBallManager: {fileID: 1703800862}
+  defendersTriedToIntercept: []
+--- !u!4 &757768962
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757768960}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 552.90485, y: 367.53717, z: -4.9973216}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 19
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &886834327
 GameObject:
   m_ObjectHideFlags: 0
@@ -2134,22 +2184,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e38fde42f7a72427eb8ee1141081340a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedToken: {fileID: 0}
-  hexGrid: {fileID: 1405702520}
-  ball: {fileID: 390494642}
   groundBallManager: {fileID: 1703800862}
   headerManager: {fileID: 2071234817}
   freeKickManager: {fileID: 1688718062}
+  looseBallManager: {fileID: 757768961}
+  hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
+  ballHex: {fileID: 0}
+  selectedToken: {fileID: 0}
+  selectedDefender: {fileID: 0}
+  nutmegVictim: {fileID: 0}
+  isBallPickable: 0
+  isDribblerRunning: 0
+  isPlayerMoving: 0
+  tokenPickedUpBall: 0
   isWaitingForInterceptionDiceRoll: 0
   isWaitingForTackleDecision: 0
   isWaitingForTackleDecisionWithoutMoving: 0
   isWaitingForTackleRoll: 0
   isWaitingForReposition: 0
+  isWaitingForYellowCardRoll: 0
+  isWaitingForInjuryRoll: 0
+  isWaitingForFoulDecision: 0
+  isWaitingForNutmegDecision: 0
+  isWaitingForNutmegDecisionWithoutMoving: 0
+  lookingForNutmegVictim: 0
+  isNutmegInProgress: 0
+  remainingDribblerPace: 0
   movedTokens: []
+  eligibleDefenders: []
+  nutmeggableDefenders: []
+  defendersTriedToIntercept: []
+  stunnedTokens: []
+  stunnedforNext: []
   attackersMoved: 0
   defendersMoved: 0
   attackersMovedIn2f2: 0
-  isPlayerMoving: 0
 --- !u!1 &1393973651
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,7 +2887,17 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   matchManager: {fileID: 622907910}
+  shouldDefMoveTokens: []
+  potentialKickers: []
+  movesUsed: 0
+  remainingDefenderMoves: 0
+  attackerMovesUsed: 0
+  defenderMovesUsed: 0
   isWaitingForKickerSelection: 0
+  isWaitingForSetupPhase: 0
+  isWaitingForExecution: 0
+  selectedToken: {fileID: 0}
+  targetHex: {fileID: 0}
 --- !u!4 &1688718063
 Transform:
   m_ObjectHideFlags: 0

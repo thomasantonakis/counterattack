@@ -73,7 +73,7 @@ public class OutOfBoundsManager : MonoBehaviour
         // Log the final hex for debugging
         if (finalHex != null)
         {
-            Debug.Log($"Inaccurate final hex: ({finalHex.coordinates.x}, {finalHex.coordinates.z})");
+            // Debug.Log($"Final hex: ({finalHex.coordinates.x}, {finalHex.coordinates.z})");
         }
         else
         {
