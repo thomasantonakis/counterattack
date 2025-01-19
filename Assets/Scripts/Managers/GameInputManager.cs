@@ -313,15 +313,15 @@ public class GameInputManager : MonoBehaviour
                 // When do we need a expect a Token Selection?
                 if (
                     inferredToken != null // A token was indeed inferred from the click
-                    && !movementPhaseManager.isPlayerMoving
-                    && !movementPhaseManager.isDribblerRunning
+                    && !movementPhaseManager.isPlayerMoving // Wait for anumations to stop
+                    && !movementPhaseManager.isDribblerRunning // The Dribbler has not started moving
                     && (
                         movementPhaseManager.selectedToken == null // MovementPhase does not have a selected Token.
                         || !movementPhaseManager.isDribblerRunning //  We Should not be able to reset the selected Token while the Dribbler is running.
                     )
-                    && !movementPhaseManager.lookingForNutmegVictim
-                    && !movementPhaseManager.isWaitingForNutmegDecision
-                    // && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+                    && !movementPhaseManager.lookingForNutmegVictim // Do not handle a Token when looking for a victim
+                    && !movementPhaseManager.isWaitingForNutmegDecision // Do not handle a Token when waiting for Nutmeg Decision
+                    && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving // Do not handle a Token when waiting for Nutmeg Decision without moving
                 )
                 {
                     Debug.Log($"Passing {inferredToken.name} to HandleTokenSelection");
@@ -329,36 +329,33 @@ public class GameInputManager : MonoBehaviour
                     yield return null;
                 }
                 else if (
-                    movementPhaseManager.isDribblerRunning 
-                    && (
-                        movementPhaseManager.isWaitingForNutmegDecision 
-                        || movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
-                    )
+                    // While either we are waiting to nutmeg without moving
+                    movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+                    // Or we are waiting to nutmeg while the dribbler has already started moving
+                    || (movementPhaseManager.isDribblerRunning && movementPhaseManager.isWaitingForNutmegDecision)
                 )
                 {
-                    movementPhaseManager.isWaitingForNutmegDecision = false;
-                    movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
-                    movementPhaseManager.nutmegVictim = inferredToken;
-                    Debug.Log($"Only one nutmeggable defender: {inferredToken.name}. Proceeding with nutmeg.");
-                    movementPhaseManager.lookingForNutmegVictim = false;
-                    movementPhaseManager.StartNutmegProcess();
-                    yield return null;
-                }
-                else if (movementPhaseManager.lookingForNutmegVictim)
-                {
-                    Debug.Log($"Passing {inferredToken.name} to HandleNutmegVictimSelection");
-                    movementPhaseManager.HandleNutmegVictimSelection(inferredToken);
-                    yield return null;
-                }
-                // We did not infer a Token (clicked on an Hex (or the ball on it) where there is no Token)
-                // Clicked on a NOT OCCUPIED HEX
-                else {
-
-                    if (!movementPhaseManager.isWaitingForNutmegDecision && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+                    // We clicked on a Nutmeggable Defender
+                    if (movementPhaseManager.nutmeggableDefenders.Contains(inferredToken))
                     {
-                        // If the hex is not occupied, check if it's valid for movement
+                        // Start the Nutmeg with the Selected nutmeggable Token
+                        Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked");
+                        movementPhaseManager.isWaitingForNutmegDecision = false;
+                        movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+                        movementPhaseManager.nutmegVictim = inferredToken;
+                        movementPhaseManager.isDribblerRunning = true;
+                        hexGrid.ClearHighlightedHexes();
+                        Debug.Log($"Selected {inferredToken.name} to nutmeg. Proceeding with nutmeg.");
+                        movementPhaseManager.lookingForNutmegVictim = false;
+                        movementPhaseManager.StartNutmegProcess();
+                        yield return null;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was not clicked");
                         if (movementPhaseManager.IsHexValidForMovement(inferredHexCell))
                         {
+                            // Turning off wait for Nutmeg decision flags.
                             if (movementPhaseManager.isWaitingForTackleDecisionWithoutMoving)
                             {
                                 movementPhaseManager.isWaitingForTackleDecisionWithoutMoving = false;
@@ -367,6 +364,27 @@ public class GameInputManager : MonoBehaviour
                             {
                                 movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
                             }
+                            Debug.Log($"Passing {inferredHexCell.name} to MoveTokenToHex");
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCell));  // Move the selected token to the hex
+                        }
+                    }
+                }
+                else if (movementPhaseManager.lookingForNutmegVictim)
+                {
+                    // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
+                    Debug.Log($"Passing {inferredToken.name} to HandleNutmegVictimSelection");
+                    movementPhaseManager.HandleNutmegVictimSelection(inferredToken);
+                    yield return null;
+                }
+                else
+                // We did not infer a Token (clicked on an Hex (or the ball on it) where there is no Token)
+                // Clicked on a NOT OCCUPIED HEX
+                {
+                    if (!movementPhaseManager.isWaitingForNutmegDecision && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+                    {
+                        // If the hex is not occupied, check if it's valid for movement
+                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCell))
+                        {
                             bool temp_check = ball.GetCurrentHex() == inferredHexCell && movementPhaseManager.selectedToken != null;
                             if (temp_check)
                             {
