@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
+using Unity.VisualScripting;
 
 
 public class GameInputManager : MonoBehaviour
@@ -45,16 +47,29 @@ public class GameInputManager : MonoBehaviour
 
     void HandleSpecialInputs()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        // Handle Next Action Selection
+        if (
+            Input.GetKeyDown(KeyCode.P)
+            // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle
+        )
         {
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerStandardPass();
         }
-        else if (Input.GetKeyDown(KeyCode.M))
+        else if (
+            Input.GetKeyDown(KeyCode.M)
+            && (
+                MatchManager.Instance.currentState == MatchManager.GameState.LongBallCompleted
+                || true
+            )
+        )
         {
             MatchManager.Instance.TriggerMovement();
         }
-        else if (Input.GetKeyDown(KeyCode.C))
+        else if (
+            Input.GetKeyDown(KeyCode.C)
+            // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle
+        )
         {
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerHighPass();
@@ -75,9 +90,14 @@ public class GameInputManager : MonoBehaviour
             !movementPhaseManager.isPlayerMoving &&
             !movementPhaseManager.isWaitingForTackleRoll &&
             !movementPhaseManager.isWaitingForTackleDecision &&
-            // !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving &&
             !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
             !movementPhaseManager.isWaitingForReposition &&
+            !movementPhaseManager.isWaitingForInjuryRoll &&
+            !movementPhaseManager.isWaitingForYellowCardRoll &&
+            !movementPhaseManager.isWaitingForFoulDecision &&
+            // !movementPhaseManager.isWaitingForNutmegDecision &&
+            // !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving &&
+            
             (
                 MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
                 MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
@@ -86,9 +106,13 @@ public class GameInputManager : MonoBehaviour
         )
         {
             if (Input.GetKeyDown(KeyCode.X))
-            // TODO: if the dribbler is dribbling just forfeit the remaining Pace, not the whole movement phase.
             {
-                movementPhaseManager.ForfeitTeamMovementPhase();
+                if (!movementPhaseManager.isWaitingForNutmegDecision 
+                    && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+                )
+                {
+                    movementPhaseManager.ForfeitTeamMovementPhase();
+                }
             }
             StartCoroutine(HandleMouseInputForMovement());
         }
@@ -248,61 +272,112 @@ public class GameInputManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log("Raycast hit something");
+                Debug.Log("HandleMouseInputForMovement: Raycast hit something");
 
-                // Check if the player token was clicked
-                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                if (token != null && !movementPhaseManager.isDribblerRunning)
-                {
-                    Debug.Log("Player token clicked");
-                    movementPhaseManager.HandleTokenSelection(token);  // Select the token first
-                }
-                // Check if the ball was clicked
                 Ball clickedBall = hit.collider.GetComponent<Ball>();
+                HexCell clickedBallHex = null;
+                PlayerToken clickedBallToken = null;
                 if (clickedBall != null)
                 {
-                    HexCell ballHex = clickedBall.GetCurrentHex();  // Get the hex the ball is on
-                    PlayerToken ballToken = ballHex?.GetOccupyingToken();  // Check if a token occupies the hex where the ball is
-                    Debug.Log($"Ball clicked, and it's on hex {ballHex.coordinates}, carried by {ballToken?.name}");
-
-                    if (ballToken != null && !movementPhaseManager.isDribblerRunning)
-                    {
-                        Debug.Log("Selecting the token carrying the ball");
-                        movementPhaseManager.HandleTokenSelection(ballToken);  // Select the token carrying the ball
-                        yield return null;  // Stop further checks if the ball was clicked and token found
-                    }
+                    clickedBallHex = clickedBall.GetCurrentHex(); 
+                    clickedBallToken = clickedBallHex?.GetOccupyingToken();
+                    if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
+                    else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
                 }
-                // Check if a valid hex was clicked
+                PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
+                HexCell clickedTokenHex = null;
+                if (clickedToken != null)
+                {
+                    clickedTokenHex = clickedToken.GetCurrentHex();
+                    Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
+                }
                 HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                PlayerToken tokenOnClickedHex = null;
                 if (clickedHex != null)
                 {
-                    Debug.Log($"Hex clicked: {clickedHex.name}");
-
-                    // Check if the hex is occupied by a token
-                    PlayerToken occupyingToken = clickedHex.GetOccupyingToken();
-                    if (occupyingToken != null)
+                    tokenOnClickedHex = clickedHex.GetOccupyingToken();
+                    if (tokenOnClickedHex != null)
                     {
-                        Debug.Log("Hex is occupied by a token. Selecting the token instead.");
-                        movementPhaseManager.HandleTokenSelection(occupyingToken);  // Select the token on the clicked hex
-                        yield return null;  // Stop further checks if the hex is occupied by a token
+                        Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
                     }
-
-                    // If the hex is not occupied, check if it's valid for movement
-                    if (movementPhaseManager.IsHexValidForMovement(clickedHex))
+                    else 
                     {
-                        if (movementPhaseManager.isWaitingForTackleDecisionWithoutMoving)
+                        Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
+                    }
+                }
+                PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
+                HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;
+                Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
+                Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}");
+
+                // When do we need a expect a Token Selection?
+                if (
+                    inferredToken != null // A token was indeed inferred from the click
+                    && !movementPhaseManager.isPlayerMoving
+                    && !movementPhaseManager.isDribblerRunning
+                    && (
+                        movementPhaseManager.selectedToken == null // MovementPhase does not have a selected Token.
+                        || !movementPhaseManager.isDribblerRunning //  We Should not be able to reset the selected Token while the Dribbler is running.
+                    )
+                    && !movementPhaseManager.lookingForNutmegVictim
+                    && !movementPhaseManager.isWaitingForNutmegDecision
+                    // && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+                )
+                {
+                    Debug.Log($"Passing {inferredToken.name} to HandleTokenSelection");
+                    movementPhaseManager.HandleTokenSelection(inferredToken);  // Select the token first
+                    yield return null;
+                }
+                else if (
+                    movementPhaseManager.isDribblerRunning 
+                    && (
+                        movementPhaseManager.isWaitingForNutmegDecision 
+                        || movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+                    )
+                )
+                {
+                    movementPhaseManager.isWaitingForNutmegDecision = false;
+                    movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+                    movementPhaseManager.nutmegVictim = inferredToken;
+                    Debug.Log($"Only one nutmeggable defender: {inferredToken.name}. Proceeding with nutmeg.");
+                    movementPhaseManager.lookingForNutmegVictim = false;
+                    movementPhaseManager.StartNutmegProcess();
+                    yield return null;
+                }
+                else if (movementPhaseManager.lookingForNutmegVictim)
+                {
+                    Debug.Log($"Passing {inferredToken.name} to HandleNutmegVictimSelection");
+                    movementPhaseManager.HandleNutmegVictimSelection(inferredToken);
+                    yield return null;
+                }
+                // We did not infer a Token (clicked on an Hex (or the ball on it) where there is no Token)
+                // Clicked on a NOT OCCUPIED HEX
+                else {
+
+                    if (!movementPhaseManager.isWaitingForNutmegDecision && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+                    {
+                        // If the hex is not occupied, check if it's valid for movement
+                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCell))
                         {
-                          movementPhaseManager.isWaitingForTackleDecisionWithoutMoving = false;
-                        }
-                        bool temp_check = ball.GetCurrentHex() == clickedHex;
-                        if (temp_check)
-                        {
-                            movementPhaseManager.someonePickedUpBall = true;
-                        }
-                        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex));  // Move the selected token to the hex
-                        if (temp_check)
-                        {
-                          movementPhaseManager.isBallPickable = false;
+                            if (movementPhaseManager.isWaitingForTackleDecisionWithoutMoving)
+                            {
+                                movementPhaseManager.isWaitingForTackleDecisionWithoutMoving = false;
+                            }
+                            if (movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+                            {
+                                movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+                            }
+                            bool temp_check = ball.GetCurrentHex() == inferredHexCell && movementPhaseManager.selectedToken != null;
+                            if (temp_check)
+                            {
+                                movementPhaseManager.tokenPickedUpBall = true;
+                            }
+                            Debug.Log($"Passing {inferredHexCell.name} to MoveTokenToHex");
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCell));  // Move the selected token to the hex
+                            if (temp_check)
+                            {
+                                movementPhaseManager.isBallPickable = false;
+                            }
                         }
                     }
                 }
@@ -310,9 +385,34 @@ public class GameInputManager : MonoBehaviour
         }
         else if (movementPhaseManager.isBallPickable && Input.GetKeyDown(KeyCode.V))
         {
-            movementPhaseManager.someonePickedUpBall = true;
+            movementPhaseManager.tokenPickedUpBall = true;
+            movementPhaseManager.remainingDribblerPace = movementPhaseManager.selectedToken.pace;
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(ball.GetCurrentHex()));
             movementPhaseManager.isBallPickable = false;
+        }
+        else if (movementPhaseManager.isWaitingForNutmegDecision)
+        {
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                movementPhaseManager.isWaitingForNutmegDecision = false;
+                Debug.Log($"Starting Nutmeg Process.");
+                movementPhaseManager.StartNutmegVictimIdentification();
+            }
+            else if (Input.GetKeyDown(KeyCode.X))
+            {
+                movementPhaseManager.isWaitingForNutmegDecision = false;
+                Debug.Log($"Reject Nutmeg. Check for interceptions.");
+                movementPhaseManager.ContinueFromRejectedNutmeg();
+            }
+        }
+        else if (movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+        {
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+                Debug.Log($"Starting Nutmeg Process.");
+                movementPhaseManager.StartNutmegVictimIdentification();
+            }
         }
     }
 
