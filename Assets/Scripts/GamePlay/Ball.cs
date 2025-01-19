@@ -126,7 +126,7 @@ public class Ball : MonoBehaviour
     {
         if (!isBallSelected)
         {
-            Debug.Log("Ball selected! Now click on a hex to move it.");
+            // Debug.Log("Ball selected! Now click on a hex to move it.");
             isBallSelected = true;  // Mark ball as selected when clicked
         }
     }

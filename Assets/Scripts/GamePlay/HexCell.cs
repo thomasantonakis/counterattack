@@ -91,6 +91,9 @@ public class HexCell : MonoBehaviour
             case "reposition":
                 hexRenderer.material.color = Color.gray;// * 0.5f;
                 break;
+            case "nutmeggableDef":
+                hexRenderer.material.color = new Color(51, 204, 242);// * 0.5f;
+                break;
             // Add other cases if needed
             default:
                 hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason

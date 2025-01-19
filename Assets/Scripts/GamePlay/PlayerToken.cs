@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
 
 public class PlayerToken : MonoBehaviour
 {
@@ -87,7 +89,7 @@ public class PlayerToken : MonoBehaviour
     public void UpdateDribblerStatus()
     {
         isDribblerDebug = isAttacker && currentHex == ball?.GetCurrentHex();
-        Debug.Log($"{name}: IsAttacker = {isAttacker}, OccupiedHex = {currentHex?.coordinates}, BallHex = {ball?.GetCurrentHex()?.coordinates}, IsDribbler = {isDribblerDebug}");
+        // Debug.Log($"{name}: IsAttacker = {isAttacker}, OccupiedHex = {currentHex?.coordinates}, BallHex = {ball?.GetCurrentHex()?.coordinates}, IsDribbler = {isDribblerDebug}");
     }
 
     // Update isAttacker based on the current hex state
