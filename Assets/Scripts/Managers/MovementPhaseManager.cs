@@ -332,13 +332,18 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
         
-        if (movingToken.IsDribbler)
+        if (movingToken.IsDribbler && !isDribblerRunning)
         {
+            Debug.Log("isDribblerRunning set to true");
             isDribblerRunning = true;
         }
         // Start the token movement across the hexes in the path
         yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
-        if (targetHex == ballHex){isDribblerRunning = true;}
+        if (targetHex == ballHex)
+        {
+            Debug.Log("isDribblerRunning set to true because someone picked up the ball.");
+            isDribblerRunning = true;
+        }
         ResolveMovement(targetHex, path);
     }
 
@@ -403,7 +408,7 @@ public class MovementPhaseManager : MonoBehaviour
         else if (MatchManager.Instance.currentState != MatchManager.GameState.MovementPhaseDef)
         {
             Debug.LogWarning("We are not in a Defensive Movement Phase");
-            Debug.Log($"Hello from the Attacking MP, Selected Token: {selectedToken.name}, IsDribbler: {selectedToken.IsDribbler}");
+            Debug.Log($"Hello from the Attacking MP, Selected Token: {selectedToken.name}, IsDribbler: {selectedToken.IsDribbler}, remainingDribblerPace: {remainingDribblerPace}");
             // Non Dribbler Moved
             if (!selectedToken.IsDribbler)
             {
@@ -451,9 +456,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         else
         {
-            nutmeggableDefenders.Clear();
-            ContinueFromRejectedNutmeg();
-            return;
+            Debug.LogError("How did we end up here? DribblerMoved1HexOrReposition when isDribblerRunning = False");
         }
     }
 
@@ -474,11 +477,15 @@ public class MovementPhaseManager : MonoBehaviour
                 StartBallInterceptionDiceRollSequence(selectedToken.GetCurrentHex(), eligibleDefenders);
                 return; // Exit after handling interception
             }
+            else
+            {
+                Debug.LogWarning("No interceptions Available, let the dribbler move if available");
+                ContinueDribblerMovement();
+            }
         }
         else
         {
-            Debug.LogWarning("No interceptions Available, let the dribbler move if available");
-            ContinueDribblerMovement();
+            Debug.LogError("How did we end up here? ContinueFromRejectedNutmeg when isDribblerRunning = False");
         }
     }
 
@@ -496,6 +503,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.LogWarning($"Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.");
             Debug.Log($"{selectedToken.name} has exhausted their pace. Dribbling complete.");
+            Debug.Log($"isDribblerRunning set to false;");
             isDribblerRunning = false;
             hexGrid.ClearHighlightedHexes();
             if (!movedTokens.Contains(selectedToken))
@@ -912,8 +920,9 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.Log($"Reducing {attackerToken.name}'s remaining Pace by 2 due to the Nutmeg");
             remainingDribblerPace -=2;
+            remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
             // Clamp remainingDribblerPaceto 0 and adjust isDribblerRunning accordingly.
-            isDribblerRunning = (remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0)) > 0;
+            if (remainingDribblerPace == 0) {isDribblerRunning = false;}
         } 
         yield return StartCoroutine(HandlePostTackleReposition(attackerToken, selectedDefender));
         if (isNutmegInProgress)
