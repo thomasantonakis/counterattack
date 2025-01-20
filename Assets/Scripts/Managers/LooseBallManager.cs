@@ -153,7 +153,7 @@ public class LooseBallManager : MonoBehaviour
         else
         {
             Debug.Log($"Ball Went out of Bounds");
-            outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(startingToken.GetCurrentHex(), directionRoll);
+            outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
         }
         EndLooseBallPhase();
     }

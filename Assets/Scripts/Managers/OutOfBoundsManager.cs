@@ -6,14 +6,14 @@ public class OutOfBoundsManager : MonoBehaviour
 {
     public Ball ball;
     public HexGrid hexGrid;
-    public void HandleOutOfBoundsFromInaccuracy(HexCell currentTargetHex, int directionIndex)
+    public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source)
     {
         if (currentTargetHex == null)
         {
             Debug.LogWarning("currentTargetHex is null. Cannot handle out-of-bounds scenario.");
             return;
         }
-        Debug.Log($"HandleOutOfBoundsFromInaccuracy called with currentTargetHex: {currentTargetHex.coordinates}");
+        Debug.Log($"HandleOutOfBounds called with currentTargetHex: {currentTargetHex.coordinates}, due to {source}");
 
         HexCell lastInboundsHex = currentTargetHex;
         HexCell currentHex = currentTargetHex;
@@ -26,11 +26,13 @@ public class OutOfBoundsManager : MonoBehaviour
         Debug.Log($"Last inbounds hex before ball went out of bounds: {lastInboundsHex.coordinates}");
 
         // Now determine where the ball went out
-        string outOfBoundsSide = DetermineOutOfBoundsSide(lastInboundsHex, directionIndex);
+        string outOfBoundsSide = DetermineOutOfBoundsSide(lastInboundsHex, directionIndex, source);
 
         // Handle based on out-of-bounds type
         switch (outOfBoundsSide)
         {
+            // TODO: Differentiate LeftGoal to LeftGoalLine or LeftGOAL!!
+            // TODO: Differentiate RightGoal to RightGoalLine or RightGOAL!!
             case "LeftGoal":
                 Debug.Log("Goal Kick or Corner Kick for Left Side.");
                 HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide);
@@ -82,8 +84,9 @@ public class OutOfBoundsManager : MonoBehaviour
         return finalHex;
     }
 
-    private string DetermineOutOfBoundsSide(HexCell lastInboundsHex, int directionIndex)
+    private string DetermineOutOfBoundsSide(HexCell lastInboundsHex, int directionIndex, string source)
     {
+        // TODO: Use source to determine if the ball goes into the GOAL
         if ((directionIndex == 1 || directionIndex == 2) && lastInboundsHex.coordinates.x == -18)
         {
             return "LeftGoal";
@@ -114,6 +117,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private void HandleThrowIn(HexCell lastInboundsHex)
     {
+        // TODO: Use Source to decide if we need to change possession or not.
         StartCoroutine(ball.MoveToCell(lastInboundsHex));
         Debug.Log("Moved the ball to last inboundHex, Changing Possession");
         MatchManager.Instance.ChangePossession();
@@ -124,6 +128,7 @@ public class OutOfBoundsManager : MonoBehaviour
     
     private void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide)
     {
+        // TODO: Use Source to decide if it is a GoalKick or a Corner
         // Get the attacking team's direction
         MatchManager.TeamAttackingDirection attackingDirection;
         if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)

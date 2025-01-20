@@ -373,8 +373,8 @@ public class HighPassManager : MonoBehaviour
         if (targetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");
-            Debug.Log($"Passing targetHex to HandleOutOfBoundsFromInaccuracy: {currentTargetHex.coordinates}");
-            outOfBoundsManager.HandleOutOfBoundsFromInaccuracy(currentTargetHex, directionIndex);
+            Debug.Log($"Passing targetHex to HandleOutOfBounds: {currentTargetHex.coordinates}");
+            outOfBoundsManager.HandleOutOfBounds(currentTargetHex, directionIndex, "inaccuracy");
         }
         else
         {
