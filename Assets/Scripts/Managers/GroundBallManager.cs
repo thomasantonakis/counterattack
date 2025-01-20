@@ -396,7 +396,7 @@ public class GroundBallManager : MonoBehaviour
             yield break;
         }
         // Set thegame status to StandardPassMoving
-        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
+        // MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
         // Wait for the ball movement to complete
         yield return StartCoroutine(ball.MoveToCell(targetHex));
         // Adjust the ball's height based on occupancy (after movement is completed)

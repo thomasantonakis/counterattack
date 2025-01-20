@@ -456,7 +456,8 @@ public class MovementPhaseManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("How did we end up here? DribblerMoved1HexOrReposition when isDribblerRunning = False");
+            Debug.LogWarning("How did we end up here? DribblerMoved1HexOrReposition when isDribblerRunning = False");
+            Debug.LogWarning("Maybe a Change of Possession after a successful Tackle or a Failed Nutmeg.");
         }
     }
 
@@ -588,7 +589,7 @@ public class MovementPhaseManager : MonoBehaviour
         isPlayerMoving = false;  // Player finished moving
     }
 
-    private void AdvanceMovementPhase()
+    public void AdvanceMovementPhase()
     {
         if (!isWaitingForInterceptionDiceRoll
             && !isWaitingForTackleDecisionWithoutMoving
@@ -898,6 +899,11 @@ public class MovementPhaseManager : MonoBehaviour
         else if (defenderTotalScore == attackerTotalScore)
         {
             Debug.Log("Tackle results in a tie. Loose ball situation.");
+            isDribblerRunning = false;
+            isNutmegInProgress = false;
+            nutmegVictim = null;
+            remainingDribblerPace = 0;
+            // TODO: in case of a Loose Ball, is the attacker stunned?
             StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "thomas"));
         }
  
@@ -1146,7 +1152,7 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForInterceptionDiceRoll = false;
     }
 
-    private void EndMovementPhase()
+    public void EndMovementPhase()
     {
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
         ResetMovementPhase();  // Reset the moved tokens and phase counters

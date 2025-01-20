@@ -1426,7 +1426,9 @@ MonoBehaviour:
   outOfBoundsManager: {fileID: 1326402186}
   longBallManager: {fileID: 748552023}
   groundBallManager: {fileID: 1703800862}
+  movementPhaseManager: {fileID: 1390513032}
   defendersTriedToIntercept: []
+  path: []
 --- !u!4 &757768962
 Transform:
   m_ObjectHideFlags: 0
