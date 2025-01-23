@@ -34,11 +34,11 @@ public class OutOfBoundsManager : MonoBehaviour
         {
             // TODO: Differentiate LeftGoal to LeftGoalLine or LeftGOAL!!
             // TODO: Differentiate RightGoal to RightGoalLine or RightGOAL!!
-            case "LeftGoal":
+            case "LeftGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Left Side.");
                 HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source);
                 break;
-            case "RightGoal":
+            case "RightGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Right Side.");
                 HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source);
                 break;
@@ -47,8 +47,8 @@ public class OutOfBoundsManager : MonoBehaviour
                 Debug.Log("Handling a Throw-In.");
                 HandleThrowIn(lastInboundsHex, source);
                 break;
-            case "LeftGoalLine":
-            case "RightGoalLine":
+            case "LeftGoal":
+            case "RightGoal":
                 Debug.Log("GOAAAAALLL!!!!");
                 HandleGoalScored();
                 break;
@@ -92,7 +92,7 @@ public class OutOfBoundsManager : MonoBehaviour
         // TODO: Use source to determine if the ball goes into the GOAL
         if ((directionIndex == 1 || directionIndex == 2) && lastInboundsHex.coordinates.x == -18)
         {
-            if (source == "inacuracy" || Mathf.Abs(lastInboundsHex.coordinates.z) > 3) 
+            if (source == "inaccuracy" || Mathf.Abs(lastInboundsHex.coordinates.z) > 3) 
             {
                 return "LeftGoalLine";
             }
@@ -103,7 +103,7 @@ public class OutOfBoundsManager : MonoBehaviour
         }
         else if ((directionIndex == 4 || directionIndex == 5) && lastInboundsHex.coordinates.x == 18)
         {
-            if (source == "inacuracy" || Mathf.Abs(lastInboundsHex.coordinates.z) > 3) 
+            if (source == "inaccuracy" || Mathf.Abs(lastInboundsHex.coordinates.z) > 3) 
             {
                 return "RightGoalLine";
             }
@@ -136,8 +136,8 @@ public class OutOfBoundsManager : MonoBehaviour
     {
         // TODO: Use Source to decide if we need to change possession or not.
         StartCoroutine(ball.MoveToCell(lastInboundsHex));
-        Debug.Log("Moved the ball to last inboundHex, Changing Possession");
-        if (source == "inacuracy")
+        Debug.Log("Moved the ball to last inboundHex.");
+        if (source == "inaccuracy")
         {
             MatchManager.Instance.ChangePossession();
             Debug.Log("Changed Possession!");
@@ -169,7 +169,7 @@ public class OutOfBoundsManager : MonoBehaviour
             || (
                 outOfBoundsSide == "LeftGoalLine" // ball went out on the left side
                 && attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attacking team attacks to right
-                && source == "inacuracy" // Last one to touch is the attacking team
+                && source == "inaccuracy" // Last one to touch is the attacking team
             )
             || (
                 outOfBoundsSide == "RightGoalLine" // ball went out on the right side
@@ -179,12 +179,12 @@ public class OutOfBoundsManager : MonoBehaviour
             || (
                 outOfBoundsSide == "RightGoalLine" // ball went out on the right side
                 && attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attacking team attacks to Left
-                && source == "inacuracy" // Last one to touch is the attacking team
+                && source == "inaccuracy" // Last one to touch is the attacking team
             )
         )
         {
             Debug.Log("It's a Corner Kick");
-            if (source == "inacuracy")
+            if (source == "inaccuracy")
             {
                 MatchManager.Instance.ChangePossession();
             }
@@ -229,7 +229,7 @@ public class OutOfBoundsManager : MonoBehaviour
             || (
                 outOfBoundsSide == "LeftGoalLine" // ball went out on the left side
                 && attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attacking team attacks to Left
-                && source == "inacuracy" // Last one to touch is the attacking team
+                && source == "inaccuracy" // Last one to touch is the attacking team
             )
             || (
                 outOfBoundsSide == "RightGoalLine" // ball went out on the right side
@@ -239,17 +239,17 @@ public class OutOfBoundsManager : MonoBehaviour
             || (
                 outOfBoundsSide == "RightGoalLine" // ball went out on the right side
                 && attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attacking team attacks to right
-                && source == "inacuracy" // Last one to touch is the attacking team
+                && source == "inaccuracy" // Last one to touch is the attacking team
             )
         )
         {
             // It is a Goal Kick
             Debug.Log("It's a Goal Kick.");
-            if (source == "inacuracy")
+            if (source == "inaccuracy")
             {
                 MatchManager.Instance.ChangePossession();
             }
-            if (outOfBoundsSide == "RightGoal")  // Top half of the pitch
+            if (outOfBoundsSide == "RightGoalLine")  // Top half of the pitch
             {
                 Debug.Log("Right Side: Goal kick from center Hex at the 6-yard-box.");
                 StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0))));

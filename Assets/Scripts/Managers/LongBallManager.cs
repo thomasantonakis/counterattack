@@ -215,7 +215,7 @@ public class LongBallManager : MonoBehaviour
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int diceRoll = 0; // Melina Mode
+        int diceRoll = 5; // Melina Mode
         // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;

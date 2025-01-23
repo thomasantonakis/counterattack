@@ -194,6 +194,7 @@ public class LooseBallManager : MonoBehaviour
         yield return null;
         Debug.Log($"Input received: [{key}] pressed.");
     }
+    
     private IEnumerator WaitForInterceptionRoll(PlayerToken potentialInterceptor, HexCell hex)
     {
         Debug.Log($"Waiting for input: Press [R] to proceed.");
