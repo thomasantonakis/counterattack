@@ -13,6 +13,26 @@ public class LooseBallManager : MonoBehaviour
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
 
+    public string TranslateRollToDirection(int direction)
+    {
+        switch (direction)
+        {
+          case 0:
+            return "South";
+          case 1:
+            return "SouthWest";
+          case 2:
+            return "NorthWest";
+          case 3:
+            return "North";
+          case 4:
+            return "NorthEast";
+          case 5:
+            return "SouthEast";
+          default:
+            return "Invalid direction";  // This should never Happen
+        }
+    }
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, string resolutionType)
     {
         Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {resolutionType}");
@@ -25,9 +45,14 @@ public class LooseBallManager : MonoBehaviour
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
         yield return StartCoroutine(WaitForInput(KeyCode.R)); 
-        int directionRoll = 3; // 0-5 for hex directions
+        // int directionRoll = 0; // S
+        // int directionRoll = 1; // SW
+        // int directionRoll = 2; // NW
+        int directionRoll = 3; // N
+        // int directionRoll = 4; // NE
+        // int directionRoll = 5; // SE
         // int directionRoll = Random.Range(0, 6); // 0-5 for hex directions
-        string direction = longBallManager.TranslateRollToDirection(directionRoll);
+        string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         yield return StartCoroutine(WaitForInput(KeyCode.R));
         int distanceRoll = 6; // Distance 1-6
@@ -153,6 +178,7 @@ public class LooseBallManager : MonoBehaviour
         else
         {
             Debug.Log($"Ball Went out of Bounds");
+            movementPhaseManager.EndMovementPhase();
             outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
         }
         EndLooseBallPhase();

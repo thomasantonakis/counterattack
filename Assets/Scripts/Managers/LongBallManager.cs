@@ -10,6 +10,7 @@ public class LongBallManager : MonoBehaviour
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
     public OutOfBoundsManager outOfBoundsManager;
+    public LooseBallManager looseBallManager;
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isDangerous = false;  // Flag for difficult pass
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
@@ -218,32 +219,11 @@ public class LongBallManager : MonoBehaviour
         // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
-        string rolledDirection = TranslateRollToDirection(diceRoll);
+        string rolledDirection = looseBallManager.TranslateRollToDirection(diceRoll);
         Debug.Log($"Rolled {diceRollLabel}: Moving in {rolledDirection} direction");
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
         Debug.Log("Waiting for Distance roll... Please Press R key.");
-    }
-
-    public string TranslateRollToDirection(int direction)
-    {
-        switch (direction)
-        {
-          case 0:
-            return "South";
-          case 1:
-            return "SouthWest";
-          case 2:
-            return "NorthWest";
-          case 3:
-            return "North";
-          case 4:
-            return "NorthEast";
-          case 5:
-            return "SouthEast";
-          default:
-            return "Invalid direction";  // This should never Happen
-        }
     }
 
     IEnumerator PerformDistanceRoll()
