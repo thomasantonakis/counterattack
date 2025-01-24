@@ -10,6 +10,7 @@ public class LooseBallManager : MonoBehaviour
     public LongBallManager longBallManager;
     public GroundBallManager groundBallManager;
     public MovementPhaseManager movementPhaseManager;
+    public HeaderManager headerManager;
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
 
@@ -72,34 +73,55 @@ public class LooseBallManager : MonoBehaviour
             HexCell nextHex = outOfBoundsManager.CalculateInaccurateTarget(defenderHex, directionRoll, i+1);
             Debug.Log($"nextHex: {nextHex.coordinates}");
             path.Add(nextHex);
-            // TODO: Maybe reverse the Path
-            // currentHex = nextHex;
         }
         Debug.Log($"Path: {string.Join(" -> ", path.Select((hex, index) => $"({index}): {hex.coordinates}"))}");
 
-        // Step 5: Check for interceptions or pickups along the path
+        // Step 5: Check for pickups along the path
         PlayerToken closestToken = null;  // Track the closest token for fallback pickup
-        foreach (HexCell hex in path)
+        for (int i = 0; i < path.Count; i++)
         {
+            HexCell hex = path[i];
             Debug.Log($"Checking hex {hex.coordinates} for tokens...");
 
             // Step 5.1: Check if there is a token directly on this hex
             PlayerToken tokenOnHex = hex.GetOccupyingToken();
             if (tokenOnHex != null)
             {
-                // Store the closest token for fallback pickup
-                closestToken = tokenOnHex;
-                Debug.Log($"{tokenOnHex.name} encountered on hex {hex.coordinates}. Tracking as fallback for ball pickup.");
-                int indexOfClosestHex = path.IndexOf(hex);
-                Debug.Log($"{indexOfClosestHex}");
-                if (indexOfClosestHex >= 0) // Ensure the hex exists in the path
+                //  If we are resolving a Header Loose ball if we encounter a token that has jumped we should ignore it.
+                if (
+                    resolutionType == "header" 
+                    && (headerManager.defenderWillJump.Contains(tokenOnHex) || headerManager.attackerWillJump.Contains(tokenOnHex))
+                )
                 {
-                    path.RemoveRange(indexOfClosestHex, path.Count - indexOfClosestHex);
+                    // If we reached the distance roll Hex 
+                    // and we landed on a token that has jumped
+                    // we extend the distance roll by 1 hex and we check again.
+                    if (i == path.Count - 1)
+                    {
+                        HexCell additionalHex = outOfBoundsManager.CalculateInaccurateTarget(defenderHex, directionRoll, distanceRoll);
+                        path.Add(additionalHex);
+                    }
+                    continue;
                 }
-                Debug.Log($"Path: {string.Join(" -> ", path.Select((hex, index) => $"({index}): {hex.coordinates}"))}");
-                break; // Stop processing further hexes, as the ball can't go further
+                else
+                {
+                    // Store the closest token for fallback pickup
+                    closestToken = tokenOnHex;
+                    Debug.Log($"{tokenOnHex.name} encountered on hex {hex.coordinates}. Tracking as fallback for ball pickup.");
+                    int indexOfClosestHex = path.IndexOf(hex);
+                    Debug.Log($"{indexOfClosestHex}");
+                    if (indexOfClosestHex >= 0) // Ensure the hex exists in the path
+                    {
+                        path.RemoveRange(indexOfClosestHex, path.Count - indexOfClosestHex);
+                    }
+                    Debug.Log($"Path: {string.Join(" -> ", path.Select((hex, index) => $"({index}): {hex.coordinates}"))}");
+                    break; // Stop processing further hexes, as the ball can't go further
+                }
             }
         }
+
+        // If the path is occupied by a jumped token, we need to expand it until we find a free Hex.
+        // Up to here closestToken may or may not be null
         
         foreach (HexCell hexround2 in path)
         {
@@ -111,6 +133,8 @@ public class LooseBallManager : MonoBehaviour
                     potentialInterceptor != startingToken && // not the one who caused the loose ball
                     potentialInterceptor != closestToken && // not the one who is the fallback hit
                     !potentialInterceptor.isAttacker && // exclude all attackers
+                    !headerManager.defenderWillJump.Contains(potentialInterceptor) && // exclude defenders that are in the air // COLIN
+                    // !movementPhaseManager.stunnedTokens.Contains(potentialInterceptor) && // exclude defenders that stunned from a nutmeg // COLIN
                     !defendersTriedToIntercept.Contains(potentialInterceptor)) // Ensure the defender hasn't already tried
                 {
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");
@@ -146,18 +170,19 @@ public class LooseBallManager : MonoBehaviour
             }
         }
         Debug.Log($"No more interception chances, Moving Ball to the last Hex of the Path");
-        if (closestToken != null)
-        {path.Add(closestToken.GetCurrentHex());}
+        if (closestToken != null) {path.Add(closestToken.GetCurrentHex());}
         // Step 5.3: If no interception succeeded move the ball to the last Hex of the Path
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(path.Last()));
         // Check what is going on with where the ball went.
         // Ball ended up on a Token
         if (closestToken != null)
         {
+            // TODO: resolve based on what created the Loose Ball.
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
             {
                 Debug.Log($"Ball hit {closestToken.name}, who is an attacker");
+                // TODO: We need to check if the attacker is in a snanpshot position and offer such case.
                 movementPhaseManager.AdvanceMovementPhase();
             }
             else
@@ -168,16 +193,19 @@ public class LooseBallManager : MonoBehaviour
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
                 movementPhaseManager.EndMovementPhase();
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
-            }
+             }
         }
         else if (!path.Last().isOutOfBounds)
         {
             Debug.Log($"Ball did not hit anyone");
+            // TODO: We need to check if we are in a movement phase so that we can advance it or not.
+            // If we are not in a movement phase, we need to Start one for the attacking team.
             movementPhaseManager.AdvanceMovementPhase();
         }
         else
         {
             Debug.Log($"Ball Went out of Bounds");
+            // TODO: If it was a movement phase, end it.
             movementPhaseManager.EndMovementPhase();
             outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
         }

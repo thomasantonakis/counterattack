@@ -11,14 +11,13 @@ public class HeaderManager : MonoBehaviour
     public MatchManager matchManager;
     public HighPassManager highPassManager; // Reference to the HighPassManager
     public MovementPhaseManager movementPhaseManager; // Reference to the MovementPhaseManager
+    public LooseBallManager looseBallManager;
     public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
-
     [Header("Header States")]
     public List<PlayerToken> attEligibleToHead = new List<PlayerToken>();
     public List<PlayerToken> defEligibleToHead = new List<PlayerToken>();
     public List<PlayerToken> attackerWillJump = new List<PlayerToken>();
     public List<PlayerToken> defenderWillJump = new List<PlayerToken>();
-
     private bool hasEligibleAttackers = false;
     private bool hasEligibleDefenders = false;
     private const int HEADER_SELECTION_RANGE = 2;
@@ -358,9 +357,14 @@ public class HeaderManager : MonoBehaviour
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 yield return WaitForHeaderTargetSelection();
             }
+            else if (bestDefenderScore > bestAttackerScore)
+            {
+                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, "header"));
+                Debug.Log("Loose ball from header challenge.");
+            }
             else
             {
-                Debug.Log("Loose ball from header challenge.");
+                Debug.LogError("What is going on here? Resolve header cannot decide what happened");
             }
         }
     }
