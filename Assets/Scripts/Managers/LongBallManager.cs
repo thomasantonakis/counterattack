@@ -20,7 +20,6 @@ public class LongBallManager : MonoBehaviour
     private HexCell clickedHex;
     private HexCell lastClickedHex;
     private int directionIndex;
-    private int distanceRoll;
     private HexCell finalHex;
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
@@ -215,12 +214,11 @@ public class LongBallManager : MonoBehaviour
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        int diceRoll = 5; // Melina Mode
+        int diceRoll = 3; // Melina Mode
         // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
-        int diceRollLabel = diceRoll + 1;
         string rolledDirection = looseBallManager.TranslateRollToDirection(diceRoll);
-        Debug.Log($"Rolled {diceRollLabel}: Moving in {rolledDirection} direction");
+        Debug.Log($"Rolled {directionIndex}: Moving in {rolledDirection} direction");
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
         Debug.Log("Waiting for Distance roll... Please Press R key.");

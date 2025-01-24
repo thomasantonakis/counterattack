@@ -8,6 +8,7 @@ using System;
 
 public class MovementPhaseManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public GroundBallManager groundBallManager;
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
@@ -15,10 +16,12 @@ public class MovementPhaseManager : MonoBehaviour
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public HexCell ballHex;
+    [Header("Tokens Involved")]
     public PlayerToken selectedToken;
     [SerializeField]
     private PlayerToken selectedDefender;
     public PlayerToken nutmegVictim;
+    [Header("Boolean Flags")]
     public bool isBallPickable = false;
     public bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
     public bool isPlayerMoving = false;  // Tracks if a player is currently moving
@@ -37,6 +40,7 @@ public class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForNutmegDecisionWithoutMoving = false;
     public bool lookingForNutmegVictim = false;
     public bool isNutmegInProgress = false;
+    [Header("Informative Runtime Items")]
     public int remainingDribblerPace; // Temporary variable for dribbler's pace
     [SerializeField]
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
@@ -904,7 +908,7 @@ public class MovementPhaseManager : MonoBehaviour
             nutmegVictim = null;
             remainingDribblerPace = 0;
             // TODO: in case of a Loose Ball, is the attacker stunned?
-            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "thomas"));
+            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "ground"));
         }
  
     }

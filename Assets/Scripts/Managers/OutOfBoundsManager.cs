@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class OutOfBoundsManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
     public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source)

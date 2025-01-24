@@ -171,16 +171,16 @@ public class MatchManager : MonoBehaviour
             refereeLeniency = int.Parse(gameData.gameSettings.referee[^1].ToString());
         }
         {
-        if (ball != null)
-        {
-            PlayerToken.SetBallReference(ball);
-            Debug.Log("Ball reference assigned to PlayerToken class.");
+            if (ball != null)
+            {
+                PlayerToken.SetBallReference(ball);
+                Debug.Log("Ball reference assigned to PlayerToken class.");
+            }
+            else
+            {
+                Debug.LogError("Ball object not found in the scene!");
+            }
         }
-        else
-        {
-            Debug.LogError("Ball object not found in the scene!");
-        }
-}
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
         // Initialize the match in the KickOffSetup state
@@ -392,6 +392,7 @@ public class MatchManager : MonoBehaviour
     
     public void TriggerHeader()
     {
+        // TODO: This must be triggered after the HighPass Resolution
         // if (currentState == GameState.KickoffBlown)
         if (true)
         {

@@ -48,8 +48,8 @@ public class LooseBallManager : MonoBehaviour
         // int directionRoll = 0; // S
         // int directionRoll = 1; // SW
         // int directionRoll = 2; // NW
-        int directionRoll = 3; // N
-        // int directionRoll = 4; // NE
+        // int directionRoll = 3; // N
+        int directionRoll = 4; // NE
         // int directionRoll = 5; // SE
         // int directionRoll = Random.Range(0, 6); // 0-5 for hex directions
         string direction = TranslateRollToDirection(directionRoll);

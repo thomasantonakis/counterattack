@@ -3175,6 +3175,7 @@ MonoBehaviour:
   matchManager: {fileID: 622907910}
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
+  looseBallManager: {fileID: 757768961}
   isWaitingForHeaderRoll: 0
   attEligibleToHead: []
   defEligibleToHead: []
