@@ -69,6 +69,12 @@ public class HexCell : MonoBehaviour
             case "impossiblePass":
                 hexRenderer.material.color = Color.magenta * 0.5f;  // Use the provided color for the ball path
                 break;
+            case "highPass":
+                hexRenderer.material.color = Color.yellow;
+                break;
+            case "highPassTarget":
+                hexRenderer.material.color = new Color(51, 204, 242);
+                break;
             case "longPass":
                 hexRenderer.material.color = Color.blue * 3f;
                 break;
@@ -82,7 +88,6 @@ public class HexCell : MonoBehaviour
                 hexRenderer.material.color = Color.green;
                 break;
             case "PaceAvailable":
-                // Debug.Log($"Highlighting hex {name} for reason: {reason}");
                 hexRenderer.material.color = Color.yellow;
                 break;
             case "DefenderZOI":

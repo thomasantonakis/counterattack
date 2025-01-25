@@ -484,7 +484,7 @@ public class GameInputManager : MonoBehaviour
                             if (highPassManager.eligibleAttackers != null && highPassManager.eligibleAttackers.Contains(token))
                             {
                                 Debug.Log($"Eligible attacker {token.name} selected. Moving to the target hex.");
-                                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(highPassManager.currentTargetHex, token));  // Move attacker to target hex
+                                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(highPassManager.currentTargetHex, token, false));  // Move attacker to target hex
                                 highPassManager.StartDefenderMovementPhase();  // Transition to defender phase
                                 yield return null;  // Exit after attacker has moved
                             }
@@ -526,7 +526,7 @@ public class GameInputManager : MonoBehaviour
                             Debug.Log($"Moving {highPassManager.selectedToken.name} to hex {clickedHex.coordinates}");
 
                             // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, highPassManager.selectedToken));  // Pass the selected token
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, highPassManager.selectedToken, false));  // Pass the selected token
                             highPassManager.selectedToken = null;  // Reset after movement
 
                             if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement)
@@ -621,7 +621,7 @@ public class GameInputManager : MonoBehaviour
                             Debug.Log($"Moving {firstTimePassManager.selectedToken.name} to hex {clickedHex.coordinates}");
 
                             // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, firstTimePassManager.selectedToken));  // Pass the selected token
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, firstTimePassManager.selectedToken, false));  // Pass the selected token
                             firstTimePassManager.selectedToken = null;  // Reset after movement
 
                             if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement)

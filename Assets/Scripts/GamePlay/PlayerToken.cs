@@ -261,6 +261,7 @@ public class PlayerToken : MonoBehaviour
         transform.position = targetPosition;
         // currentHex = targetHex;
         SetCurrentHex(targetHex);
+        targetHex.ResetHighlight();
 
         // Debug.Log($"{name} moved to {targetHex.coordinates}, final position: {transform.position}");
     }

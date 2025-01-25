@@ -6,6 +6,7 @@ using System.Linq;
 
 public class HighPassManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
@@ -13,21 +14,24 @@ public class HighPassManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public OutOfBoundsManager outOfBoundsManager;
     public HeaderManager headerManager;
+    [Header("Basic Selections")]
     public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
-    public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
-    private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
-    private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     public HexCell currentTargetHex;
-    private HexCell lastClickedHex;
-    private HexCell intendedTargetHex; // New variable to store the intended target hex
-    private int directionIndex;
-    public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
-    public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
+    public HexCell lastClickedHex;
+    public HexCell intendedTargetHex; // New variable to store the intended target hex
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
+    public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
+    public int directionIndex;
+    [Header("Flags")]
+    public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
+    public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
+    public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
+    public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
 
     private const int MAX_PASS_DISTANCE = 15;
     private const int ATTACKER_MOVE_RANGE = 3;
     private const int DEFENDER_MOVE_RANGE = 3;
+    private const int ACCURACY_THRESHOLD = 8;
 
     // Step 1: Handle the input for starting the long pass (initial logic)
     void Update()
@@ -257,8 +261,7 @@ public class HighPassManager : MonoBehaviour
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
-        int accuracyThreshold = 8;
-        if (diceRoll + highPassAttribute >= accuracyThreshold)
+        if (diceRoll + highPassAttribute >= ACCURACY_THRESHOLD)
         {
             Debug.Log($"High Pass is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
@@ -381,6 +384,7 @@ public class HighPassManager : MonoBehaviour
             Debug.Log("Ball landed within bounds.");
             headerManager.FindEligibleHeaderTokens(targetHex);
         }
+        CleanUpHighPass();
     }
 
     public void HighlightHighPassArea(HexCell targetHex)
@@ -395,8 +399,7 @@ public class HighPassManager : MonoBehaviour
         // Initialize highlightedHexes to ensure it's ready for use
         hexGrid.highlightedHexes = new List<HexCell>();
         // Get hexes within a radius (e.g., 6 hexes) around the targetHex
-        int radius = 5;  // You can tweak this value as needed
-        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, radius);
+        List<HexCell> hexesInRange = HexGrid.GetHexesInRange(hexGrid, targetHex, 3);
         if (hexesInRange == null || hexesInRange.Count == 0)
         {
             Debug.LogError("No hexes found in range for highlighting.");
@@ -417,11 +420,17 @@ public class HighPassManager : MonoBehaviour
                 // Debug.LogWarning($"Hex {hex.coordinates} is out of bounds, skipping highlight.");
                 continue;  // Skip out of bounds hexes
             }
-
-            // Highlight hexes (use a specific color for Long Pass)
-            hex.HighlightHex("longPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
+            if (hex == targetHex)
+            {
+                // Highlight hexes (use a specific color for Long Pass)
+                hex.HighlightHex("highPassTarget");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
+            }
+            else
+            {
+                // Highlight hexes (use a specific color for Long Pass)
+                hex.HighlightHex("highPass");  // Assuming HexHighlightReason.LongPass is defined for long pass highlights
+            }
             hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes for later clearing
-
             // Debug.Log($"Highlighted Hex at coordinates: ({hex.coordinates.x}, {hex.coordinates.z})");
         }
 
@@ -479,7 +488,7 @@ public class HighPassManager : MonoBehaviour
                 Debug.Log($"Automatically moving attacker {selectedToken.name} to target hex.");
 
                 // Automatically move the attacker to the target hex
-                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(currentTargetHex, selectedToken));
+                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(currentTargetHex, selectedToken, false));
 
                 // Directly proceed to the defender movement phase after the attacker moves
                 StartDefenderMovementPhase();
@@ -533,4 +542,13 @@ public class HighPassManager : MonoBehaviour
         movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);  // Highlight movement options
     }
 
+    private void CleanUpHighPass()
+    {
+        selectedToken = null;
+        currentTargetHex = null;
+        lastClickedHex = null;
+        intendedTargetHex = null;
+        directionIndex = 240885; // Something implausible
+        eligibleAttackers.Clear();
+    }
 }

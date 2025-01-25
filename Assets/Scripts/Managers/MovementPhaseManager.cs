@@ -307,7 +307,7 @@ public class MovementPhaseManager : MonoBehaviour
         return isValid;
     }
 
-    public IEnumerator MoveTokenToHex(HexCell targetHex, PlayerToken token = null)
+    public IEnumerator MoveTokenToHex(HexCell targetHex, PlayerToken token = null, bool isCalledDuringMovement = true)
     {
         PlayerToken movingToken = token ?? selectedToken;
         if (movingToken == null)
@@ -318,8 +318,9 @@ public class MovementPhaseManager : MonoBehaviour
 
         // Find the path from the current hex to the target hex
         List<HexCell> path;
-        HexCell ballHex= ball.GetCurrentHex();
-        if (targetHex != ballHex)
+        HexCell ballHex = ball.GetCurrentHex();
+        // If We call this method during HP or FTP moves, find the shortest path 
+        if (targetHex != ballHex && isCalledDuringMovement)
         {
             ballHex.isDefenseOccupied = true;
             path = HexGridUtils.FindPath(movingToken.GetCurrentHex(), targetHex, hexGrid);
@@ -336,13 +337,14 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
         
-        if (movingToken.IsDribbler && !isDribblerRunning)
+        if (movingToken.IsDribbler && !isDribblerRunning && isCalledDuringMovement)
         {
             Debug.Log("isDribblerRunning set to true");
             isDribblerRunning = true;
         }
         // Start the token movement across the hexes in the path
         yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
+        if (!isCalledDuringMovement) {yield break;}
         if (targetHex == ballHex)
         {
             Debug.Log("isDribblerRunning set to true because someone picked up the ball.");
@@ -589,6 +591,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();
+        finalHex.ResetHighlight();
         ball.AdjustBallHeightBasedOnOccupancy();
         isPlayerMoving = false;  // Player finished moving
     }
@@ -1023,9 +1026,9 @@ public class MovementPhaseManager : MonoBehaviour
                         yield return StartCoroutine(winner.JumpToHex(clickedHex)); // Move the token
                         isWaitingForReposition = false;
                         ball.PlaceAtCell(clickedHex); // Move the ball
-                        clickedHex.HighlightHex("isAttackOccupied");
+                        // clickedHex.ResetHighlight();
+                        // clickedHex.HighlightHex("isAttackOccupied");
                         Debug.Log("Repositioning complete.");
-                        // selectedToken = winner;
                         DribblerMoved1HexOrReposition();
                     }
                 }
