@@ -248,7 +248,7 @@ public class HighPassManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
-        int diceRoll = 1; // Melina Mode
+        int diceRoll = 6; // Melina Mode
         // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();

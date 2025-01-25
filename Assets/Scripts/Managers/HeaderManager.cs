@@ -36,6 +36,7 @@ public class HeaderManager : MonoBehaviour
             }
         }
     }
+    
     public void FindEligibleHeaderTokens(HexCell landingHex)
     {
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
@@ -90,7 +91,6 @@ public class HeaderManager : MonoBehaviour
             StartAttackHeaderSelection();
         }
     }
-
     // Method to start the attacker's header selection
     public void StartAttackHeaderSelection()
     {
@@ -292,7 +292,8 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        int roll = Random.Range(1, 7);
+                        // int roll = Random.Range(1, 7);
+                        int roll = 4;
                         int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[attacker] = (roll, totalScore);
                         Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading}{penaltyInfo} = {totalScore}");
@@ -315,7 +316,8 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        int roll = Random.Range(1, 7);
+                        // int roll = Random.Range(1, 7);
+                        int roll = 4;
                         int totalScore = roll + defender.heading + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[defender] = (roll, totalScore);
                         Debug.Log($"Defender {defender.name} rolled {roll} + heading {defender.heading}{penaltyInfo} = {totalScore}");
@@ -357,7 +359,7 @@ public class HeaderManager : MonoBehaviour
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 yield return WaitForHeaderTargetSelection();
             }
-            else if (bestDefenderScore > bestAttackerScore)
+            else if (bestDefenderScore == bestAttackerScore)
             {
                 StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, "header"));
                 Debug.Log("Loose ball from header challenge.");

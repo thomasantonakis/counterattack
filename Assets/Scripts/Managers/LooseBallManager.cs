@@ -56,7 +56,7 @@ public class LooseBallManager : MonoBehaviour
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         yield return StartCoroutine(WaitForInput(KeyCode.R));
-        int distanceRoll = 6; // Distance 1-6
+        int distanceRoll = 1; // Distance 1-6
         // int distanceRoll = Random.Range(1, 7); // Distance 1-6
 
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
@@ -98,7 +98,7 @@ public class LooseBallManager : MonoBehaviour
                     // we extend the distance roll by 1 hex and we check again.
                     if (i == path.Count - 1)
                     {
-                        HexCell additionalHex = outOfBoundsManager.CalculateInaccurateTarget(defenderHex, directionRoll, distanceRoll);
+                        HexCell additionalHex = outOfBoundsManager.CalculateInaccurateTarget(hex, directionRoll, 1);
                         path.Add(additionalHex);
                     }
                     continue;

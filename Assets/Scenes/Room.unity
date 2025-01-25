@@ -1428,6 +1428,7 @@ MonoBehaviour:
   longBallManager: {fileID: 748552023}
   groundBallManager: {fileID: 1703800862}
   movementPhaseManager: {fileID: 1390513032}
+  headerManager: {fileID: 2071234817}
   defendersTriedToIntercept: []
   path: []
 --- !u!4 &757768962
@@ -3121,11 +3122,16 @@ MonoBehaviour:
   outOfBoundsManager: {fileID: 1326402186}
   headerManager: {fileID: 2071234817}
   lockedAttacker: {fileID: 0}
-  isWaitingForAccuracyRoll: 0
   currentTargetHex: {fileID: 0}
-  isWaitingForConfirmation: 0
-  eligibleAttackers: []
+  lastClickedHex: {fileID: 0}
+  intendedTargetHex: {fileID: 0}
   selectedToken: {fileID: 0}
+  eligibleAttackers: []
+  directionIndex: 0
+  isWaitingForConfirmation: 0
+  isWaitingForAccuracyRoll: 0
+  isWaitingForDirectionRoll: 0
+  isWaitingForDistanceRoll: 0
 --- !u!4 &1859472973
 Transform:
   m_ObjectHideFlags: 0
