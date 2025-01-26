@@ -22,6 +22,7 @@ public class MovementPhaseManager : MonoBehaviour
     private PlayerToken selectedDefender;
     public PlayerToken nutmegVictim;
     [Header("Boolean Flags")]
+    public bool isMovementPhaseInProgress = false;
     public bool isBallPickable = false;
     public bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
     public bool isPlayerMoving = false;  // Tracks if a player is currently moving
@@ -315,6 +316,7 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogError("No token selected to move.");
             yield break;
         }
+        isMovementPhaseInProgress = true;
 
         // Find the path from the current hex to the target hex
         List<HexCell> path;
@@ -1168,6 +1170,7 @@ public class MovementPhaseManager : MonoBehaviour
         stunnedTokens.AddRange(stunnedforNext);
         stunnedforNext.Clear();
         headerManager.ResetHeader();  // Reset the header to free up unmovable players
+        isMovementPhaseInProgress = false;
         Debug.Log("Movement phase is over.");
     }
 
