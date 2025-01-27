@@ -442,16 +442,16 @@ public class MatchManager : MonoBehaviour
     public void LoadGameSettingsFromJson()
     {
         string filePath;
-        // Retrieve the most recent file from ApplicationManager or fallback to finding it directly
+        // Check ApplicationManager for the most recent file
         if (ApplicationManager.Instance != null && !string.IsNullOrEmpty(ApplicationManager.Instance.LastSavedFileName))
         {
-            filePath = Path.Combine(Application.persistentDataPath, ApplicationManager.Instance.LastSavedFileName);
+            filePath = Path.Combine(Path.Combine(Application.persistentDataPath, "SavedGames"), ApplicationManager.Instance.LastSavedFileName);
         }
         else
         {
-            string folderPath = Application.persistentDataPath;
+            string folderPath = Path.Combine(Application.persistentDataPath, "SavedGames");
+            // Get JSON files in the folder
             string[] files = Directory.GetFiles(folderPath, "*.json");
-
             if (files.Length == 0)
             {
                 Debug.LogWarning("No game settings files found in the persistent data path!");

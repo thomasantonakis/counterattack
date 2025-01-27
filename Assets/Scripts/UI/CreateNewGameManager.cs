@@ -292,7 +292,8 @@ public class CreateNewGameManager : MonoBehaviour
         string fileName = $"{randomPrefix}_{timestamp}__{gameMode}__{homeTeam}__{awayTeam}.json";
 
         // Path where you want to save the file
-        string path = Path.Combine(Application.persistentDataPath, fileName);
+        // string path = Path.Combine(Application.persistentDataPath, fileName);
+        string path = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), fileName);
 
         // Write the file
         File.WriteAllText(path, json);

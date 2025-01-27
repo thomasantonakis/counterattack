@@ -57,60 +57,70 @@ public class HexCell : MonoBehaviour
     
     public void HighlightHex(string reason, float darkness = 0)
     {
+        if (hexRenderer == null)
+        {
+            Debug.LogError($"Hex {coordinates} is missing a renderer. Cannot highlight.");
+            return;
+        }
+        // Define your color logic
+        Color colorToApply = Color.white; // Default to white
+
         // Apply the color to the hex based on the reason
         // Debug.Log($"Highlighting hex {name} for reason: {reason}");
         switch (reason)
         {
             case "hover":
-                hexRenderer.material.color = originalColor * 0.5f;  // Darken the hex on hover
+                colorToApply = originalColor * 0.5f;  // Darken the hex on hover
                 break;
             case "ballPath":
-                hexRenderer.material.color = Color.blue;  // Use the provided color for the ball path
+                colorToApply = Color.blue;  // Use the provided color for the ball path
                 break;
             case "dangerousPass":
-                hexRenderer.material.color = Color.magenta;  // Use the provided color for the ball path
+                colorToApply = Color.magenta;  // Use the provided color for the ball path
                 break;
             case "impossiblePass":
-                hexRenderer.material.color = Color.magenta * 0.5f;  // Use the provided color for the ball path
+                colorToApply = Color.magenta * 0.5f;  // Use the provided color for the ball path
                 break;
             case "highPass":
-                hexRenderer.material.color = Color.yellow;
+                colorToApply = Color.yellow;
                 break;
             case "highPassTarget":
-                hexRenderer.material.color = new Color(51, 204, 242);
+                colorToApply = new Color(51, 204, 242);
                 break;
             case "longPass":
-                hexRenderer.material.color = Color.blue * 3f;
+                colorToApply = Color.blue * 3f;
                 break;
             case "longPassDifficult":
-                hexRenderer.material.color = Color.blue * 2f;
+                colorToApply = Color.blue * 2f;
                 break;
             case "isDefenseOccupied":
-                hexRenderer.material.color = Color.red;
+                colorToApply = Color.red;
                 break;
             case "isAttackOccupied":
-                hexRenderer.material.color = Color.green;
+                colorToApply = Color.green;
                 break;
             case "PaceAvailable":
-                hexRenderer.material.color = Color.yellow;
+                colorToApply = Color.yellow;
                 break;
             case "DefenderZOI":
-                hexRenderer.material.color = Color.yellow * 0.5f;
+                colorToApply = Color.yellow * 0.5f;
                 break;
             case "reposition":
-                hexRenderer.material.color = Color.gray;// * 0.5f;
+                colorToApply = Color.gray;// * 0.5f;
                 break;
             case "nutmeggableDef":
-                hexRenderer.material.color = new Color(51, 204, 242);// * 0.5f;
+                colorToApply = new Color(51, 204, 242);// * 0.5f;
                 break;
             case "CanShootFrom":
-                hexRenderer.material.color = Color.white / darkness;// * 0.5f;
+                colorToApply = Color.white / darkness;// * 0.5f;
                 break;
             // Add other cases if needed
             default:
-                hexRenderer.material.color = originalColor;  // Reset to original color if no valid reason
+                colorToApply = originalColor;  // Reset to original color if no valid reason
                 break;
         }
+        // Set the color directly to override all material properties
+        hexRenderer.material.SetColor("_Color", colorToApply);
         // // Apply the color to the hex based on the reason
         // hexRenderer.material.color = reason switch
         // {
