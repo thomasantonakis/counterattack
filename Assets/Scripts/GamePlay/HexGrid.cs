@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json; // Now it will recognize JsonConvert
+using Newtonsoft.Json;
+using System; // Now it will recognize JsonConvert
 
 public class HexGrid : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class HexGrid : MonoBehaviour
         CreateOutOfBoundsPlanes(this);
         // Path to save or load the shooting paths JSON
         string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
+        // if (false)
         if (File.Exists(path))
         {
             Debug.Log("Found JSON with Shooting Paths. Deserializing...");
@@ -464,21 +466,21 @@ public class HexGrid : MonoBehaviour
             }
         }
         // List<HexCell> allHexes = cells(); // All hexes on the grid
-        List<HexCell> canShootToHexes = allHexes.Where(hex => hex.coordinates.x == 19 && hex.coordinates.z >= -4 && hex.coordinates.z <= 3).ToList();
+        List<HexCell> canShootToHexes = allHexes.Where(hex => Mathf.Abs(hex.coordinates.x) == 19 && hex.coordinates.z >= -4 && hex.coordinates.z <= 3).ToList();
         // Debug.Log($"Can shoot to {canShootToHexes.Count} hexes.");
-        List<HexCell> potentialCanShootFromHexes = allHexes.Where(hex => hex.coordinates.x >= 8 && !hex.isOutOfBounds).ToList();
+        List<HexCell> potentialCanShootFromHexes = allHexes.Where(hex => Mathf.Abs(hex.coordinates.x) >= 8 && !hex.isOutOfBounds).ToList();
         // List<HexCell> potentialCanShootFromHexes = new List<HexCell>
         // {
-        //   // GetHexCellAt(new Vector3Int(12, 0, 0)),
-        //   // GetHexCellAt(new Vector3Int(12, 0, 6)),
-        //   // GetHexCellAt(new Vector3Int(12, 0, -6))
-        //   GetHexCellAt(new Vector3Int(16, 0, -12))
+        //   GetHexCellAt(new Vector3Int(12, 0, 0)),
+        //   GetHexCellAt(new Vector3Int(12, 0, 6)),
+        //   GetHexCellAt(new Vector3Int(12, 0, -6))
+        //   // GetHexCellAt(new Vector3Int(16, 0, -12))
         // };
 
         // Get NE and SE corner z-values for validation
-        HexCell hex183 = GetHexCellAt(new Vector3Int(18, 0, 3)); // NE corner
+        // HexCell hex183 = GetHexCellAt(new Vector3Int(18, 0, 3)); // NE corner
         HexCell hex18_3 = GetHexCellAt(new Vector3Int(18, 0, -3)); // SE corner
-        float zNE183 = hex183.GetHexCorners()[2].z;
+        // float zNE183 = hex183.GetHexCorners()[2].z;
         float zSE18_3 = hex18_3.GetHexCorners()[0].z;
 
         // Outer dictionary: CanShootFrom -> (CanShootTo -> Path)
@@ -488,6 +490,11 @@ public class HexGrid : MonoBehaviour
         {
             foreach (HexCell toHex in canShootToHexes)
             {
+                if (fromHex.coordinates.x * toHex.coordinates.x < 0) 
+                {
+                    Debug.Log($"Skipping {fromHex.coordinates} to {toHex.coordinates} because they are on opposite sides of the field.");
+                    continue;
+                }
                 Vector3Int fromCubeCoords = HexGridUtils.OffsetToCube(fromHex.coordinates.x, fromHex.coordinates.z);
                 Vector3Int toCubeCoords = HexGridUtils.OffsetToCube(toHex.coordinates.x, toHex.coordinates.z);
                 // Calculate the distance
@@ -502,9 +509,9 @@ public class HexGrid : MonoBehaviour
                 float intersectionZ = CalculateIntersectionWithGoalLine(fromHex, toHex);
 
                 // Validate the intersection point
-                if (intersectionZ <  zSE18_3 || intersectionZ > zNE183)
+                if (Mathf.Abs(intersectionZ) >= MathF.Abs(zSE18_3))
                 {
-                    Debug.Log($"Line that connects centers of {fromHex.coordinates} and {toHex.coordinates} does not intersect with goal line. IntersectionZ: {intersectionZ} zNE183: {zNE183} zSE18_3: {zSE18_3}");
+                    Debug.Log($"Line that connects centers of {fromHex.coordinates} and {toHex.coordinates} does not intersect with goal line. IntersectionZ: {intersectionZ}, zSE18_3: {zSE18_3}");
                     continue;
                 }
 
@@ -697,10 +704,12 @@ public class HexGrid : MonoBehaviour
         float slope = (z2 - z1) / (x2 - x1);
         float intercept = z1 - (slope * x1);
         float xNE183 = GetHexCellAt(new Vector3Int(18, 0, 3)).GetHexCorners()[2].x;
-        // Debug.Log($"slope is {slope}, intercept is {intercept}, xNE183 is {xNE183}");
+        float xSW_18_3 = GetHexCellAt(new Vector3Int(-18, 0, -3)).GetHexCorners()[5].x;
+        Debug.Log($"slope is {slope}, intercept is {intercept}, xNE183 is {xNE183}, xSW_18_3 is {xSW_18_3}");
         // Calculate the intersection Z value when x = 18 (goal line)
-        float intersectionZ = (slope * xNE183) + intercept;
-        // Debug.Log($"Intersection Z value: {intersectionZ} for line from {fromHex.coordinates} to {toHex.coordinates}");
+        float xFinal = fromHex.coordinates.x > 0 ? xNE183 : xSW_18_3;
+        float intersectionZ = (slope * xFinal) + intercept;
+        Debug.Log($"Intersection Z value: {intersectionZ} for line from {fromHex.coordinates} to {toHex.coordinates}");
         return intersectionZ; // Intersection is out of bounds
         // return float.NaN;
     }
