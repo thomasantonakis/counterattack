@@ -39,6 +39,8 @@ public class ApplicationManager : MonoBehaviour
     // Provide the folder path for saving/loading files
     public string GetSaveFolderPath()
     {
-        return Application.persistentDataPath; // Centralized access to the folder path
+        string folderPath = Path.Combine(Application.persistentDataPath, "SavedGames");
+        Debug.Log($"Save folder path: {folderPath}");
+        return folderPath; // Centralized access to the folder path
     }
 }
