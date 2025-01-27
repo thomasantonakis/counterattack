@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json; // Now it will recognize JsonConvert
 
 public class HexGrid : MonoBehaviour
 {
@@ -14,8 +17,10 @@ public class HexGrid : MonoBehaviour
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
     public Ball ball;
+    private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
     public GroundBallManager groundBallManager;
     public List<HexCell> highlightedHexes = new List<HexCell>();
+    
 
     private void Start()
     {
@@ -25,12 +30,40 @@ public class HexGrid : MonoBehaviour
             cells = new HexCell[width, height];
             Debug.Log("HexGrid initialized. Creating grid...");
             CreateGrid();  // Generate the grid
-            gridInitialized = true;  // Mark the grid as initialized
         }
         // Create out-of-bounds planes around the grid
         CreateOutOfBoundsPlanes(this);
+        // Path to save or load the shooting paths JSON
+        string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
+        if (File.Exists(path))
+        {
+            Debug.Log("Found JSON with Shooting Paths. Deserializing...");
+            string json = File.ReadAllText(path);
+            shootingPaths = DeserializeShootingPaths(json);
+            AssignShootingPathsToHexes();
+        }
+        else
+        {
+            Debug.Log("No shooting paths found. Calculating paths...");
+            CalculateShootingPaths();
+            SaveShootingPathsToJson();
+            AssignShootingPathsToHexes();
+        }
+        HighlightShootingHexes();
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(12, 0, 0)).GetHexCenter()}");
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()}");
+        // float zNE183 = GetHexCellAt(new Vector3Int(18, 0, 3)).GetHexCorners()[2].z;
+        // Debug.Log($"zNE183: {zNE183}");
+        // float zSE18_3 = GetHexCellAt(new Vector3Int(18, 0, -3)).GetHexCorners()[0].z;
+        // Debug.Log($"zSE18_3: {zSE18_3}");
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[1]}");
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[2]}");
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[3]}");
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[4]}");
+        // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[5]}");
         // InitializePlayers(10, 10);
     }
+    
 
     void Update()
     {
@@ -47,6 +80,7 @@ public class HexGrid : MonoBehaviour
             }
         }
         Debug.Log("HexGrid created with dimensions: " + width + "x" + height);
+        gridInitialized = true;  // Mark the grid as initialized
     }
 
     public bool IsGridInitialized()
@@ -233,11 +267,6 @@ public class HexGrid : MonoBehaviour
         return attackerHexes;
     }
 
-    /// <summary>
-    /// Retrieves a list of neighboring hex cells for the given list of defender hex cells.
-    /// </summary>
-    /// <param name="defenderHexes">A list of hex cells representing the defenders.</param>
-    /// <returns>A list of hex cells that are neighbors to the given defender hex cells.</returns>
     public List<HexCell> GetDefenderNeighbors(List<HexCell> defenderHexes)
     {
 
@@ -416,4 +445,264 @@ public class HexGrid : MonoBehaviour
         Debug.Log($"Total valid hexes: {validHexes.Count}");
         return validHexes;
     }
+
+    public void CalculateShootingPaths()
+    {
+        List<HexCell> allHexes = new List<HexCell>();
+        int rows = cells.GetLength(0); // Assuming cells is a 2D array
+        int cols = cells.GetLength(1);
+
+        for (int x = 0; x < rows; x++)
+        {
+            for (int z = 0; z < cols; z++)
+            {
+                HexCell cell = cells[x, z];
+                if (cell != null) // Ensure cell exists
+                {
+                    allHexes.Add(cell);
+                }
+            }
+        }
+        // List<HexCell> allHexes = cells(); // All hexes on the grid
+        List<HexCell> canShootToHexes = allHexes.Where(hex => hex.coordinates.x == 19 && hex.coordinates.z >= -4 && hex.coordinates.z <= 3).ToList();
+        // Debug.Log($"Can shoot to {canShootToHexes.Count} hexes.");
+        List<HexCell> potentialCanShootFromHexes = allHexes.Where(hex => hex.coordinates.x >= 8 && !hex.isOutOfBounds).ToList();
+        // List<HexCell> potentialCanShootFromHexes = new List<HexCell>
+        // {
+        //   // GetHexCellAt(new Vector3Int(12, 0, 0)),
+        //   // GetHexCellAt(new Vector3Int(12, 0, 6)),
+        //   // GetHexCellAt(new Vector3Int(12, 0, -6))
+        //   GetHexCellAt(new Vector3Int(16, 0, -12))
+        // };
+
+        // Get NE and SE corner z-values for validation
+        HexCell hex183 = GetHexCellAt(new Vector3Int(18, 0, 3)); // NE corner
+        HexCell hex18_3 = GetHexCellAt(new Vector3Int(18, 0, -3)); // SE corner
+        float zNE183 = hex183.GetHexCorners()[2].z;
+        float zSE18_3 = hex18_3.GetHexCorners()[0].z;
+
+        // Outer dictionary: CanShootFrom -> (CanShootTo -> Path)
+        shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
+
+        foreach (HexCell fromHex in potentialCanShootFromHexes)
+        {
+            foreach (HexCell toHex in canShootToHexes)
+            {
+                Vector3Int fromCubeCoords = HexGridUtils.OffsetToCube(fromHex.coordinates.x, fromHex.coordinates.z);
+                Vector3Int toCubeCoords = HexGridUtils.OffsetToCube(toHex.coordinates.x, toHex.coordinates.z);
+                // Calculate the distance
+                int distance = HexGridUtils.GetHexDistance(fromCubeCoords, toCubeCoords);
+                Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates}: {distance}");
+                if (distance > 11) 
+                {
+                    Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates} is too far: {distance}");
+                    continue;
+                }
+
+                float intersectionZ = CalculateIntersectionWithGoalLine(fromHex, toHex);
+
+                // Validate the intersection point
+                if (intersectionZ <  zSE18_3 || intersectionZ > zNE183)
+                {
+                    Debug.Log($"Line that connects centers of {fromHex.coordinates} and {toHex.coordinates} does not intersect with goal line. IntersectionZ: {intersectionZ} zNE183: {zNE183} zSE18_3: {zSE18_3}");
+                    continue;
+                }
+
+                // Calculate the path using the ball's radius
+                List<HexCell> path = groundBallManager.CalculateThickPath(fromHex, toHex, ball.ballRadius);
+                if (path == null || path.Count == 0)
+                {
+                    Debug.Log($"No path found from {fromHex.coordinates} to {toHex.coordinates}.");
+                    continue;
+                }
+
+                // Store the result in the dictionary
+                if (!shootingPaths.ContainsKey(fromHex))
+                {
+                    shootingPaths[fromHex] = new Dictionary<HexCell, List<HexCell>>();
+                }
+                shootingPaths[fromHex][toHex] = path;
+
+                // Mark the "from" hex as a valid shooting origin
+                fromHex.CanShootFrom = true;
+                // Debug.Log($"Shooting path found from {fromHex.coordinates} to {toHex.coordinates}.");
+            }
+            if (fromHex.CanShootFrom)
+            {
+                Debug.Log($"Finished calculating shooting paths from {fromHex.coordinates}, found {shootingPaths[fromHex].Count()} possible targets");
+            }
+            else
+            {
+                Debug.Log($"Finished calculating shooting paths from {fromHex.coordinates}, without finding ANY possible targets");
+            }
+        }
+        Debug.Log("Shooting paths calculated!");
+    }
+
+    private void AssignShootingPathsToHexes()
+    {
+        if (shootingPaths == null)
+        {
+            Debug.LogError("shootingPaths is null! Ensure CalculateShootingPaths is called before this.");
+            return;
+        }
+
+        foreach (var fromHex in shootingPaths.Keys)
+        {
+            if (fromHex == null)
+            {
+                Debug.LogWarning("Found null fromHex in shootingPaths keys.");
+                continue; // Skip null keys
+            }
+
+            fromHex.CanShootFrom = true; // Assign CanShootFrom to true
+
+            foreach (var toHex in shootingPaths[fromHex].Keys)
+            {
+                if (toHex == null)
+                {
+                    Debug.LogWarning($"Null toHex found in shootingPaths for {fromHex.coordinates}");
+                    continue; // Skip null values
+                }
+
+                // Assign the dictionary of CanShootTo paths
+                if (fromHex.ShootingPaths == null)
+                {
+
+                    Debug.Log($"There was no ShootingPaths in fromHex: {fromHex.coordinates}");
+                    fromHex.ShootingPaths = new Dictionary<HexCell, List<HexCell>>();
+                }
+
+                fromHex.ShootingPaths[toHex] = shootingPaths[fromHex][toHex];
+            }
+        }
+        Debug.Log("Finished Assigning CanShootFrom and CanShootTo paths to hexes.");
+    }
+    private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> DeserializeShootingPaths(string json)
+    {
+        // Deserialize into a structure with string keys first
+        var serializablePaths = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<string>>>>(json);
+
+        var rehydratedPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
+
+        foreach (var fromEntry in serializablePaths)
+        {
+            Vector3Int fromCoords = ParseVector3Int(fromEntry.Key); // Convert string back to Vector3Int
+            HexCell fromHex = GetHexCellAt(fromCoords);
+            if (fromHex == null) continue;
+
+            rehydratedPaths[fromHex] = new Dictionary<HexCell, List<HexCell>>();
+
+            foreach (var toEntry in fromEntry.Value)
+            {
+                Vector3Int toCoords = ParseVector3Int(toEntry.Key); // Convert string back to Vector3Int
+                HexCell toHex = GetHexCellAt(toCoords);
+                if (toHex == null) continue;
+
+                // Convert path strings back to HexCell objects
+                List<HexCell> path = toEntry.Value
+                    .Select(coordString => GetHexCellAt(ParseVector3Int(coordString)))
+                    .Where(hex => hex != null)
+                    .ToList();
+
+                rehydratedPaths[fromHex][toHex] = path;
+            }
+        }
+
+        return rehydratedPaths;
+    }
+
+    private Vector3Int ParseVector3Int(string vectorString)
+    {
+        vectorString = vectorString.Trim('(', ')'); // Remove parentheses
+        string[] parts = vectorString.Split(',');  // Split by commas
+        int x = int.Parse(parts[0].Trim());
+        int y = int.Parse(parts[1].Trim());
+        int z = int.Parse(parts[2].Trim());
+        return new Vector3Int(x, y, z);
+    }
+
+    private void SaveShootingPathsToJson()
+    {
+        var serializablePaths = new Dictionary<string, Dictionary<string, List<string>>>();
+
+        foreach (var fromHex in shootingPaths.Keys)
+        {
+            string fromKey = fromHex.coordinates.ToString(); // Convert Vector3Int to string
+            serializablePaths[fromKey] = new Dictionary<string, List<string>>();
+
+            foreach (var toHex in shootingPaths[fromHex].Keys)
+            {
+                string toKey = toHex.coordinates.ToString(); // Convert Vector3Int to string
+                List<string> pathKeys = shootingPaths[fromHex][toHex]
+                    .Select(pathHex => pathHex.coordinates.ToString()) // Convert path HexCells to strings
+                    .ToList();
+
+                serializablePaths[fromKey][toKey] = pathKeys;
+            }
+        }
+
+        // Serialize to JSON
+        string json = JsonConvert.SerializeObject(serializablePaths, Formatting.Indented);
+        string filePath = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
+        File.WriteAllText(filePath, json);
+        Debug.Log($"Shooting paths saved to {filePath}");
+    }
+
+    private void HighlightShootingHexes()
+    {
+        Debug.Log("Hello from HighlightShootingHexes");
+        foreach (var fromHex in shootingPaths.Keys) // Keys are already HexCell objects
+        {
+            float count = shootingPaths[fromHex].Count;
+            Debug.Log($"Hex {fromHex.coordinates} can shoot to {shootingPaths[fromHex].Count} hexes.");
+            if (fromHex != null) 
+            {
+                fromHex.HighlightHex("CanShootFrom", count);
+            }
+
+            // Uncomment the following if you also want to highlight the paths to CanShootTo hexes
+            // foreach (var toHex in shootingPaths[fromHex].Keys)
+            // {
+            //     List<HexCell> path = shootingPaths[fromHex][toHex];
+            //     foreach (HexCell hex in path)
+            //     {
+            //         hex.HighlightHex("PathHighlight");
+            //     }
+            // }
+        }
+    }
+
+    private float CalculateIntersectionWithGoalLine(HexCell fromHex, HexCell toHex)
+    {
+
+        // Calculate the intersection z-value
+        Vector3 fromCenter = fromHex.GetHexCenter();
+        Vector3 toCenter = toHex.GetHexCenter();
+
+        // Extract world coordinates
+        float x1 = fromCenter.x;
+        float z1 = fromCenter.z;
+        float x2 = toCenter.x;
+        float z2 = toCenter.z;
+
+        // Check if the line is vertical
+        if (Mathf.Abs(x2 - x1) < Mathf.Epsilon)
+        {
+            Debug.LogError("The line is vertical. Cannot calculate intersection with goal line.");
+            return float.NaN; // Return invalid value
+        }
+
+        // Calculate the slope and intercept of the line in world coordinates
+        float slope = (z2 - z1) / (x2 - x1);
+        float intercept = z1 - (slope * x1);
+        float xNE183 = GetHexCellAt(new Vector3Int(18, 0, 3)).GetHexCorners()[2].x;
+        // Debug.Log($"slope is {slope}, intercept is {intercept}, xNE183 is {xNE183}");
+        // Calculate the intersection Z value when x = 18 (goal line)
+        float intersectionZ = (slope * xNE183) + intercept;
+        // Debug.Log($"Intersection Z value: {intersectionZ} for line from {fromHex.coordinates} to {toHex.coordinates}");
+        return intersectionZ; // Intersection is out of bounds
+        // return float.NaN;
+    }
+
 }

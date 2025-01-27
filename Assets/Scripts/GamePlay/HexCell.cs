@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;  // Import TextMeshPro namespace
 
@@ -19,6 +20,9 @@ public class HexCell : MonoBehaviour
     private Renderer hexRenderer;
     private Color originalColor;
     public PlayerToken occupyingToken;
+    public bool CanShootFrom = false; // Displayed in Inspector
+    public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
+
 
     void Awake()
     {
@@ -51,7 +55,7 @@ public class HexCell : MonoBehaviour
         }
     }
     
-    public void HighlightHex(string reason)
+    public void HighlightHex(string reason, float darkness = 0)
     {
         // Apply the color to the hex based on the reason
         // Debug.Log($"Highlighting hex {name} for reason: {reason}");
@@ -98,6 +102,9 @@ public class HexCell : MonoBehaviour
                 break;
             case "nutmeggableDef":
                 hexRenderer.material.color = new Color(51, 204, 242);// * 0.5f;
+                break;
+            case "CanShootFrom":
+                hexRenderer.material.color = Color.white / darkness;// * 0.5f;
                 break;
             // Add other cases if needed
             default:
