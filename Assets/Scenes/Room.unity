@@ -636,6 +636,7 @@ MonoBehaviour:
   longBallManager: {fileID: 748552023}
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
+  looseBallManager: {fileID: 757768961}
   headerManager: {fileID: 2071234817}
   freeKickManager: {fileID: 1688718062}
   shotManager: {fileID: 1740884027}
@@ -1432,6 +1433,8 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   defendersTriedToIntercept: []
   path: []
+  causingDeflection: {fileID: 0}
+  ballHitThisToken: {fileID: 0}
 --- !u!4 &757768962
 Transform:
   m_ObjectHideFlags: 0
@@ -3000,7 +3003,16 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   hexGrid: {fileID: 1405702520}
   isShotInProgress: 0
+  isWaitingforBlockerSelection: 0
+  isWaitingforBlockerMovement: 0
+  isWaitingForTargetSelection: 0
+  isWaitingForBlockDiceRoll: 0
+  isWaitingForShotRoll: 0
   shotType: 
+  shooter: {fileID: 0}
+  tokenMoveforDeflection: {fileID: 0}
+  targetHex: {fileID: 0}
+  currentDefenderBlockingHex: {fileID: 0}
 --- !u!4 &1740884028
 Transform:
   m_ObjectHideFlags: 0

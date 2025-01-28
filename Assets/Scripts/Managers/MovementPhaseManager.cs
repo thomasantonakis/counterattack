@@ -503,7 +503,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         nutmeggableDefenders = GetNutmeggableDefenders(selectedToken, hexGrid); // TODO: What the fuck is this doing here?
         // TODO: method to identify if dribbler is in opponent's Penalty Box
-        bool isDribblerinOppPenBox = IsDribblerinOpponentPenaltyBox();
+        bool isDribblerinOppPenBox = IsDribblerinOpponentPenaltyBox(selectedToken);
         if (isDribblerinOppPenBox)
         {
             Debug.Log($"{selectedToken.name} is in the opponent penalty Box. Press [S] to take a snapshot!");
@@ -1333,7 +1333,7 @@ public class MovementPhaseManager : MonoBehaviour
         return token;
     }
 
-    public bool IsDribblerinOpponentPenaltyBox()
+    public bool IsDribblerinOpponentPenaltyBox(PlayerToken token)
     {
         bool DribberIsInOpponentPenaltyBox = false;
         MatchManager.TeamAttackingDirection attackingDirection;
@@ -1350,13 +1350,13 @@ public class MovementPhaseManager : MonoBehaviour
             (
                 attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attackers shoot to the Right
                 && ballHex.isInPenaltyBox == 1 // In Right PenaltyBox
-                && selectedToken.GetCurrentHex().coordinates.x > 0 // Dribbler is in the right half of pitch
+                && token.GetCurrentHex().coordinates.x > 0 // Dribbler is in the right half of pitch
             )
             ||
             (
                 attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attackers shoot to the Left
                 && ballHex.isInPenaltyBox == -1 // In Left PenaltyBox
-                && selectedToken.GetCurrentHex().coordinates.x < 0 // Dribbler is in the left half of pitch
+                && token.GetCurrentHex().coordinates.x < 0 // Dribbler is in the left half of pitch
             )
         )
         {

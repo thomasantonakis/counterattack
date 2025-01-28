@@ -53,7 +53,7 @@ public class MatchManager : MonoBehaviour
         FreeKickDef2,
         FreeKickDef3,
         FreeKickExecution,
-        SnapshotDefenderMovement,
+        SnapshotPhase,
     }
     public class GameData
     {

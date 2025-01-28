@@ -71,7 +71,7 @@ public class ShotManager : MonoBehaviour
 
     private void StartDefenderMovementPhase()
     {
-        MatchManager.Instance.currentState = MatchManager.GameState.SnapshotDefenderMovement;
+        MatchManager.Instance.currentState = MatchManager.GameState.SnapshotPhase;
         isWaitingforBlockerSelection = true;
     }
 
@@ -122,6 +122,7 @@ public class ShotManager : MonoBehaviour
         foreach (HexCell hex in trajectoryPath)
         {
             hex.HighlightHex("ballPath");
+            hexGrid.highlightedHexes.Add(hex);
         }
     }
 
@@ -132,7 +133,7 @@ public class ShotManager : MonoBehaviour
 
         if (interceptors.Count == 0)
         {
-            Debug.Log("No defenders can intercept. Proceeding to shot roll.");
+            Debug.Log($"No defenders to Deflect! The {shooter.name} may [R]oll! Good Luck!.");
             isWaitingForShotRoll = true;
             return;
         }
@@ -205,13 +206,12 @@ public class ShotManager : MonoBehaviour
                 // Retrieve defender attributes
                 PlayerToken defenderToken = currentDefenderEntry.defender;
                 int tackling = defenderToken.tackling;
-                string defenderName = defenderToken.playerName;
-                int jerseyNumber = defenderToken.jerseyNumber;
+                string defenderName = defenderToken.name;
 
                 // Roll the dice
                 // int diceRoll = Random.Range(1, 7);
-                int diceRoll = 4;
-                Debug.Log($"Dice roll by {jerseyNumber}. {defenderName} at {currentDefenderBlockingHex.coordinates}: {diceRoll}");
+                int diceRoll = 6;
+                Debug.Log($"Dice roll by {defenderName} at {currentDefenderBlockingHex.coordinates}: {diceRoll}");
                 isWaitingForBlockDiceRoll = false;
                 // Calculate interception conditions
                 bool isCausingInvalidity = currentDefenderEntry.isCausingInvalidity;
@@ -219,13 +219,14 @@ public class ShotManager : MonoBehaviour
                 bool successfulInterception = diceRoll >= requiredRoll || diceRoll + tackling >= 10;
                 if (successfulInterception)
                 {
-                    Debug.Log($"Shot blocked by {jerseyNumber}. {defenderName} at {currentDefenderBlockingHex.coordinates}! Loose Ball!");
-                    // TODO: Trigger LooseBall Event. from defenderToken ground
-                    ResetDiceRolls(); // Reset interception process
+                    hexGrid.ClearHighlightedHexes();
+                    Debug.Log($"Shot blocked by {defenderName} Loose Ball from {currentDefenderBlockingHex.coordinates}!");
+                    StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, "ground"));
+                    ResetShotProcess();
                 }
                 else
                 {
-                    Debug.Log($"{jerseyNumber}. {defenderName} at {currentDefenderBlockingHex.coordinates} failed to block.");
+                    Debug.Log($"{defenderName} at {currentDefenderBlockingHex.coordinates} failed to block.");
 
                     // Remove this defender and move to the next
                     interceptors.Remove(currentDefenderEntry);
@@ -240,7 +241,7 @@ public class ShotManager : MonoBehaviour
                     }
                     else
                     {
-                        // No more defenders, pass is successful
+                        // No more defenders, shooter can shoot!
                         Debug.Log($"No more defenders to Deflect! The {shooter.name} may [R]oll! Good Luck!.");
                         yield return null;
                         isWaitingForShotRoll = true;
@@ -257,7 +258,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForShotRoll = false;
         if (roll == 1)
         {
-            Debug.Log("Shot is off target. GoalKick awarded.");
+            Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
             // TODO: Implement GoalKick
         }
         else
@@ -276,14 +277,14 @@ public class ShotManager : MonoBehaviour
         // ResetShotProcess();
     }
 
-    private void ResetDiceRolls()
-    {
-
-    }
-
     private void ResetShotProcess()
     {
         isShotInProgress = false;
+        isWaitingforBlockerSelection = false;
+        isWaitingForBlockDiceRoll = false;
+        isWaitingForShotRoll = false;
+        isWaitingforBlockerMovement = false;
+        isWaitingForTargetSelection = false;
         shooter = null;
         targetHex = null;
         trajectoryPath = null;

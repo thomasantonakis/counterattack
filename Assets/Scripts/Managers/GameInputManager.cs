@@ -15,6 +15,7 @@ public class GameInputManager : MonoBehaviour
     public LongBallManager longBallManager;
     public HighPassManager highPassManager;
     public MovementPhaseManager movementPhaseManager;
+    public LooseBallManager looseBallManager;
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
     public ShotManager shotManager;
@@ -122,9 +123,25 @@ public class GameInputManager : MonoBehaviour
             StartCoroutine(HandleMouseInputForHighPassMovement());
         }
         if (
-                MatchManager.Instance.currentState == MatchManager.GameState.SnapshotDefenderMovement
+                MatchManager.Instance.currentState == MatchManager.GameState.SnapshotPhase
         )
         {
+            if (movementPhaseManager.isWaitingForSnapshotDecision)
+            {
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    movementPhaseManager.isWaitingForSnapshotDecision = false;
+                    Debug.Log($"Attacker decides to Snapshot!!!!");
+                    shotManager.StartShotProcess(looseBallManager.ballHitThisToken, "snapshot");
+                    looseBallManager.EndLooseBallPhase();
+                }
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    movementPhaseManager.isWaitingForSnapshotDecision = false;
+                    Debug.Log($"Attacker decides not to shoot..");
+                    if (movementPhaseManager.isMovementPhaseInProgress) movementPhaseManager.AdvanceMovementPhase();
+                }
+            }
             StartCoroutine(HandleMouseInputForSnapMovement());
         }
         if (
@@ -449,8 +466,13 @@ public class GameInputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.S))
             {
                 movementPhaseManager.isWaitingForSnapshotDecision = false;
-                Debug.Log($"SNAPSHOT!!!");
+                Debug.Log($"Attacker decides to Snapshot!!!!");
                 shotManager.StartShotProcess(movementPhaseManager.selectedToken, "snapshot");
+            }
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                movementPhaseManager.isWaitingForSnapshotDecision = false;
+                Debug.Log($"Attacker decides not to shoot..");
             }
         }
     }
@@ -671,6 +693,7 @@ public class GameInputManager : MonoBehaviour
             }
         }
     }
+    
     public IEnumerator HandleMouseInputForSnapMovement()
     {
         if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)

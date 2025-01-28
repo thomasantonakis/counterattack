@@ -271,6 +271,7 @@ public class FirstTimePassManager : MonoBehaviour
         while (selectedToken == null || !selectedToken.isAttacker)
         {
             gameInputManager.HandleMouseInputForFTPMovement();
+            // StartCoroutine(gameInputManager.HandleMouseInputForFTPMovement()); // TODO: Check if this is needed
             yield return null;  // Wait until a valid attacker is selected
         }
 
@@ -296,6 +297,7 @@ public class FirstTimePassManager : MonoBehaviour
         while (selectedToken == null || selectedToken.isAttacker)
         {
             gameInputManager.HandleMouseInputForFTPMovement();
+            // StartCoroutine(gameInputManager.HandleMouseInputForFTPMovement()); // TODO: Check if this is needed
             yield return null;  // Wait until a valid defender is selected
         }
 

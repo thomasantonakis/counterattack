@@ -13,6 +13,8 @@ public class LooseBallManager : MonoBehaviour
     public HeaderManager headerManager;
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
+    public PlayerToken causingDeflection;
+    public PlayerToken ballHitThisToken;
 
     public string TranslateRollToDirection(int direction)
     {
@@ -36,6 +38,7 @@ public class LooseBallManager : MonoBehaviour
     }
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, string resolutionType)
     {
+        causingDeflection = startingToken;
         Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {resolutionType}");
         path.Clear();
         // Step 1: Move the ball to the starting token's hex
@@ -49,14 +52,14 @@ public class LooseBallManager : MonoBehaviour
         // int directionRoll = 0; // S
         // int directionRoll = 1; // SW
         // int directionRoll = 2; // NW
-        // int directionRoll = 3; // N
-        int directionRoll = 4; // NE
+        int directionRoll = 3; // N
+        // int directionRoll = 4; // NE
         // int directionRoll = 5; // SE
         // int directionRoll = Random.Range(0, 6); // 0-5 for hex directions
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         yield return StartCoroutine(WaitForInput(KeyCode.R));
-        int distanceRoll = 1; // Distance 1-6
+        int distanceRoll = 6; // Distance 1-6
         // int distanceRoll = Random.Range(1, 7); // Distance 1-6
 
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
@@ -146,7 +149,7 @@ public class LooseBallManager : MonoBehaviour
                     yield return StartCoroutine(WaitForInterceptionRoll(potentialInterceptor, hexround2));
                     Debug.Log("Press [R] to roll for interception.");
                     // int interceptionRoll = Random.Range(1, 7); // Simulate dice roll
-                    int interceptionRoll = 5; // Simulate dice roll
+                    int interceptionRoll = 1; // Simulate dice roll
                     if (interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10)
                     {
                         Debug.Log($"{potentialInterceptor.name} successfully intercepted the ball!");
@@ -177,6 +180,7 @@ public class LooseBallManager : MonoBehaviour
         // Ball ended up on a Token
         if (closestToken != null)
         {
+            ballHitThisToken = closestToken;
             // TODO: resolve based on what created the Loose Ball.
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
@@ -197,8 +201,17 @@ public class LooseBallManager : MonoBehaviour
                 {
                     // There is a movement Phase going ON.
                     Debug.Log($"Ball hit {closestToken.name}, who is an attacker");
-                    // TODO: We need to check if the attacker is in a snanpshot position and offer such case.
-                    movementPhaseManager.AdvanceMovementPhase();
+                    bool isSnapshotAvailable = movementPhaseManager.IsDribblerinOpponentPenaltyBox(closestToken);
+                    if (isSnapshotAvailable)
+                    {
+                        Debug.Log($"{closestToken.name} found themselves with the ball in the opposition penalty Box. Press [S] to take a snapshot!");
+                        movementPhaseManager.isWaitingForSnapshotDecision = true;
+                        yield break;
+                    }
+                    else
+                    {
+                        movementPhaseManager.AdvanceMovementPhase();
+                    }
                 }
                 else
                 {
@@ -224,7 +237,7 @@ public class LooseBallManager : MonoBehaviour
                 Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starts a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             }
-            else if (!movementPhaseManager.isMovementPhaseInProgress) // TODO: check if there is no Movement Phase going on, Allow Attacker Selection
+            else if (!movementPhaseManager.isMovementPhaseInProgress)
             {
                 Debug.LogWarning($"Loose ball is not picked up by anyone.{MatchManager.Instance.teamInAttack} Starts a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
@@ -242,7 +255,7 @@ public class LooseBallManager : MonoBehaviour
         else
         {
             Debug.Log($"Ball Went out of Bounds");
-            if (movementPhaseManager.isMovementPhaseInProgress) // TODO: If it was a movement phase, end it.
+            if (movementPhaseManager.isMovementPhaseInProgress)
             {
                 movementPhaseManager.EndMovementPhase();
             }
@@ -272,9 +285,11 @@ public class LooseBallManager : MonoBehaviour
         yield return null;
     }
 
-    private void EndLooseBallPhase()
+    public void EndLooseBallPhase()
     {
       defendersTriedToIntercept.Clear();
+      causingDeflection = null;
+      ballHitThisToken = null;
       path.Clear();
     }
 
