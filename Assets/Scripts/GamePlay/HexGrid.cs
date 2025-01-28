@@ -307,11 +307,12 @@ public class HexGrid : MonoBehaviour
         return hexesInRangeofAttackers;
     }
 
-    public bool IsPassDangerous(List<HexCell> pathHexes, List<HexCell> defenderNeighbors)
+    public bool IsPassDangerous(List<HexCell> pathHexes, List<HexCell> defenderNeighbors, bool isGk = false)
     {
         // Check if any of the path hexes are in the defender's ZOI (neighbors)
         foreach (HexCell pathHex in pathHexes)
         {
+            if (isGk && pathHex != pathHexes.Last()) continue;  // Skip checking for GK
             if (defenderNeighbors.Contains(pathHex) && !pathHex.isAttackOccupied)
             {
                 // Debug.Log($"Hex {pathHex.coordinates} is within a defender's ZOI, making the pass dangerous.");
@@ -411,7 +412,7 @@ public class HexGrid : MonoBehaviour
                 )
                 {
                     // HighlightGroundPathToHex(hoveredHex);
-                    var (isValid, isDangerous, pathHexes) = groundBallManager.ValidateGroundPassPath(hoveredHex); // Use GameInputManager logic
+                    var (isValid, isDangerous, pathHexes) = groundBallManager.ValidateGroundPassPath(hoveredHex, 11); // Use GameInputManager logic
                     if (isValid)
                     {
                         ClearHighlightedHexes();
@@ -576,8 +577,7 @@ public class HexGrid : MonoBehaviour
                 // Assign the dictionary of CanShootTo paths
                 if (fromHex.ShootingPaths == null)
                 {
-
-                    Debug.Log($"There was no ShootingPaths in fromHex: {fromHex.coordinates}");
+                    // Debug.Log($"There was no ShootingPaths in fromHex: {fromHex.coordinates}");
                     fromHex.ShootingPaths = new Dictionary<HexCell, List<HexCell>>();
                 }
 

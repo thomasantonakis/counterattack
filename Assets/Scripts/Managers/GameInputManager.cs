@@ -268,7 +268,7 @@ public class GameInputManager : MonoBehaviour
         // Check for Ground Ball and Long Ball state handling
         if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
         {
-            groundBallManager.HandleGroundBallPath(hex);
+            groundBallManager.HandleGroundBallPath(hex, 11, true); // Normal Standard Pass
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
         {

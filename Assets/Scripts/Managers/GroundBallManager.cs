@@ -27,7 +27,7 @@ public class GroundBallManager : MonoBehaviour
             PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when D is pressed
         }
     }
-    public void HandleGroundBallPath(HexCell clickedHex)
+    public void HandleGroundBallPath(HexCell clickedHex, int distance, bool isGk = false)
     {
         if (clickedHex != null)
         {
@@ -40,16 +40,16 @@ public class GroundBallManager : MonoBehaviour
             else
             {
                 // Now handle the pass based on difficulty
-                HandleGroundPassBasedOnDifficulty(clickedHex);
+                HandleGroundPassBasedOnDifficulty(clickedHex, distance, isGk);
             }   
         }
     }
 
-    void HandleGroundPassBasedOnDifficulty(HexCell clickedHex)
+    void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, int distance, bool isGk = false)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized path validation and danger assessment
-        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex);
+        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex, distance, isGk);
         if (!isValid)
         {
             // Debug.LogWarning("Invalid pass. Path rejected.");
@@ -59,7 +59,7 @@ public class GroundBallManager : MonoBehaviour
         // Handle each difficulty's behavior
         if (difficulty == 3) // Hard Mode
         {
-            PopulateGroundPathInterceptions(clickedHex);
+            PopulateGroundPathInterceptions(clickedHex, isGk);
             if (passIsDangerous)
             {
                 diceRollsPending = defendingHexes.Count; // is this relevant here?
@@ -85,7 +85,7 @@ public class GroundBallManager : MonoBehaviour
         {
             hexGrid.ClearHighlightedHexes();
             HighlightValidGroundPassPath(pathHexes, isDangerous);
-            PopulateGroundPathInterceptions(clickedHex);
+            PopulateGroundPathInterceptions(clickedHex, isGk);
             diceRollsPending = defendingHexes.Count; // is this relevant here?
             if (diceRollsPending == 0)
             {
@@ -98,7 +98,7 @@ public class GroundBallManager : MonoBehaviour
             // Medium Mode: Wait for a second click for confirmation
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
-                PopulateGroundPathInterceptions(clickedHex);
+                PopulateGroundPathInterceptions(clickedHex, isGk);
                 if (passIsDangerous)
                 {
                     diceRollsPending = defendingHexes.Count; // is this relevant here?
@@ -130,14 +130,14 @@ public class GroundBallManager : MonoBehaviour
         }
         else if (difficulty == 1) // Easy Mode: Handle hover and clicks with immediate highlights
         {
-            PopulateGroundPathInterceptions(clickedHex);
+            PopulateGroundPathInterceptions(clickedHex, isGk);
             diceRollsPending = defendingHexes.Count; // is this relevant here?
             Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
                 // Second click on the same hex: confirm the pass
                 Debug.Log("Second click detected, confirming pass...");
-                PopulateGroundPathInterceptions(clickedHex);
+                PopulateGroundPathInterceptions(clickedHex, isGk);
                 if (passIsDangerous)
                 {
                     diceRollsPending = defendingHexes.Count; // is this relevant here?
@@ -169,7 +169,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex)
+    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex, int distance, bool isGk = false)
     {
         // TODO: 0.0 -> 2.-9 seems valid
         hexGrid.ClearHighlightedHexes();
@@ -185,20 +185,23 @@ public class GroundBallManager : MonoBehaviour
         // Get the distance in hex steps
         Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
         Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
-        int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+        int distanceBetweenHexes = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
         // Check the distance limit
-        if (distance > 11)
+        if (distanceBetweenHexes > distance)
         {
-            Debug.LogWarning($"Pass is out of range. Maximum steps allowed: 11. Current steps: {distance}");
+            Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {distance}. Current steps: {distanceBetweenHexes}");
             return (false, false, pathHexes);
         }
         // Step 3: Check if the path is valid by ensuring no defense-occupied hexes block the path
-        foreach (HexCell hex in pathHexes)
+        if (!isGk)
         {
-            if (hex.isDefenseOccupied)
+            foreach (HexCell hex in pathHexes)
             {
-                Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
-                return (false, false, pathHexes); // Invalid path
+                if (hex.isDefenseOccupied)
+                {
+                    Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
+                    return (false, false, pathHexes); // Invalid path
+                }
             }
         }
 
@@ -207,7 +210,7 @@ public class GroundBallManager : MonoBehaviour
         List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
 
         // Step 5: Determine if the path is dangerous by checking if it passes through any defender's ZOI
-        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors);
+        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors, isGk);
 
         // Debug.Log($"Path to {targetHex.coordinates}: Valid={true}, Dangerous={isDangerous}");
 
@@ -224,10 +227,12 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void PopulateGroundPathInterceptions(HexCell targetHex)
+    public void PopulateGroundPathInterceptions(HexCell targetHex, bool isGk = false)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        string joined = string.Join(" -> ", pathHexes.Select(hex => hex.coordinates.ToString()));  
+        Debug.Log($"Path: {joined}");
         hexGrid.ClearHighlightedHexes();
         // Remove the ball's current hex from the path
         pathHexes.Remove(ballHex);
@@ -235,6 +240,8 @@ public class GroundBallManager : MonoBehaviour
         // Get defenders and their neighbors
         List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
         List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+        string joineddefenderNeighbors = string.Join(" -> ", defenderNeighbors.Select(hex => hex.coordinates.ToString()));  
+        Debug.Log($"All Neighbors: {joineddefenderNeighbors}");
         
         // Initialize danger variables
         passIsDangerous = false;
@@ -246,36 +253,48 @@ public class GroundBallManager : MonoBehaviour
         // Check if the path crosses any defender's ZOI
         foreach (HexCell hex in pathHexes)
         {
+            Debug.Log($"Checking hex: {hex.coordinates}");
+            if (isGk && hex != pathHexes.Last())  // Skip TO the last hex if the target is the GK
+            {
+              continue;
+            }
             // Get the neighbors of the hex and log them for debugging purposes
             HexCell[] neighbors = hex.GetNeighbors(hexGrid);
+            string neighborCoords = string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"));
+            Debug.Log($"Neighbors: {neighborCoords}"); // Correct!
+
+            Debug.Log($"{defenderNeighbors.Contains(hex)}");
             // Check if a defender's neighbor is in the path excluding Attacking occupied Hexes
             if (defenderNeighbors.Contains(hex) && !hex.isAttackOccupied)
             {
-                HexCell defender = defenderHexes.Find(d => d.GetNeighbors(hexGrid).Any(n => n == hex));
-
-                // Only add the defender and interception hex if the defender hasn't already been processed
-                if (defender != null && !alreadyProcessedDefenders.Contains(defender))
+                List<HexCell> defendersForThisHex = defenderHexes.Where(d => d.GetNeighbors(hexGrid).Contains(hex)).ToList();
+                // Process all such defenders
+                foreach (HexCell defenderHex in defendersForThisHex)
                 {
-                    PlayerToken defenderToken = defender.occupyingToken; // Get the token
-                    if (defenderToken != null)
+                    // Only add the defender and interception hex if the defender hasn't already been processed
+                    if (defenderHex != null && !alreadyProcessedDefenders.Contains(defenderHex))
                     {
-                        string defenderName = defenderToken.playerName;
-                        int defenderTackling = defenderToken.tackling;
-                        int defenderJersey = defenderToken.jerseyNumber;
+                        PlayerToken defenderToken = defenderHex.occupyingToken; // Get the token
+                        if (defenderToken != null)
+                        {
+                            string defenderName = defenderToken.playerName;
+                            int defenderTackling = defenderToken.tackling;
+                            int defenderJersey = defenderToken.jerseyNumber;
 
-                        // Calculate required roll
-                        int requiredRoll = defenderTackling >= 4 ? 10 - defenderTackling : 6;
-                        string rollDescription = requiredRoll == 6 ? "6" : $"{requiredRoll}+";
+                            // Calculate required roll
+                            int requiredRoll = defenderTackling >= 4 ? 10 - defenderTackling : 6;
+                            string rollDescription = requiredRoll == 6 ? "6" : $"{requiredRoll}+";
 
-                        Debug.Log(
-                            $"{defenderJersey}. {defenderName} at {defender.coordinates} with a tackling of {defenderTackling} can intercept with a roll of {rollDescription} at {hex.coordinates}. " +
-                            $"Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}"
-                        );
-                        interceptionHexes.Add(hex);  // Add the interceptable hex
-                        defendingHexes.Add(defender);  // Add the defender responsible
-                        alreadyProcessedDefenders.Add(defender);  // Mark this defender as processed
-                        passIsDangerous = true;  // Mark the pass as dangerous
-                        // Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}. Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}");
+                            Debug.Log(
+                                $"{defenderJersey}. {defenderName} at {defenderHex.coordinates} with a tackling of {defenderTackling} can intercept with a roll of {rollDescription} at {hex.coordinates}. " +
+                                $"Defender's ZOI: {string.Join(", ", defenderHex.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}"
+                            );
+                            interceptionHexes.Add(hex);  // Add the interceptable hex
+                            defendingHexes.Add(defenderHex);  // Add the defender responsible
+                            alreadyProcessedDefenders.Add(defenderHex);  // Mark this defender as processed
+                            passIsDangerous = true;  // Mark the pass as dangerous
+                            // Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}. Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}");
+                        }
                     }
                 }
             }
