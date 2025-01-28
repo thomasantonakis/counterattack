@@ -51,7 +51,7 @@ public class HexGrid : MonoBehaviour
             SaveShootingPathsToJson();
             AssignShootingPathsToHexes();
         }
-        HighlightShootingHexes();
+        // HighlightShootingHexes();
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(12, 0, 0)).GetHexCenter()}");
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()}");
         // float zNE183 = GetHexCellAt(new Vector3Int(18, 0, 3)).GetHexCorners()[2].z;

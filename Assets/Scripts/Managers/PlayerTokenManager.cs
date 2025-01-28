@@ -20,7 +20,7 @@ public class PlayerTokenManager : MonoBehaviour
         new Vector3Int(12, 0, 12),
         new Vector3Int(4, 0, 4),
         new Vector3Int(10, 0, 10),
-        new Vector3Int(-2, 0, -1),
+        new Vector3Int(10, 0, 0),
         new Vector3Int(-4, 0, -4),
         new Vector3Int(-6, 0, -6),
         new Vector3Int(-8, 0, -8)
@@ -28,9 +28,9 @@ public class PlayerTokenManager : MonoBehaviour
 
     private Vector3Int[] awayTeamPositions = new Vector3Int[]
     {
-        new Vector3Int(2, 0, 0), // 2
-        new Vector3Int(1, 0, -1),
-        new Vector3Int(1, 0, 1),
+        new Vector3Int(-12, 0, 0), // 2
+        new Vector3Int(1, 0, -10),
+        new Vector3Int(1, 0, 10),
         new Vector3Int(1, 0, 2),
         new Vector3Int(3, 0, 3),
         new Vector3Int(4, 0, 3),

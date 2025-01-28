@@ -17,6 +17,7 @@ public class GameInputManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
+    public ShotManager shotManager;
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
@@ -95,9 +96,6 @@ public class GameInputManager : MonoBehaviour
             !movementPhaseManager.isWaitingForInjuryRoll &&
             !movementPhaseManager.isWaitingForYellowCardRoll &&
             !movementPhaseManager.isWaitingForFoulDecision &&
-            // !movementPhaseManager.isWaitingForNutmegDecision &&
-            // !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving &&
-            
             (
                 MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
                 MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
@@ -122,6 +120,12 @@ public class GameInputManager : MonoBehaviour
         )
         {
             StartCoroutine(HandleMouseInputForHighPassMovement());
+        }
+        if (
+                MatchManager.Instance.currentState == MatchManager.GameState.SnapshotDefenderMovement
+        )
+        {
+            StartCoroutine(HandleMouseInputForSnapMovement());
         }
         if (
                 MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
@@ -340,6 +344,7 @@ public class GameInputManager : MonoBehaviour
                     {
                         // Start the Nutmeg with the Selected nutmeggable Token
                         Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked");
+                        movementPhaseManager.isWaitingForSnapshotDecision = false;
                         movementPhaseManager.isWaitingForNutmegDecision = false;
                         movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
                         movementPhaseManager.nutmegVictim = inferredToken;
@@ -364,6 +369,10 @@ public class GameInputManager : MonoBehaviour
                             {
                                 movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
                             }
+                            if (movementPhaseManager.isWaitingForSnapshotDecision)
+                            {
+                                movementPhaseManager.isWaitingForSnapshotDecision = false;
+                            }
                             Debug.Log($"Passing {inferredHexCell.name} to MoveTokenToHex");
                             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCell));  // Move the selected token to the hex
                         }
@@ -385,6 +394,7 @@ public class GameInputManager : MonoBehaviour
                         // If the hex is not occupied, check if it's valid for movement
                         if (movementPhaseManager.IsHexValidForMovement(inferredHexCell))
                         {
+                            movementPhaseManager.isWaitingForSnapshotDecision = false;
                             bool temp_check = ball.GetCurrentHex() == inferredHexCell && movementPhaseManager.selectedToken != null;
                             if (temp_check)
                             {
@@ -413,6 +423,7 @@ public class GameInputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.N))
             {
                 movementPhaseManager.isWaitingForNutmegDecision = false;
+                movementPhaseManager.isWaitingForSnapshotDecision = false;
                 Debug.Log($"Starting Nutmeg Process.");
                 movementPhaseManager.StartNutmegVictimIdentification();
             }
@@ -428,8 +439,18 @@ public class GameInputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.N))
             {
                 movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+                movementPhaseManager.isWaitingForSnapshotDecision = false;
                 Debug.Log($"Starting Nutmeg Process.");
                 movementPhaseManager.StartNutmegVictimIdentification();
+            }
+        }
+        else if (movementPhaseManager.isWaitingForSnapshotDecision)
+        {
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                movementPhaseManager.isWaitingForSnapshotDecision = false;
+                Debug.Log($"SNAPSHOT!!!");
+                shotManager.StartShotProcess(movementPhaseManager.selectedToken, "snapshot");
             }
         }
     }
@@ -642,6 +663,97 @@ public class GameInputManager : MonoBehaviour
                     {
                         Debug.LogWarning("Clicked hex is not a valid movement target.");
                     }
+                }
+                else
+                {
+                    Debug.LogWarning("No valid hex or token clicked.");
+                }
+            }
+        }
+    }
+    public IEnumerator HandleMouseInputForSnapMovement()
+    {
+        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+        {
+            Debug.Log("HandleMouseInputForSnapMovement called on click");
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("Raycast hit something");
+
+                // Check if a player token was clicked
+                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                PlayerToken tokenOnHex = clickedHex?.GetOccupyingToken();
+                PlayerToken inferredToken = token ?? tokenOnHex ?? null;
+
+                if (inferredToken != null && shotManager.isWaitingforBlockerSelection)
+                {
+                    Debug.Log($"PlayerToken {inferredToken.name} clicked, for Snapshot");
+
+                    // Attacker Phase: Ensure the token is an attacker
+                    if (!inferredToken.isAttacker)
+                    {
+                        // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
+                        if (shotManager.tokenMoveforDeflection != null && shotManager.tokenMoveforDeflection != inferredToken)
+                        {
+                            Debug.Log($"Switching Defender selection to {inferredToken.name}. Clearing previous highlights.");
+                            hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
+                        }
+
+                        Debug.Log($"Selecting defender {inferredToken.name}. Highlighting reachable hexes.");
+                        shotManager.tokenMoveforDeflection = inferredToken;  // Set selected token
+                        movementPhaseManager.HighlightValidMovementHexes(inferredToken, 2);  // Highlight reachable hexes within 3 moves
+                        shotManager.isWaitingforBlockerSelection = false;
+                        shotManager.isWaitingforBlockerMovement = true;
+                        yield return null;
+                    }
+                    else {
+                        Debug.LogWarning("Attacker clicked, while waiting for a defender to select.");
+                    }
+                }
+
+                if (clickedHex != null && shotManager.isWaitingforBlockerMovement)
+                {
+                    Debug.Log($"Hex clicked: {clickedHex.name}");
+
+                    // Ensure the hex is within the highlighted valid movement hexes
+                    if (
+                        hexGrid.highlightedHexes.Contains(clickedHex)
+                        && !clickedHex.isAttackOccupied
+                        && !clickedHex.isDefenseOccupied
+                        && !clickedHex.isOutOfBounds
+                    )
+                    {
+                        if (shotManager.tokenMoveforDeflection != null)
+                        {
+                            Debug.Log($"Moving {shotManager.tokenMoveforDeflection.name} to hex {clickedHex.coordinates}");
+
+                            // Move the selected token to the valid hex (use the highPassManager's selectedToken)
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, shotManager.tokenMoveforDeflection, false));  // Pass the selected token
+                            shotManager.CompleteDefenderMovement();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("No token selected to move.");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Clicked hex is not a valid movement target.");
+                    }
+                }
+                else if (
+                    clickedHex != null // we clicked a Hex
+                    && shotManager.isWaitingForTargetSelection // We are indeed waiting for a targetSelection
+                    && hexGrid.highlightedHexes.Contains(clickedHex) // one of the target Hexes
+                )
+                {
+                    Debug.Log($"Valid selected Target Hex: {clickedHex.name}");
+                    shotManager.HandleTargetClick(clickedHex);                    
                 }
                 else
                 {

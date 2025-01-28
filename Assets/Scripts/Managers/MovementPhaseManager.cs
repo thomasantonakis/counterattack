@@ -31,6 +31,7 @@ public class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForTackleDecision = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForTackleDecisionWithoutMoving = false; // Flag to check if waiting for tackle decision
     public bool isWaitingForTackleRoll = false;  // Whether we're waiting for a dice roll
+    public bool isWaitingForSnapshotDecision = false;
     public bool isWaitingForReposition = false;  // Whether we're waiting for a dice roll
     private bool tackleAttackerRolled = false;  // Whether we're waiting for a dice roll
     private bool tackleDefenderRolled = false;  // Whether we're waiting for a dice roll
@@ -500,7 +501,15 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void ContinueDribblerMovement()
     {
-        nutmeggableDefenders = GetNutmeggableDefenders(selectedToken, hexGrid);
+        nutmeggableDefenders = GetNutmeggableDefenders(selectedToken, hexGrid); // TODO: What the fuck is this doing here?
+        // TODO: method to identify if dribbler is in opponent's Penalty Box
+        bool isDribblerinOppPenBox = IsDribblerinOpponentPenaltyBox();
+        if (isDribblerinOppPenBox)
+        {
+            Debug.Log($"{selectedToken.name} is in the opponent penalty Box. Press [S] to take a snapshot!");
+            isWaitingForSnapshotDecision = true;
+        }
+        // Offer a Snapshot option
         // Highlight neighbors if more pace is available
         if (remainingDribblerPace > 0)
         {
@@ -657,11 +666,12 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void ForfeitTeamMovementPhase()
     {
-        Debug.Log("Movement phase forfeited. No further moves for this team.");
+        Debug.Log("Trying to Forfeit Movement.");
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
         {
             if (isDribblerRunning)
             {
+                Debug.Log($"{selectedToken.name} does not want to run with the ball any more.");
                 isDribblerRunning = false;
                 hexGrid.ClearHighlightedHexes();
                 movedTokens.Add(selectedToken);
@@ -670,11 +680,13 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else 
             {
+                Debug.Log($"No more tokens moving in 2f2 phase. Ending Movement Phase.");
                 EndMovementPhase();
             }
         }
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
         {
+            Debug.Log($"No more defenders wish to move. Attack gets 2f2 move.");
             defendersMoved = maxDefenderMoves-1;
             AdvanceMovementPhase();  // Reset the movement phase
         }
@@ -682,6 +694,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (isDribblerRunning)
             {
+                Debug.Log($"{selectedToken.name} does not want to run with the ball any more.");
                 isDribblerRunning = false;
                 hexGrid.ClearHighlightedHexes();
                 movedTokens.Add(selectedToken);
@@ -689,6 +702,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else
             {
+                Debug.Log($"No more Attackers wish to move. Defence's turn to move up to 5 tokens.");
                 attackersMoved = maxAttackerMoves-1;
                 AdvanceMovementPhase();  // Reset the movement phase
             }
@@ -1319,4 +1333,35 @@ public class MovementPhaseManager : MonoBehaviour
         return token;
     }
 
+    public bool IsDribblerinOpponentPenaltyBox()
+    {
+        bool DribberIsInOpponentPenaltyBox = false;
+        MatchManager.TeamAttackingDirection attackingDirection;
+        if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
+        {
+            attackingDirection = MatchManager.Instance.homeTeamDirection;
+        }
+        else
+        {
+            attackingDirection = MatchManager.Instance.awayTeamDirection;
+        }
+        // If dribbler is in opponent's Penalty Box!
+        if (
+            (
+                attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attackers shoot to the Right
+                && ballHex.isInPenaltyBox == 1 // In Right PenaltyBox
+                && selectedToken.GetCurrentHex().coordinates.x > 0 // Dribbler is in the right half of pitch
+            )
+            ||
+            (
+                attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attackers shoot to the Left
+                && ballHex.isInPenaltyBox == -1 // In Left PenaltyBox
+                && selectedToken.GetCurrentHex().coordinates.x < 0 // Dribbler is in the left half of pitch
+            )
+        )
+        {
+          DribberIsInOpponentPenaltyBox = true;
+        }
+        return DribberIsInOpponentPenaltyBox;
+    }
 }
