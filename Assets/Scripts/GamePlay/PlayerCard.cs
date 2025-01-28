@@ -3,6 +3,7 @@ using TMPro;  // For TextMeshPro
 
 public class PlayerCard : MonoBehaviour
 {
+    [Header("Dependencies")]
     public TextMeshProUGUI playerNameText;
     public TextMeshProUGUI countryText;
     public TextMeshProUGUI paceValueText;
@@ -12,11 +13,8 @@ public class PlayerCard : MonoBehaviour
     public TextMeshProUGUI resilienceValueText;
     public TextMeshProUGUI shootingValueText;
     public TextMeshProUGUI tacklingValueText;
-    // public TextMeshProUGUI specialAbilityText;
-    
     // Optionally add Image for country flags if you plan to use them
     // public Image flagImage;
-
     public Player assignedPlayer;
 
     // Method to update the card with player data

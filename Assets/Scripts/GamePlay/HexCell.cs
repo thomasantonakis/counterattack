@@ -23,7 +23,6 @@ public class HexCell : MonoBehaviour
     public bool CanShootFrom = false; // Displayed in Inspector
     public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
 
-
     void Awake()
     {
         // Use MeshRenderer directly instead of a generic Renderer

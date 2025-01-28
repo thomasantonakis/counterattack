@@ -8,10 +8,12 @@ using System;
 
 public class ShotManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public MovementPhaseManager movementPhaseManager;
     public GameInputManager gameInputManager;
     public LooseBallManager looseBallManager;
     public HexGrid hexGrid;
+    [Header("Flags")]
     public bool isShotInProgress = false;  // Tracks if a shot is active
     public bool isWaitingforBlockerSelection = false;  // Tracks if we are waiting to select a blocker
     public bool isWaitingforBlockerMovement = false;  // Tracks if we are waiting for the selected blocker to move
@@ -19,6 +21,7 @@ public class ShotManager : MonoBehaviour
     public bool isWaitingForBlockDiceRoll = false;  // Tracks we are in the Blocking Phase
     public bool isWaitingForShotRoll = false;  // Tracks we are in the Blocking Phase
     public string shotType;               // "snapshot" or "fullPower"
+    [Header("Important Runtime Items")]
     public PlayerToken shooter;          // The token that is shooting
     public PlayerToken tokenMoveforDeflection;          // The token that is shooting
     public HexCell targetHex;            // The CanShootTo hex selected by the attacker

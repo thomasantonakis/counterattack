@@ -6,10 +6,12 @@ using System.Linq;
 
 public class FirstTimePassManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
     public MovementPhaseManager movementPhaseManager;
     public GameInputManager gameInputManager;
+    [Header("Runtime Items")]
     private HexCell currentTargetHex = null;   // The currently selected target hex
     private HexCell lastClickedHex = null;     // The last hex that was clicked
     private bool isWaitingForConfirmation = false;

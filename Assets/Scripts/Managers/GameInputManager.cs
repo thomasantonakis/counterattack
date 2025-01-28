@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 
 public class GameInputManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public CameraController cameraController;  
     public GroundBallManager groundBallManager;
     public FirstTimePassManager firstTimePassManager;
@@ -22,6 +23,7 @@ public class GameInputManager : MonoBehaviour
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
+    [Header("Layers")]
     public LayerMask tokenLayerMask;  // Layer for player tokens
     public LayerMask hexLayerMask;    // Layer for hex grid
 

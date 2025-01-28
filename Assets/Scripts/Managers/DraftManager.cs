@@ -9,6 +9,7 @@ using Newtonsoft.Json; // Now it will recognize JsonConvert
 
 public class DraftManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public GameSettings currentSettings; // Class-level variable
     public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
     public List<Player> selectedDeck;   // To hold shuffled players
@@ -22,6 +23,7 @@ public class DraftManager : MonoBehaviour
     public GameObject homeAveragePanel;
     public GameObject awayAveragePanel;
     public GameObject playerSlotPrefab;  // Assign this in the Inspector
+    [Header("Runtime Items")]
     private int squadSize;
     private bool useTableTopia = true; 
     private bool useNonTableTopia = false; 

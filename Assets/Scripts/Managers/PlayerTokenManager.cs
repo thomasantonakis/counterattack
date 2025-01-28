@@ -6,11 +6,11 @@ using TMPro;  // Import TextMeshPro namespace
 
 public class PlayerTokenManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public GameObject redKitPrefab;
     public GameObject blueKitPrefab;
     public HexGrid hexgrid;
     public GameObject textPrefab; // A prefab for TextMeshPro object for jersey numbers (you'll create this prefab)
-    
     // Spawn positions for the players
     private Vector3Int[] homeTeamPositions = new Vector3Int[]
     {

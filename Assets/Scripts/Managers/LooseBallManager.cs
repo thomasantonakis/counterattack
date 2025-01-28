@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 public class LooseBallManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public HexGrid hexGrid;
     public Ball ball;
     public OutOfBoundsManager outOfBoundsManager;
@@ -11,6 +12,7 @@ public class LooseBallManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public MovementPhaseManager movementPhaseManager;
     public HeaderManager headerManager;
+    [Header("Important Things")]
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
     public PlayerToken causingDeflection;

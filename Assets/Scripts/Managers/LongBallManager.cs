@@ -6,16 +6,19 @@ using System.Linq;
 
 public class LongBallManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
     public OutOfBoundsManager outOfBoundsManager;
     public LooseBallManager looseBallManager;
+    [Header("Flags")]
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isDangerous = false;  // Flag for difficult pass
     private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
+    [Header("Important things")]
     private HexCell currentTargetHex;
     private HexCell clickedHex;
     private HexCell lastClickedHex;

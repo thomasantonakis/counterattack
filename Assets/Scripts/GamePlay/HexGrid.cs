@@ -17,10 +17,11 @@ public class HexGrid : MonoBehaviour
     private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
-    public Ball ball;
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
-    public GroundBallManager groundBallManager;
     public List<HexCell> highlightedHexes = new List<HexCell>();
+    [Header("Dependencies")]
+    public Ball ball;
+    public GroundBallManager groundBallManager;
     
 
     private void Start()

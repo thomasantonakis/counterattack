@@ -5,7 +5,6 @@ using System.IO; // For file operations
 public class ApplicationManager : MonoBehaviour
 {
     public static ApplicationManager Instance { get; private set; }
-    
     public List<Player> PlayerList { get; private set; }
     public string LastSavedFileName { get; set; } // New field for storing the file name
 

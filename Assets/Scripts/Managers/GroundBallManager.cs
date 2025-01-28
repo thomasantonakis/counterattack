@@ -6,16 +6,18 @@ using System.Linq;
 
 public class GroundBallManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
+    [Header("Runtime Items")]
     private HexCell currentTargetHex = null;   // The currently selected target hex
     private HexCell lastClickedHex = null;     // The last hex that was clicked
     private bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     private bool passIsDangerous = false;      // To check if the pass is dangerous
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
-    private int diceRollsPending = 0;          // Number of pending dice rolls
     private List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
     private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
+    private int diceRollsPending = 0;          // Number of pending dice rolls
 
     void Update()
     {

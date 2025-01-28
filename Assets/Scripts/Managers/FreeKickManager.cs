@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class FreeKickManager : MonoBehaviour
 {
+    [Header("Dependencies")]
     public HexGrid hexGrid;
     public Ball ball;
     public MatchManager matchManager;
+    [Header("Important Items")]
     [SerializeField]
     private List<PlayerToken> shouldDefMoveTokens = new List<PlayerToken>();
     [SerializeField]
