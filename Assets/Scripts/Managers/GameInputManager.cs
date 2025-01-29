@@ -133,7 +133,7 @@ public class GameInputManager : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     movementPhaseManager.isWaitingForSnapshotDecision = false;
-                    Debug.Log($"Attacker decides to Snapshot!!!!");
+                    Debug.Log($"{looseBallManager.ballHitThisToken.name} decides to Snapshot!!!!");
                     shotManager.StartShotProcess(looseBallManager.ballHitThisToken, "snapshot");
                     looseBallManager.EndLooseBallPhase();
                 }
@@ -264,11 +264,11 @@ public class GameInputManager : MonoBehaviour
     private void HandleHexClick(HexCell hex)
     {
         // Debug.Log($"Hex clicked: {hex.name}");
-
+        // TODO: Remove this altogether and change the logic
         // Check for Ground Ball and Long Ball state handling
         if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
         {
-            groundBallManager.HandleGroundBallPath(hex, 11, true); // Normal Standard Pass
+            groundBallManager.HandleGroundBallPath(hex, 11); // Normal Standard Pass
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
         {
@@ -468,7 +468,7 @@ public class GameInputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.S))
             {
                 movementPhaseManager.isWaitingForSnapshotDecision = false;
-                Debug.Log($"Attacker decides to Snapshot!!!!");
+                Debug.Log($"{movementPhaseManager.selectedToken.name} decides to Snapshot!!!!");
                 shotManager.StartShotProcess(movementPhaseManager.selectedToken, "snapshot");
             }
             if (Input.GetKeyDown(KeyCode.X))

@@ -44,14 +44,26 @@ public class ShotManager : MonoBehaviour
     public void StartShotProcess(PlayerToken shootingToken, string shotType)
     {
         hexGrid.ClearHighlightedHexes();
-        if (!shootingToken.GetCurrentHex().CanShootFrom)
+        if (shootingToken == null)
         {
-            Debug.LogError($"Token {shootingToken.name} cannot shoot from this hex!");
+            Debug.LogError("Shooting token is NULL! Cannot proceed with shot.");
+            return;
+        }
+
+        HexCell shooterHex = shootingToken.GetCurrentHex();
+        if (shooterHex == null)
+        {
+            Debug.LogError($"Shooting token {shootingToken.name} is not on any hex! Cannot proceed with shot.");
+            return;
+        }
+        if (!shooterHex.CanShootFrom)
+        {
+            Debug.LogError($"Token {shootingToken.name} is on hex {shooterHex.coordinates}, but this hex is not a valid shooting hex!");
             return;
         }
 
         shooter = shootingToken;
-        this.shotType = shotType;
+        // this.shotType = shotType;
         isShotInProgress = true;
 
         if (shotType == "snapshot")
@@ -277,7 +289,7 @@ public class ShotManager : MonoBehaviour
             // TODO: Implement Goal scoring
         }
 
-        // ResetShotProcess();
+        // ResetShotProcess(); // TODO: Uncomment this line
     }
 
     private void ResetShotProcess()
