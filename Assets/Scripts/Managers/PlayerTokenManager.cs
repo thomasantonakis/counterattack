@@ -14,6 +14,7 @@ public class PlayerTokenManager : MonoBehaviour
     // Spawn positions for the players
     private Vector3Int[] homeTeamPositions = new Vector3Int[]
     {
+        new Vector3Int(-16, 0, 0), // 1
         new Vector3Int(0, 0, 0),
         new Vector3Int(6, 0, 6),
         new Vector3Int(8, 0, 8),
@@ -28,6 +29,7 @@ public class PlayerTokenManager : MonoBehaviour
 
     private Vector3Int[] awayTeamPositions = new Vector3Int[]
     {
+        new Vector3Int(16, 0, 0), // 1
         new Vector3Int(-12, 0, 0), // 2
         new Vector3Int(1, 0, -10),
         new Vector3Int(1, 0, 10),
@@ -36,8 +38,8 @@ public class PlayerTokenManager : MonoBehaviour
         new Vector3Int(4, 0, 3),
         new Vector3Int(4, 0, 5),
         new Vector3Int(5, 0, 5),
-        new Vector3Int(6, 0, 5),
-        new Vector3Int(7, 0, 6)
+        new Vector3Int(14, 0, 0), // 10
+        new Vector3Int(18, 0, 0), // 11
     };
 
     void Start()
@@ -77,18 +79,19 @@ public class PlayerTokenManager : MonoBehaviour
         var homeRoster = matchManager.gameData.rosters.home;
         var awayRoster = matchManager.gameData.rosters.away;
 
-        Debug.Log("Initializing Home and Away Tokens:");
-        foreach (var player in homeRoster)
-        {
-            Debug.Log($"Home {player.Key}: {player.Value.name}");
-            // Call token creation methods as shown earlier
-        }
+        // TODO: Remove Debug
+        // Debug.Log("Initializing Home and Away Tokens:");
+        // foreach (var player in homeRoster)
+        // {
+        //     Debug.Log($"Home {player.Key}: {player.Value.name}");
+        //     // Call token creation methods as shown earlier
+        // }
 
-        foreach (var player in awayRoster)
-        {
-            Debug.Log($"Away {player.Key}: {player.Value.name}");
-            // Call token creation methods as shown earlier
-        }
+        // foreach (var player in awayRoster)
+        // {
+        //     Debug.Log($"Away {player.Key}: {player.Value.name}");
+        //     // Call token creation methods as shown earlier
+        // }
     }
     private IEnumerator InitializeTeamsAfterGridIsReady(int homeTeamCount, int awayTeamCount)
     {
@@ -248,10 +251,11 @@ public class PlayerTokenManager : MonoBehaviour
             // Debug.Log($"Spawning player at hex: {spawnHexes[i].name}");
             Vector3 hexCenter = spawnHexes[i].GetHexCenter();
             Vector3 playerPosition = new Vector3(hexCenter.x, 0.2f, hexCenter.z);  // Position snapped to the hex center, y set to -0.2
+            // TODO: Change the KitPrefab for GKs
             GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity, parentObject.transform);
             // player.name = $"{teamType}Player{i+2}";
             // Set GameObject name based on roster and jersey number
-            string jerseyNumber = (i + 2).ToString();
+            string jerseyNumber = (i + 1).ToString();
             string playerName = teamType == "Home"
                 ? homeRoster.ContainsKey(jerseyNumber) ? homeRoster[jerseyNumber].name : "Unknown"
                 : awayRoster.ContainsKey(jerseyNumber) ? awayRoster[jerseyNumber].name : "Unknown";
@@ -290,7 +294,6 @@ public class PlayerTokenManager : MonoBehaviour
             }
             // Adjust position of the text slightly above the player token
             numberTextObj.transform.position = new Vector3(playerPosition.x, 0.41f, playerPosition.z);  // Adjust Y position to sit on top
-            // Rotate the text to face upwards
             numberTextObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
 
             // Get the TextMeshPro component and assign the jersey number
@@ -300,7 +303,10 @@ public class PlayerTokenManager : MonoBehaviour
                 Debug.LogError("Failed to get TextMeshPro component from instantiated jersey number prefab.");
                 continue;
             }
-            numberText.text = (i + 2).ToString();  // Assign jersey numbers starting from 2
+            // numberText.text = (i + 1).ToString();  // Assign jersey numbers starting from 1
+            // numberText.text = (i + 1).ToString() + ((i == 5 || i == 8) ? "." : "");
+            numberText.text = (i + 1 == 6 || i + 1 == 9) ? $"<u>{i + 1}</u>" : (i + 1).ToString(); // Underline 6 and 9 for acecssibility
+
             // TODO: add a '.' after 6 and 9.
             numberText.fontSize = 3;  // Set font size, tweak as needed
             numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token

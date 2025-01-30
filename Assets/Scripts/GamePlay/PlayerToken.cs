@@ -9,6 +9,7 @@ public class PlayerToken : MonoBehaviour
     public bool isHomeTeam;  // Whether the token belongs to the home team
     public HexCell currentHex { get; private set; }   // Reference to the current hex this token occupies
     public bool IsDribbler => isAttacker && currentHex == ball?.GetCurrentHex();
+    public bool IsGoalKeeper => saving > 0 && handling > 0 && aerial > 0;
     [SerializeField] private bool isDribblerDebug;
     [SerializeField] private HexCell occupiedHexDebug;
     private static Ball ball;
@@ -118,13 +119,15 @@ public class PlayerToken : MonoBehaviour
         // Outfielder-specific attributes
         heading = rosterPlayer.heading;
         shooting = rosterPlayer.shooting;
-        tackling = rosterPlayer.tackling;
+
+        tackling = (jersey == 1 || jersey == 12) ? rosterPlayer.saving : rosterPlayer.tackling;
 
         // Goalkeeper-specific attributes
         aerial = rosterPlayer.aerial;
         saving = rosterPlayer.saving;
         handling = rosterPlayer.handling;
-        Debug.Log($"Initialized attributes for {playerName} (Jersey {jerseyNumber}): Pace: {pace}, Dribbling: {dribbling}, HighPass: {highPass}, Resilience: {resilience}");
+        // Debug.Log($"Initialized attributes for {playerName} (Jersey {jerseyNumber}): Pace: {pace}, Dribbling: {dribbling}, HighPass: {highPass}, Resilience: {resilience}"
+        //   + $", Heading: {heading}, Shooting: {shooting}, Tackling: {tackling}, Aerial: {aerial}, Saving: {saving}, Handling: {handling}");
         // TestBookAndInjureTokens();  // Test booking and injuring tokens
     }
 

@@ -342,7 +342,7 @@ public class FirstTimePassManager : MonoBehaviour
             Debug.Log("Starting dice roll sequence... Press R key.");
             // Sort defendingHexes by distance from ballHex
             onPathDefendersList = onPathDefendersList.OrderBy(d => 
-            HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.defender.GetCurrentHex().coordinates)).ToList();
+            HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.defender.GetCurrentHex().coordinates)).ToList(); // TODO check if we need cubes first
             currentDefenderHex = onPathDefendersList[0].defender.GetCurrentHex();  // Start with the closest defender
             isWaitingForDiceRoll = true;
         }

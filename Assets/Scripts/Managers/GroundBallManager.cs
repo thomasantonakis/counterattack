@@ -253,7 +253,7 @@ public class GroundBallManager : MonoBehaviour
         // Check if the path crosses any defender's ZOI
         foreach (HexCell hex in pathHexes)
         {
-            Debug.Log($"Checking hex: {hex.coordinates}");
+            // Debug.Log($"Checking hex: {hex.coordinates}");
             if (isGk && hex != pathHexes.Last())  // Skip TO the last hex if the target is the GK
             {
               continue;
@@ -261,9 +261,9 @@ public class GroundBallManager : MonoBehaviour
             // Get the neighbors of the hex and log them for debugging purposes
             HexCell[] neighbors = hex.GetNeighbors(hexGrid);
             string neighborCoords = string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"));
-            Debug.Log($"Neighbors: {neighborCoords}"); // Correct!
+            // Debug.Log($"Neighbors: {neighborCoords}"); // Correct!
 
-            Debug.Log($"{defenderNeighbors.Contains(hex)}");
+            // Debug.Log($"{defenderNeighbors.Contains(hex)}");
             // Check if a defender's neighbor is in the path excluding Attacking occupied Hexes
             if (defenderNeighbors.Contains(hex) && !hex.isAttackOccupied)
             {

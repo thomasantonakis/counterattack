@@ -256,6 +256,21 @@ public class HexGrid : MonoBehaviour
         return defenderHexes;
     }
 
+    public List<PlayerToken> GetDefenders()
+    {
+        List<PlayerToken> defenderTokens = new List<PlayerToken>();
+        List<HexCell> defenderHexes = GetDefenderHexes();
+        // Loop through all hex cells in the grid
+        foreach (HexCell cell in defenderHexes)
+        {
+            PlayerToken token  = cell.GetOccupyingToken();
+            if (token != null)
+            {
+                defenderTokens.Add(token);
+            }
+        }
+        return defenderTokens;
+    }
     public List<HexCell> GetAttackerHexes()
     {
         List<HexCell> attackerHexes = new List<HexCell>();
@@ -715,4 +730,28 @@ public class HexGrid : MonoBehaviour
         // return float.NaN;
     }
 
+    public PlayerToken GetDefendingGK()
+    {
+        // **Step 1: Find the defending Goalkeeper**
+        PlayerToken defendingGK = GetDefenders().Find(gk => gk.IsGoalKeeper); // TODO is not benched
+        return defendingGK;
+    }
+    public List<HexCell> GetSavableHexes()
+    {
+        // **Step 1: Find the defending Goalkeeper**
+        PlayerToken defendingGK = GetDefendingGK();
+        HexCell gkHex = defendingGK?.GetCurrentHex();
+        // **Step 2: Calculate Saveable Hexes**
+        List<HexCell> saveableHexes = new List<HexCell>();
+        if (gkHex != null)
+        {
+            saveableHexes.Add(gkHex);
+            for (int i = 1; i <= 3; i++)  // Add 3 hexes forward and backward in the same column
+            {
+                saveableHexes.Add(GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + i)));
+                saveableHexes.Add(GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z - i)));
+            }
+        }
+        return saveableHexes;
+    }
 }

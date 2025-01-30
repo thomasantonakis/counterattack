@@ -336,7 +336,8 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (path == null || path.Count == 0)
         {
-            Debug.LogError("No valid path found to the target hex.");
+            if (isCalledDuringMovement) Debug.LogError("No valid path found to the target hex.");
+            else Debug.LogWarning("No movement asked");
             yield break;
         }
         
