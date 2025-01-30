@@ -258,7 +258,7 @@ public class LongBallManager : MonoBehaviour
         isWaitingForDistanceRoll = false;
     }
 
-    private IEnumerator HandleLongBallMovement(HexCell targetHex)
+    public IEnumerator HandleLongBallMovement(HexCell targetHex, bool isFromHandling = false)
     {
         if (targetHex == null)
         {
@@ -289,6 +289,7 @@ public class LongBallManager : MonoBehaviour
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
         // After movement completes, check if the ball is out of bounds
+        if (isFromHandling) yield break;
         if (targetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");

@@ -147,7 +147,7 @@ public class OutOfBoundsManager : MonoBehaviour
         Debug.Log("Set the GameState to WaitingForThrowInTaker");
     }
     
-    private void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
+    public void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
     {
         // TODO: Use Source to decide if it is a GoalKick or a Corner
         // Get the attacking team's direction
@@ -267,6 +267,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private void HandleGoalScored()
     {
+        // TODO: Score a goal (or an own goal from a LooseBall scenario)
         Debug.Log("We need to develop the Goal from a LooseBall scenario.");
     }
 }

@@ -47,6 +47,21 @@ public class LooseBallManager : MonoBehaviour
         HexCell defenderHex = startingToken.GetCurrentHex();
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(startingToken.GetCurrentHex()));
         // ball.SetCurrentHex(defenderHex);
+        List<int> spillDirections = new List<int>();
+        if(resolutionType == "handling" && startingToken.IsGoalKeeper)
+        {
+            if (startingToken.currentHex.isInPenaltyBox == 0) Debug.LogError($"Something is wrong, {startingToken.name} does not seem to be in Penalty Area");
+            else if( startingToken.currentHex.isInPenaltyBox == 1 )
+            {
+                // Right side of the pitch
+                spillDirections = new List<int>{1,2};
+            }
+            else if( startingToken.currentHex.isInPenaltyBox == -1 )
+            {
+                // Left side of the pitch
+                spillDirections = new List<int>{4,5};
+            }
+        }
 
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
@@ -58,6 +73,53 @@ public class LooseBallManager : MonoBehaviour
         // int directionRoll = 4; // NE
         // int directionRoll = 5; // SE
         // int directionRoll = Random.Range(0, 6); // 0-5 for hex directions
+
+        if(resolutionType == "handling" && startingToken.IsGoalKeeper)
+        {
+            if (!spillDirections.Contains(directionRoll))
+            {
+                // HexCell lastInbound;
+                // This should be a CornerKick, and we should break
+                if (directionRoll == 2 || directionRoll == 3 || directionRoll == 4)
+                {
+                    // North Direction
+                    if (startingToken.currentHex.isInPenaltyBox == 1)
+                    {
+                        // Right Side
+                        // TODO: Send the ball somehow, somewhere to the NorthEast
+                        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, 6)), true));
+                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 6)), "RightGoalLine", "defendertouch");
+                    }
+                    else
+                    {
+                        // Left Side
+                        // TODO: Send the ball somehow, somewhere to the NorthWest
+                        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, 6)), true));
+                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 6)), "LeftGoalLine", "defendertouch");
+                    }
+                }
+                else
+                {
+                    // South Direction
+                    if (startingToken.currentHex.isInPenaltyBox == 1)
+                    {
+                        // Right Side
+                        // TODO: Send the ball somehow, somewhere to the SouthEast
+                        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, -6)), true));
+                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -6)), "RightGoalLine", "defendertouch");
+                    }
+                    else
+                    {
+                        // Left Side
+                        // TODO: Send the ball somehow, somewhere to the SouthWest
+                        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, -6)), true));
+                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -6)), "LeftGoalLine", "defendertouch");
+                    }
+                }
+                // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 
+                yield break;
+            }
+        }
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         yield return StartCoroutine(WaitForInput(KeyCode.R));

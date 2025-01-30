@@ -736,6 +736,7 @@ public class HexGrid : MonoBehaviour
         PlayerToken defendingGK = GetDefenders().Find(gk => gk.IsGoalKeeper); // TODO is not benched
         return defendingGK;
     }
+    
     public List<HexCell> GetSavableHexes()
     {
         // **Step 1: Find the defending Goalkeeper**
