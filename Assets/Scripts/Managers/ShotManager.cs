@@ -501,7 +501,7 @@ public class ShotManager : MonoBehaviour
               else if (Input.GetKeyDown(KeyCode.K))
               {
                   isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
-                  Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
+                  Debug.Log("GK Decided to activate F3 Moves");
                   MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
                   // TODO: Implement Trigger Final Thirds, with a parameter -1,1 or 0 for both?
                   yield break;

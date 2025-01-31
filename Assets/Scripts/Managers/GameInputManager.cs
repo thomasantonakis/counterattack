@@ -20,6 +20,7 @@ public class GameInputManager : MonoBehaviour
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
     public ShotManager shotManager;
+    public FinalThirdManager finalThirdManager;
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
@@ -87,6 +88,12 @@ public class GameInputManager : MonoBehaviour
         {
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerFTP();
+        }
+        // Final Thirds Handling
+        if (finalThirdManager.isFinalThirdPhaseActive)
+        {
+            HandleMouseInputForF3();
+            return;
         }
         // MovementPhase input handling
         if
@@ -265,12 +272,11 @@ public class GameInputManager : MonoBehaviour
     {
         // Debug.Log($"Hex clicked: {hex.name}");
         // TODO: Remove this altogether and change the logic
-        // Check for Ground Ball and Long Ball state handling
         if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
         {
             groundBallManager.HandleGroundBallPath(hex, 11); // Normal Standard Pass
         }
-        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow)
+        else if (MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow)
         {
             groundBallManager.HandleGroundBallPath(hex, 11, true); // QuickThrow
         }
@@ -483,6 +489,59 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
+    public void HandleMouseInputForF3()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            finalThirdManager.ForfeitTurn();
+        }
+        if (Input.GetMouseButtonDown(0)) // Left Click
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Debug.Log("HandleMouseInputForF3: Raycast hit something");
+
+                Ball clickedBall = hit.collider.GetComponent<Ball>();
+                HexCell clickedBallHex = null;
+                PlayerToken clickedBallToken = null;
+                if (clickedBall != null)
+                {
+                    clickedBallHex = clickedBall.GetCurrentHex(); 
+                    clickedBallToken = clickedBallHex?.GetOccupyingToken();
+                    if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
+                    else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+                }
+                PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
+                HexCell clickedTokenHex = null;
+                if (clickedToken != null)
+                {
+                    clickedTokenHex = clickedToken.GetCurrentHex();
+                    Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
+                }
+                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                PlayerToken tokenOnClickedHex = null;
+                if (clickedHex != null)
+                {
+                    tokenOnClickedHex = clickedHex.GetOccupyingToken();
+                    if (tokenOnClickedHex != null)
+                    {
+                        Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
+                    }
+                    else 
+                    {
+                        Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
+                    }
+                }
+                PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
+                HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;
+                // Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
+                // Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}");
+                StartCoroutine(finalThirdManager.HandleMouseInput(inferredToken, inferredHexCell));
+            }
+        }
+    }
+    
     public IEnumerator HandleMouseInputForHighPassMovement()
     {
         if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)

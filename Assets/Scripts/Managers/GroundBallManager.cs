@@ -9,6 +9,7 @@ public class GroundBallManager : MonoBehaviour
     [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
+    public FinalThirdManager finalThirdManager;
     [Header("Runtime Items")]
     private HexCell currentTargetHex = null;   // The currently selected target hex
     private HexCell lastClickedHex = null;     // The last hex that was clicked
@@ -425,6 +426,7 @@ public class GroundBallManager : MonoBehaviour
         // Now clear the highlights after the movement
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");
+        finalThirdManager.TriggerFinalThirdPhase();
     }
 
     public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)

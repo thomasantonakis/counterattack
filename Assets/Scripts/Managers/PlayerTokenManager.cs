@@ -11,6 +11,7 @@ public class PlayerTokenManager : MonoBehaviour
     public GameObject blueKitPrefab;
     public HexGrid hexgrid;
     public GameObject textPrefab; // A prefab for TextMeshPro object for jersey numbers (you'll create this prefab)
+    public List<PlayerToken> allTokens = new List<PlayerToken>();
     // Spawn positions for the players
     private Vector3Int[] homeTeamPositions = new Vector3Int[]
     {
@@ -269,6 +270,7 @@ public class PlayerTokenManager : MonoBehaviour
             {
                 token = player.AddComponent<PlayerToken>();
             }
+            allTokens.Add(token);
             MatchManager.RosterPlayer rosterPlayer = teamType == "Home"
                 ? homeRoster.ContainsKey(jerseyNumber) ? homeRoster[jerseyNumber] : null
                 : awayRoster.ContainsKey(jerseyNumber) ? awayRoster[jerseyNumber] : null;
