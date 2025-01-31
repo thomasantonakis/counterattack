@@ -54,6 +54,8 @@ public class MatchManager : MonoBehaviour
         FreeKickDef3,
         FreeKickExecution,
         SnapshotPhase,
+        QuickThrow,
+        ActivateFinalThirdsAfterSave,
     }
     public class GameData
     {

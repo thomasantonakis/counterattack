@@ -11,6 +11,7 @@ public class ShotManager : MonoBehaviour
     [Header("Dependencies")]
     public MovementPhaseManager movementPhaseManager;
     public GameInputManager gameInputManager;
+    public GroundBallManager groundBallManager;
     public LooseBallManager looseBallManager;
     public HexGrid hexGrid;
     [Header("Flags")]
@@ -22,6 +23,7 @@ public class ShotManager : MonoBehaviour
     public bool isWaitingForShotRoll = false;  // Tracks we are in the Blocking Phase
     public bool isWaitingForGKDiceRoll = false;
     public bool isWaitingforHandlingTest = false;
+    public bool isWaitingForSaveandHoldScenario = false;
     public string shotType; // "snapshot" or "fullPower"
     [Header("Important Runtime Items")]
     public PlayerToken shooter; // The token that is shooting
@@ -49,7 +51,7 @@ public class ShotManager : MonoBehaviour
         }
         if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
         {
-            StartShotRoll();  // Pass the stored list
+            StartCoroutine(StartShotRoll());  // Pass the stored list
         }
         if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
         {
@@ -312,7 +314,7 @@ public class ShotManager : MonoBehaviour
                 int diceRoll = UnityEngine.Random.Range(1, 7);
                 if (defenderName == "11. Poulsen")
                 {
-                    diceRoll = 6;
+                    diceRoll = 3;
                 }
                 else
                 {
@@ -352,13 +354,14 @@ public class ShotManager : MonoBehaviour
                             if (shooterRoll == 1)
                             {
                                 Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the Shot is OFF target! GoalKick awarded.");
+                                // TODO: Throw the ball out!
                                 // TODO: Implement GoalKick
                                 ResetShotProcess();
                             }
                             else
                             {
                                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll}, that's a GOAL!!");
-                                // MatchManager.Instance.ScoreGoal(shooter);
+                                yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                                 // TODO: Implement Goal scoring
                                 ResetShotProcess();
                             }
@@ -377,11 +380,11 @@ public class ShotManager : MonoBehaviour
         yield return null;
     }
 
-    private void StartShotRoll()
+    private IEnumerator StartShotRoll()
     {
         Debug.Log("Hello from the StartShotRoll");
         // shooterRoll = UnityEngine.Random.Range(1, 7);
-        shooterRoll = 4;
+        shooterRoll = 2;
         isWaitingForShotRoll = false;
         totalShotPower = shooterRoll + shooter.shooting;
         boxPenalty = shooter.GetCurrentHex().isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
@@ -394,18 +397,19 @@ public class ShotManager : MonoBehaviour
             Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save.");
             isWaitingForGKDiceRoll = true;
         }
-        else // There are GOALKEEPER or more defenders! Shooter is attempting to put it on target. 
+        else // There's NO GOALKEEPER or more defenders! Shooter is attempting to put it on target. 
         {
             if (shooterRoll == 1)
             {
                 Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
+                // TODOL Throw the ball out!
                 // TODO: Implement GoalKick
             }
             else
             {
                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{snapPenalty}{boxPenalty}= {totalShotPower}");
                 Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
-                // MatchManager.Instance.ScoreGoal(shooter);
+                yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                 // TODO: Implement Goal scoring
                 ResetShotProcess();
             }
@@ -425,18 +429,20 @@ public class ShotManager : MonoBehaviour
 
         Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
 
+        hexGrid.ClearHighlightedHexes();
         if (totalSavingPower == totalShotPower)
         {
             yield return null;
-            // hexGrid.ClearHighlightedHexes();
             Debug.Log($"{gkToken.name} ties the attacker's roll!! Loose Ball situation initiated.");
-            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));  // Pass the selected token
+            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
+            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false)); // Maybe this is redundant
             StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "ground"));
             ResetShotProcess();
         }
         else if (totalSavingPower > totalShotPower)
         {
             // TODO: Push everyone in line.
+            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
@@ -461,6 +467,7 @@ public class ShotManager : MonoBehaviour
                 {
                     Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{snapPenalty}{boxPenalty} = {totalShotPower}");
                     Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+                    yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                     // MatchManager.Instance.ScoreGoal(shooter);
                     // TODO: Implement Goal scoring
                     ResetShotProcess();
@@ -475,13 +482,32 @@ public class ShotManager : MonoBehaviour
       yield return null;
       PlayerToken gkToken = interceptors[0].defender;
       // int gkRoll = UnityEngine.Random.Range(1, 7);
-      int gkRoll = 6;
+      int gkRoll = 1;
       isWaitingforHandlingTest = false;
       // Handling Test
       if (gkRoll < gkToken.handling)
       {
-          Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Save and Hold Scenario");
-          // TODO: Save and Hold Scenario
+          Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or G[K]");
+          isWaitingForSaveandHoldScenario = true;
+          while (isWaitingForSaveandHoldScenario)
+          {
+              if (Input.GetKeyDown(KeyCode.Q))
+              {
+                  isWaitingForSaveandHoldScenario = false;
+                  Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
+                  MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
+                  yield break;
+              }
+              else if (Input.GetKeyDown(KeyCode.K))
+              {
+                  isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
+                  Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
+                  MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
+                  // TODO: Implement Trigger Final Thirds, with a parameter -1,1 or 0 for both?
+                  yield break;
+              }
+              yield return null;  // Wait for the next frame
+          }
       }
       else 
       {

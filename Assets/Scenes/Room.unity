@@ -2464,9 +2464,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridCenter: {x: 0, y: 0, z: 0}
   hexCellPrefab: {fileID: -428787755409983856, guid: f78181e779d674d1a80601a352fff9e9, type: 3}
+  highlightedHexes: []
   ball: {fileID: 390494642}
   groundBallManager: {fileID: 1703800862}
-  highlightedHexes: []
 --- !u!4 &1405702521
 Transform:
   m_ObjectHideFlags: 0
@@ -3000,6 +3000,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementPhaseManager: {fileID: 1390513032}
   gameInputManager: {fileID: 417053521}
+  groundBallManager: {fileID: 1703800862}
   looseBallManager: {fileID: 757768961}
   hexGrid: {fileID: 1405702520}
   isShotInProgress: 0
@@ -3008,10 +3009,18 @@ MonoBehaviour:
   isWaitingForTargetSelection: 0
   isWaitingForBlockDiceRoll: 0
   isWaitingForShotRoll: 0
+  isWaitingForGKDiceRoll: 0
+  isWaitingforHandlingTest: 0
+  isWaitingForSaveandHoldScenario: 0
   shotType: 
   shooter: {fileID: 0}
+  totalShotPower: 0
+  shooterRoll: 0
+  boxPenalty: 
+  snapPenalty: 
   tokenMoveforDeflection: {fileID: 0}
   targetHex: {fileID: 0}
+  saveHex: {fileID: 0}
   currentDefenderBlockingHex: {fileID: 0}
 --- !u!4 &1740884028
 Transform:

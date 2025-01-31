@@ -270,6 +270,10 @@ public class GameInputManager : MonoBehaviour
         {
             groundBallManager.HandleGroundBallPath(hex, 11); // Normal Standard Pass
         }
+        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow)
+        {
+            groundBallManager.HandleGroundBallPath(hex, 11, true); // QuickThrow
+        }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
         {
             firstTimePassManager.HandleFTPBallPath(hex);

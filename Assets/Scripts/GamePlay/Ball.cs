@@ -82,13 +82,20 @@ public class Ball : MonoBehaviour
         AdjustBallHeightBasedOnOccupancy();
     }
 
-    public IEnumerator MoveToCell(HexCell newHex)
+    public IEnumerator MoveToCell(HexCell newHex, int? roll = null)
     {
         if (newHex == null)
         {
             Debug.LogError("Target Hex is null in MoveToCell!");
             yield break;
         }
+        // Check if target is out-of-bounds
+        bool isOutOfBounds = newHex.isOutOfBounds;
+        // Adjust speed based on shot roll
+        float baseSpeed = 3.0f;  // Default ball speed
+        float speedMultiplier = 0.5f;  // Scaling factor for shot power influence
+        float adjustedSpeed = roll.HasValue ? baseSpeed + (roll.Value * speedMultiplier) : baseSpeed;
+
 
         targetCell = newHex;
         isMoving = true;
@@ -96,7 +103,7 @@ public class Ball : MonoBehaviour
         // Move smoothly towards the target cell
         while (isMoving)
         {
-            float step = moveSpeed * Time.deltaTime;
+            float step = adjustedSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetCell.GetHexCenter(), step);
 
             // Check if the ball has reached the target
