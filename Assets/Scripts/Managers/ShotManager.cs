@@ -126,7 +126,7 @@ public class ShotManager : MonoBehaviour
         {
             canShootToHex.HighlightHex("CanShootFrom", 1);
             hexGrid.highlightedHexes.Add(canShootToHex);
-            canShootToHex.transform.position += Vector3.up * 0.5f; // Raise it above the plane
+            canShootToHex.transform.position += Vector3.up * 0.03f; // Raise it above the plane
         }
 
         Debug.Log("Waiting for target selection...");
@@ -142,7 +142,7 @@ public class ShotManager : MonoBehaviour
         foreach (var canShootToHex in shootingPaths.Keys)
         {
             canShootToHex.ResetHighlight();
-            canShootToHex.transform.position -= Vector3.up * 0.5f; // Raise it above the plane
+            canShootToHex.transform.position -= Vector3.up * 0.03f; // Raise it above the plane
         }
         trajectoryPath = shooterHex.ShootingPaths[targetHex];
         HighlightTrajectoryPath();
@@ -490,7 +490,7 @@ public class ShotManager : MonoBehaviour
       // Handling Test
       if (gkRoll < gkToken.handling)
       {
-          Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or G[K]");
+          Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
           isWaitingForSaveandHoldScenario = true;
           while (isWaitingForSaveandHoldScenario)
           {
