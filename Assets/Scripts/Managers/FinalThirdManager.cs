@@ -30,15 +30,12 @@ public class FinalThirdManager : MonoBehaviour
     private string currentTeamMoving; // attack, defense
     [SerializeField]
     private PlayerToken selectedToken;
-    [SerializeField]
-    private HexCell ballHex;
 
     public void TriggerFinalThirdPhase(bool bothSides = false)
     {
         Debug.Log("Hello from FinalThird Manager!");
-        ballHex = ball.GetCurrentHex();
         this.bothSides = bothSides;
-        int f3Side = ballHex.isInFinalThird; // 1 = Right F3, -1 = Left F3, 0 = No F3
+        int f3Side = ball.GetCurrentHex().isInFinalThird; // 1 = Right F3, -1 = Left F3, 0 = No F3
         if (f3Side == 0)  return; // No F3 triggered
         eligibleTokens = GetAllTokens(f3Side);
         if (eligibleTokens.Count == 0) return; // No Eligible Tokens
@@ -67,6 +64,7 @@ public class FinalThirdManager : MonoBehaviour
     }
     private List<PlayerToken> GetCurrentTeamTokens()
     {
+        // Debug.Log($"hello from GetCurrentTeamTokens, currentTeamMoving: {currentTeamMoving}");;
         if (currentTeamMoving == "attack")
             return eligibleTokens.Where(token => token.isAttacker).ToList();
         else
@@ -103,9 +101,10 @@ public class FinalThirdManager : MonoBehaviour
 
     private IEnumerator HandleF3Movement()
     {
+        // Debug.Log($"Hello from HandleF3Movement, currentTeamMoving: {currentTeamMoving}");
         isWaitingForTokenSelection = true;
         currentMovableTokens = GetCurrentTeamTokens();
-        Debug.Log($"Final Third Moves - {currentTeamMoving} Team Moving"); // TODO: Make this more informative.
+        Debug.Log($"Final Third Moves - {currentTeamMoving} Team Moving, currentMovableTokens has {currentMovableTokens.Count} items"); // TODO: Make this more informative.
         while (currentMovableTokens.Count > 0)
         {
             isWaitingForTargetHex = false;
@@ -186,7 +185,7 @@ public class FinalThirdManager : MonoBehaviour
             Debug.LogWarning("Invalid move! Selected hex is not in the highlighted movement options.");
             yield break;
         }
-        List<HexCell> gkZoi = ballHex.GetNeighbors(hexGrid).ToList();
+        List<HexCell> gkZoi = ball.GetCurrentHex().GetNeighbors(hexGrid).ToList();
         if (bothSides && gkZoi.Contains(targetHex) && currentTeamMoving != "attack")
         {
             Debug.LogWarning("Invalid move! You cannot land on the Ball's ZOI as it is held by the  attacking GK.");
@@ -205,10 +204,11 @@ public class FinalThirdManager : MonoBehaviour
 
     private IEnumerator NextF3Phase()
     {
-        Debug.Log("Hello from Nextf3");
+        // Debug.Log($"Hello from Nextf3, currentTeamMoving: {currentTeamMoving}");
         if (currentTeamMoving == "attack") // Attack finished, now defense
         {
             currentTeamMoving = "defense";
+            // Debug.Log($"Starting HandleF3Movement, with currentTeamMoving: {currentTeamMoving}");
             StartCoroutine(HandleF3Movement());
         }
         else
@@ -226,7 +226,6 @@ public class FinalThirdManager : MonoBehaviour
         movedTokens.Clear();
         currentTeamMoving = null;
         isWaitingForTokenSelection = false;
-        ballHex = null;
         Debug.Log("Final Third Phase Completed. Resuming gameplay.");
     }
 
@@ -247,18 +246,22 @@ public class FinalThirdManager : MonoBehaviour
 
     private IEnumerator HandleBothSidesF3(int f3Side)
     {
+        // Debug.Log("Hello from both sides");
         eligibleTokens = GetAllTokens(-f3Side); // Ball Side
         if (eligibleTokens.Count == 0) yield break; // No Eligible Tokens
 
         isFinalThirdPhaseActive = true;
         movedTokens = new List<PlayerToken>();
         currentTeamMoving = "attack";
+        // Debug.Log("Starting GK's side");
         yield return StartCoroutine(HandleF3Movement());
-
+        yield return new WaitUntil(() => !isFinalThirdPhaseActive);
+        isFinalThirdPhaseActive = true;
         eligibleTokens = GetAllTokens(f3Side); // Other side than ball's side
         if (eligibleTokens.Count == 0) yield break; // No Eligible Tokens
 
         currentTeamMoving = "attack";
+        // Debug.Log("Starting Other side");
         yield return StartCoroutine(HandleF3Movement());
     }
 }

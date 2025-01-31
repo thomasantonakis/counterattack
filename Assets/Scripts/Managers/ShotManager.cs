@@ -13,6 +13,7 @@ public class ShotManager : MonoBehaviour
     public GameInputManager gameInputManager;
     public GroundBallManager groundBallManager;
     public LooseBallManager looseBallManager;
+    public FinalThirdManager finalThirdManager;
     public HexGrid hexGrid;
     [Header("Flags")]
     public bool isShotInProgress = false;  // Tracks if a shot is active
@@ -394,7 +395,7 @@ public class ShotManager : MonoBehaviour
 
         if (interceptors.Count > 0 && interceptors[0].gkPenalty != null) // Check if the GK is next
         {
-            Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save.");
+            Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save. Press [R] to roll");
             isWaitingForGKDiceRoll = true;
         }
         else // There's NO GOALKEEPER or more defenders! Shooter is attempting to put it on target. 
@@ -444,6 +445,8 @@ public class ShotManager : MonoBehaviour
             // TODO: Push everyone in line.
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
+            MatchManager.Instance.ChangePossession();
+            yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
             yield break;
@@ -503,6 +506,7 @@ public class ShotManager : MonoBehaviour
                   isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
                   Debug.Log("GK Decided to activate F3 Moves");
                   MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
+                  finalThirdManager.TriggerFinalThirdPhase(true);
                   // TODO: Implement Trigger Final Thirds, with a parameter -1,1 or 0 for both?
                   yield break;
               }

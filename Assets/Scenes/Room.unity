@@ -1639,6 +1639,7 @@ MonoBehaviour:
   bothSides: 0
   isFinalThirdPhaseActive: 0
   isWaitingForTokenSelection: 0
+  isWaitingForTargetHex: 0
   eligibleTokens: []
   currentMovableTokens: []
   movedTokens: []
@@ -3062,6 +3063,7 @@ MonoBehaviour:
   gameInputManager: {fileID: 417053521}
   groundBallManager: {fileID: 1703800862}
   looseBallManager: {fileID: 757768961}
+  finalThirdManager: {fileID: 1012232483}
   hexGrid: {fileID: 1405702520}
   isShotInProgress: 0
   isWaitingforBlockerSelection: 0

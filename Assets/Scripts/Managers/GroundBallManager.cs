@@ -426,6 +426,7 @@ public class GroundBallManager : MonoBehaviour
         // Now clear the highlights after the movement
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");
+        if (speed != null) yield break;
         finalThirdManager.TriggerFinalThirdPhase();
     }
 
