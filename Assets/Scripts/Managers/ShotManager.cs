@@ -61,6 +61,7 @@ public class ShotManager : MonoBehaviour
             StartCoroutine(ResolveHandlingTest());
         }
     }
+    
     public void StartShotProcess(PlayerToken shootingToken, string shotType)
     {
         hexGrid.ClearHighlightedHexes();
@@ -553,7 +554,7 @@ public class ShotManager : MonoBehaviour
             case 5:
             case 6:
                 Debug.Log("Camera");
-                yield return StartCoroutine(BallCloseUpAndPlacement());
+                yield return StartCoroutine(oGamosTouKaragkiozi());
                 break;
             default:
                 yield return StartCoroutine(NextToBar());
@@ -587,7 +588,7 @@ public class ShotManager : MonoBehaviour
         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(targetX, 0, intersectionZ)), true));      
     }
 
-    private IEnumerator BallCloseUpAndPlacement()
+    private IEnumerator oGamosTouKaragkiozi()
     {
         hexGrid.ClearHighlightedHexes();
         HexCell shooterHex = shooter.GetCurrentHex();

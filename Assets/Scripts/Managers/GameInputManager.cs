@@ -151,6 +151,13 @@ public class GameInputManager : MonoBehaviour
                     if (movementPhaseManager.isMovementPhaseInProgress) movementPhaseManager.AdvanceMovementPhase();
                 }
             }
+            if (shotManager.isWaitingforBlockerSelection)
+            {
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    shotManager.CompleteDefenderMovement();
+                }
+            }
             StartCoroutine(HandleMouseInputForSnapMovement());
         }
         if (
