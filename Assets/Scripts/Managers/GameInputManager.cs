@@ -942,58 +942,17 @@ public class GameInputManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    Debug.Log($"Raycast hit: {hit.collider.name}");
-
+                    if (hit.collider == null)
+                    {
+                        Debug.Log("Raycast did not hit any collider.");
+                        return;
+                    }
+                    var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
                     // Check if the ray hit a PlayerToken directly
-                    PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
-                    if (clickedToken != null)
-                    {
-                        if (clickedToken.isAttacker)
-                        {
-                            Debug.Log($"Selected {clickedToken.name} as the kicker.");
-                            StartCoroutine(freeKickManager.HandleKickerSelection(clickedToken));
-                            return;  // End processing for this click
-                        }
-                        else
-                        {
-                            Debug.Log($"Click ignored: {clickedToken.name} is a defender and cannot be selected as the kicker.");
-                        }
-                        return;  // End processing for this click
-                    }
-
-                    // If the ray did not hit a PlayerToken, check for a HexCell
-                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                    if (clickedHex != null)
-                    {
-                        Debug.Log($"Hex clicked: {clickedHex.coordinates}");
-
-                        // Check if the hex has a token on it
-                        PlayerToken occupyingToken = clickedHex.GetOccupyingToken();
-                        if (occupyingToken != null)
-                        {
-                            if (occupyingToken.isAttacker)
-                            {
-                                Debug.Log($"Selected {occupyingToken.name} as the kicker.");
-                                StartCoroutine(freeKickManager.HandleKickerSelection(occupyingToken));
-                            }
-                            else
-                            {
-                                Debug.Log($"Click ignored: {occupyingToken.name} is a defender and cannot be selected as the kicker.");
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log("Click ignored: Please select an attacker occupying a hex.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("Raycast did not hit a valid hex or token.");
-                    }
-                }
-                else
-                {
-                    Debug.Log("Raycast did not hit any collider.");
+                    Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                    Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                    if (inferredTokenFromClick != null) StartCoroutine(freeKickManager.HandleKickerSelection(inferredTokenFromClick));
+                    else Debug.Log($"There is no Token on {inferredHexCellFromClick.name}. Doing nothing!");
                 }
             }
             else if (Input.GetKeyDown(KeyCode.X))
@@ -1013,31 +972,33 @@ public class GameInputManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    Debug.Log($"Raycast hit: {hit.collider.name}");
-                    // Check if a token is already selected
+                    if (hit.collider == null)
+                    {
+                        Debug.Log("Raycast did not hit any collider.");
+                        return;
+                    }
+                    var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                    // Check if the ray hit a PlayerToken directly
+                    Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                    Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
                     if (freeKickManager.selectedToken != null)
                     {
-                        // Handle destination Hex selection
-                        HexCell clickedDestinationHex = hit.collider.GetComponent<HexCell>();
-                        PlayerToken newClickedToken = hit.collider.GetComponent<PlayerToken>();
-                        if (newClickedToken != null && newClickedToken != freeKickManager.selectedToken)
+                        if (inferredTokenFromClick != null && inferredTokenFromClick != freeKickManager.selectedToken)
                         {
-                          Debug.Log($"New Clicked token during free kick setup: {newClickedToken.name}");
-                          freeKickManager.HandleSetupTokenSelection(newClickedToken);
+                          Debug.Log($"New Clicked token during free kick setup: {inferredTokenFromClick.name}");
+                          freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
                           return;
                         }
-                        if (clickedDestinationHex != null)
+                        if (inferredHexCellFromClick != null)
                         {
-                            if (!clickedDestinationHex.isDefenseOccupied && !clickedDestinationHex.isAttackOccupied)
+                            if (!inferredHexCellFromClick.isDefenseOccupied && !inferredHexCellFromClick.isAttackOccupied)
                             {
-                                Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {clickedDestinationHex.coordinates}");
-                                // freeKickManager.MoveTokenToHex(freeKickManager.selectedToken, clickedDestinationHex);
-                                StartCoroutine(freeKickManager.HandleSetupHexSelection(clickedDestinationHex));
-                                // freeKickManager.selectedToken = null; // Reset the selected token
+                                Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {inferredHexCellFromClick.coordinates}");
+                                StartCoroutine(freeKickManager.HandleSetupHexSelection(inferredHexCellFromClick));
                             }
                             else
                             {
-                                Debug.LogWarning($"Hex {clickedDestinationHex.coordinates} is occupied. Select an unoccupied Hex.");
+                                Debug.LogWarning($"Hex {inferredHexCellFromClick.coordinates} is occupied. Select an unoccupied Hex.");
                             }
                         }
                         else
@@ -1046,68 +1007,17 @@ public class GameInputManager : MonoBehaviour
                         }
                         return;
                     }
-
-                    PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
-                    if (clickedToken != null)
+                    else if (inferredTokenFromClick != null)
                     {
-                        Debug.Log($"Clicked token during free kick setup: {clickedToken.name}");
-                        freeKickManager.HandleSetupTokenSelection(clickedToken);
+                      Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
+                      freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
+                      return;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Hex {inferredHexCellFromClick.name} is unoccupied. Please select a valid token.");
                         return;
-                    }
-
-                    // Check if the clicked object is a HexCell
-                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                    if (clickedHex != null)
-                    {
-                        Debug.Log($"Clicked on hex: {clickedHex.coordinates}");
-
-                        // If there's a token on the clicked hex, treat it as clicking the token
-                        PlayerToken occupyingToken = clickedHex.GetOccupyingToken();
-                        if (occupyingToken != null)
-                        {
-                            Debug.Log($"Hex {clickedHex.coordinates} is occupied by token: {occupyingToken.name}");
-                            freeKickManager.HandleSetupTokenSelection(occupyingToken);
-                            return;
-                        }
-                        else
-                        {
-                            Debug.LogWarning($"Hex {clickedHex.coordinates} is unoccupied. Please select a valid token.");
-                            return;
-                        }
-                    }
-                    // Check if the clicked object is the Ball
-                    Ball clickedBall = hit.collider.GetComponent<Ball>();
-                    if (clickedBall != null)
-                    {
-                        Debug.Log("Clicked on the ball.");
-
-                        // Get the Hex where the ball is located
-                        HexCell ballHex = clickedBall.GetCurrentHex();
-                        if (ballHex != null)
-                        {
-                            PlayerToken ballToken = ballHex.GetOccupyingToken();
-                            if (ballToken != null)
-                            {
-                                Debug.Log($"Ball is on hex {ballHex.coordinates}, occupied by token: {ballToken.name}");
-                                freeKickManager.HandleSetupTokenSelection(ballToken);
-                                return;
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"Ball is on hex {ballHex.coordinates}, but no token is present. Input rejected.");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogError("Ball is not on a valid Hex. Input rejected.");
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.Log("Raycast did not hit any collider.");
+                    }            
                 }
             }
             else if (Input.GetKeyDown(KeyCode.X))
@@ -1115,9 +1025,47 @@ public class GameInputManager : MonoBehaviour
                 Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
                 freeKickManager.selectedToken = null;  // Reset the selected token
                 freeKickManager.AttemptToAdvanceToNextPhase();
-                // return;
             }
         }
     }
 
+    private (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick) DetectTokenOrHexClicked(RaycastHit hit)
+    {
+        Ball clickedBall = hit.collider.GetComponent<Ball>();
+        HexCell clickedBallHex = null;
+        PlayerToken clickedBallToken = null;
+        if (clickedBall != null)
+        {
+            clickedBallHex = clickedBall.GetCurrentHex(); 
+            clickedBallToken = clickedBallHex?.GetOccupyingToken();
+            if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
+            else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+        }
+        PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
+        HexCell clickedTokenHex = null;
+        if (clickedToken != null)
+        {
+            clickedTokenHex = clickedToken.GetCurrentHex();
+            Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
+        }
+        HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+        PlayerToken tokenOnClickedHex = null;
+        if (clickedHex != null)
+        {
+            tokenOnClickedHex = clickedHex.GetOccupyingToken();
+            if (tokenOnClickedHex != null)
+            {
+                Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
+            }
+            else 
+            {
+                Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
+            }
+        }
+        PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
+        HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;
+        Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
+        Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}"); 
+        return (inferredToken, inferredHexCell);      
+    }
 }

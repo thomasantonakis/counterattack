@@ -79,6 +79,11 @@ public class FreeKickManager : MonoBehaviour
         Debug.Log($"Handling kicker selection for {clickedToken?.name}...");
         if (clickedToken != null)
         {
+            if (!clickedToken.isAttacker)
+            {
+                Debug.Log($"Click ignored: {clickedToken.name} is a defender and cannot be selected as the kicker.");
+                yield break;
+            }
             Debug.Log($"Selected {clickedToken.name} as the kicker.");
             selectedKicker = clickedToken;
             HexCell targetHex = GetClosestAvailableHexToBall();
@@ -92,7 +97,7 @@ public class FreeKickManager : MonoBehaviour
         Debug.Log("HandleKicker Selection: Calculating potential kickers...");
         CalculatePotentialKickers();
         // Transition to the first phase
-        StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt1, 2));
+        StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAttGK, 1));
         yield break;  // Exit early since we already handled the token            
     }
 
@@ -134,6 +139,24 @@ public class FreeKickManager : MonoBehaviour
         if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef") && token.isAttacker)
         {
             Debug.LogWarning($"Token {token.name} is not a defender. Invalid selection for this phase.");
+            return;
+        }
+        if (
+            (
+                MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAttG")
+                || MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+            )
+            && !token.IsGoalKeeper
+        )
+        {
+            if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAttG"))
+            {
+                Debug.LogWarning($"Token {token.name} is not the Goalkeeper of the attacking team.");
+            }
+            else 
+            {
+                Debug.LogWarning($"Token {token.name} is not the Goalkeeper of the defending team.");
+            }
             return;
         }
         if
@@ -189,7 +212,10 @@ public class FreeKickManager : MonoBehaviour
         targetHex = hex;
         Debug.Log($"Token {selectedToken.name} moving to hex {hex.coordinates}.");
         yield return StartCoroutine(MoveTokenToHex(selectedToken, hex));
-        if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef"))
+        if (
+            MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
+            && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+        )
         {
             Debug.Log("We are in Defensive move, Cheking if we need to remove the token from the list of defenders that need to move.");
             if (selectedToken == null)
@@ -213,7 +239,7 @@ public class FreeKickManager : MonoBehaviour
         {
             Debug.Log("HandleSetupHexSelection: Calculating potential kickers...");
             CalculatePotentialKickers();
-            attackerMovesUsed++;
+            if (!MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAttG")) attackerMovesUsed++;
         }
         selectedToken = null;
         targetHex = null;
@@ -225,6 +251,7 @@ public class FreeKickManager : MonoBehaviour
     {
         if (
             MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
+            && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
             // if we let the forfeit happen, then 2 - movesUsed will be forfeited
             // so the remaining defender moves will be (remainingDefenderMoves - (2 - movesUsed))
             // This should be checked against the number of defenders that need to move.
@@ -241,12 +268,23 @@ public class FreeKickManager : MonoBehaviour
             Debug.LogWarning("You cannot forfeit current move, as the remaining moves will be less than the defenders that need to move.");
             return;
         }
-        else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef"))
+        else if (
+            MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
+            && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+        )
         {
             Debug.Log("Forfeiting current Defensive move.");
             remainingDefenderMoves -= 2 - movesUsed;
             defenderMovesUsed += 2 - movesUsed;
             movesUsed = 2;
+        }
+        else if (
+            MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+            || MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAttG")
+        )
+        {
+            Debug.Log("Forfeiting current GK Defensive move.");
+            movesUsed = 1;
         }
         else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt3"))
         {
@@ -254,7 +292,9 @@ public class FreeKickManager : MonoBehaviour
             attackerMovesUsed += 3 - movesUsed;
             movesUsed = 3;
         }
-        else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt"))
+        else if (
+            MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt")
+        )
         {
             Debug.Log("Forfeiting current Attacking move.");
             attackerMovesUsed += 2 - movesUsed;
@@ -269,6 +309,14 @@ public class FreeKickManager : MonoBehaviour
 
         switch (currentPhase)
         {
+            case MatchManager.GameState.FreeKickAttGK:
+                MatchManager.Instance.currentState = MatchManager.GameState.FreeKickDefGK1;
+                StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDefGK1, 1));
+                break;
+            case MatchManager.GameState.FreeKickDefGK1:
+                MatchManager.Instance.currentState = MatchManager.GameState.FreeKickAtt1;
+                StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt1, 2));
+                break;
             case MatchManager.GameState.FreeKickAtt1:
                 MatchManager.Instance.currentState = MatchManager.GameState.FreeKickDef1;
                 StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDef1, 2));
@@ -290,6 +338,10 @@ public class FreeKickManager : MonoBehaviour
                 StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDef3, 2));
                 break;
             case MatchManager.GameState.FreeKickDef3:
+                MatchManager.Instance.currentState = MatchManager.GameState.FreeKickDefGK2;
+                StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDefGK2, 1));
+                break;
+            case MatchManager.GameState.FreeKickDefGK2:
                 matchManager.currentState = MatchManager.GameState.FreeKickExecution;
                 ResetMoves();
                 Debug.Log("Free Kick Preparation completed. Ready for execution.");

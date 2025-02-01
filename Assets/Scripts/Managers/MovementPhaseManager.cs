@@ -835,7 +835,7 @@ public class MovementPhaseManager : MonoBehaviour
         // // Rigged
         if (isDefender)
         {
-            defenderDiceRoll = 4;
+            defenderDiceRoll = 1;
             tackleDefenderRolled = true;
             Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         }
