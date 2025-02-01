@@ -1636,16 +1636,19 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   playerTokenManager: {fileID: 501380953}
   movementPhaseManager: {fileID: 1390513032}
+  highPassManager: {fileID: 1859472972}
   bothSides: 0
   isFinalThirdPhaseActive: 0
   isWaitingForTokenSelection: 0
   isWaitingForTargetHex: 0
+  forfeitWasPressed: 0
+  isWaitingForWhatToDo: 0
+  seriesOfF3: 1
   eligibleTokens: []
   currentMovableTokens: []
   movedTokens: []
   currentTeamMoving: 
   selectedToken: {fileID: 0}
-  ballHex: {fileID: 0}
 --- !u!4 &1012232484
 Transform:
   m_ObjectHideFlags: 0

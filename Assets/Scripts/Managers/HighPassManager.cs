@@ -54,7 +54,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
     
-    public void HandleHighPassProcess(HexCell clickedHex)
+    public void HandleHighPassProcess(HexCell clickedHex, bool isGK = false)
     {
         if (clickedHex != null)
         { 
@@ -68,17 +68,17 @@ public class HighPassManager : MonoBehaviour
             else
             {
                 // Now handle the pass based on difficulty
-                HandleHighPassBasedOnDifficulty(clickedHex);
+                HandleHighPassBasedOnDifficulty(clickedHex, isGK);
             }   
         }
     }
 
-    private void HandleHighPassBasedOnDifficulty(HexCell clickedHex)
+    private void HandleHighPassBasedOnDifficulty(HexCell clickedHex, bool isGK = false)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized target validation
         hexGrid.ClearHighlightedHexes();
-        bool isValid = ValidateHighPassTarget(clickedHex);
+        bool isValid = ValidateHighPassTarget(clickedHex, isGK);
         // If the clicked hex is not valid, reset everything and reject the click
         if (!isValid)
         {
@@ -162,7 +162,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    public bool ValidateHighPassTarget(HexCell targetHex)
+    public bool ValidateHighPassTarget(HexCell targetHex, bool isGK = false)
     {
         HexCell ballHex = ball.GetCurrentHex();
         // Step 1: Ensure the ballHex and targetHex are valid
@@ -171,15 +171,29 @@ public class HighPassManager : MonoBehaviour
             Debug.LogError("Ball or target hex is null!");
             return false;
         }
-        // Alternative Step 4
-        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-        Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
-        int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
-        // Check the distance limit
-        if (distance > MAX_PASS_DISTANCE)
+        if (!isGK)
         {
-            Debug.LogWarning($"High Pass is out of range. Maximum steps allowed: {MAX_PASS_DISTANCE}. Current steps: {distance}");
-            return false;
+            // Regular HP
+            // Alternative Step 4
+            Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
+            Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
+            int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+            // Check the distance limit
+            if (distance > MAX_PASS_DISTANCE)
+            {
+                Debug.LogWarning($"High Pass is out of range. Maximum steps allowed: {MAX_PASS_DISTANCE}. Current steps: {distance}");
+                return false;
+            }
+        }
+        else
+        {
+            // Specific HP from GK after a save and hold or GoalKick
+            // reject only targets in the opposite final thirds.
+            if (ballHex.isInFinalThird * targetHex.isInFinalThird == -1)
+            {
+                Debug.LogWarning($"GK High Pass cannot be targeted in the opposite Final Third");
+                return false;
+            }
         }
         // Step 2: Calculate the path between the ball and the target hex
         List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);

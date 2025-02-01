@@ -292,6 +292,10 @@ public class GameInputManager : MonoBehaviour
         {
             highPassManager.HandleHighPassProcess(hex);
         }
+        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick)
+        {
+            highPassManager.HandleHighPassProcess(hex, true);
+        }
     }
 
     public IEnumerator HandleMouseInputForMovement()
@@ -495,12 +499,23 @@ public class GameInputManager : MonoBehaviour
         {
             finalThirdManager.ForfeitTurn();
         }
+        if (finalThirdManager.isWaitingForWhatToDo)
+        {
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                finalThirdManager.DropBall();
+            }
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                finalThirdManager.GKKick();
+            }
+        }
         if (Input.GetMouseButtonDown(0)) // Left Click
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Debug.Log("HandleMouseInputForF3: Raycast hit something");
+                Debug.Log("HandleMouseInputForF3: Click Detected!");
 
                 Ball clickedBall = hit.collider.GetComponent<Ball>();
                 HexCell clickedBallHex = null;
@@ -509,29 +524,29 @@ public class GameInputManager : MonoBehaviour
                 {
                     clickedBallHex = clickedBall.GetCurrentHex(); 
                     clickedBallToken = clickedBallHex?.GetOccupyingToken();
-                    if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
-                    else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+                    // if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
+                    // else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
                 }
                 PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
                 HexCell clickedTokenHex = null;
                 if (clickedToken != null)
                 {
                     clickedTokenHex = clickedToken.GetCurrentHex();
-                    Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
+                    // Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
                 }
                 HexCell clickedHex = hit.collider.GetComponent<HexCell>();
                 PlayerToken tokenOnClickedHex = null;
                 if (clickedHex != null)
                 {
                     tokenOnClickedHex = clickedHex.GetOccupyingToken();
-                    if (tokenOnClickedHex != null)
-                    {
-                        Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
-                    }
-                    else 
-                    {
-                        Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
-                    }
+                    // if (tokenOnClickedHex != null)
+                    // {
+                    //     Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
+                    // }
+                    // else 
+                    // {
+                    //     Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
+                    // }
                 }
                 PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
                 HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;

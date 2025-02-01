@@ -56,6 +56,7 @@ public class MatchManager : MonoBehaviour
         SnapshotPhase,
         QuickThrow,
         ActivateFinalThirdsAfterSave,
+        GoalKick,
     }
     public class GameData
     {

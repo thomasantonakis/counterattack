@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+
 public class FinalThirdManager : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -12,6 +13,7 @@ public class FinalThirdManager : MonoBehaviour
     public HexGrid hexGrid;
     public PlayerTokenManager playerTokenManager;
     public MovementPhaseManager movementPhaseManager;
+    public HighPassManager highPassManager;
     [Header("Flags")]
     public bool bothSides = false;
     public bool isFinalThirdPhaseActive = false;
@@ -19,6 +21,10 @@ public class FinalThirdManager : MonoBehaviour
     private bool isWaitingForTokenSelection = false;
     [SerializeField]
     private bool isWaitingForTargetHex = false;
+    public bool forfeitWasPressed = false;
+    public bool isWaitingForWhatToDo = false;
+    [SerializeField]
+    private bool thisIsTheSecond = false;
     [Header("Runtime Items")]
     [SerializeField]
     private List<PlayerToken> eligibleTokens;
@@ -37,21 +43,19 @@ public class FinalThirdManager : MonoBehaviour
         this.bothSides = bothSides;
         int f3Side = ball.GetCurrentHex().isInFinalThird; // 1 = Right F3, -1 = Left F3, 0 = No F3
         if (f3Side == 0)  return; // No F3 triggered
-        eligibleTokens = GetAllTokens(f3Side);
-        if (eligibleTokens.Count == 0) return; // No Eligible Tokens
 
-        Debug.Log($"We should play final thirds on the {-f3Side}");
+        if (bothSides) eligibleTokens = GetAllTokens(-f3Side);
+        else eligibleTokens = GetAllTokens(f3Side);
+        
+        if (eligibleTokens.Count == 0)
+        {
+            Debug.Log("No Tokens in the Final Third! Skipping!");
+            return; // No Eligible Tokens
+        }
         isFinalThirdPhaseActive = true;
         movedTokens = new List<PlayerToken>();
         currentTeamMoving = "attack";
-        if (bothSides)
-        {
-            StartCoroutine(HandleBothSidesF3(f3Side));
-        }
-        else
-        {
-            StartCoroutine(HandleF3Movement());
-        }
+        StartCoroutine(HandleF3Movement());
     }
 
     private List<PlayerToken> GetAllTokens(int f3Side)
@@ -62,6 +66,7 @@ public class FinalThirdManager : MonoBehaviour
         // TODO: Check if we can move stunned or Jumped Tokens.
         return initList;
     }
+    
     private List<PlayerToken> GetCurrentTeamTokens()
     {
         // Debug.Log($"hello from GetCurrentTeamTokens, currentTeamMoving: {currentTeamMoving}");;
@@ -71,7 +76,7 @@ public class FinalThirdManager : MonoBehaviour
             return eligibleTokens.Where(token => !token.isAttacker).ToList();
     }
 
-    public IEnumerator HandleMouseInput(PlayerToken inputToken, HexCell inputCell)
+    public IEnumerator  HandleMouseInput(PlayerToken inputToken, HexCell inputCell)
     {
         Debug.Log($"Hello from finalThirdManager.HandleMouseInput");
         if (
@@ -101,19 +106,43 @@ public class FinalThirdManager : MonoBehaviour
 
     private IEnumerator HandleF3Movement()
     {
-        // Debug.Log($"Hello from HandleF3Movement, currentTeamMoving: {currentTeamMoving}");
+        Debug.Log($"Hello from HandleF3Movement, currentTeamMoving: {currentTeamMoving}");
         isWaitingForTokenSelection = true;
         currentMovableTokens = GetCurrentTeamTokens();
-        Debug.Log($"Final Third Moves - {currentTeamMoving} Team Moving, currentMovableTokens has {currentMovableTokens.Count} items"); // TODO: Make this more informative.
+
+        if (currentMovableTokens.Count == 0)  // <- Add this check
+        {
+            Debug.Log($"No movable tokens for {currentTeamMoving}. Skipping...");
+            StartCoroutine(NextF3Phase());
+            yield break;
+        }
+        forfeitWasPressed = false; // ✅ Allow listening for forfeit
+        // Debug.Log($"Final Third Moves - {currentTeamMoving} Team Moving, currentMovableTokens has {currentMovableTokens.Count} items"); // TODO: Make this more informative.
         while (currentMovableTokens.Count > 0)
         {
             isWaitingForTargetHex = false;
             isWaitingForTokenSelection = true;
-            yield return new WaitUntil(() => selectedToken != null);
+            Debug.Log($"Running F3");
+            yield return new WaitUntil(() => selectedToken != null || forfeitWasPressed);
+            // ✅ Exit immediately if forfeit is triggered
+            if (forfeitWasPressed)
+            {
+                Debug.Log("Forfeit detected during F3 movement. Exiting movement phase.");
+                break;
+            }
+            Debug.Log($"Selected token is now not null: {selectedToken}");
             isWaitingForTargetHex = true;
             isWaitingForTokenSelection = false;
-            yield return new WaitUntil(() => !isWaitingForTargetHex);
+            yield return new WaitUntil(() => !isWaitingForTargetHex || forfeitWasPressed);
+            // ✅ Exit immediately if forfeit is triggered
+            if (forfeitWasPressed)
+            {
+                Debug.Log("Forfeit detected while waiting for target hex. Exiting movement phase.");
+                break;
+            }
+            Debug.Log($"isWaitingForTargetHex is now false");
         }
+        forfeitWasPressed = false; // ✅ Reset flag after movement phase
         Debug.Log($"{currentTeamMoving} Final Third Movement Phase Done.");
         StartCoroutine(NextF3Phase());
     }
@@ -185,6 +214,11 @@ public class FinalThirdManager : MonoBehaviour
             Debug.LogWarning("Invalid move! Selected hex is not in the highlighted movement options.");
             yield break;
         }
+        if (targetHex.isInPenaltyBox == 0 && selectedToken == ball.GetCurrentHex().GetOccupyingToken())
+        {
+            Debug.LogWarning("It would be best if the GoalKeeper does not walk out of the box with the ball in their hands to avoid a RED CARD!");
+            yield break;
+        }
         List<HexCell> gkZoi = ball.GetCurrentHex().GetNeighbors(hexGrid).ToList();
         if (bothSides && gkZoi.Contains(targetHex) && currentTeamMoving != "attack")
         {
@@ -204,33 +238,52 @@ public class FinalThirdManager : MonoBehaviour
 
     private IEnumerator NextF3Phase()
     {
-        // Debug.Log($"Hello from Nextf3, currentTeamMoving: {currentTeamMoving}");
-        if (currentTeamMoving == "attack") // Attack finished, now defense
+        forfeitWasPressed = false;
+        Debug.Log($"Hello from Nextf3, currentTeamMoving: {currentTeamMoving}");
+        if (currentTeamMoving == "attack")
         {
             currentTeamMoving = "defense";
             // Debug.Log($"Starting HandleF3Movement, with currentTeamMoving: {currentTeamMoving}");
             StartCoroutine(HandleF3Movement());
         }
-        else
+        else // defense just ended
         {
-            EndF3Phase();
+            if (bothSides)
+            {
+                Debug.Log("First F3 phase finished, waiting for second...");
+                thisIsTheSecond = true;
+                TriggerFinalThirdPhase(); // without both sides
+            }
+            else 
+            {
+                EndF3Phase();
+                if (thisIsTheSecond)
+                {
+                    isWaitingForWhatToDo = true;
+                    isFinalThirdPhaseActive = true;
+                    Debug.Log($"GK has to decide what to do: [D]rop the ball and play on? OR Play the GK [Kick] as a High pass enywhere except the opposite Final Third?");
+                }
+            }
         }
         yield break;
     }
 
     private void EndF3Phase()
     {
-        isFinalThirdPhaseActive = false;
+        forfeitWasPressed = false;
         eligibleTokens.Clear();
         currentMovableTokens.Clear();
         movedTokens.Clear();
         currentTeamMoving = null;
-        isWaitingForTokenSelection = false;
         Debug.Log("Final Third Phase Completed. Resuming gameplay.");
+        isWaitingForTokenSelection = false;
+        isFinalThirdPhaseActive = false;
     }
 
     public void ForfeitTurn()
     {
+        // yield return null;
+        forfeitWasPressed = true;
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Forfeiting Current F3 Moves.");
         isWaitingForTargetHex = false; // Avoid soft-locks
@@ -239,29 +292,25 @@ public class FinalThirdManager : MonoBehaviour
         // Add remaining available tokens to the already moved ones.
         movedTokens.AddRange(currentMovableTokens);
         currentMovableTokens.Clear();
-        // NextF3Phase();
-        StartCoroutine(NextF3Phase());
-
     }
 
-    private IEnumerator HandleBothSidesF3(int f3Side)
+    public void DropBall()
     {
-        // Debug.Log("Hello from both sides");
-        eligibleTokens = GetAllTokens(-f3Side); // Ball Side
-        if (eligibleTokens.Count == 0) yield break; // No Eligible Tokens
-
-        isFinalThirdPhaseActive = true;
-        movedTokens = new List<PlayerToken>();
-        currentTeamMoving = "attack";
-        // Debug.Log("Starting GK's side");
-        yield return StartCoroutine(HandleF3Movement());
-        yield return new WaitUntil(() => !isFinalThirdPhaseActive);
-        isFinalThirdPhaseActive = true;
-        eligibleTokens = GetAllTokens(f3Side); // Other side than ball's side
-        if (eligibleTokens.Count == 0) yield break; // No Eligible Tokens
-
-        currentTeamMoving = "attack";
-        // Debug.Log("Starting Other side");
-        yield return StartCoroutine(HandleF3Movement());
+        isWaitingForWhatToDo = false;
+        isFinalThirdPhaseActive = false;
+        thisIsTheSecond = false;
+        MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle; // Check this
+        string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
+        Debug.Log($"{gkWithBall} drops the ball at feet. Available things to do: Standard [P]ass / [M]ovement Phase / [C] High Pass / [L]ong Ball.");
+    }
+    
+    public void GKKick()
+    {
+        isWaitingForWhatToDo = false;
+        isFinalThirdPhaseActive = false;
+        thisIsTheSecond = false;
+        MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
+        string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
+        Debug.Log($"{gkWithBall} will take a Gk High pass, Please click on any hex except from the oposite Final Third to target.");
     }
 }
