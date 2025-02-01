@@ -12,6 +12,7 @@ public class LongBallManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public OutOfBoundsManager outOfBoundsManager;
     public LooseBallManager looseBallManager;
+    public FinalThirdManager finalThirdManager;
     [Header("Flags")]
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isDangerous = false;  // Flag for difficult pass
@@ -305,12 +306,14 @@ public class LongBallManager : MonoBehaviour
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+                finalThirdManager.TriggerFinalThirdPhase();
             }
             else if (targetHex.isAttackOccupied)
             {
                 // Ball has landed on an attacker 
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
+                finalThirdManager.TriggerFinalThirdPhase();
             }
             else {
                 // Landed neither on Def or Attacker. Check for defender's ZOI interception
@@ -402,6 +405,7 @@ public class LongBallManager : MonoBehaviour
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+                finalThirdManager.TriggerFinalThirdPhase();
                 yield break;  // Stop the sequence once an interception is successful
             }
             else
@@ -413,6 +417,7 @@ public class LongBallManager : MonoBehaviour
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
         MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
+        finalThirdManager.TriggerFinalThirdPhase();
     }
 
     public void HighlightLongPassArea(HexCell targetHex)

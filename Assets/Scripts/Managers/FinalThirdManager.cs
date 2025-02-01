@@ -39,20 +39,25 @@ public class FinalThirdManager : MonoBehaviour
 
     public void TriggerFinalThirdPhase(bool bothSides = false)
     {
-        Debug.Log("Hello from FinalThird Manager!");
+        isFinalThirdPhaseActive = true;
         this.bothSides = bothSides;
         int f3Side = ball.GetCurrentHex().isInFinalThird; // 1 = Right F3, -1 = Left F3, 0 = No F3
-        if (f3Side == 0)  return; // No F3 triggered
+        if (f3Side == 0)
+        {
+            isFinalThirdPhaseActive = false;
+            return; // No F3 triggered
+        }
 
         if (bothSides) eligibleTokens = GetAllTokens(-f3Side);
         else eligibleTokens = GetAllTokens(f3Side);
         
         if (eligibleTokens.Count == 0)
         {
+            isFinalThirdPhaseActive = false;
             Debug.Log("No Tokens in the Final Third! Skipping!");
             return; // No Eligible Tokens
         }
-        isFinalThirdPhaseActive = true;
+        Debug.Log("Hello from FinalThird Manager!");
         movedTokens = new List<PlayerToken>();
         currentTeamMoving = "attack";
         StartCoroutine(HandleF3Movement());

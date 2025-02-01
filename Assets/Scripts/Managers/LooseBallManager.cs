@@ -12,6 +12,7 @@ public class LooseBallManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public MovementPhaseManager movementPhaseManager;
     public HeaderManager headerManager;
+    public FinalThirdManager finalThirdManager;
     [Header("Important Things")]
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
@@ -224,7 +225,7 @@ public class LooseBallManager : MonoBehaviour
                         // Change possession to the defending team
                         MatchManager.Instance.ChangePossession();  
                         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
-                        movementPhaseManager.EndMovementPhase();
+                        movementPhaseManager.EndMovementPhase(true);
                         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
                         yield break; // End ball movement
                     }
@@ -253,12 +254,13 @@ public class LooseBallManager : MonoBehaviour
                 {
                     // TODO: ignore offside
                     MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToPlayer;
-                    // 
+                    finalThirdManager.TriggerFinalThirdPhase();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
                 else if (!movementPhaseManager.isMovementPhaseInProgress) // TODO: check if there is no Movement Phase going on, Allow Attacker Selection
                 {
                     Debug.LogWarning("There is no movement Phase going on, Attacker must choose what to do!");
+                    finalThirdManager.TriggerFinalThirdPhase();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
                 else if (movementPhaseManager.isMovementPhaseInProgress)
@@ -288,7 +290,7 @@ public class LooseBallManager : MonoBehaviour
                 // Change possession to the defending team
                 MatchManager.Instance.ChangePossession();  
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
-                movementPhaseManager.EndMovementPhase();
+                movementPhaseManager.EndMovementPhase(true); // Includes F3 check
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
              }
         }
@@ -298,11 +300,13 @@ public class LooseBallManager : MonoBehaviour
             if (resolutionType == "header")
             {
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+                finalThirdManager.TriggerFinalThirdPhase();
                 Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starts a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             }
             else if (!movementPhaseManager.isMovementPhaseInProgress)
             {
+                finalThirdManager.TriggerFinalThirdPhase();
                 Debug.LogWarning($"Loose ball is not picked up by anyone.{MatchManager.Instance.teamInAttack} Starts a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             }
@@ -321,7 +325,7 @@ public class LooseBallManager : MonoBehaviour
             Debug.Log($"Ball Went out of Bounds");
             if (movementPhaseManager.isMovementPhaseInProgress)
             {
-                movementPhaseManager.EndMovementPhase();
+                movementPhaseManager.EndMovementPhase(false);
             }
             outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
         }

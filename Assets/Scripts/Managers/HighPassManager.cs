@@ -14,6 +14,7 @@ public class HighPassManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public OutOfBoundsManager outOfBoundsManager;
     public HeaderManager headerManager;
+    public FinalThirdManager finalThirdManager;
     [Header("Basic Selections")]
     public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
     public HexCell currentTargetHex;
@@ -396,6 +397,11 @@ public class HighPassManager : MonoBehaviour
         else
         {
             Debug.Log("Ball landed within bounds.");
+            finalThirdManager.TriggerFinalThirdPhase();
+            while (finalThirdManager.isFinalThirdPhaseActive)
+            {
+              yield return null;
+            }
             headerManager.FindEligibleHeaderTokens(targetHex);
         }
         CleanUpHighPass();

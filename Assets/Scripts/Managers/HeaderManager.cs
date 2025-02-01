@@ -12,6 +12,7 @@ public class HeaderManager : MonoBehaviour
     public HighPassManager highPassManager; // Reference to the HighPassManager
     public MovementPhaseManager movementPhaseManager; // Reference to the MovementPhaseManager
     public LooseBallManager looseBallManager;
+    public FinalThirdManager finalThirdManager;
     public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
     [Header("Header States")]
     public List<PlayerToken> attEligibleToHead = new List<PlayerToken>();
@@ -91,6 +92,7 @@ public class HeaderManager : MonoBehaviour
             StartAttackHeaderSelection();
         }
     }
+    
     // Method to start the attacker's header selection
     public void StartAttackHeaderSelection()
     {
@@ -435,6 +437,7 @@ public class HeaderManager : MonoBehaviour
                             matchManager.UpdatePossessionAfterPass(clickedHex);
                             ball.AdjustBallHeightBasedOnOccupancy();
                             hexGrid.ClearHighlightedHexes();
+                            finalThirdManager.TriggerFinalThirdPhase();
                         }
                         else
                         {
@@ -506,6 +509,7 @@ public class HeaderManager : MonoBehaviour
         if (interceptingDefenders == null || interceptingDefenders.Count == 0)
         {
             Debug.Log("No defenders available for interception.");
+            finalThirdManager.TriggerFinalThirdPhase();
             yield break;
         }
 
@@ -536,6 +540,7 @@ public class HeaderManager : MonoBehaviour
                 // ball.AdjustBallHeightBasedOnOccupancy();
                 ball.PlaceAtCell(defenderHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+                finalThirdManager.TriggerFinalThirdPhase();
                 yield break;  // Stop the sequence once an interception is successful
             }
             else
@@ -547,6 +552,7 @@ public class HeaderManager : MonoBehaviour
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("All defenders failed to intercept. Ball remains at the landing hex.");
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+        finalThirdManager.TriggerFinalThirdPhase();
     }
 
     public void ResetHeader()

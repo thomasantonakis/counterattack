@@ -13,6 +13,7 @@ public class MovementPhaseManager : MonoBehaviour
     public HeaderManager headerManager;
     public FreeKickManager freeKickManager;
     public LooseBallManager looseBallManager;
+    public FinalThirdManager finalThirdManager;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public HexCell ballHex;
@@ -823,7 +824,7 @@ public class MovementPhaseManager : MonoBehaviour
         // Change possession to the defending team
         MatchManager.Instance.ChangePossession();  
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
-        EndMovementPhase();
+        EndMovementPhase(true);
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
     }
 
@@ -910,7 +911,7 @@ public class MovementPhaseManager : MonoBehaviour
                 nutmegVictim = null;
                 isNutmegInProgress = false;
             }
-            EndMovementPhase();
+            EndMovementPhase(true);
             MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
             Debug.Log("Movement phase ended due to successful tackle.");
         }
@@ -1176,7 +1177,7 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForInterceptionDiceRoll = false;
     }
 
-    public void EndMovementPhase()
+    public void EndMovementPhase(bool triggerF3 = true)
     {
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
         ResetMovementPhase();  // Reset the moved tokens and phase counters
@@ -1187,6 +1188,7 @@ public class MovementPhaseManager : MonoBehaviour
         headerManager.ResetHeader();  // Reset the header to free up unmovable players
         isMovementPhaseInProgress = false;
         Debug.Log("Movement phase is over.");
+        if (triggerF3) finalThirdManager.TriggerFinalThirdPhase();
     }
 
     public List<PlayerToken> GetNutmeggableDefenders(PlayerToken dribbler, HexGrid hexGrid)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class GroundBallManager : MonoBehaviour
 {
@@ -28,6 +29,20 @@ public class GroundBallManager : MonoBehaviour
             PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when D is pressed
         }
     }
+    
+    private async Task StartCoroutineAndWait(IEnumerator coroutine)
+    {
+        bool isDone = false;
+        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
+        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+    }
+
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    {
+        yield return StartCoroutine(coroutine);
+        onComplete?.Invoke();
+    }
+
     public void HandleGroundBallPath(HexCell clickedHex, int distance, bool isGk = false)
     {
         if (clickedHex != null)
@@ -46,7 +61,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, int distance, bool isGk = false)
+    public async void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, int distance, bool isGk = false)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized path validation and danger assessment
@@ -70,7 +85,8 @@ public class GroundBallManager : MonoBehaviour
             else
             {
                 Debug.Log("Pass is not dangerous, moving ball.");
-                StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+                finalThirdManager.TriggerFinalThirdPhase();
                 MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                 if (clickedHex.isAttackOccupied)
                 {
@@ -109,7 +125,8 @@ public class GroundBallManager : MonoBehaviour
                 else
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
-                    StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                     if (clickedHex.isAttackOccupied)
                     {
@@ -148,7 +165,8 @@ public class GroundBallManager : MonoBehaviour
                 else
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
-                    StartCoroutine(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                     if (clickedHex.isAttackOccupied)
                     {
@@ -323,7 +341,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void PerformGroundInterceptionDiceRoll()
+    public async void PerformGroundInterceptionDiceRoll()
     {
         if (currentDefenderHex != null)
         {
@@ -369,7 +387,8 @@ public class GroundBallManager : MonoBehaviour
                     {
                         Debug.LogError("currentTargetHex is null despite the pass being valid.");
                     }
-                    StartCoroutine(HandleGroundBallMovement(currentTargetHex));
+                    await StartCoroutineAndWait(HandleGroundBallMovement(currentTargetHex)); // Execute pass
+                    finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
                     if (currentTargetHex.isAttackOccupied)
                     {
@@ -387,11 +406,11 @@ public class GroundBallManager : MonoBehaviour
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
         yield return StartCoroutine(HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
-
         // Call UpdatePossessionAfterPass after the ball has moved to the defender's hex
         MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
+        finalThirdManager.TriggerFinalThirdPhase();
     }
 
     void ResetGroundPassInterceptionDiceRolls()
@@ -427,7 +446,7 @@ public class GroundBallManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");
         if (speed != null) yield break;
-        finalThirdManager.TriggerFinalThirdPhase();
+        // finalThirdManager.TriggerFinalThirdPhase();
     }
 
     public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)
