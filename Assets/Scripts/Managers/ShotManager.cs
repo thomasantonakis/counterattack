@@ -14,7 +14,9 @@ public class ShotManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
+    public LongBallManager longBallManager;
     public HexGrid hexGrid;
+    public Ball ball;
     [Header("Flags")]
     public bool isShotInProgress = false;  // Tracks if a shot is active
     public bool isWaitingforBlockerSelection = false;  // Tracks if we are waiting to select a blocker
@@ -355,7 +357,7 @@ public class ShotManager : MonoBehaviour
                             if (shooterRoll == 1)
                             {
                                 Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the Shot is OFF target! GoalKick awarded.");
-                                // TODO: Throw the ball out!
+                                yield return StartCoroutine(ShootOffTargetRandomizer());
                                 // TODO: Implement GoalKick
                                 ResetShotProcess();
                             }
@@ -404,6 +406,7 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
                 // TODOL Throw the ball out!
+                yield return StartCoroutine(ShootOffTargetRandomizer());
                 // TODO: Implement GoalKick
             }
             else
@@ -534,4 +537,98 @@ public class ShotManager : MonoBehaviour
         trajectoryPath = null;
         interceptors.Clear();
     }
+
+    private IEnumerator ShootOffTargetRandomizer()
+    {
+        int diceRoll = UnityEngine.Random.Range(1, 7);
+        // int diceRoll = 6;
+        switch (diceRoll)
+        {
+            case 1:
+            case 2:
+            case 3:
+                yield return StartCoroutine(FailedLob());
+                break;
+            case 4:
+            case 5:
+            case 6:
+                Debug.Log("Camera");
+                yield return StartCoroutine(BallCloseUpAndPlacement());
+                break;
+            default:
+                yield return StartCoroutine(NextToBar());
+                Debug.Log("Value is something else");
+                break;
+        }
+    }
+
+    private IEnumerator FailedLob()
+    {
+        // TODO: find the target hex that connects shooter, targethex and has a x of 22 or -22
+        HexCell shooterHex = shooter.GetCurrentHex();
+        int targetX = 22 * (shooterHex.coordinates.x > 0 ? 1 : -1);
+        float slope = (float)(targetHex.coordinates.z - shooterHex.coordinates.z) /
+                  (targetHex.coordinates.x - shooterHex.coordinates.x);
+        int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
+        int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
+        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(targetX, 0, intersectionZ)), true));
+    }
+    
+    private IEnumerator NextToBar()
+    {
+        // TODO: find the target hex that connects shooter, targethex and has a x of 22 or -22
+        HexCell shooterHex = shooter.GetCurrentHex();
+        int targetX = 20 * (shooterHex.coordinates.x > 0 ? 1 : -1);
+        int shooterz = shooterHex.coordinates.z;
+        float slope = (float)(targetHex.coordinates.z - shooterHex.coordinates.z) /
+                  (targetHex.coordinates.x - shooterHex.coordinates.x);
+        int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
+        int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
+        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(targetX, 0, intersectionZ)), true));      
+    }
+
+    private IEnumerator BallCloseUpAndPlacement()
+    {
+        hexGrid.ClearHighlightedHexes();
+        HexCell shooterHex = shooter.GetCurrentHex();
+        // Step 1: Get Camera Position & Forward Direction
+        Transform camTransform = Camera.main.transform;
+        Vector3 cameraPosition = camTransform.position;
+        Vector3 cameraForward = camTransform.forward.normalized;
+
+        // Step 2: Define Close-Up Target Position (In Front of Camera)
+        float closeUpDistance = 1f; // Distance in front of the camera where the ball will stop
+        Vector3 closeUpPosition = cameraPosition + (cameraForward * closeUpDistance);
+
+        // Step 3: Move the Ball Towards the Camera (Fast)
+        float moveDuration = 0.4f; // Ball flies toward the camera in 0.4 seconds
+        float elapsedTime = 0f;
+        Vector3 startPos = shooterHex.GetHexCenter();
+
+        while (elapsedTime < moveDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / moveDuration;
+            ball.transform.position = Vector3.Lerp(startPos, closeUpPosition, progress);
+            yield return null; // Wait for the next frame
+        }
+
+        // Step 4: Hold Ball Near Camera for Dramatic Pause
+        yield return new WaitForSeconds(2f);
+
+        // Step 5: Move Ball to Final Hex Based on Shooter's X
+        int finalX = shooterHex.coordinates.x > 0 ? 22 : -22;
+        HexCell finalHex = hexGrid.GetHexCellAt(new Vector3Int(finalX, 0, 0));
+
+        if (finalHex != null)
+        {
+            ball.transform.position = finalHex.GetHexCenter();
+            ball.PlaceAtCell(finalHex);
+        }
+        else
+        {
+            Debug.LogWarning($"Final hex at ({finalX}, 0, 0) is null!");
+        }
+    }
+
 }

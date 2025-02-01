@@ -1397,6 +1397,7 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   outOfBoundsManager: {fileID: 1326402186}
   looseBallManager: {fileID: 757768961}
+  finalThirdManager: {fileID: 1012232483}
 --- !u!1 &757768960
 GameObject:
   m_ObjectHideFlags: 0
@@ -1433,6 +1434,7 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   movementPhaseManager: {fileID: 1390513032}
   headerManager: {fileID: 2071234817}
+  finalThirdManager: {fileID: 1012232483}
   defendersTriedToIntercept: []
   path: []
   causingDeflection: {fileID: 0}
@@ -1643,7 +1645,7 @@ MonoBehaviour:
   isWaitingForTargetHex: 0
   forfeitWasPressed: 0
   isWaitingForWhatToDo: 0
-  seriesOfF3: 1
+  thisIsTheSecond: 0
   eligibleTokens: []
   currentMovableTokens: []
   movedTokens: []
@@ -2259,6 +2261,7 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   freeKickManager: {fileID: 1688718062}
   looseBallManager: {fileID: 757768961}
+  finalThirdManager: {fileID: 1012232483}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   ballHex: {fileID: 0}
@@ -3067,7 +3070,9 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
+  longBallManager: {fileID: 748552023}
   hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
   isShotInProgress: 0
   isWaitingforBlockerSelection: 0
   isWaitingforBlockerMovement: 0
@@ -3260,6 +3265,7 @@ MonoBehaviour:
   movementPhaseManager: {fileID: 1390513032}
   outOfBoundsManager: {fileID: 1326402186}
   headerManager: {fileID: 2071234817}
+  finalThirdManager: {fileID: 1012232483}
   lockedAttacker: {fileID: 0}
   currentTargetHex: {fileID: 0}
   lastClickedHex: {fileID: 0}
@@ -3321,6 +3327,7 @@ MonoBehaviour:
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
   looseBallManager: {fileID: 757768961}
+  finalThirdManager: {fileID: 1012232483}
   isWaitingForHeaderRoll: 0
   attEligibleToHead: []
   defEligibleToHead: []
