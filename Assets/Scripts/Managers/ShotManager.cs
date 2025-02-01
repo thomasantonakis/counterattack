@@ -107,7 +107,6 @@ public class ShotManager : MonoBehaviour
 
     private void StartDefenderMovementPhase()
     {
-        MatchManager.Instance.currentState = MatchManager.GameState.SnapshotPhase;
         isWaitingforBlockerSelection = true;
     }
 

@@ -95,45 +95,7 @@ public class GameInputManager : MonoBehaviour
             HandleMouseInputForF3();
             return;
         }
-        // MovementPhase input handling
-        if
-        (
-            !movementPhaseManager.isPlayerMoving &&
-            !movementPhaseManager.isWaitingForTackleRoll &&
-            !movementPhaseManager.isWaitingForTackleDecision &&
-            !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
-            !movementPhaseManager.isWaitingForReposition &&
-            !movementPhaseManager.isWaitingForInjuryRoll &&
-            !movementPhaseManager.isWaitingForYellowCardRoll &&
-            !movementPhaseManager.isWaitingForFoulDecision &&
-            (
-                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
-                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
-                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2
-            )
-        )
-        {
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                if (!movementPhaseManager.isWaitingForNutmegDecision 
-                    && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
-                )
-                {
-                    movementPhaseManager.ForfeitTeamMovementPhase();
-                }
-            }
-            StartCoroutine(HandleMouseInputForMovement());
-        }
-        if (
-                MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
-                MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement
-        )
-        {
-            StartCoroutine(HandleMouseInputForHighPassMovement());
-        }
-        if (
-                MatchManager.Instance.currentState == MatchManager.GameState.SnapshotPhase
-        )
+        if (shotManager.isShotInProgress)
         {
             if (movementPhaseManager.isWaitingForSnapshotDecision)
             {
@@ -160,53 +122,92 @@ public class GameInputManager : MonoBehaviour
             }
             StartCoroutine(HandleMouseInputForSnapMovement());
         }
-        if (
-                MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
-                MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement
-        )
+        else
         {
-            StartCoroutine(HandleMouseInputForFTPMovement());
-        }
-        if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderAttackerSelection)
-        {
-            HandleAttackerHeaderSelectionInput();
-        }
-        else if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderDefenderSelection)
-        {
-            HandleDefenderHeaderSelectionInput();
-        }
-        if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKick"))
-        {
-            if (freeKickManager.isWaitingForKickerSelection)
+            // MovementPhase input handling
+            if
+            (
+                !movementPhaseManager.isPlayerMoving &&
+                !movementPhaseManager.isWaitingForTackleRoll &&
+                !movementPhaseManager.isWaitingForTackleDecision &&
+                !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
+                !movementPhaseManager.isWaitingForReposition &&
+                !movementPhaseManager.isWaitingForInjuryRoll &&
+                !movementPhaseManager.isWaitingForYellowCardRoll &&
+                !movementPhaseManager.isWaitingForFoulDecision &&
+                (
+                    MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
+                    MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
+                    MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2
+                )
+            )
             {
-                HandleFreeKickKickerSelection();
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    if (!movementPhaseManager.isWaitingForNutmegDecision 
+                        && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+                    )
+                    {
+                        movementPhaseManager.ForfeitTeamMovementPhase();
+                    }
+                }
+                StartCoroutine(HandleMouseInputForMovement());
             }
-            else if (freeKickManager.isWaitingForSetupPhase)
+            if (
+                    MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
+                    MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement
+            )
             {
-                HandleFreeKickSetupPhaseInput();
+                StartCoroutine(HandleMouseInputForHighPassMovement());
             }
-            else if (freeKickManager.isWaitingForExecution)
+            if (
+                    MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
+                    MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement
+            )
             {
-                if (Input.GetKeyDown(KeyCode.L))
+                StartCoroutine(HandleMouseInputForFTPMovement());
+            }
+            if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderAttackerSelection)
+            {
+                HandleAttackerHeaderSelectionInput();
+            }
+            else if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderDefenderSelection)
+            {
+                HandleDefenderHeaderSelectionInput();
+            }
+            if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKick"))
+            {
+                if (freeKickManager.isWaitingForKickerSelection)
                 {
-                    hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerLongPass();
+                    HandleFreeKickKickerSelection();
                 }
-                else if (Input.GetKeyDown(KeyCode.C))
+                else if (freeKickManager.isWaitingForSetupPhase)
                 {
-                    hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerHighPass();
+                    HandleFreeKickSetupPhaseInput();
                 }
-                else if (Input.GetKeyDown(KeyCode.P))
+                else if (freeKickManager.isWaitingForExecution)
                 {
-                    hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerStandardPass();
-                }
-                else if (Input.GetKeyDown(KeyCode.S))
-                {
-                    hexGrid.ClearHighlightedHexes();
-                    Debug.Log("Free Kick Shoot triggered."); 
-                    // TODO: Implement Free Kick Shoot
+                    if (Input.GetKeyDown(KeyCode.L))
+                    {
+                        hexGrid.ClearHighlightedHexes(); 
+                        MatchManager.Instance.TriggerLongPass();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.C))
+                    {
+                        hexGrid.ClearHighlightedHexes(); 
+                        MatchManager.Instance.TriggerHighPass();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.P))
+                    {
+                        hexGrid.ClearHighlightedHexes(); 
+                        MatchManager.Instance.TriggerStandardPass();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.S))
+                    {
+                        hexGrid.ClearHighlightedHexes();
+                        Debug.Log("Free Kick Shoot triggered."); 
+                        // TODO: Implement Free Kick Shoot
+                    }
                 }
             }
         }

@@ -53,7 +53,6 @@ public class MatchManager : MonoBehaviour
         FreeKickDef2,
         FreeKickDef3,
         FreeKickExecution,
-        SnapshotPhase,
         QuickThrow,
         ActivateFinalThirdsAfterSave,
         GoalKick,
