@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 public class LooseBallManager : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -89,14 +90,14 @@ public class LooseBallManager : MonoBehaviour
                         // Right Side
                         // TODO: Send the ball somehow, somewhere to the NorthEast
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, 6)), true));
-                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 6)), "RightGoalLine", "defendertouch");
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 6)), "RightGoalLine", "defendertouch"));
                     }
                     else
                     {
                         // Left Side
                         // TODO: Send the ball somehow, somewhere to the NorthWest
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, 6)), true));
-                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 6)), "LeftGoalLine", "defendertouch");
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 6)), "LeftGoalLine", "defendertouch"));
                     }
                 }
                 else
@@ -107,14 +108,14 @@ public class LooseBallManager : MonoBehaviour
                         // Right Side
                         // TODO: Send the ball somehow, somewhere to the SouthEast
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, -6)), true));
-                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -6)), "RightGoalLine", "defendertouch");
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -6)), "RightGoalLine", "defendertouch"));
                     }
                     else
                     {
                         // Left Side
                         // TODO: Send the ball somehow, somewhere to the SouthWest
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, -6)), true));
-                        outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -6)), "LeftGoalLine", "defendertouch");
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -6)), "LeftGoalLine", "defendertouch"));
                     }
                 }
                 // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 

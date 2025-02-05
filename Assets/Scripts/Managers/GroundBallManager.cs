@@ -12,6 +12,7 @@ public class GroundBallManager : MonoBehaviour
     public HexGrid hexGrid;
     public FinalThirdManager finalThirdManager;
     [Header("Runtime Items")]
+    public int imposedDistance = 11;
     private HexCell currentTargetHex = null;   // The currently selected target hex
     private HexCell lastClickedHex = null;     // The last hex that was clicked
     private bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
@@ -43,7 +44,7 @@ public class GroundBallManager : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    public void HandleGroundBallPath(HexCell clickedHex, int distance, bool isGk = false)
+    public void HandleGroundBallPath(HexCell clickedHex, bool isGk = false)
     {
         if (clickedHex != null)
         {
@@ -56,16 +57,16 @@ public class GroundBallManager : MonoBehaviour
             else
             {
                 // Now handle the pass based on difficulty
-                HandleGroundPassBasedOnDifficulty(clickedHex, distance, isGk);
+                HandleGroundPassBasedOnDifficulty(clickedHex, isGk);
             }   
         }
     }
 
-    public async void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, int distance, bool isGk = false)
+    public async void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, bool isGk = false)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized path validation and danger assessment
-        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex, distance, isGk);
+        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex, imposedDistance, isGk);
         if (!isValid)
         {
             // Debug.LogWarning("Invalid pass. Path rejected.");
@@ -87,6 +88,7 @@ public class GroundBallManager : MonoBehaviour
                 Debug.Log("Pass is not dangerous, moving ball.");
                 await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
                 finalThirdManager.TriggerFinalThirdPhase();
+                imposedDistance = 11;
                 MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                 if (clickedHex.isAttackOccupied)
                 {
@@ -126,6 +128,7 @@ public class GroundBallManager : MonoBehaviour
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
                     await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    imposedDistance = 11;
                     finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                     if (clickedHex.isAttackOccupied)
@@ -166,6 +169,7 @@ public class GroundBallManager : MonoBehaviour
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
                     await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+                    imposedDistance = 11;
                     finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                     if (clickedHex.isAttackOccupied)
@@ -388,6 +392,7 @@ public class GroundBallManager : MonoBehaviour
                         Debug.LogError("currentTargetHex is null despite the pass being valid.");
                     }
                     await StartCoroutineAndWait(HandleGroundBallMovement(currentTargetHex)); // Execute pass
+                    imposedDistance = 11;
                     finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
                     if (currentTargetHex.isAttackOccupied)
@@ -410,6 +415,7 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
+        imposedDistance = 11;
         finalThirdManager.TriggerFinalThirdPhase();
     }
 

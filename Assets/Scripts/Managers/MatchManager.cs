@@ -55,6 +55,9 @@ public class MatchManager : MonoBehaviour
         FreeKickDef2,
         FreeKickDef3,
         FreeKickDefGK2,
+        FreeKickAttMovement3,
+        FreeKickDefMovement3,
+        FreeKickDefineKicker,
         FreeKickExecution,
         QuickThrow,
         ActivateFinalThirdsAfterSave,
@@ -142,6 +145,7 @@ public class MatchManager : MonoBehaviour
     public static MatchManager Instance;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
+    public GroundBallManager groundBallManager;
     public GameData gameData;
     public int difficulty_level;
     public int refereeLeniency;

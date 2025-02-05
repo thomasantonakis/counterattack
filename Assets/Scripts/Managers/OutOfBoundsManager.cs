@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class OutOfBoundsManager : MonoBehaviour
@@ -8,6 +6,7 @@ public class OutOfBoundsManager : MonoBehaviour
     [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
+    public FreeKickManager freeKickManager;
     public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source)
     {
         if (currentTargetHex == null)
@@ -37,11 +36,11 @@ public class OutOfBoundsManager : MonoBehaviour
             // TODO: Differentiate RightGoal to RightGoalLine or RightGOAL!!
             case "LeftGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Left Side.");
-                HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source);
+                StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source));
                 break;
             case "RightGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Right Side.");
-                HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source);
+                StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source));
                 break;
             case "Top Throw-In":
             case "Bottom Throw-In":
@@ -147,7 +146,7 @@ public class OutOfBoundsManager : MonoBehaviour
         Debug.Log("Set the GameState to WaitingForThrowInTaker");
     }
     
-    public void HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
+    public IEnumerator HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
     {
         // TODO: Use Source to decide if it is a GoalKick or a Corner
         // Get the attacking team's direction
@@ -194,29 +193,33 @@ public class OutOfBoundsManager : MonoBehaviour
                 if (lastInboundsHex.coordinates.z > 0)  // Top half of the pitch
                 {
                     Debug.Log("Left Side: Corner kick from the top-left corner.");
-                    StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12))));
-                    MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
+                    HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12));
+                    yield return StartCoroutine(ball.MoveToCell(spot));
+                    freeKickManager.StartFreeKickPreparation(spot);
                 }
                 else
                 {
                     Debug.Log("Left Side: Corner kick from the bottom-left corner.");
-                    StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12))));
-                    MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
+                    HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12));
+                    yield return StartCoroutine(ball.MoveToCell(spot));
+                    freeKickManager.StartFreeKickPreparation(spot);
                 }
             }
             else
             {
                 if (lastInboundsHex.coordinates.z > 0)  // Top half of the pitch
                 {
-                    Debug.Log("Left Side: Corner kick from the top-left corner.");
-                    StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12))));
-                    MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
+                    Debug.Log("Right Side: Corner kick from the top-right corner.");
+                    HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12));
+                    yield return StartCoroutine(ball.MoveToCell(spot));
+                    freeKickManager.StartFreeKickPreparation(spot);
                 }
                 else
                 {
-                    Debug.Log("Left Side: Corner kick from the bottom-left corner.");
-                    StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12))));
-                    MatchManager.Instance.currentState = MatchManager.GameState.WaitingForCornerTaker;
+                    Debug.Log("Right Side: Corner kick from the bottom-right corner.");
+                    HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12));
+                    yield return StartCoroutine(ball.MoveToCell(spot));
+                    freeKickManager.StartFreeKickPreparation(spot);
                 }
             }
         }

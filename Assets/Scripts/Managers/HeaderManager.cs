@@ -207,6 +207,7 @@ public class HeaderManager : MonoBehaviour
         {
             defenderWillJump.Add(token);
             Debug.Log($"Defender {token.name} selected to jump for the header.");
+            Debug.Log("Click on more or Press [X] to confirm");
         }
     }
 
@@ -427,16 +428,17 @@ public class HeaderManager : MonoBehaviour
                 {
                     HexCell clickedHex = hit.collider.GetComponent<HexCell>();
                     // TODO: Exclude from valid targets the Hexes of Jumped Tokens
+                    // TODO: Handle Click On Token or Ball Properly to infer the Hex
                     if (clickedHex != null && !clickedHex.isDefenseOccupied)
                     {
                         yield return StartCoroutine(ball.MoveToCell(clickedHex));
                         Debug.Log($"Ball moved to {clickedHex.coordinates}");
+                        hexGrid.ClearHighlightedHexes();
                         if (clickedHex.isAttackOccupied)
                         {
                             MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToPlayer;
                             matchManager.UpdatePossessionAfterPass(clickedHex);
                             ball.AdjustBallHeightBasedOnOccupancy();
-                            hexGrid.ClearHighlightedHexes();
                             finalThirdManager.TriggerFinalThirdPhase();
                         }
                         else

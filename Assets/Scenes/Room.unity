@@ -2076,6 +2076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
+  freeKickManager: {fileID: 1688718062}
 --- !u!4 &1326402187
 Transform:
   m_ObjectHideFlags: 0
@@ -2963,6 +2964,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   matchManager: {fileID: 622907910}
+  movementPhaseManager: {fileID: 1390513032}
   shouldDefMoveTokens: []
   potentialKickers: []
   movesUsed: 0
@@ -2971,9 +2973,12 @@ MonoBehaviour:
   defenderMovesUsed: 0
   isWaitingForKickerSelection: 0
   isWaitingForSetupPhase: 0
+  isWaitingForFinalKickerSelection: 0
   isWaitingForExecution: 0
+  isCornerKick: 0
   selectedToken: {fileID: 0}
   targetHex: {fileID: 0}
+  spotkick: {fileID: 0}
 --- !u!4 &1688718063
 Transform:
   m_ObjectHideFlags: 0
@@ -2981,7 +2986,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688718061}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 563.356, y: 312.31702, z: -6.2165976}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

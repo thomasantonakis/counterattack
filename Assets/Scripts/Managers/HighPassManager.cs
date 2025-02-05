@@ -28,7 +28,7 @@ public class HighPassManager : MonoBehaviour
     public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
-
+    public bool isCornerKick = false;
     private const int MAX_PASS_DISTANCE = 15;
     private const int ATTACKER_MOVE_RANGE = 3;
     private const int DEFENDER_MOVE_RANGE = 3;
@@ -120,7 +120,8 @@ public class HighPassManager : MonoBehaviour
                 lockedAttacker = null;  // Reset locked attacker, as we're selecting a new hex
 
                 // Highlight the new high pass area (optional, for visual feedback)
-                HighlightHighPassArea(clickedHex);
+                // No nore highlighting in CornerKick
+                if (!isCornerKick) HighlightHighPassArea(clickedHex);
 
                 Debug.Log("First click registered. Click again to confirm the High Pass.");
             }
@@ -132,14 +133,24 @@ public class HighPassManager : MonoBehaviour
                 isWaitingForConfirmation = false;  // Confirmation is done, allow token selection
                 selectedToken = null;  // Clear selected token to avoid auto-selecting the attacker on the target
 
-                // Lock the attacker on the target hex (if it’s occupied by an attacker)
-                if (clickedHex.isAttackOccupied)
+                if (!isCornerKick)
                 {
-                    lockedAttacker = clickedHex.GetOccupyingToken();  // Lock the attacker in place
-                    Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
+                    // Lock the attacker on the target hex (if it’s occupied by an attacker)
+                    if (clickedHex.isAttackOccupied)
+                    {
+                        lockedAttacker = clickedHex.GetOccupyingToken();  // Lock the attacker in place
+                        Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
+                    }
+                    // Proceed to start the attacker movement phase
+                    StartCoroutine(StartAttackerMovementPhase());
                 }
-                // Proceed to start the attacker movement phase
-                StartCoroutine(StartAttackerMovementPhase());
+                else
+                {
+                    lockedAttacker = null;
+                    MatchManager.Instance.currentState = MatchManager.GameState.HighPassDefenderMovement;
+                    isWaitingForAccuracyRoll = true;
+                    Debug.Log("Waiting for accuracy roll... Please Press R key.");
+                }
             }
         }
         else if (difficulty == 1) // Easy Mode: Require confirmation with a second click
@@ -172,7 +183,36 @@ public class HighPassManager : MonoBehaviour
             Debug.LogError("Ball or target hex is null!");
             return false;
         }
-        if (!isGK)
+        if (isGK)
+        {
+            // Specific HP from GK after a save and hold or GoalKick
+            // reject only targets in the opposite final thirds.
+            if (ballHex.isInFinalThird * targetHex.isInFinalThird == -1)
+            {
+                Debug.LogWarning($"GK High Pass cannot be targeted in the opposite Final Third");
+                return false;
+            }
+        }
+        else if (isCornerKick)
+        {
+            Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
+            Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
+            int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+            // Check the distance limit
+            if (
+                !targetHex.isAttackOccupied // Target is not attack occupied
+                || (
+                    ballHex.isInFinalThird * targetHex.isInPenaltyBox != 1 // the target is in the same final third with the ball and in the box
+                    && distance > MAX_PASS_DISTANCE // Or it is below the allowed distance.
+                )
+            )
+            {
+                if (!targetHex.isAttackOccupied) Debug.LogWarning("CornerKick High Pass should target an attacker, please click one within 15 or in the box!");
+                else Debug.LogWarning($"Corner Kick High Pass is out of range or not in the box. Maximum steps allowed: {MAX_PASS_DISTANCE}. Current steps: {distance}");
+                return false;
+            }
+        }
+        else
         {
             // Regular HP
             // Alternative Step 4
@@ -186,20 +226,10 @@ public class HighPassManager : MonoBehaviour
                 return false;
             }
         }
-        else
-        {
-            // Specific HP from GK after a save and hold or GoalKick
-            // reject only targets in the opposite final thirds.
-            if (ballHex.isInFinalThird * targetHex.isInFinalThird == -1)
-            {
-                Debug.LogWarning($"GK High Pass cannot be targeted in the opposite Final Third");
-                return false;
-            }
-        }
         // Step 2: Calculate the path between the ball and the target hex
         List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
         // Step 3: Check if the path is valid by ensuring no defense-occupied hexes touching the kicker block the path
-        foreach (HexCell hex in pathHexes) // add here "and in the ball's neighbors"
+        foreach (HexCell hex in pathHexes)
         {
             if (hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
             {
@@ -306,7 +336,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
 
-    string TranslateRollToDirection(int direction)
+    private string TranslateRollToDirection(int direction)
     {
         switch (direction)
         {
@@ -327,7 +357,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    IEnumerator PerformDistanceRoll()
+    private IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         int distanceRoll = 5; // Melina Mode
@@ -568,6 +598,7 @@ public class HighPassManager : MonoBehaviour
         currentTargetHex = null;
         lastClickedHex = null;
         intendedTargetHex = null;
+        isCornerKick = false;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
     }

@@ -9,6 +9,7 @@ public class FreeKickManager : MonoBehaviour
     public HexGrid hexGrid;
     public Ball ball;
     public MatchManager matchManager;
+    public MovementPhaseManager movementPhaseManager;
     [Header("Important Items")]
     [SerializeField]
     private List<PlayerToken> shouldDefMoveTokens = new List<PlayerToken>();
@@ -21,14 +22,24 @@ public class FreeKickManager : MonoBehaviour
     public int defenderMovesUsed;
     public bool isWaitingForKickerSelection = false;
     public bool isWaitingForSetupPhase = false;
+    public bool isWaitingforMovement3 = false;
+    public bool isWaitingForFinalKickerSelection = false;
     public bool isWaitingForExecution = false;
-    private PlayerToken selectedKicker;
+    public bool isCornerKick = false;
+    public PlayerToken selectedKicker;
     public PlayerToken selectedToken;
     public HexCell targetHex;
+    public HexCell spotkick;
 
-    public void StartFreeKickPreparation()
+    public void StartFreeKickPreparation(HexCell cornerKickSpot = null)
     {
-        Debug.Log("Starting Free Kick Preparation...");
+        if (cornerKickSpot == null) Debug.Log("Starting Free Kick Preparation...");
+        else
+        {
+            isCornerKick = true;
+            spotkick = cornerKickSpot;
+            Debug.Log("Starting Corner Kick Preparation...");
+        }
         matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
         isWaitingForKickerSelection = true;
         remainingDefenderMoves = 6;
@@ -75,6 +86,11 @@ public class FreeKickManager : MonoBehaviour
     public IEnumerator HandleKickerSelection(PlayerToken clickedToken = null)
     {
         yield return null; // to separate the X from Kicker Selection
+        if (clickedToken == null && isCornerKick && potentialKickers.Count == 0)
+        {
+            Debug.LogWarning("There are no attackers near the ball for the Corner Kick, please click on an Attacker to go take it!");
+            yield break;
+        }
         // If a token was pre-selected (e.g., passed from GIM), handle it immediately
         Debug.Log($"Handling kicker selection for {clickedToken?.name}...");
         if (clickedToken != null)
@@ -85,11 +101,19 @@ public class FreeKickManager : MonoBehaviour
                 yield break;
             }
             Debug.Log($"Selected {clickedToken.name} as the kicker.");
-            selectedKicker = clickedToken;
-            HexCell targetHex = GetClosestAvailableHexToBall();
-            if (targetHex != null)
-            {
-                yield return StartCoroutine(MoveTokenToHex(clickedToken, targetHex));
+            if (isCornerKick) {
+                yield return StartCoroutine(MoveTokenToHex(clickedToken, spotkick));
+            }
+            else {
+                HexCell targetHex = GetClosestAvailableHexToBall();
+                if (targetHex != null)
+                {
+                    yield return StartCoroutine(MoveTokenToHex(clickedToken, targetHex));
+                }
+                else
+                {
+                    Debug.LogError("Target Hex is null!");
+                }
             }
         }
         isWaitingForKickerSelection = false;
@@ -107,7 +131,7 @@ public class FreeKickManager : MonoBehaviour
         HexCell[] neighbors = ballHex.GetNeighbors(hexGrid);
 
         return neighbors
-            .Where(hex => !hex.isDefenseOccupied && !hex.isAttackOccupied)
+            .Where(hex => !hex.isDefenseOccupied && !hex.isAttackOccupied && !hex.isOutOfBounds)
             .OrderBy(hex => HexGridUtils.GetHexDistance(hex.coordinates, new Vector3Int(0, 0, 0)))
             .FirstOrDefault();
     }
@@ -129,6 +153,26 @@ public class FreeKickManager : MonoBehaviour
 
     public void HandleSetupTokenSelection(PlayerToken token)
     {
+        if (MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDefineKicker)
+        {
+            if (!token.isAttacker)
+            {
+                Debug.LogWarning($"Token {token.name} is not an attacker. Invalid Selection for a Kicker!");
+                return;
+            }
+            else if (!potentialKickers.Contains(token))
+            {
+                Debug.LogWarning($"Token {token.name} is not close to the ball. Invalid Selection for a Kicker!");
+                return;
+            }
+            else
+            {
+                Debug.LogWarning($"Token {token.name} Selected to take the Set Piece!");
+                selectedKicker = token;
+                AdvanceToNextPhase(matchManager.currentState);
+                return;
+            }
+        }
         // Debug.Log($"Selected token: {token.name} for current phase {MatchManager.Instance.currentState}");
         if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt") && !token.isAttacker)
         {
@@ -162,6 +206,8 @@ public class FreeKickManager : MonoBehaviour
         if
         (
             matchManager.currentState.ToString().StartsWith("FreeKickDef") // During DefX state
+            && !matchManager.currentState.ToString().StartsWith("FreeKickDefM")
+            && !matchManager.currentState.ToString().StartsWith("FreeKickDefG")
             && !token.isAttacker // Clicked token is a defender
             && !shouldDefMoveTokens.Contains(token) // Clicked token is not in the list of defenders that need to move
             && shouldDefMoveTokens.Count >= remainingDefenderMoves // Defenders that need to move are as many as the remaining moves.
@@ -180,6 +226,16 @@ public class FreeKickManager : MonoBehaviour
         {
             Debug.LogWarning($"There must be at least one attacker on the ball or around it. Please select another attacker.");
             return;
+        }
+        if (matchManager.currentState == MatchManager.GameState.FreeKickAttMovement3 && token.isAttacker)
+        {
+            Debug.Log($"Attacker {token.name} selected for movement 3 hexes.");
+            movementPhaseManager.HighlightValidMovementHexes(token, 3);
+        }
+        else if (matchManager.currentState == MatchManager.GameState.FreeKickDefMovement3 && !token.isAttacker)
+        {
+            Debug.Log($"Defender {token.name} selected for movement 3 hexes.");
+            movementPhaseManager.HighlightValidMovementHexes(token, 3);
         }
         // Clear targetHex if switching tokens mid-selection
         targetHex = null;
@@ -204,17 +260,47 @@ public class FreeKickManager : MonoBehaviour
 
         // Validate hex for defenders in Def phases
         if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef") &&
+            // TODO: Check if cube coordinates are needed as defender was not allowed to move to (-17,10) when corner is at (-18, -12)
             HexGridUtils.GetHexDistance(hex.coordinates, ball.GetCurrentHex().coordinates) <= 2)
         {
             Debug.LogWarning($"Hex {hex.coordinates} is too close to the ball. Choose another destination.");
             yield break;
         }
+        // Validate Reachable Hexes in FreeKick***Movement3 phases
+        if (
+            (
+                MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttMovement3
+                || MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDefMovement3
+            )
+            && (
+                !hexGrid.highlightedHexes.Contains(hex)
+                || hex.isDefenseOccupied
+                || hex.isAttackOccupied
+            )
+        )
+        {
+            Debug.LogWarning($"{selectedToken.name} cannot reach {hex.name}");
+        }
         targetHex = hex;
         Debug.Log($"Token {selectedToken.name} moving to hex {hex.coordinates}.");
-        yield return StartCoroutine(MoveTokenToHex(selectedToken, hex));
+        if 
+        (
+            MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttMovement3
+            || MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDefMovement3
+        )
+        {
+            // Move like in MovementPhase
+            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));
+        }
+        else
+        {
+            // Jump to selected Hex!
+            yield return StartCoroutine(MoveTokenToHex(selectedToken, hex));
+        }
         if (
             MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
             && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+            && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefM")
         )
         {
             Debug.Log("We are in Defensive move, Cheking if we need to remove the token from the list of defenders that need to move.");
@@ -252,6 +338,7 @@ public class FreeKickManager : MonoBehaviour
         if (
             MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
             && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+            && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefM")
             // if we let the forfeit happen, then 2 - movesUsed will be forfeited
             // so the remaining defender moves will be (remainingDefenderMoves - (2 - movesUsed))
             // This should be checked against the number of defenders that need to move.
@@ -268,9 +355,19 @@ public class FreeKickManager : MonoBehaviour
             Debug.LogWarning("You cannot forfeit current move, as the remaining moves will be less than the defenders that need to move.");
             return;
         }
+        else if
+        (
+            MatchManager.Instance.currentState == MatchManager.GameState.FreeKickKickerSelect
+            && isCornerKick && potentialKickers.Count == 0
+        )
+        {
+            Debug.LogWarning("You cannot forfeit the Kicker Selection during a Corner Kick. Click on an Attacker to go take it!");
+            return;
+        }
         else if (
             MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
             && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefG")
+            && !MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefM")
         )
         {
             Debug.Log("Forfeiting current Defensive move.");
@@ -283,14 +380,30 @@ public class FreeKickManager : MonoBehaviour
             || MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAttG")
         )
         {
-            Debug.Log("Forfeiting current GK Defensive move.");
+            Debug.Log("Forfeiting current GK move.");
+            movesUsed = 1;
+        }
+        else if (
+            MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAttM")
+            || MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDefM")
+        )
+        {
+            Debug.Log("Forfeiting current Movement of 3 Hexes.");
             movesUsed = 1;
         }
         else if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt3"))
         {
             Debug.Log("Forfeiting current Attacking move.");
-            attackerMovesUsed += 3 - movesUsed;
-            movesUsed = 3;
+            if (isCornerKick)
+            {
+                attackerMovesUsed += 2 - movesUsed;
+                movesUsed = 2;
+            }
+            else
+            {
+                attackerMovesUsed += 3 - movesUsed;
+                movesUsed = 3;
+            }
         }
         else if (
             MatchManager.Instance.currentState.ToString().StartsWith("FreeKickAtt")
@@ -300,6 +413,7 @@ public class FreeKickManager : MonoBehaviour
             attackerMovesUsed += 2 - movesUsed;
             movesUsed = 2;
         }
+        else Debug.LogError($"I do not know what to do from {MatchManager.Instance.currentState}");
         // AdvanceToNextPhase(MatchManager.Instance.currentState);
     }
 
@@ -331,7 +445,8 @@ public class FreeKickManager : MonoBehaviour
                 break;
             case MatchManager.GameState.FreeKickDef2:
                 MatchManager.Instance.currentState = MatchManager.GameState.FreeKickAtt3;
-                StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt3, 3));
+                if (isCornerKick) StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt3, 2));
+                else StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAtt3, 3));
                 break;
             case MatchManager.GameState.FreeKickAtt3:
                 MatchManager.Instance.currentState = MatchManager.GameState.FreeKickDef3;
@@ -342,14 +457,66 @@ public class FreeKickManager : MonoBehaviour
                 StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDefGK2, 1));
                 break;
             case MatchManager.GameState.FreeKickDefGK2:
-                matchManager.currentState = MatchManager.GameState.FreeKickExecution;
+                if (isCornerKick)
+                {
+                    isWaitingforMovement3 = true;
+                    matchManager.currentState = MatchManager.GameState.FreeKickAttMovement3;
+                    StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAttMovement3, 1));
+                }
+                else
+                {
+                    matchManager.currentState = MatchManager.GameState.FreeKickDefineKicker;
+                    ResetMoves();
+                }
+                break;
+            case MatchManager.GameState.FreeKickAttMovement3:
+                matchManager.currentState = MatchManager.GameState.FreeKickDefMovement3;
+                StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDefMovement3, 1));
+                break;
+            case MatchManager.GameState.FreeKickDefMovement3:
+                matchManager.currentState = MatchManager.GameState.FreeKickDefineKicker;
                 ResetMoves();
-                Debug.Log("Free Kick Preparation completed. Ready for execution.");
-                Debug.Log("Available Options are: [P], [L], [C], [S]");
+                isWaitingforMovement3 = false;
                 isWaitingForSetupPhase = false;
+                if (potentialKickers.Count > 1)
+                {
+                    Debug.Log($"Multiple potential kickers available. Select one from the {potentialKickers.Count} near the ball!");
+                    isWaitingForFinalKickerSelection = true;
+                }
+                else
+                {
+                    selectedKicker = potentialKickers.FirstOrDefault();
+                    Debug.Log($"{selectedKicker.name} selected as the kicker!");
+                    AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+                }
+                break;
+            case MatchManager.GameState.FreeKickDefineKicker:
+                matchManager.currentState = MatchManager.GameState.FreeKickExecution;
+                isWaitingForFinalKickerSelection = false;
                 isWaitingForExecution = true;
+                // FreeKickCleanup();
+                if (isCornerKick)
+                {
+                    Debug.Log("Corner Kick Preparation completed. Ready for execution.");
+                    Debug.Log("Available Options are: Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements.)");
+                }
+                else
+                {
+                    Debug.Log("Free Kick Preparation completed. Ready for execution.");
+                    Debug.Log("Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!");
+                }
                 break;
         }
+    }
+
+    private void FreeKickCleanup()
+    {
+        ResetMoves();
+        isCornerKick = false;
+        // selectedKicker = null; 
+        spotkick = null;       
+        potentialKickers.Clear();
+        remainingDefenderMoves = 0;
     }
 
     private void ResetMoves()
@@ -361,7 +528,6 @@ public class FreeKickManager : MonoBehaviour
         selectedToken = null;
         targetHex = null;
         shouldDefMoveTokens.Clear();
-        // potentialKickers.Clear();
     }
 
     public IEnumerator MoveTokenToHex(PlayerToken token, HexCell targetHex)
@@ -389,6 +555,7 @@ public class FreeKickManager : MonoBehaviour
         {
             targetHex.HighlightHex("isDefenseOccupied");
         }
+        ball.AdjustBallHeightBasedOnOccupancy();
         yield return null;
     }
 }

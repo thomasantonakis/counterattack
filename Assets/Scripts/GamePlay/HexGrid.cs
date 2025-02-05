@@ -271,6 +271,7 @@ public class HexGrid : MonoBehaviour
         }
         return defenderTokens;
     }
+    
     public List<HexCell> GetAttackerHexes()
     {
         List<HexCell> attackerHexes = new List<HexCell>();

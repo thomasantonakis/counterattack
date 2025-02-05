@@ -54,12 +54,13 @@ public class GameInputManager : MonoBehaviour
     {
         // Handle Next Action Selection
         if (
-            Input.GetKeyDown(KeyCode.P)
+            Input.GetKeyDown(KeyCode.P) && !freeKickManager.isCornerKick
             // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle
         )
         {
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerStandardPass();
+            groundBallManager.imposedDistance = 11;
         }
         else if (
             Input.GetKeyDown(KeyCode.M)
@@ -72,7 +73,7 @@ public class GameInputManager : MonoBehaviour
             MatchManager.Instance.TriggerMovement();
         }
         else if (
-            Input.GetKeyDown(KeyCode.C)
+            Input.GetKeyDown(KeyCode.C) && !freeKickManager.isCornerKick
             // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle
         )
         {
@@ -185,28 +186,62 @@ public class GameInputManager : MonoBehaviour
                 {
                     HandleFreeKickSetupPhaseInput();
                 }
+                else if (freeKickManager.isWaitingForFinalKickerSelection)
+                {
+                    HandleFreeKickFinalKicker();
+                }
                 else if (freeKickManager.isWaitingForExecution)
                 {
-                    if (Input.GetKeyDown(KeyCode.L))
+                    if (freeKickManager.isCornerKick)
                     {
-                        hexGrid.ClearHighlightedHexes(); 
-                        MatchManager.Instance.TriggerLongPass();
+                        if (Input.GetKeyDown(KeyCode.C))
+                        {
+                            hexGrid.ClearHighlightedHexes(); 
+                            MatchManager.Instance.TriggerHighPass();
+                            highPassManager.isCornerKick = true;
+                            freeKickManager.isWaitingForExecution = false;
+                            freeKickManager.isCornerKick = false;
+                        }
+                        else if (Input.GetKeyDown(KeyCode.P))
+                        {
+                            hexGrid.ClearHighlightedHexes(); 
+                            MatchManager.Instance.TriggerStandardPass();
+                            groundBallManager.imposedDistance = 6;
+                            freeKickManager.isWaitingForExecution = false;
+                            freeKickManager.isCornerKick = false;
+                        }
                     }
-                    else if (Input.GetKeyDown(KeyCode.C))
+                    else
                     {
-                        hexGrid.ClearHighlightedHexes(); 
-                        MatchManager.Instance.TriggerHighPass();
-                    }
-                    else if (Input.GetKeyDown(KeyCode.P))
-                    {
-                        hexGrid.ClearHighlightedHexes(); 
-                        MatchManager.Instance.TriggerStandardPass();
-                    }
-                    else if (Input.GetKeyDown(KeyCode.S))
-                    {
-                        hexGrid.ClearHighlightedHexes();
-                        Debug.Log("Free Kick Shoot triggered."); 
-                        // TODO: Implement Free Kick Shoot
+                        if (Input.GetKeyDown(KeyCode.L))
+                        {
+                            hexGrid.ClearHighlightedHexes(); 
+                            MatchManager.Instance.TriggerLongPass();
+                            freeKickManager.isWaitingForExecution = false;
+                            freeKickManager.isCornerKick = false;
+                        }
+                        else if (Input.GetKeyDown(KeyCode.C))
+                        {
+                            hexGrid.ClearHighlightedHexes(); 
+                            MatchManager.Instance.TriggerHighPass();
+                            freeKickManager.isWaitingForExecution = false;
+                            freeKickManager.isCornerKick = false;
+                        }
+                        else if (Input.GetKeyDown(KeyCode.P))
+                        {
+                            hexGrid.ClearHighlightedHexes(); 
+                            MatchManager.Instance.TriggerStandardPass();
+                            freeKickManager.isWaitingForExecution = false;
+                            freeKickManager.isCornerKick = false;
+                        }
+                        else if (Input.GetKeyDown(KeyCode.S))
+                        {
+                            hexGrid.ClearHighlightedHexes();
+                            Debug.Log("Free Kick Shoot triggered."); 
+                            freeKickManager.isWaitingForExecution = false;
+                            freeKickManager.isCornerKick = false;
+                            // TODO: Implement Free Kick Shoot
+                        }
                     }
                 }
             }
@@ -282,11 +317,11 @@ public class GameInputManager : MonoBehaviour
         // TODO: Remove this altogether and change the logic
         if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
         {
-            groundBallManager.HandleGroundBallPath(hex, 11); // Normal Standard Pass
+            groundBallManager.HandleGroundBallPath(hex); // Normal Standard Pass
         }
         else if (MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow)
         {
-            groundBallManager.HandleGroundBallPath(hex, 11, true); // QuickThrow
+            groundBallManager.HandleGroundBallPath(hex, true); // QuickThrow
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
         {
@@ -298,7 +333,7 @@ public class GameInputManager : MonoBehaviour
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttempt)
         {
-            highPassManager.HandleHighPassProcess(hex);
+            highPassManager.HandleHighPassProcess(hex, false);
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick)
         {
@@ -981,6 +1016,12 @@ public class GameInputManager : MonoBehaviour
                     // Check if the ray hit a PlayerToken directly
                     Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
                     Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                    if (freeKickManager.isWaitingForFinalKickerSelection)
+                    {
+                        freeKickManager.selectedKicker = inferredTokenFromClick;
+                        freeKickManager.AdvanceToNextPhase(MatchManager.GameState.FreeKickKickerSelect);
+                        return;
+                    }
                     if (freeKickManager.selectedToken != null)
                     {
                         if (inferredTokenFromClick != null && inferredTokenFromClick != freeKickManager.selectedToken)
@@ -1009,12 +1050,22 @@ public class GameInputManager : MonoBehaviour
                     }
                     else if (inferredTokenFromClick != null)
                     {
-                      Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
-                      freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
-                      return;
+                        {
+                            Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
+                            freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
+                            return;
+                        }
                     }
                     else
                     {
+                        if (freeKickManager.isWaitingforMovement3)
+                        {
+                            Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
+                            StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, freeKickManager.selectedToken, false));
+                            // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));
+                            return;
+                        }
+                        else
                         Debug.LogWarning($"Hex {inferredHexCellFromClick.name} is unoccupied. Please select a valid token.");
                         return;
                     }            
@@ -1025,6 +1076,32 @@ public class GameInputManager : MonoBehaviour
                 Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
                 freeKickManager.selectedToken = null;  // Reset the selected token
                 freeKickManager.AttemptToAdvanceToNextPhase();
+            }
+        }
+    }
+
+    private void HandleFreeKickFinalKicker()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (hit.collider == null)
+                {
+                    Debug.Log("Raycast did not hit any collider.");
+                    return;
+                }
+                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                // Check if the ray hit a PlayerToken directly
+                Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                if (freeKickManager.isWaitingForFinalKickerSelection)
+                {
+                    freeKickManager.selectedKicker = inferredTokenFromClick;
+                    freeKickManager.AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+                    return;
+                }
             }
         }
     }
