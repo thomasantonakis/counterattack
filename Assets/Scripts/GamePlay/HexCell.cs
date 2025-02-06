@@ -21,7 +21,9 @@ public class HexCell : MonoBehaviour
     private Color originalColor;
     public PlayerToken occupyingToken;
     public bool CanShootFrom = false; // Displayed in Inspector
+    public bool CanHeadFrom = false; // Displayed in Inspector
     public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
+    public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
 
     void Awake()
     {

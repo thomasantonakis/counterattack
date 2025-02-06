@@ -18,6 +18,7 @@ public class HexGrid : MonoBehaviour
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
     private HexCell lastHoveredHex = null;  // Store the last hovered hex
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
+    private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> headingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
     public List<HexCell> highlightedHexes = new List<HexCell>();
     [Header("Dependencies")]
     public Ball ball;
@@ -37,18 +38,21 @@ public class HexGrid : MonoBehaviour
         CreateOutOfBoundsPlanes(this);
         // Path to save or load the shooting paths JSON
         string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
+        string headpath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
         // if (false)
         if (File.Exists(path))
         {
             Debug.Log("Found JSON with Shooting Paths. Deserializing...");
             string json = File.ReadAllText(path);
             shootingPaths = DeserializeShootingPaths(json);
+            headingPaths = DeserializeShootingPaths(headpath);
             AssignShootingPathsToHexes();
         }
         else
         {
             Debug.Log("No shooting paths found. Calculating paths...");
-            CalculateShootingPaths();
+            CalculateShootingPaths("shot");
+            CalculateShootingPaths("head");
             SaveShootingPathsToJson();
             AssignShootingPathsToHexes();
         }
@@ -466,7 +470,7 @@ public class HexGrid : MonoBehaviour
         return validHexes;
     }
 
-    public void CalculateShootingPaths()
+    public void CalculateShootingPaths(string shotOrHead)
     {
         List<HexCell> allHexes = new List<HexCell>();
         int rows = cells.GetLength(0); // Assuming cells is a 2D array
@@ -502,7 +506,8 @@ public class HexGrid : MonoBehaviour
         float zSE18_3 = hex18_3.GetHexCorners()[0].z;
 
         // Outer dictionary: CanShootFrom -> (CanShootTo -> Path)
-        shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
+        if (shotOrHead == "shot") shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
+        else headingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
 
         foreach (HexCell fromHex in potentialCanShootFromHexes)
         {
@@ -518,10 +523,21 @@ public class HexGrid : MonoBehaviour
                 // Calculate the distance
                 int distance = HexGridUtils.GetHexDistance(fromCubeCoords, toCubeCoords);
                 Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates}: {distance}");
-                if (distance > 11) 
+                if (shotOrHead == "shot")
                 {
-                    Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates} is too far: {distance}");
-                    continue;
+                    if (distance > 11) 
+                    {
+                        Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates} is too far: {distance}");
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (distance > 6) 
+                    {
+                        Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates} is too far: {distance}");
+                        continue;
+                    }
                 }
 
                 float intersectionZ = CalculateIntersectionWithGoalLine(fromHex, toHex);
@@ -540,19 +556,34 @@ public class HexGrid : MonoBehaviour
                     Debug.Log($"No path found from {fromHex.coordinates} to {toHex.coordinates}.");
                     continue;
                 }
-
-                // Store the result in the dictionary
-                if (!shootingPaths.ContainsKey(fromHex))
+                if (shotOrHead == "shot")
                 {
-                    shootingPaths[fromHex] = new Dictionary<HexCell, List<HexCell>>();
-                }
-                shootingPaths[fromHex][toHex] = path;
+                    // Store the result in the dictionary
+                    if (!shootingPaths.ContainsKey(fromHex))
+                    {
+                        shootingPaths[fromHex] = new Dictionary<HexCell, List<HexCell>>();
+                    }
+                    shootingPaths[fromHex][toHex] = path;
 
-                // Mark the "from" hex as a valid shooting origin
-                fromHex.CanShootFrom = true;
-                // Debug.Log($"Shooting path found from {fromHex.coordinates} to {toHex.coordinates}.");
+                    // Mark the "from" hex as a valid shooting origin
+                    fromHex.CanShootFrom = true;
+                    // Debug.Log($"Shooting path found from {fromHex.coordinates} to {toHex.coordinates}.");
+                }
+                else
+                {
+                    // Store the result in the dictionary
+                    if (!headingPaths.ContainsKey(fromHex))
+                    {
+                        headingPaths[fromHex] = new Dictionary<HexCell, List<HexCell>>();
+                    }
+                    headingPaths[fromHex][toHex] = path;
+
+                    // Mark the "from" hex as a valid shooting origin
+                    fromHex.CanHeadFrom = true;
+                    // Debug.Log($"Shooting path found from {fromHex.coordinates} to {toHex.coordinates}.");
+                }
             }
-            if (fromHex.CanShootFrom)
+            if (fromHex.CanShootFrom && shotOrHead == "shot")
             {
                 Debug.Log($"Finished calculating shooting paths from {fromHex.coordinates}, found {shootingPaths[fromHex].Count()} possible targets");
             }
@@ -560,8 +591,16 @@ public class HexGrid : MonoBehaviour
             {
                 Debug.Log($"Finished calculating shooting paths from {fromHex.coordinates}, without finding ANY possible targets");
             }
+            if (fromHex.CanHeadFrom && shotOrHead != "shot")
+            {
+                Debug.Log($"Finished calculating heading paths from {fromHex.coordinates}, found {headingPaths[fromHex].Count()} possible targets");
+            }
+            else
+            {
+                Debug.Log($"Finished calculating heading paths from {fromHex.coordinates}, without finding ANY possible targets");
+            }
         }
-        Debug.Log("Shooting paths calculated!");
+        Debug.Log("Shooting / Heading paths calculated!");
     }
 
     private void AssignShootingPathsToHexes()
@@ -600,7 +639,40 @@ public class HexGrid : MonoBehaviour
                 fromHex.ShootingPaths[toHex] = shootingPaths[fromHex][toHex];
             }
         }
-        Debug.Log("Finished Assigning CanShootFrom and CanShootTo paths to hexes.");
+        if (headingPaths == null)
+        {
+            Debug.LogError("headingPaths is null! Ensure CalculateheadingPaths is called before this.");
+            return;
+        }
+
+        foreach (var fromHex in headingPaths.Keys)
+        {
+            if (fromHex == null)
+            {
+                Debug.LogWarning("Found null fromHex in headingPaths keys.");
+                continue; // Skip null keys
+            }
+
+            fromHex.CanShootFrom = true; // Assign CanShootFrom to true
+
+            foreach (var toHex in headingPaths[fromHex].Keys)
+            {
+                if (toHex == null)
+                {
+                    Debug.LogWarning($"Null toHex found in headingPaths for {fromHex.coordinates}");
+                    continue; // Skip null values
+                }
+
+                // Assign the dictionary of CanShootTo paths
+                if (fromHex.HeadingPaths == null)
+                {
+                    // Debug.Log($"There was no headingPaths in fromHex: {fromHex.coordinates}");
+                    fromHex.HeadingPaths = new Dictionary<HexCell, List<HexCell>>();
+                }
+                fromHex.HeadingPaths[toHex] = headingPaths[fromHex][toHex];
+            }
+        }
+        Debug.Log("Finished Assigning CanShootFrom and CanShootTo paths, as well as the relevant ones for Headers to hexes.");
     }
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> DeserializeShootingPaths(string json)
     {
@@ -671,6 +743,29 @@ public class HexGrid : MonoBehaviour
         string filePath = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
         File.WriteAllText(filePath, json);
         Debug.Log($"Shooting paths saved to {filePath}");
+        // Heading
+        var serializableHeadPaths = new Dictionary<string, Dictionary<string, List<string>>>();
+        foreach (var fromHex in headingPaths.Keys)
+        {
+            string fromKey = fromHex.coordinates.ToString(); // Convert Vector3Int to string
+            serializableHeadPaths[fromKey] = new Dictionary<string, List<string>>();
+
+            foreach (var toHex in headingPaths[fromHex].Keys)
+            {
+                string toKey = toHex.coordinates.ToString(); // Convert Vector3Int to string
+                List<string> pathKeys = headingPaths[fromHex][toHex]
+                    .Select(pathHex => pathHex.coordinates.ToString()) // Convert path HexCells to strings
+                    .ToList();
+
+                serializableHeadPaths[fromKey][toKey] = pathKeys;
+            }
+        }
+
+        // Serialize to JSON
+        string headjson = JsonConvert.SerializeObject(serializableHeadPaths, Formatting.Indented);
+        string headfilePath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
+        File.WriteAllText(headfilePath, headjson);
+        Debug.Log($"Heading paths saved to {headfilePath}");
     }
 
     private void HighlightShootingHexes()
