@@ -1159,7 +1159,7 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    private (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick) DetectTokenOrHexClicked(RaycastHit hit)
+    public (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick) DetectTokenOrHexClicked(RaycastHit hit)
     {
         Ball clickedBall = hit.collider.GetComponent<Ball>();
         HexCell clickedBallHex = null;

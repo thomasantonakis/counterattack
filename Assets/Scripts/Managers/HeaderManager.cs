@@ -12,20 +12,23 @@ public class HeaderManager : MonoBehaviour
     public HighPassManager highPassManager; // Reference to the HighPassManager
     public MovementPhaseManager movementPhaseManager; // Reference to the MovementPhaseManager
     public GroundBallManager groundBallManager;
+    public GameInputManager gameInputManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
-    public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
     [Header("Header States")]
+    public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
     public List<PlayerToken> attEligibleToHead = new List<PlayerToken>();
     public List<PlayerToken> defEligibleToHead = new List<PlayerToken>();
     public List<PlayerToken> attackerWillJump = new List<PlayerToken>();
     public List<PlayerToken> defenderWillJump = new List<PlayerToken>();
+    public PlayerToken challengeWinner = null;
     private bool hasEligibleAttackers = false;
     private bool hasEligibleDefenders = false;
+    private bool challengeWinnerIsSelected = false;
+    private bool isWaitingForControlRoll = false;
     private bool isWaitingForSaveandHoldScenario = false;
     private const int HEADER_SELECTION_RANGE = 2;
     private bool offeredControl = false;
-    
     List<HexCell> interceptingDefenders = new List<HexCell>();
     private bool isWaitingForInterceptionRoll = false;
 
@@ -88,6 +91,41 @@ public class HeaderManager : MonoBehaviour
         else if (!hasEligibleDefenders)
         {
             Debug.Log("No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).");
+            if (attEligibleToHead.Count == 1)
+            {
+                challengeWinner = attEligibleToHead[0];
+            }
+            else
+            {
+                challengeWinnerIsSelected = false;
+                while (!challengeWinnerIsSelected)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        if (Physics.Raycast(ray, out RaycastHit hit))
+                        {
+                            var (inferredTokenFromClick, inferredHexCellFromClick) =  gameInputManager.DetectTokenOrHexClicked(hit);
+                            if (inferredTokenFromClick == null)
+                            {
+                                Debug.LogWarning("No token was clicked");
+                                continue;
+                            }
+                            else if(!attEligibleToHead.Contains(inferredTokenFromClick))
+                            {
+                                Debug.LogWarning($"{inferredTokenFromClick} is not an attacker that can challenge for the HighPass");
+                                continue;
+                            }
+                            else
+                            { 
+                                challengeWinner = inferredTokenFromClick;
+                                challengeWinnerIsSelected = true;
+                            }
+                        }
+                    }
+                }
+            }
+            // yield return StartCoroutine(WaitForHeaderOrControlInput());
             StartCoroutine(WaitForHeaderOrControlInput());
         }
         else
@@ -264,8 +302,17 @@ public class HeaderManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("No defenders wished to jump. Offering again option to header (H) or bring the ball down (B).");
+                Debug.Log("No defenders wished to jump. Click on one of the eligible Attackers again and then we'll offer again the option for a free header (H) or bring the ball down (B).");
+                // wait for a click on one of the attackers in attEligibleToHead and passthem as the token who WON the challenge
                 attackerWillJump.Clear();
+                if (attEligibleToHead.Count == 1)
+                {
+                    challengeWinner = attEligibleToHead[0];
+                }
+                else
+                {
+                    yield return StartCoroutine(WaitForValidAttackerSelection());
+                }
                 yield return StartCoroutine(WaitForHeaderOrControlInput());
                 yield break;
             }
@@ -358,7 +405,6 @@ public class HeaderManager : MonoBehaviour
                 ) // Closest token to the ball first
                 .First(); // random?
 
-
             int bestAttackerScore = tokenScores[bestAttacker].totalScore;
             int bestAttackerRoll = tokenScores[bestAttacker].roll;
             Debug.Log($"Best Attacker: {bestAttacker.name} with a score of {bestAttackerScore} (roll = {bestAttackerRoll})");
@@ -424,6 +470,39 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
+    private IEnumerator WaitForValidAttackerSelection()
+    {
+        challengeWinnerIsSelected = false;
+        while (!challengeWinnerIsSelected)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    var (inferredTokenFromClick, inferredHexCellFromClick) =  gameInputManager.DetectTokenOrHexClicked(hit);
+                    if (inferredTokenFromClick == null)
+                    {
+                        Debug.LogWarning("No token was clicked");
+                        continue;
+                    }
+                    else if(!attEligibleToHead.Contains(inferredTokenFromClick))
+                    {
+                        Debug.LogWarning($"{inferredTokenFromClick.name} is not an attacker that can challenge for the HighPass");
+                        continue;
+                    }
+                    else
+                    { 
+                        challengeWinner = inferredTokenFromClick;
+                        challengeWinnerIsSelected = true;
+                        Debug.Log($"{challengeWinner.name} has been selected as the header challenge winner.");
+                    }
+                }
+            }
+        }
+        yield return null;
+    }
+
     public void SetGKToRollLast(PlayerToken gk)
     {
         if (defenderWillJump.Contains(gk))
@@ -446,13 +525,39 @@ public class HeaderManager : MonoBehaviour
             {
                 Debug.Log("Header option selected.");
                 inputReceived = true;
+                attackerWillJump.Add(challengeWinner);
                 StartAttackHeaderSelection();
             }
             else if (Input.GetKeyDown(KeyCode.B))
             {
-                Debug.Log("Attempting to bring the ball down.");
+                Debug.Log($"Attempting to bring the ball down.");
                 inputReceived = true;
-                // TODO: Implement the logic for bringing the ball down
+                // isWaitingForControlRoll = true;
+                HexCell ballHex = ball.GetCurrentHex();
+                if (ballHex == null) Debug.LogWarning("ballHex is null");
+                HexCell[] ballNeighbors = ballHex.GetNeighbors(hexGrid);
+                if (ballNeighbors == null) Debug.LogWarning("ballNeighbors is null");
+                bool hasHeadingPenalty = challengeWinner.GetCurrentHex() != ballHex && !ballNeighbors.Contains(challengeWinner.GetCurrentHex());
+                string penaltyInfo = hasHeadingPenalty ? ", with penalty (-1)" : "";
+                Debug.Log($"Press 'R' to attempt ball control: {challengeWinner.name} (dribbling: {challengeWinner.dribbling}{penaltyInfo}).");
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.R));
+                // isWaitingForControlRoll = false;
+                int roll = 4;
+                // int roll = Random.Range(1, 7);
+                int totalScore = roll + challengeWinner.dribbling + (hasHeadingPenalty ? -1 : 0);
+                Debug.Log($"Attacker {challengeWinner.name} rolled {roll} + Dribbling {challengeWinner.dribbling}{penaltyInfo} = {totalScore}");
+                if (totalScore >= 9)
+                {
+                    Debug.Log($"You beauty! {challengeWinner.name} brings the ball down on their feet! Continue as if it were a SuccessfulTackle");
+                    yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(challengeWinner.GetCurrentHex()));
+                    MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
+                }
+                else
+                {
+                    Debug.Log($"{challengeWinner.name} failed to control the ball! Loose ball from {challengeWinner.name}");
+                    MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
+                    StartCoroutine(looseBallManager.ResolveLooseBall(challengeWinner, "ground"));
+                }
             }
 
             yield return null;
