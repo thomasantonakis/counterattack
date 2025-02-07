@@ -155,11 +155,20 @@ public class GameInputManager : MonoBehaviour
                 StartCoroutine(HandleMouseInputForMovement());
             }
             if (
+                (
                     MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
                     MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement
+                ) && !highPassManager.isWaitingForDefGKChallengeDecision
             )
             {
                 StartCoroutine(HandleMouseInputForHighPassMovement());
+            }
+            if (
+                MatchManager.Instance.currentState == MatchManager.GameState.HighPassCompleted
+                && highPassManager.isWaitingForDefGKChallengeDecision
+            )
+            {
+                StartCoroutine(HandleMouseInputForHPGKRush());
             }
             if (
                     MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
@@ -690,7 +699,11 @@ public class GameInputManager : MonoBehaviour
                         if (highPassManager.selectedToken != null)
                         {
                             Debug.Log($"Moving {highPassManager.selectedToken.name} to hex {clickedHex.coordinates}");
-
+                            // Check if the defending GK was moved
+                            if (highPassManager.selectedToken == hexGrid.GetDefendingGK())
+                            {
+                                highPassManager.didGKMoveInDefPhase = true;
+                            }
                             // Move the selected token to the valid hex (use the highPassManager's selectedToken)
                             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, highPassManager.selectedToken, false));  // Pass the selected token
                             highPassManager.selectedToken = null;  // Reset after movement
@@ -719,6 +732,45 @@ public class GameInputManager : MonoBehaviour
                 {
                     Debug.LogWarning("No valid hex or token clicked.");
                 }
+            }
+        }
+    }
+
+    public IEnumerator HandleMouseInputForHPGKRush()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            hexGrid.ClearHighlightedHexes();
+            Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
+            highPassManager.isWaitingForDefGKChallengeDecision = false;
+            yield break;  
+        }
+        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+        {
+            Debug.Log("HandleMouseInputForHPGKRush called on click");
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                // Check if the ray hit a PlayerToken directly
+                Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                if (inferredHexCellFromClick != null && highPassManager.gkReachableHexes.Contains(inferredHexCellFromClick))
+                {
+                    hexGrid.ClearHighlightedHexes();
+                    yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
+                    highPassManager.isWaitingForDefGKChallengeDecision = false;
+                    headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
+                }
+                else
+                {
+                    Debug.LogWarning($"Cannot move GK there");
+                }
+            }
+            else {
+                Debug.Log("Raycast did not hit any collider.");
+                yield break;
             }
         }
     }
@@ -955,6 +1007,7 @@ public class GameInputManager : MonoBehaviour
                     Debug.Log("Invalid defender selected for header challenge.");
                 }
             }
+            else Debug.LogWarning("Raycast did not hit any collider");
         }
 
         if (Input.GetKeyDown(KeyCode.X))

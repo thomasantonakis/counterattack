@@ -20,14 +20,18 @@ public class HighPassManager : MonoBehaviour
     public HexCell currentTargetHex;
     public HexCell lastClickedHex;
     public HexCell intendedTargetHex; // New variable to store the intended target hex
+    public HexCell finalTargetHex; // Final targethex
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
     public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
+    public List<HexCell> gkReachableHexes = new List<HexCell>();
     public int directionIndex;
     [Header("Flags")]
     public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
     public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
+    public bool didGKMoveInDefPhase = false;
+    public bool isWaitingForDefGKChallengeDecision = false;
     public bool isCornerKick = false;
     private const int MAX_PASS_DISTANCE = 15;
     private const int ATTACKER_MOVE_RANGE = 3;
@@ -310,7 +314,8 @@ public class HighPassManager : MonoBehaviour
         {
             Debug.Log($"High Pass is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
-            StartCoroutine(HandleHighPassMovement(intendedTargetHex));
+            finalTargetHex = intendedTargetHex;
+            StartCoroutine(HandleHighPassMovement(finalTargetHex));
             MatchManager.Instance.currentState = MatchManager.GameState.HighPassCompleted;
             ResetHighPassRolls();  // Reset flags to finish long pass
         }
@@ -365,12 +370,12 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance
-        HexCell inaccurateTargetHex = outOfBoundsManager.CalculateInaccurateTarget(currentTargetHex, directionIndex, distanceRoll);
+        finalTargetHex = outOfBoundsManager.CalculateInaccurateTarget(currentTargetHex, directionIndex, distanceRoll);
         // Check if the final hex is valid (not out of bounds or blocked)
-        if (inaccurateTargetHex != null)
+        if (finalTargetHex != null)
         {
             // Move the ball to the inaccurate final hex
-            yield return StartCoroutine(HandleHighPassMovement(inaccurateTargetHex));            
+            yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));            
         }
         else
         {
@@ -417,8 +422,13 @@ public class HighPassManager : MonoBehaviour
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
+        StartCoroutine(PostBallMovementHandling());
+    }
+
+    private IEnumerator PostBallMovementHandling()
+    {
         // After movement completes, check if the ball is out of bounds
-        if (targetHex.isOutOfBounds)
+        if (finalTargetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");
             Debug.Log($"Passing targetHex to HandleOutOfBounds: {currentTargetHex.coordinates}");
@@ -427,14 +437,51 @@ public class HighPassManager : MonoBehaviour
         else
         {
             Debug.Log("Ball landed within bounds.");
+            // Check if the defending GK can challenge
+            gkReachableHexes = CanDefendingGKChallenge();
+            if (gkReachableHexes.Count > 0)
+            {
+                NotifyForGkRushAvailability();
+                while (isWaitingForDefGKChallengeDecision)
+                {
+                  yield return null;
+                }
+            }
+            else
+            {
+                Debug.Log("GK cannot rush out to challenge.");
+            }
             finalThirdManager.TriggerFinalThirdPhase();
             while (finalThirdManager.isFinalThirdPhaseActive)
             {
               yield return null;
             }
-            headerManager.FindEligibleHeaderTokens(targetHex);
+            headerManager.FindEligibleHeaderTokens(finalTargetHex);
         }
         CleanUpHighPass();
+    }
+
+    private void NotifyForGkRushAvailability()
+    {
+      Debug.Log($"Defending GK {hexGrid.GetDefendingGK().name} is to move closer and Challenge! Press [X] to forfeit or Click on a highlighted Hex to go and Jump wiith GK...");
+      isWaitingForDefGKChallengeDecision = true;
+      hexGrid.ClearHighlightedHexes();
+      foreach (HexCell hex in gkReachableHexes)
+      {
+          hex.HighlightHex("ballPath");
+          hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes
+      }
+    }
+
+    private List<HexCell> CanDefendingGKChallenge()
+    {
+        if (didGKMoveInDefPhase) return new List<HexCell>(); // GK already used their movement
+        if (hexGrid.GetDefendingGK() == null) return new List<HexCell>(); // No defending GK exists
+        HexCell gkHex = hexGrid.GetDefendingGK().GetCurrentHex();
+        List<HexCell> reachableHexes = HexGridUtils.GetReachableHexes(hexGrid, gkHex, 3).Item1;
+        List<HexCell> challengeHexes = HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2);
+        // Find intersection of reachable hexes & valid challenge spots
+        return reachableHexes.Intersect(challengeHexes).ToList();
     }
 
     public void HighlightHighPassArea(HexCell targetHex)
@@ -572,6 +619,8 @@ public class HighPassManager : MonoBehaviour
         Debug.Log("Defender movement phase started. Move one defender up to 3 hexes.");
         isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
         selectedToken = null;  // Ensure no token is auto-selected
+        // Find the defending goalkeeper and intialize the flag to false
+        didGKMoveInDefPhase = false;
         // Set game state to reflect we are in the defender’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.HighPassDefenderMovement;
         // Allow defenders to move one token up to 3 hexes
@@ -598,8 +647,10 @@ public class HighPassManager : MonoBehaviour
         currentTargetHex = null;
         lastClickedHex = null;
         intendedTargetHex = null;
+        finalTargetHex = null;
         isCornerKick = false;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
+        // didGKMoveInDefPhase = false; // Reset in headerManager.FindEligibleHeaderTokens()
     }
 }

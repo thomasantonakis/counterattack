@@ -993,6 +993,7 @@ MonoBehaviour:
   attackHasPossession: 0
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
+  groundBallManager: {fileID: 0}
   difficulty_level: 2
   refereeLeniency: 0
 --- !u!4 &622907911
@@ -2973,9 +2974,11 @@ MonoBehaviour:
   defenderMovesUsed: 0
   isWaitingForKickerSelection: 0
   isWaitingForSetupPhase: 0
+  isWaitingforMovement3: 0
   isWaitingForFinalKickerSelection: 0
   isWaitingForExecution: 0
   isCornerKick: 0
+  selectedKicker: {fileID: 0}
   selectedToken: {fileID: 0}
   targetHex: {fileID: 0}
   spotkick: {fileID: 0}
@@ -3026,6 +3029,7 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   finalThirdManager: {fileID: 1012232483}
+  imposedDistance: 11
 --- !u!4 &1703800863
 Transform:
   m_ObjectHideFlags: 0
@@ -3275,13 +3279,18 @@ MonoBehaviour:
   currentTargetHex: {fileID: 0}
   lastClickedHex: {fileID: 0}
   intendedTargetHex: {fileID: 0}
+  finalTargetHex: {fileID: 0}
   selectedToken: {fileID: 0}
   eligibleAttackers: []
+  gkReachableHexes: []
   directionIndex: 0
   isWaitingForConfirmation: 0
   isWaitingForAccuracyRoll: 0
   isWaitingForDirectionRoll: 0
   isWaitingForDistanceRoll: 0
+  didGKMoveInDefPhase: 0
+  isWaitingForDefGKChallengeDecision: 0
+  isCornerKick: 0
 --- !u!4 &1859472973
 Transform:
   m_ObjectHideFlags: 0
@@ -3331,6 +3340,7 @@ MonoBehaviour:
   matchManager: {fileID: 622907910}
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
+  groundBallManager: {fileID: 1703800862}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   isWaitingForHeaderRoll: 0
