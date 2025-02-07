@@ -39,13 +39,14 @@ public class HexGrid : MonoBehaviour
         // Path to save or load the shooting paths JSON
         string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
         string headpath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
-        // if (false)
+
         if (File.Exists(path))
         {
             Debug.Log("Found JSON with Shooting Paths. Deserializing...");
             string json = File.ReadAllText(path);
             shootingPaths = DeserializeShootingPaths(json);
-            headingPaths = DeserializeShootingPaths(headpath);
+            string headjson = File.ReadAllText(headpath);
+            headingPaths = DeserializeShootingPaths(headjson);
             AssignShootingPathsToHexes();
         }
         else
@@ -610,7 +611,6 @@ public class HexGrid : MonoBehaviour
             Debug.LogError("shootingPaths is null! Ensure CalculateShootingPaths is called before this.");
             return;
         }
-
         foreach (var fromHex in shootingPaths.Keys)
         {
             if (fromHex == null)
@@ -639,6 +639,8 @@ public class HexGrid : MonoBehaviour
                 fromHex.ShootingPaths[toHex] = shootingPaths[fromHex][toHex];
             }
         }
+        Debug.Log("Finished Assigning CanShootFrom and CanShootTo paths.");
+
         if (headingPaths == null)
         {
             Debug.LogError("headingPaths is null! Ensure CalculateheadingPaths is called before this.");
@@ -653,7 +655,7 @@ public class HexGrid : MonoBehaviour
                 continue; // Skip null keys
             }
 
-            fromHex.CanShootFrom = true; // Assign CanShootFrom to true
+            fromHex.CanHeadFrom = true; // Assign CanShootFrom to true
 
             foreach (var toHex in headingPaths[fromHex].Keys)
             {
@@ -672,8 +674,9 @@ public class HexGrid : MonoBehaviour
                 fromHex.HeadingPaths[toHex] = headingPaths[fromHex][toHex];
             }
         }
-        Debug.Log("Finished Assigning CanShootFrom and CanShootTo paths, as well as the relevant ones for Headers to hexes.");
+        Debug.Log("Finished Assigning CanHeadFrom and CanHeadTo paths.");
     }
+    
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> DeserializeShootingPaths(string json)
     {
         // Deserialize into a structure with string keys first
