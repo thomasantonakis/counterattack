@@ -310,7 +310,7 @@ public class PlayerTokenManager : MonoBehaviour
             numberText.text = (i + 1 == 6 || i + 1 == 9) ? $"<u>{i + 1}</u>" : (i + 1).ToString(); // Underline 6 and 9 for acecssibility
 
             // TODO: add a '.' after 6 and 9.
-            numberText.fontSize = 3;  // Set font size, tweak as needed
+            numberText.fontSize = 2;  // Set font size, tweak as needed
             numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
             numberText.GetComponent<MeshRenderer>().sortingOrder = 10;  // Ensure the number is rendered on top
         }

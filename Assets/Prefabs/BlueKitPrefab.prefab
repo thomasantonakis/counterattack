@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 73dae70003b8c4e88b0e178390f88d8c, type: 2}
+  - {fileID: 2100000, guid: 91a74afd65b4847499368b60d78f43ad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -112,4 +112,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAttacker: 0
-  hasMoved: 0
+  isHomeTeam: 0
+  isDribblerDebug: 0
+  occupiedHexDebug: {fileID: 0}
+  playerName: 
+  jerseyNumber: 0
+  pace: 0
+  dribbling: 0
+  highPass: 0
+  resilience: 0
+  heading: 0
+  shooting: 0
+  tackling: 0
+  aerial: 0
+  saving: 0
+  handling: 0
