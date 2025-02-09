@@ -62,6 +62,7 @@ public class MatchManager : MonoBehaviour
         QuickThrow,
         ActivateFinalThirdsAfterSave,
         GoalKick,
+        PreKickOffSetup,
     }
     public class GameData
     {
@@ -146,6 +147,7 @@ public class MatchManager : MonoBehaviour
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
     public GroundBallManager groundBallManager;
+    public PlayerTokenManager playerTokenManager;
     public GameData gameData;
     public int difficulty_level;
     public int refereeLeniency;
@@ -426,12 +428,9 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    private void UpdatePlayerTokensAfterPossessionChange()
+    public void UpdatePlayerTokensAfterPossessionChange()
     {
-        // Loop through all tokens in the game
-        PlayerToken[] allTokens = FindObjectsOfType<PlayerToken>();  // Find all tokens in the scene
-
-        foreach (PlayerToken token in allTokens)
+        foreach (PlayerToken token in playerTokenManager.allTokens)
         {
             // Determine if the token is now an attacker or a defender
             if ((teamInAttack == TeamInAttack.Home && token.isHomeTeam) ||
@@ -448,6 +447,49 @@ public class MatchManager : MonoBehaviour
         Debug.Log("Player tokens updated after possession change.");
     }
 
+    public void MakeSureEveryOneIsCorrectlyAssigned()
+    {
+        foreach (PlayerToken token in playerTokenManager.allTokens)
+        {
+            // Determine if the token is now an attacker or a defender
+            if ((teamInAttack == TeamInAttack.Home && token.isHomeTeam) ||
+                (teamInAttack == TeamInAttack.Away && !token.isHomeTeam))
+            {
+                token.isAttacker = true;  // Set to attacker if the token's team is now in attack
+            }
+            else
+            {
+                token.isAttacker = false;  // Set to defender otherwise
+            }
+        }
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            PlayerToken token = hex.GetOccupyingToken();
+            if (token == null)
+            {
+                hex.isAttackOccupied = false;
+                hex.isDefenseOccupied = false;
+                hex.ResetHighlight();
+            }
+            else
+            {
+                if (token.isAttacker)
+                {
+                    hex.isAttackOccupied = true;
+                    hex.isDefenseOccupied = false;
+                    hex.ResetHighlight();
+                    hex.HighlightHex("isAttackOccupied");
+                }
+                else
+                {
+                    hex.isAttackOccupied = false;
+                    hex.isDefenseOccupied = true;
+                    hex.ResetHighlight();
+                    hex.HighlightHex("isDefenseOccupied");
+                }
+            }
+        }
+    }
     // Add other match-related methods here (like handling goals, score updates, etc.)
     public void LoadGameSettingsFromJson()
     {

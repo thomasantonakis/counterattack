@@ -350,8 +350,8 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        // int roll = Random.Range(1, 7);
-                        int roll = 4;
+                        int roll = Random.Range(1, 7);
+                        // int roll = 4;
                         int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[attacker] = (roll, totalScore);
                         Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading}{penaltyInfo} = {totalScore}");
@@ -368,9 +368,9 @@ public class HeaderManager : MonoBehaviour
                 HexCell defenderHex = defender.GetCurrentHex();
                 bool hasHeadingPenalty = defenderHex != ballHex && !ballNeighbors.Contains(defenderHex);
                 string penaltyInfo = hasHeadingPenalty ? ", with penalty (-1)" : "";
-                int attribute = defender.IsGoalKeeper ? defender.handling : defender.heading;
-                string attributelabel = defender.IsGoalKeeper ? "handling" : "heading";
-                Debug.Log($"Press 'R' to roll for attacker: {defender.name} ({attributelabel}: {attribute}{penaltyInfo}).");
+                int attribute = defender.IsGoalKeeper ? defender.aerial : defender.heading;
+                string attributelabel = defender.IsGoalKeeper ? "aerial ability" : "heading";
+                Debug.Log($"Press 'R' to roll for defender: {defender.name} ({attributelabel}: {attribute}{penaltyInfo}).");
 
                 while (isWaitingForHeaderRoll)
                 {

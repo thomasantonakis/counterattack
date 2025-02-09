@@ -21,6 +21,7 @@ public class GameInputManager : MonoBehaviour
     public FreeKickManager freeKickManager;
     public ShotManager shotManager;
     public FinalThirdManager finalThirdManager;
+    public KickoffManager kickoffManager;
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
@@ -95,6 +96,10 @@ public class GameInputManager : MonoBehaviour
         {
             HandleMouseInputForF3();
             return;
+        }
+        if (MatchManager.Instance.currentState == MatchManager.GameState.PreKickOffSetup)
+        {
+            HandleKickOffClicks();
         }
         if (shotManager.isShotInProgress)
         {
@@ -1159,6 +1164,38 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
+    private void HandleKickOffClicks()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (hit.collider == null)
+                {
+                    Debug.Log("Raycast did not hit any collider.");
+                    return;
+                }
+                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                // Check if the ray hit a PlayerToken directly
+                Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                if (inferredTokenFromClick != null && inferredTokenFromClick != kickoffManager.selectedToken)
+                {
+                    kickoffManager.SelectToken(inferredTokenFromClick);
+                }
+                else if (inferredHexCellFromClick != null)
+                {
+                    StartCoroutine(kickoffManager.TryMoveToken(inferredHexCellFromClick));
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Player pressed Sapce to try and start the match.");
+            kickoffManager.ConfirmSetup();
+        }
+    }
     public (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick) DetectTokenOrHexClicked(RaycastHit hit)
     {
         Ball clickedBall = hit.collider.GetComponent<Ball>();

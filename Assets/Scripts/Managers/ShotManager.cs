@@ -15,6 +15,7 @@ public class ShotManager : MonoBehaviour
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
     public LongBallManager longBallManager;
+    public GoalFlowManager goalFlowManager;
     public HexGrid hexGrid;
     public Ball ball;
     [Header("Flags")]
@@ -365,6 +366,7 @@ public class ShotManager : MonoBehaviour
                             {
                                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll}, that's a GOAL!!");
                                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
+                                goalFlowManager.StartGoalFlow(shooter);
                                 // TODO: Implement Goal scoring
                                 ResetShotProcess();
                             }
@@ -414,7 +416,7 @@ public class ShotManager : MonoBehaviour
                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{snapPenalty}{boxPenalty}= {totalShotPower}");
                 Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
-                // TODO: Implement Goal scoring
+                goalFlowManager.StartGoalFlow(shooter);
                 ResetShotProcess();
             }
         } 
@@ -474,8 +476,7 @@ public class ShotManager : MonoBehaviour
                     Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{snapPenalty}{boxPenalty} = {totalShotPower}");
                     Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
-                    // MatchManager.Instance.ScoreGoal(shooter);
-                    // TODO: Implement Goal scoring
+                    goalFlowManager.StartGoalFlow(shooter);
                     ResetShotProcess();
                 }
             }

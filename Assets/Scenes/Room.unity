@@ -438,6 +438,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 238722947}
   m_CullTransparentMesh: 1
+--- !u!1 &282559519
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 282559521}
+  - component: {fileID: 282559520}
+  m_Layer: 0
+  m_Name: KickoffManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &282559520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282559519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7fe2ca6802384ced9989a5750c5e1e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTokenManager: {fileID: 501380953}
+  hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
+  freeKickManager: {fileID: 1688718062}
+  selectedToken: {fileID: 0}
+--- !u!4 &282559521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282559519}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 552.90485, y: 367.53717, z: -4.9973216}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &363527589
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,6 +690,7 @@ MonoBehaviour:
   freeKickManager: {fileID: 1688718062}
   shotManager: {fileID: 1740884027}
   finalThirdManager: {fileID: 1012232483}
+  kickoffManager: {fileID: 282559520}
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   matchManager: {fileID: 622907910}
@@ -993,7 +1043,8 @@ MonoBehaviour:
   attackHasPossession: 0
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
-  groundBallManager: {fileID: 0}
+  groundBallManager: {fileID: 1703800862}
+  playerTokenManager: {fileID: 501380953}
   difficulty_level: 2
   refereeLeniency: 0
 --- !u!4 &622907911
@@ -3080,6 +3131,7 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   longBallManager: {fileID: 748552023}
+  goalFlowManager: {fileID: 2034852868}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   isShotInProgress: 0
@@ -3306,6 +3358,58 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2034852867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2034852869}
+  - component: {fileID: 2034852868}
+  m_Layer: 0
+  m_Name: GoalFlowManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2034852868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034852867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84e37c78937bd45e688ad4e419fd215a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hexGrid: {fileID: 1405702520}
+  playerTokenManager: {fileID: 501380953}
+  movementPhaseManager: {fileID: 1390513032}
+  groundBallManager: {fileID: 1703800862}
+  longBallManager: {fileID: 748552023}
+  kickoffManager: {fileID: 282559520}
+  defendersAreBack: 0
+  attackersAreBack: 0
+--- !u!4 &2034852869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034852867}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 552.90485, y: 367.53717, z: -4.9973216}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 22
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2071234816
 GameObject:
   m_ObjectHideFlags: 0
@@ -3341,6 +3445,7 @@ MonoBehaviour:
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
   groundBallManager: {fileID: 1703800862}
+  gameInputManager: {fileID: 417053521}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   isWaitingForHeaderRoll: 0
@@ -3348,6 +3453,7 @@ MonoBehaviour:
   defEligibleToHead: []
   attackerWillJump: []
   defenderWillJump: []
+  challengeWinner: {fileID: 0}
 --- !u!4 &2071234818
 Transform:
   m_ObjectHideFlags: 0
