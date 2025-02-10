@@ -50,6 +50,11 @@ public class KickoffManager : MonoBehaviour
                 Debug.LogWarning($"{selectedToken.name} cannot move outside their half!");
                 yield break;
             }
+            if (selectedToken.isAttacker && targetHex.isInCircle == 5)
+            {
+                Debug.LogWarning($"Attackers should not be placed on the KickOff Circle!");
+                yield break;
+            }
             yield return StartCoroutine(freeKickManager.MoveTokenToHex(selectedToken, targetHex));
             Debug.Log($"{selectedToken.name} moved to {targetHex.coordinates}");
             selectedToken = null; // Deselect after moving

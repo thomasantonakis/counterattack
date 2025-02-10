@@ -188,6 +188,31 @@ public class HexGrid : MonoBehaviour
         {
             cell.isDifficultShotPosition = true;
         }
+        if (
+            ( x == 0 && z >= -3 && z <= 3) ||
+            (( x == 1 || x == -1) && z >= -3 && z <= 2) ||
+            (( x == 2 || x == -2) && z >= -2 && z <= 2) ||
+            (( x == 3 || x == -3) && z >= -2 && z <= 1)
+        )
+        {
+            cell.isInCircle = 5;
+        }
+        if (
+            ( x == 12 && z >= -3 && z <= 3) ||
+            ( x == 11 && z >= -2 && z <= 1) ||
+            ( x == 10 && z == 0) 
+        )
+        {
+            cell.isInCircle = 1;
+        }
+        if (
+            ( x == -12 && z >= -3 && z <= 3) ||
+            ( x == -11 && z >= -2 && z <= 1) ||
+            ( x == -10 && z == 0) 
+        )
+        {
+            cell.isInCircle = -1;
+        }
 
         // Debug to visually differentiate hexes in Unity (optional)
         // else if (cell.isKickOff) cell.GetComponent<Renderer>().material.color = Color.red;

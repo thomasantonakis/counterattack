@@ -13,6 +13,7 @@ public class HexCell : MonoBehaviour
     public int isInPenaltyBox = 0; // -1 Left, 0 No, 1 Right
     public int isInFinalThird = 0; // -1 Left, 0 No, 1 Right
     public bool isDifficultShotPosition = false;
+    public int isInCircle = 0; // -1 Left, 0 No, 1 Right, 5 Center
     public bool isDark = false;
     public bool isDefenseOccupied = false;
     public bool isAttackOccupied = false;
