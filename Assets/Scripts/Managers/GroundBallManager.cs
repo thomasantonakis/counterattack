@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;  // For JsonConvert
 
 public class GroundBallManager : MonoBehaviour
 {
@@ -127,12 +128,35 @@ public class GroundBallManager : MonoBehaviour
                 else
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
+                    PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+                    // Debug.Log("📌 Checking MatchManager instance...");
+                    // if (MatchManager.Instance == null) Debug.LogError("❌ MatchManager.Instance is NULL!");
+
+                    // Debug.Log("📌 Checking gameData...");
+                    // if (MatchManager.Instance.gameData == null) Debug.LogError("❌ MatchManager.Instance.gameData is NULL!");
+
+                    // Debug.Log("📌 Checking gameLog...");
+                    // if (MatchManager.Instance.gameData.gameLog == null) Debug.LogError("❌ MatchManager.Instance.gameData.gameLog is NULL!");
+
+                    // Debug.Log("📌 Checking Token...");
+                    // if (passer == null) Debug.LogError("❌ Ball hex has no occupying token! Cannot determine passer.");
+
+                    // Debug.Log("✅ All checks passed, logging event...");
+                    // Debug.Log($"🎯 Logging pass attempt by {passer.playerName}");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassAttempt);
+                    // MatchManager.PlayerStats playerStats = MatchManager.Instance.gameData.stats.GetPlayerStats(passer.playerName);
+                    // Debug.Log($"📊 {passer.playerName} - Passes Attempted: {playerStats.passesAttempted}");
+                    // MatchManager.TeamStats teamStats = MatchManager.Instance.gameData.stats.GetTeamStats(passer.isHomeTeam);
+                    // Debug.Log($"📈 {MatchManager.Instance.gameData.gameSettings.homeTeamName} - Total Passes Attempted: {teamStats.totalPassesAttempted}");
+
+
                     await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
                     imposedDistance = 11;
                     finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                     if (clickedHex.isAttackOccupied)
                     {
+                        MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
                     }
                     else {
@@ -361,6 +385,7 @@ public class GroundBallManager : MonoBehaviour
                 return;
             }
             Debug.Log($"Dice roll by {defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates}: {diceRoll}");
+            MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
             // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
             isWaitingForDiceRoll = false;
             // if (diceRoll == 6)
@@ -368,6 +393,7 @@ public class GroundBallManager : MonoBehaviour
             {
                 // Defender successfully intercepts the pass
                 Debug.Log($"Pass intercepted by {defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates}!");
+                MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionSuccess, recoveryType: "standard");
                 StartCoroutine(HandleBallInterception(currentDefenderHex));
                 ResetGroundPassInterceptionDiceRolls();
             }
@@ -398,6 +424,8 @@ public class GroundBallManager : MonoBehaviour
                     if (currentTargetHex.isAttackOccupied)
                     {
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+                        MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted); // Log CompletedPass
+                        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
                     }
                     else {
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;

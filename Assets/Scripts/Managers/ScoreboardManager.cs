@@ -14,9 +14,9 @@ public class ScoreboardManager : MonoBehaviour
     {
         // Subscribe to the event in MatchManager
         // MatchManager.Instance.OnGameSettingsLoaded += LoadTeamNames;
-        // matchManager.OnGameSettingsLoaded += LoadTeamNames;
+        matchManager.OnGameSettingsLoaded += LoadTeamNames;
         // Debug.Log("ScoreboardManager: Subscribed to OnGameSettingsLoaded event");
-        LoadTeamNames();
+        // LoadTeamNames();
     }
 
 

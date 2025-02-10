@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;  // For JsonConvert
 using System.Linq;
+using System.Net.WebSockets;
 
 public class MatchManager : MonoBehaviour
 {
@@ -64,10 +65,22 @@ public class MatchManager : MonoBehaviour
         GoalKick,
         PreKickOffSetup,
     }
+    
+    [Serializable]
     public class GameData
     {
         public GameSettings gameSettings;
         public Rosters rosters;
+        public Stats stats;
+        public GameLog gameLog;
+
+        public GameData()
+        {
+            gameSettings = new GameSettings();
+            rosters = new Rosters();
+            stats = new Stats();
+            gameLog = new GameLog(stats);
+        }
     }
 
     [Serializable]
@@ -101,8 +114,17 @@ public class MatchManager : MonoBehaviour
     [Serializable]
     public class Rosters
     {
-        public Dictionary<string, RosterPlayer> home;
-        public Dictionary<string, RosterPlayer> away;
+        // public List<RosterPlayer> home = new List<RosterPlayer>();
+        // public List<RosterPlayer> away = new List<RosterPlayer>();
+        public Dictionary<string, RosterPlayer> home = new Dictionary<string, RosterPlayer>();
+        public Dictionary<string, RosterPlayer> away = new Dictionary<string, RosterPlayer>();
+        // public void LoadFromDictionary()
+        // {
+        //     home = new List<RosterPlayer>(homeDict.Values);
+        //     away = new List<RosterPlayer>(awayDict.Values);
+        // }
+        // public Dictionary<string, RosterPlayer> home = new Dictionary<string, RosterPlayer>();
+        // public Dictionary<string, RosterPlayer> away = new Dictionary<string, RosterPlayer>();
     }
 
     [Serializable]
@@ -121,9 +143,556 @@ public class MatchManager : MonoBehaviour
         public int handling; // For goalkeepers
     }
 
-    // public Dictionary<string, RosterPlayer> HomeRoster { get; private set; }
-    // public Dictionary<string, RosterPlayer> AwayRoster { get; private set; }
+    [Serializable]
+    public class Stats
+    {
+        public List<PlayerStatsEntry> playerStats = new List<PlayerStatsEntry>();
+        public TeamStats homeTeamStats = new TeamStats(); 
+        public TeamStats awayTeamStats = new TeamStats();
 
+        public Stats() { }
+
+        public PlayerStats GetPlayerStats(string playerName)
+        {
+            var entry = playerStats.Find(p => p.playerName == playerName);
+            if (entry == null)
+            {
+                entry = new PlayerStatsEntry { playerName = playerName, stats = new PlayerStats() };
+                playerStats.Add(entry);
+            }
+            return entry.stats;
+        }
+
+        public TeamStats GetTeamStats(bool isHomeTeam)
+        {
+            return isHomeTeam ? homeTeamStats : awayTeamStats;
+        }
+
+        public void UpdateTeamStats(bool isHomeTeam)
+        {
+            TeamStats teamStats = isHomeTeam ? homeTeamStats : awayTeamStats;
+            teamStats.Reset();
+
+            foreach (var player in playerStats)
+            {
+                bool playerIsHome = MatchManager.Instance.IsPlayerInTeam(player.playerName, true);
+                if (playerIsHome == isHomeTeam) teamStats.AddPlayerStats(player.stats);
+            }
+        }
+    }
+
+    [Serializable]
+    public class PlayerStatsEntry
+    {
+        public string playerName;
+        public PlayerStats stats;
+    }
+
+
+    [Serializable]
+    public class PlayerStats
+    {
+        public int goals;
+        public int shotsAttempted;
+        public int shotsOnTarget;
+        public int shotsBlocked;
+        public int shotsOffTarget;
+        public int passesAttempted;
+        public int passesCompleted;
+        public int aerialPassesAttempted;
+        public int aerialPassesTargeted;
+        public int aerialPassesCompleted;
+        public int pacesRan;
+        public int assists;
+        public int possessionWon;
+        public int possessionLost;
+        public int groundDuelsInvolved;
+        public int groundDuelsWon;
+        public int interceptionsAttempted;
+        public int interceptionsMade;
+        public int aerialChallengesInvolved;
+        public int aerialChallengesWon;
+        public int attemptsFaced;
+        public int attemptsSaved;
+        public int yellowCards;
+        public int redCards;
+        public int injuries;
+        public PlayerStats()
+        {
+            goals = 0;
+            shotsAttempted = 0;
+            shotsOnTarget = 0;
+            shotsBlocked = 0;
+            shotsOffTarget = 0;
+            passesAttempted = 0;
+            passesCompleted = 0;
+            aerialPassesAttempted = 0;
+            aerialPassesTargeted = 0;
+            aerialPassesCompleted = 0;
+            pacesRan = 0;
+            assists = 0;
+            possessionWon = 0;
+            possessionLost = 0;
+            groundDuelsInvolved = 0;
+            groundDuelsWon = 0;
+            interceptionsAttempted = 0;
+            interceptionsMade = 0;
+            aerialChallengesInvolved = 0;
+            aerialChallengesWon = 0;
+            attemptsFaced = 0;
+            attemptsSaved = 0;
+            yellowCards = 0;
+            redCards = 0;
+            injuries = 0;
+        }
+    }
+
+    [Serializable]
+    public class TeamStats
+    {
+        public int totalGoals;
+        public int totalShots;
+        public int totalShotsOnTarget;
+        public int totalShotsBlocked;
+        public int totalShotsOffTarget;
+        public int totalPassesAttempted;
+        public int totalPassesCompleted;
+        public int totalAerialPassesAttempted;
+        public int totalAerialPassesTargeted;
+        public int totalAerialPassesCompleted;
+        public int totalPacesRan;
+        public int totalGroundDuelsInvolved;
+        public int totalGroundDuelsWon;
+        public int totalInterceptionsAttempted;
+        public int totalInterceptionsMade;
+        public int totalAerialChallengesInvolved;
+        public int totalAerialChallengesWon;
+        public int totalYellowCards;
+        public int totalRedCards;
+        public int totalAssists;
+        public int totalInjuries;
+        public int totalAttemptsSaved;
+        public int totalSubstiutions;
+        public int totalPossessionWon;
+        public int totalPossessionLost;
+        public int totalCorners;
+
+        public TeamStats()
+        {
+            totalGoals = 0;
+            totalShots = 0;
+            totalShotsOnTarget = 0;
+            totalShotsBlocked = 0;
+            totalShotsOffTarget = 0;
+            totalPassesAttempted = 0;
+            totalPassesCompleted = 0;
+            totalAerialPassesAttempted = 0;
+            totalAerialPassesTargeted = 0;
+            totalAerialPassesCompleted = 0;
+            totalPacesRan = 0;
+            totalGroundDuelsInvolved = 0;
+            totalGroundDuelsWon = 0;
+            totalInterceptionsAttempted = 0;
+            totalInterceptionsMade = 0;
+            totalAerialChallengesInvolved = 0;
+            totalAerialChallengesWon = 0;
+            totalYellowCards = 0;
+            totalRedCards = 0;
+            totalAssists = 0;
+            totalInjuries = 0;
+            totalAttemptsSaved = 0;
+            totalSubstiutions = 0;
+            totalPossessionWon = 0;
+            totalPossessionLost = 0;
+            totalCorners = 0;
+        }
+        public void Reset()
+        {
+            totalGoals = 0;
+            totalShots = 0;
+            totalShotsOnTarget = 0;
+            totalShotsBlocked = 0;
+            totalShotsOffTarget = 0;
+            totalPassesAttempted = 0;
+            totalPassesCompleted = 0;
+            totalAerialPassesAttempted = 0;
+            totalAerialPassesTargeted = 0;
+            totalAerialPassesCompleted = 0;
+            totalPacesRan = 0;
+            totalGroundDuelsInvolved = 0;
+            totalGroundDuelsWon = 0;
+            totalInterceptionsAttempted = 0;
+            totalInterceptionsMade = 0;
+            totalAerialChallengesInvolved = 0;
+            totalAerialChallengesWon = 0;
+            totalYellowCards = 0;
+            totalRedCards = 0;
+            totalAssists = 0;
+            totalInjuries = 0;
+            totalAttemptsSaved = 0;
+            totalSubstiutions = 0;
+            totalPossessionWon = 0;
+            totalPossessionLost = 0;
+            totalCorners = 0;
+        }
+        public void AddPlayerStats(PlayerStats stats)
+        {
+            totalGoals += stats.goals;
+            totalShots += stats.shotsAttempted;
+            totalShotsOnTarget += stats.shotsOnTarget;
+            totalShotsBlocked += stats.shotsBlocked;
+            totalShotsOffTarget += stats.shotsOffTarget;
+            totalPassesAttempted += stats.passesAttempted;
+            totalPassesCompleted += stats.passesCompleted;
+            totalAerialPassesAttempted += stats.aerialPassesAttempted;
+            totalAerialPassesTargeted += stats.aerialPassesTargeted;
+            totalAerialPassesCompleted += stats.aerialPassesCompleted;
+            totalPacesRan += stats.pacesRan;
+            totalGroundDuelsInvolved += stats.groundDuelsInvolved;
+            totalGroundDuelsWon += stats.groundDuelsWon;
+            totalInterceptionsAttempted += stats.interceptionsAttempted;
+            totalInterceptionsMade += stats.interceptionsMade;
+            totalAerialChallengesInvolved += stats.aerialChallengesInvolved;
+            totalAerialChallengesWon += stats.aerialChallengesWon;
+        }
+    }
+
+    [Serializable]
+    public class GameLog
+    {
+        private List<string> gameLog;
+        private Stats stats; // Add this
+        public GameLog(Stats statsRef)
+        {
+            gameLog = new List<string>();
+            this.stats = statsRef ?? throw new ArgumentNullException(nameof(statsRef)); // Ensure stats is never null
+        }
+
+        public void LogEvent(
+            PlayerToken token // the main actor of the action
+            , ActionType actionType // on of the loggable actions Enum
+            // Optional input
+            , int value = 1 // value to be added to stats, defaults to 1, except Paces.
+            , PlayerToken connectedToken = null // optional reference to the connected Token 
+            , string tackleType = "" // tackle, tackle from behind, reckless tackle, nutmeg
+            , string shotType = "" // Shot, Snapshot from outside the box
+            , string recoveryType = "" // 
+            , string saveType = "" // for a loose ball by - but not handled by - for a corner by - and held by
+        )
+        {
+            if (token == null)
+            {
+                Debug.LogError("❌ LogEvent ERROR: token is NULL!");
+                return;
+            }
+            if (stats == null)
+            {
+                Debug.LogError("❌ LogEvent ERROR: stats is NULL!");
+                return;
+            }
+            if (MatchManager.Instance == null || MatchManager.Instance.gameData == null)
+            {
+                Debug.LogError("❌ LogEvent ERROR: MatchManager.Instance or gameData is NULL!");
+                return;
+            }
+            if (MatchManager.Instance.gameData.gameSettings == null)
+            {
+                Debug.LogError("❌ LogEvent ERROR: gameSettings is NULL!");
+                return;
+            }
+
+            string teamName = token.isHomeTeam ? MatchManager.Instance.gameData.gameSettings.homeTeamName 
+                                              : MatchManager.Instance.gameData.gameSettings.awayTeamName;
+
+            string logEntry = $"{token.name} ({teamName}) ";
+
+            // ✅ Ensure `connectedToken` isn't NULL before using it
+            if (connectedToken != null)
+            {
+                Debug.Log($"🔍 Connected Token Found: {connectedToken.name}");
+            }
+
+            PlayerStats playerStats = stats.GetPlayerStats(token.playerName);
+            PlayerStats connectedPlayerStats = connectedToken != null ? stats.GetPlayerStats(connectedToken.playerName) : null;
+            TeamStats teamStats = stats.GetTeamStats(token.isHomeTeam);
+            TeamStats connectedTeamStats = connectedToken != null ? stats.GetTeamStats(connectedToken.isHomeTeam) : null;
+
+
+            switch (actionType)
+            {
+                case ActionType.Move:
+                    logEntry += $"moves {value} paces";
+                    playerStats.pacesRan += value;
+                    teamStats.totalPacesRan += value;
+                    // TODO: convert to km :p
+                    break;
+                
+                case ActionType.PassAttempt:
+                    logEntry += "attempts a ground pass";
+                    playerStats.passesAttempted += value;
+                    teamStats.totalPassesAttempted += value;
+                    break;
+
+                case ActionType.PassCompleted:
+                    logEntry += "completes a ground pass";
+                    playerStats.passesCompleted += value;
+                    teamStats.totalPassesCompleted += value;
+                    break;
+
+                case ActionType.AerialPassAttempt:
+                    logEntry += "attempts an aerial pass";
+                    playerStats.aerialPassesAttempted += value;
+                    teamStats.totalAerialPassesAttempted += value;
+                    break;
+
+                case ActionType.AerialPassTargeted:
+                    logEntry += "accurate places an aerial pass";
+                    playerStats.aerialPassesTargeted += value;
+                    teamStats.totalAerialPassesTargeted += value;
+                    break;
+
+                case ActionType.AerialPassCompleted:
+                    logEntry += "completes an aerial pass";
+                    playerStats.aerialPassesCompleted += value;
+                    teamStats.totalAerialPassesCompleted += value;
+                    break;
+
+                case ActionType.InterceptionAttempt:
+                    logEntry += "attempts an interception";
+                    playerStats.interceptionsAttempted += value;
+                    teamStats.totalInterceptionsAttempted += value;
+                    break;
+
+                case ActionType.InterceptionSuccess:
+                    switch (recoveryType)
+                    {
+                        case "steal":
+                            logEntry += $"steals the ball from {connectedToken.name}";
+                            break;
+                        case "standard":
+                            logEntry += $"Intercepts a Standard Pass from {connectedToken.name}";
+                            break;
+                        case "ftp":
+                            logEntry += $"Intercepts a First-Time Pass from {connectedToken.name}";
+                            break;
+                    }
+                    playerStats.interceptionsMade += value;
+                    playerStats.possessionWon += value;
+                    connectedPlayerStats.possessionLost += value;
+                    teamStats.totalInterceptionsMade += value;
+                    teamStats.totalPossessionWon += value;
+                    connectedTeamStats.totalPossessionLost += value;
+                    break;
+
+                case ActionType.BallRecovery:
+                    logEntry += "wins possession";
+                    switch (recoveryType)
+                    {
+                        case "long":
+                            logEntry += $" after a Long Pass from {connectedToken.name}";
+                            break;
+                        case "high":
+                            logEntry += $" after an Inaccurate High Pass from {connectedToken.name}";
+                            break;
+                        case "freeheader":
+                            logEntry += $" after an Inaccurate High Pass from {connectedToken.name}";
+                            break;
+                        default:
+                            logEntry += $"Unknown recoveryType: {recoveryType}";
+                            break;
+                    }
+                    playerStats.possessionWon += value;
+                    teamStats.totalPossessionWon += value;
+                    break;
+
+                case ActionType.ShotAttempt:
+                    switch (shotType)
+                    {
+                        case "snap":
+                            logEntry += $"takes a Snapshot!";
+                            break;
+                        case "snapO":
+                            logEntry += $"takes a Snapshot! from outside the box";
+                            break;
+                        case "shot":
+                            logEntry += $"takes a SHOT!";
+                            break;
+                        case "shot0":
+                            logEntry += $"takes a SHOT! from outside the box";
+                            break;
+                        default:
+                            logEntry += $"Unknown ShotType";
+                            break;
+                    }
+                    playerStats.shotsAttempted += value;
+                    teamStats.totalShots += value;
+                    break;
+
+                case ActionType.ShotOnTarget:
+                    logEntry += "completes an attempt on target";
+                    playerStats.shotsOnTarget += value;
+                    teamStats.totalShotsOnTarget += value;
+                    break;
+
+                case ActionType.ShotBlocked:
+                    logEntry += "has a shot blocked";
+                    playerStats.shotsBlocked += value;
+                    teamStats.totalShotsBlocked += value;
+                    break;
+
+                case ActionType.ShotOffTarget:
+                    logEntry += "sends an attempt off target";
+                    playerStats.shotsOffTarget += value;
+                    teamStats.totalShotsOffTarget += value;
+                    break;
+
+                case ActionType.GoalScored:
+                    logEntry += "scores a goal! ⚽";
+                    playerStats.goals += value;
+                    teamStats.totalGoals += value;
+                    break;
+
+                case ActionType.AssistProvided:
+                    logEntry += "provides the assist for a goal! 🅰️";
+                    playerStats.assists += value;
+                    teamStats.totalAssists += value;
+                    break;
+
+                case ActionType.GroundDuelAttempt:
+                    logEntry += "engages in a ground duel";
+                    playerStats.groundDuelsInvolved += value;
+                    teamStats.totalGroundDuelsInvolved += value;
+                    connectedPlayerStats.groundDuelsInvolved += value;
+                    teamStats.totalGroundDuelsInvolved += value;
+                    connectedTeamStats.totalGroundDuelsInvolved += value;
+                    break;
+
+                case ActionType.GroundDuelWon:
+                    switch (tackleType)
+                    {
+                        case "successful":
+                            logEntry += $"successful tackle on {connectedToken.name}";
+                            break;
+                        case "nutmeg":
+                            logEntry += $"successful nutmeg on {connectedToken.name}";
+                            break;
+                        case "keep":
+                            logEntry += $"skips past {connectedToken.name}";
+                            break;
+                    }
+                    playerStats.groundDuelsWon += value;
+                    teamStats.totalGroundDuelsWon += value;
+                    break;
+
+                case ActionType.AerialChallengeAttempt:
+                    logEntry += "engages in an aerial challenge";
+                    playerStats.aerialChallengesInvolved += value;
+                    teamStats.totalAerialChallengesInvolved += value;
+                    connectedPlayerStats.aerialChallengesInvolved += value;
+                    connectedTeamStats.totalAerialChallengesInvolved += value;
+                    break;
+
+                case ActionType.AerialChallengeWon:
+                    logEntry += "wins an aerial challenge";
+                    playerStats.aerialChallengesWon += value;
+                    teamStats.totalAerialChallengesWon += value;
+                    break;
+
+                case ActionType.SaveAttempt:
+                    logEntry += "faces a shot";
+                    playerStats.attemptsFaced += value;
+                    break;
+
+                case ActionType.SaveMade:
+                    logEntry += "makes a save! 🧤";
+                    switch (saveType)
+                    {
+                        case "held":
+                            logEntry += "Saved and held!";
+                            playerStats.attemptsSaved += value;
+                            break;
+                        case "loose":
+                            logEntry += "Saved for a loose ball";
+                            playerStats.attemptsSaved += value;
+                            break;
+                        case "corner":
+                            logEntry += "Saved for corner Kick";
+                            playerStats.attemptsSaved += value;
+                            connectedTeamStats.totalCorners += value;
+                            break;
+                        default:
+                            logEntry = "UNKNOWN SAVETYPE";
+                            break;
+                    }
+                    teamStats.totalAttemptsSaved += value;
+                    break;
+
+                case ActionType.YellowCardShown:
+                    logEntry += $"is shown a Yellow Card 🟨 for something on {connectedToken.name}";
+                    playerStats.yellowCards += value;
+                    teamStats.totalYellowCards += value;
+                    break;
+
+                case ActionType.RedCardShown:
+                    logEntry += $"is Sent Off for something on {connectedToken.name}";
+                    playerStats.redCards += value;
+                    teamStats.totalRedCards += value;
+                    break;
+
+                case ActionType.Injured:
+                    logEntry += $"is Injured 🚑 by {connectedToken.name}";
+                    playerStats.injuries += value;
+                    teamStats.totalInjuries += value;
+                    break;
+
+                case ActionType.Substituted:
+                    logEntry += $"⬇️ Subbed off for ⬆️ {connectedToken.name}";
+                    teamStats.totalSubstiutions += value;
+                    break;
+
+                default:
+                    logEntry += "performs an unknown action";
+                    break;
+            }
+
+            gameLog.Add(logEntry);
+            Debug.Log("[Game Log] " + logEntry);
+        }
+
+        public List<string> GetGameLog()
+        {
+            return new List<string>(gameLog);
+        }
+    }
+
+    public enum ActionType
+    {
+        Move,
+        PassAttempt,
+        PassCompleted,
+        AerialPassAttempt,
+        AerialPassTargeted,
+        AerialPassCompleted,
+        InterceptionAttempt,
+        InterceptionSuccess,
+        ShotAttempt,
+        ShotOnTarget,
+        ShotBlocked,
+        ShotOffTarget,
+        GoalScored,
+        BallRecovery,
+        AssistProvided,
+        GroundDuelAttempt,
+        GroundDuelWon,
+        AerialChallengeAttempt,
+        AerialChallengeWon,
+        SaveAttempt,
+        YellowCardShown,
+        RedCardShown,
+        Injured,
+        Substituted,
+        SaveMade
+    }
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
     public enum TeamInAttack
@@ -149,6 +718,10 @@ public class MatchManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public PlayerTokenManager playerTokenManager;
     public GameData gameData;
+    // public PlayerToken LastTokenToTouchTheBallOnPurpose { get; private set; }
+    // public PlayerToken PreviousTokenToTouchTheBallOnPurpose { get; private set; }
+    public PlayerToken LastTokenToTouchTheBallOnPurpose;
+    public PlayerToken PreviousTokenToTouchTheBallOnPurpose;
     public int difficulty_level;
     public int refereeLeniency;
 
@@ -158,22 +731,28 @@ public class MatchManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("MatchManager Awake() - Starting Initialization");
+        Debug.Log($"⚠️ MatchManager Awake() - Instance ID: {GetInstanceID()}");
+        
         // Set up the singleton instance
         if (Instance == null)
         {
             Instance = this;
+            // DontDestroyOnLoad(gameObject); // Keep MatchManager persistent
         }
         else
         {
-            Destroy(gameObject); // Ensure there is only one MatchManager
+            Debug.LogWarning("⚠️ Duplicate MatchManager detected! Destroying new instance.");
+            Destroy(gameObject);
+            return;
         }
-        // Initialize gameData if it's not set already
-        gameData ??= new GameData();
     }
 
     IEnumerator Start()
     {
+        Debug.Log($"⚠️ MatchManager Start() - Instance ID: {GetInstanceID()}");
         LoadGameSettingsFromJson();
+        yield return new WaitUntil(() => gameData != null && gameData.rosters != null && gameData.rosters.home.Count > 10 && gameData.rosters.away.Count > 10);
         if (gameData != null && gameData.gameSettings != null)
         {
             difficulty_level = gameData.gameSettings.playerAssistance;
@@ -195,6 +774,28 @@ public class MatchManager : MonoBehaviour
         }
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
+        Debug.Log("⚠️ MatchManager Start() - Checking gameData...");
+        if (gameData == null)
+        {
+            Debug.LogWarning("⚠️ gameData was NULL in Start! Reinitializing...");
+            gameData = new GameData();
+        }
+
+        if (gameData.stats == null)
+        {
+            Debug.LogWarning("⚠️ gameData.stats was NULL in Start! Reinitializing...");
+            gameData.stats = new Stats();
+        }
+
+        if (gameData.gameLog == null)
+        {
+            Debug.LogWarning("⚠️ gameData.gameLog was NULL in Start! Reinitializing...");
+            gameData.gameLog = new GameLog(gameData.stats);  // Now `stats` is guaranteed to exist
+        }
+        Debug.Log($"🔍 Home Roster: {JsonConvert.SerializeObject(gameData.rosters.home, Formatting.Indented)}");
+        Debug.Log($"🔍 Away Roster: {JsonConvert.SerializeObject(gameData.rosters.away, Formatting.Indented)}");
+        Debug.Log($"🔍 GameLog: {JsonConvert.SerializeObject(gameData.gameLog, Formatting.Indented)}");
+        // Debug.Log($"✅ Final gameLog: {JsonUtility.ToJson(gameData.gameLog, true)}");
         // Initialize the match in the KickOffSetup state
         currentState = GameState.KickOffSetup;
         Debug.Log("Game initialized in KickOffSetup state.");
@@ -219,6 +820,14 @@ public class MatchManager : MonoBehaviour
         // }
     }
 
+    // public void PrintGameLog()
+    // {
+    //     Debug.Log("📜 Game Log Contents:");
+    //     foreach (string entry in gameData.gameLog)
+    //     {
+    //         Debug.Log(entry);
+    //     }
+    // }
     // Call this when players are fully instantiated
     public void NotifyPlayersInstantiated()
     {
@@ -232,6 +841,7 @@ public class MatchManager : MonoBehaviour
     public void StartMatch()
     {
         currentState = GameState.KickoffBlown;
+        LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team to call an action");
         // Logic to start the game, such as showing the ball, enabling inputs, etc.
@@ -519,7 +1129,22 @@ public class MatchManager : MonoBehaviour
             string json = File.ReadAllText(filePath);
 
             // Deserialize the JSON into the GameData class
-            gameData = JsonConvert.DeserializeObject<GameData>(json);
+            // gameData = JsonConvert.DeserializeObject<GameData>(json);
+            gameData = JsonConvert.DeserializeObject<GameData>(json) ?? new GameData();
+            if (gameData == null)
+            {
+                Debug.LogWarning("⚠️ gameData was NULL after loading JSON! Reinitializing...");
+                gameData = new GameData();
+            }
+            // Convert dictionary-based rosters to list-based rosters for JSON compatibility
+            if (gameData.rosters == null)
+            {
+                Debug.LogWarning("⚠️ gameData.rosters is NULL! Creating new rosters...");
+                gameData.rosters = new Rosters();
+            }
+            // Debugging after loading JSON
+            Debug.Log($"🔍 Loaded Home Roster: {JsonConvert.SerializeObject(gameData.rosters.home, Formatting.Indented)}");
+            Debug.Log($"🔍 Loaded Away Roster: {JsonConvert.SerializeObject(gameData.rosters.away, Formatting.Indented)}");
 
             if (gameData != null && gameData.gameSettings != null)
             {
@@ -544,13 +1169,53 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public bool IsPlayerInTeam(string playerName, bool isHomeTeam)
+    {
+        return isHomeTeam 
+            ? gameData.rosters.home.ContainsKey(playerName) 
+            : gameData.rosters.away.ContainsKey(playerName);
+    }
+    
+    public void SetLastToken(PlayerToken inputToken)
+    {
+        if (inputToken == null)
+        {
+            Debug.LogError("SetLastToken called with null token!");
+            return;
+        }
+
+        // If the input token is already the last token, do nothing
+        if (LastTokenToTouchTheBallOnPurpose == inputToken) return;
+
+        // If there's no last token, simply set it
+        if (LastTokenToTouchTheBallOnPurpose == null)
+        {
+            LastTokenToTouchTheBallOnPurpose = inputToken;
+            return;
+        }
+
+        // If the new token is a teammate of the last token
+        if (
+            LastTokenToTouchTheBallOnPurpose.isHomeTeam == inputToken.isHomeTeam
+        )
+        {
+            PreviousTokenToTouchTheBallOnPurpose = LastTokenToTouchTheBallOnPurpose;
+            LastTokenToTouchTheBallOnPurpose = inputToken;
+        }
+        else // New token is from the opposite team
+        {
+            PreviousTokenToTouchTheBallOnPurpose = null; // Reset previous token
+            LastTokenToTouchTheBallOnPurpose = inputToken;
+        }
+    }
+
     private void DebugGameSettings()
     {
         // Debug Game Settings
         if (gameData.gameSettings != null)
         {
             Debug.Log("Game Settings:");
-            Debug.Log(JsonConvert.SerializeObject(gameData.gameSettings, Formatting.Indented));
+            // Debug.Log(JsonConvert.SerializeObject(gameData.gameSettings, Formatting.Indented));
         }
         else
         {

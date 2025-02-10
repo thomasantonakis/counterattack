@@ -55,45 +55,45 @@ public class PlayerTokenManager : MonoBehaviour
         }
 
         // Subscribe to the OnGameSettingsLoaded event
-        matchManager.OnGameSettingsLoaded += InitializeTokens;
+        // matchManager.OnGameSettingsLoaded += InitializeTokens;
     }
-    private void OnDestroy()
-    {
-        var matchManager = FindObjectOfType<MatchManager>();
-        if (matchManager != null)
-        {
-            // Unsubscribe to avoid memory leaks
-            matchManager.OnGameSettingsLoaded -= InitializeTokens;
-        }
-    }
-    private void InitializeTokens()
-    {
-        Debug.Log("Game settings loaded. Initializing tokens...");
-        var matchManager = FindObjectOfType<MatchManager>();
-        if (matchManager == null || matchManager.gameData == null || matchManager.gameData.rosters == null)
-        {
-            Debug.LogError("MatchManager or rosters not found. Cannot initialize tokens.");
-            return;
-        }
+    // private void OnDestroy()
+    // {
+    //     var matchManager = FindObjectOfType<MatchManager>();
+    //     if (matchManager != null)
+    //     {
+    //         // Unsubscribe to avoid memory leaks
+    //         matchManager.OnGameSettingsLoaded -= InitializeTokens;
+    //     }
+    // }
+    // private void InitializeTokens()
+    // {
+    //     Debug.Log("Game settings loaded. Initializing tokens...");
+    //     var matchManager = FindObjectOfType<MatchManager>();
+    //     if (matchManager == null || matchManager.gameData == null || matchManager.gameData.rosters == null)
+    //     {
+    //         Debug.LogError("MatchManager or rosters not found. Cannot initialize tokens.");
+    //         return;
+    //     }
 
-        // Access the parsed home and away rosters directly
-        var homeRoster = matchManager.gameData.rosters.home;
-        var awayRoster = matchManager.gameData.rosters.away;
+    //     // Access the parsed home and away rosters directly
+    //     var homeRoster = matchManager.gameData.rosters.home;
+    //     var awayRoster = matchManager.gameData.rosters.away;
 
-        // TODO: Remove Debug
-        // Debug.Log("Initializing Home and Away Tokens:");
-        // foreach (var player in homeRoster)
-        // {
-        //     Debug.Log($"Home {player.Key}: {player.Value.name}");
-        //     // Call token creation methods as shown earlier
-        // }
+    //     // TODO: Remove Debug
+    //     // Debug.Log("Initializing Home and Away Tokens:");
+    //     // foreach (var player in homeRoster)
+    //     // {
+    //     //     Debug.Log($"Home {player.Key}: {player.Value.name}");
+    //     //     // Call token creation methods as shown earlier
+    //     // }
 
-        // foreach (var player in awayRoster)
-        // {
-        //     Debug.Log($"Away {player.Key}: {player.Value.name}");
-        //     // Call token creation methods as shown earlier
-        // }
-    }
+    //     // foreach (var player in awayRoster)
+    //     // {
+    //     //     Debug.Log($"Away {player.Key}: {player.Value.name}");
+    //     //     // Call token creation methods as shown earlier
+    //     // }
+    // }
     private IEnumerator InitializeTeamsAfterGridIsReady(int homeTeamCount, int awayTeamCount)
     {
         // Wait until the HexGrid has finished creating cells
