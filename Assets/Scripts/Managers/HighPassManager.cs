@@ -482,6 +482,7 @@ public class HighPassManager : MonoBehaviour
     {
         if (didGKMoveInDefPhase) return new List<HexCell>(); // GK already used their movement
         if (hexGrid.GetDefendingGK() == null) return new List<HexCell>(); // No defending GK exists
+        if (finalTargetHex.isInPenaltyBox == 0) return new List<HexCell>(); // Better not rush to Handle a HP outside the box :)
         HexCell gkHex = hexGrid.GetDefendingGK().GetCurrentHex();
         List<HexCell> reachableHexes = HexGridUtils.GetReachableHexes(hexGrid, gkHex, 3).Item1;
         List<HexCell> challengeHexes = HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2);
