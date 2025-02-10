@@ -22,6 +22,7 @@ public class GameInputManager : MonoBehaviour
     public ShotManager shotManager;
     public FinalThirdManager finalThirdManager;
     public KickoffManager kickoffManager;
+    public GoalKeeperManager goalKeeperManager;
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
@@ -174,6 +175,12 @@ public class GameInputManager : MonoBehaviour
             )
             {
                 StartCoroutine(HandleMouseInputForHPGKRush());
+            }
+            if (
+                goalKeeperManager.isWaitingForDefGKBoxMove
+            )
+            {
+                StartCoroutine(HandleMouseInputForGKBoxMovement());
             }
             if (
                     MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
@@ -767,6 +774,44 @@ public class GameInputManager : MonoBehaviour
                     yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
                     highPassManager.isWaitingForDefGKChallengeDecision = false;
                     headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
+                }
+                else
+                {
+                    Debug.LogWarning($"Cannot move GK there");
+                }
+            }
+            else {
+                Debug.Log("Raycast did not hit any collider.");
+                yield break;
+            }
+        }
+    }
+    public IEnumerator HandleMouseInputForGKBoxMovement()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            hexGrid.ClearHighlightedHexes();
+            Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
+            goalKeeperManager.isWaitingForDefGKBoxMove = false;
+            yield break;  
+        }
+        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+        {
+            Debug.Log("HandleMouseInputForGKBoxMovement called on click");
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                // Check if the ray hit a PlayerToken directly
+                // Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                // Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
+                {
+                    hexGrid.ClearHighlightedHexes();
+                    yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
+                    goalKeeperManager.isWaitingForDefGKBoxMove = false;
+                    Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
                 }
                 else
                 {

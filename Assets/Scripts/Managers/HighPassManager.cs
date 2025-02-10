@@ -15,6 +15,7 @@ public class HighPassManager : MonoBehaviour
     public OutOfBoundsManager outOfBoundsManager;
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
+    public GoalKeeperManager goalKeeperManager;
     [Header("Basic Selections")]
     public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
     public HexCell currentTargetHex;
@@ -422,6 +423,10 @@ public class HighPassManager : MonoBehaviour
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
+        if (goalKeeperManager.ShouldGKMove(targetHex))
+        {
+            yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+        }
         StartCoroutine(PostBallMovementHandling());
     }
 

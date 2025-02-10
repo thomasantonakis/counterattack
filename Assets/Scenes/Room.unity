@@ -438,6 +438,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 238722947}
   m_CullTransparentMesh: 1
+--- !u!1 &272854142
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 272854144}
+  - component: {fileID: 272854143}
+  m_Layer: 0
+  m_Name: GoalKeeperManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &272854143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272854142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810e2f98aa2c7495aa5d6eaaf528a5d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementPhaseManager: {fileID: 1390513032}
+  hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
+  isWaitingForDefGKBoxMove: 0
+--- !u!4 &272854144
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272854142}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 552.90485, y: 367.53717, z: -4.9973216}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 24
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &282559519
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,6 +739,7 @@ MonoBehaviour:
   shotManager: {fileID: 1740884027}
   finalThirdManager: {fileID: 1012232483}
   kickoffManager: {fileID: 282559520}
+  goalKeeperManager: {fileID: 272854143}
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   matchManager: {fileID: 622907910}
@@ -1045,6 +1094,66 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
   playerTokenManager: {fileID: 501380953}
+  gameData:
+    gameSettings:
+      gameMode: 
+      homeTeamName: 
+      awayTeamName: 
+      homeKit: 
+      awayKit: 
+      playerAssistance: 0
+      matchType: 
+      ballColor: 
+      draft: 
+      gkDraft: 
+      halfDuration: 0
+      numberOfHalfs: 0
+      tiebreaker: 
+      referee: 
+      weatherConditions: 
+      includeTabletopia: 0
+      includeNonTabletopia: 0
+      includeInternationals: 0
+      includeTabletopiaGK: 0
+      includeNonTabletopiaGK: 0
+      includeInternationalsGK: 0
+      squadSize: 0
+    stats:
+      playerStats: []
+      homeTeamStats:
+        totalGoals: 0
+        totalShots: 0
+        totalShotsOnTarget: 0
+        totalShotsBlocked: 0
+        totalShotsOffTarget: 0
+        totalPassesAttempted: 0
+        totalPassesCompleted: 0
+        totalAerialPassesAttempted: 0
+        totalAerialPassesTargeted: 0
+        totalAerialPassesCompleted: 0
+        totalPacesRan: 0
+        totalGroundDuelsInvolved: 0
+        totalGroundDuelsWon: 0
+        totalInterceptions: 0
+        totalAerialChallengesInvolved: 0
+        totalAerialChallengesWon: 0
+      awayTeamStats:
+        totalGoals: 0
+        totalShots: 0
+        totalShotsOnTarget: 0
+        totalShotsBlocked: 0
+        totalShotsOffTarget: 0
+        totalPassesAttempted: 0
+        totalPassesCompleted: 0
+        totalAerialPassesAttempted: 0
+        totalAerialPassesTargeted: 0
+        totalAerialPassesCompleted: 0
+        totalPacesRan: 0
+        totalGroundDuelsInvolved: 0
+        totalGroundDuelsWon: 0
+        totalInterceptions: 0
+        totalAerialChallengesInvolved: 0
+        totalAerialChallengesWon: 0
   difficulty_level: 2
   refereeLeniency: 0
 --- !u!4 &622907911
@@ -1450,6 +1559,7 @@ MonoBehaviour:
   outOfBoundsManager: {fileID: 1326402186}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
+  goalKeeperManager: {fileID: 272854143}
 --- !u!1 &757768960
 GameObject:
   m_ObjectHideFlags: 0
@@ -3327,6 +3437,7 @@ MonoBehaviour:
   outOfBoundsManager: {fileID: 1326402186}
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
+  goalKeeperManager: {fileID: 272854143}
   lockedAttacker: {fileID: 0}
   currentTargetHex: {fileID: 0}
   lastClickedHex: {fileID: 0}

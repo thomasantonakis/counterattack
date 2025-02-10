@@ -13,6 +13,7 @@ public class LongBallManager : MonoBehaviour
     public OutOfBoundsManager outOfBoundsManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
+    public GoalKeeperManager goalKeeperManager;
     [Header("Flags")]
     private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     private bool isDangerous = false;  // Flag for difficult pass
@@ -299,6 +300,10 @@ public class LongBallManager : MonoBehaviour
         }
         else
         {
+            if (goalKeeperManager.ShouldGKMove(targetHex))
+            {
+                yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+            }
             Debug.Log("Ball landed within bounds.");
             if (targetHex.isDefenseOccupied)
             {
