@@ -137,6 +137,10 @@ public class HighPassManager : MonoBehaviour
                 intendedTargetHex = clickedHex; // Save the intended target hex
                 isWaitingForConfirmation = false;  // Confirmation is done, allow token selection
                 selectedToken = null;  // Clear selected token to avoid auto-selecting the attacker on the target
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                    , MatchManager.ActionType.AerialPassAttempt
+                );
 
                 if (!isCornerKick)
                 {
@@ -316,6 +320,7 @@ public class HighPassManager : MonoBehaviour
             Debug.Log($"High Pass is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
             finalTargetHex = intendedTargetHex;
+            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassTargeted);
             StartCoroutine(HandleHighPassMovement(finalTargetHex));
             MatchManager.Instance.currentState = MatchManager.GameState.HighPassCompleted;
             ResetHighPassRolls();  // Reset flags to finish long pass
@@ -441,6 +446,7 @@ public class HighPassManager : MonoBehaviour
         }
         else
         {
+            MatchManager.Instance.hangingPassType = "aerial";
             Debug.Log("Ball landed within bounds.");
             // Check if the defending GK can challenge
             gkReachableHexes = CanDefendingGKChallenge();
@@ -492,7 +498,6 @@ public class HighPassManager : MonoBehaviour
 
     public void HighlightHighPassArea(HexCell targetHex)
     {
-        // TODO
         hexGrid.ClearHighlightedHexes();
         if (targetHex == null)
         {
@@ -543,7 +548,6 @@ public class HighPassManager : MonoBehaviour
 
     public void HighlightAllValidHighPassTargets()
     {
-        // TODO
         // Clear the previous highlights
         hexGrid.ClearHighlightedHexes();
 

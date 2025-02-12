@@ -310,7 +310,7 @@ public class MovementPhaseManager : MonoBehaviour
         return isValid;
     }
 
-    public IEnumerator MoveTokenToHex(HexCell targetHex, PlayerToken token = null, bool isCalledDuringMovement = true)
+    public IEnumerator MoveTokenToHex(HexCell targetHex, PlayerToken token = null, bool isCalledDuringMovement = true, bool shouldCountForDistance = true)
     {
         PlayerToken movingToken = token ?? selectedToken;
         if (movingToken == null)
@@ -348,7 +348,7 @@ public class MovementPhaseManager : MonoBehaviour
             isDribblerRunning = true;
         }
         // Start the token movement across the hexes in the path
-        yield return StartCoroutine(MoveTokenAlongPath(movingToken, path));
+        yield return StartCoroutine(MoveTokenAlongPath(movingToken, path, shouldCountForDistance));
         if (!isCalledDuringMovement) {yield break;}
         if (targetHex == ballHex)
         {
@@ -504,7 +504,6 @@ public class MovementPhaseManager : MonoBehaviour
     private void ContinueDribblerMovement()
     {
         nutmeggableDefenders = GetNutmeggableDefenders(selectedToken, hexGrid); // TODO: What the fuck is this doing here?
-        // TODO: method to identify if dribbler is in opponent's Penalty Box
         bool isDribblerinOppPenBox = IsDribblerinOpponentPenaltyBox(selectedToken);
         if (isDribblerinOppPenBox)
         {
@@ -535,7 +534,7 @@ public class MovementPhaseManager : MonoBehaviour
     }
 
     // Coroutine to move the token one hex at a time
-    private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path)
+    private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path, bool shouldCountForDistance = true)
     {
         isPlayerMoving = true;  // Player starts moving
         // Get the current Y position of the token (to maintain it during the movement)
@@ -571,6 +570,8 @@ public class MovementPhaseManager : MonoBehaviour
                     Vector3 ballPosition = new Vector3(token.transform.position.x, ball.playerHeightOffset, token.transform.position.z);
                     ball.transform.position = ballPosition;  // Move the ball along with the token
                 }
+                // TODO: Check if the ball with the dribbler entered the box, to offer the defGK a movement
+                // Log that this was offered to never offer it again
                 yield return null;  // Wait for the next frame
             }
             // Update the token's hex after reaching the next hex
@@ -601,6 +602,13 @@ public class MovementPhaseManager : MonoBehaviour
         {
             MatchManager.Instance.UpdatePossessionAfterPass(finalHex);
             isBallPickable = false;
+        }
+        if (shouldCountForDistance) {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                token
+                , MatchManager.ActionType.Move
+                , value: path.Count
+            );
         }
         // Clear highlighted hexes after movement is completed
         hexGrid.ClearHighlightedHexes();

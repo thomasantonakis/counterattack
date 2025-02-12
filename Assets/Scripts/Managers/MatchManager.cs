@@ -475,6 +475,12 @@ public class MatchManager : MonoBehaviour
                         case "ftp":
                             logEntry += $"Intercepts a First-Time Pass from {connectedToken.name}";
                             break;
+                        case "headedpass":
+                            logEntry += $"Intercepts a headed Pass from {connectedToken.name}";
+                            break;
+                        case "long":
+                            logEntry += $"Intercepts a Long Pass from {connectedToken.name}";
+                            break;
                     }
                     playerStats.interceptionsMade += value;
                     playerStats.possessionWon += value;
@@ -496,6 +502,9 @@ public class MatchManager : MonoBehaviour
                             break;
                         case "freeheader":
                             logEntry += $" after an Inaccurate High Pass from {connectedToken.name}";
+                            break;
+                        case "header":
+                            logEntry += $" on the air from {connectedToken.name}";
                             break;
                         default:
                             logEntry += $"Unknown recoveryType: {recoveryType}";
@@ -585,7 +594,7 @@ public class MatchManager : MonoBehaviour
                     break;
 
                 case ActionType.AerialChallengeAttempt:
-                    logEntry += "engages in an aerial challenge";
+                    logEntry += $"engages in an aerial challenge with {connectedToken.name}";
                     playerStats.aerialChallengesInvolved += value;
                     teamStats.totalAerialChallengesInvolved += value;
                     connectedPlayerStats.aerialChallengesInvolved += value;
@@ -593,7 +602,7 @@ public class MatchManager : MonoBehaviour
                     break;
 
                 case ActionType.AerialChallengeWon:
-                    logEntry += "wins an aerial challenge";
+                    logEntry += "wins an aerial challenge" + ((connectedToken!= null) ? $"from {connectedToken.name}" : "");
                     playerStats.aerialChallengesWon += value;
                     teamStats.totalAerialChallengesWon += value;
                     break;
@@ -722,6 +731,7 @@ public class MatchManager : MonoBehaviour
     // public PlayerToken PreviousTokenToTouchTheBallOnPurpose { get; private set; }
     public PlayerToken LastTokenToTouchTheBallOnPurpose;
     public PlayerToken PreviousTokenToTouchTheBallOnPurpose;
+    public string hangingPassType;
     public int difficulty_level;
     public int refereeLeniency;
 
@@ -1242,11 +1252,9 @@ public class MatchManager : MonoBehaviour
             // foreach (var player in gameData.rosters.away)
             // {
             //     Debug.Log($"Jersey {player.Key}: {player.Value.name}");
-            //     // TODO: Add everything here
             //     Debug.Log($"Attributes: Pace: {player.Value.pace}, Dribbling: {player.Value.dribbling}, HighPass: {player.Value.highPass}, Resilience: {player.Value.resilience}");
             //     if (player.Value.aerial > 0 || player.Value.saving > 0 || player.Value.handling > 0)
             //     {
-            //         // TODO: Add everything here
             //         Debug.Log($"(Goalkeeper) Aerial: {player.Value.aerial}, Saving: {player.Value.saving}, Handling: {player.Value.handling}");
             //     }
             // }

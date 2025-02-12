@@ -152,14 +152,16 @@ public class GroundBallManager : MonoBehaviour
 
                     await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
                     imposedDistance = 11;
-                    finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
+                    finalThirdManager.TriggerFinalThirdPhase();
                     if (clickedHex.isAttackOccupied)
                     {
                         MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
                     }
-                    else {
+                    else
+                    {
+                        MatchManager.Instance.hangingPassType = "ground";
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
                     }
                 }
@@ -198,9 +200,12 @@ public class GroundBallManager : MonoBehaviour
                     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
                     if (clickedHex.isAttackOccupied)
                     {
+                        MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted); // Log CompletedPass
+                        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
                     }
                     else {
+                        MatchManager.Instance.hangingPassType = "ground";
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
                     }
                 }
@@ -384,7 +389,7 @@ public class GroundBallManager : MonoBehaviour
                 Debug.LogError($"No PlayerToken found on defender's hex at {currentDefenderHex.coordinates}. This should not happen.");
                 return;
             }
-            Debug.Log($"Dice roll by {defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates}: {diceRoll}");
+            Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
             MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
             // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
             isWaitingForDiceRoll = false;
@@ -392,14 +397,20 @@ public class GroundBallManager : MonoBehaviour
             if (diceRoll == 6 || diceRoll + defenderToken.tackling >= 10)
             {
                 // Defender successfully intercepts the pass
-                Debug.Log($"Pass intercepted by {defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates}!");
-                MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionSuccess, recoveryType: "standard");
+                Debug.Log($"Pass intercepted by {defenderToken.name} at {currentDefenderHex.coordinates}!");
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    defenderToken
+                    , MatchManager.ActionType.InterceptionSuccess
+                    , recoveryType: "standard"
+                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                );
+                MatchManager.Instance.SetLastToken(defenderToken);
                 StartCoroutine(HandleBallInterception(currentDefenderHex));
                 ResetGroundPassInterceptionDiceRolls();
             }
             else
             {
-                Debug.Log($"{defenderToken.jerseyNumber}. {defenderToken.playerName} at {currentDefenderHex.coordinates} failed to intercept.");
+                Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
                 // Move to the next defender, if any
                 defendingHexes.Remove(currentDefenderHex);
                 if (defendingHexes.Count > 0)
@@ -423,11 +434,12 @@ public class GroundBallManager : MonoBehaviour
                     MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
                     if (currentTargetHex.isAttackOccupied)
                     {
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
                         MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted); // Log CompletedPass
                         MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
+                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
                     }
                     else {
+                        MatchManager.Instance.hangingPassType = "ground";
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
                     }
                 }

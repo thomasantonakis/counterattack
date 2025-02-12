@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class HeaderManager : MonoBehaviour
@@ -81,7 +82,7 @@ public class HeaderManager : MonoBehaviour
             Debug.Log("No players eligible to head the ball. Ball drops to the ground.");
             movementPhaseManager.ResetMovementPhase();
             MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
-            // TODO: start movement phase
+            // TODO: Log Appropriately
         }
         else if (!hasEligibleAttackers)
         {
@@ -293,21 +294,40 @@ public class HeaderManager : MonoBehaviour
         // **Scenario: Only Attackers are Jumping**
         if (attackerWillJump.Count > 0 && defenderWillJump.Count == 0)
         {
+            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
             if (offeredControl) 
             {
+                MatchManager.Instance.SetLastToken(attackerWillJump[0]); // Pick the first attacker that was selected as the header winner and passer
                 Debug.Log("Attackers win the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
+                // TODO: Check if this is a Shot or a pass
+                if (true)
+                {
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.PassAttempt
+                    );
+                }
+                else
+                {
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.ShotAttempt
+                    );
+                }
                 yield return WaitForHeaderTargetSelection();
             }
             else
             {
+                
                 Debug.Log("No defenders wished to jump. Click on one of the eligible Attackers again and then we'll offer again the option for a free header (H) or bring the ball down (B).");
                 // wait for a click on one of the attackers in attEligibleToHead and passthem as the token who WON the challenge
                 attackerWillJump.Clear();
                 if (attEligibleToHead.Count == 1)
                 {
                     challengeWinner = attEligibleToHead[0];
+                    MatchManager.Instance.SetLastToken(challengeWinner);
                 }
                 else
                 {
@@ -322,6 +342,19 @@ public class HeaderManager : MonoBehaviour
         if (attackerWillJump.Count == 0 && defenderWillJump.Count > 0)
         {
             Debug.Log("Only defenders are jumping. Defense wins the header automatically. Switching possession.");
+            // TODO: Sort defenderWillJump by desc header, and then by distance from the ball asc
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                defenderWillJump[0]
+                , MatchManager.ActionType.BallRecovery
+                , recoveryType: "freeheader"
+                , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+            );
+            MatchManager.Instance.SetLastToken(defenderWillJump[0]); // Add the first (and maybe only) Defender Token as the one that took the header.
+            // TODO: Check if this is a Shot or a pass
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                , MatchManager.ActionType.PassAttempt
+            );
             matchManager.ChangePossession();
             HighlightHexesForHeader(ball.GetCurrentHex(), 6);
             yield return WaitForHeaderTargetSelection();
@@ -405,6 +438,8 @@ public class HeaderManager : MonoBehaviour
                 ) // Closest token to the ball first
                 .First(); // random?
 
+            MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeAttempt, connectedToken: bestDefender);
+
             int bestAttackerScore = tokenScores[bestAttacker].totalScore;
             int bestAttackerRoll = tokenScores[bestAttacker].roll;
             Debug.Log($"Best Attacker: {bestAttacker.name} with a score of {bestAttackerScore} (roll = {bestAttackerRoll})");
@@ -414,17 +449,22 @@ public class HeaderManager : MonoBehaviour
 
             if (bestAttackerScore > bestDefenderScore)
             {
-                // TODO: Check if it is a header at goal and if it is a roll of 1
-                Debug.Log("Attack wins the header. Highlighting target hexes.");
+                Debug.Log($"{bestAttacker.name} (Attack) wins the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
+                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
+                MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestDefender);
+                MatchManager.Instance.SetLastToken(bestAttacker);
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
                 yield return WaitForHeaderTargetSelection();
             }
             else if (bestDefenderScore > bestAttackerScore)
             {
+                MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestAttacker);
+                MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.BallRecovery, recoveryType: "header", connectedToken: bestAttacker);
+                MatchManager.Instance.SetLastToken(bestDefender);
                 if (!bestDefender.IsGoalKeeper)
                 {
-                    Debug.Log("Defense wins the header. Switching possession.");
+                    Debug.Log($"{bestDefender.name} (Defense) wins the header. Switching possession. Click on a Highlighted Hex to play a Headed Pass.");
                     MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
                     matchManager.ChangePossession();
                     HighlightHexesForHeader(ball.GetCurrentHex(), 6);
@@ -435,7 +475,7 @@ public class HeaderManager : MonoBehaviour
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(bestDefender.GetCurrentHex())); // Move the ball to the GK's Hex
                     MatchManager.Instance.ChangePossession();
                     yield return null;
-                    Debug.Log($"{bestDefender.name} Wins the Aerial Challenge! Press [Q]uickThrow, or [K] to activate Final Thirds");
+                    Debug.Log($"GK {bestDefender.playerName} Wins the Aerial Challenge! Press [Q]uickThrow, or [K] to activate Final Thirds");
                     isWaitingForSaveandHoldScenario = true;
                     while (isWaitingForSaveandHoldScenario)
                     {
@@ -460,6 +500,8 @@ public class HeaderManager : MonoBehaviour
             }
             else if (bestDefenderScore == bestAttackerScore)
             {
+                MatchManager.Instance.hangingPassType = "aerial";
+                // MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
                 StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, "header"));
                 Debug.Log("Loose ball from header challenge.");
             }
@@ -494,6 +536,7 @@ public class HeaderManager : MonoBehaviour
                     else
                     { 
                         challengeWinner = inferredTokenFromClick;
+                        MatchManager.Instance.SetLastToken(challengeWinner);
                         challengeWinnerIsSelected = true;
                         Debug.Log($"{challengeWinner.name} has been selected as the header challenge winner.");
                     }
@@ -596,12 +639,31 @@ public class HeaderManager : MonoBehaviour
                     // TODO: Handle Click On Token or Ball Properly to infer the Hex
                     if (clickedHex != null && !clickedHex.isDefenseOccupied)
                     {
+                        if (true)
+                        {
+                            MatchManager.Instance.gameData.gameLog.LogEvent(
+                                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                                , MatchManager.ActionType.PassAttempt
+                            );
+                        }
+                        else
+                        {
+                            MatchManager.Instance.gameData.gameLog.LogEvent(
+                                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                                , MatchManager.ActionType.ShotAttempt
+                            );
+                        }
                         yield return StartCoroutine(ball.MoveToCell(clickedHex));
                         Debug.Log($"Ball moved to {clickedHex.coordinates}");
                         hexGrid.ClearHighlightedHexes();
                         if (clickedHex.isAttackOccupied)
                         {
                             MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToPlayer;
+                            MatchManager.Instance.gameData.gameLog.LogEvent(
+                                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                                , MatchManager.ActionType.PassCompleted
+                            );
+                            MatchManager.Instance.SetLastToken(clickedHex.GetOccupyingToken());
                             matchManager.UpdatePossessionAfterPass(clickedHex);
                             ball.AdjustBallHeightBasedOnOccupancy();
                             finalThirdManager.TriggerFinalThirdPhase();
@@ -660,13 +722,14 @@ public class HeaderManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("No defenders eligible for interception. Header goes without interception. Should not appear");
+                Debug.LogError("No defenders eligible for interception. Header goes without interception. Should not appear");
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
             }
         }
         else
         {
             Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
+            MatchManager.Instance.hangingPassType = "ground";
             MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
         }
     }
@@ -695,11 +758,19 @@ public class HeaderManager : MonoBehaviour
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;
             Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");
+            MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
 
             if (diceRoll == 6 || totalInterceptionScore >= 10)
             {
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
                 isWaitingForInterceptionRoll = false;
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    defenderToken
+                    , MatchManager.ActionType.InterceptionSuccess
+                    , recoveryType: "headedpass"
+                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                );
+                MatchManager.Instance.SetLastToken(defenderToken);
                 // Move the ball to the defender's hex and change possession
                 yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();
@@ -718,6 +789,7 @@ public class HeaderManager : MonoBehaviour
 
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("All defenders failed to intercept. Ball remains at the landing hex.");
+        MatchManager.Instance.hangingPassType = "ground";
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
         finalThirdManager.TriggerFinalThirdPhase();
     }

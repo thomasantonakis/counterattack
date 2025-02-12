@@ -100,6 +100,7 @@ public class FirstTimePassManager : MonoBehaviour
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
                 Debug.Log("First-Time Pass target confirmed. Waiting for movement phases.");
+                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassAttempt); // Log CompletedPass
                 MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassAttackerMovement;
                 StartAttackerMovementPhase();  // Allow attacker to move 1 hex
             }
@@ -322,6 +323,15 @@ public class FirstTimePassManager : MonoBehaviour
         else
         {
             Debug.Log("No interception chance. Moving ball to target hex.");
+            if (currentTargetHex.isAttackOccupied)
+            {
+                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted);
+                MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
+            }
+            else
+            {
+                MatchManager.Instance.hangingPassType = "ground";
+            }
             yield return StartCoroutine(HandleGroundBallMovement(currentTargetHex));
             MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
             MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
@@ -369,13 +379,13 @@ public class FirstTimePassManager : MonoBehaviour
                 // Retrieve defender attributes
                 PlayerToken defenderToken = currentDefenderEntry.defender;
                 int tackling = defenderToken.tackling;
-                string defenderName = defenderToken.playerName;
-                int jerseyNumber = defenderToken.jerseyNumber;
+                // string defenderName = defenderToken.playerName;
+                // int jerseyNumber = defenderToken.jerseyNumber;
 
                 // Roll the dice
                 // int diceRoll = Random.Range(1, 7);
                 int diceRoll = 4;
-                Debug.Log($"Dice roll by {jerseyNumber}. {defenderName} at {currentDefenderHex.coordinates}: {diceRoll}");
+                Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
 
                 // Calculate interception conditions
                 bool isCausingInvalidity = currentDefenderEntry.isCausingInvalidity;
@@ -384,13 +394,20 @@ public class FirstTimePassManager : MonoBehaviour
 
                 if (successfulInterception)
                 {
-                    Debug.Log($"Pass intercepted by {jerseyNumber}. {defenderName} at {currentDefenderHex.coordinates}!");
+                    Debug.Log($"Pass intercepted by {defenderToken.name} at {currentDefenderHex.coordinates}!");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        defenderToken
+                        , MatchManager.ActionType.InterceptionSuccess
+                        , recoveryType: "ftp"
+                        , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                    );
+                    MatchManager.Instance.SetLastToken(defenderToken);
                     StartCoroutine(HandleBallInterception(currentDefenderHex));
                     ResetFTPInterceptionDiceRolls(); // Reset interception process
                 }
                 else
                 {
-                    Debug.Log($"{jerseyNumber}. {defenderName} at {currentDefenderHex.coordinates} failed to intercept.");
+                    Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
 
                     // Remove this defender and move to the next
                     onPathDefendersList.Remove(currentDefenderEntry);
@@ -406,6 +423,15 @@ public class FirstTimePassManager : MonoBehaviour
                     {
                         // No more defenders, pass is successful
                         Debug.Log("Pass successful! No more defenders to roll.");
+                        if (currentTargetHex.isAttackOccupied)
+                        {
+                            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted);
+                            MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
+                        }
+                        else
+                        {
+                            MatchManager.Instance.hangingPassType = "ground";
+                        }
                         StartCoroutine(HandleGroundBallMovement(currentTargetHex));
                         MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
                         MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;

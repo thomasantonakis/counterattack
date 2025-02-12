@@ -97,6 +97,7 @@ public class LongBallManager : MonoBehaviour
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
             {
                 Debug.Log("Long Ball confirmed by second click. Waiting for accuracy roll.");
+                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassAttempt);
                 isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
             }
             else
@@ -205,6 +206,7 @@ public class LongBallManager : MonoBehaviour
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
             StartCoroutine(HandleLongBallMovement(clickedHex));
+            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassTargeted);
             MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
             ResetLongPassRolls();  // Reset flags to finish long pass
         }
@@ -308,6 +310,12 @@ public class LongBallManager : MonoBehaviour
             if (targetHex.isDefenseOccupied)
             {
                 // Ball Landed directly on a Defender
+                MatchManager.Instance.gameData.gameLog.LogEvent(targetHex.GetOccupyingToken()
+                    , MatchManager.ActionType.BallRecovery
+                    , recoveryType: "long"
+                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                );
+                MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
@@ -317,6 +325,8 @@ public class LongBallManager : MonoBehaviour
             {
                 // Ball has landed on an attacker 
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
+                MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
                 MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
                 finalThirdManager.TriggerFinalThirdPhase();
             }
@@ -368,12 +378,14 @@ public class LongBallManager : MonoBehaviour
             {
                 Debug.Log("No defenders eligible for interception. Ball lands without interception. Number one");
                 MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
+                MatchManager.Instance.hangingPassType = "aerial";
             }
         }
         else
         {
             Debug.Log("Landing hex is not in any defender's ZOI. No interception needed. Number two ");
             MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
+            MatchManager.Instance.hangingPassType = "aerial";
         }
     }
 
@@ -400,11 +412,19 @@ public class LongBallManager : MonoBehaviour
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;
             Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");
+            MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
 
             if (diceRoll == 6 || totalInterceptionScore >= 10)
             {
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
                 isWaitingForInterceptionRoll = false;
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    defenderToken
+                    , MatchManager.ActionType.InterceptionSuccess
+                    , recoveryType: "long"
+                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                );
+                MatchManager.Instance.SetLastToken(defenderToken);
                 // Move the ball to the defender's hex and change possession
                 yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();

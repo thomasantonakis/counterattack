@@ -266,7 +266,7 @@ public class GoalFlowManager : MonoBehaviour
             assignedHexes.Add(targetHex); // Mark this hex as taken
             Debug.Log($"[GoalFlow] Moving {players[i].name} to Hex {targetHexes[i].coordinates}");
             // Start moving everyone at the same time
-            Coroutine moveCoroutine = StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHexes[i], players[i], false));
+            Coroutine moveCoroutine = StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHexes[i], players[i], false, false));
             movementCoroutines.Add(moveCoroutine);
         }
         // Wait for all coroutines to finish before moving forward
