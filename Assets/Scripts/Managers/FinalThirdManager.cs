@@ -122,7 +122,8 @@ public class FinalThirdManager : MonoBehaviour
             yield break;
         }
         forfeitWasPressed = false; // ✅ Allow listening for forfeit
-        // Debug.Log($"Final Third Moves - {currentTeamMoving} Team Moving, currentMovableTokens has {currentMovableTokens.Count} items"); // TODO: Make this more informative.
+        // // TODO: Make this more informative.
+        // Debug.Log($"Final Third Moves - {currentTeamMoving} Team Moving, currentMovableTokens has {currentMovableTokens.Count} items");
         while (currentMovableTokens.Count > 0)
         {
             isWaitingForTargetHex = false;
@@ -173,7 +174,8 @@ public class FinalThirdManager : MonoBehaviour
         }
         if (!eligibleTokens.Contains(token))
         {
-            Debug.Log("This is not an eligible Player"); // TODO, check which Token was clicked and provide relevant Message
+            // TODO, check which Token was clicked and provide relevant Message
+            Debug.Log("This is not an eligible Player");
             selectedToken = null; 
             isWaitingForTargetHex = false;
             isWaitingForTokenSelection = true;
@@ -230,9 +232,8 @@ public class FinalThirdManager : MonoBehaviour
             Debug.LogWarning("Invalid move! You cannot land on the Ball's ZOI as it is held by the  attacking GK.");
             yield break;
         }
-        // TODO: Check if the clicked token is one of hghlighted reachable Hexes
         isWaitingForTargetHex = false;
-        // Prevent duplicate movement**
+        // Prevent duplicate movement
         PlayerToken movingToken = selectedToken;
         movedTokens.Add(selectedToken);
         // eligibleTokens.Remove(selectedToken);

@@ -32,8 +32,6 @@ public class OutOfBoundsManager : MonoBehaviour
         // Handle based on out-of-bounds type
         switch (outOfBoundsSide)
         {
-            // TODO: Differentiate LeftGoal to LeftGoalLine or LeftGOAL!!
-            // TODO: Differentiate RightGoal to RightGoalLine or RightGOAL!!
             case "LeftGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Left Side.");
                 StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source));
@@ -89,7 +87,6 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private string DetermineOutOfBoundsSide(HexCell lastInboundsHex, int directionIndex, string source)
     {
-        // TODO: Use source to determine if the ball goes into the GOAL
         if ((directionIndex == 1 || directionIndex == 2) && lastInboundsHex.coordinates.x == -18)
         {
             if (source == "inaccuracy" || Mathf.Abs(lastInboundsHex.coordinates.z) > 3) 
@@ -148,7 +145,6 @@ public class OutOfBoundsManager : MonoBehaviour
     
     public IEnumerator HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
     {
-        // TODO: Use Source to decide if it is a GoalKick or a Corner
         // Get the attacking team's direction
         MatchManager.TeamAttackingDirection attackingDirection;
         if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)

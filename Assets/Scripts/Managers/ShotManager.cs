@@ -100,7 +100,7 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log("Shooter is OUTSIDE the penalty box. -1 to shot power.");
                 Debug.Log("Goalkeeper can move 1 hex");
-                // TODO: Implement Goalkeeper movement
+                // TODO: Implement Goalkeeper movement for the Box in case of a Shot from outside the box
             }
             HandleTargetSelection();
         }
@@ -367,7 +367,6 @@ public class ShotManager : MonoBehaviour
                                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll}, that's a GOAL!!");
                                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                                 goalFlowManager.StartGoalFlow(shooter);
-                                // TODO: Implement Goal scoring
                                 ResetShotProcess();
                             }
                         }
@@ -393,6 +392,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForShotRoll = false;
         totalShotPower = shooterRoll + shooter.shooting;
         boxPenalty = shooter.GetCurrentHex().isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
+        // TODO: dificult shooting position penalty
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         if (shotType == "snapshot") totalShotPower -= 1; 
         if (shooter.GetCurrentHex().isInPenaltyBox == 0) totalShotPower -= 1;
@@ -407,7 +407,6 @@ public class ShotManager : MonoBehaviour
             if (shooterRoll == 1)
             {
                 Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
-                // TODOL Throw the ball out!
                 yield return StartCoroutine(ShootOffTargetRandomizer());
                 // TODO: Implement GoalKick
             }
@@ -511,7 +510,6 @@ public class ShotManager : MonoBehaviour
                   Debug.Log("GK Decided to activate F3 Moves");
                   MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
                   finalThirdManager.TriggerFinalThirdPhase(true);
-                  // TODO: Implement Trigger Final Thirds, with a parameter -1,1 or 0 for both?
                   yield break;
               }
               yield return null;  // Wait for the next frame
@@ -565,7 +563,6 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator FailedLob()
     {
-        // TODO: find the target hex that connects shooter, targethex and has a x of 22 or -22
         HexCell shooterHex = shooter.GetCurrentHex();
         int targetX = 22 * (shooterHex.coordinates.x > 0 ? 1 : -1);
         float slope = (float)(targetHex.coordinates.z - shooterHex.coordinates.z) /
@@ -577,7 +574,7 @@ public class ShotManager : MonoBehaviour
     
     private IEnumerator NextToBar()
     {
-        // TODO: find the target hex that connects shooter, targethex and has a x of 22 or -22
+        // TODO: Shoot right next to the bar
         HexCell shooterHex = shooter.GetCurrentHex();
         int targetX = 20 * (shooterHex.coordinates.x > 0 ? 1 : -1);
         int shooterz = shooterHex.coordinates.z;

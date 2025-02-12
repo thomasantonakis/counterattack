@@ -93,9 +93,8 @@ public class Ball : MonoBehaviour
         bool isOutOfBounds = newHex.isOutOfBounds;
         // Adjust speed based on shot roll
         float baseSpeed = 3.0f;  // Default ball speed
-        float speedMultiplier = 0.5f;  // Scaling factor for shot power influence
+        float speedMultiplier = 3.5f;  // Scaling factor for shot power influence
         float adjustedSpeed = roll.HasValue ? baseSpeed + (roll.Value * speedMultiplier) : baseSpeed;
-
 
         targetCell = newHex;
         isMoving = true;
