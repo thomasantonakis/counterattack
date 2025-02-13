@@ -163,6 +163,12 @@ public class HexCell : MonoBehaviour
 
     public Vector3[] GetHexCorners()
     {
+        // [0] SE
+        // [1] E
+        // [2] NE
+        // [3] NW
+        // [4] W
+        // [5] SW
         Vector3[] corners = new Vector3[6];
         float radius = 0.5f;  // Adjust this based on your hex tile size
 
@@ -193,6 +199,12 @@ public class HexCell : MonoBehaviour
 
     public Vector3[] GetHexEdgeMidpoints()
     {
+        // [0] SW
+        // [1] NW
+        // [2] N
+        // [3] NE
+        // [4] SE
+        // [5] S
         Vector3[] corners = GetHexCorners();  // First, calculate the corners
         Vector3[] midpoints = new Vector3[6];  // Array to store the midpoints of the 6 edges
 

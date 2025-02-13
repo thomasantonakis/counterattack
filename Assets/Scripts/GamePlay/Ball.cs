@@ -11,6 +11,7 @@ public class Ball : MonoBehaviour
     private float moveSpeed = 2f;  // Speed: 2 hexes per second
     private bool isBallSelected = false;  // Track if the ball is selected
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
+    public GoalKeeperManager goalKeeperManager;
     [SerializeField] public float ballRadius = 0.6474f;
     private bool playersInstantiated = false;  // New flag to track when players are ready
     public float groundHeightOffset = 0.2f;  // Height when ball is on the ground
@@ -98,13 +99,39 @@ public class Ball : MonoBehaviour
 
         targetCell = newHex;
         isMoving = true;
-
+        int previousPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position); 
         // Move smoothly towards the target cell
         while (isMoving)
         {
             float step = adjustedSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetCell.GetHexCenter(), step);
-
+            // ✅ Detect transition into penalty box
+            int currentPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position);
+            if (previousPenaltyBoxStatus == 0 && currentPenaltyBoxStatus != 0)
+            {
+                Debug.Log("⚽ Ball just entered the penalty box! Checking if GK should move.");
+                Vector3Int currentHexCoords = hexGrid.WorldToHexCoords(transform.position);
+                HexCell currentHex = hexGrid.GetHexCellAt(currentHexCoords);
+                if (currentHex == null)
+                {
+                    Debug.LogError("Ball is in an invalid hex cell!");
+                    yield break;
+                }
+                // ✅ Check if GK should move
+                if (goalKeeperManager.ShouldGKMove(currentHex))
+                {
+                    Debug.Log("🛑 GK move triggered! Pausing ball.");
+                    isMoving = false;
+                    // ✅ Store paused position before GK move
+                    Vector3 pausedPosition = transform.position;
+                    yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+                    // ✅ Restore ball's paused position after GK move
+                    transform.position = pausedPosition;
+                    isMoving = true; // Resume movement
+                }
+            }
+            // Update previous status
+            previousPenaltyBoxStatus = currentPenaltyBoxStatus;
             // Check if the ball has reached the target
             if (Vector3.Distance(transform.position, targetCell.GetHexCenter()) < 0.001f)
             {

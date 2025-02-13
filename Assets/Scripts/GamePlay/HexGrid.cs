@@ -70,6 +70,8 @@ public class HexGrid : MonoBehaviour
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[4]}");
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(2, 0, 0)).GetHexCorners()[5]}");
         // InitializePlayers(10, 10);
+        // TestWorldToHex();
+        
     }
     
 
@@ -243,6 +245,32 @@ public class HexGrid : MonoBehaviour
         }
         Debug.LogError($"Requested HexCell is out of bounds at [{coords.x}, {coords.z}]");
         return null;  // Return null if out of bounds
+    }
+
+    public Vector3Int WorldToHexCoords(Vector3 worldPos)
+    {
+        float hexWidth = 1f;  // Width of a hexagon
+        float hexHeight = 0.866f * hexWidth;  // sqrt(3)/2 * width
+        float columnSpacing = 0.75f * hexWidth;  // Distance between centers of adjacent columns
+
+        // Estimate x (column index)
+        int estimatedX = Mathf.RoundToInt(worldPos.x / columnSpacing);
+
+        // Determine stagger offset (odd/even column shift)
+        float zOffset = (estimatedX % 2 == 0) ? 0f : hexHeight / 2f;
+
+        // Estimate z (row index) with stagger correction
+        int estimatedZ = Mathf.RoundToInt((worldPos.z - zOffset) / hexHeight);
+
+        // Get closest matching hex cell from HexGrid
+        HexCell closestHex = GetHexCellAt(new Vector3Int(estimatedX, 0, estimatedZ));
+        if (closestHex != null)
+        {
+            return closestHex.coordinates;
+        }
+
+        Debug.LogWarning($"World position {worldPos} does not map cleanly to a hex cell.");
+        return new Vector3Int(estimatedX, 0, estimatedZ);
     }
 
     public static List<HexCell> GetHexesInRange(HexGrid hexGrid, HexCell startHex, int range)
@@ -494,6 +522,46 @@ public class HexGrid : MonoBehaviour
         }
         Debug.Log($"Total valid hexes: {validHexes.Count}");
         return validHexes;
+    }
+
+    public int CheckPenaltyBox(Vector3 position)
+    {
+        // Ignore y component
+        Vector2 pos2D = new Vector2(position.x, position.z);
+
+        // Define the left penalty box bounds
+        Vector2 leftMin = new Vector2(
+            GetHexCellAt(new Vector3Int(-18, 0, -7)).GetHexCorners()[5].x,
+            GetHexCellAt(new Vector3Int(-18, 0, -7)).GetHexCorners()[5].z
+        );
+        Vector2 leftMax = new Vector2(
+            GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2].x,
+            GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2].z
+        );
+
+        // Define the right penalty box bounds
+        Vector2 rightMin = new Vector2(
+            GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5].x,
+            GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5].z
+        );
+        Vector2 rightMax = new Vector2(
+            GetHexCellAt(new Vector3Int(18, 0, 7)).GetHexCorners()[2].x,
+            GetHexCellAt(new Vector3Int(18, 0, 7)).GetHexCorners()[2].z
+        );
+
+        // Check if position is within left penalty box
+        if (pos2D.x >= leftMin.x && pos2D.x <= leftMax.x && pos2D.y >= leftMin.y && pos2D.y <= leftMax.y)
+        {
+            return -1; // Left penalty box
+        }
+
+        // Check if position is within right penalty box
+        if (pos2D.x >= rightMin.x && pos2D.x <= rightMax.x && pos2D.y >= rightMin.y && pos2D.y <= rightMax.y)
+        {
+            return 1; // Right penalty box
+        }
+
+        return 0; // Neither penalty box
     }
 
     public void CalculateShootingPaths(string shotOrHead)
@@ -878,5 +946,54 @@ public class HexGrid : MonoBehaviour
             }
         }
         return saveableHexes;
+    }
+
+    private void TestWorldToHex()
+    {
+        Debug.Log("Testing WorldToHexCoords...");
+
+        // List of sample world positions to test
+        List<Vector3> testPositions = new List<Vector3>
+        {
+            new Vector3(0, 0, 0),   // Center of the grid
+            // NORTHEAST CORNER OF (10,-9)
+            new Vector3(
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].x,
+                0,
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].z - 0.001f
+            ),
+            new Vector3(
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].x + 0.01f,
+                0,
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].z
+            ),
+            new Vector3(
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].x - 0.01f,
+                0,
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].z + 0.01f
+            ),
+            new Vector3(
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].x - 0.01f,
+                0,
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].z - 0.01f
+            ),
+            new Vector3(
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].x,
+                0,
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].z - 0.01f
+            ),
+            new Vector3(
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].x,
+                0,
+                GetHexCellAt(new Vector3Int(10, 0, -9)).GetHexCorners()[3].z + 0.01f
+            ),
+        };
+
+        // Loop through test positions and log results
+        foreach (Vector3 worldPos in testPositions)
+        {
+            Vector3Int hexCoords = WorldToHexCoords(worldPos);
+            Debug.Log($"World Pos: {worldPos} -> Hex Coords: {hexCoords}");
+        }
     }
 }
