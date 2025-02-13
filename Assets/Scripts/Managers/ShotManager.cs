@@ -16,6 +16,7 @@ public class ShotManager : MonoBehaviour
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
     public LongBallManager longBallManager;
+    public GoalKeeperManager goalKeeperManager;
     public GoalFlowManager goalFlowManager;
     public HexGrid hexGrid;
     public Ball ball;
@@ -29,6 +30,7 @@ public class ShotManager : MonoBehaviour
     public bool isWaitingForGKDiceRoll = false;
     public bool isWaitingforHandlingTest = false;
     public bool isWaitingForSaveandHoldScenario = false;
+    public bool gkWasOfferedMoveForBox = false;
     public string shotType; // "snapshot" or "fullPower"
     [Header("Important Runtime Items")]
     public PlayerToken shooter; // The token that is shooting
@@ -42,6 +44,7 @@ public class ShotManager : MonoBehaviour
     public HexCell currentDefenderBlockingHex; // The Hex of the defender currently attempting to intercept
     private List<HexCell> trajectoryPath; // The list of hexes the ball will travel through
     private List<(PlayerToken defender, bool isCausingInvalidity, int? gkPenalty)> interceptors; // Defenders trying to intercept
+    public List<PlayerToken> alreadyInterceptedDefs;
 
     void Update()
     {
@@ -158,7 +161,7 @@ public class ShotManager : MonoBehaviour
         trajectoryPath = shooterHex.ShootingPaths[targetHex];
         HighlightTrajectoryPath();
         isWaitingForTargetSelection = false;
-        StartInterceptionPhase();
+        StartCoroutine(StartInterceptionPhase());
     }
 
     private void HighlightTrajectoryPath()
@@ -170,22 +173,37 @@ public class ShotManager : MonoBehaviour
         }
     }
 
-    private void StartInterceptionPhase()
+    private IEnumerator StartInterceptionPhase()
     {
         Debug.Log("Starting interception phase.");
         interceptors = GatherInterceptors(trajectoryPath);
 
         if (interceptors.Count == 0)
         {
-            Debug.Log($"No defenders to Deflect! The {shooter.name} may [R]oll! Good Luck!. Starting dice roll sequence..");
-            isWaitingForShotRoll = true;
-            return;
+            if (shooter.GetCurrentHex().isInPenaltyBox != 0)
+            {
+                Debug.Log($"No defenders to Deflect! The {shooter.name} may [R]oll! Good Luck! Starting dice roll sequence..");
+                isWaitingForShotRoll = true;
+                yield break;
+            }
+            else // Shot is from outside the box
+            {
+                gkWasOfferedMoveForBox = true;
+                yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+                interceptors = GatherInterceptors(trajectoryPath);
+                if (interceptors.Count == 0)
+                {
+                    Debug.Log($"No defenders to Deflect! The {shooter.name} may [R]oll! Good Luck!. Starting dice roll sequence..");
+                    isWaitingForShotRoll = true;
+                    yield break;
+                }
+            }
         }
-
         Debug.Log($"Defenders with interception chances: {interceptors.Count}");
         interceptors = interceptors.OrderBy(d =>
             HexGridUtils.GetHexDistance(shooter.GetCurrentHex().coordinates, d.defender.GetCurrentHex().coordinates)).ToList();
-        OfferBlockRoll();
+        StartCoroutine(OfferBlockRoll());
+
     }
 
     private List<(PlayerToken defender, bool isCausingInvalidity, int? gkPenalty)> GatherInterceptors(List<HexCell> path)
@@ -197,28 +215,31 @@ public class ShotManager : MonoBehaviour
         // **Step 1: Find the defending Goalkeeper**
         PlayerToken defendingGK = hexGrid.GetDefendingGK();
         HexCell gkHex = defendingGK.GetCurrentHex();
-        int gkPenalty = 0;
-
-        // **Step 2: Calculate Saveable Hexes**
-        List<HexCell> saveableHexes = hexGrid.GetSavableHexes();
-
-        // **Step 3: Find all SaveHexes in the shot path**
-        List<HexCell> validSaveHexes = path
-            .Where(hex => saveableHexes.Contains(hex))
-            .OrderBy(hex => HexGridUtils.GetHexDistance(gkHex.coordinates, hex.coordinates))
-            .ToList();
-        // Get the closest one (if any)
-        saveHex = validSaveHexes.FirstOrDefault();
-
-        if (saveHex != null && gkHex != null)
+        if (!alreadyInterceptedDefs.Contains(defendingGK))
         {
-            int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates); // turn to Cube
-            if (saveDistance == 3) gkPenalty = -1;
-            if (saveDistance == 2 && tokenMoveforDeflection == defendingGK) gkPenalty = -1;
-            if (saveDistance == 3 && tokenMoveforDeflection == defendingGK) gkPenalty = -2;
-            
-            Debug.Log($"Goalkeeper {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {gkPenalty}");
-            onPathDefenders.Add((defendingGK, false, gkPenalty));
+            int gkPenalty = 0;
+
+            // **Step 2: Calculate Saveable Hexes**
+            List<HexCell> saveableHexes = hexGrid.GetSavableHexes();
+
+            // **Step 3: Find all SaveHexes in the shot path**
+            List<HexCell> validSaveHexes = path
+                .Where(hex => saveableHexes.Contains(hex))
+                .OrderBy(hex => HexGridUtils.GetHexDistance(gkHex.coordinates, hex.coordinates))
+                .ToList();
+            // Get the closest one (if any)
+            saveHex = validSaveHexes.FirstOrDefault();
+
+            if (saveHex != null && gkHex != null)
+            {
+                int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates); // turn to Cube
+                if (saveDistance == 3) gkPenalty = -1;
+                if (saveDistance == 2 && tokenMoveforDeflection == defendingGK) gkPenalty = -1;
+                if (saveDistance == 3 && tokenMoveforDeflection == defendingGK) gkPenalty = -2;
+                
+                Debug.Log($"Goalkeeper {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {gkPenalty}");
+                onPathDefenders.Add((defendingGK, false, gkPenalty));
+            }
         }
 
         // Step 4.1: Get defenders On the Path
@@ -227,10 +248,13 @@ public class ShotManager : MonoBehaviour
             if (hex.isDefenseOccupied && hex!= gkHex) // Skip the GK Hex
             {
                 PlayerToken defenderOnPath = hex.GetOccupyingToken();
-                // After movement: Defender on the path causes the pass to become dangerous
-                onPathDefenders.Add((defenderOnPath, true, null));  // Add defender as blocking path
-                invalidityCausingDefender = defenderOnPath;  // Keep track for later rolls
-                Debug.Log($"Path blocked by defender at hex: {hex.coordinates}. Defender: {defenderOnPath.name}");
+                if (!alreadyInterceptedDefs.Contains(defenderOnPath))
+                {
+                    // After movement: Defender on the path causes the pass to become dangerous
+                    onPathDefenders.Add((defenderOnPath, true, null));  // Add defender as blocking path
+                    invalidityCausingDefender = defenderOnPath;  // Keep track for later rolls
+                    Debug.Log($"Path blocked by defender at hex: {hex.coordinates}. Defender: {defenderOnPath.name}");
+                }
             }
         }
         
@@ -258,17 +282,20 @@ public class ShotManager : MonoBehaviour
                     // Check if a defender is already processed as causing invalidity
                     // Check if a defender is already processed as causing invalidity
                     PlayerToken defenderInZOI = neighbor.GetOccupyingToken();
-                    if (defenderInZOI != null) // Avoid adding the same defender twice)
+                    if (!alreadyInterceptedDefs.Contains(defenderInZOI))
                     {
-                        bool isCausingInvalidity = defenderInZOI == invalidityCausingDefender;
-                        if (!onPathDefenders.Exists(d => d.defender == defenderInZOI))
+                        if (defenderInZOI != null) // Avoid adding the same defender twice)
                         {
-                            onPathDefenders.Add((defenderInZOI, isCausingInvalidity, null));  // Add as a potential interceptor
-                            Debug.Log($"Defender {defenderInZOI.name} can intercept through ZOI at hex: {hex.coordinates}");
-                        }
-                        else
-                        {
-                            // Debug.Log($"Skipping already processed defender: {defenderInZOI.name}");
+                            bool isCausingInvalidity = defenderInZOI == invalidityCausingDefender;
+                            if (!onPathDefenders.Exists(d => d.defender == defenderInZOI))
+                            {
+                                onPathDefenders.Add((defenderInZOI, isCausingInvalidity, null));  // Add as a potential interceptor
+                                Debug.Log($"Defender {defenderInZOI.name} can intercept through ZOI at hex: {hex.coordinates}");
+                            }
+                            else
+                            {
+                                // Debug.Log($"Skipping already processed defender: {defenderInZOI.name}");
+                            }
                         }
                     }
                 }
@@ -277,16 +304,32 @@ public class ShotManager : MonoBehaviour
         return onPathDefenders;
     }
 
-    private void OfferBlockRoll()
+    private IEnumerator OfferBlockRoll()
     {
-        // Calculate the roll needed, ensuring GK penalty is handled safely
+        currentDefenderBlockingHex = interceptors[0].defender.GetCurrentHex();
+        // 🛑 If shot is from OUTSIDE the box & first in-box defender is blocking, allow GK to move
+        if (
+            shooter.GetCurrentHex().isInPenaltyBox == 0 // Shot is from outside the box
+            && currentDefenderBlockingHex.isInPenaltyBox != 0 // defender is in the box
+            && !gkWasOfferedMoveForBox // GK as not already moved for the box.
+        )
+        {
+            // this is the first defender in the box while shooting from outside the box
+            gkWasOfferedMoveForBox = true;
+            yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+            interceptors = GatherInterceptors(trajectoryPath);
+            StartCoroutine(OfferBlockRoll());
+            yield break;
+        }
+        
+        /// 🏆 Calculate roll needed
         int gkPenalty = interceptors[0].gkPenalty ?? 0;  // Default to 0 if null
         int rollNeeded = 10 - (interceptors[0].defender.tackling + gkPenalty);
         int howIsDefBlocking = interceptors[0].isCausingInvalidity ? 5 : 6;
         int finalRollNeeded = Math.Min(rollNeeded, howIsDefBlocking);
 
-        currentDefenderBlockingHex = interceptors[0].defender.GetCurrentHex();
         // Log based on whether the interceptor is a GK or a defender
+        // 🎲 If GK is next, trigger shot roll instead
         if (interceptors[0].gkPenalty != null)
         {
             Debug.Log("The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.");
@@ -358,11 +401,12 @@ public class ShotManager : MonoBehaviour
                     Debug.Log($"{defenderName} at {currentDefenderBlockingHex.coordinates} failed to block.");
                     // Remove this defender and move to the next
                     interceptors.Remove(currentDefenderEntry);
+                    alreadyInterceptedDefs.Add(currentDefenderEntry.defender);
 
                     if (interceptors.Count > 0)
                     {
                         // There are more defenders (maybe the GK too) that can block
-                        OfferBlockRoll();
+                        StartCoroutine(OfferBlockRoll());
                     }
                     else
                     {
@@ -478,6 +522,8 @@ public class ShotManager : MonoBehaviour
             );
 
         hexGrid.ClearHighlightedHexes();
+        alreadyInterceptedDefs.Add(gkToken);
+
         if (totalSavingPower == totalShotPower)
         {
             yield return null;
@@ -518,7 +564,7 @@ public class ShotManager : MonoBehaviour
             if (interceptors.Count > 0)
             {
                 // There are more defenders to block, Run through them
-                OfferBlockRoll();
+                StartCoroutine(OfferBlockRoll());
             }
             else
             {
@@ -610,6 +656,7 @@ public class ShotManager : MonoBehaviour
         targetHex = null;
         trajectoryPath = null;
         interceptors.Clear();
+        alreadyInterceptedDefs.Clear();
     }
 
     private IEnumerator ShootOffTargetRandomizer()

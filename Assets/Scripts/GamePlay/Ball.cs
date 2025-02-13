@@ -118,7 +118,10 @@ public class Ball : MonoBehaviour
                     yield break;
                 }
                 // ✅ Check if GK should move
-                if (goalKeeperManager.ShouldGKMove(currentHex))
+                if (
+                    goalKeeperManager.ShouldGKMove(currentHex) // check if we're eligible for move
+                    && roll == null // this is not called from Shot Manager
+                )
                 {
                     Debug.Log("🛑 GK move triggered! Pausing ball.");
                     isMoving = false;
