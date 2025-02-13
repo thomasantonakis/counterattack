@@ -81,17 +81,20 @@ public class HeaderManager : MonoBehaviour
         {
             Debug.Log("No players eligible to head the ball. Ball drops to the ground.");
             movementPhaseManager.ResetMovementPhase();
+            CleanUpHeader();
             MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             // TODO: Log Appropriately
         }
         else if (!hasEligibleAttackers)
         {
             Debug.Log("No attackers eligible to head the ball. Defense wins the header automatically.");
+            MatchManager.Instance.hangingPassType = null;
             StartDefenseHeaderSelection();
         }
         else if (!hasEligibleDefenders)
         {
             Debug.Log("No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).");
+            MatchManager.Instance.hangingPassType = null;
             if (attEligibleToHead.Count == 1)
             {
                 challengeWinner = attEligibleToHead[0];
@@ -233,6 +236,7 @@ public class HeaderManager : MonoBehaviour
     // Coroutine for handling defender header selection
     public IEnumerator HandleDefenderHeaderSelection(PlayerToken token)
     {
+        // TODO: if attEligibleTohead.Count == 0 threshold = 1
         int threshold = highPassManager.didGKMoveInDefPhase ? 3 : 2 ;
         highPassManager.didGKMoveInDefPhase = false;
         if (defenderWillJump.Count < threshold)
@@ -294,6 +298,7 @@ public class HeaderManager : MonoBehaviour
         // **Scenario: Only Attackers are Jumping**
         if (attackerWillJump.Count > 0 && defenderWillJump.Count == 0)
         {
+            MatchManager.Instance.hangingPassType = null;
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
             if (offeredControl) 
             {
@@ -593,12 +598,19 @@ public class HeaderManager : MonoBehaviour
                 {
                     Debug.Log($"You beauty! {challengeWinner.name} brings the ball down on their feet! Continue as if it were a SuccessfulTackle");
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(challengeWinner.GetCurrentHex()));
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.AerialPassCompleted
+                    );
+                    MatchManager.Instance.SetLastToken(challengeWinner);
                     MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
+                    
                 }
                 else
                 {
                     Debug.Log($"{challengeWinner.name} failed to control the ball! Loose ball from {challengeWinner.name}");
                     MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
+                    MatchManager.Instance.hangingPassType = "control";
                     StartCoroutine(looseBallManager.ResolveLooseBall(challengeWinner, "ground"));
                 }
             }
@@ -639,6 +651,7 @@ public class HeaderManager : MonoBehaviour
                     // TODO: Handle Click On Token or Ball Properly to infer the Hex
                     if (clickedHex != null && !clickedHex.isDefenseOccupied)
                     {
+                        // TODO: BUG THIS IS CALLED 
                         if (true)
                         {
                             MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -794,6 +807,14 @@ public class HeaderManager : MonoBehaviour
         finalThirdManager.TriggerFinalThirdPhase();
     }
 
+    private void CleanUpHeader()
+    {
+      attEligibleToHead.Clear();
+      defEligibleToHead.Clear();
+      hasEligibleAttackers = false;
+      hasEligibleDefenders = false;
+      offeredControl = false;
+    }
     public void ResetHeader()
     {
       attEligibleToHead.Clear();

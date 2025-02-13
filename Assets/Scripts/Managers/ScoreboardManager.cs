@@ -6,17 +6,12 @@ public class ScoreboardManager : MonoBehaviour
     public MatchManager matchManager;  // Drag and drop the MatchManager object here
     public TMP_Text homeTeamText;  // Drag and drop the TextMeshPro element here
     public TMP_Text awayTeamText;  // Drag and drop the TextMeshPro element here
-    // public TextMeshProUGUI homeTeamText;
-    // public TextMeshProUGUI awayTeamText;
-    // public TMP_Text scoreText;  // Add this field for score display
 
     void Start()
     {
         // Subscribe to the event in MatchManager
-        // MatchManager.Instance.OnGameSettingsLoaded += LoadTeamNames;
         matchManager.OnGameSettingsLoaded += LoadTeamNames;
         // Debug.Log("ScoreboardManager: Subscribed to OnGameSettingsLoaded event");
-        // LoadTeamNames();
     }
 
 

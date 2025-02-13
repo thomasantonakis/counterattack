@@ -157,6 +157,7 @@ public class GroundBallManager : MonoBehaviour
                     if (clickedHex.isAttackOccupied)
                     {
                         MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
+                        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
                         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
                     }
                     else
@@ -490,7 +491,7 @@ public class GroundBallManager : MonoBehaviour
         ball.AdjustBallHeightBasedOnOccupancy();  // Ensure this method is public in Ball.cs
         // Now clear the highlights after the movement
         hexGrid.ClearHighlightedHexes();
-        Debug.Log("Highlights cleared after ball movement.");
+        // Debug.Log("Highlights cleared after ball movement.");
         if (speed != null) yield break;
         // finalThirdManager.TriggerFinalThirdPhase();
     }

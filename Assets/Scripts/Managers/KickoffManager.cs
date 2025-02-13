@@ -50,9 +50,9 @@ public class KickoffManager : MonoBehaviour
                 Debug.LogWarning($"{selectedToken.name} cannot move outside their half!");
                 yield break;
             }
-            if (selectedToken.isAttacker && targetHex.isInCircle == 5)
+            if (!selectedToken.isAttacker && targetHex.isInCircle == 5)
             {
-                Debug.LogWarning($"Attackers should not be placed on the KickOff Circle!");
+                Debug.LogWarning($"Defenders should not be placed on the KickOff Circle!");
                 yield break;
             }
             yield return StartCoroutine(freeKickManager.MoveTokenToHex(selectedToken, targetHex));
@@ -85,6 +85,7 @@ public class KickoffManager : MonoBehaviour
         }
 
         Debug.Log("Kick-off confirmed! The match begins.");
+        MatchManager.Instance.SetLastToken(ball.GetCurrentHex().GetOccupyingToken());
         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassAttempt;
     }
 

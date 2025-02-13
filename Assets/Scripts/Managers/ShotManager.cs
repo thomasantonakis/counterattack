@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine.Analytics;
 using System;
+using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 
 public class ShotManager : MonoBehaviour
 {
@@ -91,16 +92,23 @@ public class ShotManager : MonoBehaviour
         if (shotType == "snapshot")
         {
             Debug.Log("Snapshot initiated. Allow one defender to move 2 hexes.");
+            if (shooterHex.isInPenaltyBox == 0) MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: "snapO");
+            else MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: "snap");
             StartDefenderMovementPhase();
         }
         else
         {
             Debug.Log("Full Power Shot initiated. Proceeding to target selection.");
-            if (shooter.GetCurrentHex().isInPenaltyBox == 0)
+            if (shooterHex.isInPenaltyBox == 0)
             {
                 Debug.Log("Shooter is OUTSIDE the penalty box. -1 to shot power.");
+                MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: "shot");
                 Debug.Log("Goalkeeper can move 1 hex");
                 // TODO: Implement Goalkeeper movement for the Box in case of a Shot from outside the box
+            }
+            else
+            {
+                MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: "shotO");
             }
             HandleTargetSelection();
         }
@@ -326,6 +334,7 @@ public class ShotManager : MonoBehaviour
                 }
                 
                 Debug.Log($"Dice roll by {defenderName} at {currentDefenderBlockingHex.coordinates}: {diceRoll}");
+                MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
                 isWaitingForBlockDiceRoll = false;
                 // Calculate interception conditions
                 bool isCausingInvalidity = currentDefenderEntry.isCausingInvalidity;
@@ -335,6 +344,12 @@ public class ShotManager : MonoBehaviour
                 {
                     hexGrid.ClearHighlightedHexes();
                     Debug.Log($"Shot blocked by {defenderName}! Loose Ball from {currentDefenderBlockingHex.coordinates}!");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.ShotBlocked
+                        , connectedToken: defenderToken
+                    );
+                    MatchManager.Instance.hangingPassType = "shot";
                     StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, "ground"));
                     ResetShotProcess();
                 }
@@ -358,13 +373,25 @@ public class ShotManager : MonoBehaviour
                             if (shooterRoll == 1)
                             {
                                 Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the Shot is OFF target! GoalKick awarded.");
+                                MatchManager.Instance.gameData.gameLog.LogEvent(
+                                    MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                                    , MatchManager.ActionType.ShotOffTarget
+                                );
                                 yield return StartCoroutine(ShootOffTargetRandomizer());
-                                // TODO: Implement GoalKick
                                 ResetShotProcess();
+                                // TODO: Implement GoalKick
                             }
                             else
                             {
                                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll}, that's a GOAL!!");
+                                MatchManager.Instance.gameData.gameLog.LogEvent(
+                                    MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                                    , MatchManager.ActionType.GoalScored
+                                );
+                                MatchManager.Instance.gameData.gameLog.LogEvent(
+                                    MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
+                                    , MatchManager.ActionType.AssistProvided
+                                );
                                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                                 goalFlowManager.StartGoalFlow(shooter);
                                 ResetShotProcess();
@@ -407,6 +434,10 @@ public class ShotManager : MonoBehaviour
             if (shooterRoll == 1)
             {
                 Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                    , MatchManager.ActionType.ShotOffTarget
+                );
                 yield return StartCoroutine(ShootOffTargetRandomizer());
                 // TODO: Implement GoalKick
             }
@@ -414,6 +445,14 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{snapPenalty}{boxPenalty}= {totalShotPower}");
                 Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.GoalScored
+                    );
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.AssistProvided
+                    );
                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                 goalFlowManager.StartGoalFlow(shooter);
                 ResetShotProcess();
@@ -433,12 +472,26 @@ public class ShotManager : MonoBehaviour
         // int totalSavingPower = 1;
 
         Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+                gkToken
+                , MatchManager.ActionType.SaveAttempt
+            );
 
         hexGrid.ClearHighlightedHexes();
         if (totalSavingPower == totalShotPower)
         {
             yield return null;
             Debug.Log($"{gkToken.name} ties the attacker's roll!! Loose Ball situation initiated.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                , MatchManager.ActionType.ShotOnTarget
+            );
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                gkToken
+                , MatchManager.ActionType.SaveMade
+                , saveType: "loose"
+            );
+            MatchManager.Instance.hangingPassType = "shot";
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false)); // Maybe this is redundant
             StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "ground"));
@@ -447,6 +500,10 @@ public class ShotManager : MonoBehaviour
         else if (totalSavingPower > totalShotPower)
         {
             // TODO: Push everyone in line.
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                , MatchManager.ActionType.ShotOnTarget
+            );
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
             MatchManager.Instance.ChangePossession();
@@ -468,12 +525,24 @@ public class ShotManager : MonoBehaviour
                 if (shooterRoll == 1)
                 {
                     Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.ShotOffTarget
+                    );
                     // TODO: Implement GoalKick
                 }
                 else
                 {
                     Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{snapPenalty}{boxPenalty} = {totalShotPower}");
                     Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.GoalScored
+                    );
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.AssistProvided
+                    );
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                     goalFlowManager.StartGoalFlow(shooter);
                     ResetShotProcess();
@@ -493,6 +562,12 @@ public class ShotManager : MonoBehaviour
       // Handling Test
       if (gkRoll < gkToken.handling)
       {
+          MatchManager.Instance.gameData.gameLog.LogEvent(
+              gkToken
+              , MatchManager.ActionType.SaveMade
+              , saveType: "held"
+          );
+          MatchManager.Instance.SetLastToken(gkToken);
           Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
           isWaitingForSaveandHoldScenario = true;
           while (isWaitingForSaveandHoldScenario)

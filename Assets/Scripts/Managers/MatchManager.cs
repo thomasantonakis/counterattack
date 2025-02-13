@@ -188,7 +188,6 @@ public class MatchManager : MonoBehaviour
         public PlayerStats stats;
     }
 
-
     [Serializable]
     public class PlayerStats
     {
@@ -504,7 +503,13 @@ public class MatchManager : MonoBehaviour
                             logEntry += $" after an Inaccurate High Pass from {connectedToken.name}";
                             break;
                         case "header":
-                            logEntry += $" on the air from {connectedToken.name}";
+                            logEntry += $" in the air from {connectedToken.name}";
+                            break;
+                        case "shot":
+                            logEntry += $" after a shot from {connectedToken.name}";
+                            break;
+                        case "control":
+                            logEntry += $" after a missed ball control from {connectedToken.name}";
                             break;
                         default:
                             logEntry += $"Unknown recoveryType: {recoveryType}";
@@ -547,6 +552,8 @@ public class MatchManager : MonoBehaviour
                     logEntry += "has a shot blocked";
                     playerStats.shotsBlocked += value;
                     teamStats.totalShotsBlocked += value;
+                    connectedPlayerStats.interceptionsMade += value;
+                    connectedTeamStats.totalInterceptionsMade += value;
                     break;
 
                 case ActionType.ShotOffTarget:
@@ -559,6 +566,14 @@ public class MatchManager : MonoBehaviour
                     logEntry += "scores a goal! ⚽";
                     playerStats.goals += value;
                     teamStats.totalGoals += value;
+                    MatchManager.Instance.AddGoal(
+                        token.playerName
+                        , token.isHomeTeam
+                        // , GetCurrentMinute()
+                        , 10
+                        , false
+                        , MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose?.playerName
+                    );
                     break;
 
                 case ActionType.AssistProvided:
@@ -619,6 +634,8 @@ public class MatchManager : MonoBehaviour
                         case "held":
                             logEntry += "Saved and held!";
                             playerStats.attemptsSaved += value;
+                            playerStats.possessionWon += value;
+                            teamStats.totalPossessionWon += value;
                             break;
                         case "loose":
                             logEntry += "Saved for a loose ball";
@@ -634,6 +651,11 @@ public class MatchManager : MonoBehaviour
                             break;
                     }
                     teamStats.totalAttemptsSaved += value;
+                    break;
+
+                case ActionType.CornerWon:
+                    logEntry += "win a corner";
+                    teamStats.totalCorners += value;
                     break;
 
                 case ActionType.YellowCardShown:
@@ -674,6 +696,24 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    [Serializable]
+    public class GoalEvent
+    {
+        public string scorer;
+        public int minute;
+        public bool isPenalty;
+        public string assist;  // Optional
+
+        public override string ToString()
+        {
+            if (isPenalty)
+                return $"{scorer} {minute}'(p)";
+            if (!string.IsNullOrEmpty(assist))
+                return $"{scorer} {minute}' (A: {assist})";
+            return $"{scorer} {minute}'";
+        }
+    }
+
     public enum ActionType
     {
         Move,
@@ -700,8 +740,14 @@ public class MatchManager : MonoBehaviour
         RedCardShown,
         Injured,
         Substituted,
-        SaveMade
+        SaveMade,
+        CornerWon
     }
+
+
+    public List<GoalEvent> homeScorers = new List<GoalEvent>();
+    public List<GoalEvent> awayScorers = new List<GoalEvent>();
+
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
     public enum TeamInAttack
@@ -726,6 +772,7 @@ public class MatchManager : MonoBehaviour
     public HexGrid hexGrid;  // Reference to the ball
     public GroundBallManager groundBallManager;
     public PlayerTokenManager playerTokenManager;
+    public MatchStatsUI matchStatsUI;
     public GameData gameData;
     // public PlayerToken LastTokenToTouchTheBallOnPurpose { get; private set; }
     // public PlayerToken PreviousTokenToTouchTheBallOnPurpose { get; private set; }
@@ -1219,6 +1266,17 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public void AddGoal(string scorer, bool isHomeTeam, int minute, bool isPenalty, string assist = null)
+    {
+        GoalEvent goal = new GoalEvent { scorer = scorer, minute = minute, isPenalty = isPenalty, assist = assist };
+        
+        if (isHomeTeam)
+            homeScorers.Add(goal);
+        else
+            awayScorers.Add(goal);
+
+        matchStatsUI.UpdateScorersDisplay();
+    }
     private void DebugGameSettings()
     {
         // Debug Game Settings

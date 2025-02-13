@@ -585,7 +585,10 @@ public class MovementPhaseManager : MonoBehaviour
             if (previousHex.isInPenaltyBox == 0 && step.isInPenaltyBox != 0 && token.IsDribbler && goalKeeperManager.ShouldGKMove(step))
             {
                 Debug.Log("⚽ Ball entered penalty box during dribble! Offering GK a free move.");
-                yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+                if (goalKeeperManager.ShouldGKMove(step))
+                {
+                    yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+                }
             }
             previousHex = step;  // Set the previous hex to the current step for the next iteration
         }

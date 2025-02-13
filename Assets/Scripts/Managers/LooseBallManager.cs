@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 public class LooseBallManager : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class LooseBallManager : MonoBehaviour
     }
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, string resolutionType)
     {
-        causingDeflection = startingToken;
+        causingDeflection = startingToken; // TODO: I think this is redundant
         Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {resolutionType}");
         path.Clear();
         // Step 1: Move the ball to the starting token's hex
@@ -80,6 +81,12 @@ public class LooseBallManager : MonoBehaviour
         {
             if (!spillDirections.Contains(directionRoll))
             {
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    startingToken
+                    , MatchManager.ActionType.SaveMade
+                    , saveType: "corner"
+                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                );
                 // HexCell lastInbound;
                 // This should be a CornerKick, and we should break
                 if (directionRoll == 2 || directionRoll == 3 || directionRoll == 4)
@@ -117,6 +124,15 @@ public class LooseBallManager : MonoBehaviour
                 // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 
                 yield break;
             }
+        }
+        if (resolutionType == "handling")
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                startingToken
+                , MatchManager.ActionType.SaveMade
+                , saveType: "loose"
+            );
+            MatchManager.Instance.hangingPassType = "shot";
         }
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
@@ -203,6 +219,7 @@ public class LooseBallManager : MonoBehaviour
                     !defendersTriedToIntercept.Contains(potentialInterceptor)) // Ensure the defender hasn't already tried
                 {
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(potentialInterceptor, MatchManager.ActionType.InterceptionAttempt);
 
                     // Roll for interception
                     // Step 5.3: Wait for interception roll
@@ -214,6 +231,13 @@ public class LooseBallManager : MonoBehaviour
                     int interceptionRoll = 1; // Simulate dice roll
                     if (interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10)
                     {
+                        MatchManager.Instance.gameData.gameLog.LogEvent(
+                            potentialInterceptor
+                            , MatchManager.ActionType.BallRecovery
+                            , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                            , recoveryType: MatchManager.Instance.hangingPassType
+                        );
+                        MatchManager.Instance.SetLastToken(potentialInterceptor);
                         Debug.Log($"{potentialInterceptor.name} successfully intercepted the ball!");
                         // Move the ball to the interceptor's hex
                         ball.SetCurrentHex(potentialInterceptor.GetCurrentHex());
@@ -247,6 +271,7 @@ public class LooseBallManager : MonoBehaviour
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
             {
+                MatchManager.Instance.SetLastToken(closestToken);
                 if (resolutionType == "header")
                 {
                     // TODO: ignore offside
@@ -284,6 +309,12 @@ public class LooseBallManager : MonoBehaviour
             else
             {
                 Debug.Log($"Ball hit {closestToken.name}, who is a defender");
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    closestToken
+                    , MatchManager.ActionType.BallRecovery
+                    , recoveryType: MatchManager.Instance.hangingPassType
+                ); // TODO: check what is being picked up
+                MatchManager.Instance.SetLastToken(closestToken);
                 // Change possession to the defending team
                 MatchManager.Instance.ChangePossession();  
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
@@ -298,7 +329,7 @@ public class LooseBallManager : MonoBehaviour
             {
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
                 finalThirdManager.TriggerFinalThirdPhase();
-                Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starts a movement Phase");
+                Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starting a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             }
             else if (!movementPhaseManager.isMovementPhaseInProgress)
