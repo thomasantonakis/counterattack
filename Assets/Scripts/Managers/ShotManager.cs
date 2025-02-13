@@ -657,6 +657,13 @@ public class ShotManager : MonoBehaviour
         trajectoryPath = null;
         interceptors.Clear();
         alreadyInterceptedDefs.Clear();
+        totalShotPower = 0;
+        shooterRoll = 0;
+        snapPenalty = "";
+        tokenMoveforDeflection = null;
+        saveHex = null;
+        currentDefenderBlockingHex = null;
+        shotType = null;
     }
 
     private IEnumerator ShootOffTargetRandomizer()

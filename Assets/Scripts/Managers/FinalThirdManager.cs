@@ -14,6 +14,7 @@ public class FinalThirdManager : MonoBehaviour
     public PlayerTokenManager playerTokenManager;
     public MovementPhaseManager movementPhaseManager;
     public HighPassManager highPassManager;
+    public HeaderManager headerManager;
     [Header("Flags")]
     public bool bothSides = false;
     public bool isFinalThirdPhaseActive = false;
@@ -67,8 +68,10 @@ public class FinalThirdManager : MonoBehaviour
     {
         List<PlayerToken> initList = playerTokenManager.allTokens
             .Where(token => token.GetCurrentHex().isInFinalThird == -f3Side)  // Opposite F3
+            .Where(token => !movementPhaseManager.stunnedTokens.Contains(token))
+            .Where(token => !headerManager.attackerWillJump.Contains(token))
+            .Where(token => !headerManager.defenderWillJump.Contains(token))
             .ToList();
-        // TODO: Check if we can move stunned or Jumped Tokens.
         return initList;
     }
     

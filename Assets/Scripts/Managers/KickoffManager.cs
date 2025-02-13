@@ -10,6 +10,8 @@ public class KickoffManager : MonoBehaviour
     public HexGrid hexGrid;
     public Ball ball;
     public FreeKickManager freeKickManager;
+    public MovementPhaseManager movementPhaseManager;
+    public HeaderManager headerManager;
     
     public PlayerToken selectedToken;
     private int spacePressCount = 0;
@@ -85,6 +87,8 @@ public class KickoffManager : MonoBehaviour
         }
 
         Debug.Log("Kick-off confirmed! The match begins.");
+        movementPhaseManager.ResetMovementPhase();
+        headerManager.ResetHeader();
         MatchManager.Instance.SetLastToken(ball.GetCurrentHex().GetOccupyingToken());
         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassAttempt;
     }

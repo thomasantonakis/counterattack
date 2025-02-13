@@ -519,6 +519,8 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   freeKickManager: {fileID: 1688718062}
+  movementPhaseManager: {fileID: 1390513032}
+  headerManager: {fileID: 2071234817}
   selectedToken: {fileID: 0}
 --- !u!4 &282559521
 Transform:
@@ -1043,8 +1045,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 43.024, y: 210.7019}
-  m_SizeDelta: {x: 86.048, y: 51.3188}
+  m_AnchoredPosition: {x: -40.292, y: 222.59}
+  m_SizeDelta: {x: 65.552, y: 44.4862}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &482100302
 MonoBehaviour:
@@ -1066,7 +1068,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Away team name
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1100,7 +1102,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1968,8 +1970,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 502.44775, y: 0}
-  m_SizeDelta: {x: -1004.8956, y: 0}
+  m_AnchoredPosition: {x: 494.93176, y: 0}
+  m_SizeDelta: {x: -989.8636, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &977372729
 MonoBehaviour:
@@ -2058,6 +2060,7 @@ MonoBehaviour:
   playerTokenManager: {fileID: 501380953}
   movementPhaseManager: {fileID: 1390513032}
   highPassManager: {fileID: 1859472972}
+  headerManager: {fileID: 2071234817}
   bothSides: 0
   isFinalThirdPhaseActive: 0
   isWaitingForTokenSelection: 0
@@ -2364,8 +2367,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -43.024, y: 210.7}
-  m_SizeDelta: {x: 86.048, y: 51.32}
+  m_AnchoredPosition: {x: 40.296, y: 223.27}
+  m_SizeDelta: {x: 65.552, y: 45.8538}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1138450823
 MonoBehaviour:
@@ -2387,7 +2390,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Home Scorers List
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2421,7 +2424,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -3140,8 +3143,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0021992, y: 112}
-  m_SizeDelta: {x: 172.1, y: 47.3625}
+  m_AnchoredPosition: {x: 0.0019422, y: 59}
+  m_SizeDelta: {x: 146.14, y: 231.8458}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1449960841
 MonoBehaviour:
@@ -3190,8 +3193,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 11
-  m_fontSizeBase: 11
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3206,7 +3209,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -3770,6 +3773,7 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   longBallManager: {fileID: 748552023}
+  goalKeeperManager: {fileID: 272854143}
   goalFlowManager: {fileID: 2034852868}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
@@ -3782,6 +3786,7 @@ MonoBehaviour:
   isWaitingForGKDiceRoll: 0
   isWaitingforHandlingTest: 0
   isWaitingForSaveandHoldScenario: 0
+  gkWasOfferedMoveForBox: 0
   shotType: 
   shooter: {fileID: 0}
   totalShotPower: 0
@@ -3792,6 +3797,7 @@ MonoBehaviour:
   targetHex: {fileID: 0}
   saveHex: {fileID: 0}
   currentDefenderBlockingHex: {fileID: 0}
+  alreadyInterceptedDefs: []
 --- !u!4 &1740884028
 Transform:
   m_ObjectHideFlags: 0

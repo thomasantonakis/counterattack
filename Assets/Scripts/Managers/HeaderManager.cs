@@ -737,11 +737,13 @@ public class HeaderManager : MonoBehaviour
             {
                 Debug.LogError("No defenders eligible for interception. Header goes without interception. Should not appear");
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+                CleanUpHeader();
             }
         }
         else
         {
             Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
+            CleanUpHeader();
             MatchManager.Instance.hangingPassType = "ground";
             MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
         }
@@ -802,6 +804,7 @@ public class HeaderManager : MonoBehaviour
 
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("All defenders failed to intercept. Ball remains at the landing hex.");
+        CleanUpHeader();
         MatchManager.Instance.hangingPassType = "ground";
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
         finalThirdManager.TriggerFinalThirdPhase();

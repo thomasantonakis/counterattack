@@ -32,13 +32,13 @@ public class MatchStatsUI : MonoBehaviour
         statsText.text =
             $"{homeTeamName} - {awayTeamName} \n\n" +
             $"{homeTeam.totalGoals} Goals {awayTeam.totalGoals}\n" +
-            $"{homeTeam.totalShots} ({homeTeam.totalShotsOnTarget}) Shots (On Target) {awayTeam.totalShots} ({awayTeam.totalShotsOnTarget})\n" +
-            $"{homeTeam.totalPassesAttempted} ({homeTeam.totalPassesCompleted}) Passes (completed) {awayTeam.totalPassesAttempted} ({awayTeam.totalPassesCompleted})\n" +
+            $"{homeTeam.totalShots} ({homeTeam.totalShotsOnTarget}) Shots (On Trg) {awayTeam.totalShots} ({awayTeam.totalShotsOnTarget})\n" +
+            $"{homeTeam.totalPassesAttempted} ({homeTeam.totalPassesCompleted}) Passes (Comp) {awayTeam.totalPassesAttempted} ({awayTeam.totalPassesCompleted})\n" +
             $"{homeTeam.totalPacesRan} Distance (paces) {awayTeam.totalPacesRan}\n"+
-            $"{homeTeam.totalInterceptionsAttempted} ({homeTeam.totalInterceptionsMade}) Interceptions (Made) {awayTeam.totalInterceptionsAttempted} ({awayTeam.totalInterceptionsMade})\n"+
-            $"{homeTeam.totalAerialPassesAttempted} Aerial Passes Att {awayTeam.totalAerialPassesAttempted}\n"+
-            $"{homeTeam.totalAerialPassesTargeted} Aerial Passes targ {awayTeam.totalAerialPassesTargeted}\n"+
-            $"{homeTeam.totalAerialPassesCompleted} Aerial Passes Completed {awayTeam.totalAerialPassesCompleted}\n"+
+            $"{homeTeam.totalInterceptionsAttempted} ({homeTeam.totalInterceptionsMade}) Int.(Made) {awayTeam.totalInterceptionsAttempted} ({awayTeam.totalInterceptionsMade})\n"+
+            $"{homeTeam.totalAerialPassesAttempted} Aerial Att {awayTeam.totalAerialPassesAttempted}\n"+
+            $"{homeTeam.totalAerialPassesTargeted} Aerial Targ {awayTeam.totalAerialPassesTargeted}\n"+
+            $"{homeTeam.totalAerialPassesCompleted} Aerial Completed {awayTeam.totalAerialPassesCompleted}\n"+
             $"{homeTeam.totalAssists} Assists {awayTeam.totalAssists}\n"
             ;
     }

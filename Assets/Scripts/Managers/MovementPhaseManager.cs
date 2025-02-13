@@ -1175,6 +1175,7 @@ public class MovementPhaseManager : MonoBehaviour
         isBallPickable = false;
         isDribblerRunning = false;
         tokenPickedUpBall = false;
+        isMovementPhaseInProgress = false;
         Debug.Log("Movement phase has been reset.");
     }
 
