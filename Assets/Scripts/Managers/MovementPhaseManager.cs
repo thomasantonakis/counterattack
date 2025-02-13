@@ -14,6 +14,7 @@ public class MovementPhaseManager : MonoBehaviour
     public FreeKickManager freeKickManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
+    public GoalKeeperManager goalKeeperManager;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public HexCell ballHex;
@@ -570,8 +571,6 @@ public class MovementPhaseManager : MonoBehaviour
                     Vector3 ballPosition = new Vector3(token.transform.position.x, ball.playerHeightOffset, token.transform.position.z);
                     ball.transform.position = ballPosition;  // Move the ball along with the token
                 }
-                // TODO: Check if the ball with the dribbler entered the box, to offer the defGK a movement
-                // Log that this was offered to never offer it again
                 yield return null;  // Wait for the next frame
             }
             // Update the token's hex after reaching the next hex
@@ -582,21 +581,20 @@ public class MovementPhaseManager : MonoBehaviour
                 ball.SetCurrentHex(step);  // Update ball's hex to the current step
                 ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's height
             }
-
+            // 🛑 CHECK IF THE BALL ENTERED THE PENALTY BOX
+            if (previousHex.isInPenaltyBox == 0 && step.isInPenaltyBox != 0 && token.IsDribbler && goalKeeperManager.ShouldGKMove(step))
+            {
+                Debug.Log("⚽ Ball entered penalty box during dribble! Offering GK a free move.");
+                yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+            }
             previousHex = step;  // Set the previous hex to the current step for the next iteration
         }
         token.SetCurrentHex(path.Last());  // Update the token's hex to the final step
         Debug.Log($"Token arrived at hex: {path.Last().name}");
         // Mark the final hex as occupied after the token reaches the destination
         HexCell finalHex = path[path.Count - 1];
-        if (token.isAttacker)
-        {
-            finalHex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
-        }
-        else
-        {
-            finalHex.isDefenseOccupied = true;  // Mark the target hex as occupied by a defender
-        }
+        if (token.isAttacker) finalHex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
+        else finalHex.isDefenseOccupied = true;  // Mark the target hex as occupied by a defender
         // Check if the player landed on the ball hex, adjust the ball height if necessary
         if (finalHex == ball.GetCurrentHex())
         {
