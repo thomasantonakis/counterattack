@@ -10,6 +10,7 @@ public class LongBallManager : MonoBehaviour
     public Ball ball;
     public HexGrid hexGrid;
     public GroundBallManager groundBallManager;
+    public MovementPhaseManager movementPhaseManager;
     public OutOfBoundsManager outOfBoundsManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
@@ -28,6 +29,7 @@ public class LongBallManager : MonoBehaviour
     private HexCell finalHex;
     private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
+    public bool isWaitingForDefLBMove = false;
 
     // Step 1: Handle the input for starting the long pass (initial logic)
     void Update()
@@ -306,6 +308,7 @@ public class LongBallManager : MonoBehaviour
             {
                 yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
             }
+            yield return StartCoroutine(HandleGKFreeMove());
             Debug.Log("Ball landed within bounds.");
             if (targetHex.isDefenseOccupied)
             {
@@ -340,6 +343,34 @@ public class LongBallManager : MonoBehaviour
         // Allow GK Movement
         // And Check Again
         // CheckForLongBallInterception(targetHex);
+    }
+
+    public IEnumerator HandleGKFreeMove()
+    {
+        isWaitingForDefLBMove = true;
+        PlayerToken defenderGK = hexGrid.GetDefendingGK();
+
+        if (defenderGK == null)
+        {
+            Debug.LogError("No defending goalkeeper found!");
+            yield break;
+        }
+
+        HexCell gkHex = defenderGK.GetCurrentHex();
+        movementPhaseManager.HighlightValidMovementHexes(defenderGK, defenderGK.pace);
+
+        if (hexGrid.highlightedHexes.Count == 0)
+        {
+            Debug.Log("GK has no valid move options. Skipping free move.");
+            yield break;
+        }
+
+        Debug.Log("🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.");
+
+        while (isWaitingForDefLBMove)
+        {
+            yield return null;
+        }
     }
 
     private void CheckForLongBallInterception(HexCell landingHex)

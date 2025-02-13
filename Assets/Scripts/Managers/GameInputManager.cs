@@ -68,7 +68,6 @@ public class GameInputManager : MonoBehaviour
             Input.GetKeyDown(KeyCode.M)
             && (
                 MatchManager.Instance.currentState == MatchManager.GameState.LongBallCompleted
-                || true
             )
         )
         {
@@ -181,6 +180,13 @@ public class GameInputManager : MonoBehaviour
             )
             {
                 StartCoroutine(HandleMouseInputForGKBoxMovement());
+            }
+            if (
+                MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt
+                && longBallManager.isWaitingForDefLBMove
+            )
+            {
+                StartCoroutine(HandleMouseInputForGKLongBallMovement());
             }
             if (
                     MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
@@ -348,7 +354,7 @@ public class GameInputManager : MonoBehaviour
         {
             firstTimePassManager.HandleFTPBallPath(hex);
         }
-        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt)
+        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt && !longBallManager.isWaitingForDefLBMove)
         {
             longBallManager.HandleLongBallProcess(hex);
         }
@@ -811,6 +817,44 @@ public class GameInputManager : MonoBehaviour
                     hexGrid.ClearHighlightedHexes();
                     yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
                     goalKeeperManager.isWaitingForDefGKBoxMove = false;
+                    Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
+                }
+                else
+                {
+                    Debug.LogWarning($"Cannot move GK there");
+                }
+            }
+            else {
+                Debug.Log("Raycast did not hit any collider.");
+                yield break;
+            }
+        }
+    }
+    public IEnumerator HandleMouseInputForGKLongBallMovement()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            hexGrid.ClearHighlightedHexes();
+            Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
+            longBallManager.isWaitingForDefLBMove = false;
+            yield break;  
+        }
+        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+        {
+            Debug.Log("HandleMouseInputForGKLongBallMovement called on click");
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                // Check if the ray hit a PlayerToken directly
+                // Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+                // Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
+                {
+                    hexGrid.ClearHighlightedHexes();
+                    yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
+                    longBallManager.isWaitingForDefLBMove = false;
                     Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
                 }
                 else

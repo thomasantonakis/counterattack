@@ -1720,10 +1720,12 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
+  movementPhaseManager: {fileID: 1390513032}
   outOfBoundsManager: {fileID: 1326402186}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  isWaitingForDefLBMove: 0
 --- !u!1 &757768960
 GameObject:
   m_ObjectHideFlags: 0
