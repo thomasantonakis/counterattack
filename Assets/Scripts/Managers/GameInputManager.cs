@@ -68,6 +68,7 @@ public class GameInputManager : MonoBehaviour
             Input.GetKeyDown(KeyCode.M)
             && (
                 MatchManager.Instance.currentState == MatchManager.GameState.LongBallCompleted
+                || true
             )
         )
         {

@@ -69,6 +69,8 @@ public class LooseBallManager : MonoBehaviour
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
         yield return StartCoroutine(WaitForInput(KeyCode.R)); 
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int directionRoll = returnedRoll - 1;
         // int directionRoll = 0; // S
         // int directionRoll = 1; // SW
         // int directionRoll = 2; // NW
@@ -137,8 +139,9 @@ public class LooseBallManager : MonoBehaviour
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         yield return StartCoroutine(WaitForInput(KeyCode.R));
+        var (returnedRoll2, returnedJackpot2) = MatchManager.Instance.DiceRoll();
+        // int diceRoll = returnedRoll2;
         int distanceRoll = 6; // Distance 1-6
-        // int distanceRoll = Random.Range(1, 7); // Distance 1-6
 
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
 
@@ -227,7 +230,8 @@ public class LooseBallManager : MonoBehaviour
 
                     yield return StartCoroutine(WaitForInterceptionRoll(potentialInterceptor, hexround2));
                     Debug.Log("Press [R] to roll for interception.");
-                    // int interceptionRoll = Random.Range(1, 7); // Simulate dice roll
+                    var (returnedRoll3, returnedJackpot3) = MatchManager.Instance.DiceRoll();
+                    // int interceptionRoll = returnedRoll3;
                     int interceptionRoll = 1; // Simulate dice roll
                     if (interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10)
                     {

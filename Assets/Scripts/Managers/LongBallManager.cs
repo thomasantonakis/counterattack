@@ -186,8 +186,9 @@ public class LongBallManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Roll the dice (1 to 6)
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int diceRoll = returnedRoll;
         int diceRoll = 1; // Melina Mode
-        // int diceRoll = Random.Range(1, 7);
         Debug.Log($"Accuracy dice roll: {diceRoll}");
         isWaitingForAccuracyRoll = false;
         // Get the passer's highPass attribute
@@ -236,8 +237,9 @@ public class LongBallManager : MonoBehaviour
     IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int diceRoll = returnedRoll;
         int distanceRoll = 6; // Melina Mode
-        // int distanceRoll = Random.Range(1, 7);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final inaccurate target hex
@@ -438,8 +440,9 @@ public class LongBallManager : MonoBehaviour
             }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
+            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+            // int diceRoll = returnedRoll;
             int diceRoll = 6; // Ensure proper range (1-6)
-            // int diceRoll = Random.Range(1, 7); // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;
             Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");

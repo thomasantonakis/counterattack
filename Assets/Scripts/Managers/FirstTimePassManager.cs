@@ -383,7 +383,8 @@ public class FirstTimePassManager : MonoBehaviour
                 // int jerseyNumber = defenderToken.jerseyNumber;
 
                 // Roll the dice
-                // int diceRoll = Random.Range(1, 7);
+                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                // int diceRoll = returnedRoll;
                 int diceRoll = 4;
                 Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
 

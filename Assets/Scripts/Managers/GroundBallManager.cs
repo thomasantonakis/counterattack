@@ -381,8 +381,9 @@ public class GroundBallManager : MonoBehaviour
         {
             // Roll the dice (1 to 6)
             // int diceRoll = 6; // God Mode
-            // int diceRoll = 5; // Stupid Mode
-            int diceRoll = Random.Range(1, 7);
+            // int diceRoll = 1; // Stupid Mode
+            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+            int diceRoll = returnedRoll;
             // Retrieve the defender token
             PlayerToken defenderToken = currentDefenderHex.occupyingToken;
             if (defenderToken == null)

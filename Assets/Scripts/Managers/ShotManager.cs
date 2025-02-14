@@ -366,7 +366,8 @@ public class ShotManager : MonoBehaviour
                 }
 
                 // Roll the dice
-                int diceRoll = UnityEngine.Random.Range(1, 7);
+                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                int diceRoll = returnedRoll;
                 if (defenderName == "11. Poulsen")
                 {
                     diceRoll = 3;
@@ -458,10 +459,11 @@ public class ShotManager : MonoBehaviour
     private IEnumerator StartShotRoll()
     {
         Debug.Log("Hello from the StartShotRoll");
-        // shooterRoll = UnityEngine.Random.Range(1, 7);
-        shooterRoll = 2;
+        
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        shooterRoll = returnedRoll;
         isWaitingForShotRoll = false;
-        totalShotPower = shooterRoll + shooter.shooting;
+        totalShotPower = returnedJackpot ? 50 : shooterRoll + shooter.shooting;
         boxPenalty = shooter.GetCurrentHex().isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
         // TODO: dificult shooting position penalty
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
@@ -493,10 +495,13 @@ public class ShotManager : MonoBehaviour
                         MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                         , MatchManager.ActionType.GoalScored
                     );
+                if (MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose != null)
+                {
                     MatchManager.Instance.gameData.gameLog.LogEvent(
                         MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
                         , MatchManager.ActionType.AssistProvided
                     );
+                }
                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                 goalFlowManager.StartGoalFlow(shooter);
                 ResetShotProcess();
@@ -509,12 +514,18 @@ public class ShotManager : MonoBehaviour
         isWaitingForGKDiceRoll = false;
         yield return null;
         PlayerToken gkToken = gkEntry.defender;
-        // int gkRoll = UnityEngine.Random.Range(1, 7);
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int gkRoll = returnedRoll;
         int gkRoll = 6;
         int gkPenalty = gkEntry.gkPenalty ?? 0;
+        // int totalSavingPower = returnedJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
         int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 1;
-
+        // if (returnedJackpot)
+        // {
+        //     Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
+        // }
+        // else
         Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
         MatchManager.Instance.gameData.gameLog.LogEvent(
                 gkToken
@@ -602,7 +613,8 @@ public class ShotManager : MonoBehaviour
     {
       yield return null;
       PlayerToken gkToken = interceptors[0].defender;
-      // int gkRoll = UnityEngine.Random.Range(1, 7);
+      var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+      // int gkRoll = returnedRoll;
       int gkRoll = 1;
       isWaitingforHandlingTest = false;
       // Handling Test
@@ -668,7 +680,8 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator ShootOffTargetRandomizer()
     {
-        int diceRoll = UnityEngine.Random.Range(1, 7);
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        int diceRoll = returnedRoll;
         // int diceRoll = 6;
         switch (diceRoll)
         {

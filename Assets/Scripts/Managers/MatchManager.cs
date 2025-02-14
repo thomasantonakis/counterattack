@@ -1323,4 +1323,15 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public (int _roll, bool _isJackPot) DiceRoll()
+    {
+        bool isJackpot = false;
+        int roll = UnityEngine.Random.Range(1, 7);
+        if (roll == 6)
+        {
+            int secondRoll = UnityEngine.Random.Range(1, 3);
+            isJackpot = secondRoll == 2;
+        }
+        return (roll, isJackpot);
+    }
 }

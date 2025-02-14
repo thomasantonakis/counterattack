@@ -302,8 +302,9 @@ public class HighPassManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int diceRoll = returnedRoll;
         int diceRoll = 6; // Melina Mode
-        // int diceRoll = Random.Range(1, 7);
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -336,8 +337,9 @@ public class HighPassManager : MonoBehaviour
     private void PerformDirectionRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int diceRoll = returnedRoll - 1;
         int diceRoll = 0; // South Mode
-        // int diceRoll = Random.Range(0, 6);
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
         string rolledDirection = TranslateRollToDirection(diceRoll);
@@ -371,8 +373,9 @@ public class HighPassManager : MonoBehaviour
     private IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        // int distanceRoll = returnedRoll;
         int distanceRoll = 5; // Melina Mode
-        // int distanceRoll = Random.Range(1, 7);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance

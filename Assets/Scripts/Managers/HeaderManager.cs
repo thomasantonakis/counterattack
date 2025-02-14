@@ -388,11 +388,13 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        int roll = Random.Range(1, 7);
-                        // int roll = 4;
-                        int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
+                        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                        int roll = returnedRoll;
+                        int totalScore = returnedJackpot ? 50 : roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
+                        // int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[attacker] = (roll, totalScore);
-                        Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading}{penaltyInfo} = {totalScore}");
+                        if (returnedJackpot) Debug.Log($"Attacker {attacker.name} rolled A JACKPOT!!");
+                        else Debug.Log($"Attacker {attacker.name} rolled {roll} + heading {attacker.heading}{penaltyInfo} = {totalScore}");
                         isWaitingForHeaderRoll = false; // Proceed to the next token
                     }
                     yield return null;
@@ -414,11 +416,14 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        // int roll = Random.Range(1, 7);
-                        int roll = 4;
-                        int totalScore = roll + attribute + (hasHeadingPenalty ? -1 : 0);
+                        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                        int roll = returnedRoll;
+                        // int roll = 4;
+                        int totalScore = returnedJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
+                        // int totalScore = roll + attribute + (hasHeadingPenalty ? -1 : 0);
                         tokenScores[defender] = (roll, totalScore);
-                        Debug.Log($"Defender {defender.name} rolled {roll} + {attributelabel} {attribute}{penaltyInfo} = {totalScore}");
+                        if (returnedJackpot) Debug.Log($"Attacker {defender.name} rolled A JACKPOT!!");
+                        else Debug.Log($"Defender {defender.name} rolled {roll} + {attributelabel} {attribute}{penaltyInfo} = {totalScore}");
                         isWaitingForHeaderRoll = false; // Proceed to the next token
                     }
                     yield return null;
@@ -580,7 +585,6 @@ public class HeaderManager : MonoBehaviour
             {
                 Debug.Log($"Attempting to bring the ball down.");
                 inputReceived = true;
-                // isWaitingForControlRoll = true;
                 HexCell ballHex = ball.GetCurrentHex();
                 if (ballHex == null) Debug.LogWarning("ballHex is null");
                 HexCell[] ballNeighbors = ballHex.GetNeighbors(hexGrid);
@@ -589,9 +593,8 @@ public class HeaderManager : MonoBehaviour
                 string penaltyInfo = hasHeadingPenalty ? ", with penalty (-1)" : "";
                 Debug.Log($"Press 'R' to attempt ball control: {challengeWinner.name} (dribbling: {challengeWinner.dribbling}{penaltyInfo}).");
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.R));
-                // isWaitingForControlRoll = false;
-                int roll = 4;
-                // int roll = Random.Range(1, 7);
+                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                int roll = returnedRoll;
                 int totalScore = roll + challengeWinner.dribbling + (hasHeadingPenalty ? -1 : 0);
                 Debug.Log($"Attacker {challengeWinner.name} rolled {roll} + Dribbling {challengeWinner.dribbling}{penaltyInfo} = {totalScore}");
                 if (totalScore >= 9)
@@ -768,8 +771,9 @@ public class HeaderManager : MonoBehaviour
             }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
-            int diceRoll = 6; // Ensure proper range (1-6)
-            // int diceRoll = Random.Range(1, 7); // Ensure proper range (1-6)
+            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+            int diceRoll = returnedRoll;
+            // int diceRoll = 6; // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;
             Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");
@@ -818,6 +822,7 @@ public class HeaderManager : MonoBehaviour
       hasEligibleDefenders = false;
       offeredControl = false;
     }
+    
     public void ResetHeader()
     {
       attEligibleToHead.Clear();

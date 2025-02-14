@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine.Analytics;
 using System;
+using UnityEditor.Experimental.GraphView;
 
 public class MovementPhaseManager : MonoBehaviour
 {
@@ -771,8 +772,9 @@ public class MovementPhaseManager : MonoBehaviour
         if (selectedDefender != null)
         {
             // Roll the dice (1 to 6)
+            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+            // int diceRoll = returnedRoll;
             int diceRoll = 2; // God Mode
-            // int diceRoll = Random.Range(1, 7);
             // Debug.Log($"Dice roll by defender at {selectedDefender.GetCurrentHex().coordinates}: {diceRoll}");
             isWaitingForInterceptionDiceRoll = false;
 
@@ -839,7 +841,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void PerformTackleDiceRoll(bool isDefender)
     {
-        int diceRoll = UnityEngine.Random.Range(1, 7);  // Roll a dice (1 to 6)
+        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        int diceRoll = returnedJackpot ? 50 :returnedRoll;
         
         // // Rigged
         if (isDefender)
@@ -860,13 +863,15 @@ public class MovementPhaseManager : MonoBehaviour
         // {
         //     defenderDiceRoll = diceRoll;
         //     tackleDefenderRolled = true;
-        //     Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
+        //     if (returnedJackpot) Debug.Log($"Defender rolled A JACKPOT!!!");
+        //     else Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         // }
         // else
         // {
         //     attackerDiceRoll = diceRoll;
         //     tackleAttackerRolled = true;
-        //     Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
+        //     if (returnedJackpot) Debug.Log($"Defender rolled A JACKPOT!!!");
+        //     else Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
         //     StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
         // }
     }
@@ -894,8 +899,8 @@ public class MovementPhaseManager : MonoBehaviour
         // Retrieve the dribbling and tackling values
         int defenderTackling = selectedDefender.tackling;
         int attackerDribbling = attackerToken.dribbling;
-        int defenderTotalScore = selectedDefender.tackling + defenderDiceRoll + (isNutmegInProgress ? 1 : 0);
-        int attackerTotalScore = attackerToken.dribbling + attackerDiceRoll;
+        int defenderTotalScore = defenderDiceRoll == 50 ? defenderDiceRoll : selectedDefender.tackling + defenderDiceRoll + (isNutmegInProgress ? 1 : 0);
+        int attackerTotalScore = attackerDiceRoll == 50 ? attackerDiceRoll : attackerToken.dribbling + attackerDiceRoll;
 
         Debug.Log($"Defender Name: {selectedDefender.name} with tackling: {defenderTackling}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}");
         if (defenderDiceRoll <= FOUL_THRESHOLD)
@@ -906,9 +911,13 @@ public class MovementPhaseManager : MonoBehaviour
         }
         else if (defenderTotalScore > attackerTotalScore)
         {
-            Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} beats {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, and wins possession of the ball.");
-            Debug.Log($"{attackerToken.name} will be stunned in next Movement Phase");
-            if(isNutmegInProgress){stunnedforNext.Add(attackerToken);}
+            if (defenderTotalScore == 50) Debug.Log($"Tackle failed! {selectedDefender.name} Rolled a JACKPOT!! Attacker {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore} is left helpless and loses possession of the ball.");
+            else Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} beats {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, and wins possession of the ball.");
+            if(isNutmegInProgress)
+            {
+                Debug.Log($"{attackerToken.name} will be stunned in next Movement Phase");
+                stunnedforNext.Add(attackerToken);
+            }
             ball.SetCurrentHex(selectedDefender.GetCurrentHex());
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(selectedDefender.GetCurrentHex()));  // Move the ball to the defender's hex
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
@@ -924,20 +933,22 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
             Debug.Log("Movement phase ended due to successful tackle.");
         }
-        else if (defenderTotalScore < attackerTotalScore) // TODO: Remove equality when LooseBall is being Developed
+        else if (defenderTotalScore < attackerTotalScore)
         {
             // Defender Loses and gets stunned
-            Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} loses to {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, who retains possession of the ball.");
+            if (attackerTotalScore == 50) Debug.Log($"{attackerToken.name} rolled A JACKPOT!!! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore}. {attackerToken.name} retains possession of the ball.");
+            else Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} loses to {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, who retains possession of the ball.");
             yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
         }
         else if (defenderTotalScore == attackerTotalScore)
         {
-            Debug.Log("Tackle results in a tie. Loose ball situation.");
+            if (defenderTotalScore == 50) Debug.Log("Oh, my! A DOUBLE JACKPOT!! Loose Ball situation from the defender");
+            else Debug.Log($"{selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} is equal to {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}. Tackle results in a tie. Loose ball situation from the defender Hex.");
             isDribblerRunning = false;
             isNutmegInProgress = false;
             nutmegVictim = null;
             remainingDribblerPace = 0;
-            // TODO: in case of a Loose Ball, is the attacker stunned?
+            // TODO: in case of a Loose Ball, is the attacker stunned? I think not!
             StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "ground"));
         }
  
@@ -959,6 +970,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isNutmegInProgress)
         {
             Debug.Log($"Reducing {attackerToken.name}'s remaining Pace by 2 due to the Nutmeg");
+            // TODO: Add log for two paces
             remainingDribblerPace -=2;
             remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
             // Clamp remainingDribblerPaceto 0 and adjust isDribblerRunning accordingly.
@@ -1077,7 +1089,8 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                int roll = UnityEngine.Random.Range(1, 7);  // Roll a dice (1 to 6)
+                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                int roll = returnedRoll;
                 Debug.Log($"Yellow card roll: {roll}");
                 if (roll >= MatchManager.Instance.refereeLeniency)
                 {
@@ -1101,7 +1114,8 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                // int roll = Random.Range(1, 7);  // Roll a dice (1 to 6)
+                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                // int roll = returnedRoll;
                 int roll = 6;
                 Debug.Log($"Injury roll: {roll}");
                 if (roll >= attackerToken.resilience)
