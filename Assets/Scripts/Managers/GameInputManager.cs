@@ -780,6 +780,7 @@ public class GameInputManager : MonoBehaviour
                     hexGrid.ClearHighlightedHexes();
                     yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
                     highPassManager.isWaitingForDefGKChallengeDecision = false;
+                    highPassManager.gkRushedOut = true;
                     headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
                 }
                 else
@@ -831,6 +832,7 @@ public class GameInputManager : MonoBehaviour
             }
         }
     }
+    
     public IEnumerator HandleMouseInputForGKLongBallMovement()
     {
         if (Input.GetKeyDown(KeyCode.X))
@@ -1093,13 +1095,30 @@ public class GameInputManager : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                if (token != null && !token.isAttacker && headerManager.defEligibleToHead.Contains(token) && !headerManager.defenderWillJump.Contains(token))
+                if (token == null)
                 {
-                    StartCoroutine(headerManager.HandleDefenderHeaderSelection(token));
+                    Debug.LogWarning("You did not click on a token");
+                    return;
                 }
                 else
                 {
-                    Debug.Log("Invalid defender selected for header challenge.");
+                    if (token.isAttacker)
+                    {
+                        Debug.LogWarning($"{token.name} is not a defender! Rejecting input");
+                    }
+                    else if (!headerManager.defEligibleToHead.Contains(token))
+                    {
+                        Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
+                    }
+                    else if (headerManager.defenderWillJump.Contains(token))
+                    {
+                        Debug.LogWarning($"{token.name} has already declared to Jump for header. Rejecting input");
+                        // TODO: Maybe deselect?
+                    }
+                    else
+                    {
+                        StartCoroutine(headerManager.HandleDefenderHeaderSelection(token));
+                    }
                 }
             }
             else Debug.LogWarning("Raycast did not hit any collider");

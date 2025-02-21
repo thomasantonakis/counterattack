@@ -49,7 +49,7 @@ public class HeaderManager : MonoBehaviour
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
         hasEligibleAttackers = false;
         hasEligibleDefenders = false;
-        if (highPassManager.didGKMoveInDefPhase) 
+        if (highPassManager.gkRushedOut) 
         {
             defEligibleToHead.Add(hexGrid.GetDefendingGK());
         }
@@ -69,7 +69,7 @@ public class HeaderManager : MonoBehaviour
                 }
                 else
                 {
-                    if (!token.IsGoalKeeper) defEligibleToHead.Add(token);
+                    if (!defEligibleToHead.Contains(token)) defEligibleToHead.Add(token);
                     hasEligibleDefenders = true;
                 }
             }
@@ -237,15 +237,21 @@ public class HeaderManager : MonoBehaviour
     public IEnumerator HandleDefenderHeaderSelection(PlayerToken token)
     {
         // TODO: if attEligibleTohead.Count == 0 threshold = 1
-        int threshold = highPassManager.didGKMoveInDefPhase ? 3 : 2 ;
-        highPassManager.didGKMoveInDefPhase = false;
-        if (defenderWillJump.Count < threshold)
+        int threshold = highPassManager.gkRushedOut ? 3 : 2 ;
+        highPassManager.gkRushedOut = false;
+        if (defenderWillJump.Count < threshold) // TODO: this needs to be turned on a WHILE LOOP
         {
             AddDefenderToHeaderSelection(token);
-            if (defenderWillJump.Count == threshold)
+            if
+            (
+                defenderWillJump.Count == threshold // reached the allowed theshold
+                || defEligibleToHead.All(item => defenderWillJump.Contains(item)) // there are no more eligible defenders.
+            )
             {
                 ConfirmDefenderHeaderSelection();
+                yield break;
             }
+            Debug.LogWarning("HandleDefenderHeaderSelection is running!");
             yield return null; // Yield to wait for input handled by GIM
         }
     }

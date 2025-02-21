@@ -32,6 +32,7 @@ public class HighPassManager : MonoBehaviour
     public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     public bool didGKMoveInDefPhase = false;
+    public bool gkRushedOut = false;
     public bool isWaitingForDefGKChallengeDecision = false;
     public bool isCornerKick = false;
     private const int MAX_PASS_DISTANCE = 15;
@@ -664,6 +665,7 @@ public class HighPassManager : MonoBehaviour
         isCornerKick = false;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
+        gkReachableHexes.Clear();
         // didGKMoveInDefPhase = false; // Reset in headerManager.FindEligibleHeaderTokens()
     }
 }
