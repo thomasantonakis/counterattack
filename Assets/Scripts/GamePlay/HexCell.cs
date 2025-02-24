@@ -12,6 +12,7 @@ public class HexCell : MonoBehaviour
     public bool isOutOfBounds = false;
     public int isInPenaltyBox = 0; // -1 Left, 0 No, 1 Right
     public int isInFinalThird = 0; // -1 Left, 0 No, 1 Right
+    public int isInGoal = 0; // -1 Left, 0 No, 1 Right
     public bool isDifficultShotPosition = false;
     public int isInCircle = 0; // -1 Left, 0 No, 1 Right, 5 Center
     public bool isDark = false;
@@ -63,6 +64,13 @@ public class HexCell : MonoBehaviour
         {
             Debug.LogError($"Hex {coordinates} is missing a renderer. Cannot highlight.");
             return;
+        }
+        if (
+            isInGoal != 0 && transform.position.y == 0
+            // TODO: if we are in a proper state (Attackig MP, Reposition, Shot, Header at GOAL)
+        )
+        {
+            transform.position += Vector3.up * 0.03f; // Put it back.
         }
         // Define your color logic
         Color colorToApply = Color.white; // Default to white
@@ -145,7 +153,10 @@ public class HexCell : MonoBehaviour
         {
             return;
         }
-
+        if (isInGoal != 0 && transform.position.y > 0)
+        {
+            transform.position -= Vector3.up * 0.03f; // Put it back.
+        }
         // If the hex is defense-occupied, reset it to red, else reset to the original color
         if (isDefenseOccupied)
         {
@@ -264,6 +275,7 @@ public class HexCell : MonoBehaviour
 
     public HexCell[] GetNeighbors(HexGrid grid)
     {
+        List<HexCell> validNeighbors = new List<HexCell>();
         HexCell[] neighbors = new HexCell[6];
         // Choose directions based on whether the row (z) is even or odd
         Vector2Int[] offsetDirections = GetDirectionVectors();  // Get appropriate directions
@@ -274,14 +286,22 @@ public class HexCell : MonoBehaviour
             int newZ = coordinates.z + offsetDirections[i].y;
 
             HexCell neighborHex = grid.GetHexCellAt(new Vector3Int(newX, 0, newZ));  // Fetch neighbor in offset coords
-            if (neighborHex != null && !neighborHex.isOutOfBounds)
+            if (
+                neighborHex != null 
+                && (
+                    !neighborHex.isOutOfBounds
+                    || neighborHex.isInGoal != 0 // A out of bounds neighbor which is inGoal, it's a valid neighbor.
+                )
+            )
             {
-                neighbors[i] = neighborHex;
+                // neighbors[i] = neighborHex;
+                validNeighbors.Add(neighborHex);  // ✅ Only add valid neighbors
             }
         }
         // Debug log the neighbors for this hex
         // Debug.Log($"Neighbors of hex ({coordinates.x}, {coordinates.z}): {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
-        return neighbors;
+        // return neighbors;
+        return validNeighbors.ToArray();
     }
 
     public PlayerToken GetOccupyingToken()

@@ -447,6 +447,16 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void DribblerMoved1HexOrReposition()
     {
+        Debug.Log($"BallHex: {ballHex.name}, {ballHex.isInGoal}");
+        Debug.Log($"Ball's currentHex: {ball.GetCurrentHex().name}, {ball.GetCurrentHex().isInGoal}");
+        if (ball.GetCurrentHex().isInGoal != 0)
+        {
+          Debug.Log($"{selectedToken.name} walked or repositioned in the goal! It's a GOAL!!!!");
+          // TRIGGER The GOAL CELEBRATION
+          // LOG The GOAL
+          return;
+        }
+                  
         if(isDribblerRunning)
         {
             HighlightValidMovementHexes(selectedToken, 1);
@@ -470,7 +480,7 @@ public class MovementPhaseManager : MonoBehaviour
         else
         {
             Debug.LogWarning("How did we end up here? DribblerMoved1HexOrReposition when isDribblerRunning = False");
-            Debug.LogWarning("Maybe a Change of Possession after a successful Tackle or a Failed Nutmeg.");
+            // this appeared after a reposition of the attacker.
         }
     }
 
@@ -580,8 +590,10 @@ public class MovementPhaseManager : MonoBehaviour
             if (MatchManager.Instance.currentState != MatchManager.GameState.HighPassDefenderMovement && ball.GetCurrentHex() == previousHex)
             {
                 ball.SetCurrentHex(step);  // Update ball's hex to the current step
+                Debug.Log($"Ball is at: {ball.GetCurrentHex().name}");
                 ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's height
             }
+            ball.AdjustBallHeightBasedOnOccupancy();
             // 🛑 CHECK IF THE BALL ENTERED THE PENALTY BOX
             if (previousHex.isInPenaltyBox == 0 && step.isInPenaltyBox != 0 && token.IsDribbler && goalKeeperManager.ShouldGKMove(step))
             {
@@ -1061,6 +1073,7 @@ public class MovementPhaseManager : MonoBehaviour
                             winnerHex.ResetHighlight();
                             clickedHex.isDefenseOccupied = true;  // Mark the target hex as occupied by an attacker
                         }
+                        foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
                         hexGrid.ClearHighlightedHexes();
                         yield return StartCoroutine(winner.JumpToHex(clickedHex)); // Move the token
                         isWaitingForReposition = false;
@@ -1068,6 +1081,15 @@ public class MovementPhaseManager : MonoBehaviour
                         // clickedHex.ResetHighlight();
                         // clickedHex.HighlightHex("isAttackOccupied");
                         Debug.Log("Repositioning complete.");
+                        isWaitingForReposition = false;
+                        if (winnerHex.isInPenaltyBox == 0 && clickedHex.isInPenaltyBox != 0 && winner.IsDribbler)
+                        {
+                            Debug.Log("⚽ Ball entered penalty box during a reposition! Offering GK a free move.");
+                            if (goalKeeperManager.ShouldGKMove(clickedHex))
+                            {
+                                yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+                            }
+                        }
                         DribblerMoved1HexOrReposition();
                     }
                 }
@@ -1143,6 +1165,8 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 isWaitingForFoulDecision = false;
                 yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
+                AdvanceMovementPhase();
+                // DribblerMoved1HexOrReposition();
             }
             else if (Input.GetKeyDown(KeyCode.Z))
             {

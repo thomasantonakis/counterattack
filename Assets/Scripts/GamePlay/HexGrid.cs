@@ -216,6 +216,18 @@ public class HexGrid : MonoBehaviour
             cell.isInCircle = -1;
         }
 
+        if (Mathf.Abs(cell.coordinates.x) == 19 && cell.coordinates.z >= -4 && cell.coordinates.z <= 3)
+        {
+            if (cell.coordinates.x > 0)
+            {
+                cell.isInGoal = 1;
+            }
+            else
+            {
+                cell.isInGoal = -1;
+            }
+        }
+
         // Debug to visually differentiate hexes in Unity (optional)
         // else if (cell.isKickOff) cell.GetComponent<Renderer>().material.color = Color.red;
         // else if (cell.isOutOfBounds) cell.GetComponent<Renderer>().material.color = Color.blue;

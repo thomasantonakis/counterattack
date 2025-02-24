@@ -142,6 +142,7 @@ public class GameInputManager : MonoBehaviour
                 !movementPhaseManager.isWaitingForInjuryRoll &&
                 !movementPhaseManager.isWaitingForYellowCardRoll &&
                 !movementPhaseManager.isWaitingForFoulDecision &&
+                !goalKeeperManager.isWaitingForDefGKBoxMove &&
                 (
                     MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
                     MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
