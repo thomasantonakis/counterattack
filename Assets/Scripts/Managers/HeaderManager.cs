@@ -109,7 +109,12 @@ public class HeaderManager : MonoBehaviour
                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                         if (Physics.Raycast(ray, out RaycastHit hit))
                         {
-                            var (inferredTokenFromClick, inferredHexCellFromClick) =  gameInputManager.DetectTokenOrHexClicked(hit);
+                            var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  gameInputManager.DetectTokenOrHexClicked(hit);
+                            if (isOOBClicked)
+                            {
+                                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                                continue;
+                            }
                             if (inferredTokenFromClick == null)
                             {
                                 Debug.LogWarning("No token was clicked");
@@ -538,7 +543,12 @@ public class HeaderManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    var (inferredTokenFromClick, inferredHexCellFromClick) =  gameInputManager.DetectTokenOrHexClicked(hit);
+                    var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  gameInputManager.DetectTokenOrHexClicked(hit);
+                    if (isOOBClicked)
+                    {
+                        Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                        continue;
+                    }
                     if (inferredTokenFromClick == null)
                     {
                         Debug.LogWarning("No token was clicked");
@@ -655,7 +665,13 @@ public class HeaderManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                    var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = gameInputManager.DetectTokenOrHexClicked(hit);
+                    if (isOOBClicked)
+                    {
+                      Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                      yield break;
+                    }
+                    HexCell clickedHex = inferredHexCellFromClick;
                     // TODO: Exclude from valid targets the Hexes of Jumped Tokens
                     // TODO: Handle Click On Token or Ball Properly to infer the Hex
                     if (clickedHex != null && !clickedHex.isDefenseOccupied)
