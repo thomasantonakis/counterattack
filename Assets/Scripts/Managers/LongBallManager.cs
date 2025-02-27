@@ -324,7 +324,6 @@ public class LongBallManager : MonoBehaviour
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
                 MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
-                finalThirdManager.TriggerFinalThirdPhase();
             }
             else if (targetHex.isAttackOccupied)
             {
@@ -333,18 +332,14 @@ public class LongBallManager : MonoBehaviour
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
                 MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
                 MatchManager.Instance.currentState = MatchManager.GameState.LongBallCompleted;
-                finalThirdManager.TriggerFinalThirdPhase();
             }
             else {
                 // Landed neither on Def or Attacker. Check for defender's ZOI interception
                 CheckForLongBallInterception(targetHex);
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
             }
+            finalThirdManager.TriggerFinalThirdPhase();
         }
-        // TODO: Check for interception by defenders in the ZOI
-        // Allow GK Movement
-        // And Check Again
-        // CheckForLongBallInterception(targetHex);
     }
 
     public IEnumerator HandleGKFreeMove()
