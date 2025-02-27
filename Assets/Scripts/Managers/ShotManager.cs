@@ -424,6 +424,11 @@ public class ShotManager : MonoBehaviour
                                 );
                                 yield return StartCoroutine(ShootOffTargetRandomizer());
                                 ResetShotProcess();
+                                if (movementPhaseManager.isMovementPhaseInProgress)
+                                {
+                                    movementPhaseManager.EndMovementPhase(false);
+                                    movementPhaseManager.stunnedTokens.Clear();
+                                }
                                 // TODO: Implement GoalKick
                             }
                             else
@@ -438,6 +443,11 @@ public class ShotManager : MonoBehaviour
                                     , MatchManager.ActionType.AssistProvided
                                 );
                                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
+                                if (movementPhaseManager.isMovementPhaseInProgress)
+                                {
+                                    movementPhaseManager.EndMovementPhase(false);
+                                    movementPhaseManager.stunnedTokens.Clear();
+                                }
                                 goalFlowManager.StartGoalFlow(shooter);
                                 ResetShotProcess();
                             }
@@ -462,6 +472,7 @@ public class ShotManager : MonoBehaviour
         
         var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
         shooterRoll = returnedRoll;
+        // shooterRoll = 2;
         isWaitingForShotRoll = false;
         totalShotPower = returnedJackpot ? 50 : shooterRoll + shooter.shooting;
         boxPenalty = shooter.GetCurrentHex().isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
@@ -469,7 +480,7 @@ public class ShotManager : MonoBehaviour
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         if (shotType == "snapshot") totalShotPower -= 1; 
         if (shooter.GetCurrentHex().isInPenaltyBox == 0) totalShotPower -= 1;
-
+        totalShotPower = 6;
         if (interceptors.Count > 0 && interceptors[0].gkPenalty != null) // Check if the GK is next
         {
             Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save. Press [R] to roll");
@@ -519,8 +530,8 @@ public class ShotManager : MonoBehaviour
         int gkRoll = 6;
         int gkPenalty = gkEntry.gkPenalty ?? 0;
         // int totalSavingPower = returnedJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
-        int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
-        // int totalSavingPower = 1;
+        // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
+        int totalSavingPower = 6;
         // if (returnedJackpot)
         // {
         //     Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
@@ -563,6 +574,11 @@ public class ShotManager : MonoBehaviour
             );
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
+            if (movementPhaseManager.isMovementPhaseInProgress)
+            {
+                movementPhaseManager.EndMovementPhase(false);
+                // movementPhaseManager.stunnedTokens.Clear();
+            }
             MatchManager.Instance.ChangePossession();
             yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
@@ -582,6 +598,11 @@ public class ShotManager : MonoBehaviour
                 if (shooterRoll == 1)
                 {
                     Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
+                    if (movementPhaseManager.isMovementPhaseInProgress)
+                    {
+                        movementPhaseManager.EndMovementPhase(false);
+                        movementPhaseManager.stunnedTokens.Clear();
+                    }
                     MatchManager.Instance.gameData.gameLog.LogEvent(
                         MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                         , MatchManager.ActionType.ShotOffTarget
@@ -601,6 +622,11 @@ public class ShotManager : MonoBehaviour
                         , MatchManager.ActionType.AssistProvided
                     );
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
+                    if (movementPhaseManager.isMovementPhaseInProgress)
+                    {
+                        movementPhaseManager.EndMovementPhase(false);
+                        movementPhaseManager.stunnedTokens.Clear();
+                    }
                     goalFlowManager.StartGoalFlow(shooter);
                     ResetShotProcess();
                 }
@@ -627,6 +653,11 @@ public class ShotManager : MonoBehaviour
           );
           MatchManager.Instance.SetLastToken(gkToken);
           Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
+          if (movementPhaseManager.isMovementPhaseInProgress)
+          {
+              movementPhaseManager.EndMovementPhase(false);
+              // movementPhaseManager.stunnedTokens.Clear();
+          }
           isWaitingForSaveandHoldScenario = true;
           while (isWaitingForSaveandHoldScenario)
           {
