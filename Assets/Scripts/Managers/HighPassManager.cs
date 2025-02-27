@@ -404,6 +404,7 @@ public class HighPassManager : MonoBehaviour
 
     private IEnumerator HandleHighPassMovement(HexCell targetHex)
     {
+        HexCell positionOfpasser = ball.GetCurrentHex();
         if (targetHex == null)
         {
             Debug.LogError("Target Hex is null in HandleHighPassMovement!");
@@ -432,7 +433,10 @@ public class HighPassManager : MonoBehaviour
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
-        if (goalKeeperManager.ShouldGKMove(targetHex))
+        if (
+            goalKeeperManager.ShouldGKMove(targetHex)
+            && positionOfpasser.isInPenaltyBox * targetHex.isInPenaltyBox != 1 // The HP was played from anywhere except the same box
+        )
         {
             yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
         }

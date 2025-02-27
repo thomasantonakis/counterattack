@@ -170,6 +170,7 @@ public class GoalFlowManager : MonoBehaviour
         yield return StartCoroutine(MovePlayersToHexes(attackers, celebrationHexes));
         // 4️⃣ Wait a bit to celebrate
         yield return new WaitForSeconds(1); // Small pause for celebration
+        Debug.Log("Waited for 1 second, going back!");
         // 6️⃣ Move attackers back to their reset positions
         // TeleportPlayersToHexes(attackers, attackerResetHexes);
         yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes));
