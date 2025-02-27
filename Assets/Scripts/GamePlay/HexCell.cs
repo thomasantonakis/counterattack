@@ -65,13 +65,13 @@ public class HexCell : MonoBehaviour
             Debug.LogError($"Hex {coordinates} is missing a renderer. Cannot highlight.");
             return;
         }
-        if (
-            isInGoal != 0 && transform.position.y == 0
-            // TODO: if we are in a proper state (Attackig MP, Reposition, Shot, Header at GOAL)
-        )
-        {
-            transform.position += Vector3.up * 0.03f; // Put it back.
-        }
+        // if (
+        //     isInGoal != 0 && transform.position.y == 0
+        //     // TODO: if we are in a proper state (Attackig MP, Reposition, Shot, Header at GOAL)
+        // )
+        // {
+        //     transform.position += Vector3.up * 0.03f; // Put it back.
+        // }
         // Define your color logic
         Color colorToApply = Color.white; // Default to white
 
@@ -153,10 +153,10 @@ public class HexCell : MonoBehaviour
         {
             return;
         }
-        if (isInGoal != 0 && transform.position.y > 0)
-        {
-            transform.position -= Vector3.up * 0.03f; // Put it back.
-        }
+        // if (isInGoal != 0 && transform.position.y > 0)
+        // {
+        //    transform.position -= Vector3.up * 0.03f; // Put it back.
+        // }
         // If the hex is defense-occupied, reset it to red, else reset to the original color
         if (isDefenseOccupied)
         {

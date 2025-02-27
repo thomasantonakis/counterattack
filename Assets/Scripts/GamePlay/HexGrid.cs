@@ -420,12 +420,10 @@ public class HexGrid : MonoBehaviour
         float horizontalOffset = width * hexRadius;
         float verticalOffset = height * hexRadius;
         // Layer index for the "IgnoreRaycast" layer
-        int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
 
         // Left Plane (to the left of the grid)
         GameObject leftPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
         leftPlane.name = "Left Out-of-Bounds";
-        leftPlane.layer = ignoreRaycastLayer;
         leftPlane.transform.localScale = new Vector3(horizontalOffset * 2 , horizontalOffset * 2, 1);  // Scale based on grid height
         leftPlane.transform.position = new Vector3(topLeftHex.GetHexCorners()[5].x - horizontalOffset , planeHeight, 0);  // Place at the left edge
         leftPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
@@ -434,7 +432,6 @@ public class HexGrid : MonoBehaviour
         // Right Plane (to the left of the grid)
         GameObject rightPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
         rightPlane.name = "Right Out-of-Bounds";
-        rightPlane.layer = ignoreRaycastLayer;
         rightPlane.transform.localScale = new Vector3(horizontalOffset * 2 , horizontalOffset * 2, 1);  // Scale based on grid height
         rightPlane.transform.position = new Vector3(bottomRightHex.GetHexCorners()[2].x + horizontalOffset , planeHeight, 0);  // Place at the left edge
         rightPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
@@ -443,7 +440,6 @@ public class HexGrid : MonoBehaviour
         // Top Plane (above the grid)
         GameObject topPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
         topPlane.name = "Top Out-of-Bounds";
-        topPlane.layer = ignoreRaycastLayer;
         topPlane.transform.localScale = new Vector3(verticalOffset * 2 , verticalOffset * 2, 1);  // Scale based on grid height
         topPlane.transform.position = new Vector3(0 , planeHeight, topLeftHex.GetHexCorners()[2].z + verticalOffset);  // Place at the left edge
         topPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
@@ -452,11 +448,18 @@ public class HexGrid : MonoBehaviour
         // Bottom Plane (below the grid)
         GameObject bottomPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
         bottomPlane.name = "Bottom Out-of-Bounds";
-        bottomPlane.layer = ignoreRaycastLayer;
         bottomPlane.transform.localScale = new Vector3(verticalOffset * 2 , verticalOffset * 2, 1);  // Scale based on grid height
         bottomPlane.transform.position = new Vector3(0 , planeHeight, bottomRightHex.GetHexCorners()[5].z - verticalOffset );  // Place at the left edge
         bottomPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
         bottomPlane.GetComponent<Renderer>().material = blueMaterial;
+
+        // Uncomment the below in order to ignore raycasts on the out of bounds planes.
+        // If this is commented, then we need to handle clicks on hexes that are below the planes.
+        // int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
+        // leftPlane.layer = ignoreRaycastLayer;
+        // rightPlane.layer = ignoreRaycastLayer;
+        // topPlane.layer = ignoreRaycastLayer;
+        // bottomPlane.layer = ignoreRaycastLayer;
 
         // Optionally, parent these planes to a game object (e.g., "OutOfBounds")
         GameObject outOfBoundsParent = new GameObject("OutOfBoundsPlanes");

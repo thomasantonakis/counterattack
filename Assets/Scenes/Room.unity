@@ -2824,6 +2824,7 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  goalFlowManager: {fileID: 2034852868}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   ballHex: {fileID: 0}
@@ -3989,6 +3990,7 @@ MonoBehaviour:
   isWaitingForDirectionRoll: 0
   isWaitingForDistanceRoll: 0
   didGKMoveInDefPhase: 0
+  gkRushedOut: 0
   isWaitingForDefGKChallengeDecision: 0
   isCornerKick: 0
 --- !u!4 &1859472973
