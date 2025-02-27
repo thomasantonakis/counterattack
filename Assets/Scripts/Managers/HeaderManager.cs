@@ -623,7 +623,6 @@ public class HeaderManager : MonoBehaviour
                     );
                     MatchManager.Instance.SetLastToken(challengeWinner);
                     MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
-                    
                 }
                 else
                 {
@@ -633,7 +632,6 @@ public class HeaderManager : MonoBehaviour
                     StartCoroutine(looseBallManager.ResolveLooseBall(challengeWinner, "ground"));
                 }
             }
-
             yield return null;
         }
     }
@@ -843,6 +841,7 @@ public class HeaderManager : MonoBehaviour
       hasEligibleAttackers = false;
       hasEligibleDefenders = false;
       offeredControl = false;
+      challengeWinner = null;
     }
     
     public void ResetHeader()

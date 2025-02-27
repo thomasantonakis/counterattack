@@ -16,6 +16,7 @@ public class MovementPhaseManager : MonoBehaviour
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
+    public GoalFlowManager goalFlowManager;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public HexCell ballHex;
@@ -285,7 +286,14 @@ public class MovementPhaseManager : MonoBehaviour
                 // Highlight the hex based on ZOI entry and range
                 if (hexDistance <= movementRange)
                 {
-                    hex.HighlightHex("PaceAvailable");  // Normal color for reachable hexes
+                    // if (
+                    //     token.GetCurrentHex() == ballHex // token is on the ball
+                    //     && hex.isInGoal != 0 // the hex is in a goal
+                    //     // the hex is in the attaking part of the dribbler
+                    // )
+                    {
+                        hex.HighlightHex("PaceAvailable");  // Normal color for reachable hexes
+                    }
                 }
             }
         }
@@ -452,6 +460,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (ball.GetCurrentHex().isInGoal != 0)
         {
           Debug.Log($"{selectedToken.name} walked or repositioned in the goal! It's a GOAL!!!!");
+          goalFlowManager.StartGoalFlow(ball.GetCurrentHex().GetOccupyingToken());
           // TRIGGER The GOAL CELEBRATION
           // LOG The GOAL
           return;
