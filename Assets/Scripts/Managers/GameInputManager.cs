@@ -1,10 +1,12 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 
 public class GameInputManager : MonoBehaviour
@@ -26,12 +28,23 @@ public class GameInputManager : MonoBehaviour
     public Ball ball;  
     public HexGrid hexGrid; 
     public MatchManager matchManager;
+    public static event Action<PlayerToken, HexCell> OnClick;
+    public static event Action<PlayerToken, HexCell> OnHover;
+    public static event Action<KeyCode> OnKeyPress;
     [Header("Layers")]
     public LayerMask tokenLayerMask;  // Layer for player tokens
     public LayerMask hexLayerMask;    // Layer for hex grid
 
+    [Header("Hovers")]
+    public PlayerToken hoveredToken = null;
+    public HexCell hoveredHex = null;
+    [Header("Clicks")]
+    public PlayerToken clickedToken = null;
+    public HexCell clickedHex = null;
     private Vector3 mouseDownPosition;  
-    private bool isDragging = false;    
+    public bool isDragging = false;    
+    [SerializeField]
+    private bool logIsOn = false;    
     public float dragThreshold = 10f;   
 
     void Start()
@@ -41,16 +54,204 @@ public class GameInputManager : MonoBehaviour
 
     void Update()
     {
-        cameraController.HandleCameraInput();
-        HandleMouseInput();
+        // cameraController.HandleCameraInput();
+        ProcessInputs();
+        // HandleMouseInput();
+        // HandleSpecialInputs();
+    }
 
-        if (MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
+    private void ProcessInputs()
+    {
+      HandleMouseHover();
+      DetectMouseDrag();     // Drag overrides click
+      HandleKeyPresses();
+    }
+
+    private void HandleMouseHover()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit hover))
         {
-            MatchManager.Instance.StartMatch();
+            ClearHover();
+            return;
+        }
+        
+        var (newHoveredToken, newHoveredHex, isOOBClick) = DetectTokenOrHexClicked(hover);
+
+        if (isOOBClick)
+        {
+            ClearHover();
+            return;
         }
 
-        HandleSpecialInputs();
+        // ✅ Only update hover state when it changes
+        if (newHoveredToken != hoveredToken || newHoveredHex != hoveredHex)
+        {
+            hoveredToken = newHoveredToken;
+            hoveredHex = newHoveredHex;
+            // HandleHover(hoveredToken, hoveredHex);
+            OnHover?.Invoke(hoveredToken, hoveredHex);  // 📣 Broadcast hover updates
+        }
     }
+
+    private void DetectMouseDrag()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            mouseDownPosition = Input.mousePosition;
+            isDragging = false;
+        }
+        if (Input.GetMouseButton(0))
+        {
+            if (!isDragging && Vector3.Distance(mouseDownPosition, Input.mousePosition) > dragThreshold)
+            {
+                isDragging = true;
+            }
+
+            if (isDragging)
+            {
+                cameraController.HandleCameraInput();
+            }
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (!isDragging)
+            {
+                if (logIsOn) Debug.Log("🖱️ No drag → treat as click.");
+                HandleMouseClick();
+            }
+            else
+            {
+                if (logIsOn) Debug.Log("🖱️ Drag ended.");
+            }
+            isDragging = false;
+        }
+    }
+
+    private void HandleMouseClick()
+    {
+        if (logIsOn) Debug.Log("HandleMouseClick called!");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit click))
+        {
+            return;
+        }
+        else
+        {
+            if (logIsOn) Debug.Log("Raycast was successful");
+            var (newClickedToken, newClickedHex, isOOBClick) = DetectTokenOrHexClicked(click);
+            if (isOOBClick)
+            {
+                clickedToken = null;
+                clickedHex = null;
+            }
+            else
+            {
+                if (logIsOn) Debug.Log("Updating Clicked Items");
+                // ✅ Only update clicked items when they change
+                if (newClickedToken != clickedToken || newClickedHex != clickedHex)
+                {
+                    clickedToken = newClickedToken;
+                    clickedHex = newClickedHex;
+                }
+            }
+            OnClick?.Invoke(clickedToken, clickedHex);  // 📣 Broadcast the click event
+        }
+    }
+    
+    // private void HandleHover(PlayerToken token, HexCell hex)
+    // {
+    //     if (logIsOn)
+    //     {
+    //         if (token != null)
+    //         {
+    //             Debug.Log($"👀 Hovering over Token: {token.name}");
+    //             // Highlight token, show stats, etc.
+    //         }
+    //         else if (hex != null)
+    //         {
+    //             Debug.Log($"👀 Hovering over Hex: {hex.name}");
+    //             // Show movement paths, highlight, etc.
+    //         }
+    //         else
+    //         {
+    //             Debug.Log("❓ Hovering over empty space.");
+    //         }
+    //     }
+    // }
+
+    private void ClearHover()
+    {
+        if (hoveredToken != null || hoveredHex != null)
+        {
+            Debug.Log("🏁 Hover cleared.");
+        }
+        hoveredToken = null;
+        hoveredHex = null;
+    }
+    
+    private void HandleKeyPresses()
+    {
+        if (Input.anyKeyDown)
+        {
+            foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKeyDown(kcode))
+                {
+                    if (logIsOn) Debug.Log($"🔑 Key pressed: {kcode}");
+                    OnKeyPress?.Invoke(kcode);  // 📣 Broadcast the key press
+                }
+            }
+        }
+    }
+
+    // private void HandleKeyAction(KeyCode key)
+    // {
+    //     // switch (key)
+    //     // {
+    //     //     case KeyCode.R:
+    //     //         Debug.Log("🔁 Reload or Roll logic here.");
+    //     //         break;
+
+    //     //     case KeyCode.Space:
+    //     //         Debug.Log("⏸ Pause logic here.");
+    //     //         break;
+
+    //     //     case KeyCode.Escape:
+    //     //         Debug.Log("❌ Cancel logic here.");
+    //     //         break;
+
+    //     //     case KeyCode.Alpha1:
+    //     //         Debug.Log("1️⃣ Select action 1.");
+    //     //         break;
+
+    //     //     case KeyCode.Alpha2:
+    //     //         Debug.Log("2️⃣ Select action 2.");
+    //     //         break;
+
+    //     //     default:
+    //     //         Debug.Log($"🪓 No action mapped for {key}");
+    //     //         break;
+    //     // }
+    // }
+
+    // private void HandleClick(PlayerToken token, HexCell hex)
+    // {
+    //     if (token != null)
+    //     {
+    //         Debug.Log($"🎯 Clicked on Token: {token.name}");
+    //         // HandleTokenClick(token);
+    //     }
+    //     else if (hex != null)
+    //     {
+    //         Debug.Log($"🎯 Clicked on Hex: {hex.name}");
+    //         HandleHexClick(hex);
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning("❓ Click did not hit a valid game object.");
+    //     }
+    // }
 
     void HandleSpecialInputs()
     {
@@ -277,72 +478,40 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    void HandleMouseInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            mouseDownPosition = Input.mousePosition;
-            isDragging = false;
-        }
-        
-        if (Input.GetMouseButton(0))
-        {
-            if (!isDragging && Vector3.Distance(mouseDownPosition, Input.mousePosition) > dragThreshold)
-            {
-                isDragging = true;
-            }
+    // void HandleClick()
+    // {
+    //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //     RaycastHit hit;
 
-            if (isDragging)
-            {
-                cameraController.HandleCameraInput();
-            }
-        }
+    //     // Check if we hit a token first
+    //     if (Physics.Raycast(ray, out hit, Mathf.Infinity, tokenLayerMask))
+    //     {
+    //         Ray hexRay = new Ray(hit.point + Vector3.up * 0.1f, Vector3.down);
+    //         RaycastHit hexHit;
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (!isDragging)
-            {
-                HandleClick();
-            }
-            isDragging = false;
-        }
-    }
-
-    // This method handles the click logic for tokens and hexes
-    void HandleClick()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        // Check if we hit a token first
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, tokenLayerMask))
-        {
-            Ray hexRay = new Ray(hit.point + Vector3.up * 0.1f, Vector3.down);
-            RaycastHit hexHit;
-
-            // Raycast down to detect the hex beneath the token
-            if (Physics.Raycast(hexRay, out hexHit, Mathf.Infinity, hexLayerMask))
-            {
-                HexCell clickedHex = hexHit.collider.GetComponent<HexCell>();
-                if (clickedHex != null)
-                {
-                    HandleHexClick(clickedHex);
-                }
-            }
-        }
-        else if (Physics.Raycast(ray, out hit, Mathf.Infinity, hexLayerMask))
-        {
-            HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-            if (clickedHex != null)
-            {
-                HandleHexClick(clickedHex);
-            }
-        }
-    }
+    //         // Raycast down to detect the hex beneath the token
+    //         if (Physics.Raycast(hexRay, out hexHit, Mathf.Infinity, hexLayerMask))
+    //         {
+    //             HexCell clickedHex = hexHit.collider.GetComponent<HexCell>();
+    //             if (clickedHex != null)
+    //             {
+    //                 HandleHexClick(clickedHex);
+    //             }
+    //         }
+    //     }
+    //     else if (Physics.Raycast(ray, out hit, Mathf.Infinity, hexLayerMask))
+    //     {
+    //         HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+    //         if (clickedHex != null)
+    //         {
+    //             HandleHexClick(clickedHex);
+    //         }
+    //     }
+    // }
 
     private void HandleHexClick(HexCell hex)
     {
-        // Debug.Log($"Hex clicked: {hex.name}");
+        Debug.LogError($"LEGACY: Hex clicked: {hex.name}");
         // TODO: Remove this altogether and change the logic
         if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
         {
@@ -382,46 +551,16 @@ public class GameInputManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Debug.Log("HandleMouseInputForMovement: Raycast hit something");
-
-                Ball clickedBall = hit.collider.GetComponent<Ball>();
-                HexCell clickedBallHex = null;
-                PlayerToken clickedBallToken = null;
-                if (clickedBall != null)
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
                 {
-                    clickedBallHex = clickedBall.GetCurrentHex(); 
-                    clickedBallToken = clickedBallHex?.GetOccupyingToken();
-                    if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
-                    else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
                 }
-                PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
-                HexCell clickedTokenHex = null;
-                if (clickedToken != null)
-                {
-                    clickedTokenHex = clickedToken.GetCurrentHex();
-                    Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
-                }
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                PlayerToken tokenOnClickedHex = null;
-                if (clickedHex != null)
-                {
-                    tokenOnClickedHex = clickedHex.GetOccupyingToken();
-                    if (tokenOnClickedHex != null)
-                    {
-                        Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
-                    }
-                    else 
-                    {
-                        Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
-                    }
-                }
-                PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
-                HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;
-                Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
-                Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}");
 
                 // When do we need a expect a Token Selection?
                 if (
-                    inferredToken != null // A token was indeed inferred from the click
+                    inferredTokenFromClick != null // A token was indeed inferred from the click
                     && !movementPhaseManager.isPlayerMoving // Wait for anumations to stop
                     && !movementPhaseManager.isDribblerRunning // The Dribbler has not started moving
                     && (
@@ -433,8 +572,8 @@ public class GameInputManager : MonoBehaviour
                     && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving // Do not handle a Token when waiting for Nutmeg Decision without moving
                 )
                 {
-                    Debug.Log($"Passing {inferredToken.name} to HandleTokenSelection");
-                    movementPhaseManager.HandleTokenSelection(inferredToken);  // Select the token first
+                    Debug.Log($"Passing {inferredTokenFromClick.name} to HandleTokenSelection");
+                    movementPhaseManager.HandleTokenSelection(inferredTokenFromClick);  // Select the token first
                     yield return null;
                 }
                 else if (
@@ -445,17 +584,17 @@ public class GameInputManager : MonoBehaviour
                 )
                 {
                     // We clicked on a Nutmeggable Defender
-                    if (movementPhaseManager.nutmeggableDefenders.Contains(inferredToken))
+                    if (movementPhaseManager.nutmeggableDefenders.Contains(inferredTokenFromClick))
                     {
                         // Start the Nutmeg with the Selected nutmeggable Token
                         Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked");
                         movementPhaseManager.isWaitingForSnapshotDecision = false;
                         movementPhaseManager.isWaitingForNutmegDecision = false;
                         movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
-                        movementPhaseManager.nutmegVictim = inferredToken;
+                        movementPhaseManager.nutmegVictim = inferredTokenFromClick;
                         movementPhaseManager.isDribblerRunning = true;
                         hexGrid.ClearHighlightedHexes();
-                        Debug.Log($"Selected {inferredToken.name} to nutmeg. Proceeding with nutmeg.");
+                        Debug.Log($"Selected {inferredTokenFromClick.name} to nutmeg. Proceeding with nutmeg.");
                         movementPhaseManager.lookingForNutmegVictim = false;
                         movementPhaseManager.StartNutmegProcess();
                         yield return null;
@@ -463,7 +602,7 @@ public class GameInputManager : MonoBehaviour
                     else
                     {
                         Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was not clicked");
-                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCell))
+                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCellFromClick))
                         {
                             // Turning off wait for Nutmeg decision flags.
                             if (movementPhaseManager.isWaitingForTackleDecisionWithoutMoving)
@@ -478,16 +617,16 @@ public class GameInputManager : MonoBehaviour
                             {
                                 movementPhaseManager.isWaitingForSnapshotDecision = false;
                             }
-                            Debug.Log($"Passing {inferredHexCell.name} to MoveTokenToHex");
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCell));  // Move the selected token to the hex
+                            Debug.Log($"Passing {inferredHexCellFromClick.name} to MoveTokenToHex");
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));  // Move the selected token to the hex
                         }
                     }
                 }
                 else if (movementPhaseManager.lookingForNutmegVictim)
                 {
                     // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
-                    Debug.Log($"Passing {inferredToken.name} to HandleNutmegVictimSelection");
-                    movementPhaseManager.HandleNutmegVictimSelection(inferredToken);
+                    Debug.Log($"Passing {inferredTokenFromClick.name} to HandleNutmegVictimSelection");
+                    movementPhaseManager.HandleNutmegVictimSelection(inferredTokenFromClick);
                     yield return null;
                 }
                 else
@@ -497,16 +636,16 @@ public class GameInputManager : MonoBehaviour
                     if (!movementPhaseManager.isWaitingForNutmegDecision && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
                     {
                         // If the hex is not occupied, check if it's valid for movement
-                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCell))
+                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCellFromClick))
                         {
                             movementPhaseManager.isWaitingForSnapshotDecision = false;
-                            bool temp_check = ball.GetCurrentHex() == inferredHexCell && movementPhaseManager.selectedToken != null;
+                            bool temp_check = ball.GetCurrentHex() == inferredHexCellFromClick && movementPhaseManager.selectedToken != null;
                             if (temp_check)
                             {
                                 movementPhaseManager.tokenPickedUpBall = true;
                             }
-                            Debug.Log($"Passing {inferredHexCell.name} to MoveTokenToHex");
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCell));  // Move the selected token to the hex
+                            Debug.Log($"Passing {inferredHexCellFromClick.name} to MoveTokenToHex");
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));  // Move the selected token to the hex
                             if (temp_check)
                             {
                                 movementPhaseManager.isBallPickable = false;
@@ -588,43 +727,13 @@ public class GameInputManager : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 Debug.Log("HandleMouseInputForF3: Click Detected!");
-
-                Ball clickedBall = hit.collider.GetComponent<Ball>();
-                HexCell clickedBallHex = null;
-                PlayerToken clickedBallToken = null;
-                if (clickedBall != null)
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
                 {
-                    clickedBallHex = clickedBall.GetCurrentHex(); 
-                    clickedBallToken = clickedBallHex?.GetOccupyingToken();
-                    // if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
-                    // else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   return;
                 }
-                PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
-                HexCell clickedTokenHex = null;
-                if (clickedToken != null)
-                {
-                    clickedTokenHex = clickedToken.GetCurrentHex();
-                    // Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
-                }
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                PlayerToken tokenOnClickedHex = null;
-                if (clickedHex != null)
-                {
-                    tokenOnClickedHex = clickedHex.GetOccupyingToken();
-                    // if (tokenOnClickedHex != null)
-                    // {
-                    //     Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
-                    // }
-                    // else 
-                    // {
-                    //     Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
-                    // }
-                }
-                PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
-                HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;
-                // Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
-                // Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}");
-                StartCoroutine(finalThirdManager.HandleMouseInput(inferredToken, inferredHexCell));
+                StartCoroutine(finalThirdManager.HandleMouseInput(inferredTokenFromClick, inferredHexCellFromClick));
             }
         }
     }
@@ -636,14 +745,19 @@ public class GameInputManager : MonoBehaviour
             Debug.Log("HandleMouseInputForHighPassMovement called on click");
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 Debug.Log("Raycast hit something");
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
+                }
 
                 // Check if a player token was clicked
-                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                PlayerToken token = inferredTokenFromClick;
                 if (token != null)
                 {
                     Debug.Log($"PlayerToken {token.name} clicked");
@@ -708,7 +822,7 @@ public class GameInputManager : MonoBehaviour
                 }
 
                 // Check if a valid hex was clicked (for movement)
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                HexCell clickedHex = inferredHexCellFromClick;
                 if (clickedHex != null)
                 {
                     Debug.Log($"Hex clicked: {clickedHex.name}");
@@ -772,7 +886,12 @@ public class GameInputManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
+                }
                 // Check if the ray hit a PlayerToken directly
                 Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
                 Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
@@ -795,6 +914,7 @@ public class GameInputManager : MonoBehaviour
             }
         }
     }
+    
     public IEnumerator HandleMouseInputForGKBoxMovement()
     {
         if (Input.GetKeyDown(KeyCode.X))
@@ -811,10 +931,13 @@ public class GameInputManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
-                // Check if the ray hit a PlayerToken directly
-                // Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                // Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
+                }
+
                 if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
                 {
                     hexGrid.ClearHighlightedHexes();
@@ -850,10 +973,13 @@ public class GameInputManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
-                // Check if the ray hit a PlayerToken directly
-                // Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                // Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
+                }
+
                 if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
                 {
                     hexGrid.ClearHighlightedHexes();
@@ -880,11 +1006,15 @@ public class GameInputManager : MonoBehaviour
             Debug.Log("HandleMouseInputForFTPMovement called on click");
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 Debug.Log("Raycast hit something");
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
+                }
 
                 // Check if a player token was clicked
                 PlayerToken token = hit.collider.GetComponent<PlayerToken>();
@@ -979,30 +1109,36 @@ public class GameInputManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Debug.Log("Raycast hit something");
-
-                // Check if a player token was clicked
-                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                PlayerToken tokenOnHex = clickedHex?.GetOccupyingToken();
-                PlayerToken inferredToken = token ?? tokenOnHex ?? null;
-
-                if (inferredToken != null && shotManager.isWaitingforBlockerSelection)
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
                 {
-                    Debug.Log($"PlayerToken {inferredToken.name} clicked, for Snapshot");
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   yield break;
+                }
+
+                // // Check if a player token was clicked
+                // PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+                // HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+                // PlayerToken tokenOnHex = clickedHex?.GetOccupyingToken();
+                // PlayerToken inferredToken = token ?? tokenOnHex ?? null;
+
+                if (inferredTokenFromClick != null && shotManager.isWaitingforBlockerSelection)
+                {
+                    Debug.Log($"PlayerToken {inferredTokenFromClick.name} clicked, for Snapshot");
 
                     // Attacker Phase: Ensure the token is an attacker
-                    if (!inferredToken.isAttacker)
+                    if (!inferredTokenFromClick.isAttacker)
                     {
                         // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
-                        if (shotManager.tokenMoveforDeflection != null && shotManager.tokenMoveforDeflection != inferredToken)
+                        if (shotManager.tokenMoveforDeflection != null && shotManager.tokenMoveforDeflection != inferredTokenFromClick)
                         {
-                            Debug.Log($"Switching Defender selection to {inferredToken.name}. Clearing previous highlights.");
+                            Debug.Log($"Switching Defender selection to {inferredTokenFromClick.name}. Clearing previous highlights.");
                             hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
                         }
 
-                        Debug.Log($"Selecting defender {inferredToken.name}. Highlighting reachable hexes.");
-                        shotManager.tokenMoveforDeflection = inferredToken;  // Set selected token
-                        movementPhaseManager.HighlightValidMovementHexes(inferredToken, 2);  // Highlight reachable hexes within 3 moves
+                        Debug.Log($"Selecting defender {inferredTokenFromClick.name}. Highlighting reachable hexes.");
+                        shotManager.tokenMoveforDeflection = inferredTokenFromClick;  // Set selected token
+                        movementPhaseManager.HighlightValidMovementHexes(inferredTokenFromClick, 2);  // Highlight reachable hexes within 3 moves
                         shotManager.isWaitingforBlockerSelection = false;
                         shotManager.isWaitingforBlockerMovement = true;
                         yield return null;
@@ -1012,24 +1148,24 @@ public class GameInputManager : MonoBehaviour
                     }
                 }
 
-                if (clickedHex != null && shotManager.isWaitingforBlockerMovement)
+                if (inferredHexCellFromClick != null && shotManager.isWaitingforBlockerMovement)
                 {
-                    Debug.Log($"Hex clicked: {clickedHex.name}");
+                    Debug.Log($"Hex clicked: {inferredHexCellFromClick.name}");
 
                     // Ensure the hex is within the highlighted valid movement hexes
                     if (
-                        hexGrid.highlightedHexes.Contains(clickedHex)
-                        && !clickedHex.isAttackOccupied
-                        && !clickedHex.isDefenseOccupied
-                        && !clickedHex.isOutOfBounds
+                        hexGrid.highlightedHexes.Contains(inferredHexCellFromClick)
+                        && !inferredHexCellFromClick.isAttackOccupied
+                        && !inferredHexCellFromClick.isDefenseOccupied
+                        && !inferredHexCellFromClick.isOutOfBounds
                     )
                     {
                         if (shotManager.tokenMoveforDeflection != null)
                         {
-                            Debug.Log($"Moving {shotManager.tokenMoveforDeflection.name} to hex {clickedHex.coordinates}");
+                            Debug.Log($"Moving {shotManager.tokenMoveforDeflection.name} to hex {inferredHexCellFromClick.coordinates}");
 
                             // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, shotManager.tokenMoveforDeflection, false));  // Pass the selected token
+                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, shotManager.tokenMoveforDeflection, false));  // Pass the selected token
                             shotManager.CompleteDefenderMovement();
                         }
                         else
@@ -1043,13 +1179,13 @@ public class GameInputManager : MonoBehaviour
                     }
                 }
                 else if (
-                    clickedHex != null // we clicked a Hex
+                    inferredHexCellFromClick != null // we clicked a Hex
                     && shotManager.isWaitingForTargetSelection // We are indeed waiting for a targetSelection
-                    && hexGrid.highlightedHexes.Contains(clickedHex) // one of the target Hexes
+                    && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick) // one of the target Hexes
                 )
                 {
-                    Debug.Log($"Valid selected Target Hex: {clickedHex.name}");
-                    shotManager.HandleTargetClick(clickedHex);                    
+                    Debug.Log($"Valid selected Target Hex: {inferredHexCellFromClick.name}");
+                    shotManager.HandleTargetClick(inferredHexCellFromClick);                    
                 }
                 else
                 {
@@ -1150,7 +1286,12 @@ public class GameInputManager : MonoBehaviour
                         Debug.Log("Raycast did not hit any collider.");
                         return;
                     }
-                    var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                    var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                    if (isOOBClicked)
+                    {
+                      Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                      return;
+                    }
                     // Check if the ray hit a PlayerToken directly
                     Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
                     Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
@@ -1180,7 +1321,12 @@ public class GameInputManager : MonoBehaviour
                         Debug.Log("Raycast did not hit any collider.");
                         return;
                     }
-                    var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                    var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                    if (isOOBClicked)
+                    {
+                      Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                      return;
+                    }
                     // Check if the ray hit a PlayerToken directly
                     Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
                     Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
@@ -1260,7 +1406,12 @@ public class GameInputManager : MonoBehaviour
                     Debug.Log("Raycast did not hit any collider.");
                     return;
                 }
-                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   return;
+                }
                 // Check if the ray hit a PlayerToken directly
                 Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
                 Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
@@ -1286,7 +1437,12 @@ public class GameInputManager : MonoBehaviour
                     Debug.Log("Raycast did not hit any collider.");
                     return;
                 }
-                var (inferredTokenFromClick, inferredHexCellFromClick) =  DetectTokenOrHexClicked(hit);
+                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+                if (isOOBClicked)
+                {
+                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+                   return;
+                }
                 // Check if the ray hit a PlayerToken directly
                 Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
                 Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
@@ -1306,8 +1462,15 @@ public class GameInputManager : MonoBehaviour
             kickoffManager.ConfirmSetup();
         }
     }
-    public (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick) DetectTokenOrHexClicked(RaycastHit hit)
+    
+    public (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick, bool isOutOfBoundsClick) DetectTokenOrHexClicked(RaycastHit hit)
     {
+        // Detect if we hit an Out-of-Bounds Plane
+        if (hit.collider.name.Contains("Out-of-Bounds"))
+        {
+            if (logIsOn) Debug.Log($"🚫 Clicked on {hit.collider.name} - Out of Bounds area.");
+            return (null, null, true);  // ✅ Indicate this was an OOB click
+        }
         Ball clickedBall = hit.collider.GetComponent<Ball>();
         HexCell clickedBallHex = null;
         PlayerToken clickedBallToken = null;
@@ -1315,34 +1478,43 @@ public class GameInputManager : MonoBehaviour
         {
             clickedBallHex = clickedBall.GetCurrentHex(); 
             clickedBallToken = clickedBallHex?.GetOccupyingToken();
-            if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
-            else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+            if (logIsOn)
+            {
+                if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
+                else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+            }
         }
         PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
         HexCell clickedTokenHex = null;
         if (clickedToken != null)
         {
             clickedTokenHex = clickedToken.GetCurrentHex();
-            Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
+            if (logIsOn) Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
         }
         HexCell clickedHex = hit.collider.GetComponent<HexCell>();
         PlayerToken tokenOnClickedHex = null;
         if (clickedHex != null)
         {
             tokenOnClickedHex = clickedHex.GetOccupyingToken();
-            if (tokenOnClickedHex != null)
+            if (logIsOn)
             {
-                Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
-            }
-            else 
-            {
-                Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
+                if (tokenOnClickedHex != null)
+                {
+                    Debug.Log($"Raycast hit {clickedHex.name}, where {tokenOnClickedHex.name} is on");
+                }
+                else 
+                {
+                    Debug.Log($"Raycast hit {clickedHex.name}, which is not occupied ");
+                }
             }
         }
         PlayerToken inferredToken = clickedBallToken ?? clickedToken ?? tokenOnClickedHex ?? null;
         HexCell inferredHexCell = clickedBallHex ?? clickedTokenHex ?? clickedHex ?? null;
-        Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
-        Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}"); 
-        return (inferredToken, inferredHexCell);      
+        if (logIsOn)
+        {
+            Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
+            Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}"); 
+        }
+        return (inferredToken, inferredHexCell, false);      
     }
 }

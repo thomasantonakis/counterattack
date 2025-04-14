@@ -752,6 +752,12 @@ MonoBehaviour:
   hexLayerMask:
     serializedVersion: 2
     m_Bits: 128
+  hoveredToken: {fileID: 0}
+  hoveredHex: {fileID: 0}
+  clickedToken: {fileID: 0}
+  clickedHex: {fileID: 0}
+  isDragging: 0
+  logIsOn: 0
   dragThreshold: 10
 --- !u!1 &421809151
 GameObject:
@@ -1933,6 +1939,7 @@ MonoBehaviour:
   zoomSpeed: 15
   dragSpeed: 30
   rotationSpeed: 1000
+  gameInputManager: {fileID: 417053521}
 --- !u!1 &977372727
 GameObject:
   m_ObjectHideFlags: 0
