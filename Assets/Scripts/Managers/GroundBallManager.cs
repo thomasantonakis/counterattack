@@ -13,9 +13,13 @@ public class GroundBallManager : MonoBehaviour
     public HexGrid hexGrid;
     public FinalThirdManager finalThirdManager;
     [Header("Runtime Items")]
+    public bool isAvailable = false;        // Check if the GroundBall is available as an action from the user.
+    public bool isActivated = false;        // To check if the script is activated
+    public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
     public int imposedDistance = 11;
     private HexCell currentTargetHex = null;   // The currently selected target hex
     private HexCell lastClickedHex = null;     // The last hex that was clicked
+    [SerializeField]
     private bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     private bool passIsDangerous = false;      // To check if the pass is dangerous
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
@@ -23,13 +27,60 @@ public class GroundBallManager : MonoBehaviour
     private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
     private int diceRollsPending = 0;          // Number of pending dice rolls
 
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (isAwaitingTargetSelection)
+        {
+            HandleGroundBallPath(hex);
+        }
+    }
+
+    private void OnKeyReceived(KeyCode key)
+    {
+        // return;
+        if (isAvailable && !isActivated && key == KeyCode.P)
+        {
+            ActivateGroundBall();
+        }
+        if (isActivated)
+        {
+            if (isWaitingForDiceRoll && key == KeyCode.R)
+            {
+                // Check if waiting for dice rolls and the R key is pressed
+                PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when R is pressed
+            }
+        }
+    }
+
     void Update()
     {
-        // Check if waiting for dice rolls and the R key is pressed
-        if (isWaitingForDiceRoll && Input.GetKeyDown(KeyCode.R))
-        {
-            PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when D is pressed
-        }
+
+    }
+
+    private void ActivateGroundBall()
+    {
+        isActivated = true;
+        isAvailable = false;  // Make it non available to avoid restarting this action again.
+        if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
+        isAwaitingTargetSelection = true;
+        Debug.Log("GroundBallManager activated. Waiting for target selection...");
+    }
+
+    private void CommitToThisAction()
+    {
+        // Broadcast the commitment to this action
     }
     
     private async Task StartCoroutineAndWait(IEnumerator coroutine)
@@ -77,6 +128,7 @@ public class GroundBallManager : MonoBehaviour
         // Handle each difficulty's behavior
         if (difficulty == 3) // Hard Mode
         {
+            isAwaitingTargetSelection = false;
             PopulateGroundPathInterceptions(clickedHex, isGk);
             if (passIsDangerous)
             {
@@ -118,6 +170,7 @@ public class GroundBallManager : MonoBehaviour
             // Medium Mode: Wait for a second click for confirmation
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
+                isAwaitingTargetSelection = false;
                 PopulateGroundPathInterceptions(clickedHex, isGk);
                 if (passIsDangerous)
                 {
@@ -127,44 +180,7 @@ public class GroundBallManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Pass is not dangerous, moving ball.");
-                    PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-                    // Debug.Log("📌 Checking MatchManager instance...");
-                    // if (MatchManager.Instance == null) Debug.LogError("❌ MatchManager.Instance is NULL!");
-
-                    // Debug.Log("📌 Checking gameData...");
-                    // if (MatchManager.Instance.gameData == null) Debug.LogError("❌ MatchManager.Instance.gameData is NULL!");
-
-                    // Debug.Log("📌 Checking gameLog...");
-                    // if (MatchManager.Instance.gameData.gameLog == null) Debug.LogError("❌ MatchManager.Instance.gameData.gameLog is NULL!");
-
-                    // Debug.Log("📌 Checking Token...");
-                    // if (passer == null) Debug.LogError("❌ Ball hex has no occupying token! Cannot determine passer.");
-
-                    // Debug.Log("✅ All checks passed, logging event...");
-                    // Debug.Log($"🎯 Logging pass attempt by {passer.playerName}");
-                    MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassAttempt);
-                    // MatchManager.PlayerStats playerStats = MatchManager.Instance.gameData.stats.GetPlayerStats(passer.playerName);
-                    // Debug.Log($"📊 {passer.playerName} - Passes Attempted: {playerStats.passesAttempted}");
-                    // MatchManager.TeamStats teamStats = MatchManager.Instance.gameData.stats.GetTeamStats(passer.isHomeTeam);
-                    // Debug.Log($"📈 {MatchManager.Instance.gameData.gameSettings.homeTeamName} - Total Passes Attempted: {teamStats.totalPassesAttempted}");
-
-
-                    await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
-                    imposedDistance = 11;
-                    MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
-                    finalThirdManager.TriggerFinalThirdPhase();
-                    if (clickedHex.isAttackOccupied)
-                    {
-                        MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
-                        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-                    }
-                    else
-                    {
-                        MatchManager.Instance.hangingPassType = "ground";
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
-                    }
+                    MoveTheBall(clickedHex); // Execute pass
                 }
                 ball.DeselectBall();
             }
@@ -185,6 +201,7 @@ public class GroundBallManager : MonoBehaviour
             {
                 // Second click on the same hex: confirm the pass
                 Debug.Log("Second click detected, confirming pass...");
+                isAwaitingTargetSelection = false;
                 PopulateGroundPathInterceptions(clickedHex, isGk);
                 if (passIsDangerous)
                 {
@@ -194,21 +211,7 @@ public class GroundBallManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Pass is not dangerous, moving ball.");
-                    await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
-                    imposedDistance = 11;
-                    finalThirdManager.TriggerFinalThirdPhase();
-                    MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
-                    if (clickedHex.isAttackOccupied)
-                    {
-                        MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted); // Log CompletedPass
-                        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-                    }
-                    else {
-                        MatchManager.Instance.hangingPassType = "ground";
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
-                    }
+                    MoveTheBall(clickedHex); // Execute pass
                 }
                 ball.DeselectBall();
             }
@@ -356,6 +359,39 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
+    private async void MoveTheBall(HexCell trgDestHex)
+    {
+        Debug.Log("Pass is not dangerous, moving ball.");
+        LogGroundPassAttempt();
+        await StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
+        imposedDistance = 11;
+        MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
+        finalThirdManager.TriggerFinalThirdPhase();
+        if (trgDestHex.isAttackOccupied)
+        {
+            LogGroundPassSucess();
+            MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+        }
+        else
+        {
+            MatchManager.Instance.hangingPassType = "ground";
+            MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+        }
+        isActivated = false;
+    }
+
+    public void LogGroundPassAttempt()
+    {
+        PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassAttempt);
+    }
+    public void LogGroundPassSucess()
+    {
+        PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
+        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
+    }
+
     void StartGroundPassInterceptionDiceRollSequence()
     {
         Debug.Log($"Defenders with interception chances: {defendingHexes.Count}");
@@ -459,6 +495,9 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
         imposedDistance = 11;
         finalThirdManager.TriggerFinalThirdPhase();
+        isActivated = false;
+        isAvailable = true;  // Make it available again as in Any Other Scenario
+        // TODO: Broadcast ANY OTHER SCENARIO
     }
 
     void ResetGroundPassInterceptionDiceRolls()
