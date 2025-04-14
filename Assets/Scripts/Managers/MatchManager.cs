@@ -894,10 +894,35 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+    }
+
+    private void OnKeyReceived(KeyCode key)
+    {
+        if (currentState == GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
+        {
+            StartMatch();
+        }
+    }
+
     // Example method to start the match
     public void StartMatch()
     {
         currentState = GameState.KickoffBlown;
+        groundBallManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team to call an action");
