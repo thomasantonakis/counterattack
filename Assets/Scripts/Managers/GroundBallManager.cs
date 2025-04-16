@@ -12,18 +12,21 @@ public class GroundBallManager : MonoBehaviour
     public Ball ball;
     public HexGrid hexGrid;
     public FinalThirdManager finalThirdManager;
+    public FirstTimePassManager firstTimePassManager;
     [Header("Runtime Items")]
     public bool isAvailable = false;        // Check if the GroundBall is available as an action from the user.
     public bool isActivated = false;        // To check if the script is activated
     public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
     public int imposedDistance = 11;
+    [SerializeField]
     private HexCell currentTargetHex = null;   // The currently selected target hex
-    private HexCell lastClickedHex = null;     // The last hex that was clicked
     [SerializeField]
     private bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     private bool passIsDangerous = false;      // To check if the pass is dangerous
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
+    [SerializeField]
     private List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
+    [SerializeField]
     private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
     private int diceRollsPending = 0;          // Number of pending dice rolls
 
@@ -64,13 +67,11 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-
-    }
-
     private void ActivateGroundBall()
     {
+        MatchManager.Instance.TriggerStandardPass();
+        ball.SelectBall();
+        Debug.Log("Standard pass attempt mode activated.");
         isActivated = true;
         isAvailable = false;  // Make it non available to avoid restarting this action again.
         if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
@@ -114,7 +115,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public async void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, bool isGk = false)
+    public void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, bool isGk = false)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized path validation and danger assessment
@@ -122,36 +123,38 @@ public class GroundBallManager : MonoBehaviour
         if (!isValid)
         {
             // Debug.LogWarning("Invalid pass. Path rejected.");
+            currentTargetHex = null;
+            // lastClickedHex = null;  // Reset the last clicked hex
             return; // Reject invalid paths
         }
-        currentTargetHex = clickedHex;  // Assign the current target hex
+        // currentTargetHex = clickedHex;  // Assign the current target hex
         // Handle each difficulty's behavior
         if (difficulty == 3) // Hard Mode
         {
-            isAwaitingTargetSelection = false;
-            PopulateGroundPathInterceptions(clickedHex, isGk);
-            if (passIsDangerous)
-            {
-                diceRollsPending = defendingHexes.Count; // is this relevant here?
-                Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-                StartGroundPassInterceptionDiceRollSequence();
-            }
-            else
-            {
-                Debug.Log("Pass is not dangerous, moving ball.");
-                await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
-                finalThirdManager.TriggerFinalThirdPhase();
-                imposedDistance = 11;
-                MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
-                if (clickedHex.isAttackOccupied)
-                {
-                    MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-                }
-                else {
-                    MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
-                }
-            }
-            ball.DeselectBall();
+            // isAwaitingTargetSelection = false;
+            // PopulateGroundPathInterceptions(clickedHex, isGk);
+            // if (passIsDangerous)
+            // {
+            //     diceRollsPending = defendingHexes.Count; // is this relevant here?
+            //     Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+            //     StartGroundPassInterceptionDiceRollSequence();
+            // }
+            // else
+            // {
+            //     Debug.Log("Pass is not dangerous, moving ball.");
+            //     await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+            //     finalThirdManager.TriggerFinalThirdPhase();
+            //     imposedDistance = 11;
+            //     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
+            //     if (clickedHex.isAttackOccupied)
+            //     {
+            //         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+            //     }
+            //     else {
+            //         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
+            //     }
+            // }
+            // ball.DeselectBall();
         }
         else if (difficulty == 2)
         {
@@ -168,7 +171,10 @@ public class GroundBallManager : MonoBehaviour
                 Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
             }
             // Medium Mode: Wait for a second click for confirmation
-            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+            if (
+                clickedHex == currentTargetHex
+                // && clickedHex == lastClickedHex
+            )
             {
                 isAwaitingTargetSelection = false;
                 PopulateGroundPathInterceptions(clickedHex, isGk);
@@ -180,6 +186,7 @@ public class GroundBallManager : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("Pass is not dangerous, moving ball.");
                     MoveTheBall(clickedHex); // Execute pass
                 }
                 ball.DeselectBall();
@@ -189,39 +196,39 @@ public class GroundBallManager : MonoBehaviour
                 hexGrid.ClearHighlightedHexes();
                 HighlightValidGroundPassPath(pathHexes, isDangerous);
                 currentTargetHex = clickedHex;
-                lastClickedHex = clickedHex;  // Set for confirmation click
+                // lastClickedHex = clickedHex;  // Set for confirmation click
             }
         }
         else if (difficulty == 1) // Easy Mode: Handle hover and clicks with immediate highlights
         {
-            PopulateGroundPathInterceptions(clickedHex, isGk);
-            diceRollsPending = defendingHexes.Count; // is this relevant here?
-            Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
-            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
-            {
-                // Second click on the same hex: confirm the pass
-                Debug.Log("Second click detected, confirming pass...");
-                isAwaitingTargetSelection = false;
-                PopulateGroundPathInterceptions(clickedHex, isGk);
-                if (passIsDangerous)
-                {
-                    diceRollsPending = defendingHexes.Count; // is this relevant here?
-                    Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-                    StartGroundPassInterceptionDiceRollSequence();
-                }
-                else
-                {
-                    MoveTheBall(clickedHex); // Execute pass
-                }
-                ball.DeselectBall();
-            }
-            else
-            {
-                hexGrid.ClearHighlightedHexes();
-                HighlightValidGroundPassPath(pathHexes, isDangerous);
-                currentTargetHex = clickedHex; // Set this as the current target hex
-                lastClickedHex = clickedHex; // Track the last clicked hex
-            }
+            // PopulateGroundPathInterceptions(clickedHex, isGk);
+            // diceRollsPending = defendingHexes.Count; // is this relevant here?
+            // Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+            // if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+            // {
+            //     // Second click on the same hex: confirm the pass
+            //     Debug.Log("Second click detected, confirming pass...");
+            //     isAwaitingTargetSelection = false;
+            //     PopulateGroundPathInterceptions(clickedHex, isGk);
+            //     if (passIsDangerous)
+            //     {
+            //         diceRollsPending = defendingHexes.Count; // is this relevant here?
+            //         Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+            //         StartGroundPassInterceptionDiceRollSequence();
+            //     }
+            //     else
+            //     {
+            //         MoveTheBall(clickedHex); // Execute pass
+            //     }
+            //     ball.DeselectBall();
+            // }
+            // else
+            // {
+            //     hexGrid.ClearHighlightedHexes();
+            //     HighlightValidGroundPassPath(pathHexes, isDangerous);
+            //     currentTargetHex = clickedHex; // Set this as the current target hex
+            //     lastClickedHex = clickedHex; // Track the last clicked hex
+            // }
         }
     }
 
@@ -361,23 +368,22 @@ public class GroundBallManager : MonoBehaviour
 
     private async void MoveTheBall(HexCell trgDestHex)
     {
-        Debug.Log("Pass is not dangerous, moving ball.");
         LogGroundPassAttempt();
         await StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
-        imposedDistance = 11;
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         finalThirdManager.TriggerFinalThirdPhase();
         if (trgDestHex.isAttackOccupied)
         {
             LogGroundPassSucess();
             MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
+            firstTimePassManager.isAvailable = true;
         }
         else
         {
             MatchManager.Instance.hangingPassType = "ground";
             MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
         }
-        isActivated = false;
+        CleanUpPass();
     }
 
     public void LogGroundPassAttempt()
@@ -385,6 +391,7 @@ public class GroundBallManager : MonoBehaviour
         PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassAttempt);
     }
+    
     public void LogGroundPassSucess()
     {
         PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
@@ -411,7 +418,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public async void PerformGroundInterceptionDiceRoll()
+    public void PerformGroundInterceptionDiceRoll()
     {
         if (currentDefenderHex != null)
         {
@@ -444,7 +451,6 @@ public class GroundBallManager : MonoBehaviour
                 );
                 MatchManager.Instance.SetLastToken(defenderToken);
                 StartCoroutine(HandleBallInterception(currentDefenderHex));
-                ResetGroundPassInterceptionDiceRolls();
             }
             else
             {
@@ -466,26 +472,13 @@ public class GroundBallManager : MonoBehaviour
                     {
                         Debug.LogError("currentTargetHex is null despite the pass being valid.");
                     }
-                    await StartCoroutineAndWait(HandleGroundBallMovement(currentTargetHex)); // Execute pass
-                    imposedDistance = 11;
-                    finalThirdManager.TriggerFinalThirdPhase();
-                    MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
-                    if (currentTargetHex.isAttackOccupied)
-                    {
-                        MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted); // Log CompletedPass
-                        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-                    }
-                    else {
-                        MatchManager.Instance.hangingPassType = "ground";
-                        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
-                    }
+                    MoveTheBall(currentTargetHex);
+                    CleanUpPass();
                 }
             }
         }
     }
 
-    // Create a new coroutine to handle ball movement and update possession after the ball moves
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
         yield return StartCoroutine(HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
@@ -493,11 +486,20 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
-        imposedDistance = 11;
         finalThirdManager.TriggerFinalThirdPhase();
-        isActivated = false;
-        isAvailable = true;  // Make it available again as in Any Other Scenario
+        ResetGroundPassInterceptionDiceRolls();
+        CleanUpPass();
         // TODO: Broadcast ANY OTHER SCENARIO
+    }
+    
+    private void CleanUpPass()
+    {
+        hexGrid.ClearHighlightedHexes();
+        isAvailable = false;
+        isActivated = false;
+        isAwaitingTargetSelection = false;
+        currentTargetHex = null;  // Reset current target hex
+        ResetGroundPassInterceptionDiceRolls();
     }
 
     void ResetGroundPassInterceptionDiceRolls()
