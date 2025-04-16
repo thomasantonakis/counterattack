@@ -275,14 +275,14 @@ public class GameInputManager : MonoBehaviour
         {
             MatchManager.Instance.TriggerMovement();
         }
-        else if (
-            Input.GetKeyDown(KeyCode.C) && !freeKickManager.isCornerKick
-            // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle
-        )
-        {
-            hexGrid.ClearHighlightedHexes(); 
-            MatchManager.Instance.TriggerHighPass();
-        }
+        // else if (
+        //     Input.GetKeyDown(KeyCode.C) && !freeKickManager.isCornerKick
+        //     // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle
+        // )
+        // {
+        //     hexGrid.ClearHighlightedHexes(); 
+        //     MatchManager.Instance.TriggerHighPass();
+        // }
         else if (Input.GetKeyDown(KeyCode.L))
         {
             hexGrid.ClearHighlightedHexes(); 
@@ -362,28 +362,28 @@ public class GameInputManager : MonoBehaviour
                 }
                 StartCoroutine(HandleMouseInputForMovement());
             }
-            if (
-                (
-                    MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
-                    MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement
-                ) && !highPassManager.isWaitingForDefGKChallengeDecision
-            )
-            {
-                StartCoroutine(HandleMouseInputForHighPassMovement());
-            }
-            if (
-                MatchManager.Instance.currentState == MatchManager.GameState.HighPassCompleted
-                && highPassManager.isWaitingForDefGKChallengeDecision
-            )
-            {
-                StartCoroutine(HandleMouseInputForHPGKRush());
-            }
-            if (
-                goalKeeperManager.isWaitingForDefGKBoxMove
-            )
-            {
-                StartCoroutine(HandleMouseInputForGKBoxMovement());
-            }
+            // if (
+            //     (
+            //         MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
+            //         MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement
+            //     ) && !highPassManager.isWaitingForDefGKChallengeDecision
+            // )
+            // {
+            //     StartCoroutine(HandleMouseInputForHighPassMovement());
+            // }
+            // if (
+            //     MatchManager.Instance.currentState == MatchManager.GameState.HighPassCompleted
+            //     && highPassManager.isWaitingForDefGKChallengeDecision
+            // )
+            // {
+            //     StartCoroutine(HandleMouseInputForHPGKRush());
+            // }
+            // if (
+            //     goalKeeperManager.isWaitingForDefGKBoxMove
+            // )
+            // {
+            //     StartCoroutine(HandleMouseInputForGKBoxMovement());
+            // }
             if (
                 MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt
                 && longBallManager.isWaitingForDefLBMove
@@ -478,61 +478,31 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    // void HandleClick()
-    // {
-    //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //     RaycastHit hit;
-
-    //     // Check if we hit a token first
-    //     if (Physics.Raycast(ray, out hit, Mathf.Infinity, tokenLayerMask))
-    //     {
-    //         Ray hexRay = new Ray(hit.point + Vector3.up * 0.1f, Vector3.down);
-    //         RaycastHit hexHit;
-
-    //         // Raycast down to detect the hex beneath the token
-    //         if (Physics.Raycast(hexRay, out hexHit, Mathf.Infinity, hexLayerMask))
-    //         {
-    //             HexCell clickedHex = hexHit.collider.GetComponent<HexCell>();
-    //             if (clickedHex != null)
-    //             {
-    //                 HandleHexClick(clickedHex);
-    //             }
-    //         }
-    //     }
-    //     else if (Physics.Raycast(ray, out hit, Mathf.Infinity, hexLayerMask))
-    //     {
-    //         HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-    //         if (clickedHex != null)
-    //         {
-    //             HandleHexClick(clickedHex);
-    //         }
-    //     }
-    // }
 
     private void HandleHexClick(HexCell hex)
     {
         Debug.LogError($"LEGACY: Hex clicked: {hex.name}");
         // TODO: Remove this altogether and change the logic
-        if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
-        {
-            groundBallManager.HandleGroundBallPath(hex); // Normal Standard Pass
-        }
-        else if (MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow)
+        // if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt)
+        // {
+        //     groundBallManager.HandleGroundBallPath(hex); // Normal Standard Pass
+        // }
+        if (MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow)
         {
             groundBallManager.HandleGroundBallPath(hex, true); // QuickThrow
         }
-        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
-        {
-            // firstTimePassManager.HandleFTPBallPath(hex);
-        }
+        // else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
+        // {
+        //     firstTimePassManager.HandleFTPBallPath(hex);
+        // }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt && !longBallManager.isWaitingForDefLBMove)
         {
             longBallManager.HandleLongBallProcess(hex);
         }
-        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttempt)
-        {
-            highPassManager.HandleHighPassProcess(hex, false);
-        }
+        // else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttempt)
+        // {
+        //     highPassManager.HandleHighPassProcess(hex, false);
+        // }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick)
         {
             highPassManager.HandleHighPassProcess(hex, true);
@@ -738,182 +708,51 @@ public class GameInputManager : MonoBehaviour
         }
     }
     
-    public IEnumerator HandleMouseInputForHighPassMovement()
-    {
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForHighPassMovement called on click");
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    // public IEnumerator HandleMouseInputForHPGKRush()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.X))
+    //     {
+    //         hexGrid.ClearHighlightedHexes();
+    //         Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
+    //         highPassManager.isWaitingForDefGKChallengeDecision = false;
+    //         yield break;  
+    //     }
+    //     if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+    //     {
+    //         Debug.Log("HandleMouseInputForHPGKRush called on click");
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Debug.Log("Raycast hit something");
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
-
-                // Check if a player token was clicked
-                PlayerToken token = inferredTokenFromClick;
-                if (token != null)
-                {
-                    Debug.Log($"PlayerToken {token.name} clicked");
-
-                    // Attacker Phase: Ensure the token is an attacker
-                    if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement && token.isAttacker)
-                    {
-                        // ** Targeting a Player
-                        if (highPassManager.lockedAttacker != null)
-                        { 
-                            // Trying to move the locked Player Reject
-                            if (token == highPassManager.lockedAttacker)
-                            {
-                                Debug.LogWarning($"This attacker {token.name} is locked and cannot be moved.");
-                                // Clear previous highlights if locked attacker is clicked
-                                hexGrid.ClearHighlightedHexes();
-                                highPassManager.selectedToken = null;  // Reset selected token
-                                yield return null;  // Exit to avoid selecting a locked attacker
-                            }
-                            else
-                            {
-                                // Trying to move anyone BUT the locked Player, Accept, Highlight and wait for click on Hex
-                                Debug.Log($"Selecting attacker {token.name}. Highlighting reachable hexes.");
-                                highPassManager.selectedToken = token;  // Set selected token
-                                movementPhaseManager.HighlightValidMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
-                                yield return null;
-                            }
-                        }
-                        // ** Targeting a Hex Near One or more Players
-                        // **Check if there are multiple eligible attackers**
-                        else
-                        {
-                            if (highPassManager.eligibleAttackers != null && highPassManager.eligibleAttackers.Contains(token))
-                            {
-                                Debug.Log($"Eligible attacker {token.name} selected. Moving to the target hex.");
-                                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(highPassManager.currentTargetHex, token, false));  // Move attacker to target hex
-                                highPassManager.StartDefenderMovementPhase();  // Transition to defender phase
-                                yield return null;  // Exit after attacker has moved
-                            }
-                            else if (highPassManager.eligibleAttackers != null && !highPassManager.eligibleAttackers.Contains(token))
-                            {
-                                Debug.LogWarning($"Ineligible attacker {token.name} clicked. Rejecting.");
-                                hexGrid.ClearHighlightedHexes();
-                                highPassManager.selectedToken = null;
-                                yield return null;  // Exit after rejecting the ineligible attacker
-                            }
-                        }
-                    }
-                    // Defender Phase: Ensure the token is a defender
-                    else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement && !token.isAttacker)
-                    {
-                        if (highPassManager.selectedToken != null && highPassManager.selectedToken != token)
-                        {
-                            Debug.Log($"Switching defender selection to {token.name}. Clearing previous highlights.");
-                            hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
-                        }
-
-                        highPassManager.selectedToken = token;  // Set the selected defender token
-                        movementPhaseManager.HighlightValidMovementHexes(token, 3);  // Highlight reachable hexes within 3 moves
-                        yield return null;  // Ensure no further processing for this click
-                    }
-                }
-
-                // Check if a valid hex was clicked (for movement)
-                HexCell clickedHex = inferredHexCellFromClick;
-                if (clickedHex != null)
-                {
-                    Debug.Log($"Hex clicked: {clickedHex.name}");
-
-                    // Ensure the hex is within the highlighted valid movement hexes
-                    if (hexGrid.highlightedHexes.Contains(clickedHex))
-                    {
-                        if (highPassManager.selectedToken != null)
-                        {
-                            Debug.Log($"Moving {highPassManager.selectedToken.name} to hex {clickedHex.coordinates}");
-                            // Check if the defending GK was moved
-                            if (highPassManager.selectedToken == hexGrid.GetDefendingGK())
-                            {
-                                highPassManager.didGKMoveInDefPhase = true;
-                            }
-                            // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, highPassManager.selectedToken, false));  // Pass the selected token
-                            highPassManager.selectedToken = null;  // Reset after movement
-
-                            if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement)
-                            {
-                                highPassManager.StartDefenderMovementPhase();  // Transition to defender movement after attacker moves
-                            }
-                            else if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement)
-                            {
-                                highPassManager.isWaitingForAccuracyRoll = true;
-                                Debug.Log("Waiting for accuracy roll... Please Press R key.");
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogWarning("No token selected to move.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Clicked hex is not a valid movement target.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("No valid hex or token clicked.");
-                }
-            }
-        }
-    }
-
-    public IEnumerator HandleMouseInputForHPGKRush()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            hexGrid.ClearHighlightedHexes();
-            Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
-            highPassManager.isWaitingForDefGKChallengeDecision = false;
-            yield break;  
-        }
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForHPGKRush called on click");
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
-                // Check if the ray hit a PlayerToken directly
-                Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
-                if (inferredHexCellFromClick != null && highPassManager.gkReachableHexes.Contains(inferredHexCellFromClick))
-                {
-                    hexGrid.ClearHighlightedHexes();
-                    yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
-                    highPassManager.isWaitingForDefGKChallengeDecision = false;
-                    highPassManager.gkRushedOut = true;
-                    headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
-                }
-                else
-                {
-                    Debug.LogWarning($"Cannot move GK there");
-                }
-            }
-            else {
-                Debug.Log("Raycast did not hit any collider.");
-                yield break;
-            }
-        }
-    }
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                yield break;
+    //             }
+    //             // Check if the ray hit a PlayerToken directly
+    //             Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+    //             Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+    //             if (inferredHexCellFromClick != null && highPassManager.gkReachableHexes.Contains(inferredHexCellFromClick))
+    //             {
+    //                 hexGrid.ClearHighlightedHexes();
+    //                 yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
+    //                 highPassManager.isWaitingForDefGKChallengeDecision = false;
+    //                 highPassManager.gkRushedOut = true;
+    //                 headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
+    //             }
+    //             else
+    //             {
+    //                 Debug.LogWarning($"Cannot move GK there");
+    //             }
+    //         }
+    //         else {
+    //             Debug.Log("Raycast did not hit any collider.");
+    //             yield break;
+    //         }
+    //     }
+    // }
     
     public IEnumerator HandleMouseInputForGKBoxMovement()
     {

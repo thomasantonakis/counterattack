@@ -59,6 +59,16 @@ public class GroundBallManager : MonoBehaviour
         }
         if (isActivated)
         {
+            // if (
+            //     isCommitted
+            //     && (
+            //         key == KeyCode.C
+            //         || key == KeyCode.M
+            //     )
+            // {
+            //     CleanUpPass();
+            //     isAvailable = true;
+            // }
             if (isWaitingForDiceRoll && key == KeyCode.R)
             {
                 // Check if waiting for dice rolls and the R key is pressed

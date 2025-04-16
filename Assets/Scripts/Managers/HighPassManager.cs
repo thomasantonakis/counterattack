@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class HighPassManager : MonoBehaviour
 {
@@ -16,21 +17,28 @@ public class HighPassManager : MonoBehaviour
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
-    [Header("Basic Selections")]
-    public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
-    public HexCell currentTargetHex;
-    public HexCell lastClickedHex;
-    public HexCell intendedTargetHex; // New variable to store the intended target hex
-    public HexCell finalTargetHex; // Final targethex
-    public PlayerToken selectedToken;  // To store the selected attacker or defender token
-    public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
-    public List<HexCell> gkReachableHexes = new List<HexCell>();
-    public int directionIndex;
-    [Header("Flags")]
+    [Header("Runtime")]
+    public bool isAvailable = false;
+    [SerializeField]
+    private bool isActivated = false;
     public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
+    public bool isWaitingForAttackerSelection = false; // Flag to check for Distance roll
+    public bool isWaitingForAttackerMove = false; // Flag to check for Distance roll
+    public bool isWaitingForDefenderSelection = false; // Flag to check for Distance roll
+    public bool isWaitingForDefenderMove = false; // Flag to check for Distance roll
     public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
     public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
+    [Header("Basic Selections")]
+    public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
+    public HexCell currentTargetHex;
+    public HexCell intendedTargetHex; // New variable to store the intended target hex
+    public HexCell finalTargetHex; // Final targethex
+    public PlayerToken selectedToken;  // To store the selected attacker or defender token
+    public List<HexCell> gkReachableHexes = new List<HexCell>();
+    public List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
+    public int directionIndex;
+    [Header("Flags")]
     public bool didGKMoveInDefPhase = false;
     public bool gkRushedOut = false;
     public bool isWaitingForDefGKChallengeDecision = false;
@@ -40,27 +48,165 @@ public class HighPassManager : MonoBehaviour
     private const int DEFENDER_MOVE_RANGE = 3;
     private const int ACCURACY_THRESHOLD = 8;
 
-    // Step 1: Handle the input for starting the long pass (initial logic)
-    void Update()
-    {   
-        // If waiting for accuracy roll
-        if (MatchManager.Instance.currentState == MatchManager.GameState.HighPassDefenderMovement)
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (isActivated)
         {
-            if (isWaitingForAccuracyRoll && Input.GetKeyDown(KeyCode.R))
+            if (isWaitingForConfirmation)
             {
-                PerformAccuracyRoll(); // Handle accuracy roll
+                HandleHighPassProcess(hex);
             }
-            else if (isWaitingForDirectionRoll && Input.GetKeyDown(KeyCode.R))
+            else if (isWaitingForAttackerSelection)
             {
-                PerformDirectionRoll(); // Handle direction roll
+                if (isWaitingForAttackerMove && hexGrid.highlightedHexes.Contains(hex))
+                {
+                    Debug.Log($"Valid Hex to move the Attacker.");
+                    StartCoroutine(MoveSelectedAttackerToHex(hex));
+                    return;
+                }
+                if (
+                    token == null // empty hex Clicked
+                    || !token.isAttacker // Hex of a non attacker was clicked
+                )
+                {
+                    // Rejection case — either nothing was clicked, or it was a defender or invalid hex
+                    Debug.LogWarning("Invalid token or Not an attacker clicked. Please click on an attacker.");
+                    hexGrid.ClearHighlightedHexes();
+                    selectedToken = null;
+                    isWaitingForAttackerMove = false;  // Stop waiting for attacker move
+                    return;
+                }
+                // Clicked on an attacker token
+                if (selectedToken == null || selectedToken != token) // No previous selection of attacker
+                {
+                    // First attacker click or switching attacker
+                    Debug.Log($"Attacker {token.name} selected.");
+                    selectedToken = token;
+                    hexGrid.ClearHighlightedHexes();
+                    movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);
+                    isWaitingForAttackerMove = true;
+                }
+                else if (selectedToken == token)
+                {
+                    Debug.Log($"Attacker {token.name} already selected. Please click on a Higlighted Hex to move them there!");
+                }
             }
-            else if (isWaitingForDistanceRoll && Input.GetKeyDown(KeyCode.R))
+            else if (isWaitingForDefenderSelection)
             {
-                StartCoroutine(PerformDistanceRoll()); // Handle distance roll
+                if (isWaitingForDefenderMove && hexGrid.highlightedHexes.Contains(hex))
+                {
+                    Debug.Log($"Valid Hex to move the Defender.");
+                    StartCoroutine(MoveSelectedDefenderToHex(hex));
+                    return;
+                }
+                if (
+                    token == null // empty hex Clicked
+                    || token.isAttacker // Hex of a non attacker was clicked
+                )
+                {
+                    // Rejection case — either nothing was clicked, or it was a defender or invalid hex
+                    Debug.LogWarning("Invalid token or Not a Defender clicked. Please click on a Defender.");
+                    hexGrid.ClearHighlightedHexes();
+                    selectedToken = null;
+                    isWaitingForDefenderMove = false;  // Stop waiting for attacker move
+                    return;
+                }
+                // Clicked on an attacker token
+                if (selectedToken == null || selectedToken != token) // No previous selection of attacker
+                {
+                    // First attacker click or switching attacker
+                    Debug.Log($"Defender {token.name} selected.");
+                    selectedToken = token;
+                    hexGrid.ClearHighlightedHexes();
+                    movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);
+                    isWaitingForDefenderMove = true;
+                }
+                else if (selectedToken == token)
+                {
+                    Debug.Log($"Defender {token.name} already selected. Please click on a Higlighted Hex to move them there!");
+                }
+            }
+            else if (isWaitingForDefGKChallengeDecision)
+            {
+                if (hex != null && gkReachableHexes.Contains(hex))
+                {
+                    hexGrid.ClearHighlightedHexes();
+                    MoveGKForHP(hex);
+                }
+                else
+                {
+                    Debug.LogWarning($"Cannot move GK there");
+                }
             }
         }
     }
-    
+
+    private async Task StartCoroutineAndWait(IEnumerator coroutine)
+    {
+        bool isDone = false;
+        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
+        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+    }
+
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    {
+        yield return StartCoroutine(coroutine);
+        onComplete?.Invoke();
+    }
+
+
+    private void OnKeyReceived(KeyCode key)
+    {
+        // return;
+        if (isAvailable && !isActivated && key == KeyCode.C)
+        {
+            ActivateHighPass();
+        }
+        if (isActivated)
+        {
+            if (isWaitingForAccuracyRoll && key == KeyCode.R)
+            {
+                PerformAccuracyRoll(); // Handle accuracy roll
+            }
+            else if (isWaitingForDirectionRoll && key == KeyCode.R)
+            {
+                PerformDirectionRoll(); // Handle direction roll
+            }
+            else if (isWaitingForDistanceRoll && key == KeyCode.R)
+            {
+                PerformDistanceRoll(); // Handle distance roll
+            }
+            else if (isWaitingForDefGKChallengeDecision && key == KeyCode.X)
+            {
+                hexGrid.ClearHighlightedHexes();
+                Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
+                isWaitingForDefGKChallengeDecision = false;
+            }
+        }
+    }
+
+    public void ActivateHighPass()
+    {
+        MatchManager.Instance.TriggerHighPass();
+        isActivated = true;
+        isAvailable = false;  // Make it non available to avoid restarting this action again.
+        // if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
+        isWaitingForConfirmation = true;
+        Debug.Log("HighPassManager activated. Waiting for target selection...");
+    }
+
     public void HandleHighPassProcess(HexCell clickedHex, bool isGK = false)
     {
         if (clickedHex != null)
@@ -89,52 +235,42 @@ public class HighPassManager : MonoBehaviour
         // If the clicked hex is not valid, reset everything and reject the click
         if (!isValid)
         {
-            Debug.LogWarning("High Pass target is invalid.");
-
+            // Debug.LogWarning("High Pass target is invalid.");
             // Reset the previous target and clicked hex
             currentTargetHex = null;
-            lastClickedHex = null;
-
             // Clear the selected token and highlights
             selectedToken = null;
             lockedAttacker = null;  // Make sure no attacker is locked
-            hexGrid.ClearHighlightedHexes();
-
+            // hexGrid.ClearHighlightedHexes();
             return;  // Reject invalid targets
         }
         // Difficulty-based handling
         if (difficulty == 3) // Hard Mode: Immediate action
         {
-            currentTargetHex = clickedHex;  // Assign the current target hex
-            intendedTargetHex = clickedHex; // Save the intended target hex
-            isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
-            Debug.Log("Waiting for accuracy roll... Please Press R key.");
+            // currentTargetHex = clickedHex;  // Assign the current target hex
+            // intendedTargetHex = clickedHex; // Save the intended target hex
+            // isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
+            // Debug.Log("Waiting for accuracy roll... Please Press R key.");
         }
         else if (difficulty == 2)  // Medium Mode: Require confirmation with a second click
         {
             // If a new hex is clicked, reset the previous target and highlights
             if (clickedHex != currentTargetHex)
             {
-                // Reset everything if a new hex is clicked
-                Debug.Log("New hex clicked, resetting previous target.");
-
                 currentTargetHex = clickedHex;
-                lastClickedHex = clickedHex;
                 // Clear any previous highlights and selections
                 hexGrid.ClearHighlightedHexes();
                 selectedToken = null;  // Reset selected token if a new hex is clicked
                 lockedAttacker = null;  // Reset locked attacker, as we're selecting a new hex
-
                 // Highlight the new high pass area (optional, for visual feedback)
                 // No nore highlighting in CornerKick
                 if (!isCornerKick) HighlightHighPassArea(clickedHex);
 
                 Debug.Log("First click registered. Click again to confirm the High Pass.");
             }
-            else if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
+            else if (clickedHex == currentTargetHex)  // If it's the same hex clicked twice
             {
                 Debug.Log("High Pass confirmed by second click.");
-                currentTargetHex = clickedHex;
                 intendedTargetHex = clickedHex; // Save the intended target hex
                 isWaitingForConfirmation = false;  // Confirmation is done, allow token selection
                 selectedToken = null;  // Clear selected token to avoid auto-selecting the attacker on the target
@@ -165,7 +301,7 @@ public class HighPassManager : MonoBehaviour
         }
         else if (difficulty == 1) // Easy Mode: Require confirmation with a second click
         {
-            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)  // If it's the same hex clicked twice
+            if (clickedHex == currentTargetHex)  // If it's the same hex clicked twice
             {
                 Debug.Log("High Pass confirmed by second click. Waiting for accuracy roll.");
                 isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
@@ -174,7 +310,7 @@ public class HighPassManager : MonoBehaviour
             {
                 // First click: Set the target, highlight the path, and wait for confirmation
                 currentTargetHex = clickedHex;
-                lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
+                // lastClickedHex = clickedHex;  // Set this as the last clicked hex for confirmation
                 hexGrid.ClearHighlightedHexes();
 
                 // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
@@ -296,7 +432,7 @@ public class HighPassManager : MonoBehaviour
         return eligibleAttackers;
     }
 
-    private void PerformAccuracyRoll()
+    private async void PerformAccuracyRoll()
     {
         // TODO: Refine order and logs
         lockedAttacker = null;
@@ -304,8 +440,8 @@ public class HighPassManager : MonoBehaviour
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
         var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-        // int diceRoll = returnedRoll;
-        int diceRoll = 6; // Melina Mode
+        int diceRoll = returnedRoll;
+        // int diceRoll = 1; // Melina Mode
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -323,7 +459,7 @@ public class HighPassManager : MonoBehaviour
             // Move the ball to the intended target
             finalTargetHex = intendedTargetHex;
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassTargeted);
-            StartCoroutine(HandleHighPassMovement(finalTargetHex));
+            await StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));
             MatchManager.Instance.currentState = MatchManager.GameState.HighPassCompleted;
             ResetHighPassRolls();  // Reset flags to finish long pass
         }
@@ -371,7 +507,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    private IEnumerator PerformDistanceRoll()
+    private async void PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
@@ -385,7 +521,8 @@ public class HighPassManager : MonoBehaviour
         if (finalTargetHex != null)
         {
             // Move the ball to the inaccurate final hex
-            yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));            
+            // yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));           
+            await StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));           
         }
         else
         {
@@ -580,7 +717,7 @@ public class HighPassManager : MonoBehaviour
     private IEnumerator StartAttackerMovementPhase()
     {
         Debug.Log("Attacker movement phase started. Move one attacker up to 3 hexes.");
-        isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
+        isWaitingForAttackerSelection = true;  // Now allow attacker selection
         selectedToken = null;  // Ensure no token is auto-selected
         // Set game state to reflect we are in the attacker’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.HighPassAttackerMovement;
@@ -600,76 +737,77 @@ public class HighPassManager : MonoBehaviour
             {
                 // **Automatic move for single eligible attacker**
                 selectedToken = eligibleAttackers[0];
+                isWaitingForAttackerSelection = false;
                 Debug.Log($"Automatically moving attacker {selectedToken.name} to target hex.");
-
                 // Automatically move the attacker to the target hex
-                yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(currentTargetHex, selectedToken, false));
-
-                // Directly proceed to the defender movement phase after the attacker moves
-                StartDefenderMovementPhase();
+                StartCoroutine(MoveSelectedAttackerToHex(currentTargetHex));
                 yield break;  // Skip further input handling
             }
             else
             {
                 // **Multiple eligible attackers - no highlights, just allow user to click on one**
                 Debug.Log($"Found {eligibleAttackers.Count} attackers who can reach the target hex.");
-                StartCoroutine(WaitForAttackerSelection());
             }
         }
         // Wait for player to move an attacker
     }
 
-    private IEnumerator WaitForAttackerSelection()
+    private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
     {
-        Debug.Log("Waiting for attacker selection...");
-        while (selectedToken == null || !selectedToken.isAttacker)
-        {
-            gameInputManager.HandleMouseInputForHighPassMovement();
-            yield return null;  // Wait until a valid attacker is selected
-        }
-
-        // Once an attacker is selected, highlight valid movement hexes
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);  // Highlight movement options
+        hexGrid.ClearHighlightedHexes();
+        isWaitingForAttackerMove = false;  // Stop waiting for attacker move
+        isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
+        Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        selectedToken = null;
+        StartDefenderMovementPhase();
     }
 
     public void StartDefenderMovementPhase()
     {
         Debug.Log("Defender movement phase started. Move one defender up to 3 hexes.");
-        isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
+        isWaitingForDefenderSelection = true;  // Now allow attacker selection
         selectedToken = null;  // Ensure no token is auto-selected
         // Find the defending goalkeeper and intialize the flag to false
         didGKMoveInDefPhase = false;
         // Set game state to reflect we are in the defender’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.HighPassDefenderMovement;
-        // Allow defenders to move one token up to 3 hexes
-        StartCoroutine(WaitForDefenderSelection());
-        // Wait for player to move a defender
     }
 
-    private IEnumerator WaitForDefenderSelection()
+    private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
-        Debug.Log("Waiting for defender selection...");
-        while (selectedToken == null || selectedToken.isAttacker)
-        {
-            gameInputManager.HandleMouseInputForHighPassMovement();
-            yield return null;  // Wait until a valid defender is selected
-        }
+        hexGrid.ClearHighlightedHexes();
+        isWaitingForDefenderMove = false;  // Stop waiting for attacker move
+        isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
+        Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        selectedToken = null;
+        isWaitingForAccuracyRoll = true;
+        Debug.Log("Waiting for accuracy roll... Please Press R key.");
+        // CompleteDefenderMovementPhase();
+    }
 
-        // Once a defender is selected, highlight valid movement hexes
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);  // Highlight movement options
+    private async void MoveGKForHP(HexCell hex)
+    {
+        hexGrid.ClearHighlightedHexes();
+        await StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
+        isWaitingForDefGKChallengeDecision = false;
+        gkRushedOut = true;
+        headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
     }
 
     private void CleanUpHighPass()
     {
         selectedToken = null;
         currentTargetHex = null;
-        lastClickedHex = null;
         intendedTargetHex = null;
         finalTargetHex = null;
         isCornerKick = false;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
         gkReachableHexes.Clear();
+        isActivated = false;
         // didGKMoveInDefPhase = false; // Reset in headerManager.FindEligibleHeaderTokens()
     }
 }

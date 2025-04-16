@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class GoalKeeperManager : MonoBehaviour
 {
@@ -8,6 +9,58 @@ public class GoalKeeperManager : MonoBehaviour
     public HexGrid hexGrid;
     public Ball ball;
     public bool isWaitingForDefGKBoxMove = false;
+
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private async Task StartCoroutineAndWait(IEnumerator coroutine)
+    {
+        bool isDone = false;
+        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
+        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+    }
+
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    {
+        yield return StartCoroutine(coroutine);
+        onComplete?.Invoke();
+    }
+    
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (isWaitingForDefGKBoxMove)
+        {
+            MoveGKforBox(hex);
+        }
+    }
+
+
+    private void OnKeyReceived(KeyCode key)
+    {
+        if (isWaitingForDefGKBoxMove && key == KeyCode.X)
+        {
+            hexGrid.ClearHighlightedHexes();
+            Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
+            isWaitingForDefGKBoxMove = false;
+        }
+    }
+
+    private async void MoveGKforBox(HexCell hex)
+    {
+        hexGrid.ClearHighlightedHexes();
+        await StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        isWaitingForDefGKBoxMove = false;
+        Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
+    }
 
     public bool ShouldGKMove(HexCell targetHex)
     {

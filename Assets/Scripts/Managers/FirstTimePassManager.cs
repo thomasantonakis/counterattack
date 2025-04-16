@@ -473,6 +473,7 @@ public class FirstTimePassManager : MonoBehaviour
         selectedToken = null;  // Reset selected token
         currentTargetHex = null;  // Reset current target hex
     }
+    
     void StartFTPInterceptionDiceRollSequence()
     {
         Debug.Log($"Defenders with interception chances: {onPathDefendersList.Count}");
