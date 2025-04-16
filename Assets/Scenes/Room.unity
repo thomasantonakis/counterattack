@@ -1836,7 +1836,15 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   movementPhaseManager: {fileID: 1390513032}
   gameInputManager: {fileID: 417053521}
+  isAvailable: 0
+  isActivated: 0
+  isAwaitingTargetSelection: 0
+  isWaitingForAttackerSelection: 0
+  isWaitingForDefenderSelection: 0
+  isWaitingForAttackerMove: 0
+  isWaitingForDefenderMove: 0
   isWaitingForDiceRoll: 0
+  currentTargetHex: {fileID: 0}
   selectedToken: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
@@ -3732,7 +3740,14 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   finalThirdManager: {fileID: 1012232483}
+  firstTimePassManager: {fileID: 886834329}
+  isAvailable: 0
+  isActivated: 0
+  isAwaitingTargetSelection: 0
   imposedDistance: 11
+  currentTargetHex: {fileID: 0}
+  lastClickedHex: {fileID: 0}
+  isWaitingForDiceRoll: 0
 --- !u!4 &1703800863
 Transform:
   m_ObjectHideFlags: 0

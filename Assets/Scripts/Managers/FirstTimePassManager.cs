@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Unity.VisualScripting;
 
 public class FirstTimePassManager : MonoBehaviour
 {
@@ -12,27 +14,147 @@ public class FirstTimePassManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public GameInputManager gameInputManager;
     [Header("Runtime Items")]
+    public bool isAvailable = false;
+    public bool isActivated = false;        // To check if the script is activated
+    public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
+    public bool isWaitingForAttackerSelection = false; // To check if we are waiting for attacker selection
+    public bool isWaitingForDefenderSelection = false; // To check if we are waiting for defender selection
+    public bool isWaitingForAttackerMove = false; // To check if we are waiting for attacker selection
+    public bool isWaitingForDefenderMove = false; // To check if we are waiting for defender selection
+    public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
+    [Header("Others")]
+    [SerializeField]
     private HexCell currentTargetHex = null;   // The currently selected target hex
+    public PlayerToken selectedToken;  // To store the selected attacker or defender token
     private HexCell lastClickedHex = null;     // The last hex that was clicked
     private bool isWaitingForConfirmation = false;
-    public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
-    private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
-    private int diceRollsPending = 0;          // Number of pending dice rolls
+    private HexCell currentDefenderHex = null; // The defender hex currently rolling the dice
+    // private int diceRollsPending = 0; // Number of pending dice rolls
     private bool isDangerous = false;
-    private List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
-    private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
     private List<(PlayerToken defender, bool isCausingInvalidity)> onPathDefendersList;
-    public PlayerToken selectedToken;  // To store the selected attacker or defender token
 
-
-    void Update()
+    private void OnEnable()
     {
-        // Check if waiting for dice rolls and the R key is pressed
-        if (isWaitingForDiceRoll && Input.GetKeyDown(KeyCode.R))
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (isActivated)
         {
-            PerformFTPInterceptionRolls();  // Pass the stored list
+            if (isAwaitingTargetSelection)
+            {
+                HandleFTPBallPath(hex);
+            }
+            else if (isWaitingForAttackerSelection)
+            {
+                if (isWaitingForAttackerMove && hexGrid.highlightedHexes.Contains(hex))
+                {
+                    Debug.Log($"Valid Hex to move the Attacker.");
+                    StartCoroutine(MoveSelectedAttackerToHex(hex));
+                    return;
+                }
+                if (
+                    token == null // empty hex Clicked
+                    || !token.isAttacker // Hex of a non attacker was clicked
+                )
+                {
+                    // Rejection case — either nothing was clicked, or it was a defender or invalid hex
+                    Debug.LogWarning("Invalid token or Not an attacker clicked. Please click on an attacker.");
+                    hexGrid.ClearHighlightedHexes();
+                    selectedToken = null;
+                    isWaitingForAttackerMove = false;  // Stop waiting for attacker move
+                    return;
+                }
+                // Clicked on an attacker token
+                if (selectedToken == null || selectedToken != token) // No previous selection of attacker
+                {
+                    // First attacker click or switching attacker
+                    Debug.Log($"Attacker {token.name} selected.");
+                    selectedToken = token;
+                    hexGrid.ClearHighlightedHexes();
+                    movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);
+                    isWaitingForAttackerMove = true;
+                }
+                else if (selectedToken == token)
+                {
+                    Debug.Log($"Attacker {token.name} already selected. Please click on a Higlighted Hex to move them there!");
+                }
+            }
+            else if (isWaitingForDefenderSelection)
+            {
+                if (isWaitingForDefenderMove && hexGrid.highlightedHexes.Contains(hex))
+                {
+                    Debug.Log($"Valid Hex to move the Defender.");
+                    StartCoroutine(MoveSelectedDefenderToHex(hex));
+                    return;
+                }
+                if (
+                    token == null // empty hex Clicked
+                    || token.isAttacker // Hex of a non attacker was clicked
+                )
+                {
+                    // Rejection case — either nothing was clicked, or it was a defender or invalid hex
+                    Debug.LogWarning("Invalid token or Not a Defender clicked. Please click on a Defender.");
+                    hexGrid.ClearHighlightedHexes();
+                    selectedToken = null;
+                    isWaitingForDefenderMove = false;  // Stop waiting for attacker move
+                    return;
+                }
+                // Clicked on an attacker token
+                if (selectedToken == null || selectedToken != token) // No previous selection of attacker
+                {
+                    // First attacker click or switching attacker
+                    Debug.Log($"Defender {token.name} selected.");
+                    selectedToken = token;
+                    hexGrid.ClearHighlightedHexes();
+                    movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);
+                    isWaitingForDefenderMove = true;
+                }
+                else if (selectedToken == token)
+                {
+                    Debug.Log($"Defender {token.name} already selected. Please click on a Higlighted Hex to move them there!");
+                }
+            }
         }
     }
+
+    private void OnKeyReceived(KeyCode key)
+    {
+        // return;
+        if (isAvailable && !isActivated && key == KeyCode.F)
+        {
+            ActivateFTP();
+        }
+        if (isActivated)
+        {
+            if (isWaitingForDiceRoll && key == KeyCode.R)
+            {
+                // Check if waiting for dice rolls and the R key is pressed
+                PerformFTPInterceptionRolls();  // Trigger the dice roll when R is pressed
+            }
+        }
+    }
+
+    private void ActivateFTP()
+    {
+        MatchManager.Instance.TriggerFTP();
+        ball.SelectBall();
+        Debug.Log("First Time pass attempt mode activated.");
+        isActivated = true;
+        isAvailable = false;  // Make it non available to avoid restarting this action again.
+        // if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
+        isAwaitingTargetSelection = true;
+        Debug.Log("FirstTimePassManager activated. Waiting for target selection...");
+    }
+
     public void HandleFTPBallPath(HexCell clickedHex)
     {
         if (clickedHex != null)
@@ -63,6 +185,7 @@ public class FirstTimePassManager : MonoBehaviour
         if (!isValid)
         {
             // Debug.LogWarning("Invalid pass. Path rejected.");
+            currentTargetHex = null;  // Assign the current target hex
             return; // Reject invalid paths
         }
         currentTargetHex = clickedHex;  // Assign the current target hex
@@ -100,6 +223,7 @@ public class FirstTimePassManager : MonoBehaviour
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
                 Debug.Log("First-Time Pass target confirmed. Waiting for movement phases.");
+                isAwaitingTargetSelection = false;  // Stop waiting for target selection
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassAttempt); // Log CompletedPass
                 MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassAttackerMovement;
                 StartAttackerMovementPhase();  // Allow attacker to move 1 hex
@@ -258,59 +382,27 @@ public class FirstTimePassManager : MonoBehaviour
     private void StartAttackerMovementPhase()
     {
         Debug.Log("Attacker movement phase started. Move one attacker 1 hex.");
+        isWaitingForAttackerSelection = true;
         isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
         selectedToken = null;  // Ensure no token is auto-selected
         // Set game state to reflect we are in the attacker’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassAttackerMovement;
-        // Allow attackers to move one token up to 1 hex
-        // **Multiple eligible attackers - no highlights, just allow user to click on one**
-        StartCoroutine(WaitForAttackerSelection());
-        // Wait for player to move an attacker
     }
 
-    private IEnumerator WaitForAttackerSelection()
-    {
-        Debug.Log("Waiting for attacker selection...");
-        while (selectedToken == null || !selectedToken.isAttacker)
-        {
-            gameInputManager.HandleMouseInputForFTPMovement();
-            // StartCoroutine(gameInputManager.HandleMouseInputForFTPMovement()); // TODO: Check if this is needed
-            yield return null;  // Wait until a valid attacker is selected
-        }
-
-        // Once an attacker is selected, highlight valid movement hexes
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);  // Highlight movement options
-    }
 
     public void StartDefenderMovementPhase()
     {
         Debug.Log("Defender movement phase started. Move one defender 1 hex.");
         isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
+        isWaitingForDefenderSelection = true;
         selectedToken = null;  // Ensure no token is auto-selected
         // Set game state to reflect we are in the defender’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassDefenderMovement;
-        // Allow defenders to move one token up to 1 hexes
-        StartCoroutine(WaitForDefenderSelection());
-        // Wait for player to move a defender
     }
 
-    private IEnumerator WaitForDefenderSelection()
+    public void CompleteDefenderMovementPhase()
     {
-        Debug.Log("Waiting for defender selection...");
-        while (selectedToken == null || selectedToken.isAttacker)
-        {
-            gameInputManager.HandleMouseInputForFTPMovement();
-            // StartCoroutine(gameInputManager.HandleMouseInputForFTPMovement()); // TODO: Check if this is needed
-            yield return null;  // Wait until a valid defender is selected
-        }
-
-        // Once a defender is selected, highlight valid movement hexes
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);  // Highlight movement options
-    }
-
-    public IEnumerator CompleteDefenderMovementPhase()
-    {
-       // Step 1: Validate the path after defender movements
+        // Step 1: Validate the path after defender movements
         var (isValid, isDangerous, pathHexes, onPathDefenders) = ValidateFTPPath(currentTargetHex, true);
         onPathDefendersList = onPathDefenders; // Store defenders from Validate
         // Step 2: Check for interception chances or dangerous paths
@@ -323,21 +415,64 @@ public class FirstTimePassManager : MonoBehaviour
         else
         {
             Debug.Log("No interception chance. Moving ball to target hex.");
-            if (currentTargetHex.isAttackOccupied)
-            {
-                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted);
-                MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
-            }
-            else
-            {
-                MatchManager.Instance.hangingPassType = "ground";
-            }
-            yield return StartCoroutine(HandleGroundBallMovement(currentTargetHex));
-            MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
-            MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
+            StartCoroutine(MovePassNotIntercepted(currentTargetHex));
         }
     }
 
+    private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
+    {
+        hexGrid.ClearHighlightedHexes();
+        isWaitingForAttackerMove = false;  // Stop waiting for attacker move
+        isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
+        Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        selectedToken = null;
+        StartDefenderMovementPhase();
+    }
+    private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
+    {
+        hexGrid.ClearHighlightedHexes();
+        isWaitingForDefenderMove = false;  // Stop waiting for attacker move
+        isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
+        Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        selectedToken = null;
+        CompleteDefenderMovementPhase();
+    }
+
+    private IEnumerator MovePassNotIntercepted(HexCell hex)
+    {
+        if (currentTargetHex.isAttackOccupied)
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted);
+            MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
+        }
+        else
+        {
+            MatchManager.Instance.hangingPassType = "ground";
+        }
+        yield return StartCoroutine(HandleGroundBallMovement(currentTargetHex));
+        MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
+        MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
+        CleanUpFTP();
+    }
+
+    private void CleanUpFTP()
+    {
+        // Clear all highlighted hexes
+        hexGrid.ClearHighlightedHexes();
+        isAvailable = false;
+        // Reset all relevant variables
+        isActivated = false;
+        isAwaitingTargetSelection = false;
+        isWaitingForAttackerSelection = false;
+        isWaitingForDefenderSelection = false;
+        isWaitingForAttackerMove = false;
+        isWaitingForDefenderMove = false;
+        isWaitingForConfirmation = false;
+        selectedToken = null;  // Reset selected token
+        currentTargetHex = null;  // Reset current target hex
+    }
     void StartFTPInterceptionDiceRollSequence()
     {
         Debug.Log($"Defenders with interception chances: {onPathDefendersList.Count}");
@@ -359,10 +494,7 @@ public class FirstTimePassManager : MonoBehaviour
         else
         {
             Debug.LogError("No defenders in ZOI. This should never appear because the path should have been clear.");
-            StartCoroutine(HandleGroundBallMovement(currentTargetHex));  // Move ball to the target hex
-            MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
-            MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
-            return;
+            StartCoroutine(MovePassNotIntercepted(currentTargetHex));
         }
     }
     
@@ -405,6 +537,7 @@ public class FirstTimePassManager : MonoBehaviour
                     MatchManager.Instance.SetLastToken(defenderToken);
                     StartCoroutine(HandleBallInterception(currentDefenderHex));
                     ResetFTPInterceptionDiceRolls(); // Reset interception process
+                    CleanUpFTP();
                 }
                 else
                 {
@@ -424,18 +557,7 @@ public class FirstTimePassManager : MonoBehaviour
                     {
                         // No more defenders, pass is successful
                         Debug.Log("Pass successful! No more defenders to roll.");
-                        if (currentTargetHex.isAttackOccupied)
-                        {
-                            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassCompleted);
-                            MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
-                        }
-                        else
-                        {
-                            MatchManager.Instance.hangingPassType = "ground";
-                        }
-                        StartCoroutine(HandleGroundBallMovement(currentTargetHex));
-                        MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
-                        MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
+                        StartCoroutine(MovePassNotIntercepted(currentTargetHex));
                     }
                 }
             }
@@ -458,12 +580,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     void ResetFTPInterceptionDiceRolls()
     {
-        // Reset variables after the dice roll sequence
-        // TODO verify what is reset here.
-        defendingHexes.Clear();
-        interceptionHexes.Clear();
         onPathDefendersList.Clear();
-        diceRollsPending = 0;
         currentDefenderHex = null;
     }
 

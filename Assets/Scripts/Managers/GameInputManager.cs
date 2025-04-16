@@ -263,7 +263,7 @@ public class GameInputManager : MonoBehaviour
         {
             hexGrid.ClearHighlightedHexes(); 
             MatchManager.Instance.TriggerStandardPass();
-            groundBallManager.imposedDistance = 11;
+            // groundBallManager.imposedDistance = 11;
         }
         else if (
             Input.GetKeyDown(KeyCode.M)
@@ -391,13 +391,13 @@ public class GameInputManager : MonoBehaviour
             {
                 StartCoroutine(HandleMouseInputForGKLongBallMovement());
             }
-            if (
-                    MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
-                    MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement
-            )
-            {
-                StartCoroutine(HandleMouseInputForFTPMovement());
-            }
+            // if (
+            //         MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
+            //         MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement
+            // )
+            // {
+            //     StartCoroutine(HandleMouseInputForFTPMovement());
+            // }
             if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderAttackerSelection)
             {
                 HandleAttackerHeaderSelectionInput();
@@ -523,7 +523,7 @@ public class GameInputManager : MonoBehaviour
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttempt)
         {
-            firstTimePassManager.HandleFTPBallPath(hex);
+            // firstTimePassManager.HandleFTPBallPath(hex);
         }
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt && !longBallManager.isWaitingForDefLBMove)
         {
@@ -999,103 +999,103 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    public IEnumerator HandleMouseInputForFTPMovement()
-    {
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForFTPMovement called on click");
+    // public IEnumerator HandleMouseInputForFTPMovement()
+    // {
+    //     if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+    //     {
+    //         Debug.Log("HandleMouseInputForFTPMovement called on click");
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Debug.Log("Raycast hit something");
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             Debug.Log("Raycast hit something");
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                yield break;
+    //             }
 
-                // Check if a player token was clicked
-                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                if (token != null)
-                {
-                    Debug.Log($"PlayerToken {token.name} clicked, for FTP");
+    //             // Check if a player token was clicked
+    //             PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+    //             if (token != null)
+    //             {
+    //                 Debug.Log($"PlayerToken {token.name} clicked, for FTP");
 
-                    // Attacker Phase: Ensure the token is an attacker
-                    if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement && token.isAttacker)
-                    {
-                        // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
-                        if (firstTimePassManager.selectedToken != null && firstTimePassManager.selectedToken != token)
-                        {
-                            Debug.Log($"Switching Attacker selection to {token.name}. Clearing previous highlights.");
-                            hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
-                        }
+    //                 // Attacker Phase: Ensure the token is an attacker
+    //                 if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement && token.isAttacker)
+    //                 {
+    //                     // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
+    //                     if (firstTimePassManager.selectedToken != null && firstTimePassManager.selectedToken != token)
+    //                     {
+    //                         Debug.Log($"Switching Attacker selection to {token.name}. Clearing previous highlights.");
+    //                         hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
+    //                     }
 
-                        Debug.Log($"Selecting attacker {token.name}. Highlighting reachable hexes.");
-                        firstTimePassManager.selectedToken = token;  // Set selected token
-                        movementPhaseManager.HighlightValidMovementHexes(token, 1);  // Highlight reachable hexes within 3 moves
-                        yield return null;
-                    }
-                    // Defender Phase: Ensure the token is a defender
-                    else if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement && !token.isAttacker)
-                    {
-                        if (firstTimePassManager.selectedToken != null && firstTimePassManager.selectedToken != token)
-                        {
-                            Debug.Log($"Switching defender selection to {token.name}. Clearing previous highlights.");
-                            hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
-                        }
+    //                     Debug.Log($"Selecting attacker {token.name}. Highlighting reachable hexes.");
+    //                     firstTimePassManager.selectedToken = token;  // Set selected token
+    //                     movementPhaseManager.HighlightValidMovementHexes(token, 1);  // Highlight reachable hexes within 3 moves
+    //                     yield return null;
+    //                 }
+    //                 // Defender Phase: Ensure the token is a defender
+    //                 else if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement && !token.isAttacker)
+    //                 {
+    //                     if (firstTimePassManager.selectedToken != null && firstTimePassManager.selectedToken != token)
+    //                     {
+    //                         Debug.Log($"Switching defender selection to {token.name}. Clearing previous highlights.");
+    //                         hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
+    //                     }
 
-                        firstTimePassManager.selectedToken = token;  // Set the selected defender token
-                        movementPhaseManager.HighlightValidMovementHexes(token, 1);  // Highlight reachable hexes within 3 moves
-                        firstTimePassManager.CompleteDefenderMovementPhase();
-                        yield return null;  // Ensure no further processing for this click
-                    }
-                }
+    //                     firstTimePassManager.selectedToken = token;  // Set the selected defender token
+    //                     movementPhaseManager.HighlightValidMovementHexes(token, 1);  // Highlight reachable hexes within 3 moves
+    //                     firstTimePassManager.CompleteDefenderMovementPhase();
+    //                     yield return null;  // Ensure no further processing for this click
+    //                 }
+    //             }
 
-                // Check if a valid hex was clicked (for movement)
-                HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                if (clickedHex != null)
-                {
-                    Debug.Log($"Hex clicked: {clickedHex.name}");
+    //             // Check if a valid hex was clicked (for movement)
+    //             HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+    //             if (clickedHex != null)
+    //             {
+    //                 Debug.Log($"Hex clicked: {clickedHex.name}");
 
-                    // Ensure the hex is within the highlighted valid movement hexes
-                    if (hexGrid.highlightedHexes.Contains(clickedHex))
-                    {
-                        if (firstTimePassManager.selectedToken != null)
-                        {
-                            Debug.Log($"Moving {firstTimePassManager.selectedToken.name} to hex {clickedHex.coordinates}");
+    //                 // Ensure the hex is within the highlighted valid movement hexes
+    //                 if (hexGrid.highlightedHexes.Contains(clickedHex))
+    //                 {
+    //                     if (firstTimePassManager.selectedToken != null)
+    //                     {
+    //                         Debug.Log($"Moving {firstTimePassManager.selectedToken.name} to hex {clickedHex.coordinates}");
 
-                            // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, firstTimePassManager.selectedToken, false));  // Pass the selected token
-                            firstTimePassManager.selectedToken = null;  // Reset after movement
+    //                         // Move the selected token to the valid hex (use the highPassManager's selectedToken)
+    //                         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(clickedHex, firstTimePassManager.selectedToken, false));  // Pass the selected token
+    //                         firstTimePassManager.selectedToken = null;  // Reset after movement
 
-                            if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement)
-                            {
-                                firstTimePassManager.StartDefenderMovementPhase();  // Transition to defender movement after attacker moves
-                            }
-                            else if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement)
-                            {
-                                StartCoroutine(firstTimePassManager.CompleteDefenderMovementPhase());
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogWarning("No token selected to move.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Clicked hex is not a valid movement target.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("No valid hex or token clicked.");
-                }
-            }
-        }
-    }
+    //                         if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement)
+    //                         {
+    //                             firstTimePassManager.StartDefenderMovementPhase();  // Transition to defender movement after attacker moves
+    //                         }
+    //                         else if (MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement)
+    //                         {
+    //                             firstTimePassManager.CompleteDefenderMovementPhase();
+    //                         }
+    //                     }
+    //                     else
+    //                     {
+    //                         Debug.LogWarning("No token selected to move.");
+    //                     }
+    //                 }
+    //                 else
+    //                 {
+    //                     Debug.LogWarning("Clicked hex is not a valid movement target.");
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 Debug.LogWarning("No valid hex or token clicked.");
+    //             }
+    //         }
+    //     }
+    // }
     
     public IEnumerator HandleMouseInputForSnapMovement()
     {

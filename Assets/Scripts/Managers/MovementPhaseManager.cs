@@ -297,7 +297,9 @@ public class MovementPhaseManager : MonoBehaviour
                 }
             }
         }
-        isBallPickable = reachableHexes.Contains(ballHex) && !selectedToken.IsDribbler;
+        isBallPickable = reachableHexes.Contains(ballHex) && !token.IsDribbler;
+        // Slight change as it seems that clicking on the ballHex while moving for FTP causes an error
+        // isBallPickable = reachableHexes.Contains(ballHex) && !selectedToken.IsDribbler;
     }
 
     // Check if the clicked hex is a valid one
