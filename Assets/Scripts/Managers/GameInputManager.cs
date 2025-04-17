@@ -144,6 +144,7 @@ public class GameInputManager : MonoBehaviour
             {
                 clickedToken = null;
                 clickedHex = null;
+                Debug.LogWarning("Out Of Bounds Plane hit, Sending empty Notification");
             }
             else
             {
@@ -294,11 +295,11 @@ public class GameInputManager : MonoBehaviour
             MatchManager.Instance.TriggerFTP();
         }
         // Final Thirds Handling
-        if (finalThirdManager.isFinalThirdPhaseActive)
-        {
-            HandleMouseInputForF3();
-            return;
-        }
+        // if (finalThirdManager.isActivated)
+        // {
+        //     HandleMouseInputForF3();
+        //     return;
+        // }
         if (MatchManager.Instance.currentState == MatchManager.GameState.PreKickOffSetup)
         {
             HandleKickOffClicks();
@@ -674,39 +675,39 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    public void HandleMouseInputForF3()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            finalThirdManager.ForfeitTurn();
-        }
-        if (finalThirdManager.isWaitingForWhatToDo)
-        {
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                finalThirdManager.DropBall();
-            }
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                finalThirdManager.GKKick();
-            }
-        }
-        if (Input.GetMouseButtonDown(0)) // Left Click
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Debug.Log("HandleMouseInputForF3: Click Detected!");
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   return;
-                }
-                StartCoroutine(finalThirdManager.HandleMouseInput(inferredTokenFromClick, inferredHexCellFromClick));
-            }
-        }
-    }
+    // public void HandleMouseInputForF3()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.X))
+    //     {
+    //         finalThirdManager.ForfeitTurn();
+    //     }
+    //     if (finalThirdManager.isWaitingForWhatToDo)
+    //     {
+    //         if (Input.GetKeyDown(KeyCode.D))
+    //         {
+    //             finalThirdManager.DropBall();
+    //         }
+    //         if (Input.GetKeyDown(KeyCode.K))
+    //         {
+    //             finalThirdManager.GKKick();
+    //         }
+    //     }
+    //     if (Input.GetMouseButtonDown(0)) // Left Click
+    //     {
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             Debug.Log("HandleMouseInputForF3: Click Detected!");
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                return;
+    //             }
+    //             StartCoroutine(finalThirdManager.HandleMouseInput(inferredTokenFromClick, inferredHexCellFromClick));
+    //         }
+    //     }
+    // }
     
 
     // public IEnumerator HandleMouseInputForHPGKRush()

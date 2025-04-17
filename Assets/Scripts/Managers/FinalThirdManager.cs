@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
 
@@ -17,7 +18,11 @@ public class FinalThirdManager : MonoBehaviour
     public HeaderManager headerManager;
     [Header("Flags")]
     public bool bothSides = false;
-    public bool isFinalThirdPhaseActive = false;
+    public bool isActivated = false;
+    [SerializeField]
+    private string currentTeamMoving; // attack, defense
+    [SerializeField]
+    private PlayerToken selectedToken;
     [SerializeField]
     private bool isWaitingForTokenSelection = false;
     [SerializeField]
@@ -34,18 +39,67 @@ public class FinalThirdManager : MonoBehaviour
     [SerializeField]
     private List<PlayerToken> movedTokens;
     [SerializeField]
-    private string currentTeamMoving; // attack, defense
-    [SerializeField]
-    private PlayerToken selectedToken;
+
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (isActivated)
+        {
+            StartCoroutine(HandleMouseInput(token, hex));
+        }
+    }
+
+    private void OnKeyReceived(KeyCode key)
+    {
+        if (isActivated)
+        {
+            if (key == KeyCode.X)
+            {
+                ForfeitTurn();
+            }
+            if (isWaitingForWhatToDo && key == KeyCode.D)
+            {
+                DropBall();
+            }
+            if (isWaitingForWhatToDo && key == KeyCode.K)
+            {
+                GKKick();
+            }
+        }
+    }
+
+    private async Task StartCoroutineAndWait(IEnumerator coroutine)
+    {
+        bool isDone = false;
+        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
+        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+    }
+
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    {
+        yield return StartCoroutine(coroutine);
+        onComplete?.Invoke();
+    }
 
     public void TriggerFinalThirdPhase(bool bothSides = false)
     {
-        isFinalThirdPhaseActive = true;
+        isActivated = true;
         this.bothSides = bothSides;
         int f3Side = ball.GetCurrentHex().isInFinalThird; // 1 = Right F3, -1 = Left F3, 0 = No F3
         if (f3Side == 0)
         {
-            isFinalThirdPhaseActive = false;
+            isActivated = false;
             return; // No F3 triggered
         }
 
@@ -54,7 +108,7 @@ public class FinalThirdManager : MonoBehaviour
         
         if (eligibleTokens.Count == 0)
         {
-            isFinalThirdPhaseActive = false;
+            isActivated = false;
             Debug.Log("No Tokens in the Final Third! Skipping!");
             return; // No Eligible Tokens
         }
@@ -269,7 +323,7 @@ public class FinalThirdManager : MonoBehaviour
                 if (thisIsTheSecond)
                 {
                     isWaitingForWhatToDo = true;
-                    isFinalThirdPhaseActive = true;
+                    isActivated = true;
                     Debug.Log($"GK has to decide what to do: [D]rop the ball and play on? OR Play the GK [Kick] as a High pass enywhere except the opposite Final Third?");
                 }
             }
@@ -286,7 +340,7 @@ public class FinalThirdManager : MonoBehaviour
         currentTeamMoving = null;
         Debug.Log("Final Third Phase Completed. Resuming gameplay.");
         isWaitingForTokenSelection = false;
-        isFinalThirdPhaseActive = false;
+        isActivated = false;
     }
 
     public void ForfeitTurn()
@@ -306,7 +360,7 @@ public class FinalThirdManager : MonoBehaviour
     public void DropBall()
     {
         isWaitingForWhatToDo = false;
-        isFinalThirdPhaseActive = false;
+        isActivated = false;
         thisIsTheSecond = false;
         MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle; // Check this
         string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
@@ -316,7 +370,7 @@ public class FinalThirdManager : MonoBehaviour
     public void GKKick()
     {
         isWaitingForWhatToDo = false;
-        isFinalThirdPhaseActive = false;
+        isActivated = false;
         thisIsTheSecond = false;
         MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
         string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
