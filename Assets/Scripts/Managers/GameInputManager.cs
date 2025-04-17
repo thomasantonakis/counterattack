@@ -283,11 +283,11 @@ public class GameInputManager : MonoBehaviour
         //     hexGrid.ClearHighlightedHexes(); 
         //     MatchManager.Instance.TriggerHighPass();
         // }
-        else if (Input.GetKeyDown(KeyCode.L))
-        {
-            hexGrid.ClearHighlightedHexes(); 
-            MatchManager.Instance.TriggerLongPass();
-        }
+        // else if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     hexGrid.ClearHighlightedHexes(); 
+        //     MatchManager.Instance.TriggerLongPass();
+        // }
         else if (Input.GetKeyDown(KeyCode.F))
         {
             hexGrid.ClearHighlightedHexes(); 
@@ -384,13 +384,13 @@ public class GameInputManager : MonoBehaviour
             // {
             //     StartCoroutine(HandleMouseInputForGKBoxMovement());
             // }
-            if (
-                MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt
-                && longBallManager.isWaitingForDefLBMove
-            )
-            {
-                StartCoroutine(HandleMouseInputForGKLongBallMovement());
-            }
+            // if (
+            //     MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt
+            //     && longBallManager.isWaitingForDefLBMove
+            // )
+            // {
+            //     StartCoroutine(HandleMouseInputForGKLongBallMovement());
+            // }
             // if (
             //         MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassAttackerMovement ||
             //         MatchManager.Instance.currentState == MatchManager.GameState.FirstTimePassDefenderMovement
@@ -495,10 +495,10 @@ public class GameInputManager : MonoBehaviour
         // {
         //     firstTimePassManager.HandleFTPBallPath(hex);
         // }
-        else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt && !longBallManager.isWaitingForDefLBMove)
-        {
-            longBallManager.HandleLongBallProcess(hex);
-        }
+        // else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.LongBallAttempt && !longBallManager.isWaitingForDefLBMove)
+        // {
+        //     longBallManager.HandleLongBallProcess(hex);
+        // }
         // else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttempt)
         // {
         //     highPassManager.HandleHighPassProcess(hex, false);
@@ -796,47 +796,47 @@ public class GameInputManager : MonoBehaviour
         }
     }
     
-    public IEnumerator HandleMouseInputForGKLongBallMovement()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            hexGrid.ClearHighlightedHexes();
-            Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
-            longBallManager.isWaitingForDefLBMove = false;
-            yield break;  
-        }
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForGKLongBallMovement called on click");
+    // public IEnumerator HandleMouseInputForGKLongBallMovement()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.X))
+    //     {
+    //         hexGrid.ClearHighlightedHexes();
+    //         Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
+    //         longBallManager.isWaitingForDefLBMove = false;
+    //         yield break;  
+    //     }
+    //     if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+    //     {
+    //         Debug.Log("HandleMouseInputForGKLongBallMovement called on click");
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                yield break;
+    //             }
 
-                if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
-                {
-                    hexGrid.ClearHighlightedHexes();
-                    yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
-                    longBallManager.isWaitingForDefLBMove = false;
-                    Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
-                }
-                else
-                {
-                    Debug.LogWarning($"Cannot move GK there");
-                }
-            }
-            else {
-                Debug.Log("Raycast did not hit any collider.");
-                yield break;
-            }
-        }
-    }
+    //             if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
+    //             {
+    //                 hexGrid.ClearHighlightedHexes();
+    //                 yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
+    //                 longBallManager.isWaitingForDefLBMove = false;
+    //                 Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
+    //             }
+    //             else
+    //             {
+    //                 Debug.LogWarning($"Cannot move GK there");
+    //             }
+    //         }
+    //         else {
+    //             Debug.Log("Raycast did not hit any collider.");
+    //             yield break;
+    //         }
+    //     }
+    // }
 
     // public IEnumerator HandleMouseInputForFTPMovement()
     // {

@@ -60,6 +60,19 @@ public class HighPassManager : MonoBehaviour
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
 
+    private async Task StartCoroutineAndWait(IEnumerator coroutine)
+    {
+        bool isDone = false;
+        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
+        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+    }
+
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    {
+        yield return StartCoroutine(coroutine);
+        onComplete?.Invoke();
+    }
+
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (isActivated)
@@ -152,20 +165,6 @@ public class HighPassManager : MonoBehaviour
             }
         }
     }
-
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
-    }
-
 
     private void OnKeyReceived(KeyCode key)
     {
