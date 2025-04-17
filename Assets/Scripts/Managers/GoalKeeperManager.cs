@@ -43,7 +43,6 @@ public class GoalKeeperManager : MonoBehaviour
         }
     }
 
-
     private void OnKeyReceived(KeyCode key)
     {
         if (isWaitingForDefGKBoxMove && key == KeyCode.X)
@@ -109,7 +108,6 @@ public class GoalKeeperManager : MonoBehaviour
             yield break;
         }
 
-        HexCell gkHex = defenderGK.GetCurrentHex();
         movementPhaseManager.HighlightValidMovementHexes(defenderGK, 1);
 
         if (hexGrid.highlightedHexes.Count == 0)
@@ -125,4 +123,5 @@ public class GoalKeeperManager : MonoBehaviour
             yield return null;
         }
     }
+
 }
