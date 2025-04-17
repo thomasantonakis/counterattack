@@ -607,7 +607,7 @@ public class HighPassManager : MonoBehaviour
                 Debug.Log("GK cannot rush out to challenge.");
             }
             finalThirdManager.TriggerFinalThirdPhase();
-            while (finalThirdManager.isFinalThirdPhaseActive)
+            while (finalThirdManager.isActivated)
             {
               yield return null;
             }
