@@ -8,6 +8,18 @@ using System.Diagnostics.CodeAnalysis;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 
+public struct KeyPressData
+    {
+        public KeyCode key;
+        public bool shift;
+        public bool ctrl;
+        public bool alt;
+
+        public override string ToString()
+        {
+            return $"{(ctrl ? "Ctrl+" : "")}{(alt ? "Alt+" : "")}{(shift ? "Shift+" : "")}{key}";
+        }
+    }
 
 public class GameInputManager : MonoBehaviour
 {
@@ -30,7 +42,9 @@ public class GameInputManager : MonoBehaviour
     public MatchManager matchManager;
     public static event Action<PlayerToken, HexCell> OnClick;
     public static event Action<PlayerToken, HexCell> OnHover;
-    public static event Action<KeyCode> OnKeyPress;
+    // public static event Action<KeyCode> OnKeyPress;
+    public static event Action<KeyPressData> OnKeyPress;
+
     [Header("Layers")]
     public LayerMask tokenLayerMask;  // Layer for player tokens
     public LayerMask hexLayerMask;    // Layer for hex grid
@@ -45,11 +59,10 @@ public class GameInputManager : MonoBehaviour
     public bool isDragging = false;    
     [SerializeField]
     private bool logIsOn = false;    
-    public float dragThreshold = 10f;   
+    public float dragThreshold = 10f;
 
     void Start()
     {
-
     }
 
     void Update()
@@ -193,16 +206,39 @@ public class GameInputManager : MonoBehaviour
     
     private void HandleKeyPresses()
     {
-        if (Input.anyKeyDown)
+        if (!Input.anyKeyDown) return;
+        foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
         {
-            foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
+            if (!Input.GetKeyDown(kcode)) continue;
+            if (kcode is
+                KeyCode.LeftShift or KeyCode.RightShift or 
+                KeyCode.LeftControl or KeyCode.RightControl or 
+                KeyCode.LeftAlt or KeyCode.RightAlt or
+                KeyCode.LeftCommand or KeyCode.RightCommand
+            )
             {
-                if (Input.GetKeyDown(kcode))
-                {
-                    if (logIsOn) Debug.Log($"🔑 Key pressed: {kcode}");
-                    OnKeyPress?.Invoke(kcode);  // 📣 Broadcast the key press
-                }
+                if (logIsOn) Debug.Log($"🔒 Modifier key ignored: {kcode}");
+                continue;
             }
+            KeyPressData data = new KeyPressData
+            {
+                key = kcode,
+                shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift),
+                ctrl  = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand),
+                alt   = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)
+            };
+            if (logIsOn) Debug.Log($"📢 KeyPress: {data}");
+            OnKeyPress?.Invoke(data);
+            break; // Stop after first match
+
+            // if (!Input.anyKeyDown) 
+            // {
+            //     if (Input.GetKeyDown(kcode))
+            //     {
+            //         if (logIsOn) Debug.Log($"🔑 Key pressed: {kcode}");
+            //         OnKeyPress?.Invoke(kcode);  // 📣 Broadcast the key press
+            //     }
+            // }
         }
     }
 
@@ -399,14 +435,14 @@ public class GameInputManager : MonoBehaviour
             // {
             //     StartCoroutine(HandleMouseInputForFTPMovement());
             // }
-            if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderAttackerSelection)
-            {
-                HandleAttackerHeaderSelectionInput();
-            }
-            else if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderDefenderSelection)
-            {
-                HandleDefenderHeaderSelectionInput();
-            }
+            // if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderAttackerSelection)
+            // {
+            //     HandleAttackerHeaderSelectionInput();
+            // }
+            // else if (MatchManager.Instance.currentState == MatchManager.GameState.HeaderDefenderSelection)
+            // {
+            //     HandleDefenderHeaderSelectionInput();
+            // }
             if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKick"))
             {
                 if (freeKickManager.isWaitingForKickerSelection)
@@ -755,47 +791,47 @@ public class GameInputManager : MonoBehaviour
     //     }
     // }
     
-    public IEnumerator HandleMouseInputForGKBoxMovement()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            hexGrid.ClearHighlightedHexes();
-            Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
-            goalKeeperManager.isWaitingForDefGKBoxMove = false;
-            yield break;  
-        }
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForGKBoxMovement called on click");
+    // public IEnumerator HandleMouseInputForGKBoxMovement()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.X))
+    //     {
+    //         hexGrid.ClearHighlightedHexes();
+    //         Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
+    //         goalKeeperManager.isWaitingForDefGKBoxMove = false;
+    //         yield break;  
+    //     }
+    //     if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+    //     {
+    //         Debug.Log("HandleMouseInputForGKBoxMovement called on click");
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                yield break;
+    //             }
 
-                if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
-                {
-                    hexGrid.ClearHighlightedHexes();
-                    yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
-                    goalKeeperManager.isWaitingForDefGKBoxMove = false;
-                    Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
-                }
-                else
-                {
-                    Debug.LogWarning($"Cannot move GK there");
-                }
-            }
-            else {
-                Debug.Log("Raycast did not hit any collider.");
-                yield break;
-            }
-        }
-    }
+    //             if (inferredTokenFromClick == null && inferredHexCellFromClick != null && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick))
+    //             {
+    //                 hexGrid.ClearHighlightedHexes();
+    //                 yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
+    //                 goalKeeperManager.isWaitingForDefGKBoxMove = false;
+    //                 Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
+    //             }
+    //             else
+    //             {
+    //                 Debug.LogWarning($"Cannot move GK there");
+    //             }
+    //         }
+    //         else {
+    //             Debug.Log("Raycast did not hit any collider.");
+    //             yield break;
+    //         }
+    //     }
+    // }
     
     // public IEnumerator HandleMouseInputForGKLongBallMovement()
     // {
@@ -1035,81 +1071,81 @@ public class GameInputManager : MonoBehaviour
         }
     }
 
-    private void HandleAttackerHeaderSelectionInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                if (token != null && token.isAttacker && headerManager.attEligibleToHead.Contains(token) && !headerManager.attackerWillJump.Contains(token))
-                {
-                    StartCoroutine(headerManager.HandleAttackerHeaderSelection(token));
-                }
-                else
-                {
-                    Debug.Log("Invalid attacker selected for header challenge.");
-                }
-            }
-        }
+    // private void HandleAttackerHeaderSelectionInput()
+    // {
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+    //             if (token != null && token.isAttacker && headerManager.attEligibleToHead.Contains(token) && !headerManager.attackerWillJump.Contains(token))
+    //             {
+    //                 StartCoroutine(headerManager.HandleAttackerHeaderSelection(token));
+    //             }
+    //             else
+    //             {
+    //                 Debug.Log("Invalid attacker selected for header challenge.");
+    //             }
+    //         }
+    //     }
 
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            headerManager.ConfirmAttackerHeaderSelection();
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            headerManager.SelectAllAvailableAttackers();
-        }
-    }
+    //     if (Input.GetKeyDown(KeyCode.X))
+    //     {
+    //         headerManager.ConfirmAttackerHeaderSelection();
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.A))
+    //     {
+    //         headerManager.SelectAllAvailableAttackers();
+    //     }
+    // }
 
-    private void HandleDefenderHeaderSelectionInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                if (token == null)
-                {
-                    Debug.LogWarning("You did not click on a token");
-                    return;
-                }
-                else
-                {
-                    if (token.isAttacker)
-                    {
-                        Debug.LogWarning($"{token.name} is not a defender! Rejecting input");
-                    }
-                    else if (!headerManager.defEligibleToHead.Contains(token))
-                    {
-                        Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
-                    }
-                    else if (headerManager.defenderWillJump.Contains(token))
-                    {
-                        Debug.LogWarning($"{token.name} has already declared to Jump for header. Rejecting input");
-                        // TODO: Maybe deselect?
-                    }
-                    else
-                    {
-                        StartCoroutine(headerManager.HandleDefenderHeaderSelection(token));
-                    }
-                }
-            }
-            else Debug.LogWarning("Raycast did not hit any collider");
-        }
+    // private void HandleDefenderHeaderSelectionInput()
+    // {
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+    //             if (token == null)
+    //             {
+    //                 Debug.LogWarning("You did not click on a token");
+    //                 return;
+    //             }
+    //             else
+    //             {
+    //                 if (token.isAttacker)
+    //                 {
+    //                     Debug.LogWarning($"{token.name} is not a defender! Rejecting input");
+    //                 }
+    //                 else if (!headerManager.defEligibleToHead.Contains(token))
+    //                 {
+    //                     Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
+    //                 }
+    //                 else if (headerManager.defenderWillJump.Contains(token))
+    //                 {
+    //                     Debug.LogWarning($"{token.name} has already declared to Jump for header. Rejecting input");
+    //                     // TODO: Maybe deselect?
+    //                 }
+    //                 else
+    //                 {
+    //                     StartCoroutine(headerManager.HandleDefenderHeaderSelection(token));
+    //                 }
+    //             }
+    //         }
+    //         else Debug.LogWarning("Raycast did not hit any collider");
+    //     }
 
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            headerManager.ConfirmDefenderHeaderSelection();
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            headerManager.SelectAllAvailableDefenders();
-        }
-    }
+    //     if (Input.GetKeyDown(KeyCode.X))
+    //     {
+    //         headerManager.ConfirmDefenderHeaderSelection();
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.A))
+    //     {
+    //         headerManager.SelectAllAvailableDefenders();
+    //     }
+    // }
 
     private void HandleFreeKickKickerSelection()
     {
@@ -1356,5 +1392,45 @@ public class GameInputManager : MonoBehaviour
             Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}"); 
         }
         return (inferredToken, inferredHexCell, false);      
+    }
+
+    public void SimulateClickAt(Vector2Int hexCoords)
+    {
+        Vector3Int coords = new Vector3Int(hexCoords.x, 0, hexCoords.y);
+        HexCell hex = hexGrid.GetHexCellAt(coords);
+        if (hex == null)
+        {
+            Debug.LogWarning($"No HexCell found at {coords}");
+            return;
+        }
+
+        PlayerToken token = hex.GetOccupyingToken();
+
+        Debug.Log($"🧪 Simulated click at {coords}. Hex: {hex.name}, Token: {(token != null ? token.name : "None")}");
+        OnClick?.Invoke(token, hex);
+    }
+
+    public void SimulateKeyDataPress(KeyCode key, bool shift = false, bool ctrl = false, bool alt = false)
+    {
+        var keyData = new KeyPressData
+        {
+            key = key,
+            shift = shift,
+            ctrl = ctrl,
+            alt = alt
+        };
+        OnKeyPress?.Invoke(keyData);
+    }
+
+    public IEnumerator DelayedClick(Vector2Int pos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SimulateClickAt(pos);
+    }
+
+    public IEnumerator DelayedKeyDataPress(KeyCode key, float delay, bool shift = false, bool ctrl = false, bool alt = false)
+    {
+        yield return new WaitForSeconds(delay);
+        SimulateKeyDataPress(key);
     }
 }
