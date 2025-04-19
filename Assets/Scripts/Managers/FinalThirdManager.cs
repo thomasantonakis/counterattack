@@ -60,19 +60,19 @@ public class FinalThirdManager : MonoBehaviour
         }
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
         if (isActivated)
         {
-            if (key == KeyCode.X)
+            if (keyData.key == KeyCode.X)
             {
                 ForfeitTurn();
             }
-            if (isWaitingForWhatToDo && key == KeyCode.D)
+            if (isWaitingForWhatToDo && keyData.key == KeyCode.D)
             {
                 DropBall();
             }
-            if (isWaitingForWhatToDo && key == KeyCode.K)
+            if (isWaitingForWhatToDo && keyData.key == KeyCode.K)
             {
                 GKKick();
             }

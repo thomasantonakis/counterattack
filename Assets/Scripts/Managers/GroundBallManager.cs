@@ -50,10 +50,10 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
         // return;
-        if (isAvailable && !isActivated && key == KeyCode.P)
+        if (isAvailable && !isActivated && keyData.key == KeyCode.P)
         {
             ActivateGroundBall();
         }
@@ -62,14 +62,14 @@ public class GroundBallManager : MonoBehaviour
             // if (
             //     isCommitted
             //     && (
-            //         key == KeyCode.C
-            //         || key == KeyCode.M
+            //         keyData.key == KeyCode.C
+            //         || keyData.key == KeyCode.M
             //     )
             // {
             //     CleanUpPass();
             //     isAvailable = true;
             // }
-            if (isWaitingForDiceRoll && key == KeyCode.R)
+            if (isWaitingForDiceRoll && keyData.key == KeyCode.R)
             {
                 // Check if waiting for dice rolls and the R key is pressed
                 PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when R is pressed

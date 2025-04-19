@@ -39,13 +39,18 @@ public class GoalKeeperManager : MonoBehaviour
     {
         if (isWaitingForDefGKBoxMove)
         {
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                Debug.Log($"🧤 Invalid move! {hex.name} is not a highlighted hex.");
+                return;
+            }
             MoveGKforBox(hex);
         }
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
-        if (isWaitingForDefGKBoxMove && key == KeyCode.X)
+        if (isWaitingForDefGKBoxMove && keyData.key == KeyCode.X)
         {
             hexGrid.ClearHighlightedHexes();
             Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");

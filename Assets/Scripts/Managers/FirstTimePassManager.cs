@@ -126,16 +126,16 @@ public class FirstTimePassManager : MonoBehaviour
         }
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
         // return;
-        if (isAvailable && !isActivated && key == KeyCode.F)
+        if (isAvailable && !isActivated && keyData.key == KeyCode.F)
         {
             ActivateFTP();
         }
         if (isActivated)
         {
-            if (isWaitingForDiceRoll && key == KeyCode.R)
+            if (isWaitingForDiceRoll && keyData.key == KeyCode.R)
             {
                 // Check if waiting for dice rolls and the R key is pressed
                 PerformFTPInterceptionRolls();  // Trigger the dice roll when R is pressed
@@ -389,7 +389,6 @@ public class FirstTimePassManager : MonoBehaviour
         MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassAttackerMovement;
     }
 
-
     public void StartDefenderMovementPhase()
     {
         Debug.Log("Defender movement phase started. Move one defender 1 hex.");
@@ -426,9 +425,11 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        movementPhaseManager.isMovementPhaseInProgress = false;
         selectedToken = null;
         StartDefenderMovementPhase();
     }
+    
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
@@ -436,6 +437,7 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        movementPhaseManager.isMovementPhaseInProgress = false;
         selectedToken = null;
         CompleteDefenderMovementPhase();
     }
@@ -728,4 +730,5 @@ public class FirstTimePassManager : MonoBehaviour
 
         // Debug.Log($"Log saved to: {filePath}");
     }
+
 }

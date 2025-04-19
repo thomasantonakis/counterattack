@@ -85,32 +85,32 @@ public class LongBallManager : MonoBehaviour
         }
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
         // return;
-        if (isAvailable && !isActivated && key == KeyCode.L)
+        if (isAvailable && !isActivated && keyData.key == KeyCode.L)
         {
             ActivateHighPass();
         }
         if (isActivated)
         {
-            if (isWaitingForAccuracyRoll && key == KeyCode.R)
+            if (isWaitingForAccuracyRoll && keyData.key == KeyCode.R)
             {
                 PerformAccuracyRoll(); // Handle accuracy roll
             }
-            else if (isWaitingForDirectionRoll && key == KeyCode.R)
+            else if (isWaitingForDirectionRoll && keyData.key == KeyCode.R)
             {
                 PerformDirectionRoll(); // Handle direction roll
             }
-            else if (isWaitingForDistanceRoll && key == KeyCode.R)
+            else if (isWaitingForDistanceRoll && keyData.key == KeyCode.R)
             {
                 StartCoroutine(PerformDistanceRoll()); // Handle distance roll
             }
-            else if (isWaitingForInterceptionRoll && key == KeyCode.R)
+            else if (isWaitingForInterceptionRoll && keyData.key == KeyCode.R)
             {
                 StartCoroutine(PerformInterceptionCheck(finalHex)); 
             }
-            else if (isWaitingForDefLBMove && key == KeyCode.X)
+            else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
             {
                 hexGrid.ClearHighlightedHexes();
                 Debug.Log($"GK chooses to not move for the Long Ball, moving on!");
