@@ -1,0 +1,17 @@
+===== TEST LOG START =====
+
+==== Starting Test #1 ====
+▶️ Starting test scenario: 'Kick Off'
+✅ PASS: KickOff state check after pressing 2 | Expected: KickOffSetup | Actual: KickOffSetup
+✅ PASS: KickOff state check after pressing Space | Expected: KickoffBlown | Actual: KickoffBlown
+✅ Kick off - TEST PASSED COMPLETELY 🎉
+
+
+✅ Test #1 passed.
+
+
+==== Starting Test #2 ====
+▶️ Starting test scenario: 'Ground Ball - Too Far Away'
+✅ PASS: KickOff state check after pressing 2 | Expected: KickOffSetup | Actual: KickOffSetup
+❌ ASSERT FAILED: KickOff state check after pressing Space | Expected: KickOffSetup | Actual: KickoffBlown
+✅ PASS: GroundBallManager is availableafter  pressing Space | Expected: True | Actual: True
