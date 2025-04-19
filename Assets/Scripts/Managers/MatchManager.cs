@@ -62,7 +62,6 @@ public class MatchManager : MonoBehaviour
         QuickThrow,
         ActivateFinalThirdsAfterSave,
         GoalKick,
-        PreKickOffSetup,
     }
     
     [Serializable]

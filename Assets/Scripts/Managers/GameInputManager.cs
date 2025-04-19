@@ -325,21 +325,17 @@ public class GameInputManager : MonoBehaviour
         //     hexGrid.ClearHighlightedHexes(); 
         //     MatchManager.Instance.TriggerLongPass();
         // }
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            hexGrid.ClearHighlightedHexes(); 
-            MatchManager.Instance.TriggerFTP();
-        }
+        // else if (Input.GetKeyDown(KeyCode.F))
+        // {
+        //     hexGrid.ClearHighlightedHexes(); 
+        //     MatchManager.Instance.TriggerFTP();
+        // }
         // Final Thirds Handling
         // if (finalThirdManager.isActivated)
         // {
         //     HandleMouseInputForF3();
         //     return;
         // }
-        if (MatchManager.Instance.currentState == MatchManager.GameState.PreKickOffSetup)
-        {
-            HandleKickOffClicks();
-        }
         if (shotManager.isShotInProgress)
         {
             if (movementPhaseManager.isWaitingForSnapshotDecision)
@@ -447,69 +443,69 @@ public class GameInputManager : MonoBehaviour
             {
                 if (freeKickManager.isWaitingForKickerSelection)
                 {
-                    HandleFreeKickKickerSelection();
+                    // HandleFreeKickKickerSelection();
                 }
                 else if (freeKickManager.isWaitingForSetupPhase)
                 {
-                    HandleFreeKickSetupPhaseInput();
+                    // HandleFreeKickSetupPhaseInput();
                 }
                 else if (freeKickManager.isWaitingForFinalKickerSelection)
                 {
-                    HandleFreeKickFinalKicker();
+                    // HandleFreeKickFinalKicker();
                 }
                 else if (freeKickManager.isWaitingForExecution)
                 {
-                    if (freeKickManager.isCornerKick)
-                    {
-                        if (Input.GetKeyDown(KeyCode.C))
-                        {
-                            hexGrid.ClearHighlightedHexes(); 
-                            MatchManager.Instance.TriggerHighPass();
-                            highPassManager.isCornerKick = true;
-                            freeKickManager.isWaitingForExecution = false;
-                            freeKickManager.isCornerKick = false;
-                        }
-                        else if (Input.GetKeyDown(KeyCode.P))
-                        {
-                            hexGrid.ClearHighlightedHexes(); 
-                            MatchManager.Instance.TriggerStandardPass();
-                            groundBallManager.imposedDistance = 6;
-                            freeKickManager.isWaitingForExecution = false;
-                            freeKickManager.isCornerKick = false;
-                        }
-                    }
-                    else
-                    {
-                        if (Input.GetKeyDown(KeyCode.L))
-                        {
-                            hexGrid.ClearHighlightedHexes(); 
-                            MatchManager.Instance.TriggerLongPass();
-                            freeKickManager.isWaitingForExecution = false;
-                            freeKickManager.isCornerKick = false;
-                        }
-                        else if (Input.GetKeyDown(KeyCode.C))
-                        {
-                            hexGrid.ClearHighlightedHexes(); 
-                            MatchManager.Instance.TriggerHighPass();
-                            freeKickManager.isWaitingForExecution = false;
-                            freeKickManager.isCornerKick = false;
-                        }
-                        else if (Input.GetKeyDown(KeyCode.P))
-                        {
-                            hexGrid.ClearHighlightedHexes(); 
-                            MatchManager.Instance.TriggerStandardPass();
-                            freeKickManager.isWaitingForExecution = false;
-                            freeKickManager.isCornerKick = false;
-                        }
-                        else if (Input.GetKeyDown(KeyCode.S))
-                        {
-                            hexGrid.ClearHighlightedHexes();
-                            Debug.Log("Free Kick Shoot triggered."); 
-                            freeKickManager.isWaitingForExecution = false;
-                            freeKickManager.isCornerKick = false;
-                            // TODO: Implement Free Kick Shoot
-                        }
-                    }
+                //     if (freeKickManager.isCornerKick)
+                //     {
+                //         if (Input.GetKeyDown(KeyCode.C))
+                //         {
+                //             hexGrid.ClearHighlightedHexes(); 
+                //             MatchManager.Instance.TriggerHighPass();
+                //             highPassManager.isCornerKick = true;
+                //             freeKickManager.isWaitingForExecution = false;
+                //             freeKickManager.isCornerKick = false;
+                //         }
+                //         else if (Input.GetKeyDown(KeyCode.P))
+                //         {
+                //             hexGrid.ClearHighlightedHexes(); 
+                //             MatchManager.Instance.TriggerStandardPass();
+                //             groundBallManager.imposedDistance = 6;
+                //             freeKickManager.isWaitingForExecution = false;
+                //             freeKickManager.isCornerKick = false;
+                //         }
+                //     }
+                //     else
+                //     {
+                //         if (Input.GetKeyDown(KeyCode.L))
+                //         {
+                //             hexGrid.ClearHighlightedHexes(); 
+                //             MatchManager.Instance.TriggerLongPass();
+                //             freeKickManager.isWaitingForExecution = false;
+                //             freeKickManager.isCornerKick = false;
+                //         }
+                //         else if (Input.GetKeyDown(KeyCode.C))
+                //         {
+                //             hexGrid.ClearHighlightedHexes(); 
+                //             MatchManager.Instance.TriggerHighPass();
+                //             freeKickManager.isWaitingForExecution = false;
+                //             freeKickManager.isCornerKick = false;
+                //         }
+                //         else if (Input.GetKeyDown(KeyCode.P))
+                //         {
+                //             hexGrid.ClearHighlightedHexes(); 
+                //             MatchManager.Instance.TriggerStandardPass();
+                //             freeKickManager.isWaitingForExecution = false;
+                //             freeKickManager.isCornerKick = false;
+                //         }
+                //         else if (Input.GetKeyDown(KeyCode.S))
+                //         {
+                //             hexGrid.ClearHighlightedHexes();
+                //             Debug.Log("Free Kick Shoot triggered."); 
+                //             freeKickManager.isWaitingForExecution = false;
+                //             freeKickManager.isCornerKick = false;
+                //             // TODO: Implement Free Kick Shoot
+                //         }
+                //     }
                 }
             }
         }
@@ -1147,197 +1143,197 @@ public class GameInputManager : MonoBehaviour
     //     }
     // }
 
-    private void HandleFreeKickKickerSelection()
-    {
-        if (MatchManager.Instance.currentState == MatchManager.GameState.FreeKickKickerSelect
-            && freeKickManager.isWaitingForKickerSelection)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    if (hit.collider == null)
-                    {
-                        Debug.Log("Raycast did not hit any collider.");
-                        return;
-                    }
-                    var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                    if (isOOBClicked)
-                    {
-                      Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                      return;
-                    }
-                    // Check if the ray hit a PlayerToken directly
-                    Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                    Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
-                    if (inferredTokenFromClick != null) StartCoroutine(freeKickManager.HandleKickerSelection(inferredTokenFromClick));
-                    else Debug.Log($"There is no Token on {inferredHexCellFromClick.name}. Doing nothing!");
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.X))
-            {
-                Debug.Log("Player pressed X to skip kicker selection.");
-                StartCoroutine(freeKickManager.HandleKickerSelection());  // Pass no token to skip
-            }
-        }
-    }
+    // private void HandleFreeKickKickerSelection()
+    // {
+    //     if (MatchManager.Instance.currentState == MatchManager.GameState.FreeKickKickerSelect
+    //         && freeKickManager.isWaitingForKickerSelection)
+    //     {
+    //         if (Input.GetMouseButtonDown(0))
+    //         {
+    //             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //             if (Physics.Raycast(ray, out RaycastHit hit))
+    //             {
+    //                 if (hit.collider == null)
+    //                 {
+    //                     Debug.Log("Raycast did not hit any collider.");
+    //                     return;
+    //                 }
+    //                 var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+    //                 if (isOOBClicked)
+    //                 {
+    //                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                   return;
+    //                 }
+    //                 // Check if the ray hit a PlayerToken directly
+    //                 Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+    //                 Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+    //                 if (inferredTokenFromClick != null) StartCoroutine(freeKickManager.HandleKickerSelection(inferredTokenFromClick));
+    //                 else Debug.Log($"There is no Token on {inferredHexCellFromClick.name}. Doing nothing!");
+    //             }
+    //         }
+    //         else if (Input.GetKeyDown(KeyCode.X))
+    //         {
+    //             Debug.Log("Player pressed X to skip kicker selection.");
+    //             StartCoroutine(freeKickManager.HandleKickerSelection());  // Pass no token to skip
+    //         }
+    //     }
+    // }
 
-    private void HandleFreeKickSetupPhaseInput()
-    {
-        if (freeKickManager.isWaitingForSetupPhase)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    if (hit.collider == null)
-                    {
-                        Debug.Log("Raycast did not hit any collider.");
-                        return;
-                    }
-                    var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                    if (isOOBClicked)
-                    {
-                      Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                      return;
-                    }
-                    // Check if the ray hit a PlayerToken directly
-                    Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                    Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
-                    if (freeKickManager.isWaitingForFinalKickerSelection)
-                    {
-                        freeKickManager.selectedKicker = inferredTokenFromClick;
-                        freeKickManager.AdvanceToNextPhase(MatchManager.GameState.FreeKickKickerSelect);
-                        return;
-                    }
-                    if (freeKickManager.selectedToken != null)
-                    {
-                        if (inferredTokenFromClick != null && inferredTokenFromClick != freeKickManager.selectedToken)
-                        {
-                          Debug.Log($"New Clicked token during free kick setup: {inferredTokenFromClick.name}");
-                          freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
-                          return;
-                        }
-                        if (inferredHexCellFromClick != null)
-                        {
-                            if (!inferredHexCellFromClick.isDefenseOccupied && !inferredHexCellFromClick.isAttackOccupied)
-                            {
-                                Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {inferredHexCellFromClick.coordinates}");
-                                StartCoroutine(freeKickManager.HandleSetupHexSelection(inferredHexCellFromClick));
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"Hex {inferredHexCellFromClick.coordinates} is occupied. Select an unoccupied Hex.");
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogWarning("Please click on a valid Hex to move the selected token.");
-                        }
-                        return;
-                    }
-                    else if (inferredTokenFromClick != null)
-                    {
-                        {
-                            Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
-                            freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        if (freeKickManager.isWaitingforMovement3)
-                        {
-                            Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
-                            StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, freeKickManager.selectedToken, false));
-                            // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));
-                            return;
-                        }
-                        else
-                        Debug.LogWarning($"Hex {inferredHexCellFromClick.name} is unoccupied. Please select a valid token.");
-                        return;
-                    }            
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.X))
-            {
-                Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
-                freeKickManager.selectedToken = null;  // Reset the selected token
-                freeKickManager.AttemptToAdvanceToNextPhase();
-            }
-        }
-    }
+    // private void HandleFreeKickSetupPhaseInput()
+    // {
+    //     if (freeKickManager.isWaitingForSetupPhase)
+    //     {
+    //         if (Input.GetMouseButtonDown(0))
+    //         {
+    //             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //             if (Physics.Raycast(ray, out RaycastHit hit))
+    //             {
+    //                 if (hit.collider == null)
+    //                 {
+    //                     Debug.Log("Raycast did not hit any collider.");
+    //                     return;
+    //                 }
+    //                 var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+    //                 if (isOOBClicked)
+    //                 {
+    //                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                   return;
+    //                 }
+    //                 // Check if the ray hit a PlayerToken directly
+    //                 Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+    //                 Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+    //                 if (freeKickManager.isWaitingForFinalKickerSelection)
+    //                 {
+    //                     freeKickManager.selectedKicker = inferredTokenFromClick;
+    //                     freeKickManager.AdvanceToNextPhase(MatchManager.GameState.FreeKickKickerSelect);
+    //                     return;
+    //                 }
+    //                 if (freeKickManager.selectedToken != null)
+    //                 {
+    //                     if (inferredTokenFromClick != null && inferredTokenFromClick != freeKickManager.selectedToken)
+    //                     {
+    //                       Debug.Log($"New Clicked token during free kick setup: {inferredTokenFromClick.name}");
+    //                       freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
+    //                       return;
+    //                     }
+    //                     if (inferredHexCellFromClick != null)
+    //                     {
+    //                         if (!inferredHexCellFromClick.isDefenseOccupied && !inferredHexCellFromClick.isAttackOccupied)
+    //                         {
+    //                             Debug.Log($"Token {freeKickManager.selectedToken.name} moving to Hex {inferredHexCellFromClick.coordinates}");
+    //                             StartCoroutine(freeKickManager.HandleSetupHexSelection(inferredHexCellFromClick));
+    //                         }
+    //                         else
+    //                         {
+    //                             Debug.LogWarning($"Hex {inferredHexCellFromClick.coordinates} is occupied. Select an unoccupied Hex.");
+    //                         }
+    //                     }
+    //                     else
+    //                     {
+    //                         Debug.LogWarning("Please click on a valid Hex to move the selected token.");
+    //                     }
+    //                     return;
+    //                 }
+    //                 else if (inferredTokenFromClick != null)
+    //                 {
+    //                     {
+    //                         Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
+    //                         freeKickManager.HandleSetupTokenSelection(inferredTokenFromClick);
+    //                         return;
+    //                     }
+    //                 }
+    //                 else
+    //                 {
+    //                     if (freeKickManager.isWaitingforMovement3)
+    //                     {
+    //                         Debug.Log($"Clicked token during free kick setup: {inferredTokenFromClick.name}");
+    //                         StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, freeKickManager.selectedToken, false));
+    //                         // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));
+    //                         return;
+    //                     }
+    //                     else
+    //                     Debug.LogWarning($"Hex {inferredHexCellFromClick.name} is unoccupied. Please select a valid token.");
+    //                     return;
+    //                 }            
+    //             }
+    //         }
+    //         else if (Input.GetKeyDown(KeyCode.X))
+    //         {
+    //             Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
+    //             freeKickManager.selectedToken = null;  // Reset the selected token
+    //             freeKickManager.AttemptToAdvanceToNextPhase();
+    //         }
+    //     }
+    // }
 
-    private void HandleFreeKickFinalKicker()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                if (hit.collider == null)
-                {
-                    Debug.Log("Raycast did not hit any collider.");
-                    return;
-                }
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   return;
-                }
-                // Check if the ray hit a PlayerToken directly
-                Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
-                if (freeKickManager.isWaitingForFinalKickerSelection)
-                {
-                    freeKickManager.selectedKicker = inferredTokenFromClick;
-                    freeKickManager.AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
-                    return;
-                }
-            }
-        }
-    }
+    // private void HandleFreeKickFinalKicker()
+    // {
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             if (hit.collider == null)
+    //             {
+    //                 Debug.Log("Raycast did not hit any collider.");
+    //                 return;
+    //             }
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                return;
+    //             }
+    //             // Check if the ray hit a PlayerToken directly
+    //             Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+    //             Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+    //             if (freeKickManager.isWaitingForFinalKickerSelection)
+    //             {
+    //                 freeKickManager.selectedKicker = inferredTokenFromClick;
+    //                 freeKickManager.AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+    //                 return;
+    //             }
+    //         }
+    //     }
+    // }
 
-    private void HandleKickOffClicks()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                if (hit.collider == null)
-                {
-                    Debug.Log("Raycast did not hit any collider.");
-                    return;
-                }
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   return;
-                }
-                // Check if the ray hit a PlayerToken directly
-                Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
-                Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
-                if (inferredTokenFromClick != null && inferredTokenFromClick != kickoffManager.selectedToken)
-                {
-                    kickoffManager.SelectToken(inferredTokenFromClick);
-                }
-                else if (inferredHexCellFromClick != null)
-                {
-                    StartCoroutine(kickoffManager.TryMoveToken(inferredHexCellFromClick));
-                }
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Player pressed Sapce to try and start the match.");
-            kickoffManager.ConfirmSetup();
-        }
-    }
+    // private void HandleKickOffClicks()
+    // {
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         if (Physics.Raycast(ray, out RaycastHit hit))
+    //         {
+    //             if (hit.collider == null)
+    //             {
+    //                 Debug.Log("Raycast did not hit any collider.");
+    //                 return;
+    //             }
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                return;
+    //             }
+    //             // Check if the ray hit a PlayerToken directly
+    //             Debug.Log($"Inferred Clicked Token: {inferredTokenFromClick?.name}");
+    //             Debug.Log($"Inferred Clicked Hex: {inferredHexCellFromClick.name}");
+    //             if (inferredTokenFromClick != null && inferredTokenFromClick != kickoffManager.selectedToken)
+    //             {
+    //                 kickoffManager.SelectToken(inferredTokenFromClick);
+    //             }
+    //             else if (inferredHexCellFromClick != null)
+    //             {
+    //                 StartCoroutine(kickoffManager.TryMoveToken(inferredHexCellFromClick));
+    //             }
+    //         }
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.Space))
+    //     {
+    //         Debug.Log("Player pressed Sapce to try and start the match.");
+    //         kickoffManager.ConfirmSetup();
+    //     }
+    // }
     
     public (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick, bool isOutOfBoundsClick) DetectTokenOrHexClicked(RaycastHit hit)
     {

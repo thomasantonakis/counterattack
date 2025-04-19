@@ -10,7 +10,10 @@ public class FreeKickManager : MonoBehaviour
     public Ball ball;
     public MatchManager matchManager;
     public MovementPhaseManager movementPhaseManager;
+    public HighPassManager highPassManager;
+    public GroundBallManager groundBallManager;
     [Header("Important Items")]
+    public bool isActivated = false;
     [SerializeField]
     private List<PlayerToken> shouldDefMoveTokens = new List<PlayerToken>();
     [SerializeField]
@@ -30,6 +33,170 @@ public class FreeKickManager : MonoBehaviour
     public PlayerToken selectedToken;
     public HexCell targetHex;
     public HexCell spotkick;
+
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated) return;
+        if (isWaitingForKickerSelection)
+        {
+            if (token != null) StartCoroutine(HandleKickerSelection(token));
+            else Debug.Log($"There is no Token on {hex.name}. Doing nothing!");
+            return;
+        }
+        if (isWaitingForSetupPhase)
+        {
+            // TODO Maybe this is not needed
+            if (isWaitingForFinalKickerSelection)
+            {
+                selectedKicker = token;
+                AdvanceToNextPhase(MatchManager.GameState.FreeKickKickerSelect);
+                return;
+            }
+            if (selectedToken != null)
+            {
+                if (token != null && token != selectedToken)
+                {
+                  Debug.Log($"New Clicked token during free kick setup: {token.name}");
+                  HandleSetupTokenSelection(token);
+                  return;
+                }
+                if (hex != null)
+                {
+                    if (!hex.isDefenseOccupied && !hex.isAttackOccupied)
+                    {
+                        Debug.Log($"Token {selectedToken.name} moving to Hex {hex.coordinates}");
+                        StartCoroutine(HandleSetupHexSelection(hex));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Hex {hex.coordinates} is occupied. Select an unoccupied Hex.");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Please click on a valid Hex to move the selected token.");
+                }
+                return;
+            }
+            else if (token != null)
+            {
+                {
+                    Debug.Log($"Clicked token during free kick setup: {token.name}");
+                    HandleSetupTokenSelection(token);
+                    return;
+                }
+            }
+            else
+            {
+                if (isWaitingforMovement3)
+                {
+                    Debug.Log($"Clicked token during free kick setup: {token.name}");
+                    StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));
+                    // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex));
+                    return;
+                }
+                else
+                Debug.LogWarning($"Hex {hex.name} is unoccupied. Please select a valid token.");
+                return;
+            } 
+        }
+        if (isWaitingForFinalKickerSelection)
+        {
+            selectedKicker = token;
+            AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+            return;
+        }
+    }
+
+    private void OnKeyReceived(KeyPressData keyData)
+    {
+        if (!isActivated) return;
+        if (isWaitingForKickerSelection)
+        {
+            if (keyData.key == KeyCode.X)
+            {
+                Debug.Log("Player pressed X to skip kicker selection.");
+                StartCoroutine(HandleKickerSelection());  // Pass no token to skip
+                return;
+            }
+        }
+        if (isWaitingForSetupPhase)
+        {
+            if (keyData.key == KeyCode.X)
+            {
+                Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
+                selectedToken = null;  // Reset the selected token
+                AttemptToAdvanceToNextPhase();
+                return;
+            }
+        }
+        if (isWaitingForExecution)
+        {
+            if (isCornerKick)
+            {
+                if (keyData.key == KeyCode.C)
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerHighPass();
+                    highPassManager.isCornerKick = true;
+                    isWaitingForExecution = false;
+                    isCornerKick = false;
+                }
+                else if (keyData.key == KeyCode.P)
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerStandardPass();
+                    groundBallManager.imposedDistance = 6;
+                    isWaitingForExecution = false;
+                    isCornerKick = false;
+                }
+            }
+            else
+            {
+                if (keyData.key == KeyCode.L)
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerLongPass();
+                    isWaitingForExecution = false;
+                    isCornerKick = false;
+                }
+                else if (keyData.key == KeyCode.C)
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerHighPass();
+                    isWaitingForExecution = false;
+                    isCornerKick = false;
+                }
+                else if (keyData.key == KeyCode.P)
+                {
+                    hexGrid.ClearHighlightedHexes(); 
+                    MatchManager.Instance.TriggerStandardPass();
+                    isWaitingForExecution = false;
+                    isCornerKick = false;
+                }
+                else if (Input.GetKeyDown(KeyCode.S))
+                {
+                    hexGrid.ClearHighlightedHexes();
+                    Debug.Log("Free Kick Shoot triggered."); 
+                    isWaitingForExecution = false;
+                    isCornerKick = false;
+                    // TODO: Implement Free Kick Shoot
+                }
+            }
+        }
+    }
 
     public void StartFreeKickPreparation(HexCell cornerKickSpot = null)
     {
