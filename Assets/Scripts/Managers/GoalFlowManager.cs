@@ -21,6 +21,7 @@ public class GoalFlowManager : MonoBehaviour
     private List<HexCell> resetFormationRight;
     public bool defendersAreBack = false;
     public bool attackersAreBack = false;
+    
     private void Start()
     {
         StartCoroutine(WaitUntilHexGridIsReady());
@@ -37,6 +38,7 @@ public class GoalFlowManager : MonoBehaviour
         resetFormationLeft = GenerateResetLeft();
         resetFormationRight = GenerateResetRight();
     }
+    
     private List<HexCell> GenerateTopLeftHexList()
     {
         List<HexCell> list = new()
@@ -55,6 +57,7 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
+    
     private List<HexCell> GenerateTopRightHexList()
     {
         List<HexCell> list = new List<HexCell>
@@ -73,6 +76,7 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
+    
     private List<HexCell> GenerateBottomLeftHexList()
     {
         List<HexCell> list = new List<HexCell>
@@ -91,6 +95,7 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
+    
     private List<HexCell> GenerateBottomRightHexList()
     {
         List<HexCell> list = new List<HexCell>
@@ -109,6 +114,7 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
+    
     private List<HexCell> GenerateResetLeft()
     {
         List<HexCell> list = new List<HexCell>
@@ -127,6 +133,7 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
+    
     private List<HexCell> GenerateResetRight()
     {
         List<HexCell> list = new List<HexCell>
@@ -145,7 +152,6 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
-  
   
     public void StartGoalFlow(PlayerToken shooterToken)
     {
@@ -289,4 +295,5 @@ public class GoalFlowManager : MonoBehaviour
       yield return longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)), true);
       kickoffManager.StartPreKickoffPhase();
     }
+
 }

@@ -38,7 +38,6 @@ public class MatchManager : MonoBehaviour
         HighPassDefenderMovement,
         HeaderGeneric,
         HeaderAttackerSelection,
-        HeaderDefenderSelection,
         HeaderChallengeResolved,
         HeaderCompletedToPlayer,
         HeaderCompletedToSpace,
@@ -771,6 +770,7 @@ public class MatchManager : MonoBehaviour
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
     public GroundBallManager groundBallManager;
+    public HighPassManager highPassManager;
     public PlayerTokenManager playerTokenManager;
     public MatchStatsUI matchStatsUI;
     public GameData gameData;
@@ -910,9 +910,9 @@ public class MatchManager : MonoBehaviour
     {
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
-        if (currentState == GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
+        if (currentState == GameState.KickOffSetup && keyData.key == KeyCode.Space)
         {
             StartMatch();
         }
@@ -923,6 +923,7 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.KickoffBlown;
         groundBallManager.isAvailable = true;
+        highPassManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team to call an action");
@@ -1283,6 +1284,7 @@ public class MatchManager : MonoBehaviour
         {
             PreviousTokenToTouchTheBallOnPurpose = LastTokenToTouchTheBallOnPurpose;
             LastTokenToTouchTheBallOnPurpose = inputToken;
+            Debug.Log($"Set LastTokenToTouchTheBallOnPurpose to {LastTokenToTouchTheBallOnPurpose.playerName}");
         }
         else // New token is from the opposite team
         {
@@ -1358,5 +1360,9 @@ public class MatchManager : MonoBehaviour
             isJackpot = secondRoll == 2;
         }
         return (roll, isJackpot);
+    }
+    public static void ResetSingleton()
+    {
+        Instance = null;
     }
 }

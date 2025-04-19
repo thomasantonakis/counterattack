@@ -75,7 +75,7 @@ public class HighPassManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
-        if (isActivated)
+        if (isActivated && !goalKeeperManager.isWaitingForDefGKBoxMove)
         {
             if (isWaitingForConfirmation)
             {
@@ -100,6 +100,11 @@ public class HighPassManager : MonoBehaviour
                     selectedToken = null;
                     isWaitingForAttackerMove = false;  // Stop waiting for attacker move
                     return;
+                }
+                if (token == lockedAttacker)
+                {
+                    Debug.LogWarning($"Cannot move the locked attacker {token.name}.");
+                    return;  // Skip if the clicked token is the locked attacker
                 }
                 // Clicked on an attacker token
                 if (selectedToken == null || selectedToken != token) // No previous selection of attacker
@@ -166,28 +171,28 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    private void OnKeyReceived(KeyCode key)
+    private void OnKeyReceived(KeyPressData keyData)
     {
         // return;
-        if (isAvailable && !isActivated && key == KeyCode.C)
+        if (isAvailable && !isActivated && keyData.key == KeyCode.C)
         {
             ActivateHighPass();
         }
         if (isActivated)
         {
-            if (isWaitingForAccuracyRoll && key == KeyCode.R)
+            if (isWaitingForAccuracyRoll && keyData.key == KeyCode.R)
             {
                 PerformAccuracyRoll(); // Handle accuracy roll
             }
-            else if (isWaitingForDirectionRoll && key == KeyCode.R)
+            else if (isWaitingForDirectionRoll && keyData.key == KeyCode.R)
             {
                 PerformDirectionRoll(); // Handle direction roll
             }
-            else if (isWaitingForDistanceRoll && key == KeyCode.R)
+            else if (isWaitingForDistanceRoll && keyData.key == KeyCode.R)
             {
                 PerformDistanceRoll(); // Handle distance roll
             }
-            else if (isWaitingForDefGKChallengeDecision && key == KeyCode.X)
+            else if (isWaitingForDefGKChallengeDecision && keyData.key == KeyCode.X)
             {
                 hexGrid.ClearHighlightedHexes();
                 Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
@@ -439,8 +444,8 @@ public class HighPassManager : MonoBehaviour
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
         var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-        int diceRoll = returnedRoll;
-        // int diceRoll = 1; // Melina Mode
+        // int diceRoll = returnedRoll;
+        int diceRoll = 6; // Melina Mode
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -758,6 +763,7 @@ public class HighPassManager : MonoBehaviour
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        movementPhaseManager.isMovementPhaseInProgress = false;
         selectedToken = null;
         StartDefenderMovementPhase();
     }
@@ -780,6 +786,7 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        movementPhaseManager.isMovementPhaseInProgress = false;
         selectedToken = null;
         isWaitingForAccuracyRoll = true;
         Debug.Log("Waiting for accuracy roll... Please Press R key.");
