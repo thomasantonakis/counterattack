@@ -1239,6 +1239,7 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
+  highPassManager: {fileID: 1859472972}
   playerTokenManager: {fileID: 501380953}
   matchStatsUI: {fileID: 977372731}
   gameData:
@@ -1731,7 +1732,16 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  isAvailable: 0
+  isActivated: 0
+  isAwaitingTargetSelection: 0
+  isDangerous: 0
+  isWaitingForAccuracyRoll: 0
+  isWaitingForDirectionRoll: 0
+  isWaitingForDistanceRoll: 0
+  isWaitingForInterceptionRoll: 0
   isWaitingForDefLBMove: 0
+  currentTargetHex: {fileID: 0}
 --- !u!1 &757768960
 GameObject:
   m_ObjectHideFlags: 0
@@ -2079,7 +2089,9 @@ MonoBehaviour:
   highPassManager: {fileID: 1859472972}
   headerManager: {fileID: 2071234817}
   bothSides: 0
-  isFinalThirdPhaseActive: 0
+  isActivated: 0
+  currentTeamMoving: 
+  selectedToken: {fileID: 0}
   isWaitingForTokenSelection: 0
   isWaitingForTargetHex: 0
   forfeitWasPressed: 0
@@ -2088,8 +2100,6 @@ MonoBehaviour:
   eligibleTokens: []
   currentMovableTokens: []
   movedTokens: []
-  currentTeamMoving: 
-  selectedToken: {fileID: 0}
 --- !u!4 &1012232484
 Transform:
   m_ObjectHideFlags: 0
@@ -3746,8 +3756,9 @@ MonoBehaviour:
   isAwaitingTargetSelection: 0
   imposedDistance: 11
   currentTargetHex: {fileID: 0}
-  lastClickedHex: {fileID: 0}
   isWaitingForDiceRoll: 0
+  defendingHexes: []
+  interceptionHexes: []
 --- !u!4 &1703800863
 Transform:
   m_ObjectHideFlags: 0
@@ -3998,19 +4009,24 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
-  lockedAttacker: {fileID: 0}
-  currentTargetHex: {fileID: 0}
-  lastClickedHex: {fileID: 0}
-  intendedTargetHex: {fileID: 0}
-  finalTargetHex: {fileID: 0}
-  selectedToken: {fileID: 0}
-  eligibleAttackers: []
-  gkReachableHexes: []
-  directionIndex: 0
+  isAvailable: 0
+  isActivated: 0
   isWaitingForConfirmation: 0
+  isWaitingForAttackerSelection: 0
+  isWaitingForAttackerMove: 0
+  isWaitingForDefenderSelection: 0
+  isWaitingForDefenderMove: 0
   isWaitingForAccuracyRoll: 0
   isWaitingForDirectionRoll: 0
   isWaitingForDistanceRoll: 0
+  lockedAttacker: {fileID: 0}
+  currentTargetHex: {fileID: 0}
+  intendedTargetHex: {fileID: 0}
+  finalTargetHex: {fileID: 0}
+  selectedToken: {fileID: 0}
+  gkReachableHexes: []
+  eligibleAttackers: []
+  directionIndex: 0
   didGKMoveInDefPhase: 0
   gkRushedOut: 0
   isWaitingForDefGKChallengeDecision: 0
@@ -4120,12 +4136,24 @@ MonoBehaviour:
   gameInputManager: {fileID: 417053521}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
+  isAvailable: 0
+  isActivated: 0
+  hasEligibleAttackers: 0
+  hasEligibleDefenders: 0
+  isWaitingForAttackerSelection: 0
+  isWaitingForDefenderSelection: 0
   isWaitingForHeaderRoll: 0
+  isWaitingForSaveandHoldScenario: 0
+  iswaitingForChallengeWinnerSelection: 0
+  challengeWinner: {fileID: 0}
+  isWaitingForControlOrHeaderDecision: 0
+  isWaitingForHeaderTargetSelection: 0
+  isWaitingForInterceptionRoll: 0
   attEligibleToHead: []
   defEligibleToHead: []
   attackerWillJump: []
   defenderWillJump: []
-  challengeWinner: {fileID: 0}
+  interceptingDefenders: []
 --- !u!4 &2071234818
 Transform:
   m_ObjectHideFlags: 0
