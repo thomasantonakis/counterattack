@@ -12,13 +12,48 @@ public class KickoffManager : MonoBehaviour
     public FreeKickManager freeKickManager;
     public MovementPhaseManager movementPhaseManager;
     public HeaderManager headerManager;
-    
     public PlayerToken selectedToken;
+    [Header("Runtime Items")]
+    private bool isActivated = false;
     private int spacePressCount = 0;
+
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated) return;
+        if (token != null && token != selectedToken)
+        {
+            SelectToken(token);
+        }
+        else if (hex != null)
+        {
+            StartCoroutine(TryMoveToken(hex));
+        }
+    }
+
+    private void OnKeyReceived(KeyPressData keyData)
+    {
+        if (!isActivated) return;
+        if (keyData.key == KeyCode.Space)
+        {
+            ConfirmSetup();
+        }
+    }
 
     public void StartPreKickoffPhase()
     {
-        MatchManager.Instance.currentState = MatchManager.GameState.PreKickOffSetup;
+        isActivated = true;
         Debug.Log("Pre-Kickoff Formation: Click tokens to reposition them. Press Space twice to start!");
         spacePressCount = 0;
     }
