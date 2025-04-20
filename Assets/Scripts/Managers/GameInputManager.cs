@@ -351,7 +351,7 @@ public class GameInputManager : MonoBehaviour
                 {
                     movementPhaseManager.isWaitingForSnapshotDecision = false;
                     Debug.Log($"Attacker decides not to shoot..");
-                    if (movementPhaseManager.isMovementPhaseInProgress) movementPhaseManager.AdvanceMovementPhase();
+                    if (movementPhaseManager.isActivated) movementPhaseManager.AdvanceMovementPhase();
                 }
             }
             if (shotManager.isWaitingforBlockerSelection)
@@ -365,36 +365,36 @@ public class GameInputManager : MonoBehaviour
         }
         else
         {
-            // MovementPhase input handling
-            if
-            (
-                !movementPhaseManager.isPlayerMoving &&
-                !movementPhaseManager.isWaitingForTackleRoll &&
-                !movementPhaseManager.isWaitingForTackleDecision &&
-                !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
-                !movementPhaseManager.isWaitingForReposition &&
-                !movementPhaseManager.isWaitingForInjuryRoll &&
-                !movementPhaseManager.isWaitingForYellowCardRoll &&
-                !movementPhaseManager.isWaitingForFoulDecision &&
-                !goalKeeperManager.isWaitingForDefGKBoxMove &&
-                (
-                    MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
-                    MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
-                    MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2
-                )
-            )
-            {
-                if (Input.GetKeyDown(KeyCode.X))
-                {
-                    if (!movementPhaseManager.isWaitingForNutmegDecision 
-                        && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
-                    )
-                    {
-                        movementPhaseManager.ForfeitTeamMovementPhase();
-                    }
-                }
-                StartCoroutine(HandleMouseInputForMovement());
-            }
+            // // MovementPhase input handling
+            // if
+            // (
+            //     !movementPhaseManager.isPlayerMoving &&
+            //     !movementPhaseManager.isWaitingForTackleRoll &&
+            //     !movementPhaseManager.isWaitingForTackleDecision &&
+            //     !movementPhaseManager.isWaitingForInterceptionDiceRoll &&
+            //     !movementPhaseManager.isWaitingForReposition &&
+            //     !movementPhaseManager.isWaitingForInjuryRoll &&
+            //     !movementPhaseManager.isWaitingForYellowCardRoll &&
+            //     !movementPhaseManager.isWaitingForFoulDecision &&
+            //     !goalKeeperManager.isWaitingForDefGKBoxMove &&
+            //     (
+            //         MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
+            //         MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
+            //         MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2
+            //     )
+            // )
+            // {
+            //     // if (Input.GetKeyDown(KeyCode.X))
+            //     // {
+            //     //     if (!movementPhaseManager.isWaitingForNutmegDecision 
+            //     //         && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+            //     //     )
+            //     //     {
+            //     //         movementPhaseManager.ForfeitTeamMovementPhase();
+            //     //     }
+            //     // }
+            //     // StartCoroutine(HandleMouseInputForMovement());
+            // }
             // if (
             //     (
             //         MatchManager.Instance.currentState == MatchManager.GameState.HighPassAttackerMovement || 
@@ -544,167 +544,168 @@ public class GameInputManager : MonoBehaviour
 
     public IEnumerator HandleMouseInputForMovement()
     {
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForMovement called on click");
+        yield return null;
+        // if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+        // {
+        //     Debug.Log("HandleMouseInputForMovement called on click");
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //     RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                Debug.Log("HandleMouseInputForMovement: Raycast hit something");
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
+        //     if (Physics.Raycast(ray, out hit))
+        //     {
+        //         Debug.Log("HandleMouseInputForMovement: Raycast hit something");
+        //         var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) =  DetectTokenOrHexClicked(hit);
+        //         if (isOOBClicked)
+        //         {
+        //            Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+        //            yield break;
+        //         }
 
-                // When do we need a expect a Token Selection?
-                if (
-                    inferredTokenFromClick != null // A token was indeed inferred from the click
-                    && !movementPhaseManager.isPlayerMoving // Wait for anumations to stop
-                    && !movementPhaseManager.isDribblerRunning // The Dribbler has not started moving
-                    && (
-                        movementPhaseManager.selectedToken == null // MovementPhase does not have a selected Token.
-                        || !movementPhaseManager.isDribblerRunning //  We Should not be able to reset the selected Token while the Dribbler is running.
-                    )
-                    && !movementPhaseManager.lookingForNutmegVictim // Do not handle a Token when looking for a victim
-                    && !movementPhaseManager.isWaitingForNutmegDecision // Do not handle a Token when waiting for Nutmeg Decision
-                    && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving // Do not handle a Token when waiting for Nutmeg Decision without moving
-                )
-                {
-                    Debug.Log($"Passing {inferredTokenFromClick.name} to HandleTokenSelection");
-                    movementPhaseManager.HandleTokenSelection(inferredTokenFromClick);  // Select the token first
-                    yield return null;
-                }
-                else if (
-                    // While either we are waiting to nutmeg without moving
-                    movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
-                    // Or we are waiting to nutmeg while the dribbler has already started moving
-                    || (movementPhaseManager.isDribblerRunning && movementPhaseManager.isWaitingForNutmegDecision)
-                )
-                {
-                    // We clicked on a Nutmeggable Defender
-                    if (movementPhaseManager.nutmeggableDefenders.Contains(inferredTokenFromClick))
-                    {
-                        // Start the Nutmeg with the Selected nutmeggable Token
-                        Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked");
-                        movementPhaseManager.isWaitingForSnapshotDecision = false;
-                        movementPhaseManager.isWaitingForNutmegDecision = false;
-                        movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
-                        movementPhaseManager.nutmegVictim = inferredTokenFromClick;
-                        movementPhaseManager.isDribblerRunning = true;
-                        hexGrid.ClearHighlightedHexes();
-                        Debug.Log($"Selected {inferredTokenFromClick.name} to nutmeg. Proceeding with nutmeg.");
-                        movementPhaseManager.lookingForNutmegVictim = false;
-                        movementPhaseManager.StartNutmegProcess();
-                        yield return null;
-                    }
-                    else
-                    {
-                        Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was not clicked");
-                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCellFromClick))
-                        {
-                            // Turning off wait for Nutmeg decision flags.
-                            if (movementPhaseManager.isWaitingForTackleDecisionWithoutMoving)
-                            {
-                                movementPhaseManager.isWaitingForTackleDecisionWithoutMoving = false;
-                            }
-                            if (movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
-                            {
-                                movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
-                            }
-                            if (movementPhaseManager.isWaitingForSnapshotDecision)
-                            {
-                                movementPhaseManager.isWaitingForSnapshotDecision = false;
-                            }
-                            Debug.Log($"Passing {inferredHexCellFromClick.name} to MoveTokenToHex");
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));  // Move the selected token to the hex
-                        }
-                    }
-                }
-                else if (movementPhaseManager.lookingForNutmegVictim)
-                {
-                    // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
-                    Debug.Log($"Passing {inferredTokenFromClick.name} to HandleNutmegVictimSelection");
-                    movementPhaseManager.HandleNutmegVictimSelection(inferredTokenFromClick);
-                    yield return null;
-                }
-                else
-                // We did not infer a Token (clicked on an Hex (or the ball on it) where there is no Token)
-                // Clicked on a NOT OCCUPIED HEX
-                {
-                    if (!movementPhaseManager.isWaitingForNutmegDecision && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
-                    {
-                        // If the hex is not occupied, check if it's valid for movement
-                        if (movementPhaseManager.IsHexValidForMovement(inferredHexCellFromClick))
-                        {
-                            movementPhaseManager.isWaitingForSnapshotDecision = false;
-                            bool temp_check = ball.GetCurrentHex() == inferredHexCellFromClick && movementPhaseManager.selectedToken != null;
-                            if (temp_check)
-                            {
-                                movementPhaseManager.tokenPickedUpBall = true;
-                            }
-                            Debug.Log($"Passing {inferredHexCellFromClick.name} to MoveTokenToHex");
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));  // Move the selected token to the hex
-                            if (temp_check)
-                            {
-                                movementPhaseManager.isBallPickable = false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else if (movementPhaseManager.isBallPickable && Input.GetKeyDown(KeyCode.V))
-        {
-            movementPhaseManager.tokenPickedUpBall = true;
-            movementPhaseManager.remainingDribblerPace = movementPhaseManager.selectedToken.pace;
-            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(ball.GetCurrentHex()));
-            movementPhaseManager.isBallPickable = false;
-        }
-        else if (movementPhaseManager.isWaitingForNutmegDecision)
-        {
-            if (Input.GetKeyDown(KeyCode.N))
-            {
-                movementPhaseManager.isWaitingForNutmegDecision = false;
-                movementPhaseManager.isWaitingForSnapshotDecision = false;
-                Debug.Log($"Starting Nutmeg Process.");
-                movementPhaseManager.StartNutmegVictimIdentification();
-            }
-            else if (Input.GetKeyDown(KeyCode.X))
-            {
-                movementPhaseManager.isWaitingForNutmegDecision = false;
-                Debug.Log($"Reject Nutmeg. Check for interceptions.");
-                movementPhaseManager.ContinueFromRejectedNutmeg();
-            }
-        }
-        else if (movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
-        {
-            if (Input.GetKeyDown(KeyCode.N))
-            {
-                movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
-                movementPhaseManager.isWaitingForSnapshotDecision = false;
-                Debug.Log($"Starting Nutmeg Process.");
-                movementPhaseManager.StartNutmegVictimIdentification();
-            }
-        }
-        else if (movementPhaseManager.isWaitingForSnapshotDecision)
-        {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                movementPhaseManager.isWaitingForSnapshotDecision = false;
-                Debug.Log($"{movementPhaseManager.selectedToken.name} decides to Snapshot!!!!");
-                shotManager.StartShotProcess(movementPhaseManager.selectedToken, "snapshot");
-            }
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                movementPhaseManager.isWaitingForSnapshotDecision = false;
-                Debug.Log($"Attacker decides not to shoot..");
-            }
-        }
+        //         // When do we need a expect a Token Selection?
+        //         if (
+        //             inferredTokenFromClick != null // A token was indeed inferred from the click
+        //             && !movementPhaseManager.isPlayerMoving // Wait for animations to stop
+        //             && !movementPhaseManager.isDribblerRunning // The Dribbler has not started moving
+        //             && (
+        //                 movementPhaseManager.selectedToken == null // MovementPhase does not have a selected Token.
+        //                 || !movementPhaseManager.isDribblerRunning //  We Should not be able to reset the selected Token while the Dribbler is running.
+        //             )
+        //             && !movementPhaseManager.lookingForNutmegVictim // Do not handle a Token when looking for a victim
+        //             && !movementPhaseManager.isWaitingForNutmegDecision // Do not handle a Token when waiting for Nutmeg Decision
+        //             && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving // Do not handle a Token when waiting for Nutmeg Decision without moving
+        //         )
+        //         {
+        //             Debug.Log($"Passing {inferredTokenFromClick.name} to HandleTokenSelection");
+        //             movementPhaseManager.HandleTokenSelection(inferredTokenFromClick);  // Select the token first
+        //             yield return null;
+        //         }
+        //         else if (
+        //             // While either we are waiting to nutmeg without moving
+        //             movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+        //             // Or we are waiting to nutmeg while the dribbler has already started moving
+        //             || (movementPhaseManager.isDribblerRunning && movementPhaseManager.isWaitingForNutmegDecision)
+        //         )
+        //         {
+        //             // We clicked on a Nutmeggable Defender
+        //             if (movementPhaseManager.nutmeggableDefenders.Contains(inferredTokenFromClick))
+        //             {
+        //                 // Start the Nutmeg with the Selected nutmeggable Token
+        //                 Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked");
+        //                 movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //                 movementPhaseManager.isWaitingForNutmegDecision = false;
+        //                 movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+        //                 movementPhaseManager.nutmegVictim = inferredTokenFromClick;
+        //                 movementPhaseManager.isDribblerRunning = true;
+        //                 hexGrid.ClearHighlightedHexes();
+        //                 Debug.Log($"Selected {inferredTokenFromClick.name} to nutmeg. Proceeding with nutmeg.");
+        //                 movementPhaseManager.lookingForNutmegVictim = false;
+        //                 movementPhaseManager.StartNutmegProcess();
+        //                 yield return null;
+        //             }
+        //             else
+        //             {
+        //                 Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was not clicked");
+        //                 if (movementPhaseManager.IsHexValidForMovement(inferredHexCellFromClick))
+        //                 {
+        //                     // Turning off wait for Nutmeg decision flags.
+        //                     if (movementPhaseManager.isWaitingForTackleDecisionWithoutMoving)
+        //                     {
+        //                         movementPhaseManager.isWaitingForTackleDecisionWithoutMoving = false;
+        //                     }
+        //                     if (movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+        //                     {
+        //                         movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+        //                     }
+        //                     if (movementPhaseManager.isWaitingForSnapshotDecision)
+        //                     {
+        //                         movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //                     }
+        //                     Debug.Log($"Passing {inferredHexCellFromClick.name} to MoveTokenToHex");
+        //                     yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));  // Move the selected token to the hex
+        //                 }
+        //             }
+        //         }
+        //         else if (movementPhaseManager.lookingForNutmegVictim)
+        //         {
+        //             // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
+        //             Debug.Log($"Passing {inferredTokenFromClick.name} to HandleNutmegVictimSelection");
+        //             movementPhaseManager.HandleNutmegVictimSelection(inferredTokenFromClick);
+        //             yield return null;
+        //         }
+        //         else
+        //         // We did not infer a Token (clicked on an Hex (or the ball on it) where there is no Token)
+        //         // Clicked on a NOT OCCUPIED HEX
+        //         {
+        //             if (!movementPhaseManager.isWaitingForNutmegDecision && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+        //             {
+        //                 // If the hex is not occupied, check if it's valid for movement
+        //                 if (movementPhaseManager.IsHexValidForMovement(inferredHexCellFromClick))
+        //                 {
+        //                     movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //                     bool temp_check = ball.GetCurrentHex() == inferredHexCellFromClick && movementPhaseManager.selectedToken != null;
+        //                     if (temp_check)
+        //                     {
+        //                         movementPhaseManager.tokenPickedUpBall = true;
+        //                     }
+        //                     Debug.Log($"Passing {inferredHexCellFromClick.name} to MoveTokenToHex");
+        //                     yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick));  // Move the selected token to the hex
+        //                     if (temp_check)
+        //                     {
+        //                         movementPhaseManager.isBallPickable = false;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // else if (movementPhaseManager.isBallPickable && Input.GetKeyDown(KeyCode.V))
+        // {
+        //     movementPhaseManager.tokenPickedUpBall = true;
+        //     movementPhaseManager.remainingDribblerPace = movementPhaseManager.selectedToken.pace;
+        //     yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(ball.GetCurrentHex()));
+        //     movementPhaseManager.isBallPickable = false;
+        // }
+        // else if (movementPhaseManager.isWaitingForNutmegDecision)
+        // {
+        //     if (Input.GetKeyDown(KeyCode.N))
+        //     {
+        //         movementPhaseManager.isWaitingForNutmegDecision = false;
+        //         movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //         Debug.Log($"Starting Nutmeg Process.");
+        //         movementPhaseManager.StartNutmegVictimIdentification();
+        //     }
+        //     else if (Input.GetKeyDown(KeyCode.X))
+        //     {
+        //         movementPhaseManager.isWaitingForNutmegDecision = false;
+        //         Debug.Log($"Reject Nutmeg. Check for interceptions.");
+        //         movementPhaseManager.ContinueFromRejectedNutmeg();
+        //     }
+        // }
+        // else if (movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving)
+        // {
+        //     if (Input.GetKeyDown(KeyCode.N))
+        //     {
+        //         movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving = false;
+        //         movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //         Debug.Log($"Starting Nutmeg Process.");
+        //         movementPhaseManager.StartNutmegVictimIdentification();
+        //     }
+        // }
+        // else if (movementPhaseManager.isWaitingForSnapshotDecision)
+        // {
+        //     if (Input.GetKeyDown(KeyCode.S))
+        //     {
+        //         movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //         Debug.Log($"{movementPhaseManager.selectedToken.name} decides to Snapshot!!!!");
+        //         shotManager.StartShotProcess(movementPhaseManager.selectedToken, "snapshot");
+        //     }
+        //     if (Input.GetKeyDown(KeyCode.X))
+        //     {
+        //         movementPhaseManager.isWaitingForSnapshotDecision = false;
+        //         Debug.Log($"Attacker decides not to shoot..");
+        //     }
+        // }
     }
 
     // public void HandleMouseInputForF3()
