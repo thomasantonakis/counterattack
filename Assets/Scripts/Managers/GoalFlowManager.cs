@@ -166,6 +166,17 @@ public class GoalFlowManager : MonoBehaviour
 
     private IEnumerator AttackCelebrationFlow(PlayerToken shooterToken)
     {
+        // 4️⃣ GK joins if after 85’ and team scored match-winner (basic logic here)
+        // if (MatchManager.Instance.minutesPassed >= 85)
+        // {
+        //     PlayerToken gk = celebratingPlayers.FirstOrDefault(p => p.isGoalkeeper);
+        //     if (gk != null)
+        //     {
+        //         Debug.Log($"🧤 GK {gk.name} joins the celebration!");
+        //         yield return StartCoroutine(MovePlayersToHexes(new List<PlayerToken> { gk }, celebrationHexes));
+        //     }
+        // }
+
         // 1️⃣ Determine which corner flag the players should run to
         List<HexCell> celebrationHexes = GetCelebrationHexes(shooterToken);
         List<HexCell> attackerResetHexes = (shooterToken.GetCurrentHex().coordinates.x > 0) ? resetFormationLeft : resetFormationRight;
@@ -173,13 +184,13 @@ public class GoalFlowManager : MonoBehaviour
         // 2️⃣ Get all attacking teammates
         List<PlayerToken> attackers = GetAttackTokens(shooterToken.isHomeTeam);
         // 3️⃣ Move all attackers to their celebration positions
-        yield return StartCoroutine(MovePlayersToHexes(attackers, celebrationHexes));
+        yield return StartCoroutine(MovePlayersToHexes(attackers, celebrationHexes, true, false));
         // 4️⃣ Wait a bit to celebrate
+
         yield return new WaitForSeconds(1); // Small pause for celebration
         Debug.Log("Waited for 1 second, going back!");
         // 6️⃣ Move attackers back to their reset positions
-        // TeleportPlayersToHexes(attackers, attackerResetHexes);
-        yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes));
+        yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false));
         attackersAreBack = true;
         // foreach (var token in playerTokenManager.allTokens)
         // {
@@ -200,7 +211,7 @@ public class GoalFlowManager : MonoBehaviour
         yield return new WaitForSeconds(0); // Small pause for disappointment
         // 4️⃣ Move defenders to their reset positions
         // TeleportPlayersToHexes(defenders, defenderResetHexes);
-        yield return StartCoroutine(MovePlayersToHexes(defenders, defenderResetHexes));
+        yield return StartCoroutine(MovePlayersToHexes(defenders, defenderResetHexes, false, true));
         defendersAreBack = true;
     }
 
@@ -242,7 +253,7 @@ public class GoalFlowManager : MonoBehaviour
     }
 
     // Moves all players in a team to their target hexes
-    private IEnumerator MovePlayersToHexes(List<PlayerToken> players, List<HexCell> targetHexes)
+    private IEnumerator MovePlayersToHexes(List<PlayerToken> players, List<HexCell> targetHexes, bool isForward, bool isDefense)
     {
         if (players.Count > targetHexes.Count)
         {
@@ -273,7 +284,8 @@ public class GoalFlowManager : MonoBehaviour
             assignedHexes.Add(targetHex); // Mark this hex as taken
             Debug.Log($"[GoalFlow] Moving {players[i].name} to Hex {targetHexes[i].coordinates}");
             // Start moving everyone at the same time
-            Coroutine moveCoroutine = StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHexes[i], players[i], false, false));
+            // Coroutine moveCoroutine = StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHexes[i], players[i], false, false));
+            Coroutine moveCoroutine = StartCoroutine(MoveTokenStraightToHex(player, targetHex, isForward, isDefense));
             movementCoroutines.Add(moveCoroutine);
         }
         // Wait for all coroutines to finish before moving forward
@@ -281,6 +293,38 @@ public class GoalFlowManager : MonoBehaviour
         {
             yield return coroutine;
         }
+    }
+
+    private IEnumerator MoveTokenStraightToHex(PlayerToken token, HexCell targetHex, bool isForward, bool isDefense)
+    {
+        Vector3 startPos = token.transform.position;
+        Vector3 endPos = targetHex.transform.position;
+        float distance = Vector3.Distance(startPos, endPos);
+        float speed = 1f;
+        if (!isDefense)
+        {
+            if (isForward)
+            {
+                speed = speed + (token.pace - 3) * 0.1f;
+            }
+            else
+            {
+                speed = speed *1.1f;
+            }
+        }
+        // float speed = pace * 1.5f;             // You can adjust the multiplier
+        float duration = distance / speed;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            token.transform.position = Vector3.Lerp(startPos, endPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        token.transform.position = endPos;
+        token.SetCurrentHex(targetHex);
     }
 
     // Retrieves all tokens belonging to a specific team
@@ -296,4 +340,34 @@ public class GoalFlowManager : MonoBehaviour
       kickoffManager.StartPreKickoffPhase();
     }
 
+    // private IEnumerator JumpPlayer(PlayerToken token, float height = 2f, float totalDuration = 0.6f)
+    // {
+    //     float halfDuration = totalDuration / 2f;
+    //     float elapsed = 0f;
+    //     Vector3 startPos = token.transform.position;
+
+    //     // Jump up
+    //     while (elapsed < halfDuration)
+    //     {
+    //         float progress = elapsed / halfDuration;
+    //         float yOffset = Mathf.Lerp(0, height, progress);
+    //         token.transform.position = new Vector3(startPos.x, startPos.y + yOffset, startPos.z);
+    //         elapsed += Time.deltaTime;
+    //         yield return null;
+    //     }
+
+    //     // Jump down
+    //     elapsed = 0f;
+    //     while (elapsed < halfDuration)
+    //     {
+    //         float progress = elapsed / halfDuration;
+    //         float yOffset = Mathf.Lerp(height, 0, progress);
+    //         token.transform.position = new Vector3(startPos.x, startPos.y + yOffset, startPos.z);
+    //         elapsed += Time.deltaTime;
+    //         yield return null;
+    //     }
+
+    //     // Ensure final position is exactly the start
+    //     token.transform.position = startPos;
+    // }
 }
