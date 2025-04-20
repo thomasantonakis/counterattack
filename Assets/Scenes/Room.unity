@@ -1240,6 +1240,10 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   groundBallManager: {fileID: 1703800862}
   highPassManager: {fileID: 1859472972}
+  longBallManager: {fileID: 748552023}
+  firstTimePassManager: {fileID: 886834329}
+  movementPhaseManager: {fileID: 1390513032}
+  shotManager: {fileID: 1740884027}
   playerTokenManager: {fileID: 501380953}
   matchStatsUI: {fileID: 977372731}
   gameData:
@@ -1732,6 +1736,7 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
   isAwaitingTargetSelection: 0
@@ -1779,6 +1784,7 @@ MonoBehaviour:
   movementPhaseManager: {fileID: 1390513032}
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
+  helperFunctions: {fileID: 1397543275}
   defendersTriedToIntercept: []
   path: []
   causingDeflection: {fileID: 0}
@@ -1846,6 +1852,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   movementPhaseManager: {fileID: 1390513032}
   gameInputManager: {fileID: 417053521}
+  helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
   isAwaitingTargetSelection: 0
@@ -2850,13 +2857,22 @@ MonoBehaviour:
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
   goalFlowManager: {fileID: 2034852868}
+  shotManager: {fileID: 1740884027}
+  highPassManager: {fileID: 1859472972}
+  helperFunctions: {fileID: 1397543275}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   ballHex: {fileID: 0}
   selectedToken: {fileID: 0}
   selectedDefender: {fileID: 0}
   nutmegVictim: {fileID: 0}
-  isMovementPhaseInProgress: 0
+  isAvailable: 0
+  isActivated: 0
+  isMovementPhaseAttack: 0
+  isMovementPhaseDef: 0
+  isMovementPhase2f2: 0
+  isAwaitingTokenSelection: 0
+  isAwaitingHexDestination: 0
   isBallPickable: 0
   isDribblerRunning: 0
   isPlayerMoving: 0
@@ -2874,6 +2890,8 @@ MonoBehaviour:
   isWaitingForNutmegDecisionWithoutMoving: 0
   lookingForNutmegVictim: 0
   isNutmegInProgress: 0
+  repositionWinner: {fileID: 0}
+  repositionLoser: {fileID: 0}
   remainingDribblerPace: 0
   movedTokens: []
   eligibleDefenders: []
@@ -2881,6 +2899,7 @@ MonoBehaviour:
   defendersTriedToIntercept: []
   stunnedTokens: []
   stunnedforNext: []
+  repositionHexes: []
   attackersMoved: 0
   defendersMoved: 0
   attackersMovedIn2f2: 0
@@ -3087,6 +3106,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395662487}
   m_CullTransparentMesh: 1
+--- !u!1 &1397543274
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1397543276}
+  - component: {fileID: 1397543275}
+  m_Layer: 0
+  m_Name: HelperFunctions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1397543275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397543274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8d14342299f4e5e9b685546f01f928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1397543276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397543274}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 564.0518, y: 323.64664, z: -7.655792}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 25
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1405702519
 GameObject:
   m_ObjectHideFlags: 0
@@ -3687,6 +3750,9 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   matchManager: {fileID: 622907910}
   movementPhaseManager: {fileID: 1390513032}
+  highPassManager: {fileID: 1859472972}
+  groundBallManager: {fileID: 1703800862}
+  isActivated: 0
   shouldDefMoveTokens: []
   potentialKickers: []
   movesUsed: 0
@@ -3751,6 +3817,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   finalThirdManager: {fileID: 1012232483}
   firstTimePassManager: {fileID: 886834329}
+  helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
   isAwaitingTargetSelection: 0
@@ -3811,8 +3878,10 @@ MonoBehaviour:
   longBallManager: {fileID: 748552023}
   goalKeeperManager: {fileID: 272854143}
   goalFlowManager: {fileID: 2034852868}
+  helperFunctions: {fileID: 1397543275}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
+  isAvailable: 0
   isShotInProgress: 0
   isWaitingforBlockerSelection: 0
   isWaitingforBlockerMovement: 0
@@ -4009,6 +4078,7 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
   isWaitingForConfirmation: 0
@@ -4136,6 +4206,7 @@ MonoBehaviour:
   gameInputManager: {fileID: 417053521}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
+  helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
   hasEligibleAttackers: 0

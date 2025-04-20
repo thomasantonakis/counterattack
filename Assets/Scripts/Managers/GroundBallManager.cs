@@ -13,22 +13,22 @@ public class GroundBallManager : MonoBehaviour
     public HexGrid hexGrid;
     public FinalThirdManager finalThirdManager;
     public FirstTimePassManager firstTimePassManager;
+    public HelperFunctions helperFunctions;
     [Header("Runtime Items")]
     public bool isAvailable = false;        // Check if the GroundBall is available as an action from the user.
     public bool isActivated = false;        // To check if the script is activated
     public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
     public int imposedDistance = 11;
+    public HexCell currentTargetHex = null;   // The currently selected target hex
     [SerializeField]
-    private HexCell currentTargetHex = null;   // The currently selected target hex
-    [SerializeField]
-    private bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
-    private bool passIsDangerous = false;      // To check if the pass is dangerous
+    public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
+    public bool passIsDangerous = false;      // To check if the pass is dangerous
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
     [SerializeField]
-    private List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
+    public List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
     [SerializeField]
     private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
-    private int diceRollsPending = 0;          // Number of pending dice rolls
+    public int diceRollsPending = 0;          // Number of pending dice rolls
 
     private void OnEnable()
     {
@@ -52,10 +52,10 @@ public class GroundBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
-        // return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.P)
         {
             ActivateGroundBall();
+            return;
         }
         if (isActivated)
         {
@@ -77,9 +77,9 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    private void ActivateGroundBall()
+    public void ActivateGroundBall()
     {
-        MatchManager.Instance.TriggerStandardPass();
+        // MatchManager.Instance.TriggerStandardPass();
         ball.SelectBall();
         Debug.Log("Standard pass attempt mode activated.");
         isActivated = true;
@@ -91,7 +91,7 @@ public class GroundBallManager : MonoBehaviour
 
     private void CommitToThisAction()
     {
-        // Broadcast the commitment to this action
+        MatchManager.Instance.CommitToGroundBall();
     }
     
     private async Task StartCoroutineAndWait(IEnumerator coroutine)
@@ -187,6 +187,8 @@ public class GroundBallManager : MonoBehaviour
             )
             {
                 isAwaitingTargetSelection = false;
+                CommitToThisAction();
+                LogGroundPassAttempt();
                 PopulateGroundPathInterceptions(clickedHex, isGk);
                 if (passIsDangerous)
                 {
@@ -378,7 +380,6 @@ public class GroundBallManager : MonoBehaviour
 
     private async void MoveTheBall(HexCell trgDestHex)
     {
-        LogGroundPassAttempt();
         await StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         finalThirdManager.TriggerFinalThirdPhase();
@@ -428,15 +429,15 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void PerformGroundInterceptionDiceRoll()
+    public void PerformGroundInterceptionDiceRoll(int? rigroll = null)
     {
         if (currentDefenderHex != null)
         {
             // Roll the dice (1 to 6)
             // int diceRoll = 6; // God Mode
             // int diceRoll = 1; // Stupid Mode
-            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-            int diceRoll = returnedRoll;
+            var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+            int diceRoll = rigroll ?? returnedRoll;
             // Retrieve the defender token
             PlayerToken defenderToken = currentDefenderHex.occupyingToken;
             if (defenderToken == null)
