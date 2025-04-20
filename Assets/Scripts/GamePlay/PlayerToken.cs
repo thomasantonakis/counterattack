@@ -41,6 +41,7 @@ public class PlayerToken : MonoBehaviour
         ball = ballReference;
         Debug.Log($"Ball reference set in PlayerToken. Ball Hex: {ball?.GetCurrentHex()?.coordinates}");
     }
+    
     // Get the current hex the token is on
     public HexCell GetCurrentHex()
     {
@@ -269,4 +270,18 @@ public class PlayerToken : MonoBehaviour
         // Debug.Log($"{name} moved to {targetHex.coordinates}, final position: {transform.position}");
     }
 
+    public static PlayerToken GetPlayerTokenByName(string playerName)
+{
+    PlayerToken[] allTokens = FindObjectsOfType<PlayerToken>();
+    foreach (var token in allTokens)
+    {
+        if (token.playerName == playerName || token.name == playerName)
+        {
+            return token;
+        }
+    }
+
+    Debug.LogWarning($"❌ PlayerToken with name '{playerName}' not found.");
+    return null;
+}
 }

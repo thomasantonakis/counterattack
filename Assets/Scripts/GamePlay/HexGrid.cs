@@ -483,41 +483,42 @@ public class HexGrid : MonoBehaviour
     
     void DetectHexUnderMouse()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        // TODO: replace with hoveredToken from GIM
+        // Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
-        {
-            HexCell hoveredHex = hit.collider.GetComponent<HexCell>();
-            if (hoveredHex != null && hoveredHex != lastHoveredHex)
-            {
-                if (lastHoveredHex != null)
-                {
-                    lastHoveredHex.ResetHighlight();
-                }
-                if (hoveredHex != null 
-                    && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt
-                    && MatchManager.Instance.difficulty_level == 1
-                )
-                {
-                    // HighlightGroundPathToHex(hoveredHex);
-                    var (isValid, isDangerous, pathHexes) = groundBallManager.ValidateGroundPassPath(hoveredHex, 11); // Use GameInputManager logic
-                    if (isValid)
-                    {
-                        ClearHighlightedHexes();
-                        groundBallManager.HighlightValidGroundPassPath(pathHexes, isDangerous); // Highlight based on danger
-                    }
-                }
-            }
-            else
-            {
-                if (lastHoveredHex != null)
-                {
-                    lastHoveredHex.ResetHighlight();
-                    lastHoveredHex = null;
-                }
-            }
-        }
+        // if (Physics.Raycast(ray, out hit))
+        // {
+        //     HexCell hoveredHex = hit.collider.GetComponent<HexCell>();
+        //     if (hoveredHex != null && hoveredHex != lastHoveredHex)
+        //     {
+        //         if (lastHoveredHex != null)
+        //         {
+        //             lastHoveredHex.ResetHighlight();
+        //         }
+        //         if (hoveredHex != null 
+        //             && MatchManager.Instance.currentState == MatchManager.GameState.StandardPassAttempt
+        //             && MatchManager.Instance.difficulty_level == 1
+        //         )
+        //         {
+        //             // HighlightGroundPathToHex(hoveredHex);
+        //             var (isValid, isDangerous, pathHexes) = groundBallManager.ValidateGroundPassPath(hoveredHex, 11); // Use GameInputManager logic
+        //             if (isValid)
+        //             {
+        //                 ClearHighlightedHexes();
+        //                 groundBallManager.HighlightValidGroundPassPath(pathHexes, isDangerous); // Highlight based on danger
+        //             }
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (lastHoveredHex != null)
+        //         {
+        //             lastHoveredHex.ResetHighlight();
+        //             lastHoveredHex = null;
+        //         }
+        //     }
+        // }
     }
 
     // This method returns a list of valid movement hexes within the given range

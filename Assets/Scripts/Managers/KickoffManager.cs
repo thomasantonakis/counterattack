@@ -58,7 +58,7 @@ public class KickoffManager : MonoBehaviour
         spacePressCount = 0;
     }
 
-    public void SelectToken(PlayerToken token)
+    private void SelectToken(PlayerToken token)
     {
         if (selectedToken != null)
         {
@@ -70,7 +70,7 @@ public class KickoffManager : MonoBehaviour
         
     }
 
-    public IEnumerator TryMoveToken(HexCell targetHex)
+    private IEnumerator TryMoveToken(HexCell targetHex)
     {
         if (selectedToken == null)
         {
@@ -98,7 +98,7 @@ public class KickoffManager : MonoBehaviour
         }
     }
 
-    public void ConfirmSetup()
+    private void ConfirmSetup()
     {
         spacePressCount++;
         Debug.Log($"Player confirmed setup ({spacePressCount}/2)");
