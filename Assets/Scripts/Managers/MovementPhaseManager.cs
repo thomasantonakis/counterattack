@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using System.Threading.Tasks;
 using UnityEngine.Analytics;
 using System;
 using UnityEditor.Experimental.GraphView;
+using System.Text.RegularExpressions;
 
 public class MovementPhaseManager : MonoBehaviour
 {
@@ -17,6 +19,9 @@ public class MovementPhaseManager : MonoBehaviour
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
     public GoalFlowManager goalFlowManager;
+    public ShotManager shotManager;
+    public HighPassManager highPassManager;
+    public HelperFunctions helperFunctions;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
     public HexCell ballHex;
@@ -26,7 +31,13 @@ public class MovementPhaseManager : MonoBehaviour
     private PlayerToken selectedDefender;
     public PlayerToken nutmegVictim;
     [Header("Boolean Flags")]
-    public bool isMovementPhaseInProgress = false;
+    public bool isAvailable = false;
+    public bool isActivated = false;
+    public bool isMovementPhaseAttack = false;
+    public bool isMovementPhaseDef = false;
+    public bool isMovementPhase2f2 = false;
+    public bool isAwaitingTokenSelection = false;  // Flag to indicate if waiting for token selection
+    public bool isAwaitingHexDestination = false;  // Flag to indicate if waiting for the selected token's destinatiion
     public bool isBallPickable = false;
     public bool isDribblerRunning; // Flag to indicate ongoing dribbler movement
     public bool isPlayerMoving = false;  // Tracks if a player is currently moving
@@ -47,6 +58,8 @@ public class MovementPhaseManager : MonoBehaviour
     public bool lookingForNutmegVictim = false;
     public bool isNutmegInProgress = false;
     [Header("Informative Runtime Items")]
+    public PlayerToken repositionWinner; // The token that won the tackle duel
+    public PlayerToken repositionLoser; // The token that lost the tackle duel
     public int remainingDribblerPace; // Temporary variable for dribbler's pace
     [SerializeField]
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
@@ -57,6 +70,7 @@ public class MovementPhaseManager : MonoBehaviour
     private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
     public List<PlayerToken> stunnedTokens = new List<PlayerToken>(); // Temporary list of defenders
     public List<PlayerToken> stunnedforNext = new List<PlayerToken>(); // Temporary list of defenders
+    public List<HexCell> repositionHexes = new List<HexCell>();
     private int defenderDiceRoll;
     private int attackerDiceRoll;
     [SerializeField]
@@ -73,24 +87,135 @@ public class MovementPhaseManager : MonoBehaviour
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
 
-    void Update()
+    private async Task StartCoroutineAndWait(IEnumerator coroutine)
     {
-        // Check if waiting for dice rolls and the R key is pressed
-        if (isWaitingForInterceptionDiceRoll && Input.GetKeyDown(KeyCode.R))
+        bool isDone = false;
+        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
+        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+    }
+
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    {
+        yield return StartCoroutine(coroutine);
+        onComplete?.Invoke();
+    }
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated) return;
+        // When do we need a expect a Token Selection?
+        if (
+            token != null // A token was indeed inferred from the click
+            && !isPlayerMoving // Wait for animations to stop
+            && !isDribblerRunning // The Dribbler has not started moving
+            && (
+                selectedToken == null // MovementPhase does not have a selected Token.
+                || !isDribblerRunning //  We Should not be able to reset the selected Token while the Dribbler is running.
+            )
+            && !lookingForNutmegVictim // Do not handle a Token when looking for a victim
+            && !isWaitingForNutmegDecision // Do not handle a Token when waiting for Nutmeg Decision
+            && !isWaitingForNutmegDecisionWithoutMoving // Do not handle a Token when waiting for Nutmeg Decision without moving
+        )
+        {
+            Debug.Log($"Passing {token.name} to HandleTokenSelection");
+            HandleTokenSelection(token);  // Select the token first
+        }
+        else if (
+            // While either we are waiting to nutmeg without moving
+            isWaitingForNutmegDecisionWithoutMoving
+            // Or we are waiting to nutmeg while the dribbler has already started moving
+            || (isDribblerRunning && isWaitingForNutmegDecision)
+        )
+        {
+            // We clicked on a Nutmeggable Defender
+            if (nutmeggableDefenders.Contains(token))
+            {
+                // Start the Nutmeg with the Selected nutmeggable Token
+                Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked");
+                isWaitingForSnapshotDecision = false;
+                isWaitingForNutmegDecision = false;
+                isWaitingForNutmegDecisionWithoutMoving = false;
+                nutmegVictim = token;
+                isDribblerRunning = true;
+                hexGrid.ClearHighlightedHexes();
+                Debug.Log($"Selected {token.name} to nutmeg. Proceeding with nutmeg.");
+                lookingForNutmegVictim = false;
+                StartNutmegProcess();
+            }
+            else
+            {
+                Debug.LogWarning("While waiting for a Nutmeg Decision, a nutmeggable Defender was not clicked");
+                if (IsHexValidForMovement(hex))
+                {
+                    AsyncMoveTokenToHexWhileWaitingForNutmegDecision(hex);
+                }
+            }
+        }
+        else if (lookingForNutmegVictim)
+        {
+            // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
+            Debug.Log($"Passing {token.name} to HandleNutmegVictimSelection");
+            HandleNutmegVictimSelection(token);
+        }
+        else if (isWaitingForReposition)
+        {
+            if (hex != null
+                && repositionHexes.Contains(hex)
+                && hex != repositionLoser.GetCurrentHex()
+                && !hex.isDefenseOccupied
+                && !hex.isAttackOccupied
+            )
+            {
+                AsyncRepositionTokenToHex(hex);
+            }
+        }
+        else
+        // We did not infer a Token (clicked on an Hex (or the ball on it) where there is no Token)
+        // Clicked on a NOT OCCUPIED HEX
+        {
+            if (!isWaitingForNutmegDecision && !isWaitingForNutmegDecisionWithoutMoving)
+            {
+                // If the hex is not occupied, check if it's valid for movement
+                if (IsHexValidForMovement(hex))
+                {
+                    AsyncMoveTokenToHexWithTempCheck(hex);
+                }
+            }
+        }
+    }
+
+  private void OnKeyReceived(KeyPressData keyData)
+    {
+        if (isAvailable && !isActivated && keyData.key == KeyCode.M)
+        {
+            ActivateMovementPhase();
+            return;
+        }
+        if (isWaitingForInterceptionDiceRoll && keyData.key == KeyCode.R)
         {
             Debug.Log("R key detected for interception dice roll.");
-            StartCoroutine(PerformBallInterceptionDiceRoll());  // Trigger the dice roll when R is pressed
+            StartCoroutine(PerformBallInterceptionDiceRoll());
         }
-        // Handle tackle decision (either Tackle or No Tackle)
         else if (isWaitingForTackleDecision)
         {
-            if (Input.GetKeyDown(KeyCode.N))  // No tackle
+            if (keyData.key == KeyCode.N)  // No tackle
             {
                 Debug.Log("No tackle chosen.");
                 ResetTacklePhase();  // Reset tackle phase if no tackle is chosen
                 AdvanceMovementPhase();
             }
-            else if (Input.GetKeyDown(KeyCode.T))  // Tackle chosen
+            else if (keyData.key == KeyCode.T)  // Tackle chosen
             {
                 Debug.Log("Tackle chosen. Starting tackle dice rolls...");
                 isWaitingForTackleDecision = false;
@@ -99,7 +224,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         else if (isWaitingForTackleDecisionWithoutMoving)
         {
-            if (Input.GetKeyDown(KeyCode.T))
+            if (keyData.key == KeyCode.T)
             {
                 // Defender chooses to tackle
                 Debug.Log($"{selectedToken.name} initiates a tackle without moving. Starting Dice Rolls...");
@@ -110,8 +235,7 @@ public class MovementPhaseManager : MonoBehaviour
                 StartTackleDiceRollSequence();  // Start the dice roll sequence for tackling
             }
         }
-        // Check for defender or attacker dice roll
-        else if (isWaitingForTackleRoll && Input.GetKeyDown(KeyCode.R))
+        else if (isWaitingForTackleRoll && keyData.key == KeyCode.R)
         {
             if (!tackleDefenderRolled)
             {
@@ -122,8 +246,144 @@ public class MovementPhaseManager : MonoBehaviour
                 PerformTackleDiceRoll(isDefender: false);  // Attacker rolls second
             }
         }
+        else if (isWaitingForNutmegDecision && isWaitingForNutmegDecisionWithoutMoving && keyData.key == KeyCode.X)
+        {
+            ForfeitTeamMovementPhase();
+        }
+        else if (isBallPickable && keyData.key == KeyCode.V)
+        {
+            AsyncMoveTokenToHexToPickUpBall();
+        }
+        else if (isWaitingForNutmegDecision)
+        {
+            if (keyData.key == KeyCode.N)
+            {
+                isWaitingForNutmegDecision = false;
+                isWaitingForSnapshotDecision = false;
+                Debug.Log($"Starting Nutmeg Process.");
+                StartNutmegVictimIdentification();
+            }
+            else if (keyData.key == KeyCode.X)
+            {
+                isWaitingForNutmegDecision = false;
+                Debug.Log($"Reject Nutmeg. Check for interceptions.");
+                ContinueFromRejectedNutmeg();
+            }
+        }
+        else if (isWaitingForNutmegDecisionWithoutMoving)
+        {
+            if (keyData.key == KeyCode.N)
+            {
+                isWaitingForNutmegDecisionWithoutMoving = false;
+                isWaitingForSnapshotDecision = false;
+                Debug.Log($"Starting Nutmeg Process.");
+                StartNutmegVictimIdentification();
+            }
+        }
+        else if (isWaitingForSnapshotDecision)
+        {
+            if (keyData.key == KeyCode.S)
+            {
+                isWaitingForSnapshotDecision = false;
+                Debug.Log($"{selectedToken.name} decides to Snapshot!!!!");
+                shotManager.StartShotProcess(selectedToken, "snapshot");
+            }
+            if (keyData.key == KeyCode.X)
+            {
+                isWaitingForSnapshotDecision = false;
+                Debug.Log($"Attacker decides not to shoot..");
+            }
+        }
+        else if (isWaitingForReposition)
+        {
+            if (keyData.key == KeyCode.X)
+            {
+                if (isNutmegInProgress)
+                {
+                    Debug.Log($"{repositionWinner.name} just nutmegged {repositionLoser.name}, they have to reposition.");
+                }
+                else if (MatchManager.Instance.currentState != MatchManager.GameState.MovementPhaseDef)
+                {
+                    Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
+                    isWaitingForReposition = false;
+                    hexGrid.ClearHighlightedHexes();
+                    // selectedToken = winner;
+                    DribblerMoved1HexOrReposition();
+                    return;
+                }
+                else
+                {
+                    AdvanceMovementPhase();
+                }
+            }
+        }
+        else if (isWaitingForYellowCardRoll)
+        {
+            if (keyData.key == KeyCode.R)
+            {
+                PerformLeniencyTest();
+            }
+        }
+        else if (isWaitingForInjuryRoll)
+        {
+            if (keyData.key == KeyCode.R)
+            {
+                PerformInjuryTest();
+            }
+        }
+        else if (isWaitingForFoulDecision)
+        {
+            if (keyData.key == KeyCode.A)
+            {
+                PlayAdvantage();
+            }
+            else if (keyData.key == KeyCode.Z)
+            {
+                TakeFreeKick();
+            }
+        }
     }
 
+    private async void AsyncMoveTokenToHexWhileWaitingForNutmegDecision(HexCell hex)
+    {
+        // Turning off wait for Nutmeg decision flags.
+        if (isWaitingForTackleDecisionWithoutMoving) isWaitingForTackleDecisionWithoutMoving = false;
+        if (isWaitingForNutmegDecisionWithoutMoving) isWaitingForNutmegDecisionWithoutMoving = false;
+        if (isWaitingForSnapshotDecision) isWaitingForSnapshotDecision = false;
+        Debug.Log($"Passing {hex.name} to MoveTokenToHex");
+        await StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
+    }
+    private async void AsyncMoveTokenToHexToPickUpBall()
+    {
+        tokenPickedUpBall = true;
+        remainingDribblerPace = selectedToken.pace;
+        await StartCoroutineAndWait(MoveTokenToHex(ball.GetCurrentHex()));
+        isBallPickable = false;
+    }
+
+    private async void AsyncMoveTokenToHexWithTempCheck(HexCell hex)
+    {
+        isWaitingForSnapshotDecision = false;
+        bool temp_check = ball.GetCurrentHex() == hex && selectedToken != null;
+        if (temp_check)
+        {
+            tokenPickedUpBall = true;
+        }
+        Debug.Log($"Passing {hex.name} to MoveTokenToHex");
+        await StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
+        if (temp_check)
+        {
+            isBallPickable = false;
+        }
+    }
+
+    private void ActivateMovementPhase()
+    {
+        isActivated = true;
+        isAvailable = false;
+        isMovementPhaseAttack = true;
+        isAwaitingTokenSelection = true;
+    }
     // This method will be called when a player token is clicked
     public void HandleTokenSelection(PlayerToken token)
     {
@@ -131,7 +391,7 @@ public class MovementPhaseManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
 
         // Ensure the token can move in this phase and hasn't already moved
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        if (isMovementPhaseAttack)
         {
             if (
                 !token.isAttacker
@@ -145,7 +405,7 @@ public class MovementPhaseManager : MonoBehaviour
                 return;  // Reject defender clicks or already moved tokens
             }
         }
-        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+        else if (isMovementPhaseDef)
         {
             if (
                 token.isAttacker
@@ -159,7 +419,7 @@ public class MovementPhaseManager : MonoBehaviour
                 return;  // Reject attacker clicks or already moved tokens
             }
         }
-        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        else if (isMovementPhase2f2)
         {
             // Only allow attackers who haven't moved yet in MovementPhaseAtt
             if (!token.isAttacker || movedTokens.Contains(token) || headerManager.attackerWillJump.Contains(token) || headerManager.defenderWillJump.Contains(token))
@@ -178,7 +438,7 @@ public class MovementPhaseManager : MonoBehaviour
         // Select the token
         selectedToken = token;
         // The selected token is a Defender that has not moved.
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef && !selectedToken.isAttacker && !movedTokens.Contains(selectedToken))
+        if (isMovementPhaseDef && !selectedToken.isAttacker && !movedTokens.Contains(selectedToken))
         {
             Debug.Log($"A Valid Defender was selected: {selectedToken.name}");
             HighlightValidMovementHexes(selectedToken, token.pace);
@@ -197,8 +457,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         if (
             (
-                MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack
-                || MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2
+                isMovementPhaseAttack || isMovementPhase2f2
             ) 
             && selectedToken.isAttacker
             && !movedTokens.Contains(selectedToken)
@@ -209,7 +468,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"{token.name} selected as dribbler. Starting dribble movement.");
                 if (!tokenPickedUpBall)
                 {
-                    if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+                    if (isMovementPhase2f2)
                     {
                         remainingDribblerPace = movementRange2f2;
                     }
@@ -234,10 +493,10 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.LogWarning("Dribbler is Running and has remaining Pace, please first Forfeit the rest of the Pace [X]");
                 // HighlightValidMovementHexes(selectedToken, 1);
             }
-            else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+            else if (isMovementPhaseAttack)
             { HighlightValidMovementHexes(selectedToken, token.pace); }
             // Highlight valid movement hexes for the selected token
-            else if(MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+            else if (isMovementPhase2f2)
             { HighlightValidMovementHexes(selectedToken, movementRange2f2); }
             else { Debug.LogError("Unknown Match State"); }
         }
@@ -330,7 +589,7 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogError("No token selected to move.");
             yield break;
         }
-        isMovementPhaseInProgress = true;
+        isActivated = true;
 
         // Find the path from the current hex to the target hex
         List<HexCell> path;
@@ -389,7 +648,7 @@ public class MovementPhaseManager : MonoBehaviour
             remainingDribblerPace = 0;
         }
         // Defender does not land on Ball Hex
-        else if (!isMovingTokenAttacker && MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef )
+        else if (!isMovingTokenAttacker && isMovementPhaseDef)
         {
             Debug.LogWarning("Defender does not land on Ball Hex");
             movedTokens.Add(selectedToken);
@@ -428,7 +687,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
         }
         // Not a defensive movement Phase
-        else if (MatchManager.Instance.currentState != MatchManager.GameState.MovementPhaseDef)
+        else if (!isMovementPhaseDef)
         {
             Debug.LogWarning("We are not in a Defensive Movement Phase");
             Debug.Log($"Hello from the Attacking MP, Selected Token: {selectedToken.name}, IsDribbler: {selectedToken.IsDribbler}, remainingDribblerPace: {remainingDribblerPace}");
@@ -587,7 +846,7 @@ public class MovementPhaseManager : MonoBehaviour
                 t += Time.deltaTime / moveDuration;
                 token.transform.position = Vector3.Lerp(startPosition, targetPosition, t);  // Interpolate the position
                 // If the player is carrying the ball, move the ball alongside the player
-                if (MatchManager.Instance.currentState != MatchManager.GameState.HighPassDefenderMovement && ball.GetCurrentHex() == previousHex)
+                if (!highPassManager.isWaitingForDefenderSelection && !highPassManager.isWaitingForDefenderMove && ball.GetCurrentHex() == previousHex)
                 {
                     // Move the ball alongside the player, keeping the correct Y offset
                     Vector3 ballPosition = new Vector3(token.transform.position.x, ball.playerHeightOffset, token.transform.position.z);
@@ -598,7 +857,7 @@ public class MovementPhaseManager : MonoBehaviour
             // Update the token's hex after reaching the next hex
             token.SetCurrentHex(step);
             // If the player is carrying the ball, move the ball along with the player
-            if (MatchManager.Instance.currentState != MatchManager.GameState.HighPassDefenderMovement && ball.GetCurrentHex() == previousHex)
+            if (!highPassManager.isWaitingForDefenderSelection && !highPassManager.isWaitingForDefenderMove && ball.GetCurrentHex() == previousHex)
             {
                 ball.SetCurrentHex(step);  // Update ball's hex to the current step
                 Debug.Log($"Ball is at: {ball.GetCurrentHex().name}");
@@ -656,7 +915,7 @@ public class MovementPhaseManager : MonoBehaviour
             defendersTriedToIntercept.Clear();
             remainingDribblerPace = 0;
             // Check for the 2f2 special phase
-            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+            if (isMovementPhase2f2)
             {
                 attackersMovedIn2f2++;
                 if (attackersMovedIn2f2 >= maxAttackerMovesIn2f2)
@@ -667,7 +926,7 @@ public class MovementPhaseManager : MonoBehaviour
                 }
             }
             // Check for defender movement phase
-            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+            if (isMovementPhaseDef)
             {
                 defendersMoved++;
                 if (defendersMoved >= maxDefenderMoves)
@@ -675,12 +934,13 @@ public class MovementPhaseManager : MonoBehaviour
                     Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
                     selectedToken = null;
                     hexGrid.ClearHighlightedHexes();
-                    MatchManager.Instance.StartMovementPhase2f2();
+                    isMovementPhaseDef = false;
+                    isMovementPhase2f2 = true;
                     return;
                 }
             }
             // Check for attacker movement phase
-            if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+            if (isMovementPhaseAttack)
             {
                 attackersMoved++;
                 if (attackersMoved >= maxAttackerMoves)
@@ -688,7 +948,8 @@ public class MovementPhaseManager : MonoBehaviour
                     Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
                     selectedToken = null;
                     hexGrid.ClearHighlightedHexes();
-                    MatchManager.Instance.StartMovementPhaseDef();
+                    isMovementPhaseAttack = false;
+                    isMovementPhaseDef = true;
                     return;
                 }
             }
@@ -702,7 +963,7 @@ public class MovementPhaseManager : MonoBehaviour
     public void ForfeitTeamMovementPhase()
     {
         Debug.Log("Trying to Forfeit Movement.");
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        if (isMovementPhase2f2)
         {
             if (isDribblerRunning)
             {
@@ -719,13 +980,13 @@ public class MovementPhaseManager : MonoBehaviour
                 EndMovementPhase();
             }
         }
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef)
+        if (isMovementPhaseDef)
         {
             Debug.Log($"No more defenders wish to move. Attack gets 2f2 move.");
             defendersMoved = maxDefenderMoves-1;
             AdvanceMovementPhase();  // Reset the movement phase
         }
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        if (isMovementPhaseAttack)
         {
             if (isDribblerRunning)
             {
@@ -789,15 +1050,14 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForInterceptionDiceRoll = true;
     }
 
-    public IEnumerator PerformBallInterceptionDiceRoll()
+    public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = null)
     {
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
         {
             // Roll the dice (1 to 6)
-            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-            // int diceRoll = returnedRoll;
-            int diceRoll = 2; // God Mode
+            var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+            int diceRoll = rigroll ?? returnedRoll;
             // Debug.Log($"Dice roll by defender at {selectedDefender.GetCurrentHex().coordinates}: {diceRoll}");
             isWaitingForInterceptionDiceRoll = false;
 
@@ -862,41 +1122,28 @@ public class MovementPhaseManager : MonoBehaviour
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
     }
 
-    private void PerformTackleDiceRoll(bool isDefender)
+    private void PerformTackleDiceRoll(bool isDefender, int? rigroll = null)
     {
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-        int diceRoll = returnedJackpot ? 50 :returnedRoll;
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int roll = returnedJackpot ? 50 :returnedRoll;
+        int diceRoll = rigroll ?? roll;
         
-        // // Rigged
+        // Random
         if (isDefender)
         {
-            defenderDiceRoll = 1;
+            defenderDiceRoll = diceRoll;
             tackleDefenderRolled = true;
-            Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
+            if (returnedJackpot) Debug.Log($"Defender rolled A JACKPOT!!!");
+            else Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         }
         else
         {
-            attackerDiceRoll = 4;
+            attackerDiceRoll = diceRoll;
             tackleAttackerRolled = true;
-            Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
+            if (returnedJackpot) Debug.Log($"Defender rolled A JACKPOT!!!");
+            else Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
             StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
         }
-        // // Random
-        // if (isDefender)
-        // {
-        //     defenderDiceRoll = diceRoll;
-        //     tackleDefenderRolled = true;
-        //     if (returnedJackpot) Debug.Log($"Defender rolled A JACKPOT!!!");
-        //     else Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
-        // }
-        // else
-        // {
-        //     attackerDiceRoll = diceRoll;
-        //     tackleAttackerRolled = true;
-        //     if (returnedJackpot) Debug.Log($"Defender rolled A JACKPOT!!!");
-        //     else Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
-        //     StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
-        // }
     }
 
     private IEnumerator CompareTackleRolls()
@@ -946,7 +1193,9 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(selectedDefender.GetCurrentHex());  // Update possession
             Debug.Log($"{selectedDefender.name} can reposition!");
-            yield return StartCoroutine(HandlePostTackleReposition(selectedDefender, attackerToken));
+            repositionWinner = selectedDefender;
+            repositionLoser = attackerToken;
+            yield return StartCoroutine(HandlePostTackleReposition());
             if (isNutmegInProgress)
             {
                 nutmegVictim = null;
@@ -998,28 +1247,36 @@ public class MovementPhaseManager : MonoBehaviour
             remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
             // Clamp remainingDribblerPaceto 0 and adjust isDribblerRunning accordingly.
             if (remainingDribblerPace == 0) {isDribblerRunning = false;}
-        } 
-        yield return StartCoroutine(HandlePostTackleReposition(attackerToken, selectedDefender));
+        }
+        repositionWinner = attackerToken;
+        repositionLoser = selectedDefender;
+        yield return StartCoroutine(HandlePostTackleReposition());
         if (isNutmegInProgress)
         {
             nutmegVictim = null;
             isNutmegInProgress = false;
         }
     }
-
-    private IEnumerator HandlePostTackleReposition(PlayerToken winner, PlayerToken loser)
+    
+    private List<HexCell> FindRepositionHexes()
     {
-        Debug.Log($"{winner.name} won the tackle and is repositioning around {loser.name}. Click a Highlighted Hex to move there or Press X to stay put.");
-        // Get the loser's hex and neighboring hexes
-        HexCell loserHex = loser.GetCurrentHex();
+        HexCell loserHex = repositionLoser.GetCurrentHex();
         HexCell[] repositionHexesArray = loserHex.GetNeighbors(hexGrid);
-        List<HexCell> repositionHexes = new List<HexCell>(repositionHexesArray); // Convert array to list
+        repositionHexes = new List<HexCell>(repositionHexesArray); // Convert array to list
         repositionHexes.Where(hex => 
             hex != loserHex && !hex.isDefenseOccupied && !hex.isAttackOccupied).ToList();
+        return repositionHexes;
+    }
+
+    private IEnumerator HandlePostTackleReposition()
+    {
+        Debug.Log($"{repositionWinner.name} won the tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there or Press X to stay put.");
+        // Get the loser's hex and neighboring hexes
+        FindRepositionHexes();
         if (isNutmegInProgress)
         {
             Debug.Log("Leaving as repositionable Hexes only the nutmeggableHexes");
-            HexCell winnerHex = winner.GetCurrentHex();
+            HexCell winnerHex = repositionWinner.GetCurrentHex();
             HexCell[] nutmegHexesArray = winnerHex.GetNeighbors(hexGrid);
             List<HexCell> nutmegUnavailable = new List<HexCell>(nutmegHexesArray); // Convert array to list
             repositionHexes.RemoveAll(thomas => nutmegUnavailable.Contains(thomas));
@@ -1036,83 +1293,49 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForReposition = true;
         while (isWaitingForReposition)
         {
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                if (isNutmegInProgress)
-                {
-                    Debug.Log($"{winner.name} just nutmegged {loser.name}, they have to reposition.");
-                }
-                else if (MatchManager.Instance.currentState != MatchManager.GameState.MovementPhaseDef)
-                {
-                    Debug.Log($"{winner.name} forfeits repositioning and stays at current position.");
-                    isWaitingForReposition = false;
-                    hexGrid.ClearHighlightedHexes();
-                    // selectedToken = winner;
-                    DribblerMoved1HexOrReposition();
-                    yield break;
-                }
-                else
-                {
-                    AdvanceMovementPhase();
-                }
-            }
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                    if (clickedHex != null
-                        && repositionHexes.Contains(clickedHex)
-                        && clickedHex != loser.GetCurrentHex()
-                        && !clickedHex.isDefenseOccupied
-                        && !clickedHex.isAttackOccupied
-                    )
-                    {
-                        Debug.Log($"{winner.name} repositioning to {clickedHex.coordinates}.");
-                        HexCell winnerHex = winner.GetCurrentHex();
-                        // the check seems to be redundant as before the call of this method, the Possession has been changed if needed
-                        if (winner.isAttacker)
-                        {
-                            winnerHex.isAttackOccupied = false;
-                            winnerHex.ResetHighlight();
-                            clickedHex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
-                        }
-                        else
-                        {
-                            winnerHex.isDefenseOccupied = false;
-                            winnerHex.ResetHighlight();
-                            clickedHex.isDefenseOccupied = true;  // Mark the target hex as occupied by an attacker
-                        }
-                        foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
-                        hexGrid.ClearHighlightedHexes();
-                        yield return StartCoroutine(winner.JumpToHex(clickedHex)); // Move the token
-                        isWaitingForReposition = false;
-                        ball.PlaceAtCell(clickedHex); // Move the ball
-                        // clickedHex.ResetHighlight();
-                        // clickedHex.HighlightHex("isAttackOccupied");
-                        Debug.Log("Repositioning complete.");
-                        isWaitingForReposition = false;
-                        if (winnerHex.isInPenaltyBox == 0 && clickedHex.isInPenaltyBox != 0 && winner.IsDribbler)
-                        {
-                            Debug.Log("⚽ Ball entered penalty box during a reposition! Offering GK a free move.");
-                            if (goalKeeperManager.ShouldGKMove(clickedHex))
-                            {
-                                yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
-                            }
-                        }
-                        DribblerMoved1HexOrReposition();
-                    }
-                }
-            }
             yield return null;
         }
+    }
+
+    private async void AsyncRepositionTokenToHex(HexCell hex)
+    {
+        Debug.Log($"{repositionWinner.name} repositioning to {hex.coordinates}.");
+        HexCell winnerHex = repositionWinner.GetCurrentHex();
+        // the check seems to be redundant as before the call of this method, the Possession has been changed if needed
+        if (repositionWinner.isAttacker)
+        {
+            winnerHex.isAttackOccupied = false;
+            winnerHex.ResetHighlight();
+            hex.isAttackOccupied = true;  // Mark the target hex as occupied by an attacker
+        }
+        else
+        {
+            winnerHex.isDefenseOccupied = false;
+            winnerHex.ResetHighlight();
+            hex.isDefenseOccupied = true;  // Mark the target hex as occupied by an attacker
+        }
+        foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
+        hexGrid.ClearHighlightedHexes();
+        await StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); // Move the token
+        ball.PlaceAtCell(hex); // Move the ball
+        // clickedHex.ResetHighlight();
+        // clickedHex.HighlightHex("isAttackOccupied");
+        Debug.Log("Repositioning complete.");
+        isWaitingForReposition = false;
+        if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler)
+        {
+            Debug.Log("⚽ Ball entered penalty box during a reposition! Offering GK a free move.");
+            if (goalKeeperManager.ShouldGKMove(hex))
+            {
+                await StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
+            }
+        }
+        DribblerMoved1HexOrReposition();
     }
 
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
     {
         Debug.Log("Handling foul resolution process...");
-
         // Phase 1: Yellow card decision
         Debug.Log("Press 'R' to roll for a Booking.");
         isWaitingForYellowCardRoll = true;
@@ -1120,76 +1343,78 @@ public class MovementPhaseManager : MonoBehaviour
         yield return null;
         while (isWaitingForYellowCardRoll)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-                int roll = returnedRoll;
-                Debug.Log($"Yellow card roll: {roll}");
-                if (roll >= MatchManager.Instance.refereeLeniency)
-                {
-                    Debug.Log($"Defender {defenderToken.name} receives a yellow card!");
-                    defenderToken.ReceiveYellowCard();  // Assume a method exists to handle this
-                }
-                else
-                {
-                    Debug.Log($"Defender {defenderToken.name} escapes a yellow card.");
-                }
-                isWaitingForYellowCardRoll = false;
-            }
             yield return null;  // Wait for the next frame
         }
-
         // Phase 2: Injury decision
         Debug.Log("Press 'R' to roll for attacker injury.");
         isWaitingForInjuryRoll = true;
         yield return null;   // Delay to avoid immediate triggering
         while (isWaitingForInjuryRoll)
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-                // int roll = returnedRoll;
-                int roll = 6;
-                Debug.Log($"Injury roll: {roll}");
-                if (roll >= attackerToken.resilience)
-                {
-                    Debug.Log($"Attacker {attackerToken.name} is injured!");
-                    attackerToken.ReceiveInjury();  // Assume a method exists to handle this
-                    remainingDribblerPace -= 1;
-                }
-                else
-                {
-                    Debug.Log($"Attacker {attackerToken.name} avoids injury.");
-                }
-                isWaitingForInjuryRoll = false;
-            }
             yield return null;  // Wait for the next frame
         }
         Debug.Log("Foul process completed.");
-
+        yield return null;   // Delay to avoid immediate triggering
         // Phase 3: Foul decision (Play On or Take the Foul)
         Debug.Log("Press 'A' to Play On or 'Z' to Take the Foul.");
         isWaitingForFoulDecision = true;
         while (isWaitingForFoulDecision)
         {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                isWaitingForFoulDecision = false;
-                yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
-                AdvanceMovementPhase();
-                // DribblerMoved1HexOrReposition();
-            }
-            else if (Input.GetKeyDown(KeyCode.Z))
-            {
-                Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
-                isWaitingForFoulDecision = false;  // Cancel the decision phase
-                // End the movement phase and start the free kick process
-                EndMovementPhase();  // End the movement phase
-                freeKickManager.StartFreeKickPreparation();
-            }
             yield return null;  // Wait for the next frame
         }
+    }
 
+    private async void PlayAdvantage()
+    {
+        isWaitingForFoulDecision = false;
+        PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        await StartCoroutineAndWait(PrepareAttackerReposition(attackerToken));
+        AdvanceMovementPhase();
+    }
+
+    private void TakeFreeKick()
+    {
+        Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
+        isWaitingForFoulDecision = false;  // Cancel the decision phase
+        // End the movement phase and start the free kick process
+        EndMovementPhase();  // End the movement phase
+        freeKickManager.StartFreeKickPreparation();
+    }
+
+    public void PerformLeniencyTest(int? rigroll = null)
+    {
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int roll = rigroll ?? returnedRoll;
+        Debug.Log($"Yellow card roll: {roll}");
+        if (roll >= MatchManager.Instance.refereeLeniency)
+        {
+            Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
+            selectedDefender.ReceiveYellowCard();  // Assume a method exists to handle this
+        }
+        else
+        {
+            Debug.Log($"Defender {selectedDefender.name} escapes a yellow card.");
+        }
+        isWaitingForYellowCardRoll = false;
+    }
+    public void PerformInjuryTest(int? rigroll = null)
+    {
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int roll = rigroll ?? returnedRoll;
+        Debug.Log($"Injury roll: {roll}");
+        // PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        if (roll >= attackerToken.resilience)
+        {
+            Debug.Log($"Attacker {attackerToken.name} is injured!");
+            attackerToken.ReceiveInjury();  // Assume a method exists to handle this
+            remainingDribblerPace -= 1;
+        }
+        else
+        {
+            Debug.Log($"Attacker {attackerToken.name} avoids injury.");
+        }
+        isWaitingForInjuryRoll = false;
     }
 
     private void StartTackleDiceRollSequence()
@@ -1197,10 +1422,8 @@ public class MovementPhaseManager : MonoBehaviour
         // Reset the tackle dice roll flags
         tackleDefenderRolled = false;
         tackleAttackerRolled = false;
-
         // Set flag to wait for dice rolls
         isWaitingForTackleRoll = true;
-
         Debug.Log("Press R to roll the dice for tackle. Defender rolls first.");
     }
 
@@ -1224,7 +1447,12 @@ public class MovementPhaseManager : MonoBehaviour
         isBallPickable = false;
         isDribblerRunning = false;
         tokenPickedUpBall = false;
-        isMovementPhaseInProgress = false;
+        isActivated = false;
+        isMovementPhaseAttack = false;  // Reset the movement phase state
+        isMovementPhaseDef = false;  // Reset the movement phase state
+        isMovementPhase2f2 = false;  // Reset the movement phase state
+        isAwaitingTokenSelection = false;  // Reset the token selection state
+        isAwaitingHexDestination = false;  // Reset the hex destination state
         Debug.Log("Movement phase has been reset.");
     }
 
@@ -1239,13 +1467,14 @@ public class MovementPhaseManager : MonoBehaviour
     public void EndMovementPhase(bool triggerF3 = true)
     {
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
+        // TODO: Broadcast Ennd of MovementPhase
         ResetMovementPhase();  // Reset the moved tokens and phase counters
         nutmeggableDefenders.Clear();
         stunnedTokens.Clear();
         stunnedTokens.AddRange(stunnedforNext);
         stunnedforNext.Clear();
         headerManager.ResetHeader();  // Reset the header to free up unmovable players
-        isMovementPhaseInProgress = false;
+        isActivated = false;
         Debug.Log("Movement phase is over.");
         if (triggerF3) finalThirdManager.TriggerFinalThirdPhase();
     }
@@ -1376,24 +1605,6 @@ public class MovementPhaseManager : MonoBehaviour
         StartTackleDiceRollSequence();
     }
     
-    private PlayerToken FindPlayerTokenOnHex(HexCell hex)
-    {
-        Debug.Log($"Searching for PlayerToken on or around hex: {hex.name}");
-
-        // Use GetOccupyingToken() to retrieve the token on this hex
-        PlayerToken token = hex.GetOccupyingToken();
-
-        if (token == null)
-        {
-            Debug.LogError($"No PlayerToken found on hex {hex.name}. Please ensure PlayerToken is correctly assigned.");
-        }
-        else
-        {
-            Debug.Log($"PlayerToken found: {token.name} on hex {hex.name}");
-        }
-
-        return token;
-    }
 
     public bool IsDribblerinOpponentPenaltyBox(PlayerToken token)
     {
