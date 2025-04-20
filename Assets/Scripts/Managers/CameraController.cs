@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed = 15f;
     [SerializeField] private float dragSpeed = 30f;
     [SerializeField] private float rotationSpeed = 1000f;
+    public GameInputManager gameInputManager;
     private Vector3 dragOrigin;
     private bool isRotating = false;
     // Arrays to store position and rotation for 4 camera presets
@@ -32,35 +33,53 @@ public class CameraController : MonoBehaviour
         SetCameraToPreset(1);
     }
 
-    public void HandleCameraInput()
+    void Update()
     {
-        HandleMovement();
-        HandleZoom();
-        HandleMouseDrag();
-        HandleRotation();
-        HandlePresetKeys();
+        HandleCameraInput();
+        // HandlePresetKeys();
     }
 
-    void HandlePresetKeys()
+    private void OnEnable()
     {
-        // Check if Shift is held
-        bool isShiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        // GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
 
-        // Press Shift + 1, 2, 3, or 4 to save the current camera state to the preset slots
-        if (isShiftHeld)
+    private void OnDisable()
+    {
+        // GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    public void HandleCameraInput()
+    {
+        if (gameInputManager.isDragging)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) SaveCurrentCameraToPreset(1);
-            if (Input.GetKeyDown(KeyCode.Alpha2)) SaveCurrentCameraToPreset(2);
-            if (Input.GetKeyDown(KeyCode.Alpha3)) SaveCurrentCameraToPreset(3);
-            if (Input.GetKeyDown(KeyCode.Alpha4)) SaveCurrentCameraToPreset(4);
+            HandleMovement();
+            HandleZoom();
+            HandleMouseDrag();
+            HandleRotation();
+        }
+    }
+
+    private void OnKeyReceived(KeyPressData keyData)
+    {
+        if (keyData.shift)
+        {
+            // Check if Shift is held
+            // Press Shift + 1, 2, 3, or 4 to save the current camera state to the preset slots
+            if (keyData.key == KeyCode.Alpha1) SaveCurrentCameraToPreset(1);
+            if (keyData.key == KeyCode.Alpha2) SaveCurrentCameraToPreset(2);
+            if (keyData.key == KeyCode.Alpha3) SaveCurrentCameraToPreset(3);
+            if (keyData.key == KeyCode.Alpha4) SaveCurrentCameraToPreset(4);
         }
         else
         {
             // Press 1, 2, 3, or 4 to move the camera to preset slots when Shift is NOT held
-            if (Input.GetKeyDown(KeyCode.Alpha1)) SetCameraToPreset(1);
-            if (Input.GetKeyDown(KeyCode.Alpha2)) SetCameraToPreset(2);
-            if (Input.GetKeyDown(KeyCode.Alpha3)) SetCameraToPreset(3);
-            if (Input.GetKeyDown(KeyCode.Alpha4)) SetCameraToPreset(4);
+            if (keyData.key == KeyCode.Alpha1) SetCameraToPreset(1);
+            if (keyData.key == KeyCode.Alpha2) SetCameraToPreset(2);
+            if (keyData.key == KeyCode.Alpha3) SetCameraToPreset(3);
+            if (keyData.key == KeyCode.Alpha4) SetCameraToPreset(4);
         }
     }
 
