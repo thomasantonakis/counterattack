@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;  // For JsonConvert
 using System.Linq;
 using System.Net.WebSockets;
+using System.Text.RegularExpressions;
 
 public class MatchManager : MonoBehaviour
 {
@@ -770,6 +771,10 @@ public class MatchManager : MonoBehaviour
     public HexGrid hexGrid;  // Reference to the ball
     public GroundBallManager groundBallManager;
     public HighPassManager highPassManager;
+    public LongBallManager longBallManager;
+    public FirstTimePassManager firstTimePassManager;
+    public MovementPhaseManager movementPhaseManager;
+    public ShotManager shotManager;
     public PlayerTokenManager playerTokenManager;
     public MatchStatsUI matchStatsUI;
     public GameData gameData;
@@ -885,6 +890,7 @@ public class MatchManager : MonoBehaviour
     //     }
     // }
     // Call this when players are fully instantiated
+    
     public void NotifyPlayersInstantiated()
     {
         if (OnPlayersInstantiated != null)
@@ -1007,21 +1013,21 @@ public class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass()
     {
-        if (
-            currentState == GameState.StandardPassMoving ||
-            currentState == GameState.StandardPassAttempt ||
-            // currentState == GameState.StandardPassCompleted || // Development Mode
-            currentState == GameState.KickOffSetup
-        ) // in not available
-        {
-            Debug.LogWarning("Cannot start pass attempt from current state: " + currentState);
-        }
-        else
-        {
-            currentState = GameState.StandardPassAttempt;
-            ball.SelectBall();
-            Debug.Log("Standard pass attempt mode activated.");
-        }
+        
+        currentState = GameState.StandardPassAttempt;
+        ball.SelectBall();
+        Debug.Log("Standard pass attempt mode activated.");
+        groundBallManager.isActivated = true;
+    }
+
+    public void CommitToGroundBall()
+    {
+        // groundBallManager.isAvailable = false;
+        highPassManager.isAvailable = false;
+        longBallManager.isAvailable = false;
+        firstTimePassManager.isAvailable = false;
+        shotManager.isAvailable = false;
+        movementPhaseManager.isAvailable = false;
     }
     
     public void TriggerMovement()
@@ -1043,18 +1049,6 @@ public class MatchManager : MonoBehaviour
             currentState = GameState.MovementPhaseAttack;
             Debug.Log("Attacking Movement Phase started.");
         }
-    }
-
-    public void StartMovementPhaseDef()
-    {
-        currentState = GameState.MovementPhaseDef;
-        Debug.Log("Defensive Movement Phase Activated");
-    }
-
-    public void StartMovementPhase2f2()
-    {
-        currentState = GameState.MovementPhase2f2;
-        Debug.Log("Movement Phase 2f2 Activated. Two attackers can move up to 2 hexes.");
     }
 
     public void TriggerHighPass()
@@ -1349,19 +1343,4 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    public (int _roll, bool _isJackPot) DiceRoll()
-    {
-        bool isJackpot = false;
-        int roll = UnityEngine.Random.Range(1, 7);
-        if (roll == 6)
-        {
-            int secondRoll = UnityEngine.Random.Range(1, 3);
-            isJackpot = secondRoll == 2;
-        }
-        return (roll, isJackpot);
-    }
-    public static void ResetSingleton()
-    {
-        Instance = null;
-    }
 }
