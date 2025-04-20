@@ -149,7 +149,8 @@ public class FreeKickManager : MonoBehaviour
                 if (keyData.key == KeyCode.C)
                 {
                     hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerHighPass();
+                    highPassManager.ActivateHighPass();
+                    // TODO: Commit to HighPass
                     highPassManager.isCornerKick = true;
                     isWaitingForExecution = false;
                     isCornerKick = false;
@@ -157,7 +158,8 @@ public class FreeKickManager : MonoBehaviour
                 else if (keyData.key == KeyCode.P)
                 {
                     hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerStandardPass();
+                    groundBallManager.ActivateGroundBall();
+                    MatchManager.Instance.CommitToGroundBall();
                     groundBallManager.imposedDistance = 6;
                     isWaitingForExecution = false;
                     isCornerKick = false;
@@ -174,19 +176,21 @@ public class FreeKickManager : MonoBehaviour
                 }
                 else if (keyData.key == KeyCode.C)
                 {
-                    hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerHighPass();
+                    hexGrid.ClearHighlightedHexes();
+                    highPassManager.ActivateHighPass(); 
+                    highPassManager.isCornerKick = false;
                     isWaitingForExecution = false;
                     isCornerKick = false;
                 }
                 else if (keyData.key == KeyCode.P)
                 {
                     hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerStandardPass();
+                    groundBallManager.ActivateGroundBall();
+                    MatchManager.Instance.CommitToGroundBall();
                     isWaitingForExecution = false;
                     isCornerKick = false;
                 }
-                else if (Input.GetKeyDown(KeyCode.S))
+                else if (keyData.key == KeyCode.S)
                 {
                     hexGrid.ClearHighlightedHexes();
                     Debug.Log("Free Kick Shoot triggered."); 
@@ -207,7 +211,7 @@ public class FreeKickManager : MonoBehaviour
             spotkick = cornerKickSpot;
             Debug.Log("Starting Corner Kick Preparation...");
         }
-        matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
+        // matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
         isWaitingForKickerSelection = true;
         remainingDefenderMoves = 6;
         attackerMovesUsed = 0;
@@ -215,7 +219,7 @@ public class FreeKickManager : MonoBehaviour
         CalculateDefendersThatNeedToMove();
     }
 
-    public void CalculatePotentialKickers()
+    private void CalculatePotentialKickers()
     {
         potentialKickers.Clear();
         // Debug.Log("Calculating potential kickers...");
@@ -236,7 +240,7 @@ public class FreeKickManager : MonoBehaviour
         }
     }
 
-    public void CalculateDefendersThatNeedToMove()
+    private void CalculateDefendersThatNeedToMove()
       {
           shouldDefMoveTokens.Clear();
           HexCell ballHex = ball.GetCurrentHex();
@@ -250,7 +254,7 @@ public class FreeKickManager : MonoBehaviour
           }
       }
     
-    public IEnumerator HandleKickerSelection(PlayerToken clickedToken = null)
+    private IEnumerator HandleKickerSelection(PlayerToken clickedToken = null)
     {
         yield return null; // to separate the X from Kicker Selection
         if (clickedToken == null && isCornerKick && potentialKickers.Count == 0)
@@ -318,7 +322,7 @@ public class FreeKickManager : MonoBehaviour
         AdvanceToNextPhase(phaseState);
     }
 
-    public void HandleSetupTokenSelection(PlayerToken token)
+    private void HandleSetupTokenSelection(PlayerToken token)
     {
         if (MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDefineKicker)
         {
@@ -410,7 +414,7 @@ public class FreeKickManager : MonoBehaviour
         Debug.Log($"Token {token.name} selected for current phase {MatchManager.Instance.currentState}. Awaiting destination hex.");
     }
 
-    public IEnumerator HandleSetupHexSelection(HexCell hex)
+    private IEnumerator HandleSetupHexSelection(HexCell hex)
     {
         // Reject if no token is currently selected
         if (selectedToken == null)
@@ -500,7 +504,7 @@ public class FreeKickManager : MonoBehaviour
         Debug.Log($"Move {movesUsed} just performed");
     }
 
-    public void AttemptToAdvanceToNextPhase()
+    private void AttemptToAdvanceToNextPhase()
     {
         if (
             MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef")
