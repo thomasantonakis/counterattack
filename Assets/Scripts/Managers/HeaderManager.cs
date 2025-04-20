@@ -17,6 +17,7 @@ public class HeaderManager : MonoBehaviour
     public GameInputManager gameInputManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
+    public HelperFunctions helperFunctions;
     [Header("Header States")]
     public bool isAvailable = false;
     public bool isActivated = false;
@@ -610,7 +611,7 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
                         int roll = returnedRoll;
                         int totalScore = returnedJackpot ? 50 : roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
                         // int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
@@ -638,7 +639,7 @@ public class HeaderManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
                         int roll = returnedRoll;
                         // int roll = 4;
                         int totalScore = returnedJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
@@ -763,7 +764,7 @@ public class HeaderManager : MonoBehaviour
         string penaltyInfo = hasHeadingPenalty ? ", with penalty (-1)" : "";
         Debug.Log($"Press 'R' to attempt ball control: {challengeWinner.name} (dribbling: {challengeWinner.dribbling}{penaltyInfo}).");
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.R));
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int roll = returnedRoll;
         int totalScore = roll + challengeWinner.dribbling + (hasHeadingPenalty ? -1 : 0);
         Debug.Log($"Attacker {challengeWinner.name} rolled {roll} + Dribbling {challengeWinner.dribbling}{penaltyInfo} = {totalScore}");
@@ -908,7 +909,7 @@ public class HeaderManager : MonoBehaviour
             }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
-            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+            var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
             int diceRoll = returnedRoll;
             // int diceRoll = 6; // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");

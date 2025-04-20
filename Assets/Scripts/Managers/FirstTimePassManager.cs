@@ -13,6 +13,7 @@ public class FirstTimePassManager : MonoBehaviour
     public HexGrid hexGrid;
     public MovementPhaseManager movementPhaseManager;
     public GameInputManager gameInputManager;
+    public HelperFunctions helperFunctions;
     [Header("Runtime Items")]
     public bool isAvailable = false;
     public bool isActivated = false;        // To check if the script is activated
@@ -425,7 +426,7 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
-        movementPhaseManager.isMovementPhaseInProgress = false;
+        movementPhaseManager.isActivated = false;
         selectedToken = null;
         StartDefenderMovementPhase();
     }
@@ -437,7 +438,7 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
-        movementPhaseManager.isMovementPhaseInProgress = false;
+        movementPhaseManager.isActivated = false;
         selectedToken = null;
         CompleteDefenderMovementPhase();
     }
@@ -518,7 +519,7 @@ public class FirstTimePassManager : MonoBehaviour
                 // int jerseyNumber = defenderToken.jerseyNumber;
 
                 // Roll the dice
-                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
                 // int diceRoll = returnedRoll;
                 int diceRoll = 4;
                 Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");

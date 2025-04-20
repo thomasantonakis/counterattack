@@ -16,6 +16,7 @@ public class LongBallManager : MonoBehaviour
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
+    public HelperFunctions helperFunctions;
     [Header("Runtime")]
     public bool isAvailable = false;
     [SerializeField]
@@ -124,7 +125,6 @@ public class LongBallManager : MonoBehaviour
         isActivated = true;
         isAvailable = false;
         isAwaitingTargetSelection = true;
-        MatchManager.Instance.TriggerLongPass();
         hexGrid.ClearHighlightedHexes(); 
         Debug.Log("Long Ball activated. Please select a target hex.");
     }
@@ -259,7 +259,7 @@ public class LongBallManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Roll the dice (1 to 6)
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         // int diceRoll = returnedRoll;
         int diceRoll = 1; // Melina Mode
         Debug.Log($"Accuracy dice roll: {diceRoll}");
@@ -310,7 +310,7 @@ public class LongBallManager : MonoBehaviour
     private IEnumerator PerformDistanceRoll()
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         // int diceRoll = returnedRoll;
         int distanceRoll = 6; // Melina Mode
         isWaitingForDistanceRoll = false;
@@ -520,7 +520,7 @@ public class LongBallManager : MonoBehaviour
             }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
-            var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+            var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
             // int diceRoll = returnedRoll;
             int diceRoll = 6; // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");

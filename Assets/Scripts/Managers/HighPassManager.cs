@@ -17,6 +17,7 @@ public class HighPassManager : MonoBehaviour
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
+    public HelperFunctions helperFunctions;
     [Header("Runtime")]
     public bool isAvailable = false;
     [SerializeField]
@@ -203,7 +204,6 @@ public class HighPassManager : MonoBehaviour
 
     public void ActivateHighPass()
     {
-        MatchManager.Instance.TriggerHighPass();
         isActivated = true;
         isAvailable = false;  // Make it non available to avoid restarting this action again.
         // if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
@@ -297,7 +297,7 @@ public class HighPassManager : MonoBehaviour
                 else
                 {
                     lockedAttacker = null;
-                    MatchManager.Instance.currentState = MatchManager.GameState.HighPassDefenderMovement;
+                    // MatchManager.Instance.currentState = MatchManager.GameState.HighPassDefenderMovement;
                     isWaitingForAccuracyRoll = true;
                     Debug.Log("Waiting for accuracy roll... Please Press R key.");
                 }
@@ -324,7 +324,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    public bool ValidateHighPassTarget(HexCell targetHex, bool isGK = false)
+    private bool ValidateHighPassTarget(HexCell targetHex, bool isGK = false)
     {
         HexCell ballHex = ball.GetCurrentHex();
         // Step 1: Ensure the ballHex and targetHex are valid
@@ -408,7 +408,7 @@ public class HighPassManager : MonoBehaviour
         }
     }
     
-    public List<PlayerToken> GetAttackersWithinRangeOfHex(HexCell targetHex, int range)
+    private List<PlayerToken> GetAttackersWithinRangeOfHex(HexCell targetHex, int range)
     {
         List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
         List<HexCell> reachableHexes;
@@ -436,16 +436,16 @@ public class HighPassManager : MonoBehaviour
         return eligibleAttackers;
     }
 
-    private async void PerformAccuracyRoll()
+    private async void PerformAccuracyRoll(int? rigroll = null)
     {
         // TODO: Refine order and logs
         lockedAttacker = null;
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
         // Roll the dice (1 to 6)
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-        // int diceRoll = returnedRoll;
-        int diceRoll = 6; // Melina Mode
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int diceRoll = rigroll ?? returnedRoll;
+        // int diceRoll = 6; // Melina Mode
         isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -475,12 +475,12 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    private void PerformDirectionRoll()
+    private void PerformDirectionRoll(int? rigroll = null)
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-        // int diceRoll = returnedRoll - 1;
-        int diceRoll = 0; // South Mode
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int diceRoll = rigroll -1 ?? returnedRoll - 1;
+        // int diceRoll = 0; // South Mode
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
         string rolledDirection = TranslateRollToDirection(diceRoll);
@@ -511,12 +511,12 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    private async void PerformDistanceRoll()
+    private async void PerformDistanceRoll(int? rigroll = null)
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
-        // int distanceRoll = returnedRoll;
-        int distanceRoll = 5; // Melina Mode
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int distanceRoll = rigroll ?? returnedRoll;
+        // int distanceRoll = 5; // Melina Mode
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance
@@ -645,7 +645,7 @@ public class HighPassManager : MonoBehaviour
         return reachableHexes.Intersect(challengeHexes).ToList();
     }
 
-    public void HighlightHighPassArea(HexCell targetHex)
+    private void HighlightHighPassArea(HexCell targetHex)
     {
         hexGrid.ClearHighlightedHexes();
         if (targetHex == null)
@@ -695,7 +695,7 @@ public class HighPassManager : MonoBehaviour
         // Debug.Log($"Highlighted {hexesInRange.Count} hexes around the target for a Long Pass.");
     }
 
-    public void HighlightAllValidHighPassTargets()
+    private void HighlightAllValidHighPassTargets()
     {
         // Clear the previous highlights
         hexGrid.ClearHighlightedHexes();
@@ -763,12 +763,12 @@ public class HighPassManager : MonoBehaviour
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
-        movementPhaseManager.isMovementPhaseInProgress = false;
+        movementPhaseManager.isActivated = false;
         selectedToken = null;
         StartDefenderMovementPhase();
     }
 
-    public void StartDefenderMovementPhase()
+    private void StartDefenderMovementPhase()
     {
         Debug.Log("Defender movement phase started. Move one defender up to 3 hexes.");
         isWaitingForDefenderSelection = true;  // Now allow attacker selection
@@ -786,7 +786,7 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
-        movementPhaseManager.isMovementPhaseInProgress = false;
+        movementPhaseManager.isActivated = false;
         selectedToken = null;
         isWaitingForAccuracyRoll = true;
         Debug.Log("Waiting for accuracy roll... Please Press R key.");

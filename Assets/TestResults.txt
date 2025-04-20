@@ -3,15 +3,119 @@
 ==== Starting Test #1 ====
 ▶️ Starting test scenario: 'Kick Off'
 ✅ PASS: KickOff state check after pressing 2 | Expected: KickOffSetup | Actual: KickOffSetup
+✅ PASS: GBM is not activated after pressing 2 | Expected: False | Actual: False
+✅ PASS: MPM is not activated after pressing 2 | Expected: False | Actual: False
+✅ PASS: GBM is not Availabls after pressing 2 | Expected: False | Actual: False
+✅ PASS: MPM is not Available after pressing 2 | Expected: False | Actual: False
 ✅ PASS: KickOff state check after pressing Space | Expected: KickoffBlown | Actual: KickoffBlown
-✅ Kick off - TEST PASSED COMPLETELY 🎉
+✅ PASS: GBM is not activated after pressing Space | Expected: False | Actual: False
+✅ PASS: MPM is not activated after pressing Space | Expected: False | Actual: False
+✅ PASS: GBM is not Available after pressing Space | Expected: True | Actual: True
+✅ PASS: MPM is not Available after pressing Space | Expected: False | Actual: False
+✅ PASS: GBM is activated after pressing P | Expected: True | Actual: True
+✅ PASS: MPM is not activated after pressing P | Expected: False | Actual: False
+✅ PASS: GBM is not Available after pressing P | Expected: False | Actual: False
+✅ PASS: MPM is not Available after pressing P | Expected: False | Actual: False
+✅ PASS: GBM is waiting target selection after pressing P | Expected: True | Actual: True
 
+✅ KICK OFF - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #1 passed.
 
 
 ==== Starting Test #2 ====
-▶️ Starting test scenario: 'Ground Ball - Too Far Away'
+▶️ Starting test scenario: 'Ground Ball - Commitment'
 ✅ PASS: KickOff state check after pressing 2 | Expected: KickOffSetup | Actual: KickOffSetup
-❌ ASSERT FAILED: KickOff state check after pressing Space | Expected: KickOffSetup | Actual: KickoffBlown
-✅ PASS: GroundBallManager is availableafter  pressing Space | Expected: True | Actual: True
+✅ PASS: GBM is not activated after pressing 2 | Expected: False | Actual: False
+✅ PASS: MPM is not activated after pressing 2 | Expected: False | Actual: False
+✅ PASS: GBM is not Availabls after pressing 2 | Expected: False | Actual: False
+✅ PASS: MPM is not Available after pressing 2 | Expected: False | Actual: False
+✅ PASS: KickOff state check after pressing Space | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: GBM is not activated after pressing Space | Expected: False | Actual: False
+✅ PASS: MPM is not activated after pressing Space | Expected: False | Actual: False
+✅ PASS: GBM is not Available after pressing Space | Expected: True | Actual: True
+✅ PASS: MPM is not Available after pressing Space | Expected: False | Actual: False
+✅ PASS: GBM is activated after pressing P | Expected: True | Actual: True
+✅ PASS: MPM is not activated after pressing P | Expected: False | Actual: False
+✅ PASS: GBM is not Available after pressing P | Expected: False | Actual: False
+✅ PASS: MPM is not Available after pressing P | Expected: False | Actual: False
+✅ PASS: GBM is waiting target selection after pressing P | Expected: True | Actual: True
+✅ PASS: GBM is activated after Clicking on (12, -6) which is too far away | Expected: True | Actual: True
+✅ PASS: GBM is not Available after Clicking on (12, -6) which is too far away | Expected: False | Actual: False
+✅ PASS: GBM has a null target after Clicking on (12, -6) which is too far away
+✅ PASS: GGBM is waiting target selection after Clicking on (12, -6) which is too far away | Expected: True | Actual: True
+✅ PASS: GBM is activated after Clicking on (10, 0) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is not Available after Clicking on (10, 0) which is passable | Expected: False | Actual: False
+✅ PASS: GBM has a valid target after Clicking on (10, 0) which is passable | Expected: HexCell [10, 0] (HexCell) | Actual: HexCell [10, 0] (HexCell)
+✅ PASS: GBM is waiting target selection after Clicking on (10, 0) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is activated after Clicking again on (12, -6) which is too far away | Expected: True | Actual: True
+✅ PASS: GBM is not Available after Clicking again on (12, -6) which is too far away | Expected: False | Actual: False
+✅ PASS: GBM has a null target after Clicking again on (12, -6) which is too far away
+✅ PASS: GBM is waiting target selection after Clicking again on (12, -6) which is too far away | Expected: True | Actual: True
+✅ PASS: GBM is activated after Clicking on (10, 0) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is not Available after Clicking on (10, 0) which is passable | Expected: False | Actual: False
+✅ PASS: GBM has a valid target after Clicking on (10, 0) which is passable | Expected: HexCell [10, 0] (HexCell) | Actual: HexCell [10, 0] (HexCell)
+✅ PASS: GBM is waiting target selection after Clicking again on (10, 0) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is activated after Clicking on (4, -4) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is not Available after Clicking on (4, -4) which is passable | Expected: False | Actual: False
+✅ PASS: GBM has a valid target after Clicking on (4, -4) which is passable | Expected: HexCell [4, -4] (HexCell) | Actual: HexCell [4, -4] (HexCell)
+✅ PASS: GBM is waiting target selection after Clicking again on (4, -4) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is activated after reClicking on (10, 0) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is not Available after reClicking on (10, 0) which is passable | Expected: False | Actual: False
+✅ PASS: GBM has a valid target after reClicking on (10, 0) which is passable | Expected: HexCell [10, 0] (HexCell) | Actual: HexCell [10, 0] (HexCell)
+✅ PASS: GBM is waiting target selection after reClicking again on (10, 0) which is passable | Expected: True | Actual: True
+✅ PASS: GBM is activated after Clicking again on (10, 0) to confirm Pass | Expected: True | Actual: True
+✅ PASS: GBM is not Available after Clicking again on (10, 0) to confirm Pass | Expected: False | Actual: False
+✅ PASS: GBM has a valid target after Clicking again on (10, 0) to confirm Pass | Expected: HexCell [10, 0] (HexCell) | Actual: HexCell [10, 0] (HexCell)
+✅ PASS: GBM is NOT waiting target selection after Clicking again on (10, 0) which is passable | Expected: False | Actual: False
+✅ PASS: GBM is deactivated after ball movement | Expected: False | Actual: False
+
+✅ Ground Ball - Invalid, Switch and Commitment to no interceptions - TEST PASSED COMPLETELY 🎉
+
+✅ Test #2 passed.
+
+
+==== Starting Test #3 ====
+▶️ Starting test scenario: 'Ground Ball - Dangerous Pass - No Interception'
+✅ PASS: GBM has a valid target after Clicking on (0, 6) which is passable, but dangerous | Expected: HexCell [0, 6] (HexCell) | Actual: HexCell [0, 6] (HexCell)
+✅ PASS: GBM pass to (0, 6) is indeed considered dangerous | Expected: True | Actual: True
+✅ PASS: GBM has a valid target after Clicking on (3, 2) which is passable, but dangerous | Expected: HexCell [3, 2] (HexCell) | Actual: HexCell [3, 2] (HexCell)
+✅ PASS: GBM pass to (3, 2) is indeed considered dangerous | Expected: True | Actual: True
+✅ PASS: GBM has a valid target after Confirming pass to (3, 2) which is passable, but dangerous | Expected: HexCell [3, 2] (HexCell) | Actual: HexCell [3, 2] (HexCell)
+✅ PASS: GBM pass to (3, 2) is indeed considered dangerous | Expected: True | Actual: True
+✅ PASS: GBM pass to (3, 2) is indeed considered dangerous | Expected: False | Actual: True
+✅ PASS: GBM is now waiting for a dice roll | Expected: True | Actual: True
+✅ PASS: GBM is now waiting for 3 dice rolls | Expected: 3 | Actual: 3
+✅ PASS: GBM is now waiting for 2 dice rolls | Expected: 2 | Actual: 2
+✅ PASS: GBM is now waiting for 1 dice rolls | Expected: 1 | Actual: 1
+✅ PASS: GBM is cleaned up | Expected: 0 | Actual: 0
+✅ PASS: GBM is deactivated after ball movement | Expected: False | Actual: False
+✅ PASS: home team is in attack after ball movement | Expected: Home | Actual: Home
+✅ PASS: Attack has no possession after ball movement | Expected: False | Actual: False
+✅ PASS: Cafferata should be the last to touch the ball | Expected: 2. Cafferata (PlayerToken) | Actual: 2. Cafferata (PlayerToken)
+✅ PASS: MatchManager is in StandardPassCompletedToSpace state | Expected: StandardPassCompletedToSpace | Actual: StandardPassCompletedToSpace
+✅ PASS: There is a hanging pass and it is a ground pass | Expected: ground | Actual: ground
+
+✅ Ground Ball - Dangerous Pass - No Interception - TEST PASSED COMPLETELY 🎉
+
+✅ Test #3 passed.
+
+
+==== Starting Test #4 ====
+▶️ Starting test scenario: 'Ground Ball - Dangerous Pass - No Interception'
+✅ PASS: GBM is deactivated after ball movement | Expected: False | Actual: False
+✅ PASS: home team is in attack after ball movement | Expected: Away | Actual: Away
+✅ PASS: Attack has no possession after ball movement | Expected: True | Actual: True
+✅ PASS: Gilbert should be the last to touch the ball | Expected: 6. Gilbert (PlayerToken) | Actual: 6. Gilbert (PlayerToken)
+✅ PASS: Cafferata Should have 1 pass attempted | Expected: 1 | Actual: 1
+✅ PASS: Cafferata Should have 0 pass completed | Expected: 0 | Actual: 0
+✅ PASS: Vladoiu Should have 1 interception attempted | Expected: 1 | Actual: 1
+✅ PASS: Gilbert Should have 1 interception attempted | Expected: 1 | Actual: 1
+✅ PASS: Vladoiu Should have 0 interceptions made | Expected: 1 | Actual: 0
+✅ PASS: Gilbert Should have 1 interception made | Expected: 1 | Actual: 1
+
+✅ Ground Ball - Dangerous Pass - No Interception - TEST PASSED COMPLETELY 🎉
+
+✅ Test #4 passed.
+
+🎉 ALL TESTS PASSED SUCCESSFULLY!

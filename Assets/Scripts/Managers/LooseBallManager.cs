@@ -15,6 +15,7 @@ public class LooseBallManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
+    public HelperFunctions helperFunctions;
     [Header("Important Things")]
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
@@ -69,7 +70,7 @@ public class LooseBallManager : MonoBehaviour
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
         yield return StartCoroutine(WaitForInput(KeyCode.R)); 
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         // int directionRoll = returnedRoll - 1;
         // int directionRoll = 0; // S
         // int directionRoll = 1; // SW
@@ -139,9 +140,9 @@ public class LooseBallManager : MonoBehaviour
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         yield return StartCoroutine(WaitForInput(KeyCode.R));
-        var (returnedRoll2, returnedJackpot2) = MatchManager.Instance.DiceRoll();
-        // int diceRoll = returnedRoll2;
-        int distanceRoll = 6; // Distance 1-6
+        var (returnedRoll2, returnedJackpot2) = helperFunctions.DiceRoll();
+        int distanceRoll = returnedRoll2;
+        // int distanceRoll = 6; // Distance 1-6
 
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
 
@@ -230,9 +231,9 @@ public class LooseBallManager : MonoBehaviour
 
                     yield return StartCoroutine(WaitForInterceptionRoll(potentialInterceptor, hexround2));
                     Debug.Log("Press [R] to roll for interception.");
-                    var (returnedRoll3, returnedJackpot3) = MatchManager.Instance.DiceRoll();
-                    // int interceptionRoll = returnedRoll3;
-                    int interceptionRoll = 1; // Simulate dice roll
+                    var (returnedRoll3, returnedJackpot3) = helperFunctions.DiceRoll();
+                    int interceptionRoll = returnedRoll3;
+                    // int interceptionRoll = 1; // Simulate dice roll
                     if (interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10)
                     {
                         MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -283,13 +284,13 @@ public class LooseBallManager : MonoBehaviour
                     finalThirdManager.TriggerFinalThirdPhase();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
-                else if (!movementPhaseManager.isMovementPhaseInProgress) // TODO: check if there is no Movement Phase going on, Allow Attacker Selection
+                else if (!movementPhaseManager.isActivated) // TODO: check if there is no Movement Phase going on, Allow Attacker Selection
                 {
                     Debug.LogWarning("There is no movement Phase going on, Attacker must choose what to do!");
                     finalThirdManager.TriggerFinalThirdPhase();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
-                else if (movementPhaseManager.isMovementPhaseInProgress)
+                else if (movementPhaseManager.isActivated)
                 {
                     // There is a movement Phase going ON.
                     Debug.Log($"Ball hit {closestToken.name}, who is an attacker");
@@ -336,13 +337,13 @@ public class LooseBallManager : MonoBehaviour
                 Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starting a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             }
-            else if (!movementPhaseManager.isMovementPhaseInProgress)
+            else if (!movementPhaseManager.isActivated)
             {
                 finalThirdManager.TriggerFinalThirdPhase();
                 Debug.LogWarning($"Loose ball is not picked up by anyone.{MatchManager.Instance.teamInAttack} Starts a movement Phase");
                 MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             }
-            else if (movementPhaseManager.isMovementPhaseInProgress)
+            else if (movementPhaseManager.isActivated)
             {
                 Debug.LogWarning($"Loose ball is not picked up by anyone. Current movement Phase continues.");
                 movementPhaseManager.AdvanceMovementPhase();
@@ -355,7 +356,7 @@ public class LooseBallManager : MonoBehaviour
         else
         {
             Debug.Log($"Ball Went out of Bounds");
-            if (movementPhaseManager.isMovementPhaseInProgress)
+            if (movementPhaseManager.isActivated)
             {
                 movementPhaseManager.EndMovementPhase(false);
             }

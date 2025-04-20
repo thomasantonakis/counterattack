@@ -18,9 +18,11 @@ public class ShotManager : MonoBehaviour
     public LongBallManager longBallManager;
     public GoalKeeperManager goalKeeperManager;
     public GoalFlowManager goalFlowManager;
+    public HelperFunctions helperFunctions;
     public HexGrid hexGrid;
     public Ball ball;
     [Header("Flags")]
+    public bool isAvailable = false;
     public bool isShotInProgress = false;  // Tracks if a shot is active
     public bool isWaitingforBlockerSelection = false;  // Tracks if we are waiting to select a blocker
     public bool isWaitingforBlockerMovement = false;  // Tracks if we are waiting for the selected blocker to move
@@ -366,7 +368,7 @@ public class ShotManager : MonoBehaviour
                 }
 
                 // Roll the dice
-                var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+                var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
                 int diceRoll = returnedRoll;
                 if (defenderName == "11. Poulsen")
                 {
@@ -424,7 +426,7 @@ public class ShotManager : MonoBehaviour
                                 );
                                 yield return StartCoroutine(ShootOffTargetRandomizer());
                                 ResetShotProcess();
-                                if (movementPhaseManager.isMovementPhaseInProgress)
+                                if (movementPhaseManager.isActivated)
                                 {
                                     movementPhaseManager.EndMovementPhase(false);
                                     movementPhaseManager.stunnedTokens.Clear();
@@ -443,7 +445,7 @@ public class ShotManager : MonoBehaviour
                                     , MatchManager.ActionType.AssistProvided
                                 );
                                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
-                                if (movementPhaseManager.isMovementPhaseInProgress)
+                                if (movementPhaseManager.isActivated)
                                 {
                                     movementPhaseManager.EndMovementPhase(false);
                                     movementPhaseManager.stunnedTokens.Clear();
@@ -470,7 +472,7 @@ public class ShotManager : MonoBehaviour
     {
         Debug.Log("Hello from the StartShotRoll");
         
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         shooterRoll = returnedRoll;
         // shooterRoll = 2;
         isWaitingForShotRoll = false;
@@ -525,7 +527,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForGKDiceRoll = false;
         yield return null;
         PlayerToken gkToken = gkEntry.defender;
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         // int gkRoll = returnedRoll;
         int gkRoll = 6;
         int gkPenalty = gkEntry.gkPenalty ?? 0;
@@ -574,7 +576,7 @@ public class ShotManager : MonoBehaviour
             );
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
-            if (movementPhaseManager.isMovementPhaseInProgress)
+            if (movementPhaseManager.isActivated)
             {
                 movementPhaseManager.EndMovementPhase(false);
                 // movementPhaseManager.stunnedTokens.Clear();
@@ -598,7 +600,7 @@ public class ShotManager : MonoBehaviour
                 if (shooterRoll == 1)
                 {
                     Debug.Log($"{shooter.name} rolls 1! Shot is off target. GoalKick awarded.");
-                    if (movementPhaseManager.isMovementPhaseInProgress)
+                    if (movementPhaseManager.isActivated)
                     {
                         movementPhaseManager.EndMovementPhase(false);
                         movementPhaseManager.stunnedTokens.Clear();
@@ -622,7 +624,7 @@ public class ShotManager : MonoBehaviour
                         , MatchManager.ActionType.AssistProvided
                     );
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
-                    if (movementPhaseManager.isMovementPhaseInProgress)
+                    if (movementPhaseManager.isActivated)
                     {
                         movementPhaseManager.EndMovementPhase(false);
                         movementPhaseManager.stunnedTokens.Clear();
@@ -639,7 +641,7 @@ public class ShotManager : MonoBehaviour
     {
       yield return null;
       PlayerToken gkToken = interceptors[0].defender;
-      var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+      var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
       // int gkRoll = returnedRoll;
       int gkRoll = 1;
       isWaitingforHandlingTest = false;
@@ -653,7 +655,7 @@ public class ShotManager : MonoBehaviour
           );
           MatchManager.Instance.SetLastToken(gkToken);
           Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
-          if (movementPhaseManager.isMovementPhaseInProgress)
+          if (movementPhaseManager.isActivated)
           {
               movementPhaseManager.EndMovementPhase(false);
               // movementPhaseManager.stunnedTokens.Clear();
@@ -711,7 +713,7 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator ShootOffTargetRandomizer()
     {
-        var (returnedRoll, returnedJackpot) = MatchManager.Instance.DiceRoll();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int diceRoll = returnedRoll;
         // int diceRoll = 6;
         switch (diceRoll)
