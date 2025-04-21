@@ -24,18 +24,14 @@ public class LongBallManager : MonoBehaviour
     public bool isAwaitingTargetSelection = false;
     [SerializeField]
     private bool isDangerous = false;  // Flag for difficult pass
-    [SerializeField]
-    private bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
-    [SerializeField]
-    private bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
-    [SerializeField]
-    private bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
+    public bool isWaitingForAccuracyRoll = false; // Flag to check for accuracy roll
+    public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
+    public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     [SerializeField]
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
     public bool isWaitingForDefLBMove = false;
     [Header("Important things")]
-    [SerializeField]
-    private HexCell currentTargetHex;
+    public HexCell currentTargetHex;
     private int directionIndex;
     private HexCell finalHex;
     // private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
