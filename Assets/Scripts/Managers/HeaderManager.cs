@@ -274,7 +274,7 @@ public class HeaderManager : MonoBehaviour
             movementPhaseManager.ResetMovementPhase();
             CleanUpHeader();
             isActivated = false;
-            // TODO: Trigger Movement Phase for attackers and commit to it
+            MatchManager.Instance.TriggerStandardPass();
             MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
             // TODO: Log Appropriately
         }

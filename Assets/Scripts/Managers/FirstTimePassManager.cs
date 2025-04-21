@@ -19,8 +19,8 @@ public class FirstTimePassManager : MonoBehaviour
     public bool isActivated = false;        // To check if the script is activated
     public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
     public bool isWaitingForAttackerSelection = false; // To check if we are waiting for attacker selection
-    public bool isWaitingForDefenderSelection = false; // To check if we are waiting for defender selection
     public bool isWaitingForAttackerMove = false; // To check if we are waiting for attacker selection
+    public bool isWaitingForDefenderSelection = false; // To check if we are waiting for defender selection
     public bool isWaitingForDefenderMove = false; // To check if we are waiting for defender selection
     public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     [Header("Others")]
@@ -224,6 +224,7 @@ public class FirstTimePassManager : MonoBehaviour
             if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
             {
                 Debug.Log("First-Time Pass target confirmed. Waiting for movement phases.");
+                MatchManager.Instance.CommitToAction();
                 isAwaitingTargetSelection = false;  // Stop waiting for target selection
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.PassAttempt); // Log CompletedPass
                 MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassAttackerMovement;
@@ -397,7 +398,6 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForDefenderSelection = true;
         selectedToken = null;  // Ensure no token is auto-selected
         // Set game state to reflect we are in the defender’s movement phase
-        MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassDefenderMovement;
     }
 
     public void CompleteDefenderMovementPhase()
@@ -456,7 +456,7 @@ public class FirstTimePassManager : MonoBehaviour
         }
         yield return StartCoroutine(HandleGroundBallMovement(currentTargetHex));
         MatchManager.Instance.UpdatePossessionAfterPass(currentTargetHex);
-        MatchManager.Instance.currentState = MatchManager.GameState.FTPCompleted;
+        MatchManager.Instance.BroadcastEndofFirstTimePass();
         CleanUpFTP();
     }
 

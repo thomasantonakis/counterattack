@@ -15,22 +15,17 @@ public class MatchManager : MonoBehaviour
     {
         KickOffSetup, // Free movements of Players in each own Half
         KickoffBlown, // Only a Standard Pass is available
-        StandardPassAttempt, // Attacking Team calls a Standard Pass-11
-        StandardPassMoving, // Ball is moving to either the intercepting Def or the Destination
         StandardPassCompletedToPlayer, // A standard Pass was not intercepted and is on an Attacker
         StandardPassCompletedToSpace, // A standard Pass was not intercepted and is on on a Free Hex
         LongBallAttempt,
-        LongPassMoving,
         LongBallCompleted,
         WaitingForThrowInTaker, // An attacker must be chosen to take the throw in
-        WaitingForCornerTaker, // An attacker must be chosen to take the Corner Kick
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
         MovementPhaseAttack,
         MovementPhaseDef,
         MovementPhase2f2,
         // Repositioning,
-        MovementPhaseEnded,
         SuccessfulTackle,
         HighPassAttempt,
         HighPassMoving,
@@ -44,7 +39,6 @@ public class MatchManager : MonoBehaviour
         HeaderCompletedToSpace,
         FirstTimePassAttempt,
         FirstTimePassAttackerMovement,
-        FirstTimePassDefenderMovement,
         FTPCompleted,
         FreeKickKickerSelect,
         FreeKickAttGK,
@@ -928,10 +922,10 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.KickoffBlown;
         groundBallManager.isAvailable = true;
-        highPassManager.isAvailable = true;
+        // highPassManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
         // Start the timer or wait for the next Action to be called to start it.
-        Debug.Log("Match Kicked Off. Awaiting for Attacking Team to call an action");
+        Debug.Log("Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.");
         // Logic to start the game, such as showing the ball, enabling inputs, etc.
     }
 
@@ -1012,43 +1006,105 @@ public class MatchManager : MonoBehaviour
 
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass()
-    {
-        
-        currentState = GameState.StandardPassAttempt;
-        ball.SelectBall();
-        Debug.Log("Standard pass attempt mode activated.");
-        groundBallManager.isActivated = true;
+    {  
+        groundBallManager.ActivateGroundBall();
     }
 
-    public void CommitToGroundBall()
+    public void CommitToAction()
     {
-        // groundBallManager.isAvailable = false;
+        movementPhaseManager.isAvailable = false;
+        groundBallManager.isAvailable = false;
+        firstTimePassManager.isAvailable = false;
         highPassManager.isAvailable = false;
         longBallManager.isAvailable = false;
-        firstTimePassManager.isAvailable = false;
         shotManager.isAvailable = false;
+    }
+
+    public void BroadcastSafeEndofMovementPhase()
+    {
+        movementPhaseManager.isAvailable = true;
+        groundBallManager.isAvailable = true;
+        firstTimePassManager.isAvailable = false;
+        highPassManager.isAvailable = true;
+        longBallManager.isAvailable = true;
+        shotManager.isAvailable = true;
+    }
+    public void BroadcastEndofGroundBallPass()
+    {
+        movementPhaseManager.isAvailable = true;
+        groundBallManager.isAvailable = false;
+        if (attackHasPossession)
+        {
+            firstTimePassManager.isAvailable = true;
+            highPassManager.isAvailable = true;
+            longBallManager.isAvailable = true;
+            if (ball.GetCurrentHex().CanShootFrom)
+            {
+                shotManager.isAvailable = true;
+            }
+            else
+            {
+                shotManager.isAvailable = false;
+            }
+        }
+        else
+        {
+            shotManager.isAvailable = false;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = false;
+            longBallManager.isAvailable = false;
+        }
+    }
+    public void BroadcastEndofFirstTimePass()
+    {
+        movementPhaseManager.isAvailable = true;
+        groundBallManager.isAvailable = false;
+        firstTimePassManager.isAvailable = false;
+        highPassManager.isAvailable = false;
+        longBallManager.isAvailable = false;
+        if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
+        {
+            shotManager.isAvailable = true;
+        }
+        else
+        {
+            shotManager.isAvailable = false;
+        }
+    }
+    public void BroadcastAnyOtherScenario()
+    {
+        movementPhaseManager.isAvailable = true;
+        groundBallManager.isAvailable = true;
+        firstTimePassManager.isAvailable = false;
+        highPassManager.isAvailable = false;
+        longBallManager.isAvailable = true;
+        // TODO: Check if the ball is in CanShootFrom Hex
+        shotManager.isAvailable = true;
+    }
+
+    public void EnableFreeKickOptions()
+    {
         movementPhaseManager.isAvailable = false;
+        groundBallManager.isAvailable = true;
+        firstTimePassManager.isAvailable = false;
+        highPassManager.isAvailable = true;
+        longBallManager.isAvailable = true;
+        // TODO: Check if the ball is in CanShootFrom Hex
+        shotManager.isAvailable = true;
+    }
+    public void EnableCornerKickOptions()
+    {
+        movementPhaseManager.isAvailable = false;
+        groundBallManager.isAvailable = true;
+        firstTimePassManager.isAvailable = false;
+        highPassManager.isAvailable = true;
+        longBallManager.isAvailable = false;
+        shotManager.isAvailable = false;
     }
     
     public void TriggerMovement()
     {
-        if (
-            currentState == GameState.StandardPassMoving ||
-            currentState == GameState.KickOffSetup ||
-            currentState == GameState.KickoffBlown
-        )  // Not available in current situation
-        {
-            Debug.LogWarning("Cannot start Movement Phase from current state: " + currentState);
-        }
-        // else if ( currentState != GameState.KickoffBlown ) // High diff and Something Else is selected
-        // {
-        //     Debug.LogWarning("Movement Not Available. You have already called something else");
-        // }
-        else // low diff
-        {
-            currentState = GameState.MovementPhaseAttack;
-            Debug.Log("Attacking Movement Phase started.");
-        }
+        movementPhaseManager.ActivateMovementPhase();
     }
 
     public void TriggerHighPass()

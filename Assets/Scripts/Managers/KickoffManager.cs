@@ -125,7 +125,7 @@ public class KickoffManager : MonoBehaviour
         movementPhaseManager.ResetMovementPhase();
         headerManager.ResetHeader();
         MatchManager.Instance.SetLastToken(ball.GetCurrentHex().GetOccupyingToken());
-        MatchManager.Instance.currentState = MatchManager.GameState.StandardPassAttempt;
+        MatchManager.Instance.TriggerStandardPass();
     }
 
 }
