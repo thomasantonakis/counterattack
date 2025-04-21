@@ -377,7 +377,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-    private void ActivateMovementPhase()
+    public void ActivateMovementPhase()
     {
         isActivated = true;
         isAvailable = false;
@@ -922,6 +922,7 @@ public class MovementPhaseManager : MonoBehaviour
                 {
                     Debug.Log("Last two attackers have moved in 2f2 phase. Ending Movement Phase.");
                     EndMovementPhase();
+                    MatchManager.Instance.BroadcastSafeEndofMovementPhase();
                     return;
                 }
             }
@@ -1376,7 +1377,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
         isWaitingForFoulDecision = false;  // Cancel the decision phase
-        // End the movement phase and start the free kick process
+        // End the movement phase and start the free `kick process
         EndMovementPhase();  // End the movement phase
         freeKickManager.StartFreeKickPreparation();
     }
@@ -1397,6 +1398,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         isWaitingForYellowCardRoll = false;
     }
+    
     public void PerformInjuryTest(int? rigroll = null)
     {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
@@ -1466,8 +1468,6 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void EndMovementPhase(bool triggerF3 = true)
     {
-        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseEnded;  // Stop all movements
-        // TODO: Broadcast Ennd of MovementPhase
         ResetMovementPhase();  // Reset the moved tokens and phase counters
         nutmeggableDefenders.Clear();
         stunnedTokens.Clear();

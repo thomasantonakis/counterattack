@@ -91,7 +91,7 @@ public class GroundBallManager : MonoBehaviour
 
     private void CommitToThisAction()
     {
-        MatchManager.Instance.CommitToGroundBall();
+        MatchManager.Instance.CommitToAction();
     }
     
     private async Task StartCoroutineAndWait(IEnumerator coroutine)
@@ -383,16 +383,15 @@ public class GroundBallManager : MonoBehaviour
         await StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         finalThirdManager.TriggerFinalThirdPhase();
+        MatchManager.Instance.BroadcastEndofGroundBallPass();
         if (trgDestHex.isAttackOccupied)
         {
             LogGroundPassSucess();
-            MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-            firstTimePassManager.isAvailable = true;
+            
         }
         else
         {
             MatchManager.Instance.hangingPassType = "ground";
-            MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
         }
         CleanUpPass();
     }
@@ -495,12 +494,11 @@ public class GroundBallManager : MonoBehaviour
         yield return StartCoroutine(HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
         // Call UpdatePossessionAfterPass after the ball has moved to the defender's hex
         MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
-        MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
         finalThirdManager.TriggerFinalThirdPhase();
         ResetGroundPassInterceptionDiceRolls();
         CleanUpPass();
-        // TODO: Broadcast ANY OTHER SCENARIO
+        MatchManager.Instance.BroadcastAnyOtherScenario();
     }
     
     private void CleanUpPass()
@@ -510,6 +508,7 @@ public class GroundBallManager : MonoBehaviour
         isActivated = false;
         isAwaitingTargetSelection = false;
         currentTargetHex = null;  // Reset current target hex
+        imposedDistance = 11;  // Reset imposed distance
         ResetGroundPassInterceptionDiceRolls();
     }
 

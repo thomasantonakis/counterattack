@@ -20,7 +20,7 @@ public class LongBallManager : MonoBehaviour
     [Header("Runtime")]
     public bool isAvailable = false;
     [SerializeField]
-    private bool isActivated = false;
+    public bool isActivated = false;
     public bool isAwaitingTargetSelection = false;
     [SerializeField]
     private bool isDangerous = false;  // Flag for difficult pass

@@ -21,7 +21,7 @@ public class HighPassManager : MonoBehaviour
     [Header("Runtime")]
     public bool isAvailable = false;
     [SerializeField]
-    private bool isActivated = false;
+    public bool isActivated = false;
     public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
     public bool isWaitingForAttackerSelection = false; // Flag to check for Distance roll
     public bool isWaitingForAttackerMove = false; // Flag to check for Distance roll

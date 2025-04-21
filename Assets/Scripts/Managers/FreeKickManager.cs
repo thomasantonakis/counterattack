@@ -150,19 +150,20 @@ public class FreeKickManager : MonoBehaviour
                 {
                     hexGrid.ClearHighlightedHexes(); 
                     highPassManager.ActivateHighPass();
-                    // TODO: Commit to HighPass
+                    MatchManager.Instance.CommitToAction();
                     highPassManager.isCornerKick = true;
-                    isWaitingForExecution = false;
                     isCornerKick = false;
+                    isWaitingForExecution = false;
                 }
                 else if (keyData.key == KeyCode.P)
                 {
                     hexGrid.ClearHighlightedHexes(); 
-                    groundBallManager.ActivateGroundBall();
-                    MatchManager.Instance.CommitToGroundBall();
+                    MatchManager.Instance.TriggerStandardPass();;
+                    // groundBallManager.ActivateGroundBall();
+                    MatchManager.Instance.CommitToAction();
                     groundBallManager.imposedDistance = 6;
-                    isWaitingForExecution = false;
                     isCornerKick = false;
+                    isWaitingForExecution = false;
                 }
             }
             else
@@ -171,6 +172,7 @@ public class FreeKickManager : MonoBehaviour
                 {
                     hexGrid.ClearHighlightedHexes(); 
                     MatchManager.Instance.TriggerLongPass();
+                    MatchManager.Instance.CommitToAction();
                     isWaitingForExecution = false;
                     isCornerKick = false;
                 }
@@ -186,7 +188,7 @@ public class FreeKickManager : MonoBehaviour
                 {
                     hexGrid.ClearHighlightedHexes(); 
                     groundBallManager.ActivateGroundBall();
-                    MatchManager.Instance.CommitToGroundBall();
+                    MatchManager.Instance.CommitToAction();
                     isWaitingForExecution = false;
                     isCornerKick = false;
                 }
@@ -668,11 +670,13 @@ public class FreeKickManager : MonoBehaviour
                 // FreeKickCleanup();
                 if (isCornerKick)
                 {
+                    MatchManager.Instance.EnableCornerKickOptions();
                     Debug.Log("Corner Kick Preparation completed. Ready for execution.");
                     Debug.Log("Available Options are: Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements.)");
                 }
                 else
                 {
+                    MatchManager.Instance.EnableFreeKickOptions();
                     Debug.Log("Free Kick Preparation completed. Ready for execution.");
                     Debug.Log("Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!");
                 }
