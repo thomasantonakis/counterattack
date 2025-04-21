@@ -199,7 +199,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
-            ActivateMovementPhase();
+            MatchManager.Instance.TriggerMovement();
             return;
         }
         if (isWaitingForInterceptionDiceRoll && keyData.key == KeyCode.R)
@@ -384,6 +384,7 @@ public class MovementPhaseManager : MonoBehaviour
         isMovementPhaseAttack = true;
         isAwaitingTokenSelection = true;
     }
+
     // This method will be called when a player token is clicked
     public void HandleTokenSelection(PlayerToken token)
     {
@@ -1438,6 +1439,21 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Tackle phase reset.");
     }
 
+    // public void Deactivate()
+    // {
+    //     isActivated = false;
+    //     isAvailable = true;
+    //     isMovementPhaseAttack = false;
+    //     isMovementPhaseDef = false;
+    //     isMovementPhase2f2 = false;
+    //     isAwaitingTokenSelection = false;
+    //     isAwaitingHexDestination = false;
+    //     isBallPickable = false;
+    //     isDribblerRunning = false;
+    //     tokenPickedUpBall = false;
+    //     selectedToken = null;  // Reset selected token
+    //     hexGrid.ClearHighlightedHexes();  // Clear highlighted hexes
+    // }
     public void ResetMovementPhase()
     {
         movedTokens.Clear();  // Reset the list of moved tokens

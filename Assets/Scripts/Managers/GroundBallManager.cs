@@ -54,7 +54,12 @@ public class GroundBallManager : MonoBehaviour
     {
         if (isAvailable && !isActivated && keyData.key == KeyCode.P)
         {
-            ActivateGroundBall();
+            MatchManager.Instance.TriggerStandardPass();
+            if (MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown)
+            // TODO: catch all cases where the game is kicking off (Match Start, goal, Half time, Extra times, etc.)
+            {
+                CommitToThisAction();
+            }
             return;
         }
         if (isActivated)
@@ -387,7 +392,6 @@ public class GroundBallManager : MonoBehaviour
         if (trgDestHex.isAttackOccupied)
         {
             LogGroundPassSucess();
-            
         }
         else
         {
@@ -501,14 +505,14 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.BroadcastAnyOtherScenario();
     }
     
-    private void CleanUpPass()
+    public void CleanUpPass()
     {
         hexGrid.ClearHighlightedHexes();
         isAvailable = false;
         isActivated = false;
         isAwaitingTargetSelection = false;
         currentTargetHex = null;  // Reset current target hex
-        imposedDistance = 11;  // Reset imposed distance
+        // imposedDistance = 11;  // Reset imposed distance
         ResetGroundPassInterceptionDiceRolls();
     }
 

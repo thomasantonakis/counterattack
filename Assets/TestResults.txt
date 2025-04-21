@@ -160,7 +160,7 @@ Wait for the ball to move
 
 
 ==== Starting Test #5 ====
-▶️ Starting test scenario: 'Ground Ball - Pass to Player - Make Sure FTP Is Available'
+▶️ Starting test scenario: 'Ground Ball - Pass to Player - FTP with No Interceptions'
 Pressing 2
 Pressing Space
 Pressing P
@@ -194,7 +194,7 @@ Clicking (1, -9) Move Delgado
 Wait for the ball to move
 ✅ PASS: FTP subsystem waiting status at after After Moving Delgado | Expected: True | Actual: ✅ All availability flags are correct.
 
-✅ Ground Ball - Pass to Player - Make Sure FTP Is Available - TEST PASSED COMPLETELY 🎉
+✅ Ground Ball - Pass to Player - FTP with No Interceptions' - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #5 passed.
 
@@ -219,7 +219,51 @@ Clicking (-8, -7) Move Ulisses
 Clicking (1, -10) Select Delgado
 Clicking (1, -9) Move Delgado
 Wait for the ball to move
-❌ ASSERT FAILED: FTP subsystem waiting status at after After Moving Delgado | Expected: True | Actual: ❌ Failures: LongBall should be available, FirstTimePass should be activated
+✅ PASS: FTP subsystem waiting status at after After Moving Delgado | Expected: True | Actual: ✅ All availability flags are correct.
 
-❌ Ground Ball - Pass to Player - FTP To Player - TEST FAILED SOMEWHERE
+✅ Ground Ball - Pass to Player - FTP To Player - TEST PASSED COMPLETELY 🎉
 
+✅ Test #6 passed.
+
+
+==== Starting Test #7 ====
+▶️ Starting test scenario: 'Ground ball to Player, FTP - M - FTP Commitment'
+Pressing 2
+Pressing Space
+Pressing P
+✅ PASS: MPM is not Available after pressing P form kick Off  | Expected: False | Actual: False
+Clicking (-6, -6)
+Clicking (-6, -6) again
+Wait for the ball to move
+Pressing F
+✅ PASS: FTP subsystem waiting status at Initialization | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MPM is Available after Selecting FTP and not committing | Expected: True | Actual: True
+Clicking (-4, -4)
+✅ PASS: FTP subsystem waiting status at after Target CLick | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MPM is Available after Selecting FTP target and still not committing | Expected: True | Actual: True
+Switch Selection to Movement
+✅ PASS: MPM is not Available after Selecting it by changing or MPM | Expected: False | Actual: False
+✅ PASS: FTP SHould be available while MP was selected | Expected: True | Actual: True
+Switch Selection Back to FTP
+✅ PASS: MPM is Available after Re Selecting FTP target | Expected: True | Actual: True
+✅ PASS: FTP subsystem waiting status at after Target CLick | Expected: True | Actual: ✅ All availability flags are correct.
+Clicking (-5, -5) to select target
+✅ PASS: FTP subsystem waiting status at after Target CLick | Expected: True | Actual: ✅ All availability flags are correct.
+Clicking (-5, -5) To confirm the target
+✅ PASS: FTP subsystem waiting status at after Target CLick | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MPM is NOT Available after Confirming FTP target | Expected: False | Actual: False
+Clicking (-8, -8) On Ulisses
+Clicking (-8, -7) Move Ulisses
+✅ PASS: FTP subsystem waiting status at after Selecting a Valid Attacker Destination | Expected: True | Actual: ✅ All availability flags are correct.
+Clicking (1, -10) Select Delgado
+✅ PASS: FTP subsystem waiting status at after Once again Defender Selection | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: FTP subsystem waiting status for Move at Once again Defender Selection | Expected: True | Actual: True
+Clicking (1, -9) Move Delgado
+Wait for the ball to move
+✅ PASS: FTP subsystem waiting status at after After Moving Delgado | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ Ground ball to Player, FTP - M - FTP Commitment - TEST PASSED COMPLETELY 🎉
+
+✅ Test #7 passed.
+
+🎉 ALL TESTS PASSED SUCCESSFULLY!
