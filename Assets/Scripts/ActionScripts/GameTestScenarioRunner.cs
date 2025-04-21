@@ -24,6 +24,248 @@ public struct AvailabilityCheckResult
     }
 }
 
+public class GameStatusSnapshot
+{
+    public bool gbmAvailable;
+    public bool gbmisActivated;
+    public bool gbmIsAwaitingTargetSelection;
+    public bool gbmIsWaitingForDiceRoll;
+    public HexCell gbmCurrentTargetHex;
+    public bool ftpAvailable;
+    public bool ftpIsActivated;
+    public bool ftpIsAwaitingTargetSelection;
+    public bool ftpIsWaitingforAttackerSelection;
+    public bool ftpIsWaitingforDefenderSelection;
+    public bool ftpIsWaitingforDiceRoll;
+    public HexCell ftpCurrentTargetHex;
+    public bool hpmAvailable;
+    public bool hpmIsActivated;
+    public bool hpmIsAwaitingTargetSelection;
+    public bool hpmIsWaitingforAttackerSelection;
+    public bool hpmIsWaitingforDefenderSelection;
+    public HexCell hpmCurrentTargetHex;
+    public bool hpmisWaitingForAccuracyRoll;
+    public bool hpmIsWaitingForDirectionRoll;
+    public bool hpmIsWaitingForDistanceRoll;
+    public bool lbmAvailable;
+    public bool lbmIsActivated;
+    public bool lbmIsAwaitingTargetSelection;
+    public bool lbmIsWaiitngForAccuracyRoll;
+    public bool lbmIsWaitingForDirectionRoll;
+    public bool lbmIsWaitingForDistanceRoll;
+    public bool lbmIsWaitingForDefLBMove;
+    public HexCell lbmCurrentTargetHex;
+
+    public GameStatusSnapshot(
+        GroundBallManager gbm
+        , FirstTimePassManager ftp
+        , HighPassManager hpm
+        , LongBallManager lbm
+        , MovementPhaseManager mpm
+        , FinalThirdManager ftm
+        , HeaderManager hdm
+        , LooseBallManager loose
+        , OutOfBoundsManager obob
+        , FreeKickManager fkm
+        , ShotManager shot
+        , GoalKeeperManager gkm
+        , GoalFlowManager gfm
+        , KickoffManager kom
+        , HexGrid hg
+        , GameInputManager gim
+    )
+    {
+        gbmAvailable = gbm.isAvailable;
+        gbmisActivated = gbm.isActivated;
+        gbmIsAwaitingTargetSelection = gbm.isAwaitingTargetSelection; 
+        gbmIsWaitingForDiceRoll = gbm.isWaitingForDiceRoll;
+        gbmCurrentTargetHex = gbm.currentTargetHex;
+        ftpAvailable = ftp.isAvailable;
+        ftpIsActivated = ftp.isActivated;
+        ftpIsAwaitingTargetSelection = ftp.isAwaitingTargetSelection;
+        ftpIsWaitingforAttackerSelection = ftp.isWaitingForAttackerSelection;
+        ftpIsWaitingforDefenderSelection = ftp.isWaitingForDefenderSelection;
+        ftpIsWaitingforDiceRoll = ftp.isWaitingForDiceRoll;
+        ftpCurrentTargetHex = ftp.currentTargetHex;
+        hpmAvailable = hpm.isAvailable;
+        hpmIsActivated = hpm.isActivated;
+        hpmIsAwaitingTargetSelection = hpm.isWaitingForConfirmation;
+        hpmIsWaitingforAttackerSelection = hpm.isWaitingForAttackerSelection;
+        hpmIsWaitingforDefenderSelection = hpm.isWaitingForDefenderSelection;
+        hpmCurrentTargetHex = hpm.currentTargetHex;
+        hpmisWaitingForAccuracyRoll = hpm.isWaitingForAccuracyRoll;
+        hpmIsWaitingForDirectionRoll = hpm.isWaitingForDirectionRoll;
+        hpmIsWaitingForDistanceRoll = hpm.isWaitingForDistanceRoll;
+        lbmAvailable = lbm.isAvailable;
+        lbmIsActivated = lbm.isActivated;
+        lbmIsWaiitngForAccuracyRoll = lbm.isWaitingForAccuracyRoll;
+        lbmIsWaitingForDirectionRoll = lbm.isWaitingForDirectionRoll;
+        lbmIsWaitingForDistanceRoll = lbm.isWaitingForDistanceRoll;
+        lbmIsAwaitingTargetSelection = lbm.isAwaitingTargetSelection;
+        lbmCurrentTargetHex = lbm.currentTargetHex;
+        lbmIsWaitingForDefLBMove = lbm.isWaitingForDefLBMove;
+    }
+
+    public bool IsEqualTo(GameStatusSnapshot other, out string reason, HashSet<string> excludeFields = null)
+    {
+        List<string> mismatches = new List<string>();
+
+        if (excludeFields?.Contains("gbmAvailable") != true && gbmAvailable != other.gbmAvailable)
+        {
+            mismatches.Add($"GroundBallManager.isAvailable mismatch: {gbmAvailable} vs {other.gbmAvailable}");
+        }
+
+        if (excludeFields?.Contains("gbmisActivated") != true && gbmisActivated != other.gbmisActivated)
+        {
+            mismatches.Add($"GroundBallManager.isActivated mismatch: {gbmisActivated} vs {other.gbmisActivated}");
+        }
+
+        if (excludeFields?.Contains("gbmIsAwaitingTargetSelection") != true && gbmIsAwaitingTargetSelection != other.gbmIsAwaitingTargetSelection)
+        {
+            mismatches.Add($"GroundBallManager.isAwaitingTargetSelection mismatch: {gbmIsAwaitingTargetSelection} vs {other.gbmIsAwaitingTargetSelection}");
+        }
+
+        if (excludeFields?.Contains("gbmIsWaitingForDiceRoll") != true && gbmIsWaitingForDiceRoll != other.gbmIsWaitingForDiceRoll)
+        {
+            mismatches.Add($"GroundBallManager.isWaitingForDiceRoll mismatch: {gbmIsWaitingForDiceRoll} vs {other.gbmIsWaitingForDiceRoll}");
+        }
+
+        if (excludeFields?.Contains("gbmCurrentTargetHex") != true && gbmCurrentTargetHex != other.gbmCurrentTargetHex)
+        {
+            mismatches.Add($"GroundBallManager.currentTargetHex mismatch: {gbmCurrentTargetHex?.name} vs {other.gbmCurrentTargetHex?.name}");
+        }
+
+        if (excludeFields?.Contains("ftpAvailable") != true && ftpAvailable != other.ftpAvailable)
+        {
+            mismatches.Add($"FirstTimePassManager.isAvailable mismatch: {ftpAvailable} vs {other.ftpAvailable}");
+        }
+
+        if (excludeFields?.Contains("ftpIsActivated") != true && ftpIsActivated != other.ftpIsActivated)
+        {
+            mismatches.Add($"FirstTimePassManager.isActivated mismatch: {ftpIsActivated} vs {other.ftpIsActivated}");
+        }
+
+        if (excludeFields?.Contains("ftpIsAwaitingTargetSelection") != true && ftpIsAwaitingTargetSelection != other.ftpIsAwaitingTargetSelection)
+        {
+            mismatches.Add($"FirstTimePassManager.isAwaitingTargetSelection mismatch: {ftpIsAwaitingTargetSelection} vs {other.ftpIsAwaitingTargetSelection}");
+        }
+
+        if (excludeFields?.Contains("ftpIsWaitingforAttackerSelection") != true && ftpIsWaitingforAttackerSelection != other.ftpIsWaitingforAttackerSelection)
+        {
+            mismatches.Add($"FirstTimePassManager.isWaitingforAttackerSelection mismatch: {ftpIsWaitingforAttackerSelection} vs {other.ftpIsWaitingforAttackerSelection}");
+        }
+
+        if (excludeFields?.Contains("ftpIsWaitingforDefenderSelection") != true && ftpIsWaitingforDefenderSelection != other.ftpIsWaitingforDefenderSelection)
+        {
+            mismatches.Add($"FirstTimePassManager.isWaitingforDefenderSelection mismatch: {ftpIsWaitingforDefenderSelection} vs {other.ftpIsWaitingforDefenderSelection}");
+        }
+
+        if (excludeFields?.Contains("ftpIsWaitingforDiceRoll") != true && ftpIsWaitingforDiceRoll != other.ftpIsWaitingforDiceRoll)
+        {
+            mismatches.Add($"FirstTimePassManager.isWaitingforDiceRoll mismatch: {ftpIsWaitingforDiceRoll} vs {other.ftpIsWaitingforDiceRoll}");
+        }
+
+        if (excludeFields?.Contains("ftpCurrentTargetHex") != true && ftpCurrentTargetHex != other.ftpCurrentTargetHex)
+        {
+            mismatches.Add($"FirstTimePassManager.currentTargetHex mismatch: {ftpCurrentTargetHex?.name} vs {other.ftpCurrentTargetHex?.name}");
+        }
+        
+        if (excludeFields?.Contains("hpmAvailable") != true && hpmAvailable != other.hpmAvailable)
+        {
+            mismatches.Add($"HighPassManager.isAvailable mismatch: {hpmAvailable} vs {other.hpmAvailable}");
+        }
+        
+        if (excludeFields?.Contains("hpmIsActivated") != true && hpmIsActivated != other.hpmIsActivated)
+        {
+            mismatches.Add($"HighPassManager.isActivated mismatch: {hpmIsActivated} vs {other.hpmIsActivated}");
+        }
+        
+        if (excludeFields?.Contains("hpmIsAwaitingTargetSelection") != true && hpmIsAwaitingTargetSelection != other.hpmIsAwaitingTargetSelection)
+        {
+            mismatches.Add($"HighPassManager.IsAwaitingTargetSelection mismatch: {hpmIsAwaitingTargetSelection} vs {other.hpmIsAwaitingTargetSelection}");
+        }
+        
+        if (excludeFields?.Contains("hpmIsWaitingforAttackerSelection") != true && hpmIsWaitingforAttackerSelection != other.hpmIsWaitingforAttackerSelection)
+        {
+            mismatches.Add($"HighPassManager.IsWaitingforAttackerSelection mismatch: {hpmIsWaitingforAttackerSelection} vs {other.hpmIsWaitingforAttackerSelection}");
+        }
+        
+        if (excludeFields?.Contains("hpmIsWaitingforDefenderSelection") != true && hpmIsWaitingforDefenderSelection != other.hpmIsWaitingforDefenderSelection)
+        {
+            mismatches.Add($"HighPassManager.IsWaitingforDefenderSelection mismatch: {hpmIsWaitingforDefenderSelection} vs {other.hpmIsWaitingforDefenderSelection}");
+        }
+
+        if (excludeFields?.Contains("hpmCurrentTargetHex") != true && hpmCurrentTargetHex != other.hpmCurrentTargetHex)
+        {
+            mismatches.Add($"HighPassManager.currentTargetHex mismatch: {hpmCurrentTargetHex?.name} vs {other.hpmCurrentTargetHex?.name}");
+        }
+
+        if (excludeFields?.Contains("hpmisWaitingForAccuracyRoll") != true && hpmisWaitingForAccuracyRoll != other.hpmisWaitingForAccuracyRoll)
+        {
+            mismatches.Add($"HighPassManager.isWaitingForAccuracyRoll mismatch: {hpmisWaitingForAccuracyRoll} vs {other.hpmisWaitingForAccuracyRoll}");
+        }
+        
+        if (excludeFields?.Contains("hpmIsWaitingForDirectionRoll") != true && hpmIsWaitingForDirectionRoll != other.hpmIsWaitingForDirectionRoll)
+        {
+            mismatches.Add($"HighPassManager.IsWaitingForDirectionRoll mismatch: {hpmIsWaitingForDirectionRoll} vs {other.hpmIsWaitingForDirectionRoll}");
+        }
+        
+        if (excludeFields?.Contains("hpmIsWaitingForDistanceRoll") != true && hpmIsWaitingForDistanceRoll != other.hpmIsWaitingForDistanceRoll)
+        {
+            mismatches.Add($"HighPassManager.IsWaitingForDistanceRoll mismatch: {hpmIsWaitingForDistanceRoll} vs {other.hpmIsWaitingForDistanceRoll}");
+        }
+        
+        if (excludeFields?.Contains("lbmAvailable") != true && lbmAvailable != other.lbmAvailable)
+        {
+            mismatches.Add($"LongBallManager.isAvailable mismatch: {lbmAvailable} vs {other.lbmAvailable}");
+        }
+        
+        if (excludeFields?.Contains("lbmIsActivated") != true && lbmIsActivated != other.lbmIsActivated)
+        {
+            mismatches.Add($"LongBallManager.isActivated mismatch: {lbmIsActivated} vs {other.lbmIsActivated}");
+        }
+        
+        if (excludeFields?.Contains("lbmIsWaiitngForAccuracyRoll") != true && lbmIsWaiitngForAccuracyRoll != other.lbmIsWaiitngForAccuracyRoll)
+        {
+            mismatches.Add($"LongBallManager.isWaitingForAccuracyRoll mismatch: {lbmIsWaiitngForAccuracyRoll} vs {other.lbmIsWaiitngForAccuracyRoll}");
+        }
+        
+        if (excludeFields?.Contains("lbmIsWaitingForDirectionRoll") != true && lbmIsWaitingForDirectionRoll != other.lbmIsWaitingForDirectionRoll)
+        {
+            mismatches.Add($"LongBallManager.IsWaitingForDirectionRoll mismatch: {lbmIsWaitingForDirectionRoll} vs {other.lbmIsWaitingForDirectionRoll}");
+        }
+        
+        if (excludeFields?.Contains("lbmIsWaitingForDistanceRoll") != true && lbmIsWaitingForDistanceRoll != other.lbmIsWaitingForDistanceRoll)
+        {
+            mismatches.Add($"LongBallManager.IsWaitingForDistanceRoll mismatch: {lbmIsWaitingForDistanceRoll} vs {other.lbmIsWaitingForDistanceRoll}");
+        }
+        
+        if (excludeFields?.Contains("lbmIsAwaitingTargetSelection") != true && lbmIsAwaitingTargetSelection != other.lbmIsAwaitingTargetSelection)
+        {
+            mismatches.Add($"LongBallManager.isAwaitingTargetSelection mismatch: {lbmIsAwaitingTargetSelection} vs {other.lbmIsAwaitingTargetSelection}");
+        }
+        
+        if (excludeFields?.Contains("lbmIsWaitingForDefLBMove") != true && lbmIsWaitingForDefLBMove != other.lbmIsWaitingForDefLBMove)
+        {
+            mismatches.Add($"LongBallManager.IsWaitingForDefLBMove mismatch: {lbmIsWaitingForDefLBMove} vs {other.lbmIsWaitingForDefLBMove}");
+        }
+        
+        if (excludeFields?.Contains("lbmCurrentTargetHex") != true && lbmCurrentTargetHex != other.lbmCurrentTargetHex)
+        {
+            mismatches.Add($"LongBallManager.currentTargetHex mismatch: {lbmCurrentTargetHex?.name} vs {other.lbmCurrentTargetHex?.name}");
+        }
+        
+        if (mismatches.Count > 0)
+        {
+            reason = string.Join("\n", mismatches);
+            return false;
+        }
+
+        reason = null;
+        return true;
+    }
+}
+
 public class GameTestScenarioRunner : MonoBehaviour
 {
     // private bool shouldRunTests = false;
@@ -49,6 +291,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     public GoalKeeperManager goalKeeperManager;
     public HexGrid hexgrid;
     public static GameTestScenarioRunner Instance;
+    private GameStatusSnapshot savedSnapshot;
     
     private void Awake()
     {
@@ -58,7 +301,6 @@ public class GameTestScenarioRunner : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
@@ -91,17 +333,64 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
     }
 
+    private GameStatusSnapshot SaveGameStatusSnapshot()
+    {
+        savedSnapshot = new GameStatusSnapshot(
+              groundBallManager
+            , firstTimePassManager
+            , highPassManager
+            , longBallManager
+            , movementPhaseManager
+            , finalThirdManager
+            , headerManager
+            , looseBallManager
+            , outOfBoundsManager
+            , freeKickManager
+            , shotManager
+            , goalKeeperManager
+            , goalFlowManager
+            , kickoffManager
+            , hexgrid
+            , gameInputManager
+        );
+        Log("📸 Game state snapshot saved");
+        return savedSnapshot;
+    }
+
+    private GameStatusSnapshot GetCurrentSnapshot()
+    {
+        return new GameStatusSnapshot(
+            groundBallManager,
+            firstTimePassManager,
+            highPassManager,
+            longBallManager,
+            movementPhaseManager,
+            finalThirdManager,
+            headerManager,
+            looseBallManager,
+            outOfBoundsManager,
+            freeKickManager,
+            shotManager,
+            goalKeeperManager,
+            goalFlowManager,
+            kickoffManager,
+            hexgrid,
+            gameInputManager
+        );
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<IEnumerator>
         {
-            Scenario_01_BasicKickoff(),
-            Scenario_001_GroundBall_0001_Commitment(),
-            Scenario_001_GroundBall_0002_Dangerous_pass_no_interception(),
-            Scenario_001_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            Scenario_001_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            Scenario_001_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            Scenario_002_GroundBall_0006_Swith_between_options_before_Committing(),
+            // Scenario_01_BasicKickoff(),
+            // Scenario_001_GroundBall_0001_Commitment(),
+            // Scenario_001_GroundBall_0002_Dangerous_pass_no_interception(),
+            // Scenario_001_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            // Scenario_001_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            // Scenario_001_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            // Scenario_002_GroundBall_0006_Swith_between_options_before_Committing(),
+            Scenario_002_Stupid_Click_and_KeyPress_do_not_change_status(),
             // Add more scenarios here
         };
 
@@ -1268,6 +1557,60 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     }
 
+    private IEnumerator Scenario_002_Stupid_Click_and_KeyPress_do_not_change_status()
+    {
+        yield return new WaitForSeconds(2f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: Stupid Click and Key Press do not change status");
+        // ✅ STEP 1: Press 2
+        savedSnapshot = SaveGameStatusSnapshot();
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0f));
+        Log("Pressing 2");
+        GameStatusSnapshot currentSnapshot = GetCurrentSnapshot();
+        bool isSame = savedSnapshot.IsEqualTo(currentSnapshot, out string mismatchReason, new HashSet<string> {});
+        AssertTrue(
+            isSame,
+            "Snapshot should match the expected game state",
+            "Snapshots match",
+            isSame ? "Snapshots match" : mismatchReason
+        );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P - Game is in Ground Ball Mode");
+        savedSnapshot = SaveGameStatusSnapshot();
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, -6), 0.5f));
+        Log("Clicking (12, -6)");
+        GameStatusSnapshot currentSnapshot2 = GetCurrentSnapshot();
+        bool isSame2 = savedSnapshot.IsEqualTo(currentSnapshot2, out string mismatchReason2, new HashSet<string> {});
+        AssertTrue(
+            isSame2,
+            "Snapshot should match the `Pressing P - Game is in Ground Ball Mode` game state",
+            "Snapshots match",
+            isSame2 ? "Snapshots match" : mismatchReason2
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, -6), 0.5f));
+        Log("Clicking (11, -6)");
+        GameStatusSnapshot currentSnapshot3 = GetCurrentSnapshot();
+        bool isSame3 = savedSnapshot.IsEqualTo(currentSnapshot3, out string mismatchReason3, new HashSet<string> {"gbmCurrentTargetHex"});
+        AssertTrue(
+            isSame3,
+            "Snapshot should match the `Pressing P - Game is in Ground Ball Mode` game state",
+            "Snapshots match",
+            isSame3 ? "Snapshots match" : mismatchReason3
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, -6), 0.5f));
+        Log("Clicking (10, -6)");
+        groundBallManager.currentTargetHex = hexgrid.GetHexCellAt(new Vector3Int(0, 0, 0));
+        GameStatusSnapshot currentSnapshot4 = GetCurrentSnapshot();
+        bool isSame4 = savedSnapshot.IsEqualTo(currentSnapshot4, out string mismatchReason4, new HashSet<string> {"gbmCurrentTargetHex"});
+        AssertTrue(
+            isSame4,
+            "Snapshot should match the `Pressing P - Game is in Ground Ball Mode` game state",
+            "Snapshots match",
+            isSame4 ? "Snapshots match" : mismatchReason4
+        );
+        LogFooterofTest("Stupid Click and Key Press do not change status");
+    }
     private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
     {
         if (!condition)

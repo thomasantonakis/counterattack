@@ -24,8 +24,7 @@ public class FirstTimePassManager : MonoBehaviour
     public bool isWaitingForDefenderMove = false; // To check if we are waiting for defender selection
     public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     [Header("Others")]
-    [SerializeField]
-    private HexCell currentTargetHex = null;   // The currently selected target hex
+    public HexCell currentTargetHex = null;   // The currently selected target hex
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
     private HexCell lastClickedHex = null;     // The last hex that was clicked
     private bool isWaitingForConfirmation = false;
