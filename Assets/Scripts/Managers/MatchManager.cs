@@ -15,9 +15,10 @@ public class MatchManager : MonoBehaviour
     {
         KickOffSetup, // Free movements of Players in each own Half
         KickoffBlown, // Only a Standard Pass is available
-        StandardPassCompletedToPlayer, // A standard Pass was not intercepted and is on an Attacker
-        StandardPassCompletedToSpace, // A standard Pass was not intercepted and is on on a Free Hex
-        LongBallAttempt,
+        EndOfMovementPhase,
+        EndOfStandardPass,
+        EndOfFirstTimePass,
+        AnyOtherScenario,
         LongBallCompleted,
         WaitingForThrowInTaker, // An attacker must be chosen to take the throw in
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
@@ -27,8 +28,6 @@ public class MatchManager : MonoBehaviour
         MovementPhase2f2,
         // Repositioning,
         SuccessfulTackle,
-        HighPassAttempt,
-        HighPassMoving,
         HighPassCompleted,
         HighPassAttackerMovement,
         HighPassDefenderMovement,
@@ -37,7 +36,6 @@ public class MatchManager : MonoBehaviour
         HeaderChallengeResolved,
         HeaderCompletedToPlayer,
         HeaderCompletedToSpace,
-        FirstTimePassAttempt,
         FirstTimePassAttackerMovement,
         FTPCompleted,
         FreeKickKickerSelect,
@@ -779,6 +777,7 @@ public class MatchManager : MonoBehaviour
     public string hangingPassType;
     public int difficulty_level;
     public int refereeLeniency;
+    public bool isFTPAvailable = false;
 
     // // Define other match-specific variables here (e.g., time, score, teams)
     // private int homeScore = 0;
@@ -1007,7 +1006,57 @@ public class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass()
     {  
+        movementPhaseManager.ResetMovementPhase();
+        groundBallManager.CleanUpPass();
+        firstTimePassManager.CleanUpFTP();
+        highPassManager.CleanUpHighPass();
+        longBallManager.CleanUpLongBall();
+        RefreshAvailableActions();
         groundBallManager.ActivateGroundBall();
+    }
+
+    public void TriggerMovement()
+    {
+        movementPhaseManager.ResetMovementPhase();
+        groundBallManager.CleanUpPass();
+        firstTimePassManager.CleanUpFTP();
+        highPassManager.CleanUpHighPass();
+        longBallManager.CleanUpLongBall();
+        RefreshAvailableActions();
+        movementPhaseManager.ActivateMovementPhase();
+    }
+
+    public void TriggerHighPass()
+    {
+        movementPhaseManager.ResetMovementPhase();
+        groundBallManager.CleanUpPass();
+        firstTimePassManager.CleanUpFTP();
+        highPassManager.CleanUpHighPass();
+        longBallManager.CleanUpLongBall();
+        RefreshAvailableActions();
+        highPassManager.ActivateHighPass();
+    }
+    
+    public void TriggerLongPass()
+    {
+        movementPhaseManager.ResetMovementPhase();
+        groundBallManager.CleanUpPass();
+        firstTimePassManager.CleanUpFTP();
+        highPassManager.CleanUpHighPass();
+        longBallManager.CleanUpLongBall();
+        RefreshAvailableActions();
+        longBallManager.ActivateLongBall();
+    }
+
+    public void TriggerFTP()
+    {
+        movementPhaseManager.ResetMovementPhase();
+        groundBallManager.CleanUpPass();
+        firstTimePassManager.CleanUpFTP();
+        highPassManager.CleanUpHighPass();
+        longBallManager.CleanUpLongBall();
+        RefreshAvailableActions();
+        firstTimePassManager.ActivateFTP();
     }
 
     public void CommitToAction()
@@ -1018,27 +1067,77 @@ public class MatchManager : MonoBehaviour
         highPassManager.isAvailable = false;
         longBallManager.isAvailable = false;
         shotManager.isAvailable = false;
+        isFTPAvailable = false;
     }
 
     public void BroadcastSafeEndofMovementPhase()
     {
-        movementPhaseManager.isAvailable = true;
-        groundBallManager.isAvailable = true;
-        firstTimePassManager.isAvailable = false;
-        highPassManager.isAvailable = true;
-        longBallManager.isAvailable = true;
-        shotManager.isAvailable = true;
+        currentState = GameState.EndOfMovementPhase;
+        RefreshAvailableActions();
     }
+    
     public void BroadcastEndofGroundBallPass()
     {
-        movementPhaseManager.isAvailable = true;
-        groundBallManager.isAvailable = false;
-        if (attackHasPossession)
+        currentState = GameState.EndOfStandardPass;
+        RefreshAvailableActions();
+    }
+
+    public void BroadcastEndofFirstTimePass()
+    {
+        currentState = GameState.EndOfFirstTimePass;
+        RefreshAvailableActions();
+    }
+    
+    public void BroadcastAnyOtherScenario()
+    {
+        currentState = GameState.AnyOtherScenario;
+        RefreshAvailableActions();
+    }
+
+    private void RefreshAvailableActions()
+    {
+        if (currentState == GameState.EndOfStandardPass)
         {
-            firstTimePassManager.isAvailable = true;
+            movementPhaseManager.isAvailable = true;
+            groundBallManager.isAvailable = false;
+            highPassManager.isAvailable = false;
+            longBallManager.isAvailable = false;
+            if (attackHasPossession)
+            {
+                firstTimePassManager.isAvailable = true;
+                isFTPAvailable = true;
+                if (ball.GetCurrentHex().CanShootFrom)
+                {
+                    shotManager.isAvailable = true;
+                }
+                else
+                {
+                    shotManager.isAvailable = false;
+                }
+            }
+            else
+            {
+                shotManager.isAvailable = false;
+                firstTimePassManager.isAvailable = false;
+            }
+        }
+        else if (currentState == GameState.EndOfMovementPhase)
+        {
+            movementPhaseManager.isAvailable = true;
+            groundBallManager.isAvailable = true;
+            firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = true;
             longBallManager.isAvailable = true;
-            if (ball.GetCurrentHex().CanShootFrom)
+            shotManager.isAvailable = true;
+        }
+        else if (currentState == GameState.EndOfFirstTimePass)
+        {
+            movementPhaseManager.isAvailable = true;
+            groundBallManager.isAvailable = false;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = false;
+            longBallManager.isAvailable = false;
+            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
             {
                 shotManager.isAvailable = true;
             }
@@ -1047,41 +1146,18 @@ public class MatchManager : MonoBehaviour
                 shotManager.isAvailable = false;
             }
         }
-        else
+        else if (currentState == GameState.AnyOtherScenario)
         {
-            shotManager.isAvailable = false;
+            movementPhaseManager.isAvailable = true;
+            groundBallManager.isAvailable = true;
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = false;
-            longBallManager.isAvailable = false;
-        }
-    }
-    public void BroadcastEndofFirstTimePass()
-    {
-        movementPhaseManager.isAvailable = true;
-        groundBallManager.isAvailable = false;
-        firstTimePassManager.isAvailable = false;
-        highPassManager.isAvailable = false;
-        longBallManager.isAvailable = false;
-        if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
-        {
+            longBallManager.isAvailable = true;
+            // TODO: Check if the ball is in CanShootFrom Hex
             shotManager.isAvailable = true;
         }
-        else
-        {
-            shotManager.isAvailable = false;
-        }
     }
-    public void BroadcastAnyOtherScenario()
-    {
-        movementPhaseManager.isAvailable = true;
-        groundBallManager.isAvailable = true;
-        firstTimePassManager.isAvailable = false;
-        highPassManager.isAvailable = false;
-        longBallManager.isAvailable = true;
-        // TODO: Check if the ball is in CanShootFrom Hex
-        shotManager.isAvailable = true;
-    }
-
+    
     public void EnableFreeKickOptions()
     {
         movementPhaseManager.isAvailable = false;
@@ -1092,6 +1168,7 @@ public class MatchManager : MonoBehaviour
         // TODO: Check if the ball is in CanShootFrom Hex
         shotManager.isAvailable = true;
     }
+    
     public void EnableCornerKickOptions()
     {
         movementPhaseManager.isAvailable = false;
@@ -1102,73 +1179,6 @@ public class MatchManager : MonoBehaviour
         shotManager.isAvailable = false;
     }
     
-    public void TriggerMovement()
-    {
-        movementPhaseManager.ActivateMovementPhase();
-    }
-
-    public void TriggerHighPass()
-    {
-        if (true)
-        {
-            currentState = GameState.HighPassAttempt;
-            ball.SelectBall();
-            Debug.Log("High Pass attempt mode activated.");
-        }
-        else
-        {
-        }
-    }
-    
-    public void TriggerLongPass()
-    {
-        if (true)
-        {
-            currentState = GameState.LongBallAttempt;
-            ball.SelectBall();
-            Debug.Log("Long ball attempt mode activated.");
-        }
-        else
-        {
-        }
-    }
-    
-    public void TriggerShot()
-    {
-        // if (currentState == GameState.KickoffBlown)
-        if (true)
-        {
-        }
-        else
-        {
-        }
-    }
-    
-    public void TriggerHeader()
-    {
-        // TODO: This must be triggered after the HighPass Resolution
-        // if (currentState == GameState.KickoffBlown)
-        if (true)
-        {
-        }
-        else
-        {
-        }
-    }
-    
-    public void TriggerFTP()
-    {
-        // if (currentState == GameState.KickoffBlown)
-        if (true)
-        {
-            currentState = GameState.FirstTimePassAttempt;
-            ball.SelectBall();
-            Debug.Log("First Time Pass attempt mode activated.");
-        }
-        else
-        {
-        }
-    }
 
     public void UpdatePlayerTokensAfterPossessionChange()
     {
@@ -1353,6 +1363,7 @@ public class MatchManager : MonoBehaviour
 
         matchStatsUI.UpdateScorersDisplay();
     }
+    
     private void DebugGameSettings()
     {
         // Debug Game Settings

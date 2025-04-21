@@ -101,6 +101,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             Scenario_001_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
             Scenario_001_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
             Scenario_001_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            Scenario_002_GroundBall_0006_Swith_between_options_before_Committing(),
             // Add more scenarios here
         };
 
@@ -1112,10 +1113,161 @@ public class GameTestScenarioRunner : MonoBehaviour
             ftpballMoved.ToString()
         );
 
-
         LogFooterofTest("Ground Ball - Pass to Player - FTP To Player");
     }
     
+    private IEnumerator Scenario_002_GroundBall_0006_Swith_between_options_before_Committing()
+    {
+        yield return new WaitForSeconds(3f); // Allow scene to stabilize
+
+        Log("▶️ Starting test scenario: 'Ground ball to Player, FTP - M - FTP Commitment'");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.05f));
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.05f));
+        Log("Pressing P");
+        AssertTrue(
+            !movementPhaseManager.isAvailable
+            , "MPM is not Available after pressing P form kick Off "
+            , false
+            , movementPhaseManager.isAvailable
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.2f));
+        Log("Clicking (-6, -6)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.2f));
+        Log("Clicking (-6, -6) again");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        Log("Wait for the ball to move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.5f));
+        Log("Pressing F");
+        AvailabilityCheckResult availabilityFTPInit = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            availabilityFTPInit.passed,
+            "FTP subsystem waiting status at Initialization",
+            true,
+            availabilityFTPInit.ToString()
+        );
+        AssertTrue(
+            movementPhaseManager.isAvailable
+            , "MPM is Available after Selecting FTP and not committing"
+            , true
+            , movementPhaseManager.isAvailable
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.2f));
+        Log("Clicking (-4, -4)");
+        AvailabilityCheckResult availabilitysecondFTPInit = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            availabilitysecondFTPInit.passed,
+            "FTP subsystem waiting status at after Target CLick",
+            true,
+            availabilitysecondFTPInit.ToString()
+        );
+        AssertTrue(
+            movementPhaseManager.isAvailable
+            , "MPM is Available after Selecting FTP target and still not committing"
+            , true
+            , movementPhaseManager.isAvailable
+        );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.5f));
+        Log("Switch Selection to Movement");
+        AssertTrue(
+            !movementPhaseManager.isAvailable
+            , "MPM is not Available after Selecting it by changing or MPM"
+            , false
+            , movementPhaseManager.isAvailable
+        );
+        AssertTrue(
+            firstTimePassManager.isAvailable
+            , "FTP SHould be available while MP was selected"
+            , true
+            , firstTimePassManager.isAvailable
+        );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.5f));
+        Log("Switch Selection Back to FTP");
+        yield return new WaitForSeconds(1f);
+        AssertTrue(
+            movementPhaseManager.isAvailable
+            , "MPM is Available after Re Selecting FTP target"
+            , true
+            , movementPhaseManager.isAvailable
+        );
+        AvailabilityCheckResult availabilitysecondFTPInit2 = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            availabilitysecondFTPInit2.passed,
+            "FTP subsystem waiting status at after Target CLick",
+            true,
+            availabilitysecondFTPInit2.ToString()
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-5, -5), 0.2f));
+        Log("Clicking (-5, -5) to select target");
+        AvailabilityCheckResult availabilitysecondFTPInit1 = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            availabilitysecondFTPInit1.passed,
+            "FTP subsystem waiting status at after Target CLick",
+            true,
+            availabilitysecondFTPInit1.ToString()
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-5, -5), 0.2f));
+        Log("Clicking (-5, -5) To confirm the target");
+        AvailabilityCheckResult availabilitysecondFTPTargetSelected = AssertCorrectWaitinginFTPAttackerMovementPhase();
+        AssertTrue(
+            availabilitysecondFTPTargetSelected.passed,
+            "FTP subsystem waiting status at after Target CLick",
+            true,
+            availabilitysecondFTPTargetSelected.ToString()
+        );
+        AssertTrue(
+            !movementPhaseManager.isAvailable
+            , "MPM is NOT Available after Confirming FTP target"
+            , false
+            , movementPhaseManager.isAvailable
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.2f));
+        Log("Clicking (-8, -8) On Ulisses");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -7), 0.2f));
+        Log("Clicking (-8, -7) Move Ulisses");
+        yield return new WaitForSeconds(1f);
+        AvailabilityCheckResult availabilityFTPDefense = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            availabilityFTPDefense.passed,
+            "FTP subsystem waiting status at after Selecting a Valid Attacker Destination",
+            true,
+            availabilityFTPDefense.ToString()
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, -10), 0.2f));
+        Log("Clicking (1, -10) Select Delgado");
+        AvailabilityCheckResult availabilityFTPDefense3 = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            availabilityFTPDefense3.passed,
+            "FTP subsystem waiting status at after Once again Defender Selection",
+            true,
+            availabilityFTPDefense3.ToString()
+        );
+        AssertTrue(
+            firstTimePassManager.isWaitingForDefenderMove,
+            "FTP subsystem waiting status for Move at Once again Defender Selection",
+            true,
+            firstTimePassManager.isWaitingForDefenderMove
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, -9), 0.2f));
+        Log("Clicking (1, -9) Move Delgado");
+        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
+        Log("Wait for the ball to move");
+        AvailabilityCheckResult ftpballMoved = AssertCorrectAvailabilityAfterFTPToSpace();
+        AssertTrue(
+            ftpballMoved.passed,
+            "FTP subsystem waiting status at after After Moving Delgado",
+            true,
+            ftpballMoved.ToString()
+        );
+
+        LogFooterofTest("Ground ball to Player, FTP - M - FTP Commitment");
+
+    }
+
     private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
     {
         if (!condition)
@@ -1143,8 +1295,8 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         if (!firstTimePassManager.isAvailable) failures.Add("FirstTimePass should be available");
         if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
-        if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
-        if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
+        if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
+        if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
         if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
 
         if (movementPhaseManager.isActivated) failures.Add("MovementPhase should not be activated");
@@ -1203,9 +1355,9 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should not be available");
         if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
-        if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT  be available");
-        if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
-        if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
+        if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
+        if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
+        if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
 
         if (!firstTimePassManager.isAwaitingTargetSelection) failures.Add("FirstTimePass should be waiting for target selection");
         if (firstTimePassManager.isWaitingForAttackerSelection) failures.Add("FirstTimePass should not be waiting for attacker selection");

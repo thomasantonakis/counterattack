@@ -20,7 +20,6 @@ public class HighPassManager : MonoBehaviour
     public HelperFunctions helperFunctions;
     [Header("Runtime")]
     public bool isAvailable = false;
-    [SerializeField]
     public bool isActivated = false;
     public bool isWaitingForConfirmation = false; // Prevents token selection during confirmation stage
     public bool isWaitingForAttackerSelection = false; // Flag to check for Distance roll
@@ -177,7 +176,7 @@ public class HighPassManager : MonoBehaviour
         // return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.C)
         {
-            ActivateHighPass();
+            MatchManager.Instance.TriggerHighPass();
         }
         if (isActivated)
         {
@@ -208,6 +207,7 @@ public class HighPassManager : MonoBehaviour
         isAvailable = false;  // Make it non available to avoid restarting this action again.
         // if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
         isWaitingForConfirmation = true;
+        MatchManager.Instance.TriggerHighPass();
         Debug.Log("HighPassManager activated. Waiting for target selection...");
     }
 
@@ -803,7 +803,7 @@ public class HighPassManager : MonoBehaviour
         headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
     }
 
-    private void CleanUpHighPass()
+    public void CleanUpHighPass()
     {
         selectedToken = null;
         currentTargetHex = null;

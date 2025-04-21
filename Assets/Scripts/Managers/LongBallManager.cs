@@ -91,7 +91,7 @@ public class LongBallManager : MonoBehaviour
         // return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.L)
         {
-            ActivateHighPass();
+            MatchManager.Instance.TriggerLongPass();
         }
         if (isActivated)
         {
@@ -120,7 +120,7 @@ public class LongBallManager : MonoBehaviour
         }
     }
 
-    private void ActivateHighPass()
+    public void ActivateLongBall()
     {
         isActivated = true;
         isAvailable = false;
@@ -634,10 +634,9 @@ public class LongBallManager : MonoBehaviour
         Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for Long Pass.");
     }
 
-    private void CleanUpLongBall()
+    public void CleanUpLongBall()
     {
         isActivated = false;
-        isAvailable = false;
         isAwaitingTargetSelection = false;
         isDangerous = false;
         isWaitingForAccuracyRoll = false;

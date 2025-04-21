@@ -132,7 +132,7 @@ public class FirstTimePassManager : MonoBehaviour
         // return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.F)
         {
-            ActivateFTP();
+            MatchManager.Instance.TriggerFTP();
         }
         if (isActivated)
         {
@@ -144,13 +144,12 @@ public class FirstTimePassManager : MonoBehaviour
         }
     }
 
-    private void ActivateFTP()
+    public void ActivateFTP()
     {
-        MatchManager.Instance.TriggerFTP();
         ball.SelectBall();
         Debug.Log("First Time pass attempt mode activated.");
         isActivated = true;
-        isAvailable = false;  // Make it non available to avoid restarting this action again.
+        isAvailable = false;
         // if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
         isAwaitingTargetSelection = true;
         Debug.Log("FirstTimePassManager activated. Waiting for target selection...");
@@ -189,7 +188,7 @@ public class FirstTimePassManager : MonoBehaviour
             currentTargetHex = null;  // Assign the current target hex
             return; // Reject invalid paths
         }
-        currentTargetHex = clickedHex;  // Assign the current target hex
+        // currentTargetHex = clickedHex;  // Assign the current target hex
         // TODO Hard Mode in FTP
         // Handle each difficulty's behavior
         // if (difficulty == 3) // Hard Mode
@@ -221,7 +220,7 @@ public class FirstTimePassManager : MonoBehaviour
         {
             hexGrid.ClearHighlightedHexes();
             // Second click: Confirm the target and proceed to the movement phase
-            if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
+            if (clickedHex == currentTargetHex)
             {
                 Debug.Log("First-Time Pass target confirmed. Waiting for movement phases.");
                 MatchManager.Instance.CommitToAction();
@@ -460,11 +459,10 @@ public class FirstTimePassManager : MonoBehaviour
         CleanUpFTP();
     }
 
-    private void CleanUpFTP()
+    public void CleanUpFTP()
     {
         // Clear all highlighted hexes
         hexGrid.ClearHighlightedHexes();
-        isAvailable = false;
         // Reset all relevant variables
         isActivated = false;
         isAwaitingTargetSelection = false;
