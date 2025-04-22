@@ -468,6 +468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementPhaseManager: {fileID: 1390513032}
+  helperFunctions: {fileID: 1397543275}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   isWaitingForDefGKBoxMove: 0
@@ -1300,6 +1301,7 @@ MonoBehaviour:
   hangingPassType: 
   difficulty_level: 2
   refereeLeniency: 0
+  isFTPAvailable: 0
 --- !u!4 &622907911
 Transform:
   m_ObjectHideFlags: 0
@@ -1826,8 +1828,8 @@ MonoBehaviour:
   isActivated: 0
   isAwaitingTargetSelection: 0
   isWaitingForAttackerSelection: 0
-  isWaitingForDefenderSelection: 0
   isWaitingForAttackerMove: 0
+  isWaitingForDefenderSelection: 0
   isWaitingForDefenderMove: 0
   isWaitingForDiceRoll: 0
   currentTargetHex: {fileID: 0}

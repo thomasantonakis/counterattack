@@ -99,19 +99,6 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.CommitToAction();
     }
     
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
-    }
-
     public void HandleGroundBallPath(HexCell clickedHex, bool isGk = false)
     {
         if (clickedHex != null)
@@ -157,7 +144,7 @@ public class GroundBallManager : MonoBehaviour
             // else
             // {
             //     Debug.Log("Pass is not dangerous, moving ball.");
-            //     await StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
+            //     await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
             //     finalThirdManager.TriggerFinalThirdPhase();
             //     imposedDistance = 11;
             //     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
@@ -385,7 +372,7 @@ public class GroundBallManager : MonoBehaviour
 
     private async void MoveTheBall(HexCell trgDestHex)
     {
-        await StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
+        await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         finalThirdManager.TriggerFinalThirdPhase();
         MatchManager.Instance.BroadcastEndofGroundBallPass();
