@@ -86,18 +86,6 @@ public class MovementPhaseManager : MonoBehaviour
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
 
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
-    }
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
@@ -350,13 +338,13 @@ public class MovementPhaseManager : MonoBehaviour
         if (isWaitingForNutmegDecisionWithoutMoving) isWaitingForNutmegDecisionWithoutMoving = false;
         if (isWaitingForSnapshotDecision) isWaitingForSnapshotDecision = false;
         Debug.Log($"Passing {hex.name} to MoveTokenToHex");
-        await StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
+        await helperFunctions.StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
     }
     private async void AsyncMoveTokenToHexToPickUpBall()
     {
         tokenPickedUpBall = true;
         remainingDribblerPace = selectedToken.pace;
-        await StartCoroutineAndWait(MoveTokenToHex(ball.GetCurrentHex()));
+        await helperFunctions.StartCoroutineAndWait(MoveTokenToHex(ball.GetCurrentHex()));
         isBallPickable = false;
     }
 
@@ -369,7 +357,7 @@ public class MovementPhaseManager : MonoBehaviour
             tokenPickedUpBall = true;
         }
         Debug.Log($"Passing {hex.name} to MoveTokenToHex");
-        await StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
+        await helperFunctions.StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
         if (temp_check)
         {
             isBallPickable = false;
@@ -1317,7 +1305,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
         hexGrid.ClearHighlightedHexes();
-        await StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); // Move the token
+        await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); // Move the token
         ball.PlaceAtCell(hex); // Move the ball
         // clickedHex.ResetHighlight();
         // clickedHex.HighlightHex("isAttackOccupied");
@@ -1328,7 +1316,7 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log("⚽ Ball entered penalty box during a reposition! Offering GK a free move.");
             if (goalKeeperManager.ShouldGKMove(hex))
             {
-                await StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
+                await helperFunctions.StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
             }
         }
         DribblerMoved1HexOrReposition();
@@ -1369,7 +1357,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         isWaitingForFoulDecision = false;
         PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        await StartCoroutineAndWait(PrepareAttackerReposition(attackerToken));
+        await helperFunctions.StartCoroutineAndWait(PrepareAttackerReposition(attackerToken));
         AdvanceMovementPhase();
     }
 

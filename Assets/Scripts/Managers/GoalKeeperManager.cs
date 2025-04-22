@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 public class GoalKeeperManager : MonoBehaviour
 {
     public MovementPhaseManager movementPhaseManager;
+    public HelperFunctions helperFunctions;
     public HexGrid hexGrid;
     public Ball ball;
     public bool isWaitingForDefGKBoxMove = false;
@@ -20,19 +21,6 @@ public class GoalKeeperManager : MonoBehaviour
     {
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
-    }
-
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
     }
     
     private void OnClickReceived(PlayerToken token, HexCell hex)
@@ -61,7 +49,7 @@ public class GoalKeeperManager : MonoBehaviour
     private async void MoveGKforBox(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
-        await StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
         isWaitingForDefGKBoxMove = false;
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
     }

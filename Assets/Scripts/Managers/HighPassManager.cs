@@ -60,18 +60,6 @@ public class HighPassManager : MonoBehaviour
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
 
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
-    }
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
@@ -463,7 +451,7 @@ public class HighPassManager : MonoBehaviour
             // Move the ball to the intended target
             finalTargetHex = intendedTargetHex;
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassTargeted);
-            await StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));
+            await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));
             MatchManager.Instance.currentState = MatchManager.GameState.HighPassCompleted;
             ResetHighPassRolls();  // Reset flags to finish long pass
         }
@@ -526,7 +514,7 @@ public class HighPassManager : MonoBehaviour
         {
             // Move the ball to the inaccurate final hex
             // yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));           
-            await StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));           
+            await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));           
         }
         else
         {
@@ -796,7 +784,7 @@ public class HighPassManager : MonoBehaviour
     private async void MoveGKForHP(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
-        await StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
         isWaitingForDefGKChallengeDecision = false;
         gkRushedOut = true;

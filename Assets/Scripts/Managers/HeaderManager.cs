@@ -52,18 +52,6 @@ public class HeaderManager : MonoBehaviour
     List<HexCell> interceptingDefenders = new List<HexCell>();
     private const int HEADER_SELECTION_RANGE = 2;
 
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
-    }
 
     private void OnEnable()
     {
@@ -817,7 +805,7 @@ public class HeaderManager : MonoBehaviour
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
             , MatchManager.ActionType.PassAttempt
         );
-        await StartCoroutineAndWait(ball.MoveToCell(clickedHex));
+        await helperFunctions.StartCoroutineAndWait(ball.MoveToCell(clickedHex));
         Debug.Log($"Ball moved to {clickedHex.coordinates}");
         hexGrid.ClearHighlightedHexes();
         if (clickedHex.isAttackOccupied)

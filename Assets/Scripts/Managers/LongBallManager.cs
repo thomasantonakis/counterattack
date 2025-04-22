@@ -49,19 +49,6 @@ public class LongBallManager : MonoBehaviour
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
 
-    private async Task StartCoroutineAndWait(IEnumerator coroutine)
-    {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
-    }
-
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
-    {
-        yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
-    }
-
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (isAwaitingTargetSelection)
@@ -445,7 +432,7 @@ public class LongBallManager : MonoBehaviour
     private async void MoveGKForLB(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
-        await StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
         isWaitingForDefLBMove = false;
     }
