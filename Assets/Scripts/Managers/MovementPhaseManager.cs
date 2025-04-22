@@ -73,8 +73,7 @@ public class MovementPhaseManager : MonoBehaviour
     public List<HexCell> repositionHexes = new List<HexCell>();
     private int defenderDiceRoll;
     private int attackerDiceRoll;
-    [SerializeField]
-    private int attackersMoved = 0;
+    public int attackersMoved = 0;
     [SerializeField]
     private int defendersMoved = 0;
     [SerializeField]

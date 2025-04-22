@@ -1,22 +1,40 @@
 ===== TEST LOG START =====
 
 ==== Starting Test #1 ====
-▶️ Starting test scenario: Stupid Click and Key Press do not change status
-📸 Game state snapshot saved
+▶️ Starting test scenario: MovementPhase No Interceptions, No Tackles
 Pressing 2
-✅ PASS: Snapshot should match the expected game state | Expected: Snapshots match | Actual: Snapshots match
 Pressing Space
-Pressing P - Game is in Ground Ball Mode
-📸 Game state snapshot saved
-Clicking (12, -6)
-✅ PASS: Snapshot should match the `Pressing P - Game is in Ground Ball Mode` game state | Expected: Snapshots match | Actual: Snapshots match
-Clicking (11, -6)
-✅ PASS: Snapshot should match the `Pressing P - Game is in Ground Ball Mode` game state | Expected: Snapshots match | Actual: Snapshots match
-Clicking (10, -6)
-✅ PASS: Snapshot should match the `Pressing P - Game is in Ground Ball Mode` game state | Expected: Snapshots match | Actual: Snapshots match
-
-✅ Stupid Click and Key Press do not change status - TEST PASSED COMPLETELY 🎉
-
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (-8, -8), 11.Ulisses
+Clicking (-3, -8), Move Ulisses, a commitment should be made
+Clicking (-4, -4), 9.Pavlovic
+Clicking (0, -3), Move 9.Pavlovic
+Clicking (0, 0), 2.Cafferata
+Clicking (5, 0), Move 2.Cafferata
+Clicking (4, 4), 6.Nazef
+Clicking (0, 6), Move 6.Nazef
+Clicking (1, 2), 5.Vladoiu
+Clicking (-4, 5), Move 5.Vladoiu
+Clicking (1, 10), 4.Marell
+Clicking (5, 10), Move 4.Marell
+Clicking (14, 0), 10. Soares
+Clicking (14, 5), Move 10. Soares
+Clicking (18, 0), 11.Poulsen
+Clicking (14, 0), Move 11.Poulsen
+Clicking (1, -10), 3.Delgado
+Clicking (6, -9), Move 3.Delgado
+Clicking (-6, -6), 10.Noruega
+Clicking (-8, -6), Move 10.Noruega
+Clicking (12, 12), 5.Murphy
+Clicking (10, 12), Move 5.Murphy
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
 ✅ Test #1 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

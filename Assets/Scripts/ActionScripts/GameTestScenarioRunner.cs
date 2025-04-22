@@ -383,14 +383,15 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            // Scenario_01_BasicKickoff(),
-            // Scenario_001_GroundBall_0001_Commitment(),
-            // Scenario_001_GroundBall_0002_Dangerous_pass_no_interception(),
-            // Scenario_001_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            // Scenario_001_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            // Scenario_001_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            // Scenario_002_GroundBall_0006_Swith_between_options_before_Committing(),
-            Scenario_002_Stupid_Click_and_KeyPress_do_not_change_status(),
+            // Scenario_001_BasicKickoff(),
+            // Scenario_002_GroundBall_0001_Commitment(),
+            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
             // Add more scenarios here
         };
 
@@ -474,7 +475,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
     }
 
-    private IEnumerator Scenario_01_BasicKickoff()
+    private IEnumerator Scenario_001_BasicKickoff()
     {
         yield return new WaitForSeconds(2f); // Allow scene to stabilize
 
@@ -586,7 +587,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("KICK OFF");
     }
     
-    private IEnumerator Scenario_001_GroundBall_0001_Commitment()
+    private IEnumerator Scenario_002_GroundBall_0001_Commitment()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
 
@@ -927,7 +928,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         
     }
 
-    private IEnumerator Scenario_001_GroundBall_0002_Dangerous_pass_no_interception()
+    private IEnumerator Scenario_003_GroundBall_0002_Dangerous_pass_no_interception()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
 
@@ -1090,7 +1091,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Ground Ball - Dangerous Pass - No Interception");
     }
     
-    private IEnumerator Scenario_001_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor()
+    private IEnumerator Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
 
@@ -1181,7 +1182,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Ground Ball - Dangerous Pass - No Interception");
     }
 
-    private IEnumerator Scenario_001_GroundBall_0004_Pass_to_Player_FTP_No_interceptions()
+    private IEnumerator Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
 
@@ -1331,7 +1332,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Ground Ball - Pass to Player - FTP with No Interceptions'");
     }
     
-    private IEnumerator Scenario_001_GroundBall_0005_Pass_to_Player_FTP_To_Player()
+    private IEnumerator Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
 
@@ -1405,7 +1406,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Ground Ball - Pass to Player - FTP To Player");
     }
     
-    private IEnumerator Scenario_002_GroundBall_0006_Swith_between_options_before_Committing()
+    private IEnumerator Scenario_007_GroundBall_0006_Swith_between_options_before_Committing()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
 
@@ -1557,7 +1558,7 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     }
 
-    private IEnumerator Scenario_002_Stupid_Click_and_KeyPress_do_not_change_status()
+    private IEnumerator Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status()
     {
         yield return new WaitForSeconds(2f); // Allow scene to stabilize
         Log("▶️ Starting test scenario: Stupid Click and Key Press do not change status");
@@ -1610,6 +1611,231 @@ public class GameTestScenarioRunner : MonoBehaviour
             isSame4 ? "Snapshots match" : mismatchReason4
         );
         LogFooterofTest("Stupid Click and Key Press do not change status");
+    }
+    
+    private IEnumerator Scenario_009_Movement_Phase_NO_interceptions_No_tackles()
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: MovementPhase No Interceptions, No Tackles");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) again");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        Log("Wait for the ball to move");
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToPlayer();
+        // AssertTrue(
+        //     availabilityCheck.passed,
+        //     "Action Availability after Pass to Player",
+        //     true,
+        //     availabilityCheck.ToString()
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Attack FinalThird");
+        // AssertTrue(
+        //     finalThirdManager.isActivated,
+        //     "Final Thirds should be Active now",
+        //     true,
+        //     finalThirdManager.isActivated
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Defense FinalThird");
+        yield return null ; // for the token to move
+        // AssertTrue(
+        //     !finalThirdManager.isActivated,
+        //     "Final Thirds should be inactive now",
+        //     false,
+        //     finalThirdManager.isActivated
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        Log("Pressing M - Game is in Movement Phase");
+        // AssertTrue(
+        //     movementPhaseManager.isAwaitingTokenSelection,
+        //     "MP SHould be waiting for Token Selection after M",
+        //     true,
+        //     movementPhaseManager.isAwaitingTokenSelection
+        // );
+        // AssertTrue(
+        //     movementPhaseManager.isAwaitingHexDestination,
+        //     "MP Should NOT be waiting for Hex Destination after M",
+        //     true,
+        //     movementPhaseManager.isAwaitingHexDestination
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.5f));
+        Log("Clicking (-8, -8), 11.Ulisses");
+        // AssertTrue(
+        //     movementPhaseManager.isAwaitingTokenSelection,
+        //     "MP Should be waiting for Token Selection after Clicking on a Token",
+        //     true,
+        //     movementPhaseManager.isAwaitingTokenSelection
+        // );
+        // AssertTrue(
+        //     movementPhaseManager.isAwaitingHexDestination,
+        //     "MP Should be waiting for Hex Destination after Clicking on a Token",
+        //     true,
+        //     movementPhaseManager.isAwaitingHexDestination
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-3, -8), 0.5f));
+        Log("Clicking (-3, -8), Move Ulisses, a commitment should be made");
+        yield return new WaitForSeconds(3f); // for the token to move
+        AvailabilityCheckResult mpcommitment = AssertCorrectAvailabilityAfterMovementCommitment();
+        // AssertTrue(
+        //     mpcommitment.passed,
+        //     "MovementPhase Commitment Check Status Availability",
+        //     true,
+        //     mpcommitment.ToString()
+        // );
+        // AssertTrue(
+        //     movementPhaseManager.attackersMoved == 1,
+        //     "MP - 1 attcker moved",
+        //     1,
+        //     movementPhaseManager.attackersMoved
+        // );
+        // savedSnapshot = SaveGameStatusSnapshot();
+        // Log("Saving Game Status Snapshot");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
+        Log("Clicking (-4, -4), 9.Pavlovic");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, -3), 0.5f));
+        Log("Clicking (0, -3), Move 9.Pavlovic");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // AssertTrue(
+        //     movementPhaseManager.attackersMoved == 2,
+        //     "MP - 2 attcker moved",
+        //     2,
+        //     movementPhaseManager.attackersMoved
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 0), 0.5f));
+        Log("Clicking (0, 0), 2.Cafferata");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 0), 0.5f));
+        Log("Clicking (5, 0), Move 2.Cafferata");
+        yield return new WaitForSeconds(3f); // for the token to move
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 4), 0.5f));
+        Log("Clicking (4, 4), 6.Nazef");
+        // AssertTrue(
+        //     movementPhaseManager.isMovementPhaseAttack,
+        //     "MP - Attacking Movement Phase",
+        //     true,
+        //     movementPhaseManager.isMovementPhaseAttack
+        // );
+        // AssertTrue(
+        //     !movementPhaseManager.isMovementPhaseDef,
+        //     "MP - Attacking Movement Phase",
+        //     false,
+        //     movementPhaseManager.isMovementPhaseDef
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 6), 0.5f));
+        Log("Clicking (0, 6), Move 6.Nazef");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // AssertTrue(
+        //     movementPhaseManager.isMovementPhaseDef,
+        //     "MP - Defensive Movement Phase after 4 moves",
+        //     true,
+        //     movementPhaseManager.isMovementPhaseDef
+        // );
+        // AssertTrue(
+        //     !movementPhaseManager.isMovementPhaseAttack,
+        //     "MP - NOt Attacking Movement Phase after 4 moves",
+        //     false,
+        //     movementPhaseManager.isMovementPhaseAttack
+        // );
+        // AssertTrue(
+        //     movementPhaseManager.isAwaitingTokenSelection,
+        //     "MP SHould be waiting for Token Selection after Attacking Movement Phase",
+        //     true,
+        //     movementPhaseManager.isAwaitingTokenSelection
+        // );
+        // AssertTrue(
+        //     movementPhaseManager.isAwaitingHexDestination,
+        //     "MP Should NOT be waiting for Hex Destination after Attacking Movement Phase",
+        //     true,
+        //     movementPhaseManager.isAwaitingHexDestination
+        // );
+
+        // Def1
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
+        Log("Clicking (1, 2), 5.Vladoiu");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, 5), 0.5f));
+        Log("Clicking (-4, 5), Move 5.Vladoiu");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // Def2
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 10), 0.5f));
+        Log("Clicking (1, 10), 4.Marell");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 10), 0.5f));
+        Log("Clicking (5, 10), Move 4.Marell");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // Def3
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+        Log("Clicking (14, 0), 10. Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 5), 0.5f));
+        Log("Clicking (14, 5), Move 10. Soares");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // Def4
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(18, 0), 0.5f));
+        Log("Clicking (18, 0), 11.Poulsen");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+        Log("Clicking (14, 0), Move 11.Poulsen");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // Def5
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, -10), 0.5f));
+        Log("Clicking (1, -10), 3.Delgado");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -9), 0.5f));
+        Log("Clicking (6, -9), Move 3.Delgado");
+        yield return new WaitForSeconds(3f); // for the token to move
+
+        // 2f1
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.5f));
+        Log("Clicking (-6, -6), 10.Noruega");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -6), 0.5f));
+        Log("Clicking (-8, -6), Move 10.Noruega");
+        yield return new WaitForSeconds(3f); // for the token to move
+        // 2f2
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 12), 0.5f));
+        Log("Clicking (12, 12), 5.Murphy");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 12), 0.5f));
+        Log("Clicking (10, 12), Move 5.Murphy");
+        yield return new WaitForSeconds(3f); // for the token to move
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Attack FinalThird");
+        // AssertTrue(
+        //     finalThirdManager.isActivated,
+        //     "Final Thirds should be Active now after MP ending in F3",
+        //     true,
+        //     finalThirdManager.isActivated
+        // );
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Defense FinalThird");
+        yield return null ; // for the token to move
+        // AssertTrue(
+        //     !finalThirdManager.isActivated,
+        //     "Final Thirds should be inactive now after MP ending in F3",
+        //     false,
+        //     finalThirdManager.isActivated
+        // );
+        
+        AvailabilityCheckResult mpcomplete = AssertCorrectAvailabilityAfterMovementComplete();
+        // AssertTrue(
+        //     mpcomplete.passed,
+        //     "MovementPhase Complete Check Status Availability",
+        //     true,
+        //     mpcomplete.ToString()
+        // );
+        
+        // GameStatusSnapshot currentSnapshot = GetCurrentSnapshot();
+        // bool isSame = savedSnapshot.IsEqualTo(currentSnapshot, out string mismatchReason, new HashSet<string> {});
+        // AssertTrue(
+        //     isSame,
+        //     "Snapshot should match the expected game state",
+        //     "Snapshots match",
+        //     isSame ? "Snapshots match" : mismatchReason
+        // );
+
     }
     private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
     {
@@ -1808,6 +2034,38 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (longBallManager.isActivated) failures.Add("LongBall should not be activated");
         if (MatchManager.Instance.attackHasPossession) failures.Add("Attack has possession after ball movement");
 
+        return new AvailabilityCheckResult(failures.Count == 0, failures);
+    }
+
+    private AvailabilityCheckResult AssertCorrectAvailabilityAfterMovementCommitment()
+    {
+        List<string> failures = new();
+        if (movementPhaseManager.isAvailable) failures.Add("MovementPhase should NOT be available");
+        if (!movementPhaseManager.isActivated) failures.Add("MovementPhase should be activated");
+        if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
+        if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+        if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
+        if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+        if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
+        if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+        if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
+        if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
+        return new AvailabilityCheckResult(failures.Count == 0, failures);
+    }
+    
+    private AvailabilityCheckResult AssertCorrectAvailabilityAfterMovementComplete()
+    {
+        List<string> failures = new();
+        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
+        if (!groundBallManager.isAvailable) failures.Add("GroundBall should be available");
+        if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+        if (!firstTimePassManager.isAvailable) failures.Add("FirstTimePass should be available");
+        if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+        if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
+        if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+        if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
+        if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
         return new AvailabilityCheckResult(failures.Count == 0, failures);
     }
     
