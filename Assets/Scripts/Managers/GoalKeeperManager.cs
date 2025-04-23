@@ -9,7 +9,7 @@ public class GoalKeeperManager : MonoBehaviour
     public HelperFunctions helperFunctions;
     public HexGrid hexGrid;
     public Ball ball;
-    public bool isWaitingForDefGKBoxMove = false;
+    public bool isActivated = false;
 
     private void OnEnable()
     {
@@ -25,7 +25,7 @@ public class GoalKeeperManager : MonoBehaviour
     
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
-        if (isWaitingForDefGKBoxMove)
+        if (isActivated)
         {
             if (!hexGrid.highlightedHexes.Contains(hex))
             {
@@ -38,11 +38,13 @@ public class GoalKeeperManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
-        if (isWaitingForDefGKBoxMove && keyData.key == KeyCode.X)
+        if (keyData.isConsumed) return;
+        if (isActivated && keyData.key == KeyCode.X)
         {
             hexGrid.ClearHighlightedHexes();
             Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
-            isWaitingForDefGKBoxMove = false;
+            isActivated = false;
+            keyData.isConsumed = true;
         }
     }
 
@@ -50,7 +52,7 @@ public class GoalKeeperManager : MonoBehaviour
     {
         hexGrid.ClearHighlightedHexes();
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
-        isWaitingForDefGKBoxMove = false;
+        isActivated = false;
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
     }
 
@@ -84,15 +86,16 @@ public class GoalKeeperManager : MonoBehaviour
         if (isAttacker && isTargetPenaltyBoxOfDefenders)
         {
             Debug.Log("⚽ Ball has entered the opponent's penalty box! 🧤 GK gets a free move.");
+            isActivated = true;
             return true;
         }
+
 
         return false;
     }
 
     public IEnumerator HandleGKFreeMove()
     {
-        isWaitingForDefGKBoxMove = true;
         PlayerToken defenderGK = hexGrid.GetDefendingGK();
 
         if (defenderGK == null)
@@ -111,7 +114,7 @@ public class GoalKeeperManager : MonoBehaviour
 
         Debug.Log("🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.");
 
-        while (isWaitingForDefGKBoxMove)
+        while (isActivated)
         {
             yield return null;
         }

@@ -63,7 +63,7 @@ public class HighPassManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
-        if (isActivated && !goalKeeperManager.isWaitingForDefGKBoxMove)
+        if (isActivated && !goalKeeperManager.isActivated)
         {
             if (isWaitingForConfirmation)
             {

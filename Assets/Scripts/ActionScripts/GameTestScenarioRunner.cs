@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering;
 
 public struct AvailabilityCheckResult
 {
@@ -391,7 +392,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
             // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
             // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
+            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),            
+            Scenario_010_Movement_Phase_faield_interceptions_No_tackles(),
             // Add more scenarios here
         };
 
@@ -1630,202 +1632,388 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return new WaitForSeconds(3f); // for the ball to move
         Log("Wait for the ball to move");
         AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToPlayer();
-        // AssertTrue(
-        //     availabilityCheck.passed,
-        //     "Action Availability after Pass to Player",
-        //     true,
-        //     availabilityCheck.ToString()
-        // );
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Pass to Player",
+            true,
+            availabilityCheck.ToString()
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
         Log("Pressing X - Forfeit Attack FinalThird");
-        // AssertTrue(
-        //     finalThirdManager.isActivated,
-        //     "Final Thirds should be Active now",
-        //     true,
-        //     finalThirdManager.isActivated
-        // );
+        AssertTrue(
+            finalThirdManager.isActivated,
+            "Final Thirds should be Active now",
+            true,
+            finalThirdManager.isActivated
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
         Log("Pressing X - Forfeit Defense FinalThird");
         yield return null ; // for the token to move
-        // AssertTrue(
-        //     !finalThirdManager.isActivated,
-        //     "Final Thirds should be inactive now",
-        //     false,
-        //     finalThirdManager.isActivated
-        // );
+        AssertTrue(
+            !finalThirdManager.isActivated,
+            "Final Thirds should be inactive now",
+            false,
+            finalThirdManager.isActivated
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
         Log("Pressing M - Game is in Movement Phase");
-        // AssertTrue(
-        //     movementPhaseManager.isAwaitingTokenSelection,
-        //     "MP SHould be waiting for Token Selection after M",
-        //     true,
-        //     movementPhaseManager.isAwaitingTokenSelection
-        // );
-        // AssertTrue(
-        //     movementPhaseManager.isAwaitingHexDestination,
-        //     "MP Should NOT be waiting for Hex Destination after M",
-        //     true,
-        //     movementPhaseManager.isAwaitingHexDestination
-        // );
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP SHould be waiting for Token Selection after M",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after M",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.5f));
         Log("Clicking (-8, -8), 11.Ulisses");
-        // AssertTrue(
-        //     movementPhaseManager.isAwaitingTokenSelection,
-        //     "MP Should be waiting for Token Selection after Clicking on a Token",
-        //     true,
-        //     movementPhaseManager.isAwaitingTokenSelection
-        // );
-        // AssertTrue(
-        //     movementPhaseManager.isAwaitingHexDestination,
-        //     "MP Should be waiting for Hex Destination after Clicking on a Token",
-        //     true,
-        //     movementPhaseManager.isAwaitingHexDestination
-        // );
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP Should be waiting for Token Selection after Clicking on a Token",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on a Ulisses",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-3, -8), 0.5f));
         Log("Clicking (-3, -8), Move Ulisses, a commitment should be made");
         yield return new WaitForSeconds(3f); // for the token to move
         AvailabilityCheckResult mpcommitment = AssertCorrectAvailabilityAfterMovementCommitment();
-        // AssertTrue(
-        //     mpcommitment.passed,
-        //     "MovementPhase Commitment Check Status Availability",
-        //     true,
-        //     mpcommitment.ToString()
-        // );
-        // AssertTrue(
-        //     movementPhaseManager.attackersMoved == 1,
-        //     "MP - 1 attcker moved",
-        //     1,
-        //     movementPhaseManager.attackersMoved
-        // );
+        AssertTrue(
+            mpcommitment.passed,
+            "MovementPhase Commitment Check Status Availability",
+            true,
+            mpcommitment.ToString()
+        );
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 1,
+            "MP - 1 attcker moved",
+            1,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Ulisses",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         // savedSnapshot = SaveGameStatusSnapshot();
         // Log("Saving Game Status Snapshot");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
         Log("Clicking (-4, -4), 9.Pavlovic");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Pavlovic",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, -3), 0.5f));
         Log("Clicking (0, -3), Move 9.Pavlovic");
         yield return new WaitForSeconds(3f); // for the token to move
-        // AssertTrue(
-        //     movementPhaseManager.attackersMoved == 2,
-        //     "MP - 2 attcker moved",
-        //     2,
-        //     movementPhaseManager.attackersMoved
-        // );
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 2,
+            "MP - 2 attcker moved",
+            2,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Pavlovic",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 0), 0.5f));
         Log("Clicking (0, 0), 2.Cafferata");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Cafferata",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 0), 0.5f));
         Log("Clicking (5, 0), Move 2.Cafferata");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 3,
+            "MP - 3 attcker moved",
+            3,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Cafferata",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 4), 0.5f));
         Log("Clicking (4, 4), 6.Nazef");
-        // AssertTrue(
-        //     movementPhaseManager.isMovementPhaseAttack,
-        //     "MP - Attacking Movement Phase",
-        //     true,
-        //     movementPhaseManager.isMovementPhaseAttack
-        // );
-        // AssertTrue(
-        //     !movementPhaseManager.isMovementPhaseDef,
-        //     "MP - Attacking Movement Phase",
-        //     false,
-        //     movementPhaseManager.isMovementPhaseDef
-        // );
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Nazef",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseAttack,
+            "MP - Attacking Movement Phase",
+            true,
+            movementPhaseManager.isMovementPhaseAttack
+        );
+        AssertTrue(
+            !movementPhaseManager.isMovementPhaseDef,
+            "MP - Attacking Movement Phase",
+            false,
+            movementPhaseManager.isMovementPhaseDef
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 6), 0.5f));
         Log("Clicking (0, 6), Move 6.Nazef");
         yield return new WaitForSeconds(3f); // for the token to move
-        // AssertTrue(
-        //     movementPhaseManager.isMovementPhaseDef,
-        //     "MP - Defensive Movement Phase after 4 moves",
-        //     true,
-        //     movementPhaseManager.isMovementPhaseDef
-        // );
-        // AssertTrue(
-        //     !movementPhaseManager.isMovementPhaseAttack,
-        //     "MP - NOt Attacking Movement Phase after 4 moves",
-        //     false,
-        //     movementPhaseManager.isMovementPhaseAttack
-        // );
-        // AssertTrue(
-        //     movementPhaseManager.isAwaitingTokenSelection,
-        //     "MP SHould be waiting for Token Selection after Attacking Movement Phase",
-        //     true,
-        //     movementPhaseManager.isAwaitingTokenSelection
-        // );
-        // AssertTrue(
-        //     movementPhaseManager.isAwaitingHexDestination,
-        //     "MP Should NOT be waiting for Hex Destination after Attacking Movement Phase",
-        //     true,
-        //     movementPhaseManager.isAwaitingHexDestination
-        // );
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP - 4 attcker moved",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 0,
+            "MP - 0 defenders moved",
+            0,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseDef,
+            "MP - Defensive Movement Phase after 4 moves",
+            true,
+            movementPhaseManager.isMovementPhaseDef
+        );
+        AssertTrue(
+            !movementPhaseManager.isMovementPhaseAttack,
+            "MP - Not Attacking Movement Phase after 4 moves",
+            false,
+            movementPhaseManager.isMovementPhaseAttack
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP Should be waiting for Token Selection after Attacking Movement Phase",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Attacking Movement Phase",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
 
         // Def1
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
         Log("Clicking (1, 2), 5.Vladoiu");
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP SHould be waiting for Token Selection after Attacking Movement Phase",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Vladoiu",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, 5), 0.5f));
         Log("Clicking (-4, 5), Move 5.Vladoiu");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP SHould be waiting for Token Selection after Attacking Movement Phase",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after moving Vladoiu",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 1,
+            "MP - 1 defenders moved",
+            1,
+            movementPhaseManager.defendersMoved
+        );
         // Def2
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 10), 0.5f));
         Log("Clicking (1, 10), 4.Marell");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Marell",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 10), 0.5f));
         Log("Clicking (5, 10), Move 4.Marell");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 2,
+            "MP - 2 defenders moved",
+            2,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Marell",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         // Def3
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
         Log("Clicking (14, 0), 10. Soares");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Soares",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 5), 0.5f));
         Log("Clicking (14, 5), Move 10. Soares");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 3,
+            "MP - 3 defenders moved",
+            3,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Soares",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         // Def4
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(18, 0), 0.5f));
         Log("Clicking (18, 0), 11.Poulsen");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Poulsen",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
         Log("Clicking (14, 0), Move 11.Poulsen");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 4,
+            "MP - 4 defenders moved",
+            4,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Poulsen",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         // Def5
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, -10), 0.5f));
         Log("Clicking (1, -10), 3.Delgado");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Delgado",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -9), 0.5f));
         Log("Clicking (6, -9), Move 3.Delgado");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 5,
+            "MP - 4 defenders moved",
+            5,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Delgado",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
 
         // 2f1
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.5f));
         Log("Clicking (-6, -6), 10.Noruega");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Noruega",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -6), 0.5f));
         Log("Clicking (-8, -6), Move 10.Noruega");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.attackersMovedIn2f2 == 1,
+            "MP - 1 2f2 moved",
+            1,
+            movementPhaseManager.attackersMovedIn2f2
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Noruega",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         // 2f2
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 12), 0.5f));
         Log("Clicking (12, 12), 5.Murphy");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Muprhy",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 12), 0.5f));
         Log("Clicking (10, 12), Move 5.Murphy");
         yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            finalThirdManager.isActivated,
+            "Final Thirds should be Active now after MP ending in F3",
+            true,
+            finalThirdManager.isActivated
+        );
 
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
         Log("Pressing X - Forfeit Attack FinalThird");
-        // AssertTrue(
-        //     finalThirdManager.isActivated,
-        //     "Final Thirds should be Active now after MP ending in F3",
-        //     true,
-        //     finalThirdManager.isActivated
-        // );
+        AssertTrue(
+            finalThirdManager.isActivated,
+            "Final Thirds should be Active now after MP ending in F3",
+            true,
+            finalThirdManager.isActivated
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
         Log("Pressing X - Forfeit Defense FinalThird");
         yield return null ; // for the token to move
-        // AssertTrue(
-        //     !finalThirdManager.isActivated,
-        //     "Final Thirds should be inactive now after MP ending in F3",
-        //     false,
-        //     finalThirdManager.isActivated
-        // );
+        AssertTrue(
+            !finalThirdManager.isActivated,
+            "Final Thirds should be inactive now after MP ending in F3",
+            false,
+            finalThirdManager.isActivated
+        );
         
         AvailabilityCheckResult mpcomplete = AssertCorrectAvailabilityAfterMovementComplete();
-        // AssertTrue(
-        //     mpcomplete.passed,
-        //     "MovementPhase Complete Check Status Availability",
-        //     true,
-        //     mpcomplete.ToString()
-        // );
+        AssertTrue(
+            mpcomplete.passed,
+            "MovementPhase Complete Check Status Availability",
+            true,
+            mpcomplete.ToString()
+        );
         
         // GameStatusSnapshot currentSnapshot = GetCurrentSnapshot();
         // bool isSame = savedSnapshot.IsEqualTo(currentSnapshot, out string mismatchReason, new HashSet<string> {});
@@ -1836,7 +2024,76 @@ public class GameTestScenarioRunner : MonoBehaviour
         //     isSame ? "Snapshots match" : mismatchReason
         // );
 
+        LogFooterofTest("MovementPhase No Interceptions, No Tackles");
     }
+    
+    private IEnumerator Scenario_010_Movement_Phase_faield_interceptions_No_tackles()
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: MovementPhase With failed Interceptions, No Tackles");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) again");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        Log("Wait for the ball to move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Attack FinalThird");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Defense FinalThird");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        Log("Pressing M - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) Select Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (11, 0) Move Yaneva 1 pace");
+
+        LogFooterofTest("MovementPhase With failed Interceptions, No Tackles");
+    }
+    // TODO: Pass to player, move into interception, finish movement phase
+    // TODO: Pass to player, move into interception, steal the ball, check availability afterwards
+    // TODO: Pass to player, move into interception, Foul, take foul
+    // TODO: Pass to player, move into interception, Foul, play advantage finish Movement phase
+    // TODO: Pass to player
+    //    , move with dribbler next to defender (no nutmeg, no interception)
+    //    , move defender away, with no tackle
+    //    , move another defender for tackle
+    //    , reposition attacker next to first defender verify no interception
+    //    , move third defender for tackle
+    //    , reposition next to 4th defender
+    //    , do not intercept
+    //    , tackle without moving with 4th defender 
+    //    , move 5th defender, finish movement phase
+    // TODO: Pass to player
+    //    , move with dribbler next to defender (no nutmeg, no interception)
+    //    , forfeit rest of movement
+    //    , start MP with nutmeg without moving
+    //    , reposition attacker
+    //    , forfeit Attacking MP
+    //    , bring defender for tackle
+    //    , reposition attacker next to nutmegged (verify no interception)
+    //    , bring third attacker for tackle
+    //    , force loose ball to space
+    //    , pick up with fourth defender verify end of movement
+    // TODO: Pass to player
+    //    , move dribler for nutmeg
+    //    , reposition and continue moving
+    //    , forfeit MPAtt
+    //    , verify the defender cannot move
+    //    , end MP
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, fail nutmeg, reposition defender, check Availability
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, loose ball to space with no interceptions.
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, loose ball to space with failed interceptions.
+    
     private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
     {
         if (!condition)
@@ -1883,12 +2140,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         List<string> failures = new();
 
         if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should not be available");
-        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+        if (movementPhaseManager.isAvailable) failures.Add("MovementPhase should NOT be available");
         if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
         if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
         if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
 
-        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should not be activated");
+        if (!movementPhaseManager.isActivated) failures.Add("MovementPhase should be activated");
         if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should not be activated");
         if (groundBallManager.isActivated) failures.Add("GroundBall should not be activated");
         if (highPassManager.isActivated) failures.Add("HighPass should not be activated");
@@ -2058,12 +2315,36 @@ public class GameTestScenarioRunner : MonoBehaviour
         List<string> failures = new();
         if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
         if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
+        
         if (!groundBallManager.isAvailable) failures.Add("GroundBall should be available");
         if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
-        if (!firstTimePassManager.isAvailable) failures.Add("FirstTimePass should be available");
+        
+        if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
         if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+        
         if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
         if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+        
+        if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
+        if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
+        return new AvailabilityCheckResult(failures.Count == 0, failures);
+    }
+    
+    private AvailabilityCheckResult AssertCorrectAvailabilityAfterSuccessfulTackle()
+    {
+        List<string> failures = new();
+        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
+        
+        if (!groundBallManager.isAvailable) failures.Add("GroundBall should be available");
+        if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+        
+        if (!firstTimePassManager.isAvailable) failures.Add("FirstTimePass should be available");
+        if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+        
+        if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
+        if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+        
         if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
         if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
         return new AvailabilityCheckResult(failures.Count == 0, failures);

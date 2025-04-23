@@ -1017,12 +1017,14 @@ public class MatchManager : MonoBehaviour
 
     public void TriggerMovement()
     {
+        // All these resets are in case it is not comitted
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
         highPassManager.CleanUpHighPass();
         longBallManager.CleanUpLongBall();
         RefreshAvailableActions();
+        // Finally Activate the movement phase
         movementPhaseManager.ActivateMovementPhase();
     }
 
@@ -1117,8 +1119,8 @@ public class MatchManager : MonoBehaviour
             }
             else
             {
-                shotManager.isAvailable = false;
-                firstTimePassManager.isAvailable = false;
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
             }
         }
         else if (currentState == GameState.EndOfMovementPhase)

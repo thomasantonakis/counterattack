@@ -8,16 +8,26 @@ using System.Diagnostics.CodeAnalysis;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 
-public struct KeyPressData
+public class KeyPressData
     {
         public KeyCode key;
         public bool shift;
         public bool ctrl;
         public bool alt;
+        public bool isConsumed;
+
+        public KeyPressData(KeyCode key, bool shift, bool ctrl, bool alt)
+        {
+            this.key = key;
+            this.shift = shift;
+            this.ctrl = ctrl;
+            this.alt = alt;
+            this.isConsumed = false; // set default here
+        }
 
         public override string ToString()
         {
-            return $"{(ctrl ? "Ctrl+" : "")}{(alt ? "Alt+" : "")}{(shift ? "Shift+" : "")}{key}";
+            return $"{(ctrl ? "Ctrl+" : "")}{(alt ? "Alt+" : "")}{(shift ? "Shift+" : "")}{key}, , Consumed: {isConsumed}";
         }
     }
 
@@ -221,12 +231,12 @@ public class GameInputManager : MonoBehaviour
                 continue;
             }
             KeyPressData data = new KeyPressData
-            {
-                key = kcode,
-                shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift),
-                ctrl  = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand),
-                alt   = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)
-            };
+            (
+                kcode,
+                Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift),
+                Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand),
+                Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)
+            );
             if (logIsOn) Debug.Log($"📢 KeyPress: {data}");
             OnKeyPress?.Invoke(data);
             break; // Stop after first match
@@ -376,7 +386,7 @@ public class GameInputManager : MonoBehaviour
             //     !movementPhaseManager.isWaitingForInjuryRoll &&
             //     !movementPhaseManager.isWaitingForYellowCardRoll &&
             //     !movementPhaseManager.isWaitingForFoulDecision &&
-            //     !goalKeeperManager.isWaitingForDefGKBoxMove &&
+            //     !goalKeeperManager.isActivated &&
             //     (
             //         MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack || 
             //         MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseDef ||
@@ -412,7 +422,7 @@ public class GameInputManager : MonoBehaviour
             //     StartCoroutine(HandleMouseInputForHPGKRush());
             // }
             // if (
-            //     goalKeeperManager.isWaitingForDefGKBoxMove
+            //     goalKeeperManager.isActivated
             // )
             // {
             //     StartCoroutine(HandleMouseInputForGKBoxMovement());
@@ -794,7 +804,7 @@ public class GameInputManager : MonoBehaviour
     //     {
     //         hexGrid.ClearHighlightedHexes();
     //         Debug.Log($"GK chooses to not move for the ball entering the box, moving on!");
-    //         goalKeeperManager.isWaitingForDefGKBoxMove = false;
+    //         goalKeeperManager.isActivated = false;
     //         yield break;  
     //     }
     //     if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
@@ -815,7 +825,7 @@ public class GameInputManager : MonoBehaviour
     //             {
     //                 hexGrid.ClearHighlightedHexes();
     //                 yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, hexGrid.GetDefendingGK(), false));
-    //                 goalKeeperManager.isWaitingForDefGKBoxMove = false;
+    //                 goalKeeperManager.isActivated = false;
     //                 Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {inferredHexCellFromClick.name}");
     //             }
     //             else
@@ -1409,13 +1419,7 @@ public class GameInputManager : MonoBehaviour
 
     public void SimulateKeyDataPress(KeyCode key, bool shift = false, bool ctrl = false, bool alt = false)
     {
-        var keyData = new KeyPressData
-        {
-            key = key,
-            shift = shift,
-            ctrl = ctrl,
-            alt = alt
-        };
+        var keyData = new KeyPressData(key,shift,ctrl,alt);
         OnKeyPress?.Invoke(keyData);
     }
 

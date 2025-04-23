@@ -8,33 +8,105 @@ Pressing P - Game is in Movement Phase
 Clicking (10, 0)
 Clicking (10, 0) again
 Wait for the ball to move
+✅ PASS: Action Availability after Pass to Player | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing X - Forfeit Attack FinalThird
+✅ PASS: Final Thirds should be Active now | Expected: True | Actual: True
+Pressing X - Forfeit Defense FinalThird
+✅ PASS: Final Thirds should be inactive now | Expected: False | Actual: False
+Pressing M - Game is in Movement Phase
+✅ PASS: MP SHould be waiting for Token Selection after M | Expected: True | Actual: True
+✅ PASS: MP Should NOT be waiting for Hex Destination after M | Expected: False | Actual: False
+Clicking (-8, -8), 11.Ulisses
+✅ PASS: MP Should be waiting for Token Selection after Clicking on a Token | Expected: True | Actual: True
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on a Ulisses | Expected: True | Actual: True
+Clicking (-3, -8), Move Ulisses, a commitment should be made
+✅ PASS: MovementPhase Commitment Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MP - 1 attcker moved | Expected: 1 | Actual: 1
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Ulisses | Expected: False | Actual: False
+Clicking (-4, -4), 9.Pavlovic
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Pavlovic | Expected: True | Actual: True
+Clicking (0, -3), Move 9.Pavlovic
+✅ PASS: MP - 2 attcker moved | Expected: 2 | Actual: 2
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Pavlovic | Expected: False | Actual: False
+Clicking (0, 0), 2.Cafferata
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Cafferata | Expected: True | Actual: True
+Clicking (5, 0), Move 2.Cafferata
+✅ PASS: MP - 3 attcker moved | Expected: 3 | Actual: 3
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Cafferata | Expected: False | Actual: False
+Clicking (4, 4), 6.Nazef
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Nazef | Expected: True | Actual: True
+✅ PASS: MP - Attacking Movement Phase | Expected: True | Actual: True
+✅ PASS: MP - Attacking Movement Phase | Expected: False | Actual: False
+Clicking (0, 6), Move 6.Nazef
+✅ PASS: MP - 4 attcker moved | Expected: 4 | Actual: 4
+✅ PASS: MP - 0 defenders moved | Expected: 0 | Actual: 0
+✅ PASS: MP - Defensive Movement Phase after 4 moves | Expected: True | Actual: True
+✅ PASS: MP - Not Attacking Movement Phase after 4 moves | Expected: False | Actual: False
+✅ PASS: MP Should be waiting for Token Selection after Attacking Movement Phase | Expected: True | Actual: True
+✅ PASS: MP Should NOT be waiting for Hex Destination after Attacking Movement Phase | Expected: False | Actual: False
+Clicking (1, 2), 5.Vladoiu
+✅ PASS: MP SHould be waiting for Token Selection after Attacking Movement Phase | Expected: True | Actual: True
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Vladoiu | Expected: True | Actual: True
+Clicking (-4, 5), Move 5.Vladoiu
+✅ PASS: MP SHould be waiting for Token Selection after Attacking Movement Phase | Expected: True | Actual: True
+✅ PASS: MP Should NOT be waiting for Hex Destination after moving Vladoiu | Expected: False | Actual: False
+✅ PASS: MP - 1 defenders moved | Expected: 1 | Actual: 1
+Clicking (1, 10), 4.Marell
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Marell | Expected: True | Actual: True
+Clicking (5, 10), Move 4.Marell
+✅ PASS: MP - 2 defenders moved | Expected: 2 | Actual: 2
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Marell | Expected: False | Actual: False
+Clicking (14, 0), 10. Soares
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Soares | Expected: True | Actual: True
+Clicking (14, 5), Move 10. Soares
+✅ PASS: MP - 3 defenders moved | Expected: 3 | Actual: 3
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Soares | Expected: False | Actual: False
+Clicking (18, 0), 11.Poulsen
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Poulsen | Expected: True | Actual: True
+Clicking (14, 0), Move 11.Poulsen
+✅ PASS: MP - 4 defenders moved | Expected: 4 | Actual: 4
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Poulsen | Expected: False | Actual: False
+Clicking (1, -10), 3.Delgado
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Delgado | Expected: True | Actual: True
+Clicking (6, -9), Move 3.Delgado
+✅ PASS: MP - 4 defenders moved | Expected: 5 | Actual: 5
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Delgado | Expected: False | Actual: False
+Clicking (-6, -6), 10.Noruega
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Noruega | Expected: True | Actual: True
+Clicking (-8, -6), Move 10.Noruega
+✅ PASS: MP - 1 2f2 moved | Expected: 1 | Actual: 1
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Noruega | Expected: False | Actual: False
+Clicking (12, 12), 5.Murphy
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Muprhy | Expected: True | Actual: True
+Clicking (10, 12), Move 5.Murphy
+✅ PASS: Final Thirds should be Active now after MP ending in F3 | Expected: True | Actual: True
+Pressing X - Forfeit Attack FinalThird
+✅ PASS: Final Thirds should be Active now after MP ending in F3 | Expected: True | Actual: True
+Pressing X - Forfeit Defense FinalThird
+✅ PASS: Final Thirds should be inactive now after MP ending in F3 | Expected: False | Actual: False
+✅ PASS: MovementPhase Complete Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ MovementPhase No Interceptions, No Tackles - TEST PASSED COMPLETELY 🎉
+
+✅ Test #1 passed.
+
+
+==== Starting Test #2 ====
+▶️ Starting test scenario: MovementPhase With failed Interceptions, No Tackles
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
 Pressing X - Forfeit Attack FinalThird
 Pressing X - Forfeit Defense FinalThird
 Pressing M - Game is in Movement Phase
-Clicking (-8, -8), 11.Ulisses
-Clicking (-3, -8), Move Ulisses, a commitment should be made
-Clicking (-4, -4), 9.Pavlovic
-Clicking (0, -3), Move 9.Pavlovic
-Clicking (0, 0), 2.Cafferata
-Clicking (5, 0), Move 2.Cafferata
-Clicking (4, 4), 6.Nazef
-Clicking (0, 6), Move 6.Nazef
-Clicking (1, 2), 5.Vladoiu
-Clicking (-4, 5), Move 5.Vladoiu
-Clicking (1, 10), 4.Marell
-Clicking (5, 10), Move 4.Marell
-Clicking (14, 0), 10. Soares
-Clicking (14, 5), Move 10. Soares
-Clicking (18, 0), 11.Poulsen
-Clicking (14, 0), Move 11.Poulsen
-Clicking (1, -10), 3.Delgado
-Clicking (6, -9), Move 3.Delgado
-Clicking (-6, -6), 10.Noruega
-Clicking (-8, -6), Move 10.Noruega
-Clicking (12, 12), 5.Murphy
-Clicking (10, 12), Move 5.Murphy
-Pressing X - Forfeit Attack FinalThird
-Pressing X - Forfeit Defense FinalThird
-✅ Test #1 passed.
+Clicking (10, 0) Select Yaneva
+Clicking (11, 0) Move Yaneva 1 pace
+
+✅ MovementPhase With failed Interceptions, No Tackles - TEST PASSED COMPLETELY 🎉
+
+✅ Test #2 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

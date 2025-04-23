@@ -376,6 +376,7 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         finalThirdManager.TriggerFinalThirdPhase();
         MatchManager.Instance.BroadcastEndofGroundBallPass();
+        Debug.Log($"Pass completed to {trgDestHex.coordinates}");
         if (trgDestHex.isAttackOccupied)
         {
             LogGroundPassSucess();
