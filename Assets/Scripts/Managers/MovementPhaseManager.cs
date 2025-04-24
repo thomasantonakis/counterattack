@@ -65,11 +65,9 @@ public class MovementPhaseManager : MonoBehaviour
     public int remainingDribblerPace; // Temporary variable for dribbler's pace
     [SerializeField]
     private List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
-    [SerializeField]
-    private List<PlayerToken> eligibleDefenders = new List<PlayerToken>();  // To track defenders eligible for interception
+    public List<PlayerToken> eligibleDefenders = new List<PlayerToken>();  // To track defenders eligible for interception
     public List<PlayerToken> nutmeggableDefenders = new List<PlayerToken>(); // Temporary list of defenders tha can be nutmegged
-    [SerializeField]
-    private List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
+    public List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
     public List<PlayerToken> stunnedTokens = new List<PlayerToken>(); // Temporary list of defenders
     public List<PlayerToken> stunnedforNext = new List<PlayerToken>(); // Temporary list of defenders
     public List<HexCell> repositionHexes = new List<HexCell>();
@@ -135,6 +133,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 if (IsHexValidForMovement(hex)) // A valid destination Hex was clicked
                 {
+                    // TODO: reject, if we are waiting for nutmeg decision, we must reply, in order to force interceptions.
                     isAwaitingHexDestination = false;
                     AsyncMoveTokenToHexWhileWaitingForNutmegDecision(hex);
                 }
@@ -155,6 +154,7 @@ public class MovementPhaseManager : MonoBehaviour
                 CommitToAction();
                 Debug.Log($"Passing {hex.name} to AsyncMoveTokenToHexRegularly");
                 isAwaitingHexDestination = false;
+                isWaitingForSnapshotDecision = false;
                 AsyncMoveTokenToHexRegularly(hex);
             }
             else
@@ -168,6 +168,11 @@ public class MovementPhaseManager : MonoBehaviour
             && token != null // Yay, a token was inferred from the click!
         )
         {
+            if (isWaitingForSnapshotDecision && !isDribblerRunning)
+            {
+                Debug.LogWarning($"{selectedToken.name} exhausted their pace and is waiting for a snapshot decision. Press [S] to Snapshot or [X] to continue with MovementPhase!");
+                return;
+            }
             Debug.Log($"Passing {token.name} to HandleTokenSelection");
             HandleTokenSelection(token);  // Select the token first
             return;
@@ -233,7 +238,7 @@ public class MovementPhaseManager : MonoBehaviour
                 PerformTackleDiceRoll(isDefender: false);  // Attacker rolls second
             }
         }
-        else if (!isWaitingForNutmegDecision && !isWaitingForNutmegDecisionWithoutMoving && keyData.key == KeyCode.X)
+        else if (!isWaitingForNutmegDecision && !isWaitingForNutmegDecisionWithoutMoving && !isWaitingForSnapshotDecision && keyData.key == KeyCode.X)
         {
             CommitToAction();
             ForfeitTeamMovementPhase();
@@ -282,6 +287,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 isWaitingForSnapshotDecision = false;
                 Debug.Log($"Attacker decides not to shoot..");
+                AdvanceMovementPhase();
             }
         }
         if (isWaitingForReposition && keyData.key == KeyCode.X)
@@ -624,7 +630,7 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogError("No token selected to move.");
             yield break;
         }
-        isActivated = true;
+        // isActivated = true;
 
         // Find the path from the current hex to the target hex
         List<HexCell> path;
@@ -795,10 +801,10 @@ public class MovementPhaseManager : MonoBehaviour
         if(isDribblerRunning)
         {
             Debug.LogWarning("ContinueFromRejectedNutmeg: Checking for Interceptions");
-            nutmeggableDefenders.Clear();
             Debug.Log($"{selectedToken.name} Rejected the Nutmeg option, forcing interceptions from adjacent defenders.");
             HexCell ballHex = ball.GetCurrentHex();
             eligibleDefenders = GetEligibleDefendersForInterception(ballHex);
+            nutmeggableDefenders.Clear();
             Debug.Log($"eligibleDefenders.Count: {eligibleDefenders.Count}");
             if (eligibleDefenders.Count > 0)
             {
@@ -810,7 +816,7 @@ public class MovementPhaseManager : MonoBehaviour
             else
             {
                 Debug.LogWarning("No interceptions Available, let the dribbler move if available");
-                ContinueDribblerMovement();
+                StartCoroutine(ContinueDribblerMovement());
             }
         }
         else
@@ -819,7 +825,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-    private void ContinueDribblerMovement()
+    private IEnumerator ContinueDribblerMovement()
     {
         // nutmeggableDefenders = GetNutmeggableDefenders(selectedToken, hexGrid); // TODO: What the fuck is this doing here?
         bool isDribblerinOppPenBox = IsDribblerinOpponentPenaltyBox(selectedToken);
@@ -834,8 +840,9 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.LogWarning($"Dribbler has {remainingDribblerPace} remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination");
             isAwaitingHexDestination = true;
-            Debug.Log("More Pace is available");
+
             HighlightValidMovementHexes(selectedToken, 1);
+            yield break;
         }
         else
         {
@@ -849,7 +856,13 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 movedTokens.Add(selectedToken);
             }
-            AdvanceMovementPhase();
+            if (isWaitingForSnapshotDecision)
+            {
+                while (isWaitingForSnapshotDecision)
+                {
+                    yield return null;  // Wait until the snapshot decision is made
+                }
+            }
         }
     }
 
@@ -1059,6 +1072,7 @@ public class MovementPhaseManager : MonoBehaviour
             if (token != null && // null check
                 !eligibleDefs.Contains(token) && // Avoid duplicates
                 neighbor.isDefenseOccupied && // only defenders
+                nutmeggableDefenders.Contains(token) && 
                 !defendersTriedToIntercept.Contains(token) && // has not already tried to intercept during the dribblers movement
                 !headerManager.defenderWillJump.Contains(token) && // has not jumped in previous Header Challenge
                 !stunnedTokens.Contains(token) && // ignore nutmegged defenders may cause problems in Loose ball.
@@ -1093,7 +1107,7 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForInterceptionDiceRoll = true;
     }
 
-    public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = null)
+    public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = 2)
     {
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
@@ -1139,8 +1153,7 @@ public class MovementPhaseManager : MonoBehaviour
                 else if (isDribblerRunning)
                 {
                     Debug.Log("No more defenders to roll.");
-                    // HandleTokenSelection(selectedToken);
-                    ContinueDribblerMovement();
+                    StartCoroutine(ContinueDribblerMovement());
                 }
                 else
                 {
@@ -1584,6 +1597,7 @@ public class MovementPhaseManager : MonoBehaviour
                 || defender.isAttacker // Ignore Defenders
                 || stunnedTokens.Contains(defender) // Ignored stunned Defenders
                 || stunnedforNext.Contains(defender) // Ignore Stunned defenders for next
+                || defendersTriedToIntercept.Contains(defender)
             )
             {
                 continue;
