@@ -326,7 +326,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 PlayAdvantage();
             }
-            else if (keyData.key == KeyCode.Z)
+            else if (keyData.key == KeyCode.F)
             {
                 TakeFreeKick();
             }
@@ -1107,7 +1107,7 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForInterceptionDiceRoll = true;
     }
 
-    public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = 2)
+    public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = null)
     {
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
@@ -1561,6 +1561,8 @@ public class MovementPhaseManager : MonoBehaviour
         stunnedforNext.Clear();
         headerManager.ResetHeader();  // Reset the header to free up unmovable players
         isActivated = false;
+        remainingDribblerPace = 0;  // Reset the remaining dribbler pace
+        defendersTriedToIntercept.Clear();  // Clear the list of defenders who tried to intercept
         Debug.Log("Movement phase is over.");
         if (triggerF3) finalThirdManager.TriggerFinalThirdPhase();
     }

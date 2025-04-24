@@ -471,7 +471,7 @@ MonoBehaviour:
   helperFunctions: {fileID: 1397543275}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
-  isWaitingForDefGKBoxMove: 0
+  isActivated: 0
 --- !u!4 &272854144
 Transform:
   m_ObjectHideFlags: 0
@@ -2839,6 +2839,7 @@ MonoBehaviour:
   nutmegVictim: {fileID: 0}
   isAvailable: 0
   isActivated: 0
+  isCommitted: 0
   isMovementPhaseAttack: 0
   isMovementPhaseDef: 0
   isMovementPhase2f2: 0
@@ -3723,6 +3724,7 @@ MonoBehaviour:
   movementPhaseManager: {fileID: 1390513032}
   highPassManager: {fileID: 1859472972}
   groundBallManager: {fileID: 1703800862}
+  finalThirdManager: {fileID: 1012232483}
   isActivated: 0
   shouldDefMoveTokens: []
   potentialKickers: []

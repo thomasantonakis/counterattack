@@ -441,11 +441,47 @@ Pressing X to not Nutmeg Soares
 ✅ PASS: MP Should be waiting for Interception Roll after Rejected nutmeg | Expected: True | Actual: True
 ✅ PASS: MP eligibleDefenders should contain 1 | Expected: 1 | Actual: 1
 ✅ PASS: MP eligibleDefenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 10. Soares (PlayerToken)
-Pressing R to roll and Soares fails to steal the ball
+Pressing R to roll and Soares steals the ball
 ✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
 
 ✅ MovementPhase With Successful Interception - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #11 passed.
+
+
+==== Starting Test #12 ====
+▶️ Starting test scenario: MovementPhase With Foul Taken on Interception
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (10, 0) Select Yaneva
+Clicking (11, 0) Move Yaneva 1 pace
+Clicking (12, 1) Move Yaneva 2nd pace
+Clicking (16, -1) Move GK for Box entrance
+Clicking (13, 0) Move Yaneva 3rd pace
+✅ PASS: MP Should be waiting for nutmeg decision when Yaneva moves next to Soares | Expected: True | Actual: True
+✅ PASS: MP Nutmeggable defenders should contain 1 | Expected: 1 | Actual: 1
+✅ PASS: MP Nutmeggable defenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 10. Soares (PlayerToken)
+Pressing X to not Nutmeg Soares
+✅ PASS: MP Should be waiting for Interception Roll after Rejected nutmeg | Expected: True | Actual: True
+✅ PASS: MP eligibleDefenders should contain 1 | Expected: 1 | Actual: 1
+✅ PASS: MP eligibleDefenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 10. Soares (PlayerToken)
+Pressing R to roll and Soares and he fouls!
+Pressing X for Leniency Test
+Pressing X for Resilience Test
+Pressing F - to take foul
+✅ PASS: FreeKickManager should be waiting for Kicker Selection | Expected: True | Actual: True
+✅ PASS: FreeKickManager should be waiting for Kicker Selection | Expected: 6 | Actual: 6
+✅ PASS: MP Should have died after FK taken | Expected: False | Actual: False
+
+✅ MovementPhase With Foul Taken on Interception - TEST PASSED COMPLETELY 🎉
+
+✅ Test #12 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

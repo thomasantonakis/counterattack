@@ -66,6 +66,7 @@ public class FinalThirdManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.X)
             {
+                keyData.isConsumed = true;
                 ForfeitTurn();
             }
             if (isWaitingForWhatToDo && keyData.key == KeyCode.D)

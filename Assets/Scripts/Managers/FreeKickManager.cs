@@ -12,8 +12,15 @@ public class FreeKickManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public HighPassManager highPassManager;
     public GroundBallManager groundBallManager;
+    public FinalThirdManager finalThirdManager;
     [Header("Important Items")]
     public bool isActivated = false;
+    public bool isWaitingForKickerSelection = false;
+    public bool isWaitingForSetupPhase = false;
+    public bool isWaitingforMovement3 = false;
+    public bool isWaitingForFinalKickerSelection = false;
+    public bool isWaitingForExecution = false;
+    public bool isCornerKick = false;
     [SerializeField]
     private List<PlayerToken> shouldDefMoveTokens = new List<PlayerToken>();
     [SerializeField]
@@ -23,12 +30,6 @@ public class FreeKickManager : MonoBehaviour
     public int remainingDefenderMoves;
     public int attackerMovesUsed;
     public int defenderMovesUsed;
-    public bool isWaitingForKickerSelection = false;
-    public bool isWaitingForSetupPhase = false;
-    public bool isWaitingforMovement3 = false;
-    public bool isWaitingForFinalKickerSelection = false;
-    public bool isWaitingForExecution = false;
-    public bool isCornerKick = false;
     public PlayerToken selectedKicker;
     public PlayerToken selectedToken;
     public HexCell targetHex;
@@ -49,6 +50,7 @@ public class FreeKickManager : MonoBehaviour
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (!isActivated) return;
+        if (finalThirdManager.isActivated) return;
         if (isWaitingForKickerSelection)
         {
             if (token != null) StartCoroutine(HandleKickerSelection(token));
@@ -123,6 +125,8 @@ public class FreeKickManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (!isActivated) return;
+        if (finalThirdManager.isActivated) return;
+        if (keyData.isConsumed) return;
         if (isWaitingForKickerSelection)
         {
             if (keyData.key == KeyCode.X)
@@ -206,6 +210,7 @@ public class FreeKickManager : MonoBehaviour
 
     public void StartFreeKickPreparation(HexCell cornerKickSpot = null)
     {
+        isActivated = true;
         if (cornerKickSpot == null) Debug.Log("Starting Free Kick Preparation...");
         else
         {
