@@ -396,6 +396,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
             Scenario_011_Movement_Phase_Successful_Interception(),
             Scenario_012_Movement_Phase_interception_Foul_take_foul(),
+            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
             // Add more scenarios here
         };
 
@@ -2329,11 +2330,30 @@ public class GameTestScenarioRunner : MonoBehaviour
         StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(1));
         Log("Pressing X for Leniency Test");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.R, 0.1f));
+        AssertTrue(
+            !movementPhaseManager.isWaitingForFoulDecision,
+            "MP Should NOT be waiting for a foul decision after Leniency Roll",
+            true,
+            movementPhaseManager.isWaitingForFoulDecision
+        );
         Log("Pressing X for Resilience Test");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.R, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForFoulDecision,
+            "MP Should be waiting for a foul decision after Foul Rolls",
+            true,
+            movementPhaseManager.isWaitingForFoulDecision
+        );
         Log("Pressing F - to take foul");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.1f));
         yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !movementPhaseManager.isWaitingForFoulDecision,
+            "MP Should NOT wait for a foul decision after Foul Decision",
+            false,
+            movementPhaseManager.isWaitingForFoulDecision
+        );
         AssertTrue(
             freeKickManager.isWaitingForKickerSelection,
             "FreeKickManager should be waiting for Kicker Selection",
@@ -2368,6 +2388,155 @@ public class GameTestScenarioRunner : MonoBehaviour
         // );
 
         LogFooterofTest("MovementPhase With Foul Taken on Interception");
+    }
+
+    private IEnumerator Scenario_013_Movement_Phase_interception_Foul_Play_on()
+    {        
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: MovementPhase With Fouled Interception and Play On");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) again");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        Log("Wait for the ball to move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Attack FinalThird");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Defense FinalThird");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        Log("Pressing M - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) Select Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 0), 0.5f));
+        Log("Clicking (11, 0) Move Yaneva 1 pace");
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
+        Log("Clicking (12, 1) Move Yaneva 2nd pace");
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -1), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Clicking (16, -1) Move GK for Box entrance");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 0), 0.5f));
+        Log("Clicking (13, 0) Move Yaneva 3rd pace");
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.isWaitingForNutmegDecision,
+            "MP Should be waiting for nutmeg decision when Yaneva moves next to Soares",
+            true,
+            movementPhaseManager.isWaitingForNutmegDecision
+        );
+        AssertTrue(
+            movementPhaseManager.nutmeggableDefenders.Count == 1,
+            "MP Nutmeggable defenders should contain 1",
+            1,
+            movementPhaseManager.nutmeggableDefenders.Count
+        );
+        var defender = PlayerToken.GetPlayerTokenByName("Soares");
+        AssertTrue(
+            movementPhaseManager.nutmeggableDefenders.Contains(defender),
+            "MP Nutmeggable defenders should contain Soares",
+            PlayerToken.GetPlayerTokenByName("Soares"),
+            defender
+        );
+        Log("Pressing X to not Nutmeg Soares");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.1f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.isWaitingForInterceptionDiceRoll,
+            "MP Should be waiting for Interception Roll after Rejected nutmeg",
+            true,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll
+        );
+        AssertTrue(
+            movementPhaseManager.eligibleDefenders.Count == 1,
+            "MP eligibleDefenders should contain 1",
+            1,
+            movementPhaseManager.eligibleDefenders.Count
+        );
+        var interceptor = PlayerToken.GetPlayerTokenByName("Soares");
+        AssertTrue(
+            movementPhaseManager.eligibleDefenders.Contains(interceptor),
+            "MP eligibleDefenders should contain Soares",
+            PlayerToken.GetPlayerTokenByName("Soares"),
+            interceptor
+        );
+        Log("Pressing R to roll and Soares and he fouls!");
+        StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(1));
+        Log("Pressing X for Leniency Test");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.R, 0.1f));
+        AssertTrue(
+            !movementPhaseManager.isWaitingForFoulDecision,
+            "MP Should NOT be waiting for a foul decision after Leniency Roll",
+            true,
+            movementPhaseManager.isWaitingForFoulDecision
+        );
+        Log("Pressing X for Resilience Test");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.R, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForFoulDecision,
+            "MP Should be waiting for a foul decision after Foul Rolls",
+            true,
+            movementPhaseManager.isWaitingForFoulDecision
+        );
+        Log("Pressing F - to Play ON");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        // AssertTrue(
+        //     freeKickManager.isWaitingForKickerSelection,
+        //     "FreeKickManager should be waiting for Kicker Selection",
+        //     true,
+        //     freeKickManager.isWaitingForKickerSelection
+        // );
+        // AssertTrue(
+        //     freeKickManager.remainingDefenderMoves == 6,
+        //     "FreeKickManager should be waiting for Kicker Selection",
+        //     6,
+        //     freeKickManager.remainingDefenderMoves
+        // );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForFoulDecision,
+            "MP Should NOT wait for a foul decision after Play On",
+            false,
+            movementPhaseManager.isWaitingForFoulDecision
+        );
+        AssertTrue(
+            movementPhaseManager.isWaitingForReposition,
+            "MP Should Be Waiting for a reposition after Play On",
+            true,
+            movementPhaseManager.isWaitingForReposition
+        );
+        Log("Clicking (15, 0) Reposition Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(15, 0), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        AssertTrue(
+            !movementPhaseManager.isWaitingForReposition,
+            "MP Should NOT Be Waiting for a reposition after Reposition Yaneva",
+            false,
+            movementPhaseManager.isWaitingForReposition
+        );
+        AssertTrue(
+            movementPhaseManager.isWaitingForSnapshotDecision,
+            "MP Should Be Waiting for Snapshot after Reposition Yaneva",
+            true,
+            movementPhaseManager.isWaitingForSnapshotDecision
+        );
+        // AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityFreeKickTaken(hexgrid.GetHexCellAt(new Vector3Int(13, 0, 0)));
+        // AssertTrue(
+        //     availabilityCheck.passed,
+        //     "Action Availability FreeKick Taken",
+        //     true,
+        //     availabilityCheck.ToString()
+        // );
+
+        LogFooterofTest("MovementPhase With Fouled Interception and Play On");
     }
 
     // TODO: Pass to player, move into interception, Foul, play advantage finish Movement phase

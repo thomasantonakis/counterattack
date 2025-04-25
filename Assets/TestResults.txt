@@ -474,8 +474,11 @@ Pressing X to not Nutmeg Soares
 ✅ PASS: MP eligibleDefenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 10. Soares (PlayerToken)
 Pressing R to roll and Soares and he fouls!
 Pressing X for Leniency Test
+✅ PASS: MP Should NOT be waiting for a foul decision after Leniency Roll | Expected: True | Actual: False
 Pressing X for Resilience Test
+✅ PASS: MP Should be waiting for a foul decision after Foul Rolls | Expected: True | Actual: True
 Pressing F - to take foul
+✅ PASS: MP Should NOT wait for a foul decision after Foul Decision | Expected: False | Actual: False
 ✅ PASS: FreeKickManager should be waiting for Kicker Selection | Expected: True | Actual: True
 ✅ PASS: FreeKickManager should be waiting for Kicker Selection | Expected: 6 | Actual: 6
 ✅ PASS: MP Should have died after FK taken | Expected: False | Actual: False
@@ -483,5 +486,45 @@ Pressing F - to take foul
 ✅ MovementPhase With Foul Taken on Interception - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #12 passed.
+
+
+==== Starting Test #13 ====
+▶️ Starting test scenario: MovementPhase With Fouled Interception and Play On
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (10, 0) Select Yaneva
+Clicking (11, 0) Move Yaneva 1 pace
+Clicking (12, 1) Move Yaneva 2nd pace
+Clicking (16, -1) Move GK for Box entrance
+Clicking (13, 0) Move Yaneva 3rd pace
+✅ PASS: MP Should be waiting for nutmeg decision when Yaneva moves next to Soares | Expected: True | Actual: True
+✅ PASS: MP Nutmeggable defenders should contain 1 | Expected: 1 | Actual: 1
+✅ PASS: MP Nutmeggable defenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 10. Soares (PlayerToken)
+Pressing X to not Nutmeg Soares
+✅ PASS: MP Should be waiting for Interception Roll after Rejected nutmeg | Expected: True | Actual: True
+✅ PASS: MP eligibleDefenders should contain 1 | Expected: 1 | Actual: 1
+✅ PASS: MP eligibleDefenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 10. Soares (PlayerToken)
+Pressing R to roll and Soares and he fouls!
+Pressing X for Leniency Test
+✅ PASS: MP Should NOT be waiting for a foul decision after Leniency Roll | Expected: True | Actual: False
+Pressing X for Resilience Test
+✅ PASS: MP Should be waiting for a foul decision after Foul Rolls | Expected: True | Actual: True
+Pressing F - to Play ON
+✅ PASS: MP Should NOT wait for a foul decision after Play On | Expected: False | Actual: False
+✅ PASS: MP Should Be Waiting for a reposition after Play On | Expected: True | Actual: True
+Clicking (15, 0) Reposition Yaneva
+✅ PASS: MP Should NOT Be Waiting for a reposition after Reposition Yaneva | Expected: False | Actual: False
+✅ PASS: MP Should Be Waiting for Snapshot after Reposition Yaneva | Expected: True | Actual: True
+
+✅ MovementPhase With Fouled Interception and Play On - TEST PASSED COMPLETELY 🎉
+
+✅ Test #13 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

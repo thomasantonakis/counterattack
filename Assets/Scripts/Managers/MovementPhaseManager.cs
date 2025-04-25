@@ -1426,7 +1426,6 @@ public class MovementPhaseManager : MonoBehaviour
             yield return null;  // Wait for the next frame
         }
         Debug.Log("Foul process completed.");
-        yield return null;   // Delay to avoid immediate triggering
         // Phase 3: Foul decision (Play On or Take the Foul)
         Debug.Log("Press 'A' to Play On or 'Z' to Take the Foul.");
         isWaitingForFoulDecision = true;
