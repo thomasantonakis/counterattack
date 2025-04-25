@@ -102,6 +102,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (!isActivated) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
+        if (shotManager.isActivated) return;
         if (lookingForNutmegVictim)
         {
             // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
@@ -180,7 +181,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-  private void OnKeyReceived(KeyPressData keyData)
+    private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
         if (finalThirdManager.isActivated) return;
@@ -419,6 +420,8 @@ public class MovementPhaseManager : MonoBehaviour
                 || stunnedTokens.Contains(token)
             )
             {
+                selectedToken = null;  // Reset selected token
+                isAwaitingHexDestination = false;  // Reset hex destination flag
                 Debug.Log("MPAtt: Cannot select this token to move. Either it's not an attacker or it has already moved or is frozen due to previous header challenge.");
                 return;  // Reject defender clicks or already moved tokens
             }
@@ -433,6 +436,8 @@ public class MovementPhaseManager : MonoBehaviour
                 || stunnedTokens.Contains(token)
             )
             {
+                selectedToken = null;  // Reset selected token
+                isAwaitingHexDestination = false;  // Reset hex destination flag
                 Debug.Log("MPDef: Cannot select this token to move. Either it's not a defender or it has already moved or is frozen due to previous header challenge.");
                 return;  // Reject attacker clicks or already moved tokens
             }
@@ -449,6 +454,8 @@ public class MovementPhaseManager : MonoBehaviour
                 // Maybe because a stunned token can only be a Defender?
             )
             {
+                selectedToken = null;  // Reset selected token
+                isAwaitingHexDestination = false;  // Reset hex destination flag
                 Debug.Log("MP2f2:Cannot select this token to move. Either it's not an attacker or it has already moved or is frozen due to previous header challenge.");
                 return;
             }
@@ -1729,6 +1736,22 @@ public class MovementPhaseManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (goalKeeperManager.isActivated) return "";
+        if (finalThirdManager.isActivated) return "";
+        if (shotManager.isActivated) return "";
+        if (isAvailable) sb.Append("Press [M] to start a Movement Phase, ");
+        if (isActivated) sb.Append("MP: ");
+        if (lookingForNutmegVictim) sb.Append("Click on one of the Nutmeggable Defenders to choose which one to nutmeg, ");
+        if (isAwaitingTokenSelection) sb.Append("Click on a Token to Select them for Movement!, ");
+        if (isAwaitingHexDestination) sb.Append($"Click on a Free Hex to move {selectedToken.name} there!, ");
+        if (isWaitingForSnapshotDecision) sb.Append($"Press [S] to take a Snapshot, ");
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
+        return sb.ToString();
+    }
     public bool IsDribblerinOpponentPenaltyBox(PlayerToken token)
     {
         bool DribberIsInOpponentPenaltyBox = false;

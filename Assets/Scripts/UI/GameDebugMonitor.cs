@@ -26,10 +26,12 @@ public class GameDebugMonitor : MonoBehaviour
 
     [Header("UI Elements")]
     public TextMeshProUGUI debugText;
+    public TextMeshProUGUI instructionText;
 
     [Header("Toggles")]
     public bool isVisible = true;
     private StringBuilder builder = new();
+    private StringBuilder instruction = new();
 
     private void OnEnable()
     {
@@ -50,14 +52,14 @@ public class GameDebugMonitor : MonoBehaviour
             Debug.Log($"🪧 GameDebugMonitor visibility toggled: {isVisible}");
         }
 
-        // You can also add key combinations for custom debug commands here
     }
 
     void Update()
     {
+        UpdateInstructionText();
         if (isVisible)
         {
-            UpdateDisplay();
+            UpdateDebugDisplay();
         }
         else
         {
@@ -121,7 +123,7 @@ public class GameDebugMonitor : MonoBehaviour
         }
     }
 
-    private void UpdateDisplay()
+    private void UpdateDebugDisplay()
     {
         builder.Clear();
         builder.AppendLine("<b>GAME STATUS</b>");
@@ -140,5 +142,15 @@ public class GameDebugMonitor : MonoBehaviour
         builder.AppendLine(finalThirdManager.GetDebugStatus());
 
         debugText.text = builder.ToString();
+    }
+
+    private void UpdateInstructionText()
+    {
+        instruction.Clear();
+        instruction.Append(finalThirdManager.GetInstructions());
+        instruction.Append(movementPhaseManager.GetInstructions());
+        instruction.Append(goalKeeperManager.GetInstructions());
+
+        instructionText.text = instruction.ToString();
     }
 }

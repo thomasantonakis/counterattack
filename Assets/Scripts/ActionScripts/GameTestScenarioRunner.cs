@@ -2539,9 +2539,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("MovementPhase With Fouled Interception and Play On");
     }
 
-    // TODO: Pass to player, move into interception, Foul, play advantage finish Movement phase
+    // TODO: Movement Phase
+
     // TODO: Pass to player
     //    , move with dribbler next to defender (no nutmeg, no interception)
+    //    , forfeit rest of movement
     //    , move defender away, with no tackle
     //    , move another defender for tackle
     //    , reposition attacker next to first defender verify no interception
@@ -2573,6 +2575,13 @@ public class GameTestScenarioRunner : MonoBehaviour
     //    , move dribbler for nutmeg, loose ball to space with no interceptions.
     // TODO: Pass to player
     //    , move dribbler for nutmeg, loose ball to space with failed interceptions.
+    // TODO: Pass to next to defenders, fail interceptions
+    //    , move attacker to pickup ball and nutmeg.
+
+    // TODO: Final Thirds
+    // TODO: High Pass
+    // TODO: Long Ball
+
     
     private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
     {

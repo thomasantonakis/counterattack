@@ -131,4 +131,13 @@ public class GoalKeeperManager : MonoBehaviour
         if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
+
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (isActivated) sb.Append("Defending GK is awarded a free move! Click on a highlighted hex to move, or Press [X] to stay there, ");
+        
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
+        return sb.ToString();
+    }
 }

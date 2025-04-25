@@ -385,4 +385,32 @@ public class FinalThirdManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (isActivated)
+        {
+            sb.Append("F3: ");
+            if (bothSides)
+            {
+                sb.Append("Both Sides will be played, ");
+                if (!thisIsTheSecond)
+                {
+                    sb.Append("current side first: ");
+                }
+                else
+                {
+                    sb.Append("opposite side now: ");
+                }
+            }
+        }
+        if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {currentTeamMoving} Team, to select for movement, ");
+        if (isWaitingForTargetHex) sb.Append($" or Click on a Hex to move {selectedToken} there, ");
+        if (isActivated) sb.Append($"Press [X] to Forfeit {currentTeamMoving}'s current F3 Move, ");
+        if (isWaitingForWhatToDo) sb.Append($"Press [D] to Drop the ball, or [K] to take a Goal Kick, ");
+        
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
+        return sb.ToString();
+    }
+
 }
