@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 
 public class HighPassManager : MonoBehaviour
 {
@@ -803,5 +804,30 @@ public class HighPassManager : MonoBehaviour
         gkReachableHexes.Clear();
         isActivated = false;
         // didGKMoveInDefPhase = false; // Reset in headerManager.FindEligibleHeaderTokens()
+    }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("HP: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (isWaitingForConfirmation) sb.Append("isAwaitingTargetSelection, ");
+        if (isWaitingForAttackerSelection) sb.Append("if (isWaitingForAttackerSelection, ");
+        if (isWaitingForAttackerMove) sb.Append("if (isWaitingForAttackerMove, ");
+        if (isWaitingForDefenderSelection) sb.Append("if (isWaitingForDefenderSelection, ");
+        if (isWaitingForDefenderMove) sb.Append("if (isWaitingForDefenderMove, ");
+        if (isWaitingForAccuracyRoll) sb.Append("isWaitingForAccuracyRoll, ");
+        if (isWaitingForDirectionRoll) sb.Append("isWaitingForDirectionRoll, ");
+        if (isWaitingForDistanceRoll) sb.Append("isWaitingForDistanceRoll, ");
+        if (isWaitingForDefGKChallengeDecision) sb.Append("isWaitingForDefGKChallengeDecision, ");
+        if (gkRushedOut) sb.Append("gkRushedOut, ");
+        if (didGKMoveInDefPhase) sb.Append("didGKMoveInDefPhase, ");
+        if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
+        if (lockedAttacker != null) sb.Append($"lockedAttacker: {lockedAttacker.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
     }
 }

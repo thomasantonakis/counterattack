@@ -1,3 +1,4 @@
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -738,4 +739,23 @@ public class FreeKickManager : MonoBehaviour
         ball.AdjustBallHeightBasedOnOccupancy();
         yield return null;
     }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("FK: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isWaitingForKickerSelection) sb.Append("isWaitingForKickerSelection, ");
+        if (isWaitingForSetupPhase) sb.Append("isWaitingForSetupPhase, ");
+        if (isWaitingforMovement3) sb.Append("isWaitingforMovement3, ");
+        if (isWaitingForFinalKickerSelection) sb.Append("isWaitingForFinalKickerSelection, ");
+        if (isWaitingForExecution) sb.Append("isWaitingForExecution, ");
+        if (isCornerKick) sb.Append("isCornerKick, ");
+        if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
 }

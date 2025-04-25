@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Text;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -654,5 +655,21 @@ public class GroundBallManager : MonoBehaviour
         // }
 
         // Debug.Log($"Log saved to: {filePath}");
+    }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("GBM: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (isAwaitingTargetSelection) sb.Append("isAwaitingTargetSelection, ");
+        if (isWaitingForDiceRoll) sb.Append("isWaitingForDiceRoll, ");
+        if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
+        // if (defendingHexes.Count == 0) sb.Append($"defendingHexes: {defendingHexes}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
     }
 }

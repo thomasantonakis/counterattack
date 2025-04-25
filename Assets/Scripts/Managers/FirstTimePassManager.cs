@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Text;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -729,4 +730,22 @@ public class FirstTimePassManager : MonoBehaviour
         // Debug.Log($"Log saved to: {filePath}");
     }
 
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("FTP: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (isAwaitingTargetSelection) sb.Append("isAwaitingTargetSelection, ");
+        if (isWaitingForAttackerSelection) sb.Append("isWaitingForAttackerSelection, ");
+        if (isWaitingForAttackerMove) sb.Append("isWaitingForAttackerMove, ");
+        if (isWaitingForDefenderSelection) sb.Append("isWaitingForDefenderSelection, ");
+        if (isWaitingForDefenderMove) sb.Append("isWaitingForDefenderMove, ");
+        if (isWaitingForDiceRoll) sb.Append("isWaitingForDiceRoll, ");
+        if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
 }

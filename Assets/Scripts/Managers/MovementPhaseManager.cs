@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using System.Threading.Tasks;
 using UnityEngine.Analytics;
 using System;
+using System.Text;
 using UnityEditor.Experimental.GraphView;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting.Dependencies.Sqlite;
@@ -1693,6 +1694,40 @@ public class MovementPhaseManager : MonoBehaviour
         StartTackleDiceRollSequence();
     }
     
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("MP: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (isMovementPhaseAttack) sb.Append("isMovementPhaseAttack, ");
+        if (isMovementPhaseDef) sb.Append("isMovementPhaseDef, ");
+        if (isMovementPhase2f2) sb.Append("isMovementPhase2f2, ");
+        if (isAwaitingTokenSelection) sb.Append("isAwaitingTokenSelection, ");
+        if (isAwaitingHexDestination) sb.Append("isAwaitingHexDestination, ");
+        if (isBallPickable) sb.Append("isBallPickable, ");
+        if (isPlayerMoving) sb.Append("isPlayerMoving, ");
+        if (isDribblerRunning) sb.Append("isDribblerRunning, ");
+        if (tokenPickedUpBall) sb.Append("tokenPickedUpBall, ");
+        if (isWaitingForInterceptionDiceRoll) sb.Append("isWaitingForInterceptionDiceRoll, ");
+        if (isWaitingForTackleDecision) sb.Append("isWaitingForTackleDecision, ");
+        if (isWaitingForTackleDecisionWithoutMoving) sb.Append("isWaitingForTackleDecisionWithoutMoving, ");
+        if (isWaitingForTackleRoll) sb.Append("isWaitingForTackleRoll, ");
+        if (isWaitingForSnapshotDecision) sb.Append("isWaitingForSnapshotDecision, ");
+        if (isWaitingForReposition) sb.Append("isWaitingForReposition, ");
+        if (isWaitingForYellowCardRoll) sb.Append("isWaitingForYellowCardRoll, ");
+        if (isWaitingForInjuryRoll) sb.Append("isWaitingForInjuryRoll, ");
+        if (isWaitingForFoulDecision) sb.Append("isWaitingForFoulDecision, ");
+        if (isWaitingForNutmegDecision) sb.Append("isWaitingForNutmegDecision, ");
+        if (isWaitingForNutmegDecisionWithoutMoving) sb.Append("isWaitingForNutmegDecisionWithoutMoving, ");
+        if (lookingForNutmegVictim) sb.Append("lookingForNutmegVictim, ");
+        if (isNutmegInProgress) sb.Append("isNutmegInProgress, ");
+        if (selectedToken != null) sb.Append($"selectedToken: {selectedToken.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
 
     public bool IsDribblerinOpponentPenaltyBox(PlayerToken token)
     {

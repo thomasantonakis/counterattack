@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 using System.Threading.Tasks;
 
 public class GoalKeeperManager : MonoBehaviour
@@ -120,4 +121,14 @@ public class GoalKeeperManager : MonoBehaviour
         }
     }
 
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("GK: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
@@ -346,7 +347,7 @@ public class GameInputManager : MonoBehaviour
         //     HandleMouseInputForF3();
         //     return;
         // }
-        if (shotManager.isShotInProgress)
+        if (shotManager.isActivated)
         {
             if (movementPhaseManager.isWaitingForSnapshotDecision)
             {
@@ -1433,5 +1434,19 @@ public class GameInputManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         SimulateKeyDataPress(key);
+    }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("GIM: ");
+
+        if (clickedToken != null) sb.Append($"clickedToken: {clickedToken.name}, ");
+        if (clickedHex != null) sb.Append($"clickedHex: {clickedHex.name}, ");
+        if (hoveredToken != null) sb.Append($"hoveredToken: {hoveredToken.name}, ");
+        if (hoveredHex != null) sb.Append($"hoveredHex: {hoveredHex.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
     }
 }
