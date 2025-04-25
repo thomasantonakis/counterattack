@@ -31,4 +31,37 @@ public class HelperFunctions : MonoBehaviour
         }
         return (roll, isJackpot);
     }
+
+    public string PrintListNamesOneLine<T>(List<T> list)
+    {
+        if (list == null || list.Count == 0)
+            return "(empty)";
+
+        var builder = new System.Text.StringBuilder();
+        for (int i = 0; i < list.Count; i++)
+        {
+            var item = list[i];
+            if (item == null)
+            {
+                builder.Append("(null)");
+            }
+            else
+            {
+                var nameProperty = item.GetType().GetProperty("name");
+                if (nameProperty != null)
+                {
+                    var nameValue = nameProperty.GetValue(item);
+                    builder.Append(nameValue != null ? nameValue.ToString() : "(unnamed)");
+                }
+                else
+                {
+                    builder.Append(item.ToString()); // fallback if no 'name' exists
+                }
+            }
+
+            if (i < list.Count - 1)
+                builder.Append(", ");
+        }
+        return builder.ToString();
+    }
 }

@@ -3935,7 +3935,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   isAvailable: 0
-  isShotInProgress: 0
+  isActivated: 0
   isWaitingforBlockerSelection: 0
   isWaitingforBlockerMovement: 0
   isWaitingForTargetSelection: 0

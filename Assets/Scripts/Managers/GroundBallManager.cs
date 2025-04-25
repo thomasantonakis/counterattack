@@ -667,9 +667,10 @@ public class GroundBallManager : MonoBehaviour
         if (isAwaitingTargetSelection) sb.Append("isAwaitingTargetSelection, ");
         if (isWaitingForDiceRoll) sb.Append("isWaitingForDiceRoll, ");
         if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
-        // if (defendingHexes.Count == 0) sb.Append($"defendingHexes: {defendingHexes}, ");
+        if (defendingHexes.Count != 0) sb.Append($"defendingHexes: {helperFunctions.PrintListNamesOneLine(defendingHexes)}, ");
 
         if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
+
 }
