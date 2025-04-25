@@ -365,14 +365,14 @@ public class GameInputManager : MonoBehaviour
                     if (movementPhaseManager.isActivated) movementPhaseManager.AdvanceMovementPhase();
                 }
             }
-            if (shotManager.isWaitingforBlockerSelection)
-            {
-                if (Input.GetKeyDown(KeyCode.X))
-                {
-                    shotManager.CompleteDefenderMovement();
-                }
-            }
-            StartCoroutine(HandleMouseInputForSnapMovement());
+            // if (shotManager.isWaitingforBlockerSelection)
+            // {
+            //     if (Input.GetKeyDown(KeyCode.X))
+            //     {
+            //         shotManager.CompleteDefenderMovement();
+            //     }
+            // }
+            // StartCoroutine(HandleMouseInputForSnapMovement());
         }
         else
         {
@@ -981,103 +981,103 @@ public class GameInputManager : MonoBehaviour
     //     }
     // }
     
-    public IEnumerator HandleMouseInputForSnapMovement()
-    {
-        if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
-        {
-            Debug.Log("HandleMouseInputForSnapMovement called on click");
+    // public IEnumerator HandleMouseInputForSnapMovement()
+    // {
+    //     if (Input.GetMouseButtonDown(0))  // Only respond to left mouse click (not every frame)
+    //     {
+    //         Debug.Log("HandleMouseInputForSnapMovement called on click");
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+    //         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //         RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                Debug.Log("Raycast hit something");
-                var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
-                if (isOOBClicked)
-                {
-                   Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
-                   yield break;
-                }
+    //         if (Physics.Raycast(ray, out hit))
+    //         {
+    //             Debug.Log("Raycast hit something");
+    //             var (inferredTokenFromClick, inferredHexCellFromClick, isOOBClicked) = DetectTokenOrHexClicked(hit);
+    //             if (isOOBClicked)
+    //             {
+    //                Debug.LogWarning("Out Of Bounds Plane hit, rejecting click");
+    //                yield break;
+    //             }
 
-                // // Check if a player token was clicked
-                // PlayerToken token = hit.collider.GetComponent<PlayerToken>();
-                // HexCell clickedHex = hit.collider.GetComponent<HexCell>();
-                // PlayerToken tokenOnHex = clickedHex?.GetOccupyingToken();
-                // PlayerToken inferredToken = token ?? tokenOnHex ?? null;
+    //             // // Check if a player token was clicked
+    //             // PlayerToken token = hit.collider.GetComponent<PlayerToken>();
+    //             // HexCell clickedHex = hit.collider.GetComponent<HexCell>();
+    //             // PlayerToken tokenOnHex = clickedHex?.GetOccupyingToken();
+    //             // PlayerToken inferredToken = token ?? tokenOnHex ?? null;
 
-                if (inferredTokenFromClick != null && shotManager.isWaitingforBlockerSelection)
-                {
-                    Debug.Log($"PlayerToken {inferredTokenFromClick.name} clicked, for Snapshot");
+    //             if (inferredTokenFromClick != null && shotManager.isWaitingforBlockerSelection)
+    //             {
+    //                 Debug.Log($"PlayerToken {inferredTokenFromClick.name} clicked, for Snapshot");
 
-                    // Attacker Phase: Ensure the token is an attacker
-                    if (!inferredTokenFromClick.isAttacker)
-                    {
-                        // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
-                        if (shotManager.tokenMoveforDeflection != null && shotManager.tokenMoveforDeflection != inferredTokenFromClick)
-                        {
-                            Debug.Log($"Switching Defender selection to {inferredTokenFromClick.name}. Clearing previous highlights.");
-                            hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
-                        }
+    //                 // Attacker Phase: Ensure the token is an attacker
+    //                 if (!inferredTokenFromClick.isAttacker)
+    //                 {
+    //                     // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
+    //                     if (shotManager.tokenMoveforDeflection != null && shotManager.tokenMoveforDeflection != inferredTokenFromClick)
+    //                     {
+    //                         Debug.Log($"Switching Defender selection to {inferredTokenFromClick.name}. Clearing previous highlights.");
+    //                         hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
+    //                     }
 
-                        Debug.Log($"Selecting defender {inferredTokenFromClick.name}. Highlighting reachable hexes.");
-                        shotManager.tokenMoveforDeflection = inferredTokenFromClick;  // Set selected token
-                        movementPhaseManager.HighlightValidMovementHexes(inferredTokenFromClick, 2);  // Highlight reachable hexes within 3 moves
-                        shotManager.isWaitingforBlockerSelection = false;
-                        shotManager.isWaitingforBlockerMovement = true;
-                        yield return null;
-                    }
-                    else {
-                        Debug.LogWarning("Attacker clicked, while waiting for a defender to select.");
-                    }
-                }
+    //                     Debug.Log($"Selecting defender {inferredTokenFromClick.name}. Highlighting reachable hexes.");
+    //                     shotManager.tokenMoveforDeflection = inferredTokenFromClick;  // Set selected token
+    //                     movementPhaseManager.HighlightValidMovementHexes(inferredTokenFromClick, 2);  // Highlight reachable hexes within 3 moves
+    //                     shotManager.isWaitingforBlockerSelection = false;
+    //                     shotManager.isWaitingforBlockerMovement = true;
+    //                     yield return null;
+    //                 }
+    //                 else {
+    //                     Debug.LogWarning("Attacker clicked, while waiting for a defender to select.");
+    //                 }
+    //             }
 
-                if (inferredHexCellFromClick != null && shotManager.isWaitingforBlockerMovement)
-                {
-                    Debug.Log($"Hex clicked: {inferredHexCellFromClick.name}");
+    //             if (inferredHexCellFromClick != null && shotManager.isWaitingforBlockerMovement)
+    //             {
+    //                 Debug.Log($"Hex clicked: {inferredHexCellFromClick.name}");
 
-                    // Ensure the hex is within the highlighted valid movement hexes
-                    if (
-                        hexGrid.highlightedHexes.Contains(inferredHexCellFromClick)
-                        && !inferredHexCellFromClick.isAttackOccupied
-                        && !inferredHexCellFromClick.isDefenseOccupied
-                        && !inferredHexCellFromClick.isOutOfBounds
-                    )
-                    {
-                        if (shotManager.tokenMoveforDeflection != null)
-                        {
-                            Debug.Log($"Moving {shotManager.tokenMoveforDeflection.name} to hex {inferredHexCellFromClick.coordinates}");
+    //                 // Ensure the hex is within the highlighted valid movement hexes
+    //                 if (
+    //                     hexGrid.highlightedHexes.Contains(inferredHexCellFromClick)
+    //                     && !inferredHexCellFromClick.isAttackOccupied
+    //                     && !inferredHexCellFromClick.isDefenseOccupied
+    //                     && !inferredHexCellFromClick.isOutOfBounds
+    //                 )
+    //                 {
+    //                     if (shotManager.tokenMoveforDeflection != null)
+    //                     {
+    //                         Debug.Log($"Moving {shotManager.tokenMoveforDeflection.name} to hex {inferredHexCellFromClick.coordinates}");
 
-                            // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, shotManager.tokenMoveforDeflection, false));  // Pass the selected token
-                            shotManager.CompleteDefenderMovement();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("No token selected to move.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Clicked hex is not a valid movement target.");
-                    }
-                }
-                else if (
-                    inferredHexCellFromClick != null // we clicked a Hex
-                    && shotManager.isWaitingForTargetSelection // We are indeed waiting for a targetSelection
-                    && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick) // one of the target Hexes
-                )
-                {
-                    Debug.Log($"Valid selected Target Hex: {inferredHexCellFromClick.name}");
-                    shotManager.HandleTargetClick(inferredHexCellFromClick);                    
-                }
-                else
-                {
-                    Debug.LogWarning("No valid hex or token clicked.");
-                }
-            }
-        }
-    }
+    //                         // Move the selected token to the valid hex (use the highPassManager's selectedToken)
+    //                         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(inferredHexCellFromClick, shotManager.tokenMoveforDeflection, false));  // Pass the selected token
+    //                         shotManager.CompleteDefenderMovement();
+    //                     }
+    //                     else
+    //                     {
+    //                         Debug.LogWarning("No token selected to move.");
+    //                     }
+    //                 }
+    //                 else
+    //                 {
+    //                     Debug.LogWarning("Clicked hex is not a valid movement target.");
+    //                 }
+    //             }
+    //             else if (
+    //                 inferredHexCellFromClick != null // we clicked a Hex
+    //                 && shotManager.isWaitingForTargetSelection // We are indeed waiting for a targetSelection
+    //                 && hexGrid.highlightedHexes.Contains(inferredHexCellFromClick) // one of the target Hexes
+    //             )
+    //             {
+    //                 Debug.Log($"Valid selected Target Hex: {inferredHexCellFromClick.name}");
+    //                 shotManager.HandleTargetClick(inferredHexCellFromClick);                    
+    //             }
+    //             else
+    //             {
+    //                 Debug.LogWarning("No valid hex or token clicked.");
+    //             }
+    //         }
+    //     }
+    // }
 
     // private void HandleAttackerHeaderSelectionInput()
     // {

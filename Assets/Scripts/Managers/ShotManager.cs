@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 using UnityEngine.Analytics;
 using System;
 using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
+using System.Data.Common;
+using System.Threading.Tasks;
 
 public class ShotManager : MonoBehaviour
 {
@@ -58,16 +60,77 @@ public class ShotManager : MonoBehaviour
         }
         if (!isWaitingForBlockDiceRoll && isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));  // Pass the stored list
+            StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
         }
         if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(StartShotRoll());  // Pass the stored list
+            StartCoroutine(StartShotRoll());
         }
         if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(ResolveHandlingTest());
         }
+    }
+
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated) return;
+        HandleClicksForSnapMovement(token, hex);
+    }
+
+    private void OnKeyReceived(KeyPressData keyData)
+    {
+        if (keyData.isConsumed) return;
+        if (!isActivated) return;
+        if (isWaitingForBlockDiceRoll && keyData.key == KeyCode.R)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            StartCoroutine(StartShotBlockRoll());  // Pass the stored list
+            return;
+        }
+        else if (isWaitingForGKDiceRoll && keyData.key == KeyCode.R)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
+            return;
+        }
+        else if (isWaitingForShotRoll && keyData.key == KeyCode.R)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            StartCoroutine(StartShotRoll());
+            return;
+        }
+        else if (isWaitingforHandlingTest && keyData.key == KeyCode.R)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            StartCoroutine(ResolveHandlingTest());
+            return;
+        }
+        else if (isWaitingforBlockerSelection && keyData.key == KeyCode.R)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            StartDefenderMovementPhase();
+            return;
+        }
+        else if (isWaitingForTargetSelection && keyData.key == KeyCode.X)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            CompleteDefenderMovement();
+            return;
+        }
+
     }
     
     public void StartShotProcess(PlayerToken shootingToken, string shotType)
@@ -117,6 +180,78 @@ public class ShotManager : MonoBehaviour
                 MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: "shotO");
             }
             HandleTargetSelection();
+        }
+    }
+
+    private async void HandleClicksForSnapMovement(PlayerToken token, HexCell hex)
+    {
+        if (token != null && isWaitingforBlockerSelection)
+        {
+            Debug.Log($"PlayerToken {token.name} clicked, for Snapshot");
+
+            // Attacker Phase: Ensure the token is an attacker
+            if (!token.isAttacker)
+            {
+                // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
+                if (tokenMoveforDeflection != null && tokenMoveforDeflection != token)
+                {
+                    Debug.Log($"Switching Defender selection to {token.name}. Clearing previous highlights.");
+                    hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
+                }
+
+                Debug.Log($"Selecting defender {token.name}. Highlighting reachable hexes.");
+                tokenMoveforDeflection = token;  // Set selected token
+                movementPhaseManager.HighlightValidMovementHexes(token, 2);  // Highlight reachable hexes within 3 moves
+                isWaitingforBlockerSelection = false;
+                isWaitingforBlockerMovement = true;
+            }
+            else {
+                Debug.LogWarning("Attacker clicked, while waiting for a defender to select.");
+            }
+        }
+
+        if (hex != null && isWaitingforBlockerMovement)
+        {
+            Debug.Log($"Hex clicked: {hex.name}");
+
+            // Ensure the hex is within the highlighted valid movement hexes
+            if (
+                hexGrid.highlightedHexes.Contains(hex)
+                && !hex.isAttackOccupied
+                && !hex.isDefenseOccupied
+                && !hex.isOutOfBounds
+            )
+            {
+                if (tokenMoveforDeflection != null)
+                {
+                    Debug.Log($"Moving {tokenMoveforDeflection.name} to hex {hex.coordinates}");
+
+                    // Move the selected token to the valid hex (use the highPassManager's selectedToken)
+                    await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, tokenMoveforDeflection, false));  // Pass the selected token
+                    CompleteDefenderMovement();
+                }
+                else
+                {
+                    Debug.LogWarning("No token selected to move.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Clicked hex is not a valid movement target.");
+            }
+        }
+        else if (
+            hex != null // we clicked a Hex
+            && isWaitingForTargetSelection // We are indeed waiting for a targetSelection
+            && hexGrid.highlightedHexes.Contains(hex) // one of the target Hexes
+        )
+        {
+            Debug.Log($"Valid selected Target Hex: {hex.name}");
+            HandleTargetClick(hex);                    
+        }
+        else
+        {
+            Debug.LogWarning("No valid hex or token clicked.");
         }
     }
 
