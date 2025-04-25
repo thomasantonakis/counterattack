@@ -427,7 +427,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("🎉 ALL TESTS PASSED SUCCESSFULLY!");
     }
 
-    private void LinkRoomSceneComponents()
+    public void LinkRoomSceneComponents()
     {
         // Attempt to assign all managers
         gameInputManager = FindObjectOfType<GameInputManager>();

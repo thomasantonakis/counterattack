@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
+using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -628,6 +629,26 @@ public class LongBallManager : MonoBehaviour
         isWaitingForInterceptionRoll = false;
         isWaitingForDefLBMove = false;
         currentTargetHex = null;
+    }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("LONG: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (isAwaitingTargetSelection) sb.Append("isAwaitingTargetSelection, ");
+        if (isDangerous) sb.Append("isDangerous, ");
+        if (isWaitingForAccuracyRoll) sb.Append("isWaitingForAccuracyRoll, ");
+        if (isWaitingForDirectionRoll) sb.Append("isWaitingForDirectionRoll, ");
+        if (isWaitingForDistanceRoll) sb.Append("isWaitingForDistanceRoll, ");
+        if (isWaitingForInterceptionRoll) sb.Append("isWaitingForInterceptionRoll, ");
+        if (isWaitingForDefLBMove) sb.Append("isWaitingForDefLBMove, ");
+        if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
     }
 
 }

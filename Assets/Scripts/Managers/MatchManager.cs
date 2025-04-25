@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;  // For JsonConvert
 using System.Linq;
+using System.Text;
 using System.Net.WebSockets;
 using System.Text.RegularExpressions;
 
@@ -1412,4 +1413,18 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("MM: ");
+
+        sb.Append($"currentState: {currentState}, ");
+        sb.Append($"currentState: {teamInAttack}, ");
+        if (attackHasPossession) sb.Append($"attackHasPossession, ");
+        if (LastTokenToTouchTheBallOnPurpose != null) sb.Append($"LastTokenToTouchTheBallOnPurpose: {LastTokenToTouchTheBallOnPurpose.name}, ");
+        if (PreviousTokenToTouchTheBallOnPurpose != null) sb.Append($"PreviousTokenToTouchTheBallOnPurpose: {PreviousTokenToTouchTheBallOnPurpose.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
 }

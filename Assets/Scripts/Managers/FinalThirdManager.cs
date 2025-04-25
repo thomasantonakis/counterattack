@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Text;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -365,4 +366,23 @@ public class FinalThirdManager : MonoBehaviour
         string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
         Debug.Log($"{gkWithBall} will take a Gk High pass, Please click on any hex except from the oposite Final Third to target.");
     }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("F3: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (bothSides) sb.Append("bothSides, ");
+        if (isWaitingForTokenSelection) sb.Append("isWaitingForTokenSelection, ");
+        if (isWaitingForTargetHex) sb.Append("isWaitingForTargetHex, ");
+        if (isWaitingForWhatToDo) sb.Append("isWaitingForWhatToDo, ");
+        if (thisIsTheSecond) sb.Append("thisIsTheSecond, ");
+        if (currentTeamMoving == "") sb.Append($"currentTeamMoving: {currentTeamMoving}, ");
+        if (selectedToken != null) sb.Append($"selectedToken: {selectedToken.name}, ");
+        
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
 }

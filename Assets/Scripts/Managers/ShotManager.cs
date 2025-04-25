@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Unity.VisualScripting;
 using UnityEngine.Analytics;
 using System;
@@ -23,7 +24,7 @@ public class ShotManager : MonoBehaviour
     public Ball ball;
     [Header("Flags")]
     public bool isAvailable = false;
-    public bool isShotInProgress = false;  // Tracks if a shot is active
+    public bool isActivated = false;  // Tracks if a shot is active
     public bool isWaitingforBlockerSelection = false;  // Tracks if we are waiting to select a blocker
     public bool isWaitingforBlockerMovement = false;  // Tracks if we are waiting for the selected blocker to move
     public bool isWaitingForTargetSelection = false;  // Tracks if we are waiting for shot target selection
@@ -92,7 +93,7 @@ public class ShotManager : MonoBehaviour
 
         shooter = shootingToken;
         this.shotType = shotType;
-        isShotInProgress = true;
+        isActivated = true;
 
         if (shotType == "snapshot")
         {
@@ -691,7 +692,7 @@ public class ShotManager : MonoBehaviour
 
     private void ResetShotProcess()
     {
-        isShotInProgress = false;
+        isActivated = false;
         isWaitingforBlockerSelection = false;
         isWaitingForBlockDiceRoll = false;
         isWaitingForShotRoll = false;
@@ -804,4 +805,28 @@ public class ShotManager : MonoBehaviour
         }
     }
 
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("Shot: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (isWaitingforBlockerSelection) sb.Append("isWaitingforBlockerSelection, ");
+        if (isWaitingforBlockerMovement) sb.Append("isWaitingforBlockerMovement, ");
+        if (isWaitingForTargetSelection) sb.Append("isWaitingForTargetSelection, ");
+        if (isWaitingForBlockDiceRoll) sb.Append("isWaitingForBlockDiceRoll, ");
+        if (isWaitingForShotRoll) sb.Append("isWaitingForShotRoll, ");
+        if (isWaitingForGKDiceRoll) sb.Append("isWaitingForGKDiceRoll, ");
+        if (isWaitingforHandlingTest) sb.Append("isWaitingforHandlingTest, ");
+        if (isWaitingForSaveandHoldScenario) sb.Append("isPlayerMoving, ");
+        if (gkWasOfferedMoveForBox) sb.Append("gkWasOfferedMoveForBox, ");
+        if (shotType != "") sb.Append($"shotType: {shotType}, ");
+        if (shooter != null) sb.Append($"shooter: {shooter.name}, ");
+        if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
+        if (saveHex != null) sb.Append($"saveHex: {saveHex.name}, ");
+
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
 }
