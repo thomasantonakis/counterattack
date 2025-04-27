@@ -299,8 +299,10 @@ public class MovementPhaseManager : MonoBehaviour
             if (keyData.key == KeyCode.N)
             {
                 CommitToAction();
+                hexGrid.ClearHighlightedHexes();
                 isWaitingForNutmegDecisionWithoutMoving = false;
                 isWaitingForSnapshotDecision = false;
+                isDribblerRunning = true;
                 Debug.Log($"Starting Nutmeg Process.");
                 StartNutmegVictimIdentification();
             }
@@ -414,6 +416,7 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Committing to Movement Phase action...");
         // TODO: add one action taken to the counter with an identifier
         isCommitted = true;  // Set the committed flag to true
+        MatchManager.Instance.currentState = MatchManager.GameState.MovementPhase;  // Update game state
         MatchManager.Instance.CommitToAction();
     }
 
@@ -794,9 +797,23 @@ public class MovementPhaseManager : MonoBehaviour
           // LOG The GOAL
           return;
         }
+        
                   
         if(isDribblerRunning)
         {
+            if (isNutmegInProgress)
+            {
+                Debug.Log($"Reducing {repositionWinner.name}'s remaining Pace by 2 due to the Nutmeg");
+                // TODO: Add log for two paces
+                remainingDribblerPace -=2;
+                remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
+                if (remainingDribblerPace == 0)
+                {
+                    isDribblerRunning = false;
+                    movedTokens.Add(repositionWinner);
+                    isAwaitingHexDestination = false;
+                }
+            }
             // HighlightValidMovementHexes(selectedToken, 1);
             // isAwaitingHexDestination = true;
             nutmeggableDefenders = GetNutmeggableDefenders(selectedToken, hexGrid);
@@ -1076,6 +1093,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log($"No more tokens moving in 2f2 phase. Ending Movement Phase.");
                 EndMovementPhase();
+                MatchManager.Instance.BroadcastSafeEndofMovementPhase();
             }
         }
         if (isMovementPhaseDef)
@@ -1127,7 +1145,7 @@ public class MovementPhaseManager : MonoBehaviour
                 eligibleDefs.Add(token);
             }
         }
-
+        if (eligibleDefs.Count() > 0) {Debug.Log($"Interception List: {string.Join(", ", eligibleDefs.Select(d => d.name))}");}
         return eligibleDefs;
     }
 
@@ -1326,33 +1344,32 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator PrepareAttackerReposition(PlayerToken attackerToken)
     {
-        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase2f2)
+        if (isMovementPhase2f2)
         {
             Debug.Log($"{selectedDefender.name} will be stunned in the next Movement Phase");
             stunnedforNext.Add(selectedDefender);
         }
-        else if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhaseAttack)
+        else if (isMovementPhaseAttack)
         {
             Debug.Log($"{selectedDefender.name} will be stunned in the Defensive Part of the Movement Phase");
             stunnedTokens.Add(selectedDefender);
         }
         Debug.Log($"{attackerToken.name} can reposition!");
-        if (isNutmegInProgress)
-        {
-            Debug.Log($"Reducing {attackerToken.name}'s remaining Pace by 2 due to the Nutmeg");
-            // TODO: Add log for two paces
-            remainingDribblerPace -=2;
-            remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
-            // Clamp remainingDribblerPaceto 0 and adjust isDribblerRunning accordingly.
-            if (remainingDribblerPace == 0) {isDribblerRunning = false;}
-        }
+        // if (isNutmegInProgress)
+        // {
+        //     Debug.Log($"Reducing {attackerToken.name}'s remaining Pace by 2 due to the Nutmeg");
+        //     // TODO: Add log for two paces
+        //     remainingDribblerPace -=2;
+        //     remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
+        //     // Clamp remainingDribblerPaceto 0 and adjust isDribblerRunning accordingly.
+        //     if (remainingDribblerPace == 0) {isDribblerRunning = false;}
+        // }
         repositionWinner = attackerToken;
         repositionLoser = selectedDefender;
         yield return StartCoroutine(HandlePostTackleReposition());
         if (isNutmegInProgress)
         {
             nutmegVictim = null;
-            isNutmegInProgress = false;
         }
     }
     
@@ -1368,16 +1385,21 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator HandlePostTackleReposition()
     {
-        Debug.Log($"{repositionWinner.name} won the tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there or Press X to stay put.");
         // Get the loser's hex and neighboring hexes
         FindRepositionHexes();
         if (isNutmegInProgress)
         {
-            Debug.Log("Leaving as repositionable Hexes only the nutmeggableHexes");
+            Debug.Log($"{repositionWinner.name} won the nutmeg tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there.");
+            // TODO: What if defense wins?
             HexCell winnerHex = repositionWinner.GetCurrentHex();
             HexCell[] nutmegHexesArray = winnerHex.GetNeighbors(hexGrid);
             List<HexCell> nutmegUnavailable = new List<HexCell>(nutmegHexesArray); // Convert array to list
             repositionHexes.RemoveAll(thomas => nutmegUnavailable.Contains(thomas));
+            // isNutmegInProgress = false;
+        }
+        else 
+        {
+            Debug.Log($"{repositionWinner.name} won the tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there or Press X to stay put.");
         }
         // Highlight repositioning options
         foreach (HexCell hex in repositionHexes)
@@ -1404,16 +1426,16 @@ public class MovementPhaseManager : MonoBehaviour
         }
         if (hex.isAttackOccupied || hex.isDefenseOccupied)
         {
-            Debug.LogWarning($"Hex {hex.coordinates} is already occupied. Repositioning failed.");
+            Debug.LogWarning($"Hex {hex.name} is already occupied. Repositioning failed.");
             return;  // Exit if the hex is already occupied
         }
         if (!repositionHexes.Contains(hex))
         {
-            Debug.LogWarning($"Hex {hex.coordinates} is not a valid repositioning option. Repositioning failed.");
+            Debug.LogWarning($"Hex {hex.name} is not a valid repositioning option. Repositioning failed.");
             return;  // Exit if the hex is not a valid repositioning option
         }
 
-        Debug.Log($"{repositionWinner.name} repositioning to {hex.coordinates}.");
+        Debug.Log($"{repositionWinner.name} repositioning to {hex.name}.");
         HexCell winnerHex = repositionWinner.GetCurrentHex();
         // the check seems to be redundant as before the call of this method, the Possession has been changed if needed
         if (repositionWinner.isAttacker)
@@ -1550,21 +1572,6 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Tackle phase reset.");
     }
 
-    // public void Deactivate()
-    // {
-    //     isActivated = false;
-    //     isAvailable = true;
-    //     isMovementPhaseAttack = false;
-    //     isMovementPhaseDef = false;
-    //     isMovementPhase2f2 = false;
-    //     isAwaitingTokenSelection = false;
-    //     isAwaitingHexDestination = false;
-    //     isBallPickable = false;
-    //     isDribblerRunning = false;
-    //     tokenPickedUpBall = false;
-    //     selectedToken = null;  // Reset selected token
-    //     hexGrid.ClearHighlightedHexes();  // Clear highlighted hexes
-    // }
     public void ResetMovementPhase()
     {
         movedTokens.Clear();  // Reset the list of moved tokens
@@ -1602,6 +1609,7 @@ public class MovementPhaseManager : MonoBehaviour
         stunnedforNext.Clear();
         headerManager.ResetHeader();  // Reset the header to free up unmovable players
         isActivated = false;
+        isCommitted = false;
         remainingDribblerPace = 0;  // Reset the remaining dribbler pace
         defendersTriedToIntercept.Clear();  // Clear the list of defenders who tried to intercept
         Debug.Log("Movement phase is over.");

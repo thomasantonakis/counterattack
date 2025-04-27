@@ -516,7 +516,7 @@ Pressing X for Leniency Test
 ✅ PASS: MP Should NOT be waiting for a foul decision after Leniency Roll | Expected: True | Actual: False
 Pressing X for Resilience Test
 ✅ PASS: MP Should be waiting for a foul decision after Foul Rolls | Expected: True | Actual: True
-Pressing F - to Play ON
+Pressing A - to Play ON
 ✅ PASS: MP Should NOT wait for a foul decision after Play On | Expected: False | Actual: False
 ✅ PASS: MP Should Be Waiting for a reposition after Play On | Expected: True | Actual: True
 Clicking (15, 0) Reposition Yaneva
@@ -605,5 +605,68 @@ Clicking (10, 12), Move 5.Murphy
 ✅ MovementPhase Check Reposition Interceptions - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #14 passed.
+
+
+==== Starting Test #15 ====
+▶️ Starting test scenario: MovementPhase Check NutmegWithoutMovement And then 2 more successful nutmegs
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (10, 0) Select Yaneva
+Clicking (9, 0) Move Yaneva 1 pace
+Clicking (8, 1) Move Yaneva 2nd pace
+Clicking (7, 1) Move Yaneva 3rd pace
+Clicking (6, 2) Move Yaneva 4th pace
+Clicking (5, 2) Move Yaneva 5th pace
+Pressing R to roll and Paterson and he fails!
+Pressing X to Forfeit Rest of Yaneva Pace
+Pressing X to Forfeit Rest of Attack Movement Phase
+Pressing X to Forfeit Defensive Movement Phase
+Pressing X to Forfeit 2f2 Attack Movement Phase
+✅ PASS: MovementPhase Complete Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing M to Start New Movement Phase
+Clicking (5, 2) Select Yaneva
+✅ PASS: MovementPhase Should be waiting for Nutmeg Decision without moving before moving Yaneva | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Another token selection after selecting Yaneva | Expected: False | Actual: True
+✅ PASS: MovementPhase Should be waiting Hex Destination after selecting Yaneva | Expected: False | Actual: True
+Pressing N to Nutmeg Paterson
+✅ PASS: MovementPhase Commitment Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MovementPhase Should NOT be waiting for Nutmeg Decision after calling Nutmeg | Expected: False | Actual: False
+✅ PASS: MovementPhase Should be waiting for takling Rolls after calling Nutmeg | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Reposition after Tackle Rolls | Expected: True | Actual: True
+✅ PASS: MovementPhase Paterson should be now stunned | Expected: True | Actual: True
+Clicking (3, 2) Reposition Yaneva after Nutmeg on Paterson
+✅ PASS: MovementPhase Should be waiting for Nutmeg Decision after Reposition Yaneva from paterson | Expected: True | Actual: True
+Pressing N to Nutmeg Gilbert
+✅ PASS: MovementPhase Should NOT be waiting for Nutmeg Decision after Call for Nutmeg on Gilbert | Expected: False | Actual: False
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls after Call for Nutmeg on Gilbert | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Reposition after Tackle Rolls | Expected: True | Actual: True
+✅ PASS: MovementPhase Gilbert should be now stunned | Expected: True | Actual: True
+✅ PASS: MovementPhase Paterson should be now stunned | Expected: True | Actual: True
+Clicking (3, 4) Reposition Yaneva after Nutmeg on Paterson
+✅ PASS: MovementPhase Should be waiting for Nutmeg Decision after Reposition Yaneva from Gilbert | Expected: True | Actual: True
+Pressing N to Nutmeg Stewart
+✅ PASS: MovementPhase Should NOT be waiting for Nutmeg Decision after Call for Nutmeg on Gilbert | Expected: False | Actual: False
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls after Call for Nutmeg on Gilbert | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Reposition after Tackle Rolls | Expected: True | Actual: True
+✅ PASS: MovementPhase Stewart should be now stunned | Expected: True | Actual: True
+✅ PASS: MovementPhase Gilbert should be now stunned | Expected: True | Actual: True
+✅ PASS: MovementPhase Paterson should be now stunned | Expected: True | Actual: True
+Clicking (4, 6) Reposition Yaneva after Nutmeg on Paterson
+✅ PASS: MP Should be waiting for Interception Roll after Rejected nutmeg | Expected: True | Actual: True
+✅ PASS: MP eligibleDefenders should contain 1 | Expected: 1 | Actual: 1
+✅ PASS: MP eligibleDefenders should contain Soares | Expected: 10. Soares (PlayerToken) | Actual: 9. McNulty (PlayerToken)
+Pressing R to roll and McNulty and he fails!
+✅ PASS: MovementPhase Yaneva should have 0 remaining pace after three successful nutmegs | Expected: True | Actual: True
+
+✅ MovementPhase Check NutmegWithoutMovement And then 2 more successful nutmegs - TEST PASSED COMPLETELY 🎉
+
+✅ Test #15 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

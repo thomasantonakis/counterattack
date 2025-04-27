@@ -16,6 +16,7 @@ public class MatchManager : MonoBehaviour
     {
         KickOffSetup, // Free movements of Players in each own Half
         KickoffBlown, // Only a Standard Pass is available
+        MovementPhase,
         EndOfMovementPhase,
         EndOfStandardPass,
         EndOfFirstTimePass,
@@ -24,10 +25,6 @@ public class MatchManager : MonoBehaviour
         WaitingForThrowInTaker, // An attacker must be chosen to take the throw in
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
-        MovementPhaseAttack,
-        MovementPhaseDef,
-        MovementPhase2f2,
-        // Repositioning,
         SuccessfulTackle,
         HighPassCompleted,
         HighPassAttackerMovement,
@@ -38,7 +35,6 @@ public class MatchManager : MonoBehaviour
         HeaderCompletedToPlayer,
         HeaderCompletedToSpace,
         FirstTimePassAttackerMovement,
-        FTPCompleted,
         FreeKickKickerSelect,
         FreeKickAttGK,
         FreeKickDefGK1,

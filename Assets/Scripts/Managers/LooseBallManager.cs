@@ -324,7 +324,7 @@ public class LooseBallManager : MonoBehaviour
                 MatchManager.Instance.ChangePossession();  
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
                 movementPhaseManager.EndMovementPhase(true); // Includes F3 check
-                MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+                MatchManager.Instance.BroadcastAnyOtherScenario();
              }
         }
         else if (!path.Last().isOutOfBounds)
@@ -335,13 +335,15 @@ public class LooseBallManager : MonoBehaviour
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
                 finalThirdManager.TriggerFinalThirdPhase();
                 Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starting a movement Phase");
-                MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
             }
             else if (!movementPhaseManager.isActivated)
             {
                 finalThirdManager.TriggerFinalThirdPhase();
                 Debug.LogWarning($"Loose ball is not picked up by anyone.{MatchManager.Instance.teamInAttack} Starts a movement Phase");
-                MatchManager.Instance.currentState = MatchManager.GameState.MovementPhaseAttack;
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
             }
             else if (movementPhaseManager.isActivated)
             {
