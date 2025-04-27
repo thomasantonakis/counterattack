@@ -21,7 +21,7 @@ public class FinalThirdManager : MonoBehaviour
     public bool bothSides = false;
     public bool isActivated = false;
     [SerializeField]
-    private string currentTeamMoving; // attack, defense
+    private string currentTeamMoving = null; // attack, defense
     [SerializeField]
     private PlayerToken selectedToken;
     [SerializeField]
@@ -367,6 +367,43 @@ public class FinalThirdManager : MonoBehaviour
         Debug.Log($"{gkWithBall} will take a Gk High pass, Please click on any hex except from the oposite Final Third to target.");
     }
 
+    private string GetTeamNameByCurrentTeamMoving()
+    {
+        if (MatchManager.Instance == null)
+        {
+            Debug.LogWarning("MatchManager instance is null!");
+            return "Unknown Team";
+        }
+
+        if (currentTeamMoving == "attack")
+        {
+            // If we are in "attack" mode, get the attacking team's name
+            if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
+            {
+                return MatchManager.Instance.gameData.gameSettings.homeTeamName;
+            }
+            else if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Away)
+            {
+                return MatchManager.Instance.gameData.gameSettings.awayTeamName;
+            }
+        }
+        else if (currentTeamMoving == "defense")
+        {
+            // If we are in "defense" mode, get the defending team's name
+            if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
+            {
+                return MatchManager.Instance.gameData.gameSettings.awayTeamName;
+            }
+            else if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Away)
+            {
+                return MatchManager.Instance.gameData.gameSettings.homeTeamName;
+            }
+        }
+        
+        Debug.LogWarning($"Unknown currentTeamMoving value: {currentTeamMoving}");
+        return "Unknown Team";
+    }
+
     public string GetDebugStatus()
     {
         StringBuilder sb = new();
@@ -378,7 +415,7 @@ public class FinalThirdManager : MonoBehaviour
         if (isWaitingForTargetHex) sb.Append("isWaitingForTargetHex, ");
         if (isWaitingForWhatToDo) sb.Append("isWaitingForWhatToDo, ");
         if (thisIsTheSecond) sb.Append("thisIsTheSecond, ");
-        if (currentTeamMoving == "") sb.Append($"currentTeamMoving: {currentTeamMoving}, ");
+        if (!string.IsNullOrEmpty(currentTeamMoving) && (currentTeamMoving == "attack" || currentTeamMoving == "defense")) sb.Append($"currentTeamMoving: {GetTeamNameByCurrentTeamMoving()}, ");
         if (selectedToken != null) sb.Append($"selectedToken: {selectedToken.name}, ");
         
         if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
@@ -404,9 +441,9 @@ public class FinalThirdManager : MonoBehaviour
                 }
             }
         }
-        if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {currentTeamMoving} Team, to select for movement, ");
-        if (isWaitingForTargetHex) sb.Append($" or Click on a Hex to move {selectedToken} there, ");
-        if (isActivated) sb.Append($"Press [X] to Forfeit {currentTeamMoving}'s current F3 Move, ");
+        if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {GetTeamNameByCurrentTeamMoving()}, to select for movement, ");
+        if (isWaitingForTargetHex) sb.Append($" or Click on a Hex to move {selectedToken.name} there, ");
+        if (isActivated) sb.Append($"Press [X] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
         if (isWaitingForWhatToDo) sb.Append($"Press [D] to Drop the ball, or [K] to take a Goal Kick, ");
         
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
