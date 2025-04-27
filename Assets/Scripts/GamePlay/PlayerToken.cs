@@ -240,7 +240,7 @@ public class PlayerToken : MonoBehaviour
         // Adjust target Y to ensure consistent ground level
         targetPosition.y = Mathf.Max(targetPosition.y, startPosition.y);
 
-        Debug.Log($"Starting movement. Initial Y: {startPosition.y}, Target Y: {targetPosition.y}");
+        // Debug.Log($"Starting movement. Initial Y: {startPosition.y}, Target Y: {targetPosition.y}");
 
         float travelDuration = 1.0f;
         float elapsedTime = 0;

@@ -1182,7 +1182,6 @@ public class MatchManager : MonoBehaviour
         shotManager.isAvailable = false;
     }
     
-
     public void UpdatePlayerTokensAfterPossessionChange()
     {
         foreach (PlayerToken token in playerTokenManager.allTokens)
@@ -1427,4 +1426,5 @@ public class MatchManager : MonoBehaviour
         if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
+
 }

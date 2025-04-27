@@ -527,4 +527,83 @@ Clicking (15, 0) Reposition Yaneva
 
 ✅ Test #13 passed.
 
+
+==== Starting Test #14 ====
+▶️ Starting test scenario: MovementPhase Check Reposition Interceptions
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (10, 0) Select Yaneva
+Clicking (9, 0) Move Yaneva 1 pace
+Clicking (8, 1) Move Yaneva 2nd pace
+Clicking (7, 1) Move Yaneva 3rd pace
+Clicking (6, 2) Move Yaneva 4th pace
+Clicking (5, 2) Move Yaneva 5th pace
+Pressing R to roll and Soares and he fails!
+Pressing X to Forfeit Rest of Yaneva Pace
+Pressing X to Forfeit Rest of Attack Movement Phase
+Clicking (4, 3) Select Paterson
+✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving before moving Paterson | Expected: True | Actual: True
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving before moving Paterson | Expected: False | Actual: False
+Clicking (6, 4) Move Paterson
+✅ PASS: MovementPhase Defenders Moved should be 1 after moving Paterson | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Defenders Moved should be 1 after moving Paterson | Expected: True | Actual: True
+Clicking (3, 3) Select Gilbert
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving after selecting Gilbert | Expected: False | Actual: False
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision after selecting Gilbert | Expected: False | Actual: False
+Clicking (5, 3) Move Gilbert
+✅ PASS: MovementPhase movedTokens should contain Gilbert | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Tackle Decision after moving Gilbert | Expected: True | Actual: True
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving | Expected: False | Actual: False
+Pressing T to Tackle Yaneva with Gilbert
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision after calling Tackle | Expected: False | Actual: False
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls after calling Tackle | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls | Expected: 6. Gilbert | Actual: 6. Gilbert
+✅ PASS: MovementPhase Should be waiting for Reposition after Tackle Rolls | Expected: True | Actual: True
+Clicking (5, 4) Reposition Yaneva
+✅ PASS: MovementPhase Should be waiting for Interception Rolls after Reposition Yaneva | Expected: True | Actual: True
+✅ PASS: MP eligibleDefenders should contain 2 | Expected: 2 | Actual: 2
+Pressing R to roll and Stewart and he fails!
+Pressing R to roll and McNulty and he fails!
+✅ PASS: MovementPhase Defenders Moved should be 2 after moving Gilbert and resolving his tackling | Expected: 2 | Actual: 2
+Clicking (5, 5) Select McNulty
+✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving when we select McNulty | Expected: True | Actual: True
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving when we select McNulty | Expected: False | Actual: False
+Pressing T to Tackle Yaneva with McNulty
+✅ PASS: MovementPhase movedTokens should contain McNulty | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving after calling Tackle | Expected: False | Actual: False
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls after calling Tackle with McNulty | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Reposition after Tackle Rolls | Expected: True | Actual: True
+Clicking (4, 6) Reposition Yaneva
+Pressing R to roll and Stewart and he fails!
+✅ PASS: MovementPhase Defenders Moved should be 3 after moving McNulty and resolving his tackling | Expected: 3 | Actual: 3
+Clicking (4, 5) Select Stewart
+✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving when we select Stewart | Expected: True | Actual: True
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving when we select Stewart | Expected: False | Actual: False
+Clicking (0, 7) Move Stewart away
+✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving when we move Stewart away | Expected: False | Actual: False
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving when we move Stewart away | Expected: False | Actual: False
+✅ PASS: MovementPhase Defenders Moved should be 4 after moving Stewart | Expected: 4 | Actual: 4
+Pressing X to Forfeit Rest of Defense Movement Phase
+✅ PASS: MovementPhase Defenders Moved should be 5 after forfeting 5th move | Expected: 5 | Actual: 5
+Clicking (-6, -6), 10.Noruega
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Noruega | Expected: True | Actual: True
+Clicking (-8, -6), Move 10.Noruega
+✅ PASS: MP - 1 2f2 moved | Expected: 1 | Actual: 1
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Noruega | Expected: False | Actual: False
+Clicking (12, 12), 5.Murphy
+✅ PASS: MP Should be waiting for Hex Destination after Clicking on Muprhy | Expected: True | Actual: True
+Clicking (10, 12), Move 5.Murphy
+✅ PASS: MovementPhase Complete Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ MovementPhase Check Reposition Interceptions - TEST PASSED COMPLETELY 🎉
+
+✅ Test #14 passed.
+
 🎉 ALL TESTS PASSED SUCCESSFULLY!

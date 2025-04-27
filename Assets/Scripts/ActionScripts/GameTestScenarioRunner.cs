@@ -58,22 +58,9 @@ public class GameStatusSnapshot
     public HexCell lbmCurrentTargetHex;
 
     public GameStatusSnapshot(
-        GroundBallManager gbm
-        , FirstTimePassManager ftp
-        , HighPassManager hpm
-        , LongBallManager lbm
-        , MovementPhaseManager mpm
-        , FinalThirdManager ftm
-        , HeaderManager hdm
-        , LooseBallManager loose
-        , OutOfBoundsManager obob
-        , FreeKickManager fkm
-        , ShotManager shot
-        , GoalKeeperManager gkm
-        , GoalFlowManager gfm
-        , KickoffManager kom
-        , HexGrid hg
-        , GameInputManager gim
+        GroundBallManager gbm, FirstTimePassManager ftp, HighPassManager hpm, LongBallManager lbm, MovementPhaseManager mpm
+        , FinalThirdManager ftm, HeaderManager hdm, LooseBallManager loose, OutOfBoundsManager obob, FreeKickManager fkm
+        , ShotManager shot, GoalKeeperManager gkm, GoalFlowManager gfm, KickoffManager kom, HexGrid hg, GameInputManager gim
     )
     {
         gbmAvailable = gbm.isAvailable;
@@ -392,11 +379,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
             Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
             Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),            
+            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
             Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
             Scenario_011_Movement_Phase_Successful_Interception(),
             Scenario_012_Movement_Phase_interception_Foul_take_foul(),
             Scenario_013_Movement_Phase_interception_Foul_Play_on(),
+            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
             // Add more scenarios here
         };
 
@@ -2060,12 +2048,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
         Log("Clicking (12, 1) Move Yaneva 2nd pace");
         yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Clicking (16, -1) Move GK for Box entrance");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -1), 0.5f));
         yield return new WaitForSeconds(1.2f); // for the token to move
-        Log("Clicking (16, -1) Move GK for Box entrance");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 0), 0.5f));
         Log("Clicking (13, 0) Move Yaneva 3rd pace");
-        yield return new WaitForSeconds(1.2f); // for the token to move
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 0), 0.5f));
+        yield return new WaitForSeconds(1.9f); // for the token to move
         AssertTrue(
             movementPhaseManager.isWaitingForNutmegDecision,
             "MP Should be waiting for nutmeg decision when Yaneva moves next to Soares",
@@ -2086,7 +2074,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             defender
         );
         Log("Pressing X to not Nutmeg Soares");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.9f));
         yield return new WaitForSeconds(0.1f); // for the token to move
         AssertTrue(
             movementPhaseManager.isWaitingForInterceptionDiceRoll,
@@ -2486,7 +2474,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             movementPhaseManager.isWaitingForFoulDecision
         );
-        Log("Pressing F - to Play ON");
+        Log("Pressing A - to Play ON");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
         yield return new WaitForSeconds(0.5f);
         // AssertTrue(
@@ -2539,19 +2527,328 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("MovementPhase With Fouled Interception and Play On");
     }
 
+    private IEnumerator Scenario_014_Movement_Phase_Check_reposition_interceptions()
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: MovementPhase Check Reposition Interceptions");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) again");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        Log("Wait for the ball to move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Attack FinalThird");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X - Forfeit Defense FinalThird");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        Log("Pressing M - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) Select Yaneva");
+        Log("Clicking (9, 0) Move Yaneva 1 pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(9, 0), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Clicking (8, 1) Move Yaneva 2nd pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(8, 1), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Clicking (7, 1) Move Yaneva 3rd pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(7, 1), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Clicking (6, 2) Move Yaneva 4th pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 2), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Clicking (5, 2) Move Yaneva 5th pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 2), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        Log("Pressing R to roll and Soares and he fails!");
+        StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(2));
+        Log("Pressing X to Forfeit Rest of Yaneva Pace");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to Forfeit Rest of Attack Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Clicking (4, 3) Select Paterson");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 3), 0.5f));
+        AssertTrue(
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should be waiting for Tackle Decision without moving before moving Paterson",
+            true,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should NOT be waiting for Tackle Decision without moving before moving Paterson",
+            false,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        Log("Clicking (6, 4) Move Paterson");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 4), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 1,
+            "MovementPhase Defenders Moved should be 1 after moving Paterson",
+            1,
+            movementPhaseManager.defendersMoved
+        );
+        var paterson = PlayerToken.GetPlayerTokenByName("Paterson");
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(paterson),
+            "MovementPhase Defenders Moved should be 1 after moving Paterson",
+            true,
+            movementPhaseManager.movedTokens.Contains(paterson)
+        );
+        Log("Clicking (3, 3) Select Gilbert");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 3), 0.5f));
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should NOT be waiting for Tackle Decision without moving after selecting Gilbert",
+            false,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should NOT be waiting for Tackle Decision after selecting Gilbert",
+            false,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        Log("Clicking (5, 3) Move Gilbert");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 3), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        var gilbert = PlayerToken.GetPlayerTokenByName("Gilbert");
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(gilbert),
+            "MovementPhase movedTokens should contain Gilbert",
+            true,
+            movementPhaseManager.movedTokens.Contains(gilbert)
+        );
+        AssertTrue(
+            movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should be waiting for Tackle Decision after moving Gilbert",
+            true,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should NOT be waiting for Tackle Decision without moving",
+            false,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        Log("Pressing T to Tackle Yaneva with Gilbert");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should NOT be waiting for Tackle Decision after calling Tackle",
+            false,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        AssertTrue(
+            movementPhaseManager.isWaitingForTackleRoll,
+            "MovementPhase Should be waiting for Tackle Rolls after calling Tackle",
+            true,
+            movementPhaseManager.isWaitingForTackleRoll
+        );
+        var tackler = PlayerToken.GetPlayerTokenByName("Gilbert");
+        AssertTrue(
+            movementPhaseManager.selectedDefender == tackler,
+            "MovementPhase Should be waiting for Tackle Rolls",
+            tackler.name,
+            movementPhaseManager.selectedDefender.name
+        );
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForReposition,
+            "MovementPhase Should be waiting for Reposition after Tackle Rolls",
+            true,
+            movementPhaseManager.isWaitingForReposition
+        );
+        Log("Clicking (5, 4) Reposition Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 4), 0.5f));
+        yield return new WaitForSeconds(2.0f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForInterceptionDiceRoll,
+            "MovementPhase Should be waiting for Interception Rolls after Reposition Yaneva",
+            true,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll
+        );
+        AssertTrue(
+            movementPhaseManager.eligibleDefenders.Count == 2,
+            "MP eligibleDefenders should contain 2",
+            2,
+            movementPhaseManager.eligibleDefenders.Count
+        );
+        // We need to check the moved defenders
+        yield return new WaitForSeconds(1.0f);
+        Log("Pressing R to roll and Stewart and he fails!");
+        StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(2));
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R to roll and McNulty and he fails!");
+        StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(2));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 2,
+            "MovementPhase Defenders Moved should be 2 after moving Gilbert and resolving his tackling",
+            2,
+            movementPhaseManager.defendersMoved
+        );
+        Log("Clicking (5, 5) Select McNulty");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 5), 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should be waiting for Tackle Decision without moving when we select McNulty",
+            true,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should NOT be waiting for Tackle Decision without moving when we select McNulty",
+            false,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        Log("Pressing T to Tackle Yaneva with McNulty");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        var mcnulty = PlayerToken.GetPlayerTokenByName("McNulty");
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(mcnulty),
+            "MovementPhase movedTokens should contain McNulty",
+            true,
+            movementPhaseManager.movedTokens.Contains(mcnulty)
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should be waiting for Tackle Decision without moving after calling Tackle",
+            false,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        AssertTrue(
+            movementPhaseManager.isWaitingForTackleRoll,
+            "MovementPhase Should be waiting for Tackle Rolls after calling Tackle with McNulty",
+            true,
+            movementPhaseManager.isWaitingForTackleRoll
+        );
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForReposition,
+            "MovementPhase Should be waiting for Reposition after Tackle Rolls",
+            true,
+            movementPhaseManager.isWaitingForReposition
+        );
+        Log("Clicking (4, 6) Reposition Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 6), 0.5f));
+        yield return new WaitForSeconds(2.0f);
+        Log("Pressing R to roll and Stewart and he fails!");
+        StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(2));
+        yield return new WaitForSeconds(1.0f);
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 3,
+            "MovementPhase Defenders Moved should be 3 after moving McNulty and resolving his tackling",
+            3,
+            movementPhaseManager.defendersMoved
+        );
+        Log("Clicking (4, 5) Select Stewart");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 5), 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should be waiting for Tackle Decision without moving when we select Stewart",
+            true,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should NOT be waiting for Tackle Decision without moving when we select Stewart",
+            false,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        Log("Clicking (0, 7) Move Stewart away");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 7), 0.5f));
+        yield return new WaitForSeconds(1.5f);
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecisionWithoutMoving,
+            "MovementPhase Should be waiting for Tackle Decision without moving when we move Stewart away",
+            false,
+            movementPhaseManager.isWaitingForTackleDecisionWithoutMoving
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleDecision,
+            "MovementPhase Should NOT be waiting for Tackle Decision without moving when we move Stewart away",
+            false,
+            movementPhaseManager.isWaitingForTackleDecision
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 4,
+            "MovementPhase Defenders Moved should be 4 after moving Stewart",
+            4,
+            movementPhaseManager.defendersMoved
+        );
+        Log("Pressing X to Forfeit Rest of Defense Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 5,
+            "MovementPhase Defenders Moved should be 5 after forfeting 5th move",
+            5,
+            movementPhaseManager.defendersMoved
+        );
+        // 2f2
+        Log("Clicking (-6, -6), 10.Noruega");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.5f));
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Noruega",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -6), 0.5f));
+        Log("Clicking (-8, -6), Move 10.Noruega");
+        yield return new WaitForSeconds(3f); // for the token to move
+        AssertTrue(
+            movementPhaseManager.attackersMovedIn2f2 == 1,
+            "MP - 1 2f2 moved",
+            1,
+            movementPhaseManager.attackersMovedIn2f2
+        );
+        AssertTrue(
+            !movementPhaseManager.isAwaitingHexDestination,
+            "MP Should NOT be waiting for Hex Destination after Moving Noruega",
+            false,
+            movementPhaseManager.isAwaitingHexDestination
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 12), 0.5f));
+        Log("Clicking (12, 12), 5.Murphy");
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP Should be waiting for Hex Destination after Clicking on Muprhy",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 12), 0.5f));
+        Log("Clicking (10, 12), Move 5.Murphy");
+        yield return new WaitForSeconds(3f); // for the token to move
+        AvailabilityCheckResult mpcomplete = AssertCorrectAvailabilityAfterMovementComplete();
+        AssertTrue(
+            mpcomplete.passed,
+            "MovementPhase Complete Check Status Availability",
+            true,
+            mpcomplete.ToString()
+        );
+
+        LogFooterofTest("MovementPhase Check Reposition Interceptions");
+    }
     // TODO: Movement Phase
 
-    // TODO: Pass to player
-    //    , move with dribbler next to defender (no nutmeg, no interception)
-    //    , forfeit rest of movement
-    //    , move defender away, with no tackle
-    //    , move another defender for tackle
-    //    , reposition attacker next to first defender verify no interception
-    //    , move third defender for tackle
-    //    , reposition next to 4th defender
-    //    , do not intercept
-    //    , tackle without moving with 4th defender 
-    //    , move 5th defender, finish movement phase
+    
     // TODO: Pass to player
     //    , move with dribbler next to defender (no nutmeg, no interception)
     //    , forfeit rest of movement
@@ -2581,6 +2878,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     // TODO: Final Thirds
     // TODO: High Pass
     // TODO: Long Ball
+
 
     
     private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
@@ -2861,7 +3159,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     
     private void Log(string message)
     {
-        Debug.Log(message);
+        Debug.Log("LOG: " + message);
         File.AppendAllText(logFilePath, message + "\n");
     }
 
