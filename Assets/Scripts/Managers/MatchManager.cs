@@ -1074,6 +1074,11 @@ public class MatchManager : MonoBehaviour
         currentState = GameState.EndOfMovementPhase;
         RefreshAvailableActions();
     }
+    public void BroadcastSuccessfulTackle()
+    {
+        currentState = GameState.SuccessfulTackle;
+        RefreshAvailableActions();
+    }
     
     public void BroadcastEndofGroundBallPass()
     {
@@ -1127,7 +1132,14 @@ public class MatchManager : MonoBehaviour
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = true;
             longBallManager.isAvailable = true;
-            shotManager.isAvailable = true;
+            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
+            {
+                shotManager.isAvailable = true;
+            }
+            else
+            {
+                shotManager.isAvailable = false;
+            }
         }
         else if (currentState == GameState.EndOfFirstTimePass)
         {
@@ -1153,7 +1165,31 @@ public class MatchManager : MonoBehaviour
             highPassManager.isAvailable = false;
             longBallManager.isAvailable = true;
             // TODO: Check if the ball is in CanShootFrom Hex
-            shotManager.isAvailable = true;
+            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
+            {
+                shotManager.isAvailable = true;
+            }
+            else
+            {
+                shotManager.isAvailable = false;
+            }
+        }
+        else if (currentState == GameState.SuccessfulTackle)
+        {
+            movementPhaseManager.isAvailable = true;
+            groundBallManager.isAvailable = true;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = true;
+            longBallManager.isAvailable = true;
+            // TODO: Check if the ball is in CanShootFrom Hex
+            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
+            {
+                shotManager.isAvailable = true;
+            }
+            else
+            {
+                shotManager.isAvailable = false;
+            }
         }
     }
     

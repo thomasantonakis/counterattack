@@ -309,23 +309,38 @@ Clicking (-8, -8), 11.Ulisses
 Clicking (-3, -8), Move Ulisses, a commitment should be made
 ✅ PASS: MovementPhase Commitment Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
 ✅ PASS: MP - 1 attcker moved | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: True | Actual: True
 ✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Ulisses | Expected: False | Actual: False
 Clicking (-4, -4), 9.Pavlovic
 ✅ PASS: MP Should be waiting for Hex Destination after Clicking on Pavlovic | Expected: True | Actual: True
+✅ PASS: MP - 1 attcker moved | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: True | Actual: True
 Clicking (0, -3), Move 9.Pavlovic
 ✅ PASS: MP - 2 attcker moved | Expected: 2 | Actual: 2
+✅ PASS: MovementPhase Should have 1 after Pavlovic's movement | Expected: 2 | Actual: 2
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Pavlovic's movement | Expected: True | Actual: True
 ✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Pavlovic | Expected: False | Actual: False
 Clicking (0, 0), 2.Cafferata
 ✅ PASS: MP Should be waiting for Hex Destination after Clicking on Cafferata | Expected: True | Actual: True
 Clicking (5, 0), Move 2.Cafferata
 ✅ PASS: MP - 3 attcker moved | Expected: 3 | Actual: 3
 ✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Cafferata | Expected: False | Actual: False
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Pavlovic's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Cafferata's movement | Expected: True | Actual: True
 Clicking (4, 4), 6.Nazef
 ✅ PASS: MP Should be waiting for Hex Destination after Clicking on Nazef | Expected: True | Actual: True
 ✅ PASS: MP - Attacking Movement Phase | Expected: True | Actual: True
 ✅ PASS: MP - Attacking Movement Phase | Expected: False | Actual: False
 Clicking (0, 6), Move 6.Nazef
 ✅ PASS: MP - 4 attcker moved | Expected: 4 | Actual: 4
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Pavlovic's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Cafferata's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Nazef's movement | Expected: True | Actual: True
 ✅ PASS: MP - 0 defenders moved | Expected: 0 | Actual: 0
 ✅ PASS: MP - Defensive Movement Phase after 4 moves | Expected: True | Actual: True
 ✅ PASS: MP - Not Attacking Movement Phase after 4 moves | Expected: False | Actual: False
@@ -338,6 +353,11 @@ Clicking (-4, 5), Move 5.Vladoiu
 ✅ PASS: MP SHould be waiting for Token Selection after Attacking Movement Phase | Expected: True | Actual: True
 ✅ PASS: MP Should NOT be waiting for Hex Destination after moving Vladoiu | Expected: False | Actual: False
 ✅ PASS: MP - 1 defenders moved | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should have 1 after Ulisses's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Pavlovic's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Cafferata's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Nazef's movement | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 1 after Vladoiu's movement | Expected: True | Actual: True
 Clicking (1, 10), 4.Marell
 ✅ PASS: MP Should be waiting for Hex Destination after Clicking on Marell | Expected: True | Actual: True
 Clicking (5, 10), Move 4.Marell
@@ -518,7 +538,7 @@ Pressing X for Resilience Test
 ✅ PASS: MP Should be waiting for a foul decision after Foul Rolls | Expected: True | Actual: True
 Pressing A - to Play ON
 ✅ PASS: MP Should NOT wait for a foul decision after Play On | Expected: False | Actual: False
-✅ PASS: MP Should Be Waiting for a reposition after Play On | Expected: True | Actual: True
+✅ PASS: MP Should NOT Be Waiting for a reposition after Play On, it was just an interception | Expected: False | Actual: False
 Clicking (15, 0) Reposition Yaneva
 ✅ PASS: MP Should NOT Be Waiting for a reposition after Reposition Yaneva | Expected: False | Actual: False
 ✅ PASS: MP Should Be Waiting for Snapshot after Reposition Yaneva | Expected: True | Actual: True
@@ -668,5 +688,82 @@ Pressing R to roll and McNulty and he fails!
 ✅ MovementPhase Check NutmegWithoutMovement And then 2 more successful nutmegs - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #15 passed.
+
+
+==== Starting Test #16 ====
+▶️ Starting test scenario: MovementPhase Check InterceptionFoul Tackle Foul NewTackle SuccessfulTackle
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (10, 0) Select Yaneva
+Clicking (9, 0) Move Yaneva 1st Pace
+Clicking (8, 1) Move Yaneva 2nd Pace
+Clicking (7, 1) Move Yaneva 3rd Pace
+Clicking (6, 2) Move Yaneva 4th Pace
+Clicking (5, 2) Move Yaneva 5th Pace
+Pressing R to roll and Paterson and he fouls!
+Pressing R to roll for a card on Paterson, Yellow!
+Pressing R to roll for an injury on Yaneva, oh, she's injured!
+Pressing A - to play on
+✅ PASS: MovementPhase Should have 1 after Yaneva's movement | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should be 1 after Yaneva's injury | Expected: 1 | Actual: 1
+Pressing X - Forfeit Attack MovementPhase
+✅ PASS: MovementPhase Should be 4 after movement forfeiting | Expected: 4 | Actual: 4
+Clicking (4, 3) Select Paterson
+✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving before moving Paterson | Expected: True | Actual: True
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision before moving Paterson | Expected: False | Actual: False
+Pressing T - Tackle Yaneva with Paterson
+✅ PASS: MovementPhase Should have 2 after Paterson's call for tackle | Expected: 1 | Actual: 2
+✅ PASS: MovementPhase Should be 4 after movement forfeiting | Expected: 4 | Actual: 4
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls after calling Tackle | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Tackle Rolls | Expected: 7. Paterson | Actual: 7. Paterson
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+✅ PASS: MovementPhase Should be waiting for Yellow Card Rolls after Tackle Rolls | Expected: True | Actual: True
+Pressing R to roll for a card on Paterson, no Yellow!
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+✅ PASS: MovementPhase Should be waiting for Injury Rolls after Tackle Rolls | Expected: True | Actual: True
+Pressing R to roll for an injury on Yaneva, NO injury!
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+✅ PASS: MovementPhase Should be waiting for Foul Decision after Tackle Rolls | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+Pressing A - Play on
+✅ PASS: MovementPhase Should be 0 as Paterson's tackle is not resolved yet | Expected: 0 | Actual: 0
+✅ PASS: MovementPhase Should be waiting for Reposition after Tackle Rolls | Expected: True | Actual: True
+✅ PASS: MovementPhase Should NOT have any stunned tokens after Tackle | Expected: True | Actual: True
+✅ PASS: MovementPhase Should have 2 moved token after Tackle | Expected: 2 | Actual: 2
+✅ PASS: MovementPhase Should have Paterson moved after Tackle | Expected: True | Actual: True
+Clicking (4, 2) Reposition Yaneva after Tackle
+✅ PASS: MovementPhase Should be 1 after Paterson's tackle | Expected: 1 | Actual: 1
+✅ PASS: MP Should NOT be waiting for Interception Roll after Reposition Yaneva | Expected: False | Actual: False
+✅ PASS: MP Should be waiting for Another token selection after Reposition Yaneva | Expected: True | Actual: True
+Clicking (3, 3) Select Gilbert
+✅ PASS: MP Should be waiting for Hex Destination after Selecting Gilbert | Expected: True | Actual: True
+✅ PASS: MP Should NOT be waiting for Tackle Decision after Selecting Gilbert | Expected: False | Actual: False
+✅ PASS: MP Should be NOT waiting for Tackle Decision without moving after Selecting Gilbert | Expected: False | Actual: False
+Clicking (3, 2) Move Gilbert for the tackle
+✅ PASS: MP Should NOT be waiting for Hex Destination after Moving Gilbert | Expected: False | Actual: False
+✅ PASS: MP Should be waiting for Tackle Decision after Moving Gilbert | Expected: True | Actual: True
+✅ PASS: MP Should be NOT waiting for Tackle Decision without moving after Moving Gilbert | Expected: False | Actual: False
+✅ PASS: MP Should be waiting for Tackle Rolls after Selecting Gilbert | Expected: True | Actual: True
+✅ PASS: MP Should be in MovementPhase after Selecting Gilbert | Expected: True | Actual: MovementPhase
+✅ PASS: LastTokenToTouchTheBallOnPurpose should be Yaneva | Expected: Yaneva | Actual: Yaneva
+✅ PASS: LastTokenToTouchTheBallOnPurpose should be Cafferata | Expected: Cafferata | Actual: Cafferata
+Pressing X to Forfeit Reposition of Gilbert
+✅ PASS: MP Should be in MovementPhase after the successful tackle | Expected: True | Actual: SuccessfulTackle
+✅ PASS: LastTokenToTouchTheBallOnPurpose should be Gilbert | Expected: Gilbert | Actual: Gilbert
+✅ PASS: LastTokenToTouchTheBallOnPurpose should be NULL
+✅ PASS: Availability after successful tackle | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ MovementPhase Check InterceptionFoul Tackle Foul NewTackle SuccessfulTackle - TEST PASSED COMPLETELY 🎉
+
+✅ Test #16 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

@@ -79,6 +79,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int maxDefenderMoves = 5;  // Max moves allowed for defenders
     private int maxAttackerMovesIn2f2 = 2;
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
+    private bool needsReposition = false;
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
@@ -100,6 +101,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (!isActivated) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
+        if (isPlayerMoving) return;
         if (shotManager.isActivated) return;
         if (lookingForNutmegVictim)
         {
@@ -154,6 +156,7 @@ public class MovementPhaseManager : MonoBehaviour
                 CommitToAction();
                 Debug.Log($"Passing {hex.name} to AsyncMoveTokenToHexRegularly");
                 isAwaitingHexDestination = false;
+                isAwaitingTokenSelection = false;
                 isWaitingForSnapshotDecision = false;
                 AsyncMoveTokenToHexRegularly(hex);
             }
@@ -182,6 +185,7 @@ public class MovementPhaseManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
+        if (isPlayerMoving) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
@@ -227,7 +231,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 isWaitingForSnapshotDecision = false;
                 Debug.Log($"Attacker decides not to shoot..");
-                AdvanceMovementPhase();
+                // AdvanceMovementPhase();
                 return;
             }
         }
@@ -235,12 +239,6 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.Log("Dribbler is running. Forfeiting remaining pace.");
             AdvanceMovementPhase();
-            return;
-        }
-        else if (isWaitingForTackleDecision && keyData.key == KeyCode.X)
-        {
-            Debug.Log("Movement Phase: Forfeiting tackle decision.");
-            isWaitingForTackleDecision = false;  // Reset tackle decision flag
             return;
         }
         else if (isWaitingForTackleDecision)
@@ -284,7 +282,7 @@ public class MovementPhaseManager : MonoBehaviour
                 PerformTackleDiceRoll(isDefender: false);  // Attacker rolls second
             }
         }
-        else if (!isWaitingForNutmegDecision && !isWaitingForNutmegDecisionWithoutMoving && !isWaitingForSnapshotDecision && keyData.key == KeyCode.X)
+        else if (!isWaitingForReposition && !isWaitingForNutmegDecision && !isWaitingForNutmegDecisionWithoutMoving && !isWaitingForSnapshotDecision && keyData.key == KeyCode.X)
         {
             CommitToAction();
             ForfeitTeamMovementPhase();
@@ -823,21 +821,22 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.LogWarning("Nutmeg(s) Are available to the dribbler");
                 Debug.Log($"{selectedToken.name} is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.");
                 isWaitingForNutmegDecision = true;
+                isAwaitingTokenSelection = false;
+                isAwaitingHexDestination = false;
                 return;
             }
             else
             {
-                Debug.LogWarning("For some reason the nutmeg was not available");
-                // nutmeggableDefenders.Clear();
+                if (nutmeggableDefenders.Count == 0) Debug.Log("No nutmeggable defenders available");
+                else if (remainingDribblerPace < 2) Debug.Log("Not enough pace to nutmeg");
                 ContinueFromRejectedNutmeg();
                 return;
             }
         }
         else // repositioning
         {
+            Debug.Log("Dribbler repositioned after tackle");
             ContinueFromRejectedNutmeg();
-            // Debug.LogWarning("How did we end up here? DribblerMoved1HexOrReposition when isDribblerRunning = False");
-            // this appeared after a reposition of the attacker.
         }
     }
 
@@ -846,7 +845,7 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.LogWarning("ContinueFromRejectedNutmeg: Checking for Interceptions");
         if (isMovementPhaseDef)
         {
-            Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} repositioned, forcing interceptions from adjacent defenders.");
+            Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} avoided tackle and repositioned, forcing interceptions from adjacent defenders.");
         }
         else
         {
@@ -886,13 +885,10 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log($"{selectedToken.name} is in the opponent penalty Box. Press [S] to take a snapshot!");
             isWaitingForSnapshotDecision = true;
         }
-        // Offer a Snapshot option
-        // Highlight neighbors if more pace is available
         if (remainingDribblerPace > 0)
         {
             Debug.LogWarning($"Dribbler has {remainingDribblerPace} remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination");
             isAwaitingHexDestination = true;
-
             HighlightValidMovementHexes(selectedToken, 1);
             yield break;
         }
@@ -915,6 +911,7 @@ public class MovementPhaseManager : MonoBehaviour
                     yield return null;  // Wait until the snapshot decision is made
                 }
             }
+            AdvanceMovementPhase();
         }
     }
 
@@ -1006,6 +1003,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void AdvanceMovementPhase()
     {
+        Debug.Log("Advancing Movement Phase");
         if (isDribblerRunning)
         {
             hexGrid.ClearHighlightedHexes();
@@ -1037,19 +1035,21 @@ public class MovementPhaseManager : MonoBehaviour
                     MatchManager.Instance.BroadcastSafeEndofMovementPhase();
                     return;
                 }
+                isAwaitingTokenSelection = true;
             }
             // Check for defender movement phase
             if (isMovementPhaseDef)
             {
                 defendersMoved++;
+                isAwaitingTokenSelection = true;
                 if (defendersMoved >= maxDefenderMoves)
                 {
                     Debug.Log("All defenders have moved. Ready for Movement Phase 2f2.");
                     hexGrid.ClearHighlightedHexes();
                     isMovementPhaseDef = false;
                     isMovementPhase2f2 = true;
-                    isAwaitingTokenSelection = true;
                     isAwaitingHexDestination = false;
+                    isAwaitingTokenSelection = true;
                     return;
                 }
             }
@@ -1057,13 +1057,13 @@ public class MovementPhaseManager : MonoBehaviour
             if (isMovementPhaseAttack)
             {
                 attackersMoved++;
+                isAwaitingTokenSelection = true;
                 if (attackersMoved >= maxAttackerMoves)
                 {
                     Debug.Log("All attackers have moved. Switching to Defensive Movement Phase.");
                     hexGrid.ClearHighlightedHexes();
                     isMovementPhaseAttack = false;
                     isMovementPhaseDef = true;
-                    isAwaitingTokenSelection = true;
                     isAwaitingHexDestination = false;
                     return;
                 }
@@ -1188,6 +1188,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log("Defender committed a foul.");
                 eligibleDefenders.Remove(selectedDefender);
                 defendersTriedToIntercept.Add(selectedDefender);
+                needsReposition = false;
                 yield return StartCoroutine(HandleFoulProcess(selectedToken, selectedDefender));
             }
             // Check interception condition: either roll a 6 or roll + tackling >= 10
@@ -1292,6 +1293,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (defenderDiceRoll <= FOUL_THRESHOLD)
         {
             Debug.Log("Defender committed a foul.");
+            needsReposition = true;
             yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
         }
@@ -1308,6 +1310,8 @@ public class MovementPhaseManager : MonoBehaviour
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(selectedDefender.GetCurrentHex()));  // Move the ball to the defender's hex
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(selectedDefender.GetCurrentHex());  // Update possession
+            MatchManager.Instance.BroadcastSuccessfulTackle();
+            MatchManager.Instance.SetLastToken(selectedDefender);
             Debug.Log($"{selectedDefender.name} can reposition!");
             repositionWinner = selectedDefender;
             repositionLoser = attackerToken;
@@ -1318,7 +1322,6 @@ public class MovementPhaseManager : MonoBehaviour
                 isNutmegInProgress = false;
             }
             EndMovementPhase(true);
-            MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle;
             Debug.Log("Movement phase ended due to successful tackle.");
         }
         else if (defenderTotalScore < attackerTotalScore)
@@ -1466,10 +1469,10 @@ public class MovementPhaseManager : MonoBehaviour
                 await helperFunctions.StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
             }
         }
-        DribblerMoved1HexOrReposition();
+        if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase) DribblerMoved1HexOrReposition();
     }
 
-    private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
+    private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken, bool needsReposition = true)
     {
         Debug.Log("Handling foul resolution process...");
         // Phase 1: Yellow card decision
@@ -1503,8 +1506,15 @@ public class MovementPhaseManager : MonoBehaviour
     {
         isWaitingForFoulDecision = false;
         PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        await helperFunctions.StartCoroutineAndWait(PrepareAttackerReposition(attackerToken));
-        AdvanceMovementPhase();
+        if (needsReposition)
+        {
+            await helperFunctions.StartCoroutineAndWait(PrepareAttackerReposition(attackerToken));
+        }
+        else
+        {
+            StartCoroutine(ContinueDribblerMovement());
+        }
+        // AdvanceMovementPhase();
     }
 
     private void TakeFreeKick()
@@ -1589,6 +1599,8 @@ public class MovementPhaseManager : MonoBehaviour
         isMovementPhase2f2 = false;  // Reset the movement phase state
         isAwaitingTokenSelection = false;  // Reset the token selection state
         isAwaitingHexDestination = false;  // Reset the hex destination state
+        repositionWinner = null;  // Reset the reposition winner
+        repositionLoser = null;  // Reset the reposition loser
         Debug.Log("Movement phase has been reset.");
     }
 
@@ -1786,11 +1798,16 @@ public class MovementPhaseManager : MonoBehaviour
         if (shotManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [M] to start a Movement Phase, ");
         if (isActivated) sb.Append("MP: ");
+        if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}, ");
         if (lookingForNutmegVictim) sb.Append("Click on one of the Nutmeggable Defenders to choose which one to nutmeg, ");
         if (isAwaitingTokenSelection) sb.Append("Click on a Token to Select them for Movement!, ");
-        if (isAwaitingHexDestination) sb.Append($"Click on a Free Hex to move {selectedToken.name} there!, ");
+        if (isAwaitingHexDestination) sb.Append($"Click on a Free Hex to move {selectedToken.playerName} there!, ");
+        if (isWaitingForInterceptionDiceRoll) sb.Append($"Press [R] to roll for interception with {eligibleDefenders[0].playerName}, ");
         if (isWaitingForSnapshotDecision) sb.Append($"Press [S] to take a Snapshot, ");
+        if (isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [X] to forfeit {selectedToken.playerName}'s remaining pace ({remainingDribblerPace}), ");
         if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedToken.name} from there!, ");
+        if (isWaitingForReposition && isNutmegInProgress) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
+        if (isWaitingForReposition) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
