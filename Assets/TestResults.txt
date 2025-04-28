@@ -766,4 +766,51 @@ Pressing X to Forfeit Reposition of Gilbert
 
 ✅ Test #16 passed.
 
+
+==== Starting Test #17 ====
+▶️ Starting test scenario: MovementPhase Check InterceptionFoul Lost Nutmeg
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+Pressing X - Forfeit Attack FinalThird
+Pressing X - Forfeit Defense FinalThird
+Pressing M - Game is in Movement Phase
+Clicking (10, 0) Select Yaneva
+Clicking (9, 0) Move Yaneva 1st Pace
+Clicking (8, 1) Move Yaneva 2nd Pace
+Clicking (7, 1) Move Yaneva 3rd Pace
+Clicking (6, 2) Move Yaneva 4th Pace
+Clicking (5, 2) Move Yaneva 5th Pace
+Pressing R to roll and Paterson and he fouls!
+Pressing R to roll for a card on Paterson, Yellow!
+Pressing R to roll for an injury on Yaneva, oh, she's injured!
+Pressing A - to play on
+✅ PASS: MovementPhase Should have 1 after Yaneva's movement | Expected: 1 | Actual: 1
+✅ PASS: MovementPhase Should be 1 after Yaneva's injury | Expected: 1 | Actual: 1
+Pressing X - Forfeit Attack MovementPhase
+Pressing X - Forfeit Defense MovementPhase
+Pressing X - Forfeit 2f2 MovementPhase
+✅ PASS: MovementPhase Complete Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing M - New Movement Phase
+Clicking (5, 2) Select Yaneva
+✅ PASS: MovementPhase Should be waiting for Nutmeg Decision without moving before moving Yaneva | Expected: True | Actual: True
+✅ PASS: MovementPhase Should be waiting for Another token selection after selecting Yaneva | Expected: False | Actual: True
+✅ PASS: MovementPhase Should be waiting Hex Destination after selecting Yaneva | Expected: False | Actual: True
+Pressing N to Nutmeg Paterson
+✅ PASS: MovementPhase Commitment Check Status Availability | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MovementPhase Should NOT be waiting for Nutmeg Decision after calling Nutmeg | Expected: False | Actual: False
+✅ PASS: MovementPhase Should be waiting for the tackle rolls | Expected: True | Actual: True
+✅ PASS: Yaneva should be stunned for next | Expected: True | Actual: True
+✅ PASS: Paterson should be the last to touch the ball | Expected: Paterson | Actual: Paterson
+✅ PASS: Tackle Resolves with reposition | Expected: True | Actual: True
+Clicking (6, 2) Reposition Paterson
+✅ PASS: Availability after successful tackle | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ MovementPhase Check InterceptionFoul Lost Nutmeg - TEST PASSED COMPLETELY 🎉
+
+✅ Test #17 passed.
+
 🎉 ALL TESTS PASSED SUCCESSFULLY!

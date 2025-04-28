@@ -1301,10 +1301,11 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (defenderTotalScore == 50) Debug.Log($"Tackle failed! {selectedDefender.name} Rolled a JACKPOT!! Attacker {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore} is left helpless and loses possession of the ball.");
             else Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} beats {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, and wins possession of the ball.");
-            if(isNutmegInProgress)
+            if (isNutmegInProgress)
             {
                 Debug.Log($"{attackerToken.name} will be stunned in next Movement Phase");
                 stunnedforNext.Add(attackerToken);
+                // DO NOT Set it to true
             }
             ball.SetCurrentHex(selectedDefender.GetCurrentHex());
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(selectedDefender.GetCurrentHex()));  // Move the ball to the defender's hex
@@ -1358,22 +1359,10 @@ public class MovementPhaseManager : MonoBehaviour
             stunnedTokens.Add(selectedDefender);
         }
         Debug.Log($"{attackerToken.name} can reposition!");
-        // if (isNutmegInProgress)
-        // {
-        //     Debug.Log($"Reducing {attackerToken.name}'s remaining Pace by 2 due to the Nutmeg");
-        //     // TODO: Add log for two paces
-        //     remainingDribblerPace -=2;
-        //     remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
-        //     // Clamp remainingDribblerPaceto 0 and adjust isDribblerRunning accordingly.
-        //     if (remainingDribblerPace == 0) {isDribblerRunning = false;}
-        // }
         repositionWinner = attackerToken;
         repositionLoser = selectedDefender;
         yield return StartCoroutine(HandlePostTackleReposition());
-        if (isNutmegInProgress)
-        {
-            nutmegVictim = null;
-        }
+        if (isNutmegInProgress) nutmegVictim = null;
     }
     
     private List<HexCell> FindRepositionHexes()
@@ -1390,7 +1379,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         // Get the loser's hex and neighboring hexes
         FindRepositionHexes();
-        if (isNutmegInProgress)
+        if (isNutmegInProgress && MatchManager.Instance.currentState != MatchManager.GameState.SuccessfulTackle)
         {
             Debug.Log($"{repositionWinner.name} won the nutmeg tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there.");
             // TODO: What if defense wins?
