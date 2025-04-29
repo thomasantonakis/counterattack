@@ -151,6 +151,12 @@ public class MovementPhaseManager : MonoBehaviour
             && token == null // The Hex Clicked is empty
         )
         {
+            if (hex == ballHex)
+            {
+                CommitToAction();
+                AsyncMoveTokenToHexRegularly(hex);
+                return;
+            }
             if (IsHexValidForMovement(hex)) // The clicked Hex is one of the Highlighted.)
             {
                 CommitToAction();
@@ -291,7 +297,7 @@ public class MovementPhaseManager : MonoBehaviour
         else if (isBallPickable && keyData.key == KeyCode.V)
         {
             CommitToAction();
-            AsyncMoveTokenToHexToPickUpBall();
+            AsyncMoveTokenToHexRegularly(ball.GetCurrentHex());
         }
         else if (isWaitingForNutmegDecisionWithoutMoving)
         {
@@ -360,14 +366,6 @@ public class MovementPhaseManager : MonoBehaviour
         await helperFunctions.StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
     }
     
-    private async void AsyncMoveTokenToHexToPickUpBall()
-    {
-        tokenPickedUpBall = true;
-        remainingDribblerPace = selectedToken.pace;
-        await helperFunctions.StartCoroutineAndWait(MoveTokenToHex(ball.GetCurrentHex()));
-        isBallPickable = false;
-    }
-
     private async void AsyncMoveTokenToHexRegularly(HexCell hex)
     {
         isWaitingForSnapshotDecision = false;
@@ -376,6 +374,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (temp_check)
         {
             tokenPickedUpBall = true;
+            remainingDribblerPace = selectedToken.pace;
         }
         Debug.Log($"Passing {hex.name} to MoveTokenToHex");
         // The below contains the ResolveMovementPhase method
@@ -383,6 +382,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (temp_check)
         {
             isBallPickable = false;
+            isAwaitingTokenSelection = false;
         }
     }
 
@@ -713,8 +713,11 @@ public class MovementPhaseManager : MonoBehaviour
             ball.SetCurrentHex(targetHex);  // Move the ball to the defender's hex
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);  // Update possession
+            MatchManager.Instance.SetLastToken(selectedToken);
+            MatchManager.Instance.hangingPassType = null;
             EndMovementPhase();
             MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;  // Update game state
+            MatchManager.Instance.BroadcastAnyOtherScenario();
             remainingDribblerPace = 0;
         }
         // Defender does not land on Ball Hex
@@ -752,7 +755,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Defender is not close enough to tackle. No prompt shown.");
+                Debug.LogWarning("Defender is not close enough to pickup or intercept. No prompt shown.");
                 AdvanceMovementPhase();
             }
         }
@@ -773,8 +776,27 @@ public class MovementPhaseManager : MonoBehaviour
                 AdvanceMovementPhase(); // Basic check to advance the movement phase
             }
             else if (selectedToken.IsDribbler)
-            // If attackHasPossession is false Check for nutmeg Option otherwise go for interception
             {
+                if (tokenPickedUpBall)
+                {
+                    PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+                    Debug.Log($"{!string.IsNullOrEmpty(MatchManager.Instance.hangingPassType)}");
+                    Debug.Log($"{MatchManager.Instance.hangingPassType}");
+                    if (!string.IsNullOrEmpty(MatchManager.Instance.hangingPassType))
+                    {
+                        if (MatchManager.Instance.hangingPassType == "ground")
+                        {
+                            MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted);
+                            MatchManager.Instance.hangingPassType = null;
+                        }
+                        else if (MatchManager.Instance.hangingPassType == "aerial")
+                        {
+                            MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.AerialPassCompleted);
+                            MatchManager.Instance.hangingPassType = null;
+                        }
+                        MatchManager.Instance.SetLastToken(selectedToken);
+                    }
+                }
                 Debug.LogWarning("The selected Token is the dribbler");
                 Debug.Log("Hello, this is a dribbler dribbling, Reducing their pace.");
                 remainingDribblerPace -= path.Count; // Reduce remaining dribbler pace
@@ -1344,7 +1366,6 @@ public class MovementPhaseManager : MonoBehaviour
             // TODO: in case of a Loose Ball, is the attacker stunned? I think not!
             StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "ground"));
         }
- 
     }
 
     private IEnumerator PrepareAttackerReposition(PlayerToken attackerToken)

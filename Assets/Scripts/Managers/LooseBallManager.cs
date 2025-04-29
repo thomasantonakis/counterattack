@@ -385,6 +385,7 @@ public class LooseBallManager : MonoBehaviour
             }
             else
             {
+                // TODO: Should we check what is going on first?
                 Debug.Log($"Ball hit {closestToken.name}, who is a defender");
                 MatchManager.Instance.gameData.gameLog.LogEvent(
                     closestToken

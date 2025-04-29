@@ -1756,10 +1756,18 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
   helperFunctions: {fileID: 1397543275}
+  isActivated: 0
+  isWaitingForDirectionRoll: 0
+  isWaitingForDistanceRoll: 0
+  isWaitingForInterceptionRoll: 0
+  directionRoll: 240885
+  distanceRoll: 0
+  interceptionRoll: 0
   defendersTriedToIntercept: []
   path: []
   causingDeflection: {fileID: 0}
   ballHitThisToken: {fileID: 0}
+  potentialInterceptor: {fileID: 0}
 --- !u!4 &757768962
 Transform:
   m_ObjectHideFlags: 0
@@ -1975,7 +1983,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 494.93176, y: 0}
+  m_AnchoredPosition: {x: 453, y: 0}
   m_SizeDelta: {x: -989.8636, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &977372729
