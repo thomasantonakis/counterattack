@@ -188,6 +188,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isPlayerMoving) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
+        if (looseBallManager.isActivated) return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
             MatchManager.Instance.TriggerMovement();
@@ -1785,6 +1786,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
         if (shotManager.isActivated) return "";
+        if (looseBallManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [M] to start a Movement Phase, ");
         if (isActivated) sb.Append("MP: ");
         if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}, ");

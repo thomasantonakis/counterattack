@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Text;
 
 public class LooseBallManager : MonoBehaviour
 {
@@ -16,11 +17,59 @@ public class LooseBallManager : MonoBehaviour
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
     public HelperFunctions helperFunctions;
+    [Header("Flags")]
+    public bool isActivated = false;
+    public bool isWaitingForDirectionRoll = false;
+    public bool isWaitingForDistanceRoll = false;
+    public bool isWaitingForInterceptionRoll = false;
+    public int directionRoll = 240885;
+    public int distanceRoll = 0;
+    public int interceptionRoll = 0;
     [Header("Important Things")]
     public List<PlayerToken> defendersTriedToIntercept;
     public List<HexCell> path = new List<HexCell>();
+    // public HexCell checkedHex = null;
     public PlayerToken causingDeflection;
     public PlayerToken ballHitThisToken;
+    public PlayerToken potentialInterceptor;
+
+    private void OnEnable()
+    {
+        GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnKeyPress += OnKeyReceived;
+    }
+
+    private void OnDisable()
+    {
+        GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnClickReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated) return;
+    }
+
+    private void OnKeyReceived(KeyPressData keyData)
+    {
+        if (keyData.isConsumed) return;
+        if (!isActivated) return;
+        if (isWaitingForDirectionRoll && keyData.key == KeyCode.R)
+        {
+            PerformDirectionRoll();
+            keyData.isConsumed = true;
+        }
+        if (isWaitingForDistanceRoll && keyData.key == KeyCode.R)
+        {
+            PerformDistanceRoll();
+            keyData.isConsumed = true;
+        }
+        if (isWaitingForInterceptionRoll && keyData.key == KeyCode.R)
+        {
+            PerformInterceptionRoll();
+            keyData.isConsumed = true;
+        }
+    }
 
     public string TranslateRollToDirection(int direction)
     {
@@ -42,8 +91,35 @@ public class LooseBallManager : MonoBehaviour
             return "Invalid direction";  // This should never Happen
         }
     }
+
+    public void PerformDirectionRoll(int? rigroll = null)
+    {
+        // directionRoll = 0; // S  : PerformDirectionRoll(1)
+        // directionRoll = 1; // SW : PerformDirectionRoll(2)
+        // directionRoll = 2; // NW : PerformDirectionRoll(3)
+        // directionRoll = 3; // N  : PerformDirectionRoll(4)
+        // directionRoll = 4; // NE : PerformDirectionRoll(5)
+        // directionRoll = 5; // SE : PerformDirectionRoll(6)
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        directionRoll = rigroll -1 ?? returnedRoll - 1;
+        isWaitingForDirectionRoll = false;
+    }
+    public void PerformDistanceRoll(int? rigroll = null)
+    {
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        distanceRoll = rigroll ?? returnedRoll;
+        isWaitingForDistanceRoll = false;
+    }
+    
+    public void PerformInterceptionRoll(int? rigroll = null)
+    {
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        interceptionRoll = rigroll ?? returnedRoll;
+        isWaitingForInterceptionRoll = false;
+    }
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, string resolutionType)
     {
+        isActivated = true;
         causingDeflection = startingToken; // TODO: I think this is redundant
         Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {resolutionType}");
         path.Clear();
@@ -69,16 +145,11 @@ public class LooseBallManager : MonoBehaviour
 
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
-        yield return StartCoroutine(WaitForInput(KeyCode.R)); 
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        // int directionRoll = returnedRoll - 1;
-        // int directionRoll = 0; // S
-        // int directionRoll = 1; // SW
-        // int directionRoll = 2; // NW
-        int directionRoll = 3; // N
-        // int directionRoll = 4; // NE
-        // int directionRoll = 5; // SE
-        // int directionRoll = Random.Range(0, 6); // 0-5 for hex directions
+        isWaitingForDirectionRoll = true;
+        while (isWaitingForDirectionRoll)
+        {
+            yield return null;
+        }
 
         if(resolutionType == "handling" && startingToken.IsGoalKeeper)
         {
@@ -139,10 +210,11 @@ public class LooseBallManager : MonoBehaviour
         }
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
-        yield return StartCoroutine(WaitForInput(KeyCode.R));
-        var (returnedRoll2, returnedJackpot2) = helperFunctions.DiceRoll();
-        int distanceRoll = returnedRoll2;
-        // int distanceRoll = 6; // Distance 1-6
+        isWaitingForDistanceRoll = true;
+        while (isWaitingForDistanceRoll)
+        {
+            yield return null;
+        }
 
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
 
@@ -213,7 +285,7 @@ public class LooseBallManager : MonoBehaviour
             // Step 5.2: Check if there are defenders in ZOI of this hex
             foreach (HexCell neighbor in hexround2.GetNeighbors(hexGrid))
             {
-                PlayerToken potentialInterceptor = neighbor?.GetOccupyingToken();
+                potentialInterceptor = neighbor?.GetOccupyingToken();
                 if (potentialInterceptor != null && // a token is there
                     potentialInterceptor != startingToken && // not the one who caused the loose ball
                     potentialInterceptor != closestToken && // not the one who is the fallback hit
@@ -225,14 +297,12 @@ public class LooseBallManager : MonoBehaviour
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");
                     MatchManager.Instance.gameData.gameLog.LogEvent(potentialInterceptor, MatchManager.ActionType.InterceptionAttempt);
 
-                    // Roll for interception
-                    // Step 5.3: Wait for interception roll
-                    // Interception logic (e.g., wait for dice roll input)
+                    isWaitingForInterceptionRoll = true;
+                    while (isWaitingForInterceptionRoll)
+                    {
+                        yield return null;
+                    }
 
-                    yield return StartCoroutine(WaitForInterceptionRoll(potentialInterceptor, hexround2));
-                    Debug.Log("Press [R] to roll for interception.");
-                    var (returnedRoll3, returnedJackpot3) = helperFunctions.DiceRoll();
-                    int interceptionRoll = returnedRoll3;
                     // int interceptionRoll = 1; // Simulate dice roll
                     if (interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10)
                     {
@@ -252,7 +322,9 @@ public class LooseBallManager : MonoBehaviour
                         MatchManager.Instance.ChangePossession();  
                         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
                         movementPhaseManager.EndMovementPhase(true);
-                        MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+                        MatchManager.Instance.currentState = MatchManager.GameState.AnyOtherScenario;
+                        MatchManager.Instance.BroadcastAnyOtherScenario();
+                        EndLooseBallPhase();
                         yield break; // End ball movement
                     }
                     else
@@ -367,33 +439,46 @@ public class LooseBallManager : MonoBehaviour
         EndLooseBallPhase();
     }
 
-    private IEnumerator WaitForInput(KeyCode key)
-    {
-        Debug.Log($"Waiting for input: Press [{key}] to proceed.");
-        while (!Input.GetKeyDown(key))
-        {
-            yield return null; // Wait until the key is pressed
-        }
-        yield return null;
-        Debug.Log($"Input received: [{key}] pressed.");
-    }
-    
-    private IEnumerator WaitForInterceptionRoll(PlayerToken potentialInterceptor, HexCell hex)
-    {
-        Debug.Log($"Waiting for input: Press [R] to proceed.");
-        while (!Input.GetKeyDown(KeyCode.R))
-        {
-            yield return null; // Wait until the key is pressed
-        }
-        yield return null;
-    }
-
     public void EndLooseBallPhase()
     {
-      defendersTriedToIntercept.Clear();
-      causingDeflection = null;
-      ballHitThisToken = null;
-      path.Clear();
+        isActivated = false;
+        isWaitingForDirectionRoll = false;
+        isWaitingForDistanceRoll = false;
+        isWaitingForInterceptionRoll = false;
+        directionRoll = 240885;
+        distanceRoll = 0;
+        interceptionRoll = 0;
+        defendersTriedToIntercept.Clear();
+        potentialInterceptor = null;
+        causingDeflection = null;
+        ballHitThisToken = null;
+        path.Clear();
+    }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("Loose: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isWaitingForDirectionRoll) sb.Append("isWaitingForDirectionRoll, ");
+        if (isWaitingForDistanceRoll) sb.Append("isWaitingForDistanceRoll, ");
+        if (isWaitingForInterceptionRoll) sb.Append("isWaitingForInterceptionRoll, ");
+        
+        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (isActivated) sb.Append("Loose: ");
+        if (isWaitingForDirectionRoll) sb.Append($"Press [R] to roll the Direction roll from {causingDeflection.playerName}, ");
+        if (isWaitingForDistanceRoll) sb.Append($"Press [R] to roll the Distance roll from {causingDeflection.playerName}, ");
+        if (isWaitingForInterceptionRoll) sb.Append($"Press [R] to roll an Interception roll from {potentialInterceptor.playerName}, ");
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
+        return sb.ToString();
     }
 
 }

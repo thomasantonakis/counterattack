@@ -140,6 +140,7 @@ public class GameDebugMonitor : MonoBehaviour
         builder.AppendLine(freeKickManager.GetDebugStatus());
         builder.AppendLine(goalKeeperManager.GetDebugStatus());
         builder.AppendLine(finalThirdManager.GetDebugStatus());
+        builder.AppendLine(looseBallManager.GetDebugStatus());
 
         debugText.text = builder.ToString();
     }
@@ -150,6 +151,7 @@ public class GameDebugMonitor : MonoBehaviour
         instruction.Append(finalThirdManager.GetInstructions());
         instruction.Append(movementPhaseManager.GetInstructions());
         instruction.Append(goalKeeperManager.GetInstructions());
+        instruction.AppendLine(looseBallManager.GetInstructions());
 
         instructionText.text = instruction.ToString();
     }
