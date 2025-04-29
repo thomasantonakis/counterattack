@@ -395,26 +395,26 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            // Scenario_001_BasicKickoff(),
-            // Scenario_002_GroundBall_0001_Commitment(),
-            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            // Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
-            // Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
-            // Scenario_011_Movement_Phase_Successful_Interception(),
-            // Scenario_012_Movement_Phase_interception_Foul_take_foul(),
-            // Scenario_013_Movement_Phase_interception_Foul_Play_on(),
-            // Scenario_014_Movement_Phase_Check_reposition_interceptions(),
-            // Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
-            // Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
-            // Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
-            // Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
-            // Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
-            // Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
+            Scenario_001_BasicKickoff(),
+            Scenario_002_GroundBall_0001_Commitment(),
+            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
+            Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
+            Scenario_011_Movement_Phase_Successful_Interception(),
+            Scenario_012_Movement_Phase_interception_Foul_take_foul(),
+            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
+            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
+            Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
+            Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
+            Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
+            Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
+            Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
+            Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
             Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
             // Add more scenarios here
         };
@@ -4710,20 +4710,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("MovementPhase Check Pick Up Ball, continue Dribble, tackle Loose, 2 missed interceptions");
     }
     // TODO: Movement Phase
-    // 2 interceptions failed from 
+    // Loose ball to get in the box
+    // Loose ball from in the box on attacker check snapshot availability and how to move from there.
 
     
-    // TODO: Pass to player
-    //    , move with dribbler next to defender (no nutmeg, no interception)
-    //    , forfeit rest of movement
-    //    , start MP with nutmeg without moving
-    //    , reposition attacker
-    //    , forfeit Attacking MP
-    //    , bring defender for tackle
-    //    , reposition attacker next to nutmegged (verify no interception)
-    //    , bring third attacker for tackle
-    //    , force loose ball to space
-    //    , pick up with fourth defender verify end of movement
+
     // TODO: Pass to player
     //    , move dribler for nutmeg
     //    , reposition and continue moving
