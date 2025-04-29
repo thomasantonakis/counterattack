@@ -1,18 +1,52 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Collections;
 
 public class MatchStatsUI : MonoBehaviour
 {
     public TMP_Text statsText;  // Drag the TextMeshPro UI element here
     public TMP_Text homeScorersText;
     public TMP_Text awayScorersText;
+    public RectTransform panel;     // Assign the MatchStatsUI panel here
+    public Button toggleButton;     // Assign a small edge button (like "◀"/"▶")
+    public float collapsedX = 370f; // Distance off-screen to slide
+    public float animationSpeed = 5f;
+
+    private bool isExpanded = true;
+    private Vector2 onScreenPos;
+    private Vector2 offScreenPos;
 
     private void Start()
     {
         InvokeRepeating(nameof(UpdateStatsUI), 1f, 1f);  // Update UI every second
+        onScreenPos = panel.anchoredPosition;
+        offScreenPos = new Vector2(collapsedX, onScreenPos.y);
+
+        toggleButton.onClick.AddListener(TogglePanel);
+    }
+
+    private void TogglePanel()
+    {
+        isExpanded = !isExpanded;
+        StopAllCoroutines();
+        StartCoroutine(SlidePanel(isExpanded ? onScreenPos : offScreenPos));
+
+        // Optional: flip button text/icon
+        // toggleButton.GetComponentInChildren<TextMeshProUGUI>().text = isExpanded ? "▶" : "◀";
+        toggleButton.GetComponentInChildren<TextMeshProUGUI>().text = isExpanded ? "C" : "E";
+    }
+
+    private IEnumerator SlidePanel(Vector2 targetPos)
+    {
+        while (Vector2.Distance(panel.anchoredPosition, targetPos) > 0.1f)
+        {
+            panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, targetPos, Time.deltaTime * animationSpeed);
+            yield return null;
+        }
+        panel.anchoredPosition = targetPos;
     }
 
     void UpdateStatsUI()
