@@ -416,6 +416,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
             Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
             Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
+            Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
             // Add more scenarios here
         };
 
@@ -4709,6 +4710,166 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         LogFooterofTest("MovementPhase Check Pick Up Ball, continue Dribble, tackle Loose, 2 missed interceptions");
     }
+
+    private IEnumerator Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move()
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: MovementPhase Loose Ball, sent in the Penalty Box");
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing P - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Clicking (10, 0)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) again");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Wait for the ball to move");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToPlayer();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after GB to Player is correct",
+            true,
+            availabilityCheck.ToString()
+        );
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing M - Start Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing M - Forfeit Att MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Clicking (14, 0) - Select Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+        Log("Clicking (11, 0) - Move Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 0), 0.5f));
+        yield return new WaitForSeconds(3f); // for the ball to move
+        Log("Pressing T - Tackle Yaneva with Soares");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return new WaitForSeconds(1.2f);
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager Should be activated after the loose ball caused by Paterson's tackle",
+            true,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should be waiting for a Direction Roll after the loose ball caused by Paterson's tackle",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R - Direction Roll North East");
+        looseBallManager.PerformDirectionRoll(5);
+        yield return new WaitForSeconds(0.1f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should NOT be waiting for a Direction Roll after Direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager Should be waiting for a Distance Roll after Direction Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R - Distance Roll 6");
+        looseBallManager.PerformDistanceRoll(6);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should NOT be waiting for a Direction Roll after Distance Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager NOT Should be waiting for a Distance Roll after Direction Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager Should Still be active",
+            true,
+            looseBallManager.isActivated
+        );
+        yield return new WaitForSeconds(2.5f);
+        AssertTrue(
+            goalKeeperManager.isActivated,
+            "GK Manager Should be active",
+            true,
+            goalKeeperManager.isActivated
+        );
+        Log("Clicking (16, -1) Move GK for Box entrance");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -1), 0.5f));
+        yield return new WaitForSeconds(1.2f); // for the token to move
+        AssertTrue(
+            !goalKeeperManager.isActivated,
+            "GK Manager Should NOT be active any more",
+            false,
+            goalKeeperManager.isActivated
+        );
+        yield return new WaitForSeconds(2.2f); // for the token to move
+        AssertTrue(
+            !looseBallManager.isActivated,
+            "Loose Ball Should NOT be active any more",
+            false,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseDef,
+            "MP Should still be at Defensive part",
+            true,
+            movementPhaseManager.isMovementPhaseDef
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Count == 1,
+            "MP Moved Tokens should have 1",
+            true,
+            movementPhaseManager.movedTokens.Count
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 1,
+            "MP Defenders Moved should have 1",
+            true,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Soares")),
+            "MP Moved Tokens should Contain Soares",
+            true,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase,
+            "MM should be at Movement Phase",
+            true,
+            MatchManager.Instance.currentState
+        );
+
+        LogFooterofTest("MovementPhase Loose Ball, sent in the Penalty Box");
+    }
+        // AssertTrue(
+        //     false,
+        //     "Break"
+        // );
+    
+    
     // TODO: Movement Phase
     // Loose ball to get in the box
     // Loose ball from in the box on attacker check snapshot availability and how to move from there.

@@ -1051,4 +1051,44 @@ Pressing V - McNulty to Pick Up Ball
 
 ✅ Test #21 passed.
 
+
+==== Starting Test #22 ====
+▶️ Starting test scenario: MovementPhase Loose Ball, sent in the Penalty Box
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing X - Forfeit Att F3
+Pressing X - Forfeit Def F3
+Pressing M - Start Movement Phase
+Pressing M - Forfeit Att MP
+Clicking (14, 0) - Select Soares
+Clicking (11, 0) - Move Soares
+Pressing T - Tackle Yaneva with Soares
+✅ PASS: Loose Ball Manager Should be activated after the loose ball caused by Paterson's tackle | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Should be waiting for a Direction Roll after the loose ball caused by Paterson's tackle | Expected: True | Actual: True
+Pressing R - Direction Roll North East
+✅ PASS: Loose Ball Manager Should NOT be waiting for a Direction Roll after Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be waiting for a Distance Roll after Direction Roll | Expected: True | Actual: True
+Pressing R - Distance Roll 6
+✅ PASS: Loose Ball Manager Should NOT be waiting for a Direction Roll after Distance Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager NOT Should be waiting for a Distance Roll after Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should Still be active | Expected: True | Actual: True
+✅ PASS: GK Manager Should be active | Expected: True | Actual: True
+Clicking (16, -1) Move GK for Box entrance
+✅ PASS: GK Manager Should NOT be active any more | Expected: False | Actual: False
+✅ PASS: Loose Ball Should NOT be active any more | Expected: False | Actual: False
+✅ PASS: MP Should still be at Defensive part | Expected: True | Actual: True
+✅ PASS: MP Moved Tokens should have 1 | Expected: True | Actual: 1
+✅ PASS: MP Defenders Moved should have 1 | Expected: True | Actual: 1
+✅ PASS: MP Moved Tokens should Contain Soares | Expected: True | Actual: 1
+✅ PASS: MM should be at Movement Phase | Expected: True | Actual: MovementPhase
+
+✅ MovementPhase Loose Ball, sent in the Penalty Box - TEST PASSED COMPLETELY 🎉
+
+✅ Test #22 passed.
+
 🎉 ALL TESTS PASSED SUCCESSFULLY!
