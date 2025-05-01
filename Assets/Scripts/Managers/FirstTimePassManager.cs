@@ -13,7 +13,8 @@ public class FirstTimePassManager : MonoBehaviour
     public Ball ball;
     public HexGrid hexGrid;
     public MovementPhaseManager movementPhaseManager;
-    public GameInputManager gameInputManager;
+    public GoalKeeperManager goalKeeperManager;
+    public FinalThirdManager finalThirdManager;
     public HelperFunctions helperFunctions;
     [Header("Runtime Items")]
     public bool isAvailable = false;
@@ -233,9 +234,8 @@ public class FirstTimePassManager : MonoBehaviour
             else
             {
                 hexGrid.ClearHighlightedHexes();
-                HighlightValidFTPPath(pathHexes, isDangerous);
                 currentTargetHex = clickedHex;
-                lastClickedHex = clickedHex;  // Set for confirmation click
+                HighlightValidFTPPath(pathHexes, isDangerous);
                 Debug.Log($"First click registered. Click again to confirm the First-Time Pass. Path is {(isDangerous ? "dangerous" : "safe")}.");
             }
         }
@@ -375,7 +375,7 @@ public class FirstTimePassManager : MonoBehaviour
         foreach (HexCell hex in pathHexes)
         {
             if (hex == null) continue; // to next hex (loop)
-            hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
+            hex.HighlightHex(hex == currentTargetHex ? "passTarget" : isDangerous ? "dangerousPass" : "ballPath");
             hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes
         }
     }
@@ -384,7 +384,6 @@ public class FirstTimePassManager : MonoBehaviour
     {
         Debug.Log("Attacker movement phase started. Move one attacker 1 hex.");
         isWaitingForAttackerSelection = true;
-        isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
         selectedToken = null;  // Ensure no token is auto-selected
         // Set game state to reflect we are in the attacker’s movement phase
         MatchManager.Instance.currentState = MatchManager.GameState.FirstTimePassAttackerMovement;
@@ -393,7 +392,6 @@ public class FirstTimePassManager : MonoBehaviour
     public void StartDefenderMovementPhase()
     {
         Debug.Log("Defender movement phase started. Move one defender 1 hex.");
-        isWaitingForConfirmation = false;  // Now allow token selection since confirmation is done
         isWaitingForDefenderSelection = true;
         selectedToken = null;  // Ensure no token is auto-selected
         // Set game state to reflect we are in the defender’s movement phase
@@ -470,7 +468,6 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForDefenderSelection = false;
         isWaitingForAttackerMove = false;
         isWaitingForDefenderMove = false;
-        isWaitingForConfirmation = false;
         selectedToken = null;  // Reset selected token
         currentTargetHex = null;  // Reset current target hex
     }
@@ -500,7 +497,7 @@ public class FirstTimePassManager : MonoBehaviour
         }
     }
     
-    void PerformFTPInterceptionRolls()
+    void PerformFTPInterceptionRolls(int? rigRoll = null)
     {
         if (currentDefenderHex != null)
         {
@@ -518,8 +515,7 @@ public class FirstTimePassManager : MonoBehaviour
 
                 // Roll the dice
                 var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-                // int diceRoll = returnedRoll;
-                int diceRoll = 4;
+                int diceRoll = rigRoll ?? returnedRoll;
                 Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
 
                 // Calculate interception conditions
@@ -745,7 +741,37 @@ public class FirstTimePassManager : MonoBehaviour
         if (isWaitingForDiceRoll) sb.Append("isWaitingForDiceRoll, ");
         if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (goalKeeperManager.isActivated) return "";
+        if (finalThirdManager.isActivated) return "";
+        if (isAvailable) sb.Append("Press [F] to Play a First-Time Pass, ");
+        if (isActivated) sb.Append("FTP: ");
+        if (isAwaitingTargetSelection) sb.Append($"Click on a Hex up to 6 Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
+        if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
+        if (isAwaitingTargetSelection && currentTargetHex != null && onPathDefendersList.Count > 0) sb.Append($"there will be {onPathDefendersList.Count} attempts to intercept the pass, ");
+        if (isWaitingForAttackerSelection)
+        {
+            if (selectedToken == null) sb.Append($"Click on an Attacker to show the range, ");
+            else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another attacker to switch player, ");
+        }
+        if (isWaitingForDefenderSelection)
+        {
+            if (!isWaitingForDefenderMove) sb.Append($"Click on a Defender to show the moveable range, ");
+            else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another defender to switch player, ");
+        }
+        if (isWaitingForDiceRoll)
+        {
+            string rollneeded = currentDefenderHex.GetOccupyingToken().tackling <= 4 ? "6" : currentDefenderHex.GetOccupyingToken().tackling == 6 ? "4+": "5+";
+            sb.Append($"Press [R] to roll for interception with {currentDefenderHex.GetOccupyingToken().name}, a roll of {rollneeded} is needed, ");
+        }
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 }

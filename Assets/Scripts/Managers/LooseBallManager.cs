@@ -469,7 +469,7 @@ public class LooseBallManager : MonoBehaviour
         if (isWaitingForDistanceRoll) sb.Append("isWaitingForDistanceRoll, ");
         if (isWaitingForInterceptionRoll) sb.Append("isWaitingForInterceptionRoll, ");
         
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 

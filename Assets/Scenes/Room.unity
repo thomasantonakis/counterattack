@@ -1820,7 +1820,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &748552023
 MonoBehaviour:
@@ -1948,7 +1948,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &886834329
 MonoBehaviour:
@@ -1965,7 +1965,8 @@ MonoBehaviour:
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
   movementPhaseManager: {fileID: 1390513032}
-  gameInputManager: {fileID: 417053521}
+  goalKeeperManager: {fileID: 272854143}
+  finalThirdManager: {fileID: 1012232483}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
@@ -3303,7 +3304,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1390513032
 MonoBehaviour:
@@ -3616,7 +3617,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 24
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1405702519
 GameObject:
@@ -4286,6 +4287,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   finalThirdManager: {fileID: 1012232483}
   firstTimePassManager: {fileID: 886834329}
+  goalKeeperManager: {fileID: 272854143}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
@@ -4310,7 +4312,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1740884026
 GameObject:
@@ -4797,7 +4799,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1884634488
 GameObject:
@@ -4860,7 +4862,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 25
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2034852867
 GameObject:
@@ -4897,6 +4899,7 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   longBallManager: {fileID: 748552023}
   kickoffManager: {fileID: 282559520}
+  isActivated: 0
   defendersAreBack: 0
   attackersAreBack: 0
 --- !u!4 &2034852869
@@ -4984,7 +4987,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2071675947
 GameObject:

@@ -1475,7 +1475,7 @@ public class MatchManager : MonoBehaviour
         if (LastTokenToTouchTheBallOnPurpose != null) sb.Append($"LastTokenToTouchTheBallOnPurpose: {LastTokenToTouchTheBallOnPurpose.name}, ");
         if (PreviousTokenToTouchTheBallOnPurpose != null) sb.Append($"PreviousTokenToTouchTheBallOnPurpose: {PreviousTokenToTouchTheBallOnPurpose.name}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 

@@ -82,6 +82,9 @@ public class HexCell : MonoBehaviour
             case "hover":
                 colorToApply = originalColor * 0.5f;  // Darken the hex on hover
                 break;
+            case "passTarget":
+                colorToApply = Color.yellow;  // Use the provided color for the ball path
+                break;
             case "ballPath":
                 colorToApply = Color.blue;  // Use the provided color for the ball path
                 break;

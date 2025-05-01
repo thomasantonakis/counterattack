@@ -647,7 +647,7 @@ public class LongBallManager : MonoBehaviour
         if (isWaitingForDefLBMove) sb.Append("isWaitingForDefLBMove, ");
         if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 

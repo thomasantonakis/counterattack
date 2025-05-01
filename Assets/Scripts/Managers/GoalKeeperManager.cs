@@ -128,7 +128,7 @@ public class GoalKeeperManager : MonoBehaviour
 
         if (isActivated) sb.Append("isActivated, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 

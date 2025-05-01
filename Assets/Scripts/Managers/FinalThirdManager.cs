@@ -418,7 +418,7 @@ public class FinalThirdManager : MonoBehaviour
         if (!string.IsNullOrEmpty(currentTeamMoving) && (currentTeamMoving == "attack" || currentTeamMoving == "defense")) sb.Append($"currentTeamMoving: {GetTeamNameByCurrentTeamMoving()}, ");
         if (selectedToken != null) sb.Append($"selectedToken: {selectedToken.name}, ");
         
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 

@@ -827,7 +827,35 @@ public class HighPassManager : MonoBehaviour
         if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
         if (lockedAttacker != null) sb.Append($"lockedAttacker: {lockedAttacker.name}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (goalKeeperManager.isActivated) return "";
+        if (finalThirdManager.isActivated) return "";
+        if (isAvailable) sb.Append("Press [C] to Play a High Pass, ");
+        if (isActivated) sb.Append("HP: ");
+        if (isWaitingForConfirmation) sb.Append($"Click on a Hex up to 15 Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
+        if (isWaitingForConfirmation && currentTargetHex != null) sb.Append($"or click the Yellow Hex again to confirm target, ");
+        if (isWaitingForAttackerSelection && lockedAttacker == null) sb.Append($"Click on an Attacker in the Blue hexes to move them to the target, ");
+        if (isWaitingForAttackerSelection && lockedAttacker != null)
+        {
+            if (selectedToken == null) sb.Append($"Click on an Attacker (not {lockedAttacker.name}) to show the range, ");
+            else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another attacker to switch player, ");
+        }
+        if (isWaitingForDefenderSelection)
+        {
+            if (!isWaitingForDefenderMove) sb.Append($"Click on a Defender to show the moveable range, ");
+            else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another defender to switch player, ");
+        }
+        if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll for interception with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {8 - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
+        if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll for interception with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {8 - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
+        if (isWaitingForDefGKChallengeDecision) {sb.Append($"{hexGrid.GetDefendingGK().name} can rush out to challenge, click a highlighted hex to rush there, or Press [x] to not rush out, ");}
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 }

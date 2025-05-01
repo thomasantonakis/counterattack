@@ -148,12 +148,26 @@ public class GameDebugMonitor : MonoBehaviour
     private void UpdateInstructionText()
     {
         instruction.Clear();
-        instruction.Append(finalThirdManager.GetInstructions());
-        instruction.Append(movementPhaseManager.GetInstructions());
-        instruction.Append(goalKeeperManager.GetInstructions());
-        instruction.AppendLine(looseBallManager.GetInstructions());
-        instruction.AppendLine(shotManager.GetInstructions());
 
+        List<string> activeInstructions = new List<string>();
+
+        void AddIfNotEmpty(string s)
+        {
+            if (!string.IsNullOrWhiteSpace(s))
+                activeInstructions.Add(s);
+        }
+
+        AddIfNotEmpty(finalThirdManager.GetInstructions());
+        AddIfNotEmpty(movementPhaseManager.GetInstructions());
+        AddIfNotEmpty(goalKeeperManager.GetInstructions());
+        AddIfNotEmpty(looseBallManager.GetInstructions());
+        AddIfNotEmpty(shotManager.GetInstructions());
+        AddIfNotEmpty(groundBallManager.GetInstructions());
+        AddIfNotEmpty(firstTimePassManager.GetInstructions());
+        AddIfNotEmpty(highPassManager.GetInstructions());
+
+        instruction.Append(string.Join(" / ", activeInstructions));
         instructionText.text = instruction.ToString();
     }
+
 }

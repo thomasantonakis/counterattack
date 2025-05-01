@@ -971,7 +971,7 @@ public class ShotManager : MonoBehaviour
         if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
         if (saveHex != null) sb.Append($"saveHex: {saveHex.name}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 

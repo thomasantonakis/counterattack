@@ -14,6 +14,7 @@ public class GroundBallManager : MonoBehaviour
     public HexGrid hexGrid;
     public FinalThirdManager finalThirdManager;
     public FirstTimePassManager firstTimePassManager;
+    public GoalKeeperManager goalKeeperManager;
     public HelperFunctions helperFunctions;
     [Header("Runtime Items")]
     public bool isAvailable = false;        // Check if the GroundBall is available as an action from the user.
@@ -162,22 +163,17 @@ public class GroundBallManager : MonoBehaviour
         else if (difficulty == 2)
         {
             hexGrid.ClearHighlightedHexes();
-            HighlightValidGroundPassPath(pathHexes, isDangerous);
-            PopulateGroundPathInterceptions(clickedHex, isGk);
-            diceRollsPending = defendingHexes.Count; // is this relevant here?
-            if (diceRollsPending == 0)
+            if (currentTargetHex == null || clickedHex != currentTargetHex)
             {
-                Debug.Log($"The Stanard pass cannot be intercepted. Click again to confirm or elsewhere to try another path.");
-            }
-            else 
-            {
-                Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+                currentTargetHex = clickedHex;
+                PopulateGroundPathInterceptions(clickedHex, isGk);
+                HighlightValidGroundPassPath(pathHexes, isDangerous);
+                diceRollsPending = defendingHexes.Count; // is this relevant here?
+                if (diceRollsPending == 0) Debug.Log($"The Stanard pass cannot be intercepted. Click again to confirm or elsewhere to try another path.");
+                else Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
             }
             // Medium Mode: Wait for a second click for confirmation
-            if (
-                clickedHex == currentTargetHex
-                // && clickedHex == lastClickedHex
-            )
+            else 
             {
                 isAwaitingTargetSelection = false;
                 CommitToThisAction();
@@ -194,15 +190,9 @@ public class GroundBallManager : MonoBehaviour
                     Debug.Log("Pass is not dangerous, moving ball.");
                     MoveTheBall(clickedHex); // Execute pass
                 }
-                ball.DeselectBall();
+                ball.DeselectBall();  
             }
-            else
-            {
-                hexGrid.ClearHighlightedHexes();
-                HighlightValidGroundPassPath(pathHexes, isDangerous);
-                currentTargetHex = clickedHex;
-                // lastClickedHex = clickedHex;  // Set for confirmation click
-            }
+            
         }
         else if (difficulty == 1) // Easy Mode: Handle hover and clicks with immediate highlights
         {
@@ -290,7 +280,7 @@ public class GroundBallManager : MonoBehaviour
         foreach (HexCell hex in pathHexes)
         {
             if (hex == null) continue; // to next hex (loop)
-            hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
+            hex.HighlightHex(hex == currentTargetHex ? "passTarget" : isDangerous ? "dangerousPass" : "ballPath");
             hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes
         }
     }
@@ -669,8 +659,28 @@ public class GroundBallManager : MonoBehaviour
         if (currentTargetHex != null) sb.Append($"currentTargetHex: {currentTargetHex.name}, ");
         if (defendingHexes.Count != 0) sb.Append($"defendingHexes: {helperFunctions.PrintListNamesOneLine(defendingHexes)}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (goalKeeperManager.isActivated) return "";
+        if (finalThirdManager.isActivated) return "";
+        if (!isActivated) return "";
+        if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
+        if (isActivated) sb.Append("SP: ");
+        if (isAwaitingTargetSelection) sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
+        if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
+        if (isAwaitingTargetSelection && currentTargetHex != null && diceRollsPending > 0) sb.Append($"there will be {diceRollsPending} attempts to intercept the pass, ");
+        if (isWaitingForDiceRoll)
+        {
+            string rollneeded = currentDefenderHex.GetOccupyingToken().tackling <= 4 ? "6" : currentDefenderHex.GetOccupyingToken().tackling == 6 ? "4+": "5+";
+            sb.Append($"Press [R] to roll for interception with {currentDefenderHex.GetOccupyingToken().name}, a roll of {rollneeded} is needed, ");
+        }
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
 }

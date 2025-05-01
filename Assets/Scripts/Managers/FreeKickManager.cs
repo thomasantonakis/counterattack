@@ -754,7 +754,7 @@ public class FreeKickManager : MonoBehaviour
         if (isCornerKick) sb.Append("isCornerKick, ");
         if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
 
-        if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
 
