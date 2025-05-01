@@ -1153,18 +1153,23 @@ public class MatchManager : MonoBehaviour
         }
         else if (currentState == GameState.EndOfFirstTimePass)
         {
-            movementPhaseManager.isAvailable = true;
-            groundBallManager.isAvailable = false;
-            firstTimePassManager.isAvailable = false;
-            highPassManager.isAvailable = false;
-            longBallManager.isAvailable = false;
-            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
+            if (!attackHasPossession)
             {
-                shotManager.isAvailable = true;
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
             }
             else
             {
-                shotManager.isAvailable = false;
+                if (ball.GetCurrentHex().CanShootFrom)
+                {
+                    shotManager.isAvailable = true;
+                    movementPhaseManager.isAvailable = true;
+                }
+                else
+                {
+                    movementPhaseManager.ActivateMovementPhase();
+                    movementPhaseManager.CommitToAction();
+                }
             }
         }
         else if (currentState == GameState.AnyOtherScenario)
