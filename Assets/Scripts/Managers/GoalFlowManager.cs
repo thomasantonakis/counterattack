@@ -303,28 +303,49 @@ public class GoalFlowManager : MonoBehaviour
     {
         Vector3 startPos = token.transform.position;
         Vector3 endPos = targetHex.transform.position;
+
+        float fixedY = startPos.y; // Lock this value
+
+        // Apply fixed Y to end position too
+        endPos.y = fixedY;
+
         float distance = Vector3.Distance(startPos, endPos);
         float speed = 2f;
+
         if (!isDefense)
         {
             if (isForward)
             {
-                speed = speed * ( 1 + (token.pace - 3) * 0.3f );
+                speed *= (1 + (token.pace - 3) * 0.3f);
             }
         }
-        else speed = speed * 0.7f;
-        float duration = distance / speed;
+        else
+        {
+            speed *= 0.7f;
+        }
 
+        float duration = distance / speed;
         float elapsed = 0f;
+
         while (elapsed < duration)
         {
-            token.transform.position = Vector3.Lerp(startPos, endPos, elapsed / duration);
+            float t = elapsed / duration;
+            Vector3 interpolated = Vector3.Lerp(startPos, endPos, t);
+            interpolated.y = fixedY;  // Force Y again
+            token.transform.position = interpolated;
+
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        token.transform.position = endPos;
+        // Final position with fixed Y
+        Vector3 finalPosition = endPos;
+        finalPosition.y = fixedY;
+        token.transform.position = finalPosition;
+
         token.SetCurrentHex(targetHex);
+
+        Debug.Log($"✅ Token {token.name} moved to {finalPosition} (target hex: {targetHex.name})");
     }
 
     // Retrieves all tokens belonging to a specific team

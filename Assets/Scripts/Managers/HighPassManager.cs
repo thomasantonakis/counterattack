@@ -332,7 +332,6 @@ public class HighPassManager : MonoBehaviour
                         lockedAttacker = clickedHex.GetOccupyingToken();  // Lock the attacker in place
                         Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
                     }
-                    hexGrid.ClearHighlightedHexes();
                     // Proceed to start the attacker movement phase
                     StartCoroutine(StartAttackerMovementPhase());
                 }
@@ -903,6 +902,8 @@ public class HighPassManager : MonoBehaviour
             else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another defender to switch player, ");
         }
         if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll the accuracy check with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {8 - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
+        if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
+        if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
         if (isWaitingForDefGKChallengeDecision) {sb.Append($"{hexGrid.GetDefendingGK().name} can rush out to challenge, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
