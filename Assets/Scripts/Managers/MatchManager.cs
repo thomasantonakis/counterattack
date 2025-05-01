@@ -21,7 +21,8 @@ public class MatchManager : MonoBehaviour
         EndOfStandardPass,
         EndOfFirstTimePass,
         AnyOtherScenario,
-        LongBallCompleted,
+        LongBall,
+        EndOfLongBall,
         WaitingForThrowInTaker, // An attacker must be chosen to take the throw in
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
@@ -918,10 +919,10 @@ public class MatchManager : MonoBehaviour
         currentState = GameState.KickoffBlown;
         groundBallManager.isAvailable = true;
         highPassManager.isAvailable = true;
+        longBallManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.");
-        // Logic to start the game, such as showing the ball, enabling inputs, etc.
     }
 
     public void SwitchSides()
@@ -1020,7 +1021,6 @@ public class MatchManager : MonoBehaviour
         highPassManager.CleanUpHighPass();
         longBallManager.CleanUpLongBall();
         RefreshAvailableActions();
-        // Finally Activate the movement phase
         movementPhaseManager.ActivateMovementPhase();
     }
 
@@ -1091,6 +1091,12 @@ public class MatchManager : MonoBehaviour
         RefreshAvailableActions();
     }
     
+    public void BroadcastEndOfLongBall()
+    {
+        currentState = GameState.EndOfLongBall;
+        RefreshAvailableActions();
+    }
+    
     public void BroadcastAnyOtherScenario()
     {
         currentState = GameState.AnyOtherScenario;
@@ -1150,6 +1156,11 @@ public class MatchManager : MonoBehaviour
             {
                 shotManager.isAvailable = false;
             }
+        }
+        else if (currentState == GameState.EndOfLongBall)
+        {
+            movementPhaseManager.ActivateMovementPhase();
+            movementPhaseManager.CommitToAction();
         }
         else if (currentState == GameState.EndOfFirstTimePass)
         {

@@ -313,16 +313,6 @@ public class GameInputManager : MonoBehaviour
             MatchManager.Instance.TriggerStandardPass();
             // groundBallManager.imposedDistance = 11;
         }
-        else if (
-            Input.GetKeyDown(KeyCode.M)
-            && (
-                MatchManager.Instance.currentState == MatchManager.GameState.LongBallCompleted
-                || true
-            )
-        )
-        {
-            MatchManager.Instance.TriggerMovement();
-        }
         // else if (
         //     Input.GetKeyDown(KeyCode.C) && !freeKickManager.isCornerKick
         //     // && MatchManager.Instance.currentState == MatchManager.GameState.SuccessfulTackle

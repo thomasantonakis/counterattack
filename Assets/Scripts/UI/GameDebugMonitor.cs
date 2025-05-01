@@ -165,6 +165,7 @@ public class GameDebugMonitor : MonoBehaviour
         AddIfNotEmpty(groundBallManager.GetInstructions());
         AddIfNotEmpty(firstTimePassManager.GetInstructions());
         AddIfNotEmpty(highPassManager.GetInstructions());
+        AddIfNotEmpty(longBallManager.GetInstructions());
 
         instruction.Append(string.Join(" / ", activeInstructions));
         instructionText.text = instruction.ToString();
