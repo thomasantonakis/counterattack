@@ -406,7 +406,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (temp_check)
         {
             isBallPickable = false;
-            isAwaitingTokenSelection = false;
+            // isAwaitingTokenSelection = false;
         }
     }
 
@@ -804,8 +804,8 @@ public class MovementPhaseManager : MonoBehaviour
                 if (tokenPickedUpBall)
                 {
                     PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-                    Debug.Log($"{!string.IsNullOrEmpty(MatchManager.Instance.hangingPassType)}");
-                    Debug.Log($"{MatchManager.Instance.hangingPassType}");
+                    // Debug.Log($"{!string.IsNullOrEmpty(MatchManager.Instance.hangingPassType)}");
+                    // Debug.Log($"{MatchManager.Instance.hangingPassType}");
                     if (!string.IsNullOrEmpty(MatchManager.Instance.hangingPassType))
                     {
                         if (MatchManager.Instance.hangingPassType == "ground")

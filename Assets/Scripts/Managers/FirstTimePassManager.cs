@@ -28,8 +28,6 @@ public class FirstTimePassManager : MonoBehaviour
     [Header("Others")]
     public HexCell currentTargetHex = null;   // The currently selected target hex
     public PlayerToken selectedToken;  // To store the selected attacker or defender token
-    private HexCell lastClickedHex = null;     // The last hex that was clicked
-    private bool isWaitingForConfirmation = false;
     private HexCell currentDefenderHex = null; // The defender hex currently rolling the dice
     // private int diceRollsPending = 0; // Number of pending dice rolls
     private bool isDangerous = false;

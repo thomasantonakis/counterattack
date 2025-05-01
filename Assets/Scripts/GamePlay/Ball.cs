@@ -8,7 +8,6 @@ public class Ball : MonoBehaviour
     private HexCell currentCell;
     private HexCell targetCell;
     public bool isMoving = false;
-    private float moveSpeed = 2f;  // Speed: 2 hexes per second
     private bool isBallSelected = false;  // Track if the ball is selected
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
     public GoalKeeperManager goalKeeperManager;

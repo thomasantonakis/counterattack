@@ -16,7 +16,6 @@ public class HexGrid : MonoBehaviour
     public HexCell[,] cells;  // 2D array to hold the cells
     private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
     private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
-    private HexCell lastHoveredHex = null;  // Store the last hovered hex
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> headingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
     public List<HexCell> highlightedHexes = new List<HexCell>();

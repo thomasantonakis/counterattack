@@ -95,10 +95,7 @@ public class HexCell : MonoBehaviour
                 colorToApply = Color.magenta * 0.5f;  // Use the provided color for the ball path
                 break;
             case "highPass":
-                colorToApply = Color.yellow;
-                break;
-            case "highPassTarget":
-                colorToApply = new Color(51, 204, 242);
+                colorToApply = Color.blue;
                 break;
             case "longPass":
                 colorToApply = Color.blue * 3f;

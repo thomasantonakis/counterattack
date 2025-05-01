@@ -668,7 +668,6 @@ public class GroundBallManager : MonoBehaviour
         StringBuilder sb = new();
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
-        if (!isActivated) return "";
         if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
         if (isActivated) sb.Append("SP: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");

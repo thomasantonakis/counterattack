@@ -26,9 +26,8 @@ public class MatchManager : MonoBehaviour
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
         SuccessfulTackle,
+        HighPass,
         HighPassCompleted,
-        HighPassAttackerMovement,
-        HighPassDefenderMovement,
         HeaderGeneric,
         HeaderAttackerSelection,
         HeaderChallengeResolved,
@@ -918,7 +917,7 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.KickoffBlown;
         groundBallManager.isAvailable = true;
-        // highPassManager.isAvailable = true;
+        highPassManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.");
