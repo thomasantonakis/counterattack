@@ -195,6 +195,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
         if (looseBallManager.isActivated) return;
+        if (shotManager.isActivated) return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
             MatchManager.Instance.TriggerMovement();
@@ -236,7 +237,7 @@ public class MovementPhaseManager : MonoBehaviour
                     isDribblerRunning = false;
                     remainingDribblerPace = 0;
                     movedTokens.Add(selectedToken);
-                    Debug.Log($"{selectedToken.name} decides to Snapshot!!!!");
+                    Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
                     shotManager.StartShotProcess(selectedToken, "snapshot");
                     return;
                 }
@@ -260,8 +261,8 @@ public class MovementPhaseManager : MonoBehaviour
             if (keyData.key == KeyCode.S)
             {
                 isWaitingForSnapshotDecision = false;
-                Debug.Log($"{selectedToken.name} decides to Snapshot!!!!");
-                shotManager.StartShotProcess(selectedToken, "snapshot");
+                Debug.Log($"Non Dribbler {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
+                shotManager.StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
             }
             if (keyData.key == KeyCode.X)
             {

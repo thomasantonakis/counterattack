@@ -118,7 +118,7 @@ public class ShotManager : MonoBehaviour
             StartCoroutine(ResolveHandlingTest());
             return;
         }
-        else if (isWaitingforBlockerSelection && keyData.key == KeyCode.R)
+        else if (isWaitingforBlockerSelection && keyData.key == KeyCode.X)
         {
             keyData.isConsumed = true; // Consume the key event
             StartDefenderMovementPhase();
@@ -129,6 +129,19 @@ public class ShotManager : MonoBehaviour
             keyData.isConsumed = true; // Consume the key event
             CompleteDefenderMovement();
             return;
+        }
+        else if (isWaitingForSaveandHoldScenario)
+        {
+            if (keyData.key == KeyCode.Q)
+            {
+                keyData.isConsumed = true;
+                QuickThrow();
+            }
+            if (keyData.key == KeyCode.K)
+            {
+                keyData.isConsumed = true;
+                ActivateFinalThirds();
+            }
         }
 
     }
@@ -327,6 +340,7 @@ public class ShotManager : MonoBehaviour
             else // Shot is from outside the box
             {
                 gkWasOfferedMoveForBox = true;
+                goalKeeperManager.isActivated = true;
                 yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
                 interceptors = GatherInterceptors(trajectoryPath);
                 if (interceptors.Count == 0)
@@ -480,7 +494,7 @@ public class ShotManager : MonoBehaviour
         }
     }
 
-    private IEnumerator StartShotBlockRoll()
+    private IEnumerator StartShotBlockRoll(int? rigRoll = null)
     {
         yield return null; // Wait for next frame
         if (currentDefenderBlockingHex != null)
@@ -505,15 +519,7 @@ public class ShotManager : MonoBehaviour
 
                 // Roll the dice
                 var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-                int diceRoll = returnedRoll;
-                if (defenderName == "11. Poulsen")
-                {
-                    diceRoll = 3;
-                }
-                else
-                {
-                    diceRoll = 2;
-                }
+                int diceRoll = rigRoll ?? returnedRoll;
                 
                 Debug.Log($"Dice roll by {defenderName} at {currentDefenderBlockingHex.coordinates}: {diceRoll}");
                 MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
@@ -531,7 +537,7 @@ public class ShotManager : MonoBehaviour
                         , MatchManager.ActionType.ShotBlocked
                         , connectedToken: defenderToken
                     );
-                    MatchManager.Instance.hangingPassType = "shot";
+                    MatchManager.Instance.hangingPassType = "shot"; // TODO: WHY?
                     StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, "ground"));
                     ResetShotProcess();
                 }
@@ -604,12 +610,12 @@ public class ShotManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator StartShotRoll()
+    public IEnumerator StartShotRoll(int? rigRoll = null)
     {
         Debug.Log("Hello from the StartShotRoll");
         
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        shooterRoll = returnedRoll;
+        shooterRoll = rigRoll ?? returnedRoll;
         // shooterRoll = 2;
         isWaitingForShotRoll = false;
         totalShotPower = returnedJackpot ? 50 : shooterRoll + shooter.shooting;
@@ -618,7 +624,7 @@ public class ShotManager : MonoBehaviour
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         if (shotType == "snapshot") totalShotPower -= 1; 
         if (shooter.GetCurrentHex().isInPenaltyBox == 0) totalShotPower -= 1;
-        totalShotPower = 6;
+        // totalShotPower = 6;
         if (interceptors.Count > 0 && interceptors[0].gkPenalty != null) // Check if the GK is next
         {
             Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save. Press [R] to roll");
@@ -651,6 +657,11 @@ public class ShotManager : MonoBehaviour
                         , MatchManager.ActionType.AssistProvided
                     );
                 }
+                if (movementPhaseManager.isActivated)
+                {
+                    movementPhaseManager.EndMovementPhase(false);
+                    movementPhaseManager.stunnedTokens.Clear();
+                }
                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                 goalFlowManager.StartGoalFlow(shooter);
                 ResetShotProcess();
@@ -658,18 +669,18 @@ public class ShotManager : MonoBehaviour
         } 
     }
 
-    private IEnumerator ResolveGKSavingAttempt((PlayerToken defender, bool isCausingInvalidity, int? gkPenalty) gkEntry)
+    private IEnumerator ResolveGKSavingAttempt((PlayerToken defender, bool isCausingInvalidity, int? gkPenalty) gkEntry, int? rigRoll = null)
     {
         isWaitingForGKDiceRoll = false;
         yield return null;
         PlayerToken gkToken = gkEntry.defender;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        // int gkRoll = returnedRoll;
-        int gkRoll = 6;
+        int gkRoll = rigRoll ?? returnedRoll;
+        // int gkRoll = 6;
         int gkPenalty = gkEntry.gkPenalty ?? 0;
-        // int totalSavingPower = returnedJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
+        int totalSavingPower = returnedJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
-        int totalSavingPower = 6;
+        // int totalSavingPower = 6;
         // if (returnedJackpot)
         // {
         //     Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
@@ -799,21 +810,6 @@ public class ShotManager : MonoBehaviour
           isWaitingForSaveandHoldScenario = true;
           while (isWaitingForSaveandHoldScenario)
           {
-              if (Input.GetKeyDown(KeyCode.Q))
-              {
-                  isWaitingForSaveandHoldScenario = false;
-                  Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
-                  MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
-                  yield break;
-              }
-              else if (Input.GetKeyDown(KeyCode.K))
-              {
-                  isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
-                  Debug.Log("GK Decided to activate F3 Moves");
-                  MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
-                  finalThirdManager.TriggerFinalThirdPhase(true);
-                  yield break;
-              }
               yield return null;  // Wait for the next frame
           }
       }
@@ -823,6 +819,20 @@ public class ShotManager : MonoBehaviour
           StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "handling"));
       }
       ResetShotProcess();
+    }
+
+    private void QuickThrow()
+    {
+        isWaitingForSaveandHoldScenario = false;
+        Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
+        MatchManager.Instance.BroadcastQuickThrow();
+    }
+    private void ActivateFinalThirds()
+    {
+        isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
+        Debug.Log("GK Decided to activate F3 Moves");
+        MatchManager.Instance.BroadcastActivateFinalThirdsAfterSave();
+        finalThirdManager.TriggerFinalThirdPhase(true);
     }
 
     private void ResetShotProcess()
@@ -954,7 +964,7 @@ public class ShotManager : MonoBehaviour
         if (isWaitingForShotRoll) sb.Append("isWaitingForShotRoll, ");
         if (isWaitingForGKDiceRoll) sb.Append("isWaitingForGKDiceRoll, ");
         if (isWaitingforHandlingTest) sb.Append("isWaitingforHandlingTest, ");
-        if (isWaitingForSaveandHoldScenario) sb.Append("isPlayerMoving, ");
+        if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
         if (gkWasOfferedMoveForBox) sb.Append("gkWasOfferedMoveForBox, ");
         if (shotType != "") sb.Append($"shotType: {shotType}, ");
         if (shooter != null) sb.Append($"shooter: {shooter.name}, ");
@@ -962,6 +972,25 @@ public class ShotManager : MonoBehaviour
         if (saveHex != null) sb.Append($"saveHex: {saveHex.name}, ");
 
         if (sb[sb.Length - 2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (finalThirdManager.isActivated) return "";
+        if (goalKeeperManager.isActivated) return "";
+        if (isAvailable) sb.Append("Press [S] to Shoot");
+        if (isActivated) sb.Append("Shot: ");
+        if (isWaitingforBlockerSelection) sb.Append($"Click on a defender to move 2 Hexes in an attempt to block the Snapshot, ");
+        if (isWaitingforBlockerMovement) sb.Append($"Click on a Highlighted Hex to move the blocker there, ");
+        if (isWaitingForTargetSelection) sb.Append($"Click on a Hex in the Goal to target the Shot there, ");
+        if (isWaitingForBlockDiceRoll) sb.Append($"Press [R] to roll for the block of the shot, ");
+        if (isWaitingForShotRoll) sb.Append($"Press [R] to roll with {shooter} for the shot, ");
+        if (isWaitingforHandlingTest) sb.Append($"Press [R] to roll for the Handling Test, ");
+        if (isWaitingForSaveandHoldScenario) sb.Append($"Press [Q]uick Throwor [K] to Activate Final thirds, ");
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
     }
 }

@@ -964,6 +964,16 @@ public class HexGrid : MonoBehaviour
         return saveableHexes;
     }
 
+    public void RemoveHighlightsFromAllHexes()
+    {
+      foreach (HexCell i in cells)
+      {
+          i.isAttackOccupied = false;
+          i.isDefenseOccupied = false;
+          i.ResetHighlight();
+      }
+    }
+    
     private void TestWorldToHex()
     {
         Debug.Log("Testing WorldToHexCoords...");
@@ -1012,4 +1022,5 @@ public class HexGrid : MonoBehaviour
             Debug.Log($"World Pos: {worldPos} -> Hex Coords: {hexCoords}");
         }
     }
+
 }

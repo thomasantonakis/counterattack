@@ -11,6 +11,7 @@ public class GoalFlowManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public LongBallManager longBallManager;
     public KickoffManager kickoffManager;
+    public bool isActivated = false;
     // Celebration hex lists
     private List<HexCell> celebrationTopLeft;
     private List<HexCell> celebrationTopRight;
@@ -155,11 +156,9 @@ public class GoalFlowManager : MonoBehaviour
   
     public void StartGoalFlow(PlayerToken shooterToken)
     {
+        isActivated = true;
+        hexGrid.RemoveHighlightsFromAllHexes();
         Debug.Log($"GOAL! {shooterToken.name} scores! Starting celebration...");
-        // foreach (var token in playerTokenManager.allTokens)
-        // {
-        //     Debug.Log($"[BEFORE Celebration] {token.name} - isAttacker: {token.isAttacker}");
-        // }
         StartCoroutine(DefenseCelebrationFlow(shooterToken));
         StartCoroutine(AttackCelebrationFlow(shooterToken));
     }
@@ -187,7 +186,7 @@ public class GoalFlowManager : MonoBehaviour
         yield return StartCoroutine(MovePlayersToHexes(attackers, celebrationHexes, true, false));
         // 4️⃣ Wait a bit to celebrate
 
-        yield return new WaitForSeconds(1); // Small pause for celebration
+        yield return new WaitForSeconds(2); // Small pause for celebration
         Debug.Log("Waited for 1 second, going back!");
         // 6️⃣ Move attackers back to their reset positions
         yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false));
@@ -199,6 +198,7 @@ public class GoalFlowManager : MonoBehaviour
         MatchManager.Instance.MakeSureEveryOneIsCorrectlyAssigned();
         StartCoroutine(MoveBallBackToKickOffHex(defGkHex));
         MatchManager.Instance.ChangePossession();
+        isActivated = false;
     }
 
     private IEnumerator DefenseCelebrationFlow(PlayerToken shooterToken)
@@ -260,7 +260,11 @@ public class GoalFlowManager : MonoBehaviour
             Debug.LogWarning($"[GoalFlow] Not enough target hexes ({targetHexes.Count}) for all players ({players.Count})!");
         }
         // 🛠 Shuffle the hex list so it's randomized (avoids unnatural movement patterns)
-        List<HexCell> shuffledHexes = targetHexes.OrderBy(h => Random.value).ToList();
+        List<HexCell> shuffledHexes = targetHexes;
+        if (isForward)
+        {
+            shuffledHexes = targetHexes.OrderBy(h => Random.value).ToList();
+        }
 
         // Store assigned hexes to prevent double assignments
         HashSet<HexCell> assignedHexes = new HashSet<HexCell>();
@@ -282,7 +286,7 @@ public class GoalFlowManager : MonoBehaviour
                 continue;
             }
             assignedHexes.Add(targetHex); // Mark this hex as taken
-            Debug.Log($"[GoalFlow] Moving {players[i].name} to Hex {targetHexes[i].coordinates}");
+            // Debug.Log($"[GoalFlow] Moving {players[i].name} to Hex {targetHexes[i].coordinates}");
             // Start moving everyone at the same time
             // Coroutine moveCoroutine = StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHexes[i], players[i], false, false));
             Coroutine moveCoroutine = StartCoroutine(MoveTokenStraightToHex(player, targetHex, isForward, isDefense));
@@ -300,19 +304,15 @@ public class GoalFlowManager : MonoBehaviour
         Vector3 startPos = token.transform.position;
         Vector3 endPos = targetHex.transform.position;
         float distance = Vector3.Distance(startPos, endPos);
-        float speed = 1f;
+        float speed = 2f;
         if (!isDefense)
         {
             if (isForward)
             {
-                speed = speed + (token.pace - 3) * 0.1f;
-            }
-            else
-            {
-                speed = speed *1.1f;
+                speed = speed * ( 1 + (token.pace - 3) * 0.3f );
             }
         }
-        // float speed = pace * 1.5f;             // You can adjust the multiplier
+        else speed = speed * 0.7f;
         float duration = distance / speed;
 
         float elapsed = 0f;

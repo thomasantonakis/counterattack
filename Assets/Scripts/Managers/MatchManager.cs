@@ -1098,6 +1098,17 @@ public class MatchManager : MonoBehaviour
         RefreshAvailableActions();
     }
 
+    public void BroadcastQuickThrow()
+    {
+        currentState = GameState.QuickThrow;
+        RefreshAvailableActions();
+    }
+    public void BroadcastActivateFinalThirdsAfterSave()
+    {
+        currentState = GameState.ActivateFinalThirdsAfterSave;
+        RefreshAvailableActions();
+    }
+
     private void RefreshAvailableActions()
     {
         if (currentState == GameState.EndOfStandardPass)
@@ -1181,7 +1192,6 @@ public class MatchManager : MonoBehaviour
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = true;
             longBallManager.isAvailable = true;
-            // TODO: Check if the ball is in CanShootFrom Hex
             if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
             {
                 shotManager.isAvailable = true;
@@ -1190,6 +1200,15 @@ public class MatchManager : MonoBehaviour
             {
                 shotManager.isAvailable = false;
             }
+        }
+        else if (currentState == GameState.QuickThrow)
+        {
+            movementPhaseManager.isAvailable = false;
+            groundBallManager.isAvailable = true;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = false;
+            longBallManager.isAvailable = false;
+            shotManager.isAvailable = false;
         }
     }
     
@@ -1276,7 +1295,7 @@ public class MatchManager : MonoBehaviour
             }
         }
     }
-    // Add other match-related methods here (like handling goals, score updates, etc.)
+    
     public void LoadGameSettingsFromJson()
     {
         string filePath;
@@ -1372,6 +1391,7 @@ public class MatchManager : MonoBehaviour
 
         // If the new token is a teammate of the last token
         if (
+            // TODO: Why are we checking the home team instead of the team in attack?
             LastTokenToTouchTheBallOnPurpose.isHomeTeam == inputToken.isHomeTeam
         )
         {

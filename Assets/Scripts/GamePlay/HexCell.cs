@@ -19,8 +19,8 @@ public class HexCell : MonoBehaviour
     public bool isDefenseOccupied = false;
     public bool isAttackOccupied = false;
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
-    private Renderer hexRenderer;
-    private Color originalColor;
+    public Renderer hexRenderer;
+    public Color originalColor;
     public PlayerToken occupyingToken;
     public bool CanShootFrom = false; // Displayed in Inspector
     public bool CanHeadFrom = false; // Displayed in Inspector

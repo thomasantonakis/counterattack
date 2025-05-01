@@ -370,6 +370,8 @@ public class LooseBallManager : MonoBehaviour
                     if (isSnapshotAvailable)
                     {
                         Debug.Log($"{closestToken.name} found themselves with the ball in the opposition penalty Box. Press [S] to take a snapshot!");
+                        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
+                        MatchManager.Instance.SetLastToken(closestToken);
                         movementPhaseManager.isWaitingForSnapshotDecision = true;
                         EndLooseBallPhase();
                         yield break;

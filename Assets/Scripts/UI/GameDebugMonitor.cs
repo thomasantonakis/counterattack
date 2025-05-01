@@ -152,6 +152,7 @@ public class GameDebugMonitor : MonoBehaviour
         instruction.Append(movementPhaseManager.GetInstructions());
         instruction.Append(goalKeeperManager.GetInstructions());
         instruction.AppendLine(looseBallManager.GetInstructions());
+        instruction.AppendLine(shotManager.GetInstructions());
 
         instructionText.text = instruction.ToString();
     }
