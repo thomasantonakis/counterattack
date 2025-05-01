@@ -570,7 +570,7 @@ Pressing X to Forfeit Rest of Yaneva Pace
 Pressing X to Forfeit Rest of Attack Movement Phase
 Clicking (4, 3) Select Paterson
 ✅ PASS: MovementPhase Should be waiting for Tackle Decision without moving before moving Paterson | Expected: True | Actual: True
-✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision without moving before moving Paterson | Expected: False | Actual: False
+✅ PASS: MovementPhase Should NOT be waiting for Tackle Decision before moving Paterson | Expected: False | Actual: False
 Clicking (6, 4) Move Paterson
 ✅ PASS: MovementPhase Defenders Moved should be 1 after moving Paterson | Expected: 1 | Actual: 1
 ✅ PASS: MovementPhase Defenders Moved should be 1 after moving Paterson | Expected: True | Actual: True
@@ -1090,5 +1090,54 @@ Clicking (16, -1) Move GK for Box entrance
 ✅ MovementPhase Loose Ball, sent in the Penalty Box - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #22 passed.
+
+
+==== Starting Test #23 ====
+▶️ Starting test scenario: MovementPhase Loose Ball, sent in the Penalty Box
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing X - Forfeit Att F3
+Pressing X - Forfeit Def F3
+Pressing M - Start Movement Phase
+Clicking (8, 8) - Select Toothnail
+Clicking (13, 5) - Move Toothnail
+Clicking (10, 0) - Select Yaneva
+Clicking (11, 0) - Move Yaneva 1st Pace
+Clicking (12, 1) - Move Yaneva 2nd Pace
+✅ PASS: GK Manager Should be active for Yaneva entering the box with the ball | Expected: False | Actual: True
+Clicking (16, 1) - Move GK for 
+✅ PASS: GK Manager Should NOT be active any more | Expected: False | Actual: False
+Clicking (13, 1) - Move Yaneva 3rd Pace
+Pressing X - Forfeit Yaneva's remaining Pace
+Pressing X - Forfeit Att MP
+✅ PASS: MP Defenders Moved should have 4 as the Att MP is forfeited | Expected: 4 | Actual: 4
+Clicking (14, 0) - Select Soares
+Clicking (13, 2) - Move Soares for Tackle
+Pressing T - Tackle Yaneva with Soares
+✅ PASS: Loose Ball Manager Should be activated after the loose ball caused by Soares's tackle | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Should be waiting for a Direction Roll after the loose ball caused by Soares's tackle | Expected: True | Actual: True
+Pressing R - Direction Roll North
+✅ PASS: Loose Ball Manager Should NOT be waiting for a Direction Roll after Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be waiting for a Distance Roll after Direction Roll | Expected: True | Actual: True
+Pressing R - Distance Roll 6
+✅ PASS: Loose Ball Manager Should not be activated any more | Expected: False | Actual: False
+✅ PASS: MP Should still be at Defensive part | Expected: True | Actual: True
+✅ PASS: MP Moved Tokens should have 3 | Expected: True | Actual: 3
+✅ PASS: MP Defenders Moved should have 4 as the Att MP is forfeited | Expected: 4 | Actual: 4
+✅ PASS: MP Moved Tokens should Contain Soares
+✅ PASS: MP Moved Tokens should Contain Yaneva
+✅ PASS: MP Moved Tokens should Contain Yaneva
+✅ PASS: MP Should be waiting for a Snapshot decision, as Toothnail should be on the ball | Expected: True | Actual: True
+Pressing X - Do not take a Snapshot with Toothnail
+✅ PASS: MP Defenders Moved should have 1 | Expected: 1 | Actual: 1
+
+✅ MovementPhase Loose Ball, sent in the Penalty Box - TEST PASSED COMPLETELY 🎉
+
+✅ Test #23 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

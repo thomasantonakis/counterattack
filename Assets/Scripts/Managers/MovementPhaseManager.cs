@@ -226,7 +226,36 @@ public class MovementPhaseManager : MonoBehaviour
                 return;
             }
         }
-        else if (isWaitingForSnapshotDecision)
+        else if (isDribblerRunning)// && keyData.key == KeyCode.X)
+        {
+            if(isWaitingForSnapshotDecision)
+            {
+                if (keyData.key == KeyCode.S)
+                {
+                    isWaitingForSnapshotDecision = false;
+                    isDribblerRunning = false;
+                    remainingDribblerPace = 0;
+                    movedTokens.Add(selectedToken);
+                    Debug.Log($"{selectedToken.name} decides to Snapshot!!!!");
+                    shotManager.StartShotProcess(selectedToken, "snapshot");
+                    return;
+                }
+                if (keyData.key == KeyCode.X)
+                {
+                    isWaitingForSnapshotDecision = false;
+                    Debug.Log("Dribbler was running. Decided to forfeit remaining pace, and thus snapshot.");
+                    AdvanceMovementPhase();
+                    return;
+                }
+            }
+            if (keyData.key == KeyCode.X)
+            {
+                Debug.Log("Dribbler is running. Forfeiting remaining pace.");
+                AdvanceMovementPhase();
+                return;
+            }
+        }
+        else if (isWaitingForSnapshotDecision) // not during the dribbler's movement
         {
             if (keyData.key == KeyCode.S)
             {
@@ -238,15 +267,9 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 isWaitingForSnapshotDecision = false;
                 Debug.Log($"Attacker decides not to shoot..");
-                // AdvanceMovementPhase();
+                if (isMovementPhaseDef) AdvanceMovementPhase();
                 return;
             }
-        }
-        else if (isDribblerRunning && keyData.key == KeyCode.X)
-        {
-            Debug.Log("Dribbler is running. Forfeiting remaining pace.");
-            AdvanceMovementPhase();
-            return;
         }
         else if (isWaitingForTackleDecision)
         {
