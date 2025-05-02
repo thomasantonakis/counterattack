@@ -18,6 +18,7 @@ public class MatchManager : MonoBehaviour
         KickoffBlown, // Only a Standard Pass is available
         MovementPhase,
         EndOfMovementPhase,
+        StandardPass,
         EndOfStandardPass,
         EndOfFirstTimePass,
         AnyOtherScenario,
@@ -1485,7 +1486,7 @@ public class MatchManager : MonoBehaviour
         sb.Append("MM: ");
 
         sb.Append($"currentState: {currentState}, ");
-        sb.Append($"currentState: {teamInAttack}, ");
+        sb.Append($"teamInAttack: {teamInAttack}, ");
         if (attackHasPossession) sb.Append($"attackHasPossession, ");
         if (LastTokenToTouchTheBallOnPurpose != null) sb.Append($"LastTokenToTouchTheBallOnPurpose: {LastTokenToTouchTheBallOnPurpose.name}, ");
         if (PreviousTokenToTouchTheBallOnPurpose != null) sb.Append($"PreviousTokenToTouchTheBallOnPurpose: {PreviousTokenToTouchTheBallOnPurpose.name}, ");

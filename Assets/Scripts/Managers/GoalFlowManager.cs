@@ -196,9 +196,9 @@ public class GoalFlowManager : MonoBehaviour
         //     Debug.Log($"[AFTER Celebration] {token.name} - isAttacker: {token.isAttacker}");
         // }
         MatchManager.Instance.MakeSureEveryOneIsCorrectlyAssigned();
-        StartCoroutine(MoveBallBackToKickOffHex(defGkHex));
+        yield return StartCoroutine(MoveBallBackToKickOffHex(defGkHex));
         MatchManager.Instance.ChangePossession();
-        isActivated = false;
+        CleanUpGoalFlow();
     }
 
     private IEnumerator DefenseCelebrationFlow(PlayerToken shooterToken)
@@ -213,6 +213,13 @@ public class GoalFlowManager : MonoBehaviour
         // TeleportPlayersToHexes(defenders, defenderResetHexes);
         yield return StartCoroutine(MovePlayersToHexes(defenders, defenderResetHexes, false, true));
         defendersAreBack = true;
+    }
+
+    private void CleanUpGoalFlow()
+    {
+        isActivated = false;
+        attackersAreBack = false;
+        defendersAreBack = false;
     }
 
     // Determines the celebration hex list based on scorer's position
@@ -345,7 +352,7 @@ public class GoalFlowManager : MonoBehaviour
 
         token.SetCurrentHex(targetHex);
 
-        Debug.Log($"✅ Token {token.name} moved to {finalPosition} (target hex: {targetHex.name})");
+        // Debug.Log($"✅ Token {token.name} moved to {finalPosition} (target hex: {targetHex.name})");
     }
 
     // Retrieves all tokens belonging to a specific team

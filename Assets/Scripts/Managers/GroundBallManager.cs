@@ -98,6 +98,7 @@ public class GroundBallManager : MonoBehaviour
 
     private void CommitToThisAction()
     {
+        MatchManager.Instance.currentState = MatchManager.GameState.StandardPass;
         MatchManager.Instance.CommitToAction();
     }
     

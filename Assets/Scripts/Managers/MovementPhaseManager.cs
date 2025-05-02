@@ -840,11 +840,13 @@ public class MovementPhaseManager : MonoBehaviour
         // Debug.Log($"Ball's currentHex: {ball.GetCurrentHex().name}, {ball.GetCurrentHex().isInGoal}");
         if (ball.GetCurrentHex().isInGoal != 0)
         {
-          Debug.Log($"{selectedToken.name} walked or repositioned in the goal! It's a GOAL!!!!");
-          goalFlowManager.StartGoalFlow(ball.GetCurrentHex().GetOccupyingToken());
-          // TRIGGER The GOAL CELEBRATION
-          // LOG The GOAL
-          return;
+            Debug.Log($"{selectedToken.name} walked or repositioned in the goal! It's a GOAL!!!!");
+            EndMovementPhase(false);
+            EndMovementPhase(false);
+            goalFlowManager.StartGoalFlow(ball.GetCurrentHex().GetOccupyingToken());
+            // TRIGGER The GOAL CELEBRATION
+            // LOG The GOAL
+            return;
         }
         
                   
