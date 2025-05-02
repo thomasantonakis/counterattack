@@ -994,7 +994,7 @@ public class ShotManager : MonoBehaviour
         if (isWaitingForBlockDiceRoll) sb.Append($"Press [R] to roll for the block of the shot, ");
         if (isWaitingForShotRoll) sb.Append($"Press [R] to roll with {shooter} for the shot, ");
         if (isWaitingforHandlingTest) sb.Append($"Press [R] to roll for the Handling Test, ");
-        if (isWaitingForSaveandHoldScenario) sb.Append($"Press [Q]uick Throwor [K] to Activate Final thirds, ");
+        if (isWaitingForSaveandHoldScenario) sb.Append($"Press [Q]uick Throw or [K] to Activate Final thirds, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();

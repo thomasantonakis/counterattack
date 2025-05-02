@@ -6305,7 +6305,6 @@ public class GameTestScenarioRunner : MonoBehaviour
             false,
             finalThirdManager.isActivated
         );
-
         Log("Pressing M - Start Movement Phase");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
         yield return new WaitForSeconds(0.2f);
@@ -6384,7 +6383,6 @@ public class GameTestScenarioRunner : MonoBehaviour
             , "GoalFlow is no longer activated"
         );
 
-
         LogFooterofTest("MovementPhase Reposition IN GOAL!");
 
     }
@@ -6395,8 +6393,19 @@ public class GameTestScenarioRunner : MonoBehaviour
     
     
     // TODO: Movement Phase
-    // Loose ball to get in the box
-    // Loose ball from in the box on attacker check snapshot availability and how to move from there.
+    // TODO: OwnGoal from Tackle Loose Ball
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, fail nutmeg, reposition defender, check Availability
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, Loose ball on nutmeg, on dribbler, check Availability
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, Loose ball on nutmeg, on not moved attacker, check Availability
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, Loose ball on nutmeg, on defender, check Availability
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, Loose ball on nutmeg, to space with interceptions, check Availability
+    // TODO: Pass to player
+    //    , move dribbler for nutmeg, Loose ball on nutmeg, to space without interceptions, check Availability
 
     
 
@@ -6406,8 +6415,6 @@ public class GameTestScenarioRunner : MonoBehaviour
     //    , forfeit MPAtt
     //    , verify the defender cannot move
     //    , end MP
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, fail nutmeg, reposition defender, check Availability
     // TODO: Pass to player
     //    , move dribbler for nutmeg, loose ball to space with no interceptions.
     // TODO: Pass to player

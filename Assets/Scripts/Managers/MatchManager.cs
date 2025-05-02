@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Net.WebSockets;
 using System.Text.RegularExpressions;
+using UnityEngine.Android;
 
 public class MatchManager : MonoBehaviour
 {
@@ -1127,14 +1128,8 @@ public class MatchManager : MonoBehaviour
             {
                 firstTimePassManager.isAvailable = true;
                 isFTPAvailable = true;
-                if (ball.GetCurrentHex().CanShootFrom)
-                {
-                    shotManager.isAvailable = true;
-                }
-                else
-                {
-                    shotManager.isAvailable = false;
-                }
+                if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+                else shotManager.isAvailable = false;
             }
             else
             {
@@ -1149,14 +1144,8 @@ public class MatchManager : MonoBehaviour
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = true;
             longBallManager.isAvailable = true;
-            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
-            {
-                shotManager.isAvailable = true;
-            }
-            else
-            {
-                shotManager.isAvailable = false;
-            }
+            if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+            else shotManager.isAvailable = false;
         }
         else if (currentState == GameState.EndOfLongBall)
         {
@@ -1172,11 +1161,7 @@ public class MatchManager : MonoBehaviour
             }
             else
             {
-                if (ball.GetCurrentHex().CanShootFrom)
-                {
-                    shotManager.isAvailable = true;
-                    movementPhaseManager.isAvailable = true;
-                }
+                if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
                 else
                 {
                     movementPhaseManager.ActivateMovementPhase();
@@ -1191,15 +1176,8 @@ public class MatchManager : MonoBehaviour
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = false;
             longBallManager.isAvailable = true;
-            // TODO: Check if the ball is in CanShootFrom Hex
-            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
-            {
-                shotManager.isAvailable = true;
-            }
-            else
-            {
-                shotManager.isAvailable = false;
-            }
+            if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+            else shotManager.isAvailable = false;
         }
         else if (currentState == GameState.SuccessfulTackle)
         {
@@ -1208,14 +1186,8 @@ public class MatchManager : MonoBehaviour
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = true;
             longBallManager.isAvailable = true;
-            if (attackHasPossession && ball.GetCurrentHex().CanShootFrom)
-            {
-                shotManager.isAvailable = true;
-            }
-            else
-            {
-                shotManager.isAvailable = false;
-            }
+            if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+            else shotManager.isAvailable = false;
         }
         else if (currentState == GameState.QuickThrow)
         {
@@ -1226,6 +1198,39 @@ public class MatchManager : MonoBehaviour
             longBallManager.isAvailable = false;
             shotManager.isAvailable = false;
         }
+    }
+
+    private bool ShouldShotBeAvailable()
+    {
+        bool shoulShotBeAvailable = false;
+        MatchManager.TeamAttackingDirection attackingDirection;
+        if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
+        {
+            attackingDirection = MatchManager.Instance.homeTeamDirection;
+        }
+        else
+        {
+            attackingDirection = MatchManager.Instance.awayTeamDirection;
+        }
+        if (
+            (
+                attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attackers shoot to the Right
+                && ball.GetCurrentHex().CanShootFrom // Is in shooting distance
+                && ball.GetCurrentHex().coordinates.x > 0 // In Right Side of Pitch
+                && attackHasPossession // Ball is on an attacker
+            )
+            ||
+            (
+                attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attackers shoot to the Left
+                && ball.GetCurrentHex().CanShootFrom // Is in shooting distance
+                && ball.GetCurrentHex().coordinates.x < 0 // In Left Side of Pitch
+                && attackHasPossession // Ball is on an attacker
+            )
+        )
+        {
+          shoulShotBeAvailable = true;
+        }
+        return shoulShotBeAvailable;
     }
     
     public void EnableFreeKickOptions()
