@@ -637,16 +637,20 @@ public class MovementPhaseManager : MonoBehaviour
                 var (hexDistance, enteredZOI) = distanceData[hex];
 
                 // Highlight the hex based on ZOI entry and range
-                if (hexDistance <= movementRange)
+                if (hexDistance <= movementRange && hex.isInGoal == 0)
                 {
-                    // if (
-                    //     token.GetCurrentHex() == ballHex // token is on the ball
-                    //     && hex.isInGoal != 0 // the hex is in a goal
-                    //     // the hex is in the attaking part of the dribbler
-                    // )
-                    {
-                        hex.HighlightHex("PaceAvailable");  // Normal color for reachable hexes
-                    }
+                    hex.HighlightHex("PaceAvailable");  // Normal color for reachable hexes
+                }
+                if (
+                    !isMovementPhaseDef
+                    && isDribblerRunning
+                    && token.GetCurrentHex() == ballHex // token is on the ball
+                    && hex.isInGoal != 0 // the hex is in a goal
+                    // the hex is in the attaking part of the dribbler
+                )
+                {
+                    hex.HighlightHex("CanShootFrom");
+                    hex.transform.position += Vector3.up * 0.03f;
                 }
             }
         }
@@ -1446,6 +1450,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 hex.HighlightHex("reposition");
                 hexGrid.highlightedHexes.Add(hex);
+                if (hex.isInGoal != 0) hex.transform.position += Vector3.up * 0.03f;
             }
         }
         isWaitingForReposition = true;

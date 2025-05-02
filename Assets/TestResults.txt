@@ -1,64 +1,104 @@
 ===== TEST LOG START =====
 
 ==== Starting Test #1 ====
-▶️ Starting test scenario: MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL!
+▶️ Starting test scenario: MovementPhase Dribble IN GOAL!
 Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
 Pressing Space
-Pressing P - Game is in Movement Phase
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing P - Pass to Yaneva
+✅ PASS: GBM should be activated | Expected: False | Actual: True
+✅ PASS: GBM should be waiting for a target | Expected: False | Actual: True
+✅ PASS: GBM should be waiting for a target, but there is no target yet | Expected: False | Actual: True
 Clicking (10, 0)
+✅ PASS: GBM should be activated | Expected: False | Actual: True
+✅ PASS: GBM should be waiting for a target | Expected: False | Actual: True
+✅ PASS: GBM should be waiting for a target, but there a target was clicked
 Clicking (10, 0) again
 Wait for the ball to move
 ✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: F3 should be activated | Expected: True | Actual: True
 Pressing X - Forfeit Att F3
+✅ PASS: F3 should be activated | Expected: True | Actual: True
 Pressing X - Forfeit Def F3
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
 Pressing M - Start Movement Phase
-Clicking (8, 8) - Select Toothnail
-Clicking (13, 5) - Move Toothnail
+✅ PASS: MP should be activated | Expected: True | Actual: True
+✅ PASS: MP should be waiting for token selection | Expected: True | Actual: True
+✅ PASS: MP should NOT be waiting for Hex selection | Expected: False | Actual: False
 Clicking (10, 0) - Select Yaneva
+✅ PASS: MP should be waiting for token selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
 Clicking (11, 0) - Move Yaneva 1st Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 5 | Expected: 5 | Actual: 5
 Clicking (12, 1) - Move Yaneva 2nd Pace
 ✅ PASS: GK Manager Should be active for Yaneva entering the box with the ball | Expected: False | Actual: True
 Clicking (16, -1) - Move GK for Box
 ✅ PASS: GK Manager Should NOT be active any more | Expected: False | Actual: False
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 4 | Expected: 4 | Actual: 4
 Clicking (13, 1) - Move Yaneva 3rd Pace
-Pressing X - Forfeit Yaneva's remaining Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 3 | Expected: 3 | Actual: 3
+Clicking (14, 2) - Move Yaneva 4th Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 2 | Expected: 2 | Actual: 2
+Clicking (15, 2) - Move Yaneva 5th Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 1 | Expected: 1 | Actual: 1
+Clicking (16, 3) - Move Yaneva 6th Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should NOT be running after 6th pace | Expected: False | Actual: False
+✅ PASS: MP should NOT be waiting for Hex selection after 6th pace | Expected: True | Actual: False
+✅ PASS: MP Yaneva's movement should be considered as done | Expected: 1 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 0 | Expected: 0 | Actual: 0
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+Pressing X - No Snapshot
+✅ PASS: MP should NOT be waiting for Snapshot decision | Expected: False | Actual: False
+✅ PASS: MP Yaneva should NOT be considered as running | Expected: 1 | Actual: True
+✅ PASS: MP Yaneva's movement has been resolved | Expected: 1 | Actual: 1
+✅ PASS: MP should be in attacking part still | Expected: 1 | Actual: True
 Pressing X - Forfeit Att MP
-✅ PASS: MP Defenders Moved should have 4 as the Att MP is forfeited | Expected: 4 | Actual: 4
-Clicking (14, 0) - Select Soares
-Clicking (13, 2) - Move Soares for Tackle
-Pressing T - Tackle Yaneva with Soares
-✅ PASS: Loose Ball Manager Should be activated after the loose ball caused by Soares's tackle | Expected: True | Actual: True
-✅ PASS: Loose Ball Manager Should be waiting for a Direction Roll after the loose ball caused by Soares's tackle | Expected: True | Actual: True
-Pressing R - Direction Roll North
-✅ PASS: Loose Ball Manager Should NOT be waiting for a Direction Roll after Direction Roll | Expected: False | Actual: False
-✅ PASS: Loose Ball Manager Should be waiting for a Distance Roll after Direction Roll | Expected: True | Actual: True
-Pressing R - Distance Roll 6
-✅ PASS: Loose Ball Manager Should not be activated any more | Expected: False | Actual: False
-✅ PASS: MP Should still be at Defensive part | Expected: True | Actual: True
-✅ PASS: MP Moved Tokens should have 3 | Expected: True | Actual: 3
-✅ PASS: MP Defenders Moved should have 4 as the Att MP is forfeited | Expected: 4 | Actual: 4
-✅ PASS: MP Moved Tokens should Contain Soares
-✅ PASS: MP Moved Tokens should Contain Yaneva
-✅ PASS: MP Moved Tokens should Contain Yaneva
-✅ PASS: MP Should be waiting for a Snapshot decision, as Toothnail should be on the ball | Expected: True | Actual: True
-Pressing S - Snapshot with Toothnail!
-✅ PASS: Shot Manager is activated
-✅ PASS: Shot Manager waiting for blocker Selection
-Clicking (13, 2) - Select Soares
-✅ PASS: Shot Manager waiting for blocker Target
-Clicking (11, 2) - Move Soares for Snapshot Block
-✅ PASS: Shot Manager is activated
-✅ PASS: Shot Manager NOT waiting for blocker Selection
-✅ PASS: Shot Manager NOT waiting for blocker target
-✅ PASS: Shot Manager waiting for target selection
-Clicking (19, 2) - Select target of Snapshot
-✅ PASS: Shot Manager NOT waiting for target selection
-✅ PASS: Shot Manager waiting for Shot Roll
-Pressing R - Roll shot with Toothnail!
-✅ PASS: Shot Manager is no longer activated
-✅ PASS: MP Manager is no longer activated
+✅ PASS: MP should be in defensive part now | Expected: 1 | Actual: True
+Pressing X - Forfeit Def MP
+✅ PASS: MP should be in 2f2 part now | Expected: 1 | Actual: True
+Pressing X - Forfeit 2f2 MP
+✅ PASS: F3 should be activated | Expected: True | Actual: True
+Pressing X - Forfeit Att F3
+✅ PASS: F3 should be activated | Expected: True | Actual: True
+Pressing X - Forfeit Def F3
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+Pressing M - Start Movement Phase
+Clicking (16, 3) - Select Yaneva
+Clicking (17, 3) - Move Yaneva 1st Pace
+Clicking (18, 3) - Move Yaneva 2nd Pace
+Clicking (19, 3) - Move Yaneva 3rd Pace IN GOAL
+❌ ASSERT FAILED: MP Manager is no longer activated
 ✅ PASS: GoalFlow is activated
-❌ ASSERT FAILED: GoalFlow is no longer activated
-
-❌ MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL! - TEST FAILED SOMEWHERE
-

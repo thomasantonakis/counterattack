@@ -291,7 +291,10 @@ public class ShotManager : MonoBehaviour
         {
             canShootToHex.HighlightHex("CanShootFrom", 1);
             hexGrid.highlightedHexes.Add(canShootToHex);
-            canShootToHex.transform.position += Vector3.up * 0.03f; // Raise it above the plane
+            if (canShootToHex.transform.position.y == 0)
+            {
+                canShootToHex.transform.position += Vector3.up * 0.03f; // Raise it above the plane
+            }
         }
 
         Debug.Log("Waiting for target selection...");
@@ -307,7 +310,10 @@ public class ShotManager : MonoBehaviour
         foreach (var canShootToHex in shootingPaths.Keys)
         {
             canShootToHex.ResetHighlight();
-            canShootToHex.transform.position -= Vector3.up * 0.03f; // Raise it above the plane
+            if (canShootToHex.transform.position.y >= 0)
+            {
+              canShootToHex.transform.position -= Vector3.up * 0.03f; // Sink it below the plane
+            }
         }
         trajectoryPath = shooterHex.ShootingPaths[targetHex];
         HighlightTrajectoryPath();

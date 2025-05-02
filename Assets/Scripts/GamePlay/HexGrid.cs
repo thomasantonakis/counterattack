@@ -476,6 +476,10 @@ public class HexGrid : MonoBehaviour
             {
                 hex.ResetHighlight();  // Assuming this method resets the color of the hex
             }
+            if (hex.isInGoal != 0 && hex.transform.position.y == 0.03f)
+            {
+                hex.transform.position -= Vector3.up * 0.03f;
+            }
         }
         highlightedHexes.Clear();  // Clear the list after resetting
     }
