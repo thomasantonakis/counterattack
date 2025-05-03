@@ -1890,6 +1890,8 @@ MonoBehaviour:
   movementPhaseManager: {fileID: 1390513032}
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
+  shotManager: {fileID: 1740884027}
+  goalFlowManager: {fileID: 2034852868}
   helperFunctions: {fileID: 1397543275}
   isActivated: 0
   isWaitingForDirectionRoll: 0
@@ -4366,6 +4368,7 @@ MonoBehaviour:
   isWaitingforHandlingTest: 0
   isWaitingForSaveandHoldScenario: 0
   gkWasOfferedMoveForBox: 0
+  isWaitingForSnapshotDecisionFromLoose: 0
   shotType: 
   shooter: {fileID: 0}
   totalShotPower: 0

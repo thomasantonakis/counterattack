@@ -36,6 +36,7 @@ public class ShotManager : MonoBehaviour
     public bool isWaitingforHandlingTest = false;
     public bool isWaitingForSaveandHoldScenario = false;
     public bool gkWasOfferedMoveForBox = false;
+    public bool isWaitingForSnapshotDecisionFromLoose = false;
     public string shotType; // "snapshot" or "fullPower"
     [Header("Important Runtime Items")]
     public PlayerToken shooter; // The token that is shooting
@@ -53,23 +54,23 @@ public class ShotManager : MonoBehaviour
 
     void Update()
     {
-        // Check if waiting for dice rolls and the R key is pressed
-        if (isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        {
-            StartCoroutine(StartShotBlockRoll());  // Pass the stored list
-        }
-        if (!isWaitingForBlockDiceRoll && isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        {
-            StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
-        }
-        if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        {
-            StartCoroutine(StartShotRoll());
-        }
-        if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        {
-            StartCoroutine(ResolveHandlingTest());
-        }
+        // // Check if waiting for dice rolls and the R key is pressed
+        // if (isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
+        // {
+        //     StartCoroutine(StartShotBlockRoll());  // Pass the stored list
+        // }
+        // if (!isWaitingForBlockDiceRoll && isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
+        // {
+        //     StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
+        // }
+        // if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
+        // {
+        //     StartCoroutine(StartShotRoll());
+        // }
+        // if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
+        // {
+        //     StartCoroutine(ResolveHandlingTest());
+        // }
     }
 
     private void OnEnable()
@@ -93,7 +94,43 @@ public class ShotManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
-        if (!isActivated) return;
+        if (isAvailable && isWaitingForSnapshotDecisionFromLoose)
+        {
+            if (keyData.key == KeyCode.S)
+            {
+                isAvailable = false;
+                isActivated = true;
+                isWaitingForSnapshotDecisionFromLoose = false;
+                Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
+                StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
+                keyData.isConsumed = true;
+                return;
+            }
+            if (keyData.key == KeyCode.X)
+            {
+                isAvailable = false;
+                isActivated = false;
+                isWaitingForSnapshotDecisionFromLoose = false;
+                if (movementPhaseManager.isActivated)
+                {
+                    Debug.Log($"Ball found itself (during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
+                    movementPhaseManager.AdvanceMovementPhase();
+                }
+                else
+                {
+                    // TODO: this should be "Any other Scenario"
+                    Debug.LogWarning($"Ball found itself (NOT during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
+                }
+                keyData.isConsumed = true;
+                return;
+            }
+        }
+        if (isAvailable && keyData.key == KeyCode.S)
+        {
+            keyData.isConsumed = true; // Consume the key event
+            IdentifyShotType();
+            return;
+        }
         if (isWaitingForBlockDiceRoll && keyData.key == KeyCode.R)
         {
             keyData.isConsumed = true; // Consume the key event
@@ -143,7 +180,18 @@ public class ShotManager : MonoBehaviour
                 ActivateFinalThirds();
             }
         }
+    }
 
+    private void IdentifyShotType()
+    {
+        if (MatchManager.Instance.currentState == MatchManager.GameState.EndOfMovementPhase)
+        {
+            StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "fullPower");
+        }
+        else 
+        {
+            StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
+        }
     }
     
     public void StartShotProcess(PlayerToken shootingToken, string shotType)
@@ -987,7 +1035,8 @@ public class ShotManager : MonoBehaviour
         StringBuilder sb = new();
         if (finalThirdManager.isActivated) return "";
         if (goalKeeperManager.isActivated) return "";
-        if (isAvailable) sb.Append("Press [S] to Shoot");
+        if (isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Snapshot directly from there, or [X] no continue without shoooting, ");
+        if (isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");
         if (isActivated) sb.Append("Shot: ");
         if (isWaitingforBlockerSelection) sb.Append($"Click on a defender to move 2 Hexes in an attempt to block the Snapshot, ");
         if (isWaitingforBlockerMovement) sb.Append($"Click on a Highlighted Hex to move the blocker there, ");

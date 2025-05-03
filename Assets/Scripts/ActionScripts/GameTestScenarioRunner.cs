@@ -395,30 +395,31 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            // Scenario_001_BasicKickoff(),
-            // Scenario_002_GroundBall_0001_Commitment(),
-            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            // Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
-            // Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
-            // Scenario_011_Movement_Phase_Successful_Interception(),
-            // Scenario_012_Movement_Phase_interception_Foul_take_foul(),
-            // Scenario_013_Movement_Phase_interception_Foul_Play_on(),
-            // Scenario_014_Movement_Phase_Check_reposition_interceptions(),
-            // Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
-            // Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
-            // Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
-            // Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
-            // Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
-            // Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
-            // Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
-            // Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
-            // Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            // Scenario_024_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_Snapshot_goal(),
+            Scenario_001_BasicKickoff(),
+            Scenario_002_GroundBall_0001_Commitment(),
+            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
+            Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
+            Scenario_011_Movement_Phase_Successful_Interception(),
+            Scenario_012_Movement_Phase_interception_Foul_take_foul(),
+            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
+            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
+            Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
+            Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
+            Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
+            Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
+            Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
+            Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
+            Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
+            Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
+            Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
+            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
+            Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
             Scenario_025a_Movement_Phase_Dribling_into_goal(),
             Scenario_025b_Movement_Phase_Reposition_into_goal(),
             // Add more scenarios here
@@ -4848,9 +4849,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.isMovementPhaseDef
         );
         AssertTrue(
-            movementPhaseManager.movedTokens.Count == 1,
-            "MP Moved Tokens should have 1",
-            true,
+            movementPhaseManager.movedTokens.Count == 2,
+            "MP Moved Tokens should have 2",
+            2,
             movementPhaseManager.movedTokens.Count
         );
         AssertTrue(
@@ -5023,16 +5024,16 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.attackersMoved
         );
         AssertTrue(
-            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Soares")),
-            "MP Moved Tokens should Contain Soares"
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Toothnail")),
+            "MP Moved Tokens should Contain Toothnail"
         );
         AssertTrue(
             movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
             "MP Moved Tokens should Contain Yaneva"
         );
         AssertTrue(
-            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Toothnail")),
-            "MP Moved Tokens should Contain Yaneva"
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Soares")),
+            "MP Moved Tokens should Contain Soares"
         );
         AssertTrue(
             !movementPhaseManager.isWaitingForSnapshotDecision,
@@ -5044,6 +5045,51 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.defendersMoved == 1,
             "MP Defenders Moved should have 1",
             1,
+            movementPhaseManager.defendersMoved
+        );
+        Log("Clicking (1, 2) - Select Vladoiu");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
+        Log("Clicking (-1, 1) - Move Vladoiu");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-1, 1), 0.5f));
+        yield return new WaitForSeconds(1.2f);
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseDef,
+            "MP Should still be at Defensive part",
+            true,
+            movementPhaseManager.isMovementPhaseDef
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Count == 4,
+            "MP Moved Tokens should have 4",
+            true,
+            movementPhaseManager.movedTokens.Count
+        );
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP Defenders Moved should have 4 as the Att MP is forfeited",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Toothnail")),
+            "MP Moved Tokens should Contain Toothnail"
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "MP Moved Tokens should Contain Yaneva"
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Soares")),
+            "MP Moved Tokens should Contain Soares"
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Vladoiu")),
+            "MP Moved Tokens should Contain Vladoiu"
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 2,
+            "MP Defenders Moved should have 2",
+            2,
             movementPhaseManager.defendersMoved
         );
         Log("Pressing X - Forfeit Def MP");
@@ -5061,7 +5107,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("MovementPhase DribbleBox Tackle, LB, ball on attacker, no snapshot");
     }
     
-    private IEnumerator Scenario_024_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_Snapshot_goal()
+    private IEnumerator Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal()
     {
         yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
         Log("▶️ Starting test scenario: MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL!");
@@ -5098,6 +5144,59 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (13, 5) - Move Toothnail");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 5), 0.5f));
         yield return new WaitForSeconds(2.8f);
+        Log("Pressing X - Forfeit Att MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP Defenders Moved should have 4 as the Att MP is forfeited",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseDef,
+            "MP must have passed in Def MP",
+            true,
+            movementPhaseManager.isMovementPhaseDef
+        );
+        Log("Clicking (14, 0) - Select Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+        Log("Clicking (13, 1) - Move Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing X - Forfeit Def MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP Defenders Moved should have 4 as the Att MP is forfeited",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 5 ,
+            "MP Defenders Moved should have 5 as the Att MP is forfeited",
+            5,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhase2f2,
+            "MP must have passed in MovementPhase2f2 MP",
+            true,
+            movementPhaseManager.isMovementPhase2f2
+        );
+        Log("Pressing X - Forfeit 2f2 MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing M - Start Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return new WaitForSeconds(0.2f);
         Log("Clicking (10, 0) - Select Yaneva");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
         Log("Clicking (11, 0) - Move Yaneva 1st Pace");
@@ -5124,34 +5223,22 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (13, 1) - Move Yaneva 3rd Pace");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
         yield return new WaitForSeconds(0.8f);
-        Log("Pressing X - Forfeit Yaneva's remaining Pace");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
-        yield return new WaitForSeconds(0.5f);
-        // AssertTrue(
-        //     false,
-        //     "Break"
-        // );
-        Log("Pressing X - Forfeit Att MP");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
-        yield return new WaitForSeconds(0.2f);
-        AssertTrue(
-            movementPhaseManager.attackersMoved == 4,
-            "MP Defenders Moved should have 4 as the Att MP is forfeited",
-            4,
-            movementPhaseManager.attackersMoved
-        );
-        Log("Clicking (14, 0) - Select Soares");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
-        Log("Clicking (13, 2) - Move Soares for Tackle");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 2), 0.5f));
+        Log("Clicking (12, 1) - Move Yaneva 4th Pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
         yield return new WaitForSeconds(0.8f);
-        Log("Pressing T - Tackle Yaneva with Soares");
+        Log("Pressing T - Nutmeg Soares with Yaneva");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
         yield return new WaitForSeconds(0.5f);
-        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
         yield return new WaitForSeconds(1.2f);
+        AssertTrue(
+            !movementPhaseManager.isNutmegInProgress,
+            "Movement Phase should NO longer be in Nutmeg phase",
+            false,
+            movementPhaseManager.isNutmegInProgress
+        );
         AssertTrue(
             looseBallManager.isActivated,
             "Loose Ball Manager Should be activated after the loose ball caused by Soares's tackle",
@@ -5191,33 +5278,25 @@ public class GameTestScenarioRunner : MonoBehaviour
             looseBallManager.isActivated
         );
         AssertTrue(
-            movementPhaseManager.isMovementPhaseDef,
-            "MP Should still be at Defensive part",
+            movementPhaseManager.isMovementPhaseAttack,
+            "MP Should still be at Attacking part",
             true,
-            movementPhaseManager.isMovementPhaseDef
+            movementPhaseManager.isMovementPhaseAttack
         );
         AssertTrue(
-            movementPhaseManager.movedTokens.Count == 3,
-            "MP Moved Tokens should have 3",
-            true,
+            movementPhaseManager.movedTokens.Count == 1,
+            "MP Moved Tokens should have 1",
+            1,
             movementPhaseManager.movedTokens.Count
         );
         AssertTrue(
-            movementPhaseManager.attackersMoved == 4,
-            "MP Defenders Moved should have 4 as the Att MP is forfeited",
+            movementPhaseManager.attackersMoved == 0,
+            "MP Attackers Moved shouldbe 0 sas ithis is not yet resolved",
             4,
             movementPhaseManager.attackersMoved
         );
         AssertTrue(
-            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Soares")),
-            "MP Moved Tokens should Contain Soares"
-        );
-        AssertTrue(
             movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
-            "MP Moved Tokens should Contain Yaneva"
-        );
-        AssertTrue(
-            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Toothnail")),
             "MP Moved Tokens should Contain Yaneva"
         );
         AssertTrue(
@@ -5226,82 +5305,402 @@ public class GameTestScenarioRunner : MonoBehaviour
             // or takes the ball in the opposition’s penalty area OR immediately when a Loose Ball hits
             // an attacking player in the opposition’s penalty area or outside the box within shooting distance.
             // Immediately following a pass, whether inside or outside the penalty area.
-            "MP Should be waiting for a Snapshot decision, as we are in isMovementDef",
+            "MP Should Not be waiting for a Snapshot decision, as this is the Shot Manager's responsiility now",
             true,
             movementPhaseManager.isWaitingForSnapshotDecision
         );
-        // Log("Pressing S - Snapshot with Toothnail!");
-        // yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.S, 0.5f));
-        // // AssertTrue(
-        // //     false,
-        // //     "Break"
-        // // );
+        AssertTrue(
+            shotManager.isWaitingForSnapshotDecisionFromLoose,
+            "Shot Should be waiting for a Snapshot decision",
+            true,
+            shotManager.isWaitingForSnapshotDecisionFromLoose
+        );
+        Log("Pressing S - Snapshot with Toothnail!");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.S, 0.5f));
+        AssertTrue(
+            shotManager.isActivated
+            , "Shot Manager is activated"
+        );
+        AssertTrue(
+            shotManager.isWaitingforBlockerSelection
+            , "Shot Manager waiting for blocker Selection"
+        );
+        Log("Clicking (13, 1) - Select Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        AssertTrue(
+            shotManager.isWaitingforBlockerMovement
+            , "Shot Manager waiting for blocker Target"
+        );
+        Log("Clicking (11, 1) - Move Soares for Snapshot Block");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 1), 0.5f));
+        yield return new WaitForSeconds(1.5f);
+        AssertTrue(
+            shotManager.isActivated
+            , "Shot Manager is activated"
+        );
+        AssertTrue(
+            !shotManager.isWaitingforBlockerSelection
+            , "Shot Manager NOT waiting for blocker Selection"
+        );
+        AssertTrue(
+            !shotManager.isWaitingforBlockerMovement
+            , "Shot Manager NOT waiting for blocker target"
+        );
+        AssertTrue(
+            shotManager.isWaitingForTargetSelection
+            , "Shot Manager waiting for target selection"
+        );
+        Log("Clicking (19, 2) - Select target of Snapshot");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, 2), 0.5f));
+        yield return new WaitForSeconds(2.5f);
+        AssertTrue(
+            !shotManager.isWaitingForTargetSelection
+            , "Shot Manager NOT waiting for target selection"
+        );
+        AssertTrue(
+            shotManager.isWaitingForShotRoll
+            , "Shot Manager waiting for Shot Roll"
+        );
+        Log("Pressing R - Roll shot with Toothnail!");
+        StartCoroutine(shotManager.StartShotRoll(6));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !shotManager.isActivated
+            , "Shot Manager is no longer activated"
+        );
+        AssertTrue(
+            !movementPhaseManager.isActivated
+            , "MP Manager is no longer activated"
+        );
+        AssertTrue(
+            goalFlowManager.isActivated
+            , "GoalFlow is activated"
+        );
+        while (goalFlowManager.isActivated) yield return null;
+        AssertTrue(
+            !goalFlowManager.isActivated
+            , "GoalFlow is no longer activated"
+        );
         // AssertTrue(
-        //     shotManager.isActivated
-        //     , "Shot Manager is activated"
-        // );
-        // AssertTrue(
-        //     shotManager.isWaitingforBlockerSelection
-        //     , "Shot Manager waiting for blocker Selection"
-        // );
-        // Log("Clicking (13, 2) - Select Soares");
-        // yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 2), 0.5f));
-        // AssertTrue(
-        //     shotManager.isWaitingforBlockerMovement
-        //     , "Shot Manager waiting for blocker Target"
-        // );
-        // Log("Clicking (11, 2) - Move Soares for Snapshot Block");
-        // yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 2), 0.5f));
-        // yield return new WaitForSeconds(1.5f);
-        // AssertTrue(
-        //     shotManager.isActivated
-        //     , "Shot Manager is activated"
-        // );
-        // AssertTrue(
-        //     !shotManager.isWaitingforBlockerSelection
-        //     , "Shot Manager NOT waiting for blocker Selection"
-        // );
-        // AssertTrue(
-        //     !shotManager.isWaitingforBlockerMovement
-        //     , "Shot Manager NOT waiting for blocker target"
-        // );
-        // AssertTrue(
-        //     shotManager.isWaitingForTargetSelection
-        //     , "Shot Manager waiting for target selection"
-        // );
-        // Log("Clicking (19, 2) - Select target of Snapshot");
-        // yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, 2), 0.5f));
-        // yield return new WaitForSeconds(2.5f);
-        // AssertTrue(
-        //     !shotManager.isWaitingForTargetSelection
-        //     , "Shot Manager NOT waiting for target selection"
-        // );
-        // AssertTrue(
-        //     shotManager.isWaitingForShotRoll
-        //     , "Shot Manager waiting for Shot Roll"
-        // );
-        // Log("Pressing R - Roll shot with Toothnail!");
-        // StartCoroutine(shotManager.StartShotRoll(6));
-        // yield return new WaitForSeconds(0.5f);
-        // AssertTrue(
-        //     !shotManager.isActivated
-        //     , "Shot Manager is no longer activated"
-        // );
-        // AssertTrue(
-        //     !movementPhaseManager.isActivated
-        //     , "MP Manager is no longer activated"
-        // );
-        // AssertTrue(
-        //     goalFlowManager.isActivated
-        //     , "GoalFlow is activated"
-        // );
-        // yield return new WaitForSeconds(20.5f);
-        // AssertTrue(
-        //     !goalFlowManager.isActivated
-        //     , "GoalFlow is no longer activated"
+        //     false,
+        //     "Break"
         // );
 
         LogFooterofTest("MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL!");
+    }
+
+    private IEnumerator Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL()
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL!");
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing P - Game is in Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Clicking (10, 0)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (10, 0) again");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Wait for the ball to move");
+        yield return new WaitForSeconds(3f); // for the ball to move
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToPlayer();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after GB to Player is correct",
+            true,
+            availabilityCheck.ToString()
+        );
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing M - Start Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Clicking (8, 8) - Select Toothnail");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(8, 8), 0.5f));
+        Log("Clicking (13, 5) - Move Toothnail");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 5), 0.5f));
+        yield return new WaitForSeconds(2.8f);
+        Log("Pressing X - Forfeit Att MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP Defenders Moved should have 4 as the Att MP is forfeited",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseDef,
+            "MP must have passed in Def MP",
+            true,
+            movementPhaseManager.isMovementPhaseDef
+        );
+        Log("Clicking (14, 0) - Select Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+        Log("Clicking (13, 1) - Move Soares");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing X - Forfeit Def MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP Defenders Moved should have 4 as the Att MP is forfeited",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.defendersMoved == 5 ,
+            "MP Defenders Moved should have 5 as the Att MP is forfeited",
+            5,
+            movementPhaseManager.defendersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhase2f2,
+            "MP must have passed in MovementPhase2f2 MP",
+            true,
+            movementPhaseManager.isMovementPhase2f2
+        );
+        Log("Pressing X - Forfeit 2f2 MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing M - Start Movement Phase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Clicking (10, 0) - Select Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        Log("Clicking (11, 0) - Move Yaneva 1st Pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 0), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Clicking (12, 1) - Move Yaneva 2nd Pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        AssertTrue(
+            goalKeeperManager.isActivated,
+            "GK Manager Should be active for Yaneva entering the box with the ball",
+            false,
+            goalKeeperManager.isActivated
+        );
+        Log("Clicking (16, -1) - Move GK for Box");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        AssertTrue(
+            !goalKeeperManager.isActivated,
+            "GK Manager Should NOT be active any more",
+            false,
+            goalKeeperManager.isActivated
+        );
+        Log("Clicking (13, 1) - Move Yaneva 3rd Pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Clicking (12, 1) - Move Yaneva 4th Pace");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing T - Nutmeg Soares with Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return new WaitForSeconds(1.2f);
+        AssertTrue(
+            !movementPhaseManager.isNutmegInProgress,
+            "Movement Phase should NO longer be in Nutmeg phase",
+            false,
+            movementPhaseManager.isNutmegInProgress
+        );
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager Should be activated after the loose ball caused by Soares's tackle",
+            true,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should be waiting for a Direction Roll after the loose ball caused by Soares's tackle",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R - Direction Roll North");
+        looseBallManager.PerformDirectionRoll(4);
+        yield return new WaitForSeconds(0.1f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should NOT be waiting for a Direction Roll after Direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager Should be waiting for a Distance Roll after Direction Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R - Distance Roll 6");
+        looseBallManager.PerformDistanceRoll(6);
+        yield return new WaitForSeconds(3.5f);
+        AssertTrue(
+            !looseBallManager.isActivated,
+            "Loose Ball Manager Should not be activated any more",
+            false,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseAttack,
+            "MP Should still be at Attacking part",
+            true,
+            movementPhaseManager.isMovementPhaseAttack
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Count == 1,
+            "MP Moved Tokens should have 1",
+            1,
+            movementPhaseManager.movedTokens.Count
+        );
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 0,
+            "MP Attackers Moved shouldbe 0 sas ithis is not yet resolved",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "MP Moved Tokens should Contain Yaneva"
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForSnapshotDecision,
+            // TODO: During the attacking team’s player movements in a Movement Phase if a player has 
+            // or takes the ball in the opposition’s penalty area OR immediately when a Loose Ball hits
+            // an attacking player in the opposition’s penalty area or outside the box within shooting distance.
+            // Immediately following a pass, whether inside or outside the penalty area.
+            "MP Should Not be waiting for a Snapshot decision, as this is the Shot Manager's responsiility now",
+            true,
+            movementPhaseManager.isWaitingForSnapshotDecision
+        );
+        AssertTrue(
+            shotManager.isWaitingForSnapshotDecisionFromLoose,
+            "Shot Should be waiting for a Snapshot decision",
+            true,
+            shotManager.isWaitingForSnapshotDecisionFromLoose
+        );
+        Log("Pressing X - NO Snapshot with Toothnail!");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        AssertTrue(
+            !shotManager.isActivated
+            , "Shot Manager is no longer activated"
+        );
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 1,
+            "MP Defenders Moved should have 1 as the Att MP is continuing",
+            1,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Toothnail"),
+            "LastTokenToTouchTheBallOnPurpose should be Toothnail",
+            PlayerToken.GetPlayerTokenByName("Yaneva").playerName,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "Yaneva be in te moved tokens",
+            true,
+            movementPhaseManager.movedTokens.Contains(PlayerToken.GetPlayerTokenByName("Yaneva"))
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Count == 1,
+            "moved tokens contains only one token Taneva",
+            1,
+            movementPhaseManager.movedTokens.Count
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP shoulbd be waiting for an atacking token to move",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseAttack,
+            "MP shoulbd be waiting for an atacking phase",
+            true,
+            movementPhaseManager.isMovementPhaseAttack
+        );
+        Log("Clicking (4, 4) - Select Nazef");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 4), 0.5f));
+        Log("Clicking (0, 6) - Move Nazef");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 6), 0.5f));
+        yield return new WaitForSeconds(1.2f);
+        Log("Pressing X - Forfeit Att MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 4,
+            "MP Attackers Moved should have 4 as the Att MP is fofeit",
+            4,
+            movementPhaseManager.attackersMoved
+        );
+        AssertTrue(
+            movementPhaseManager.movedTokens.Count == 2,
+            "moved tokens contains only one token Nazef & Yaneva",
+            2,
+            movementPhaseManager.movedTokens.Count
+        );
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseDef,
+            "MP shoulbd be waiting for an defending phase",
+            true,
+            movementPhaseManager.isMovementPhaseDef
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP shoulbd be waiting for an defending token to move",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        Log("Clicking (13, 1) - Select Nazef");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP shoulbd be waiting for an defending token to move",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        Log("Clicking (13, -2) - Move Nazef");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, -2), 0.5f));
+        yield return new WaitForSeconds(1.2f);
+        Log("Pressing X - Forfeit Def MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing X - Forfeit 2f2 MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        Log("Pressing S - Declare Shot with Toothnail");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.S, 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        
+
+        LogFooterofTest("MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL!");
     }
 
     private IEnumerator Scenario_025a_Movement_Phase_Dribling_into_goal()
@@ -6372,7 +6771,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         Log("Clicking (19, 2) - Reposition Yaneva IN GOAL");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, 2), 0.5f));
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(1.8f);
         AssertTrue(
             !movementPhaseManager.isActivated
             , "MP Manager is no longer activated"
@@ -6651,20 +7050,33 @@ public class GameTestScenarioRunner : MonoBehaviour
     private AvailabilityCheckResult AssertCorrectAvailabilityAfterMovementComplete()
     {
         List<string> failures = new();
-        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
-        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
-        
-        if (!groundBallManager.isAvailable) failures.Add("GroundBall should be available");
-        if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
-        
-        if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
-        if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
-        
-        if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
-        if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
-        
-        if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
-        if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
+        if (MatchManager.Instance.attackHasPossession)
+        {
+            if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+            if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
+            if (!groundBallManager.isAvailable) failures.Add("GroundBall should be available");
+            if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+            if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
+            if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+            if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
+            if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+            if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
+            if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
+        }
+        else
+        {
+            if (movementPhaseManager.isAvailable) failures.Add("MovementPhase should NOT be available");
+            if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should not be available");
+            if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
+            if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
+            if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
+
+            if (!movementPhaseManager.isActivated) failures.Add("MovementPhase should be activated");
+            if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+            if (groundBallManager.isActivated) failures.Add("GroundBall should not be activated");
+            if (highPassManager.isActivated) failures.Add("HighPass should not be activated");
+            if (longBallManager.isActivated) failures.Add("LongBall should not be activated");
+        }
         return new AvailabilityCheckResult(failures.Count == 0, failures);
     }
     

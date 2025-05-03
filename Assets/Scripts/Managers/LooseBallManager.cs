@@ -16,6 +16,7 @@ public class LooseBallManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
+    public ShotManager shotManager;
     public HelperFunctions helperFunctions;
     [Header("Flags")]
     public bool isActivated = false;
@@ -348,45 +349,53 @@ public class LooseBallManager : MonoBehaviour
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
             {
+                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
                 MatchManager.Instance.SetLastToken(closestToken);
                 if (resolutionType == "header")
                 {
                     // TODO: ignore offside
                     MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToPlayer;
                     finalThirdManager.TriggerFinalThirdPhase();
+                    // TODO: Switch this with a Header to Player
+                    MatchManager.Instance.BroadcastAnyOtherScenario();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
+                // TODO: Check if the the Loose Ball is from HP OR LB or they handle themselves
+                // TODO: Check if the Loose ball is from Shot or snapshot
                 else if (!movementPhaseManager.isActivated) // TODO: check if there is no Movement Phase going on, Allow Attacker Selection
                 {
                     Debug.LogWarning("There is no movement Phase going on, Attacker must choose what to do!");
                     finalThirdManager.TriggerFinalThirdPhase();
+                    MatchManager.Instance.BroadcastAnyOtherScenario();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
                 else if (movementPhaseManager.isActivated)
                 {
                     // There is a movement Phase going ON.
                     Debug.Log($"Ball hit {closestToken.name}, who is an attacker");
-                    bool isSnapshotAvailable = movementPhaseManager.IsDribblerinOpponentPenaltyBox(closestToken);
-                    if (isSnapshotAvailable && !movementPhaseManager.isMovementPhaseDef)
+                    if (movementPhaseManager.isMovementPhaseDef)
                     {
-                        Debug.Log($"{closestToken.name} found themselves with the ball in the opposition penalty Box. Press [S] to take a snapshot!");
-                        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
-                        MatchManager.Instance.SetLastToken(closestToken);
-                        movementPhaseManager.isWaitingForSnapshotDecision = true;
-                        EndLooseBallPhase();
-                        yield break;
+                        // Attacker hit during Def MP
+                        movementPhaseManager.AdvanceMovementPhase();
                     }
                     else
                     {
-                        movementPhaseManager.AdvanceMovementPhase();
+                        bool isSnapshotAvailable = movementPhaseManager.IsDribblerinOpponentPenaltyBox(closestToken);
+                        if (isSnapshotAvailable)
+                        {
+                            Debug.Log($"{closestToken.name} found themselves with the ball in during MP the opposition penalty Box. Press [S] to take a snapshot!");
+                            shotManager.isAvailable = true;
+                            shotManager.isWaitingForSnapshotDecisionFromLoose = true;
+                            // Shot Manager takes responsibility from here on
+                        }
                     }
                 }
                 else
                 {
-                    Debug.Log("Unknown Scenario");
+                    Debug.LogError("Unknown Scenario");
                 }
             }
-            else
+            else // Ball Hit a defender
             {
                 // TODO: Should we check what is going on first?
                 Debug.Log($"Ball hit {closestToken.name}, who is a defender");
@@ -403,42 +412,45 @@ public class LooseBallManager : MonoBehaviour
                 MatchManager.Instance.BroadcastAnyOtherScenario();
              }
         }
-        else if (!path.Last().isOutOfBounds)
+        else // ball hit no token and reached an empty Hex
         {
-            Debug.Log($"Ball did not hit anyone");
-            if (resolutionType == "header")
+            if (!path.Last().isOutOfBounds) // in bounds, still in play
             {
-                MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
-                finalThirdManager.TriggerFinalThirdPhase();
-                Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starting a movement Phase");
-                movementPhaseManager.ActivateMovementPhase();
-                movementPhaseManager.CommitToAction();
-            }
-            else if (!movementPhaseManager.isActivated)
-            {
-                finalThirdManager.TriggerFinalThirdPhase();
-                Debug.LogWarning($"Loose ball is not picked up by anyone.{MatchManager.Instance.teamInAttack} Starts a movement Phase");
-                movementPhaseManager.ActivateMovementPhase();
-                movementPhaseManager.CommitToAction();
-            }
-            else if (movementPhaseManager.isActivated)
-            {
-                Debug.LogWarning($"Loose ball is not picked up by anyone. Current movement Phase continues.");
-                movementPhaseManager.AdvanceMovementPhase();
+                Debug.Log($"Ball did not hit anyone");
+                if (resolutionType == "header")
+                {
+                    MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+                    finalThirdManager.TriggerFinalThirdPhase();
+                    Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starting a movement Phase");
+                    movementPhaseManager.ActivateMovementPhase();
+                    movementPhaseManager.CommitToAction();
+                }
+                else if (!movementPhaseManager.isActivated)
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                    Debug.LogWarning($"Loose ball is not picked up by anyone.{MatchManager.Instance.teamInAttack} Starts a movement Phase");
+                    movementPhaseManager.ActivateMovementPhase();
+                    movementPhaseManager.CommitToAction();
+                }
+                else if (movementPhaseManager.isActivated)
+                {
+                    Debug.LogWarning($"Loose ball is not picked up by anyone. Current movement Phase continues.");
+                    movementPhaseManager.AdvanceMovementPhase();
+                }
+                else
+                {
+                    Debug.LogError("Unknown Scenario");
+                }
             }
             else
             {
-                Debug.Log("Unknown Scenario");
+                Debug.Log($"Ball Went out of Bounds");
+                if (movementPhaseManager.isActivated)
+                {
+                    movementPhaseManager.EndMovementPhase(false);
+                }
+                outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
             }
-        }
-        else
-        {
-            Debug.Log($"Ball Went out of Bounds");
-            if (movementPhaseManager.isActivated)
-            {
-                movementPhaseManager.EndMovementPhase(false);
-            }
-            outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
         }
         EndLooseBallPhase();
     }

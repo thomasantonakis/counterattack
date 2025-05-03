@@ -1139,13 +1139,21 @@ public class MatchManager : MonoBehaviour
         }
         else if (currentState == GameState.EndOfMovementPhase)
         {
-            movementPhaseManager.isAvailable = true;
-            groundBallManager.isAvailable = true;
-            firstTimePassManager.isAvailable = false;
-            highPassManager.isAvailable = true;
-            longBallManager.isAvailable = true;
-            if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
-            else shotManager.isAvailable = false;
+            if (attackHasPossession)
+            {
+                movementPhaseManager.isAvailable = true;
+                groundBallManager.isAvailable = true;
+                firstTimePassManager.isAvailable = false;
+                highPassManager.isAvailable = true;
+                longBallManager.isAvailable = true;
+                if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+                else shotManager.isAvailable = false;
+            }
+            else 
+            {
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
+            }
         }
         else if (currentState == GameState.EndOfLongBall)
         {
@@ -1171,13 +1179,21 @@ public class MatchManager : MonoBehaviour
         }
         else if (currentState == GameState.AnyOtherScenario)
         {
-            movementPhaseManager.isAvailable = true;
-            groundBallManager.isAvailable = true;
-            firstTimePassManager.isAvailable = false;
-            highPassManager.isAvailable = false;
-            longBallManager.isAvailable = true;
-            if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
-            else shotManager.isAvailable = false;
+            if (attackHasPossession)
+            {
+                movementPhaseManager.isAvailable = true;
+                groundBallManager.isAvailable = true;
+                firstTimePassManager.isAvailable = false;
+                highPassManager.isAvailable = false;
+                longBallManager.isAvailable = true;
+                if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+                else shotManager.isAvailable = false;
+            }
+            else 
+            {
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
+            }
         }
         else if (currentState == GameState.SuccessfulTackle)
         {

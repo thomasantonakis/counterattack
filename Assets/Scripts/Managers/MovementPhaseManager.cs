@@ -57,6 +57,7 @@ public class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForFoulDecision = false;  // Whether we're waiting for a dice roll
     public bool isWaitingForNutmegDecision = false;
     public bool isWaitingForNutmegDecisionWithoutMoving = false;
+    // public bool isWaitingForSnapshotDecisionFromLoose = false;
     public bool lookingForNutmegVictim = false;
     public bool isNutmegInProgress = false;
     [Header("Informative Runtime Items")]
@@ -195,13 +196,14 @@ public class MovementPhaseManager : MonoBehaviour
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
         if (looseBallManager.isActivated) return;
-        if (shotManager.isActivated) return;
+        if (shotManager.isActivated || shotManager.isWaitingForSnapshotDecisionFromLoose) return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
             MatchManager.Instance.TriggerMovement();
             keyData.isConsumed = true;
             return;
         }
+        
         if (isWaitingForInterceptionDiceRoll && keyData.key == KeyCode.R)
         {
             Debug.Log("R key detected for interception dice roll.");
@@ -1358,7 +1360,10 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log("Defender committed a foul.");
             needsReposition = true;
             isDribblerRunning = false;
-            yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
+            // If the nutmeg challenge results in a free-kick and attacker chooses to take it, the attacker does not get
+            // through the defender and the free kick is taken from the Hex where the attacker started the nutmeg attampt.
+            if (isNutmegInProgress) yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender, false));
+            else yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
         }
         else if (defenderTotalScore > attackerTotalScore)
@@ -1406,8 +1411,10 @@ public class MovementPhaseManager : MonoBehaviour
             isNutmegInProgress = false;
             nutmegVictim = null;
             remainingDribblerPace = 0;
-            // TODO: in case of a Loose Ball, is the attacker stunned? I think not!
+            if (!movedTokens.Contains(attackerToken)) movedTokens.Add(attackerToken);
+            // TODO: in case of a Loose Ball, is the attacker stunned? I think not!, but cannot further move
             StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "ground"));
+            // No further handling from here, LooseBallManager needs to handle everything from here on.
         }
     }
 
@@ -1524,6 +1531,7 @@ public class MovementPhaseManager : MonoBehaviour
                 await helperFunctions.StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
             }
         }
+        // this shows that it was the dribber winning the tackle
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase) DribblerMoved1HexOrReposition();
     }
 
@@ -1843,6 +1851,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isWaitingForNutmegDecisionWithoutMoving) sb.Append("isWaitingForNutmegDecisionWithoutMoving, ");
         if (lookingForNutmegVictim) sb.Append("lookingForNutmegVictim, ");
         if (isNutmegInProgress) sb.Append("isNutmegInProgress, ");
+        // if (isWaitingForSnapshotDecisionFromLoose) sb.Append("isWaitingForSnapshotDecisionFromLoose, ");
         if (selectedToken != null) sb.Append($"selectedToken: {selectedToken.name}, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
@@ -1855,6 +1864,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
         if (shotManager.isActivated) return "";
+        if (shotManager.isAvailable) return "";
         if (looseBallManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [M] to start a Movement Phase, ");
         if (isActivated) sb.Append("MP: ");
@@ -1863,25 +1873,32 @@ public class MovementPhaseManager : MonoBehaviour
         if (isWaitingForNutmegDecision) sb.Append("Press [N] to nutmeg, or [X] to allow interceptions, ");
         if (isWaitingForInterceptionDiceRoll) sb.Append($"Press [R] to roll for interception with {eligibleDefenders[0].playerName}, ");
         if (lookingForNutmegVictim) sb.Append("Click on one of the Nutmeggable Defenders to choose which one to nutmeg, ");
-        if (!isNutmegInProgress)
-        {
-            if (isWaitingForTackleRoll && !tackleDefenderRolled) sb.Append($"Press [R] to roll with {selectedDefender.playerName} for the tackle. Tackling: {selectedDefender.tackling}, ");
-            if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
-        }
-        else
-        {
-            if (isWaitingForTackleRoll && !tackleDefenderRolled ) sb.Append($"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling+1}, ");
-            if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the nutmeg. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
-        }
-        if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
-        if (isWaitingForInjuryRoll) sb.Append($"Press [R] to roll the injury check for {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} whose Resilience is {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.resilience}, ");
-        if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot");
-        if (isWaitingForSnapshotDecision && !isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to end your move, ");
-        if (isDribblerRunning && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedToken.playerName}'s remaining pace ({remainingDribblerPace}), ");
-        if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedToken.playerName}, or [X] to just stand there, ");
-        if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedToken.playerName} from there!, ");
-        if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
-        if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
+        // if (isWaitingForSnapshotDecisionFromLoose)
+        // {
+        //     sb.Append($"Press [S] to take a Snapshot, or [X] to not take it and continue the movement phase, ");
+        // }
+        // else
+        // {
+            if (!isNutmegInProgress)
+            {
+                if (isWaitingForTackleRoll && !tackleDefenderRolled) sb.Append($"Press [R] to roll with {selectedDefender.playerName} for the tackle. Tackling: {selectedDefender.tackling}, ");
+                if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
+            }
+            else
+            {
+                if (isWaitingForTackleRoll && !tackleDefenderRolled ) sb.Append($"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling+1}, ");
+                if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the nutmeg. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
+            }
+            if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
+            if (isWaitingForInjuryRoll) sb.Append($"Press [R] to roll the injury check for {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} whose Resilience is {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.resilience}, ");
+            if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot");
+            if (isWaitingForSnapshotDecision && !isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to end your move, ");
+            if (isDribblerRunning && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedToken.playerName}'s remaining pace ({remainingDribblerPace}), ");
+            if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedToken.playerName}, or [X] to just stand there, ");
+            if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedToken.playerName} from there!, ");
+            if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
+            if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
+        // }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
