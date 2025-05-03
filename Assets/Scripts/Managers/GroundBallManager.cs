@@ -21,6 +21,7 @@ public class GroundBallManager : MonoBehaviour
     public bool isActivated = false;        // To check if the script is activated
     public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
     public int imposedDistance = 11;
+    public bool isQuickThrow = false;
     public HexCell currentTargetHex = null;   // The currently selected target hex
     [SerializeField]
     public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
@@ -64,18 +65,19 @@ public class GroundBallManager : MonoBehaviour
             }
             return;
         }
+        if (isAvailable
+            && !isActivated
+            && MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow&&
+            keyData.key == KeyCode.Q
+        )
+        {
+            MatchManager.Instance.TriggerStandardPass();
+            CommitToThisAction();
+            isQuickThrow = true;
+            return;
+        }
         if (isActivated)
         {
-            // if (
-            //     isCommitted
-            //     && (
-            //         keyData.key == KeyCode.C
-            //         || keyData.key == KeyCode.M
-            //     )
-            // {
-            //     CleanUpPass();
-            //     isAvailable = true;
-            // }
             if (isWaitingForDiceRoll && keyData.key == KeyCode.R)
             {
                 // Check if waiting for dice rolls and the R key is pressed
@@ -96,7 +98,7 @@ public class GroundBallManager : MonoBehaviour
         Debug.Log("GroundBallManager activated. Waiting for target selection...");
     }
 
-    private void CommitToThisAction()
+    public void CommitToThisAction()
     {
         MatchManager.Instance.currentState = MatchManager.GameState.StandardPass;
         MatchManager.Instance.CommitToAction();
@@ -115,16 +117,16 @@ public class GroundBallManager : MonoBehaviour
             else
             {
                 // Now handle the pass based on difficulty
-                HandleGroundPassBasedOnDifficulty(clickedHex, isGk);
+                HandleGroundPassBasedOnDifficulty(clickedHex);
             }   
         }
     }
 
-    public void HandleGroundPassBasedOnDifficulty(HexCell clickedHex, bool isGk = false)
+    public void HandleGroundPassBasedOnDifficulty(HexCell clickedHex)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized path validation and danger assessment
-        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex, imposedDistance, isGk);
+        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex, imposedDistance);
         if (!isValid)
         {
             // Debug.LogWarning("Invalid pass. Path rejected.");
@@ -167,7 +169,7 @@ public class GroundBallManager : MonoBehaviour
             if (currentTargetHex == null || clickedHex != currentTargetHex)
             {
                 currentTargetHex = clickedHex;
-                PopulateGroundPathInterceptions(clickedHex, isGk);
+                PopulateGroundPathInterceptions(clickedHex);
                 HighlightValidGroundPassPath(pathHexes, isDangerous);
                 diceRollsPending = defendingHexes.Count; // is this relevant here?
                 if (diceRollsPending == 0) Debug.Log($"The Stanard pass cannot be intercepted. Click again to confirm or elsewhere to try another path.");
@@ -179,7 +181,7 @@ public class GroundBallManager : MonoBehaviour
                 isAwaitingTargetSelection = false;
                 CommitToThisAction();
                 LogGroundPassAttempt();
-                PopulateGroundPathInterceptions(clickedHex, isGk);
+                PopulateGroundPathInterceptions(clickedHex);
                 if (passIsDangerous)
                 {
                     diceRollsPending = defendingHexes.Count; // is this relevant here?
@@ -228,7 +230,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex, int distance, bool isGk = false)
+    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex, int distance)
     {
         // TODO: 0.0 -> 2.-9 seems valid
         hexGrid.ClearHighlightedHexes();
@@ -252,7 +254,7 @@ public class GroundBallManager : MonoBehaviour
             return (false, false, pathHexes);
         }
         // Step 3: Check if the path is valid by ensuring no defense-occupied hexes block the path
-        if (!isGk)
+        if (!isQuickThrow)
         {
             foreach (HexCell hex in pathHexes)
             {
@@ -269,7 +271,7 @@ public class GroundBallManager : MonoBehaviour
         List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
 
         // Step 5: Determine if the path is dangerous by checking if it passes through any defender's ZOI
-        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors, isGk);
+        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors, isQuickThrow);
 
         // Debug.Log($"Path to {targetHex.coordinates}: Valid={true}, Dangerous={isDangerous}");
 
@@ -286,7 +288,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void PopulateGroundPathInterceptions(HexCell targetHex, bool isGk = false)
+    public void PopulateGroundPathInterceptions(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
@@ -313,7 +315,7 @@ public class GroundBallManager : MonoBehaviour
         foreach (HexCell hex in pathHexes)
         {
             // Debug.Log($"Checking hex: {hex.coordinates}");
-            if (isGk && hex != pathHexes.Last())  // Skip TO the last hex if the target is the GK
+            if (isQuickThrow && hex != pathHexes.Last())  // Skip TO the last hex if the target is the GK
             {
               continue;
             }

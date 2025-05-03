@@ -1198,6 +1198,16 @@ public class MatchManager : MonoBehaviour
             longBallManager.isAvailable = false;
             shotManager.isAvailable = false;
         }
+        else if (currentState == GameState.ActivateFinalThirdsAfterSave)
+        {
+            // Drop Ball and GK
+            // movementPhaseManager.isAvailable = false;
+            // groundBallManager.isAvailable = true;
+            // firstTimePassManager.isAvailable = false;
+            // highPassManager.isAvailable = false;
+            // longBallManager.isAvailable = false;
+            // shotManager.isAvailable = false;
+        }
     }
 
     private bool ShouldShotBeAvailable()

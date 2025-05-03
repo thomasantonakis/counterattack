@@ -408,6 +408,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             tokenPickedUpBall = true;
             remainingDribblerPace = selectedToken.pace;
+            isAwaitingTokenSelection = false;
         }
         Debug.Log($"Passing {hex.name} to MoveTokenToHex");
         // The below contains the ResolveMovementPhase method

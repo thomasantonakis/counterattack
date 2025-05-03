@@ -16,3 +16,97 @@ Clicking (10, 0)
 ✅ PASS: GBM should be waiting for a target, but there a target was clicked
 Clicking (10, 0) again
 Wait for the ball to move
+✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: F3 should be activated | Expected: True | Actual: True
+Pressing X - Forfeit Att F3
+✅ PASS: F3 should be activated | Expected: True | Actual: True
+Pressing X - Forfeit Def F3
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing M - Start Movement Phase
+✅ PASS: MP should be activated | Expected: True | Actual: True
+✅ PASS: MP should be waiting for token selection | Expected: True | Actual: True
+✅ PASS: MP should NOT be waiting for Hex selection | Expected: False | Actual: False
+Clicking (10, 0) - Select Yaneva
+✅ PASS: MP should be waiting for token selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+Clicking (11, 0) - Move Yaneva 1st Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 5 | Expected: 5 | Actual: 5
+Clicking (12, 1) - Move Yaneva 2nd Pace
+✅ PASS: GK Manager Should be active for Yaneva entering the box with the ball | Expected: False | Actual: True
+Clicking (16, -1) - Move GK for Box
+✅ PASS: GK Manager Should NOT be active any more | Expected: False | Actual: False
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 4 | Expected: 4 | Actual: 4
+Clicking (13, 1) - Move Yaneva 3rd Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 3 | Expected: 3 | Actual: 3
+Clicking (14, 2) - Move Yaneva 4th Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 2 | Expected: 2 | Actual: 2
+Clicking (15, 2) - Move Yaneva 5th Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should be running | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+✅ PASS: MP should be waiting for Hex selection | Expected: True | Actual: True
+✅ PASS: MP Yaneva should be considered as running | Expected: 0 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 1 | Expected: 1 | Actual: 1
+Clicking (16, 3) - Move Yaneva 6th Pace
+✅ PASS: MP should NOT be waiting for token selection, as dribbler is running | Expected: False | Actual: False
+✅ PASS: MP Dribbler should NOT be running after 6th pace | Expected: False | Actual: False
+✅ PASS: MP should NOT be waiting for Hex selection after 6th pace | Expected: True | Actual: False
+✅ PASS: MP Yaneva's movement should be considered as done | Expected: 1 | Actual: True
+✅ PASS: MP Yaneva should be considered as running but MP has not advanced | Expected: 0 | Actual: 0
+✅ PASS: MP Yaneva has remaining pace 0 | Expected: 0 | Actual: 0
+✅ PASS: MP should be waiting for Snapshot decision | Expected: True | Actual: True
+Pressing X - No Snapshot
+✅ PASS: MP should NOT be waiting for Snapshot decision | Expected: False | Actual: False
+✅ PASS: MP Yaneva should NOT be considered as running | Expected: 1 | Actual: True
+✅ PASS: MP Yaneva's movement has been resolved | Expected: 1 | Actual: 1
+✅ PASS: MP should be in attacking part still | Expected: 1 | Actual: True
+Pressing X - Forfeit Att MP
+✅ PASS: MP should be in defensive part now | Expected: 1 | Actual: True
+Pressing X - Forfeit Def MP
+✅ PASS: MP should be in 2f2 part now | Expected: 1 | Actual: True
+Pressing X - Forfeit 2f2 MP
+✅ PASS: F3 should be activated | Expected: True | Actual: True
+Pressing X - Forfeit Att F3
+✅ PASS: F3 should be activated | Expected: True | Actual: True
+Pressing X - Forfeit Def F3
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+Pressing M - Start Movement Phase
+Clicking (16, 3) - Select Yaneva
+Clicking (17, 3) - Move Yaneva 1st Pace
+Clicking (18, 3) - Move Yaneva 2nd Pace
+Clicking (19, 3) - Move Yaneva 3rd Pace IN GOAL
+✅ PASS: MP Manager is no longer activated
+✅ PASS: GoalFlow is activated
+✅ PASS: GoalFlow is no longer activated
+
+✅ MovementPhase Dribble IN GOAL! - TEST PASSED COMPLETELY 🎉
+
+✅ Test #1 passed.
+
+
+==== Starting Test #2 ====

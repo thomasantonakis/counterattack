@@ -367,7 +367,7 @@ public class LooseBallManager : MonoBehaviour
                     // There is a movement Phase going ON.
                     Debug.Log($"Ball hit {closestToken.name}, who is an attacker");
                     bool isSnapshotAvailable = movementPhaseManager.IsDribblerinOpponentPenaltyBox(closestToken);
-                    if (isSnapshotAvailable)
+                    if (isSnapshotAvailable && !movementPhaseManager.isMovementPhaseDef)
                     {
                         Debug.Log($"{closestToken.name} found themselves with the ball in the opposition penalty Box. Press [S] to take a snapshot!");
                         MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;

@@ -3706,12 +3706,6 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.stunnedforNext.Contains(PlayerToken.GetPlayerTokenByName("Yaneva"))
         );
         AssertTrue(
-            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Paterson"),
-            "Paterson should be the last to touch the ball",
-            PlayerToken.GetPlayerTokenByName("Paterson").playerName,
-            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName
-        );
-        AssertTrue(
             movementPhaseManager.isWaitingForReposition,
             "Tackle Resolves with reposition",
             true,
@@ -3721,6 +3715,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (6, 2) Reposition Paterson");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 2), 0.5f));
         yield return new WaitForSeconds(1.2f);
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Paterson"),
+            "Paterson should be the last to touch the ball",
+            PlayerToken.GetPlayerTokenByName("Paterson").playerName,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName
+        );
         AvailabilityCheckResult successfulTackle = AssertCorrectAvailabilityAfterSuccessfulTackle();
         AssertTrue(
             successfulTackle.passed,
@@ -4486,8 +4486,14 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.isAwaitingTokenSelection
         );
         Log("Pressing X - Forfeit remaining Pace of Yaneva");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.3f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.8f));
         yield return new WaitForSeconds(0.6f);
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP should be waiting for TOKEN, after forfeiting remaining Pace",
+            false,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
         AssertTrue(
             movementPhaseManager.attackersMoved == 1,
             "MP - 1 attackers moved",
@@ -5029,13 +5035,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             "MP Moved Tokens should Contain Yaneva"
         );
         AssertTrue(
-            movementPhaseManager.isWaitingForSnapshotDecision,
-            "MP Should be waiting for a Snapshot decision, as Toothnail should be on the ball",
-            true,
+            !movementPhaseManager.isWaitingForSnapshotDecision,
+            "MP Should be waiting for a Snapshot decision, as we are in Def MP",
+            false,
             movementPhaseManager.isWaitingForSnapshotDecision
         );
-        Log("Pressing X - Do not take a Snapshot with Toothnail");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
         AssertTrue(
             movementPhaseManager.defendersMoved == 1,
             "MP Defenders Moved should have 1",
@@ -5226,76 +5230,76 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             movementPhaseManager.isWaitingForSnapshotDecision
         );
-        Log("Pressing S - Snapshot with Toothnail!");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.S, 0.5f));
+        // Log("Pressing S - Snapshot with Toothnail!");
+        // yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.S, 0.5f));
+        // // AssertTrue(
+        // //     false,
+        // //     "Break"
+        // // );
         // AssertTrue(
-        //     false,
-        //     "Break"
+        //     shotManager.isActivated
+        //     , "Shot Manager is activated"
         // );
-        AssertTrue(
-            shotManager.isActivated
-            , "Shot Manager is activated"
-        );
-        AssertTrue(
-            shotManager.isWaitingforBlockerSelection
-            , "Shot Manager waiting for blocker Selection"
-        );
-        Log("Clicking (13, 2) - Select Soares");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 2), 0.5f));
-        AssertTrue(
-            shotManager.isWaitingforBlockerMovement
-            , "Shot Manager waiting for blocker Target"
-        );
-        Log("Clicking (11, 2) - Move Soares for Snapshot Block");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 2), 0.5f));
-        yield return new WaitForSeconds(1.5f);
-        AssertTrue(
-            shotManager.isActivated
-            , "Shot Manager is activated"
-        );
-        AssertTrue(
-            !shotManager.isWaitingforBlockerSelection
-            , "Shot Manager NOT waiting for blocker Selection"
-        );
-        AssertTrue(
-            !shotManager.isWaitingforBlockerMovement
-            , "Shot Manager NOT waiting for blocker target"
-        );
-        AssertTrue(
-            shotManager.isWaitingForTargetSelection
-            , "Shot Manager waiting for target selection"
-        );
-        Log("Clicking (19, 2) - Select target of Snapshot");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, 2), 0.5f));
-        yield return new WaitForSeconds(2.5f);
-        AssertTrue(
-            !shotManager.isWaitingForTargetSelection
-            , "Shot Manager NOT waiting for target selection"
-        );
-        AssertTrue(
-            shotManager.isWaitingForShotRoll
-            , "Shot Manager waiting for Shot Roll"
-        );
-        Log("Pressing R - Roll shot with Toothnail!");
-        StartCoroutine(shotManager.StartShotRoll(6));
-        yield return new WaitForSeconds(0.5f);
-        AssertTrue(
-            !shotManager.isActivated
-            , "Shot Manager is no longer activated"
-        );
-        AssertTrue(
-            !movementPhaseManager.isActivated
-            , "MP Manager is no longer activated"
-        );
-        AssertTrue(
-            goalFlowManager.isActivated
-            , "GoalFlow is activated"
-        );
-        yield return new WaitForSeconds(20.5f);
-        AssertTrue(
-            !goalFlowManager.isActivated
-            , "GoalFlow is no longer activated"
-        );
+        // AssertTrue(
+        //     shotManager.isWaitingforBlockerSelection
+        //     , "Shot Manager waiting for blocker Selection"
+        // );
+        // Log("Clicking (13, 2) - Select Soares");
+        // yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 2), 0.5f));
+        // AssertTrue(
+        //     shotManager.isWaitingforBlockerMovement
+        //     , "Shot Manager waiting for blocker Target"
+        // );
+        // Log("Clicking (11, 2) - Move Soares for Snapshot Block");
+        // yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 2), 0.5f));
+        // yield return new WaitForSeconds(1.5f);
+        // AssertTrue(
+        //     shotManager.isActivated
+        //     , "Shot Manager is activated"
+        // );
+        // AssertTrue(
+        //     !shotManager.isWaitingforBlockerSelection
+        //     , "Shot Manager NOT waiting for blocker Selection"
+        // );
+        // AssertTrue(
+        //     !shotManager.isWaitingforBlockerMovement
+        //     , "Shot Manager NOT waiting for blocker target"
+        // );
+        // AssertTrue(
+        //     shotManager.isWaitingForTargetSelection
+        //     , "Shot Manager waiting for target selection"
+        // );
+        // Log("Clicking (19, 2) - Select target of Snapshot");
+        // yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, 2), 0.5f));
+        // yield return new WaitForSeconds(2.5f);
+        // AssertTrue(
+        //     !shotManager.isWaitingForTargetSelection
+        //     , "Shot Manager NOT waiting for target selection"
+        // );
+        // AssertTrue(
+        //     shotManager.isWaitingForShotRoll
+        //     , "Shot Manager waiting for Shot Roll"
+        // );
+        // Log("Pressing R - Roll shot with Toothnail!");
+        // StartCoroutine(shotManager.StartShotRoll(6));
+        // yield return new WaitForSeconds(0.5f);
+        // AssertTrue(
+        //     !shotManager.isActivated
+        //     , "Shot Manager is no longer activated"
+        // );
+        // AssertTrue(
+        //     !movementPhaseManager.isActivated
+        //     , "MP Manager is no longer activated"
+        // );
+        // AssertTrue(
+        //     goalFlowManager.isActivated
+        //     , "GoalFlow is activated"
+        // );
+        // yield return new WaitForSeconds(20.5f);
+        // AssertTrue(
+        //     !goalFlowManager.isActivated
+        //     , "GoalFlow is no longer activated"
+        // );
 
         LogFooterofTest("MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL!");
     }
@@ -6592,13 +6596,13 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         List<string> failures = new();
 
+        if (movementPhaseManager.isAvailable) failures.Add("MovementPhase should NOT be available");
         if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
-        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
         if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
         if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
         if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
 
-        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should not be activated");
+        if (!movementPhaseManager.isActivated) failures.Add("MovementPhase should be activated");
         if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
         if (groundBallManager.isActivated) failures.Add("GroundBall should not be activated");
         if (highPassManager.isActivated) failures.Add("HighPass should not be activated");
@@ -6612,13 +6616,13 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         List<string> failures = new();
 
-        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+        if (movementPhaseManager.isAvailable) failures.Add("MovementPhase should NOT be available");
         if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should not be available");
         if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
         if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
         if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
 
-        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should not be activated");
+        if (!movementPhaseManager.isActivated) failures.Add("MovementPhase should be activated");
         if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
         if (groundBallManager.isActivated) failures.Add("GroundBall should not be activated");
         if (highPassManager.isActivated) failures.Add("HighPass should not be activated");

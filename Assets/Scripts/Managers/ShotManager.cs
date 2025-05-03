@@ -832,6 +832,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForSaveandHoldScenario = false;
         Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
         MatchManager.Instance.BroadcastQuickThrow();
+        groundBallManager.CommitToThisAction();
     }
     private void ActivateFinalThirds()
     {
