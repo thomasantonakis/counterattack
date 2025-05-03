@@ -70,6 +70,7 @@ public class HighPassManager : MonoBehaviour
             if (isWaitingForConfirmation)
             {
                 HandleHighPassProcess(hex);
+                return;
             }
             if (isWaitingForAttackerSelection)
             {
@@ -85,7 +86,7 @@ public class HighPassManager : MonoBehaviour
                         Debug.LogWarning($"{token.name} is not an attacker.");
                         return;  // Skip if the clicked token is a defender
                     }
-                    if (lockedAttacker == null) // not on an attacker, someone needs to be selected and moved.
+                    if (lockedAttacker == null) // not on an attacker, someone close needs to be selected and moved.
                     {
                         if (!eligibleAttackers.Contains(token))
                         {
@@ -137,6 +138,14 @@ public class HighPassManager : MonoBehaviour
                     {
                         // Rejection case — either nothing was clicked, or it was a defender or invalid hex
                         Debug.LogWarning("Invalid token or Not an attacker clicked. Please click on an attacker.");
+                        hexGrid.ClearHighlightedHexes();
+                        selectedToken = null;
+                        isWaitingForAttackerMove = false;  // Stop waiting for attacker move
+                        return;
+                    }
+                    if (token != null && lockedAttacker != null && token == lockedAttacker)
+                    {
+                        Debug.LogWarning("You cannot click the Locked Attacker, resetting selection");
                         hexGrid.ClearHighlightedHexes();
                         selectedToken = null;
                         isWaitingForAttackerMove = false;  // Stop waiting for attacker move
@@ -414,6 +423,7 @@ public class HighPassManager : MonoBehaviour
             if (distance > MAX_PASS_DISTANCE)
             {
                 Debug.LogWarning($"High Pass is out of range. Maximum steps allowed: {MAX_PASS_DISTANCE}. Current steps: {distance}");
+                eligibleAttackers.Clear();
                 return false;
             }
         }
@@ -425,16 +435,19 @@ public class HighPassManager : MonoBehaviour
             if (hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
             {
                 Debug.LogWarning($"Path blocked by defender at hex: {hex.coordinates}");
+                eligibleAttackers.Clear();
                 return false; // Invalid path
             }
         }
+        List<PlayerToken> attackersWithinRange = GetAttackersWithinRangeOfHex(targetHex, ATTACKER_MOVE_RANGE);
         // Step 5: Check if the target hex is occupied by an attacker
         if (targetHex.isAttackOccupied)
         {
+            // Store these attackers for movement phase
+            eligibleAttackers = attackersWithinRange;
             return true;  // If occupied by an attacker, the target is valid
         }
         // Step 6: If the target is not occupied, check if any attacker can reach it within 3 moves
-        List<PlayerToken> attackersWithinRange = GetAttackersWithinRangeOfHex(targetHex, ATTACKER_MOVE_RANGE);
         if (attackersWithinRange.Count > 0)
         {
             Debug.Log("Empty hex is valid for High Pass, at least one attacker can reach it.");
@@ -445,6 +458,7 @@ public class HighPassManager : MonoBehaviour
         else
         {
             Debug.LogWarning("No attackers can reach the target hex. High Pass is invalid.");
+            eligibleAttackers.Clear();
             return false;
         }
     }
@@ -477,7 +491,7 @@ public class HighPassManager : MonoBehaviour
         return eligibleAttackers;
     }
 
-    private async void PerformAccuracyRoll(int? rigroll = null)
+    public async void PerformAccuracyRoll(int? rigroll = null)
     {
         // TODO: Refine order and logs
         lockedAttacker = null;
@@ -653,10 +667,10 @@ public class HighPassManager : MonoBehaviour
                 Debug.Log("GK cannot rush out to challenge.");
             }
             finalThirdManager.TriggerFinalThirdPhase();
-            while (finalThirdManager.isActivated)
-            {
-              yield return null;
-            }
+            // while (finalThirdManager.isActivated)
+            // {
+            //   yield return null;
+            // }
             headerManager.FindEligibleHeaderTokens(finalTargetHex);
         }
         CleanUpHighPass();
