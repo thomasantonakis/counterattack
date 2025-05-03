@@ -98,7 +98,8 @@ public class Ball : MonoBehaviour
 
         targetCell = newHex;
         isMoving = true;
-        int previousPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position); 
+        int previousPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position);
+        bool isFromGoal = GetCurrentHex().isInGoal != 0;
         // Move smoothly towards the target cell
         while (isMoving)
         {
@@ -120,7 +121,7 @@ public class Ball : MonoBehaviour
                 if (
                     goalKeeperManager.ShouldGKMove(currentHex) // check if we're eligible for move
                     && roll == null // this is not called from Shot Manager
-                    && currentHex.isInGoal != 0
+                    && !isFromGoal
                 )
                 {
                     Debug.Log("🛑 GK move triggered! Pausing ball.");

@@ -4293,6 +4293,7 @@ MonoBehaviour:
   isActivated: 0
   isAwaitingTargetSelection: 0
   imposedDistance: 11
+  isQuickThrow: 0
   currentTargetHex: {fileID: 0}
   isWaitingForDiceRoll: 0
   passIsDangerous: 0
@@ -4955,6 +4956,7 @@ MonoBehaviour:
   gameInputManager: {fileID: 417053521}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
+  goalKeeperManager: {fileID: 272854143}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0

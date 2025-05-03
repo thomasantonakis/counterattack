@@ -811,7 +811,7 @@ public class HighPassManager : MonoBehaviour
     private void StartDefenderMovementPhase()
     {
         Debug.Log("Defender movement phase started. Move one defender up to 3 hexes.");
-        isWaitingForDefenderSelection = true;  // Now allow attacker selection
+        isWaitingForDefenderSelection = true;  // Now allow defender selection
         selectedToken = null;  // Ensure no token is auto-selected
         // Find the defending goalkeeper and intialize the flag to false
         didGKMoveInDefPhase = false;
@@ -820,6 +820,7 @@ public class HighPassManager : MonoBehaviour
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
+        if (selectedToken == hexGrid.GetDefendingGK()) didGKMoveInDefPhase = true;
         isWaitingForDefenderMove = false;  // Stop waiting for attacker move
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
