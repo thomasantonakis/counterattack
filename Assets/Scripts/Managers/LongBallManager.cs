@@ -443,7 +443,14 @@ public class LongBallManager : MonoBehaviour
     {
         isWaitingForDefLBMove = false;
         hexGrid.ClearHighlightedHexes();
-        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        // await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(
+            targetHex: hex
+            , token: hexGrid.GetDefendingGK()
+            , isCalledDuringMovement: false
+            , shouldCountForDistance: true
+            , shouldCarryBall: false
+        ));
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
     }
 

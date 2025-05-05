@@ -18,6 +18,7 @@ public class HighPassManager : MonoBehaviour
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
+    public LooseBallManager looseBallManager;
     public HelperFunctions helperFunctions;
     [Header("Runtime")]
     public bool isAvailable = false;
@@ -340,6 +341,7 @@ public class HighPassManager : MonoBehaviour
                     {
                         lockedAttacker = clickedHex.GetOccupyingToken();  // Lock the attacker in place
                         Debug.Log($"Attacker {lockedAttacker.name} is locked on the target hex and cannot move.");
+                        hexGrid.ClearHighlightedHexes();
                     }
                     // Proceed to start the attacker movement phase
                     StartCoroutine(StartAttackerMovementPhase());
@@ -502,7 +504,7 @@ public class HighPassManager : MonoBehaviour
         int diceRoll = rigroll ?? returnedRoll;
         // int diceRoll = 6; // Melina Mode
         isWaitingForAccuracyRoll = false;
-        PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (attackerToken == null)
         {
             Debug.LogError("Error: No attacker token found on the ball's hex!");
@@ -530,45 +532,31 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
-    private void PerformDirectionRoll(int? rigroll = null)
+    public void PerformDirectionRoll(int? rigroll = null)
     {
+        // directionRoll = 0; // S  : PerformDirectionRoll(1)
+        // directionRoll = 1; // SW : PerformDirectionRoll(2)
+        // directionRoll = 2; // NW : PerformDirectionRoll(3)
+        // directionRoll = 3; // N  : PerformDirectionRoll(4)
+        // directionRoll = 4; // NE : PerformDirectionRoll(5)
+        // directionRoll = 5; // SE : PerformDirectionRoll(6)
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int diceRoll = rigroll -1 ?? returnedRoll - 1;
         // int diceRoll = 0; // South Mode
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
-        string rolledDirection = TranslateRollToDirection(diceRoll);
+        string rolledDirection = looseBallManager.TranslateRollToDirection(diceRoll);
         Debug.Log($"Rolled {diceRollLabel}: Moving in {rolledDirection} direction");
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
         Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
 
-    private string TranslateRollToDirection(int direction)
-    {
-        switch (direction)
-        {
-          case 0:
-            return "South";
-          case 1:
-            return "SouthWest";
-          case 2:
-            return "NorthWest";
-          case 3:
-            return "North";
-          case 4:
-            return "NorthEast";
-          case 5:
-            return "SouthEast";
-          default:
-            return "Invalid direction";  // This han
-        }
-    }
 
-    private async void PerformDistanceRoll(int? rigroll = null)
+    public void PerformDistanceRoll(int? rigroll = null)
     {
-        // Debug.Log("Performing Direction roll to find Long Pass destination.");
+        Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int distanceRoll = rigroll ?? returnedRoll;
         // int distanceRoll = 5; // Melina Mode
@@ -581,7 +569,8 @@ public class HighPassManager : MonoBehaviour
         {
             // Move the ball to the inaccurate final hex
             // yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));           
-            await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));           
+            // await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex)); 
+            StartCoroutine(HandleHighPassMovement(finalTargetHex));
         }
         else
         {
@@ -608,39 +597,112 @@ public class HighPassManager : MonoBehaviour
         }
         Vector3 startPosition = ball.transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();
-        float travelDuration = 2.0f;  // Duration of the ball's flight
-        float elapsedTime = 0;
-        float height = 10f;// Height of the arc for the aerial trajectory
-        // isMoving = true;
-
-        while (elapsedTime < travelDuration)
+        float height = 10f;
+        int steps = 120;
+        for (int i = 0; i <= steps; i++)
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / travelDuration;
-            // Lerp position along the straight line
-            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
-            // // Add the arc (use a sine curve to create the arc)
-            flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
-            // // Combine the flat position with the height offset to create the arc
+            float t = i / (float)steps;
+            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, t);
+            flatPosition.y += height * Mathf.Sin(Mathf.PI * t);
+
+            if (
+                float.IsNaN(flatPosition.x) || float.IsInfinity(flatPosition.x)
+                || float.IsNaN(flatPosition.y) || float.IsInfinity(flatPosition.y)
+                || float.IsNaN(flatPosition.z) || float.IsInfinity(flatPosition.z)
+            )
+            {
+                Debug.LogError($"❌ Invalid flatPosition at i={i}: {flatPosition}");
+                yield break;
+            }
             ball.transform.position = flatPosition;
-            yield return null;  // Wait for the next frame
+            yield return null;
         }
-        // isMoving = false;  // Stop the movement
-        // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
-        Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
+        Debug.Log($"Ball has reached its destination: {targetHex.coordinates}");
+        // Debug.Break();
+
         if (
             goalKeeperManager.ShouldGKMove(targetHex)
-            && positionOfpasser.isInPenaltyBox * targetHex.isInPenaltyBox != 1 // The HP was played from anywhere except the same box
+            && positionOfpasser.isInPenaltyBox * targetHex.isInPenaltyBox != 1
         )
         {
             yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
         }
+
         StartCoroutine(PostBallMovementHandling());
     }
 
+    // private IEnumerator HandleHighPassMovement(HexCell targetHex)
+    // {
+    //     if (targetHex == null)
+    //     {
+    //         Debug.LogError("Target Hex is null in HandleHighPassMovement!");
+    //         yield break;
+    //     }
+    //     HexCell positionOfpasser = ball.GetCurrentHex();
+    //     Vector3 startPosition = ball.transform.position;
+    //     Vector3 targetPosition = targetHex.GetHexCenter();
+    //     float travelDuration = 2.0f;  // Duration of the ball's flight
+    //     float elapsedTime = 0;
+    //     float height = 10f;// Height of the arc for the aerial trajectory
+    //     // Debug.Log($"HandleHighPassMovement → start: {startPosition}, target: {targetPosition}, duration: {travelDuration}");
+    //     int safetyCounter = 0;
+    //     const int maxFrames = 300;
+    //     // Debug.Log($"Time.timeScale = {Time.timeScale}");
+
+    //     // isMoving = true;
+
+    //     while (elapsedTime < travelDuration && safetyCounter++ < maxFrames)
+    //     {
+    //         if (safetyCounter == 10) Debug.Break();
+    //         elapsedTime += Time.deltaTime;
+    //         // float progress = elapsedTime / travelDuration;
+    //         float progress = Mathf.Clamp01(elapsedTime / travelDuration);
+    //         // Lerp position along the straight line
+    //         Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+    //         // // Add the arc (use a sine curve to create the arc)
+    //         flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
+    //         // // Combine the flat position with the height offset to create the arc
+    //         ball.transform.position = flatPosition;
+    //         // Debug.Log($"[HP Move] progress: {progress:F3}, elapsedTime: {elapsedTime:F3}, pos: {ball.transform.position}");
+    //         if (Time.deltaTime == 0) Debug.LogWarning("⚠ Time.deltaTime == 0");
+    //         if (float.IsNaN(flatPosition.x) || float.IsNaN(flatPosition.y) || float.IsNaN(flatPosition.z))
+    //         {
+    //             Debug.LogError($"NaN detected at progress: {progress}, elapsedTime: {elapsedTime}");
+    //             yield break;
+    //         }
+    //         if (float.IsNaN(ball.transform.position.y))
+    //         {
+    //             Debug.LogError("Ball Y is NaN! Breaking early.");
+    //             yield break;
+    //         }
+    //         if (++safetyCounter > maxFrames)
+    //         {
+    //             Debug.LogWarning("⚠️ Ball movement exceeded max frame count! Breaking out of animation loop.");
+    //             break;
+    //         }
+    //         yield return null;  // Wait for the next frame
+    //     }
+    //     // Debug.Log($"Time.timeScale = {Time.timeScale}");
+    //     // Debug.Break();
+    //     // isMoving = false;  // Stop the movement
+    //     // Ensure the ball ends exactly on the target hex
+    //     ball.PlaceAtCell(targetHex);
+    //     // Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
+        
+    //     if (
+    //         goalKeeperManager.ShouldGKMove(targetHex)
+    //         && positionOfpasser.isInPenaltyBox * targetHex.isInPenaltyBox != 1 // The HP was played from anywhere except the same box
+    //     )
+    //     {
+    //         yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+    //     }
+    //     StartCoroutine(PostBallMovementHandling());
+    // }
+
     private IEnumerator PostBallMovementHandling()
     {
+        // Debug.Log("[PostBallMovementHandling] Entered coroutine");
         // After movement completes, check if the ball is out of bounds
         if (finalTargetHex.isOutOfBounds)
         {
@@ -654,6 +716,7 @@ public class HighPassManager : MonoBehaviour
             Debug.Log("Ball landed within bounds.");
             // Check if the defending GK can challenge
             gkReachableHexes = CanDefendingGKChallenge();
+            // Debug.Log($"gkReachableHexes.Count: {gkReachableHexes.Count}");
             if (gkReachableHexes.Count > 0)
             {
                 NotifyForGkRushAvailability();
@@ -667,11 +730,7 @@ public class HighPassManager : MonoBehaviour
                 Debug.Log("GK cannot rush out to challenge.");
             }
             finalThirdManager.TriggerFinalThirdPhase();
-            // while (finalThirdManager.isActivated)
-            // {
-            //   yield return null;
-            // }
-            headerManager.FindEligibleHeaderTokens(finalTargetHex);
+            StartCoroutine(headerManager.FindEligibleHeaderTokens(finalTargetHex));
         }
         CleanUpHighPass();
     }
@@ -816,7 +875,8 @@ public class HighPassManager : MonoBehaviour
         isWaitingForAttackerMove = false;  // Stop waiting for attacker move
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
-        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex: hex, token: selectedToken, isCalledDuringMovement: false, shouldCountForDistance: true, shouldCarryBall: false));  // Pass the selected token
         movementPhaseManager.isActivated = false;
         selectedToken = null;
         StartDefenderMovementPhase();
@@ -838,7 +898,7 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDefenderMove = false;  // Stop waiting for attacker move
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
-        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex: hex, token: selectedToken, isCalledDuringMovement: false, shouldCountForDistance: true));  // Pass the selected token
         movementPhaseManager.isActivated = false;
         selectedToken = null;
         isWaitingForAccuracyRoll = true;
@@ -905,7 +965,7 @@ public class HighPassManager : MonoBehaviour
         if (isActivated) sb.Append("HP: ");
         if (isWaitingForConfirmation) sb.Append($"Click on a Hex up to 15 Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
         if (isWaitingForConfirmation && currentTargetHex != null) sb.Append($"or click the Yellow Hex again to confirm target, ");
-        if (isWaitingForAttackerSelection && lockedAttacker == null) sb.Append($"Click on an Attacker in the Blue hexes to move them to the target, ");
+        if (isWaitingForAttackerSelection && lockedAttacker == null) sb.Append($"Click on an Attacker in the Blue hexes (among {string.Join(", ", eligibleAttackers.Select(t => t.name))}) to move them to the target, ");
         if (isWaitingForAttackerSelection && lockedAttacker != null)
         {
             if (selectedToken == null) sb.Append($"Click on an Attacker (not {lockedAttacker.name}) to show the range, ");

@@ -420,7 +420,13 @@ public class FirstTimePassManager : MonoBehaviour
         isWaitingForAttackerMove = false;  // Stop waiting for attacker move
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
-        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(
+            targetHex: hex
+            , token: selectedToken
+            , isCalledDuringMovement: false
+            , shouldCountForDistance: true
+            , shouldCarryBall: false
+        ));  // Pass the selected token
         movementPhaseManager.isActivated = false;
         selectedToken = null;
         StartDefenderMovementPhase();

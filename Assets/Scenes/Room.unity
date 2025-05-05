@@ -1891,7 +1891,6 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
   shotManager: {fileID: 1740884027}
-  goalFlowManager: {fileID: 2034852868}
   helperFunctions: {fileID: 1397543275}
   isActivated: 0
   isWaitingForDirectionRoll: 0
@@ -4767,6 +4766,7 @@ MonoBehaviour:
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  looseBallManager: {fileID: 757768961}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0

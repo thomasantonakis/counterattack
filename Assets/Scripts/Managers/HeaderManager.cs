@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ public class HeaderManager : MonoBehaviour
     public GameInputManager gameInputManager;
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
+    public GoalKeeperManager goalKeeperManager;
     public HelperFunctions helperFunctions;
     [Header("Header States")]
     public bool isAvailable = false;
@@ -159,6 +161,8 @@ public class HeaderManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (finalThirdManager.isActivated) return;
+        if (goalKeeperManager.isActivated) return;
         if (!isActivated) return;
         else
         {
@@ -221,7 +225,7 @@ public class HeaderManager : MonoBehaviour
         }
     }
     
-    public void FindEligibleHeaderTokens(HexCell landingHex)
+    public IEnumerator FindEligibleHeaderTokens(HexCell landingHex)
     {
         isActivated = true;
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
@@ -230,6 +234,7 @@ public class HeaderManager : MonoBehaviour
         if (highPassManager.gkRushedOut) 
         {
             defEligibleToHead.Add(hexGrid.GetDefendingGK());
+            highPassManager.gkRushedOut = false;
         }
         List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, landingHex, HEADER_SELECTION_RANGE);
 
@@ -280,7 +285,7 @@ public class HeaderManager : MonoBehaviour
                     Debug.Log($"🧤 GK {gk.name} auto-selected for the header.");
                 }
                 StartCoroutine(ResolveHeaderChallenge());
-                return;
+                yield break;
             }
             // 👤 Only one defender? Auto-select them
             if (defEligibleToHead.Count == 1)
@@ -289,7 +294,7 @@ public class HeaderManager : MonoBehaviour
                 defenderWillJump.Add(soloDefender);
                 Debug.Log($"Single defender {soloDefender.name} auto-selected for the header.");
                 StartCoroutine(ResolveHeaderChallenge());
-                return;
+                yield break;
             }
             // 👥 More than one defender: wait for player input
             Debug.Log("Multiple defenders eligible. Please click one to jump for the header.");
@@ -308,7 +313,7 @@ public class HeaderManager : MonoBehaviour
                 isWaitingForControlOrHeaderDecision = true;
                 while (isWaitingForControlOrHeaderDecision)
                 {
-                    continue;
+                    yield return null;
                 }
             }
             // yield return StartCoroutine(WaitForHeaderOrControlInput());
@@ -959,5 +964,59 @@ public class HeaderManager : MonoBehaviour
       hasEligibleAttackers = false;
       hasEligibleDefenders = false;
       offeredControl = false;
+    }
+
+    public string GetDebugStatus()
+    {
+        StringBuilder sb = new();
+        sb.Append("Head: ");
+
+        if (isActivated) sb.Append("isActivated, ");
+        if (isAvailable) sb.Append("isAvailable, ");
+        if (hasEligibleAttackers) sb.Append($"hasEligibleAttackers ({attEligibleToHead.Count}), ");
+        if (hasEligibleDefenders) sb.Append($"hasEligibleDefenders {defEligibleToHead.Count}, ");
+        if (isWaitingForAttackerSelection) sb.Append("isWaitingForAttackerSelection, ");
+        if (isWaitingForDefenderSelection) sb.Append("isWaitingForDefenderSelection, ");
+        if (isWaitingForHeaderRoll) sb.Append("isWaitingForHeaderRoll, ");
+        if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
+        if (iswaitingForChallengeWinnerSelection) sb.Append("iswaitingForChallengeWinnerSelection, ");
+        if (isWaitingForControlOrHeaderDecision) sb.Append("isWaitingForControlOrHeaderDecision, ");
+        if (isWaitingForHeaderTargetSelection) sb.Append("isWaitingForHeaderTargetSelection, ");
+        if (isWaitingForInterceptionRoll) sb.Append("isWaitingForInterceptionRoll, ");
+        if (challengeWinner != null) sb.Append($"challengeWinner: {challengeWinner.playerName}, ");
+
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+
+
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        if (goalKeeperManager.isActivated) return "";
+        if (finalThirdManager.isActivated) return "";
+        // if (isAvailable) sb.Append("Press [C] to Play a High Pass, ");
+        if (isActivated) sb.Append("Head: ");
+        // if (isWaitingForConfirmation) sb.Append($"Click on a Hex up to 15 Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
+        // if (isWaitingForConfirmation && currentTargetHex != null) sb.Append($"or click the Yellow Hex again to confirm target, ");
+        // if (isWaitingForAttackerSelection && lockedAttacker == null) sb.Append($"Click on an Attacker in the Blue hexes to move them to the target, ");
+        // if (isWaitingForAttackerSelection && lockedAttacker != null)
+        // {
+        //     if (selectedToken == null) sb.Append($"Click on an Attacker (not {lockedAttacker.name}) to show the range, ");
+        //     else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another attacker to switch player, ");
+        // }
+        // if (isWaitingForDefenderSelection)
+        // {
+        //     if (!isWaitingForDefenderMove) sb.Append($"Click on a Defender to show the moveable range, ");
+        //     else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, or click another defender to switch player, ");
+        // }
+        // if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll the accuracy check with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {8 - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
+        // if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
+        // if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
+        // if (isWaitingForDefGKChallengeDecision) {sb.Append($"{hexGrid.GetDefendingGK().name} can rush out to challenge, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
     }
 }

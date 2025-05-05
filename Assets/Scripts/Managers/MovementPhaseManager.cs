@@ -691,7 +691,13 @@ public class MovementPhaseManager : MonoBehaviour
         return isValid;
     }
 
-    public IEnumerator MoveTokenToHex(HexCell targetHex, PlayerToken token = null, bool isCalledDuringMovement = true, bool shouldCountForDistance = true)
+    public IEnumerator MoveTokenToHex(
+        HexCell targetHex
+        , PlayerToken token = null
+        , bool isCalledDuringMovement = true
+        , bool shouldCountForDistance = true
+        , bool shouldCarryBall = true
+    )
     {
         PlayerToken movingToken = token ?? selectedToken;
         if (movingToken == null)
@@ -699,7 +705,6 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogError("No token selected to move.");
             yield break;
         }
-        // isActivated = true;
 
         // Find the path from the current hex to the target hex
         List<HexCell> path;
@@ -729,7 +734,7 @@ public class MovementPhaseManager : MonoBehaviour
             isDribblerRunning = true;
         }
         // Start the token movement across the hexes in the path
-        yield return StartCoroutine(MoveTokenAlongPath(movingToken, path, shouldCountForDistance));
+        yield return StartCoroutine(MoveTokenAlongPath(movingToken, path, shouldCountForDistance, shouldCarryBall));
         if (!isCalledDuringMovement) {yield break;}
         if (targetHex == ballHex)
         {
@@ -981,12 +986,30 @@ public class MovementPhaseManager : MonoBehaviour
     }
 
     // Coroutine to move the token one hex at a time
-    private IEnumerator MoveTokenAlongPath(PlayerToken token, List<HexCell> path, bool shouldCountForDistance = true)
+    private IEnumerator MoveTokenAlongPath(
+        PlayerToken token
+        , List<HexCell> path
+        , bool shouldCountForDistance = true
+        , bool shouldCarryBall = true
+    )
     {
+        Debug.Log($"MoveTokenAlongPath: shouldCarryBall: {shouldCarryBall}");
         isPlayerMoving = true;  // Player starts moving
-        // Get the current Y position of the token (to maintain it during the movement)
         float originalY = token.transform.position.y;
-        HexCell previousHex = token.GetCurrentHex();
+        HexCell originalHex = token.GetCurrentHex();
+        HexCell previousHex = originalHex;
+        bool tokenStartedWithBall = ball.GetCurrentHex() == originalHex;
+        bool shouldMoveBall = shouldCarryBall && tokenStartedWithBall;
+
+        // ⚠️ Don't do anything with the ball if the token didn't start with it
+        // Let it stay wherever it already was
+        if (tokenStartedWithBall && !shouldCarryBall)
+        {
+            // ✅ Only leave the ball if this player had it and chose not to carry it
+            ball.SetCurrentHex(originalHex);
+            ball.AdjustBallHeightBasedOnOccupancy();
+        }
+
         if (previousHex != null)
         {
             // Debug.Log($"Token leaving hex: {previousHex.name}");
@@ -1011,9 +1034,10 @@ public class MovementPhaseManager : MonoBehaviour
                 t += Time.deltaTime / moveDuration;
                 token.transform.position = Vector3.Lerp(startPosition, targetPosition, t);  // Interpolate the position
                 // If the player is carrying the ball, move the ball alongside the player
-                if (!highPassManager.isWaitingForDefenderSelection && !highPassManager.isWaitingForDefenderMove && ball.GetCurrentHex() == previousHex)
+                if (shouldMoveBall)// && ball.GetCurrentHex() == previousHex)
                 {
                     // Move the ball alongside the player, keeping the correct Y offset
+                    Debug.Log("MovingBall with Token");
                     Vector3 ballPosition = new Vector3(token.transform.position.x, ball.playerHeightOffset, token.transform.position.z);
                     ball.transform.position = ballPosition;  // Move the ball along with the token
                 }
@@ -1022,10 +1046,9 @@ public class MovementPhaseManager : MonoBehaviour
             // Update the token's hex after reaching the next hex
             token.SetCurrentHex(step);
             // If the player is carrying the ball, move the ball along with the player
-            if (!highPassManager.isWaitingForDefenderSelection && !highPassManager.isWaitingForDefenderMove && ball.GetCurrentHex() == previousHex)
+            if (shouldMoveBall) // && ball.GetCurrentHex() == previousHex)
             {
                 ball.SetCurrentHex(step);  // Update ball's hex to the current step
-                // Debug.Log($"Ball is at: {ball.GetCurrentHex().name}");
                 ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's height
             }
             ball.AdjustBallHeightBasedOnOccupancy();
