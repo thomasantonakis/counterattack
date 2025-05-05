@@ -34,8 +34,7 @@ public class MatchManager : MonoBehaviour
         HeaderGeneric,
         HeaderAttackerSelection,
         HeaderChallengeResolved,
-        HeaderCompletedToPlayer,
-        HeaderCompletedToSpace,
+        HeaderCompleted,
         FirstTimePassAttackerMovement,
         FreeKickKickerSelect,
         FreeKickAttGK,
@@ -1116,6 +1115,12 @@ public class MatchManager : MonoBehaviour
         RefreshAvailableActions();
     }
 
+    public void BroadcastHeaderCompleted()
+    {
+      currentState = GameState.HeaderCompleted;
+        RefreshAvailableActions();
+    }
+
     private void RefreshAvailableActions()
     {
         if (currentState == GameState.EndOfStandardPass)
@@ -1177,7 +1182,7 @@ public class MatchManager : MonoBehaviour
                 }
             }
         }
-        else if (currentState == GameState.AnyOtherScenario)
+        else if (currentState == GameState.AnyOtherScenario || currentState == GameState.HeaderCompleted)
         {
             if (attackHasPossession)
             {
@@ -1526,4 +1531,5 @@ public class MatchManager : MonoBehaviour
         return sb.ToString();
     }
 
+  
 }

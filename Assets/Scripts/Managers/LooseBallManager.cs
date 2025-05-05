@@ -354,10 +354,8 @@ public class LooseBallManager : MonoBehaviour
                 if (resolutionType == "header")
                 {
                     // TODO: ignore offside
-                    MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToPlayer;
                     finalThirdManager.TriggerFinalThirdPhase();
-                    // TODO: Switch this with a Header to Player
-                    MatchManager.Instance.BroadcastAnyOtherScenario();
+                    MatchManager.Instance.BroadcastHeaderCompleted();
                     Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
                 }
                 // TODO: Check if the the Loose Ball is from HP OR LB or they handle themselves
@@ -419,7 +417,7 @@ public class LooseBallManager : MonoBehaviour
                 Debug.Log($"Ball did not hit anyone");
                 if (resolutionType == "header")
                 {
-                    MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompletedToSpace;
+                    MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompleted;
                     finalThirdManager.TriggerFinalThirdPhase();
                     Debug.Log($"Header Resolved to a Loose Ball, Ball is not in Possesssion. {MatchManager.Instance.teamInAttack} Starting a movement Phase");
                     movementPhaseManager.ActivateMovementPhase();
