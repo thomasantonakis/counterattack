@@ -4971,6 +4971,7 @@ MonoBehaviour:
   isWaitingForSaveandHoldScenario: 0
   iswaitingForChallengeWinnerSelection: 0
   challengeWinner: {fileID: 0}
+  offeredControl: 0
   isWaitingForControlOrHeaderDecision: 0
   isWaitingForHeaderTargetSelection: 0
   isWaitingForInterceptionRoll: 0
@@ -4978,7 +4979,10 @@ MonoBehaviour:
   defEligibleToHead: []
   attackerWillJump: []
   defenderWillJump: []
+  tokenRolling: {fileID: 0}
   interceptingDefenders: []
+  interceptingDefender: {fileID: 0}
+  interceptionDiceRoll: 0
 --- !u!4 &2071234818
 Transform:
   m_ObjectHideFlags: 0

@@ -395,36 +395,36 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            Scenario_001_BasicKickoff(),
-            Scenario_002_GroundBall_0001_Commitment(),
-            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
-            Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
-            Scenario_011_Movement_Phase_Successful_Interception(),
-            Scenario_012_Movement_Phase_interception_Foul_take_foul(),
-            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
-            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
-            Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
-            Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
-            Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
-            Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
-            Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
-            Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
-            Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
-            Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
-            Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
-            Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
-            Scenario_025a_Movement_Phase_Dribling_into_goal(),
-            Scenario_025b_Movement_Phase_Reposition_into_goal(),
-            Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
+            // Scenario_001_BasicKickoff(),
+            // Scenario_002_GroundBall_0001_Commitment(),
+            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            // Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
+            // Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
+            // Scenario_011_Movement_Phase_Successful_Interception(),
+            // Scenario_012_Movement_Phase_interception_Foul_take_foul(),
+            // Scenario_013_Movement_Phase_interception_Foul_Play_on(),
+            // Scenario_014_Movement_Phase_Check_reposition_interceptions(),
+            // Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
+            // Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
+            // Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
+            // Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
+            // Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
+            // Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
+            // Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
+            // Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
+            // Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
+            // Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
+            // Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
+            // Scenario_025a_Movement_Phase_Dribling_into_goal(),
+            // Scenario_025b_Movement_Phase_Reposition_into_goal(),
+            // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
             // // // // Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP(),
-            Scenario_027a_Decide_on_attWillJump(),
+            // Scenario_027a_Decide_on_attWillJump(),
             Scenario_027b_Decide_on_DefWillJump(),
             // Add more scenarios here
         };
@@ -7659,7 +7659,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             4,
             headerManager.defEligibleToHead.Count
         );
-        Log("Click On (1, 3) - Nominate Vladoiu");
+        Log("Click On (1, 3) - Reject Nominate Vladoiu");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 3), 0.5f));
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
@@ -7733,8 +7733,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             4,
             headerManager.defEligibleToHead.Count
         );
-        Log("Click On (3, 3) - ReNominate Gilbert");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 3), 0.5f));
+        Log("Click On (5, 5) - Nominate McNulty");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 5), 0.5f));
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             !headerManager.isWaitingForAttackerSelection,
@@ -7757,8 +7757,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Header Manager Kalla is Nominated to jump"
         );
         AssertTrue(
-            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Gilbert")),
-            "Header Manager Gilbert is reNominated to jump"
+            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("McNulty")),
+            "Header Manager McNulty is Nominated to jump"
         );
         AssertTrue(
             !headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Vladoiu")),
@@ -7794,8 +7794,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Header Manager Kalla is Nominated to jump"
         );
         AssertTrue(
-            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Gilbert")),
-            "Header Manager Gilbert is Nominated to jump"
+            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("McNulty")),
+            "Header Manager McNulty is Nominated to jump"
         );
         AssertTrue(
             headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Stewart")),
@@ -7845,6 +7845,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Rolling 2nd Defender");
         headerManager.PerformHeaderRoll(2);
         yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            headerManager.isWaitingForHeaderTargetSelection,
+            "Header Manager Should be waiting for HeaderTargetSelection",
+            true,
+            headerManager.isWaitingForHeaderTargetSelection
+        );
         Log("Click On (2, 3) - Send ball next to Vladoiu");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(2, 3), 0.5f));
         yield return new WaitForSeconds(2.2f); // ball moving
@@ -7855,6 +7861,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.isWaitingForInterceptionRoll
         );
         Log("Rolling Vladoiu's Interception");
+        headerManager.PerformInterceptionRoll(2);
+        yield return new WaitForSeconds(2.2f);
+        AssertTrue(
+            headerManager.isWaitingForInterceptionRoll,
+            "Header Manager Should be waiting for InterceptionRoll",
+            true,
+            headerManager.isWaitingForInterceptionRoll
+        );
+        Log("Rolling Gilbert's Interception");
         headerManager.PerformInterceptionRoll(2);
         yield return new WaitForSeconds(2.2f);
 

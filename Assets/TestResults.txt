@@ -1803,7 +1803,7 @@ Click On (3, 3) - Nominate Gilbert
 ✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
-Click On (1, 3) - Nominate Vladoiu
+Click On (1, 3) - Reject Nominate Vladoiu
 ✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
@@ -1819,12 +1819,12 @@ Click On (3, 3) - DeNominate Gilbert
 ✅ PASS: Header Manager Gilbert is deNominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
-Click On (3, 3) - ReNominate Gilbert
+Click On (5, 5) - Nominate McNulty
 ✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
 ✅ PASS: Header Manager Kalla is Nominated to jump
-✅ PASS: Header Manager Gilbert is reNominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
 Click On (4, 5) - Nominate Stewart
@@ -1832,7 +1832,7 @@ Click On (4, 5) - Nominate Stewart
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
 ✅ PASS: Header Manager Kalla is Nominated to jump
-✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
 ✅ PASS: Header Manager Stewart is Nominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
@@ -1844,9 +1844,12 @@ Rolling 1st Attacker
 Rolling 2nd Attacker
 Rolling 1st Defender
 Rolling 2nd Defender
+✅ PASS: Header Manager Should be waiting for HeaderTargetSelection | Expected: True | Actual: True
 Click On (2, 3) - Send ball next to Vladoiu
 ✅ PASS: Header Manager Should be waiting for InterceptionRoll | Expected: True | Actual: True
 Rolling Vladoiu's Interception
+✅ PASS: Header Manager Should be waiting for InterceptionRoll | Expected: True | Actual: True
+Rolling Gilbert's Interception
 
 ✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
 

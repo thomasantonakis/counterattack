@@ -872,10 +872,10 @@ public class HeaderManager : MonoBehaviour
             finalThirdManager.TriggerFinalThirdPhase();
             yield break;
         }
-        isWaitingForInterceptionRoll = true;
 
         foreach (HexCell defenderHex in interceptingDefenders)
         {
+            isWaitingForInterceptionRoll = true;
             interceptingDefender = defenderHex.GetOccupyingToken();
             if (interceptingDefender == null)
             {
