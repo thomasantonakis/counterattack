@@ -395,37 +395,58 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            // Scenario_001_BasicKickoff(),
-            // Scenario_002_GroundBall_0001_Commitment(),
-            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            // Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
-            // Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
-            // Scenario_011_Movement_Phase_Successful_Interception(),
-            // Scenario_012_Movement_Phase_interception_Foul_take_foul(),
-            // Scenario_013_Movement_Phase_interception_Foul_Play_on(),
-            // Scenario_014_Movement_Phase_Check_reposition_interceptions(),
-            // Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
-            // Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
-            // Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
-            // Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
-            // Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
-            // Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
-            // Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
-            // Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
-            // Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            // Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
-            // Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
-            // Scenario_025a_Movement_Phase_Dribling_into_goal(),
-            // Scenario_025b_Movement_Phase_Reposition_into_goal(),
-            // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
-            // // // // Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP(),
-            // Scenario_027a_Decide_on_attWillJump(),
-            Scenario_027b_Decide_on_DefWillJump(),
+            Scenario_001_BasicKickoff(),
+            Scenario_002_GroundBall_0001_Commitment(),
+            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
+            Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
+            Scenario_011_Movement_Phase_Successful_Interception(),
+            Scenario_012_Movement_Phase_interception_Foul_take_foul(),
+            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
+            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
+            Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
+            Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
+            Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
+            Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
+            Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
+            Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
+            Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
+            Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
+            Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
+            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
+            Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
+            Scenario_025a_Movement_Phase_Dribling_into_goal(),
+            Scenario_025b_Movement_Phase_Reposition_into_goal(),
+            // // // // // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
+            Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC(),
+            // // // // // Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP(),
+            Scenario_027a_Decide_on_attWillJump(),
+            // // // Scenario_027_a_b_HP_on_1att_def_Not_challenging(),
+            Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(),
+            Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(true),
+            Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(),
+            Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(true),
+            // // // // // Scenario_027b_Decide_on_DefWillJump(),
+            Scenario_027c_4PlayerJump_AttackWins(),
+            Scenario_027d_4PlayerJump_Defense_Wins_to_player(),
+            Scenario_027e_4PlayerJump_Defense_Wins_to_space(),
+            // // // // // Scenario_027g_4PlayerJump_LooseBall_From_Stewart_Space(),
+            Scenario_027g_a_4PlayerJump_LooseBall_OnDefender_interception(),
+            Scenario_027g_b_4PlayerJump_LooseBall_OnDefender_NO_interception(),
+            Scenario_027h_4PlayerJump_LooseBall_OnDefender(),
+            Scenario_027i_4PlayerJump_LooseBall_OnAttacker(),
+            Scenario_027j_4PlayerJump_LooseBall_OnJumpedToken(),
+            // // Scenario_028_Inaccurate_on_Defenders(),
+            Scenario_028a_Defense_Heads(),
+            // // // // // Scenario_028a_Defense_BCs(),
+            Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_INterception(),
+            Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_NO_interception(),
+            Scenario_028b_a_Defense_Ball_Controls_McNulty_BC(),
             // Add more scenarios here
         };
 
@@ -7049,7 +7070,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             highPassManager.isWaitingForDefenderMove
         );
-        Log("Click On (1, 2) - Click on an valid Hex");
+        Log("Click On (1, 2) - Click on an valid Defender");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
         AssertTrue(
             !highPassManager.isWaitingForAttackerSelection,
@@ -7075,7 +7096,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             highPassManager.isWaitingForDefenderMove
         );
-        Log("Click On (-8, -8) - Click on an valid Hex");
+        Log("Click On (-8, -8) - Click on an Attacker");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.5f));
         AssertTrue(
             !highPassManager.isWaitingForAttackerSelection,
@@ -7101,7 +7122,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             false,
             highPassManager.isWaitingForDefenderMove
         );
-        Log("Click On (14, 0) - Click on an valid Hex");
+        Log("Click On (14, 0) - Click on an valid Defender");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
         AssertTrue(
             !highPassManager.isWaitingForAttackerSelection,
@@ -7133,8 +7154,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             false,
             highPassManager.isWaitingForAccuracyRoll
         );
-        Log("Click On (11, 0) - Click on an valid Hex");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 0), 0.5f));
+        Log("Click On (14, 1) - Click on an valid Hex");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 1), 0.5f));
         yield return new WaitForSeconds(1);
         AssertTrue(
             !highPassManager.isWaitingForAttackerSelection,
@@ -7174,25 +7195,56 @@ public class GameTestScenarioRunner : MonoBehaviour
             false,
             highPassManager.isActivated
         );
-        // AssertTrue(
-        //     false,
-        //     "Break"
-        // );
+        AssertTrue(
+            headerManager.isActivated,
+            "header Manager should be activated",
+            true,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            headerManager.isWaitingForControlOrHeaderDecision,
+            "header Manager should isWaitingForControlOrHeaderDecision",
+            true,
+            headerManager.isWaitingForControlOrHeaderDecision
+        );
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
 
         LogFooterofTest("High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
     }
 
-    private IEnumerator Scenario_025a_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP()
+    private IEnumerator Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC()
     {
-        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
-        Log("▶️ Starting test scenario: High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
-        yield return StartCoroutine(Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP());
+        Log("▶️ Starting test scenario: High Pass on Attacker, Attacking and Defensive moves before Accurate Pass Defense cannot challenge.");
+        yield return Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP();
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing B - Ball Control");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.B, 0.1f));
+        yield return new WaitForSeconds(0.5f);
         AssertTrue(
+            !headerManager.isWaitingForControlOrHeaderDecision,
+            "header Manager should NOT isWaitingForControlOrHeaderDecision",
             false,
-            "Break"
+            headerManager.isWaitingForControlOrHeaderDecision
         );
-
-        LogFooterofTest("High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
+        AssertTrue(
+            headerManager.isWaitingForControlRoll,
+            "header Manager should isWaitingForControlRoll",
+            true,
+            headerManager.isWaitingForControlRoll
+        );
+        AssertTrue(
+            headerManager.challengeWinner == PlayerToken.GetPlayerTokenByName("Yaneva"),
+            "Yaneva should be the winner",
+            PlayerToken.GetPlayerTokenByName("Yaneva"),
+            headerManager.challengeWinner
+        );
+        // AssertTrue(false, "break");
+        LogFooterofTest("High Pass on Attacker, Attacking and Defensive moves before Accurate Pass Defense cannot challenge");
     }
 
     private IEnumerator Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP()
@@ -7404,12 +7456,18 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         yield return new WaitForSeconds(3.5f);
         AssertTrue(
+            !highPassManager.isActivated,
+            "HP is NO activated",
+            true,
+            highPassManager.isActivated
+        );
+        AssertTrue(
             headerManager.isActivated,
             "Header Manager is activated",
             true,
             headerManager.isActivated
         );
-        yield return new WaitForSeconds(0.2f);
+        // yield return new WaitForSeconds(0.2f);
         // AssertTrue(
         //     finalThirdManager.isActivated,
         //     "F3 should be activated",
@@ -7430,7 +7488,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("High Pass on Attacker, Move Passer, defender and INAccurate HP.");
     }
 
-    private IEnumerator Scenario_027a_Decide_on_attWillJump()
+    private IEnumerator Scenario_027a_Decide_on_attWillJump(bool addKalla = false)
     {
         yield return Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP();
 
@@ -7528,10 +7586,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attEligibleToHead.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
             "Header Manager Kalla is Eligible"
         );
-        // AssertTrue(
-        //     headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
-        //     "Header Manager Nazef is Nominated to Jump"
-        // );
+        AssertTrue(
+            !headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
+            "Header Manager Nazef is NOT Nominated to Jump"
+        );
         AssertTrue(
             headerManager.defEligibleToHead.Count == 4,
             "Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty)",
@@ -7565,9 +7623,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             4,
             headerManager.defEligibleToHead.Count
         );
-        Log("Click On (6, 6) - Nominate Kalla too");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 6), 0.5f));
-        yield return new WaitForSeconds(0.2f);
+        if (addKalla)
+        {
+            Log("Click On (6, 6) - Nominate Kalla too");
+            yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 6), 0.5f));
+            yield return new WaitForSeconds(0.2f);
+        }
         AssertTrue(
             headerManager.isWaitingForAttackerSelection,
             "Header Manager Should be waiting for Attacker selection",
@@ -7592,10 +7653,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
             "Header Manager Nazef is Nominated"
         );
+        if (addKalla)
+        {
         AssertTrue(
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
-            "Header Manager Nazef is Nominated to jump"
+            "Header Manager Kalla is Nominated to jump"
         );
+        }
         AssertTrue(
             headerManager.defEligibleToHead.Count == 4,
             "Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty)",
@@ -7621,9 +7685,151 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("hasEligibleAtt & hasEligibleDef: Decide on who will jump");
     }
 
-    private IEnumerator Scenario_027b_Decide_on_DefWillJump()
+    private IEnumerator Scenario_027_a_b_HP_on_1att_def_Not_challenging(bool addKalla)
     {
-        yield return Scenario_027a_Decide_on_attWillJump();
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible");
+        yield return StartCoroutine(Scenario_027a_Decide_on_attWillJump(addKalla));
+        Log("Press Enter - Defense not challenging");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            headerManager.isWaitingForControlOrHeaderDecision,
+            "Header should be waiting for choice between header or BC",
+            true,
+            headerManager.isWaitingForControlOrHeaderDecision
+        );
+
+        LogFooterofTest("High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible");
+    }
+
+    private IEnumerator Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(bool addKalla = false)
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack Heads");
+        yield return StartCoroutine(Scenario_027_a_b_HP_on_1att_def_Not_challenging(addKalla));
+        Log("Press H - Attack decides to Head");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.H, 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !headerManager.isWaitingForControlOrHeaderDecision,
+            "Header should NOT be waiting for choice between header or BC",
+            false,
+            headerManager.isWaitingForControlOrHeaderDecision
+        );
+        AssertTrue(
+            headerManager.isWaitingForHeaderTargetSelection,
+            "Header should be waiting for header Target",
+            true,
+            headerManager.isWaitingForHeaderTargetSelection
+        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Count == 2,
+                "Header both Kalla and Nazef should be jumping",
+                2,
+                headerManager.attackerWillJump.Count
+            );
+            AssertTrue(
+                headerManager.challengeWinner == PlayerToken.GetPlayerTokenByName("Nazef"),
+                "Header Auto selection of Nazef for header",
+                PlayerToken.GetPlayerTokenByName("Nazef"),
+                headerManager.challengeWinner
+            );
+        }
+        else
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Count == 1,
+                "Header only Nazef should be jumping",
+                1,
+                headerManager.attackerWillJump.Count
+            );
+            AssertTrue(
+                headerManager.challengeWinner == PlayerToken.GetPlayerTokenByName("Nazef"),
+                "Header Auto selection of Nazef for header",
+                PlayerToken.GetPlayerTokenByName("Nazef"),
+                headerManager.challengeWinner
+            );
+        }
+
+        LogFooterofTest("High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack Heads");
+    }
+
+    private IEnumerator Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(bool addKalla = false)
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack BC with Nazef");
+        yield return StartCoroutine(Scenario_027_a_b_HP_on_1att_def_Not_challenging(addKalla));
+        Log("Press B - Attack decides to Ball Control");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.B, 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !headerManager.isWaitingForControlOrHeaderDecision,
+            "Header should NOT be waiting for choice between header or BC",
+            false,
+            headerManager.isWaitingForControlOrHeaderDecision
+        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.iswaitingForChallengeWinnerSelection,
+                "Header waiting for who will contol ball",
+                true,
+                headerManager.iswaitingForChallengeWinnerSelection
+            );
+            AssertTrue(
+                headerManager.attackerWillJump.Count == 2,
+                "Header both Kalla and Nazef should be jumping",
+                2,
+                headerManager.attackerWillJump.Count
+            );
+            AssertTrue(
+                headerManager.iswaitingForChallengeWinnerSelection,
+                "Header waiting for who will contol ball",
+                true,
+                headerManager.iswaitingForChallengeWinnerSelection
+            );
+            Log("Click On (4, 4) - Nazef will attempt to Control");
+            yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 4), 0.5f));
+            yield return new WaitForSeconds(0.2f);
+        }
+        else
+        {
+            yield return new WaitForSeconds(1.2f);
+            AssertTrue(
+                headerManager.attackerWillJump.Count == 1,
+                "Header only Nazef should be jumping",
+                1,
+                headerManager.attackerWillJump.Count
+            );
+            AssertTrue(
+                headerManager.challengeWinner == PlayerToken.GetPlayerTokenByName("Nazef"),
+                "Header Auto selection of Nazef for header",
+                PlayerToken.GetPlayerTokenByName("Nazef"),
+                headerManager.challengeWinner
+            );
+        }
+        AssertTrue(
+            !headerManager.iswaitingForChallengeWinnerSelection,
+            "Header SHOULD NOT BE waiting for who will contol ball as Nazef was declared or autoselected",
+            false,
+            headerManager.iswaitingForChallengeWinnerSelection
+        );
+        AssertTrue(
+            headerManager.isWaitingForControlRoll,
+            "Header waiting for Ball Control Roll",
+            true,
+            headerManager.isWaitingForControlRoll
+        );
+
+        LogFooterofTest("High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack BC with Nazef");
+    }
+    
+    private IEnumerator Scenario_027b_Decide_on_DefWillJump(bool addKalla = false)
+    {
+        yield return Scenario_027a_Decide_on_attWillJump(addKalla);
 
         Log("▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)");
         Log("Click On (3, 3) - Nominate Gilbert");
@@ -7645,10 +7851,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
             "Header Manager Nazef is Nominated to jump"
         );
-        AssertTrue(
-            headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
-            "Header Manager Kalla is Nominated to jump"
-        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
+                "Header Manager Kalla is Nominated to jump"
+            );
+        }
         AssertTrue(
             headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Gilbert")),
             "Header Manager Kalla is Nominated to jump"
@@ -7678,10 +7887,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
             "Header Manager Nazef is Nominated to jump"
         );
-        AssertTrue(
-            headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
-            "Header Manager Kalla is Nominated to jump"
-        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
+                "Header Manager Kalla is Nominated to jump"
+            );
+        }
         AssertTrue(
             headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Gilbert")),
             "Header Manager Gilbert is Nominated to jump"
@@ -7715,10 +7927,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
             "Header Manager Nazef is Nominated to jump"
         );
-        AssertTrue(
-            headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
-            "Header Manager Kalla is Nominated to jump"
-        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
+                "Header Manager Kalla is Nominated to jump"
+            );
+        }
         AssertTrue(
             !headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Gilbert")),
             "Header Manager Gilbert is deNominated to jump"
@@ -7752,10 +7967,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
             "Header Manager Nazef is Nominated to jump"
         );
-        AssertTrue(
-            headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
-            "Header Manager Kalla is Nominated to jump"
-        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
+                "Header Manager Kalla is Nominated to jump"
+            );
+        }
         AssertTrue(
             headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("McNulty")),
             "Header Manager McNulty is Nominated to jump"
@@ -7789,10 +8007,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Nazef")),
             "Header Manager Nazef is Nominated to jump"
         );
-        AssertTrue(
-            headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
-            "Header Manager Kalla is Nominated to jump"
-        );
+        if (addKalla)
+        {
+            AssertTrue(
+                headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kalla")),
+                "Header Manager Kalla is Nominated to jump"
+            );
+        }
         AssertTrue(
             headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("McNulty")),
             "Header Manager McNulty is Nominated to jump"
@@ -7811,9 +8032,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             4,
             headerManager.defEligibleToHead.Count
         );
-        Log("Pressing Enter - Confirm Attackers");
+        Log("Pressing Enter - Confirm Defenders");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.1f));
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         AssertTrue(
             !headerManager.isWaitingForAttackerSelection,
             "Header Manager Should NO LONGER be waiting for Attacker selection",
@@ -7833,12 +8054,21 @@ public class GameTestScenarioRunner : MonoBehaviour
             headerManager.isWaitingForHeaderRoll
         );
         yield return new WaitForSeconds(0.8f);
+        
+        LogFooterofTest("hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)");
+    }
+
+    private IEnumerator Scenario_027c_4PlayerJump_AttackWins()
+    {
+        yield return Scenario_027b_Decide_on_DefWillJump();
+
+        Log("▶️ Starting test scenario: 4 players Jump - Attack Wins, 2 failed Interceptions header to space");
         Log("Rolling 1st Attacker");
         headerManager.PerformHeaderRoll(6);
         yield return new WaitForSeconds(0.5f);
-        Log("Rolling 2nd Attacker");
-        headerManager.PerformHeaderRoll(4);
-        yield return new WaitForSeconds(0.5f);
+        // Log("Rolling 2nd Attacker");
+        // headerManager.PerformHeaderRoll(4);
+        // yield return new WaitForSeconds(0.5f);
         Log("Rolling 1st Defender");
         headerManager.PerformHeaderRoll(2);
         yield return new WaitForSeconds(0.5f);
@@ -7873,8 +8103,924 @@ public class GameTestScenarioRunner : MonoBehaviour
         headerManager.PerformInterceptionRoll(2);
         yield return new WaitForSeconds(2.2f);
 
-        LogFooterofTest("hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)");
+        LogFooterofTest("4 players Jump - Attack Wins, 2 failed Interceptions header to space");
     }
+
+    private IEnumerator Scenario_027d_4PlayerJump_Defense_Wins_to_player()
+    {
+        yield return Scenario_027b_Decide_on_DefWillJump();
+
+        Log("▶️ Starting test scenario: 4 players Jump - Defense Wins, Header To Player");
+        Log("Rolling 1st Attacker");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.5f);
+        // Log("Rolling 2nd Attacker");
+        // headerManager.PerformHeaderRoll(1);
+        // yield return new WaitForSeconds(0.5f);
+        Log("Rolling 1st Defender");
+        headerManager.PerformHeaderRoll(6);
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling 2nd Defender");
+        headerManager.PerformHeaderRoll(6);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            headerManager.isWaitingForHeaderTargetSelection,
+            "Header Manager Should be waiting for HeaderTargetSelection",
+            true,
+            headerManager.isWaitingForHeaderTargetSelection
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("McNulty"),
+            "Header Manager should have killed itself by now",
+            PlayerToken.GetPlayerTokenByName("McNulty").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+        Log("Click On (1, 3) - Send ball to Vladoiu");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 3), 0.5f));
+        yield return new WaitForSeconds(2.2f); // ball moving
+        AssertTrue(
+            !headerManager.isActivated,
+            "Header Manager should have killed itself by now",
+            false,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Vladoiu"),
+            "Vladoiu Last one to touch teh ball",
+            PlayerToken.GetPlayerTokenByName("Vladoiu").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterHeadToPlayer();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Head to Player",
+            true,
+            availabilityCheck.ToString()
+        );
+
+        LogFooterofTest("4 players Jump - Defense Wins, Header To Player");
+    }
+    
+    private IEnumerator Scenario_027e_4PlayerJump_Defense_Wins_to_space()
+    {
+        yield return Scenario_027b_Decide_on_DefWillJump();
+
+        Log("▶️ Starting test scenario: 4 players Jump - Defense Wins, Header To Player");
+        Log("Rolling 1st Attacker");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.5f);
+        // Log("Rolling 2nd Attacker");
+        // headerManager.PerformHeaderRoll(1);
+        // yield return new WaitForSeconds(0.5f);
+        Log("Rolling 1st Defender");
+        headerManager.PerformHeaderRoll(6);
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling 2nd Defender");
+        headerManager.PerformHeaderRoll(6);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            headerManager.isWaitingForHeaderTargetSelection,
+            "Header Manager Should be waiting for HeaderTargetSelection",
+            true,
+            headerManager.isWaitingForHeaderTargetSelection
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("McNulty"),
+            "Header Manager should have killed itself by now",
+            PlayerToken.GetPlayerTokenByName("McNulty").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+        Log("Click On (11, 3) - Send ball to space");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 3), 0.5f));
+        yield return new WaitForSeconds(3.2f); // ball moving
+        AssertTrue(
+            !headerManager.isActivated,
+            "Header Manager should have killed itself by now",
+            false,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("McNulty"),
+            "Last Player to touch the ball should still be McNulty",
+            PlayerToken.GetPlayerTokenByName("McNulty").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Interception (Any Other Scenario)",
+            true,
+            availabilityCheck.ToString()
+        );
+
+        LogFooterofTest("4 players Jump - Defense Wins, Header To Player");
+    }
+
+    private IEnumerator Scenario_027f_4PlayerJump_LooseBall()
+    {
+        yield return Scenario_027b_Decide_on_DefWillJump();
+
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from header");
+        Log("Rolling 1st Attacker - Nazef");
+        headerManager.PerformHeaderRoll(3);
+        yield return new WaitForSeconds(0.5f);
+        // Log("Rolling 2nd Attacker - Kalla");
+        // headerManager.PerformHeaderRoll(2);
+        // yield return new WaitForSeconds(0.5f);
+        Log("Rolling 1st Defender - McNulty");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling 2nd Defender - Stewart");
+        headerManager.PerformHeaderRoll(4);
+        yield return new WaitForSeconds(1.9f);
+        AssertTrue(
+            !headerManager.isActivated,
+            "Header Manager Should have killed itself by now",
+            false,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose ball Should be awake by now",
+            true,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should be waiting for a direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Cafferata"),
+            "Last player to touch the ball is still the HPasser",
+            PlayerToken.GetPlayerTokenByName("Cafferata").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+
+        LogFooterofTest("4 players Jump - Loose Ball from header");
+    }
+
+    private IEnumerator Scenario_027g_4PlayerJump_LooseBall_From_Stewart_Space()
+    {
+        yield return Scenario_027f_4PlayerJump_LooseBall();
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space");
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should be waiting for a direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        Log("Rolling for Direction - SouthWest");
+        looseBallManager.PerformDirectionRoll(2);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should NOT be waiting for a direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should be waiting for a distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        Log("Rolling for Distance - 4");
+        yield return new WaitForSeconds(0.5f);
+        looseBallManager.PerformDistanceRoll(4);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should NOT be waiting for a distance Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(2f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should NOT be waiting for a distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForInterceptionRoll,
+            "Loose ball Should be waiting for a interception Roll",
+            true,
+            looseBallManager.isWaitingForInterceptionRoll
+        );
+        AssertTrue(
+            looseBallManager.potentialInterceptor == PlayerToken.GetPlayerTokenByName("Vladoiu"),
+            "Loose ball Should be waiting for a interception Roll from Vladoiu",
+            PlayerToken.GetPlayerTokenByName("Vladoiu"),
+            looseBallManager.potentialInterceptor
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Cafferata"),
+            "Last player to touch the ball is still the HPasser",
+            PlayerToken.GetPlayerTokenByName("Cafferata").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+
+        LogFooterofTest("4 players Jump - Loose Ball from Stewart To Space");
+    }
+
+    private IEnumerator Scenario_027g_a_4PlayerJump_LooseBall_OnDefender_interception()
+    {
+        yield return Scenario_027g_4PlayerJump_LooseBall_From_Stewart_Space();
+        looseBallManager.PerformInterceptionRoll(6);
+        yield return new WaitForSeconds(2.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForInterceptionRoll,
+            "Loose ball Should NOT be waiting for a interception Roll",
+            false,
+            looseBallManager.isWaitingForInterceptionRoll
+        );
+        AssertTrue(
+            MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Away
+            , "Away team is in attack after ball movement"
+            , MatchManager.TeamInAttack.Away
+            , MatchManager.Instance.teamInAttack
+        );
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Interception (Any Other Scenario)",
+            true,
+            availabilityCheck.ToString()
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Vladoiu"),
+            "Last player to touch the ball is Now the interceptor",
+            PlayerToken.GetPlayerTokenByName("Vladoiu").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space Intercepted by Vladoiu");
+
+        LogFooterofTest("4 players Jump - Loose Ball from Stewart To Space Intercepted by Vladoiu");
+    }
+    
+    private IEnumerator Scenario_027g_b_4PlayerJump_LooseBall_OnDefender_NO_interception()
+    {
+        yield return Scenario_027g_4PlayerJump_LooseBall_From_Stewart_Space();
+        looseBallManager.PerformInterceptionRoll(1);
+        yield return new WaitForSeconds(2.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForInterceptionRoll,
+            "Loose ball Should NOT be waiting for a interception Roll",
+            false,
+            looseBallManager.isWaitingForInterceptionRoll
+        );
+        AssertTrue(
+            !looseBallManager.isActivated,
+            "Loose ball Should have killed itself by now",
+            false,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home
+            , "home team is in attack after ball movement"
+            , MatchManager.TeamInAttack.Home
+            , MatchManager.Instance.teamInAttack
+        );
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Interception (Any Other Scenario)",
+            true,
+            availabilityCheck.ToString()
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Cafferata"),
+            "Last player to touch the ball is still the HPasser",
+            PlayerToken.GetPlayerTokenByName("Cafferata").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space No Interception");
+
+        LogFooterofTest("4 players Jump - Loose Ball from Stewart To Space No Interception");
+    }
+
+    private IEnumerator Scenario_027h_4PlayerJump_LooseBall_OnDefender()
+    {
+        yield return Scenario_027f_4PlayerJump_LooseBall();
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should be waiting for a direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        Log("Rolling for Direction - South");
+        looseBallManager.PerformDirectionRoll(1);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should NOT be waiting for a direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should be waiting for a distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        looseBallManager.PerformDistanceRoll(2);
+        Log("Rolling for Distance - 2");
+        yield return new WaitForSeconds(2f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should NOT be waiting for a distance Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        AssertTrue(
+            MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Away
+            , "Away team is in attack after ball movement"
+            , MatchManager.TeamInAttack.Away
+            , MatchManager.Instance.teamInAttack
+        );
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Interception (Any Other Scenario)",
+            true,
+            availabilityCheck.ToString()
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Paterson"),
+            "Last player to touch the ball is the Tokem with the ball.",
+            PlayerToken.GetPlayerTokenByName("Paterson").name,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name
+        );
+
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from header On Defender");
+        LogFooterofTest("4 players Jump - Loose Ball from header On Defender");
+    }
+
+    private IEnumerator Scenario_027i_4PlayerJump_LooseBall_OnAttacker()
+    {
+        yield return Scenario_027f_4PlayerJump_LooseBall();
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should be waiting for a direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        Log("Rolling for Direction - NorthEast - 5");
+        looseBallManager.PerformDirectionRoll(5);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should NOT be waiting for a direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should be waiting for a distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling for Distance - 2");
+        looseBallManager.PerformDistanceRoll(2);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should NOT be waiting for a distance Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(2f);
+
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from header On Attacker");
+        LogFooterofTest("4 players Jump - Loose Ball from header On Attacker");
+    }
+    
+    private IEnumerator Scenario_027j_4PlayerJump_LooseBall_OnJumpedToken()
+    {
+        yield return Scenario_027f_4PlayerJump_LooseBall();
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should be waiting for a direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling for Direction - NorthEast - 5");
+        looseBallManager.PerformDirectionRoll(5);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose ball Should NOT be waiting for a direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should be waiting for a distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling for Distance - 1");
+        looseBallManager.PerformDistanceRoll();
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose ball Should NOT be waiting for a distance Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(2f);
+        AssertTrue(false, "break");
+
+        Log("▶️ Starting test scenario: 4 players Jump - Loose Ball from header On Jumped Token");
+        LogFooterofTest("4 players Jump - Loose Ball from header On Jumped Token");
+    }
+
+    private IEnumerator Scenario_028_Inaccurate_on_Defenders()
+    {
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders.");
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup,
+            "Game is in KickOff Setup",
+            MatchManager.GameState.KickOffSetup,
+            MatchManager.Instance.currentState
+        );
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
+            "Game is in KickoffBlown",
+            MatchManager.GameState.KickoffBlown,
+            MatchManager.Instance.currentState
+        );
+        Log("Pressing C - Call a HighPass");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        Log("Click On (6, 8) - Intitial HP Target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 8), 0.5f));
+        AssertTrue(
+            highPassManager.eligibleAttackers.Count == 2,
+            "HP target is has 2 eligible Attacker",
+            2,
+            highPassManager.eligibleAttackers.Count
+        );
+        AssertTrue(
+            highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int (6, 0, 8)),
+            "HP target is the key pressed",
+            hexgrid.GetHexCellAt(new Vector3Int (6, 0, 8)),
+            highPassManager.currentTargetHex
+        );
+        Log("Click On (6, 8) - Confirm HP Target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 8), 0.5f));
+        AssertTrue(
+            highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int (6, 0, 8)),
+            "HP target 8, 8 Toothnail",
+            hexgrid.GetHexCellAt(new Vector3Int (6, 0, 8)),
+            highPassManager.currentTargetHex
+        );
+        AssertTrue(
+            highPassManager.intendedTargetHex == hexgrid.GetHexCellAt(new Vector3Int (6, 0, 8)),
+            "HP confrimed target is 8, 8 Toothnail",
+            hexgrid.GetHexCellAt(new Vector3Int (6, 0, 8)),
+            highPassManager.intendedTargetHex
+        );
+        AssertTrue(
+            highPassManager.isWaitingForAttackerSelection,
+            "HP is wating for attacker to be selected",
+            true,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            highPassManager.lockedAttacker == null,
+            "HP has noone locked"
+        );
+        Log("Click On (6, 6) - Select Kalla to go on Target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, 6), 0.5f));
+        yield return new WaitForSeconds(1);
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerSelection,
+            "HP is NO LONGER wating for attacker to be selected",
+            true,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerMove,
+            "HP is NOT wating for attacker to move",
+            false,
+            highPassManager.isWaitingForAttackerMove
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDefenderSelection,
+            "HP is wating for defender to be selected",
+            true,
+            highPassManager.isWaitingForDefenderSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForDefenderMove,
+            "HP is NOT wating for defender to move",
+            false,
+            highPassManager.isWaitingForDefenderMove
+        );
+        Log("Click On (1, 2) - Select Vladoiu");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerSelection,
+            "HP is NOT wating for attacker to be selected",
+            false,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerMove,
+            "HP is NOT wating for attacker to move",
+            false,
+            highPassManager.isWaitingForAttackerMove
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDefenderSelection,
+            "HP is wating for defender to be selected",
+            true,
+            highPassManager.isWaitingForDefenderSelection
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDefenderMove,
+            "HP is wating for defender to move",
+            false,
+            highPassManager.isWaitingForDefenderMove
+        );
+        Log("Click On (1, 3) - Move Vladoiu");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 3), 0.5f));
+        yield return new WaitForSeconds(1.5f);
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerSelection,
+            "HP is NOT wating for attacker to be selected",
+            false,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerMove,
+            "HP is NOT wating for attacker to move",
+            false,
+            highPassManager.isWaitingForAttackerMove
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForDefenderSelection,
+            "HP is NOT wating for defender to be selected",
+            false,
+            highPassManager.isWaitingForDefenderSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForDefenderMove,
+            "HP is NOT wating for defender to move",
+            false,
+            highPassManager.isWaitingForDefenderMove
+        );
+        AssertTrue(
+            highPassManager.isWaitingForAccuracyRoll,
+            "HP is waiting for accuracy Roll",
+            true,
+            highPassManager.isWaitingForAccuracyRoll
+        );
+        Log("Pressing R for Accuracy");
+        highPassManager.PerformAccuracyRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            !highPassManager.isWaitingForAccuracyRoll,
+            "HP is NO longer waiting for accuracy Roll",
+            false,
+            highPassManager.isWaitingForAccuracyRoll
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDirectionRoll,
+            "HP is waiting for direction Roll",
+            true,
+            highPassManager.isWaitingForDirectionRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R for Direction 3 - SouthWest");
+        highPassManager.PerformDirectionRoll(2);
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            !highPassManager.isWaitingForDirectionRoll,
+            "HP is NO longer waiting for direction Roll",
+            false,
+            highPassManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDistanceRoll,
+            "HP is waiting for distance Roll",
+            true,
+            highPassManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R for Distance 3");
+        highPassManager.PerformDistanceRoll(3);
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            !highPassManager.isWaitingForDistanceRoll,
+            "HP is NO Longer waiting for distance Roll",
+            true,
+            highPassManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(3.5f);
+        AssertTrue(
+            !highPassManager.isActivated,
+            "HP is NO activated",
+            false,
+            highPassManager.isActivated
+        );
+        AssertTrue(
+            headerManager.isActivated,
+            "Header Manager is activated",
+            true,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            headerManager.isWaitingForControlOrHeaderDecisionDef,
+            "Header Manager Should be waiting for Defensive BC or H Decision",
+            true,
+            headerManager.isWaitingForControlOrHeaderDecisionDef
+        );
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders.");
+    }
+    
+    private IEnumerator Scenario_028a_Defense_Heads()
+    {
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to Head.");
+        yield return Scenario_028_Inaccurate_on_Defenders();
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing H");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.H, 0.1f));
+        AssertTrue(
+            !headerManager.isWaitingForControlOrHeaderDecisionDef,
+            "Header Manager Should NO LONGER be waiting for Defensive BC or H Decision",
+            false,
+            headerManager.isWaitingForControlOrHeaderDecisionDef
+        );
+        AssertTrue(
+            headerManager.iswaitingForChallengeWinnerSelection,
+            "Header Manager Should be waiting for Challenge Winner Selection",
+            true,
+            headerManager.iswaitingForChallengeWinnerSelection
+        );
+        Log("Click On (5, 5) - Head with McnNulty");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 5), 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            headerManager.isWaitingForHeaderTargetSelection,
+            "Header Manager Should be waiting for Header Target Selection",
+            true,
+            headerManager.isWaitingForHeaderTargetSelection
+        );
+        AssertTrue(
+            headerManager.defenderWillJump.Count == 1,
+            "Header Manager defenderWillJump Should be Containing only McNulty",
+            1,
+            headerManager.defenderWillJump.Count
+        );
+        AssertTrue(
+            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("McNulty")),
+            "Header Manager McNulty should be Jumping"
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Click On (1, 10) - Head the ball to Marell");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 10), 0.5f));
+        yield return new WaitForSeconds(1.5f);
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterHeadToPlayer();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Header to Player",
+            true,
+            availabilityCheck.ToString()
+        );
+        AssertTrue(
+            MatchManager.Instance.attackHasPossession,
+            "match Manager should know that attack is in possession",
+            true,
+            MatchManager.Instance.attackHasPossession
+        );
+        AssertTrue(
+            MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Away,
+            "Match Manager should know that Away is in Attack",
+            MatchManager.TeamInAttack.Away,
+            MatchManager.Instance.teamInAttack
+        );
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to Head.");
+    }
+    
+    private IEnumerator Scenario_028b_Defense_Ball_Controls_McNulty()
+    {
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC.");
+        yield return Scenario_028_Inaccurate_on_Defenders();
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing B");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.B, 0.1f));
+        AssertTrue(
+            headerManager.iswaitingForChallengeWinnerSelection,
+            "Header Manager Should be waiting for Challenge winner to use for Dribbling Roll",
+            true,
+            headerManager.iswaitingForChallengeWinnerSelection
+        );
+        AssertTrue(
+            headerManager.defenderWillJump.Count == 0,
+            "Header Manager defenderWillJump Should be empty",
+            1,
+            headerManager.defenderWillJump.Count
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Click On (5, 5) - Ball Control with McNulty");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 5), 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            headerManager.isWaitingForControlRoll,
+            "Header Manager Should be waiting for Control Roll",
+            true,
+            headerManager.isWaitingForControlRoll
+        );
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to BC.");
+    }
+
+    private IEnumerator Scenario_028b_a_Defense_Ball_Controls_McNulty_fails()
+    {
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails.");
+        yield return Scenario_028b_Defense_Ball_Controls_McNulty();
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R - McNulty Fails the Control Attempt");
+        headerManager.PerformControlRoll(1);
+        yield return new WaitForSeconds(1.5f);
+        AssertTrue(
+            !headerManager.isWaitingForControlRoll,
+            "Header Manager Should NO LONGER be waiting for Control Roll",
+            false,
+            headerManager.isWaitingForControlRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !headerManager.isActivated,
+            "Header Manager Should NO LONGER be even Available",
+            false,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager Should be Available",
+            true,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should be Waiting for Direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling for Direction - 6 - North");
+        looseBallManager.PerformDirectionRoll(4);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should NOT be Waiting for Direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager Should be Waiting for Distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling for Distance - 4");
+        looseBallManager.PerformDistanceRoll(4);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager Should NOT be Waiting for Distance Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForInterceptionRoll,
+            "Loose Ball Manager Should be Waiting for Interception Roll",
+            true,
+            looseBallManager.isWaitingForInterceptionRoll
+        );
+        AssertTrue(
+            looseBallManager.potentialInterceptor == PlayerToken.GetPlayerTokenByName("Kalla"),
+            "Loose Ball Manager Kalla is waiting for a roll",
+            PlayerToken.GetPlayerTokenByName("Kalla"),
+            looseBallManager.potentialInterceptor
+        );
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails.");
+    }
+
+    private IEnumerator Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_INterception()
+    {
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla Intercepts");
+        yield return Scenario_028b_a_Defense_Ball_Controls_McNulty_fails();
+        yield return new WaitForSeconds(0.5f);
+        looseBallManager.PerformInterceptionRoll(6);
+        yield return new WaitForSeconds(1.5f); // Wait for ball to move
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Interception (Any Other Scenario)",
+            true,
+            availabilityCheck.ToString()
+        );
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla Intercepts");
+    }
+    
+    private IEnumerator Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_NO_interception()
+    {
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla fails to Intercept");
+        yield return Scenario_028b_a_Defense_Ball_Controls_McNulty_fails();
+        yield return new WaitForSeconds(0.5f);
+        looseBallManager.PerformInterceptionRoll(1);
+        yield return new WaitForSeconds(2.5f); // Wait for ball to move
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Interception (Any Other Scenario)",
+            true,
+            availabilityCheck.ToString()
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP should be waiting for a token selection",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Click On (5, 5) - Select McNulty");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(5, 5), 0.5f));
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "MP should be waiting for a token selection",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection
+        );
+        AssertTrue(
+            movementPhaseManager.isAwaitingHexDestination,
+            "MP should be waiting for a HexDestination",
+            true,
+            movementPhaseManager.isAwaitingHexDestination
+        );
+        AssertTrue(
+            movementPhaseManager.isBallPickable,
+            "MP Ball should be pickable",
+            true,
+            movementPhaseManager.isBallPickable
+        );
+        Log("Pressing V - Pick Up ball with McNulty");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.V, 0.1f));
+        yield return new WaitForSeconds(2.5f); // Wait for McN to Move
+        AssertTrue(
+            movementPhaseManager.isDribblerRunning,
+            "MP Dribbler is Dribbling",
+            true,
+            movementPhaseManager.isDribblerRunning
+        );
+        AssertTrue(
+            movementPhaseManager.remainingDribblerPace == 1,
+            "MP McNulty has 1 more pace available",
+            1,
+            movementPhaseManager.remainingDribblerPace
+        );
+
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla fails to Intercept");
+    }
+
+    private IEnumerator Scenario_028b_a_Defense_Ball_Controls_McNulty_BC()
+    {
+        Log("▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Controls.");
+        yield return Scenario_028b_Defense_Ball_Controls_McNulty();
+        yield return new WaitForSeconds(0.5f);
+        Log("Pressing R - McNulty Fails the Control Attempt");
+        headerManager.PerformControlRoll(6);
+        yield return new WaitForSeconds(1.5f); 
+        AvailabilityCheckResult successfulTackle = AssertCorrectAvailabilityAfterSuccessfulTackle();
+        AssertTrue(
+            successfulTackle.passed,
+            "Availability after successful tackle",
+            true,
+            successfulTackle.ToString()
+        );
+
+        LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Controls.");
+
+    }
+      
 
         // AssertTrue(
         //     false,
@@ -8179,6 +9325,26 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
         
         if (!highPassManager.isAvailable) failures.Add("HighPass should be available");
+        if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+        
+        if (!longBallManager.isAvailable) failures.Add("LongBall should be available");
+        if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
+        return new AvailabilityCheckResult(failures.Count == 0, failures);
+    }
+    
+    private AvailabilityCheckResult AssertCorrectAvailabilityAfterHeadToPlayer()
+    {
+        List<string> failures = new();
+        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
+        
+        if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
+        if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+        
+        if (!firstTimePassManager.isAvailable) failures.Add("FirstTimePass should be available");
+        if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+        
+        if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
         if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
         
         if (!longBallManager.isAvailable) failures.Add("LongBall should be available");

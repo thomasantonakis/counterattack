@@ -4952,7 +4952,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 390494642}
   hexGrid: {fileID: 1405702520}
-  matchManager: {fileID: 622907910}
   highPassManager: {fileID: 1859472972}
   movementPhaseManager: {fileID: 1390513032}
   groundBallManager: {fileID: 1703800862}
@@ -4973,6 +4972,8 @@ MonoBehaviour:
   challengeWinner: {fileID: 0}
   offeredControl: 0
   isWaitingForControlOrHeaderDecision: 0
+  isWaitingForControlOrHeaderDecisionDef: 0
+  isWaitingForControlRoll: 0
   isWaitingForHeaderTargetSelection: 0
   isWaitingForInterceptionRoll: 0
   attEligibleToHead: []

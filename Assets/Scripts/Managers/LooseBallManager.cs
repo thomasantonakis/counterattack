@@ -126,6 +126,7 @@ public class LooseBallManager : MonoBehaviour
         path.Clear();
         // Step 1: Move the ball to the starting token's hex
         HexCell defenderHex = startingToken.GetCurrentHex();
+        // TODO: Do not offer GK Movement for this
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(startingToken.GetCurrentHex()));
         // ball.SetCurrentHex(defenderHex);
         List<int> spillDirections = new List<int>();
@@ -154,6 +155,11 @@ public class LooseBallManager : MonoBehaviour
 
         if(resolutionType == "handling" && startingToken.IsGoalKeeper)
         {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                startingToken
+                , MatchManager.ActionType.SaveMade
+                , saveType: "loose"
+            );
             if (!spillDirections.Contains(directionRoll))
             {
                 MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -199,15 +205,10 @@ public class LooseBallManager : MonoBehaviour
                 // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 
                 yield break;
             }
-        }
-        if (resolutionType == "handling")
-        {
-            MatchManager.Instance.gameData.gameLog.LogEvent(
-                startingToken
-                , MatchManager.ActionType.SaveMade
-                , saveType: "loose"
-            );
-            MatchManager.Instance.hangingPassType = "shot";
+            else
+            {
+                MatchManager.Instance.hangingPassType = "shot";
+            }
         }
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
@@ -229,7 +230,7 @@ public class LooseBallManager : MonoBehaviour
         for (int i = 0; i < distanceRoll; i++)
         {
             HexCell nextHex = outOfBoundsManager.CalculateInaccurateTarget(defenderHex, directionRoll, i+1);
-            Debug.Log($"nextHex: {nextHex.coordinates}");
+            // Debug.Log($"nextHex: {nextHex.coordinates}");
             path.Add(nextHex);
         }
         Debug.Log($"Path: {string.Join(" -> ", path.Select((hex, index) => $"({index}): {hex.coordinates}"))}");
@@ -238,6 +239,10 @@ public class LooseBallManager : MonoBehaviour
         PlayerToken closestToken = null;  // Track the closest token for fallback pickup
         for (int i = 0; i < path.Count; i++)
         {
+            // Noone can stop a header, so if we are resolving a header and we are not at the last one,
+            if (i != path.Count - 1 && resolutionType == "header") continue;
+            // move to the next one until we reach the last one
+
             HexCell hex = path[i];
             Debug.Log($"Checking hex {hex.coordinates} for tokens...");
 
@@ -248,7 +253,12 @@ public class LooseBallManager : MonoBehaviour
                 //  If we are resolving a Header Loose ball if we encounter a token that has jumped we should ignore it.
                 if (
                     resolutionType == "header" 
-                    && (headerManager.defenderWillJump.Contains(tokenOnHex) || headerManager.attackerWillJump.Contains(tokenOnHex))
+                    && (
+                        headerManager.defenderWillJump.Contains(tokenOnHex)
+                        || headerManager.attackerWillJump.Contains(tokenOnHex)
+                        || movementPhaseManager.stunnedTokens.Contains(tokenOnHex) 
+                        || movementPhaseManager.stunnedforNext.Contains(tokenOnHex)
+                    )
                 )
                 {
                     // If we reached the distance roll Hex 
@@ -267,7 +277,7 @@ public class LooseBallManager : MonoBehaviour
                     closestToken = tokenOnHex;
                     Debug.Log($"{tokenOnHex.name} encountered on hex {hex.coordinates}. Tracking as fallback for ball pickup.");
                     int indexOfClosestHex = path.IndexOf(hex);
-                    Debug.Log($"{indexOfClosestHex}");
+                    // Debug.Log($"{indexOfClosestHex}");
                     if (indexOfClosestHex >= 0) // Ensure the hex exists in the path
                     {
                         path.RemoveRange(indexOfClosestHex, path.Count - indexOfClosestHex);
@@ -283,6 +293,10 @@ public class LooseBallManager : MonoBehaviour
         
         foreach (HexCell hexround2 in path)
         {
+            // Noone can stop a header, so if we are resolving a header and we are not at the last one,
+            if (hexround2 != path[path.Count - 1] && resolutionType == "header") continue;
+            // check for interceptions only on the last Hex of the path
+            if (hexround2.isAttackOccupied || hexround2.isDefenseOccupied) continue;
             // Step 5.2: Check if there are defenders in ZOI of this hex
             foreach (HexCell neighbor in hexround2.GetNeighbors(hexGrid))
             {
@@ -292,7 +306,7 @@ public class LooseBallManager : MonoBehaviour
                     potentialInterceptor != closestToken && // not the one who is the fallback hit
                     !potentialInterceptor.isAttacker && // exclude all attackers
                     !headerManager.defenderWillJump.Contains(potentialInterceptor) && // exclude defenders that are in the air // COLIN
-                    // !movementPhaseManager.stunnedTokens.Contains(potentialInterceptor) && // exclude defenders that stunned from a nutmeg // COLIN
+                    !movementPhaseManager.stunnedTokens.Contains(potentialInterceptor) && // exclude defenders that stunned from a nutmeg // COLIN
                     !defendersTriedToIntercept.Contains(potentialInterceptor)) // Ensure the defender hasn't already tried
                 {
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");
@@ -313,17 +327,17 @@ public class LooseBallManager : MonoBehaviour
                             , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                             , recoveryType: MatchManager.Instance.hangingPassType
                         );
+                        ball.SetCurrentHex(potentialInterceptor.GetCurrentHex());
+                        MatchManager.Instance.hangingPassType = null;
                         MatchManager.Instance.SetLastToken(potentialInterceptor);
                         Debug.Log($"{potentialInterceptor.name} successfully intercepted the ball!");
                         // Move the ball to the interceptor's hex
-                        ball.SetCurrentHex(potentialInterceptor.GetCurrentHex());
                         // Change possession
                         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(neighbor));
                         // Change possession to the defending team
                         MatchManager.Instance.ChangePossession();  
-                        MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
+                        MatchManager.Instance.UpdatePossessionAfterPass(neighbor);  // Update possession
                         movementPhaseManager.EndMovementPhase(true);
-                        MatchManager.Instance.currentState = MatchManager.GameState.AnyOtherScenario;
                         MatchManager.Instance.BroadcastAnyOtherScenario();
                         EndLooseBallPhase();
                         yield break; // End ball movement

@@ -29,6 +29,7 @@ public class MatchManager : MonoBehaviour
         WaitingForGoalKickFinalThirds, // Both Final Thirds Can Move
         LooseBallPickedUp, // Any type of Loose ball picked up by an outfielder
         SuccessfulTackle,
+        BallControl,
         HighPass,
         HighPassCompleted,
         HeaderGeneric,
@@ -1104,6 +1105,13 @@ public class MatchManager : MonoBehaviour
         RefreshAvailableActions();
     }
 
+    public void BroadcastBallControl()
+    {
+        currentState = GameState.BallControl;
+        RefreshAvailableActions();
+    }
+
+
     public void BroadcastQuickThrow()
     {
         currentState = GameState.QuickThrow;
@@ -1117,7 +1125,7 @@ public class MatchManager : MonoBehaviour
 
     public void BroadcastHeaderCompleted()
     {
-      currentState = GameState.HeaderCompleted;
+        currentState = GameState.HeaderCompleted;
         RefreshAvailableActions();
     }
 
@@ -1182,7 +1190,7 @@ public class MatchManager : MonoBehaviour
                 }
             }
         }
-        else if (currentState == GameState.AnyOtherScenario || currentState == GameState.HeaderCompleted)
+        else if (currentState == GameState.AnyOtherScenario)
         {
             if (attackHasPossession)
             {
@@ -1200,7 +1208,25 @@ public class MatchManager : MonoBehaviour
                 movementPhaseManager.CommitToAction();
             }
         }
-        else if (currentState == GameState.SuccessfulTackle)
+        else if (currentState == GameState.HeaderCompleted)
+        {
+            if (attackHasPossession)
+            {
+                movementPhaseManager.isAvailable = true;
+                groundBallManager.isAvailable = false;
+                firstTimePassManager.isAvailable = true;
+                highPassManager.isAvailable = false;
+                longBallManager.isAvailable = true;
+                if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+                else shotManager.isAvailable = false;
+            }
+            else 
+            {
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
+            }
+        }
+        else if (currentState == GameState.SuccessfulTackle || currentState == GameState.BallControl)
         {
             movementPhaseManager.isAvailable = true;
             groundBallManager.isAvailable = true;

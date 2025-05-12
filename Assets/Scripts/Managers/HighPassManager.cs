@@ -554,7 +554,7 @@ public class HighPassManager : MonoBehaviour
     }
 
 
-    public void PerformDistanceRoll(int? rigroll = null)
+    public async void PerformDistanceRoll(int? rigroll = null)
     {
         Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
@@ -569,8 +569,8 @@ public class HighPassManager : MonoBehaviour
         {
             // Move the ball to the inaccurate final hex
             // yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));           
-            // await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex)); 
-            StartCoroutine(HandleHighPassMovement(finalTargetHex));
+            await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex)); 
+            // StartCoroutine(HandleHighPassMovement(finalTargetHex));
         }
         else
         {
@@ -598,7 +598,7 @@ public class HighPassManager : MonoBehaviour
         Vector3 startPosition = ball.transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();
         float height = 10f;
-        int steps = 120;
+        int steps = 100;
         for (int i = 0; i <= steps; i++)
         {
             float t = i / (float)steps;
@@ -900,6 +900,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex: hex, token: selectedToken, isCalledDuringMovement: false, shouldCountForDistance: true));  // Pass the selected token
         movementPhaseManager.isActivated = false;
+        movementPhaseManager.isBallPickable = false;
         selectedToken = null;
         isWaitingForAccuracyRoll = true;
         Debug.Log("Waiting for accuracy roll... Please Press R key.");

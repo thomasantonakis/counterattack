@@ -1536,6 +1536,7 @@ Clicking (19, 2) - Reposition Yaneva IN GOAL
 
 
 ==== Starting Test #28 ====
+▶️ Starting test scenario: High Pass on Attacker, Attacking and Defensive moves before Accurate Pass Defense cannot challenge.
 ▶️ Starting test scenario: High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.
 Pressing 2
 ✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
@@ -1589,31 +1590,42 @@ Click On (4, 5) - Click on an valid Hex
 ✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Defender selection | Expected: True | Actual: True
 ✅ PASS: HP target is waiting for Defender move | Expected: True | Actual: True
-Click On (1, 2) - Click on an valid Hex
+Click On (1, 2) - Click on an valid Defender
 ✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Defender selection | Expected: True | Actual: True
 ✅ PASS: HP target is waiting for Defender move | Expected: True | Actual: True
-Click On (-8, -8) - Click on an valid Hex
+Click On (-8, -8) - Click on an Attacker
 ✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Defender selection | Expected: True | Actual: True
 ✅ PASS: HP target is waiting for Defender move | Expected: False | Actual: False
-Click On (14, 0) - Click on an valid Hex
+Click On (14, 0) - Click on an valid Defender
 ✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Defender selection | Expected: True | Actual: True
 ✅ PASS: HP target is waiting for Defender move | Expected: True | Actual: True
 ✅ PASS: HP target is NOT waiting for Accuracy Roll yet | Expected: False | Actual: False
-Click On (11, 0) - Click on an valid Hex
+Click On (14, 1) - Click on an valid Hex
 ✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Defender selection | Expected: False | Actual: False
 ✅ PASS: HP target is waiting for Defender move | Expected: False | Actual: False
 ✅ PASS: HP target is NOT waiting for Accuracy Roll yet | Expected: True | Actual: True
 ✅ PASS: HP should be done | Expected: False | Actual: False
+✅ PASS: header Manager should be activated | Expected: True | Actual: True
+✅ PASS: header Manager should isWaitingForControlOrHeaderDecision | Expected: True | Actual: True
+Pressing X - Forfeit Att F3
+Pressing X - Forfeit Def F3
 
 ✅ High Pass on Attacker, Attacking and Defensive moves before Accurate Pass. - TEST PASSED COMPLETELY 🎉
+
+Pressing B - Ball Control
+✅ PASS: header Manager should NOT isWaitingForControlOrHeaderDecision | Expected: False | Actual: False
+✅ PASS: header Manager should isWaitingForControlRoll | Expected: True | Actual: True
+✅ PASS: Yaneva should be the winner | Expected: 8. Yaneva (PlayerToken) | Actual: 8. Yaneva (PlayerToken)
+
+✅ High Pass on Attacker, Attacking and Defensive moves before Accurate Pass Defense cannot challenge - TEST PASSED COMPLETELY 🎉
 
 ✅ Test #28 passed.
 
@@ -1658,6 +1670,7 @@ Pressing R for Accuracy
 ✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
 ✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
 ✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
 ✅ PASS: Header Manager is activated | Expected: True | Actual: True
 ✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
 
@@ -1684,6 +1697,7 @@ Click On (4, 4) - DeNominate Nazef
 ✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Eligible
 ✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
 Click On (4, 4) - Re Nominate Nazef
 ✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
@@ -1691,13 +1705,11 @@ Click On (4, 4) - Re Nominate Nazef
 ✅ PASS: Header Manager Nazef is Eligible
 ✅ PASS: Header Manager Kalla is Nominated to Jump
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
-Click On (6, 6) - Nominate Kalla too
 ✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
 ✅ PASS: Header Manager Nazef is Eligible
 ✅ PASS: Header Manager Kalla isEligible
 ✅ PASS: Header Manager Nazef is Nominated
-✅ PASS: Header Manager Nazef is Nominated to jump
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
 Pressing Enter - Confirm Attackers
 ✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
@@ -1709,6 +1721,8 @@ Pressing Enter - Confirm Attackers
 
 
 ==== Starting Test #30 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack Heads
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible
 ▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
 Pressing 2
 ✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
@@ -1748,6 +1762,7 @@ Pressing R for Accuracy
 ✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
 ✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
 ✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
 ✅ PASS: Header Manager is activated | Expected: True | Actual: True
 ✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
 
@@ -1774,6 +1789,112 @@ Click On (4, 4) - DeNominate Nazef
 ✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Eligible
 ✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+Press Enter - Defense not challenging
+✅ PASS: Header should be waiting for choice between header or BC | Expected: True | Actual: True
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible - TEST PASSED COMPLETELY 🎉
+
+Press H - Attack decides to Head
+✅ PASS: Header should NOT be waiting for choice between header or BC | Expected: False | Actual: False
+✅ PASS: Header should be waiting for header Target | Expected: True | Actual: True
+✅ PASS: Header only Nazef should be jumping | Expected: 1 | Actual: 1
+✅ PASS: Header Auto selection of Nazef for header | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack Heads - TEST PASSED COMPLETELY 🎉
+
+✅ Test #30 passed.
+
+
+==== Starting Test #31 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack Heads
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
 Click On (4, 4) - Re Nominate Nazef
 ✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
@@ -1787,7 +1908,326 @@ Click On (6, 6) - Nominate Kalla too
 ✅ PASS: Header Manager Nazef is Eligible
 ✅ PASS: Header Manager Kalla isEligible
 ✅ PASS: Header Manager Nazef is Nominated
-✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+Press Enter - Defense not challenging
+✅ PASS: Header should be waiting for choice between header or BC | Expected: True | Actual: True
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible - TEST PASSED COMPLETELY 🎉
+
+Press H - Attack decides to Head
+✅ PASS: Header should NOT be waiting for choice between header or BC | Expected: False | Actual: False
+✅ PASS: Header should be waiting for header Target | Expected: True | Actual: True
+✅ PASS: Header both Kalla and Nazef should be jumping | Expected: 2 | Actual: 2
+✅ PASS: Header Auto selection of Nazef for header | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack Heads - TEST PASSED COMPLETELY 🎉
+
+✅ Test #31 passed.
+
+
+==== Starting Test #32 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack BC with Nazef
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+Press Enter - Defense not challenging
+✅ PASS: Header should be waiting for choice between header or BC | Expected: True | Actual: True
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible - TEST PASSED COMPLETELY 🎉
+
+Press B - Attack decides to Ball Control
+✅ PASS: Header should NOT be waiting for choice between header or BC | Expected: False | Actual: False
+✅ PASS: Header only Nazef should be jumping | Expected: 1 | Actual: 1
+✅ PASS: Header Auto selection of Nazef for header | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+✅ PASS: Header SHOULD NOT BE waiting for who will contol ball as Nazef was declared or autoselected | Expected: False | Actual: False
+✅ PASS: Header waiting for Ball Control Roll | Expected: True | Actual: True
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack BC with Nazef - TEST PASSED COMPLETELY 🎉
+
+✅ Test #32 passed.
+
+
+==== Starting Test #33 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack BC with Nazef
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (6, 6) - Nominate Kalla too
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+Press Enter - Defense not challenging
+✅ PASS: Header should be waiting for choice between header or BC | Expected: True | Actual: True
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 eligible - TEST PASSED COMPLETELY 🎉
+
+Press B - Attack decides to Ball Control
+✅ PASS: Header should NOT be waiting for choice between header or BC | Expected: False | Actual: False
+✅ PASS: Header waiting for who will contol ball | Expected: True | Actual: True
+✅ PASS: Header both Kalla and Nazef should be jumping | Expected: 2 | Actual: 2
+✅ PASS: Header waiting for who will contol ball | Expected: True | Actual: True
+Click On (4, 4) - Nazef will attempt to Control
+✅ PASS: Header SHOULD NOT BE waiting for who will contol ball as Nazef was declared or autoselected | Expected: False | Actual: False
+✅ PASS: Header waiting for Ball Control Roll | Expected: True | Actual: True
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. Attack challenges with 2 players. Defense Does not jump with any of the 4 , Attack BC with Nazef - TEST PASSED COMPLETELY 🎉
+
+✅ Test #33 passed.
+
+
+==== Starting Test #34 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
 Pressing Enter - Confirm Attackers
 ✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
@@ -1801,13 +2241,11 @@ Click On (3, 3) - Nominate Gilbert
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
 ✅ PASS: Header Manager Kalla is Nominated to jump
-✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
 Click On (1, 3) - Reject Nominate Vladoiu
 ✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
-✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager Gilbert is Nominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
@@ -1815,7 +2253,6 @@ Click On (3, 3) - DeNominate Gilbert
 ✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
-✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager Gilbert is deNominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
@@ -1823,7 +2260,6 @@ Click On (5, 5) - Nominate McNulty
 ✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
-✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager McNulty is Nominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
@@ -1831,17 +2267,19 @@ Click On (4, 5) - Nominate Stewart
 ✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
 ✅ PASS: Header Manager Nazef is Nominated to jump
-✅ PASS: Header Manager Kalla is Nominated to jump
 ✅ PASS: Header Manager McNulty is Nominated to jump
 ✅ PASS: Header Manager Stewart is Nominated to jump
 ✅ PASS: Header Manager Vladoiu's nomination was rejected
 ✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
-Pressing Enter - Confirm Attackers
+Pressing Enter - Confirm Defenders
 ✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
 ✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Attack Wins, 2 failed Interceptions header to space
 Rolling 1st Attacker
-Rolling 2nd Attacker
 Rolling 1st Defender
 Rolling 2nd Defender
 ✅ PASS: Header Manager Should be waiting for HeaderTargetSelection | Expected: True | Actual: True
@@ -1851,8 +2289,1388 @@ Rolling Vladoiu's Interception
 ✅ PASS: Header Manager Should be waiting for InterceptionRoll | Expected: True | Actual: True
 Rolling Gilbert's Interception
 
+✅ 4 players Jump - Attack Wins, 2 failed Interceptions header to space - TEST PASSED COMPLETELY 🎉
+
+✅ Test #34 passed.
+
+
+==== Starting Test #35 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
 ✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
 
-✅ Test #30 passed.
+▶️ Starting test scenario: 4 players Jump - Defense Wins, Header To Player
+Rolling 1st Attacker
+Rolling 1st Defender
+Rolling 2nd Defender
+✅ PASS: Header Manager Should be waiting for HeaderTargetSelection | Expected: True | Actual: True
+✅ PASS: Header Manager should have killed itself by now | Expected: 9. McNulty | Actual: 9. McNulty
+Click On (1, 3) - Send ball to Vladoiu
+✅ PASS: Header Manager should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Vladoiu Last one to touch teh ball | Expected: 5. Vladoiu | Actual: 5. Vladoiu
+✅ PASS: Action Availability after Head to Player | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ 4 players Jump - Defense Wins, Header To Player - TEST PASSED COMPLETELY 🎉
+
+✅ Test #35 passed.
+
+
+==== Starting Test #36 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Defense Wins, Header To Player
+Rolling 1st Attacker
+Rolling 1st Defender
+Rolling 2nd Defender
+✅ PASS: Header Manager Should be waiting for HeaderTargetSelection | Expected: True | Actual: True
+✅ PASS: Header Manager should have killed itself by now | Expected: 9. McNulty | Actual: 9. McNulty
+Click On (11, 3) - Send ball to space
+✅ PASS: Header Manager should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Last Player to touch the ball should still be McNulty | Expected: 9. McNulty | Actual: 9. McNulty
+✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ 4 players Jump - Defense Wins, Header To Player - TEST PASSED COMPLETELY 🎉
+
+✅ Test #36 passed.
+
+
+==== Starting Test #37 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header
+Rolling 1st Attacker - Nazef
+Rolling 1st Defender - McNulty
+Rolling 2nd Defender - Stewart
+✅ PASS: Header Manager Should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Loose ball Should be awake by now | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from header - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+Rolling for Direction - SouthWest
+✅ PASS: Loose ball Should NOT be waiting for a direction Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should be waiting for a distance Roll | Expected: True | Actual: True
+Rolling for Distance - 4
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: True | Actual: False
+✅ PASS: Loose ball Should be waiting for a interception Roll | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a interception Roll from Vladoiu | Expected: 5. Vladoiu (PlayerToken) | Actual: 5. Vladoiu (PlayerToken)
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from Stewart To Space - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Loose ball Should NOT be waiting for a interception Roll | Expected: False | Actual: False
+✅ PASS: Away team is in attack after ball movement | Expected: Away | Actual: Away
+✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: Last player to touch the ball is Now the interceptor | Expected: 5. Vladoiu | Actual: 5. Vladoiu
+▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space Intercepted by Vladoiu
+
+✅ 4 players Jump - Loose Ball from Stewart To Space Intercepted by Vladoiu - TEST PASSED COMPLETELY 🎉
+
+✅ Test #37 passed.
+
+
+==== Starting Test #38 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header
+Rolling 1st Attacker - Nazef
+Rolling 1st Defender - McNulty
+Rolling 2nd Defender - Stewart
+✅ PASS: Header Manager Should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Loose ball Should be awake by now | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from header - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+Rolling for Direction - SouthWest
+✅ PASS: Loose ball Should NOT be waiting for a direction Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should be waiting for a distance Roll | Expected: True | Actual: True
+Rolling for Distance - 4
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: True | Actual: False
+✅ PASS: Loose ball Should be waiting for a interception Roll | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a interception Roll from Vladoiu | Expected: 5. Vladoiu (PlayerToken) | Actual: 5. Vladoiu (PlayerToken)
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from Stewart To Space - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Loose ball Should NOT be waiting for a interception Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should have killed itself by now | Expected: False | Actual: False
+✅ PASS: home team is in attack after ball movement | Expected: Home | Actual: Home
+✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+▶️ Starting test scenario: 4 players Jump - Loose Ball from Stewart to Space No Interception
+
+✅ 4 players Jump - Loose Ball from Stewart To Space No Interception - TEST PASSED COMPLETELY 🎉
+
+✅ Test #38 passed.
+
+
+==== Starting Test #39 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header
+Rolling 1st Attacker - Nazef
+Rolling 1st Defender - McNulty
+Rolling 2nd Defender - Stewart
+✅ PASS: Header Manager Should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Loose ball Should be awake by now | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from header - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+Rolling for Direction - South
+✅ PASS: Loose ball Should NOT be waiting for a direction Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should be waiting for a distance Roll | Expected: True | Actual: True
+Rolling for Distance - 2
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: False | Actual: False
+✅ PASS: Away team is in attack after ball movement | Expected: Away | Actual: Away
+✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: Last player to touch the ball is the Tokem with the ball. | Expected: 7. Paterson | Actual: 7. Paterson
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header On Defender
+
+✅ 4 players Jump - Loose Ball from header On Defender - TEST PASSED COMPLETELY 🎉
+
+✅ Test #39 passed.
+
+
+==== Starting Test #40 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header
+Rolling 1st Attacker - Nazef
+Rolling 1st Defender - McNulty
+Rolling 2nd Defender - Stewart
+✅ PASS: Header Manager Should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Loose ball Should be awake by now | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from header - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+Rolling for Direction - NorthEast - 5
+✅ PASS: Loose ball Should NOT be waiting for a direction Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should be waiting for a distance Roll | Expected: True | Actual: True
+Rolling for Distance - 2
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: False | Actual: False
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header On Attacker
+
+✅ 4 players Jump - Loose Ball from header On Attacker - TEST PASSED COMPLETELY 🎉
+
+✅ Test #40 passed.
+
+
+==== Starting Test #41 ====
+▶️ Starting test scenario: High Pass on Attacker, Move Passer, defender and INAccurate HP.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (4, 4) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+Click On (4, 4) - Confirm HP Target
+✅ PASS: HP target 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP confrimed target is 4, 4 Nazef | Expected: HexCell [4, 4] (HexCell) | Actual: HexCell [4, 4] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has locked Nazef | Expected: 6. Nazef (PlayerToken) | Actual: 6. Nazef (PlayerToken)
+Click On (0, 0) - Select Cafferata
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for attacker to move | Expected: True | Actual: True
+Click On (-1, -1) - Select Cafferata
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: True | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: F3 should no longer be activated | Expected: False | Actual: False
+
+✅ High Pass on Attacker, Move Passer, defender and INAccurate HP. - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (-4, -4) - Nominate Pavlovic, LOL
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - DeNominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Eligible
+✅ PASS: Header Manager Nazef is NOT Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 4) - Re Nominate Nazef
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla is Nominated to Jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+✅ PASS: Header Manager Should be waiting for Attacker selection | Expected: True | Actual: True
+✅ PASS: Header Manager Should NOT be waiting for defender selection as Attack has not confirmed | Expected: True | Actual: False
+✅ PASS: Header Manager Nazef is Eligible
+✅ PASS: Header Manager Kalla isEligible
+✅ PASS: Header Manager Nazef is Nominated
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Attackers
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should now be waiting for defender selection | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF)
+Click On (3, 3) - Nominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Kalla is Nominated to jump
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (1, 3) - Reject Nominate Vladoiu
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (3, 3) - DeNominate Gilbert
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager Gilbert is deNominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (5, 5) - Nominate McNulty
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Click On (4, 5) - Nominate Stewart
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for defender selection | Expected: True | Actual: True
+✅ PASS: Header Manager Nazef is Nominated to jump
+✅ PASS: Header Manager McNulty is Nominated to jump
+✅ PASS: Header Manager Stewart is Nominated to jump
+✅ PASS: Header Manager Vladoiu's nomination was rejected
+✅ PASS: Header Manager defEligibleToHead has Tokens (Gilbert, Paterson, Stewart, McNulty) | Expected: 4 | Actual: 4
+Pressing Enter - Confirm Defenders
+✅ PASS: Header Manager Should NO LONGER be waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be waiting for defender selection | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for HeaderRolls | Expected: True | Actual: True
+
+✅ hasEligibleAtt & hasEligibleDef: Decide on who will jump (DEF) - TEST PASSED COMPLETELY 🎉
+
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header
+Rolling 1st Attacker - Nazef
+Rolling 1st Defender - McNulty
+Rolling 2nd Defender - Stewart
+✅ PASS: Header Manager Should have killed itself by now | Expected: False | Actual: False
+✅ PASS: Loose ball Should be awake by now | Expected: True | Actual: True
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+✅ PASS: Last player to touch the ball is still the HPasser | Expected: 2. Cafferata | Actual: 2. Cafferata
+
+✅ 4 players Jump - Loose Ball from header - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Loose ball Should be waiting for a direction Roll | Expected: True | Actual: True
+Rolling for Direction - NorthEast - 5
+✅ PASS: Loose ball Should NOT be waiting for a direction Roll | Expected: False | Actual: False
+✅ PASS: Loose ball Should be waiting for a distance Roll | Expected: True | Actual: True
+Rolling for Distance - 1
+✅ PASS: Loose ball Should NOT be waiting for a distance Roll | Expected: False | Actual: False
+▶️ Starting test scenario: 4 players Jump - Loose Ball from header On Jumped Token
+
+✅ 4 players Jump - Loose Ball from header On Jumped Token - TEST PASSED COMPLETELY 🎉
+
+✅ Test #41 passed.
+
+
+==== Starting Test #42 ====
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to Head.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (6, 8) - Intitial HP Target
+✅ PASS: HP target is has 2 eligible Attacker | Expected: 2 | Actual: 2
+✅ PASS: HP target is the key pressed | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+Click On (6, 8) - Confirm HP Target
+✅ PASS: HP target 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP confrimed target is 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has noone locked
+Click On (6, 6) - Select Kalla to go on Target
+✅ PASS: HP is NO LONGER wating for attacker to be selected | Expected: True | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+Pressing R for Direction 3 - SouthWest
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+Pressing R for Distance 3
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: False | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Defensive BC or H Decision | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders. - TEST PASSED COMPLETELY 🎉
+
+Pressing H
+✅ PASS: Header Manager Should NO LONGER be waiting for Defensive BC or H Decision | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for Challenge Winner Selection | Expected: True | Actual: True
+Click On (5, 5) - Head with McnNulty
+✅ PASS: Header Manager Should be waiting for Header Target Selection | Expected: True | Actual: True
+✅ PASS: Header Manager defenderWillJump Should be Containing only McNulty | Expected: 1 | Actual: 1
+✅ PASS: Header Manager McNulty should be Jumping
+Click On (1, 10) - Head the ball to Marell
+✅ PASS: Action Availability after Header to Player | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: match Manager should know that attack is in possession | Expected: True | Actual: True
+✅ PASS: Match Manager should know that Away is in Attack | Expected: Away | Actual: Away
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to Head. - TEST PASSED COMPLETELY 🎉
+
+✅ Test #42 passed.
+
+
+==== Starting Test #43 ====
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla Intercepts
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (6, 8) - Intitial HP Target
+✅ PASS: HP target is has 2 eligible Attacker | Expected: 2 | Actual: 2
+✅ PASS: HP target is the key pressed | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+Click On (6, 8) - Confirm HP Target
+✅ PASS: HP target 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP confrimed target is 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has noone locked
+Click On (6, 6) - Select Kalla to go on Target
+✅ PASS: HP is NO LONGER wating for attacker to be selected | Expected: True | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+Pressing R for Direction 3 - SouthWest
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+Pressing R for Distance 3
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: False | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Defensive BC or H Decision | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders. - TEST PASSED COMPLETELY 🎉
+
+Pressing B
+✅ PASS: Header Manager Should be waiting for Challenge winner to use for Dribbling Roll | Expected: True | Actual: True
+✅ PASS: Header Manager defenderWillJump Should be empty | Expected: 1 | Actual: 0
+Click On (5, 5) - Ball Control with McNulty
+✅ PASS: Header Manager Should be waiting for Control Roll | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC. - TEST PASSED COMPLETELY 🎉
+
+Pressing R - McNulty Fails the Control Attempt
+✅ PASS: Header Manager Should NO LONGER be waiting for Control Roll | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be even Available | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be Available | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Should be Waiting for Direction Roll | Expected: True | Actual: True
+Rolling for Direction - 6 - North
+✅ PASS: Loose Ball Manager Should NOT be Waiting for Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be Waiting for Distance Roll | Expected: True | Actual: True
+Rolling for Distance - 4
+✅ PASS: Loose Ball Manager Should NOT be Waiting for Distance Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be Waiting for Interception Roll | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Kalla is waiting for a roll | Expected: 3. Kalla (PlayerToken) | Actual: 3. Kalla (PlayerToken)
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails. - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla Intercepts - TEST PASSED COMPLETELY 🎉
+
+✅ Test #43 passed.
+
+
+==== Starting Test #44 ====
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla fails to Intercept
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (6, 8) - Intitial HP Target
+✅ PASS: HP target is has 2 eligible Attacker | Expected: 2 | Actual: 2
+✅ PASS: HP target is the key pressed | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+Click On (6, 8) - Confirm HP Target
+✅ PASS: HP target 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP confrimed target is 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has noone locked
+Click On (6, 6) - Select Kalla to go on Target
+✅ PASS: HP is NO LONGER wating for attacker to be selected | Expected: True | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+Pressing R for Direction 3 - SouthWest
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+Pressing R for Distance 3
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: False | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Defensive BC or H Decision | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders. - TEST PASSED COMPLETELY 🎉
+
+Pressing B
+✅ PASS: Header Manager Should be waiting for Challenge winner to use for Dribbling Roll | Expected: True | Actual: True
+✅ PASS: Header Manager defenderWillJump Should be empty | Expected: 1 | Actual: 0
+Click On (5, 5) - Ball Control with McNulty
+✅ PASS: Header Manager Should be waiting for Control Roll | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC. - TEST PASSED COMPLETELY 🎉
+
+Pressing R - McNulty Fails the Control Attempt
+✅ PASS: Header Manager Should NO LONGER be waiting for Control Roll | Expected: False | Actual: False
+✅ PASS: Header Manager Should NO LONGER be even Available | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be Available | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Should be Waiting for Direction Roll | Expected: True | Actual: True
+Rolling for Direction - 6 - North
+✅ PASS: Loose Ball Manager Should NOT be Waiting for Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be Waiting for Distance Roll | Expected: True | Actual: True
+Rolling for Distance - 4
+✅ PASS: Loose Ball Manager Should NOT be Waiting for Distance Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be Waiting for Interception Roll | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Kalla is waiting for a roll | Expected: 3. Kalla (PlayerToken) | Actual: 3. Kalla (PlayerToken)
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails. - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Action Availability after Interception (Any Other Scenario) | Expected: True | Actual: ✅ All availability flags are correct.
+✅ PASS: MP should be waiting for a token selection | Expected: True | Actual: True
+Click On (5, 5) - Select McNulty
+✅ PASS: MP should be waiting for a token selection | Expected: True | Actual: True
+✅ PASS: MP should be waiting for a HexDestination | Expected: True | Actual: True
+✅ PASS: MP Ball should be pickable | Expected: True | Actual: True
+Pressing V - Pick Up ball with McNulty
+✅ PASS: MP Dribbler is Dribbling | Expected: True | Actual: True
+✅ PASS: MP McNulty has 1 more pace available | Expected: 1 | Actual: 1
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Fails, Kalla fails to Intercept - TEST PASSED COMPLETELY 🎉
+
+✅ Test #44 passed.
+
+
+==== Starting Test #45 ====
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Controls.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders who decide to BC.
+▶️ Starting test scenario: High Pass on Attacker, INAccurate HP on Defenders.
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (6, 8) - Intitial HP Target
+✅ PASS: HP target is has 2 eligible Attacker | Expected: 2 | Actual: 2
+✅ PASS: HP target is the key pressed | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+Click On (6, 8) - Confirm HP Target
+✅ PASS: HP target 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP confrimed target is 8, 8 Toothnail | Expected: HexCell [6, 8] (HexCell) | Actual: HexCell [6, 8] (HexCell)
+✅ PASS: HP is wating for attacker to be selected | Expected: True | Actual: True
+✅ PASS: HP has noone locked
+Click On (6, 6) - Select Kalla to go on Target
+✅ PASS: HP is NO LONGER wating for attacker to be selected | Expected: True | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+Click On (1, 2) - Select Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is wating for defender to be selected | Expected: True | Actual: True
+✅ PASS: HP is wating for defender to move | Expected: False | Actual: True
+Click On (1, 3) - Move Vladoiu
+✅ PASS: HP is NOT wating for attacker to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for attacker to move | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to be selected | Expected: False | Actual: False
+✅ PASS: HP is NOT wating for defender to move | Expected: False | Actual: False
+✅ PASS: HP is waiting for accuracy Roll | Expected: True | Actual: True
+Pressing R for Accuracy
+✅ PASS: HP is NO longer waiting for accuracy Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for direction Roll | Expected: True | Actual: True
+Pressing R for Direction 3 - SouthWest
+✅ PASS: HP is NO longer waiting for direction Roll | Expected: False | Actual: False
+✅ PASS: HP is waiting for distance Roll | Expected: True | Actual: True
+Pressing R for Distance 3
+✅ PASS: HP is NO Longer waiting for distance Roll | Expected: True | Actual: False
+✅ PASS: HP is NO activated | Expected: False | Actual: False
+✅ PASS: Header Manager is activated | Expected: True | Actual: True
+✅ PASS: Header Manager Should be waiting for Defensive BC or H Decision | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders. - TEST PASSED COMPLETELY 🎉
+
+Pressing B
+✅ PASS: Header Manager Should be waiting for Challenge winner to use for Dribbling Roll | Expected: True | Actual: True
+✅ PASS: Header Manager defenderWillJump Should be empty | Expected: 1 | Actual: 0
+Click On (5, 5) - Ball Control with McNulty
+✅ PASS: Header Manager Should be waiting for Control Roll | Expected: True | Actual: True
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC. - TEST PASSED COMPLETELY 🎉
+
+Pressing R - McNulty Fails the Control Attempt
+✅ PASS: Availability after successful tackle | Expected: True | Actual: ✅ All availability flags are correct.
+
+✅ High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Controls. - TEST PASSED COMPLETELY 🎉
+
+✅ Test #45 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!
