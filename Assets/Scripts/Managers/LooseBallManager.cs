@@ -266,6 +266,7 @@ public class LooseBallManager : MonoBehaviour
                     // we extend the distance roll by 1 hex and we check again.
                     if (i == path.Count - 1)
                     {
+                        Debug.Log("Moving a Hex further, as ball (after a header LB) landed on a jumped token.");
                         HexCell additionalHex = outOfBoundsManager.CalculateInaccurateTarget(hex, directionRoll, 1);
                         path.Add(additionalHex);
                     }

@@ -520,7 +520,8 @@ public class HighPassManager : MonoBehaviour
             // Move the ball to the intended target
             finalTargetHex = intendedTargetHex;
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassTargeted);
-            await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));
+            StartCoroutine(HandleHighPassMovement(finalTargetHex));
+            // await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex));
             MatchManager.Instance.currentState = MatchManager.GameState.HighPassCompleted;
             ResetHighPassRolls();  // Reset flags to finish long pass
         }
@@ -554,7 +555,7 @@ public class HighPassManager : MonoBehaviour
     }
 
 
-    public async void PerformDistanceRoll(int? rigroll = null)
+    public void PerformDistanceRoll(int? rigroll = null)
     {
         Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
@@ -569,8 +570,8 @@ public class HighPassManager : MonoBehaviour
         {
             // Move the ball to the inaccurate final hex
             // yield return StartCoroutine(HandleHighPassMovement(finalTargetHex));           
-            await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex)); 
-            // StartCoroutine(HandleHighPassMovement(finalTargetHex));
+            // await helperFunctions.StartCoroutineAndWait(HandleHighPassMovement(finalTargetHex)); 
+            StartCoroutine(HandleHighPassMovement(finalTargetHex));
         }
         else
         {
@@ -598,13 +599,12 @@ public class HighPassManager : MonoBehaviour
         Vector3 startPosition = ball.transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();
         float height = 10f;
-        int steps = 100;
+        int steps = 90;
         for (int i = 0; i <= steps; i++)
         {
             float t = i / (float)steps;
             Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, t);
             flatPosition.y += height * Mathf.Sin(Mathf.PI * t);
-
             if (
                 float.IsNaN(flatPosition.x) || float.IsInfinity(flatPosition.x)
                 || float.IsNaN(flatPosition.y) || float.IsInfinity(flatPosition.y)
@@ -619,7 +619,6 @@ public class HighPassManager : MonoBehaviour
         }
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}");
-        // Debug.Break();
 
         if (
             goalKeeperManager.ShouldGKMove(targetHex)
