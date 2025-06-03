@@ -5,7 +5,9 @@ Temp/
 Obj/
 UnityGenerated/
 Library/
-Assets/AssetStoreTools*
+Build/
+Logs/
+MemoryCaptures/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -36,7 +38,8 @@ Thumbs.db
 # ================ #
 # Thomas generated #
 # ================ #
-Assets/Low Poly Hexagons/
-Assets/TextMesh Pro/
+# Assets/Low Poly Hexagons/
+# Assets/TextMesh Pro/
 Assets/Logs/
+# Assets/AssetStoreTools*
 *.log

@@ -1,0 +1,739 @@
+Unity Editor version:    6000.1.3f1 (f34db9734971)
+Branch:                  6000.1/staging
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 15.5 (Build 24F74)
+Darwin version:          24.5.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+Date:                    2025-06-03T13:33:07Z
+Using pre-set license
+Pro License: YES
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/MacOS/Unity
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+/Users/thomasantonakis/Documents/Projects/CA from Chatgpt
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+62705
+-job-worker-count
+3
+-background-job-worker-count
+8
+-gc-helper-count
+1
+-name AssetImport
+Successfully changed project path to: /Users/thomasantonakis/Documents/Projects/CA from Chatgpt
+/Users/thomasantonakis/Documents/Projects/CA from Chatgpt
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Player connection [8751193856]  Target information:
+
+Player connection [8751193856]  * "[IP] 192.168.1.85 [Port] 0 [Flags] 2 [Guid] 3502628324 [EditorId] 3502628324 [Version] 1048832 [Id] OSXEditor(0,thomass-mbp-4.home) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8751193856]  * "[IP] 192.168.1.26 [Port] 0 [Flags] 2 [Guid] 3502628324 [EditorId] 3502628324 [Version] 1048832 [Id] OSXEditor(0,thomass-mbp-4.home) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+
+Player connection [8751193856] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [8751193856] Host joined alternative multi-casting on [225.0.0.222:34997]...
+JobSystem: Creating JobQueue using job-worker-count value 3
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 3.28 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.1.3f1 (f34db9734971)
+[Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /Users/thomasantonakis/Documents/Projects/CA from Chatgpt/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+ preferred device: Apple M2 (high power)
+Metal devices available: 1
+0: Apple M2 (high power)
+Using device Apple M2 (high power)
+Initializing Metal device caps: Apple M2
+Initialize mono
+Mono path[0] = '/Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/Managed'
+Mono path[1] = '/Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityjit-macos'
+Mono config path = '/Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56454
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: /Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/6000.1.3f1/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/6000.1.3f1/PlaybackEngines/LinuxStandaloneSupport/UnityEditor.LinuxStandalone.Extensions.dll
+Registered in 0.000885 seconds.
+- Loaded All Assemblies, in  0.416 seconds
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Native extension for OSXStandalone target not found
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.359 seconds
+Domain Reload Profiling: 776ms
+	BeginReloadAssembly (158ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (0ms)
+	RebuildCommonClasses (34ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (38ms)
+	LoadAllAssembliesAndSetupDomain (173ms)
+		LoadAssemblies (160ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (167ms)
+			TypeCache.Refresh (165ms)
+				TypeCache.ScanAssembly (148ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (359ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (325ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (86ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (60ms)
+			ProcessInitializeOnLoadAttributes (112ms)
+			ProcessInitializeOnLoadMethodAttributes (63ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+========================================================================
+Worker process is ready to serve import requests
+Import Worker Mode flag is 0x00
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.752 seconds
+Refreshing native plugins compatible for Editor in 0.92 ms, found 2 plugins.
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Native extension for OSXStandalone target not found
+Package Manager log level set to [2]
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.415 seconds
+Domain Reload Profiling: 1168ms
+	BeginReloadAssembly (163ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (4ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (51ms)
+	RebuildCommonClasses (35ms)
+	RebuildNativeTypeToScriptingClass (10ms)
+	initialDomainReloadingComplete (28ms)
+	LoadAllAssembliesAndSetupDomain (517ms)
+		LoadAssemblies (408ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (184ms)
+			TypeCache.Refresh (157ms)
+				TypeCache.ScanAssembly (135ms)
+			BuildScriptInfoCaches (19ms)
+			ResolveRequiredComponents (5ms)
+	FinalizeReload (416ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (319ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (10ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (71ms)
+			ProcessInitializeOnLoadAttributes (219ms)
+			ProcessInitializeOnLoadMethodAttributes (16ms)
+			AfterProcessingInitializeOnLoad (1ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (2ms)
+Launching external process: /Applications/Unity/Hub/Editor/6000.1.3f1/Unity.app/Contents/Tools/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 0.05 seconds
+Refreshing native plugins compatible for Editor in 0.53 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3458 unused Assets / (423.9 KB). Loaded Objects now: 3999.
+Memory consumption went from 98.7 MB to 98.3 MB.
+Total: 4.516959 ms (FindLiveObjects: 0.363833 ms CreateObjectMapping: 0.263958 ms MarkObjects: 3.364834 ms  DeleteObjects: 0.523917 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 18641.846737 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs
+  artifactKey: Guid(975b5071d2fb57b4e9292c99153ee364) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs using Guid(975b5071d2fb57b4e9292c99153ee364) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'b7f2fe97d06d568738afa20a07db4766') in 0.002775834 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.794498 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples
+  artifactKey: Guid(754bb5e6996229b4b953a2da1109c818) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples using Guid(754bb5e6996229b4b953a2da1109c818) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ca544adb0b59ee13161663c7f38b70f6') in 0.0003745 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.088707 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/CandyLand1.prefab
+  artifactKey: Guid(1a26dce1969a2f04babab44007f57939) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/CandyLand1.prefab using Guid(1a26dce1969a2f04babab44007f57939) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '88ee57c38da4551a719da20b82570b68') in 0.457974709 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000048 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertMountain.prefab
+  artifactKey: Guid(1c1d07a4036f32e4db71385ea172b294) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertMountain.prefab using Guid(1c1d07a4036f32e4db71385ea172b294) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '20536566ea01c920b0efdbe1e0e43d6c') in 0.013629625 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000069 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/PalmTrees.prefab
+  artifactKey: Guid(6aa6d57464e3a7742b51561c98bf11c8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/PalmTrees.prefab using Guid(6aa6d57464e3a7742b51561c98bf11c8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '7c77ea4d2a4cf9088a4f5f4dbf63942a') in 0.007678042 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000032 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest.prefab
+  artifactKey: Guid(71be69e7a312bc844ad384574d3624fe) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest.prefab using Guid(71be69e7a312bc844ad384574d3624fe) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'a6152dcb963df9f0b7446e15a4ff285a') in 0.014134667 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000106 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedRed.prefab
+  artifactKey: Guid(626db4159ad5e0a458fdf88991a248e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedRed.prefab using Guid(626db4159ad5e0a458fdf88991a248e8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '8ff944b1f53aa62c912c8fd4afacf30b') in 0.010080333 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000038 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellSpikes.prefab
+  artifactKey: Guid(3bc77662e4f05fb41948030e26fb4708) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellSpikes.prefab using Guid(3bc77662e4f05fb41948030e26fb4708) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'bfe1d6ae3746e252ee68c1c431c4d4cf') in 0.008414125 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000031 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/ForestCutDown.prefab
+  artifactKey: Guid(665f2d1def9c35b42b8e86da6403ead4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/ForestCutDown.prefab using Guid(665f2d1def9c35b42b8e86da6403ead4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'a21dbcdff15a2653ab90c37926ad6414') in 0.012417958 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000026 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Flowers.prefab
+  artifactKey: Guid(724d1dba07b41c34282d4078db00274d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Flowers.prefab using Guid(724d1dba07b41c34282d4078db00274d) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'e1d6a3cc47ab8bce6858f76aa811b0fd') in 0.006545833 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedYellow.prefab
+  artifactKey: Guid(45bae768bcfa069478e86c24ebc9df05) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SelectedYellow.prefab using Guid(45bae768bcfa069478e86c24ebc9df05) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '6bdc6533f64868ab2f4519f274b0ea50') in 0.014498625 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000040 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SnowyForest.prefab
+  artifactKey: Guid(d81f640118a683b44979ca3293d0ef32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SnowyForest.prefab using Guid(d81f640118a683b44979ca3293d0ef32) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '30df7af4380f3b1b8d2a7830e803e617') in 0.01632875 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000075 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Glaciers.prefab
+  artifactKey: Guid(4eff434b792317140a2f08fcfdcb297b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Glaciers.prefab using Guid(4eff434b792317140a2f08fcfdcb297b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '882fda542735271a93c61536bb27e4a6') in 0.00851325 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000063 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertCacti.prefab
+  artifactKey: Guid(ce6f2f64a6f1845499e520cdede3a885) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/DesertCacti.prefab using Guid(ce6f2f64a6f1845499e520cdede3a885) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'f836e993e48a33cba33720805ace4977') in 0.008948208 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000200 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Castle.prefab
+  artifactKey: Guid(fadb9dd6254f1d14a9b77307bf133e1b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Castle.prefab using Guid(fadb9dd6254f1d14a9b77307bf133e1b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'c33c955225f07a162cb8ab2dd5b25ad6') in 0.007013584 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellTrees.prefab
+  artifactKey: Guid(46aabe81c014e774d8e7104bc6ce9335) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/HellTrees.prefab using Guid(46aabe81c014e774d8e7104bc6ce9335) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'd03394cac076597100b687fa571ddc29') in 0.015468958 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest2.prefab
+  artifactKey: Guid(39b499a5c4069b14f9642f978230eb46) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/Forest2.prefab using Guid(39b499a5c4069b14f9642f978230eb46) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '98fc9bb68900998e8eed7fa80128b932') in 0.006786209 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000060 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RocksInWater.prefab
+  artifactKey: Guid(ba18ad1c2b7e68644b186f04055c20f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/RocksInWater.prefab using Guid(ba18ad1c2b7e68644b186f04055c20f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ce21a2f6d5d49e5869d170a926c37c18') in 0.006209917 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000027 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SnowyMountain.prefab
+  artifactKey: Guid(32b583582798a5f4cbbbcaf093e364e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Combination Examples/SnowyMountain.prefab using Guid(32b583582798a5f4cbbbcaf093e364e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '4901d506f0ecd222636199ca439fa68a') in 0.006599958 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 14
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.739152 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons
+  artifactKey: Guid(eee9557aba7910842adfda3b0d312580) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons using Guid(eee9557aba7910842adfda3b0d312580) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ddab36c4c0f3039a3993af04bec94771') in 0.000319375 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.050841 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/BeachShore.prefab
+  artifactKey: Guid(71199765df3f9d147bc10d0b8c6f4af7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/BeachShore.prefab using Guid(71199765df3f9d147bc10d0b8c6f4af7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '041d1ac7d5d374cad87ced5ca0362a07') in 0.0100695 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex2.prefab
+  artifactKey: Guid(ba54e0f64ad505c4fa5521c008dc356e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex2.prefab using Guid(ba54e0f64ad505c4fa5521c008dc356e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'cee180a50831d6c254edc3e550e1c229') in 0.003479084 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex4.prefab
+  artifactKey: Guid(2ee43f6acf07a194eb588a7dd5bc1c5b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex4.prefab using Guid(2ee43f6acf07a194eb588a7dd5bc1c5b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '319a05e303ca5677df57e9c0be356036') in 0.006451542 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex7.prefab
+  artifactKey: Guid(1e37ca3e943829a479e4ff6d29c23d73) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex7.prefab using Guid(1e37ca3e943829a479e4ff6d29c23d73) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'e792a856c7e40f3d0fdbf59f2f7c45b0') in 0.007431625 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex9.prefab
+  artifactKey: Guid(b6b0c220ebe042b498958eadf1f52fa4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex9.prefab using Guid(b6b0c220ebe042b498958eadf1f52fa4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'd5f8b999ec04720b115098ed54194ad9') in 0.003873417 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000022 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex6.prefab
+  artifactKey: Guid(2e0f1312996d68349933ef1d0445cd09) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex6.prefab using Guid(2e0f1312996d68349933ef1d0445cd09) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'd32ddada1e95bd03e51d59a8ccdfb5cb') in 0.00353525 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000025 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex14.prefab
+  artifactKey: Guid(92b694c77a8f5d64eb88d747e08f1905) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex14.prefab using Guid(92b694c77a8f5d64eb88d747e08f1905) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'b35df7085e513576bb9c534a7ec093e4') in 0.003151833 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000045 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex15.prefab
+  artifactKey: Guid(6d34a82773c25b44a97610f246fb01f7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex15.prefab using Guid(6d34a82773c25b44a97610f246fb01f7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '61342075e8c340f4c59ba60f770d7839') in 0.004686916 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000026 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex20.prefab
+  artifactKey: Guid(cd4f2cbde7d033f45a5d96afb77a69e1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex20.prefab using Guid(cd4f2cbde7d033f45a5d96afb77a69e1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '700f80ddfaac598c1256c399215182db') in 0.004717791 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex25.prefab
+  artifactKey: Guid(d4f75f0ac34d85a43a92e749133c074f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex25.prefab using Guid(d4f75f0ac34d85a43a92e749133c074f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '1b63e1e94df91a5e43853977280e71b9') in 0.004841041 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex29.prefab
+  artifactKey: Guid(f2360a07b6cee064aad307fa66e6f8f8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex29.prefab using Guid(f2360a07b6cee064aad307fa66e6f8f8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '3ed6ffb4eccb0cc0c14fcb92fe17597a') in 0.005689708 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000043 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex31.prefab
+  artifactKey: Guid(a41f077c11efded408e9a886cd98d8be) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex31.prefab using Guid(a41f077c11efded408e9a886cd98d8be) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '170448363970e3cc71dccdf40ff7f3f6') in 0.008964542 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000043 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex21.prefab
+  artifactKey: Guid(9f72ec78b69754d4e837c0e91c22412b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex21.prefab using Guid(9f72ec78b69754d4e837c0e91c22412b) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '25cc4ee9f3c9e3ce1bce36d007c37a7d') in 0.007958416 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000085 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex17.prefab
+  artifactKey: Guid(72272eac6433e404190af80658766b51) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex17.prefab using Guid(72272eac6433e404190af80658766b51) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '2769de28d92798a9a77242d775186433') in 0.006690333 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex23.prefab
+  artifactKey: Guid(de4d7d45706bba64093bd478a8d6c363) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex23.prefab using Guid(de4d7d45706bba64093bd478a8d6c363) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '59cd3acd6740a3bab1c1d62f1ab5e679') in 0.014765334 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000125 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex16.prefab
+  artifactKey: Guid(3ff8e5a24d6f833468acc35eed032df7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex16.prefab using Guid(3ff8e5a24d6f833468acc35eed032df7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '03d74fab10d55a5d25408b69e7c876c3') in 0.005818958 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000048 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex1.prefab
+  artifactKey: Guid(88d6135510f32df49aeb43b51172cc52) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex1.prefab using Guid(88d6135510f32df49aeb43b51172cc52) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'e0548979258873586dbefc6789c6722c') in 0.005601542 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000054 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex12.prefab
+  artifactKey: Guid(e451c469d5daa4e46aac7a3b9de0c3a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Hexagons/Hex12.prefab using Guid(e451c469d5daa4e46aac7a3b9de0c3a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'e96a0b12c0e195de20f5030b6746cac1') in 0.015042 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.919519 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects
+  artifactKey: Guid(877503243203b2340add5964114ce7c1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects using Guid(877503243203b2340add5964114ce7c1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '9e7a632b5e7aa13b5b81282916c9e470') in 0.001173875 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.059403 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Candy.prefab
+  artifactKey: Guid(25cba09db03db5f4ca304e42752ec650) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Candy.prefab using Guid(25cba09db03db5f4ca304e42752ec650) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '18908a0fafd0a1aac18c6ff8df0cff04') in 0.011510583 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000055 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Castle.prefab
+  artifactKey: Guid(aa767870062b50b4c9cd1f7d02bde55c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Castle.prefab using Guid(aa767870062b50b4c9cd1f7d02bde55c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'b844bb78e4ecaed006ca1d30ea7636e1') in 0.0056775 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000042 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Crops.prefab
+  artifactKey: Guid(1b13308cf0c0f6b4fb4f182c3fd921f1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Crops.prefab using Guid(1b13308cf0c0f6b4fb4f182c3fd921f1) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'fc553643612401a39db45f301f63c64f') in 0.007096583 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Desert2.prefab
+  artifactKey: Guid(3384ab3a2854b1344ac4ff79c4386138) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Desert2.prefab using Guid(3384ab3a2854b1344ac4ff79c4386138) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '854f4aafc9d75433bb80b2044ea21878') in 0.006225708 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/GlaciersOnWater.prefab
+  artifactKey: Guid(f6b25dc160247b8459d39a1a4101788e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/GlaciersOnWater.prefab using Guid(f6b25dc160247b8459d39a1a4101788e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'be5d0d0aadb6c66f50f5bd687d87a555') in 0.00432475 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000031 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Mountain.prefab
+  artifactKey: Guid(99903ff7f2c772241902437b5ea27a4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Mountain.prefab using Guid(99903ff7f2c772241902437b5ea27a4f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '042a38ee9bf80d8dcfafe788b5e578a3') in 0.003589292 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000025 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Factory.prefab
+  artifactKey: Guid(f4da999687480fd4abc77b148f373c54) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Factory.prefab using Guid(f4da999687480fd4abc77b148f373c54) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'a1be7f123964ab95139aff72dfa03022') in 0.00344675 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RocksInWater.prefab
+  artifactKey: Guid(30ce0138157d8e1489a8d2ec56035bb7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RocksInWater.prefab using Guid(30ce0138157d8e1489a8d2ec56035bb7) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '097c97a33f93585db91f30f9dd96cb8e') in 0.012680375 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000040 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Fence.prefab
+  artifactKey: Guid(2a506530c723d3a429773b86bf8ab9ca) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Fence.prefab using Guid(2a506530c723d3a429773b86bf8ab9ca) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'f00ea9cd0ded6df6b345c9611a220627') in 0.006635834 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000032 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Village.prefab
+  artifactKey: Guid(4fbd252196892684286e1d961b54195f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Village.prefab using Guid(4fbd252196892684286e1d961b54195f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '227445d0d3db942bbb56d08bb9b4bc58') in 0.008974375 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000055 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RoadEnd.prefab
+  artifactKey: Guid(22c940814b74ff14eb4ff8133d61788c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RoadEnd.prefab using Guid(22c940814b74ff14eb4ff8133d61788c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '61484186d74e510d94208607a61973c0') in 0.012667791 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000172 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Flowers.prefab
+  artifactKey: Guid(968dca314c3171b418050fd10fee5fc6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Flowers.prefab using Guid(968dca314c3171b418050fd10fee5fc6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '5665c2dfe71f3d791d6a550fc7f442a7') in 0.005167958 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Swamp.prefab
+  artifactKey: Guid(63c53604d6cc13a48a1e879919e93fef) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Swamp.prefab using Guid(63c53604d6cc13a48a1e879919e93fef) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '70001cadbadd5174caf67d20268c4d3d') in 0.014887916 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000162 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RoadStraight.prefab
+  artifactKey: Guid(501022875c9e09348a7f1f27695f6ceb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/RoadStraight.prefab using Guid(501022875c9e09348a7f1f27695f6ceb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '182aa87167bc0eb8ecebf03cce5f459a') in 0.007616125 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000114 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionYellow.prefab
+  artifactKey: Guid(dd5543970ad8a7742b587b37412bdeea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionYellow.prefab using Guid(dd5543970ad8a7742b587b37412bdeea) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'cf98b6e86c7ecd5e425f14936ab8e3a8') in 0.011094167 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000101 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionWhite.prefab
+  artifactKey: Guid(b9c5ab851b762b74f8bcba314257140c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SelectionWhite.prefab using Guid(b9c5ab851b762b74f8bcba314257140c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '47f3e25756a1604a48295e27d0e7b250') in 0.004702917 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Pyramids.prefab
+  artifactKey: Guid(aa9ea7f7464180c49917654695328b13) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/Pyramids.prefab using Guid(aa9ea7f7464180c49917654695328b13) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'd5a337d129a3a359d94fcebd67448348') in 0.014423833 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000061 seconds.
+  path: Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SnowyForest.prefab
+  artifactKey: Guid(0f7fc4a9fcc3541408fa7639f0342de0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Low Poly Hexagons/Assets/Prefabs/Objects/SnowyForest.prefab using Guid(0f7fc4a9fcc3541408fa7639f0342de0) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '61028d69f1a9a2eca94fae80cc614bc8') in 0.003984834 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 20.981691 seconds.
+  path: Assets/Prefabs/BlueKitPrefab.prefab
+  artifactKey: Guid(2f62232d1ef944599b5037c38e58ab50) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/BlueKitPrefab.prefab using Guid(2f62232d1ef944599b5037c38e58ab50) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '036b1ad3614ed661198751991cd2efd4') in 0.292939791 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 9
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Prefabs/PlayerSlot.prefab
+  artifactKey: Guid(454bcfd73974e4c03b10ccc58affc854) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/PlayerSlot.prefab using Guid(454bcfd73974e4c03b10ccc58affc854) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'c665765fd7507c3e8d091d42162b97b7') in 0.0382365 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 99
+
+========================================================================
+Received Prepare
+Begin MonoManager ReloadAssembly
+Thread 0x17f587000 may have been prematurely finalized
+- Loaded All Assemblies, in  0.786 seconds
+Refreshing native plugins compatible for Editor in 0.57 ms, found 2 plugins.
+Native extension for LinuxStandalone target not found
+Native extension for WindowsStandalone target not found
+Native extension for OSXStandalone target not found
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.438 seconds
+Domain Reload Profiling: 1225ms
+	BeginReloadAssembly (223ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (10ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (1ms)
+		CreateAndSetChildDomain (74ms)
+	RebuildCommonClasses (37ms)
+	RebuildNativeTypeToScriptingClass (18ms)
+	initialDomainReloadingComplete (61ms)
+	LoadAllAssembliesAndSetupDomain (448ms)
+		LoadAssemblies (384ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (135ms)
+			TypeCache.Refresh (10ms)
+				TypeCache.ScanAssembly (0ms)
+			BuildScriptInfoCaches (118ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (438ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (351ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (9ms)
+			SetLoadedEditorAssemblies (2ms)
+			BeforeProcessingInitializeOnLoad (81ms)
+			ProcessInitializeOnLoadAttributes (244ms)
+			ProcessInitializeOnLoadMethodAttributes (15ms)
+			AfterProcessingInitializeOnLoad (1ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (2ms)
+Refreshing native plugins compatible for Editor in 0.52 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3457 unused Assets / (0.5 MB). Loaded Objects now: 4009.
+Memory consumption went from 101.7 MB to 101.2 MB.
+Total: 4.436041 ms (FindLiveObjects: 0.228000 ms CreateObjectMapping: 0.169334 ms MarkObjects: 3.443041 ms  DeleteObjects: 0.595333 ms)
+
+Prepare: number of updated asset objects reloaded= 0
+========================================================================
+Received Import Request.
+  Time since last request: 41.432375 seconds.
+  path: Assets/Prefabs/HexagonalCell.prefab
+  artifactKey: Guid(f78181e779d674d1a80601a352fff9e9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/HexagonalCell.prefab using Guid(f78181e779d674d1a80601a352fff9e9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'a482af7c7a04cb26826d746719b6e8a0') in 0.070234583 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 8
+
