@@ -128,7 +128,7 @@ public class PlayerTokenManager : MonoBehaviour
         {
             CreateTeam(redKitPrefab, "Home", homeTeamHexes);
         }
-        else if (homeKit == "Bluw")
+        else if (homeKit == "Blue")
         {
             CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
         }
@@ -191,7 +191,7 @@ public class PlayerTokenManager : MonoBehaviour
         {
             CreateTeam(redKitPrefab, "Home", homeTeamHexes);
         }
-        else if (homeKit == "Bluw")
+        else if (homeKit == "Blue")
         {
             CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
         }
