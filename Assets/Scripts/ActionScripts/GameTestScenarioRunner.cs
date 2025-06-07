@@ -43,13 +43,13 @@ public class GameStatusSnapshot
     public bool hpmIsWaitingforAttackerSelection;
     public bool hpmIsWaitingforDefenderSelection;
     public HexCell hpmCurrentTargetHex;
-    public bool hpmisWaitingForAccuracyRoll;
+    public bool hpmIsWaitingForAccuracyRoll;
     public bool hpmIsWaitingForDirectionRoll;
     public bool hpmIsWaitingForDistanceRoll;
     public bool lbmAvailable;
     public bool lbmIsActivated;
     public bool lbmIsAwaitingTargetSelection;
-    public bool lbmIsWaiitngForAccuracyRoll;
+    public bool lbmIsWaitingForAccuracyRoll;
     public bool lbmIsWaitingForDirectionRoll;
     public bool lbmIsWaitingForDistanceRoll;
     public bool lbmIsWaitingForDefLBMove;
@@ -83,12 +83,12 @@ public class GameStatusSnapshot
         hpmIsWaitingforAttackerSelection = hpm.isWaitingForAttackerSelection;
         hpmIsWaitingforDefenderSelection = hpm.isWaitingForDefenderSelection;
         hpmCurrentTargetHex = hpm.currentTargetHex;
-        hpmisWaitingForAccuracyRoll = hpm.isWaitingForAccuracyRoll;
+        hpmIsWaitingForAccuracyRoll = hpm.isWaitingForAccuracyRoll;
         hpmIsWaitingForDirectionRoll = hpm.isWaitingForDirectionRoll;
         hpmIsWaitingForDistanceRoll = hpm.isWaitingForDistanceRoll;
         lbmAvailable = lbm.isAvailable;
         lbmIsActivated = lbm.isActivated;
-        lbmIsWaiitngForAccuracyRoll = lbm.isWaitingForAccuracyRoll;
+        lbmIsWaitingForAccuracyRoll = lbm.isWaitingForAccuracyRoll;
         lbmIsWaitingForDirectionRoll = lbm.isWaitingForDirectionRoll;
         lbmIsWaitingForDistanceRoll = lbm.isWaitingForDistanceRoll;
         lbmIsAwaitingTargetSelection = lbm.isAwaitingTargetSelection;
@@ -194,9 +194,9 @@ public class GameStatusSnapshot
             mismatches.Add($"HighPassManager.currentTargetHex mismatch: {hpmCurrentTargetHex?.name} vs {other.hpmCurrentTargetHex?.name}");
         }
 
-        if (excludeFields?.Contains("hpmisWaitingForAccuracyRoll") != true && hpmisWaitingForAccuracyRoll != other.hpmisWaitingForAccuracyRoll)
+        if (excludeFields?.Contains("hpmIsWaitingForAccuracyRoll") != true && hpmIsWaitingForAccuracyRoll != other.hpmIsWaitingForAccuracyRoll)
         {
-            mismatches.Add($"HighPassManager.isWaitingForAccuracyRoll mismatch: {hpmisWaitingForAccuracyRoll} vs {other.hpmisWaitingForAccuracyRoll}");
+            mismatches.Add($"HighPassManager.isWaitingForAccuracyRoll mismatch: {hpmIsWaitingForAccuracyRoll} vs {other.hpmIsWaitingForAccuracyRoll}");
         }
         
         if (excludeFields?.Contains("hpmIsWaitingForDirectionRoll") != true && hpmIsWaitingForDirectionRoll != other.hpmIsWaitingForDirectionRoll)
@@ -219,9 +219,9 @@ public class GameStatusSnapshot
             mismatches.Add($"LongBallManager.isActivated mismatch: {lbmIsActivated} vs {other.lbmIsActivated}");
         }
         
-        if (excludeFields?.Contains("lbmIsWaiitngForAccuracyRoll") != true && lbmIsWaiitngForAccuracyRoll != other.lbmIsWaiitngForAccuracyRoll)
+        if (excludeFields?.Contains("lbmIsWaitingForAccuracyRoll") != true && lbmIsWaitingForAccuracyRoll != other.lbmIsWaitingForAccuracyRoll)
         {
-            mismatches.Add($"LongBallManager.isWaitingForAccuracyRoll mismatch: {lbmIsWaiitngForAccuracyRoll} vs {other.lbmIsWaiitngForAccuracyRoll}");
+            mismatches.Add($"LongBallManager.isWaitingForAccuracyRoll mismatch: {lbmIsWaitingForAccuracyRoll} vs {other.lbmIsWaitingForAccuracyRoll}");
         }
         
         if (excludeFields?.Contains("lbmIsWaitingForDirectionRoll") != true && lbmIsWaitingForDirectionRoll != other.lbmIsWaitingForDirectionRoll)
