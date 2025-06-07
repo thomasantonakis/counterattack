@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+// using System.Text.RegularExpressions;
 using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
-using UnityEditor.Experimental.GraphView;
-using System.Data.Common;
 
 public class HeaderManager : MonoBehaviour
 {
@@ -20,6 +18,10 @@ public class HeaderManager : MonoBehaviour
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
+    public GoalFlowManager goalFlowManager;
+    public LongBallManager longBallManager;
+    public ShotManager shotManager;
+    public OutOfBoundsManager outOfBoundsManager;
     public HelperFunctions helperFunctions;
     [Header("Header States")]
     public bool isAvailable = false;
@@ -27,9 +29,12 @@ public class HeaderManager : MonoBehaviour
     public bool hasEligibleAttackers = false;
     public bool hasEligibleDefenders = false;
     public bool isWaitingForAttackerSelection = false; // Flag to indicate waiting for attacker selection
+    public bool isWaitingForHeaderAtGoal = false; // Flag to indicate waiting for attacker selection
+    public bool headerAtGoalDeclared = false; // Flag to indicate waiting for attacker selection
+    public HexCell headerAtGoalTarget = null; // Flag to indicate waiting for attacker selection
     public bool isWaitingForDefenderSelection = false; // Flag to indicate waiting for attacker selection
     public bool isWaitingForHeaderRoll = false; // Flag to indicate waiting for header roll
-    public bool isWaitingForSaveandHoldScenario = false;
+    // public bool isWaitingForSaveandHoldScenario = false;
     public bool iswaitingForChallengeWinnerSelection = false;
     public PlayerToken challengeWinner = null;
     public bool isWaitingForControlOrHeaderDecision = false;
@@ -41,7 +46,8 @@ public class HeaderManager : MonoBehaviour
     public bool defenseBallControl = false;
     public bool attackFreeHeader = false;
     public bool attackControlBall = false;
-    public int threshold => attEligibleToHead.Count == 0 ? 1 : highPassManager.gkRushedOut ? 3 : 2 ;
+    // public int threshold => attEligibleToHead.Count == 0 ? 1 : highPassManager.gkRushedOut ? 3 : 2 ;
+    public int threshold => attEligibleToHead.Count == 0 ? 1 : highPassManager.gkRushedOut ? Mathf.Min(3, defEligibleToHead.Count(t => !t.IsGoalKeeper) + 1) : Mathf.Min(2, defEligibleToHead.Count(t => !t.IsGoalKeeper));
     [Header("Lists")]
     public List<PlayerToken> attEligibleToHead = new List<PlayerToken>();
     public List<PlayerToken> defEligibleToHead = new List<PlayerToken>();
@@ -82,77 +88,81 @@ public class HeaderManager : MonoBehaviour
         {
             if (isWaitingForDefenderSelection)
             {
-                if (token == null)
+              if (token == null)
+              {
+                Debug.LogWarning("You did not click on a token");
+              }
+              else
+              {
+                if (token.isAttacker)
                 {
-                    Debug.LogWarning("You did not click on a token");
+                  Debug.LogWarning($"{token.name} is not a defender! Rejecting input");
+                }
+                else if (!defEligibleToHead.Contains(token))
+                {
+                  Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
                 }
                 else
                 {
-                    if (token.isAttacker)
-                    {
-                        Debug.LogWarning($"{token.name} is not a defender! Rejecting input");
-                    }
-                    else if (!defEligibleToHead.Contains(token))
-                    {
-                        Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
-                    }
-                    else
-                    {
-                        HandleDefenderHeaderSelection(token);
-                    }
+                  HandleDefenderHeaderSelection(token);
                 }
+              }
             }
             else if (isWaitingForAttackerSelection)
             {
-                if (token == null)
+              if (token == null)
+              {
+                Debug.LogWarning("You did not click on a token");
+              }
+              else
+              {
+                if (!token.isAttacker)
                 {
-                    Debug.LogWarning("You did not click on a token");
+                  Debug.LogWarning($"{token.name} is not an Attacker! Rejecting input");
+                }
+                else if (!attEligibleToHead.Contains(token))
+                {
+                  Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
+                }
+                else if (attackerWillJump.Contains(token))
+                {
+                  Debug.LogWarning($"{token.name} has already declared to Jump for header. Rejecting input");
+                  attackerWillJump.Remove(token);
                 }
                 else
                 {
-                    if (!token.isAttacker)
-                    {
-                        Debug.LogWarning($"{token.name} is not an Attacker! Rejecting input");
-                    }
-                    else if (!attEligibleToHead.Contains(token))
-                    {
-                        Debug.LogWarning($"{token.name} is not eligible to Head! Rejecting input");
-                    }
-                    else if (attackerWillJump.Contains(token))
-                    {
-                        Debug.LogWarning($"{token.name} has already declared to Jump for header. Rejecting input");
-                        attackerWillJump.Remove(token);
-                    }
-                    else
-                    {
-                        HandleAttackerHeaderSelection(token);
-                    }
+                  HandleAttackerHeaderSelection(token);
                 }
+              }
 
             }
             else if (isWaitingForHeaderTargetSelection)
             {
-                if (hex == null)
-                {
-                    Debug.LogWarning("Invalid hex selected.");
-                    return;
-                }
-                else if (hex.isDefenseOccupied)
-                {
-                    Debug.LogWarning("Please select a hex not occupied by the defense.");
-                    return;
-                }
-                else if (hexGrid.highlightedHexes.Contains(hex))
-                {
-                    // TODO: Can I pass to a Jumped Token?
-                    isWaitingForHeaderTargetSelection = false;
-                    MoveHeaderToTargetSelection(hex);
-                    return;
-                }
+              if (hex == null)
+              {
+                Debug.LogWarning("Invalid hex selected.");
+                return;
+              }
+              else if (hex.isDefenseOccupied)
+              {
+                Debug.LogWarning("Please select a hex not occupied by the defense.");
+                return;
+              }
+              else if (hexGrid.highlightedHexes.Contains(hex))
+              {
+                // TODO: Can I pass to a Jumped Token?
+                isWaitingForHeaderTargetSelection = false;
+                MoveHeaderToTargetSelection(hex);
+                return;
+              }
             }
             else if (iswaitingForChallengeWinnerSelection)
             {
-                DetermineChallengeWinner(token);
+              DetermineChallengeWinner(token);
+            }
+            if (isWaitingForHeaderAtGoal)
+            {
+                HandleHeaderAtGoalClick(hex);
             }
         }
     }
@@ -218,22 +228,22 @@ public class HeaderManager : MonoBehaviour
                     DefenseContolBall();
                 }
             }
-            else if (isWaitingForSaveandHoldScenario)
-            {
-                if (keyData.key == KeyCode.Q)
-                {
-                    isWaitingForSaveandHoldScenario = false;
-                    Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
-                    MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
-                }
-                else if (keyData.key == KeyCode.K)
-                {
-                    isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
-                    Debug.Log("GK Decided to activate F3 Moves");
-                    MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
-                    finalThirdManager.TriggerFinalThirdPhase(true);
-                }
-            }
+            // else if (isWaitingForSaveandHoldScenario)
+            // {
+            //     if (keyData.key == KeyCode.Q)
+            //     {
+            //         isWaitingForSaveandHoldScenario = false;
+            //         Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
+            //         MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
+            //     }
+            //     else if (keyData.key == KeyCode.K)
+            //     {
+            //         isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
+            //         Debug.Log("GK Decided to activate F3 Moves");
+            //         MatchManager.Instance.currentState = MatchManager.GameState.ActivateFinalThirdsAfterSave;
+            //         finalThirdManager.TriggerFinalThirdPhase(true);
+            //     }
+            // }
             else if (isWaitingForHeaderRoll)
             {
                 if (keyData.key == KeyCode.R)
@@ -247,7 +257,16 @@ public class HeaderManager : MonoBehaviour
                 if (keyData.key == KeyCode.R)
                 {
                     keyData.isConsumed = true;
-                    PerformControlRoll();
+                    _ = PerformControlRoll(); // No need to await this here
+                }
+            }
+            else if (isWaitingForHeaderAtGoal)
+            {
+                if (keyData.key == KeyCode.H)
+                {
+                    keyData.isConsumed = true;
+                    isWaitingForHeaderAtGoal = false;
+                    headerAtGoalDeclared = false;
                 }
             }
         }
@@ -255,6 +274,7 @@ public class HeaderManager : MonoBehaviour
 
     public IEnumerator FindEligibleHeaderTokens(HexCell landingHex)
     {
+        while (finalThirdManager.isActivated) yield return null;
         isActivated = true;
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
         hasEligibleAttackers = false;
@@ -324,7 +344,19 @@ public class HeaderManager : MonoBehaviour
         else
         {
             // Both attackers and defenders are eligible
-            StartAttackHeaderSelection();
+            _ = StartAttackHeaderSelection(); // No need to await this
+        }
+    }
+
+    private void HandleHeaderAtGoalClick(HexCell hexcell)
+    {
+        if (hexcell.isInGoal == 0) return;
+        else
+        {
+          headerAtGoalTarget = hexcell;
+          headerAtGoalDeclared = true;
+          isWaitingForHeaderAtGoal = false;
+          hexGrid.ClearHighlightedHexes();
         }
     }
 
@@ -335,12 +367,12 @@ public class HeaderManager : MonoBehaviour
         defenseWonFreeHeader = true;
         if (defEligibleToHead.Count == 1)
         {
-            defenderWillJump.Add(defEligibleToHead[0]);
-            ConfirmDefenderHeaderSelection();
+          defenderWillJump.Add(defEligibleToHead[0]);
+          ConfirmDefenderHeaderSelection();
         }
         else iswaitingForChallengeWinnerSelection = true;
     }
-    
+      
     private void DefenseContolBall()
     {
         Debug.Log("Ball Control option selected from Defense");
@@ -452,8 +484,9 @@ public class HeaderManager : MonoBehaviour
             }
         }
     }
+    
     // Method to start the attacker's header selection
-    public void StartAttackHeaderSelection()
+    public async Task StartAttackHeaderSelection()
     {
         // This case is called after defense's forfeit of aerial challenge
         // Since More than one attackers have declared that they want to jump
@@ -485,6 +518,7 @@ public class HeaderManager : MonoBehaviour
                 attackerWillJump.Add(attEligibleToHead[0]);
                 isWaitingForControlOrHeaderDecision = false;
                 Debug.Log($"Automatically selected attacker: {attEligibleToHead[0].name}");
+                await helperFunctions.StartCoroutineAndWait(WaitForHeadAtGoalDecision());
                 StartCoroutine(ResolveHeaderChallenge());
                 return;
             }
@@ -502,29 +536,96 @@ public class HeaderManager : MonoBehaviour
             {
                 attackerWillJump.Add(attEligibleToHead[0]);
                 Debug.Log($"Automatically selected attacker: {attEligibleToHead[0].name}");
+                await helperFunctions.StartCoroutineAndWait(WaitForHeadAtGoalDecision());
                 // Check if there are eligible defenders
                 StartDefenseHeaderSelection();
                 return;
             }
             else
             {
-                Debug.Log($"Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'X' to confirm selection.");
+                Debug.Log($"Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.");
                 isWaitingForAttackerSelection = true;
                 return;
             }
         }
         // fallback
         Debug.LogError("Why are we here?");
+    }
 
+    private IEnumerator WaitForHeadAtGoalDecision()
+    {
+        if (!IsHeaderAtGoalAvailable())
+        {
+            yield break;
+        }
+        else
+        {
+          isWaitingForHeaderAtGoal = true;
+          LiftHexesInGoal();
+          while (isWaitingForHeaderAtGoal)
+          {
+            yield return null;
+          }
+        }
+    }
+    
+    public void LiftHexesInGoal()
+    {
+        Debug.Log("Highlighting CanShootTo hexes for target selection.");
+        HexCell shooterHex = ball.GetCurrentHex();
+        Dictionary<HexCell, List<HexCell>> shootingPaths = shooterHex.HeadingPaths;
+
+        // Highlight and raise all CanShootTo hexes
+        foreach (var canShootToHex in shootingPaths.Keys)
+        {
+            canShootToHex.HighlightHex("CanShootFrom", 1);
+            hexGrid.highlightedHexes.Add(canShootToHex);
+            if (canShootToHex.transform.position.y == 0)
+            {
+                canShootToHex.transform.position += Vector3.up * 0.03f; // Raise it above the plane
+            }
+        }
+    }
+
+    private bool IsHeaderAtGoalAvailable()
+    {
+        bool shouldShotBeAvailable = false;
+        MatchManager.TeamAttackingDirection attackingDirection;
+        if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
+        {
+            attackingDirection = MatchManager.Instance.homeTeamDirection;
+        }
+        else
+        {
+            attackingDirection = MatchManager.Instance.awayTeamDirection;
+        }
+        // Debug.Log($"attackingDirection: {attackingDirection}, CanHeadfrom: {ball.GetCurrentHex().CanHeadFrom}, side: {ball.GetCurrentHex().coordinates.x}");
+        if (
+            (
+                attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attackers shoot to the Right
+                && ball.GetCurrentHex().CanHeadFrom // Is in heading distance
+                && ball.GetCurrentHex().coordinates.x > 0 // In Right Side of Pitch
+            )
+            ||
+            (
+                attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attackers shoot to the Left
+                && ball.GetCurrentHex().CanHeadFrom // Is in heading distance
+                && ball.GetCurrentHex().coordinates.x < 0 // In Left Side of Pitch
+            )
+        )
+        {
+          shouldShotBeAvailable = true;
+        }
+        return shouldShotBeAvailable;
     }
 
     public void HandleAttackerHeaderSelection(PlayerToken token)
+  {
+    if (attackerWillJump.Count < 2)
     {
-        if (attackerWillJump.Count < 2)
-        {
-            AddAttackerToHeaderSelection(token);
-        }
+      AddAttackerToHeaderSelection(token);
     }
+  }
 
     public void AddAttackerToHeaderSelection(PlayerToken token)
     {
@@ -535,13 +636,13 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
-    public void ConfirmAttackerHeaderSelection()
+    public async Task ConfirmAttackerHeaderSelection()
     {
         if (attackerWillJump.Count > 0)
         {
             Debug.Log("Attack header selection confirmed.");
             isWaitingForAttackerSelection = false;
-            // if (hasEligibleDefenders && !offeredControl)
+            await helperFunctions.StartCoroutineAndWait(WaitForHeadAtGoalDecision());
             if (hasEligibleDefenders)
             {
                 StartDefenseHeaderSelection();
@@ -553,6 +654,7 @@ public class HeaderManager : MonoBehaviour
         }
         else
         {
+            // await Task.Delay(0);
             Debug.LogWarning("Attack cannot choose to not jump. Please select attackers and then press 'X' to confirm selection.");
         }
     }
@@ -578,14 +680,14 @@ public class HeaderManager : MonoBehaviour
 
     public void StartDefenseHeaderSelection()
     {
-        defenderWillJump.Clear();
-        if (defEligibleToHead.Count == 1)
-        {
-            defenderWillJump.Add(defEligibleToHead[0]);
-            Debug.Log($"Single defender {defEligibleToHead[0].name} auto-selected for the header.");
-            StartCoroutine(ResolveHeaderChallenge());
-            return;
-        }
+        // defenderWillJump.Clear();
+        // if (defEligibleToHead.Count == 1)
+        // {
+        //     defenderWillJump.Add(defEligibleToHead[0]);
+        //     Debug.Log($"Single defender {defEligibleToHead[0].name} auto-selected for the header.");
+        //     StartCoroutine(ResolveHeaderChallenge());
+        //     return;
+        // }
         if (attEligibleToHead.Count == 0)
         {
             Debug.LogWarning("Is this ever called?");
@@ -614,11 +716,17 @@ public class HeaderManager : MonoBehaviour
     // Coroutine for handling defender header selection
     public void HandleDefenderHeaderSelection(PlayerToken token)
     {
+        Debug.Log($"threshold: {threshold}");
         if (!hasEligibleAttackers)
         {
             if (!defenderWillJump.Contains(token)) defenderWillJump.Add(token);
             challengeWinner = token;
             ConfirmDefenderHeaderSelection();
+            return;
+        }
+        if (highPassManager.gkRushedOut && token == hexGrid.GetDefendingGK())
+        {
+            Debug.LogWarning($"{token.name} is the GK and has already declared to be challenging, cannot de nominate");
             return;
         }
         if (defenderWillJump.Contains(token))
@@ -768,16 +876,61 @@ public class HeaderManager : MonoBehaviour
             if (bestAttackerScore > bestDefenderScore)
             {
                 challengeWinner = bestAttacker;
-                Debug.Log($"{bestAttacker.name} (Attack) wins the header. Highlighting target hexes.");
-                HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestDefender);
                 MatchManager.Instance.SetLastToken(bestAttacker);
-                MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
-                StartCoroutine(WaitForHeaderTargetSelection());
+                if (headerAtGoalDeclared)
+                {
+                    if (bestAttackerRoll > 1) // Header at goal ON target
+                    {
+                        if (defenderWillJump.Contains(hexGrid.GetDefendingGK())) // GK is in the challenge and was defeated
+                        {
+                            Debug.Log($"{bestAttacker.name} (Attack) wins the header and scores a GOAL!.");
+                            MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt);
+                            MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOnTarget);
+                            MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.GoalScored);
+                            MatchManager.Instance.gameData.gameLog.LogEvent(
+                                            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
+                                            , MatchManager.ActionType.AssistProvided
+                                        );
+                            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(headerAtGoalTarget, bestAttackerRoll));
+                            goalFlowManager.StartGoalFlow(bestAttacker);
+                            CleanUpHeader();
+                            ResetHeader();
+                        }
+                        else // TODO: GK was not in the challenge and can attempt to save
+                        {
+                            MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt);
+                            MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOnTarget);
+                            shotManager.ProcessHeaderAtGoal(bestAttacker, bestAttackerScore, headerAtGoalTarget);
+                            CleanUpHeader();
+                        }
+                    }
+                    else // Header At goal OFF Target
+                    {
+                        MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt);
+                        MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOffTarget);
+                        yield return StartCoroutine(FailedLob());
+                        Debug.Log("off target");
+                        string side = bestAttacker.GetCurrentHex().coordinates.z > 0 ? "RightGoalLine" : "LeftGoalLine";
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(bestAttacker.GetCurrentHex(), side, "inaccuracy"));
+                        CleanUpHeader();
+                        ResetHeader();
+                    }
+                }
+                else // Headed Pass (regardless of headedShot range)
+                {
+                    HighlightHexesForHeader(ball.GetCurrentHex(), 6);
+                    // Do not log the pass attempt here, as it is logged in the next state
+                    // MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.PassAttempt);
+                    Debug.Log($"{bestAttacker.name} (Attack) wins the header. Highlighting target hexes.");
+                    MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
+                    StartCoroutine(WaitForHeaderTargetSelection());
+                }
             }
             else if (bestDefenderScore > bestAttackerScore)
             {
+                // TODO: if headerAtGoalDeclared log a header at goal?
                 challengeWinner = bestDefender;
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestAttacker);
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.BallRecovery, recoveryType: "header", connectedToken: bestAttacker);
@@ -786,13 +939,10 @@ public class HeaderManager : MonoBehaviour
                 {
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(bestDefender.GetCurrentHex())); // Move the ball to the GK's Hex
                     MatchManager.Instance.ChangePossession();
-                    yield return null;
-                    Debug.Log($"GK {bestDefender.playerName} Wins the Aerial Challenge! Press [Q]uickThrow, or [K] to activate Final Thirds");
-                    isWaitingForSaveandHoldScenario = true;
-                    while (isWaitingForSaveandHoldScenario)
-                    {
-                        yield return null;  // Wait for the next frame
-                    }
+                    Debug.Log($"{bestDefender.name} (DefenseGK) wins the Aerial Challenge. Switching possession. SaveandHoldScenario");
+                    shotManager.isActivated = true;
+                    shotManager.isWaitingForSaveandHoldScenario = true;
+                    CleanUpHeader();
                 }
                 else
                 {
@@ -821,12 +971,23 @@ public class HeaderManager : MonoBehaviour
     {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int roll = rigRoll ?? returnedRoll;
-        int totalScore = rigRoll == null && returnedJackpot ? 50 : roll + tokenRolling.heading + (hasHeadingPenalty ? -1 : 0);
+        int totalScore = rigRoll == null && returnedJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
         // int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
         tokenScores[tokenRolling] = (roll, totalScore);
         if (returnedJackpot) Debug.Log($"{attordef} {tokenRolling.name} rolled A JACKPOT!!");
         else Debug.Log($"{attordef} {tokenRolling.name} rolled {roll} + {attributelabel}: {attribute}{penaltyInfo}= {totalScore}");
         isWaitingForHeaderRoll = false; // Proceed to the next token
+    }
+    
+    private IEnumerator FailedLob()
+    {
+        HexCell shooterHex = ball.GetCurrentHex();
+        int targetX = 22 * (shooterHex.coordinates.x > 0 ? 1 : -1);
+        float slope = (float)(headerAtGoalTarget.coordinates.z - shooterHex.coordinates.z) /
+                  (headerAtGoalTarget.coordinates.x - shooterHex.coordinates.x);
+        int intercept = headerAtGoalTarget.coordinates.z - Mathf.RoundToInt(slope * headerAtGoalTarget.coordinates.x);
+        int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
+        yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(targetX, 0, intersectionZ)), true));
     }
 
     public void SetGKToRollLast(PlayerToken gk)
@@ -851,7 +1012,7 @@ public class HeaderManager : MonoBehaviour
         Debug.Log($"Press 'R' to attempt ball control: {challengeWinner.name} (dribbling: {challengeWinner.dribbling}{penaltyInfo}).");
     }
 
-    public async void PerformControlRoll(int? rigRoll = null)
+    public async Task PerformControlRoll(int? rigRoll = null)
     {
         isWaitingForControlRoll = false;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
@@ -902,7 +1063,7 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
-    private async void MoveHeaderToTargetSelection(HexCell clickedHex)
+    private async Task MoveHeaderToTargetSelection(HexCell clickedHex)
     {
         hexGrid.ClearHighlightedHexes();
         MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -1050,33 +1211,37 @@ public class HeaderManager : MonoBehaviour
 
     private void CleanUpHeader()
     {
-      attEligibleToHead.Clear();
-      defEligibleToHead.Clear();
-      hasEligibleAttackers = false;
-      hasEligibleDefenders = false;
-      isWaitingForControlOrHeaderDecision = false;
-      isWaitingForControlOrHeaderDecisionDef = false;
-      challengeWinner = null;
-      tokenRolling = null;
-      tokenScores = new Dictionary<PlayerToken, (int, int)>();
-      interceptingDefenders.Clear();
-      isActivated = false;
-      interceptingDefender = null;
-      interceptionDiceRoll = 0;
-      defenseWonFreeHeader = false;
-      defenseBallControl = false;
-      attackFreeHeader = false;
-      attackControlBall = false;
+        attEligibleToHead.Clear();
+        defEligibleToHead.Clear();
+        hasEligibleAttackers = false;
+        hasEligibleDefenders = false;
+        isWaitingForControlOrHeaderDecision = false;
+        isWaitingForControlOrHeaderDecisionDef = false;
+        challengeWinner = null;
+        tokenRolling = null;
+        tokenScores = new Dictionary<PlayerToken, (int, int)>();
+        interceptingDefenders.Clear();
+        isActivated = false;
+        interceptingDefender = null;
+        interceptionDiceRoll = 0;
+        defenseWonFreeHeader = false;
+        defenseBallControl = false;
+        attackFreeHeader = false;
+        attackControlBall = false;
+        headerAtGoalDeclared = false;
+        headerAtGoalTarget = null;
     }
     
     public void ResetHeader()
     {
-      attEligibleToHead.Clear();
-      defEligibleToHead.Clear();
-      attackerWillJump.Clear();
-      defenderWillJump.Clear();
-      hasEligibleAttackers = false;
-      hasEligibleDefenders = false;
+        attEligibleToHead.Clear();
+        defEligibleToHead.Clear();
+        attackerWillJump.Clear();
+        defenderWillJump.Clear();
+        hasEligibleAttackers = false;
+        hasEligibleDefenders = false;
+        
+        
     }
 
     public string GetDebugStatus()
@@ -1091,7 +1256,7 @@ public class HeaderManager : MonoBehaviour
         if (isWaitingForAttackerSelection) sb.Append($"isWaitingForAttackerSelection ({string.Join(", ", attackerWillJump.Select(t => t.name))}), ");
         if (isWaitingForDefenderSelection) sb.Append($"isWaitingForDefenderSelection ({string.Join(", ", defenderWillJump.Select(t => t.name))}), ");
         if (isWaitingForHeaderRoll) sb.Append($"isWaitingForHeaderRoll, {tokenRolling.name} ");
-        if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
+        // if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
         if (iswaitingForChallengeWinnerSelection) sb.Append("iswaitingForChallengeWinnerSelection, ");
         if (isWaitingForControlOrHeaderDecision) sb.Append("isWaitingForControlOrHeaderDecision, ");
         if (isWaitingForControlOrHeaderDecisionDef) sb.Append("isWaitingForControlOrHeaderDecisionDef, ");
@@ -1135,6 +1300,7 @@ public class HeaderManager : MonoBehaviour
         if (iswaitingForChallengeWinnerSelection) sb.Append($"Click on a Token to take the free Header or Control, ");
         if (isWaitingForControlOrHeaderDecision || isWaitingForControlOrHeaderDecisionDef) sb.Append($"Press [H] to take a free Header or [B] to attempt a ball control, ");
         if (isWaitingForControlRoll) sb.Append($"Press [R] to roll with {challengeWinner.name} to attempt to control the Ball, ");
+        if (isWaitingForHeaderAtGoal) sb.Append($"Click on a Highlghted Hex In Goal to declare Goal attempt and target or Press [H] to declare a headed Pass, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();

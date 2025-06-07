@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Threading.Tasks;
 
@@ -11,7 +9,12 @@ public class HelperFunctions : MonoBehaviour
     {
         bool isDone = false;
         StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        await Task.Run(() => { while (!isDone) { } }); // Wait until coroutine completes
+        // await Task.Run(() => { while (!isDone) {await Task.Yield();} }); // Wait until coroutine completes
+        // Poll with delay to avoid blocking and allow coroutine to finish
+        while (!isDone)
+        {
+            await Task.Yield(); // Non-blocking, allows other tasks to run
+        }
     }
 
     private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)

@@ -2,11 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using UnityEngine.Rendering;
-using Unity.VisualScripting;
 
 public class FinalThirdManager : MonoBehaviour
 {

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +17,7 @@ public class GoalKeeperManager : MonoBehaviour
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
 
+
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
@@ -33,7 +33,8 @@ public class GoalKeeperManager : MonoBehaviour
                 Debug.Log($"🧤 Invalid move! {hex.name} is not a highlighted hex.");
                 return;
             }
-            MoveGKforBox(hex);
+            // MoveGKforBox(hex);
+            _ = MoveGKforBox(hex); // Explicitly discard the task to silence the warning 
         }
     }
 
@@ -49,7 +50,7 @@ public class GoalKeeperManager : MonoBehaviour
         }
     }
 
-    private async void MoveGKforBox(HexCell hex)
+    private async Task MoveGKforBox(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));

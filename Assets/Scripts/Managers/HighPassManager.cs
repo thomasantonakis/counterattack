@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
@@ -43,6 +42,7 @@ public class HighPassManager : MonoBehaviour
     [Header("Flags")]
     public bool didGKMoveInDefPhase = false;
     public bool gkRushedOut = false;
+    public PlayerToken defGK = null;
     public bool isWaitingForDefGKChallengeDecision = false;
     public bool isCornerKick = false;
     private const int MAX_PASS_DISTANCE = 15;
@@ -493,7 +493,7 @@ public class HighPassManager : MonoBehaviour
         return eligibleAttackers;
     }
 
-    public async void PerformAccuracyRoll(int? rigroll = null)
+    public void PerformAccuracyRoll(int? rigroll = null)
     {
         // TODO: Refine order and logs
         lockedAttacker = null;
@@ -553,7 +553,6 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDistanceRoll = true;
         Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
-
 
     public void PerformDistanceRoll(int? rigroll = null)
     {
@@ -721,7 +720,7 @@ public class HighPassManager : MonoBehaviour
                 NotifyForGkRushAvailability();
                 while (isWaitingForDefGKChallengeDecision)
                 {
-                  yield return null;
+                    yield return null;
                 }
             }
             else
@@ -736,14 +735,15 @@ public class HighPassManager : MonoBehaviour
 
     private void NotifyForGkRushAvailability()
     {
-      Debug.Log($"Defending GK {hexGrid.GetDefendingGK().name} is to move closer and Challenge! Press [X] to forfeit or Click on a highlighted Hex to go and Jump wiith GK...");
-      isWaitingForDefGKChallengeDecision = true;
-      hexGrid.ClearHighlightedHexes();
-      foreach (HexCell hex in gkReachableHexes)
-      {
-          hex.HighlightHex("ballPath");
-          hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes
-      }
+        defGK = hexGrid.GetDefendingGK();
+        Debug.Log($"Defending GK {defGK.name} is to move closer and Challenge! Press [X] to forfeit or Click on a highlighted Hex to go and Jump wiith GK...");
+        isWaitingForDefGKChallengeDecision = true;
+        hexGrid.ClearHighlightedHexes();
+        foreach (HexCell hex in gkReachableHexes)
+        {
+            hex.HighlightHex("ballPath");
+            hexGrid.highlightedHexes.Add(hex);  // Track the highlighted hexes
+        }
     }
 
     private List<HexCell> CanDefendingGKChallenge()
@@ -906,14 +906,15 @@ public class HighPassManager : MonoBehaviour
         // CompleteDefenderMovementPhase();
     }
 
-    private async void MoveGKForHP(HexCell hex)
+    private async Task MoveGKForHP(HexCell hex)
     {
-        isWaitingForDefGKChallengeDecision = false;
         hexGrid.ClearHighlightedHexes();
-        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
-        Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
+        Debug.Log($"🧤 {defGK.name} moving to {hex.name}");
+        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defGK, false));
+        Debug.Log($"🧤 {defGK.name} moved to {hex.name}");
         gkRushedOut = true;
-        headerManager.defenderWillJump.Add(hexGrid.GetDefendingGK());
+        headerManager.defenderWillJump.Add(defGK);
+        isWaitingForDefGKChallengeDecision = false;
     }
 
     public void CleanUpHighPass()

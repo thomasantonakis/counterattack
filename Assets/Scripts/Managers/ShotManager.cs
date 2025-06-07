@@ -3,11 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Unity.VisualScripting;
-using UnityEngine.Analytics;
 using System;
-using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
-using System.Data.Common;
 using System.Threading.Tasks;
 
 public class ShotManager : MonoBehaviour
@@ -49,29 +45,18 @@ public class ShotManager : MonoBehaviour
     public HexCell saveHex; // The hex (if any) where the GK will make the save on.
     public HexCell currentDefenderBlockingHex; // The Hex of the defender currently attempting to intercept
     private List<HexCell> trajectoryPath; // The list of hexes the ball will travel through
-    private List<(PlayerToken defender, bool isCausingInvalidity, int? gkPenalty)> interceptors; // Defenders trying to intercept
+    private List<(PlayerToken defender, bool isCausingInvalidity, int? gkPenalty)> interceptors = new(); // Defenders trying to intercept
     public List<PlayerToken> alreadyInterceptedDefs;
 
+    // Header-at-goal specific
+    public bool isHeaderAtGoal = false;
+    private int headerAttackerTotalScore;
+    private PlayerToken headerAttacker;
+    private HexCell headerTargetHex;
+    private int headerGkPenalty = 0;
+
     void Update()
-    {
-        // // Check if waiting for dice rolls and the R key is pressed
-        // if (isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        // {
-        //     StartCoroutine(StartShotBlockRoll());  // Pass the stored list
-        // }
-        // if (!isWaitingForBlockDiceRoll && isWaitingForGKDiceRoll && !isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        // {
-        //     StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
-        // }
-        // if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && isWaitingForShotRoll && !isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        // {
-        //     StartCoroutine(StartShotRoll());
-        // }
-        // if (!isWaitingForBlockDiceRoll && !isWaitingForGKDiceRoll && !isWaitingForShotRoll && isWaitingforHandlingTest && Input.GetKeyDown(KeyCode.R))
-        // {
-        //     StartCoroutine(ResolveHandlingTest());
-        // }
-    }
+    {}
 
     private void OnEnable()
     {
@@ -131,54 +116,60 @@ public class ShotManager : MonoBehaviour
             IdentifyShotType();
             return;
         }
-        if (isWaitingForBlockDiceRoll && keyData.key == KeyCode.R)
+        if (isActivated && isWaitingForBlockDiceRoll && keyData.key == KeyCode.R)
         {
-            keyData.isConsumed = true; // Consume the key event
-            StartCoroutine(StartShotBlockRoll());  // Pass the stored list
-            return;
+          keyData.isConsumed = true; // Consume the key event
+          StartCoroutine(StartShotBlockRoll());  // Pass the stored list
+          return;
         }
-        else if (isWaitingForGKDiceRoll && keyData.key == KeyCode.R)
+        else if (isActivated && !isHeaderAtGoal && isWaitingForGKDiceRoll && keyData.key == KeyCode.R)
         {
-            keyData.isConsumed = true; // Consume the key event
-            StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
-            return;
+          keyData.isConsumed = true; // Consume the key event
+          StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
+          return;
         }
-        else if (isWaitingForShotRoll && keyData.key == KeyCode.R)
+        else if (isActivated && isHeaderAtGoal && isWaitingForGKDiceRoll && keyData.key == KeyCode.R)
         {
-            keyData.isConsumed = true; // Consume the key event
-            StartCoroutine(StartShotRoll());
-            return;
+            keyData.isConsumed = true;
+            isWaitingForGKDiceRoll = false;
+            PerformGKHeaderSave();
         }
-        else if (isWaitingforHandlingTest && keyData.key == KeyCode.R)
+        else if (isActivated && isWaitingForShotRoll && keyData.key == KeyCode.R)
         {
-            keyData.isConsumed = true; // Consume the key event
-            StartCoroutine(ResolveHandlingTest());
-            return;
+          keyData.isConsumed = true; // Consume the key event
+          StartCoroutine(StartShotRoll());
+          return;
         }
-        else if (isWaitingforBlockerSelection && keyData.key == KeyCode.X)
+        else if (isActivated && isWaitingforHandlingTest && keyData.key == KeyCode.R)
         {
-            keyData.isConsumed = true; // Consume the key event
-            StartDefenderMovementPhase();
-            return;
+          keyData.isConsumed = true; // Consume the key event
+          StartCoroutine(ResolveHandlingTest());
+          return;
         }
-        else if (isWaitingForTargetSelection && keyData.key == KeyCode.X)
+        else if (isActivated && isWaitingforBlockerSelection && keyData.key == KeyCode.X)
         {
-            keyData.isConsumed = true; // Consume the key event
-            CompleteDefenderMovement();
-            return;
+          keyData.isConsumed = true; // Consume the key event
+          StartDefenderMovementPhase();
+          return;
         }
-        else if (isWaitingForSaveandHoldScenario)
+        else if (isActivated && isWaitingForTargetSelection && keyData.key == KeyCode.X)
         {
-            if (keyData.key == KeyCode.Q)
-            {
-                keyData.isConsumed = true;
-                QuickThrow();
-            }
-            if (keyData.key == KeyCode.K)
-            {
-                keyData.isConsumed = true;
-                ActivateFinalThirds();
-            }
+          keyData.isConsumed = true; // Consume the key event
+          CompleteDefenderMovement();
+          return;
+        }
+        else if (isActivated && isWaitingForSaveandHoldScenario)
+        {
+          if (keyData.key == KeyCode.Q)
+          {
+            keyData.isConsumed = true;
+            QuickThrow();
+          }
+          if (keyData.key == KeyCode.K)
+          {
+            keyData.isConsumed = true;
+            ActivateFinalThirds();
+          }
         }
     }
 
@@ -244,7 +235,108 @@ public class ShotManager : MonoBehaviour
         }
     }
 
-    private async void HandleClicksForSnapMovement(PlayerToken token, HexCell hex)
+    public async void ProcessHeaderAtGoal(PlayerToken attacker, int attackerTotalScore, HexCell headerTargetHex)
+    {
+        isActivated = true;
+        isHeaderAtGoal = true;
+        this.headerAttacker = attacker;
+        this.headerAttackerTotalScore = attackerTotalScore;
+        this.headerTargetHex = headerTargetHex;
+
+        // Find the defending GK and their hex
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        HexCell gkHex = defendingGK.GetCurrentHex();
+
+        // Find the saveHex: the closest hex in the trajectory from headerTargetHex to the GK that is in the goal area
+        List<HexCell> saveableHexes = hexGrid.GetSavableHexes();
+        // TODO: Retrieve the path from the JSON
+        List<HexCell> path = ball.GetCurrentHex().HeadingPaths[headerTargetHex];
+        List<HexCell> validSaveHexes = path
+                .Where(hex => saveableHexes.Contains(hex))
+                .OrderBy(hex => HexGridUtils.GetHexDistance(gkHex.coordinates, hex.coordinates))
+                .ToList();
+        // Get the closest one (if any)
+        saveHex = validSaveHexes.FirstOrDefault();
+
+        if (saveHex == null)
+        {
+            // No save possible, goal!
+            Debug.Log("No saveHex found, header at goal is a GOAL!");
+            MatchManager.Instance.gameData.gameLog.LogEvent(attacker, MatchManager.ActionType.GoalScored);
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
+                , MatchManager.ActionType.AssistProvided
+            );
+            // Animate ball to target, then trigger goal flow
+            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(targetHex));
+            goalFlowManager.StartGoalFlow(attacker);
+            ResetShotProcess();
+            return;
+        }
+
+        int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates);
+        headerGkPenalty = 0;
+        if (saveDistance == 3) headerGkPenalty = -1;
+
+        // GK can attempt a save
+        Debug.Log($"GK {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {headerGkPenalty}. Waiting for GK dice roll...");
+        // StartCoroutine(PerformGKHeaderSave(defendingGK, headerGkPenalty));
+        // Debug.Log($"Press [R] to roll for GK save attempt (header at goal).");
+        isWaitingForGKDiceRoll = true;
+    }
+
+    public async void PerformGKHeaderSave(int? rigRoll = null)
+    {
+        // Roll for GK
+        PlayerToken gkToken = hexGrid.GetDefendingGK();
+        isWaitingForGKDiceRoll = false;
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int gkRoll = rigRoll ?? returnedRoll;
+        int totalSavingPower = rigRoll == null && returnedJackpot ? 50 : gkRoll + gkToken.saving + headerGkPenalty;
+        if (totalSavingPower == 50) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
+        else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {headerGkPenalty} = {totalSavingPower}");
+
+        // Compare with attacker's total
+        if (totalSavingPower == headerAttackerTotalScore)
+        {
+            Debug.Log($"{gkToken.name} ties the attacker's header! Loose Ball situation initiated.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                gkToken
+                , MatchManager.ActionType.SaveMade
+                , saveType: "loose"
+            );
+            MatchManager.Instance.hangingPassType = "shot";
+            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex));
+            await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
+            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "ground"));
+            ResetShotProcess();
+        }
+        else if (totalSavingPower > headerAttackerTotalScore)
+        {
+            Debug.Log($"{gkToken.name} saves the header! Will they hold the ball? Needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
+            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex));
+            await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
+            // MatchManager.Instance.ChangePossession();
+            isWaitingforHandlingTest = true;
+        }
+        else // attacker wins
+        {
+            Debug.Log($"{headerAttacker.name} wins the header at goal! GOAL!");
+            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex, headerAttackerTotalScore/2));
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        , MatchManager.ActionType.GoalScored
+                    );
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
+                , MatchManager.ActionType.AssistProvided
+            );
+            goalFlowManager.StartGoalFlow(headerAttacker);
+            ResetShotProcess();
+        }
+    }
+
+    private async Task HandleClicksForSnapMovement(PlayerToken token, HexCell hex)
     {
         if (token != null && isWaitingforBlockerSelection)
         {
@@ -262,7 +354,7 @@ public class ShotManager : MonoBehaviour
 
                 Debug.Log($"Selecting defender {token.name}. Highlighting reachable hexes.");
                 tokenMoveforDeflection = token;  // Set selected token
-                movementPhaseManager.HighlightValidMovementHexes(token, 2);  // Highlight reachable hexes within 3 moves
+                movementPhaseManager.HighlightValidMovementHexes(token, 2, false);  // Highlight reachable hexes within 3 moves
                 isWaitingforBlockerSelection = false;
                 isWaitingforBlockerMovement = true;
             }
@@ -436,16 +528,19 @@ public class ShotManager : MonoBehaviour
             // Get the closest one (if any)
             saveHex = validSaveHexes.FirstOrDefault();
 
-            if (saveHex != null && gkHex != null)
-            {
-                int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates); // turn to Cube
-                if (saveDistance == 3) gkPenalty = -1;
-                if (saveDistance == 2 && tokenMoveforDeflection == defendingGK) gkPenalty = -1;
-                if (saveDistance == 3 && tokenMoveforDeflection == defendingGK) gkPenalty = -2;
-                
-                Debug.Log($"Goalkeeper {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {gkPenalty}");
-                onPathDefenders.Add((defendingGK, false, gkPenalty));
-            }
+          if (saveHex == null || gkHex == null)
+          {
+          }
+          else
+          {
+            int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates); // turn to Cube
+            if (saveDistance == 3) gkPenalty = -1;
+            if (saveDistance == 2 && tokenMoveforDeflection == defendingGK) gkPenalty = -1;
+            if (saveDistance == 3 && tokenMoveforDeflection == defendingGK) gkPenalty = -2;
+
+            Debug.Log($"Goalkeeper {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {gkPenalty}");
+            onPathDefenders.Add((defendingGK, false, gkPenalty));
+          }
         }
 
         // Step 4.1: Get defenders On the Path
@@ -672,13 +767,13 @@ public class ShotManager : MonoBehaviour
         shooterRoll = rigRoll ?? returnedRoll;
         // shooterRoll = 2;
         isWaitingForShotRoll = false;
-        totalShotPower = returnedJackpot ? 50 : shooterRoll + shooter.shooting;
+        totalShotPower = shooterRoll + shooter.shooting;
         boxPenalty = shooter.GetCurrentHex().isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
         // TODO: dificult shooting position penalty
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         if (shotType == "snapshot") totalShotPower -= 1; 
         if (shooter.GetCurrentHex().isInPenaltyBox == 0) totalShotPower -= 1;
-        // totalShotPower = 6;
+        totalShotPower = returnedJackpot ? 50 : totalShotPower;
         if (interceptors.Count > 0 && interceptors[0].gkPenalty != null) // Check if the GK is next
         {
             Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save. Press [R] to roll");
@@ -730,21 +825,16 @@ public class ShotManager : MonoBehaviour
         PlayerToken gkToken = gkEntry.defender;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int gkRoll = rigRoll ?? returnedRoll;
-        // int gkRoll = 6;
         int gkPenalty = gkEntry.gkPenalty ?? 0;
         int totalSavingPower = returnedJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 6;
-        // if (returnedJackpot)
-        // {
-        //     Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
-        // }
-        // else
-        Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
+        if (returnedJackpot) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
+        else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
         MatchManager.Instance.gameData.gameLog.LogEvent(
-                gkToken
-                , MatchManager.ActionType.SaveAttempt
-            );
+            gkToken
+            , MatchManager.ActionType.SaveAttempt
+        );
 
         hexGrid.ClearHighlightedHexes();
         alreadyInterceptedDefs.Add(gkToken);
@@ -763,6 +853,7 @@ public class ShotManager : MonoBehaviour
                 , saveType: "loose"
             );
             MatchManager.Instance.hangingPassType = "shot";
+            // TODO: Push everyone in line.
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false)); // Maybe this is redundant
             StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "ground"));
@@ -782,8 +873,7 @@ public class ShotManager : MonoBehaviour
                 movementPhaseManager.EndMovementPhase(false);
                 // movementPhaseManager.stunnedTokens.Clear();
             }
-            MatchManager.Instance.ChangePossession();
-            yield return null;
+            // yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
             yield break;
@@ -838,49 +928,48 @@ public class ShotManager : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator ResolveHandlingTest()
+    public IEnumerator ResolveHandlingTest(int? rigRoll = null)
     {
-      yield return null;
-      PlayerToken gkToken = interceptors[0].defender;
-      var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-      // int gkRoll = returnedRoll;
-      int gkRoll = 1;
-      isWaitingforHandlingTest = false;
-      // Handling Test
-      if (gkRoll < gkToken.handling)
-      {
-          MatchManager.Instance.gameData.gameLog.LogEvent(
-              gkToken
-              , MatchManager.ActionType.SaveMade
-              , saveType: "held"
-          );
-          MatchManager.Instance.SetLastToken(gkToken);
-          Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
-          if (movementPhaseManager.isActivated)
-          {
-              movementPhaseManager.EndMovementPhase(false);
-              // movementPhaseManager.stunnedTokens.Clear();
-          }
-          isWaitingForSaveandHoldScenario = true;
-          while (isWaitingForSaveandHoldScenario)
-          {
-              yield return null;  // Wait for the next frame
-          }
-      }
-      else 
-      {
-          Debug.Log($"{gkToken.name} rolled {gkRoll} and can't hold it!");
-          StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "handling"));
-      }
-      ResetShotProcess();
+        PlayerToken gkToken = hexGrid.GetDefendingGK();
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int gkRoll = rigRoll ?? returnedRoll;
+        isWaitingforHandlingTest = false;
+        // Handling Test
+        if (gkRoll < gkToken.handling)
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                gkToken
+                , MatchManager.ActionType.SaveMade
+                , saveType: "held"
+            );
+            MatchManager.Instance.ChangePossession();
+            MatchManager.Instance.SetLastToken(gkToken);
+            Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
+            if (movementPhaseManager.isActivated)
+            {
+                movementPhaseManager.EndMovementPhase(false);
+                // movementPhaseManager.stunnedTokens.Clear();
+            }
+            isWaitingForSaveandHoldScenario = true;
+            while (isWaitingForSaveandHoldScenario)
+            {
+                yield return null;  // Wait for the next frame
+            }
+        }
+        else 
+        {
+            Debug.Log($"{gkToken.name} rolled {gkRoll} and can't hold it!");
+            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "handling"));
+        }
+        ResetShotProcess();
     }
 
     private void QuickThrow()
     {
         isWaitingForSaveandHoldScenario = false;
         Debug.Log("QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw");
+        ResetShotProcess();
         MatchManager.Instance.BroadcastQuickThrow();
-        groundBallManager.CommitToThisAction();
     }
     private void ActivateFinalThirds()
     {
@@ -910,6 +999,10 @@ public class ShotManager : MonoBehaviour
         saveHex = null;
         currentDefenderBlockingHex = null;
         shotType = null;
+        isHeaderAtGoal = false;
+        headerAttackerTotalScore = 0;
+        headerAttacker = null;
+        headerTargetHex = null;
     }
 
     private IEnumerator ShootOffTargetRandomizer()

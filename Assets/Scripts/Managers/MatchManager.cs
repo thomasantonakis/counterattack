@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json;  // For JsonConvert
 using System.Linq;
 using System.Text;
-using System.Net.WebSockets;
-using System.Text.RegularExpressions;
-using UnityEngine.Android;
 
 public class MatchManager : MonoBehaviour
 {
@@ -607,7 +604,7 @@ public class MatchManager : MonoBehaviour
                     break;
 
                 case ActionType.AerialChallengeWon:
-                    logEntry += "wins an aerial challenge" + ((connectedToken!= null) ? $"from {connectedToken.name}" : "");
+                    logEntry += "wins an aerial challenge" + ((connectedToken!= null) ? $" from {connectedToken.name}" : "");
                     playerStats.aerialChallengesWon += value;
                     teamStats.totalAerialChallengesWon += value;
                     break;
@@ -1238,12 +1235,8 @@ public class MatchManager : MonoBehaviour
         }
         else if (currentState == GameState.QuickThrow)
         {
-            movementPhaseManager.isAvailable = false;
-            groundBallManager.isAvailable = true;
-            firstTimePassManager.isAvailable = false;
-            highPassManager.isAvailable = false;
-            longBallManager.isAvailable = false;
-            shotManager.isAvailable = false;
+            groundBallManager.ActivateGroundBall(true);
+            groundBallManager.CommitToThisAction();
         }
         else if (currentState == GameState.ActivateFinalThirdsAfterSave)
         {
@@ -1259,7 +1252,7 @@ public class MatchManager : MonoBehaviour
 
     private bool ShouldShotBeAvailable()
     {
-        bool shoulShotBeAvailable = false;
+        bool shouldShotBeAvailable = false;
         MatchManager.TeamAttackingDirection attackingDirection;
         if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
         {
@@ -1285,9 +1278,9 @@ public class MatchManager : MonoBehaviour
             )
         )
         {
-          shoulShotBeAvailable = true;
+          shouldShotBeAvailable = true;
         }
-        return shoulShotBeAvailable;
+        return shouldShotBeAvailable;
     }
     
     public void EnableFreeKickOptions()

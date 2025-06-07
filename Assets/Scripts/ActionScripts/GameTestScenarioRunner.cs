@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
-using UnityEngine.Assertions;
-using UnityEngine.Rendering;
 
 public struct AvailabilityCheckResult
 {
@@ -395,60 +393,80 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            Scenario_001_BasicKickoff(),
-            Scenario_002_GroundBall_0001_Commitment(),
-            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
-            Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
-            Scenario_011_Movement_Phase_Successful_Interception(),
-            Scenario_012_Movement_Phase_interception_Foul_take_foul(),
-            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
-            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
-            Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
-            Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
-            Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
-            Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
-            Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
-            Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
-            Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
-            Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
-            Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
-            Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
-            Scenario_025a_Movement_Phase_Dribling_into_goal(),
-            Scenario_025b_Movement_Phase_Reposition_into_goal(),
+            // Scenario_001_BasicKickoff(),
+            // Scenario_002_GroundBall_0001_Commitment(),
+            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            // Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
+            // Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
+            // Scenario_011_Movement_Phase_Successful_Interception(),
+            // Scenario_012_Movement_Phase_interception_Foul_take_foul(),
+            // Scenario_013_Movement_Phase_interception_Foul_Play_on(),
+            // Scenario_014_Movement_Phase_Check_reposition_interceptions(),
+            // Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
+            // Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
+            // Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
+            // Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
+            // Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
+            // Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
+            // Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
+            // Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
+            // Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
+            // Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
+            // Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
+            // Scenario_025a_Movement_Phase_Dribling_into_goal(),
+            // Scenario_025b_Movement_Phase_Reposition_into_goal(),
               
-            // // // // // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
-            Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC(),
-            // // // // // Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP(),
-            Scenario_027a_Decide_on_attWillJump(),
-            // // // Scenario_027_a_b_HP_on_1att_def_Not_challenging(),
-            Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(),
-            Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(true),
-            Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(),
-            Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(true),
-            // // // // // Scenario_027b_Decide_on_DefWillJump(),
-            Scenario_027c_4PlayerJump_AttackWins(),
-            Scenario_027d_4PlayerJump_Defense_Wins_to_player(),
-            Scenario_027e_4PlayerJump_Defense_Wins_to_space(),
-            // // // // // Scenario_027g_4PlayerJump_LooseBall_From_Stewart_Space(),
-            Scenario_027g_a_4PlayerJump_LooseBall_OnDefender_interception(),
-            Scenario_027g_b_4PlayerJump_LooseBall_OnDefender_NO_interception(),
-            Scenario_027h_4PlayerJump_LooseBall_OnDefender(),
-            Scenario_027i_4PlayerJump_LooseBall_OnAttacker(),
-            Scenario_027j_4PlayerJump_LooseBall_OnJumpedToken(),
-            Scenario_027j_4PlayerJump_LooseBall_OnJumpedToken(true),
-            // // // Scenario_028_Inaccurate_on_Defenders(),
-            Scenario_028a_Defense_Heads(),
-            // // // // // // Scenario_028a_Defense_BCs(),
-            Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_INterception(),
-            Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_NO_interception(),
-            Scenario_028b_a_Defense_Ball_Controls_McNulty_BC(),
+            // // // // // // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
+            // Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC(),
+            // // // // // // Scenario_027_HighPass_onAttacker_MoveAtt_moveDef_INAccurateHP(),
+            // Scenario_027a_Decide_on_attWillJump(),
+            // // // // Scenario_027_a_b_HP_on_1att_def_Not_challenging(),
+            // Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(),
+            // Scenario_027_a_c_HP_on_1att_def_Not_challenging_att_head(true),
+            // Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(),
+            // Scenario_027_a_d_HP_on_1att_def_Not_challenging_att_BC(true),
+            // // // // // // Scenario_027b_Decide_on_DefWillJump(),
+            // Scenario_027c_4PlayerJump_AttackWins(),
+            // Scenario_027d_4PlayerJump_Defense_Wins_to_player(),
+            // Scenario_027e_4PlayerJump_Defense_Wins_to_space(),
+            // // // // // // Scenario_027g_4PlayerJump_LooseBall_From_Stewart_Space(),
+            // Scenario_027g_a_4PlayerJump_LooseBall_OnDefender_interception(),
+            // Scenario_027g_b_4PlayerJump_LooseBall_OnDefender_NO_interception(),
+            // Scenario_027h_4PlayerJump_LooseBall_OnDefender(),
+            // Scenario_027i_4PlayerJump_LooseBall_OnAttacker(),
+            // Scenario_027j_4PlayerJump_LooseBall_OnJumpedToken(),
+            // Scenario_027j_4PlayerJump_LooseBall_OnJumpedToken(true),
+            // // // // Scenario_028_Inaccurate_on_Defenders(),
+            // Scenario_028a_Defense_Heads(),
+            // // // // // // // Scenario_028a_Defense_BCs(),
+            // Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_INterception(),
+            // Scenario_028b_a_a_Defense_Ball_Controls_McNulty_fails_NO_interception(),
+            // Scenario_028b_a_Defense_Ball_Controls_McNulty_BC(),
+            // // // // // Scenario_029_HeaderAtGoal_prep(true),
+            // // // // // Scenario_029_HeaderAtGoal_prep(),
+            Scenario_029_HeaderAtGoal_GOAL(true), // ✅
+            Scenario_029_HeaderAtGoal_GOAL(), // ✅
+            Scenario_029_HeaderAtGoal_OFF_TARGET(true), // ✅
+            Scenario_029_HeaderAtGoal_OFF_TARGET(), // ✅
+            // // // // // // // Scenario_029_HeaderAtGoal_Saved_by_GK(true),
+            // // // // // // // Scenario_029_HeaderAtGoal_Saved_by_GK(),
+            Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(true), // ✅ // TODO: Check Quickthrow logic
+            Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(),
+            Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(true), // ✅
+            Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(),
+            Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(true), // ✅
+            Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(),
+            Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(true), // ✅
+            Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(),
+            Scenario_029_HeaderAtGoal_Headed_Away(true),
+            Scenario_029_HeaderAtGoal_Headed_Away(),
+            Scenario_029_HeaderAtGoal_LooseBall(),
+            // Scenario_029_HeaderAtGoal_LooseBall_OWN_GOAL(),
             // Add more scenarios here
         };
 
@@ -6819,406 +6837,406 @@ public class GameTestScenarioRunner : MonoBehaviour
     
     // Duplicate This one for header at goal
     private IEnumerator Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP()
-  {
-    yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
-    Log("▶️ Starting test scenario: High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
-    Log("Pressing 2");
-    yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
-    AssertTrue(
-        MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup,
-        "Game is in KickOff Setup",
-        MatchManager.GameState.KickOffSetup,
-        MatchManager.Instance.currentState
-    );
-    Log("Pressing Space");
-    yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
-    AssertTrue(
-        MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
-        "Game is in KickoffBlown",
-        MatchManager.GameState.KickoffBlown,
-        MatchManager.Instance.currentState
-    );
-    Log("Pressing C - Call a HighPass");
-    yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
-    Log("Click On (13, 1) - Intitial HP Target");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
-    AssertTrue(
-        highPassManager.eligibleAttackers.Count == 1,
-        "HP target is has 1 eligible Attacker",
-        1,
-        highPassManager.eligibleAttackers.Count
-    );
-    AssertTrue(
-        highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
-        "HP target is the key pressed",
-        hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
-        highPassManager.currentTargetHex
-    );
-    yield return new WaitForSeconds(0.5f);
-    Log("Click On (7, 5) - Intitial HP Target");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(7, 5), 0.5f));
-    AssertTrue(
-        highPassManager.eligibleAttackers.Count == 3,
-        "HP target is has 3 eligible Attacker",
-        3,
-        highPassManager.eligibleAttackers.Count
-    );
-    AssertTrue(
-        highPassManager.isWaitingForConfirmation,
-        "HP target is waiting for target confirmation",
-        true,
-        highPassManager.isWaitingForConfirmation
-    );
-    AssertTrue(
-        highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(7, 0, 5)),
-        "HP target is the key pressed",
-        hexgrid.GetHexCellAt(new Vector3Int(7, 0, 5)),
-        highPassManager.currentTargetHex
-    );
-    yield return new WaitForSeconds(0.5f);
-    Log("Click On (-6, 3) - Intitial HP Target");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, 3), 0.5f));
-    AssertTrue(
-        highPassManager.eligibleAttackers.Count == 0,
-        "HP target is has no eligible Attacker",
-        0,
-        highPassManager.eligibleAttackers.Count
-    );
-    AssertTrue(
-        highPassManager.isWaitingForConfirmation,
-        "HP target is waiting for target confirmation",
-        true,
-        highPassManager.isWaitingForConfirmation
-    );
-    AssertTrue(
-        highPassManager.currentTargetHex == null,
-        "HP target is cleared"
-    );
-    yield return new WaitForSeconds(0.5f);
-    Log("Click On (10, 0) - Intitial HP Target");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
-    AssertTrue(
-        highPassManager.eligibleAttackers.Count == 1,
-        "HP target is has 1 eligible Attacker",
-        1,
-        highPassManager.eligibleAttackers.Count
-    );
-    AssertTrue(
-        highPassManager.isWaitingForConfirmation,
-        "HP target is waiting for target confirmation",
-        true,
-        highPassManager.isWaitingForConfirmation
-    );
-    AssertTrue(
-        highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)),
-        "HP target is the key pressed",
-        hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)),
-        highPassManager.currentTargetHex
-    );
-    Log("Click On (10, 0) - Confirm HP Target on Yaneva");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
-    AssertTrue(
-        !highPassManager.isWaitingForConfirmation,
-        "HP target is NO LONGER waiting for target confirmation",
-        false,
-        highPassManager.isWaitingForConfirmation
-    );
-    AssertTrue(
-        highPassManager.eligibleAttackers.Count == 1,
-        "HP target is has 1 eligible Attacker",
-        1,
-        highPassManager.eligibleAttackers.Count
-    );
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    Log("Click On (-12, 0) - Click on a Defender");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-12, 0), 0.5f));
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is NOT waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    Log("Click On (-4, -4) - Click on an Attacker");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        true,
-        highPassManager.isWaitingForAttackerMove
-    );
-    Log("Click On (10, 0) - Click on the locked Attacker");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is NOT waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    Log("Click On (-4, -4) - Click on an Attacker");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        true,
-        highPassManager.isWaitingForAttackerMove
-    );
-    Log("Click On (0, 8) - Click on an enpty Hex, not in Highlights");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 8), 0.5f));
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    Log("Click On (-4, -4) - Click on an Attacker");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
-    AssertTrue(
-        highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        true,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        true,
-        highPassManager.isWaitingForAttackerMove
-    );
-    Log("Click On (-1, -5) - Click on an valid Hex");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-1, -5), 0.5f));
-    yield return new WaitForSeconds(1.5f);
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        false,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderSelection,
-        "HP target is waiting for Defender selection",
-        true,
-        highPassManager.isWaitingForDefenderSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForDefenderMove,
-        "HP target is waiting for Defender move",
-        false,
-        highPassManager.isWaitingForDefenderMove
-    );
-    Log("Click On (4, 5) - Click on an valid Hex");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 5), 0.5f));
-    yield return new WaitForSeconds(1);
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        false,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderSelection,
-        "HP target is waiting for Defender selection",
-        true,
-        highPassManager.isWaitingForDefenderSelection
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderMove,
-        "HP target is waiting for Defender move",
-        true,
-        highPassManager.isWaitingForDefenderMove
-    );
-    Log("Click On (1, 2) - Click on an valid Defender");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        false,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderSelection,
-        "HP target is waiting for Defender selection",
-        true,
-        highPassManager.isWaitingForDefenderSelection
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderMove,
-        "HP target is waiting for Defender move",
-        true,
-        highPassManager.isWaitingForDefenderMove
-    );
-    Log("Click On (-8, -8) - Click on an Attacker");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.5f));
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        false,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderSelection,
-        "HP target is waiting for Defender selection",
-        true,
-        highPassManager.isWaitingForDefenderSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForDefenderMove,
-        "HP target is waiting for Defender move",
-        false,
-        highPassManager.isWaitingForDefenderMove
-    );
-    Log("Click On (14, 0) - Click on an valid Defender");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        false,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderSelection,
-        "HP target is waiting for Defender selection",
-        true,
-        highPassManager.isWaitingForDefenderSelection
-    );
-    AssertTrue(
-        highPassManager.isWaitingForDefenderMove,
-        "HP target is waiting for Defender move",
-        true,
-        highPassManager.isWaitingForDefenderMove
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAccuracyRoll,
-        "HP target is NOT waiting for Accuracy Roll yet",
-        false,
-        highPassManager.isWaitingForAccuracyRoll
-    );
-    Log("Click On (14, 1) - Click on an valid Hex");
-    yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 1), 0.5f));
-    yield return new WaitForSeconds(1);
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerSelection,
-        "HP target is waiting for Attacker selection",
-        false,
-        highPassManager.isWaitingForAttackerSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForAttackerMove,
-        "HP target is waiting for Attacker move",
-        false,
-        highPassManager.isWaitingForAttackerMove
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForDefenderSelection,
-        "HP target is waiting for Defender selection",
-        false,
-        highPassManager.isWaitingForDefenderSelection
-    );
-    AssertTrue(
-        !highPassManager.isWaitingForDefenderMove,
-        "HP target is waiting for Defender move",
-        false,
-        highPassManager.isWaitingForDefenderMove
-    );
-    AssertTrue(
-        highPassManager.isWaitingForAccuracyRoll,
-        "HP target is NOT waiting for Accuracy Roll yet",
-        true,
-        highPassManager.isWaitingForAccuracyRoll
-    );
-    highPassManager.PerformAccuracyRoll(6);
-    yield return new WaitForSeconds(5);
-    AssertTrue(
-        !highPassManager.isActivated,
-        "HP should be done",
-        false,
-        highPassManager.isActivated
-    );
-    AssertTrue(
-        headerManager.isActivated,
-        "header Manager should be activated",
-        true,
-        headerManager.isActivated
-    );
-    AssertTrue(
-        headerManager.isWaitingForControlOrHeaderDecision,
-        "header Manager should isWaitingForControlOrHeaderDecision",
-        true,
-        headerManager.isWaitingForControlOrHeaderDecision
-    );
-    Log("Pressing X - Forfeit Att F3");
-    yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
-    yield return new WaitForSeconds(0.2f);
-    Log("Pressing X - Forfeit Def F3");
-    yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
-    yield return new WaitForSeconds(0.2f);
+    {
+      yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+      Log("▶️ Starting test scenario: High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
+      Log("Pressing 2");
+      yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+      AssertTrue(
+          MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup,
+          "Game is in KickOff Setup",
+          MatchManager.GameState.KickOffSetup,
+          MatchManager.Instance.currentState
+      );
+      Log("Pressing Space");
+      yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+      AssertTrue(
+          MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
+          "Game is in KickoffBlown",
+          MatchManager.GameState.KickoffBlown,
+          MatchManager.Instance.currentState
+      );
+      Log("Pressing C - Call a HighPass");
+      yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+      Log("Click On (13, 1) - Intitial HP Target");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+      AssertTrue(
+          highPassManager.eligibleAttackers.Count == 1,
+          "HP target is has 1 eligible Attacker",
+          1,
+          highPassManager.eligibleAttackers.Count
+      );
+      AssertTrue(
+          highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
+          "HP target is the key pressed",
+          hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
+          highPassManager.currentTargetHex
+      );
+      yield return new WaitForSeconds(0.5f);
+      Log("Click On (7, 5) - Intitial HP Target");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(7, 5), 0.5f));
+      AssertTrue(
+          highPassManager.eligibleAttackers.Count == 3,
+          "HP target is has 3 eligible Attacker",
+          3,
+          highPassManager.eligibleAttackers.Count
+      );
+      AssertTrue(
+          highPassManager.isWaitingForConfirmation,
+          "HP target is waiting for target confirmation",
+          true,
+          highPassManager.isWaitingForConfirmation
+      );
+      AssertTrue(
+          highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(7, 0, 5)),
+          "HP target is the key pressed",
+          hexgrid.GetHexCellAt(new Vector3Int(7, 0, 5)),
+          highPassManager.currentTargetHex
+      );
+      yield return new WaitForSeconds(0.5f);
+      Log("Click On (-6, 3) - Intitial HP Target");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, 3), 0.5f));
+      AssertTrue(
+          highPassManager.eligibleAttackers.Count == 0,
+          "HP target is has no eligible Attacker",
+          0,
+          highPassManager.eligibleAttackers.Count
+      );
+      AssertTrue(
+          highPassManager.isWaitingForConfirmation,
+          "HP target is waiting for target confirmation",
+          true,
+          highPassManager.isWaitingForConfirmation
+      );
+      AssertTrue(
+          highPassManager.currentTargetHex == null,
+          "HP target is cleared"
+      );
+      yield return new WaitForSeconds(0.5f);
+      Log("Click On (10, 0) - Intitial HP Target");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+      AssertTrue(
+          highPassManager.eligibleAttackers.Count == 1,
+          "HP target is has 1 eligible Attacker",
+          1,
+          highPassManager.eligibleAttackers.Count
+      );
+      AssertTrue(
+          highPassManager.isWaitingForConfirmation,
+          "HP target is waiting for target confirmation",
+          true,
+          highPassManager.isWaitingForConfirmation
+      );
+      AssertTrue(
+          highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)),
+          "HP target is the key pressed",
+          hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)),
+          highPassManager.currentTargetHex
+      );
+      Log("Click On (10, 0) - Confirm HP Target on Yaneva");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+      AssertTrue(
+          !highPassManager.isWaitingForConfirmation,
+          "HP target is NO LONGER waiting for target confirmation",
+          false,
+          highPassManager.isWaitingForConfirmation
+      );
+      AssertTrue(
+          highPassManager.eligibleAttackers.Count == 1,
+          "HP target is has 1 eligible Attacker",
+          1,
+          highPassManager.eligibleAttackers.Count
+      );
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      Log("Click On (-12, 0) - Click on a Defender");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-12, 0), 0.5f));
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is NOT waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      Log("Click On (-4, -4) - Click on an Attacker");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          true,
+          highPassManager.isWaitingForAttackerMove
+      );
+      Log("Click On (10, 0) - Click on the locked Attacker");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is NOT waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      Log("Click On (-4, -4) - Click on an Attacker");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          true,
+          highPassManager.isWaitingForAttackerMove
+      );
+      Log("Click On (0, 8) - Click on an enpty Hex, not in Highlights");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(0, 8), 0.5f));
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      Log("Click On (-4, -4) - Click on an Attacker");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.5f));
+      AssertTrue(
+          highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          true,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          true,
+          highPassManager.isWaitingForAttackerMove
+      );
+      Log("Click On (-1, -5) - Click on an valid Hex");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-1, -5), 0.5f));
+      yield return new WaitForSeconds(1.5f);
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          false,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderSelection,
+          "HP target is waiting for Defender selection",
+          true,
+          highPassManager.isWaitingForDefenderSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForDefenderMove,
+          "HP target is waiting for Defender move",
+          false,
+          highPassManager.isWaitingForDefenderMove
+      );
+      Log("Click On (4, 5) - Click on an valid Hex");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 5), 0.5f));
+      yield return new WaitForSeconds(1);
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          false,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderSelection,
+          "HP target is waiting for Defender selection",
+          true,
+          highPassManager.isWaitingForDefenderSelection
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderMove,
+          "HP target is waiting for Defender move",
+          true,
+          highPassManager.isWaitingForDefenderMove
+      );
+      Log("Click On (1, 2) - Click on an valid Defender");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(1, 2), 0.5f));
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          false,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderSelection,
+          "HP target is waiting for Defender selection",
+          true,
+          highPassManager.isWaitingForDefenderSelection
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderMove,
+          "HP target is waiting for Defender move",
+          true,
+          highPassManager.isWaitingForDefenderMove
+      );
+      Log("Click On (-8, -8) - Click on an Attacker");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.5f));
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          false,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderSelection,
+          "HP target is waiting for Defender selection",
+          true,
+          highPassManager.isWaitingForDefenderSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForDefenderMove,
+          "HP target is waiting for Defender move",
+          false,
+          highPassManager.isWaitingForDefenderMove
+      );
+      Log("Click On (14, 0) - Click on an valid Defender");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          false,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderSelection,
+          "HP target is waiting for Defender selection",
+          true,
+          highPassManager.isWaitingForDefenderSelection
+      );
+      AssertTrue(
+          highPassManager.isWaitingForDefenderMove,
+          "HP target is waiting for Defender move",
+          true,
+          highPassManager.isWaitingForDefenderMove
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAccuracyRoll,
+          "HP target is NOT waiting for Accuracy Roll yet",
+          false,
+          highPassManager.isWaitingForAccuracyRoll
+      );
+      Log("Click On (14, 1) - Click on an valid Hex");
+      yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 1), 0.5f));
+      yield return new WaitForSeconds(1);
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerSelection,
+          "HP target is waiting for Attacker selection",
+          false,
+          highPassManager.isWaitingForAttackerSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForAttackerMove,
+          "HP target is waiting for Attacker move",
+          false,
+          highPassManager.isWaitingForAttackerMove
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForDefenderSelection,
+          "HP target is waiting for Defender selection",
+          false,
+          highPassManager.isWaitingForDefenderSelection
+      );
+      AssertTrue(
+          !highPassManager.isWaitingForDefenderMove,
+          "HP target is waiting for Defender move",
+          false,
+          highPassManager.isWaitingForDefenderMove
+      );
+      AssertTrue(
+          highPassManager.isWaitingForAccuracyRoll,
+          "HP target is NOT waiting for Accuracy Roll yet",
+          true,
+          highPassManager.isWaitingForAccuracyRoll
+      );
+      highPassManager.PerformAccuracyRoll(6);
+      yield return new WaitForSeconds(5);
+      AssertTrue(
+          !highPassManager.isActivated,
+          "HP should be done",
+          false,
+          highPassManager.isActivated
+      );
+      AssertTrue(
+          headerManager.isActivated,
+          "header Manager should be activated",
+          true,
+          headerManager.isActivated
+      );
+      AssertTrue(
+          headerManager.isWaitingForControlOrHeaderDecision,
+          "header Manager should isWaitingForControlOrHeaderDecision",
+          true,
+          headerManager.isWaitingForControlOrHeaderDecision
+      );
+      Log("Pressing X - Forfeit Att F3");
+      yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+      yield return new WaitForSeconds(0.2f);
+      Log("Pressing X - Forfeit Def F3");
+      yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+      yield return new WaitForSeconds(0.2f);
 
-    LogFooterofTest("High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
-  }
+      LogFooterofTest("High Pass on Attacker, Attacking and Defensive moves before Accurate Pass.");
+    }
 
     private IEnumerator Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC()
     {
@@ -9027,69 +9045,795 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("High Pass on Attacker, INAccurate HP on Defenders who decide to BC, McNulty Controls.");
 
     }
-      
-
-        // AssertTrue(
-        //     false,
-        //     "Break"
-        // );
     
-    // TODO: Movement Phase
-    // TODO: OwnGoal from Tackle Loose Ball
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, fail nutmeg, reposition defender, check Availability
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, Loose ball on nutmeg, on dribbler, check Availability
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, Loose ball on nutmeg, on not moved attacker, check Availability
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, Loose ball on nutmeg, on defender, check Availability
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, Loose ball on nutmeg, to space with interceptions, check Availability
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, Loose ball on nutmeg, to space without interceptions, check Availability
-
-    
-
-    // TODO: Pass to player
-    //    , move dribler for nutmeg
-    //    , reposition and continue moving
-    //    , forfeit MPAtt
-    //    , verify the defender cannot move
-    //    , end MP
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, loose ball to space with no interceptions.
-    // TODO: Pass to player
-    //    , move dribbler for nutmeg, loose ball to space with failed interceptions.
-    // TODO: Pass to next to defenders, fail interceptions
-    //    , move attacker to pickup ball and nutmeg.
-
-    // TODO: Final Thirds
-    // TODO: High Pass
-    // TODO: Long Ball
-
-
-    
-    private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
+    private IEnumerator Scenario_029_HeaderAtGoal_prep(bool gkRush = false)
     {
-        if (!condition)
+        yield return new WaitForSeconds(1.5f); // Allow scene to stabilize
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal");
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup,
+            "Game is in KickOff Setup",
+            MatchManager.GameState.KickOffSetup,
+            MatchManager.Instance.currentState
+        );
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
+            "Game is in KickoffBlown",
+            MatchManager.GameState.KickoffBlown,
+            MatchManager.Instance.currentState
+        );
+        Log("Pressing C - Call a HighPass");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        Log("Click On (13, 1) - Intitial HP Target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        AssertTrue(
+            highPassManager.eligibleAttackers.Count == 1,
+            "HP target is has 1 eligible Attacker",
+            1,
+            highPassManager.eligibleAttackers.Count
+        );
+        AssertTrue(
+            highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
+            "HP target is the key pressed",
+            hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
+            highPassManager.currentTargetHex
+        );
+        Log("Click On (13, 1) - Confirm HP Target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.5f));
+        yield return new WaitForSeconds(1.0f);
+        AssertTrue(
+            !highPassManager.isWaitingForConfirmation,
+            "HP target is NO LONGER waiting for target confirmation",
+            false,
+            highPassManager.isWaitingForConfirmation
+        );
+        AssertTrue(
+            highPassManager.eligibleAttackers.Count == 1,
+            "HP target is has 1 eligible Attacker",
+            1,
+            highPassManager.eligibleAttackers.Count
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerSelection,
+            "HP target is waiting for Attacker selection",
+            false,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        Log("Click On (14, 0) - Click on a Defender");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.5f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerSelection,
+            "HP target is waiting for Attacker selection",
+            false,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerMove,
+            "HP target is waiting for Attacker move",
+            false,
+            highPassManager.isWaitingForAttackerMove
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDefenderSelection,
+            "HP target is waiting for Defender selection",
+            true,
+            highPassManager.isWaitingForDefenderSelection
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDefenderMove,
+            "HP target is waiting for Defender move",
+            true,
+            highPassManager.isWaitingForDefenderMove
+        );
+        Log("Click On (14, 1) - Click on an valid Hex");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 1), 0.5f));
+        yield return new WaitForSeconds(1);
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerSelection,
+            "HP target is waiting for Attacker selection",
+            false,
+            highPassManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForAttackerMove,
+            "HP target is waiting for Attacker move",
+            false,
+            highPassManager.isWaitingForAttackerMove
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForDefenderSelection,
+            "HP target is waiting for Defender selection",
+            false,
+            highPassManager.isWaitingForDefenderSelection
+        );
+        AssertTrue(
+            !highPassManager.isWaitingForDefenderMove,
+            "HP target is waiting for Defender move",
+            false,
+            highPassManager.isWaitingForDefenderMove
+        );
+        AssertTrue(
+            highPassManager.isWaitingForAccuracyRoll,
+            "HP target is NOT waiting for Accuracy Roll yet",
+            true,
+            highPassManager.isWaitingForAccuracyRoll
+        );
+        highPassManager.PerformAccuracyRoll(6);
+        yield return new WaitForSeconds(3);
+        AssertTrue(
+            highPassManager.isActivated,
+            "HP should NOT be done",
+            true,
+            highPassManager.isActivated
+        );
+        AssertTrue(
+            !headerManager.isActivated,
+            "header Manager should be activated",
+            false,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            goalKeeperManager.isActivated,
+            "GK Manager should be activated for the ball entering the box",
+            true,
+            goalKeeperManager.isActivated
+        );
+        Log("Click On (16, 1) - Click on an valid Hex");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, 1), 0.5f));
+        yield return new WaitForSeconds(1); // Move GK for Box
+        AssertTrue(
+            !goalKeeperManager.isActivated,
+            "GK Manager should be done with GK Movement",
+            false,
+            goalKeeperManager.isActivated
+        );
+        AssertTrue(
+            highPassManager.isWaitingForDefGKChallengeDecision,
+            "HP Manager should now be waiting for a GK decision to Rushout",
+            true,
+            highPassManager.isWaitingForDefGKChallengeDecision
+        );
+        if (gkRush)
         {
-            string failMessage = $"❌ ASSERT FAILED: {message}";
-            if (expected != null || actual != null) {failMessage += $" | Expected: {expected} | Actual: {actual}";}
-            Debug.LogError(failMessage);
-            File.AppendAllText(logFilePath, failMessage + "\n");
-            testFailed = true;
-            StopAllCoroutines(); // freeze test
+          Log("Click On (15, 2) - Click on an valid Hex");
+          yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(15, 2), 0.5f));
+          yield return new WaitForSeconds(1); // Move GK for HighPass
+          AssertTrue(
+              highPassManager.gkRushedOut,
+              "HP Manager know that GK rushed out",
+              true,
+              highPassManager.gkRushedOut
+          );
         }
         else
         {
-            string passMessage = $"✅ PASS: {message}";
-            if (expected != null || actual != null) {passMessage += $" | Expected: {expected} | Actual: {actual}";}
-
-            Debug.Log(passMessage);
-            File.AppendAllText(logFilePath, passMessage + "\n");
+            Log("Press X - Do not Rush Out");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.5f));
+            yield return new WaitForSeconds(1); // Move GK for HighPass
+            AssertTrue(
+                !highPassManager.gkRushedOut,
+                "HP Manager know that GK DID NOT rush out",
+                false,
+                highPassManager.gkRushedOut
+            );  
         }
+        AssertTrue(
+            !highPassManager.isActivated,
+            "HP Manager should be done now",
+            false,
+            highPassManager.isActivated
+        );
+        AssertTrue(
+            finalThirdManager.isActivated,
+            "Final third Manager should be waiting",
+            true,
+            finalThirdManager.isActivated
+        );
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            headerManager.isActivated,
+            "Head should be Active",
+            true,
+            headerManager.isActivated
+        );
+        AssertTrue(
+            !finalThirdManager.isActivated,
+            "Final third Manager should be done by now",
+            false,
+            finalThirdManager.isActivated
+        );
+        AssertTrue(
+            !headerManager.isWaitingForAttackerSelection,
+            "Header Manager Should NOT be waiting for Attacker selection as there is only one",
+            false,
+            headerManager.isWaitingForAttackerSelection
+        );
+        AssertTrue(
+            headerManager.isWaitingForHeaderAtGoal,
+            "Header Manager Should be waiting for Attack to chose if they are going to try and score",
+            true,
+            headerManager.isWaitingForHeaderAtGoal
+        );
+        AssertTrue(
+            headerManager.attEligibleToHead.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "Header Manager Yaneva is Eligible"
+        );
+        AssertTrue(
+            headerManager.attackerWillJump.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "Header Manager Yaneva is Automatically nominated"
+        );
+        Log("Click On (19, 1) - Declaring header At Goal");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, 1), 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            !headerManager.isWaitingForHeaderAtGoal,
+            "Header Manager Should NO LONGER be waiting for GOAL decision, as it was already declared",
+            false,
+            headerManager.isWaitingForHeaderAtGoal
+        );
+        AssertTrue(
+            headerManager.isWaitingForDefenderSelection,
+            "Header Manager Should be waiting for More defenders to challenge",
+            true,
+            headerManager.isWaitingForDefenderSelection
+        );
+        if (gkRush)
+        {
+          AssertTrue(
+            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kuzmic")),
+            "GK is already in defensive challengers"
+          );
+          Log("Click On (15, 2) - Attempt to Deselect Kuzmic");
+          yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(15, 2), 0.5f));
+          AssertTrue(
+            headerManager.defenderWillJump.Contains(PlayerToken.GetPlayerTokenByName("Kuzmic")),
+            "Defensive GK was not denominated"
+          );
+            AssertTrue(
+                highPassManager.gkRushedOut,
+                "HP Manager know that GK rushed out",
+                true,
+                highPassManager.gkRushedOut
+            );
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.5f);
+            AssertTrue(
+                !highPassManager.gkRushedOut,
+                "HP Manager know that GK DID NOT rush out",
+                false,
+                highPassManager.gkRushedOut
+            );  
+        }
+        AssertTrue(
+            headerManager.isWaitingForDefenderSelection,
+            "Header Manager Should be waiting for More defenders to challenge",
+            true,
+            headerManager.isWaitingForDefenderSelection
+        );
+        Log("Click On (14, 1) - Nominate Soares to also Jump");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 1), 0.5f));
+        yield return new WaitForSeconds(0.2f);
+        Log("Pressing Enter to confirm the Defensive Selection");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            !headerManager.isWaitingForDefenderSelection,
+            "Header Manager Should NO LONGER be waiting for More defenders to challenge",
+            false,
+            headerManager.isWaitingForDefenderSelection
+        );
+        AssertTrue(
+            headerManager.isWaitingForHeaderRoll,
+            "Header Manager Should be waiting for Header Rolls",
+            true,
+            headerManager.isWaitingForHeaderRoll
+        );
+
+        LogFooterofTest("High Pass towards Attacker to head at Goal");
     }
+
+    private IEnumerator Scenario_029_HeaderAtGoal_GOAL(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND GOAL");
+        yield return Scenario_029_HeaderAtGoal_prep(gkRush);
+        Log("Press R to Roll a Header for Yaneva");
+        headerManager.PerformHeaderRoll(6);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Soares");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        if (gkRush)
+        {
+            Log("Press R to Roll a Header for Kuzmic");
+            headerManager.PerformHeaderRoll(1);
+            yield return new WaitForSeconds(0.4f);
+            AssertTrue(
+                goalFlowManager.isActivated
+                , "GoalFlow is activated"
+            );
+            while (goalFlowManager.isActivated) yield return null;
+            AssertTrue(
+                !goalFlowManager.isActivated
+                , "GoalFlow is no longer activated"
+            );
+        }
+        else
+        {
+            AssertTrue(
+                !headerManager.isActivated,
+                "Header Manager is dead",
+                false,
+                headerManager.isActivated
+            );
+            AssertTrue(
+                shotManager.isActivated,
+                "Shot Manager is activated for the Goal",
+                true,
+                shotManager.isActivated
+            );
+            AssertTrue(
+                shotManager.isWaitingForGKDiceRoll,
+                "Shot Manager is waiting for GK Dice Roll",
+                true,
+                shotManager.isWaitingForGKDiceRoll
+            );
+            shotManager.PerformGKHeaderSave(2);
+            yield return new WaitForSeconds(1.2f);
+            AssertTrue(
+                goalFlowManager.isActivated
+                , "GoalFlow is activated"
+            );
+            while (goalFlowManager.isActivated) yield return null;
+            AssertTrue(
+                !goalFlowManager.isActivated
+                , "GoalFlow is no longer activated"
+            );
+            
+        }
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND GOAL");
+    }
+    
+    private IEnumerator Scenario_029_HeaderAtGoal_OFF_TARGET(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND OFF target");
+        if (gkRush) yield return Scenario_029_HeaderAtGoal_prep(true);
+        else yield return Scenario_029_HeaderAtGoal_prep();
+        PlayerToken.GetPlayerTokenByName("Yaneva").heading = 6;
+        Log("Press R to Roll a Header for Yaneva");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Soares");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        if (gkRush)
+        {
+            Log("Press R to Roll a Header for Kuzmic");
+            headerManager.PerformHeaderRoll(1);
+        }
+        yield return new WaitForSeconds(5.2f);
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            "Match Manager shound understand that it is a GoalKick",
+            MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            MatchManager.Instance.currentState
+        );
+            
+        // Check what to test from here
+        // AssertTrue(false, "break");
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND OFF target");
+    }
+    
+    private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK(bool gkRush = false, bool handled = true)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved by GK");
+        if (gkRush) yield return Scenario_029_HeaderAtGoal_prep(true);
+        else yield return Scenario_029_HeaderAtGoal_prep();
+        Log("Press R to Roll a Header for Yaneva");
+        headerManager.PerformHeaderRoll(2);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Soares");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        if (gkRush)
+        {
+            Log("Press R to Roll a Header for Kuzmic");
+            headerManager.PerformHeaderRoll(6);
+            yield return new WaitForSeconds(1.5f);
+            AssertTrue(
+                shotManager.isWaitingForSaveandHoldScenario,
+                "Shot Manager is now handling the Save and Hold Choice",
+                true,
+                shotManager.isWaitingForSaveandHoldScenario
+            );
+            AssertTrue(
+                !headerManager.isActivated,
+                "Header Manager is dead",
+                true,
+                headerManager.isActivated
+            );
+            // AssertTrue(false, "break");
+        }
+        else
+        {
+            AssertTrue(
+                shotManager.isWaitingForGKDiceRoll,
+                "Shot Manager is Waiting for GK Dice Roll",
+                true,
+                shotManager.isWaitingForGKDiceRoll
+            );
+            AssertTrue(
+                !headerManager.isActivated,
+                "Header Manager is dead",
+                true,
+                headerManager.isActivated
+            );
+            yield return new WaitForSeconds(0.5f);
+            Log("Press R to Roll a Save with Kuzmic");
+            shotManager.PerformGKHeaderSave(6);
+            yield return new WaitForSeconds(1.5f);
+            AssertTrue(
+                !shotManager.isWaitingForGKDiceRoll,
+                "Shot Manager is no longer Waiting for GK Dice Roll",
+                false,
+                shotManager.isWaitingForGKDiceRoll
+            );
+            AssertTrue(
+                shotManager.isWaitingforHandlingTest,
+                "Shot Manager is Waiting for Handling Test",
+                true,
+                shotManager.isWaitingforHandlingTest
+            );
+            yield return new WaitForSeconds(0.5f);
+            if (handled)
+            {
+                StartCoroutine(shotManager.ResolveHandlingTest(1));
+                AssertTrue(
+                    shotManager.isWaitingForSaveandHoldScenario
+                    ,"Shot Manager is waiting for Save and Hold Scenario"
+                    , true
+                    , shotManager.isWaitingForSaveandHoldScenario
+                );
+            }
+            else
+            {
+                StartCoroutine(shotManager.ResolveHandlingTest(6));
+            }
+            yield return new WaitForSeconds(0.5f);
+            AssertTrue(
+                !shotManager.isWaitingforHandlingTest,
+                "Shot Manager is no longer Waiting for Handling Test",
+                true,
+                shotManager.isWaitingforHandlingTest
+            );
+            
+        }
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND saved by GK");
+    }
+    
+    private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved by GK, GK chooses Quick Throw");
+        yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush);
+        Log("Pressing Q to Play a Quick Throw");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Q, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !shotManager.isActivated
+            , "Shot Manager killed itself"
+            , true
+            , shotManager.isActivated
+        );
+        AssertTrue(
+            groundBallManager.isActivated
+            , "Ground Ball Manager is Activated"
+            , true
+            , groundBallManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow
+            , "Matchmanager should know that we are in a quick throw in order to help GBM handle it"
+            , MatchManager.GameState.QuickThrow
+            , MatchManager.Instance.currentState
+        );
+        AssertTrue(
+            groundBallManager.isQuickThrow
+            , "Ground Ball Manager is handling a Quick Throw"
+            , true
+            , groundBallManager.isQuickThrow
+        );
+
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND saved by GK, GK chooses Quick Throw");
+    }
+    
+    private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved by GK, GK chooses Goal Kick");
+        yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush);
+        Log("Pressing Enter to confirm the Defensive Selection");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.K, 0.1f));
+        AssertTrue(
+            !shotManager.isWaitingForSaveandHoldScenario
+            , "header Manager is NOT waiting for Save and Hold decision"
+            , true
+            , shotManager.isWaitingForSaveandHoldScenario
+        );
+        AssertTrue(
+            finalThirdManager.isActivated
+            , "F3 Manager is Activated"
+            , true
+            , finalThirdManager.isActivated
+        );
+        AssertTrue(
+            finalThirdManager.bothSides
+            , "F3 Manager is Activated for both sides"
+            , true
+            , finalThirdManager.bothSides
+        );
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND saved by  GK, GK chooses Goal Kick");
+    }
+
+  private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(bool gkRush = false)
+  {
+      Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner");
+      yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush, false);
+      AssertTrue(
+          looseBallManager.isActivated
+          , "Loose Ball Manager is Activated"
+          , true
+          , looseBallManager.isActivated
+      );
+      AssertTrue(
+          looseBallManager.isWaitingForDirectionRoll
+          , "Loose Ball Manager is Waiting for Direction Roll"
+          , true
+          , looseBallManager.isWaitingForDirectionRoll
+      );
+      Log("Rolling for Direction - 4 - North - Corner");
+      looseBallManager.PerformDirectionRoll(4);
+      yield return new WaitForSeconds(0.5f);
+      AssertTrue(
+          !looseBallManager.isWaitingForDirectionRoll
+          , "Loose Ball Manager is NOT Waiting for Direction Roll"
+          , false
+          , looseBallManager.isWaitingForDirectionRoll
+      );
+      AssertTrue(
+          !looseBallManager.isWaitingForDistanceRoll
+          , "Loose Ball Manager is Not Waiting for Distance Roll"
+          , false
+          , looseBallManager.isWaitingForDistanceRoll
+      );
+      yield return new WaitForSeconds(0.5f);
+      AssertTrue(
+          !looseBallManager.isActivated
+          , "Loose Ball Manager is Not Activated"
+          , false
+          , looseBallManager.isActivated
+      );
+      // AssertTrue(
+      //     outOfBoundsManager.isActivated
+      //     , "Out Of Bounds Manager is Not Activated"
+      //     , false
+      //     , outOfBoundsManager.isActivated
+      // );
+      LogFooterofTest("High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner");
+  }
+
+  private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(bool gkRush = false)
+  {
+      Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Loose Ball");
+      yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush, false);
+      AssertTrue(
+          looseBallManager.isActivated
+          , "Loose Ball Manager is Activated"
+          , true
+          , looseBallManager.isActivated
+      );
+      AssertTrue(
+          looseBallManager.isWaitingForDirectionRoll
+          , "Loose Ball Manager is Waiting for Direction Roll"
+          , true
+          , looseBallManager.isWaitingForDirectionRoll
+      );
+      Log("Rolling for Direction - 4 - NorthWest - Play On");
+      looseBallManager.PerformDirectionRoll(3);
+      yield return new WaitForSeconds(0.5f);
+      AssertTrue(
+          !looseBallManager.isWaitingForDirectionRoll
+          , "Loose Ball Manager is NOT Waiting for Direction Roll"
+          , false
+          , looseBallManager.isWaitingForDirectionRoll
+      );
+      AssertTrue(
+          looseBallManager.isWaitingForDistanceRoll
+          , "Loose Ball Manager is Waiting for Distance Roll"
+          , true
+          , looseBallManager.isWaitingForDistanceRoll
+      );
+      LogFooterofTest("High Pass towards Attacker to head at Goal AND saved but not handled by GK, Loose Ball");
+  }
+
+    private IEnumerator Scenario_029_HeaderAtGoal_Headed_Away(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND headed away by Def");
+        yield return Scenario_029_HeaderAtGoal_prep(gkRush);
+        Log("Press R to Roll a Header for Yaneva");
+        headerManager.PerformHeaderRoll(2);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Soares");
+        headerManager.PerformHeaderRoll(6);
+        yield return new WaitForSeconds(0.2f);
+        if (gkRush)
+        {
+            Log("Press R to Roll a Header for Kuzmic");
+            headerManager.PerformHeaderRoll(2);
+            yield return new WaitForSeconds(0.5f);
+        }
+        // AssertTrue(false, "break");
+        AssertTrue(
+            headerManager.isWaitingForHeaderTargetSelection,
+            "Header Manager Should be waiting for Header Target Selection",
+            true,
+            headerManager.isWaitingForHeaderTargetSelection
+        );
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND headed away by Def");
+    }
+    
+    private IEnumerator Scenario_029_HeaderAtGoal_LooseBall(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND Looseball");
+        yield return Scenario_029_HeaderAtGoal_prep(gkRush);
+        Log("Press R to Roll a Header for Yaneva");
+        headerManager.PerformHeaderRoll(5);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Soares");
+        headerManager.PerformHeaderRoll(5);
+        yield return new WaitForSeconds(0.2f);
+        if (gkRush)
+        {
+            Log("Press R to Roll a Header for Kuzmic");
+            headerManager.PerformHeaderRoll(2);
+            yield return new WaitForSeconds(0.5f);
+        }
+        yield return new WaitForSeconds(1.5f);
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager Should be Activated",
+            true,
+            looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should be Waiting for Direction Roll",
+            true,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        Log("Rolling for Direction - 1 - South");
+        looseBallManager.PerformDirectionRoll(1);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager Should NOT be Waiting for Direction Roll",
+            false,
+            looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager Should be Waiting for Distance Roll",
+            true,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(0.5f);
+        Log("Rolling for Distance - 4");
+        looseBallManager.PerformDistanceRoll(4);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll,
+            "Loose Ball Manager Should NOT be Waiting for Distance Roll",
+            false,
+            looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(3.5f);
+        AssertTrue(
+            !looseBallManager.isActivated,
+            "Loose Ball Manager Should NOT be Activated",
+            false,
+            looseBallManager.isActivated
+        );
+        // AssertTrue(false, "break");
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND Looseball");
+    }
+    
+    private IEnumerator Scenario_029_HeaderAtGoal_LooseBall_OWN_GOAL(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND Loose Ball for Own GOAL");
+        yield return Scenario_029_HeaderAtGoal_prep(gkRush);
+        Log("Press R to Roll a Header for Yaneva");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Soares");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        Log("Press R to Roll a Header for Kuzmic");
+        headerManager.PerformHeaderRoll(1);
+        yield return new WaitForSeconds(0.5f);
+        // AssertTrue(false, "break");
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND Loose Ball for Own GOAL");
+    }
+
+        // AssertTrue(
+  //     false,
+  //     "Break"
+  // );
+
+  // TODO: Movement Phase
+  // TODO: OwnGoal from Tackle Loose Ball
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, fail nutmeg, reposition defender, check Availability
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, Loose ball on nutmeg, on dribbler, check Availability
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, Loose ball on nutmeg, on not moved attacker, check Availability
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, Loose ball on nutmeg, on defender, check Availability
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, Loose ball on nutmeg, to space with interceptions, check Availability
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, Loose ball on nutmeg, to space without interceptions, check Availability
+
+
+
+  // TODO: Pass to player
+  //    , move dribler for nutmeg
+  //    , reposition and continue moving
+  //    , forfeit MPAtt
+  //    , verify the defender cannot move
+  //    , end MP
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, loose ball to space with no interceptions.
+  // TODO: Pass to player
+  //    , move dribbler for nutmeg, loose ball to space with failed interceptions.
+  // TODO: Pass to next to defenders, fail interceptions
+  //    , move attacker to pickup ball and nutmeg.
+
+  // TODO: Final Thirds
+  // TODO: High Pass
+  // TODO: Long Ball
+
+
+
+  private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
+  {
+    if (!condition)
+    {
+      string failMessage = $"❌ ASSERT FAILED: {message}";
+      if (expected != null || actual != null) { failMessage += $" | Expected: {expected} | Actual: {actual}"; }
+      Debug.LogError(failMessage);
+      File.AppendAllText(logFilePath, failMessage + "\n");
+      testFailed = true;
+      StopAllCoroutines(); // freeze test
+    }
+    else
+    {
+      string passMessage = $"✅ PASS: {message}";
+      if (expected != null || actual != null) { passMessage += $" | Expected: {expected} | Actual: {actual}"; }
+
+      Debug.Log(passMessage);
+      File.AppendAllText(logFilePath, passMessage + "\n");
+    }
+  }
 
     private AvailabilityCheckResult AssertCorrectAvailabilityAfterGBToPlayer()
     {

@@ -2,10 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 
 public class FirstTimePassManager : MonoBehaviour
 {

@@ -156,11 +156,14 @@ public class GoalFlowManager : MonoBehaviour
   
     public void StartGoalFlow(PlayerToken shooterToken)
     {
+        // TODO: This should clean up everything from all Managers.
         isActivated = true;
         hexGrid.RemoveHighlightsFromAllHexes();
         Debug.Log($"GOAL! {shooterToken.name} scores! Starting celebration...");
         StartCoroutine(DefenseCelebrationFlow(shooterToken));
         StartCoroutine(AttackCelebrationFlow(shooterToken));
+        
+        
     }
 
     private IEnumerator AttackCelebrationFlow(PlayerToken shooterToken)

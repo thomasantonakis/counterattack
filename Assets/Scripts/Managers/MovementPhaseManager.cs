@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using System.Threading.Tasks;
-using UnityEngine.Analytics;
 using System;
 using System.Text;
-using UnityEditor.Experimental.GraphView;
-using System.Text.RegularExpressions;
-using Unity.VisualScripting.Dependencies.Sqlite;
 
 public class MovementPhaseManager : MonoBehaviour
 {
@@ -391,7 +387,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-    private async void AsyncMoveTokenToHexWhileWaitingForNutmegDecision(HexCell hex)
+    private async Task AsyncMoveTokenToHexWhileWaitingForNutmegDecision(HexCell hex)
     {
         // Turning off wait for Nutmeg decision flags.
         if (isWaitingForTackleDecisionWithoutMoving) isWaitingForTackleDecisionWithoutMoving = false;
@@ -401,7 +397,7 @@ public class MovementPhaseManager : MonoBehaviour
         await helperFunctions.StartCoroutineAndWait(MoveTokenToHex(hex));  // Move the selected token to the hex
     }
     
-    private async void AsyncMoveTokenToHexRegularly(HexCell hex)
+    private async Task AsyncMoveTokenToHexRegularly(HexCell hex)
     {
         isWaitingForSnapshotDecision = false;
         isWaitingForTackleDecisionWithoutMoving = false;
@@ -610,7 +606,7 @@ public class MovementPhaseManager : MonoBehaviour
     }
     
     // This method will highlight valid movement hexes for the selected token
-    public void HighlightValidMovementHexes(PlayerToken token, int movementRange)
+    public void HighlightValidMovementHexes(PlayerToken token, int movementRange, bool isCalledDuringMovement = true)
     {
         HexCell currentHex = token.GetCurrentHex();  // Get the hex the token is currently on
         if (currentHex == null)
@@ -666,7 +662,7 @@ public class MovementPhaseManager : MonoBehaviour
                 }
             }
         }
-        isBallPickable = reachableHexes.Contains(ballHex) && !token.IsDribbler;
+        isBallPickable = reachableHexes.Contains(ballHex) && !token.IsDribbler && isCalledDuringMovement;
         // Slight change as it seems that clicking on the ballHex while moving for FTP causes an error
         // isBallPickable = reachableHexes.Contains(ballHex) && !selectedToken.IsDribbler;
     }
@@ -1505,7 +1501,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-    private async void AsyncRepositionTokenToHex(HexCell hex)
+    private async Task AsyncRepositionTokenToHex(HexCell hex)
     {
         if (hex == null)
         {
@@ -1588,7 +1584,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-    private async void PlayAdvantage()
+    private async Task PlayAdvantage()
     {
         isWaitingForFoulDecision = false;
         isDribblerRunning = true;

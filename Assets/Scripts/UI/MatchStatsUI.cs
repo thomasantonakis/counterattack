@@ -66,14 +66,13 @@ public class MatchStatsUI : MonoBehaviour
         statsText.text =
             $"{homeTeamName} - {awayTeamName} \n\n" +
             $"{homeTeam.totalGoals} Goals {awayTeam.totalGoals}\n" +
+            $"{homeTeam.totalAssists} Assists {awayTeam.totalAssists}\n"+
             $"{homeTeam.totalShots} ({homeTeam.totalShotsOnTarget}) Shots (On Trg) {awayTeam.totalShots} ({awayTeam.totalShotsOnTarget})\n" +
             $"{homeTeam.totalPassesAttempted} ({homeTeam.totalPassesCompleted}) Passes (Comp) {awayTeam.totalPassesAttempted} ({awayTeam.totalPassesCompleted})\n" +
+            $"{homeTeam.totalAerialPassesAttempted}-{homeTeam.totalAerialPassesTargeted}-{homeTeam.totalAerialPassesCompleted} Aerial Att-Trg-Comp {awayTeam.totalAerialPassesAttempted}-{awayTeam.totalAerialPassesTargeted}-{awayTeam.totalAerialPassesCompleted}\n"+
             $"{homeTeam.totalPacesRan} Distance (paces) {awayTeam.totalPacesRan}\n"+
             $"{homeTeam.totalInterceptionsAttempted} ({homeTeam.totalInterceptionsMade}) Int.(Made) {awayTeam.totalInterceptionsAttempted} ({awayTeam.totalInterceptionsMade})\n"+
-            $"{homeTeam.totalAerialPassesAttempted} Aerial Att {awayTeam.totalAerialPassesAttempted}\n"+
-            $"{homeTeam.totalAerialPassesTargeted} Aerial Targ {awayTeam.totalAerialPassesTargeted}\n"+
-            $"{homeTeam.totalAerialPassesCompleted} Aerial Completed {awayTeam.totalAerialPassesCompleted}\n"+
-            $"{homeTeam.totalAssists} Assists {awayTeam.totalAssists}\n"
+            $"{homeTeam.totalAerialChallengesInvolved} ({homeTeam.totalAerialChallengesWon}) Aerial Duels(Won) {awayTeam.totalAerialChallengesInvolved} ({awayTeam.totalAerialChallengesWon})\n"
             ;
     }
 

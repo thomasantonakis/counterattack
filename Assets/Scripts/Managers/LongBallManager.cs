@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System.IO;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 
 public class LongBallManager : MonoBehaviour
 {
@@ -439,7 +437,7 @@ public class LongBallManager : MonoBehaviour
         }
     }
 
-    private async void MoveGKForLB(HexCell hex)
+    private async Task MoveGKForLB(HexCell hex)
     {
         isWaitingForDefLBMove = false;
         hexGrid.ClearHighlightedHexes();

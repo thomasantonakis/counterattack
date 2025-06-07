@@ -145,6 +145,7 @@ public class OutOfBoundsManager : MonoBehaviour
     
     public IEnumerator HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
     {
+        Debug.Log($"Hello from OOM, {lastInboundsHex.name}, {outOfBoundsSide}, {source}");
         // Get the attacking team's direction
         MatchManager.TeamAttackingDirection attackingDirection;
         if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)

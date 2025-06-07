@@ -2,10 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;  // For JsonConvert
 
 public class GroundBallManager : MonoBehaviour
 {
@@ -86,7 +84,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void ActivateGroundBall()
+    public void ActivateGroundBall(bool isFromQuickThrow = false)
     {
         // MatchManager.Instance.TriggerStandardPass();
         ball.SelectBall();
@@ -95,12 +93,20 @@ public class GroundBallManager : MonoBehaviour
         isAvailable = false;  // Make it non available to avoid restarting this action again.
         if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
         isAwaitingTargetSelection = true;
+        isQuickThrow = isFromQuickThrow;
         Debug.Log("GroundBallManager activated. Waiting for target selection...");
     }
 
     public void CommitToThisAction()
     {
-        MatchManager.Instance.currentState = MatchManager.GameState.StandardPass;
+        if (isQuickThrow)
+        {
+            MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
+        }
+        else
+        {
+            MatchManager.Instance.currentState = MatchManager.GameState.StandardPass;
+        }
         MatchManager.Instance.CommitToAction();
     }
     
@@ -191,7 +197,8 @@ public class GroundBallManager : MonoBehaviour
                 else
                 {
                     Debug.Log("Pass is not dangerous, moving ball.");
-                    MoveTheBall(clickedHex); // Execute pass
+                    // MoveTheBall(clickedHex); // Execute pass
+                    _ = MoveTheBall(clickedHex); // Execute pass
                 }
                 ball.DeselectBall();  
             }
@@ -364,7 +371,7 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    private async void MoveTheBall(HexCell trgDestHex)
+    private async Task MoveTheBall(HexCell trgDestHex)
     {
         await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
@@ -496,6 +503,7 @@ public class GroundBallManager : MonoBehaviour
         currentTargetHex = null;  // Reset current target hex
         // imposedDistance = 11;  // Reset imposed distance
         ResetGroundPassInterceptionDiceRolls();
+        isQuickThrow = false;  // Reset quick throw state
     }
 
     void ResetGroundPassInterceptionDiceRolls()

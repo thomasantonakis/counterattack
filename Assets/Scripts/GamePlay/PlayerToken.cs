@@ -79,7 +79,7 @@ public class PlayerToken : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"Hex {newHex.coordinates} is already occupied by {newHex.occupyingToken.name}!");
+                Debug.LogWarning($"For token: {name}; Hex {newHex.coordinates} is already occupied by {newHex.occupyingToken.name}!");
             }
         }
 
@@ -214,7 +214,7 @@ public class PlayerToken : MonoBehaviour
     // Helper method to find a token (example implementation, adjust to your game's logic)
     private PlayerToken FindPlayerTokenByNameOrID(string nameOrID)
     {
-        PlayerToken[] allTokens = FindObjectsOfType<PlayerToken>();
+        PlayerToken[] allTokens = FindObjectsByType<PlayerToken>(FindObjectsSortMode.None);
         foreach (var token in allTokens)
         {
             if (token.name == nameOrID) // Adjust based on your identifier
