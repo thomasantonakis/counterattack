@@ -687,7 +687,7 @@ public class LongBallManager : MonoBehaviour
         if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
         if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll the accuracy check with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {(isDangerous ? 10 : 9) - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
-        if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
+        if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
         if (isWaitingForDefLBMove) {sb.Append($"{hexGrid.GetDefendingGK().name} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
