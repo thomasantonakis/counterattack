@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 public class ShotManager : MonoBehaviour
 {
@@ -1114,7 +1115,7 @@ public class ShotManager : MonoBehaviour
         if (isWaitingforHandlingTest) sb.Append("isWaitingforHandlingTest, ");
         if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
         if (gkWasOfferedMoveForBox) sb.Append("gkWasOfferedMoveForBox, ");
-        if (shotType != "") sb.Append($"shotType: {shotType}, ");
+        if (!string.IsNullOrEmpty(shotType)) sb.Append($"shotType: {shotType}, ");
         if (shooter != null) sb.Append($"shooter: {shooter.name}, ");
         if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
         if (saveHex != null) sb.Append($"saveHex: {saveHex.name}, ");

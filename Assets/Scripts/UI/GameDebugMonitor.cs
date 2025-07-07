@@ -164,6 +164,7 @@ public class GameDebugMonitor : MonoBehaviour
         AddIfNotEmpty(shotManager.GetInstructions());
         AddIfNotEmpty(groundBallManager.GetInstructions());
         AddIfNotEmpty(firstTimePassManager.GetInstructions());
+        AddIfNotEmpty(freeKickManager.GetInstructions());
         AddIfNotEmpty(highPassManager.GetInstructions());
         AddIfNotEmpty(longBallManager.GetInstructions());
         AddIfNotEmpty(headerManager.GetInstructions());

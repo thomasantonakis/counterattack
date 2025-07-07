@@ -154,11 +154,6 @@ public class LooseBallManager : MonoBehaviour
 
         if(resolutionType == "handling" && startingToken.IsGoalKeeper)
         {
-            MatchManager.Instance.gameData.gameLog.LogEvent(
-                startingToken
-                , MatchManager.ActionType.SaveMade
-                , saveType: "loose"
-            );
             if (!spillDirections.Contains(directionRoll))
             {
                 MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -167,6 +162,8 @@ public class LooseBallManager : MonoBehaviour
                     , saveType: "corner"
                     , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 );
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = null;
+                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
                 // HexCell lastInbound;
                 // This should be a CornerKick, and we should break
                 if (directionRoll == 2 || directionRoll == 3 || directionRoll == 4)
@@ -175,12 +172,14 @@ public class LooseBallManager : MonoBehaviour
                     if (startingToken.currentHex.isInPenaltyBox == 1)
                     {
                         // Right Side
+                        Debug.Log($"Ball went out of bounds on the Right Side, starting a Corner Kick form the North corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, 6)), true));
                         StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 6)), "RightGoalLine", "defendertouch"));
                     }
                     else
                     {
                         // Left Side
+                        Debug.Log($"Ball went out of bounds on the Left Side, starting a Corner Kick form the North corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, 6)), true));
                         StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 6)), "LeftGoalLine", "defendertouch"));
                     }
@@ -191,21 +190,29 @@ public class LooseBallManager : MonoBehaviour
                     if (startingToken.currentHex.isInPenaltyBox == 1)
                     {
                         // Right Side
+                        Debug.Log($"Ball went out of bounds on the Right Side, starting a Corner Kick form the South corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, -6)), true));
                         StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -6)), "RightGoalLine", "defendertouch"));
                     }
                     else
                     {
                         // Left Side
+                        Debug.Log($"Ball went out of bounds on the Left Side, starting a Corner Kick form the South corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, -6)), true));
                         StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -6)), "LeftGoalLine", "defendertouch"));
                     }
                 }
                 // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 
+                EndLooseBallPhase();
                 yield break;
             }
             else
             {
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                startingToken
+                , MatchManager.ActionType.SaveMade
+                , saveType: "loose"
+            );
                 MatchManager.Instance.hangingPassType = "shot";
             }
         }
@@ -457,6 +464,8 @@ public class LooseBallManager : MonoBehaviour
             else
             {
                 Debug.Log($"Ball Went out of Bounds");
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = null;
+                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
                 if (movementPhaseManager.isActivated)
                 {
                     movementPhaseManager.EndMovementPhase(false);

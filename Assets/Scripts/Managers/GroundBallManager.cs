@@ -13,6 +13,7 @@ public class GroundBallManager : MonoBehaviour
     public FinalThirdManager finalThirdManager;
     public FirstTimePassManager firstTimePassManager;
     public GoalKeeperManager goalKeeperManager;
+    public FreeKickManager freeKickManager;
     public HelperFunctions helperFunctions;
     [Header("Runtime Items")]
     public bool isAvailable = false;        // Check if the GroundBall is available as an action from the user.
@@ -53,7 +54,7 @@ public class GroundBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
-        if (isAvailable && !isActivated && keyData.key == KeyCode.P)
+        if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)
         {
             MatchManager.Instance.TriggerStandardPass();
             if (MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown)
@@ -679,6 +680,7 @@ public class GroundBallManager : MonoBehaviour
         StringBuilder sb = new();
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
+        if (freeKickManager.isWaitingForExecution) return "";
         if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
         if (isActivated) sb.Append("SP: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");

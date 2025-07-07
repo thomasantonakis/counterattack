@@ -60,13 +60,6 @@ public class FreeKickManager : MonoBehaviour
         }
         if (isWaitingForSetupPhase)
         {
-            // TODO Maybe this is not needed
-            if (isWaitingForFinalKickerSelection)
-            {
-                selectedKicker = token;
-                AdvanceToNextPhase(MatchManager.GameState.FreeKickKickerSelect);
-                return;
-            }
             if (selectedToken != null)
             {
                 if (token != null && token != selectedToken)
@@ -117,9 +110,13 @@ public class FreeKickManager : MonoBehaviour
         }
         if (isWaitingForFinalKickerSelection)
         {
-            selectedKicker = token;
-            AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
-            return;
+            if (token != null && potentialKickers.Contains(token))
+            {
+                selectedKicker = token;
+                MatchManager.Instance.SetLastToken(selectedKicker);
+                AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+                return;
+            }
         }
     }
 
@@ -280,10 +277,12 @@ public class FreeKickManager : MonoBehaviour
                 yield break;
             }
             Debug.Log($"Selected {clickedToken.name} as the kicker.");
-            if (isCornerKick) {
+            if (isCornerKick)
+            {
                 yield return StartCoroutine(MoveTokenToHex(clickedToken, spotkick));
             }
-            else {
+            else
+            {
                 HexCell targetHex = GetClosestAvailableHexToBall();
                 if (targetHex != null)
                 {
@@ -666,6 +665,7 @@ public class FreeKickManager : MonoBehaviour
                 {
                     selectedKicker = potentialKickers.FirstOrDefault();
                     Debug.Log($"{selectedKicker.name} selected as the kicker!");
+                    MatchManager.Instance.SetLastToken(selectedKicker);
                     AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
                 }
                 break;
@@ -753,6 +753,81 @@ public class FreeKickManager : MonoBehaviour
         if (isWaitingForExecution) sb.Append("isWaitingForExecution, ");
         if (isCornerKick) sb.Append("isCornerKick, ");
         if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
+
+        if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
+        return sb.ToString();
+    }
+    public string GetInstructions()
+    {
+        StringBuilder sb = new();
+        sb.Append("FK: ");
+
+        if (!isActivated) return "";
+        if (isWaitingForKickerSelection) sb.Append("Click on an Attacker Token to Move to the Set Piece Spot as potential Kicker, ");
+        if (isWaitingForSetupPhase)
+        {
+            switch (MatchManager.Instance.currentState)
+            {
+                case MatchManager.GameState.FreeKickAttGK:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click on a Hex to move {selectedToken.name} to, or Press [X] to leave them there, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click on the Attacking GK to adjust their position before the moving sequence or Press [X] to leave them there, ");
+                    }
+                    break;
+                case MatchManager.GameState.FreeKickDefGK1:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click on a Hex to move {selectedToken.name} to, or Press [X] to leave them there, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click on the Defending GK to move before the moving sequence or Press [X] to leave them there, ");
+                    }
+                    break;
+                case MatchManager.GameState.FreeKickDefGK2:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click on a Hex to move {selectedToken.name} to, or Press [X] to leave them there, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click on the Defending GK to move just before the Kick or Press [X] to leave them there, ");
+                    }
+                    break;
+                case MatchManager.GameState.FreeKickAtt1:
+                case MatchManager.GameState.FreeKickAtt2:
+                case MatchManager.GameState.FreeKickAtt3:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click another Attacking Token to move, or Click on a Hex to move {selectedToken.name} to, or Press [X] to this sequence part, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click on an Attacking Token to move or Press [X] to this sequence part, ");
+                    }
+                    break;
+                case MatchManager.GameState.FreeKickDef1:
+                case MatchManager.GameState.FreeKickDef2:
+                case MatchManager.GameState.FreeKickDef3:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click another Defending Token to move, or Click on a Hex to move {selectedToken.name} to, or Press [X] to this sequence part, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click on a Defending Token to move or Press [X] to this sequence part, ");
+                    }
+                    break;
+            }
+        }
+        if (isWaitingforMovement3) sb.Append("isWaitingforMovement3, ");
+        if (isWaitingForFinalKickerSelection) sb.Append("isWaitingForFinalKickerSelection, ");
+        if (isWaitingForExecution) sb.Append("Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements, ");
+
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();

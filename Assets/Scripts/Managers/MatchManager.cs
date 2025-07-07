@@ -1290,8 +1290,8 @@ public class MatchManager : MonoBehaviour
         firstTimePassManager.isAvailable = false;
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
-        // TODO: Check if the ball is in CanShootFrom Hex
-        shotManager.isAvailable = true;
+        if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+        else shotManager.isAvailable = false;
     }
     
     public void EnableCornerKickOptions()

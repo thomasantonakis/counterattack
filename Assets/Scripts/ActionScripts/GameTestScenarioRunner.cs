@@ -449,17 +449,17 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_028b_a_Defense_Ball_Controls_McNulty_BC(),
             // // // // // Scenario_029_HeaderAtGoal_prep(true),
             // // // // // Scenario_029_HeaderAtGoal_prep(),
-            Scenario_029_HeaderAtGoal_GOAL(true), // ✅
-            Scenario_029_HeaderAtGoal_GOAL(), // ✅
-            Scenario_029_HeaderAtGoal_OFF_TARGET(true), // ✅
-            Scenario_029_HeaderAtGoal_OFF_TARGET(), // ✅
+            // Scenario_029_HeaderAtGoal_GOAL(true), // ✅
+            // Scenario_029_HesorryaderAtGoal_GOAL(), // ✅
+            // Scenario_029_HeaderAtGoal_OFF_TARGET(true), // ✅
+            // Scenario_029_HeaderAtGoal_OFF_TARGET(), // ✅
             // // // // // // // Scenario_029_HeaderAtGoal_Saved_by_GK(true),
             // // // // // // // Scenario_029_HeaderAtGoal_Saved_by_GK(),
-            Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(true), // ✅ // TODO: Check Quickthrow logic
-            Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(),
-            Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(true), // ✅
-            Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(),
-            Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(true), // ✅
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(true), // ✅ // TODO: Check Quickthrow logic
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_QThrow(),
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(true), // ✅
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(),
+            // // // // // // Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(true), // Impossible Scenario
             Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(),
             Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(true), // ✅
             Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(),
@@ -9438,8 +9438,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK(bool gkRush = false, bool handled = true)
     {
         Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved by GK");
-        if (gkRush) yield return Scenario_029_HeaderAtGoal_prep(true);
-        else yield return Scenario_029_HeaderAtGoal_prep();
+        yield return Scenario_029_HeaderAtGoal_prep(gkRush);
         Log("Press R to Roll a Header for Yaneva");
         headerManager.PerformHeaderRoll(2);
         yield return new WaitForSeconds(0.2f);
@@ -9463,7 +9462,6 @@ public class GameTestScenarioRunner : MonoBehaviour
                 true,
                 headerManager.isActivated
             );
-            // AssertTrue(false, "break");
         }
         else
         {
@@ -9509,14 +9507,14 @@ public class GameTestScenarioRunner : MonoBehaviour
             else
             {
                 StartCoroutine(shotManager.ResolveHandlingTest(6));
+                yield return new WaitForSeconds(0.5f);
+                AssertTrue(
+                    !shotManager.isWaitingforHandlingTest,
+                    "Shot Manager is no longer Waiting for Handling Test",
+                    true,
+                    shotManager.isWaitingforHandlingTest
+                );
             }
-            yield return new WaitForSeconds(0.5f);
-            AssertTrue(
-                !shotManager.isWaitingforHandlingTest,
-                "Shot Manager is no longer Waiting for Handling Test",
-                true,
-                shotManager.isWaitingforHandlingTest
-            );
             
         }
         LogFooterofTest("High Pass towards Attacker to head at Goal AND saved by GK");
@@ -9584,87 +9582,107 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("High Pass towards Attacker to head at Goal AND saved by  GK, GK chooses Goal Kick");
     }
 
-  private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(bool gkRush = false)
-  {
-      Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner");
-      yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush, false);
-      AssertTrue(
-          looseBallManager.isActivated
-          , "Loose Ball Manager is Activated"
-          , true
-          , looseBallManager.isActivated
-      );
-      AssertTrue(
-          looseBallManager.isWaitingForDirectionRoll
-          , "Loose Ball Manager is Waiting for Direction Roll"
-          , true
-          , looseBallManager.isWaitingForDirectionRoll
-      );
-      Log("Rolling for Direction - 4 - North - Corner");
-      looseBallManager.PerformDirectionRoll(4);
-      yield return new WaitForSeconds(0.5f);
-      AssertTrue(
-          !looseBallManager.isWaitingForDirectionRoll
-          , "Loose Ball Manager is NOT Waiting for Direction Roll"
-          , false
-          , looseBallManager.isWaitingForDirectionRoll
-      );
-      AssertTrue(
-          !looseBallManager.isWaitingForDistanceRoll
-          , "Loose Ball Manager is Not Waiting for Distance Roll"
-          , false
-          , looseBallManager.isWaitingForDistanceRoll
-      );
-      yield return new WaitForSeconds(0.5f);
-      AssertTrue(
-          !looseBallManager.isActivated
-          , "Loose Ball Manager is Not Activated"
-          , false
-          , looseBallManager.isActivated
-      );
-      // AssertTrue(
-      //     outOfBoundsManager.isActivated
-      //     , "Out Of Bounds Manager is Not Activated"
-      //     , false
-      //     , outOfBoundsManager.isActivated
-      // );
-      LogFooterofTest("High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner");
-  }
+    private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner");
+        yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush, false);
+        AssertTrue(
+            looseBallManager.isActivated
+            , "Loose Ball Manager is Activated"
+            , true
+            , looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll
+            , "Loose Ball Manager is Waiting for Direction Roll"
+            , true
+            , looseBallManager.isWaitingForDirectionRoll
+        );
+        Log("Rolling for Direction - 4 - North - Corner");
+        looseBallManager.PerformDirectionRoll(4);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll
+            , "Loose Ball Manager is NOT Waiting for Direction Roll"
+            , false
+            , looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            !looseBallManager.isWaitingForDistanceRoll
+            , "Loose Ball Manager is Not Waiting for Distance Roll"
+            , false
+            , looseBallManager.isWaitingForDistanceRoll
+        );
+        yield return new WaitForSeconds(4.5f);
+        AssertTrue(
+            !looseBallManager.isActivated
+            , "Loose Ball Manager is Not Activated"
+            , false
+            , looseBallManager.isActivated
+        );
+        AssertTrue(
+            freeKickManager.isActivated
+            , "Free Kick Manager is Activated"
+            , true
+            , freeKickManager.isActivated
+        );
+        AssertTrue(
+            freeKickManager.isWaitingForKickerSelection
+            , "Free Kick Manager is Waiting for Kicker Selection"
+            , true
+            , freeKickManager.isWaitingForKickerSelection
+        );
+        // TODO: Check Corner Kick Flow
+        Log("Click On (-6, -6) - Nominate Noruega as the Corner Kicker");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.5f));
+        yield return new WaitForSeconds(1.5f);
+        AssertTrue(
+            !freeKickManager.isWaitingForKickerSelection
+            , "Free Kick Manager is NOT Waiting for Kicker Selection"
+            , false
+            , freeKickManager.isWaitingForKickerSelection
+        );
+        AssertTrue(
+            false,
+            "Break"
+        );
+    LogFooterofTest("High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner");
+    }
 
-  private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(bool gkRush = false)
-  {
-      Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Loose Ball");
-      yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush, false);
-      AssertTrue(
-          looseBallManager.isActivated
-          , "Loose Ball Manager is Activated"
-          , true
-          , looseBallManager.isActivated
-      );
-      AssertTrue(
-          looseBallManager.isWaitingForDirectionRoll
-          , "Loose Ball Manager is Waiting for Direction Roll"
-          , true
-          , looseBallManager.isWaitingForDirectionRoll
-      );
-      Log("Rolling for Direction - 4 - NorthWest - Play On");
-      looseBallManager.PerformDirectionRoll(3);
-      yield return new WaitForSeconds(0.5f);
-      AssertTrue(
-          !looseBallManager.isWaitingForDirectionRoll
-          , "Loose Ball Manager is NOT Waiting for Direction Roll"
-          , false
-          , looseBallManager.isWaitingForDirectionRoll
-      );
-      AssertTrue(
-          looseBallManager.isWaitingForDistanceRoll
-          , "Loose Ball Manager is Waiting for Distance Roll"
-          , true
-          , looseBallManager.isWaitingForDistanceRoll
-      );
-      LogFooterofTest("High Pass towards Attacker to head at Goal AND saved but not handled by GK, Loose Ball");
-  }
-
+    private IEnumerator Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(bool gkRush = false)
+    {
+        Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Loose Ball");
+        yield return Scenario_029_HeaderAtGoal_Saved_by_GK(gkRush, false);
+        AssertTrue(
+            looseBallManager.isActivated
+            , "Loose Ball Manager is Activated"
+            , true
+            , looseBallManager.isActivated
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll
+            , "Loose Ball Manager is Waiting for Direction Roll"
+            , true
+            , looseBallManager.isWaitingForDirectionRoll
+        );
+        Log("Rolling for Direction - 4 - NorthWest - Play On");
+        looseBallManager.PerformDirectionRoll(3);
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForDirectionRoll
+            , "Loose Ball Manager is NOT Waiting for Direction Roll"
+            , false
+            , looseBallManager.isWaitingForDirectionRoll
+        );
+        AssertTrue(
+            looseBallManager.isWaitingForDistanceRoll
+            , "Loose Ball Manager is Waiting for Distance Roll"
+            , true
+            , looseBallManager.isWaitingForDistanceRoll
+        );
+        LogFooterofTest("High Pass towards Attacker to head at Goal AND saved but not handled by GK, Loose Ball");
+    }
+    
     private IEnumerator Scenario_029_HeaderAtGoal_Headed_Away(bool gkRush = false)
     {
         Log("▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND headed away by Def");

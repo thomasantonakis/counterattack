@@ -18,6 +18,7 @@ public class HighPassManager : MonoBehaviour
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
     public LooseBallManager looseBallManager;
+    public FreeKickManager freeKickManager;
     public HelperFunctions helperFunctions;
     [Header("Runtime")]
     public bool isAvailable = false;
@@ -220,7 +221,7 @@ public class HighPassManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         // return;
-        if (isAvailable && !isActivated && keyData.key == KeyCode.C)
+        if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.C)
         {
             MatchManager.Instance.TriggerHighPass();
         }
@@ -962,6 +963,7 @@ public class HighPassManager : MonoBehaviour
         StringBuilder sb = new();
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
+        if (freeKickManager.isWaitingForExecution) return "";
         if (isAvailable) sb.Append("Press [C] to Play a High Pass, ");
         if (isActivated) sb.Append("HP: ");
         if (isWaitingForConfirmation) sb.Append($"Click on a Hex up to 15 Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
@@ -980,7 +982,7 @@ public class HighPassManager : MonoBehaviour
         if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll the accuracy check with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {8 - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
         if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
-        if (isWaitingForDefGKChallengeDecision) {sb.Append($"{hexGrid.GetDefendingGK().name} can rush out to challenge, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
+        if (isWaitingForDefGKChallengeDecision) {sb.Append($"{defGK.name} can rush out to challenge, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();

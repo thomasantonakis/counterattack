@@ -4311,6 +4311,7 @@ MonoBehaviour:
   finalThirdManager: {fileID: 1012232483}
   firstTimePassManager: {fileID: 886834329}
   goalKeeperManager: {fileID: 272854143}
+  freeKickManager: {fileID: 1688718062}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
@@ -4401,6 +4402,7 @@ MonoBehaviour:
   saveHex: {fileID: 0}
   currentDefenderBlockingHex: {fileID: 0}
   alreadyInterceptedDefs: []
+  isHeaderAtGoal: 0
 --- !u!4 &1740884028
 Transform:
   m_ObjectHideFlags: 0
@@ -4788,6 +4790,7 @@ MonoBehaviour:
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
   looseBallManager: {fileID: 757768961}
+  freeKickManager: {fileID: 1688718062}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0

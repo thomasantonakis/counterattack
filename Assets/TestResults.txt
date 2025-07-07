@@ -1,4 +1,84 @@
 ===== TEST LOG START =====
 
 ==== Starting Test #1 ====
-▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND GOAL
+▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner
+▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved by GK
+▶️ Starting test scenario: High Pass towards Attacker to head at Goal
+Pressing 2
+✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
+Pressing Space
+✅ PASS: Game is in KickoffBlown | Expected: KickoffBlown | Actual: KickoffBlown
+Pressing C - Call a HighPass
+Click On (13, 1) - Intitial HP Target
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is the key pressed | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Click On (13, 1) - Confirm HP Target
+✅ PASS: HP target is NO LONGER waiting for target confirmation | Expected: False | Actual: False
+✅ PASS: HP target is has 1 eligible Attacker | Expected: 1 | Actual: 1
+✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
+Click On (14, 0) - Click on a Defender
+✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
+✅ PASS: HP target is waiting for Defender selection | Expected: True | Actual: True
+✅ PASS: HP target is waiting for Defender move | Expected: True | Actual: True
+Click On (14, 1) - Click on an valid Hex
+✅ PASS: HP target is waiting for Attacker selection | Expected: False | Actual: False
+✅ PASS: HP target is waiting for Attacker move | Expected: False | Actual: False
+✅ PASS: HP target is waiting for Defender selection | Expected: False | Actual: False
+✅ PASS: HP target is waiting for Defender move | Expected: False | Actual: False
+✅ PASS: HP target is NOT waiting for Accuracy Roll yet | Expected: True | Actual: True
+✅ PASS: HP should NOT be done | Expected: True | Actual: True
+✅ PASS: header Manager should be activated | Expected: False | Actual: False
+✅ PASS: GK Manager should be activated for the ball entering the box | Expected: True | Actual: True
+Click On (16, 1) - Click on an valid Hex
+✅ PASS: GK Manager should be done with GK Movement | Expected: False | Actual: False
+✅ PASS: HP Manager should now be waiting for a GK decision to Rushout | Expected: True | Actual: True
+Press X - Do not Rush Out
+✅ PASS: HP Manager know that GK DID NOT rush out | Expected: False | Actual: False
+✅ PASS: HP Manager should be done now | Expected: False | Actual: False
+✅ PASS: Final third Manager should be waiting | Expected: True | Actual: True
+Pressing X - Forfeit Att F3
+Pressing X - Forfeit Def F3
+✅ PASS: Head should be Active | Expected: True | Actual: True
+✅ PASS: Final third Manager should be done by now | Expected: False | Actual: False
+✅ PASS: Header Manager Should NOT be waiting for Attacker selection as there is only one | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for Attack to chose if they are going to try and score | Expected: True | Actual: True
+✅ PASS: Header Manager Yaneva is Eligible
+✅ PASS: Header Manager Yaneva is Automatically nominated
+Click On (19, 1) - Declaring header At Goal
+✅ PASS: Header Manager Should NO LONGER be waiting for GOAL decision, as it was already declared | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for More defenders to challenge | Expected: True | Actual: True
+✅ PASS: HP Manager know that GK DID NOT rush out | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for More defenders to challenge | Expected: True | Actual: True
+Click On (14, 1) - Nominate Soares to also Jump
+Pressing Enter to confirm the Defensive Selection
+✅ PASS: Header Manager Should NO LONGER be waiting for More defenders to challenge | Expected: False | Actual: False
+✅ PASS: Header Manager Should be waiting for Header Rolls | Expected: True | Actual: True
+
+✅ High Pass towards Attacker to head at Goal - TEST PASSED COMPLETELY 🎉
+
+Press R to Roll a Header for Yaneva
+Press R to Roll a Header for Soares
+✅ PASS: Shot Manager is Waiting for GK Dice Roll | Expected: True | Actual: True
+✅ PASS: Header Manager is dead | Expected: True | Actual: False
+Press R to Roll a Save with Kuzmic
+✅ PASS: Shot Manager is no longer Waiting for GK Dice Roll | Expected: False | Actual: False
+✅ PASS: Shot Manager is Waiting for Handling Test | Expected: True | Actual: True
+✅ PASS: Shot Manager is no longer Waiting for Handling Test | Expected: True | Actual: False
+
+✅ High Pass towards Attacker to head at Goal AND saved by GK - TEST PASSED COMPLETELY 🎉
+
+✅ PASS: Loose Ball Manager is Activated | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager is Waiting for Direction Roll | Expected: True | Actual: True
+Rolling for Direction - 4 - North - Corner
+✅ PASS: Loose Ball Manager is NOT Waiting for Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager is Not Waiting for Distance Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager is Not Activated | Expected: False | Actual: False
+✅ PASS: Free Kick Manager is Activated | Expected: True | Actual: True
+✅ PASS: Free Kick Manager is Waiting for Kicker Selection | Expected: True | Actual: True
+Click On (-6, -6) - Nominate Noruega as the Corner Kicker
+✅ PASS: Free Kick Manager is NOT Waiting for Kicker Selection | Expected: False | Actual: False
+❌ ASSERT FAILED: Break
+
+❌ High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner - TEST FAILED SOMEWHERE
+

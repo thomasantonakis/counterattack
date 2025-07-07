@@ -1885,7 +1885,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (shotManager.isActivated) return "";
         if (shotManager.isAvailable) return "";
         if (looseBallManager.isActivated) return "";
-        if (isAvailable) sb.Append("Press [M] to start a Movement Phase, ");
+        if (isAvailable) sb.Append("Press [M] to start a Movement Phase, "); //TODO: this is suppressed in case a Snapshot it available.
         if (isActivated) sb.Append("MP: ");
         if (isAwaitingTokenSelection) sb.Append("Click on a Token to Select them for Movement!, ");
         if (isAwaitingHexDestination) sb.Append($"Click on a Free Hex to move {selectedToken.playerName} there!, ");
