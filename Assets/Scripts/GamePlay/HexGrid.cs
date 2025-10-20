@@ -33,11 +33,15 @@ public class HexGrid : MonoBehaviour
             Debug.Log("HexGrid initialized. Creating grid...");
             CreateGrid();  // Generate the grid
         }
-        // Create out-of-bounds planes around the grid
-        CreateOutOfBoundsPlanes(this);
+    // Create out-of-bounds planes around the grid
+    CreateOutOfBoundsPlanes(this);
         // Path to save or load the shooting paths JSON
-        string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
-        string headpath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
+        // string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
+        // string headpath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
+        // string path = Resources.Load<TextAsset>("shootingpaths/shootingPaths");
+        // string headpath = Resources.Load<TextAsset>("shootingpaths/headingPaths");
+        string path = Path.Combine(Application.dataPath, "Resources/shootingpaths/shootingPaths.json");
+        string headpath = Path.Combine(Application.dataPath, "Resources/shootingpaths/headingPaths.json");
 
         if (File.Exists(path))
         {
@@ -855,7 +859,7 @@ public class HexGrid : MonoBehaviour
 
         // Serialize to JSON
         string json = JsonConvert.SerializeObject(serializablePaths, Formatting.Indented);
-        string filePath = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
+        string filePath = Path.Combine(Application.dataPath, "Resources/shootingpaths/shootingPaths.json");
         File.WriteAllText(filePath, json);
         Debug.Log($"Shooting paths saved to {filePath}");
         // Heading
@@ -878,7 +882,7 @@ public class HexGrid : MonoBehaviour
 
         // Serialize to JSON
         string headjson = JsonConvert.SerializeObject(serializableHeadPaths, Formatting.Indented);
-        string headfilePath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
+        string headfilePath = Path.Combine(Application.dataPath, "Resources/shootingpaths/headingPaths.json");
         File.WriteAllText(headfilePath, headjson);
         Debug.Log($"Heading paths saved to {headfilePath}");
     }
