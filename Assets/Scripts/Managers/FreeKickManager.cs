@@ -113,7 +113,7 @@ public class FreeKickManager : MonoBehaviour
             if (token != null && potentialKickers.Contains(token))
             {
                 selectedKicker = token;
-                MatchManager.Instance.SetLastToken(selectedKicker);
+                MatchManager.Instance.SetLastToken(selectedKicker); // I amnot sure about this yet.
                 AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
                 return;
             }
@@ -227,6 +227,7 @@ public class FreeKickManager : MonoBehaviour
     private void CalculatePotentialKickers()
     {
         potentialKickers.Clear();
+        Debug.Log("HandleKicker Selection: Calculating potential kickers...");
         // Debug.Log("Calculating potential kickers...");
         HexCell ballHex = ball.GetCurrentHex();
         List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 1);
@@ -279,6 +280,9 @@ public class FreeKickManager : MonoBehaviour
             Debug.Log($"Selected {clickedToken.name} as the kicker.");
             if (isCornerKick)
             {
+                // TODO :this is quite optimistic.
+                // There might be cases that an attacker might already be on the spotkick
+                // maybe even a defender.
                 yield return StartCoroutine(MoveTokenToHex(clickedToken, spotkick));
             }
             else
@@ -294,9 +298,9 @@ public class FreeKickManager : MonoBehaviour
                 }
             }
         }
+        Debug.Log($"isWaitingForKickerSelection is now set to false");
         isWaitingForKickerSelection = false;
-        hexGrid.ClearHighlightedHexes();
-        Debug.Log("HandleKicker Selection: Calculating potential kickers...");
+        hexGrid.ClearHighlightedHexes(); 
         CalculatePotentialKickers();
         // Transition to the first phase
         StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAttGK, 1));
@@ -803,11 +807,11 @@ public class FreeKickManager : MonoBehaviour
                 case MatchManager.GameState.FreeKickAtt3:
                     if (selectedToken != null)
                     {
-                        sb.Append($"Click another Attacking Token to move, or Click on a Hex to move {selectedToken.name} to, or Press [X] to this sequence part, ");
+                        sb.Append($"Click another Attacking Token to move, or Click on a Hex to move {selectedToken.name} to, or Press [X] to skip this sequence part, ");
                     }
                     else
                     {
-                        sb.Append("Click on an Attacking Token to move or Press [X] to this sequence part, ");
+                        sb.Append("Click on an Attacking Token to move or Press [X] to skip this sequence part, ");
                     }
                     break;
                 case MatchManager.GameState.FreeKickDef1:
@@ -815,11 +819,11 @@ public class FreeKickManager : MonoBehaviour
                 case MatchManager.GameState.FreeKickDef3:
                     if (selectedToken != null)
                     {
-                        sb.Append($"Click another Defending Token to move, or Click on a Hex to move {selectedToken.name} to, or Press [X] to this sequence part, ");
+                        sb.Append($"Click another Defending Token to move, or Click on a Hex to move {selectedToken.name} to, or Press [X] to skip this sequence part, ");
                     }
                     else
                     {
-                        sb.Append("Click on a Defending Token to move or Press [X] to this sequence part, ");
+                        sb.Append("Click on a Defending Token to move or Press [X] to skip this sequence part, ");
                     }
                     break;
             }

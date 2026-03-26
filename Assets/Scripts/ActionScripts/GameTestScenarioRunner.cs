@@ -416,7 +416,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
             // Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
             // Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            // Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
+            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
             // Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
             // Scenario_025a_Movement_Phase_Dribling_into_goal(),
             // Scenario_025b_Movement_Phase_Reposition_into_goal(),
@@ -9634,13 +9634,19 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         // TODO: Check Corner Kick Flow
         Log("Click On (-6, -6) - Nominate Noruega as the Corner Kicker");
-        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.5f));
-        yield return new WaitForSeconds(1.5f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.1f));
+        yield return new WaitForSeconds(2.5f);
         AssertTrue(
             !freeKickManager.isWaitingForKickerSelection
             , "Free Kick Manager is NOT Waiting for Kicker Selection"
             , false
             , freeKickManager.isWaitingForKickerSelection
+        );
+        AssertTrue(
+            freeKickManager.isWaitingForSetupPhase
+            , "Free Kick Manager is Waiting for Setup Phase"
+            , true
+            , freeKickManager.isWaitingForSetupPhase
         );
         AssertTrue(
             false,

@@ -1,6 +1,80 @@
 ===== TEST LOG START =====
 
 ==== Starting Test #1 ====
+▶️ Starting test scenario: MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL!
+Pressing 2
+Pressing Space
+Pressing P - Game is in Movement Phase
+Clicking (10, 0)
+Clicking (10, 0) again
+Wait for the ball to move
+✅ PASS: Action Availability after GB to Player is correct | Expected: True | Actual: ✅ All availability flags are correct.
+Pressing X - Forfeit Att F3
+Pressing X - Forfeit Def F3
+Pressing M - Start Movement Phase
+Clicking (8, 8) - Select Toothnail
+Clicking (13, 5) - Move Toothnail
+Pressing X - Forfeit Att MP
+✅ PASS: MP Defenders Moved should have 4 as the Att MP is forfeited | Expected: 4 | Actual: 4
+✅ PASS: MP must have passed in Def MP | Expected: True | Actual: True
+Clicking (14, 0) - Select Soares
+Clicking (13, 1) - Move Soares
+Pressing X - Forfeit Def MP
+✅ PASS: MP Defenders Moved should have 4 as the Att MP is forfeited | Expected: 4 | Actual: 4
+✅ PASS: MP Defenders Moved should have 5 as the Att MP is forfeited | Expected: 5 | Actual: 5
+✅ PASS: MP must have passed in MovementPhase2f2 MP | Expected: True | Actual: True
+Pressing X - Forfeit 2f2 MP
+Pressing X - Forfeit Att F3
+Pressing X - Forfeit Def F3
+Pressing M - Start Movement Phase
+Clicking (10, 0) - Select Yaneva
+Clicking (11, 0) - Move Yaneva 1st Pace
+Clicking (12, 1) - Move Yaneva 2nd Pace
+✅ PASS: GK Manager Should be active for Yaneva entering the box with the ball | Expected: False | Actual: True
+Clicking (16, -1) - Move GK for Box
+✅ PASS: GK Manager Should NOT be active any more | Expected: False | Actual: False
+Clicking (13, 1) - Move Yaneva 3rd Pace
+Clicking (12, 1) - Move Yaneva 4th Pace
+Pressing T - Nutmeg Soares with Yaneva
+✅ PASS: Movement Phase should NO longer be in Nutmeg phase | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be activated after the loose ball caused by Soares's tackle | Expected: True | Actual: True
+✅ PASS: Loose Ball Manager Should be waiting for a Direction Roll after the loose ball caused by Soares's tackle | Expected: True | Actual: True
+Pressing R - Direction Roll North
+✅ PASS: Loose Ball Manager Should NOT be waiting for a Direction Roll after Direction Roll | Expected: False | Actual: False
+✅ PASS: Loose Ball Manager Should be waiting for a Distance Roll after Direction Roll | Expected: True | Actual: True
+Pressing R - Distance Roll 6
+✅ PASS: Loose Ball Manager Should not be activated any more | Expected: False | Actual: False
+✅ PASS: MP Should still be at Attacking part | Expected: True | Actual: True
+✅ PASS: MP Moved Tokens should have 1 | Expected: 1 | Actual: 1
+✅ PASS: MP Attackers Moved shouldbe 0 sas ithis is not yet resolved | Expected: 4 | Actual: 0
+✅ PASS: MP Moved Tokens should Contain Yaneva
+✅ PASS: MP Should Not be waiting for a Snapshot decision, as this is the Shot Manager's responsiility now | Expected: True | Actual: False
+✅ PASS: Shot Should be waiting for a Snapshot decision | Expected: True | Actual: True
+Pressing S - Snapshot with Toothnail!
+✅ PASS: Shot Manager is activated
+✅ PASS: Shot Manager waiting for blocker Selection
+Clicking (13, 1) - Select Soares
+✅ PASS: Shot Manager waiting for blocker Target
+Clicking (11, 1) - Move Soares for Snapshot Block
+✅ PASS: Shot Manager is activated
+✅ PASS: Shot Manager NOT waiting for blocker Selection
+✅ PASS: Shot Manager NOT waiting for blocker target
+✅ PASS: Shot Manager waiting for target selection
+Clicking (19, 2) - Select target of Snapshot
+✅ PASS: Shot Manager NOT waiting for target selection
+✅ PASS: Shot Manager waiting for Shot Roll
+Pressing R - Roll shot with Toothnail!
+✅ PASS: Shot Manager is no longer activated
+✅ PASS: MP Manager is no longer activated
+✅ PASS: GoalFlow is activated
+✅ PASS: GoalFlow is no longer activated
+
+✅ MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL! - TEST PASSED COMPLETELY 🎉
+
+✅ Test #1 passed.
+
+
+==== Starting Test #2 ====
 ▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner
 ▶️ Starting test scenario: High Pass towards Attacker to head at Goal AND saved by GK
 ▶️ Starting test scenario: High Pass towards Attacker to head at Goal
@@ -78,6 +152,7 @@ Rolling for Direction - 4 - North - Corner
 ✅ PASS: Free Kick Manager is Waiting for Kicker Selection | Expected: True | Actual: True
 Click On (-6, -6) - Nominate Noruega as the Corner Kicker
 ✅ PASS: Free Kick Manager is NOT Waiting for Kicker Selection | Expected: False | Actual: False
+✅ PASS: Free Kick Manager is Waiting for Setup Phase | Expected: True | Actual: True
 ❌ ASSERT FAILED: Break
 
 ❌ High Pass towards Attacker to head at Goal AND saved but not handled by GK, Corner - TEST FAILED SOMEWHERE
