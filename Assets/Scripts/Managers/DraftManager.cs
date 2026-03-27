@@ -32,7 +32,12 @@ public class DraftManager : MonoBehaviour
     private bool useNonTableTopiaGK = false; 
     private bool useInternationalsGK = false; 
     private int cardsAssignedThisRound = 0;
+    private int currentBatchNumber = 0;
+    private int totalBatchCount = 0;
+    private int currentBatchSize = 0;
     private string currentTeamTurn;  // Track which team's turn it is
+    private string firstBatchStarter;
+    private string currentBatchStarter;
     private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
     public TMP_Text refereeText; // Reference to the TMP_Text for the referee
     public TMP_Text homeTeamName; // Reference to the TMP_Text for the Home Team
@@ -41,6 +46,11 @@ public class DraftManager : MonoBehaviour
 
     void Start()
     {
+        // Draft scene flow:
+        // 1. Load the game-settings JSON produced by CreateNewHSGameScene.
+        // 2. Filter/shuffle the outfielder and goalkeeper pools from the setup toggles.
+        // 3. Create roster slots for both teams and auto-assign the two GKs per side.
+        // 4. Flip who picks first, then deal 4 outfield cards at a time until squads are full.
         LoadGameSettings();
         ApplySettingsToDraft();
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
@@ -56,31 +66,19 @@ public class DraftManager : MonoBehaviour
 
     private void LoadGameSettings()
     {
-        // Get the folder path from ApplicationManager
-        // string folderPath = Application.persistentDataPath;
         ApplicationManager.EnsureInstanceExists();
         string folderPath = ApplicationManager.Instance.GetSaveFolderPath();
-
-
-        // Get all JSON files in the persistent data path
-        string[] files = Directory.GetFiles(folderPath, "*.json");
-
-        if (files.Length == 0)
+        string settingsFilePath = ResolveGameSettingsFilePath(folderPath);
+        if (string.IsNullOrEmpty(settingsFilePath))
         {
             Debug.LogError("No game settings files found in the persistent data path!");
             return;
         }
 
-        // Sort files by creation time, descending (newest first)
-        var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
+        ApplicationManager.Instance.LastSavedFileName = settingsFilePath;
+        Debug.Log($"Loading draft settings from: {settingsFilePath}");
 
-        // Select the most recent file
-        string mostRecentFilePath = sortedFiles[0];
-        ApplicationManager.Instance.LastSavedFileName = mostRecentFilePath; // Set the file path
-        Debug.Log($"Most recent file found: {mostRecentFilePath}");
-
-        // Read the content of the most recent file
-        string json = File.ReadAllText(mostRecentFilePath);
+        string json = File.ReadAllText(settingsFilePath);
 
         // Parse the "gameSettings" node into the currentSettings object
         var root = JsonConvert.DeserializeObject<RootGameSettings>(json);
@@ -95,6 +93,38 @@ public class DraftManager : MonoBehaviour
         {
             Debug.LogError("Failed to parse game settings from JSON file.");
         }
+    }
+
+    private string ResolveGameSettingsFilePath(string folderPath)
+    {
+        // Prefer the exact file selected in the previous scene before falling back to discovery.
+        string exactFilePath = ApplicationManager.Instance.GetLastSavedFilePath();
+        if (!string.IsNullOrEmpty(exactFilePath) && File.Exists(exactFilePath))
+        {
+            return exactFilePath;
+        }
+
+        string playerPrefsPath = PlayerPrefs.GetString("currentGameSettings", string.Empty);
+        if (!string.IsNullOrEmpty(playerPrefsPath))
+        {
+            string resolvedPlayerPrefsPath = Path.IsPathRooted(playerPrefsPath)
+                ? playerPrefsPath
+                : Path.Combine(folderPath, playerPrefsPath);
+
+            if (File.Exists(resolvedPlayerPrefsPath))
+            {
+                return resolvedPlayerPrefsPath;
+            }
+        }
+
+        // TODO: Replace this newest-file fallback with explicit save-slot selection when Load Game is implemented.
+        string[] files = Directory.GetFiles(folderPath, "*.json");
+        if (files.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        return files.OrderByDescending(File.GetCreationTime).First();
     }
 
     private void ApplySettingsToDraft()
@@ -257,6 +287,7 @@ public class DraftManager : MonoBehaviour
         // Shuffle the selectedDeck and limit it to squadSize * 2 cards
         ShuffleDeck(selectedDeck);
         draftPool = selectedDeck.GetRange(0, (squadSize-2) * 2);  // Limit to squadSize * 2 players - excluding GKs
+        totalBatchCount = Mathf.CeilToInt(draftPool.Count / 4f);
         Debug.Log($"Total players in draftpool: {draftPool.Count}");
     }
 
@@ -320,6 +351,7 @@ public class DraftManager : MonoBehaviour
 
     private void AssignGoalkeepersToSlots()
     {
+        // TODO: When goalkeeper draft modes beyond "Deal" are implemented, replace this auto-assignment flow.
         // Sort the first two goalkeepers for Home by Saving, Handling, and Pace
         var topTwoHome = selectedGks.Take(2).OrderByDescending(gk => gk.Saving)
                                         .ThenByDescending(gk => gk.Handling)
@@ -366,9 +398,11 @@ public class DraftManager : MonoBehaviour
 
     // Simulate the coin flip
     private void PerformCoinFlip()
-    // TODO: Press R for this, or click a button.
-    // TODO: Select Kick Off or Sides.
+    // TODO: Replace this hidden random draw with a visual pre-draft flow that follows normal football procedure:
+    // show the coin toss, let the winner choose kick-off or sides, and make the "who picks first" outcome explicit in the UI.
     {
+        // The coin flip determines who gets first pick in batch 1.
+        // Later 4-card batches alternate the starting side automatically.
         int coinFlip = Random.Range(0, 2);  // 0 = Tails (Away), 1 = Heads (Home)
 
         if (coinFlip == 1)
@@ -383,6 +417,8 @@ public class DraftManager : MonoBehaviour
         }
         // Initialize first-round team based on the coin flip result
         isHomeFirstInNextRound = currentTeamTurn == "Home";
+        firstBatchStarter = currentTeamTurn;
+        currentBatchStarter = currentTeamTurn;
     }
 
     public void DisplayDraftCards(List<Player> playersToShow)
@@ -401,14 +437,20 @@ public class DraftManager : MonoBehaviour
         // Convert the GameObjects to Transforms and update averages
         UpdateTeamAverages(homeTeamPanel.transform, homeAveragePanel.transform);
         UpdateTeamAverages(awayTeamPanel.transform, awayAveragePanel.transform);
-        // Remove the drafted player from the draft pool
+        // draftPool tracks the undealt outfielders that remain after the current 4-card batch.
+        // This extra remove is harmless if the player was already removed during DealNewDraftCards.
         draftPool.Remove(card.assignedPlayer);
         // Increment cards assigned in this round
         cardsAssignedThisRound++;
         // Alternate the current team turn after each card assignment
         currentTeamTurn = currentTeamTurn == "Home" ? "Away" : "Home";
 
-        // Alternate between teams after each card is assigned
+        // A draft round is exactly 4 face-up cards. Once all 4 are assigned:
+        // - deal the next 4 cards if any remain
+        // - alternate who gets first pick in the next round
+        // This mirrors the tabletop rule:
+        // batch 1 starter also starts batches 3, 5, 7...
+        // other side starts batches 2, 4, 6, 8...
         if (cardsAssignedThisRound >= 4 && draftPool.Count()>0)
         {
             // When 4 cards have been assigned, deal new ones
@@ -417,6 +459,7 @@ public class DraftManager : MonoBehaviour
             isHomeFirstInNextRound = !isHomeFirstInNextRound;  // Alternate which team starts
             // Set current team for the next round's first pick
             currentTeamTurn = isHomeFirstInNextRound ? "Home" : "Away";
+            currentBatchStarter = currentTeamTurn;
             Debug.Log($"New round started. {currentTeamTurn} picks first.");
         }
         else if (cardsAssignedThisRound >= 4)
@@ -429,11 +472,16 @@ public class DraftManager : MonoBehaviour
         {
             Debug.Log("No more cards to deal. Draft pool is empty.");
         }
+
+        DraftUIManager liveDraftUi = FindObjectOfType<DraftUIManager>();
+        if (liveDraftUi != null)
+        {
+            liveDraftUi.RefreshDraftStateUI();
+        }
     }
 
     public string GetCurrentTeamTurn()
     {
-        Debug.Log($"Now it's {currentTeamTurn}'s turn.");
         return currentTeamTurn;
     }
 
@@ -449,8 +497,7 @@ public class DraftManager : MonoBehaviour
 
     void DealNewDraftCards()
     {
-        // Debug.Log($"Starting round. Cards in draft pool: {draftPool.Count}");
-        // Clear current draft cards from the panel
+        // Clear the previous 4-card batch from the center panel before dealing the next one.
         foreach (Transform child in draftPanel.transform)
         {
             Destroy(child.gameObject);
@@ -462,9 +509,10 @@ public class DraftManager : MonoBehaviour
             return;
         }
         
-        // Make sure we still have enough cards in the draft pool
+        // The regular draft always reveals up to 4 cards. Near the end we deal whatever is left.
         int cardsToDeal = Mathf.Min(4, draftPool.Count);
-        // Debug.Log($"Dealing {cardsToDeal} cards.");
+        currentBatchNumber++;
+        currentBatchSize = cardsToDeal;
 
         // Deal new cards
         for (int i = 0; i < cardsToDeal; i++)
@@ -476,12 +524,46 @@ public class DraftManager : MonoBehaviour
             // Debug.Log($"Dealt card for player: {nextPlayer.Name}");
         }
 
-        // Remove the dealt cards from the draft pool
+        // Remove the dealt cards immediately so draftPool now represents undealt cards only.
         draftPool.RemoveRange(0, cardsToDeal);
-        // Debug.Log($"After round. Cards remaining in draft pool: {draftPool.Count}");
 
         // Reset the round
         cardsAssignedThisRound = 0;
+        DraftUIManager draftUIManager = FindObjectOfType<DraftUIManager>();
+        if (draftUIManager != null)
+        {
+            draftUIManager.RefreshDraftStateUI();
+        }
+    }
+
+    public int GetCurrentBatchNumber()
+    {
+        return currentBatchNumber;
+    }
+
+    public int GetTotalBatchCount()
+    {
+        return totalBatchCount;
+    }
+
+    public int GetRemainingSelectionsInCurrentBatch()
+    {
+        return Mathf.Max(0, currentBatchSize - cardsAssignedThisRound);
+    }
+
+    public string GetFirstBatchStarter()
+    {
+        return firstBatchStarter;
+    }
+
+    public string GetCurrentBatchStarter()
+    {
+        return currentBatchStarter;
+    }
+
+    public bool IsDraftComplete()
+    {
+        return draftPool.Count == 0 && cardsAssignedThisRound >= currentBatchSize;
     }
 
     public PlayerSlotDropHandler FindNextAvailableSlot(string rosterPanelName)
@@ -645,8 +727,9 @@ public class DraftManager : MonoBehaviour
                     startXICount++;
                 }
 
-                // For Team Average (slots 2 to 11 and 13 to 16)
-                if ((i >= 2 && i <= 11) || (i >= 13 && i <= 16))
+                // Team Average should include every non-goalkeeper squad slot, including larger benches.
+                // That keeps 18-player squads honest by counting slots 17 and 18 as well.
+                if (i >= 2 && i <= squadSize && i != 12)
                 {
                     teamAverageSumPace += pace;
                     teamAverageSumDribbling += dribbling;

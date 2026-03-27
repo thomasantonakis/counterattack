@@ -37,7 +37,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         );
         mouseOffset = transform.position - globalMousePos;
 
-        // Set the valid roster name to the name of the original parent (HomeRoster or AwayRoster)
+        // Assigned players may be rearranged only inside their own roster panel.
         validRosterName = originalParent.name;
         Debug.Log($"OnBeginDrag: Slot '{gameObject.name}' starting drag from '{validRosterName}'");
 

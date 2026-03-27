@@ -13,14 +13,72 @@ public class DraftUIManager : MonoBehaviour
     private DraftManager draftManager;  // Reference to the DraftManager
     public GameObject homeTeamPanel;
     public GameObject awayTeamPanel;
+    [Header("Draft State UI")]
+    public TMP_Text draftTurnText;
+    public TMP_Text draftBatchText;
+    public TMP_Text draftMetaText;
 
     void Start()
     {
         // Find the DraftManager script in the scene
         draftManager = FindObjectOfType<DraftManager>();
 
-        // Initially disable the Start Game button
+        // The match can only start after every outfield slot has been filled by the draft.
         startGameButton.interactable = false;
+    }
+
+    public void RefreshDraftStateUI()
+    {
+        if (draftTurnText == null || draftBatchText == null || draftMetaText == null)
+        {
+            Debug.LogWarning("Draft state UI references are not assigned in Draft.scene.");
+            return;
+        }
+
+        if (draftManager == null)
+        {
+            draftManager = FindObjectOfType<DraftManager>();
+        }
+
+        if (draftManager == null)
+        {
+            return;
+        }
+
+        int currentBatch = draftManager.GetCurrentBatchNumber();
+        int totalBatches = draftManager.GetTotalBatchCount();
+
+        if (draftManager.IsDraftComplete())
+        {
+            draftTurnText.text = "DRAFT COMPLETE";
+            draftBatchText.text = $"Batch {currentBatch} of {totalBatches}";
+            draftMetaText.text = "All cards assigned. Start Game is now available.";
+            return;
+        }
+
+        string currentTurn = draftManager.GetCurrentTeamTurn();
+        if (string.IsNullOrEmpty(currentTurn))
+        {
+            return;
+        }
+
+        // Keep the messaging framed around the current decision:
+        // who picks now, where we are in the 4-card cycle, and who started this batch.
+        int picksLeftInBatch = draftManager.GetRemainingSelectionsInCurrentBatch();
+        string pickLabel = picksLeftInBatch == 1 ? "pick" : "picks";
+        string batchStarter = draftManager.GetCurrentBatchStarter();
+
+        draftTurnText.text = $"{currentTurn.ToUpperInvariant()} PICKS NOW";
+        draftBatchText.text = $"Batch {currentBatch} of {totalBatches} • {picksLeftInBatch} {pickLabel} left";
+
+        if (currentBatch <= 1)
+        {
+            draftMetaText.text = $"Coin toss: {draftManager.GetFirstBatchStarter()} starts batch 1.";
+        }
+        else
+        {
+            draftMetaText.text = $"{batchStarter} started this batch. Batch starters alternate every 4 picks.";
+        }
     }
     // Method to load the previous scene
     public void OnBackButtonPressed()
@@ -44,10 +102,10 @@ public class DraftUIManager : MonoBehaviour
             return;
         }
 
-        // Gather rosters
+        // Persist the final drafted lineups back into the same JSON that created this draft.
         var homeRoster = GatherRosterData(homeTeamPanel);
         var awayRoster = GatherRosterData(awayTeamPanel);
-        string filePath = ApplicationManager.Instance.LastSavedFileName;
+        string filePath = ApplicationManager.Instance.GetLastSavedFilePath();
 
         // Ensure the file path is available
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
@@ -159,9 +217,12 @@ public class DraftUIManager : MonoBehaviour
     // Method to check if the draft is complete and enable the Start Game button
     public void CheckIfDraftIsComplete()
     {
+        // In the regular hot-seat flow, the draft is complete once there are no undealt outfielders left.
         if (draftManager.draftPool.Count == 0)  // If all cards have been dealt
         {
             startGameButton.interactable = true;  // Enable the Start Game button
         }
+
+        RefreshDraftStateUI();
     }
 }

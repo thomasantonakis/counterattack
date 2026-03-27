@@ -128,6 +128,10 @@ public class CreateNewGameManager : MonoBehaviour
         List<string> gameModeOptions = new List<string> { "Single Player", "Hot Seat", "Multi Player" };  // Define options
         gameModeDropdown.ClearOptions();  // Clear any existing options
         gameModeDropdown.AddOptions(gameModeOptions);  // Add the default options
+        // This scene is only used for hot-seat setup, so lock the mode to that value.
+        gameModeDropdown.value = 1;
+        gameModeDropdown.interactable = false;
+        gameModeDropdown.RefreshShownValue();
         List<string> numberOfHalvesOptions = new List<string> { "2", "1" };  // Define options
         numberOfHalvesDropdown.ClearOptions();  // Clear any existing options
         numberOfHalvesDropdown.AddOptions(numberOfHalvesOptions);  // Add the default options
@@ -292,26 +296,29 @@ public class CreateNewGameManager : MonoBehaviour
 
         // Path where you want to save the file
         // string path = Path.Combine(Application.persistentDataPath, fileName);
+        ApplicationManager.EnsureInstanceExists();
         string path = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), fileName);
 
         // Write the file
         File.WriteAllText(path, json);
+        // Persist the exact save reference so Draft/Room keep mutating the same JSON file.
+        ApplicationManager.Instance.LastSavedFileName = path;
+        PlayerPrefs.SetString("currentGameSettings", path);
+        PlayerPrefs.Save();
 
         // Log where the file was saved
         Debug.Log($"Game settings saved to {path}");
-        // Load the Room scene
 
         // Check the draft and gkDraft settings to determine the scene to load
         if (settings.draft == "Regular" && settings.gkDraft == "Deal")
         {
             Debug.Log("Loading the Regular Draft Scene...");
-            PlayerPrefs.SetString("currentGameSettings", fileName); // Save the file name for the Draft scene to use
             SceneManager.LoadScene("Draft"); // Load the current Draft scene
         }
         else
         {
+            // TODO: Implement the actual FreeDraft flow before exposing non-regular draft paths to players.
             Debug.Log("Non-regular draft selected. Loading the Free Draft Scene...");
-            PlayerPrefs.SetString("currentGameSettings", fileName); // Save the file name for the future Free Draft scene
             SceneManager.LoadScene("FreeDraft"); // Placeholder for a new scene
         }
     }

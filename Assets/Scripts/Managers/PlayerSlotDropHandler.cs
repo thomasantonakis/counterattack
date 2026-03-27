@@ -14,7 +14,10 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log($"OnDrop called for {gameObject.name}");
-        // Check if we are dropping a Player Slot instead of a card
+        // Dragging an already-assigned roster slot is a reordering action, not a new draft pick.
+        // Allowed only inside the same roster panel:
+        // - outfielders can swap with outfielders
+        // - GKs can swap with GKs
         PlayerSlotDragHandler draggedSlot = eventData.pointerDrag.GetComponent<PlayerSlotDragHandler>();
         if (draggedSlot != null && draggedSlot != this)
         {
@@ -50,17 +53,17 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             }
         }
         
-        // Handle the dropped card
+        // Dropping a draft card is a new selection from the current 4-card batch.
         PlayerCardDragHandler cardDragHandler = eventData.pointerDrag.GetComponent<PlayerCardDragHandler>();
         if (cardDragHandler != null)
         {
-            // Check if the drop is valid based on the current team's turn
+            // New picks are restricted to the active team's roster only.
             if (!draftManager.IsValidTeamPanel(transform.parent.name))
             {
                 Debug.LogWarning($"Invalid drop: {transform.parent.name} is not a valid target for {draftManager.GetCurrentTeamTurn()}.");
                 return;  // Reject the drop if it's not a valid team panel
             }
-            // Prevent dropping a player card into a goalkeeper slot
+            // Outfield cards can never be dropped into goalkeeper slots 1 or 12.
             bool isCurrentSlotGK = gameObject.name.Contains("-1-") || gameObject.name.Contains("-12-");
             if (isCurrentSlotGK)
             {
@@ -73,6 +76,8 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             if (IsSlotPopulated())
             {
                 Debug.Log($"Slot {gameObject.name} is already populated. Finding the next available slot.");
+                // Quality-of-life rule: dropping on a filled slot advances to the next empty slot
+                // in the same roster instead of rejecting the pick outright.
                 // Find the next available slot and update that one
                 PlayerSlotDropHandler nextAvailableSlot = FindNextAvailableSlot();
                 if (nextAvailableSlot != null)

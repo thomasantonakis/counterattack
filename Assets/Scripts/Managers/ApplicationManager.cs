@@ -6,7 +6,8 @@ public class ApplicationManager : MonoBehaviour
 {
     public static ApplicationManager Instance { get; private set; }
     public List<Player> PlayerList { get; private set; }
-    public string LastSavedFileName { get; set; } // New field for storing the file name
+    // Stores the latest save reference so adjacent scenes keep operating on the same JSON.
+    public string LastSavedFileName { get; set; }
 
     void Awake()
     {
@@ -39,7 +40,24 @@ public class ApplicationManager : MonoBehaviour
     public string GetSaveFolderPath()
     {
         string folderPath = Path.Combine(Application.persistentDataPath, "SavedGames");
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+            Debug.Log($"Created save folder path: {folderPath}");
+        }
         Debug.Log($"Save folder path: {folderPath}");
         return folderPath; // Centralized access to the folder path
+    }
+
+    public string GetLastSavedFilePath()
+    {
+        if (string.IsNullOrEmpty(LastSavedFileName))
+        {
+            return string.Empty;
+        }
+
+        return Path.IsPathRooted(LastSavedFileName)
+            ? LastSavedFileName
+            : Path.Combine(GetSaveFolderPath(), LastSavedFileName);
     }
 }

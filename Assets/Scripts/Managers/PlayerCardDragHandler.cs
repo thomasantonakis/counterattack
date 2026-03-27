@@ -74,7 +74,8 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     {
         Debug.Log($"Double-click detected on {gameObject.name}");
 
-        // Find the next available slot based on the current team's turn
+        // Double-click is the "quick pick" interaction:
+        // place this card into the next available slot for whichever team is currently drafting.
         string validRosterPanel = draftManager.GetCurrentTeamTurn() == "Home" ? "HomeRoster" : "AwayRoster";
         // Get the valid panel transform
         Transform validPanel = GameObject.Find(validRosterPanel).transform;

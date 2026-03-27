@@ -9,6 +9,8 @@ using System.Text;
 
 public class MatchManager : MonoBehaviour
 {
+    private const string EditorRoomDirectPlayTestSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
+
     // Define the possible game states
     public enum GameState
     {
@@ -1369,15 +1371,45 @@ public class MatchManager : MonoBehaviour
     
     public void LoadGameSettingsFromJson()
     {
-        string filePath;
-        // Check ApplicationManager for the most recent file
-        if (ApplicationManager.Instance != null && !string.IsNullOrEmpty(ApplicationManager.Instance.LastSavedFileName))
+        string filePath = string.Empty;
+        bool hadRuntimeSaveContext = ApplicationManager.Instance != null &&
+                                     !string.IsNullOrEmpty(ApplicationManager.Instance.GetLastSavedFilePath());
+        ApplicationManager.EnsureInstanceExists();
+
+        // TODO: Replace the current ApplicationManager + PlayerPrefs + newest-file fallback chain
+        // with a single explicit active-save identifier once Load Game is implemented properly.
+
+        // When the Room scene is played directly in the Unity Editor, there is no upstream flow to
+        // provide an active save. In that case, force the known test save so Room can be tested in isolation.
+        if (!hadRuntimeSaveContext)
         {
-            filePath = Path.Combine(Path.Combine(Application.persistentDataPath, "SavedGames"), ApplicationManager.Instance.LastSavedFileName);
+            string editorDirectPlayPath = GetEditorDirectPlaySavePath();
+            if (!string.IsNullOrEmpty(editorDirectPlayPath))
+            {
+                filePath = editorDirectPlayPath;
+            }
         }
-        else
+
+        // Keep loading from the exact save created/updated by the previous scene when available.
+        if (string.IsNullOrEmpty(filePath) && ApplicationManager.Instance != null)
         {
-            string folderPath = Path.Combine(Application.persistentDataPath, "SavedGames");
+            filePath = ApplicationManager.Instance.GetLastSavedFilePath();
+        }
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            string playerPrefsPath = PlayerPrefs.GetString("currentGameSettings", string.Empty);
+            if (!string.IsNullOrEmpty(playerPrefsPath))
+            {
+                filePath = Path.IsPathRooted(playerPrefsPath)
+                    ? playerPrefsPath
+                    : Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), playerPrefsPath);
+            }
+        }
+
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            string folderPath = ApplicationManager.Instance.GetSaveFolderPath();
             // Get JSON files in the folder
             string[] files = Directory.GetFiles(folderPath, "*.json");
             if (files.Length == 0)
@@ -1390,6 +1422,12 @@ public class MatchManager : MonoBehaviour
             var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
             filePath = sortedFiles[0];
         }
+
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            ApplicationManager.Instance.LastSavedFileName = filePath;
+        }
+
         if (File.Exists(filePath))
         {
             string json = File.ReadAllText(filePath);
@@ -1433,6 +1471,24 @@ public class MatchManager : MonoBehaviour
         {
             Debug.LogWarning("Game settings file not found.");
         }
+    }
+
+    private string GetEditorDirectPlaySavePath()
+    {
+#if UNITY_EDITOR
+        string directPlayPath = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), EditorRoomDirectPlayTestSaveFileName);
+        if (File.Exists(directPlayPath))
+        {
+            ApplicationManager.Instance.LastSavedFileName = directPlayPath;
+            PlayerPrefs.SetString("currentGameSettings", directPlayPath);
+            PlayerPrefs.Save();
+            Debug.Log($"Room direct-play detected. Using editor test save: {directPlayPath}");
+            return directPlayPath;
+        }
+
+        Debug.LogWarning($"Room direct-play test save not found: {directPlayPath}");
+#endif
+        return string.Empty;
     }
 
     public bool IsPlayerInTeam(string playerName, bool isHomeTeam)
