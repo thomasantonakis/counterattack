@@ -302,7 +302,7 @@ public class CreateNewGameManager : MonoBehaviour
         // Write the file
         File.WriteAllText(path, json);
         // Persist the exact save reference so Draft/Room keep mutating the same JSON file.
-        ApplicationManager.Instance.LastSavedFileName = path;
+        ApplicationManager.Instance.SetActiveSaveFilePath(path);
         PlayerPrefs.SetString("currentGameSettings", path);
         PlayerPrefs.Save();
 

@@ -9,6 +9,8 @@ using Newtonsoft.Json; // Now it will recognize JsonConvert
 
 public class DraftManager : MonoBehaviour
 {
+    private const string ProtectedRoomFixtureSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
+
     [Header("Dependencies")]
     public GameSettings currentSettings; // Class-level variable
     public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
@@ -75,7 +77,7 @@ public class DraftManager : MonoBehaviour
             return;
         }
 
-        ApplicationManager.Instance.LastSavedFileName = settingsFilePath;
+        ApplicationManager.Instance.SetActiveSaveFilePath(settingsFilePath);
         Debug.Log($"Loading draft settings from: {settingsFilePath}");
 
         string json = File.ReadAllText(settingsFilePath);
@@ -98,10 +100,16 @@ public class DraftManager : MonoBehaviour
     private string ResolveGameSettingsFilePath(string folderPath)
     {
         // Prefer the exact file selected in the previous scene before falling back to discovery.
-        string exactFilePath = ApplicationManager.Instance.GetLastSavedFilePath();
-        if (!string.IsNullOrEmpty(exactFilePath) && File.Exists(exactFilePath))
+        string exactFilePath = ApplicationManager.Instance.HasExplicitSaveContext
+            ? ApplicationManager.Instance.GetLastSavedFilePath()
+            : string.Empty;
+        if (!string.IsNullOrEmpty(exactFilePath) && File.Exists(exactFilePath) && !IsProtectedRoomFixturePath(exactFilePath))
         {
             return exactFilePath;
+        }
+        if (!string.IsNullOrEmpty(exactFilePath) && IsProtectedRoomFixturePath(exactFilePath))
+        {
+            Debug.LogWarning($"Draft ignored protected Room fixture from explicit save context: {exactFilePath}");
         }
 
         string playerPrefsPath = PlayerPrefs.GetString("currentGameSettings", string.Empty);
@@ -111,20 +119,38 @@ public class DraftManager : MonoBehaviour
                 ? playerPrefsPath
                 : Path.Combine(folderPath, playerPrefsPath);
 
-            if (File.Exists(resolvedPlayerPrefsPath))
+            if (File.Exists(resolvedPlayerPrefsPath) && !IsProtectedRoomFixturePath(resolvedPlayerPrefsPath))
             {
                 return resolvedPlayerPrefsPath;
+            }
+            if (File.Exists(resolvedPlayerPrefsPath) && IsProtectedRoomFixturePath(resolvedPlayerPrefsPath))
+            {
+                Debug.LogWarning($"Draft ignored protected Room fixture from PlayerPrefs: {resolvedPlayerPrefsPath}");
             }
         }
 
         // TODO: Replace this newest-file fallback with explicit save-slot selection when Load Game is implemented.
         string[] files = Directory.GetFiles(folderPath, "*.json");
-        if (files.Length == 0)
+        string newestNonProtectedFile = files
+            .Where(path => !IsProtectedRoomFixturePath(path))
+            .OrderByDescending(File.GetCreationTime)
+            .FirstOrDefault();
+
+        if (string.IsNullOrEmpty(newestNonProtectedFile))
         {
             return string.Empty;
         }
 
-        return files.OrderByDescending(File.GetCreationTime).First();
+        return newestNonProtectedFile;
+    }
+
+    private bool IsProtectedRoomFixturePath(string filePath)
+    {
+        return !string.IsNullOrEmpty(filePath) &&
+               string.Equals(
+                   Path.GetFileName(filePath),
+                   ProtectedRoomFixtureSaveFileName,
+                   System.StringComparison.OrdinalIgnoreCase);
     }
 
     private void ApplySettingsToDraft()

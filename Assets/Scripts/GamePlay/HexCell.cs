@@ -6,6 +6,11 @@ using TMPro;  // Import TextMeshPro namespace
 [ExecuteInEditMode]
 public class HexCell : MonoBehaviour
 {
+    private static readonly int MainColorProperty = Shader.PropertyToID("_MainColor");
+    private static readonly int BorderColorProperty = Shader.PropertyToID("_BorderColor");
+    private static readonly int ColorProperty = Shader.PropertyToID("_Color");
+    private static readonly int BaseColorProperty = Shader.PropertyToID("_BaseColor");
+
     public Vector3Int coordinates;
     public float hexRadius;
     public bool isKickOff = false;
@@ -21,20 +26,55 @@ public class HexCell : MonoBehaviour
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
     public Renderer hexRenderer;
     public Color originalColor;
+    [SerializeField] private Material hexBorderMaterial;
+    [SerializeField] private Renderer fillRenderer;
+    [SerializeField] private Material fillMaterial;
+    [SerializeField, Range(0.85f, 0.99f)] private float fillScale = 0.96f;
+    [SerializeField] private Color hoverColor = new Color(0.1f, 0.6f, 0.1f, 1f);
     public PlayerToken occupyingToken;
     public bool CanShootFrom = false; // Displayed in Inspector
     public bool CanHeadFrom = false; // Displayed in Inspector
     public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
     public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
+    private Renderer borderRenderer;
 
     void Awake()
     {
-        // Use MeshRenderer directly instead of a generic Renderer
-        hexRenderer = GetComponent<MeshRenderer>();
-        if (hexRenderer == null)
+        borderRenderer = GetComponent<MeshRenderer>();
+        if (borderRenderer == null)
         {
             Debug.LogError("HexCell MeshRenderer is missing! Check this cell's prefab or components.");
+            return;
         }
+
+        if (hexBorderMaterial != null && borderRenderer.sharedMaterial != hexBorderMaterial)
+        {
+            borderRenderer.sharedMaterial = hexBorderMaterial;
+        }
+
+        if (fillRenderer == null)
+        {
+            fillRenderer = ResolveFillRenderer();
+        }
+
+        hexRenderer = fillRenderer != null ? fillRenderer : borderRenderer;
+
+        if (fillMaterial != null && hexRenderer.sharedMaterial != fillMaterial)
+        {
+            hexRenderer.sharedMaterial = fillMaterial;
+        }
+
+        ApplyFillScale();
+    }
+
+    private void OnValidate()
+    {
+        if (fillRenderer == null)
+        {
+            fillRenderer = ResolveFillRenderer();
+        }
+
+        ApplyFillScale();
     }
 
     public void InitializeHex(Color initialColor)
@@ -46,7 +86,44 @@ public class HexCell : MonoBehaviour
         }
         // Set the original color and apply it to the hex
         originalColor = initialColor;
-        hexRenderer.material.color = originalColor;
+        ApplyHexFillColor(originalColor);
+    }
+
+    public void SetBorderColor(Color borderColor)
+    {
+        if (borderRenderer == null)
+        {
+            borderRenderer = GetComponent<MeshRenderer>();
+        }
+
+        if (borderRenderer == null)
+        {
+            return;
+        }
+
+        Material runtimeMaterial = borderRenderer.material;
+
+        if (runtimeMaterial.HasProperty(MainColorProperty))
+        {
+            runtimeMaterial.SetColor(MainColorProperty, borderColor);
+        }
+
+        if (runtimeMaterial.HasProperty(BorderColorProperty))
+        {
+            runtimeMaterial.SetColor(BorderColorProperty, borderColor);
+        }
+
+        if (runtimeMaterial.HasProperty(ColorProperty))
+        {
+            runtimeMaterial.SetColor(ColorProperty, borderColor);
+        }
+
+        if (runtimeMaterial.HasProperty(BaseColorProperty))
+        {
+            runtimeMaterial.SetColor(BaseColorProperty, borderColor);
+        }
+
+        runtimeMaterial.color = borderColor;
     }
 
     public void SetCoordinates(int x, int z)
@@ -80,7 +157,7 @@ public class HexCell : MonoBehaviour
         switch (reason)
         {
             case "hover":
-                colorToApply = originalColor * 0.5f;  // Darken the hex on hover
+                colorToApply = hoverColor != default ? hoverColor : originalColor * 0.5f;  // Darken the hex on hover
                 break;
             case "passTarget":
                 colorToApply = Color.yellow;  // Use the provided color for the ball path
@@ -129,8 +206,7 @@ public class HexCell : MonoBehaviour
                 colorToApply = originalColor;  // Reset to original color if no valid reason
                 break;
         }
-        // Set the color directly to override all material properties
-        hexRenderer.material.SetColor("_Color", colorToApply);
+        ApplyHexFillColor(colorToApply);
         // // Apply the color to the hex based on the reason
         // hexRenderer.material.color = reason switch
         // {
@@ -160,16 +236,55 @@ public class HexCell : MonoBehaviour
         // If the hex is defense-occupied, reset it to red, else reset to the original color
         if (isDefenseOccupied)
         {
-            hexRenderer.material.color = Color.red;
+            ApplyHexFillColor(Color.red);
         }
         else if (isAttackOccupied)
         {
-            hexRenderer.material.color = Color.green;
+            ApplyHexFillColor(Color.green);
         }
         else
         {
-            hexRenderer.material.color = originalColor;  // Reset to either light or dark green
+            ApplyHexFillColor(originalColor);  // Reset to either light or dark green
         }
+    }
+
+    private void ApplyHexFillColor(Color fillColor)
+    {
+        if (hexRenderer == null)
+        {
+            return;
+        }
+
+        Material runtimeMaterial = hexRenderer.material;
+
+        if (runtimeMaterial.HasProperty(ColorProperty))
+        {
+            runtimeMaterial.SetColor(ColorProperty, fillColor);
+        }
+
+        if (runtimeMaterial.HasProperty(BaseColorProperty))
+        {
+            runtimeMaterial.SetColor(BaseColorProperty, fillColor);
+        }
+
+        runtimeMaterial.color = fillColor;
+    }
+
+    private Renderer ResolveFillRenderer()
+    {
+        Transform fillTransform = transform.Find("Fill");
+        return fillTransform != null ? fillTransform.GetComponent<MeshRenderer>() : null;
+    }
+
+    private void ApplyFillScale()
+    {
+        if (fillRenderer == null)
+        {
+            return;
+        }
+
+        fillScale = Mathf.Clamp(fillScale, 0.85f, 0.99f);
+        fillRenderer.transform.localScale = new Vector3(fillScale, 1f, fillScale);
     }
 
     public Vector3[] GetHexCorners()

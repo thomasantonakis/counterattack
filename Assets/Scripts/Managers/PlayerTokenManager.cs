@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;  // Import TextMeshPro namespace
 
-
 public class PlayerTokenManager : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -108,6 +107,9 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        TokenStyleDefinition homeTokenStyle = ResolveTokenStyle(homeKit);
+        TokenStyleDefinition awayTokenStyle = ResolveTokenStyle(awayKit);
+        GameObject tokenBasePrefab = GetTokenBasePrefab();
         List<HexCell> homeTeamHexes = new List<HexCell>();
         List<HexCell> awayTeamHexes = new List<HexCell>();
         foreach (Vector3Int vector in home)
@@ -124,23 +126,8 @@ public class PlayerTokenManager : MonoBehaviour
             hex.HighlightHex("isDefenseOccupied");
             awayTeamHexes.Add(hex);
         } 
-        if (homeKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Home", homeTeamHexes);
-        }
-        else if (homeKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
-        }
-        // Do the same for Away team
-        if (awayKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Away", awayTeamHexes);
-        }
-        else if (awayKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Away", awayTeamHexes);
-        }
+        CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle);
+        CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle);
         // After players are instantiated
         MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
@@ -149,6 +136,9 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        TokenStyleDefinition homeTokenStyle = ResolveTokenStyle(homeKit);
+        TokenStyleDefinition awayTokenStyle = ResolveTokenStyle(awayKit);
+        GameObject tokenBasePrefab = GetTokenBasePrefab();
         // Create an empty list of HexCells
         List<HexCell> potentialSpawns = new List<HexCell>();
         // Gather inbound hexes for potential spawning locations
@@ -185,29 +175,12 @@ public class PlayerTokenManager : MonoBehaviour
             awayTeamHexes.Add(awayHex);  // Add to away team hexes
             potentialSpawns.RemoveAt(randomIndex);
         }
-
-        // // Load the correct prefab based on the kit
-        if (homeKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Home", homeTeamHexes);
-        }
-        else if (homeKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
-        }
-        // Do the same for Away team
-        if (awayKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Away", awayTeamHexes);
-        }
-        else if (awayKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Away", awayTeamHexes);
-        }
+        CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle);
+        CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle);
         // After players are instantiated
         MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
-    void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes)
+    void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes, TokenStyleDefinition tokenStyle)
     {
         // Find or create the "Player Tokens" parent object in the scene
         GameObject parentObject = GameObject.Find("Player Tokens");
@@ -284,6 +257,12 @@ public class PlayerTokenManager : MonoBehaviour
             // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
             token.isHomeTeam = teamType == "Home";  // Set isHomeTeam based on team type
+            PlayerTokenVisuals visuals = player.GetComponent<PlayerTokenVisuals>();
+            if (visuals == null)
+            {
+                visuals = player.AddComponent<PlayerTokenVisuals>();
+            }
+            visuals.ApplyStyle(tokenStyle);
             // After assignment, confirm it was assigned
             // Debug.Log($"{player.name} assigned hex: {token.GetCurrentHex()?.name}");
             // Instantiate the TextMeshPro object for the jersey number
@@ -311,6 +290,72 @@ public class PlayerTokenManager : MonoBehaviour
             numberText.fontSize = 3;  // Set font size, tweak as needed
             numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
             numberText.GetComponent<MeshRenderer>().sortingOrder = 10;  // Ensure the number is rendered on top
+            visuals.ApplyNumberStyle(numberText, tokenStyle);
         }
+    }
+
+    private GameObject GetTokenBasePrefab()
+    {
+        if (blueKitPrefab != null)
+        {
+            return blueKitPrefab;
+        }
+
+        if (redKitPrefab != null)
+        {
+            return redKitPrefab;
+        }
+
+        Debug.LogError("No token base prefab is assigned on PlayerTokenManager.");
+        return null;
+    }
+
+    // TODO: Move the kit library to ScriptableObjects once more club designs are defined from the PDF reference set.
+    private TokenStyleDefinition ResolveTokenStyle(string kitName)
+    {
+        string normalizedKit = string.IsNullOrWhiteSpace(kitName) ? string.Empty : kitName.Trim();
+
+        switch (normalizedKit)
+        {
+            case "Inter":
+                return TokenStyleDefinition.VerticalThreeColors(HexToColor("#1E2027"), HexToColor("#2E86F7"), HexToColor("#2E86F7"));
+
+            case "Milan":
+                return TokenStyleDefinition.VerticalThreeColors(HexToColor("#1E2027"), HexToColor("#E25A62"), HexToColor("#E25A62"));
+
+            case "Porto":
+                return TokenStyleDefinition.VerticalThreeColors(HexToColor("#F4F6FA"), HexToColor("#2E86F7"), HexToColor("#2E86F7"));
+
+            case "Red and White Stripes":
+            case "R&W":
+                return TokenStyleDefinition.VerticalThreeColors(
+                    HexToColor("#A71924"),
+                    HexToColor("#F4F6FA"),
+                    HexToColor("#F4F6FA"),
+                    TokenCenterStripeMode.BreakUnderNumber,
+                    HexToColor("#F4F6FA"),
+                    HexToColor("#A71924"));
+
+            case "Clarets":
+                return TokenStyleDefinition.Plain(HexToColor("#4B2735"), HexToColor("#78C8F7"), HexToColor("#78C8F7"));
+
+            case "Blues":
+            case "Blue":
+                return TokenStyleDefinition.Plain(HexToColor("#0F4E9B"), HexToColor("#F4F6FA"), HexToColor("#F4F6FA"));
+
+            default:
+                Debug.LogWarning($"Unknown kit '{normalizedKit}'. Falling back to plain blue token style.");
+                return TokenStyleDefinition.Plain(HexToColor("#0F4E9B"), HexToColor("#F4F6FA"), HexToColor("#F4F6FA"));
+        }
+    }
+
+    private Color HexToColor(string hex)
+    {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color))
+        {
+            return color;
+        }
+
+        return Color.white;
     }
 }

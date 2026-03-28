@@ -8,6 +8,7 @@ public class ApplicationManager : MonoBehaviour
     public List<Player> PlayerList { get; private set; }
     // Stores the latest save reference so adjacent scenes keep operating on the same JSON.
     public string LastSavedFileName { get; set; }
+    public bool HasExplicitSaveContext { get; private set; }
 
     void Awake()
     {
@@ -59,5 +60,23 @@ public class ApplicationManager : MonoBehaviour
         return Path.IsPathRooted(LastSavedFileName)
             ? LastSavedFileName
             : Path.Combine(GetSaveFolderPath(), LastSavedFileName);
+    }
+
+    public void SetActiveSaveFilePath(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            Debug.LogWarning("SetActiveSaveFilePath called with an empty path.");
+            return;
+        }
+
+        LastSavedFileName = filePath;
+        HasExplicitSaveContext = true;
+    }
+
+    public void ClearActiveSaveContext()
+    {
+        LastSavedFileName = string.Empty;
+        HasExplicitSaveContext = false;
     }
 }
