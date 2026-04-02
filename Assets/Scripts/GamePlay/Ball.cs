@@ -6,6 +6,7 @@ public class Ball : MonoBehaviour
 {
     [SerializeField]
     private HexCell currentCell;
+    [SerializeField] private MeshRenderer ballRenderer;
     private HexCell targetCell;
     public bool isMoving = false;
     private bool isBallSelected = false;  // Track if the ball is selected
@@ -15,11 +16,39 @@ public class Ball : MonoBehaviour
     private bool playersInstantiated = false;  // New flag to track when players are ready
     public float groundHeightOffset = 0.2f;  // Height when ball is on the ground
     public float playerHeightOffset = 0.5f;  // Height when ball is on a player
+    private MaterialPropertyBlock ballPropertyBlock;
+
+    private void Awake()
+    {
+        if (ballRenderer == null)
+        {
+            ballRenderer = GetComponent<MeshRenderer>();
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (MatchManager.Instance != null)
+        {
+            MatchManager.Instance.OnGameSettingsLoaded += ApplyConfiguredBallColor;
+            ApplyConfiguredBallColor();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (MatchManager.Instance != null)
+        {
+            MatchManager.Instance.OnGameSettingsLoaded -= ApplyConfiguredBallColor;
+            MatchManager.Instance.OnPlayersInstantiated -= PlayersReady;
+        }
+    }
 
     IEnumerator Start()
     {
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
+        ApplyConfiguredBallColor();
         // Subscribe to the event to know when players are instantiated
         MatchManager.Instance.OnPlayersInstantiated += PlayersReady;  // Subscribe to event
 
@@ -44,6 +73,47 @@ public class Ball : MonoBehaviour
     private void PlayersReady()
     {
         playersInstantiated = true;  // Set the flag to true when players are ready
+    }
+
+    private void ApplyConfiguredBallColor()
+    {
+        if (ballRenderer == null)
+        {
+            ballRenderer = GetComponent<MeshRenderer>();
+        }
+
+        if (ballRenderer == null)
+        {
+            return;
+        }
+
+        string configuredColor = MatchManager.Instance?.gameData?.gameSettings?.ballColor;
+        Color ballColor = ResolveBallColor(configuredColor);
+
+        ballPropertyBlock ??= new MaterialPropertyBlock();
+        ballRenderer.GetPropertyBlock(ballPropertyBlock);
+        ballPropertyBlock.SetColor("_Color", ballColor);
+        ballPropertyBlock.SetColor("_BaseColor", ballColor);
+        ballRenderer.SetPropertyBlock(ballPropertyBlock);
+    }
+
+    private static Color ResolveBallColor(string configuredColor)
+    {
+        if (string.IsNullOrWhiteSpace(configuredColor))
+        {
+            return Color.white;
+        }
+
+        switch (configuredColor.Trim().ToLowerInvariant())
+        {
+            case "orange":
+                return new Color32(230, 121, 36, 255);
+            case "yellow":
+                return new Color32(235, 214, 58, 255);
+            case "white":
+            default:
+                return new Color32(244, 246, 250, 255);
+        }
     }
 
     // Adjust the ball height based on player occupancy

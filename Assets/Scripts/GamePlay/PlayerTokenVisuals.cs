@@ -5,7 +5,11 @@ using UnityEngine;
 public enum TokenStyleFamily
 {
     Plain,
-    VerticalThreeColors
+    VerticalStripes,
+    HorizontalStripes,
+    Sleeved,
+    SingleStriped,
+    Roma
 }
 
 public enum TokenCenterStripeMode
@@ -15,54 +19,254 @@ public enum TokenCenterStripeMode
     BreakUnderNumber
 }
 
+public enum TokenNumberFont
+{
+    Default,
+    Getafe
+}
+
 public sealed class TokenStyleDefinition
 {
     public TokenStyleFamily family;
     public Color bodyColor;
+    // Plain only: fill color inside the top-face circle.
     public Color accentColor;
+    // Shared: ring drawn around the top-face inner circle.
+    public Color ringColor;
+    // VerticalStripes only: colors for the five vertical bands inside the top-face circle.
+    public Color leftStripeColor;
+    public Color leftMidStripeColor;
+    public Color centerStripeColor;
+    public Color rightMidStripeColor;
+    public Color rightStripeColor;
+    public float stripeWidth;
+    public float stripeDirectionDegrees;
+    public float numberFaceOffset;
     public Color numberColor;
     public TokenCenterStripeMode centerStripeMode;
-    public Color centerStripeColor;
-    public Color centerStripePlateColor;
+    public TokenNumberFont numberFont;
 
-    public static TokenStyleDefinition Plain(Color bodyColor, Color ringColor, Color numberColor)
+    public static TokenStyleDefinition Plain(
+        Color bodyColor,
+        Color accentColor,
+        Color ringColor,
+        Color numberColor,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
     {
         return new TokenStyleDefinition
         {
             family = TokenStyleFamily.Plain,
             bodyColor = bodyColor,
-            accentColor = ringColor,
+            accentColor = accentColor,
+            ringColor = ringColor,
+            leftStripeColor = Color.clear,
+            leftMidStripeColor = Color.clear,
+            centerStripeColor = Color.clear,
+            rightMidStripeColor = Color.clear,
+            rightStripeColor = Color.clear,
+            stripeWidth = 0f,
+            stripeDirectionDegrees = 0f,
+            numberFaceOffset = 0f,
             numberColor = numberColor,
             centerStripeMode = TokenCenterStripeMode.None,
-            centerStripeColor = Color.clear,
-            centerStripePlateColor = Color.clear
+            numberFont = numberFont
         };
     }
 
+    public static TokenStyleDefinition VerticalStripes(
+        Color bodyColor,
+        Color ringColor,
+        Color leftStripeColor,
+        Color leftMidStripeColor,
+        Color centerStripeColor,
+        Color rightMidStripeColor,
+        Color rightStripeColor,
+        TokenCenterStripeMode centerStripeMode,
+        Color numberColor,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
+    {
+        return new TokenStyleDefinition
+        {
+            family = TokenStyleFamily.VerticalStripes,
+            bodyColor = bodyColor,
+            accentColor = Color.clear,
+            ringColor = ringColor,
+            leftStripeColor = leftStripeColor,
+            leftMidStripeColor = leftMidStripeColor,
+            centerStripeColor = centerStripeColor,
+            rightMidStripeColor = rightMidStripeColor,
+            rightStripeColor = rightStripeColor,
+            stripeWidth = 0f,
+            stripeDirectionDegrees = 0f,
+            numberFaceOffset = 0f,
+            numberColor = numberColor,
+            centerStripeMode = centerStripeMode,
+            numberFont = numberFont
+        };
+    }
+
+    public static TokenStyleDefinition HorizontalStripes(
+        Color bodyColor,
+        Color ringColor,
+        Color topStripeColor,
+        Color topMidStripeColor,
+        Color centerStripeColor,
+        Color bottomMidStripeColor,
+        Color bottomStripeColor,
+        TokenCenterStripeMode centerStripeMode,
+        Color numberColor,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
+    {
+        return new TokenStyleDefinition
+        {
+            family = TokenStyleFamily.HorizontalStripes,
+            bodyColor = bodyColor,
+            accentColor = Color.clear,
+            ringColor = ringColor,
+            leftStripeColor = topStripeColor,
+            leftMidStripeColor = topMidStripeColor,
+            centerStripeColor = centerStripeColor,
+            rightMidStripeColor = bottomMidStripeColor,
+            rightStripeColor = bottomStripeColor,
+            stripeWidth = 0f,
+            stripeDirectionDegrees = 0f,
+            numberFaceOffset = 0f,
+            numberColor = numberColor,
+            centerStripeMode = centerStripeMode,
+            numberFont = numberFont
+        };
+    }
+
+    public static TokenStyleDefinition Sleeved(
+        Color bodyColor,
+        Color sleeveColor,
+        Color numberColor,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
+    {
+        return new TokenStyleDefinition
+        {
+            family = TokenStyleFamily.Sleeved,
+            bodyColor = bodyColor,
+            accentColor = bodyColor,
+            ringColor = sleeveColor,
+            leftStripeColor = Color.clear,
+            leftMidStripeColor = Color.clear,
+            centerStripeColor = Color.clear,
+            rightMidStripeColor = Color.clear,
+            rightStripeColor = Color.clear,
+            stripeWidth = 0f,
+            stripeDirectionDegrees = 0f,
+            numberFaceOffset = 0f,
+            numberColor = numberColor,
+            centerStripeMode = TokenCenterStripeMode.None,
+            numberFont = numberFont
+        };
+    }
+
+    public static TokenStyleDefinition SingleStriped(
+        Color bodyColor,
+        Color stripeColor,
+        Color numberColor,
+        float stripeWidth,
+        float stripeDirectionDegrees,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
+    {
+        return new TokenStyleDefinition
+        {
+            family = TokenStyleFamily.SingleStriped,
+            bodyColor = bodyColor,
+            accentColor = stripeColor,
+            ringColor = stripeColor,
+            leftStripeColor = Color.clear,
+            leftMidStripeColor = Color.clear,
+            centerStripeColor = Color.clear,
+            rightMidStripeColor = Color.clear,
+            rightStripeColor = Color.clear,
+            stripeWidth = stripeWidth,
+            stripeDirectionDegrees = stripeDirectionDegrees,
+            numberFaceOffset = 0f,
+            numberColor = numberColor,
+            centerStripeMode = TokenCenterStripeMode.None,
+            numberFont = numberFont
+        };
+    }
+
+    public static TokenStyleDefinition Roma(
+        Color bodyColor,
+        Color topStripeColor,
+        Color bottomStripeColor,
+        Color numberColor,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
+    {
+        return new TokenStyleDefinition
+        {
+            family = TokenStyleFamily.Roma,
+            bodyColor = bodyColor,
+            accentColor = topStripeColor,
+            ringColor = bottomStripeColor,
+            leftStripeColor = Color.clear,
+            leftMidStripeColor = Color.clear,
+            centerStripeColor = Color.clear,
+            rightMidStripeColor = Color.clear,
+            rightStripeColor = Color.clear,
+            stripeWidth = 0f,
+            stripeDirectionDegrees = 0f,
+            numberFaceOffset = -0.1f,
+            numberColor = numberColor,
+            centerStripeMode = TokenCenterStripeMode.None,
+            numberFont = numberFont
+        };
+    }
+
+    // Legacy helper that maps the older "body + center fill" model onto the richer 5-band layout.
     public static TokenStyleDefinition VerticalThreeColors(
         Color bodyColor,
         Color accentColor,
         Color numberColor,
         TokenCenterStripeMode centerStripeMode = TokenCenterStripeMode.None,
         Color? centerStripeColor = null,
-        Color? centerStripePlateColor = null)
+        TokenNumberFont numberFont = TokenNumberFont.Default)
     {
-        Color resolvedCenterStripeColor = centerStripeColor ?? bodyColor;
-        return new TokenStyleDefinition
-        {
-            family = TokenStyleFamily.VerticalThreeColors,
-            bodyColor = bodyColor,
-            accentColor = accentColor,
-            numberColor = numberColor,
-            centerStripeMode = centerStripeMode,
-            centerStripeColor = resolvedCenterStripeColor,
-            centerStripePlateColor = centerStripePlateColor ?? resolvedCenterStripeColor
-        };
+        Color resolvedCenterStripeColor = centerStripeColor ?? accentColor;
+        return VerticalStripes(
+            bodyColor,
+            bodyColor,
+            bodyColor,
+            accentColor,
+            resolvedCenterStripeColor,
+            accentColor,
+            bodyColor,
+            centerStripeMode,
+            numberColor,
+            numberFont);
+    }
+
+    // Rotated counterpart of VerticalThreeColors using the same 5-band model.
+    public static TokenStyleDefinition HorizontalThreeColors(
+        Color bodyColor,
+        Color accentColor,
+        Color numberColor,
+        TokenCenterStripeMode centerStripeMode = TokenCenterStripeMode.None,
+        Color? centerStripeColor = null,
+        TokenNumberFont numberFont = TokenNumberFont.Default)
+    {
+        Color resolvedCenterStripeColor = centerStripeColor ?? accentColor;
+        return HorizontalStripes(
+            bodyColor,
+            bodyColor,
+            bodyColor,
+            accentColor,
+            resolvedCenterStripeColor,
+            accentColor,
+            bodyColor,
+            centerStripeMode,
+            numberColor,
+            numberFont);
     }
 
     public string GetCacheKey()
     {
-        return $"{family}_{centerStripeMode}_{ColorUtility.ToHtmlStringRGBA(bodyColor)}_{ColorUtility.ToHtmlStringRGBA(accentColor)}_{ColorUtility.ToHtmlStringRGBA(numberColor)}_{ColorUtility.ToHtmlStringRGBA(centerStripeColor)}_{ColorUtility.ToHtmlStringRGBA(centerStripePlateColor)}";
+        return $"{family}_{centerStripeMode}_{numberFont}_{ColorUtility.ToHtmlStringRGBA(bodyColor)}_{ColorUtility.ToHtmlStringRGBA(accentColor)}_{ColorUtility.ToHtmlStringRGBA(ringColor)}_{ColorUtility.ToHtmlStringRGBA(leftStripeColor)}_{ColorUtility.ToHtmlStringRGBA(leftMidStripeColor)}_{ColorUtility.ToHtmlStringRGBA(centerStripeColor)}_{ColorUtility.ToHtmlStringRGBA(rightMidStripeColor)}_{ColorUtility.ToHtmlStringRGBA(rightStripeColor)}_{stripeWidth:F3}_{stripeDirectionDegrees:F1}_{numberFaceOffset:F3}_{ColorUtility.ToHtmlStringRGBA(numberColor)}";
     }
 }
 
@@ -72,26 +276,6 @@ public class PlayerTokenVisuals : MonoBehaviour
     private const float TopDecalHeight = 1.01f;
     // Overall scale of the generated top-face quad relative to the token top.
     private const float TopDecalScale = 0.9f;
-    // Resolution of the generated token-face texture.
-    private const int DecalTextureSize = 256;
-
-    // Plain style: outer radius of the thin ring around the jersey number, in normalized face-space (-1 to 1).
-    private const float PlainRingRadius = 0.85f;
-    // Plain style: thickness of that ring.
-    private const float PlainRingThickness = 0.04f;
-
-    // VerticalThreeColors: radius of the inner circular face area. Outside this radius, the token body color is shown.
-    private const float VerticalInnerDiscRadius = 0.9f;
-    // VerticalThreeColors: half-width of each vertical stripe. Increase for thicker stripes.
-    private const float VerticalStripeHalfWidth = 0.25f;
-    // VerticalThreeColors: horizontal distance of the left/right stripes from the center. Increase to push them farther apart.
-    private const float VerticalStripeOffset = 0.4f;
-    // BreakUnderNumber: half-height of the gap removed from the center stripe around the number.
-    // Larger values create a taller broken opening in the stripe.
-    private const float VerticalCenterStripeGapHalfHeight = 0.5f;
-    // BreakUnderNumber: half-height of the colored plate behind the jersey number inside that gap.
-    // Keep this at or below the gap height unless you intentionally want the plate to fill most of the face.
-    private const float VerticalNumberPlateHalfHeight = 0.9f;
 
     private static readonly Dictionary<string, Material> SharedDecalMaterials = new Dictionary<string, Material>();
 
@@ -131,20 +315,7 @@ public class PlayerTokenVisuals : MonoBehaviour
 
     public void ApplyNumberStyle(TextMeshPro numberText, TokenStyleDefinition style)
     {
-        if (numberText == null || style == null)
-        {
-            return;
-        }
-
-        numberText.color = style.numberColor;
-        numberText.alpha = 1f;
-        if (style.family == TokenStyleFamily.Plain)
-        {
-            numberText.fontSize = 2.75f;
-            return;
-        }
-
-        numberText.fontSize = 2f;
+        TokenFacePreviewUtility.ApplyNumberStyle(numberText, style, 2.75f, 2f);
     }
 
     private void ApplyBodyColor(Color color)
@@ -222,141 +393,8 @@ public class PlayerTokenVisuals : MonoBehaviour
         {
             name = $"TokenDecal_{cacheKey}"
         };
-        material.mainTexture = BuildDecalTexture(style);
+        material.mainTexture = TokenFacePreviewUtility.GetOrCreateFaceTexture(style);
         SharedDecalMaterials[cacheKey] = material;
         return material;
-    }
-
-    private static Texture2D BuildDecalTexture(TokenStyleDefinition style)
-    {
-        Texture2D texture = new Texture2D(DecalTextureSize, DecalTextureSize, TextureFormat.RGBA32, false)
-        {
-            wrapMode = TextureWrapMode.Clamp,
-            filterMode = FilterMode.Bilinear,
-            name = $"TokenDecalTexture_{style.GetCacheKey()}"
-        };
-
-        Color[] pixels = new Color[DecalTextureSize * DecalTextureSize];
-        for (int y = 0; y < DecalTextureSize; y++)
-        {
-            for (int x = 0; x < DecalTextureSize; x++)
-            {
-                pixels[(y * DecalTextureSize) + x] = GetDecalPixelColor(style, x, y);
-            }
-        }
-
-        texture.SetPixels(pixels);
-        texture.Apply();
-        return texture;
-    }
-
-    private static Color GetDecalPixelColor(TokenStyleDefinition style, int x, int y)
-    {
-        float u = ((x + 0.5f) / DecalTextureSize * 2f) - 1f;
-        float v = ((y + 0.5f) / DecalTextureSize * 2f) - 1f;
-        float distance = Mathf.Sqrt((u * u) + (v * v));
-
-        if (distance > 0.98f)
-        {
-            return Color.clear;
-        }
-
-        switch (style.family)
-        {
-            case TokenStyleFamily.Plain:
-                return GetPlainPixelColor(style, distance);
-
-            case TokenStyleFamily.VerticalThreeColors:
-                return GetVerticalThreeColorsPixelColor(style, u, v, distance);
-
-            default:
-                return style.bodyColor;
-        }
-    }
-
-    private static Color GetPlainPixelColor(TokenStyleDefinition style, float distance)
-    {
-        float ringOuterRadius = PlainRingRadius;
-        float ringInnerRadius = ringOuterRadius - PlainRingThickness;
-
-        if (distance <= ringOuterRadius && distance >= ringInnerRadius)
-        {
-            return style.accentColor;
-        }
-
-        return style.bodyColor;
-    }
-
-    private static Color GetVerticalThreeColorsPixelColor(TokenStyleDefinition style, float u, float v, float distance)
-    {
-        if (distance > 0.98f)
-        {
-            return Color.clear;
-        }
-        
-        if (distance > VerticalInnerDiscRadius)
-        {
-            return style.bodyColor;
-        }
-
-        if (Mathf.Abs(u - VerticalStripeOffset) <= VerticalStripeHalfWidth
-            || Mathf.Abs(u + VerticalStripeOffset) <= VerticalStripeHalfWidth)
-        {
-            return style.bodyColor;
-        }
-
-        if (TryGetCenterStripeColor(style, u, v, out Color centerStripeColor))
-        {
-            return centerStripeColor;
-        }
-
-        return style.accentColor;
-    }
-
-    private static bool TryGetCenterStripeColor(TokenStyleDefinition style, float u, float v, out Color centerStripeColor)
-    {
-        centerStripeColor = Color.clear;
-
-        if (style.centerStripeMode == TokenCenterStripeMode.None)
-        {
-            return false;
-        }
-
-        if (Mathf.Abs(u) > VerticalStripeHalfWidth)
-        {
-            return false;
-        }
-
-        if (style.centerStripeMode == TokenCenterStripeMode.Solid)
-        {
-            centerStripeColor = style.centerStripeColor;
-            return true;
-        }
-
-        if (style.centerStripeMode == TokenCenterStripeMode.BreakUnderNumber)
-        {
-            if (Mathf.Abs(v) > VerticalCenterStripeGapHalfHeight)
-            {
-                centerStripeColor = style.centerStripeColor;
-                return true;
-            }
-
-            if (Mathf.Abs(v) <= VerticalNumberPlateHalfHeight)
-            {
-                centerStripeColor = style.centerStripePlateColor;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool ApproximatelySameColor(Color a, Color b)
-    {
-        const float tolerance = 0.01f;
-        return Mathf.Abs(a.r - b.r) <= tolerance
-            && Mathf.Abs(a.g - b.g) <= tolerance
-            && Mathf.Abs(a.b - b.b) <= tolerance
-            && Mathf.Abs(a.a - b.a) <= tolerance;
     }
 }

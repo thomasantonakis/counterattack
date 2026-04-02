@@ -140,6 +140,22 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     RoomBoardEditorTools.RebuildPitchBoardAndPathAssets();
                     return BridgeResponse.Ok(request, "Room pitch board and path assets rebuilt.");
+                case "setup_create_new_game_kit_preview_ui":
+                    EnsureEditorMode(command);
+                    CreateNewGameSceneEditorTools.SetupKitPreviewUi();
+                    return BridgeResponse.Ok(request, "Create New Game kit preview UI configured.");
+                case "reload_kit_presets":
+                    EnsureEditorMode(command);
+                    TokenKitCatalog.ReloadFromSource();
+                    CreateNewGameSceneEditorTools.SetupKitPreviewUi();
+                    CreateNewGameManager createNewGameManager = FindSceneObject<CreateNewGameManager>();
+                    if (createNewGameManager != null)
+                    {
+                        createNewGameManager.ReloadKitSelectionUi();
+                        return BridgeResponse.Ok(request, $"Reloaded {TokenKitCatalog.GetAllPresets().Count} kit presets and refreshed Create New Game UI.");
+                    }
+
+                    return BridgeResponse.Ok(request, $"Reloaded {TokenKitCatalog.GetAllPresets().Count} kit presets. Open CreateNewHSGameScene to refresh its UI.");
                 case "save_open_scenes":
                     EnsureEditorMode(command);
                     bool saved = EditorSceneManager.SaveOpenScenes();
@@ -202,6 +218,20 @@ namespace CounterAttack.Editor
             }
 
             return nameMatch;
+        }
+
+        private static T FindSceneObject<T>() where T : UnityEngine.Object
+        {
+            return Resources.FindObjectsOfTypeAll<T>()
+                .FirstOrDefault(candidate =>
+                {
+                    if (candidate is not Component component)
+                    {
+                        return false;
+                    }
+
+                    return component.gameObject.scene.IsValid();
+                });
         }
 
         private static string GetRequiredArg(BridgeRequest request, string key)

@@ -107,8 +107,8 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
-        TokenStyleDefinition homeTokenStyle = ResolveTokenStyle(homeKit);
-        TokenStyleDefinition awayTokenStyle = ResolveTokenStyle(awayKit);
+        TokenStyleDefinition homeTokenStyle = TokenKitCatalog.ResolveStyle(homeKit);
+        TokenStyleDefinition awayTokenStyle = TokenKitCatalog.ResolveStyle(awayKit);
         GameObject tokenBasePrefab = GetTokenBasePrefab();
         List<HexCell> homeTeamHexes = new List<HexCell>();
         List<HexCell> awayTeamHexes = new List<HexCell>();
@@ -136,8 +136,8 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
-        TokenStyleDefinition homeTokenStyle = ResolveTokenStyle(homeKit);
-        TokenStyleDefinition awayTokenStyle = ResolveTokenStyle(awayKit);
+        TokenStyleDefinition homeTokenStyle = TokenKitCatalog.ResolveStyle(homeKit);
+        TokenStyleDefinition awayTokenStyle = TokenKitCatalog.ResolveStyle(awayKit);
         GameObject tokenBasePrefab = GetTokenBasePrefab();
         // Create an empty list of HexCells
         List<HexCell> potentialSpawns = new List<HexCell>();
@@ -272,9 +272,9 @@ public class PlayerTokenManager : MonoBehaviour
                 Debug.LogError("Failed to instantiate the TextMeshPro object for jersey numbers.");
                 continue;
             }
-            // Adjust position of the text slightly above the player token
-            numberTextObj.transform.position = new Vector3(playerPosition.x, 0.41f, playerPosition.z);  // Adjust Y position to sit on top
-            numberTextObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
+            // Keep number placement in token-local space so style-specific face offsets remain predictable.
+            numberTextObj.transform.localPosition = new Vector3(0f, 1.06f, 0f);
+            numberTextObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
 
             // Get the TextMeshPro component and assign the jersey number
             TextMeshPro numberText = numberTextObj.GetComponent<TextMeshPro>();
@@ -310,52 +310,4 @@ public class PlayerTokenManager : MonoBehaviour
         return null;
     }
 
-    // TODO: Move the kit library to ScriptableObjects once more club designs are defined from the PDF reference set.
-    private TokenStyleDefinition ResolveTokenStyle(string kitName)
-    {
-        string normalizedKit = string.IsNullOrWhiteSpace(kitName) ? string.Empty : kitName.Trim();
-
-        switch (normalizedKit)
-        {
-            case "Inter":
-                return TokenStyleDefinition.VerticalThreeColors(HexToColor("#1E2027"), HexToColor("#2E86F7"), HexToColor("#2E86F7"));
-
-            case "Milan":
-                return TokenStyleDefinition.VerticalThreeColors(HexToColor("#1E2027"), HexToColor("#E25A62"), HexToColor("#E25A62"));
-
-            case "Porto":
-                return TokenStyleDefinition.VerticalThreeColors(HexToColor("#F4F6FA"), HexToColor("#2E86F7"), HexToColor("#2E86F7"));
-
-            case "Red and White Stripes":
-            case "R&W":
-                return TokenStyleDefinition.VerticalThreeColors(
-                    HexToColor("#A71924"),
-                    HexToColor("#F4F6FA"),
-                    HexToColor("#F4F6FA"),
-                    TokenCenterStripeMode.BreakUnderNumber,
-                    HexToColor("#F4F6FA"),
-                    HexToColor("#A71924"));
-
-            case "Clarets":
-                return TokenStyleDefinition.Plain(HexToColor("#4B2735"), HexToColor("#78C8F7"), HexToColor("#78C8F7"));
-
-            case "Blues":
-            case "Blue":
-                return TokenStyleDefinition.Plain(HexToColor("#0F4E9B"), HexToColor("#F4F6FA"), HexToColor("#F4F6FA"));
-
-            default:
-                Debug.LogWarning($"Unknown kit '{normalizedKit}'. Falling back to plain blue token style.");
-                return TokenStyleDefinition.Plain(HexToColor("#0F4E9B"), HexToColor("#F4F6FA"), HexToColor("#F4F6FA"));
-        }
-    }
-
-    private Color HexToColor(string hex)
-    {
-        if (ColorUtility.TryParseHtmlString(hex, out Color color))
-        {
-            return color;
-        }
-
-        return Color.white;
-    }
 }
