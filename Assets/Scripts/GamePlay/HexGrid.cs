@@ -7,6 +7,15 @@ using System; // Now it will recognize JsonConvert
 
 public class HexGrid : MonoBehaviour
 {
+    private const float HexWidth = 1f;
+    private const float HexHeight = 0.866f;
+    private const float HexCornerRadius = 0.5f;
+    private const string ShootingPathsResource = "shootingpaths/shootingPaths";
+    private const string HeadingPathsResource = "shootingpaths/headingPaths";
+#if UNITY_EDITOR
+    private const string ShootingPathsAssetPath = "Assets/Resources/shootingpaths/shootingPaths.json";
+    private const string HeadingPathsAssetPath = "Assets/Resources/shootingpaths/headingPaths.json";
+#endif
     private bool gridInitialized = false;  // Track if the grid is fully created
     private int width = 48;  // Number of hex tiles in the grid's width
     private int height = 36; // Number of hex tiles in the grid's heightb
@@ -14,18 +23,33 @@ public class HexGrid : MonoBehaviour
     float hexRadius = 0.5f;
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab
     public HexCell[,] cells;  // 2D array to hold the cells
-    private Color lightColor = new Color(0.2f, 0.8f, 0.2f); 
-    private Color darkColor = new Color(0 / 255f, 129 / 255f, 56 / 255f, 255f / 255f);
+    [Header("Pitch Palette")]
+    [SerializeField] private Color clearLightColor = new Color(0.2f, 0.8f, 0.2f);
+    [SerializeField] private Color clearDarkColor = new Color(0f / 255f, 129f / 255f, 56f / 255f, 1f);
+    [SerializeField] private Color snowLightColor = new Color(0.82f, 0.84f, 0.86f, 1f);
+    [SerializeField] private Color snowDarkColor = new Color(0.58f, 0.6f, 0.63f, 1f);
+    private Color lightColor;
+    private Color darkColor;
+    private Color borderColor;
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
     private Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>> headingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
     public List<HexCell> highlightedHexes = new List<HexCell>();
     [Header("Dependencies")]
     public Ball ball;
     public GroundBallManager groundBallManager;
+    private MatchManager matchManager;
+
+    public int GridWidth => width;
+    public int GridHeight => height;
+    public float HexRadius => hexRadius;
     
 
     private void Start()
     {
+        ApplyPaletteForWeather("Clear");
+        BindMatchManager();
+        ApplyWeatherPaletteFromLoadedSettings();
+
         if (cells == null)
         {
             // Initialize the cells array with the correct dimensions
@@ -33,33 +57,8 @@ public class HexGrid : MonoBehaviour
             Debug.Log("HexGrid initialized. Creating grid...");
             CreateGrid();  // Generate the grid
         }
-    // Create out-of-bounds planes around the grid
-    CreateOutOfBoundsPlanes(this);
-        // Path to save or load the shooting paths JSON
-        // string path = Path.Combine(Application.persistentDataPath, "shootingpaths/shootingPaths.json");
-        // string headpath = Path.Combine(Application.persistentDataPath, "shootingpaths/headingPaths.json");
-        // string path = Resources.Load<TextAsset>("shootingpaths/shootingPaths");
-        // string headpath = Resources.Load<TextAsset>("shootingpaths/headingPaths");
-        string path = Path.Combine(Application.dataPath, "Resources/shootingpaths/shootingPaths.json");
-        string headpath = Path.Combine(Application.dataPath, "Resources/shootingpaths/headingPaths.json");
 
-        if (File.Exists(path))
-        {
-            Debug.Log("Found JSON with Shooting Paths. Deserializing...");
-            string json = File.ReadAllText(path);
-            shootingPaths = DeserializeShootingPaths(json);
-            string headjson = File.ReadAllText(headpath);
-            headingPaths = DeserializeShootingPaths(headjson);
-            AssignShootingPathsToHexes();
-        }
-        else
-        {
-            Debug.Log("No shooting paths found. Calculating paths...");
-            CalculateShootingPaths("shot");
-            CalculateShootingPaths("head");
-            SaveShootingPathsToJson();
-            AssignShootingPathsToHexes();
-        }
+        LoadPrecomputedShootingPaths();
         // HighlightShootingHexes();
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(12, 0, 0)).GetHexCenter()}");
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()}");
@@ -76,6 +75,19 @@ public class HexGrid : MonoBehaviour
         // TestWorldToHex();
         
     }
+
+    private void OnEnable()
+    {
+        BindMatchManager();
+    }
+
+    private void OnDisable()
+    {
+        if (matchManager != null)
+        {
+            matchManager.OnGameSettingsLoaded -= HandleGameSettingsLoaded;
+        }
+    }
     
 
     void Update()
@@ -83,13 +95,100 @@ public class HexGrid : MonoBehaviour
         DetectHexUnderMouse();
     }
 
-    void CreateGrid()
+    private void BindMatchManager()
+    {
+        MatchManager resolvedMatchManager = MatchManager.Instance ?? FindObjectOfType<MatchManager>();
+        if (resolvedMatchManager == null || resolvedMatchManager == matchManager)
+        {
+            return;
+        }
+
+        if (matchManager != null)
+        {
+            matchManager.OnGameSettingsLoaded -= HandleGameSettingsLoaded;
+        }
+
+        matchManager = resolvedMatchManager;
+        matchManager.OnGameSettingsLoaded -= HandleGameSettingsLoaded;
+        matchManager.OnGameSettingsLoaded += HandleGameSettingsLoaded;
+    }
+
+    private void HandleGameSettingsLoaded()
+    {
+        ApplyWeatherPaletteFromLoadedSettings();
+    }
+
+    private void ApplyWeatherPaletteFromLoadedSettings()
+    {
+        string weather = matchManager?.gameData?.gameSettings?.weatherConditions;
+        if (string.IsNullOrWhiteSpace(weather))
+        {
+            return;
+        }
+
+        ApplyPaletteForWeather(weather);
+        RefreshExistingCellColors();
+    }
+
+    private void ApplyPaletteForWeather(string weather)
+    {
+        string normalizedWeather = weather?.Trim().ToLowerInvariant() ?? "clear";
+
+        switch (normalizedWeather)
+        {
+            case "rain":
+            case "rainy":
+                // Swap the clear palette so the board feels darker and damp without changing the border shell.
+                lightColor = clearDarkColor;
+                darkColor = clearLightColor;
+                borderColor = clearLightColor;
+                break;
+            case "snow":
+            case "snowy":
+                lightColor = snowLightColor;
+                darkColor = snowDarkColor;
+                borderColor = clearDarkColor;
+                break;
+            default:
+                lightColor = clearLightColor;
+                darkColor = clearDarkColor;
+                borderColor = clearDarkColor;
+                break;
+        }
+    }
+
+    private void RefreshExistingCellColors()
+    {
+        if (cells == null)
+        {
+            return;
+        }
+
+        foreach (HexCell cell in cells)
+        {
+            if (cell == null)
+            {
+                continue;
+            }
+
+            cell.SetBorderColor(borderColor);
+            cell.originalColor = GetBaseHexColor(cell);
+            cell.ResetHighlight();
+        }
+    }
+
+    private Color GetBaseHexColor(HexCell cell)
+    {
+        return cell != null && cell.isDark ? darkColor : lightColor;
+    }
+
+    void CreateGrid(List<GameObject> createdObjects = null)
     {
         for (int z = -height / 2; z < height / 2; z++)
         {
             for (int x = -width / 2; x < width / 2; x++)
             {
-                CreateCell(x, z);
+                CreateCell(x, z, createdObjects);
             }
         }
         Debug.Log("HexGrid created with dimensions: " + width + "x" + height);
@@ -101,20 +200,15 @@ public class HexGrid : MonoBehaviour
         return gridInitialized;
     }
 
-    void CreateCell(int x, int z)
+    void CreateCell(int x, int z, List<GameObject> createdObjects = null)
     {
-        // Adjust for proper horizontal and vertical spacing based on the hexagon's size
-        // Assuming the hexagon prefab has a width of 1 unit
-        float hexWidth = 1f;  // Width of the hexagon tile
-        float hexHeight = 0.866f * hexWidth;  // Vertical height, typically sqrt(3)/2 for a regular hexagon
-        // Adjust horizontal and vertical offsets for a flat-topped layout
-        float zOffset = (x % 2 == 0) ? 0f : hexHeight / 2f;  // Stagger every other column
-        Vector3 position = new Vector3(x * 0.75f * hexWidth, 0, z * hexHeight + zOffset);
+        Vector3 position = GetHexCenterForCoordinates(new Vector3Int(x, 0, z));
 
         // Instantiate the hex cell at the calculated position
         HexCell cell = Instantiate(hexCellPrefab, position, Quaternion.identity, transform);
         cell.coordinates = new Vector3Int(x, 0, z);
         cell.name = $"HexCell [{x}, {z}]";  // Assign the name to the GameObject
+        createdObjects?.Add(cell.gameObject);
         // Assign the layer to the GameObject
         cell.gameObject.layer = LayerMask.NameToLayer("HexGrid");
         // Assign dark hex status here
@@ -123,8 +217,8 @@ public class HexGrid : MonoBehaviour
             cell.isDark = true;
         }
         // Apply either lightColor or darkColor when initializing the hex
-        Color hexColor = cell.isDark ? darkColor : lightColor;
-        cell.InitializeHex(hexColor);
+        cell.InitializeHex(GetBaseHexColor(cell));
+        cell.SetBorderColor(borderColor);
         // Check array bounds and log the creation of each cell
         int arrayX = x + width / 2;
         int arrayZ = z + height / 2;
@@ -243,6 +337,48 @@ public class HexGrid : MonoBehaviour
     {
         // Define your logic to determine which hexes should be dark
         return (x % 2 == 0) ? (z % 3 == 0) : ((z+2) % 3 == 0);  // Example: every other hex is dark
+    }
+
+    public Vector3 GetHexCenterForCoordinates(Vector3Int coords)
+    {
+        float zOffset = (coords.x % 2 == 0) ? 0f : HexHeight / 2f;
+        Vector3 localPosition = new Vector3(coords.x * 0.75f * HexWidth, 0f, coords.z * HexHeight + zOffset);
+        return transform.TransformPoint(localPosition);
+    }
+
+    public Vector3[] GetHexCornersForCoordinates(Vector3Int coords)
+    {
+        Vector3 center = GetHexCenterForCoordinates(coords);
+        Vector3[] corners = new Vector3[6];
+        Quaternion rotation = transform.rotation * Quaternion.Euler(0f, 90f, 0f);
+
+        for (int i = 0; i < 6; i++)
+        {
+            float angle_deg = 60 * i + 30;
+            float angle_rad = Mathf.Deg2Rad * angle_deg;
+            Vector3 cornerOffset = new Vector3(
+                HexCornerRadius * Mathf.Cos(angle_rad),
+                0f,
+                HexCornerRadius * Mathf.Sin(angle_rad)
+            );
+            corners[i] = center + rotation * cornerOffset;
+        }
+
+        return corners;
+    }
+
+    public Vector3[] GetHexEdgeMidpointsForCoordinates(Vector3Int coords)
+    {
+        Vector3[] corners = GetHexCornersForCoordinates(coords);
+        Vector3[] midpoints = new Vector3[6];
+
+        for (int i = 0; i < 6; i++)
+        {
+            int nextCornerIndex = (i + 1) % 6;
+            midpoints[i] = (corners[i] + corners[nextCornerIndex]) / 2f;
+        }
+
+        return midpoints;
     }
     
     public HexCell GetHexCellAt(Vector3Int coords)
@@ -411,67 +547,6 @@ public class HexGrid : MonoBehaviour
         return false;
     }
     
-    public void CreateOutOfBoundsPlanes(HexGrid grid, float planeHeight = 0.05f)
-    {
-        // Get the outermost hex cells from the grid
-        HexCell topLeftHex = grid.GetHexCellAt(new Vector3Int(-18, 0, 12));
-        HexCell bottomRightHex = grid.GetHexCellAt(new Vector3Int(18, 0, -12));
-
-        // Create a material for the out-of-bounds areas
-        Material blueMaterial = new Material(Shader.Find("Unlit/Color"));
-        blueMaterial.color = Color.blue;
-        float horizontalOffset = width * hexRadius;
-        float verticalOffset = height * hexRadius;
-        // Layer index for the "IgnoreRaycast" layer
-
-        // Left Plane (to the left of the grid)
-        GameObject leftPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        leftPlane.name = "Left Out-of-Bounds";
-        leftPlane.transform.localScale = new Vector3(horizontalOffset * 2 , horizontalOffset * 2, 1);  // Scale based on grid height
-        leftPlane.transform.position = new Vector3(topLeftHex.GetHexCorners()[5].x - horizontalOffset , planeHeight, 0);  // Place at the left edge
-        leftPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
-        leftPlane.GetComponent<Renderer>().material = blueMaterial;
-
-        // Right Plane (to the left of the grid)
-        GameObject rightPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        rightPlane.name = "Right Out-of-Bounds";
-        rightPlane.transform.localScale = new Vector3(horizontalOffset * 2 , horizontalOffset * 2, 1);  // Scale based on grid height
-        rightPlane.transform.position = new Vector3(bottomRightHex.GetHexCorners()[2].x + horizontalOffset , planeHeight, 0);  // Place at the left edge
-        rightPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
-        rightPlane.GetComponent<Renderer>().material = blueMaterial;
-
-        // Top Plane (above the grid)
-        GameObject topPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        topPlane.name = "Top Out-of-Bounds";
-        topPlane.transform.localScale = new Vector3(verticalOffset * 2 , verticalOffset * 2, 1);  // Scale based on grid height
-        topPlane.transform.position = new Vector3(0 , planeHeight, topLeftHex.GetHexCorners()[2].z + verticalOffset);  // Place at the left edge
-        topPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
-        topPlane.GetComponent<Renderer>().material = blueMaterial;
-
-        // Bottom Plane (below the grid)
-        GameObject bottomPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        bottomPlane.name = "Bottom Out-of-Bounds";
-        bottomPlane.transform.localScale = new Vector3(verticalOffset * 2 , verticalOffset * 2, 1);  // Scale based on grid height
-        bottomPlane.transform.position = new Vector3(0 , planeHeight, bottomRightHex.GetHexCorners()[5].z - verticalOffset );  // Place at the left edge
-        bottomPlane.transform.rotation = Quaternion.Euler(90, 0, 0);  // Align with the XZ plane
-        bottomPlane.GetComponent<Renderer>().material = blueMaterial;
-
-        // Uncomment the below in order to ignore raycasts on the out of bounds planes.
-        // If this is commented, then we need to handle clicks on hexes that are below the planes.
-        // int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
-        // leftPlane.layer = ignoreRaycastLayer;
-        // rightPlane.layer = ignoreRaycastLayer;
-        // topPlane.layer = ignoreRaycastLayer;
-        // bottomPlane.layer = ignoreRaycastLayer;
-
-        // Optionally, parent these planes to a game object (e.g., "OutOfBounds")
-        GameObject outOfBoundsParent = new GameObject("OutOfBoundsPlanes");
-        leftPlane.transform.parent = outOfBoundsParent.transform;
-        rightPlane.transform.parent = outOfBoundsParent.transform;
-        topPlane.transform.parent = outOfBoundsParent.transform;
-        bottomPlane.transform.parent = outOfBoundsParent.transform;
-    }
-
     public void ClearHighlightedHexes()
     {
         foreach (HexCell hex in highlightedHexes)
@@ -837,6 +912,42 @@ public class HexGrid : MonoBehaviour
         return new Vector3Int(x, y, z);
     }
 
+#if UNITY_EDITOR
+    public void RebuildShootingPathAssetsInEditor()
+    {
+        List<GameObject> temporaryCells = null;
+
+        if (!HasLiveGrid())
+        {
+            temporaryCells = new List<GameObject>();
+            cells = new HexCell[width, height];
+            CreateGrid(temporaryCells);
+        }
+
+        CalculateShootingPaths("shot");
+        CalculateShootingPaths("head");
+        SaveShootingPathsToJson();
+
+        if (temporaryCells == null)
+        {
+            AssignShootingPathsToHexes();
+            return;
+        }
+
+        foreach (GameObject temporaryCell in temporaryCells)
+        {
+            if (temporaryCell != null)
+            {
+                DestroyImmediate(temporaryCell);
+            }
+        }
+
+        cells = null;
+        gridInitialized = false;
+    }
+#endif
+
+#if UNITY_EDITOR
     private void SaveShootingPathsToJson()
     {
         var serializablePaths = new Dictionary<string, Dictionary<string, List<string>>>();
@@ -885,6 +996,33 @@ public class HexGrid : MonoBehaviour
         string headfilePath = Path.Combine(Application.dataPath, "Resources/shootingpaths/headingPaths.json");
         File.WriteAllText(headfilePath, headjson);
         Debug.Log($"Heading paths saved to {headfilePath}");
+
+        UnityEditor.AssetDatabase.ImportAsset(ShootingPathsAssetPath);
+        UnityEditor.AssetDatabase.ImportAsset(HeadingPathsAssetPath);
+    }
+#endif
+
+    private void LoadPrecomputedShootingPaths()
+    {
+        // Runtime only consumes the authored JSON assets. Regeneration is editor-only.
+        TextAsset shootingAsset = Resources.Load<TextAsset>(ShootingPathsResource);
+        TextAsset headingAsset = Resources.Load<TextAsset>(HeadingPathsResource);
+
+        if (shootingAsset == null || headingAsset == null)
+        {
+            Debug.LogError("Precomputed shooting path assets are missing. Rebuild them from the editor tooling before playing Room.");
+            return;
+        }
+
+        Debug.Log("Found JSON with Shooting Paths. Deserializing...");
+        shootingPaths = DeserializeShootingPaths(shootingAsset.text);
+        headingPaths = DeserializeShootingPaths(headingAsset.text);
+        AssignShootingPathsToHexes();
+    }
+
+    private bool HasLiveGrid()
+    {
+        return cells != null && cells.Cast<HexCell>().Any(cell => cell != null);
     }
 
     private void HighlightShootingHexes()

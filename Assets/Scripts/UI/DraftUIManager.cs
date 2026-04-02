@@ -3,12 +3,15 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.IO;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using System.Linq;
 
 public class DraftUIManager : MonoBehaviour
 {
+    private const string ProtectedRoomFixtureSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
+
     public Button startGameButton;  // Reference to the Start Game button
     private DraftManager draftManager;  // Reference to the DraftManager
     public GameObject homeTeamPanel;
@@ -114,6 +117,18 @@ public class DraftUIManager : MonoBehaviour
             return;
         }
 
+        // If Draft was started from the protected Room fixture, fork it into a fresh save before
+        // persisting rosters so the canonical editor test save remains unchanged.
+        filePath = ResolveWritableSavePath(filePath);
+        if (string.IsNullOrEmpty(filePath))
+        {
+            return;
+        }
+
+        ApplicationManager.Instance.SetActiveSaveFilePath(filePath);
+        PlayerPrefs.SetString("currentGameSettings", filePath);
+        PlayerPrefs.Save();
+
         string json = File.ReadAllText(filePath);
         var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 
@@ -134,6 +149,47 @@ public class DraftUIManager : MonoBehaviour
 
         // Proceed to the game scene
         SceneManager.LoadScene("Room");
+    }
+
+    private string ResolveWritableSavePath(string filePath)
+    {
+        if (!string.Equals(Path.GetFileName(filePath), ProtectedRoomFixtureSaveFileName, StringComparison.OrdinalIgnoreCase))
+        {
+            return filePath;
+        }
+
+        try
+        {
+            ApplicationManager.EnsureInstanceExists();
+
+            string uniquePrefix = Guid.NewGuid().ToString();
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+            string gameMode = SanitizeFileName(draftManager.currentSettings?.gameMode ?? "Hot Seat");
+            string homeTeam = SanitizeFileName(draftManager.currentSettings?.homeTeamName ?? string.Empty);
+            string awayTeam = SanitizeFileName(draftManager.currentSettings?.awayTeamName ?? string.Empty);
+            string fileName = $"{uniquePrefix}_{timestamp}__{gameMode}__{homeTeam}__{awayTeam}.json";
+            string writablePath = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), fileName);
+
+            File.Copy(filePath, writablePath, false);
+            Debug.Log($"Forked protected fixture into new draft save: {writablePath}");
+            return writablePath;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to fork protected fixture save '{filePath}': {ex.Message}");
+            return string.Empty;
+        }
+    }
+
+    private string SanitizeFileName(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        return string.Concat(value.Select(ch => invalidChars.Contains(ch) ? '_' : ch));
     }
 
     private Dictionary<string, Dictionary<string, object>> GatherRosterData(GameObject teamPanel)

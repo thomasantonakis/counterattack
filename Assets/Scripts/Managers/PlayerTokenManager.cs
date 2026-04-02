@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;  // Import TextMeshPro namespace
 
-
 public class PlayerTokenManager : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -108,6 +107,9 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        TokenStyleDefinition homeTokenStyle = TokenKitCatalog.ResolveStyle(homeKit);
+        TokenStyleDefinition awayTokenStyle = TokenKitCatalog.ResolveStyle(awayKit);
+        GameObject tokenBasePrefab = GetTokenBasePrefab();
         List<HexCell> homeTeamHexes = new List<HexCell>();
         List<HexCell> awayTeamHexes = new List<HexCell>();
         foreach (Vector3Int vector in home)
@@ -124,23 +126,8 @@ public class PlayerTokenManager : MonoBehaviour
             hex.HighlightHex("isDefenseOccupied");
             awayTeamHexes.Add(hex);
         } 
-        if (homeKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Home", homeTeamHexes);
-        }
-        else if (homeKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
-        }
-        // Do the same for Away team
-        if (awayKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Away", awayTeamHexes);
-        }
-        else if (awayKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Away", awayTeamHexes);
-        }
+        CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle);
+        CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle);
         // After players are instantiated
         MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
@@ -149,6 +136,9 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        TokenStyleDefinition homeTokenStyle = TokenKitCatalog.ResolveStyle(homeKit);
+        TokenStyleDefinition awayTokenStyle = TokenKitCatalog.ResolveStyle(awayKit);
+        GameObject tokenBasePrefab = GetTokenBasePrefab();
         // Create an empty list of HexCells
         List<HexCell> potentialSpawns = new List<HexCell>();
         // Gather inbound hexes for potential spawning locations
@@ -185,29 +175,12 @@ public class PlayerTokenManager : MonoBehaviour
             awayTeamHexes.Add(awayHex);  // Add to away team hexes
             potentialSpawns.RemoveAt(randomIndex);
         }
-
-        // // Load the correct prefab based on the kit
-        if (homeKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Home", homeTeamHexes);
-        }
-        else if (homeKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Home", homeTeamHexes);
-        }
-        // Do the same for Away team
-        if (awayKit == "R&W")
-        {
-            CreateTeam(redKitPrefab, "Away", awayTeamHexes);
-        }
-        else if (awayKit == "Blue")
-        {
-            CreateTeam(blueKitPrefab, "Away", awayTeamHexes);
-        }
+        CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle);
+        CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle);
         // After players are instantiated
         MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
-    void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes)
+    void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes, TokenStyleDefinition tokenStyle)
     {
         // Find or create the "Player Tokens" parent object in the scene
         GameObject parentObject = GameObject.Find("Player Tokens");
@@ -284,6 +257,12 @@ public class PlayerTokenManager : MonoBehaviour
             // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
             token.isHomeTeam = teamType == "Home";  // Set isHomeTeam based on team type
+            PlayerTokenVisuals visuals = player.GetComponent<PlayerTokenVisuals>();
+            if (visuals == null)
+            {
+                visuals = player.AddComponent<PlayerTokenVisuals>();
+            }
+            visuals.ApplyStyle(tokenStyle);
             // After assignment, confirm it was assigned
             // Debug.Log($"{player.name} assigned hex: {token.GetCurrentHex()?.name}");
             // Instantiate the TextMeshPro object for the jersey number
@@ -293,9 +272,9 @@ public class PlayerTokenManager : MonoBehaviour
                 Debug.LogError("Failed to instantiate the TextMeshPro object for jersey numbers.");
                 continue;
             }
-            // Adjust position of the text slightly above the player token
-            numberTextObj.transform.position = new Vector3(playerPosition.x, 0.41f, playerPosition.z);  // Adjust Y position to sit on top
-            numberTextObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
+            // Keep number placement in token-local space so style-specific face offsets remain predictable.
+            numberTextObj.transform.localPosition = new Vector3(0f, 1.06f, 0f);
+            numberTextObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
 
             // Get the TextMeshPro component and assign the jersey number
             TextMeshPro numberText = numberTextObj.GetComponent<TextMeshPro>();
@@ -311,6 +290,24 @@ public class PlayerTokenManager : MonoBehaviour
             numberText.fontSize = 3;  // Set font size, tweak as needed
             numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
             numberText.GetComponent<MeshRenderer>().sortingOrder = 10;  // Ensure the number is rendered on top
+            visuals.ApplyNumberStyle(numberText, tokenStyle);
         }
     }
+
+    private GameObject GetTokenBasePrefab()
+    {
+        if (blueKitPrefab != null)
+        {
+            return blueKitPrefab;
+        }
+
+        if (redKitPrefab != null)
+        {
+            return redKitPrefab;
+        }
+
+        Debug.LogError("No token base prefab is assigned on PlayerTokenManager.");
+        return null;
+    }
+
 }

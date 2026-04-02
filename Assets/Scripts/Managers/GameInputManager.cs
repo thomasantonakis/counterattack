@@ -225,8 +225,8 @@ public class GameInputManager : MonoBehaviour
     
     public (PlayerToken inferredTokenFromClick, HexCell inferredHexCellFromClick, bool isOutOfBoundsClick) DetectTokenOrHexClicked(RaycastHit hit)
     {
-        // Detect if we hit an Out-of-Bounds Plane
-        if (hit.collider.name.Contains("Out-of-Bounds"))
+        // Scene-owned blockers explicitly mark out-of-bounds click catchers.
+        if (hit.collider.GetComponentInParent<OutOfBoundsClickBlocker>() != null)
         {
             if (logIsOn) Debug.Log($"🚫 Clicked on {hit.collider.name} - Out of Bounds area.");
             return (null, null, true);  // ✅ Indicate this was an OOB click

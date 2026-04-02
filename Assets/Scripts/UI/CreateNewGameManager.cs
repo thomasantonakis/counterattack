@@ -26,6 +26,12 @@ public class CreateNewGameManager : MonoBehaviour
     // public TMP_Dropdown playerDeckDropdown;
     public TMP_Dropdown homeKitDropdown;
     public TMP_Dropdown awayKitDropdown;
+    public RawImage homeKitPreviewImage;
+    public TMP_Text homeKitPreviewNumberText;
+    public RawImage awayKitPreviewImage;
+    public TMP_Text awayKitPreviewNumberText;
+    public TMP_Text kitValidationText;
+    public TMP_Text kitSimilarityText;
     public TMP_InputField homeTeamInputField;
     public TMP_InputField awayTeamInputField;
     public Toggle includeTabletopiaToggle;
@@ -35,6 +41,17 @@ public class CreateNewGameManager : MonoBehaviour
     public Toggle includeNonTabletopiaGKToggle;
     public Toggle includeInternationalsGKToggle;
     public Button createGameButton;
+
+    private const string DefaultHomeKitId = "028";
+    private const string DefaultAwayKitId = "000";
+    private const string PreviewSampleNumber = "10";
+    private const float PreviewPlainNumberFontSize = 34f;
+    private const float PreviewVerticalNumberFontSize = 30f;
+
+    private IReadOnlyList<TokenKitPreset> availableKitPresets;
+    private int lastValidHomeKitIndex;
+    private int lastValidAwayKitIndex;
+    private bool isUpdatingKitUi;
 
     void Start()
     {
@@ -78,6 +95,7 @@ public class CreateNewGameManager : MonoBehaviour
         includeInternationalsGKToggle.onValueChanged.AddListener(delegate { ValidateCheckboxesGK(includeInternationalsGKToggle); });
         // Initial setup
         AdjustSquadSizeOptionsBasedOnMatchType();
+        InitializeKitSelectionUi();
     }
 
     // Update the displayed text for the slider value
@@ -161,6 +179,193 @@ public class CreateNewGameManager : MonoBehaviour
         refereeDropdown.AddOptions(refereeOptions);  // Add the default options
     }
 
+    private void InitializeKitSelectionUi()
+    {
+        ReloadKitSelectionUi();
+    }
+
+    public void ReloadKitSelectionUi()
+    {
+        string currentHomeKitId = GetSelectedKitPresetId(homeKitDropdown);
+        string currentAwayKitId = GetSelectedKitPresetId(awayKitDropdown);
+
+        homeKitDropdown.onValueChanged.RemoveListener(OnHomeKitChanged);
+        awayKitDropdown.onValueChanged.RemoveListener(OnAwayKitChanged);
+
+        availableKitPresets = TokenKitCatalog.GetAllPresets();
+        PopulateKitDropdown(homeKitDropdown, string.IsNullOrWhiteSpace(currentHomeKitId) ? DefaultHomeKitId : currentHomeKitId);
+        PopulateKitDropdown(awayKitDropdown, string.IsNullOrWhiteSpace(currentAwayKitId) ? DefaultAwayKitId : currentAwayKitId);
+
+        lastValidHomeKitIndex = homeKitDropdown.value;
+        lastValidAwayKitIndex = awayKitDropdown.value;
+
+        homeKitDropdown.onValueChanged.AddListener(OnHomeKitChanged);
+        awayKitDropdown.onValueChanged.AddListener(OnAwayKitChanged);
+
+        UpdateKitPreviews();
+        UpdateKitSimilarityScore();
+        UpdateKitValidation(string.Empty);
+    }
+
+    private void PopulateKitDropdown(TMP_Dropdown dropdown, string defaultPresetId)
+    {
+        List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+        foreach (TokenKitPreset preset in availableKitPresets)
+        {
+            options.Add(new TMP_Dropdown.OptionData(preset.DisplayName));
+        }
+
+        dropdown.ClearOptions();
+        dropdown.AddOptions(options);
+
+        int defaultIndex = FindPresetIndex(defaultPresetId);
+        dropdown.SetValueWithoutNotify(defaultIndex >= 0 ? defaultIndex : 0);
+        dropdown.RefreshShownValue();
+    }
+
+    private int FindPresetIndex(string presetIdOrAlias)
+    {
+        TokenKitPreset preset = TokenKitCatalog.GetPresetByIdOrAlias(presetIdOrAlias);
+        if (preset == null)
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < availableKitPresets.Count; i++)
+        {
+            if (availableKitPresets[i].Id == preset.Id)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private TokenKitPreset GetSelectedKitPreset(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || availableKitPresets == null || availableKitPresets.Count == 0)
+        {
+            return null;
+        }
+
+        int clampedIndex = Mathf.Clamp(dropdown.value, 0, availableKitPresets.Count - 1);
+        return availableKitPresets[clampedIndex];
+    }
+
+    private string GetSelectedKitPresetId(TMP_Dropdown dropdown)
+    {
+        return GetSelectedKitPreset(dropdown)?.Id ?? string.Empty;
+    }
+
+    private void OnHomeKitChanged(int _)
+    {
+        HandleKitSelectionChanged(isHomeSelection: true);
+    }
+
+    private void OnAwayKitChanged(int _)
+    {
+        HandleKitSelectionChanged(isHomeSelection: false);
+    }
+
+    private void HandleKitSelectionChanged(bool isHomeSelection)
+    {
+        if (isUpdatingKitUi)
+        {
+            return;
+        }
+
+        TokenKitPreset attemptedPreset = GetSelectedKitPreset(isHomeSelection ? homeKitDropdown : awayKitDropdown);
+        string homeKitId = GetSelectedKitPresetId(homeKitDropdown);
+        string awayKitId = GetSelectedKitPresetId(awayKitDropdown);
+        float similarityScore = TokenKitCatalog.GetSimilarityScore(homeKitId, awayKitId);
+        UpdateKitSimilarityScore(similarityScore);
+
+        if (similarityScore >= TokenKitCatalog.ClashThreshold)
+        {
+            isUpdatingKitUi = true;
+            if (isHomeSelection)
+            {
+                homeKitDropdown.SetValueWithoutNotify(lastValidHomeKitIndex);
+                homeKitDropdown.RefreshShownValue();
+            }
+            else
+            {
+                awayKitDropdown.SetValueWithoutNotify(lastValidAwayKitIndex);
+                awayKitDropdown.RefreshShownValue();
+            }
+            isUpdatingKitUi = false;
+
+            string attemptedPresetName = attemptedPreset?.DisplayName ?? "Selected kit";
+            string otherPresetName = (isHomeSelection ? GetSelectedKitPreset(awayKitDropdown) : GetSelectedKitPreset(homeKitDropdown))?.DisplayName ?? "other kit";
+            UpdateKitValidation($"{attemptedPresetName} is too similar to {otherPresetName} ({similarityScore:0}% match). Choose a more distinct kit.");
+            UpdateKitPreviews();
+            return;
+        }
+
+        lastValidHomeKitIndex = homeKitDropdown.value;
+        lastValidAwayKitIndex = awayKitDropdown.value;
+        UpdateKitValidation(string.Empty);
+        UpdateKitPreviews();
+        UpdateKitSimilarityScore(similarityScore);
+    }
+
+    private void UpdateKitPreviews()
+    {
+        UpdateKitPreview(homeKitPreviewImage, homeKitPreviewNumberText, GetSelectedKitPreset(homeKitDropdown));
+        UpdateKitPreview(awayKitPreviewImage, awayKitPreviewNumberText, GetSelectedKitPreset(awayKitDropdown));
+    }
+
+    private void UpdateKitSimilarityScore()
+    {
+        string homeKitId = GetSelectedKitPresetId(homeKitDropdown);
+        string awayKitId = GetSelectedKitPresetId(awayKitDropdown);
+        float similarityScore = TokenKitCatalog.GetSimilarityScore(homeKitId, awayKitId);
+        UpdateKitSimilarityScore(similarityScore);
+    }
+
+    private void UpdateKitSimilarityScore(float similarityScore)
+    {
+        if (kitSimilarityText == null)
+        {
+            return;
+        }
+
+        kitSimilarityText.text = $"Kit similarity index: {similarityScore:0}%";
+        kitSimilarityText.gameObject.SetActive(true);
+    }
+
+    private void UpdateKitPreview(RawImage previewImage, TMP_Text previewNumberText, TokenKitPreset preset)
+    {
+        if (preset == null)
+        {
+            return;
+        }
+
+        if (previewImage != null)
+        {
+            previewImage.texture = TokenFacePreviewUtility.GetOrCreateFaceTexture(preset.Style);
+            previewImage.color = Color.white;
+        }
+
+        if (previewNumberText != null)
+        {
+            previewNumberText.text = PreviewSampleNumber;
+            TokenFacePreviewUtility.ApplyNumberStyle(previewNumberText, preset.Style, PreviewPlainNumberFontSize, PreviewVerticalNumberFontSize);
+        }
+    }
+
+    private void UpdateKitValidation(string message)
+    {
+        if (kitValidationText == null)
+        {
+            return;
+        }
+
+        kitValidationText.text = message;
+        kitValidationText.gameObject.SetActive(!string.IsNullOrWhiteSpace(message));
+    }
+
     // Adjust the squad size dropdown based on match type selection
     void AdjustSquadSizeOptionsBasedOnMatchType()
     {
@@ -180,19 +385,24 @@ public class CreateNewGameManager : MonoBehaviour
     }
     void AdjustBallColorBasedOnWeather()
     {
-        // Clear current squad size options
+        string previouslySelectedColor = ballColorDropdown.options.Count > 0
+            ? ballColorDropdown.options[ballColorDropdown.value].text
+            : "White";
+
         ballColorDropdown.ClearOptions();
 
-        // Change options based on the selected match type
-        if (weatherDropdown.value == 2)  // Example: value 0 represents "Snow"
+        if (weatherDropdown.value == 2)  // Snow
         {
             ballColorDropdown.AddOptions(new List<string> { "Orange" });
         }
-        else if (weatherDropdown.value == 1)  // Example: value 1 represents "international"
+        else
         {
-            ballColorDropdown.AddOptions(new List<string> { "White", "Orange", "Yellow" }); // Fewer options for international matches
+            ballColorDropdown.AddOptions(new List<string> { "White", "Orange", "Yellow" });
         }
-        ballColorDropdown.RefreshShownValue();  // Force UI update to reflect changes
+
+        int restoredIndex = ballColorDropdown.options.FindIndex(option => option.text == previouslySelectedColor);
+        ballColorDropdown.SetValueWithoutNotify(restoredIndex >= 0 ? restoredIndex : 0);
+        ballColorDropdown.RefreshShownValue();
     }
 
     // Update checkboxes and squad size options when match type changes
@@ -272,8 +482,8 @@ public class CreateNewGameManager : MonoBehaviour
         settings.includeTabletopiaGK = includeTabletopiaGKToggle.isOn;
         settings.includeNonTabletopiaGK = includeNonTabletopiaGKToggle.isOn;
         settings.includeInternationalsGK = includeInternationalsGKToggle.isOn;
-        settings.homeKit = homeKitDropdown.options[homeKitDropdown.value].text;
-        settings.awayKit = awayKitDropdown.options[awayKitDropdown.value].text;
+        settings.homeKit = GetSelectedKitPresetId(homeKitDropdown);
+        settings.awayKit = GetSelectedKitPresetId(awayKitDropdown);
 
         var gameData = new
         {
@@ -302,7 +512,7 @@ public class CreateNewGameManager : MonoBehaviour
         // Write the file
         File.WriteAllText(path, json);
         // Persist the exact save reference so Draft/Room keep mutating the same JSON file.
-        ApplicationManager.Instance.LastSavedFileName = path;
+        ApplicationManager.Instance.SetActiveSaveFilePath(path);
         PlayerPrefs.SetString("currentGameSettings", path);
         PlayerPrefs.Save();
 

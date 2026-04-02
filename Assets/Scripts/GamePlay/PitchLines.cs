@@ -1,447 +1,367 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PitchLines : MonoBehaviour
 {
-    public HexGrid hexGrid;  // Reference to the hex grid to get hex positions
-    private int ignoreRaycastLayer; // Declare this at the class level
-    List<GameObject> pitchObjects = new List<GameObject>();
+    private const string GeneratedRootName = "GeneratedVisuals";
+    private const string MarkingsRootName = "PitchMarkings";
+    private const string DotsRootName = "PitchDots";
+    private const string NetsRootName = "GoalNets";
+    private const string BlockersRootName = "OutOfBoundsBlockers";
 
+    private const float LineLift = 0.03f;
+    private const float DotLift = 0.031f;
+    private const float GoalNetLift = 0.06f;
+    private const float OutOfBoundsLift = 0.05f;
 
-    void Start()
+    private const int FullCircleSegments = 96;
+    private const int PenaltyArcSegments = 48;
+    private const int CornerArcSegments = 24;
+
+    [Header("Dependencies")]
+    public HexGrid hexGrid;
+
+    [Header("Generated Assets")]
+    [SerializeField] private Material lineMaterial;
+    [SerializeField] private Material netMaterial;
+    [SerializeField] private Material blockerMaterial;
+    [SerializeField] private Sprite dotSprite;
+    [SerializeField] private Transform generatedRoot;
+
+    // The Room board visuals are scene-owned. This builder recreates the serialized child
+    // hierarchy in edit mode so play mode only consumes the authored result.
+    public void ConfigureGeneratedAssets(Material lines, Material nets, Material blockers, Sprite dots)
     {
-        // Wait for the grid to initialize, then draw lines
-        StartCoroutine(WaitForGridAndDrawLines());
-        // Example: Assuming "lineObjects" is an array/list of the line objects
-        ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
-        foreach (GameObject pitchObject in pitchObjects)
-        {
-            pitchObject.layer = ignoreRaycastLayer;
-        }
+        lineMaterial = lines;
+        netMaterial = nets;
+        blockerMaterial = blockers;
+        dotSprite = dots;
     }
 
-    // Coroutine to wait until the grid is ready, then draw lines
-    System.Collections.IEnumerator WaitForGridAndDrawLines()
+    public void RebuildSceneVisuals()
     {
-        // Wait until the HexGrid has finished creating cells
-        yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());  // Check if grid is ready
-
-        Debug.Log("Grid is ready, drawing lines...");
-        // Dummy Line
-        // DrawLineAsQuad(new Vector3(0, 0, 0), new Vector3(10, 0, 0), 0.15f);
-        
-        // Pitch boundaries
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5]
-            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0]
-            , 0.05f
-            , 0.03f
-            , "Bottom Side Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0]
-            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2]
-            , 0.05f
-            , 0.03f
-            , "Right Goal Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2]
-            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3]
-            , 0.05f
-            , 0.03f
-            , "Top Side Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3]
-            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5]
-            , 0.05f
-            , 0.03f
-            , "Left Goal Line")
-        );
-        // Half Court Line
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(0, 0, 12)).GetHexEdgeMidpoints()[2]
-            , hexGrid.GetHexCellAt(new Vector3Int(0, 0, -12)).GetHexEdgeMidpoints()[5]
-            , 0.05f
-            , 0.03f
-            , "Half Court Line")
-        );
-        // Left Penalty Box
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-12, 0, -7)).GetHexEdgeMidpoints()[5]
-            , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2]
-            , 0.05f
-            , 0.03f
-            , "Left Pen Box Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -7)).GetHexCorners()[5]
-            , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, -7)).GetHexEdgeMidpoints()[5]
-            , 0.05f
-            , 0.03f
-            , "Left Pen Bottom Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 7)).GetHexCorners()[3]
-            , hexGrid.GetHexCellAt(new Vector3Int(-12, 0, 7)).GetHexEdgeMidpoints()[2]
-            , 0.05f
-            , 0.03f
-            , "Left Pen Top Line")
-        );
-        // Right Penalty Box
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5]
-            , hexGrid.GetHexCellAt(new Vector3Int(12, 0, 7)).GetHexEdgeMidpoints()[2]
-            , 0.05f
-            , 0.03f
-            , "Right Pen Box Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(18, 0, -7)).GetHexCorners()[0]
-            , hexGrid.GetHexCellAt(new Vector3Int(12, 0, -7)).GetHexEdgeMidpoints()[5]
-            , 0.05f
-            , 0.03f
-            , "Right Pen Bottom Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(18, 0, 7)).GetHexCorners()[2]
-            , hexGrid.GetHexCellAt(new Vector3Int(12, 0, 7)).GetHexEdgeMidpoints()[2]
-            , 0.05f
-            , 0.03f
-            , "Right Pen Top Line")
-        );
-        // Left 6-yard Box
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, -5)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 5)).GetHexCenter()
-            , 0.05f
-            , 0.03f
-            , "Left 6yB Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, -5)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -5)).GetHexCorners()[4]
-            , 0.05f
-            , 0.03f
-            , "Left 6yB Bottom")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 5)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 5)).GetHexCorners()[4]
-            , 0.05f
-            , 0.03f
-            , "Left 6yB Top")
-        );
-        // Right 6-yard Box
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(16, 0, -5)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(16, 0, 5)).GetHexCenter()
-            , 0.05f
-            , 0.03f
-            , "Right 6yB Line")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(16, 0, -5)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -5)).GetHexCorners()[1]
-            , 0.05f
-            , 0.03f
-            , "Right 6yB Bottom")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(16, 0, 5)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 5)).GetHexCorners()[1]
-            , 0.05f
-            , 0.03f
-            , "Right 6yB Top")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-20, 0, 3)).GetHexCorners()[2]
-            , hexGrid.GetHexCellAt(new Vector3Int(-20, 0, -3)).GetHexCorners()[0]
-            , 0.05f
-            , 0.06f
-            , "Left Goal Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 3)).GetHexCorners()[3]
-            , hexGrid.GetHexCellAt(new Vector3Int(-20, 0, 3)).GetHexCorners()[2]
-            , 0.05f
-            , 0.06f
-            , "Left Goal Top Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -3)).GetHexCorners()[5]
-            , hexGrid.GetHexCellAt(new Vector3Int(-20, 0, -3)).GetHexCorners()[0]
-            , 0.05f
-            , 0.06f
-            , "Left Goal Bottom Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(20, 0, 3)).GetHexCorners()[3]
-            , hexGrid.GetHexCellAt(new Vector3Int(20, 0, -3)).GetHexCorners()[5]
-            , 0.05f
-            , 0.06f
-            , "Right Goal Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(20, 0, 3)).GetHexCorners()[3]
-            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, 3)).GetHexCorners()[2]
-            , 0.05f
-            , 0.06f
-            , "Right Goal Top Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(20, 0, -3)).GetHexCorners()[5]
-            , hexGrid.GetHexCellAt(new Vector3Int(18, 0, -3)).GetHexCorners()[0]
-            , 0.05f
-            , 0.06f
-            , "Right Goal Bottom Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(-19, 0, 3)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(-19, 0, -4)).GetHexCenter()
-            , 0.05f
-            , 0.06f
-            , "Left Goal Middle Net")
-        );
-        pitchObjects.Add(
-          DrawLineAsQuad(
-            hexGrid.GetHexCellAt(new Vector3Int(19, 0, 3)).GetHexCenter()
-            , hexGrid.GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()
-            , 0.05f
-            , 0.06f
-            , "Right Goal Middle Net")
-        );
-        // Load Sprite for Ball Spots
-        Sprite circleSprite = Resources.Load<Sprite>("circle");
-        // Kick Off Point
-        pitchObjects.Add(DrawDot(hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)).GetHexCenter(), 0.08f, circleSprite, "Kick Off"));
-        // Right Pen Spot
-        pitchObjects.Add(DrawDot(hexGrid.GetHexCellAt(new Vector3Int(14, 0, 0)).GetHexCenter(), 0.08f, circleSprite ,"Right Pen Spot"));
-        // Left Pen Spot
-        pitchObjects.Add(DrawDot(hexGrid.GetHexCellAt(new Vector3Int(-14, 0, 0)).GetHexCenter(), 0.08f, circleSprite, "Left Pen Spot"));
-        // Half court circle
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)).GetHexCenter() //center
-            , 3f // radius float
-            , 360 // segment integer
-            , 0.05f // thichness float
-            , 0 // start angle integer
-            , 360 // end angle integer
-            , "Half Court Circle")
-        );
-        // Right Penalty Arc
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(14, 0, 0)).GetHexCenter() //center
-            , 3f // radius float
-            , 360 // segment integer
-            , 0.05f // thichness float
-            , 120 // start angle integer
-            , 240 // end angle integer
-            , "Right Penalty Arc")
-        );
-        // Left Penalty Arc
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(-14, 0, 0)).GetHexCenter() //center
-            , 3f // radius float
-            , 360 // segment integer
-            , 0.05f // thichness float
-            , 300 // start angle integer
-            , 420 // end angle integer
-            , "Left Penalty Arc")
-        );
-        // Bottom Left Corner Arc
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12)).GetHexCorners()[5] //center
-            , .3f // radius float
-            , 360 // segment integer
-            , 0.03f // thichness float
-            , 0 // start angle integer
-            , 90 // end angle integer
-            , "Bottom Left Corner")
-        );
-        // Top Left Corner Arc
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12)).GetHexCorners()[3] //center
-            , .3f // radius float
-            , 360 // segment integer
-            , 0.03f // thichness float
-            , 270 // start angle integer
-            , 360 // end angle integer
-            , "Top Left Corner")
-        );
-        // Bottom Right Corner Arc
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12)).GetHexCorners()[0] //center
-            , .3f // radius float
-            , 360 // segment integer
-            , 0.03f // thichness float
-            , 90 // start angle integer
-            , 180 // end angle integer
-            , "Bottom Right Corner")
-        );
-        // Top Right Corner Arc
-        pitchObjects.Add(
-          DrawCircleOrArc(
-            hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12)).GetHexCorners()[2] //center
-            , .3f // radius float
-            , 360 // segment integer
-            , 0.03f // thichness float
-            , 180 // start angle integer
-            , 270 // end angle integer
-            , "Top Right Corner")
-        );
-        Debug.Log("Lines Drawn...");
-    }
-    
-    // Draw a line between two points with a given thickness
-    public GameObject DrawLineAsQuad(Vector3 start, Vector3 end, float thickness, float lift, string lineName = "Line", Transform parent = null)
-    {
-        // Create a new GameObject with a Quad
-        GameObject line = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        line.name = lineName;  // Assign the name to the GameObject
-        line.layer = ignoreRaycastLayer; // Ignore from RayCasts
-        // Set the parent to the specified parent, or keep it unparented if parent is null
-        if (parent != null)
+        if (hexGrid == null)
         {
-            line.transform.parent = parent;
-        }
-        else 
-        {
-            line.transform.parent = transform;  // Set the parent to PitchLines or any other game object
+            Debug.LogError("PitchBoardVisuals cannot rebuild without a HexGrid reference.");
+            return;
         }
 
-        // Set the position at the midpoint between the start and end points
-        Vector3 midPoint = (start + end) / 2f;
-        line.transform.position = new Vector3(midPoint.x, lift, midPoint.z);  // Slightly above the ground
+        if (lineMaterial == null || netMaterial == null || blockerMaterial == null || dotSprite == null)
+        {
+            Debug.LogError("PitchBoardVisuals is missing the shared assets needed to rebuild scene visuals.");
+            return;
+        }
 
-        // Calculate the direction of the line
-        Vector3 direction = end - start;
-        float lineLength = direction.magnitude;
+        gameObject.name = "PitchBoardVisuals";
+        generatedRoot = EnsureContainer(GeneratedRootName, transform);
+        ClearChildren(generatedRoot);
 
-        // Scale the quad to match the length of the line and thickness
-        line.transform.localScale = new Vector3(lineLength, thickness, 1);  // X represents length, Y is thickness
+        int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
+        Transform markingsRoot = EnsureContainer(MarkingsRootName, generatedRoot);
+        Transform dotsRoot = EnsureContainer(DotsRootName, generatedRoot);
+        Transform netsRoot = EnsureContainer(NetsRootName, generatedRoot);
+        Transform blockersRoot = EnsureContainer(BlockersRootName, generatedRoot);
 
-        // Rotate the quad to align with the direction of the line
-        float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
-        line.transform.rotation = Quaternion.Euler(90, -angle, 0);  // Rotate on the Y axis to align with the line
-
-        // Assign a simple material to the quad
-        Renderer renderer = line.GetComponent<Renderer>();
-        renderer.material = new Material(Shader.Find("Unlit/Color"));
-        renderer.material.color = Color.white;  // Set the color of the line (white in this case)
-
-        // Debug.Log($"Quad line drawn from {start} to {end} with thickness {thickness}");
-        return line;
+        BuildPitchMarkings(markingsRoot, ignoreRaycastLayer);
+        BuildPitchDots(dotsRoot, ignoreRaycastLayer);
+        BuildGoalNets(netsRoot, ignoreRaycastLayer);
+        BuildOutOfBoundsBlockers(blockersRoot);
     }
 
-    public Vector3[] GetCirclePoints(Vector3 center, float radius, int segmentCount, float startAngle = 0, float endAngle = 360)
+    private void BuildPitchMarkings(Transform root, int layer)
     {
-        Vector3[] circlePoints = new Vector3[segmentCount];
-        float angleStep = (endAngle - startAngle) / segmentCount;  // The angle between each point
+        CreateLineMesh("Bottom Side Line", Corner(-18, -12, 5), Corner(18, -12, 0), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Right Goal Line", Corner(18, -12, 0), Corner(18, 12, 2), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Top Side Line", Corner(18, 12, 2), Corner(-18, 12, 3), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Left Goal Line", Corner(-18, 12, 3), Corner(-18, -12, 5), 0.05f, LineLift, lineMaterial, root, layer);
+
+        CreateLineMesh("Halfway Line", Midpoint(0, 12, 2), Midpoint(0, -12, 5), 0.05f, LineLift, lineMaterial, root, layer);
+
+        CreateLineMesh("Left Penalty Box Side", Midpoint(-12, -7, 5), Midpoint(-12, 7, 2), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Left Penalty Box Bottom", Corner(-18, -7, 5), Midpoint(-12, -7, 5), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Left Penalty Box Top", Corner(-18, 7, 3), Midpoint(-12, 7, 2), 0.05f, LineLift, lineMaterial, root, layer);
+
+        CreateLineMesh("Right Penalty Box Side", Midpoint(12, -7, 5), Midpoint(12, 7, 2), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Right Penalty Box Bottom", Corner(18, -7, 0), Midpoint(12, -7, 5), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Right Penalty Box Top", Corner(18, 7, 2), Midpoint(12, 7, 2), 0.05f, LineLift, lineMaterial, root, layer);
+
+        CreateLineMesh("Left Six Yard Side", Center(-16, -5), Center(-16, 5), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Left Six Yard Bottom", Center(-16, -5), Corner(-18, -5, 4), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Left Six Yard Top", Center(-16, 5), Corner(-18, 5, 4), 0.05f, LineLift, lineMaterial, root, layer);
+
+        CreateLineMesh("Right Six Yard Side", Center(16, -5), Center(16, 5), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Right Six Yard Bottom", Center(16, -5), Corner(18, -5, 1), 0.05f, LineLift, lineMaterial, root, layer);
+        CreateLineMesh("Right Six Yard Top", Center(16, 5), Corner(18, 5, 1), 0.05f, LineLift, lineMaterial, root, layer);
+
+        CreateArcMesh("Center Circle", Center(0, 0), 3f, FullCircleSegments, 0.05f, LineLift, 0f, 360f, lineMaterial, root, layer, true);
+        CreateArcMesh("Right Penalty Arc", Center(14, 0), 3f, PenaltyArcSegments, 0.05f, LineLift, 120f, 240f, lineMaterial, root, layer);
+        CreateArcMesh("Left Penalty Arc", Center(-14, 0), 3f, PenaltyArcSegments, 0.05f, LineLift, 300f, 420f, lineMaterial, root, layer);
+
+        CreateArcMesh("Bottom Left Corner", Corner(-18, -12, 5), 0.3f, CornerArcSegments, 0.03f, LineLift, 0f, 90f, lineMaterial, root, layer);
+        CreateArcMesh("Top Left Corner", Corner(-18, 12, 3), 0.3f, CornerArcSegments, 0.03f, LineLift, 270f, 360f, lineMaterial, root, layer);
+        CreateArcMesh("Bottom Right Corner", Corner(18, -12, 0), 0.3f, CornerArcSegments, 0.03f, LineLift, 90f, 180f, lineMaterial, root, layer);
+        CreateArcMesh("Top Right Corner", Corner(18, 12, 2), 0.3f, CornerArcSegments, 0.03f, LineLift, 180f, 270f, lineMaterial, root, layer);
+    }
+
+    private void BuildPitchDots(Transform root, int layer)
+    {
+        CreateDot("Kick Off", Center(0, 0), 0.08f, root, layer);
+        CreateDot("Right Penalty Spot", Center(14, 0), 0.08f, root, layer);
+        CreateDot("Left Penalty Spot", Center(-14, 0), 0.08f, root, layer);
+    }
+
+    private void BuildGoalNets(Transform root, int layer)
+    {
+        CreateLineMesh("Left Goal Net", Corner(-20, 3, 2), Corner(-20, -3, 0), 0.05f, GoalNetLift, netMaterial, root, layer);
+        CreateLineMesh("Left Goal Top Net", Corner(-18, 3, 3), Corner(-20, 3, 2), 0.05f, GoalNetLift, netMaterial, root, layer);
+        CreateLineMesh("Left Goal Bottom Net", Corner(-18, -3, 5), Corner(-20, -3, 0), 0.05f, GoalNetLift, netMaterial, root, layer);
+
+        CreateLineMesh("Right Goal Net", Corner(20, 3, 3), Corner(20, -3, 5), 0.05f, GoalNetLift, netMaterial, root, layer);
+        CreateLineMesh("Right Goal Top Net", Corner(20, 3, 3), Corner(18, 3, 2), 0.05f, GoalNetLift, netMaterial, root, layer);
+        CreateLineMesh("Right Goal Bottom Net", Corner(20, -3, 5), Corner(18, -3, 0), 0.05f, GoalNetLift, netMaterial, root, layer);
+
+        CreateLineMesh("Left Goal Middle Net", Center(-19, 3), Center(-19, -4), 0.05f, GoalNetLift, netMaterial, root, layer);
+        CreateLineMesh("Right Goal Middle Net", Center(19, 3), Center(19, -4), 0.05f, GoalNetLift, netMaterial, root, layer);
+    }
+
+    private void BuildOutOfBoundsBlockers(Transform root)
+    {
+        float horizontalOffset = hexGrid.GridWidth * hexGrid.HexRadius;
+        float verticalOffset = hexGrid.GridHeight * hexGrid.HexRadius;
+
+        CreateOutOfBoundsBlocker(
+            "Left Out-of-Bounds",
+            new Vector3(Corner(-18, 12, 5).x - horizontalOffset, OutOfBoundsLift, 0f),
+            new Vector3(horizontalOffset * 2f, horizontalOffset * 2f, 1f),
+            root
+        );
+        CreateOutOfBoundsBlocker(
+            "Right Out-of-Bounds",
+            new Vector3(Corner(18, -12, 2).x + horizontalOffset, OutOfBoundsLift, 0f),
+            new Vector3(horizontalOffset * 2f, horizontalOffset * 2f, 1f),
+            root
+        );
+        CreateOutOfBoundsBlocker(
+            "Top Out-of-Bounds",
+            new Vector3(0f, OutOfBoundsLift, Corner(-18, 12, 2).z + verticalOffset),
+            new Vector3(verticalOffset * 2f, verticalOffset * 2f, 1f),
+            root
+        );
+        CreateOutOfBoundsBlocker(
+            "Bottom Out-of-Bounds",
+            new Vector3(0f, OutOfBoundsLift, Corner(18, -12, 5).z - verticalOffset),
+            new Vector3(verticalOffset * 2f, verticalOffset * 2f, 1f),
+            root
+        );
+    }
+
+    private void CreateLineMesh(string name, Vector3 start, Vector3 end, float thickness, float lift, Material material, Transform parent, int layer)
+    {
+        CreateStripMeshObject(name, new List<Vector3> { start, end }, thickness, lift, false, material, parent, layer);
+    }
+
+    private void CreateArcMesh(
+        string name,
+        Vector3 center,
+        float radius,
+        int segmentCount,
+        float thickness,
+        float lift,
+        float startAngle,
+        float endAngle,
+        Material material,
+        Transform parent,
+        int layer,
+        bool closedLoop = false
+    )
+    {
+        List<Vector3> points = GetArcPoints(center, radius, segmentCount, startAngle, endAngle, closedLoop);
+        CreateStripMeshObject(name, points, thickness, lift, closedLoop, material, parent, layer);
+    }
+
+    private void CreateStripMeshObject(
+        string name,
+        IReadOnlyList<Vector3> points,
+        float thickness,
+        float lift,
+        bool closedLoop,
+        Material material,
+        Transform parent,
+        int layer
+    )
+    {
+        if (points == null || points.Count < 2)
+        {
+            return;
+        }
+
+        GameObject stripObject = new GameObject(name);
+        stripObject.transform.SetParent(parent, false);
+        stripObject.layer = layer;
+
+        MeshFilter meshFilter = stripObject.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = stripObject.AddComponent<MeshRenderer>();
+        meshRenderer.sharedMaterial = material;
+
+        Mesh mesh = BuildStripMesh(name, points, thickness, lift, closedLoop);
+        meshFilter.sharedMesh = mesh;
+    }
+
+    private Mesh BuildStripMesh(string meshName, IReadOnlyList<Vector3> points, float thickness, float lift, bool closedLoop)
+    {
+        Mesh mesh = new Mesh
+        {
+            name = $"{meshName} Mesh"
+        };
+
+        int segmentCount = closedLoop ? points.Count : points.Count - 1;
+        List<Vector3> vertices = new List<Vector3>(segmentCount * 4);
+        List<int> triangles = new List<int>(segmentCount * 12);
+        List<Vector2> uvs = new List<Vector2>(segmentCount * 4);
 
         for (int i = 0; i < segmentCount; i++)
         {
-            // Calculate the angle for this segment
-            float currentAngle_deg = startAngle + angleStep * i;
-            float currentAngle_rad = Mathf.Deg2Rad * currentAngle_deg;
+            Vector3 start = points[i];
+            Vector3 end = points[(i + 1) % points.Count];
+            start.y = lift;
+            end.y = lift;
 
-            // Calculate the position of the point on the circle
-            circlePoints[i] = new Vector3(
-                center.x + radius * Mathf.Cos(currentAngle_rad),
-                center.y,  // Keep Y the same
-                center.z + radius * Mathf.Sin(currentAngle_rad)
-            );
+            Vector3 direction = (end - start).normalized;
+            Vector3 perpendicular = Vector3.Cross(Vector3.up, direction) * (thickness * 0.5f);
+            int baseIndex = vertices.Count;
 
-            // Log each point for debugging
-            // Debug.Log($"Circle point [{i}] at ({circlePoints[i].x}, {circlePoints[i].y}, {circlePoints[i].z})");
+            vertices.Add(start - perpendicular);
+            vertices.Add(start + perpendicular);
+            vertices.Add(end - perpendicular);
+            vertices.Add(end + perpendicular);
+
+            uvs.Add(new Vector2(0f, 0f));
+            uvs.Add(new Vector2(0f, 1f));
+            uvs.Add(new Vector2(1f, 0f));
+            uvs.Add(new Vector2(1f, 1f));
+
+            triangles.Add(baseIndex);
+            triangles.Add(baseIndex + 1);
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 1);
+            triangles.Add(baseIndex + 3);
+
+            triangles.Add(baseIndex);
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 1);
+            triangles.Add(baseIndex + 2);
+            triangles.Add(baseIndex + 3);
+            triangles.Add(baseIndex + 1);
         }
 
-        return circlePoints;
+        mesh.SetVertices(vertices);
+        mesh.SetTriangles(triangles, 0);
+        mesh.SetUVs(0, uvs);
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        return mesh;
     }
 
-    public GameObject DrawCircleOrArc(Vector3 center, float radius, int segmentCount, float thickness, float startAngle = 0, float endAngle = 360, string circleName = "Circle")
+    private List<Vector3> GetArcPoints(Vector3 center, float radius, int segmentCount, float startAngle, float endAngle, bool closedLoop)
     {
-        // Create a parent GameObject for the circle
-        GameObject circleParent = new GameObject(circleName);  // The parent object for the entire circle
+        int pointCount = closedLoop ? segmentCount : segmentCount + 1;
+        List<Vector3> points = new List<Vector3>(pointCount);
 
-        Vector3[] circlePoints = GetCirclePoints(center, radius, segmentCount, startAngle, endAngle);
-        // Draw quads between consecutive points
-        for (int i = 0; i < circlePoints.Length - 1; i++)
+        for (int i = 0; i < pointCount; i++)
         {
-            DrawLineAsQuad(circlePoints[i], circlePoints[i + 1], thickness, 0.03f, $"Segment {i}", circleParent.transform);
+            float t = i / (float)segmentCount;
+            float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
+            float currentAngleRad = Mathf.Deg2Rad * currentAngle;
+            points.Add(new Vector3(
+                center.x + radius * Mathf.Cos(currentAngleRad),
+                center.y,
+                center.z + radius * Mathf.Sin(currentAngleRad)
+            ));
         }
 
-        // Optionally connect the last point to the first if drawing a full circle
-        if (endAngle - startAngle == 360)
-        {
-            DrawLineAsQuad(circlePoints[circlePoints.Length - 1], circlePoints[0], thickness, 0.03f, "Last Segment", circleParent.transform);
-        }
-        // // Optionally set the entire circle parent object as a child of another object, like PitchLines
-        circleParent.transform.parent = GameObject.Find("PitchLines").transform;
-        return circleParent;
+        return points;
     }
 
-    public GameObject DrawDot(Vector3 position, float radius, Sprite circleSprite, string lineName = "Unnamed Dot")
+    private void CreateDot(string name, Vector3 position, float radius, Transform parent, int layer)
     {
-        // Create a new GameObject to hold the SpriteRenderer
-        GameObject dot = new GameObject("Dot");
-        dot.name = lineName;  // Assign the name to the GameObject
-        dot.layer = ignoreRaycastLayer; // Ignore from RayCasts
-        dot.transform.parent = transform;  // Set the parent to PitchLines or any other game object
+        GameObject dot = new GameObject(name);
+        dot.transform.SetParent(parent, false);
+        dot.transform.position = new Vector3(position.x, DotLift, position.z);
+        dot.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        dot.transform.localScale = new Vector3(radius, radius, 1f);
+        dot.layer = layer;
 
-        // Add a SpriteRenderer component to the GameObject
-        SpriteRenderer sr = dot.AddComponent<SpriteRenderer>();
+        SpriteRenderer spriteRenderer = dot.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = dotSprite;
+        spriteRenderer.color = Color.white;
+    }
 
-        if (circleSprite != null)
+    private void CreateOutOfBoundsBlocker(string name, Vector3 position, Vector3 scale, Transform parent)
+    {
+        GameObject blocker = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        blocker.name = name;
+        blocker.transform.SetParent(parent, false);
+        blocker.transform.position = position;
+        blocker.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        blocker.transform.localScale = scale;
+        blocker.GetComponent<Renderer>().sharedMaterial = blockerMaterial;
+
+        if (blocker.GetComponent<OutOfBoundsClickBlocker>() == null)
         {
-            sr.sprite = circleSprite;  // Set the sprite to the circle sprite
+            blocker.AddComponent<OutOfBoundsClickBlocker>();
         }
-        else
+    }
+
+    private Transform EnsureContainer(string name, Transform parent)
+    {
+        Transform existingChild = parent.Find(name);
+        if (existingChild != null)
         {
-            Debug.LogError("Circle sprite not assigned.");
+            existingChild.localPosition = Vector3.zero;
+            existingChild.localRotation = Quaternion.identity;
+            existingChild.localScale = Vector3.one;
+            return existingChild;
         }
 
-        // Set the position of the sprite (slightly above the ground)
-        dot.transform.position = new Vector3(position.x, 0.03f, position.z);
+        GameObject container = new GameObject(name);
+        container.transform.SetParent(parent, false);
+        return container.transform;
+    }
 
-        // Scale the sprite to match the desired radius
-        dot.transform.localScale = new Vector3(radius, radius, 1);  // X and Y define the size of the dot
+    private void ClearChildren(Transform parent)
+    {
+        List<GameObject> toDestroy = new List<GameObject>();
+        foreach (Transform child in parent)
+        {
+            toDestroy.Add(child.gameObject);
+        }
 
-        // Rotate the sprite to lie flat on the XZ plane
-        dot.transform.rotation = Quaternion.Euler(90, 0, 0);  // Rotate the sprite to lie flat
+        foreach (GameObject child in toDestroy)
+        {
+            if (Application.isPlaying)
+            {
+                Destroy(child);
+            }
+            else
+            {
+                DestroyImmediate(child);
+            }
+        }
+    }
 
-        // Debug.Log($"Sprite dot drawn at ({position.x}, {position.y}, {position.z}) with radius {radius}");
-        return dot;
+    private Vector3 Center(int x, int z)
+    {
+        return hexGrid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));
+    }
+
+    private Vector3 Corner(int x, int z, int index)
+    {
+        return hexGrid.GetHexCornersForCoordinates(new Vector3Int(x, 0, z))[index];
+    }
+
+    private Vector3 Midpoint(int x, int z, int index)
+    {
+        return hexGrid.GetHexEdgeMidpointsForCoordinates(new Vector3Int(x, 0, z))[index];
     }
 }

@@ -7,21 +7,56 @@ public class ScoreboardManager : MonoBehaviour
     public TMP_Text homeTeamText;  // Drag and drop the TextMeshPro element here
     public TMP_Text awayTeamText;  // Drag and drop the TextMeshPro element here
 
-    void Start()
+    private void OnEnable()
     {
-        // Subscribe to the event in MatchManager
+        if (matchManager == null)
+        {
+            matchManager = MatchManager.Instance ?? FindObjectOfType<MatchManager>();
+        }
+
+        if (matchManager == null)
+        {
+            Debug.LogError("ScoreboardManager: MatchManager reference is missing.");
+            return;
+        }
+
         matchManager.OnGameSettingsLoaded += LoadTeamNames;
-        // Debug.Log("ScoreboardManager: Subscribed to OnGameSettingsLoaded event");
+
+        // Room direct-play can load settings before this component's Start/OnEnable ordering settles.
+        // Apply the already-loaded names immediately when data is present.
+        if (matchManager.gameData?.gameSettings != null)
+        {
+            LoadTeamNames();
+        }
     }
 
+    private void OnDisable()
+    {
+        if (matchManager != null)
+        {
+            matchManager.OnGameSettingsLoaded -= LoadTeamNames;
+        }
+    }
 
     void LoadTeamNames()
     {
         Debug.Log("ScoreboardManager: Running LoadTeamNames");
-        // Ensure gameData and gameSettings are loaded
-        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        if (matchManager == null)
         {
-            MatchManager.GameSettings settings = MatchManager.Instance.gameData.gameSettings;
+            matchManager = MatchManager.Instance ?? FindObjectOfType<MatchManager>();
+        }
+
+        if (homeTeamText == null || awayTeamText == null)
+        {
+            Debug.LogError("ScoreboardManager: Team text references are missing.");
+            return;
+        }
+
+        // Use the resolved MatchManager reference instead of reaching back through the singleton
+        // during early scene initialization, where Instance may not be ready yet.
+        if (matchManager != null && matchManager.gameData?.gameSettings != null)
+        {
+            MatchManager.GameSettings settings = matchManager.gameData.gameSettings;
 
             string homeTeamName = settings.homeTeamName;
             string awayTeamName = settings.awayTeamName;

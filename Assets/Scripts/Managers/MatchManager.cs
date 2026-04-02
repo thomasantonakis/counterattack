@@ -10,6 +10,8 @@ using System.Text;
 public class MatchManager : MonoBehaviour
 {
     private const string EditorRoomDirectPlayTestSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
+    private const string EditorRoomDirectPlayWorkingCopyFolderName = "__RoomPlaytests";
+    private const string EditorRoomDirectPlayWorkingCopyFileName = "__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
 
     // Define the possible game states
     public enum GameState
@@ -1371,43 +1373,71 @@ public class MatchManager : MonoBehaviour
     
     public void LoadGameSettingsFromJson()
     {
-        string filePath = string.Empty;
-        bool hadRuntimeSaveContext = ApplicationManager.Instance != null &&
-                                     !string.IsNullOrEmpty(ApplicationManager.Instance.GetLastSavedFilePath());
         ApplicationManager.EnsureInstanceExists();
+        string filePath = string.Empty;
+        bool hasExplicitRuntimeSaveContext = ApplicationManager.Instance.HasExplicitSaveContext &&
+                                             !string.IsNullOrEmpty(ApplicationManager.Instance.GetLastSavedFilePath());
+#if UNITY_EDITOR
+        bool shouldForceEditorDirectPlaySave = !hasExplicitRuntimeSaveContext;
+#else
+        bool shouldForceEditorDirectPlaySave = false;
+#endif
 
         // TODO: Replace the current ApplicationManager + PlayerPrefs + newest-file fallback chain
         // with a single explicit active-save identifier once Load Game is implemented properly.
 
-        // When the Room scene is played directly in the Unity Editor, there is no upstream flow to
-        // provide an active save. In that case, force the known test save so Room can be tested in isolation.
-        if (!hadRuntimeSaveContext)
+        // Room direct-play in the editor should ignore stale PlayerPrefs/newest-file discovery and always
+        // use the dedicated test save unless an upstream scene explicitly handed us a save path.
+        if (hasExplicitRuntimeSaveContext)
+        {
+            string explicitSavePath = ApplicationManager.Instance.GetLastSavedFilePath();
+            if (IsProtectedEditorFixturePath(explicitSavePath))
+            {
+                Debug.LogWarning($"Room ignored protected direct-play fixture from explicit save context: {explicitSavePath}");
+            }
+            else
+            {
+                filePath = explicitSavePath;
+                Debug.Log($"Room loading explicit active save context: {filePath}");
+            }
+        }
+        else if (shouldForceEditorDirectPlaySave)
         {
             string editorDirectPlayPath = GetEditorDirectPlaySavePath();
             if (!string.IsNullOrEmpty(editorDirectPlayPath))
             {
                 filePath = editorDirectPlayPath;
+                Debug.Log($"Room loading direct-play test save: {filePath}");
+            }
+            else
+            {
+                Debug.LogError("Room direct-play test save is missing. Aborting load instead of falling back to another save.");
+                return;
             }
         }
 
-        // Keep loading from the exact save created/updated by the previous scene when available.
-        if (string.IsNullOrEmpty(filePath) && ApplicationManager.Instance != null)
-        {
-            filePath = ApplicationManager.Instance.GetLastSavedFilePath();
-        }
-
-        if (string.IsNullOrEmpty(filePath))
+        if (string.IsNullOrEmpty(filePath) && !shouldForceEditorDirectPlaySave)
         {
             string playerPrefsPath = PlayerPrefs.GetString("currentGameSettings", string.Empty);
             if (!string.IsNullOrEmpty(playerPrefsPath))
             {
-                filePath = Path.IsPathRooted(playerPrefsPath)
+                string resolvedPlayerPrefsPath = Path.IsPathRooted(playerPrefsPath)
                     ? playerPrefsPath
                     : Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), playerPrefsPath);
+
+                if (IsProtectedEditorFixturePath(resolvedPlayerPrefsPath))
+                {
+                    Debug.LogWarning($"Room ignored protected direct-play fixture from PlayerPrefs: {resolvedPlayerPrefsPath}");
+                }
+                else
+                {
+                    filePath = resolvedPlayerPrefsPath;
+                    Debug.Log($"Room loading PlayerPrefs save fallback: {filePath}");
+                }
             }
         }
 
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        if ((string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) && !shouldForceEditorDirectPlaySave)
         {
             string folderPath = ApplicationManager.Instance.GetSaveFolderPath();
             // Get JSON files in the folder
@@ -1419,13 +1449,28 @@ public class MatchManager : MonoBehaviour
             }
 
             // Get the most recent file
-            var sortedFiles = files.OrderByDescending(File.GetCreationTime).ToArray();
-            filePath = sortedFiles[0];
+            string newestNonProtectedFile = files
+                .Where(path => !IsProtectedEditorFixturePath(path))
+                .OrderByDescending(File.GetCreationTime)
+                .FirstOrDefault();
+
+            if (string.IsNullOrEmpty(newestNonProtectedFile))
+            {
+                Debug.LogWarning("No non-protected game settings files found in the persistent data path!");
+                return;
+            }
+
+            filePath = newestNonProtectedFile;
+            Debug.LogWarning($"Room fell back to newest save discovery: {filePath}");
         }
+
+        // Never let Room mutate the canonical direct-play fixture. Always switch to a disposable
+        // working copy before storing active save context or allowing any later writes.
+        filePath = SwapProtectedFixtureForWorkingCopy(filePath);
 
         if (!string.IsNullOrEmpty(filePath))
         {
-            ApplicationManager.Instance.LastSavedFileName = filePath;
+            ApplicationManager.Instance.SetActiveSaveFilePath(filePath);
         }
 
         if (File.Exists(filePath))
@@ -1479,16 +1524,65 @@ public class MatchManager : MonoBehaviour
         string directPlayPath = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), EditorRoomDirectPlayTestSaveFileName);
         if (File.Exists(directPlayPath))
         {
-            ApplicationManager.Instance.LastSavedFileName = directPlayPath;
-            PlayerPrefs.SetString("currentGameSettings", directPlayPath);
-            PlayerPrefs.Save();
-            Debug.Log($"Room direct-play detected. Using editor test save: {directPlayPath}");
             return directPlayPath;
         }
 
         Debug.LogWarning($"Room direct-play test save not found: {directPlayPath}");
 #endif
         return string.Empty;
+    }
+
+    private string SwapProtectedFixtureForWorkingCopy(string filePath)
+    {
+#if UNITY_EDITOR
+        if (string.IsNullOrEmpty(filePath) || !IsProtectedEditorFixturePath(filePath))
+        {
+            return filePath;
+        }
+
+        string sourcePath = GetEditorDirectPlaySourceSavePath();
+        if (string.IsNullOrEmpty(sourcePath) || !File.Exists(sourcePath))
+        {
+            Debug.LogError($"Protected Room fixture is missing and cannot be cloned: {sourcePath}");
+            return filePath;
+        }
+
+        string workingCopyFolderPath = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), EditorRoomDirectPlayWorkingCopyFolderName);
+        Directory.CreateDirectory(workingCopyFolderPath);
+
+        string workingCopyPath = Path.Combine(workingCopyFolderPath, EditorRoomDirectPlayWorkingCopyFileName);
+        File.Copy(sourcePath, workingCopyPath, true);
+        Debug.Log($"Room cloned protected fixture into disposable working copy: {workingCopyPath}");
+        return workingCopyPath;
+#else
+        return filePath;
+#endif
+    }
+
+    private bool IsProtectedEditorFixturePath(string filePath)
+    {
+#if UNITY_EDITOR
+        if (string.IsNullOrEmpty(filePath))
+        {
+            return false;
+        }
+
+        return string.Equals(
+            Path.GetFileName(filePath),
+            EditorRoomDirectPlayTestSaveFileName,
+            StringComparison.OrdinalIgnoreCase);
+#else
+        return false;
+#endif
+    }
+
+    private string GetEditorDirectPlaySourceSavePath()
+    {
+#if UNITY_EDITOR
+        return Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), EditorRoomDirectPlayTestSaveFileName);
+#else
+        return string.Empty;
+#endif
     }
 
     public bool IsPlayerInTeam(string playerName, bool isHomeTeam)
