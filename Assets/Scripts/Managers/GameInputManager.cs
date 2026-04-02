@@ -122,7 +122,8 @@ public class GameInputManager : MonoBehaviour
 
             if (isDragging)
             {
-                cameraController.HandleCameraInput();
+                // CameraController polls its own drag/move/zoom inputs each frame.
+                // Keep GameInputManager responsible only for classifying click vs drag.
             }
         }
         if (Input.GetMouseButtonUp(0))
