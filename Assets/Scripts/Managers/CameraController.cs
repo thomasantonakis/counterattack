@@ -53,13 +53,10 @@ public class CameraController : MonoBehaviour
 
     public void HandleCameraInput()
     {
-        if (gameInputManager.isDragging)
-        {
-            HandleMovement();
-            HandleZoom();
-            HandleMouseDrag();
-            HandleRotation();
-        }
+        HandleMovement();
+        HandleZoom();
+        HandleMouseDrag();
+        HandleRotation();
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -162,9 +159,14 @@ public class CameraController : MonoBehaviour
 
     void HandleMouseDrag()
     {
-        if (Input.GetMouseButtonDown(0) && !isRotating) dragOrigin = Input.mousePosition;
+        if (Input.GetMouseButtonDown(0) && !isRotating)
+        {
+            dragOrigin = Input.mousePosition;
+        }
 
-        if (Input.GetMouseButton(0) && !isRotating)
+        // Pan only after GameInputManager has classified the left mouse as a drag,
+        // so simple clicks on tokens/hexes do not move the camera.
+        if (Input.GetMouseButton(0) && !isRotating && gameInputManager != null && gameInputManager.isDragging)
         {
             Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
             Vector3 move = new Vector3(pos.x * dragSpeed, 0, pos.y * dragSpeed);
