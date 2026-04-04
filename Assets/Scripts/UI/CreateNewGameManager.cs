@@ -42,8 +42,8 @@ public class CreateNewGameManager : MonoBehaviour
     public Toggle includeInternationalsGKToggle;
     public Button createGameButton;
 
-    private const string DefaultHomeKitId = "028";
-    private const string DefaultAwayKitId = "000";
+    private const string DefaultHomeKitId = "088";
+    private const string DefaultAwayKitId = "021";
     private const string PreviewSampleNumber = "10";
     private const float PreviewPlainNumberFontSize = 34f;
     private const float PreviewVerticalNumberFontSize = 30f;
@@ -298,7 +298,8 @@ public class CreateNewGameManager : MonoBehaviour
 
             string attemptedPresetName = attemptedPreset?.DisplayName ?? "Selected kit";
             string otherPresetName = (isHomeSelection ? GetSelectedKitPreset(awayKitDropdown) : GetSelectedKitPreset(homeKitDropdown))?.DisplayName ?? "other kit";
-            UpdateKitValidation($"{attemptedPresetName} is too similar to {otherPresetName} ({similarityScore:0}% match). Choose a more distinct kit.");
+            // UpdateKitValidation($"{attemptedPresetName} is too similar to {otherPresetName} ({similarityScore:0}% match). Choose a more distinct kit.");
+            UpdateKitValidation("Kits too similar please choose another combination.");
             UpdateKitPreviews();
             return;
         }
@@ -332,7 +333,7 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         kitSimilarityText.text = $"Kit similarity index: {similarityScore:0}%";
-        kitSimilarityText.gameObject.SetActive(true);
+        // kitSimilarityText.gameObject.SetActive(true);
     }
 
     private void UpdateKitPreview(RawImage previewImage, TMP_Text previewNumberText, TokenKitPreset preset)
@@ -482,8 +483,8 @@ public class CreateNewGameManager : MonoBehaviour
         settings.includeTabletopiaGK = includeTabletopiaGKToggle.isOn;
         settings.includeNonTabletopiaGK = includeNonTabletopiaGKToggle.isOn;
         settings.includeInternationalsGK = includeInternationalsGKToggle.isOn;
-        settings.homeKit = GetSelectedKitPresetId(homeKitDropdown);
-        settings.awayKit = GetSelectedKitPresetId(awayKitDropdown);
+        settings.homeKit = GetSelectedKitPreset(homeKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(homeKitDropdown);
+        settings.awayKit = GetSelectedKitPreset(awayKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(awayKitDropdown);
 
         var gameData = new
         {

@@ -27,6 +27,8 @@ public class PlayerToken : MonoBehaviour
     public int handling; // Only for goalkeepers
     public bool isBooked { get; private set; } = false;
     public bool isInjured { get; private set; } = false;
+    public bool isSentOff { get; private set; } = false;
+    public bool requiresSubstitution { get; private set; } = false;
     void Awake()
     {
         // Debug.Log($"{name}: PlayerToken Awake called");
@@ -144,7 +146,8 @@ public class PlayerToken : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{name} is already booked. Consider further actions (e.g., red card).");
+            Debug.LogWarning($"{name} receives a second yellow and is sent off.");
+            isSentOff = true;
         }
     }
 
@@ -162,13 +165,11 @@ public class PlayerToken : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{name} is already injured.");
+            Debug.LogWarning($"{name} suffers a second injury and now requires substitution.");
+            requiresSubstitution = true;
         }
     }
 
-    /// <summary>
-    /// Handles the consequences of injury (e.g., disabling movement or substituting the player).
-    /// </summary>
     private void HandleInjury()
     {
         // Example logic for injury (customize as needed)

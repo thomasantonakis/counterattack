@@ -24,7 +24,9 @@ public sealed class TokenKitPreset
 public static class TokenKitCatalog
 {
     // # @thomas Previous working threshold before temporary relaxation: 72f.
-    public const float ClashThreshold = 101f;
+    // Temporarily disabled threshold was 101f. Current active threshold is 90f.
+    public const float ClashThreshold = 90f;
+    private const int FaceAverageSampleTextureSize = 64;
 
     private const string SourceJsonRelativePath = "Tools/kit-picker-v1-11-supported.json";
 
@@ -175,25 +177,59 @@ public static class TokenKitCatalog
         TokenStyleDefinition styleB = presetB.Style;
 
         float bodyScore = GetColorSimilarity(styleA.bodyColor, styleB.bodyColor);
-        float ringScore = GetColorSimilarity(styleA.ringColor, styleB.ringColor);
-        float numberScore = GetColorSimilarity(styleA.numberColor, styleB.numberColor);
-        float familyScore = styleA.family == styleB.family ? 100f : 0f;
-        float fontScore = styleA.numberFont == styleB.numberFont ? 100f : 0f;
-        float centerStripeModeScore = styleA.centerStripeMode == styleB.centerStripeMode ? 100f : 0f;
-        float surfaceScore = GetSurfacePatternSimilarity(styleA, styleB);
+        float faceAverageScore = GetColorSimilarity(GetAverageFaceColor(styleA), GetAverageFaceColor(styleB));
 
-        // # @thomas This is the kit similarity formula. Tune these weights when you want the clash score
-        // to behave differently in Create New Game. The final result is rounded to a 0-100 percentage.
+        // # @thomas This is the kit similarity formula. The body color dominates because that is what reads
+        // first on the pitch. The remaining weight is the average rendered top-face color, sampled from the
+        // actual token-face texture so each family/pattern/stripe width contributes naturally.
         float weightedScore =
-            (bodyScore * 0.20f) +
-            (ringScore * 0.10f) +
-            (surfaceScore * 0.40f) +
-            (numberScore * 0.10f) +
-            (familyScore * 0.10f) +
-            (fontScore * 0.05f) +
-            (centerStripeModeScore * 0.05f);
+            (bodyScore * 0.70f) +
+            (faceAverageScore * 0.30f);
 
         return Mathf.Round(weightedScore);
+    }
+
+    private static Color GetAverageFaceColor(TokenStyleDefinition style)
+    {
+        Texture2D faceTexture = TokenFacePreviewUtility.GetOrCreateFaceTexture(style, FaceAverageSampleTextureSize);
+        if (faceTexture == null)
+        {
+            return style.bodyColor;
+        }
+
+        Color[] pixels = faceTexture.GetPixels();
+        if (pixels == null || pixels.Length == 0)
+        {
+            return style.bodyColor;
+        }
+
+        Vector4 accumulated = Vector4.zero;
+        float contributingPixelCount = 0f;
+
+        foreach (Color pixel in pixels)
+        {
+            if (pixel.a <= 0f)
+            {
+                continue;
+            }
+
+            accumulated.x += pixel.r;
+            accumulated.y += pixel.g;
+            accumulated.z += pixel.b;
+            accumulated.w += pixel.a;
+            contributingPixelCount += 1f;
+        }
+
+        if (contributingPixelCount <= 0f)
+        {
+            return style.bodyColor;
+        }
+
+        return new Color(
+            accumulated.x / contributingPixelCount,
+            accumulated.y / contributingPixelCount,
+            accumulated.z / contributingPixelCount,
+            accumulated.w / contributingPixelCount);
     }
 
     private static void EnsureLoaded()
