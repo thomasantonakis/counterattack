@@ -297,9 +297,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         // Step 2: Calculate the path between the ball and the target hex
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
-        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-        Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
-        int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+        int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         // Check the distance limit (FTP limit should be 6 hexes)
         if (distance > 6)
         {
@@ -487,7 +485,7 @@ public class FirstTimePassManager : MonoBehaviour
             Debug.Log("Starting dice roll sequence... Press R key.");
             // Sort defendingHexes by distance from ballHex
             onPathDefendersList = onPathDefendersList.OrderBy(d => 
-            HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.defender.GetCurrentHex().coordinates)).ToList(); // TODO check if we need cubes first
+            HexGridUtils.GetHexStepDistance(ball.GetCurrentHex(), d.defender.GetCurrentHex())).ToList();
             currentDefenderHex = onPathDefendersList[0].defender.GetCurrentHex();  // Start with the closest defender
             isWaitingForDiceRoll = true;
         }

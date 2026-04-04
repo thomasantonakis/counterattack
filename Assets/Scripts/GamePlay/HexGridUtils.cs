@@ -22,6 +22,24 @@ public static class HexGridUtils
         );
     }
 
+    public static int GetHexStepDistance(Vector3Int offsetA, Vector3Int offsetB)
+    {
+        Vector3Int cubeA = OffsetToCube(offsetA.x, offsetA.z);
+        Vector3Int cubeB = OffsetToCube(offsetB.x, offsetB.z);
+        return GetHexDistance(cubeA, cubeB);
+    }
+
+    public static int GetHexStepDistance(HexCell fromHex, HexCell toHex)
+    {
+        if (fromHex == null || toHex == null)
+        {
+            Debug.LogError("GetHexStepDistance called with a null hex.");
+            return int.MaxValue;
+        }
+
+        return GetHexStepDistance(fromHex.coordinates, toHex.coordinates);
+    }
+
     public static Vector3Int OffsetToCube(int col, int row)
     {
         int x = col;

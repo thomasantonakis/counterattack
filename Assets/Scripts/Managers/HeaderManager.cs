@@ -496,10 +496,7 @@ public class HeaderManager : MonoBehaviour
         {
             isWaitingForControlOrHeaderDecision = false;
             PlayerToken thomas = attackerWillJump
-                  .OrderBy(token => HexGridUtils.GetHexDistance(
-                      HexGridUtils.OffsetToCube(ball.GetCurrentHex().coordinates.x, ball.GetCurrentHex().coordinates.z)
-                      , HexGridUtils.OffsetToCube(token.GetCurrentHex().coordinates.x, token.GetCurrentHex().coordinates.z))
-                  )
+                  .OrderBy(token => HexGridUtils.GetHexStepDistance(ball.GetCurrentHex(), token.GetCurrentHex()))
                   // Closest token to the ball first
                   .ThenByDescending(token => token.heading)
                   // Break ties with the Heading
@@ -692,10 +689,7 @@ public class HeaderManager : MonoBehaviour
         {
             Debug.LogWarning("Is this ever called?");
             PlayerToken thomas = defEligibleToHead
-                .OrderBy(token => HexGridUtils.GetHexDistance(
-                    HexGridUtils.OffsetToCube(ball.GetCurrentHex().coordinates.x, ball.GetCurrentHex().coordinates.z)
-                    , HexGridUtils.OffsetToCube(token.GetCurrentHex().coordinates.x, token.GetCurrentHex().coordinates.z))
-                )
+                .OrderBy(token => HexGridUtils.GetHexStepDistance(ball.GetCurrentHex(), token.GetCurrentHex()))
                 // Closest token to the ball first
                 .ThenByDescending(token => token.heading)
                 // Break ties with the Heading
@@ -849,19 +843,13 @@ public class HeaderManager : MonoBehaviour
             PlayerToken bestAttacker = attackerWillJump
                 .OrderByDescending(token => tokenScores[token].totalScore) // Sort by total score
                 .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll
-                .ThenBy(token => HexGridUtils.GetHexDistance(
-                    HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z)
-                    , HexGridUtils.OffsetToCube(token.GetCurrentHex().coordinates.x, token.GetCurrentHex().coordinates.z))
-                ) // Closest token to the ball first
+                .ThenBy(token => HexGridUtils.GetHexStepDistance(ballHex, token.GetCurrentHex())) // Closest token to the ball first
                 .First(); // random?
             PlayerToken bestDefender = defenderWillJump
                 .OrderByDescending(token => tokenScores[token].totalScore) // Highest total score first
                 .ThenByDescending(token => token.IsGoalKeeper)             // Prefer goalkeepers (true before false)
                 .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll (higher roll first)
-                .ThenBy(token => HexGridUtils.GetHexDistance(
-                    HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z)
-                    , HexGridUtils.OffsetToCube(token.GetCurrentHex().coordinates.x, token.GetCurrentHex().coordinates.z))
-                ) // Closest token to the ball first
+                .ThenBy(token => HexGridUtils.GetHexStepDistance(ballHex, token.GetCurrentHex())) // Closest token to the ball first
                 .First(); // random?
 
             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeAttempt, connectedToken: bestDefender);

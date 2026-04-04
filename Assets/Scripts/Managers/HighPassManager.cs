@@ -398,9 +398,7 @@ public class HighPassManager : MonoBehaviour
         }
         else if (isCornerKick)
         {
-            Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-            Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
-            int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+            int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
             // Check the distance limit
             if (
                 !targetHex.isAttackOccupied // Target is not attack occupied
@@ -419,9 +417,7 @@ public class HighPassManager : MonoBehaviour
         {
             // Regular HP
             // Alternative Step 4
-            Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-            Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
-            int distance = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
+            int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
             // Check the distance limit
             if (distance > MAX_PASS_DISTANCE)
             {

@@ -162,6 +162,9 @@ public class HexCell : MonoBehaviour
             case "passTarget":
                 colorToApply = Color.yellow;  // Use the provided color for the ball path
                 break;
+            case "passTargetCommitted":
+                colorToApply = new Color(1f, 0.55f, 0f, 1f);
+                break;
             case "ballPath":
                 colorToApply = Color.blue;  // Use the provided color for the ball path
                 break;

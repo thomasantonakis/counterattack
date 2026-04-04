@@ -611,7 +611,7 @@ public class HexGrid : MonoBehaviour
         // Loop through all hexes in the grid to find valid hexes
         foreach (HexCell hex in cells)
         {
-            int distance = HexGridUtils.GetHexDistance(startHex.coordinates, hex.coordinates);
+            int distance = HexGridUtils.GetHexStepDistance(startHex, hex);
             if (distance <= range && !hex.isAttackOccupied && !hex.isDefenseOccupied)
             {
                 validHexes.Add(hex);
@@ -710,10 +710,7 @@ public class HexGrid : MonoBehaviour
                     Debug.Log($"Skipping {fromHex.coordinates} to {toHex.coordinates} because they are on opposite sides of the field.");
                     continue;
                 }
-                Vector3Int fromCubeCoords = HexGridUtils.OffsetToCube(fromHex.coordinates.x, fromHex.coordinates.z);
-                Vector3Int toCubeCoords = HexGridUtils.OffsetToCube(toHex.coordinates.x, toHex.coordinates.z);
-                // Calculate the distance
-                int distance = HexGridUtils.GetHexDistance(fromCubeCoords, toCubeCoords);
+                int distance = HexGridUtils.GetHexStepDistance(fromHex, toHex);
                 Debug.Log($"Distance from {fromHex.coordinates} to {toHex.coordinates}: {distance}");
                 if (shotOrHead == "shot")
                 {

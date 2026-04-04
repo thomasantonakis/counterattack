@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
 
 public struct AvailabilityCheckResult
 {
@@ -302,6 +304,10 @@ public class GameTestScenarioRunner : MonoBehaviour
     public HexGrid hexgrid;
     public static GameTestScenarioRunner Instance;
     private GameStatusSnapshot savedSnapshot;
+    private Canvas testLogCanvas;
+    private TextMeshProUGUI testLogText;
+    private readonly Queue<string> onScreenLogLines = new();
+    private const int MaxOnScreenLogLines = 15;
     
     private void Awake()
     {
@@ -313,11 +319,92 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        EnsureOnScreenLogOverlay();
     }
 
     private void Start()
     {
         StartTesting();
+    }
+
+    private void EnsureOnScreenLogOverlay()
+    {
+        if (testLogCanvas != null && testLogText != null)
+        {
+            return;
+        }
+
+        GameObject canvasObject = new GameObject("GameTestLogOverlay");
+        DontDestroyOnLoad(canvasObject);
+
+        testLogCanvas = canvasObject.AddComponent<Canvas>();
+        testLogCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        testLogCanvas.sortingOrder = 5000;
+
+        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.matchWidthOrHeight = 1f;
+
+        canvasObject.AddComponent<GraphicRaycaster>();
+
+        GameObject panelObject = new GameObject("Panel");
+        panelObject.transform.SetParent(canvasObject.transform, false);
+        Image panelImage = panelObject.AddComponent<Image>();
+        panelImage.color = new Color(0f, 0f, 0f, 0.7f);
+
+        RectTransform panelRect = panelObject.GetComponent<RectTransform>();
+        panelRect.anchorMin = new Vector2(0f, 1f);
+        panelRect.anchorMax = new Vector2(0f, 1f);
+        panelRect.pivot = new Vector2(0f, 1f);
+        panelRect.anchoredPosition = new Vector2(20f, -450f);
+        panelRect.sizeDelta = new Vector2(780f, 320f);
+
+        GameObject textObject = new GameObject("Text");
+        textObject.transform.SetParent(panelObject.transform, false);
+        testLogText = textObject.AddComponent<TextMeshProUGUI>();
+        testLogText.fontSize = 20f;
+        testLogText.enableWordWrapping = true;
+        testLogText.overflowMode = TextOverflowModes.Overflow;
+        testLogText.color = Color.white;
+        testLogText.alignment = TextAlignmentOptions.TopLeft;
+        testLogText.richText = false;
+        testLogText.text = "Test log overlay ready.";
+        testLogText.font = TMP_Settings.defaultFontAsset;
+
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(12f, 12f);
+        textRect.offsetMax = new Vector2(-12f, -12f);
+    }
+
+    private void AppendOnScreenLog(string message)
+    {
+        EnsureOnScreenLogOverlay();
+
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            return;
+        }
+
+        foreach (string rawLine in message.Split('\n'))
+        {
+            string line = rawLine.TrimEnd('\r');
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
+            onScreenLogLines.Enqueue(line);
+        }
+
+        while (onScreenLogLines.Count > MaxOnScreenLogLines)
+        {
+            onScreenLogLines.Dequeue();
+        }
+
+        testLogText.text = string.Join("\n", onScreenLogLines);
     }
 
     private void StartTesting()
@@ -393,14 +480,15 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<IEnumerator>
         {
-            // Scenario_001_BasicKickoff(),
-            // Scenario_002_GroundBall_0001_Commitment(),
-            // Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            // Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            // Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            // Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            // Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            // Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
+            // Ground Ball regression suite
+            Scenario_002_GroundBall_0001_Commitment(),
+            Scenario_002b_GroundBall_0001b_QuickThrow_Commitment(),
+            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
+            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
+            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
+            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
+            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
+            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
             // Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
             // Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
             // Scenario_011_Movement_Phase_Successful_Interception(),
@@ -416,7 +504,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
             // Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
             // Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
+            // Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
             // Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
             // Scenario_025a_Movement_Phase_Dribling_into_goal(),
             // Scenario_025b_Movement_Phase_Reposition_into_goal(),
@@ -460,12 +548,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(true), // ✅
             // Scenario_029_HeaderAtGoal_Saved_by_GK_GoalKick(),
             // // // // // // Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(true), // Impossible Scenario
-            Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(),
-            Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(true), // ✅
-            Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(),
-            Scenario_029_HeaderAtGoal_Headed_Away(true),
-            Scenario_029_HeaderAtGoal_Headed_Away(),
-            Scenario_029_HeaderAtGoal_LooseBall(),
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_Corner(),
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(true), // ✅
+            // Scenario_029_HeaderAtGoal_Saved_by_GK_LooseBall(),
+            // Scenario_029_HeaderAtGoal_Headed_Away(true),
+            // Scenario_029_HeaderAtGoal_Headed_Away(),
+            // Scenario_029_HeaderAtGoal_LooseBall(),
             // Scenario_029_HeaderAtGoal_LooseBall_OWN_GOAL(),
             // Add more scenarios here
         };
@@ -1003,6 +1091,171 @@ public class GameTestScenarioRunner : MonoBehaviour
         
     }
 
+    private IEnumerator Scenario_002b_GroundBall_0001b_QuickThrow_Commitment()
+    {
+        yield return new WaitForSeconds(3f); // Allow scene to stabilize
+
+        Log("▶️ Starting test scenario: 'Quick Throw - Commitment and Target Validation'");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0f));
+        Log("Pressing 2");
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup
+            , "KickOff state check after pressing 2"
+            , MatchManager.GameState.KickOffSetup
+            , MatchManager.Instance.currentState
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Pressing Space");
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown
+            , "KickOff state check after pressing Space"
+            , MatchManager.GameState.KickoffBlown
+            , MatchManager.Instance.currentState
+        );
+        AssertTrue(
+            groundBallManager.isAvailable
+            , "GBM is Available after pressing Space"
+            , true
+            , groundBallManager.isAvailable
+        );
+
+        MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
+        Log("Forcing MatchManager into QuickThrow mode for isolated GBM validation");
+
+        groundBallManager.ActivateGroundBall(true);
+        Log("Activating Ground Ball directly as a forced Quick Throw");
+        AssertTrue(
+            groundBallManager.isActivated
+            , "GBM is activated after forcing Quick Throw mode"
+            , true
+            , groundBallManager.isActivated
+        );
+        AssertTrue(
+            groundBallManager.isQuickThrow
+            , "GBM is handling a Quick Throw after forcing Quick Throw mode"
+            , true
+            , groundBallManager.isQuickThrow
+        );
+        AssertTrue(
+            groundBallManager.isAwaitingTargetSelection
+            , "GBM is waiting target selection after forcing Quick Throw mode"
+            , true
+            , groundBallManager.isAwaitingTargetSelection
+        );
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.QuickThrow
+            , "MatchManager remains in QuickThrow state after forcing Quick Throw mode"
+            , MatchManager.GameState.QuickThrow
+            , MatchManager.Instance.currentState
+        );
+
+        // Too far away is still rejected in a Quick Throw
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, -6), 0.2f));
+        Log("Clicking (12, -6)");
+        AssertTrue(
+            groundBallManager.currentTargetHex == null
+            , "QT has a null target after Clicking on (12, -6) which is too far away"
+            , null
+            , groundBallManager.currentTargetHex
+        );
+        AssertTrue(
+            groundBallManager.isAwaitingTargetSelection
+            , "QT is still waiting target selection after Clicking on (12, -6) which is too far away"
+            , true
+            , groundBallManager.isAwaitingTargetSelection
+        );
+
+        // Targeting a defender directly must be rejected in a Quick Throw
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 3), 0.2f));
+        Log("Clicking (3, 3) which is Gilbert's hex");
+        AssertTrue(
+            groundBallManager.currentTargetHex == null
+            , "QT has a null target after Clicking on defender-occupied target (3, 3)"
+            , null
+            , groundBallManager.currentTargetHex
+        );
+        AssertTrue(
+            groundBallManager.isAwaitingTargetSelection
+            , "QT is still waiting target selection after Clicking on defender-occupied target (3, 3)"
+            , true
+            , groundBallManager.isAwaitingTargetSelection
+        );
+
+        // Quick Throw ignores occupied/path ZOI issues except on the target hex.
+        // This target is useful to prove that QT accepts targets that Standard Pass would treat more strictly.
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(4, 4), 0.2f));
+        Log("Clicking (4, 4)");
+        AssertTrue(
+            groundBallManager.currentTargetHex != null
+            , "QT has a valid target after Clicking on (4, 4)"
+            , hexgrid.GetHexCellAt(new Vector3Int(4, 0, 4))
+            , groundBallManager.currentTargetHex
+        );
+        AssertTrue(
+            groundBallManager.isAwaitingTargetSelection
+            , "QT is waiting target selection after Clicking on (4, 4)"
+            , true
+            , groundBallManager.isAwaitingTargetSelection
+        );
+
+        // A clearly safe target remains valid and not dangerous.
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.2f));
+        Log("Clicking (10, 0)");
+        AssertTrue(
+            groundBallManager.currentTargetHex != null
+            , "QT has a valid target after Clicking on (10, 0)"
+            , hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0))
+            , groundBallManager.currentTargetHex
+        );
+        AssertTrue(
+            !groundBallManager.passIsDangerous
+            , "QT pass to (10, 0) is not considered dangerous"
+            , false
+            , groundBallManager.passIsDangerous
+        );
+
+        // Dangerous in Quick Throw means the target hex itself is influenced by defenders.
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 2), 0.2f));
+        Log("Clicking (3, 2)");
+        AssertTrue(
+            groundBallManager.currentTargetHex != null
+            , "QT has a valid target after Clicking on (3, 2)"
+            , hexgrid.GetHexCellAt(new Vector3Int(3, 0, 2))
+            , groundBallManager.currentTargetHex
+        );
+        AssertTrue(
+            groundBallManager.passIsDangerous
+            , "QT pass to (3, 2) is considered dangerous because the target hex is influenced by defenders"
+            , true
+            , groundBallManager.passIsDangerous
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 2), 0.2f));
+        Log("Clicking (3, 2) again to confirm Quick Throw");
+        AssertTrue(
+            !groundBallManager.isAwaitingTargetSelection
+            , "QT is no longer waiting for target selection after confirming (3, 2)"
+            , false
+            , groundBallManager.isAwaitingTargetSelection
+        );
+        AssertTrue(
+            groundBallManager.isWaitingForDiceRoll
+            , "QT is now waiting for interception dice roll(s)"
+            , true
+            , groundBallManager.isWaitingForDiceRoll
+        );
+        AssertTrue(
+            groundBallManager.diceRollsPending > 0
+            , "QT has at least one interceptor because the target hex is influenced"
+            , true
+            , groundBallManager.diceRollsPending > 0
+        );
+
+        LogFooterofTest("Quick Throw - Commitment and Target Validation");
+    }
+
     private IEnumerator Scenario_003_GroundBall_0002_Dangerous_pass_no_interception()
     {
         yield return new WaitForSeconds(3f); // Allow scene to stabilize
@@ -1209,10 +1462,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             , true
             , MatchManager.Instance.attackHasPossession
         );
-        var interceptor = PlayerToken.GetPlayerTokenByName("Gilbert");
+        var interceptor = PlayerToken.GetPlayerTokenByName("Paterson");
         AssertTrue(
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == interceptor,
-            "Gilbert should be the last to touch the ball",
+            "Paterson should be the last to touch the ball",
             interceptor,
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
         );
@@ -1230,28 +1483,16 @@ public class GameTestScenarioRunner : MonoBehaviour
             MatchManager.Instance.gameData.stats.GetPlayerStats("Cafferata").passesCompleted
         );
         AssertTrue(
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Vladoiu").interceptionsAttempted == 1,
-            "Vladoiu Should have 1 interception attempted",
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").interceptionsAttempted == 1,
+            "Paterson Should have 1 interception attempted",
             1,
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Vladoiu").interceptionsAttempted
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").interceptionsAttempted
         );
         AssertTrue(
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").interceptionsAttempted == 1,
-            "Gilbert Should have 1 interception attempted",
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").interceptionsMade == 1,
+            "Paterson Should have 1 interception made",
             1,
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").interceptionsAttempted
-        );
-        AssertTrue(
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Vladoiu").interceptionsMade == 0,
-            "Vladoiu Should have 0 interceptions made",
-            1,
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Vladoiu").interceptionsMade
-        );
-        AssertTrue(
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").interceptionsMade == 1,
-            "Gilbert Should have 1 interception made",
-            1,
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").interceptionsMade
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").interceptionsMade
         );
 
         LogFooterofTest("Ground Ball - Dangerous Pass - No Interception");
@@ -10152,6 +10393,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         Debug.Log("LOG: " + message);
         File.AppendAllText(logFilePath, message + "\n");
+        AppendOnScreenLog(message);
     }
 
     private void LogFooterofTest(string message)

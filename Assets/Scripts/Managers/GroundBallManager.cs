@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
@@ -7,6 +8,31 @@ using System.Threading.Tasks;
 
 public class GroundBallManager : MonoBehaviour
 {
+    public enum PassValidationFailureReason
+    {
+        None,
+        NullTarget,
+        OutOfRange,
+        BlockedByDefender,
+        TargetOccupiedByDefender,
+    }
+
+    public readonly struct GroundPassValidationResult
+    {
+        public readonly bool IsValid;
+        public readonly bool IsDangerous;
+        public readonly List<HexCell> PathHexes;
+        public readonly PassValidationFailureReason FailureReason;
+
+        public GroundPassValidationResult(bool isValid, bool isDangerous, List<HexCell> pathHexes, PassValidationFailureReason failureReason)
+        {
+            IsValid = isValid;
+            IsDangerous = isDangerous;
+            PathHexes = pathHexes;
+            FailureReason = failureReason;
+        }
+    }
+
     [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
@@ -19,6 +45,7 @@ public class GroundBallManager : MonoBehaviour
     public bool isAvailable = false;        // Check if the GroundBall is available as an action from the user.
     public bool isActivated = false;        // To check if the script is activated
     public bool isAwaitingTargetSelection = false; // To check if we are waiting for target selection
+    // TODO: Formalize Short Pass as a first-class Ground Ball Pass mode instead of mutating this distance ad hoc.
     public int imposedDistance = 11;
     public bool isQuickThrow = false;
     public HexCell currentTargetHex = null;   // The currently selected target hex
@@ -26,21 +53,25 @@ public class GroundBallManager : MonoBehaviour
     public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     public bool passIsDangerous = false;      // To check if the pass is dangerous
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
+    private HexCell hoveredPreviewHex = null;
     [SerializeField]
     public List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
     [SerializeField]
     private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
     public int diceRollsPending = 0;          // Number of pending dice rolls
+    private string latestValidationInstruction = string.Empty;
 
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnHover += OnHoverReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
 
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
 
@@ -52,16 +83,32 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
+    private void OnHoverReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated || !isAwaitingTargetSelection)
+        {
+            return;
+        }
+
+        if (MatchManager.Instance.difficulty_level != 1)
+        {
+            return;
+        }
+
+        if (hoveredPreviewHex == hex)
+        {
+            return;
+        }
+
+        hoveredPreviewHex = hex;
+        UpdateEasyModeHoverPreview(hex);
+    }
+
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)
         {
             MatchManager.Instance.TriggerStandardPass();
-            if (MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown)
-            // TODO: catch all cases where the game is kicking off (Match Start, goal, Half time, Extra times, etc.)
-            {
-                CommitToThisAction();
-            }
             return;
         }
         if (isAvailable
@@ -71,8 +118,8 @@ public class GroundBallManager : MonoBehaviour
         )
         {
             MatchManager.Instance.TriggerStandardPass();
-            CommitToThisAction();
             isQuickThrow = true;
+            CommitToThisAction();
             return;
         }
         if (isActivated)
@@ -92,9 +139,13 @@ public class GroundBallManager : MonoBehaviour
         Debug.Log("Standard pass attempt mode activated.");
         isActivated = true;
         isAvailable = false;  // Make it non available to avoid restarting this action again.
-        if (MatchManager.Instance.difficulty_level == 3) CommitToThisAction();
-        isAwaitingTargetSelection = true;
         isQuickThrow = isFromQuickThrow;
+        if (MatchManager.Instance.difficulty_level == 3)
+        {
+            CommitToThisAction();
+        }
+        isAwaitingTargetSelection = true;
+        latestValidationInstruction = string.Empty;
         Debug.Log("GroundBallManager activated. Waiting for target selection...");
     }
 
@@ -133,42 +184,39 @@ public class GroundBallManager : MonoBehaviour
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized path validation and danger assessment
-        var (isValid, isDangerous, pathHexes) = ValidateGroundPassPath(clickedHex, imposedDistance);
-        if (!isValid)
+        GroundPassValidationResult validation = ValidateGroundPassPath(clickedHex, imposedDistance);
+        if (!validation.IsValid)
         {
-            // Debug.LogWarning("Invalid pass. Path rejected.");
             currentTargetHex = null;
-            // lastClickedHex = null;  // Reset the last clicked hex
+            passIsDangerous = false;
+            if (difficulty == 3)
+            {
+                latestValidationInstruction = GetValidationFailureInstruction(validation.FailureReason);
+            }
             return; // Reject invalid paths
         }
-        // currentTargetHex = clickedHex;  // Assign the current target hex
+        latestValidationInstruction = string.Empty;
+
         // Handle each difficulty's behavior
         if (difficulty == 3) // Hard Mode
         {
-            // isAwaitingTargetSelection = false;
-            // PopulateGroundPathInterceptions(clickedHex, isGk);
-            // if (passIsDangerous)
-            // {
-            //     diceRollsPending = defendingHexes.Count; // is this relevant here?
-            //     Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-            //     StartGroundPassInterceptionDiceRollSequence();
-            // }
-            // else
-            // {
-            //     Debug.Log("Pass is not dangerous, moving ball.");
-            //     await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(clickedHex)); // Execute pass
-            //     finalThirdManager.TriggerFinalThirdPhase();
-            //     imposedDistance = 11;
-            //     MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
-            //     if (clickedHex.isAttackOccupied)
-            //     {
-            //         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToPlayer;
-            //     }
-            //     else {
-            //         MatchManager.Instance.currentState = MatchManager.GameState.StandardPassCompletedToSpace;
-            //     }
-            // }
-            // ball.DeselectBall();
+            currentTargetHex = clickedHex;
+            isAwaitingTargetSelection = false;
+            CommitToThisAction();
+            LogGroundPassAttempt();
+            PopulateGroundPathInterceptions(clickedHex, false);
+            if (passIsDangerous)
+            {
+                diceRollsPending = defendingHexes.Count;
+                Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                StartGroundPassInterceptionDiceRollSequence();
+            }
+            else
+            {
+                Debug.Log("Pass is not dangerous, moving ball.");
+                _ = MoveTheBall(clickedHex);
+            }
+            ball.DeselectBall();
         }
         else if (difficulty == 2)
         {
@@ -177,7 +225,7 @@ public class GroundBallManager : MonoBehaviour
             {
                 currentTargetHex = clickedHex;
                 PopulateGroundPathInterceptions(clickedHex);
-                HighlightValidGroundPassPath(pathHexes, isDangerous);
+                HighlightValidGroundPassPath(validation.PathHexes, validation.IsDangerous);
                 diceRollsPending = defendingHexes.Count; // is this relevant here?
                 if (diceRollsPending == 0) Debug.Log($"The Stanard pass cannot be intercepted. Click again to confirm or elsewhere to try another path.");
                 else Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
@@ -207,83 +255,174 @@ public class GroundBallManager : MonoBehaviour
         }
         else if (difficulty == 1) // Easy Mode: Handle hover and clicks with immediate highlights
         {
-            // PopulateGroundPathInterceptions(clickedHex, isGk);
-            // diceRollsPending = defendingHexes.Count; // is this relevant here?
-            // Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
-            // if (clickedHex == currentTargetHex && clickedHex == lastClickedHex)
-            // {
-            //     // Second click on the same hex: confirm the pass
-            //     Debug.Log("Second click detected, confirming pass...");
-            //     isAwaitingTargetSelection = false;
-            //     PopulateGroundPathInterceptions(clickedHex, isGk);
-            //     if (passIsDangerous)
-            //     {
-            //         diceRollsPending = defendingHexes.Count; // is this relevant here?
-            //         Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
-            //         StartGroundPassInterceptionDiceRollSequence();
-            //     }
-            //     else
-            //     {
-            //         MoveTheBall(clickedHex); // Execute pass
-            //     }
-            //     ball.DeselectBall();
-            // }
-            // else
-            // {
-            //     hexGrid.ClearHighlightedHexes();
-            //     HighlightValidGroundPassPath(pathHexes, isDangerous);
-            //     currentTargetHex = clickedHex; // Set this as the current target hex
-            //     lastClickedHex = clickedHex; // Track the last clicked hex
-            // }
+            hexGrid.ClearHighlightedHexes();
+            if (currentTargetHex == null || clickedHex != currentTargetHex)
+            {
+                currentTargetHex = clickedHex;
+                PopulateGroundPathInterceptions(clickedHex, false);
+                if (hoveredPreviewHex != null)
+                {
+                    UpdateEasyModeHoverPreview(hoveredPreviewHex);
+                }
+                else
+                {
+                    HighlightCommittedTarget();
+                }
+            }
+            else
+            {
+                isAwaitingTargetSelection = false;
+                CommitToThisAction();
+                LogGroundPassAttempt();
+                PopulateGroundPathInterceptions(clickedHex, false);
+                if (passIsDangerous)
+                {
+                    diceRollsPending = defendingHexes.Count;
+                    Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                    StartGroundPassInterceptionDiceRollSequence();
+                }
+                else
+                {
+                    Debug.Log("Pass is not dangerous, moving ball.");
+                    _ = MoveTheBall(clickedHex);
+                }
+                ball.DeselectBall();
+            }
         }
     }
 
-    public (bool isValid, bool isDangerous, List<HexCell> pathHexes) ValidateGroundPassPath(HexCell targetHex, int distance)
+    private void UpdateEasyModeHoverPreview(HexCell hoveredHex)
     {
-        // TODO: 0.0 -> 2.-9 seems valid
+        if (!isActivated || !isAwaitingTargetSelection || MatchManager.Instance.difficulty_level != 1)
+        {
+            return;
+        }
+
+        hexGrid.ClearHighlightedHexes();
+        HighlightCommittedTarget();
+
+        if (hoveredHex == null)
+        {
+            latestValidationInstruction = currentTargetHex != null
+                ? "Click the orange target again to confirm, or hover another hex to preview."
+                : $"Hover a target within {imposedDistance} hexes to preview the pass.";
+            return;
+        }
+
+        GroundPassValidationResult validation = ValidateGroundPassPath(hoveredHex, imposedDistance);
+        hexGrid.ClearHighlightedHexes();
+        HighlightCommittedTarget();
+
+        if (!validation.IsValid)
+        {
+            latestValidationInstruction = GetValidationFailureInstruction(validation.FailureReason);
+            return;
+        }
+
+        HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
+        latestValidationInstruction = validation.IsDangerous
+            ? "Dangerous pass preview. Yellow target, pink path. Click to select target."
+            : "Safe pass preview. Yellow target, blue path. Click to select target.";
+    }
+
+    private void HighlightCommittedTarget()
+    {
+        if (currentTargetHex == null)
+        {
+            return;
+        }
+
+        currentTargetHex.HighlightHex("passTargetCommitted");
+        if (!hexGrid.highlightedHexes.Contains(currentTargetHex))
+        {
+            hexGrid.highlightedHexes.Add(currentTargetHex);
+        }
+    }
+
+    private void HighlightHoverPreviewPath(List<HexCell> pathHexes, HexCell hoveredHex, bool isDangerous)
+    {
+        if (pathHexes == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in pathHexes)
+        {
+            if (hex == null)
+            {
+                continue;
+            }
+
+            if (hex == hoveredHex)
+            {
+                hex.HighlightHex("passTarget");
+            }
+            else
+            {
+                hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
+            }
+
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                hexGrid.highlightedHexes.Add(hex);
+            }
+        }
+    }
+
+    public GroundPassValidationResult ValidateGroundPassPath(HexCell targetHex, int distance)
+    {
         hexGrid.ClearHighlightedHexes();
         HexCell ballHex = ball.GetCurrentHex();
-        // Step 1: Ensure the ballHex and targetHex are valid
         if (ballHex == null || targetHex == null)
         {
             Debug.LogError("Ball or target hex is null!");
-            return (false, false, null);
+            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.NullTarget);
         }
-        // Step 2: Calculate the path between the ball and the target hex
+
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
-        // Get the distance in hex steps
-        Vector3Int ballCubeCoords = HexGridUtils.OffsetToCube(ballHex.coordinates.x, ballHex.coordinates.z);
-        Vector3Int targetCubeCoords = HexGridUtils.OffsetToCube(targetHex.coordinates.x, targetHex.coordinates.z);
-        int distanceBetweenHexes = HexGridUtils.GetHexDistance(ballCubeCoords, targetCubeCoords);
-        // Check the distance limit
+        int distanceBetweenHexes = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         if (distanceBetweenHexes > distance)
         {
             Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {distance}. Current steps: {distanceBetweenHexes}");
-            return (false, false, pathHexes);
+            return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.OutOfRange);
         }
-        // Step 3: Check if the path is valid by ensuring no defense-occupied hexes block the path
-        if (!isQuickThrow)
+
+        if (isQuickThrow)
+        {
+            if (targetHex.isDefenseOccupied)
+            {
+                Debug.Log($"Quick throw target blocked by defender at hex: {targetHex.coordinates}");
+                return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.TargetOccupiedByDefender);
+            }
+        }
+        else
         {
             foreach (HexCell hex in pathHexes)
             {
                 if (hex.isDefenseOccupied)
                 {
                     Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
-                    return (false, false, pathHexes); // Invalid path
+                    return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.BlockedByDefender);
                 }
             }
         }
 
-        // Step 4: Get defenders and their ZOI
         List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
         List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
+        bool isDangerous = IsGroundPassDangerous(pathHexes, targetHex, defenderNeighbors);
+        return new GroundPassValidationResult(true, isDangerous, pathHexes, PassValidationFailureReason.None);
+    }
 
-        // Step 5: Determine if the path is dangerous by checking if it passes through any defender's ZOI
-        bool isDangerous = hexGrid.IsPassDangerous(pathHexes, defenderNeighbors, isQuickThrow);
-
-        // Debug.Log($"Path to {targetHex.coordinates}: Valid={true}, Dangerous={isDangerous}");
-
-        return (true, isDangerous, pathHexes);
+    private string GetValidationFailureInstruction(PassValidationFailureReason failureReason)
+    {
+        return failureReason switch
+        {
+            PassValidationFailureReason.OutOfRange => "Pass invalid: out of range.",
+            PassValidationFailureReason.BlockedByDefender => "Pass invalid: blocked by defender.",
+            PassValidationFailureReason.TargetOccupiedByDefender => "Pass invalid: target occupied by defender.",
+            PassValidationFailureReason.NullTarget => "Pass invalid: no valid target selected.",
+            _ => string.Empty,
+        };
     }
 
     public void HighlightValidGroundPassPath(List<HexCell> pathHexes, bool isDangerous)
@@ -296,80 +435,47 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
-    public void PopulateGroundPathInterceptions(HexCell targetHex)
+    public void PopulateGroundPathInterceptions(HexCell targetHex, bool highlightPath = true)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
         List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
         string joined = string.Join(" -> ", pathHexes.Select(hex => hex.coordinates.ToString()));  
         Debug.Log($"Path: {joined}");
         hexGrid.ClearHighlightedHexes();
-        // Remove the ball's current hex from the path
-        pathHexes.Remove(ballHex);
 
-        // Get defenders and their neighbors
-        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
-        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-        string joineddefenderNeighbors = string.Join(" -> ", defenderNeighbors.Select(hex => hex.coordinates.ToString()));  
-        Debug.Log($"All Neighbors: {joineddefenderNeighbors}");
-        
         // Initialize danger variables
         passIsDangerous = false;
         interceptionHexes.Clear();
         defendingHexes.Clear();
-        // Track defenders that have already been processed
-        HashSet<HexCell> alreadyProcessedDefenders = new HashSet<HexCell>();
 
-        // Check if the path crosses any defender's ZOI
         foreach (HexCell hex in pathHexes)
         {
-            // Debug.Log($"Checking hex: {hex.coordinates}");
-            if (isQuickThrow && hex != pathHexes.Last())  // Skip TO the last hex if the target is the GK
+            if (highlightPath)
             {
-              continue;
+                hex.HighlightHex("ballPath");
+                hexGrid.highlightedHexes.Add(hex);
             }
-            // Get the neighbors of the hex and log them for debugging purposes
-            HexCell[] neighbors = hex.GetNeighbors(hexGrid);
-            string neighborCoords = string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"));
-            // Debug.Log($"Neighbors: {neighborCoords}"); // Correct!
-
-            // Debug.Log($"{defenderNeighbors.Contains(hex)}");
-            // Check if a defender's neighbor is in the path excluding Attacking occupied Hexes
-            if (defenderNeighbors.Contains(hex) && !hex.isAttackOccupied)
-            {
-                List<HexCell> defendersForThisHex = defenderHexes.Where(d => d.GetNeighbors(hexGrid).Contains(hex)).ToList();
-                // Process all such defenders
-                foreach (HexCell defenderHex in defendersForThisHex)
-                {
-                    // Only add the defender and interception hex if the defender hasn't already been processed
-                    if (defenderHex != null && !alreadyProcessedDefenders.Contains(defenderHex))
-                    {
-                        PlayerToken defenderToken = defenderHex.occupyingToken; // Get the token
-                        if (defenderToken != null)
-                        {
-                            string defenderName = defenderToken.playerName;
-                            int defenderTackling = defenderToken.tackling;
-                            int defenderJersey = defenderToken.jerseyNumber;
-
-                            // Calculate required roll
-                            int requiredRoll = defenderTackling >= 4 ? 10 - defenderTackling : 6;
-                            string rollDescription = requiredRoll == 6 ? "6" : $"{requiredRoll}+";
-
-                            Debug.Log(
-                                $"{defenderJersey}. {defenderName} at {defenderHex.coordinates} with a tackling of {defenderTackling} can intercept with a roll of {rollDescription} at {hex.coordinates}. " +
-                                $"Defender's ZOI: {string.Join(", ", defenderHex.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}"
-                            );
-                            interceptionHexes.Add(hex);  // Add the interceptable hex
-                            defendingHexes.Add(defenderHex);  // Add the defender responsible
-                            alreadyProcessedDefenders.Add(defenderHex);  // Mark this defender as processed
-                            passIsDangerous = true;  // Mark the pass as dangerous
-                            // Debug.Log($"Defender at {defender.coordinates} can intercept at {hex.coordinates}. Defender's ZOI: {string.Join(", ", defender.GetNeighbors(hexGrid).Select(n => n?.coordinates.ToString() ?? "null"))}");
-                        }
-                    }
-                }
-            }
-            hex.HighlightHex("ballPath");  // Highlight the path
-            hexGrid.highlightedHexes.Add(hex);
         }
+
+        List<GroundInterceptionCandidate> orderedInterceptors = BuildOrderedInterceptionCandidates(targetHex);
+        foreach (GroundInterceptionCandidate candidate in orderedInterceptors)
+        {
+            string defenderName = candidate.DefenderToken.playerName;
+            int defenderTackling = candidate.DefenderToken.tackling;
+            int defenderJersey = candidate.DefenderToken.jerseyNumber;
+            int requiredRoll = defenderTackling >= 4 ? 10 - defenderTackling : 6;
+            string rollDescription = requiredRoll == 6 ? "6" : $"{requiredRoll}+";
+
+            Debug.Log(
+                $"{defenderJersey}. {defenderName} at {candidate.DefenderHex.coordinates} with a tackling of {defenderTackling} can intercept with a roll of {rollDescription} at {candidate.ClosestInterceptionHex.coordinates}. " +
+                $"Closest interception hex is {candidate.ClosestInterceptionHex.coordinates} ({candidate.ClosestZoiDistanceFromBall} steps from the ball)."
+            );
+
+            interceptionHexes.Add(candidate.ClosestInterceptionHex);
+            defendingHexes.Add(candidate.DefenderHex);
+        }
+
+        passIsDangerous = defendingHexes.Count > 0;
     }
 
     private async Task MoveTheBall(HexCell trgDestHex)
@@ -410,8 +516,9 @@ public class GroundBallManager : MonoBehaviour
         {
             // Start the dice roll process for each defender
             Debug.Log("Starting dice roll sequence... Press R key.");
-            // Sort defendingHexes by distance from ballHex
-            defendingHexes = defendingHexes.OrderBy(d => HexGridUtils.GetHexDistance(ball.GetCurrentHex().coordinates, d.coordinates)).ToList();
+            defendingHexes = BuildOrderedInterceptionCandidates(currentTargetHex, defendingHexes)
+                .Select(candidate => candidate.DefenderHex)
+                .ToList();
             currentDefenderHex = defendingHexes[0];  // Start with the closest defender
             isWaitingForDiceRoll = true;
         }
@@ -476,8 +583,7 @@ public class GroundBallManager : MonoBehaviour
                     {
                         Debug.LogError("currentTargetHex is null despite the pass being valid.");
                     }
-                    MoveTheBall(currentTargetHex);
-                    CleanUpPass();
+                    _ = MoveTheBall(currentTargetHex);
                 }
             }
         }
@@ -502,6 +608,8 @@ public class GroundBallManager : MonoBehaviour
         isActivated = false;
         isAwaitingTargetSelection = false;
         currentTargetHex = null;  // Reset current target hex
+        hoveredPreviewHex = null;
+        latestValidationInstruction = string.Empty;
         // imposedDistance = 11;  // Reset imposed distance
         ResetGroundPassInterceptionDiceRolls();
         isQuickThrow = false;  // Reset quick throw state
@@ -541,6 +649,95 @@ public class GroundBallManager : MonoBehaviour
         // Debug.Log("Highlights cleared after ball movement.");
         if (speed != null) yield break;
         // finalThirdManager.TriggerFinalThirdPhase();
+    }
+
+    private bool IsGroundPassDangerous(List<HexCell> pathHexes, HexCell targetHex, List<HexCell> defenderNeighbors)
+    {
+        List<HexCell> relevantInterceptionHexes = GetRelevantInterceptionHexes(pathHexes, targetHex);
+        return relevantInterceptionHexes.Any(defenderNeighbors.Contains);
+    }
+
+    private List<HexCell> GetRelevantInterceptionHexes(List<HexCell> pathHexes, HexCell targetHex)
+    {
+        if (pathHexes == null)
+        {
+            return new List<HexCell>();
+        }
+
+        if (isQuickThrow)
+        {
+            return pathHexes.Where(hex => hex == targetHex).ToList();
+        }
+
+        return pathHexes
+            .Where(hex => hex != null && !hex.isAttackOccupied)
+            .ToList();
+    }
+
+    private List<GroundInterceptionCandidate> BuildOrderedInterceptionCandidates(HexCell targetHex, IEnumerable<HexCell> candidateDefenders = null)
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null || targetHex == null)
+        {
+            return new List<GroundInterceptionCandidate>();
+        }
+
+        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> relevantInterceptionHexes = GetRelevantInterceptionHexes(pathHexes, targetHex);
+        HashSet<HexCell> relevantInterceptionHexSet = new HashSet<HexCell>(relevantInterceptionHexes);
+
+        IEnumerable<HexCell> defendersToEvaluate = candidateDefenders ?? hexGrid.GetDefenderHexes();
+        List<GroundInterceptionCandidate> orderedCandidates = new List<GroundInterceptionCandidate>();
+
+        foreach (HexCell defenderHex in defendersToEvaluate.Where(hex => hex != null))
+        {
+            PlayerToken defenderToken = defenderHex.occupyingToken;
+            if (defenderToken == null)
+            {
+                continue;
+            }
+
+            List<HexCell> influencedHexes = defenderHex
+                .GetNeighbors(hexGrid)
+                .Where(hex => hex != null && relevantInterceptionHexSet.Contains(hex))
+                .ToList();
+
+            if (influencedHexes.Count == 0)
+            {
+                continue;
+            }
+
+            HexCell closestInterceptionHex = influencedHexes
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(ballHex, hex))
+                .ThenBy(hex => hex.coordinates.x)
+                .ThenBy(hex => hex.coordinates.z)
+                .First();
+
+            orderedCandidates.Add(new GroundInterceptionCandidate
+            {
+                DefenderHex = defenderHex,
+                DefenderToken = defenderToken,
+                ClosestInterceptionHex = closestInterceptionHex,
+                ClosestZoiDistanceFromBall = HexGridUtils.GetHexStepDistance(ballHex, closestInterceptionHex),
+                DefenderDistanceFromBall = HexGridUtils.GetHexStepDistance(ballHex, defenderHex),
+            });
+        }
+
+        return orderedCandidates
+            .OrderBy(candidate => candidate.ClosestZoiDistanceFromBall)
+            .ThenBy(candidate => candidate.DefenderDistanceFromBall)
+            .ThenBy(candidate => candidate.DefenderToken.tackling)
+            .ThenBy(candidate => candidate.DefenderToken.playerName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private sealed class GroundInterceptionCandidate
+    {
+        public HexCell DefenderHex;
+        public PlayerToken DefenderToken;
+        public HexCell ClosestInterceptionHex;
+        public int ClosestZoiDistanceFromBall;
+        public int DefenderDistanceFromBall;
     }
 
     public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)
@@ -682,10 +879,49 @@ public class GroundBallManager : MonoBehaviour
         if (finalThirdManager.isActivated) return "";
         if (freeKickManager.isWaitingForExecution) return "";
         if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
-        if (isActivated) sb.Append("SP: ");
-        if (isAwaitingTargetSelection) sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
-        if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
-        if (isAwaitingTargetSelection && currentTargetHex != null && diceRollsPending > 0) sb.Append($"there will be {diceRollsPending} attempts to intercept the pass, ");
+        if (isActivated)
+        {
+            sb.Append("SP: ");
+        }
+        if (isAwaitingTargetSelection)
+        {
+            if (MatchManager.Instance.difficulty_level == 3)
+            {
+                if (!string.IsNullOrWhiteSpace(latestValidationInstruction))
+                {
+                    sb.Append($"{latestValidationInstruction} ");
+                }
+                else
+                {
+                    sb.Append($"Click on a valid target within {imposedDistance} hexes to attempt a pass. ");
+                }
+            }
+            else
+            {
+                if (MatchManager.Instance.difficulty_level == 1)
+                {
+                    if (!string.IsNullOrWhiteSpace(latestValidationInstruction))
+                    {
+                        sb.Append($"{latestValidationInstruction} ");
+                    }
+                    else
+                    {
+                        sb.Append($"Hover a target within {imposedDistance} hexes to preview the pass. ");
+                    }
+
+                    if (currentTargetHex != null)
+                    {
+                        sb.Append("Orange hex is the intended target. Click it again to confirm, or click another valid target to switch. ");
+                    }
+                }
+                else
+                {
+                    sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
+                    if (currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
+                    if (currentTargetHex != null && diceRollsPending > 0) sb.Append($"there will be {diceRollsPending} attempts to intercept the pass, ");
+                }
+            }
+        }
         if (isWaitingForDiceRoll)
         {
             string rollneeded = currentDefenderHex.GetOccupyingToken().tackling <= 4 ? "6" : currentDefenderHex.GetOccupyingToken().tackling == 6 ? "4+": "5+";

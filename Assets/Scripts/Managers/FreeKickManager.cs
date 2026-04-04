@@ -162,6 +162,7 @@ public class FreeKickManager : MonoBehaviour
                     hexGrid.ClearHighlightedHexes(); 
                     MatchManager.Instance.TriggerStandardPass();;
                     // groundBallManager.ActivateGroundBall();
+                    // TODO: Replace this mutable distance override with an explicit Short Pass / Corner Kick GBP mode.
                     MatchManager.Instance.CommitToAction();
                     groundBallManager.imposedDistance = 6;
                     isCornerKick = false;
@@ -314,7 +315,7 @@ public class FreeKickManager : MonoBehaviour
 
         return neighbors
             .Where(hex => !hex.isDefenseOccupied && !hex.isAttackOccupied && !hex.isOutOfBounds)
-            .OrderBy(hex => HexGridUtils.GetHexDistance(hex.coordinates, new Vector3Int(0, 0, 0)))
+            .OrderBy(hex => HexGridUtils.GetHexStepDistance(hex.coordinates, new Vector3Int(0, 0, 0)))
             .FirstOrDefault();
     }
 
@@ -443,7 +444,7 @@ public class FreeKickManager : MonoBehaviour
         // Validate hex for defenders in Def phases
         if (MatchManager.Instance.currentState.ToString().StartsWith("FreeKickDef") &&
             // TODO: Check if cube coordinates are needed as defender was not allowed to move to (-17,10) when corner is at (-18, -12)
-            HexGridUtils.GetHexDistance(hex.coordinates, ball.GetCurrentHex().coordinates) <= 2)
+            HexGridUtils.GetHexStepDistance(hex.coordinates, ball.GetCurrentHex().coordinates) <= 2)
         {
             Debug.LogWarning($"Hex {hex.coordinates} is too close to the ball. Choose another destination.");
             yield break;

@@ -254,7 +254,7 @@ public class ShotManager : MonoBehaviour
         List<HexCell> path = ball.GetCurrentHex().HeadingPaths[headerTargetHex];
         List<HexCell> validSaveHexes = path
                 .Where(hex => saveableHexes.Contains(hex))
-                .OrderBy(hex => HexGridUtils.GetHexDistance(gkHex.coordinates, hex.coordinates))
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(gkHex, hex))
                 .ToList();
         // Get the closest one (if any)
         saveHex = validSaveHexes.FirstOrDefault();
@@ -275,7 +275,7 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates);
+        int saveDistance = HexGridUtils.GetHexStepDistance(gkHex, saveHex);
         headerGkPenalty = 0;
         if (saveDistance == 3) headerGkPenalty = -1;
 
@@ -500,7 +500,7 @@ public class ShotManager : MonoBehaviour
         }
         Debug.Log($"Defenders with interception chances: {interceptors.Count}");
         interceptors = interceptors.OrderBy(d =>
-            HexGridUtils.GetHexDistance(shooter.GetCurrentHex().coordinates, d.defender.GetCurrentHex().coordinates)).ToList();
+            HexGridUtils.GetHexStepDistance(shooter.GetCurrentHex(), d.defender.GetCurrentHex())).ToList();
         StartCoroutine(OfferBlockRoll());
 
     }
@@ -524,7 +524,7 @@ public class ShotManager : MonoBehaviour
             // **Step 3: Find all SaveHexes in the shot path**
             List<HexCell> validSaveHexes = path
                 .Where(hex => saveableHexes.Contains(hex))
-                .OrderBy(hex => HexGridUtils.GetHexDistance(gkHex.coordinates, hex.coordinates))
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(gkHex, hex))
                 .ToList();
             // Get the closest one (if any)
             saveHex = validSaveHexes.FirstOrDefault();
@@ -534,7 +534,7 @@ public class ShotManager : MonoBehaviour
           }
           else
           {
-            int saveDistance = HexGridUtils.GetHexDistance(gkHex.coordinates, saveHex.coordinates); // turn to Cube
+            int saveDistance = HexGridUtils.GetHexStepDistance(gkHex, saveHex);
             if (saveDistance == 3) gkPenalty = -1;
             if (saveDistance == 2 && tokenMoveforDeflection == defendingGK) gkPenalty = -1;
             if (saveDistance == 3 && tokenMoveforDeflection == defendingGK) gkPenalty = -2;
