@@ -557,7 +557,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             Scenario_017b_Movement_Phase_Dribbler_Forfeit_Remaining_Pace(),
             Scenario_017c_Movement_Phase_Mixed_Nutmeggable_And_Stealable_Defenders(), // TODO: enable when mixed nutmeg/steal branching is verified
             Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg(), // TODO: enable when multi-defender nutmeg ordering is verified
-            Scenario_017e_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim(), // TODO: enable when multi-defender nutmeg victim flow is verified
+            Scenario_017e_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim(),
+            Scenario_017e_b_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim_Offers_Other_Steals(),
             Scenario_017f_Movement_Phase_Same_Defender_Steals_Once_Per_Section_Per_Dribbler(), // TODO: enable when repeated steal bookkeeping is verified
             Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(false), // TODO: enable when post-reposition steal is benchmarked
             Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(true), // TODO: enable when post-reposition steal is benchmarked
@@ -4611,10 +4612,54 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.nutmegVictim
         );
         AssertTrue(
+            movementPhaseManager.isWaitingForInterceptionDiceRoll,
+            "MovementPhase should offer the other nutmeggable defenders steal attempts before the nutmeg challenge starts",
+            true,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleRoll,
+            "MovementPhase should not start the nutmeg tackle rolls until the other nutmeggable defenders finish their steal attempts",
+            false,
+            movementPhaseManager.isWaitingForTackleRoll
+        );
+        AssertTrue(
+            movementPhaseManager.eligibleDefenders.Count == 2,
+            "MovementPhase should offer two non-selected nutmeggable defenders as pre-nutmeg stealers",
+            2,
+            movementPhaseManager.eligibleDefenders.Count
+        );
+        AssertTrue(
+            movementPhaseManager.selectedDefender == gilbert,
+            "MovementPhase should offer Gilbert first for the pre-nutmeg steal sequence",
+            gilbert,
+            movementPhaseManager.selectedDefender
+        );
+
+        Log("Roll Gilbert fail on pre-nutmeg steal");
+        yield return StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(2));
+        yield return new WaitForSeconds(0.2f);
+        AssertTrue(
+            movementPhaseManager.isWaitingForInterceptionDiceRoll && movementPhaseManager.selectedDefender == stewart,
+            "MovementPhase should move to Stewart after Gilbert fails the pre-nutmeg steal",
+            true,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll && movementPhaseManager.selectedDefender == stewart
+        );
+
+        Log("Roll Stewart fail on pre-nutmeg steal");
+        yield return StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(2));
+        yield return new WaitForSeconds(0.3f);
+        AssertTrue(
             movementPhaseManager.isWaitingForTackleRoll,
-            "MovementPhase should be waiting for tackle rolls after selecting a nutmeg victim",
+            "MovementPhase should start the nutmeg tackle rolls after the other nutmeggable defenders fail their steal attempts",
             true,
             movementPhaseManager.isWaitingForTackleRoll
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForInterceptionDiceRoll,
+            "MovementPhase should finish the pre-nutmeg steal sequence before starting the nutmeg challenge",
+            false,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll
         );
 
         Log("Roll defender fail, attacker win on nutmeg");
@@ -4643,6 +4688,77 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("MovementPhase Multiple Nutmeggable Defenders Select Victim");
+    }
+
+    private IEnumerator Scenario_017e_b_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim_Offers_Other_Steals()
+    {
+        yield return StartCoroutine(Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg_SetupOnly());
+
+        PlayerToken gilbert = PlayerToken.GetPlayerTokenByName("Gilbert");
+        PlayerToken paterson = PlayerToken.GetPlayerTokenByName("Paterson");
+        PlayerToken stewart = PlayerToken.GetPlayerTokenByName("Stewart");
+
+        AssertTrue(
+            movementPhaseManager.isWaitingForNutmegDecision,
+            "MovementPhase should be waiting for nutmeg decision before selecting a victim",
+            true,
+            movementPhaseManager.isWaitingForNutmegDecision
+        );
+
+        Log("Pressing N - Enter nutmeg victim selection");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.N, 0.1f));
+        yield return new WaitForSeconds(0.3f);
+        AssertTrue(
+            movementPhaseManager.lookingForNutmegVictim,
+            "MovementPhase should be looking for a nutmeg victim after pressing N",
+            true,
+            movementPhaseManager.lookingForNutmegVictim
+        );
+
+        Log("Clicking (3, 4) - Select Paterson as nutmeg victim");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 4), 0.5f));
+        yield return new WaitForSeconds(0.3f);
+
+        AssertTrue(
+            movementPhaseManager.nutmegVictim == paterson,
+            "MovementPhase should lock Paterson as the nutmeg victim before offering the other steals",
+            paterson,
+            movementPhaseManager.nutmegVictim
+        );
+        AssertTrue(
+            movementPhaseManager.isWaitingForInterceptionDiceRoll,
+            "MovementPhase should offer interception rolls from the other nutmeggable defenders before the nutmeg challenge starts",
+            true,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll
+        );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForTackleRoll,
+            "MovementPhase should not start the nutmeg tackle roll until the other nutmeggable defenders finish their steal attempts",
+            false,
+            movementPhaseManager.isWaitingForTackleRoll
+        );
+        AssertTrue(
+            movementPhaseManager.eligibleDefenders.Count == 2,
+            "MovementPhase should offer only the two non-selected nutmeggable defenders as stealers",
+            2,
+            movementPhaseManager.eligibleDefenders.Count
+        );
+        AssertTrue(
+            movementPhaseManager.eligibleDefenders.Contains(gilbert)
+            && movementPhaseManager.eligibleDefenders.Contains(stewart)
+            && !movementPhaseManager.eligibleDefenders.Contains(paterson),
+            "MovementPhase should offer Gilbert and Stewart, but not the selected victim Paterson, as pre-nutmeg stealers",
+            "Gilbert, Stewart",
+            string.Join(", ", movementPhaseManager.eligibleDefenders.Select(token => token.playerName))
+        );
+        AssertTrue(
+            movementPhaseManager.selectedDefender == gilbert,
+            "MovementPhase should offer Gilbert first based on current deterministic neighbor order once Paterson is reserved as the nutmeg victim",
+            gilbert,
+            movementPhaseManager.selectedDefender
+        );
+
+        LogFooterofTest("MovementPhase Multiple Nutmeggable Defenders Select Victim Offers Other Steals");
     }
 
     private IEnumerator Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg_SetupOnly()

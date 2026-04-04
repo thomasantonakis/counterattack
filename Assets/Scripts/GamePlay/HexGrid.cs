@@ -42,6 +42,7 @@ public class HexGrid : MonoBehaviour
     public int GridWidth => width;
     public int GridHeight => height;
     public float HexRadius => hexRadius;
+    public Color CurrentBorderColor => borderColor;
     
 
     private void Start()

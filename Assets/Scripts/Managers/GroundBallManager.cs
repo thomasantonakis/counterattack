@@ -260,14 +260,10 @@ public class GroundBallManager : MonoBehaviour
             {
                 currentTargetHex = clickedHex;
                 PopulateGroundPathInterceptions(clickedHex, false);
-                if (hoveredPreviewHex != null)
-                {
-                    UpdateEasyModeHoverPreview(hoveredPreviewHex);
-                }
-                else
-                {
-                    HighlightCommittedTarget();
-                }
+                diceRollsPending = defendingHexes.Count;
+                hoveredPreviewHex = null;
+                HighlightCommittedTarget();
+                latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending);
             }
             else
             {
@@ -304,7 +300,7 @@ public class GroundBallManager : MonoBehaviour
         if (hoveredHex == null)
         {
             latestValidationInstruction = currentTargetHex != null
-                ? "Click the orange target again to confirm, or hover another hex to preview."
+                ? GetEasyModeCommittedTargetInstruction(diceRollsPending)
                 : $"Hover a target within {imposedDistance} hexes to preview the pass.";
             return;
         }
@@ -319,10 +315,10 @@ public class GroundBallManager : MonoBehaviour
             return;
         }
 
+        PopulateGroundPathInterceptions(hoveredHex, false);
+        int previewAttempts = defendingHexes.Count;
         HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
-        latestValidationInstruction = validation.IsDangerous
-            ? "Dangerous pass preview. Yellow target, pink path. Click to select target."
-            : "Safe pass preview. Yellow target, blue path. Click to select target.";
+        latestValidationInstruction = GetEasyModePreviewInstruction(validation.IsDangerous, previewAttempts);
     }
 
     private void HighlightCommittedTarget()
@@ -423,6 +419,26 @@ public class GroundBallManager : MonoBehaviour
             PassValidationFailureReason.NullTarget => "Pass invalid: no valid target selected.",
             _ => string.Empty,
         };
+    }
+
+    private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts)
+    {
+        if (!isDangerous || interceptionAttempts == 0)
+        {
+            return "Safe pass preview. No interception attempts if you select this target.";
+        }
+
+        return $"Dangerous pass preview. {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if you select this target.";
+    }
+
+    private string GetEasyModeCommittedTargetInstruction(int interceptionAttempts)
+    {
+        if (interceptionAttempts <= 0)
+        {
+            return "Selected target is safe. No interception attempts if you confirm. Click the orange target again to confirm, or hover another hex to preview.";
+        }
+
+        return $"Selected target will trigger {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if you confirm. Click the orange target again to confirm, or hover another hex to preview.";
     }
 
     public void HighlightValidGroundPassPath(List<HexCell> pathHexes, bool isDangerous)
@@ -909,12 +925,20 @@ public class GroundBallManager : MonoBehaviour
                         sb.Append($"Hover a target within {imposedDistance} hexes to preview the pass. ");
                     }
 
-                    if (currentTargetHex != null)
+                if (currentTargetHex != null)
+                {
+                    sb.Append("Orange hex is the intended target. Click it again to confirm, or click another valid target to switch. ");
+                    if (diceRollsPending > 0)
                     {
-                        sb.Append("Orange hex is the intended target. Click it again to confirm, or click another valid target to switch. ");
+                        sb.Append($"Confirming this target will trigger {diceRollsPending} interception attempt{(diceRollsPending == 1 ? string.Empty : "s")}. ");
+                    }
+                    else
+                    {
+                        sb.Append("Confirming this target will not trigger any interception attempts. ");
                     }
                 }
-                else
+            }
+            else
                 {
                     sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
                     if (currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");

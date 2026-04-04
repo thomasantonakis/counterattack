@@ -1078,7 +1078,15 @@ Pressing N - Enter nutmeg victim selection
 ✅ PASS: MovementPhase should be looking for a nutmeg victim after pressing N | Expected: True | Actual: True
 Clicking (3, 4) - Select Paterson as nutmeg victim
 ✅ PASS: MovementPhase should lock Paterson as the nutmeg victim | Expected: 7. Paterson (PlayerToken) | Actual: 7. Paterson (PlayerToken)
-✅ PASS: MovementPhase should be waiting for tackle rolls after selecting a nutmeg victim | Expected: True | Actual: True
+✅ PASS: MovementPhase should offer the other nutmeggable defenders steal attempts before the nutmeg challenge starts | Expected: True | Actual: True
+✅ PASS: MovementPhase should not start the nutmeg tackle rolls until the other nutmeggable defenders finish their steal attempts | Expected: False | Actual: False
+✅ PASS: MovementPhase should offer two non-selected nutmeggable defenders as pre-nutmeg stealers | Expected: 2 | Actual: 2
+✅ PASS: MovementPhase should offer Gilbert first for the pre-nutmeg steal sequence | Expected: 6. Gilbert (PlayerToken) | Actual: 6. Gilbert (PlayerToken)
+Roll Gilbert fail on pre-nutmeg steal
+✅ PASS: MovementPhase should move to Stewart after Gilbert fails the pre-nutmeg steal | Expected: True | Actual: True
+Roll Stewart fail on pre-nutmeg steal
+✅ PASS: MovementPhase should start the nutmeg tackle rolls after the other nutmeggable defenders fail their steal attempts | Expected: True | Actual: True
+✅ PASS: MovementPhase should finish the pre-nutmeg steal sequence before starting the nutmeg challenge | Expected: False | Actual: False
 Roll defender fail, attacker win on nutmeg
 ✅ PASS: MovementPhase should be waiting for reposition after successful nutmeg | Expected: True | Actual: True
 ✅ PASS: Paterson should be stunned after losing the nutmeg | Expected: True | Actual: True
@@ -1090,6 +1098,27 @@ Roll defender fail, attacker win on nutmeg
 
 
 ==== Starting Test #26 ====
+> Setup helper: Multiple Nutmeggable Defenders
+Pressing 2
+Pressing Space
+Pressing P - Standard Pass
+✅ PASS: MovementPhase should be waiting for nutmeg decision before selecting a victim | Expected: True | Actual: True
+Pressing N - Enter nutmeg victim selection
+✅ PASS: MovementPhase should be looking for a nutmeg victim after pressing N | Expected: True | Actual: True
+Clicking (3, 4) - Select Paterson as nutmeg victim
+✅ PASS: MovementPhase should lock Paterson as the nutmeg victim before offering the other steals | Expected: 7. Paterson (PlayerToken) | Actual: 7. Paterson (PlayerToken)
+✅ PASS: MovementPhase should offer interception rolls from the other nutmeggable defenders before the nutmeg challenge starts | Expected: True | Actual: True
+✅ PASS: MovementPhase should not start the nutmeg tackle roll until the other nutmeggable defenders finish their steal attempts | Expected: False | Actual: False
+✅ PASS: MovementPhase should offer only the two non-selected nutmeggable defenders as stealers | Expected: 2 | Actual: 2
+✅ PASS: MovementPhase should offer Gilbert and Stewart, but not the selected victim Paterson, as pre-nutmeg stealers | Expected: Gilbert, Stewart | Actual: Gilbert, Stewart
+✅ PASS: MovementPhase should offer Gilbert first based on current deterministic neighbor order once Paterson is reserved as the nutmeg victim | Expected: 6. Gilbert (PlayerToken) | Actual: 6. Gilbert (PlayerToken)
+
+✅ MovementPhase Multiple Nutmeggable Defenders Select Victim Offers Other Steals - TEST PASSED COMPLETELY 🎉
+
+✅ Test #26 passed.
+
+
+==== Starting Test #27 ====
 > Starting test scenario: MovementPhase Same Defender Steals Once Per Section Per Dribbler
 Pressing 2
 Pressing Space
@@ -1105,10 +1134,10 @@ Move Toothnail to (8, 7) and then (8, 6)
 
 ✅ MovementPhase Same Defender Steals Once Per Section Per Dribbler - TEST PASSED COMPLETELY 🎉
 
-✅ Test #26 passed.
+✅ Test #27 passed.
 
 
-==== Starting Test #27 ====
+==== Starting Test #28 ====
 > Starting test scenario: MovementPhase Successful Tackle Reposition Triggers Other Attacker Steal (steal fails)
 Pressing 2
 Pressing Space
@@ -1132,10 +1161,10 @@ Rigging Nazef's steal roll to 1 (failure)
 
 ✅ MovementPhase Successful Tackle Reposition Triggers Other Attacker Steal (failure) - TEST PASSED COMPLETELY 🎉
 
-✅ Test #27 passed.
+✅ Test #28 passed.
 
 
-==== Starting Test #28 ====
+==== Starting Test #29 ====
 > Starting test scenario: MovementPhase Successful Tackle Reposition Triggers Other Attacker Steal (steal succeeds)
 Pressing 2
 Pressing Space
@@ -1159,10 +1188,10 @@ Rigging Nazef's steal roll to 6 (success)
 
 ✅ MovementPhase Successful Tackle Reposition Triggers Other Attacker Steal (success) - TEST PASSED COMPLETELY 🎉
 
-✅ Test #28 passed.
+✅ Test #29 passed.
 
 
-==== Starting Test #29 ====
+==== Starting Test #30 ====
 ▶️ Starting test scenario: MovementPhase Check Tackle Loose Ball Interception
 Pressing 2
 Pressing Space
@@ -1209,10 +1238,10 @@ Pressing R - Interception Roll 6
 
 ✅ MovementPhase Check Tackle Loose Ball Interception - TEST PASSED COMPLETELY 🎉
 
-✅ Test #29 passed.
+✅ Test #30 passed.
 
 
-==== Starting Test #30 ====
+==== Starting Test #31 ====
 ▶️ Starting test scenario: MovementPhase Check Tackle Loose Ball Missed Interceptio - Hit Defender
 Pressing 2
 Pressing Space
@@ -1259,10 +1288,10 @@ Pressing R - Interception Roll Missed - Should move on McNulty
 
 ✅ MovementPhase Check Tackle Loose Ball Missed Interceptio - Hit Defender - TEST PASSED COMPLETELY 🎉
 
-✅ Test #30 passed.
+✅ Test #31 passed.
 
 
-==== Starting Test #31 ====
+==== Starting Test #32 ====
 ▶️ Starting test scenario: MovementPhase Check Tackle Loose Ball Missed Interceptio - Hit Attacker, new tackle loose ball, throw in
 Pressing 2
 Pressing Space
@@ -1334,10 +1363,10 @@ Pressing R - Distance Roll 6
 
 ✅ MovementPhase Check Tackle Loose Ball Missed Interceptio - Hit Attacker, new tackle loose ball, throw in - TEST PASSED COMPLETELY 🎉
 
-✅ Test #31 passed.
+✅ Test #32 passed.
 
 
-==== Starting Test #32 ====
+==== Starting Test #33 ====
 ▶️ Starting test scenario: MovementPhase Check Pick Up Ball, continue Dribble, tackle Loose, 2 missed interceptions
 Pressing 2
 Pressing Space
@@ -1398,10 +1427,10 @@ Pressing V - McNulty to Pick Up Ball
 
 ✅ MovementPhase Check Pick Up Ball, continue Dribble, tackle Loose, 2 missed interceptions - TEST PASSED COMPLETELY 🎉
 
-✅ Test #32 passed.
+✅ Test #33 passed.
 
 
-==== Starting Test #33 ====
+==== Starting Test #34 ====
 ▶️ Starting test scenario: MovementPhase Loose Ball, sent in the Penalty Box
 Pressing 2
 Pressing Space
@@ -1438,10 +1467,10 @@ Clicking (16, -1) Move GK for Box entrance
 
 ✅ MovementPhase Loose Ball, sent in the Penalty Box - TEST PASSED COMPLETELY 🎉
 
-✅ Test #33 passed.
+✅ Test #34 passed.
 
 
-==== Starting Test #34 ====
+==== Starting Test #35 ====
 ▶️ Starting test scenario: MovementPhase DribbleBox Tackle, LB, ball on attacker, no snapshot
 Pressing 2
 Pressing Space
@@ -1499,10 +1528,10 @@ Pressing X - Forfeit 2f2 MP
 
 ✅ MovementPhase DribbleBox Tackle, LB, ball on attacker, no snapshot - TEST PASSED COMPLETELY 🎉
 
-✅ Test #34 passed.
+✅ Test #35 passed.
 
 
-==== Starting Test #35 ====
+==== Starting Test #36 ====
 ▶️ Starting test scenario: MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL!
 Pressing 2
 Pressing Space
@@ -1573,10 +1602,10 @@ Pressing R - Roll shot with Toothnail!
 
 ✅ MovementPhase DribbleBox Tackle, LB, ball on attacker, snapshot GOAL! - TEST PASSED COMPLETELY 🎉
 
-✅ Test #35 passed.
+✅ Test #36 passed.
 
 
-==== Starting Test #36 ====
+==== Starting Test #37 ====
 ▶️ Starting test scenario: MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL!
 Pressing 2
 Pressing Space
@@ -1652,10 +1681,10 @@ Pressing S - Declare Shot with Toothnail
 
 ✅ MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL! - TEST PASSED COMPLETELY 🎉
 
-✅ Test #36 passed.
+✅ Test #37 passed.
 
 
-==== Starting Test #37 ====
+==== Starting Test #38 ====
 ▶️ Starting test scenario: MovementPhase Dribble IN GOAL!
 Pressing 2
 ✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
@@ -1761,10 +1790,10 @@ Clicking (19, 3) - Move Yaneva 3rd Pace IN GOAL
 
 ✅ MovementPhase Dribble IN GOAL! - TEST PASSED COMPLETELY 🎉
 
-✅ Test #37 passed.
+✅ Test #38 passed.
 
 
-==== Starting Test #38 ====
+==== Starting Test #39 ====
 ▶️ Starting test scenario: MovementPhase Reposition IN GOAL!
 Pressing 2
 ✅ PASS: Game is in KickOff Setup | Expected: KickOffSetup | Actual: KickOffSetup
@@ -1880,6 +1909,6 @@ Clicking (19, 2) - Reposition Yaneva IN GOAL
 
 ✅ MovementPhase Reposition IN GOAL! - TEST PASSED COMPLETELY 🎉
 
-✅ Test #38 passed.
+✅ Test #39 passed.
 
 🎉 ALL TESTS PASSED SUCCESSFULLY!

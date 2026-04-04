@@ -79,20 +79,36 @@ public class MovementPhaseManager : MonoBehaviour
     private bool needsReposition = false;
     private bool isSuccessfulTackleRepositionPending = false;
     private bool isResolvingPostSuccessfulTackleSteals = false;
+    private bool isResolvingPreNutmegSteals = false;
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
+    private readonly Dictionary<HexCell, bool> movementThreatByHex = new();
+    private readonly HashSet<HexCell> heldReachOverlayHexes = new();
+    private HexCell hoveredMovementHex;
+    private bool showAttackerReachOverlay;
+    private bool showDefenderReachOverlay;
+    private int lastMovementHighlightRange;
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
 
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnHover += OnHoverReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
 
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+        hoveredMovementHex = null;
+        ClearHeldReachOverlay();
+    }
+
+    private void Update()
+    {
+        RefreshHeldReachOverlay();
     }
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
@@ -185,6 +201,28 @@ public class MovementPhaseManager : MonoBehaviour
             HandleTokenSelection(token);  // Select the token first
             return;
         }
+    }
+
+    private void OnHoverReceived(PlayerToken token, HexCell hex)
+    {
+        if (!ShouldShowEasyMovementThreats())
+        {
+            if (hoveredMovementHex != null)
+            {
+                hoveredMovementHex = null;
+                RefreshMovementDestinationHighlights();
+            }
+
+            return;
+        }
+
+        if (hoveredMovementHex == hex)
+        {
+            return;
+        }
+
+        hoveredMovementHex = hex;
+        RefreshMovementDestinationHighlights();
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -439,7 +477,7 @@ public class MovementPhaseManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         Debug.Log($"Selected {token.name} to nutmeg. Proceeding with nutmeg.");
         lookingForNutmegVictim = false;
-        StartNutmegProcess();
+        BeginNutmegResolution();
     }
    
    public void ActivateMovementPhase()
@@ -629,6 +667,8 @@ public class MovementPhaseManager : MonoBehaviour
     // This method will highlight valid movement hexes for the selected token
     public void HighlightValidMovementHexes(PlayerToken token, int movementRange, bool isCalledDuringMovement = true)
     {
+        lastMovementHighlightRange = movementRange;
+        movementThreatByHex.Clear();
         HexCell currentHex = token.GetCurrentHex();  // Get the hex the token is currently on
         if (currentHex == null)
         {
@@ -640,21 +680,9 @@ public class MovementPhaseManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
 
         // Get valid movement hexes and their distance/ZOI data
-        var (reachableHexes, distanceData) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
+        var (reachableHexes, distanceData) = GetReachableMovementData(token, movementRange);
         ballHex = ball.GetCurrentHex();
-        // Check if ball hex is reachable
-        if (reachableHexes.Contains(ballHex) && !token.isAttacker)
-        {
-            Debug.Log("Ball is reachable, recalculating Reachable without using ballHex");
-            // Temporarily mark the ball hex as occupied and recalculate
-            ballHex.isDefenseOccupied = true;
-            var (reachableWithoutBall, _) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
-            ballHex.isDefenseOccupied = false;
-
-            // Add the ball hex back to reachable hexes
-            reachableWithoutBall.Add(ballHex);
-            reachableHexes = reachableWithoutBall;
-        }
+        bool showThreatHints = ShouldShowEasyMovementThreats() && token == selectedToken;
 
         foreach (HexCell hex in reachableHexes)
         {
@@ -668,7 +696,12 @@ public class MovementPhaseManager : MonoBehaviour
                 // Highlight the hex based on ZOI entry and range
                 if (hexDistance <= movementRange && hex.isInGoal == 0)
                 {
-                    hex.HighlightHex("PaceAvailable");  // Normal color for reachable hexes
+                    bool triggersStealAttempt = showThreatHints && DoesMovementHexTriggerStealAttempt(hex);
+                    movementThreatByHex[hex] = triggersStealAttempt;
+                    string highlightReason = triggersStealAttempt
+                        ? hoveredMovementHex == hex ? "PaceRiskHover" : "PaceRisk"
+                        : "PaceAvailable";
+                    hex.HighlightHex(highlightReason);
                 }
                 if (
                     !isMovementPhaseDef
@@ -686,6 +719,68 @@ public class MovementPhaseManager : MonoBehaviour
         isBallPickable = reachableHexes.Contains(ballHex) && !token.IsDribbler && isCalledDuringMovement;
         // Slight change as it seems that clicking on the ballHex while moving for FTP causes an error
         // isBallPickable = reachableHexes.Contains(ballHex) && !selectedToken.IsDribbler;
+    }
+
+    private (List<HexCell> reachableHexes, Dictionary<HexCell, (int distance, bool enteredZOI)> distanceData) GetReachableMovementData(PlayerToken token, int movementRange)
+    {
+        HexCell currentHex = token.GetCurrentHex();
+        var (reachableHexes, distanceData) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
+        HexCell currentBallHex = ball.GetCurrentHex();
+
+        if (currentBallHex != null && reachableHexes.Contains(currentBallHex) && !token.isAttacker)
+        {
+            Debug.Log("Ball is reachable, recalculating Reachable without using ballHex");
+            currentBallHex.isDefenseOccupied = true;
+            var (reachableWithoutBall, distanceWithoutBall) = HexGridUtils.GetReachableHexes(hexGrid, currentHex, movementRange);
+            currentBallHex.isDefenseOccupied = false;
+
+            if (!reachableWithoutBall.Contains(currentBallHex))
+            {
+                reachableWithoutBall.Add(currentBallHex);
+            }
+
+            if (!distanceWithoutBall.ContainsKey(currentBallHex) && distanceData.TryGetValue(currentBallHex, out (int distance, bool enteredZOI) ballDistance))
+            {
+                distanceWithoutBall[currentBallHex] = ballDistance;
+            }
+
+            reachableHexes = reachableWithoutBall;
+            distanceData = distanceWithoutBall;
+        }
+
+        return (reachableHexes, distanceData);
+    }
+
+    private void RefreshMovementDestinationHighlights()
+    {
+        if (!isActivated || !isAwaitingHexDestination || selectedToken == null || lastMovementHighlightRange <= 0)
+        {
+            return;
+        }
+
+        HighlightValidMovementHexes(selectedToken, lastMovementHighlightRange);
+    }
+
+    private bool ShouldShowEasyMovementThreats()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level == 1
+            && isActivated
+            && isAwaitingHexDestination
+            && selectedToken != null
+            && selectedToken.IsDribbler
+            && !isWaitingForInterceptionDiceRoll
+            && !isWaitingForReposition;
+    }
+
+    private bool DoesMovementHexTriggerStealAttempt(HexCell targetHex)
+    {
+        if (targetHex == null || targetHex == ballHex)
+        {
+            return false;
+        }
+
+        return CollectEligibleDefendersForInterception(targetHex, false).Count > 0;
     }
 
     // Check if the clicked hex is a valid one
@@ -1302,9 +1397,13 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
     
-    private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
+    private List<PlayerToken> CollectEligibleDefendersForInterception(HexCell targetHex, bool logResults)
     {
-        Debug.Log("Calculating Eligible Defenders for Interception");
+        if (logResults)
+        {
+            Debug.Log("Calculating Eligible Defenders for Interception");
+        }
+
         List<PlayerToken> eligibleDefs = new List<PlayerToken>();
         HexCell[] neighbors = targetHex.GetNeighbors(hexGrid);
         foreach (HexCell neighbor in neighbors)
@@ -1326,8 +1425,13 @@ public class MovementPhaseManager : MonoBehaviour
                 eligibleDefs.Add(token);
             }
         }
-        if (eligibleDefs.Count() > 0) {Debug.Log($"Interception List: {string.Join(", ", eligibleDefs.Select(d => d.name))}");}
+        if (logResults && eligibleDefs.Count() > 0) {Debug.Log($"Interception List: {string.Join(", ", eligibleDefs.Select(d => d.name))}");}
         return eligibleDefs;
+    }
+
+    private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
+    {
+        return CollectEligibleDefendersForInterception(targetHex, true);
     }
 
     private void StartBallInterceptionDiceRollSequence(HexCell targetHex, List<PlayerToken> eligibleDefenders)
@@ -1369,6 +1473,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log("Defender committed a foul.");
                 eligibleDefenders.Remove(selectedDefender);
                 defendersTriedToIntercept.Add(selectedDefender);
+                isResolvingPreNutmegSteals = false;
                 needsReposition = false;
                 yield return StartCoroutine(HandleFoulProcess(selectedToken, selectedDefender));
             }
@@ -1377,6 +1482,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 // Defender successfully intercepts the ball
                 Debug.Log($"Ball intercepted by {selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates}!");
+                isResolvingPreNutmegSteals = false;
                 MatchManager.Instance.SetLastToken(selectedDefender);
                 StartCoroutine(HandleBallInterception(selectedDefender.GetCurrentHex()));
                 ResetBallInterceptionDiceRolls();
@@ -1397,6 +1503,12 @@ public class MovementPhaseManager : MonoBehaviour
                 {
                     Debug.Log("No more post-tackle steal attempts remain. Completing successful tackle flow.");
                     FinalizeSuccessfulTackleOutcome();
+                }
+                else if (isResolvingPreNutmegSteals)
+                {
+                    Debug.Log("No more pre-nutmeg steal attempts remain. Starting the nutmeg challenge.");
+                    ResetBallInterceptionDiceRolls();
+                    StartNutmegProcess();
                 }
                 else if (isDribblerRunning)
                 {
@@ -1850,6 +1962,7 @@ public class MovementPhaseManager : MonoBehaviour
         needsReposition = false;
         isSuccessfulTackleRepositionPending = false;
         isResolvingPostSuccessfulTackleSteals = false;
+        isResolvingPreNutmegSteals = false;
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Movement phase has been reset.");
     }
@@ -1860,6 +1973,7 @@ public class MovementPhaseManager : MonoBehaviour
         selectedDefender = null;
         eligibleDefenders.Clear();
         isWaitingForInterceptionDiceRoll = false;
+        isResolvingPreNutmegSteals = false;
     }
 
     public void EndMovementPhase(bool triggerF3 = true)
@@ -1983,7 +2097,7 @@ public class MovementPhaseManager : MonoBehaviour
             nutmegVictim = potentialVictim;
             // hexGrid.ClearHighlightedHexes(); // In case we highlight Nutmeggable Defenders.
             // TODO: Highlight Nutmeggable Defenders Hexes
-            StartNutmegProcess();
+            BeginNutmegResolution();
         }
     }
     
@@ -2003,6 +2117,47 @@ public class MovementPhaseManager : MonoBehaviour
         isNutmegInProgress = true;
         isWaitingForTackleRoll = true;
         StartTackleDiceRollSequence();
+    }
+
+    private void BeginNutmegResolution()
+    {
+        if (TryStartPreNutmegStealSequence())
+        {
+            return;
+        }
+
+        StartNutmegProcess();
+    }
+
+    private bool TryStartPreNutmegStealSequence()
+    {
+        if (nutmegVictim == null)
+        {
+            Debug.LogError("Cannot start pre-nutmeg steals because no nutmeg victim is set.");
+            return false;
+        }
+
+        List<PlayerToken> preNutmegStealers = nutmeggableDefenders
+            .Where(defender => defender != null && defender != nutmegVictim)
+            .ToList();
+
+        if (preNutmegStealers.Count == 0)
+        {
+            return false;
+        }
+
+        HexCell currentBallHex = ball.GetCurrentHex();
+        if (currentBallHex == null)
+        {
+            Debug.LogError("Cannot start pre-nutmeg steals because the ball hex is null.");
+            return false;
+        }
+
+        eligibleDefenders = preNutmegStealers;
+        isResolvingPreNutmegSteals = true;
+        Debug.Log($"Selected nutmeg victim {nutmegVictim.name}. Offering pre-nutmeg steals from: {string.Join(", ", eligibleDefenders.Select(defender => defender.name))}");
+        StartBallInterceptionDiceRollSequence(currentBallHex, eligibleDefenders);
+        return true;
     }
     
     public string GetDebugStatus()
@@ -2084,6 +2239,139 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    private void RefreshHeldReachOverlay()
+    {
+        bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand);
+        bool shiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        bool lHeld = Input.GetKey(KeyCode.L);
+
+        bool canShowOverlay = CanShowHeldReachOverlay();
+        bool nextShowAttack = canShowOverlay && ctrlHeld && lHeld && !shiftHeld;
+        bool nextShowDefense = canShowOverlay && ctrlHeld && shiftHeld && lHeld;
+
+        if (showAttackerReachOverlay == nextShowAttack && showDefenderReachOverlay == nextShowDefense)
+        {
+            return;
+        }
+
+        showAttackerReachOverlay = nextShowAttack;
+        showDefenderReachOverlay = nextShowDefense;
+        ApplyHeldReachOverlay();
+    }
+
+    private void ApplyHeldReachOverlay()
+    {
+        ClearHeldReachOverlay();
+
+        if (!showAttackerReachOverlay && !showDefenderReachOverlay)
+        {
+            return;
+        }
+
+        IEnumerable<PlayerToken> tokens = showAttackerReachOverlay
+            ? GetOverlayAttackers()
+            : hexGrid.GetDefenders();
+        string overlayReason = showAttackerReachOverlay ? "ReachOverlayAttacker" : "ReachOverlayDefender";
+
+        foreach (PlayerToken token in tokens)
+        {
+            if (token == null || token.GetCurrentHex() == null || token.isSentOff)
+            {
+                continue;
+            }
+
+            int movementRange = GetOverlayMovementRange(token);
+            if (movementRange <= 0)
+            {
+                continue;
+            }
+
+            (List<HexCell> reachableHexes, _) = GetReachableMovementData(token, movementRange);
+            foreach (HexCell hex in reachableHexes)
+            {
+                if (hex == null || hex.isAttackOccupied || hex.isDefenseOccupied)
+                {
+                    continue;
+                }
+
+                if (heldReachOverlayHexes.Add(hex))
+                {
+                    hex.HighlightHex(overlayReason);
+                }
+            }
+        }
+    }
+
+    private void ClearHeldReachOverlay()
+    {
+        if (hexGrid == null)
+        {
+            heldReachOverlayHexes.Clear();
+            return;
+        }
+
+        foreach (HexCell hex in heldReachOverlayHexes)
+        {
+            if (hex != null)
+            {
+                hex.ResetHighlight();
+            }
+        }
+
+        heldReachOverlayHexes.Clear();
+
+        RestoreHighlightsAfterHeldOverlay();
+    }
+
+    private bool CanShowHeldReachOverlay()
+    {
+        return isActivated
+            && MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level != 3
+            && !isWaitingForInterceptionDiceRoll
+            && !isWaitingForReposition
+            && !isWaitingForTackleRoll
+            && !isWaitingForNutmegDecision
+            && !isWaitingForNutmegDecisionWithoutMoving
+            && !lookingForNutmegVictim
+            && !isPlayerMoving;
+    }
+
+    private void RestoreHighlightsAfterHeldOverlay()
+    {
+        if (isAwaitingHexDestination && selectedToken != null && lastMovementHighlightRange > 0)
+        {
+            RefreshMovementDestinationHighlights();
+        }
+    }
+
+    private IEnumerable<PlayerToken> GetOverlayAttackers()
+    {
+        foreach (HexCell attackerHex in hexGrid.GetAttackerHexes())
+        {
+            PlayerToken token = attackerHex?.GetOccupyingToken();
+            if (token != null)
+            {
+                yield return token;
+            }
+        }
+    }
+
+    private int GetOverlayMovementRange(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return 0;
+        }
+
+        if (isMovementPhase2f2 && token.isAttacker)
+        {
+            return movementRange2f2;
+        }
+
+        return Mathf.Max(1, token.pace);
     }
 
     private string GetTokenSelectionInstructions()

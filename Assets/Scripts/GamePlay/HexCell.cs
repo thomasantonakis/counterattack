@@ -192,6 +192,18 @@ public class HexCell : MonoBehaviour
             case "PaceAvailable":
                 colorToApply = Color.yellow;
                 break;
+            case "PaceRisk":
+                colorToApply = new Color(1f, 0.72f, 0.18f, 1f);
+                break;
+            case "PaceRiskHover":
+                colorToApply = new Color(1f, 0.48f, 0.05f, 1f);
+                break;
+            case "ReachOverlayAttacker":
+                colorToApply = new Color(0.18f, 0.83f, 1f, 1f);
+                break;
+            case "ReachOverlayDefender":
+                colorToApply = new Color(1f, 0.55f, 0.12f, 1f);
+                break;
             case "DefenderZOI":
                 colorToApply = Color.yellow * 0.5f;
                 break;
