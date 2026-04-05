@@ -12,7 +12,7 @@
 |      | PASSING        |      |
 | 0 | Asissts   | 0  |
 | 0 / 0  | Ground (Att./Made)    | 0 / 0  |
-| 0 / 0 / 0| Aerial (Att./Trg./Made)   | 0 / 0 / 0|
+| 0 / 0 / 0| Aerial(Att./Trg./Made)   | 0 / 0 / 0|
 |      | Game Play        |      |
 | paces     | Distance Covered |  paces    |
 | 50%  | Possession  | 50%  |
@@ -22,7 +22,7 @@
 |      | DISCIPLINE        |      |
 | 0 / 0  | Yellow / Red Cards  | 0 / 0  |
 | 0 / 0  | Injuries / Subs Used   | 0 / 0  |
-|      | Stats from Opta |      |
+|      | OPTA STATS |      |
 | 0.00 / 0 | xRecoveries / Made        | 0.00 / 0 |
 | 0.00 / 0 | xDribbles / Made      | 0.00 / 0 |
 | 0.00 / 0 | xTackles / Made       | 0.00 / 0 |
