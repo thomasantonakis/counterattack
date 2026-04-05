@@ -4,14 +4,15 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 15f;
     [SerializeField] private float zoomSpeed = 15f;
-    [SerializeField] private float dragSpeed = 30f;
     [SerializeField] private float rotationSpeed = 1000f;
     [SerializeField] private float minOrbitDistance = 12f;
     [SerializeField] private float maxOrbitDistance = 90f;
     [SerializeField] private float minPitch = 20f;
     [SerializeField] private float maxPitch = 90f;
+    [SerializeField] private float screenAxisSamplePixels = 96f;
     public GameInputManager gameInputManager;
-    private Vector3 dragOrigin;
+    private Vector3 dragAnchorWorld;
+    private bool hasDragAnchor;
     private bool isRotating = false;
     // Arrays to store position and rotation for 4 camera presets
     private Vector3[] presetPositions = new Vector3[4];
@@ -22,11 +23,14 @@ public class CameraController : MonoBehaviour
     private float orbitPitch;
     private float orbitDistance;
     private HexGrid hexGrid;
+    private bool hasPitchBounds;
+    private Bounds pitchBounds;
 
     void Start()
     {
-        hexGrid = FindObjectOfType<HexGrid>();
+        hexGrid = FindFirstObjectByType<HexGrid>();
         orbitPivot = GetDefaultOrbitPivot();
+        EnsurePitchBounds();
 
         // Initialize preset 1 as the starting position (tabletop view)
         presetPositions[0] = new Vector3(0f, 45f, -45f);
@@ -101,10 +105,11 @@ public class CameraController : MonoBehaviour
     void SetCameraToPreset(int presetIndex)
     {
         if (presetIndex < 1 || presetIndex > 4) return;  // Safety check
-        orbitPivot = presetPivots[presetIndex - 1];
+        orbitPivot = ClampOrbitPivotToPitch(presetPivots[presetIndex - 1]);
         transform.position = presetPositions[presetIndex - 1];
         transform.rotation = presetRotations[presetIndex - 1];
         SyncOrbitStateFromTransform();
+        ApplyOrbitTransform();
     }
 
     void SaveCurrentCameraToPreset(int presetIndex)
@@ -119,52 +124,26 @@ public class CameraController : MonoBehaviour
     void HandleMovement()
     {
         Vector3 moveDirection = Vector3.zero;
-        // Check if the camera is in vertical view (looking straight down)
-        bool isVerticalView = Mathf.Approximately(transform.rotation.eulerAngles.x, 90f);
 
-        if (isVerticalView)
-        {
-            // Handle movement differently for vertical view (top-down camera)
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                moveDirection += new Vector3(0, 0, moveSpeed * Time.deltaTime);  // Move "up" on the Z-axis
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                moveDirection -= new Vector3(0, 0, moveSpeed * Time.deltaTime);  // Move "down" on the Z-axis
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveDirection -= new Vector3(moveSpeed * Time.deltaTime, 0, 0);  // Move "left" on the X-axis
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                moveDirection += new Vector3(moveSpeed * Time.deltaTime, 0, 0);  // Move "right" on the X-axis
-            }
-        }
-        else
-        {
-            // For other camera views, use forward and right directions on the XZ plane
-            Vector3 forward = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
-            Vector3 right = new Vector3(transform.right.x, 0, transform.right.z).normalized;
+        GetPlanarNavigationAxes(out Vector3 planarRight, out Vector3 planarUp);
 
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                moveDirection += forward * moveSpeed * Time.deltaTime;  // Move forward
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                moveDirection -= forward * moveSpeed * Time.deltaTime;  // Move backward
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveDirection -= right * moveSpeed * Time.deltaTime;  // Move left
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                moveDirection += right * moveSpeed * Time.deltaTime;  // Move right
-            }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            moveDirection += planarUp * moveSpeed * Time.deltaTime;
         }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            moveDirection -= planarUp * moveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveDirection -= planarRight * moveSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            moveDirection += planarRight * moveSpeed * Time.deltaTime;
+        }
+
         if (moveDirection != Vector3.zero)
         {
             PanCamera(moveDirection);
@@ -193,25 +172,32 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !isRotating)
         {
-            dragOrigin = Input.mousePosition;
+            hasDragAnchor = TryGetPitchPlanePoint(Input.mousePosition, out dragAnchorWorld);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            hasDragAnchor = false;
         }
 
         // Pan only after GameInputManager has classified the left mouse as a drag,
         // so simple clicks on tokens/hexes do not move the camera.
         if (Input.GetMouseButton(0) && !isRotating && gameInputManager != null && gameInputManager.isDragging)
         {
-            Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
-            Vector3 right = new Vector3(transform.right.x, 0f, transform.right.z).normalized;
-            Vector3 forward = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-            if (forward.sqrMagnitude < 0.0001f)
+            if (!hasDragAnchor)
             {
-                forward = Vector3.forward;
+                hasDragAnchor = TryGetPitchPlanePoint(Input.mousePosition, out dragAnchorWorld);
             }
 
-            Vector3 move = (-right * pos.x * dragSpeed) + (-forward * pos.y * dragSpeed);
-
-            PanCamera(move);
-            dragOrigin = Input.mousePosition;
+            if (hasDragAnchor && TryGetPitchPlanePoint(Input.mousePosition, out Vector3 currentMouseWorld))
+            {
+                Vector3 worldDelta = dragAnchorWorld - currentMouseWorld;
+                worldDelta.y = 0f;
+                if (worldDelta.sqrMagnitude > 0.000001f)
+                {
+                    PanCamera(worldDelta);
+                }
+            }
         }
     }
 
@@ -236,8 +222,8 @@ public class CameraController : MonoBehaviour
 
     private void PanCamera(Vector3 worldDelta)
     {
-        orbitPivot += worldDelta;
-        transform.position += worldDelta;
+        orbitPivot = ClampOrbitPivotToPitch(orbitPivot + worldDelta);
+        ApplyOrbitTransform();
     }
 
     private void SyncOrbitStateFromTransform()
@@ -266,7 +252,11 @@ public class CameraController : MonoBehaviour
             Mathf.Sin(pitchRadians) * orbitDistance,
             -Mathf.Cos(yawRadians) * horizontalDistance);
         transform.position = orbitPivot + offset;
-        transform.rotation = Quaternion.LookRotation((orbitPivot - transform.position).normalized, Vector3.up);
+        Vector3 lookDirection = (orbitPivot - transform.position).normalized;
+        Vector3 upReference = Mathf.Abs(Vector3.Dot(lookDirection, Vector3.up)) > 0.999f
+            ? Quaternion.Euler(0f, orbitYaw, 0f) * Vector3.forward
+            : Vector3.up;
+        transform.rotation = Quaternion.LookRotation(lookDirection, upReference);
     }
 
     private Vector3 GetDefaultOrbitPivot()
@@ -291,5 +281,129 @@ public class CameraController : MonoBehaviour
         }
 
         return defaultPivot;
+    }
+
+    private void GetPlanarNavigationAxes(out Vector3 planarRight, out Vector3 planarUp)
+    {
+        if (TryGetScreenPlanarAxes(out planarRight, out planarUp))
+        {
+            return;
+        }
+
+        planarRight = Vector3.right;
+        planarUp = Vector3.forward;
+    }
+
+    private bool TryGetScreenPlanarAxes(out Vector3 planarRight, out Vector3 planarUp)
+    {
+        planarRight = Vector3.right;
+        planarUp = Vector3.forward;
+
+        Camera activeCamera = Camera.main;
+        if (activeCamera == null)
+        {
+            return false;
+        }
+
+        Vector2 screenCenter = new Vector2(activeCamera.pixelWidth * 0.5f, activeCamera.pixelHeight * 0.5f);
+        if (!TryGetPitchPlanePoint(screenCenter, out Vector3 centerPoint)
+            || !TryGetPitchPlanePoint(screenCenter + (Vector2.right * screenAxisSamplePixels), out Vector3 rightPoint)
+            || !TryGetPitchPlanePoint(screenCenter + (Vector2.up * screenAxisSamplePixels), out Vector3 upPoint))
+        {
+            return false;
+        }
+
+        planarRight = rightPoint - centerPoint;
+        planarRight.y = 0f;
+        planarUp = upPoint - centerPoint;
+        planarUp.y = 0f;
+
+        if (planarRight.sqrMagnitude < 0.000001f || planarUp.sqrMagnitude < 0.000001f)
+        {
+            return false;
+        }
+
+        planarRight.Normalize();
+        planarUp.Normalize();
+        return true;
+    }
+
+    private bool TryGetPitchPlanePoint(Vector2 screenPoint, out Vector3 worldPoint)
+    {
+        Camera activeCamera = Camera.main;
+        if (activeCamera == null)
+        {
+            worldPoint = Vector3.zero;
+            return false;
+        }
+
+        float planeHeight = hexGrid != null ? hexGrid.transform.position.y : 0f;
+        Plane pitchPlane = new Plane(Vector3.up, new Vector3(0f, planeHeight, 0f));
+        Ray ray = activeCamera.ScreenPointToRay(screenPoint);
+        if (pitchPlane.Raycast(ray, out float enterDistance))
+        {
+            worldPoint = ray.GetPoint(enterDistance);
+            return true;
+        }
+
+        worldPoint = Vector3.zero;
+        return false;
+    }
+
+    private Vector3 ClampOrbitPivotToPitch(Vector3 pivot)
+    {
+        if (!EnsurePitchBounds())
+        {
+            return pivot;
+        }
+
+        pivot.x = Mathf.Clamp(pivot.x, pitchBounds.min.x, pitchBounds.max.x);
+        pivot.z = Mathf.Clamp(pivot.z, pitchBounds.min.z, pitchBounds.max.z);
+        return pivot;
+    }
+
+    private bool EnsurePitchBounds()
+    {
+        if (hasPitchBounds)
+        {
+            return true;
+        }
+
+        if (hexGrid == null || hexGrid.cells == null)
+        {
+            return false;
+        }
+
+        bool foundAnyCell = false;
+        Vector3 min = new Vector3(float.MaxValue, 0f, float.MaxValue);
+        Vector3 max = new Vector3(float.MinValue, 0f, float.MinValue);
+
+        foreach (HexCell cell in hexGrid.cells)
+        {
+            if (cell == null || (cell.isOutOfBounds && cell.isInGoal == 0))
+            {
+                continue;
+            }
+
+            foreach (Vector3 corner in cell.GetHexCorners())
+            {
+                foundAnyCell = true;
+                min.x = Mathf.Min(min.x, corner.x);
+                min.z = Mathf.Min(min.z, corner.z);
+                max.x = Mathf.Max(max.x, corner.x);
+                max.z = Mathf.Max(max.z, corner.z);
+            }
+        }
+
+        if (!foundAnyCell)
+        {
+            return false;
+        }
+
+        Vector3 size = new Vector3(max.x - min.x, 0.1f, max.z - min.z);
+        Vector3 center = new Vector3((min.x + max.x) * 0.5f, hexGrid.transform.position.y, (min.z + max.z) * 0.5f);
+        pitchBounds = new Bounds(center, size);
+        hasPitchBounds = true;
+        return true;
     }
 }
