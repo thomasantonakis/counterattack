@@ -141,4 +141,14 @@ public class GoalKeeperManager : MonoBehaviour
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
     }
+
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (!isActivated || MatchManager.Instance == null)
+        {
+            return null;
+        }
+
+        return MatchManager.Instance.teamInAttack != MatchManager.TeamInAttack.Home;
+    }
 }

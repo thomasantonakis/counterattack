@@ -5,6 +5,13 @@ using System.Collections.Generic;
 
 public class GameDebugMonitor : MonoBehaviour
 {
+    private enum InstructionSide
+    {
+        Neutral,
+        Home,
+        Away,
+    }
+
     public static GameDebugMonitor Instance;
     public GameInputManager gameInputManager;
     public GroundBallManager groundBallManager;
@@ -31,6 +38,7 @@ public class GameDebugMonitor : MonoBehaviour
     public bool isVisible = true;
     private StringBuilder builder = new();
     private StringBuilder instruction = new();
+    private static readonly Color NeutralInstructionColor = Color.white;
 
     private void OnEnable()
     {
@@ -150,27 +158,79 @@ public class GameDebugMonitor : MonoBehaviour
         instruction.Clear();
 
         List<string> activeInstructions = new List<string>();
+        InstructionSide activeInstructionSide = InstructionSide.Neutral;
 
-        void AddIfNotEmpty(string s)
+        void AddIfNotEmpty(string s, InstructionSide side)
         {
             if (!string.IsNullOrWhiteSpace(s))
+            {
+                if (activeInstructionSide == InstructionSide.Neutral && side != InstructionSide.Neutral)
+                {
+                    activeInstructionSide = side;
+                }
+
                 activeInstructions.Add(s);
+            }
         }
 
-        AddIfNotEmpty(finalThirdManager.GetInstructions());
-        AddIfNotEmpty(movementPhaseManager.GetInstructions());
-        AddIfNotEmpty(goalKeeperManager.GetInstructions());
-        AddIfNotEmpty(looseBallManager.GetInstructions());
-        AddIfNotEmpty(shotManager.GetInstructions());
-        AddIfNotEmpty(groundBallManager.GetInstructions());
-        AddIfNotEmpty(firstTimePassManager.GetInstructions());
-        AddIfNotEmpty(freeKickManager.GetInstructions());
-        AddIfNotEmpty(highPassManager.GetInstructions());
-        AddIfNotEmpty(longBallManager.GetInstructions());
-        AddIfNotEmpty(headerManager.GetInstructions());
+        AddIfNotEmpty(finalThirdManager != null ? finalThirdManager.GetInstructions() : string.Empty, ResolveInstructionSide(finalThirdManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(movementPhaseManager != null ? movementPhaseManager.GetInstructions() : string.Empty, ResolveInstructionSide(movementPhaseManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(goalKeeperManager != null ? goalKeeperManager.GetInstructions() : string.Empty, ResolveInstructionSide(goalKeeperManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(looseBallManager != null ? looseBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(looseBallManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(shotManager != null ? shotManager.GetInstructions() : string.Empty, ResolveInstructionSide(shotManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(groundBallManager != null ? groundBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(groundBallManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(firstTimePassManager != null ? firstTimePassManager.GetInstructions() : string.Empty, ResolveInstructionSide(firstTimePassManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(freeKickManager != null ? freeKickManager.GetInstructions() : string.Empty, ResolveInstructionSide(freeKickManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(highPassManager != null ? highPassManager.GetInstructions() : string.Empty, ResolveInstructionSide(highPassManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(longBallManager != null ? longBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(longBallManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(headerManager != null ? headerManager.GetInstructions() : string.Empty, ResolveInstructionSide(headerManager?.IsInstructionExpectingHomeTeam()));
 
         instruction.Append(string.Join(" / ", activeInstructions));
-        instructionText.text = instruction.ToString();
+        if (instructionText != null)
+        {
+            instructionText.text = instruction.ToString();
+            instructionText.color = ResolveInstructionColor(activeInstructionSide);
+        }
     }
 
+    private static InstructionSide ResolveInstructionSide(bool? expectsHomeTeam)
+    {
+        if (!expectsHomeTeam.HasValue)
+        {
+            return InstructionSide.Neutral;
+        }
+
+        return expectsHomeTeam.Value ? InstructionSide.Home : InstructionSide.Away;
+    }
+
+    private static Color ResolveInstructionColor(InstructionSide side)
+    {
+        if (MatchManager.Instance?.gameData?.gameSettings == null)
+        {
+            return NeutralInstructionColor;
+        }
+
+        return side switch
+        {
+            InstructionSide.Home => ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.homeKit, NeutralInstructionColor),
+            InstructionSide.Away => ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.awayKit, NeutralInstructionColor),
+            _ => NeutralInstructionColor,
+        };
+    }
+
+    private static Color ResolveKitBodyColor(string kitIdOrAlias, Color fallbackColor)
+    {
+        if (string.IsNullOrWhiteSpace(kitIdOrAlias))
+        {
+            return fallbackColor;
+        }
+
+        TokenKitPreset preset = TokenKitCatalog.GetPresetByIdOrAlias(kitIdOrAlias);
+        if (preset?.Style == null)
+        {
+            return fallbackColor;
+        }
+
+        return preset.Style.bodyColor;
+    }
 }

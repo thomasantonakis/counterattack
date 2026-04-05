@@ -1293,4 +1293,57 @@ public class HeaderManager : MonoBehaviour
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
+
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (!isActivated || MatchManager.Instance == null)
+        {
+            return null;
+        }
+
+        bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+
+        if (isWaitingForAttackerSelection)
+        {
+            return attackingTeamIsHome;
+        }
+
+        if (isWaitingForDefenderSelection)
+        {
+            return !attackingTeamIsHome;
+        }
+
+        if (isWaitingForHeaderRoll && tokenRolling != null)
+        {
+            return tokenRolling.isHomeTeam;
+        }
+
+        if (isWaitingForInterceptionRoll && interceptingDefender != null)
+        {
+            return interceptingDefender.isHomeTeam;
+        }
+
+        if ((isWaitingForHeaderTargetSelection
+            || iswaitingForChallengeWinnerSelection
+            || isWaitingForControlOrHeaderDecision
+            || isWaitingForControlOrHeaderDecisionDef
+            || isWaitingForControlRoll
+            || isWaitingForHeaderAtGoal)
+            && challengeWinner != null)
+        {
+            return challengeWinner.isHomeTeam;
+        }
+
+        if (isWaitingForControlOrHeaderDecisionDef || defenseWonFreeHeader || defenseBallControl)
+        {
+            return !attackingTeamIsHome;
+        }
+
+        if (isWaitingForControlOrHeaderDecision || attackFreeHeader || attackControlBall)
+        {
+            return attackingTeamIsHome;
+        }
+
+        return null;
+    }
 }

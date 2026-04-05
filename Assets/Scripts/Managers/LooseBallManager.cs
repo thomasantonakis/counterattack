@@ -518,4 +518,24 @@ public class LooseBallManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (!isActivated)
+        {
+            return null;
+        }
+
+        if (isWaitingForInterceptionRoll && potentialInterceptor != null)
+        {
+            return potentialInterceptor.isHomeTeam;
+        }
+
+        if ((isWaitingForDirectionRoll || isWaitingForDistanceRoll) && causingDeflection != null)
+        {
+            return causingDeflection.isHomeTeam;
+        }
+
+        return null;
+    }
+
 }

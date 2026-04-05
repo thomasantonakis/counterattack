@@ -446,4 +446,20 @@ public class FinalThirdManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (!isActivated || MatchManager.Instance == null)
+        {
+            return null;
+        }
+
+        bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+        return currentTeamMoving switch
+        {
+            "attack" => attackingTeamIsHome,
+            "defense" => !attackingTeamIsHome,
+            _ => isWaitingForWhatToDo ? !attackingTeamIsHome : null,
+        };
+    }
+
 }

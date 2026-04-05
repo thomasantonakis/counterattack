@@ -838,4 +838,36 @@ public class FreeKickManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (!isActivated || MatchManager.Instance == null)
+        {
+            return null;
+        }
+
+        bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+
+        if (isWaitingForKickerSelection || isWaitingForFinalKickerSelection || isWaitingForExecution)
+        {
+            return attackingTeamIsHome;
+        }
+
+        if (isWaitingForSetupPhase)
+        {
+            switch (MatchManager.Instance.currentState)
+            {
+                case MatchManager.GameState.FreeKickDefGK1:
+                case MatchManager.GameState.FreeKickDefGK2:
+                case MatchManager.GameState.FreeKickDef1:
+                case MatchManager.GameState.FreeKickDef2:
+                case MatchManager.GameState.FreeKickDef3:
+                    return !attackingTeamIsHome;
+                default:
+                    return attackingTeamIsHome;
+            }
+        }
+
+        return attackingTeamIsHome;
+    }
+
 }

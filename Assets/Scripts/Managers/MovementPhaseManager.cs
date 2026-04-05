@@ -2283,6 +2283,61 @@ public class MovementPhaseManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (MatchManager.Instance == null || (!isActivated && !isAvailable))
+        {
+            return null;
+        }
+
+        bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+
+        if (!isActivated)
+        {
+            return attackingTeamIsHome;
+        }
+
+        if (isWaitingForReposition && repositionWinner != null)
+        {
+            return repositionWinner.isHomeTeam;
+        }
+
+        if (lookingForNutmegVictim || isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving || isWaitingForSnapshotDecision)
+        {
+            return attackingTeamIsHome;
+        }
+
+        if (isWaitingForInterceptionDiceRoll || isWaitingForTackleDecision || isWaitingForTackleDecisionWithoutMoving || isWaitingForYellowCardRoll || isWaitingForFoulDecision)
+        {
+            return !attackingTeamIsHome;
+        }
+
+        if (isWaitingForTackleRoll)
+        {
+            if (!tackleDefenderRolled && selectedDefender != null)
+            {
+                return selectedDefender.isHomeTeam;
+            }
+
+            if (MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != null)
+            {
+                return MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.isHomeTeam;
+            }
+        }
+
+        if (isWaitingForInjuryRoll && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != null)
+        {
+            return MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.isHomeTeam;
+        }
+
+        if (isMovementPhaseDef)
+        {
+            return !attackingTeamIsHome;
+        }
+
+        return attackingTeamIsHome;
+    }
+
     private void RefreshHeldReachOverlay()
     {
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand);

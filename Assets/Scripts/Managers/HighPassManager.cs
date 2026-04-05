@@ -983,4 +983,25 @@ public class HighPassManager : MonoBehaviour
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
+
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (MatchManager.Instance == null || (!isActivated && !isAvailable))
+        {
+            return null;
+        }
+
+        bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+        if (!isActivated)
+        {
+            return attackingTeamIsHome;
+        }
+
+        if (isWaitingForDefenderSelection || isWaitingForDefenderMove || isWaitingForDefGKChallengeDecision)
+        {
+            return !attackingTeamIsHome;
+        }
+
+        return attackingTeamIsHome;
+    }
 }

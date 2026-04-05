@@ -1143,4 +1143,25 @@ public class ShotManager : MonoBehaviour
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
     }
+
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (MatchManager.Instance == null || (!isActivated && !isAvailable))
+        {
+            return null;
+        }
+
+        bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+        if (!isActivated)
+        {
+            return attackingTeamIsHome;
+        }
+
+        if (isWaitingforBlockerSelection || isWaitingforBlockerMovement || isWaitingForBlockDiceRoll || isWaitingforHandlingTest || isWaitingForSaveandHoldScenario)
+        {
+            return !attackingTeamIsHome;
+        }
+
+        return attackingTeamIsHome;
+    }
 }
