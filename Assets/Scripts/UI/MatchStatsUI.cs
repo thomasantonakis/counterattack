@@ -91,6 +91,13 @@ public class MatchStatsUI : MonoBehaviour
         public PlayerToken awayToken;
     }
 
+    private sealed class LineupHoverRowBounds
+    {
+        public float topY;
+        public float bottomY;
+        public LineupHoverEntry entry;
+    }
+
     public TMP_Text statsText;  // Drag the TextMeshPro UI element here
     public TMP_Text homeScorersText;
     public TMP_Text awayScorersText;
@@ -162,6 +169,7 @@ public class MatchStatsUI : MonoBehaviour
     private GoalkeeperCard homeGoalkeeperHoverCard;
     private GoalkeeperCard awayGoalkeeperHoverCard;
     private readonly Dictionary<int, LineupHoverEntry> lineupHoverEntries = new();
+    private readonly List<LineupHoverRowBounds> lineupHoverRows = new();
     private ColumnLayout currentLineupLayout;
     private PlayerToken lineupHoveredHomeToken;
     private PlayerToken lineupHoveredAwayToken;
@@ -169,7 +177,7 @@ public class MatchStatsUI : MonoBehaviour
     private PlayerToken lastHoveredAwayToken;
     private Sprite previewValueBadgeSprite;
 
-    private const float TablesTopPadding = 0.03f;
+    private const float TablesTopPadding = 0f;
     private const float TablesBottomAnchor = 0.43f;
     private const float CardsBottomPadding = 0.03f;
     private const float CardsTopAnchor = 0.39f;
@@ -200,6 +208,8 @@ public class MatchStatsUI : MonoBehaviour
     private const float PreviewRowSpacing = 8f;
     private const float PreviewRowValueRightPadding = 6f;
     private const float PreviewValueBadgeSize = 56f;
+    private const int BaselineLineupRowCount = 16;
+    private const float LineSpacingAdjustmentPerLineupRow = 0.75f;
 
     private void Awake()
     {
@@ -288,11 +298,13 @@ public class MatchStatsUI : MonoBehaviour
 
         string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
         string awayTeamName = MatchManager.Instance.gameData.gameSettings.awayTeamName;
+        int lineupRowCount = GetMaxLineupRowCount();
         ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, 5, false, ScoreboardMonospaceStepPx);
         ColumnLayout statsLayout = GetColumnLayout(StatsSideColumnRatio, StatsCenterColumnRatio, 10);
         ColumnLayout lineupLayout = GetColumnLayout(LineupSideColumnRatio, LineupCenterColumnRatio, 3);
         currentLineupLayout = lineupLayout;
         lineupHoverEntries.Clear();
+        ApplyDynamicStatsSpacing(lineupRowCount);
 
         StringBuilder builder = new();
         int currentLineIndex = 0;
@@ -318,6 +330,8 @@ public class MatchStatsUI : MonoBehaviour
         AppendLineupsTable(builder, lineupLayout, homeTeamName, awayTeamName, ref currentLineIndex);
 
         statsText.text = builder.ToString().TrimEnd();
+        statsText.ForceMeshUpdate();
+        RebuildLineupHoverRows();
         UpdateScorersDisplay();
         RefreshHoverCards();
     }
@@ -1163,7 +1177,7 @@ public class MatchStatsUI : MonoBehaviour
 
         List<ScoreboardScorerSummary> homeScorers = BuildScoreboardScorerSummaries(MatchManager.Instance?.homeScorers);
         List<ScoreboardScorerSummary> awayScorers = BuildScoreboardScorerSummaries(MatchManager.Instance?.awayScorers);
-        int rowCount = Math.Max(5, Math.Max(homeScorers.Count, awayScorers.Count));
+        int rowCount = Math.Max(4, Math.Max(homeScorers.Count, awayScorers.Count));
 
         for (int index = 0; index < rowCount; index++)
         {
@@ -1454,6 +1468,75 @@ public class MatchStatsUI : MonoBehaviour
         return $"{Mathf.RoundToInt(share * 100f)}%";
     }
 
+    private int GetMaxLineupRowCount()
+    {
+        if (MatchManager.Instance == null || MatchManager.Instance.gameData?.rosters == null)
+        {
+            return BaselineLineupRowCount;
+        }
+
+        int homeCount = MatchManager.Instance.gameData.rosters.home?.Count ?? 0;
+        int awayCount = MatchManager.Instance.gameData.rosters.away?.Count ?? 0;
+        return Mathf.Max(homeCount, awayCount, 1);
+    }
+
+    private void RebuildLineupHoverRows()
+    {
+        lineupHoverRows.Clear();
+        if (statsText == null)
+        {
+            return;
+        }
+
+        List<(float centerY, float ascender, float descender, LineupHoverEntry entry)> rows = new();
+        for (int renderedLineIndex = 0; renderedLineIndex < statsText.textInfo.lineCount; renderedLineIndex++)
+        {
+            int rawLineIndex = GetRawLineIndexFromRenderedLine(renderedLineIndex);
+            if (rawLineIndex < 0 || !lineupHoverEntries.TryGetValue(rawLineIndex, out LineupHoverEntry entry))
+            {
+                continue;
+            }
+
+            TMP_LineInfo lineInfo = statsText.textInfo.lineInfo[renderedLineIndex];
+            if (lineInfo.characterCount <= 0)
+            {
+                continue;
+            }
+
+            rows.Add((((lineInfo.ascender + lineInfo.descender) * 0.5f), lineInfo.ascender, lineInfo.descender, entry));
+        }
+
+        for (int index = 0; index < rows.Count; index++)
+        {
+            float topY = index == 0
+                ? rows[index].ascender
+                : ((rows[index - 1].centerY + rows[index].centerY) * 0.5f);
+            float bottomY = index == rows.Count - 1
+                ? rows[index].descender
+                : ((rows[index].centerY + rows[index + 1].centerY) * 0.5f);
+
+            lineupHoverRows.Add(new LineupHoverRowBounds
+            {
+                topY = topY,
+                bottomY = bottomY,
+                entry = rows[index].entry,
+            });
+        }
+    }
+
+    private void ApplyDynamicStatsSpacing(int lineupRowCount)
+    {
+        if (statsText == null)
+        {
+            return;
+        }
+
+        int rowDelta = BaselineLineupRowCount - lineupRowCount;
+        float adjustedLineSpacing = statsLineSpacing + (rowDelta * LineSpacingAdjustmentPerLineupRow);
+        statsText.lineSpacing = adjustedLineSpacing;
+        statsText.paragraphSpacing = statsParagraphSpacing;
+    }
+
     private void AppendLineupsTable(StringBuilder builder, ColumnLayout layout, string homeTeamName, string awayTeamName, ref int currentLineIndex)
     {
         if (!showLineups || MatchManager.Instance == null || MatchManager.Instance.gameData?.rosters == null)
@@ -1672,28 +1755,21 @@ public class MatchStatsUI : MonoBehaviour
 
     private void UpdateLineupHoverFromStatsText()
     {
-        if (statsText == null || !showLineups || lineupHoverEntries.Count == 0)
+        if (statsText == null || !showLineups || lineupHoverRows.Count == 0)
         {
             ClearLineupHoverOverrides();
             return;
         }
 
         RectTransform statsRect = statsText.rectTransform;
-        if (statsRect == null || !RectTransformUtility.RectangleContainsScreenPoint(statsRect, Input.mousePosition, null))
+        if (statsRect == null)
         {
             ClearLineupHoverOverrides();
             return;
         }
 
-        int characterIndex = TMP_TextUtilities.FindIntersectingCharacter(statsText, Input.mousePosition, null, true);
-        if (characterIndex < 0 || characterIndex >= statsText.textInfo.characterCount)
-        {
-            ClearLineupHoverOverrides();
-            return;
-        }
-
-        TMP_CharacterInfo characterInfo = statsText.textInfo.characterInfo[characterIndex];
-        if (!lineupHoverEntries.TryGetValue(characterInfo.lineNumber, out LineupHoverEntry hoverEntry))
+        RectTransform panelRect = panel;
+        if (panelRect != null && !RectTransformUtility.RectangleContainsScreenPoint(panelRect, Input.mousePosition, null))
         {
             ClearLineupHoverOverrides();
             return;
@@ -1705,6 +1781,15 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
+        LineupHoverRowBounds hoverRow = lineupHoverRows.FirstOrDefault(row => localPoint.y <= row.topY && localPoint.y >= row.bottomY);
+        if (hoverRow == null)
+        {
+            ClearLineupHoverOverrides();
+            return;
+        }
+
+        LineupHoverEntry hoverEntry = hoverRow.entry;
+
         float xFromLeft = localPoint.x + (statsRect.rect.width * statsRect.pivot.x);
         float gapWidth = VisibleLength(LineupColumnGap) * currentLineupLayout.monospaceStepPx;
         float homeStart = currentLineupLayout.sidePaddingPx;
@@ -1714,19 +1799,53 @@ public class MatchStatsUI : MonoBehaviour
         float awayStart = centerEnd + gapWidth;
         float awayEnd = awayStart + (currentLineupLayout.rightChars * currentLineupLayout.monospaceStepPx);
 
-        if (xFromLeft >= homeStart && xFromLeft <= homeEnd && hoverEntry.homeToken != null)
+        if (xFromLeft >= homeStart && xFromLeft <= homeEnd)
         {
-            SetLineupHoverOverrides(hoverEntry.homeToken, null);
+            if (hoverEntry.homeToken != null)
+            {
+                SetLineupHoverOverrides(hoverEntry.homeToken, null);
+            }
             return;
         }
 
-        if (xFromLeft >= awayStart && xFromLeft <= awayEnd && hoverEntry.awayToken != null)
+        if (xFromLeft >= awayStart && xFromLeft <= awayEnd)
         {
-            SetLineupHoverOverrides(null, hoverEntry.awayToken);
+            if (hoverEntry.awayToken != null)
+            {
+                SetLineupHoverOverrides(null, hoverEntry.awayToken);
+            }
             return;
         }
 
-        ClearLineupHoverOverrides();
+        return;
+    }
+
+    private int GetRawLineIndexFromRenderedLine(int renderedLineIndex)
+    {
+        if (statsText == null || renderedLineIndex < 0 || renderedLineIndex >= statsText.textInfo.lineCount)
+        {
+            return -1;
+        }
+
+        TMP_LineInfo lineInfo = statsText.textInfo.lineInfo[renderedLineIndex];
+        if (lineInfo.characterCount <= 0 || lineInfo.firstCharacterIndex < 0 || lineInfo.firstCharacterIndex >= statsText.textInfo.characterCount)
+        {
+            return -1;
+        }
+
+        int sourceIndex = statsText.textInfo.characterInfo[lineInfo.firstCharacterIndex].index;
+        string sourceText = statsText.text ?? string.Empty;
+        int rawLineIndex = 0;
+
+        for (int index = 0; index < sourceIndex && index < sourceText.Length; index++)
+        {
+            if (sourceText[index] == '\n')
+            {
+                rawLineIndex++;
+            }
+        }
+
+        return rawLineIndex;
     }
 
     private void SetLineupHoverOverrides(PlayerToken homeToken, PlayerToken awayToken)
