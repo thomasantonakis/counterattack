@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -289,6 +290,18 @@ public class GameStatusSnapshot
 
 public class GameTestScenarioRunner : MonoBehaviour
 {
+    private readonly struct ScenarioDefinition
+    {
+        public ScenarioDefinition(string name, Func<IEnumerator> run)
+        {
+            Name = name;
+            Run = run;
+        }
+
+        public string Name { get; }
+        public Func<IEnumerator> Run { get; }
+    }
+
     // private bool shouldRunTests = false;
     private bool shouldRunTests = true;
     private string logFilePath;
@@ -317,6 +330,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     private TextMeshProUGUI testLogText;
     private readonly Queue<string> onScreenLogLines = new();
     private const int MaxOnScreenLogLines = 15;
+    private string currentScenarioName = string.Empty;
     
     private void Awake()
     {
@@ -334,6 +348,11 @@ public class GameTestScenarioRunner : MonoBehaviour
     private void Start()
     {
         StartTesting();
+    }
+
+    private void OnDestroy()
+    {
+        DetachTestInputLogging();
     }
 
     private void EnsureOnScreenLogOverlay()
@@ -530,48 +549,57 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private IEnumerator RunAllScenarios()
     {
-        var scenarios = new List<IEnumerator>
+        var scenarios = new List<ScenarioDefinition>();
+        bool runManualStatsPreviewOnly = true;
+
+        if (runManualStatsPreviewOnly)
         {
+            scenarios.Add(new ScenarioDefinition(nameof(Scenario_001_Stats_UI_Preview), Scenario_001_Stats_UI_Preview));
+        }
+        else
+        {
+            scenarios.AddRange(new[]
+            {
             // Ground Ball regression suite
-            Scenario_002_GroundBall_0001_Commitment(),
-            Scenario_002b_GroundBall_0001b_QuickThrow_Commitment(),
-            Scenario_003_GroundBall_0002_Dangerous_pass_no_interception(),
-            Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor(),
-            Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions(),
-            Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player(),
-            Scenario_007_GroundBall_0006_Swith_between_options_before_Committing(),
-            Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status(),
-            Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit(),
-            Scenario_009_Movement_Phase_NO_interceptions_No_tackles(),
-            Scenario_010_Movement_Phase_failed_interceptions_No_tackles(),
-            Scenario_011_Movement_Phase_Successful_Interception(),
-            Scenario_012_Movement_Phase_interception_Foul_take_foul(false, false),
-            Scenario_012_Movement_Phase_interception_Foul_take_foul(true, false),
-            Scenario_012_Movement_Phase_interception_Foul_take_foul(false, true),
-            Scenario_012_Movement_Phase_interception_Foul_take_foul(true, true),
-            Scenario_013_Movement_Phase_interception_Foul_Play_on(),
-            Scenario_014_Movement_Phase_Check_reposition_interceptions(),
-            Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball(),
-            Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle(),
-            Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost(),
-            Scenario_017b_Movement_Phase_Dribbler_Forfeit_Remaining_Pace(),
-            Scenario_017c_Movement_Phase_Mixed_Nutmeggable_And_Stealable_Defenders(), // TODO: enable when mixed nutmeg/steal branching is verified
-            Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg(), // TODO: enable when multi-defender nutmeg ordering is verified
-            Scenario_017e_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim(),
-            Scenario_017e_b_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim_Offers_Other_Steals(),
-            Scenario_017f_Movement_Phase_Same_Defender_Steals_Once_Per_Section_Per_Dribbler(), // TODO: enable when repeated steal bookkeeping is verified
-            Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(false), // TODO: enable when post-reposition steal is benchmarked
-            Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(true), // TODO: enable when post-reposition steal is benchmarked
-            Scenario_018_Movement_Phase_Check_Tackle_loose_interception(),
-            Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender(),
-            Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in(),
-            Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions(),
-            Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move(),
-            Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP(),
-            Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal(),
-            Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL(),
-            Scenario_025a_Movement_Phase_Dribling_into_goal(),
-            Scenario_025b_Movement_Phase_Reposition_into_goal(),
+            new ScenarioDefinition(nameof(Scenario_002_GroundBall_0001_Commitment), Scenario_002_GroundBall_0001_Commitment),
+            new ScenarioDefinition(nameof(Scenario_002b_GroundBall_0001b_QuickThrow_Commitment), Scenario_002b_GroundBall_0001b_QuickThrow_Commitment),
+            new ScenarioDefinition(nameof(Scenario_003_GroundBall_0002_Dangerous_pass_no_interception), Scenario_003_GroundBall_0002_Dangerous_pass_no_interception),
+            new ScenarioDefinition(nameof(Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor), Scenario_004_GroundBall_0003_Dangerous_pass_intercepted_by_second_interceptor),
+            new ScenarioDefinition(nameof(Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions), Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions),
+            new ScenarioDefinition(nameof(Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player), Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player),
+            new ScenarioDefinition(nameof(Scenario_007_GroundBall_0006_Swith_between_options_before_Committing), Scenario_007_GroundBall_0006_Swith_between_options_before_Committing),
+            new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
+            new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
+            new ScenarioDefinition(nameof(Scenario_009_Movement_Phase_NO_interceptions_No_tackles), Scenario_009_Movement_Phase_NO_interceptions_No_tackles),
+            new ScenarioDefinition(nameof(Scenario_010_Movement_Phase_failed_interceptions_No_tackles), Scenario_010_Movement_Phase_failed_interceptions_No_tackles),
+            new ScenarioDefinition(nameof(Scenario_011_Movement_Phase_Successful_Interception), Scenario_011_Movement_Phase_Successful_Interception),
+            new ScenarioDefinition("Scenario_012_Movement_Phase_interception_Foul_take_foul(false, false)", () => Scenario_012_Movement_Phase_interception_Foul_take_foul(false, false)),
+            new ScenarioDefinition("Scenario_012_Movement_Phase_interception_Foul_take_foul(true, false)", () => Scenario_012_Movement_Phase_interception_Foul_take_foul(true, false)),
+            new ScenarioDefinition("Scenario_012_Movement_Phase_interception_Foul_take_foul(false, true)", () => Scenario_012_Movement_Phase_interception_Foul_take_foul(false, true)),
+            new ScenarioDefinition("Scenario_012_Movement_Phase_interception_Foul_take_foul(true, true)", () => Scenario_012_Movement_Phase_interception_Foul_take_foul(true, true)),
+            new ScenarioDefinition(nameof(Scenario_013_Movement_Phase_interception_Foul_Play_on), Scenario_013_Movement_Phase_interception_Foul_Play_on),
+            new ScenarioDefinition(nameof(Scenario_014_Movement_Phase_Check_reposition_interceptions), Scenario_014_Movement_Phase_Check_reposition_interceptions),
+            new ScenarioDefinition(nameof(Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball), Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball),
+            new ScenarioDefinition(nameof(Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle), Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle),
+            new ScenarioDefinition(nameof(Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost), Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost),
+            new ScenarioDefinition(nameof(Scenario_017b_Movement_Phase_Dribbler_Forfeit_Remaining_Pace), Scenario_017b_Movement_Phase_Dribbler_Forfeit_Remaining_Pace),
+            new ScenarioDefinition(nameof(Scenario_017c_Movement_Phase_Mixed_Nutmeggable_And_Stealable_Defenders), Scenario_017c_Movement_Phase_Mixed_Nutmeggable_And_Stealable_Defenders),
+            new ScenarioDefinition(nameof(Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg), Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg),
+            new ScenarioDefinition(nameof(Scenario_017e_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim), Scenario_017e_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim),
+            new ScenarioDefinition(nameof(Scenario_017e_b_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim_Offers_Other_Steals), Scenario_017e_b_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim_Offers_Other_Steals),
+            new ScenarioDefinition(nameof(Scenario_017f_Movement_Phase_Same_Defender_Steals_Once_Per_Section_Per_Dribbler), Scenario_017f_Movement_Phase_Same_Defender_Steals_Once_Per_Section_Per_Dribbler),
+            new ScenarioDefinition("Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(false)", () => Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(false)),
+            new ScenarioDefinition("Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(true)", () => Scenario_017g_Movement_Phase_Successful_Tackle_Reposition_Triggers_Other_Attacker_Steal(true)),
+            new ScenarioDefinition(nameof(Scenario_018_Movement_Phase_Check_Tackle_loose_interception), Scenario_018_Movement_Phase_Check_Tackle_loose_interception),
+            new ScenarioDefinition(nameof(Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender), Scenario_019_Movement_Phase_Check_Tackle_loose_interception_missed_hit_defender),
+            new ScenarioDefinition(nameof(Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in), Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in),
+            new ScenarioDefinition(nameof(Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions), Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions),
+            new ScenarioDefinition(nameof(Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move), Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move),
+            new ScenarioDefinition(nameof(Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP), Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP),
+            new ScenarioDefinition(nameof(Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal), Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal),
+            new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
+            new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
+            new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
               
             // // // // // // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
             // Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC(),
@@ -620,12 +648,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_029_HeaderAtGoal_LooseBall(),
             // Scenario_029_HeaderAtGoal_LooseBall_OWN_GOAL(),
             // Add more scenarios here
-        };
+            });
+        }
 
         for (; currentTestIndex < scenarios.Count; currentTestIndex++)
         {
             testFailed = false;
-            Log($"\n==== Starting Test #{currentTestIndex + 1} ====");
+            ScenarioDefinition scenario = scenarios[currentTestIndex];
+            currentScenarioName = scenario.Name;
+            LogScenarioBoundary(isStart: true, currentTestIndex + 1, currentScenarioName, status: null);
             // 🔁 Scene switch to Dummy first (full teardown)
             yield return new WaitForSeconds(1f);
 
@@ -634,19 +665,92 @@ public class GameTestScenarioRunner : MonoBehaviour
 
             yield return new WaitForSeconds(1f); // Optional buffer
             LinkRoomSceneComponents();
-            yield return StartCoroutine(scenarios[currentTestIndex]);
+            yield return StartCoroutine(scenario.Run());
 
             if (testFailed)
             {
+                LogScenarioBoundary(isStart: false, currentTestIndex + 1, currentScenarioName, "FAILED");
                 Log("❌ Test failed. Halting suite.");
                 yield break; // Stop entire suite on failure
             }
 
-            Log($"✅ Test #{currentTestIndex + 1} passed.\n");
+            LogScenarioBoundary(isStart: false, currentTestIndex + 1, currentScenarioName, "PASSED");
             yield return new WaitForSeconds(0.5f); // Short pause between tests
             SceneManager.LoadScene("DummyLoader");
         }
         Log("🎉 ALL TESTS PASSED SUCCESSFULLY!");
+    }
+
+    private IEnumerator Scenario_001_Stats_UI_Preview()
+    {
+        yield return new WaitForSeconds(2f);
+
+        Log("Preparing manual stats UI preview in Room scene.");
+
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        PlayerToken baas = RequirePlayerToken("Cafferata");
+        PlayerToken yugar = RequirePlayerToken("Kalla");
+        PlayerToken delgado = RequirePlayerToken("Delgado");
+        PlayerToken soares = RequirePlayerToken("Soares");
+        PlayerToken mcNulty = RequirePlayerToken("McNulty");
+        PlayerToken kuzmic = RequirePlayerToken("Kuzmic");
+        PlayerToken poulsen = RequirePlayerToken("Poulsen");
+        if (new[] { yaneva, baas, yugar, delgado, soares, mcNulty, kuzmic, poulsen }.Any(token => token == null))
+        {
+            yield break;
+        }
+
+        MatchManager matchManager = MatchManager.Instance;
+        AssertTrue(matchManager != null, "MatchManager should exist for stats preview.");
+        AssertTrue(matchManager.gameData != null, "MatchManager gameData should exist for stats preview.");
+        if (matchManager == null || matchManager.gameData == null)
+        {
+            yield break;
+        }
+
+        Log("Logging Yaneva: 2 goals, 1 assist, sub off.");
+        matchManager.gameData.gameLog.LogEvent(yaneva, MatchManager.ActionType.GoalScored);
+        matchManager.gameData.gameLog.LogEvent(yaneva, MatchManager.ActionType.GoalScored);
+        matchManager.gameData.gameLog.LogEvent(yaneva, MatchManager.ActionType.AssistProvided);
+
+        Log("Logging Baas: yellow card, injury, sub on, sub off.");
+        baas.ReceiveYellowCard();
+        baas.ReceiveInjury();
+        matchManager.gameData.gameLog.LogEvent(baas, MatchManager.ActionType.YellowCardShown, connectedToken: delgado);
+        matchManager.gameData.gameLog.LogEvent(baas, MatchManager.ActionType.Injured, connectedToken: delgado);
+
+        Log("Logging Yugar: sub on.");
+        matchManager.RecordSubstitutionEvent(null, baas.playerName);
+        matchManager.RecordSubstitutionEvent(baas.playerName, yugar.playerName);
+        matchManager.gameData.stats.homeTeamStats.totalSubstiutions += 2;
+
+        Log("Logging Delgado: 2 assists.");
+        matchManager.gameData.gameLog.LogEvent(delgado, MatchManager.ActionType.AssistProvided);
+        matchManager.gameData.gameLog.LogEvent(delgado, MatchManager.ActionType.AssistProvided);
+
+        Log("Logging Soares: yellow card and goal.");
+        soares.ReceiveYellowCard();
+        matchManager.gameData.gameLog.LogEvent(soares, MatchManager.ActionType.YellowCardShown, connectedToken: yaneva);
+        matchManager.gameData.gameLog.LogEvent(soares, MatchManager.ActionType.GoalScored);
+
+        Log("Logging McNulty: goal.");
+        matchManager.gameData.gameLog.LogEvent(mcNulty, MatchManager.ActionType.GoalScored);
+
+        // Provide harmless opposing references so log strings stay readable.
+        matchManager.PreviousTokenToTouchTheBallOnPurpose = null;
+        matchManager.LastTokenToTouchTheBallOnPurpose = yaneva;
+
+        Log($"Preview tokens loaded: home {yaneva.playerName}, {baas.playerName}, {yugar.playerName}; away {delgado.playerName}, {soares.playerName}, {mcNulty.playerName}.");
+        Log($"Bench anchors present for preview context: {kuzmic.playerName}, {poulsen.playerName}.");
+        Log("Stats UI preview armed. Waiting 10 seconds for visual inspection.");
+        yield return new WaitForSeconds(10f);
+    }
+
+    private PlayerToken RequirePlayerToken(string playerName)
+    {
+        PlayerToken token = PlayerToken.GetPlayerTokenByName(playerName);
+        AssertTrue(token != null, $"PlayerToken '{playerName}' should exist for the stats preview test.");
+        return token;
     }
 
     public void LinkRoomSceneComponents()
@@ -699,7 +803,65 @@ public class GameTestScenarioRunner : MonoBehaviour
         else
         {
             Debug.Log("✅ All scene components successfully linked.");
+            AttachTestInputLogging();
         }
+    }
+
+    private void AttachTestInputLogging()
+    {
+        DetachTestInputLogging();
+        GameInputManager.OnClick += HandleTestInputClickLogged;
+        GameInputManager.OnKeyPress += HandleTestInputKeyLogged;
+    }
+
+    private void DetachTestInputLogging()
+    {
+        GameInputManager.OnClick -= HandleTestInputClickLogged;
+        GameInputManager.OnKeyPress -= HandleTestInputKeyLogged;
+    }
+
+    private void HandleTestInputClickLogged(PlayerToken token, HexCell hex)
+    {
+        if (!shouldRunTests || string.IsNullOrWhiteSpace(logFilePath) || string.IsNullOrWhiteSpace(currentScenarioName))
+        {
+            return;
+        }
+
+        string clickedHex = hex != null ? $"{hex.name} @ {hex.coordinates}" : "null";
+        string clickedToken = token != null ? token.name : "None";
+        Log($"INPUT click -> hex: {clickedHex}, token: {clickedToken}");
+    }
+
+    private void HandleTestInputKeyLogged(KeyPressData keyData)
+    {
+        if (!shouldRunTests || string.IsNullOrWhiteSpace(logFilePath) || string.IsNullOrWhiteSpace(currentScenarioName) || keyData == null)
+        {
+            return;
+        }
+
+        Log($"INPUT key -> {FormatKeyChord(keyData)} | Consumed: {keyData.isConsumed}");
+    }
+
+    private static string FormatKeyChord(KeyPressData keyData)
+    {
+        if (keyData == null)
+        {
+            return "None";
+        }
+
+        StringBuilder builder = new();
+        if (keyData.ctrl) builder.Append("Ctrl+");
+        if (keyData.alt) builder.Append("Alt+");
+        if (keyData.shift) builder.Append("Shift+");
+        builder.Append(keyData.key);
+        return builder.ToString();
+    }
+
+    private void LogScenarioBoundary(bool isStart, int testNumber, string scenarioName, string status)
+    {
+        string boundaryKind = isStart ? "START" : "END";
+        string suffix = string.IsNullOrWhiteSpace(status) ? string.Empty : $" [{status}]";
+        Log($"\n==== {boundaryKind} Test #{testNumber}: {scenarioName}{suffix} ====");
     }
 
     private IEnumerator Scenario_001_BasicKickoff()
@@ -1557,6 +1719,24 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Paterson Should have 1 interception made",
             1,
             MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").interceptionsMade
+        );
+        float patersonExpectedXRecovery = CalculateExpectedRecoveryFromTackling(interceptor.tackling);
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").xRecoveries,
+            patersonExpectedXRecovery,
+            0.0001f,
+            "Paterson should record xRecovery for the actual ground-pass interception attempt");
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").possessionWon == 1,
+            "Paterson should have 1 possession won from the interception",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Paterson").possessionWon
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Cafferata").possessionLost == 1,
+            "Cafferata should have 1 possession lost from the intercepted pass",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Cafferata").possessionLost
         );
 
         LogFooterofTest("Ground Ball - Dangerous Pass - No Interception");
@@ -2853,6 +3033,29 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             availabilityCheck.ToString()
         );
+        float soaresExpectedXRecovery = CalculateExpectedRecoveryFromTackling(interceptor.tackling);
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").interceptionsAttempted == 1,
+            "Soares should have 1 interception attempted",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").interceptionsAttempted
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").interceptionsMade == 1,
+            "Soares should have 1 interception made",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").interceptionsMade
+        );
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").xRecoveries,
+            soaresExpectedXRecovery,
+            0.0001f,
+            "Soares should record xRecovery for the movement-phase steal attempt");
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.awayTeamStats.totalXRecoveries,
+            soaresExpectedXRecovery,
+            0.0001f,
+            "Away team xRecoveries should roll up Soares' movement steal expectation");
 
         LogFooterofTest("MovementPhase With Successful Interception");
     }
@@ -4084,6 +4287,61 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             successfulTackle.ToString()
         );
+        var yaneva = PlayerToken.GetPlayerTokenByName("Yaneva");
+        var gilbert = PlayerToken.GetPlayerTokenByName("Gilbert");
+        var paterson = PlayerToken.GetPlayerTokenByName("Paterson");
+        (float patersonXD, float patersonXT) = CalculateExpectedGroundDuel(yaneva.dribbling, paterson.tackling);
+        (float gilbertXD, float gilbertXT) = CalculateExpectedGroundDuel(yaneva.dribbling, gilbert.tackling);
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").groundDuelsInvolved == 2,
+            "Yaneva should have 2 ground duels involved",
+            2,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").groundDuelsInvolved
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").groundDuelsInvolved == 1,
+            "Gilbert should have 1 ground duel involved",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").groundDuelsInvolved
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").groundDuelsWon == 1,
+            "Gilbert should have 1 ground duel won",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").groundDuelsWon
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").possessionWon == 1,
+            "Gilbert should have 1 possession won from the successful tackle",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").possessionWon
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").possessionLost == 1,
+            "Yaneva should have 1 possession lost from the successful tackle",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").possessionLost
+        );
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").xDribbles,
+            patersonXD + gilbertXD,
+            0.0001f,
+            "Yaneva should record xDribbles for both tackle duels she faced in the scenario");
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").xTackles,
+            gilbertXT,
+            0.0001f,
+            "Gilbert should record xTackles when the tackle duel starts");
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.homeTeamStats.totalXTackles,
+            patersonXT + gilbertXT,
+            0.0001f,
+            "Home team xTackles should roll up the Paterson and Gilbert tackle duel expectations");
+        AssertApproximately(
+            MatchManager.Instance.gameData.stats.awayTeamStats.totalXDribbles,
+            patersonXD + gilbertXD,
+            0.0001f,
+            "Away team xDribbles should roll up Yaneva's tackle duel expectations");
 
         LogFooterofTest("MovementPhase Check InterceptionFoul Tackle Foul NewTackle SuccessfulTackle");
     }
@@ -11106,6 +11364,85 @@ public class GameTestScenarioRunner : MonoBehaviour
       File.AppendAllText(logFilePath, passMessage + "\n");
     }
   }
+
+  private void AssertApproximately(float actual, float expected, float tolerance, string message)
+  {
+    AssertTrue(
+        Mathf.Abs(actual - expected) <= tolerance,
+        message,
+        expected,
+        actual);
+  }
+
+    private static float CalculateExpectedRecoveryFromTackling(int tackling)
+    {
+        int successfulRolls = 0;
+        for (int roll = 1; roll <= 6; roll++)
+        {
+            if (roll == 6 || roll + tackling >= 10)
+            {
+                successfulRolls++;
+            }
+        }
+
+        return successfulRolls / 6f;
+    }
+
+    private static (float xDribbles, float xTackles) CalculateExpectedGroundDuel(
+        int attackerDribbling,
+        int defenderTackling,
+        int defenderBonusMalus = 0)
+    {
+        (int effectiveRoll, float probability)[] outcomes =
+        {
+            (1, 1f / 6f),
+            (2, 1f / 6f),
+            (3, 1f / 6f),
+            (4, 1f / 6f),
+            (5, 1f / 6f),
+            (6, 1f / 12f),
+            (50, 1f / 12f),
+        };
+
+        float attackerWins = 0f;
+        float defenderWins = 0f;
+        float ties = 0f;
+
+        foreach ((int defenderRoll, float defenderProbability) in outcomes)
+        {
+            foreach ((int attackerRoll, float attackerProbability) in outcomes)
+            {
+                float branchProbability = defenderProbability * attackerProbability;
+
+                if (defenderRoll <= 1)
+                {
+                    continue;
+                }
+
+                int defenderTotal = defenderRoll == 50
+                    ? 50
+                    : defenderTackling + defenderBonusMalus + defenderRoll;
+                int attackerTotal = attackerRoll == 50
+                    ? 50
+                    : attackerDribbling + attackerRoll;
+
+                if (defenderTotal > attackerTotal)
+                {
+                    defenderWins += branchProbability;
+                }
+                else if (defenderTotal < attackerTotal)
+                {
+                    attackerWins += branchProbability;
+                }
+                else
+                {
+                    ties += branchProbability;
+                }
+            }
+        }
+
+        return (attackerWins + (ties / 6f), defenderWins + ((ties * 5f) / 6f));
+    }
 
     private AvailabilityCheckResult AssertCorrectAvailabilityAfterGBToPlayer()
     {

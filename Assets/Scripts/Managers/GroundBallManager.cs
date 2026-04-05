@@ -562,6 +562,11 @@ public class GroundBallManager : MonoBehaviour
                 return;
             }
             Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
+            MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                defenderToken,
+                ExpectedStatsCalculator.CalculateRecoveryProbability(defenderToken),
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                "standard");
             MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
             // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
             isWaitingForDiceRoll = false;

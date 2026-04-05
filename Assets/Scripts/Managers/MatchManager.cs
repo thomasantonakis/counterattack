@@ -207,6 +207,9 @@ public class MatchManager : MonoBehaviour
         public int yellowCards;
         public int redCards;
         public int injuries;
+        public float xRecoveries;
+        public float xDribbles;
+        public float xTackles;
         public PlayerStats()
         {
             goals = 0;
@@ -234,6 +237,9 @@ public class MatchManager : MonoBehaviour
             yellowCards = 0;
             redCards = 0;
             injuries = 0;
+            xRecoveries = 0f;
+            xDribbles = 0f;
+            xTackles = 0f;
         }
     }
 
@@ -266,6 +272,9 @@ public class MatchManager : MonoBehaviour
         public int totalPossessionWon;
         public int totalPossessionLost;
         public int totalCorners;
+        public float totalXRecoveries;
+        public float totalXDribbles;
+        public float totalXTackles;
 
         public TeamStats()
         {
@@ -295,6 +304,9 @@ public class MatchManager : MonoBehaviour
             totalPossessionWon = 0;
             totalPossessionLost = 0;
             totalCorners = 0;
+            totalXRecoveries = 0f;
+            totalXDribbles = 0f;
+            totalXTackles = 0f;
         }
         public void Reset()
         {
@@ -324,6 +336,9 @@ public class MatchManager : MonoBehaviour
             totalPossessionWon = 0;
             totalPossessionLost = 0;
             totalCorners = 0;
+            totalXRecoveries = 0f;
+            totalXDribbles = 0f;
+            totalXTackles = 0f;
         }
         public void AddPlayerStats(PlayerStats stats)
         {
@@ -344,6 +359,16 @@ public class MatchManager : MonoBehaviour
             totalInterceptionsMade += stats.interceptionsMade;
             totalAerialChallengesInvolved += stats.aerialChallengesInvolved;
             totalAerialChallengesWon += stats.aerialChallengesWon;
+            totalAssists += stats.assists;
+            totalInjuries += stats.injuries;
+            totalAttemptsSaved += stats.attemptsSaved;
+            totalPossessionWon += stats.possessionWon;
+            totalPossessionLost += stats.possessionLost;
+            totalYellowCards += stats.yellowCards;
+            totalRedCards += stats.redCards;
+            totalXRecoveries += stats.xRecoveries;
+            totalXDribbles += stats.xDribbles;
+            totalXTackles += stats.xTackles;
         }
     }
 
@@ -484,6 +509,9 @@ public class MatchManager : MonoBehaviour
                     logEntry += "wins possession";
                     switch (recoveryType)
                     {
+                        case "tackle":
+                            logEntry += $" after tackling {connectedToken.name}";
+                            break;
                         case "long":
                             logEntry += $" after a Long Pass from {connectedToken.name}";
                             break;
@@ -508,6 +536,14 @@ public class MatchManager : MonoBehaviour
                     }
                     playerStats.possessionWon += value;
                     teamStats.totalPossessionWon += value;
+                    if (connectedPlayerStats != null)
+                    {
+                        connectedPlayerStats.possessionLost += value;
+                    }
+                    if (connectedTeamStats != null)
+                    {
+                        connectedTeamStats.totalPossessionLost += value;
+                    }
                     break;
 
                 case ActionType.ShotAttempt:
@@ -578,7 +614,6 @@ public class MatchManager : MonoBehaviour
                     playerStats.groundDuelsInvolved += value;
                     teamStats.totalGroundDuelsInvolved += value;
                     connectedPlayerStats.groundDuelsInvolved += value;
-                    teamStats.totalGroundDuelsInvolved += value;
                     connectedTeamStats.totalGroundDuelsInvolved += value;
                     break;
 
@@ -670,6 +705,7 @@ public class MatchManager : MonoBehaviour
                 case ActionType.Substituted:
                     logEntry += $"⬇️ Subbed off for ⬆️ {connectedToken.name}";
                     teamStats.totalSubstiutions += value;
+                    MatchManager.Instance.RecordSubstitutionEvent(token.playerName, connectedToken != null ? connectedToken.playerName : null, value);
                     break;
 
                 default:
@@ -679,6 +715,55 @@ public class MatchManager : MonoBehaviour
 
             gameLog.Add(logEntry);
             Debug.Log("[Game Log] " + logEntry);
+        }
+
+        public void LogExpectedRecovery(
+            PlayerToken token,
+            float expectedValue,
+            PlayerToken connectedToken = null,
+            string recoveryType = "")
+        {
+            if (token == null || stats == null)
+            {
+                return;
+            }
+
+            PlayerStats playerStats = stats.GetPlayerStats(token.playerName);
+            TeamStats teamStats = stats.GetTeamStats(token.isHomeTeam);
+            playerStats.xRecoveries += expectedValue;
+            teamStats.totalXRecoveries += expectedValue;
+
+            string targetText = connectedToken != null ? $" against {connectedToken.name}" : string.Empty;
+            string contextText = string.IsNullOrWhiteSpace(recoveryType) ? "recovery" : recoveryType;
+            Debug.Log($"[Expected Stats] {token.name} records xRecovery {expectedValue:0.###} on {contextText}{targetText}");
+        }
+
+        public void LogExpectedGroundDuel(
+            PlayerToken attacker,
+            PlayerToken defender,
+            ExpectedStatsCalculator.GroundDuelExpectation expectation,
+            string duelType = "")
+        {
+            if (attacker == null || defender == null || stats == null)
+            {
+                return;
+            }
+
+            PlayerStats attackerStats = stats.GetPlayerStats(attacker.playerName);
+            TeamStats attackerTeamStats = stats.GetTeamStats(attacker.isHomeTeam);
+            PlayerStats defenderStats = stats.GetPlayerStats(defender.playerName);
+            TeamStats defenderTeamStats = stats.GetTeamStats(defender.isHomeTeam);
+
+            attackerStats.xDribbles += expectation.xDribbles;
+            attackerTeamStats.totalXDribbles += expectation.xDribbles;
+            defenderStats.xTackles += expectation.xTackles;
+            defenderTeamStats.totalXTackles += expectation.xTackles;
+
+            string contextText = string.IsNullOrWhiteSpace(duelType) ? "ground duel" : duelType;
+            Debug.Log(
+                $"[Expected Stats] {attacker.name} vs {defender.name} ({contextText}) " +
+                $"xDribbles={expectation.xDribbles:0.###}, xTackles={expectation.xTackles:0.###}, " +
+                $"tie={expectation.tieProbability:0.###}, foul={expectation.defenderFoulProbability:0.###}");
         }
 
         public List<string> GetGameLog()
@@ -738,6 +823,8 @@ public class MatchManager : MonoBehaviour
 
     public List<GoalEvent> homeScorers = new List<GoalEvent>();
     public List<GoalEvent> awayScorers = new List<GoalEvent>();
+    private readonly Dictionary<string, int> playerSubOnCounts = new();
+    private readonly Dictionary<string, int> playerSubOffCounts = new();
 
     public event Action OnGameSettingsLoaded;
     public event Action OnPlayersInstantiated;
@@ -778,6 +865,51 @@ public class MatchManager : MonoBehaviour
     public int difficulty_level;
     public int refereeLeniency;
     public bool isFTPAvailable = false;
+
+    public void RecordSubstitutionEvent(string playerOffName, string playerOnName, int value = 1)
+    {
+        if (value <= 0)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(playerOffName))
+        {
+            IncrementPlayerEventCount(playerSubOffCounts, playerOffName, value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(playerOnName))
+        {
+            IncrementPlayerEventCount(playerSubOnCounts, playerOnName, value);
+        }
+    }
+
+    public int GetPlayerSubOnCount(string playerName)
+    {
+        return GetPlayerEventCount(playerSubOnCounts, playerName);
+    }
+
+    public int GetPlayerSubOffCount(string playerName)
+    {
+        return GetPlayerEventCount(playerSubOffCounts, playerName);
+    }
+
+    private static void IncrementPlayerEventCount(Dictionary<string, int> counts, string playerName, int value)
+    {
+        if (counts.TryGetValue(playerName, out int currentValue))
+        {
+            counts[playerName] = currentValue + value;
+        }
+        else
+        {
+            counts[playerName] = value;
+        }
+    }
+
+    private static int GetPlayerEventCount(Dictionary<string, int> counts, string playerName)
+    {
+        return !string.IsNullOrWhiteSpace(playerName) && counts.TryGetValue(playerName, out int count) ? count : 0;
+    }
 
     // // Define other match-specific variables here (e.g., time, score, teams)
     // private int homeScore = 0;

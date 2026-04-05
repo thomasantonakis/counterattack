@@ -1465,7 +1465,14 @@ public class MovementPhaseManager : MonoBehaviour
 
             // Get the defender's tackling attribute
             int defenderTackling = selectedDefender.tackling;
+            PlayerToken ballCarrier = ball.GetCurrentHex()?.GetOccupyingToken();
             Debug.Log($"Defender: {selectedDefender.name}, Tackling: {defenderTackling}, Dice Roll: {diceRoll}");
+            MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                selectedDefender,
+                ExpectedStatsCalculator.CalculateRecoveryProbability(selectedDefender),
+                ballCarrier,
+                "steal");
+            MatchManager.Instance.gameData.gameLog.LogEvent(selectedDefender, MatchManager.ActionType.InterceptionAttempt);
 
             // Check if there was a foul
             if (isDribblerRunning && diceRoll <= FOUL_THRESHOLD)
@@ -1483,6 +1490,11 @@ public class MovementPhaseManager : MonoBehaviour
                 // Defender successfully intercepts the ball
                 Debug.Log($"Ball intercepted by {selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates}!");
                 isResolvingPreNutmegSteals = false;
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    selectedDefender,
+                    MatchManager.ActionType.InterceptionSuccess,
+                    recoveryType: "steal",
+                    connectedToken: ballCarrier);
                 MatchManager.Instance.SetLastToken(selectedDefender);
                 StartCoroutine(HandleBallInterception(selectedDefender.GetCurrentHex()));
                 ResetBallInterceptionDiceRolls();
@@ -1604,6 +1616,16 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (defenderTotalScore == 50) Debug.Log($"Tackle failed! {selectedDefender.name} Rolled a JACKPOT!! Attacker {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore} is left helpless and loses possession of the ball.");
             else Debug.Log($"Tackle succeeded! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} beats {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, and wins possession of the ball.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                selectedDefender,
+                MatchManager.ActionType.GroundDuelWon,
+                connectedToken: attackerToken,
+                tackleType: "successful");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                selectedDefender,
+                MatchManager.ActionType.BallRecovery,
+                connectedToken: attackerToken,
+                recoveryType: "tackle");
             if (isNutmegInProgress)
             {
                 Debug.Log($"{attackerToken.name} will be stunned in next Movement Phase");
@@ -1632,6 +1654,11 @@ public class MovementPhaseManager : MonoBehaviour
             // Defender Loses and gets stunned
             if (attackerTotalScore == 50) Debug.Log($"{attackerToken.name} rolled A JACKPOT!!! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore}. {attackerToken.name} retains possession of the ball.");
             else Debug.Log($"Tackle failed! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} loses to {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, who retains possession of the ball.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                attackerToken,
+                MatchManager.ActionType.GroundDuelWon,
+                connectedToken: selectedDefender,
+                tackleType: isNutmegInProgress ? "nutmeg" : "keep");
             yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
         }
         else if (defenderTotalScore == attackerTotalScore)
@@ -1897,6 +1924,21 @@ public class MovementPhaseManager : MonoBehaviour
         // Reset the tackle dice roll flags
         tackleDefenderRolled = false;
         tackleAttackerRolled = false;
+        PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        PlayerToken defenderToken = isNutmegInProgress && nutmegVictim != null ? nutmegVictim : selectedDefender;
+        if (attackerToken != null && defenderToken != null)
+        {
+            int defenderBonusMalus = isNutmegInProgress ? 1 : 0;
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                attackerToken,
+                MatchManager.ActionType.GroundDuelAttempt,
+                connectedToken: defenderToken);
+            MatchManager.Instance.gameData.gameLog.LogExpectedGroundDuel(
+                attackerToken,
+                defenderToken,
+                ExpectedStatsCalculator.CalculateGroundDuelExpectation(attackerToken, defenderToken, defenderBonusMalus),
+                isNutmegInProgress ? "nutmeg duel" : "tackle duel");
+        }
         // Set flag to wait for dice rolls
         isWaitingForTackleRoll = true;
         isAwaitingHexDestination = false;

@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -160,6 +161,18 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     bool saved = EditorSceneManager.SaveOpenScenes();
                     return BridgeResponse.Ok(request, saved ? "Open scenes saved." : "Open scenes save returned false.");
+                case "refresh_assets":
+                    EnsureEditorMode(command);
+                    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+                    UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+                    return BridgeResponse.Ok(request, "Unity assets refreshed synchronously.");
+                case "reload_window_layout":
+                    EnsureEditorMode(command);
+                    string layoutPath = GetOptionalArg(request, "layout_path");
+                    ReloadWindowLayout(layoutPath);
+                    return BridgeResponse.Ok(request, string.IsNullOrWhiteSpace(layoutPath)
+                        ? "Reloaded current window layout."
+                        : $"Reloaded window layout from {layoutPath}.");
                 case "open_scene":
                     EnsureEditorMode(command);
                     string scenePath = GetRequiredArg(request, "scene_path");
@@ -194,6 +207,68 @@ namespace CounterAttack.Editor
             {
                 throw new InvalidOperationException($"{command} can only run while the editor is not in play mode.");
             }
+        }
+
+        private static void ReloadWindowLayout(string layoutPath)
+        {
+            Type windowLayoutType = Type.GetType("UnityEditor.WindowLayout, UnityEditor");
+            if (windowLayoutType == null)
+            {
+                throw new InvalidOperationException("Could not resolve UnityEditor.WindowLayout.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(layoutPath))
+            {
+                string fullLayoutPath = Path.GetFullPath(layoutPath);
+                MethodInfo tryLoadMethod = windowLayoutType
+                    .GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
+                    .FirstOrDefault(method => method.Name == "TryLoadWindowLayout");
+
+                if (tryLoadMethod == null)
+                {
+                    throw new InvalidOperationException("Could not find UnityEditor.WindowLayout.TryLoadWindowLayout.");
+                }
+
+                ParameterInfo[] parameters = tryLoadMethod.GetParameters();
+                object result;
+                if (parameters.Length == 1)
+                {
+                    result = tryLoadMethod.Invoke(null, new object[] { fullLayoutPath });
+                }
+                else if (parameters.Length == 2)
+                {
+                    result = tryLoadMethod.Invoke(null, new object[] { fullLayoutPath, false });
+                }
+                else
+                {
+                    object[] args = new object[parameters.Length];
+                    args[0] = fullLayoutPath;
+                    for (int i = 1; i < parameters.Length; i++)
+                    {
+                        args[i] = parameters[i].ParameterType.IsValueType
+                            ? Activator.CreateInstance(parameters[i].ParameterType)
+                            : null;
+                    }
+                    result = tryLoadMethod.Invoke(null, args);
+                }
+
+                if (result is bool loaded && !loaded)
+                {
+                    throw new InvalidOperationException($"Unity declined to load layout file {fullLayoutPath}.");
+                }
+
+                return;
+            }
+
+            MethodInfo reloadMethod = windowLayoutType.GetMethod(
+                "ReloadWindowLayoutMenu",
+                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            if (reloadMethod == null)
+            {
+                throw new InvalidOperationException("Could not find UnityEditor.WindowLayout.ReloadWindowLayoutMenu.");
+            }
+
+            reloadMethod.Invoke(null, null);
         }
 
         private static Transform ResolveSelectionTarget(BridgeRequest request)

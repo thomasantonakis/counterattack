@@ -3,15 +3,15 @@
     "examples": "Juventus",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "leftStripeColor": "#111111",
-      "leftMidStripeColor": "#F4F6FA",
-      "centerStripeColor": "#111111",
-      "rightMidStripeColor": "#F4F6FA",
-      "rightStripeColor": "#111111",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#1A1A18",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#1A1A18",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#1A1A18",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -19,10 +19,10 @@
     "example": "Red",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#A71924",
-      "accentColor": "#A71924",
-      "ringColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#AA141F",
+      "accentColor": "#AA141F",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -30,9 +30,9 @@
     "examples": "Dortmund",
     "pattern": "Sleeved",
     "config": {
-      "bodyColor": "#D6C414",
-      "sleeveColor": "#111111",
-      "numberColor": "#111111",
+      "bodyColor": "#CAB800",
+      "sleeveColor": "#1A1A18",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -40,9 +40,9 @@
     "examples": "Ajax",
     "pattern": "singleStriped",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "stripeColor": "#D92A3A",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
+      "stripeColor": "#AD1527",
+      "numberColor": "#E6E6E6",
       "stripeWidth": 0.7,
       "stripeRotation": 90,
       "font": "Default"
@@ -52,10 +52,10 @@
     "examples": "Blue",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#223A7A",
-      "accentColor": "#223A7A",
-      "ringColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#004389",
+      "accentColor": "#004389",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -63,10 +63,10 @@
     "examples": "Napoli",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#6BB6F3",
-      "accentColor": "#6BB6F3",
-      "ringColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#6099CE",
+      "accentColor": "#6099CE",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -74,15 +74,15 @@
       "example": "Celtic",
       "pattern": "HorizontalStripes",
       "config": {
-        "bodyColor": "#F4F6FA",
-        "ringColor": "#F4F6FA",
-        "topStripeColor": "#13884A",
-        "topMidStripeColor": "#F4F6FA",
-        "centerStripeColor": "#13884A",
-        "bottomMidStripeColor": "#F4F6FA",
-        "bottomStripeColor": "#13884A",
+        "bodyColor": "#E6E6E6",
+        "ringColor": "#E6E6E6",
+        "topStripeColor": "#00863A",
+        "topMidStripeColor": "#E6E6E6",
+        "centerStripeColor": "#00863A",
+        "bottomMidStripeColor": "#E6E6E6",
+        "bottomStripeColor": "#00863A",
         "centerStripeMode": "BreakUnderNumber",
-        "numberColor": "#111111",
+        "numberColor": "#1A1A18",
         "font": "Default"
       }
     },
@@ -90,15 +90,15 @@
     "examples": "Blaugrana",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#223A7A",
-      "ringColor": "#223A7A",
-      "leftStripeColor": "#A71924",
-      "leftMidStripeColor": "#223A7A",
-      "centerStripeColor": "#A71924",
-      "rightMidStripeColor": "#223A7A",
-      "rightStripeColor": "#A71924",
+      "bodyColor": "#193055",
+      "ringColor": "#193055",
+      "leftStripeColor": "#991631",
+      "leftMidStripeColor": "#193055",
+      "centerStripeColor": "#991631",
+      "rightMidStripeColor": "#193055",
+      "rightStripeColor": "#991631",
       "centerStripeMode": "Solid",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -106,15 +106,15 @@
     "examples": "Ath Bilbao",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "leftStripeColor": "#C61F2A",
-      "leftMidStripeColor": "#F4F6FA",
-      "centerStripeColor": "#C61F2A",
-      "rightMidStripeColor": "#F4F6FA",
-      "rightStripeColor": "#C61F2A",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#1A1A18",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#1A1A18",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#1A1A18",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -122,15 +122,15 @@
     "examples": "Olympiacos",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#A71924",
-      "ringColor": "#A71924",
-      "leftStripeColor": "#F4F6FA",
-      "leftMidStripeColor": "#A71924",
-      "centerStripeColor": "#F4F6FA",
-      "rightMidStripeColor": "#A71924",
-      "rightStripeColor": "#F4F6FA",
+      "bodyColor": "#B0201E",
+      "ringColor": "#B0201E",
+      "leftStripeColor": "#E6E6E6",
+      "leftMidStripeColor": "#B0201E",
+      "centerStripeColor": "#E6E6E6",
+      "rightMidStripeColor": "#B0201E",
+      "rightStripeColor": "#E6E6E6",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -138,8 +138,8 @@
     "examples": "Wolves",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#D46B1D",
-      "accentColor": "#D46B1D",
+      "bodyColor": "#E6610D",
+      "accentColor": "#E6610D",
       "ringColor": "#2B2718",
       "numberColor": "#2B2718",
       "font": "Default"
@@ -149,15 +149,15 @@
     "examples": "Milan",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "leftStripeColor": "#A71924",
-      "leftMidStripeColor": "#111111",
-      "centerStripeColor": "#A71924",
-      "rightMidStripeColor": "#111111",
-      "rightStripeColor": "#A71924",
-      "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#AD1619",
+      "leftMidStripeColor": "#1A1A18",
+      "centerStripeColor": "#AD1619",
+      "rightMidStripeColor": "#1A1A18",
+      "rightStripeColor": "#AD1619",
+      "centerStripeMode": "Solid",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -165,15 +165,15 @@
     "examples": "Milan Away",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "ringColor": "#F4F6FA",
-      "leftStripeColor": "#C61F2A",
-      "leftMidStripeColor": "#111111",
-      "centerStripeColor": "#C61F2A",
-      "rightMidStripeColor": "#111111",
-      "rightStripeColor": "#C61F2A",
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#AD1619",
+      "leftMidStripeColor": "#1A1A18",
+      "centerStripeColor": "#AD1619",
+      "rightMidStripeColor": "#1A1A18",
+      "rightStripeColor": "#AD1619",
       "centerStripeMode": "Solid",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -181,15 +181,15 @@
     "examples": "Inter",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "leftStripeColor": "#223A7A",
-      "leftMidStripeColor": "#111111",
-      "centerStripeColor": "#223A7A",
-      "rightMidStripeColor": "#111111",
-      "rightStripeColor": "#223A7A",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#325997",
+      "leftMidStripeColor": "#1A1A18",
+      "centerStripeColor": "#325997",
+      "rightMidStripeColor": "#1A1A18",
+      "rightStripeColor": "#325997",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -197,15 +197,15 @@
     "examples": "Inter Away",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "ringColor": "#F4F6FA",
-      "leftStripeColor": "#223A7A",
-      "leftMidStripeColor": "#111111",
-      "centerStripeColor": "#223A7A",
-      "rightMidStripeColor": "#111111",
-      "rightStripeColor": "#223A7A",
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#325997",
+      "leftMidStripeColor": "#1A1A18",
+      "centerStripeColor": "#325997",
+      "rightMidStripeColor": "#1A1A18",
+      "rightStripeColor": "#325997",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -213,15 +213,15 @@
     "examples": "Atl Madrid",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#0F4E9B",
-      "ringColor": "#F4F6FA",
-      "leftStripeColor": "#F4F6FA",
-      "leftMidStripeColor": "#C61F2A",
-      "centerStripeColor": "#F4F6FA",
-      "rightMidStripeColor": "#C61F2A",
-      "rightStripeColor": "#F4F6FA",
+      "bodyColor": "#1E4A67",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#E6E6E6",
+      "leftMidStripeColor": "#9F2823",
+      "centerStripeColor": "#E6E6E6",
+      "rightMidStripeColor": "#9F2823",
+      "rightStripeColor": "#E6E6E6",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -229,9 +229,9 @@
       "examples": "River",
       "pattern": "singleStriped",
       "config": {
-        "bodyColor": "#F4F6FA",
-        "stripeColor": "#D92A3A",
-        "numberColor": "#111111",
+        "bodyColor": "#E6E6E6",
+        "stripeColor": "#BB2A22",
+        "numberColor": "#1A1A18",
         "stripeWidth": 0.2,
         "stripeRotation": 135,
         "font": "Default"
@@ -241,9 +241,9 @@
     "examples": "Boca",
     "pattern": "singleStriped",
     "config": {
-      "bodyColor": "#355EAF",
-      "stripeColor": "#D6C414",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#306F9C",
+      "stripeColor": "#CFCB46",
+      "numberColor": "#E6E6E6",
       "stripeWidth": 0.5,
       "stripeRotation": 0,
       "font": "Default"
@@ -253,10 +253,10 @@
     "examples": "Real Madrid",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "accentColor": "#F4F6FA",
-      "ringColor": "#223A7A",
-      "numberColor": "#223A7A",
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#1D285F",
+      "numberColor": "#1D285F",
       "font": "Default"
     }
   },
@@ -264,10 +264,10 @@
     "examples": "Fiorentina",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#44213F",
-      "accentColor": "#5E2A58",
-      "ringColor": "#5E2A58",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#502854",
+      "accentColor": "#502854",
+      "ringColor": "#502854",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -275,10 +275,10 @@
     "examples": "FC Koln / Leipzig",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "accentColor": "#F4F6FA",
-      "ringColor": "#D92A3A",
-      "numberColor": "#D92A3A",
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#BD3429",
+      "numberColor": "#BD3429",
       "font": "Default"
     }
   },
@@ -286,10 +286,10 @@
     "examples": "Torino",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "accentColor": "#8A1837",
-      "ringColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#73201F",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -297,10 +297,10 @@
     "examples": "Villarreal",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#D6C414",
-      "accentColor": "#D6C414",
-      "ringColor": "#2B2718",
-      "numberColor": "#2B2718",
+      "bodyColor": "#D8CE43",
+      "accentColor": "#D8CE43",
+      "ringColor": "#354A7A",
+      "numberColor": "#354A7A",
       "font": "Default"
     }
   },
@@ -308,10 +308,10 @@
     "examples": "Rangers",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#0F5F92",
-      "accentColor": "#0F5F92",
-      "ringColor": "#C61F2A",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#306F9C",
+      "accentColor": "#306F9C",
+      "ringColor": "#9C2727",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -319,10 +319,10 @@
     "examples": "Palermo",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#9B5875",
-      "accentColor": "#111111",
-      "ringColor": "#111111",
-      "numberColor": "#D97AA8",
+      "bodyColor": "#C77896",
+      "accentColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "numberColor": "#C77896",
       "font": "Default"
     }
   },
@@ -330,10 +330,10 @@
     "examples": "Spain",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#8A1837",
-      "accentColor": "#8A1837",
-      "ringColor": "#223A7A",
-      "numberColor": "#E3CB16",
+      "bodyColor": "#A52D1E",
+      "accentColor": "#A52D1E",
+      "ringColor": "#304896",
+      "numberColor": "#F8DA65",
       "font": "Default"
     }
   },
@@ -341,10 +341,10 @@
     "examples": "Brazil",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#E3CB16",
-      "accentColor": "#E3CB16",
-      "ringColor": "#13884A",
-      "numberColor": "#355EAF",
+      "bodyColor": "#DFBE3F",
+      "accentColor": "#DFBE3F",
+      "ringColor": "#74A13E",
+      "numberColor": "#1C3F82",
       "font": "Default"
     }
   },
@@ -352,10 +352,10 @@
     "examples": "Germany",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "accentColor": "#F4F6FA",
-      "ringColor": "#111111",
-      "numberColor": "#111111",
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#1A1A18",
+      "numberColor": "#1A1A18",
       "font": "Getafe"
     }
   },
@@ -363,10 +363,10 @@
     "examples": "Roma Home",
     "pattern": "Roma",
     "config": {
-      "bodyColor": "#800e1f",
-      "topStripeColor": "#958b2a",
-      "bottomStripeColor": "#958b2a",
-      "numberColor": "#958b2a",
+      "bodyColor": "#62141B",
+      "topStripeColor": "#C79E40",
+      "bottomStripeColor": "#C79E40",
+      "numberColor": "#C79E40",
       "font": "Default"
     }
   },
@@ -374,10 +374,10 @@
     "examples": "Roma Away",
     "pattern": "Roma",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "topStripeColor": "#800e1f",
-      "bottomStripeColor": "#958b2a",
-      "numberColor": "#800e1f",
+      "bodyColor": "#E6E6E6",
+      "topStripeColor": "#62141B",
+      "bottomStripeColor": "#C79E40",
+      "numberColor": "#62141B",
       "font": "Default"
     }
   },
@@ -385,15 +385,15 @@
     "example": "Sporting",
     "pattern": "HorizontalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "topStripeColor": "#13884A",
-      "topMidStripeColor": "#F4F6FA",
-      "centerStripeColor": "#13884A",
-      "bottomMidStripeColor": "#F4F6FA",
-      "bottomStripeColor": "#13884A",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "topStripeColor": "#3A8443",
+      "topMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#3A8443",
+      "bottomMidStripeColor": "#E6E6E6",
+      "bottomStripeColor": "#3A8443",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -401,9 +401,9 @@
     "examples": "Arsenal",
     "pattern": "Sleeved",
     "config": {
-      "bodyColor": "#D92A3A",
-      "sleeveColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#D03C39",
+      "sleeveColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -411,15 +411,15 @@
     "examples": "FC Porto",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#0F4E9B",
-      "ringColor": "#F4F6FA",
-      "leftStripeColor": "#0F4E9B",
-      "leftMidStripeColor": "#F4F6FA",
-      "centerStripeColor": "#0F4E9B",
-      "rightMidStripeColor": "#F4F6FA",
-      "rightStripeColor": "#0F4E9B",
+      "bodyColor": "#306F9C",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#306F9C",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#306F9C",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#306F9C",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -435,13 +435,13 @@
     "config": {
       "bodyColor": "#D6C414",
       "ringColor": "#D6C414",
-      "leftStripeColor": "#111111",
+      "leftStripeColor": "#1A1A18",
       "leftMidStripeColor": "#D6C414",
-      "centerStripeColor": "#111111",
+      "centerStripeColor": "#1A1A18",
       "rightMidStripeColor": "#D6C414",
-      "rightStripeColor": "#111111",
+      "rightStripeColor": "#1A1A18",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -463,7 +463,7 @@
       "bodyColor": "#B51E24",
       "accentColor": "#223A7A",
       "ringColor": "#B51E24",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -471,10 +471,10 @@
     "examples": "Seville",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "accentColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
       "ringColor": "#D92A3A",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -482,10 +482,10 @@
     "examples": "DC United",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#111111",
-      "accentColor": "#111111",
-      "ringColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "bodyColor": "#1A1A18",
+      "accentColor": "#1A1A18",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -493,8 +493,8 @@
     "examples": "Los Angeles FC",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#111111",
-      "accentColor": "#111111",
+      "bodyColor": "#1A1A18",
+      "accentColor": "#1A1A18",
       "ringColor": "#D6C414",
       "numberColor": "#D6C414",
       "font": "Default"
@@ -528,8 +528,8 @@
     "config": {
       "bodyColor": "#E39BC5",
       "accentColor": "#E39BC5",
-      "ringColor": "#111111",
-      "numberColor": "#111111",
+      "ringColor": "#1A1A18",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -548,8 +548,8 @@
     "examples": "Poland",
     "pattern": "Plain",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "accentColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
       "ringColor": "#D92A3A",
       "numberColor": "#D92A3A",
       "font": "Default"
@@ -561,8 +561,8 @@
     "config": {
       "bodyColor": "#1A7D3E",
       "accentColor": "#1A7D3E",
-      "ringColor": "#F4F6FA",
-      "numberColor": "#F4F6FA",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -586,12 +586,12 @@
     "examples": "Sassuolo",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
       "leftStripeColor": "#159947",
-      "leftMidStripeColor": "#111111",
+      "leftMidStripeColor": "#1A1A18",
       "centerStripeColor": "#159947",
-      "rightMidStripeColor": "#111111",
+      "rightMidStripeColor": "#1A1A18",
       "rightStripeColor": "#159947",
       "centerStripeMode": "BreakUnderNumber",
       "numberColor": "#159947",
@@ -602,15 +602,15 @@
     "examples": "Bayer Leverkusen",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "leftStripeColor": "#111111",
-      "leftMidStripeColor": "#111111",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#1A1A18",
+      "leftMidStripeColor": "#1A1A18",
       "centerStripeColor": "#C61F2A",
-      "rightMidStripeColor": "#111111",
-      "rightStripeColor": "#111111",
+      "rightMidStripeColor": "#1A1A18",
+      "rightStripeColor": "#1A1A18",
       "centerStripeMode": "None",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -619,14 +619,14 @@
     "pattern": "VerticalStripes",
     "config": {
       "bodyColor": "#118244",
-      "ringColor": "#F4F6FA",
+      "ringColor": "#E6E6E6",
       "leftStripeColor": "#118244",
       "leftMidStripeColor": "#27cd72",
       "centerStripeColor": "#27cd72",
       "rightMidStripeColor": "#27cd72",
       "rightStripeColor": "#118244",
       "centerStripeMode": "Solid",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -634,15 +634,15 @@
     "examples": "Eintracht Frankfurt",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
-      "leftStripeColor": "#F4F6FA",
-      "leftMidStripeColor": "#111111",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#E6E6E6",
+      "leftMidStripeColor": "#1A1A18",
       "centerStripeColor": "#C61F2A",
-      "rightMidStripeColor": "#111111",
-      "rightStripeColor": "#F4F6FA",
+      "rightMidStripeColor": "#1A1A18",
+      "rightStripeColor": "#E6E6E6",
       "centerStripeMode": "Solid",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -650,15 +650,15 @@
     "examples": "Groningen",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
       "ringColor": "#13884A",
-      "leftStripeColor": "#F4F6FA",
+      "leftStripeColor": "#E6E6E6",
       "leftMidStripeColor": "#13884A",
-      "centerStripeColor": "#F4F6FA",
+      "centerStripeColor": "#E6E6E6",
       "rightMidStripeColor": "#13884A",
-      "rightStripeColor": "#F4F6FA",
+      "rightStripeColor": "#E6E6E6",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -668,13 +668,13 @@
     "config": {
       "bodyColor": "#13884A",
       "ringColor": "#13884A",
-      "leftStripeColor": "#F4F6FA",
+      "leftStripeColor": "#E6E6E6",
       "leftMidStripeColor": "#13884A",
-      "centerStripeColor": "#F4F6FA",
+      "centerStripeColor": "#E6E6E6",
       "rightMidStripeColor": "#13884A",
-      "rightStripeColor": "#F4F6FA",
+      "rightStripeColor": "#E6E6E6",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -682,15 +682,15 @@
     "examples": "Valencia",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
       "ringColor": "#D92A3A",
-      "leftStripeColor": "#F4F6FA",
-      "leftMidStripeColor": "#F4F6FA",
-      "centerStripeColor": "#F4F6FA",
-      "rightMidStripeColor": "#F4F6FA",
-      "rightStripeColor": "#F4F6FA",
+      "leftStripeColor": "#E6E6E6",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#E6E6E6",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#E6E6E6",
       "centerStripeMode": "Solid",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -698,12 +698,12 @@
     "examples": "Valladolid",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#F4F6FA",
-      "ringColor": "#F4F6FA",
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#E6E6E6",
       "leftStripeColor": "#5A4397",
-      "leftMidStripeColor": "#F4F6FA",
+      "leftMidStripeColor": "#E6E6E6",
       "centerStripeColor": "#5A4397",
-      "rightMidStripeColor": "#F4F6FA",
+      "rightMidStripeColor": "#E6E6E6",
       "rightStripeColor": "#5A4397",
       "centerStripeMode": "BreakUnderNumber",
       "numberColor": "#5A4397",
@@ -714,15 +714,15 @@
     "examples": "Gremio",
     "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#111111",
-      "ringColor": "#111111",
+      "bodyColor": "#1A1A18",
+      "ringColor": "#1A1A18",
       "leftStripeColor": "#38A8FF",
-      "leftMidStripeColor": "#111111",
+      "leftMidStripeColor": "#1A1A18",
       "centerStripeColor": "#38A8FF",
-      "rightMidStripeColor": "#111111",
+      "rightMidStripeColor": "#1A1A18",
       "rightStripeColor": "#38A8FF",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#F4F6FA",
+      "numberColor": "#E6E6E6",
       "font": "Default"
     }
   },
@@ -738,7 +738,7 @@
       "rightMidStripeColor": "#A71924",
       "rightStripeColor": "#E3CB16",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -754,7 +754,7 @@
       "rightMidStripeColor": "#D6C414",
       "rightStripeColor": "#C61F2A",
       "centerStripeMode": "BreakUnderNumber",
-      "numberColor": "#111111",
+      "numberColor": "#1A1A18",
       "font": "Default"
     }
   },
@@ -764,13 +764,13 @@
       "config": {
         "bodyColor": "#0F5F92",
         "ringColor": "#0F5F92",
-        "topStripeColor": "#F4F6FA",
+        "topStripeColor": "#E6E6E6",
         "topMidStripeColor": "#0F5F92",
-        "centerStripeColor": "#F4F6FA",
+        "centerStripeColor": "#E6E6E6",
         "bottomMidStripeColor": "#0F5F92",
-        "bottomStripeColor": "#F4F6FA",
+        "bottomStripeColor": "#E6E6E6",
         "centerStripeMode": "BreakUnderNumber",
-        "numberColor": "#F4F6FA",
+        "numberColor": "#E6E6E6",
         "font": "Default"
       }
     }

@@ -46,6 +46,34 @@ public class PlayerCard : MonoBehaviour
         // flagImage.sprite = Resources.Load<Sprite>($"Flags/{player.Country}");
     }
 
+    public void UpdateFromToken(PlayerToken token, string secondaryText = "")
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        playerNameText.text = (token.playerName ?? string.Empty).ToUpperInvariant();
+        countryText.text = (secondaryText ?? string.Empty).ToUpperInvariant();
+        paceValueText.text = token.pace.ToString();
+        dribblingValueText.text = token.dribbling.ToString();
+        headingValueText.text = token.heading.ToString();
+        highPassValueText.text = token.highPass.ToString();
+        resilienceValueText.text = token.resilience.ToString();
+        shootingValueText.text = token.shooting.ToString();
+        tacklingValueText.text = token.tackling.ToString();
+
+        playerNameText.color = Color.black;
+        countryText.color = Color.black;
+        paceValueText.color = GetAttributeColor(token.pace);
+        dribblingValueText.color = GetAttributeColor(token.dribbling);
+        headingValueText.color = GetAttributeColor(token.heading);
+        highPassValueText.color = GetAttributeColor(token.highPass);
+        resilienceValueText.color = GetAttributeColor(token.resilience);
+        shootingValueText.color = GetAttributeColor(token.shooting);
+        tacklingValueText.color = GetAttributeColor(token.tackling);
+    }
+
     private Color GetAttributeColor(int value)
     {
         if (value >= 5)

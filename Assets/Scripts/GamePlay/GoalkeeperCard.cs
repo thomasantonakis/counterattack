@@ -48,6 +48,34 @@ public class GoalkeeperCard : MonoBehaviour
         // flagImage.sprite = Resources.Load<Sprite>($"Flags/{player.Country}");
     }
 
+    public void UpdateFromToken(PlayerToken token, string secondaryText = "")
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        playerNameText.text = (token.playerName ?? string.Empty).ToUpperInvariant();
+        countryText.text = (secondaryText ?? string.Empty).ToUpperInvariant();
+        aerialValueText.text = token.aerial.ToString();
+        dribblingValueText.text = token.dribbling.ToString();
+        paceValueText.text = token.pace.ToString();
+        resilienceValueText.text = token.resilience.ToString();
+        savingValueText.text = token.saving.ToString();
+        handlingValueText.text = token.handling.ToString();
+        highPassValueText.text = token.highPass.ToString();
+
+        playerNameText.color = Color.black;
+        countryText.color = Color.black;
+        aerialValueText.color = GetAttributeColor(token.aerial);
+        dribblingValueText.color = GetAttributeColor(token.dribbling);
+        paceValueText.color = GetAttributeColor(token.pace);
+        resilienceValueText.color = GetAttributeColor(token.resilience);
+        savingValueText.color = GetAttributeColor(token.saving);
+        handlingValueText.color = GetAttributeColor(token.handling);
+        highPassValueText.color = GetAttributeColor(token.highPass);
+    }
+
     private Color GetAttributeColor(int value)
     {
         if (value >= 5)

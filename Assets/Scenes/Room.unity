@@ -2764,6 +2764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentCell: {fileID: 0}
+  ballRenderer: {fileID: 0}
   isMoving: 0
   hexGrid: {fileID: 1405702520}
   goalKeeperManager: {fileID: 272854143}
@@ -3623,6 +3624,9 @@ MonoBehaviour:
         totalPossessionWon: 0
         totalPossessionLost: 0
         totalCorners: 0
+        totalXRecoveries: 0
+        totalXDribbles: 0
+        totalXTackles: 0
       awayTeamStats:
         totalGoals: 0
         totalShots: 0
@@ -3650,6 +3654,9 @@ MonoBehaviour:
         totalPossessionWon: 0
         totalPossessionLost: 0
         totalCorners: 0
+        totalXRecoveries: 0
+        totalXDribbles: 0
+        totalXTackles: 0
   LastTokenToTouchTheBallOnPurpose: {fileID: 0}
   PreviousTokenToTouchTheBallOnPurpose: {fileID: 0}
   hangingPassType: 
@@ -6191,6 +6198,10 @@ MonoBehaviour:
   zoomSpeed: 15
   dragSpeed: 30
   rotationSpeed: 1000
+  minOrbitDistance: 12
+  maxOrbitDistance: 90
+  minPitch: 20
+  maxPitch: 90
   gameInputManager: {fileID: 417053521}
 --- !u!1 &968170741
 GameObject:
@@ -9099,6 +9110,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridCenter: {x: 0, y: 0, z: 0}
   hexCellPrefab: {fileID: -428787755409983856, guid: f78181e779d674d1a80601a352fff9e9, type: 3}
+  clearLightColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
+  clearDarkColor: {r: 0, g: 0.5058824, b: 0.21960784, a: 1}
+  snowLightColor: {r: 0.82, g: 0.84, b: 0.86, a: 1}
+  snowDarkColor: {r: 0.58, g: 0.6, b: 0.63, a: 1}
   highlightedHexes: []
   ball: {fileID: 390494642}
   groundBallManager: {fileID: 1703800862}
