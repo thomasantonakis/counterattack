@@ -124,17 +124,7 @@ public class Ball : MonoBehaviour
             return; // No current cell to check
         }
 
-        // Check if the hex is occupied by a player (attacker or defender)
-        float yOffset = groundHeightOffset;  // Default height on the ground
-        // Debug.Log("Ball Cell isAttackOccupied: " + currentCell.isAttackOccupied + " or  isDefenseOccupied: " + currentCell.isDefenseOccupied);
-        if (currentCell.isAttackOccupied || currentCell.isDefenseOccupied)
-        {
-            yOffset = playerHeightOffset;  // Lift the ball when it's on a player token
-        }
-
-        // Set the ball's position
-        Vector3 newPosition = new Vector3(currentCell.GetHexCenter().x, yOffset, currentCell.GetHexCenter().z);
-        transform.position = newPosition;
+        transform.position = GetVisualPositionForCell(currentCell);
         // Debug.Log("Ball position adjusted to: " + yOffset);
 
     }
@@ -168,13 +158,14 @@ public class Ball : MonoBehaviour
 
         targetCell = newHex;
         isMoving = true;
+        Vector3 targetPosition = GetVisualPositionForCell(targetCell);
         int previousPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position);
         bool isFromGoal = GetCurrentHex().isInGoal != 0;
         // Move smoothly towards the target cell
         while (isMoving)
         {
             float step = adjustedSpeed * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, targetCell.GetHexCenter(), step);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
             // ✅ Detect transition into penalty box
             int currentPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position);
             if (previousPenaltyBoxStatus == 0 && currentPenaltyBoxStatus != 0)
@@ -207,9 +198,9 @@ public class Ball : MonoBehaviour
             // Update previous status
             previousPenaltyBoxStatus = currentPenaltyBoxStatus;
             // Check if the ball has reached the target
-            if (Vector3.Distance(transform.position, targetCell.GetHexCenter()) < 0.001f)
+            if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
             {
-                transform.position = targetCell.GetHexCenter();  // Snap exactly to the hex center
+                transform.position = targetPosition;  // Snap exactly to the intended resting point
                 isMoving = false;  // Stop the movement
             }
 
@@ -251,6 +242,21 @@ public class Ball : MonoBehaviour
     public void DeselectBall()
     {
         isBallSelected = false;
+    }
+
+    private Vector3 GetVisualPositionForCell(HexCell cell)
+    {
+        if (cell == null)
+        {
+            return transform.position;
+        }
+
+        float yOffset = (cell.isAttackOccupied || cell.isDefenseOccupied)
+            ? playerHeightOffset
+            : groundHeightOffset;
+
+        Vector3 cellCenter = cell.GetHexCenter();
+        return new Vector3(cellCenter.x, cellCenter.y + yOffset, cellCenter.z);
     }
 
 }

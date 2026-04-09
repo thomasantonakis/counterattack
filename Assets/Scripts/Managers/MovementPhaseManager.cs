@@ -86,6 +86,7 @@ public class MovementPhaseManager : MonoBehaviour
     private HexCell hoveredMovementHex;
     private bool showAttackerReachOverlay;
     private bool showDefenderReachOverlay;
+    private bool showSafeDribblerReachOverlay;
     private int lastMovementHighlightRange;
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
@@ -2343,18 +2344,23 @@ public class MovementPhaseManager : MonoBehaviour
         bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand);
         bool shiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         bool lHeld = Input.GetKey(KeyCode.L);
+        bool uHeld = Input.GetKey(KeyCode.U);
 
         bool canShowOverlay = CanShowHeldReachOverlay();
-        bool nextShowAttack = canShowOverlay && ctrlHeld && lHeld && !shiftHeld;
-        bool nextShowDefense = canShowOverlay && ctrlHeld && shiftHeld && lHeld;
+        bool nextShowAttack = canShowOverlay && ctrlHeld && lHeld && !shiftHeld && !uHeld;
+        bool nextShowDefense = canShowOverlay && ctrlHeld && shiftHeld && lHeld && !uHeld;
+        bool nextShowSafeDribbler = canShowOverlay && ctrlHeld && shiftHeld && uHeld && !lHeld;
 
-        if (showAttackerReachOverlay == nextShowAttack && showDefenderReachOverlay == nextShowDefense)
+        if (showAttackerReachOverlay == nextShowAttack
+            && showDefenderReachOverlay == nextShowDefense
+            && showSafeDribblerReachOverlay == nextShowSafeDribbler)
         {
             return;
         }
 
         showAttackerReachOverlay = nextShowAttack;
         showDefenderReachOverlay = nextShowDefense;
+        showSafeDribblerReachOverlay = nextShowSafeDribbler;
         ApplyHeldReachOverlay();
     }
 
@@ -2362,19 +2368,25 @@ public class MovementPhaseManager : MonoBehaviour
     {
         ClearHeldReachOverlay();
 
-        if (!showAttackerReachOverlay && !showDefenderReachOverlay)
+        if (!showAttackerReachOverlay && !showDefenderReachOverlay && !showSafeDribblerReachOverlay)
         {
+            return;
+        }
+
+        if (showSafeDribblerReachOverlay)
+        {
+            ApplySafeDribblerReachOverlay();
             return;
         }
 
         IEnumerable<PlayerToken> tokens = showAttackerReachOverlay
             ? GetOverlayAttackers()
-            : hexGrid.GetDefenders();
+            : GetOverlayDefenders();
         string overlayReason = showAttackerReachOverlay ? "ReachOverlayAttacker" : "ReachOverlayDefender";
 
         foreach (PlayerToken token in tokens)
         {
-            if (token == null || token.GetCurrentHex() == null || token.isSentOff)
+            if (!IsTokenEligibleForHeldReachOverlay(token))
             {
                 continue;
             }
@@ -2397,6 +2409,42 @@ public class MovementPhaseManager : MonoBehaviour
                 {
                     hex.HighlightHex(overlayReason);
                 }
+            }
+        }
+    }
+
+    private void ApplySafeDribblerReachOverlay()
+    {
+        PlayerToken dribbler = GetOverlayDribbler();
+        if (dribbler == null || !IsTokenEligibleForHeldReachOverlay(dribbler))
+        {
+            return;
+        }
+
+        int dribblerRange = GetOverlayMovementRange(dribbler);
+        if (dribblerRange <= 0)
+        {
+            return;
+        }
+
+        (List<HexCell> dribblerReachableHexes, _) = GetReachableMovementData(dribbler, dribblerRange);
+        HashSet<HexCell> defenderThreatHexes = BuildHeldOverlayDefenderThreatHexes();
+
+        foreach (HexCell destination in dribblerReachableHexes)
+        {
+            if (destination == null || destination.isAttackOccupied || destination.isDefenseOccupied)
+            {
+                continue;
+            }
+
+            if (!IsSafeDribblerDestination(destination, defenderThreatHexes))
+            {
+                continue;
+            }
+
+            if (heldReachOverlayHexes.Add(destination))
+            {
+                destination.HighlightHex("ReachOverlayDribblerSafe");
             }
         }
     }
@@ -2456,11 +2504,127 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
+    private IEnumerable<PlayerToken> GetOverlayDefenders()
+    {
+        foreach (PlayerToken token in hexGrid.GetDefenders())
+        {
+            if (token != null)
+            {
+                yield return token;
+            }
+        }
+    }
+
+    private PlayerToken GetOverlayDribbler()
+    {
+        if (selectedToken != null && selectedToken.IsDribbler)
+        {
+            return selectedToken;
+        }
+
+        PlayerToken ballHolder = ball?.GetCurrentHex()?.GetOccupyingToken();
+        if (ballHolder != null && ballHolder.IsDribbler)
+        {
+            return ballHolder;
+        }
+
+        return null;
+    }
+
+    private HashSet<HexCell> BuildHeldOverlayDefenderThreatHexes()
+    {
+        HashSet<HexCell> threatenedHexes = new();
+
+        foreach (PlayerToken defender in GetOverlayDefenders())
+        {
+            if (!IsTokenEligibleForHeldReachOverlay(defender))
+            {
+                continue;
+            }
+
+            HexCell defenderHex = defender.GetCurrentHex();
+            if (defenderHex != null)
+            {
+                threatenedHexes.Add(defenderHex);
+            }
+
+            int movementRange = GetOverlayMovementRange(defender);
+            if (movementRange <= 0)
+            {
+                continue;
+            }
+
+            (List<HexCell> reachableHexes, _) = GetReachableMovementData(defender, movementRange);
+            foreach (HexCell reachableHex in reachableHexes)
+            {
+                if (reachableHex != null)
+                {
+                    threatenedHexes.Add(reachableHex);
+                }
+            }
+        }
+
+        return threatenedHexes;
+    }
+
+    private bool IsSafeDribblerDestination(HexCell destination, HashSet<HexCell> defenderThreatHexes)
+    {
+        if (destination == null)
+        {
+            return false;
+        }
+
+        if (defenderThreatHexes.Contains(destination))
+        {
+            return false;
+        }
+
+        foreach (HexCell neighbor in destination.GetNeighbors(hexGrid))
+        {
+            if (neighbor != null && defenderThreatHexes.Contains(neighbor))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsTokenEligibleForHeldReachOverlay(PlayerToken token)
+    {
+        if (token == null || token.GetCurrentHex() == null || token.isSentOff)
+        {
+            return false;
+        }
+
+        if (movedTokens.Contains(token))
+        {
+            return false;
+        }
+
+        if (stunnedTokens.Contains(token))
+        {
+            return false;
+        }
+
+        if (headerManager.attackerWillJump.Contains(token) || headerManager.defenderWillJump.Contains(token))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     private int GetOverlayMovementRange(PlayerToken token)
     {
         if (token == null)
         {
             return 0;
+        }
+
+        if (token == selectedToken && token.IsDribbler && isDribblerRunning)
+        {
+            return Mathf.Max(0, remainingDribblerPace);
         }
 
         if (isMovementPhase2f2 && token.isAttacker)

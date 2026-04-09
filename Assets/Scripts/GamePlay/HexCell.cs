@@ -204,6 +204,9 @@ public class HexCell : MonoBehaviour
             case "ReachOverlayDefender":
                 colorToApply = new Color(1f, 0.55f, 0.12f, 1f);
                 break;
+            case "ReachOverlayDribblerSafe":
+                colorToApply = new Color(0.18f, 1f, 0.45f, 1f);
+                break;
             case "DefenderZOI":
                 colorToApply = Color.yellow * 0.5f;
                 break;

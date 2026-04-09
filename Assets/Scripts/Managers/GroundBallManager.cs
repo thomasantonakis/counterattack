@@ -270,7 +270,7 @@ public class GroundBallManager : MonoBehaviour
                 isAwaitingTargetSelection = false;
                 CommitToThisAction();
                 LogGroundPassAttempt();
-                PopulateGroundPathInterceptions(clickedHex, false);
+                PopulateGroundPathInterceptions(clickedHex);
                 if (passIsDangerous)
                 {
                     diceRollsPending = defendingHexes.Count;
@@ -318,6 +318,7 @@ public class GroundBallManager : MonoBehaviour
         PopulateGroundPathInterceptions(hoveredHex, false);
         int previewAttempts = defendingHexes.Count;
         HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
+        HighlightCommittedTarget();
         latestValidationInstruction = GetEasyModePreviewInstruction(validation.IsDangerous, previewAttempts);
     }
 
@@ -349,7 +350,11 @@ public class GroundBallManager : MonoBehaviour
                 continue;
             }
 
-            if (hex == hoveredHex)
+            if (hex == currentTargetHex)
+            {
+                hex.HighlightHex("passTargetCommitted");
+            }
+            else if (hex == hoveredHex)
             {
                 hex.HighlightHex("passTarget");
             }
