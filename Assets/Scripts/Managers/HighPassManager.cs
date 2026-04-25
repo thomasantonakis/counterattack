@@ -707,7 +707,7 @@ public class HighPassManager : MonoBehaviour
         }
         else
         {
-            MatchManager.Instance.hangingPassType = "aerial";
+            MatchManager.Instance.SetHangingPass("aerial");
             Debug.Log("Ball landed within bounds.");
             // Check if the defending GK can challenge
             gkReachableHexes = CanDefendingGKChallenge();

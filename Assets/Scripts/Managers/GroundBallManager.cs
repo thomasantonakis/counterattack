@@ -8,31 +8,6 @@ using System.Threading.Tasks;
 
 public class GroundBallManager : MonoBehaviour
 {
-    public enum PassValidationFailureReason
-    {
-        None,
-        NullTarget,
-        OutOfRange,
-        BlockedByDefender,
-        TargetOccupiedByDefender,
-    }
-
-    public readonly struct GroundPassValidationResult
-    {
-        public readonly bool IsValid;
-        public readonly bool IsDangerous;
-        public readonly List<HexCell> PathHexes;
-        public readonly PassValidationFailureReason FailureReason;
-
-        public GroundPassValidationResult(bool isValid, bool isDangerous, List<HexCell> pathHexes, PassValidationFailureReason failureReason)
-        {
-            IsValid = isValid;
-            IsDangerous = isDangerous;
-            PathHexes = pathHexes;
-            FailureReason = failureReason;
-        }
-    }
-
     [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
@@ -373,57 +348,12 @@ public class GroundBallManager : MonoBehaviour
     public GroundPassValidationResult ValidateGroundPassPath(HexCell targetHex, int distance)
     {
         hexGrid.ClearHighlightedHexes();
-        HexCell ballHex = ball.GetCurrentHex();
-        if (ballHex == null || targetHex == null)
-        {
-            Debug.LogError("Ball or target hex is null!");
-            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.NullTarget);
-        }
-
-        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
-        int distanceBetweenHexes = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
-        if (distanceBetweenHexes > distance)
-        {
-            Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {distance}. Current steps: {distanceBetweenHexes}");
-            return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.OutOfRange);
-        }
-
-        if (isQuickThrow)
-        {
-            if (targetHex.isDefenseOccupied)
-            {
-                Debug.Log($"Quick throw target blocked by defender at hex: {targetHex.coordinates}");
-                return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.TargetOccupiedByDefender);
-            }
-        }
-        else
-        {
-            foreach (HexCell hex in pathHexes)
-            {
-                if (hex.isDefenseOccupied)
-                {
-                    Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
-                    return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.BlockedByDefender);
-                }
-            }
-        }
-
-        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
-        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-        bool isDangerous = IsGroundPassDangerous(pathHexes, targetHex, defenderNeighbors);
-        return new GroundPassValidationResult(true, isDangerous, pathHexes, PassValidationFailureReason.None);
+        return GroundPassCommon.ValidateStandardPassPath(hexGrid, ball, targetHex, distance, isQuickThrow);
     }
 
     private string GetValidationFailureInstruction(PassValidationFailureReason failureReason)
     {
-        return failureReason switch
-        {
-            PassValidationFailureReason.OutOfRange => "Pass invalid: out of range.",
-            PassValidationFailureReason.BlockedByDefender => "Pass invalid: blocked by defender.",
-            PassValidationFailureReason.TargetOccupiedByDefender => "Pass invalid: target occupied by defender.",
-            PassValidationFailureReason.NullTarget => "Pass invalid: no valid target selected.",
-            _ => string.Empty,
-        };
+        return GroundPassCommon.GetValidationFailureInstruction(failureReason);
     }
 
     private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts)
@@ -489,7 +419,7 @@ public class GroundBallManager : MonoBehaviour
 
             Debug.Log(
                 $"{defenderJersey}. {defenderName} at {candidate.DefenderHex.coordinates} with a tackling of {defenderTackling} can intercept with a roll of {rollDescription} at {candidate.ClosestInterceptionHex.coordinates}. " +
-                $"Closest interception hex is {candidate.ClosestInterceptionHex.coordinates} ({candidate.ClosestZoiDistanceFromBall} steps from the ball)."
+                $"Closest interception hex is {candidate.ClosestInterceptionHex.coordinates} ({candidate.ClosestInterceptionDistanceFromBall} steps from the ball)."
             );
 
             interceptionHexes.Add(candidate.ClosestInterceptionHex);
@@ -512,7 +442,7 @@ public class GroundBallManager : MonoBehaviour
         }
         else
         {
-            MatchManager.Instance.hangingPassType = "ground";
+            MatchManager.Instance.SetHangingPass("ground");
         }
         CleanUpPass();
     }
@@ -677,192 +607,25 @@ public class GroundBallManager : MonoBehaviour
         // finalThirdManager.TriggerFinalThirdPhase();
     }
 
-    private bool IsGroundPassDangerous(List<HexCell> pathHexes, HexCell targetHex, List<HexCell> defenderNeighbors)
-    {
-        List<HexCell> relevantInterceptionHexes = GetRelevantInterceptionHexes(pathHexes, targetHex);
-        return relevantInterceptionHexes.Any(defenderNeighbors.Contains);
-    }
-
-    private List<HexCell> GetRelevantInterceptionHexes(List<HexCell> pathHexes, HexCell targetHex)
-    {
-        if (pathHexes == null)
-        {
-            return new List<HexCell>();
-        }
-
-        if (isQuickThrow)
-        {
-            return pathHexes.Where(hex => hex == targetHex).ToList();
-        }
-
-        return pathHexes
-            .Where(hex => hex != null && !hex.isAttackOccupied)
-            .ToList();
-    }
-
     private List<GroundInterceptionCandidate> BuildOrderedInterceptionCandidates(HexCell targetHex, IEnumerable<HexCell> candidateDefenders = null)
     {
-        HexCell ballHex = ball.GetCurrentHex();
-        if (ballHex == null || targetHex == null)
-        {
-            return new List<GroundInterceptionCandidate>();
-        }
-
-        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
-        List<HexCell> relevantInterceptionHexes = GetRelevantInterceptionHexes(pathHexes, targetHex);
-        HashSet<HexCell> relevantInterceptionHexSet = new HashSet<HexCell>(relevantInterceptionHexes);
-
-        IEnumerable<HexCell> defendersToEvaluate = candidateDefenders ?? hexGrid.GetDefenderHexes();
-        List<GroundInterceptionCandidate> orderedCandidates = new List<GroundInterceptionCandidate>();
-
-        foreach (HexCell defenderHex in defendersToEvaluate.Where(hex => hex != null))
-        {
-            PlayerToken defenderToken = defenderHex.occupyingToken;
-            if (defenderToken == null)
-            {
-                continue;
-            }
-
-            List<HexCell> influencedHexes = defenderHex
-                .GetNeighbors(hexGrid)
-                .Where(hex => hex != null && relevantInterceptionHexSet.Contains(hex))
-                .ToList();
-
-            if (influencedHexes.Count == 0)
-            {
-                continue;
-            }
-
-            HexCell closestInterceptionHex = influencedHexes
-                .OrderBy(hex => HexGridUtils.GetHexStepDistance(ballHex, hex))
-                .ThenBy(hex => hex.coordinates.x)
-                .ThenBy(hex => hex.coordinates.z)
-                .First();
-
-            orderedCandidates.Add(new GroundInterceptionCandidate
-            {
-                DefenderHex = defenderHex,
-                DefenderToken = defenderToken,
-                ClosestInterceptionHex = closestInterceptionHex,
-                ClosestZoiDistanceFromBall = HexGridUtils.GetHexStepDistance(ballHex, closestInterceptionHex),
-                DefenderDistanceFromBall = HexGridUtils.GetHexStepDistance(ballHex, defenderHex),
-            });
-        }
-
-        return orderedCandidates
-            .OrderBy(candidate => candidate.ClosestZoiDistanceFromBall)
-            .ThenBy(candidate => candidate.DefenderDistanceFromBall)
-            .ThenBy(candidate => candidate.DefenderToken.tackling)
-            .ThenBy(candidate => candidate.DefenderToken.playerName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-    }
-
-    private sealed class GroundInterceptionCandidate
-    {
-        public HexCell DefenderHex;
-        public PlayerToken DefenderToken;
-        public HexCell ClosestInterceptionHex;
-        public int ClosestZoiDistanceFromBall;
-        public int DefenderDistanceFromBall;
+        return GroundPassCommon.BuildOrderedInterceptionCandidates(
+            hexGrid,
+            ball,
+            targetHex,
+            candidateDefenders,
+            isQuickThrow
+        );
     }
 
     public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)
     {
-        List<HexCell> path = new List<HexCell>();
-        string logContent = $"Ball Radius: {ballRadius}\n";
-        string startHexCoordinates = $"({startHex.coordinates.x}, {startHex.coordinates.z})";
-        string endHexCoordinates = $"({endHex.coordinates.x}, {endHex.coordinates.z})";
-        logContent += $"Starting Hex: {startHexCoordinates}, Target Hex: {endHexCoordinates}\n";
-
-        // Get world positions of the start and end hex centers
-        Vector3 startPos = startHex.GetHexCenter();
-        Vector3 endPos = endHex.GetHexCenter();
-
-        // Step 2: Get a list of candidate hexes based on the bounding box
-        List<HexCell> candidateHexes = GetCandidateGroundPathHexes(startHex, endHex, ballRadius);
-
-        // Step 3: Loop through the candidate hexes and check distances to the parallel lines
-        foreach (HexCell candidateHex in candidateHexes)
-        {
-            Vector3 candidatePos = candidateHex.GetHexCenter();
-
-            // Check the distance from the candidate hex to the main line
-            float distanceToLine = DistanceFromPointToLine(candidatePos, startPos, endPos);
-
-            if (distanceToLine <= ballRadius)
-            {
-                // Hex is within the thick path
-                if (!path.Contains(candidateHex))
-                {
-                    path.Add(candidateHex);
-                    logContent += $"Added Hex: ({candidateHex.coordinates.x}, {candidateHex.coordinates.z}), Distance to Line: {distanceToLine}, Radius: {ballRadius}\n";
-                }
-            }
-            else
-            {
-                logContent += $"Not Added: ({candidateHex.coordinates.x}, {candidateHex.coordinates.z}), Distance: {distanceToLine} exceeds Ball Radius: {ballRadius}\n";
-            }
-        }
-        path.Remove(startHex);
-        // Log the final highlighted path to the file
-        string highlightedPath = "Highlighted Path: ";
-        foreach (HexCell hex in path)
-        {
-            highlightedPath += $"({hex.coordinates.x}, {hex.coordinates.z}), ";
-        }
-        highlightedPath = highlightedPath.TrimEnd(new char[] { ',', ' ' });
-        logContent += highlightedPath;
-
-        // Save the log to a file
-        SaveLogToFile(logContent, startHexCoordinates, endHexCoordinates);
-
-        return path;
+        return GroundPassCommon.CalculateThickPath(hexGrid, startHex, endHex, ballRadius);
     }
 
     public List<HexCell> GetCandidateGroundPathHexes(HexCell startHex, HexCell endHex, float ballRadius)
     {
-        List<HexCell> candidates = new List<HexCell>();
-        // Get the axial coordinates of the start and end hexes
-        Vector3Int startCoords = startHex.coordinates;
-        Vector3Int endCoords = endHex.coordinates;
-
-        // Determine the bounds (min and max x and z)
-        int minX = Mathf.Min(startCoords.x, endCoords.x) - 1;
-        int maxX = Mathf.Max(startCoords.x, endCoords.x) + 1;
-        int minZ = Mathf.Min(startCoords.z, endCoords.z) - 1;
-        int maxZ = Mathf.Max(startCoords.z, endCoords.z) + 1;
-
-        // Loop through all hexes in the bounding box
-        for (int x = minX; x <= maxX; x++)
-        {
-            for (int z = minZ; z <= maxZ; z++)
-            {
-                Vector3Int coords = new Vector3Int(x, 0, z);
-                HexCell hex = hexGrid.GetHexCellAt(coords);
-
-                if (hex != null)
-                {
-                    candidates.Add(hex);
-                }
-            }
-        }
-        return candidates;
-    }
-
-    float DistanceFromPointToLine(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
-    {
-        Vector3 lineDirection = lineEnd - lineStart;
-        float lineLength = lineDirection.magnitude;
-        lineDirection.Normalize();
-
-        // Project the point onto the line, clamping between the start and end of the line
-        float projectedLength = Mathf.Clamp(Vector3.Dot(point - lineStart, lineDirection), 0, lineLength);
-
-        // Calculate the closest point on the line
-        Vector3 closestPoint = lineStart + lineDirection * projectedLength;
-
-        // Return the distance from the point to the closest point on the line
-        return Vector3.Distance(point, closestPoint);
+        return GroundPassCommon.GetCandidateGroundPathHexes(hexGrid, startHex, endHex);
     }
 
     void SaveLogToFile(string logText, string startHex, string endHex)

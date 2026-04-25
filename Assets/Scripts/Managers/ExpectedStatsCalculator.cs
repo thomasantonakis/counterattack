@@ -50,6 +50,11 @@ public static class ExpectedStatsCalculator
 
     public static float CalculateRecoveryProbability(PlayerToken defender)
     {
+        return CalculateRecoveryProbability(defender, 6);
+    }
+
+    public static float CalculateRecoveryProbability(PlayerToken defender, int minimumNaturalRollForSuccess)
+    {
         if (defender == null)
         {
             return 0f;
@@ -60,7 +65,7 @@ public static class ExpectedStatsCalculator
 
         for (int roll = 1; roll <= 6; roll++)
         {
-            if (roll == 6 || roll + tackling >= 10)
+            if (roll >= minimumNaturalRollForSuccess || roll + tackling >= 10)
             {
                 successfulRolls++;
             }

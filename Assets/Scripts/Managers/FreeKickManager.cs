@@ -160,11 +160,9 @@ public class FreeKickManager : MonoBehaviour
                 else if (keyData.key == KeyCode.P)
                 {
                     hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerStandardPass();;
-                    // groundBallManager.ActivateGroundBall();
-                    // TODO: Replace this mutable distance override with an explicit Short Pass / Corner Kick GBP mode.
+                    MatchManager.Instance.OfferShortGroundBallPass();
+                    MatchManager.Instance.TriggerStandardPass();
                     MatchManager.Instance.CommitToAction();
-                    groundBallManager.imposedDistance = 6;
                     isCornerKick = false;
                     isWaitingForExecution = false;
                 }

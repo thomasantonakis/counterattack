@@ -38,6 +38,7 @@ public class MatchManager : MonoBehaviour
         HeaderChallengeResolved,
         HeaderCompleted,
         FirstTimePassAttackerMovement,
+        FirstTimePassDefenderMovement,
         FreeKickKickerSelect,
         FreeKickAttGK,
         FreeKickDefGK1,
@@ -593,14 +594,27 @@ public class MatchManager : MonoBehaviour
                     logEntry += "scores a goal! ⚽";
                     playerStats.goals += value;
                     teamStats.totalGoals += value;
+                    PlayerToken assistToken = MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose;
                     MatchManager.Instance.AddGoal(
                         token.playerName
                         , token.isHomeTeam
                         // , GetCurrentMinute()
                         , 10
                         , false
-                        , MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose?.playerName
+                        , assistToken?.playerName
                     );
+                    if (
+                        assistToken != null &&
+                        assistToken != token &&
+                        assistToken.isHomeTeam == token.isHomeTeam
+                    )
+                    {
+                        LogEvent(
+                            assistToken,
+                            ActionType.AssistProvided,
+                            connectedToken: token
+                        );
+                    }
                     break;
 
                 case ActionType.AssistProvided:
@@ -862,9 +876,14 @@ public class MatchManager : MonoBehaviour
     public PlayerToken LastTokenToTouchTheBallOnPurpose;
     public PlayerToken PreviousTokenToTouchTheBallOnPurpose;
     public string hangingPassType;
+    public PlayerToken hangingPassExcludedCollector;
+    public bool clearPreviousOnNextBallCollection;
     public int difficulty_level;
     public int refereeLeniency;
     public bool isFTPAvailable = false;
+    private const int StandardGroundBallDistance = 11;
+    private const int ShortGroundBallDistance = 6;
+    [SerializeField] private int pendingGroundBallDistance = StandardGroundBallDistance;
 
     public void RecordSubstitutionEvent(string playerOffName, string playerOnName, int value = 1)
     {
@@ -1052,6 +1071,7 @@ public class MatchManager : MonoBehaviour
     public void StartMatch()
     {
         currentState = GameState.KickoffBlown;
+        OfferStandardGroundBallPass();
         groundBallManager.isAvailable = true;
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
@@ -1135,6 +1155,82 @@ public class MatchManager : MonoBehaviour
         Debug.Log($"Attacking team has possession: {attackHasPossession}.");
     }
 
+    public void OfferShortGroundBallPass()
+    {
+        pendingGroundBallDistance = ShortGroundBallDistance;
+        ApplyPendingGroundBallDistance();
+    }
+
+    public void OfferStandardGroundBallPass()
+    {
+        pendingGroundBallDistance = StandardGroundBallDistance;
+        ApplyPendingGroundBallDistance();
+    }
+
+    private void ResetPendingGroundBallOffer()
+    {
+        pendingGroundBallDistance = StandardGroundBallDistance;
+    }
+
+    private void ApplyPendingGroundBallDistance()
+    {
+        if (groundBallManager != null)
+        {
+            groundBallManager.imposedDistance = pendingGroundBallDistance;
+        }
+    }
+
+    public void SetHangingPass(string passType, PlayerToken excludedCollector = null)
+    {
+        hangingPassType = passType;
+        hangingPassExcludedCollector = excludedCollector;
+    }
+
+    public void ClearHangingPass()
+    {
+        hangingPassType = null;
+        hangingPassExcludedCollector = null;
+    }
+
+    public bool CanTokenCollectHangingPass(PlayerToken token)
+    {
+        return token != null && (string.IsNullOrEmpty(hangingPassType) || hangingPassExcludedCollector != token);
+    }
+
+    public void MarkNextBallCollectionToClearPrevious()
+    {
+        clearPreviousOnNextBallCollection = true;
+    }
+
+    public void ClearPendingLooseBallCollectionReset()
+    {
+        clearPreviousOnNextBallCollection = false;
+    }
+
+    public void ClearLastTokenChain()
+    {
+        LastTokenToTouchTheBallOnPurpose = null;
+        PreviousTokenToTouchTheBallOnPurpose = null;
+    }
+
+    public void SetLastTokenFromLooseBall(PlayerToken inputToken)
+    {
+        ClearLastTokenChain();
+        SetLastToken(inputToken);
+        clearPreviousOnNextBallCollection = false;
+    }
+
+    public void ApplyBallCollectionOwnership(PlayerToken inputToken)
+    {
+        if (clearPreviousOnNextBallCollection)
+        {
+            SetLastTokenFromLooseBall(inputToken);
+            return;
+        }
+
+        SetLastToken(inputToken);
+    }
+
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass()
     {  
@@ -1144,6 +1240,7 @@ public class MatchManager : MonoBehaviour
         highPassManager.CleanUpHighPass();
         longBallManager.CleanUpLongBall();
         RefreshAvailableActions();
+        ApplyPendingGroundBallDistance();
         groundBallManager.ActivateGroundBall();
     }
 
@@ -1157,6 +1254,10 @@ public class MatchManager : MonoBehaviour
         longBallManager.CleanUpLongBall();
         RefreshAvailableActions();
         movementPhaseManager.ActivateMovementPhase();
+        if (difficulty_level == 3)
+        {
+            movementPhaseManager.CommitToAction();
+        }
     }
 
     public void TriggerHighPass()
@@ -1201,46 +1302,55 @@ public class MatchManager : MonoBehaviour
         longBallManager.isAvailable = false;
         shotManager.isAvailable = false;
         isFTPAvailable = false;
+        ResetPendingGroundBallOffer();
     }
 
     public void BroadcastSafeEndofMovementPhase()
     {
         currentState = GameState.EndOfMovementPhase;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
     public void BroadcastSuccessfulTackle()
     {
         currentState = GameState.SuccessfulTackle;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
     
     public void BroadcastEndofGroundBallPass()
     {
         currentState = GameState.EndOfStandardPass;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
 
     public void BroadcastEndofFirstTimePass()
     {
         currentState = GameState.EndOfFirstTimePass;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
     
     public void BroadcastEndOfLongBall()
     {
         currentState = GameState.EndOfLongBall;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
     
-    public void BroadcastAnyOtherScenario()
+    public void BroadcastAnyOtherScenario(bool offerShortGroundBall = true)
     {
         currentState = GameState.AnyOtherScenario;
+        if (offerShortGroundBall) OfferShortGroundBallPass();
+        else OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
 
     public void BroadcastBallControl()
     {
         currentState = GameState.BallControl;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
 
@@ -1248,17 +1358,20 @@ public class MatchManager : MonoBehaviour
     public void BroadcastQuickThrow()
     {
         currentState = GameState.QuickThrow;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
     public void BroadcastActivateFinalThirdsAfterSave()
     {
         currentState = GameState.ActivateFinalThirdsAfterSave;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
 
     public void BroadcastHeaderCompleted()
     {
         currentState = GameState.HeaderCompleted;
+        OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
 
@@ -1303,8 +1416,16 @@ public class MatchManager : MonoBehaviour
         }
         else if (currentState == GameState.EndOfLongBall)
         {
-            movementPhaseManager.ActivateMovementPhase();
-            movementPhaseManager.CommitToAction();
+            if (attackHasPossession && ball.GetCurrentHex() != null && ball.GetCurrentHex().isAttackOccupied && ShouldShotBeAvailable())
+            {
+                movementPhaseManager.isAvailable = true;
+                shotManager.isAvailable = true;
+            }
+            else
+            {
+                movementPhaseManager.ActivateMovementPhase();
+                movementPhaseManager.CommitToAction();
+            }
         }
         else if (currentState == GameState.EndOfFirstTimePass)
         {
@@ -1384,6 +1505,8 @@ public class MatchManager : MonoBehaviour
             // longBallManager.isAvailable = false;
             // shotManager.isAvailable = false;
         }
+
+        ApplyPendingGroundBallDistance();
     }
 
     private bool ShouldShotBeAvailable()
@@ -1421,6 +1544,7 @@ public class MatchManager : MonoBehaviour
     
     public void EnableFreeKickOptions()
     {
+        OfferStandardGroundBallPass();
         movementPhaseManager.isAvailable = false;
         groundBallManager.isAvailable = true;
         firstTimePassManager.isAvailable = false;
@@ -1432,6 +1556,7 @@ public class MatchManager : MonoBehaviour
     
     public void EnableCornerKickOptions()
     {
+        OfferShortGroundBallPass();
         movementPhaseManager.isAvailable = false;
         groundBallManager.isAvailable = true;
         firstTimePassManager.isAvailable = false;

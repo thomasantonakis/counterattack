@@ -320,7 +320,7 @@ public class HeaderManager : MonoBehaviour
         else if (!hasEligibleAttackers)
         {
             Debug.Log("No attackers eligible to head the ball. Defense wins the Possession automatically.");
-            MatchManager.Instance.hangingPassType = null; // no chance of attack retaining possession
+            MatchManager.Instance.ClearHangingPass(); // no chance of attack retaining possession
             // 🧤 If the GK rushed out, auto-select the GK
             if (highPassManager.gkRushedOut)
             {
@@ -338,7 +338,7 @@ public class HeaderManager : MonoBehaviour
         else if (!hasEligibleDefenders)
         {
             Debug.Log("No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).");
-            MatchManager.Instance.hangingPassType = null;
+            MatchManager.Instance.ClearHangingPass();
             isWaitingForControlOrHeaderDecision = true;
         }
         else
@@ -776,7 +776,7 @@ public class HeaderManager : MonoBehaviour
         // **Scenario: Only Attackers are Jumping**
         if (attackerWillJump.Count > 0 && defenderWillJump.Count == 0)
         {
-            MatchManager.Instance.hangingPassType = null;
+            MatchManager.Instance.ClearHangingPass();
             if (attackFreeHeader)
             {
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
@@ -877,10 +877,6 @@ public class HeaderManager : MonoBehaviour
                             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt);
                             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOnTarget);
                             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.GoalScored);
-                            MatchManager.Instance.gameData.gameLog.LogEvent(
-                                            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
-                                            , MatchManager.ActionType.AssistProvided
-                                        );
                             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(headerAtGoalTarget, bestAttackerRoll));
                             goalFlowManager.StartGoalFlow(bestAttacker);
                             CleanUpHeader();
@@ -942,9 +938,9 @@ public class HeaderManager : MonoBehaviour
             }
             else if (bestDefenderScore == bestAttackerScore)
             {
-                MatchManager.Instance.hangingPassType = "aerial";
+                MatchManager.Instance.SetHangingPass("aerial");
                 // MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, "header"));
+                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection));
                 Debug.Log("Loose ball from header challenge.");
                 CleanUpHeader();
             }
@@ -1022,8 +1018,8 @@ public class HeaderManager : MonoBehaviour
         else
         {
             Debug.Log($"{challengeWinner.name} failed to control the ball! Loose ball from {challengeWinner.name}");
-            MatchManager.Instance.hangingPassType = "control";
-            StartCoroutine(looseBallManager.ResolveLooseBall(challengeWinner, "ground"));
+            MatchManager.Instance.SetHangingPass("control");
+            StartCoroutine(looseBallManager.ResolveLooseBall(challengeWinner, LooseBallSourceType.GroundDeflection));
             CleanUpHeader();
         }
     }
@@ -1075,7 +1071,7 @@ public class HeaderManager : MonoBehaviour
         }
         else
         {
-            MatchManager.Instance.hangingPassType = "ground";
+            MatchManager.Instance.SetHangingPass("ground");
             CheckForHeaderInterception(clickedHex);
         }
     }
@@ -1125,7 +1121,7 @@ public class HeaderManager : MonoBehaviour
             Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
             CleanUpHeader();
             finalThirdManager.TriggerFinalThirdPhase();
-            MatchManager.Instance.hangingPassType = "ground";
+            MatchManager.Instance.SetHangingPass("ground");
             MatchManager.Instance.BroadcastHeaderCompleted();
         }
     }
@@ -1193,7 +1189,7 @@ public class HeaderManager : MonoBehaviour
         Debug.Log("All defenders failed to intercept. Ball remains at the landing hex.");
         CleanUpHeader();
         finalThirdManager.TriggerFinalThirdPhase();
-        MatchManager.Instance.hangingPassType = "ground";
+        MatchManager.Instance.SetHangingPass("ground");
         MatchManager.Instance.BroadcastHeaderCompleted();
     }
 

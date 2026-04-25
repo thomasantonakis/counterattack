@@ -264,10 +264,6 @@ public class ShotManager : MonoBehaviour
             // No save possible, goal!
             Debug.Log("No saveHex found, header at goal is a GOAL!");
             MatchManager.Instance.gameData.gameLog.LogEvent(attacker, MatchManager.ActionType.GoalScored);
-            MatchManager.Instance.gameData.gameLog.LogEvent(
-                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
-                , MatchManager.ActionType.AssistProvided
-            );
             // Animate ball to target, then trigger goal flow
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(targetHex));
             goalFlowManager.StartGoalFlow(attacker);
@@ -306,10 +302,10 @@ public class ShotManager : MonoBehaviour
                 , MatchManager.ActionType.SaveMade
                 , saveType: "loose"
             );
-            MatchManager.Instance.hangingPassType = "shot";
+            MatchManager.Instance.SetHangingPass("shot");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex));
             await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false));
-            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "ground"));
+            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection));
             ResetShotProcess();
         }
         else if (totalSavingPower > headerAttackerTotalScore)
@@ -328,10 +324,6 @@ public class ShotManager : MonoBehaviour
                         MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                         , MatchManager.ActionType.GoalScored
                     );
-            MatchManager.Instance.gameData.gameLog.LogEvent(
-                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
-                , MatchManager.ActionType.AssistProvided
-            );
             goalFlowManager.StartGoalFlow(headerAttacker);
             ResetShotProcess();
         }
@@ -687,8 +679,8 @@ public class ShotManager : MonoBehaviour
                         , MatchManager.ActionType.ShotBlocked
                         , connectedToken: defenderToken
                     );
-                    MatchManager.Instance.hangingPassType = "shot"; // TODO: WHY?
-                    StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, "ground"));
+                    MatchManager.Instance.SetHangingPass("shot"); // TODO: WHY?
+                    StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection));
                     ResetShotProcess();
                 }
                 else
@@ -731,10 +723,6 @@ public class ShotManager : MonoBehaviour
                                 MatchManager.Instance.gameData.gameLog.LogEvent(
                                     MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                                     , MatchManager.ActionType.GoalScored
-                                );
-                                MatchManager.Instance.gameData.gameLog.LogEvent(
-                                    MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
-                                    , MatchManager.ActionType.AssistProvided
                                 );
                                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                                 if (movementPhaseManager.isActivated)
@@ -800,13 +788,6 @@ public class ShotManager : MonoBehaviour
                         MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                         , MatchManager.ActionType.GoalScored
                     );
-                if (MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose != null)
-                {
-                    MatchManager.Instance.gameData.gameLog.LogEvent(
-                        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
-                        , MatchManager.ActionType.AssistProvided
-                    );
-                }
                 if (movementPhaseManager.isActivated)
                 {
                     movementPhaseManager.EndMovementPhase(false);
@@ -853,11 +834,11 @@ public class ShotManager : MonoBehaviour
                 , MatchManager.ActionType.SaveMade
                 , saveType: "loose"
             );
-            MatchManager.Instance.hangingPassType = "shot";
+            MatchManager.Instance.SetHangingPass("shot");
             // TODO: Push everyone in line.
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, shooterRoll));
             yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(saveHex, gkToken, false)); // Maybe this is redundant
-            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "ground"));
+            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection));
             ResetShotProcess();
         }
         else if (totalSavingPower > totalShotPower)
@@ -911,10 +892,6 @@ public class ShotManager : MonoBehaviour
                         MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                         , MatchManager.ActionType.GoalScored
                     );
-                    MatchManager.Instance.gameData.gameLog.LogEvent(
-                        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose
-                        , MatchManager.ActionType.AssistProvided
-                    );
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll));
                     if (movementPhaseManager.isActivated)
                     {
@@ -960,7 +937,7 @@ public class ShotManager : MonoBehaviour
         else 
         {
             Debug.Log($"{gkToken.name} rolled {gkRoll} and can't hold it!");
-            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, "handling"));
+            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GoalkeeperHandlingSpill));
         }
         ResetShotProcess();
     }

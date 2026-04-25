@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+public enum LooseBallSourceType
+{
+    GroundDeflection,
+    HeaderDeflection,
+    GoalkeeperHandlingSpill,
+    InaccuratePass,
+}
+
 public class LooseBallManager : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -32,6 +40,76 @@ public class LooseBallManager : MonoBehaviour
     public PlayerToken causingDeflection;
     public PlayerToken ballHitThisToken;
     public PlayerToken potentialInterceptor;
+
+    private bool IsHeaderLooseBall(LooseBallSourceType sourceType)
+    {
+        return sourceType == LooseBallSourceType.HeaderDeflection;
+    }
+
+    private bool IsGoalkeeperHandlingSpill(LooseBallSourceType sourceType)
+    {
+        return sourceType == LooseBallSourceType.GoalkeeperHandlingSpill;
+    }
+
+    private bool ShouldAllowTokenImpactOnHex(LooseBallSourceType sourceType, int pathIndex, int pathCount)
+    {
+        if (sourceType == LooseBallSourceType.InaccuratePass)
+        {
+            return false;
+        }
+
+        if (IsHeaderLooseBall(sourceType))
+        {
+            return pathIndex == pathCount - 1;
+        }
+
+        return true;
+    }
+
+    private bool ShouldAllowInterceptionOnHex(LooseBallSourceType sourceType, int pathIndex, int pathCount)
+    {
+        if (sourceType == LooseBallSourceType.InaccuratePass)
+        {
+            return false;
+        }
+
+        if (IsHeaderLooseBall(sourceType))
+        {
+            return pathIndex == pathCount - 1;
+        }
+
+        return true;
+    }
+
+    private bool ShouldExtendPastJumpedToken(LooseBallSourceType sourceType)
+    {
+        return IsHeaderLooseBall(sourceType);
+    }
+
+    private bool ShouldClearPreviousChainOnCollection(LooseBallSourceType sourceType)
+    {
+        return sourceType != LooseBallSourceType.InaccuratePass;
+    }
+
+    private bool IsTokenUnavailableForLooseBall(PlayerToken token)
+    {
+        return token == null
+            || movementPhaseManager.stunnedTokens.Contains(token)
+            || movementPhaseManager.stunnedforNext.Contains(token)
+            || headerManager.defenderWillJump.Contains(token)
+            || headerManager.attackerWillJump.Contains(token);
+    }
+
+    private void AssignLooseBallReceiver(PlayerToken token, LooseBallSourceType sourceType)
+    {
+        if (ShouldClearPreviousChainOnCollection(sourceType))
+        {
+            MatchManager.Instance.SetLastTokenFromLooseBall(token);
+            return;
+        }
+
+        MatchManager.Instance.ApplyBallCollectionOwnership(token);
+    }
 
     private void OnEnable()
     {
@@ -117,11 +195,12 @@ public class LooseBallManager : MonoBehaviour
         interceptionRoll = rigroll ?? returnedRoll;
         isWaitingForInterceptionRoll = false;
     }
-    public IEnumerator ResolveLooseBall(PlayerToken startingToken, string resolutionType)
+    public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType)
     {
         isActivated = true;
         causingDeflection = startingToken; // TODO: I think this is redundant
-        Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {resolutionType}");
+        MatchManager.Instance.ClearPendingLooseBallCollectionReset();
+        Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {sourceType}");
         path.Clear();
         // Step 1: Move the ball to the starting token's hex
         HexCell defenderHex = startingToken.GetCurrentHex();
@@ -129,7 +208,7 @@ public class LooseBallManager : MonoBehaviour
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(startingToken.GetCurrentHex()));
         // ball.SetCurrentHex(defenderHex);
         List<int> spillDirections = new List<int>();
-        if(resolutionType == "handling" && startingToken.IsGoalKeeper)
+        if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
         {
             if (startingToken.currentHex.isInPenaltyBox == 0) Debug.LogError($"Something is wrong, {startingToken.name} does not seem to be in Penalty Area");
             else if( startingToken.currentHex.isInPenaltyBox == 1 )
@@ -152,7 +231,7 @@ public class LooseBallManager : MonoBehaviour
             yield return null;
         }
 
-        if(resolutionType == "handling" && startingToken.IsGoalKeeper)
+        if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
         {
             if (!spillDirections.Contains(directionRoll))
             {
@@ -213,7 +292,7 @@ public class LooseBallManager : MonoBehaviour
                 , MatchManager.ActionType.SaveMade
                 , saveType: "loose"
             );
-                MatchManager.Instance.hangingPassType = "shot";
+                MatchManager.Instance.SetHangingPass("shot");
             }
         }
         string direction = TranslateRollToDirection(directionRoll);
@@ -246,7 +325,7 @@ public class LooseBallManager : MonoBehaviour
         for (int i = 0; i < path.Count; i++)
         {
             // Noone can stop a header, so if we are resolving a header and we are not at the last one,
-            if (i != path.Count - 1 && resolutionType == "header") continue;
+            if (!ShouldAllowTokenImpactOnHex(sourceType, i, path.Count)) continue;
             // move to the next one until we reach the last one
 
             HexCell hex = path[i];
@@ -256,21 +335,9 @@ public class LooseBallManager : MonoBehaviour
             PlayerToken tokenOnHex = hex.GetOccupyingToken();
             if (tokenOnHex != null)
             {
-                //  If we are resolving a Header Loose ball if we encounter a token that has jumped we should ignore it.
-                if (
-                    resolutionType == "header" 
-                    && (
-                        headerManager.defenderWillJump.Contains(tokenOnHex)
-                        || headerManager.attackerWillJump.Contains(tokenOnHex)
-                        || movementPhaseManager.stunnedTokens.Contains(tokenOnHex) 
-                        || movementPhaseManager.stunnedforNext.Contains(tokenOnHex)
-                    )
-                )
+                if (IsTokenUnavailableForLooseBall(tokenOnHex))
                 {
-                    // If we reached the distance roll Hex 
-                    // and we landed on a token that has jumped
-                    // we extend the distance roll by 1 hex and we check again.
-                    if (i == path.Count - 1)
+                    if (ShouldExtendPastJumpedToken(sourceType) && i == path.Count - 1)
                     {
                         Debug.Log("Moving a Hex further, as ball (after a header LB) landed on a jumped token.");
                         HexCell additionalHex = outOfBoundsManager.CalculateInaccurateTarget(hex, directionRoll, 1);
@@ -300,8 +367,8 @@ public class LooseBallManager : MonoBehaviour
         
         foreach (HexCell hexround2 in path)
         {
-            // Noone can stop a header, so if we are resolving a header and we are not at the last one,
-            if (hexround2 != path[path.Count - 1] && resolutionType == "header") continue;
+            int pathIndex = path.IndexOf(hexround2);
+            if (!ShouldAllowInterceptionOnHex(sourceType, pathIndex, path.Count)) continue;
             // check for interceptions only on the last Hex of the path
             if (hexround2.isAttackOccupied || hexround2.isDefenseOccupied) continue;
             // Step 5.2: Check if there are defenders in ZOI of this hex
@@ -312,8 +379,7 @@ public class LooseBallManager : MonoBehaviour
                     potentialInterceptor != startingToken && // not the one who caused the loose ball
                     potentialInterceptor != closestToken && // not the one who is the fallback hit
                     !potentialInterceptor.isAttacker && // exclude all attackers
-                    !headerManager.defenderWillJump.Contains(potentialInterceptor) && // exclude defenders that are in the air // COLIN
-                    !movementPhaseManager.stunnedTokens.Contains(potentialInterceptor) && // exclude defenders that stunned from a nutmeg // COLIN
+                    !IsTokenUnavailableForLooseBall(potentialInterceptor) &&
                     !defendersTriedToIntercept.Contains(potentialInterceptor)) // Ensure the defender hasn't already tried
                 {
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");
@@ -335,8 +401,8 @@ public class LooseBallManager : MonoBehaviour
                             , recoveryType: MatchManager.Instance.hangingPassType
                         );
                         ball.SetCurrentHex(potentialInterceptor.GetCurrentHex());
-                        MatchManager.Instance.hangingPassType = null;
-                        MatchManager.Instance.SetLastToken(potentialInterceptor);
+                        MatchManager.Instance.ClearHangingPass();
+                        MatchManager.Instance.SetLastTokenFromLooseBall(potentialInterceptor);
                         Debug.Log($"{potentialInterceptor.name} successfully intercepted the ball!");
                         // Move the ball to the interceptor's hex
                         // Change possession
@@ -370,9 +436,8 @@ public class LooseBallManager : MonoBehaviour
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
             {
-                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
-                MatchManager.Instance.SetLastToken(closestToken);
-                if (resolutionType == "header")
+                AssignLooseBallReceiver(closestToken, sourceType);
+                if (IsHeaderLooseBall(sourceType))
                 {
                     // TODO: ignore offside
                     finalThirdManager.TriggerFinalThirdPhase();
@@ -385,8 +450,8 @@ public class LooseBallManager : MonoBehaviour
                 {
                     Debug.LogWarning("There is no movement Phase going on, Attacker must choose what to do!");
                     finalThirdManager.TriggerFinalThirdPhase();
-                    MatchManager.Instance.BroadcastAnyOtherScenario();
-                    Debug.Log("Available Options are: [M]ovement Phase, Short [P]ass, [L]ong Ball, [S]napshot");
+                    MatchManager.Instance.BroadcastAnyOtherScenario(false);
+                    Debug.Log("Available Options are: [M]ovement Phase, Standard [P]ass, [L]ong Ball, [S]napshot");
                 }
                 else if (movementPhaseManager.isActivated)
                 {
@@ -423,7 +488,7 @@ public class LooseBallManager : MonoBehaviour
                     , MatchManager.ActionType.BallRecovery
                     , recoveryType: MatchManager.Instance.hangingPassType
                 ); // TODO: check what is being picked up
-                MatchManager.Instance.SetLastToken(closestToken);
+                AssignLooseBallReceiver(closestToken, sourceType);
                 // Change possession to the defending team
                 MatchManager.Instance.ChangePossession();  
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
@@ -436,7 +501,16 @@ public class LooseBallManager : MonoBehaviour
             if (!path.Last().isOutOfBounds) // in bounds, still in play
             {
                 Debug.Log($"Ball did not hit anyone");
-                if (resolutionType == "header")
+                if (ShouldClearPreviousChainOnCollection(sourceType))
+                {
+                    MatchManager.Instance.MarkNextBallCollectionToClearPrevious();
+                }
+                else
+                {
+                    MatchManager.Instance.ClearPendingLooseBallCollectionReset();
+                }
+
+                if (IsHeaderLooseBall(sourceType))
                 {
                     MatchManager.Instance.currentState = MatchManager.GameState.HeaderCompleted;
                     finalThirdManager.TriggerFinalThirdPhase();
@@ -464,8 +538,8 @@ public class LooseBallManager : MonoBehaviour
             else
             {
                 Debug.Log($"Ball Went out of Bounds");
-                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = null;
-                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
+                MatchManager.Instance.ClearLastTokenChain();
+                MatchManager.Instance.ClearPendingLooseBallCollectionReset();
                 if (movementPhaseManager.isActivated)
                 {
                     movementPhaseManager.EndMovementPhase(false);

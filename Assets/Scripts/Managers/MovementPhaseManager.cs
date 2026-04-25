@@ -169,6 +169,12 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (hex == ballHex)
             {
+                if (!CanSelectedTokenCollectCurrentBall())
+                {
+                    Debug.LogWarning($"{selectedToken?.playerName ?? "Selected token"} cannot collect this hanging pass.");
+                    return;
+                }
+
                 CommitToAction();
                 AsyncMoveTokenToHexRegularly(hex);
                 return;
@@ -449,7 +455,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         isWaitingForSnapshotDecision = false;
         isWaitingForTackleDecisionWithoutMoving = false;
-        bool temp_check = ball.GetCurrentHex() == hex && selectedToken != null;
+        bool temp_check = ball.GetCurrentHex() == hex && selectedToken != null && CanSelectedTokenCollectCurrentBall();
         if (temp_check)
         {
             tokenPickedUpBall = true;
@@ -664,6 +670,13 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
     }
+
+    private bool CanSelectedTokenCollectCurrentBall()
+    {
+        return selectedToken != null
+            && ballHex != null
+            && (MatchManager.Instance == null || MatchManager.Instance.CanTokenCollectHangingPass(selectedToken));
+    }
     
     // This method will highlight valid movement hexes for the selected token
     public void HighlightValidMovementHexes(PlayerToken token, int movementRange, bool isCalledDuringMovement = true)
@@ -683,6 +696,11 @@ public class MovementPhaseManager : MonoBehaviour
         // Get valid movement hexes and their distance/ZOI data
         var (reachableHexes, distanceData) = GetReachableMovementData(token, movementRange);
         ballHex = ball.GetCurrentHex();
+        if (ballHex != null && !token.IsDribbler && MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(token))
+        {
+            reachableHexes.Remove(ballHex);
+            distanceData.Remove(ballHex);
+        }
         bool showThreatHints = ShouldShowEasyMovementThreats() && token == selectedToken;
 
         foreach (HexCell hex in reachableHexes)
@@ -871,8 +889,8 @@ public class MovementPhaseManager : MonoBehaviour
             ball.SetCurrentHex(targetHex);  // Move the ball to the defender's hex
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);  // Update possession
-            MatchManager.Instance.SetLastToken(selectedToken);
-            MatchManager.Instance.hangingPassType = null;
+            MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
+            MatchManager.Instance.ClearHangingPass();
             EndMovementPhase();
             MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;  // Update game state
             MatchManager.Instance.BroadcastAnyOtherScenario();
@@ -945,15 +963,15 @@ public class MovementPhaseManager : MonoBehaviour
                         if (MatchManager.Instance.hangingPassType == "ground")
                         {
                             MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted);
-                            MatchManager.Instance.hangingPassType = null;
+                            MatchManager.Instance.ClearHangingPass();
                         }
                         else if (MatchManager.Instance.hangingPassType == "aerial")
                         {
                             MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.AerialPassCompleted);
-                            MatchManager.Instance.hangingPassType = null;
+                            MatchManager.Instance.ClearHangingPass();
                         }
-                        MatchManager.Instance.SetLastToken(selectedToken);
                     }
+                    MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
                 }
                 Debug.LogWarning("The selected Token is the dribbler");
                 Debug.Log("Hello, this is a dribbler dribbling, Reducing their pace.");
@@ -1672,7 +1690,7 @@ public class MovementPhaseManager : MonoBehaviour
             remainingDribblerPace = 0;
             if (!movedTokens.Contains(attackerToken)) movedTokens.Add(attackerToken);
             // TODO: in case of a Loose Ball, is the attacker stunned? I think not!, but cannot further move
-            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, "ground"));
+            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, LooseBallSourceType.GroundDeflection));
             // No further handling from here, LooseBallManager needs to handle everything from here on.
         }
     }
@@ -1876,13 +1894,28 @@ public class MovementPhaseManager : MonoBehaviour
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int roll = rigroll ?? returnedRoll;
         Debug.Log($"Yellow card roll: {roll}");
+        PlayerToken fouledAttacker = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (roll >= MatchManager.Instance.refereeLeniency)
         {
             Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
+            bool wasBooked = selectedDefender.isBooked;
             selectedDefender.ReceiveYellowCard();
+            if (!wasBooked && selectedDefender.isBooked)
+            {
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    selectedDefender,
+                    MatchManager.ActionType.YellowCardShown,
+                    connectedToken: fouledAttacker
+                );
+            }
             if (selectedDefender.isSentOff)
             {
                 Debug.Log($"{selectedDefender.name} cannot continue after a second yellow.");
+                MatchManager.Instance.gameData.gameLog.LogEvent(
+                    selectedDefender,
+                    MatchManager.ActionType.RedCardShown,
+                    connectedToken: fouledAttacker
+                );
             }
         }
         else
@@ -1904,6 +1937,11 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log($"Attacker {attackerToken.name} is injured!");
             bool wasAlreadyInjured = attackerToken.isInjured;
             attackerToken.ReceiveInjury();
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                attackerToken,
+                MatchManager.ActionType.Injured,
+                connectedToken: selectedDefender
+            );
             if (attackerToken.requiresSubstitution)
             {
                 Debug.Log($"{attackerToken.name} cannot continue after a second injury.");

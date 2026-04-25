@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Text;
 using System.Linq;
+using System.Reflection;
 
 public struct AvailabilityCheckResult
 {
@@ -302,6 +303,26 @@ public class GameTestScenarioRunner : MonoBehaviour
         public Func<IEnumerator> Run { get; }
     }
 
+    private sealed class FtpInterceptionMoveSetup
+    {
+        public HexCell targetHex;
+        public HexCell attackerHex;
+        public PlayerToken attackerToken;
+        public HexCell attackerDestinationHex;
+        public HexCell defenderHex;
+        public PlayerToken defenderToken;
+        public HexCell defenderDestinationHex;
+        public bool isBlockingPath;
+    }
+
+    private sealed class FtpBlockedHoverSetup
+    {
+        public HexCell targetHex;
+        public PlayerToken defenderToken;
+        public HexCell originalDefenderHex;
+        public HexCell blockingHex;
+    }
+
     // private bool shouldRunTests = false;
     private bool shouldRunTests = true;
     private string logFilePath;
@@ -550,15 +571,60 @@ public class GameTestScenarioRunner : MonoBehaviour
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
-        bool runManualStatsPreviewOnly = true;
+        bool runManualStatsPreviewOnly = false;
+        bool runFtpAuditOnly = false;
+        bool runLongBallAuditOnly = false;
+        bool runFromCurrentFailureOnly = false;
 
         if (runManualStatsPreviewOnly)
         {
             scenarios.Add(new ScenarioDefinition(nameof(Scenario_001_Stats_UI_Preview), Scenario_001_Stats_UI_Preview));
         }
-        else
+        else if (runFtpAuditOnly)
         {
             scenarios.AddRange(new[]
+            {
+                new ScenarioDefinition(nameof(Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions), Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions),
+                new ScenarioDefinition(nameof(Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player), Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player),
+                new ScenarioDefinition(nameof(Scenario_007_GroundBall_0006_Swith_between_options_before_Committing), Scenario_007_GroundBall_0006_Swith_between_options_before_Committing),
+                new ScenarioDefinition(nameof(Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment), Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment),
+                new ScenarioDefinition(nameof(Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click), Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click),
+                new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
+                new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
+                new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
+            });
+        }
+        else if (runLongBallAuditOnly)
+        {
+            scenarios.AddRange(new[]
+            {
+                new ScenarioDefinition(nameof(Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold), Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold),
+                new ScenarioDefinition(nameof(Scenario_030b_LongBall_Difficulty3_Commits_On_First_Click), Scenario_030b_LongBall_Difficulty3_Commits_On_First_Click),
+                new ScenarioDefinition(nameof(Scenario_030c_LongBall_Inaccurate_No_Interception_GK_Forfeit_AutoMovement), Scenario_030c_LongBall_Inaccurate_No_Interception_GK_Forfeit_AutoMovement),
+                new ScenarioDefinition(nameof(Scenario_030d_LongBall_Inaccurate_Delgado_Interception_Success_Broadcasts_AnyOtherScenario), Scenario_030d_LongBall_Inaccurate_Delgado_Interception_Success_Broadcasts_AnyOtherScenario),
+                new ScenarioDefinition(nameof(Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement), Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement),
+                new ScenarioDefinition(nameof(Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario), Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario),
+                new ScenarioDefinition(nameof(Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement), Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement),
+                new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario),
+                new ScenarioDefinition(nameof(Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall), Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall),
+                new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
+                new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
+                new ScenarioDefinition(nameof(Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal), Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal),
+            });
+        }
+        else
+        {
+            scenarios.AddRange(runFromCurrentFailureOnly ? new[]
+            {
+            new ScenarioDefinition(nameof(Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in), Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in),
+            new ScenarioDefinition(nameof(Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions), Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions),
+            new ScenarioDefinition(nameof(Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move), Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move),
+            new ScenarioDefinition(nameof(Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP), Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP),
+            new ScenarioDefinition(nameof(Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal), Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal),
+            new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
+            new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
+            new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
+            } : new[]
             {
             // Ground Ball regression suite
             new ScenarioDefinition(nameof(Scenario_002_GroundBall_0001_Commitment), Scenario_002_GroundBall_0001_Commitment),
@@ -568,6 +634,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions), Scenario_005_GroundBall_0004_Pass_to_Player_FTP_No_interceptions),
             new ScenarioDefinition(nameof(Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player), Scenario_006_GroundBall_0005_Pass_to_Player_FTP_To_Player),
             new ScenarioDefinition(nameof(Scenario_007_GroundBall_0006_Swith_between_options_before_Committing), Scenario_007_GroundBall_0006_Swith_between_options_before_Committing),
+            new ScenarioDefinition(nameof(Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment), Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment),
+            new ScenarioDefinition(nameof(Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click), Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click),
+            new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
+            new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
+            new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
             new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
             new ScenarioDefinition(nameof(Scenario_009_Movement_Phase_NO_interceptions_No_tackles), Scenario_009_Movement_Phase_NO_interceptions_No_tackles),
@@ -600,6 +671,18 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
             new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
             new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
+            new ScenarioDefinition(nameof(Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold), Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold),
+            new ScenarioDefinition(nameof(Scenario_030b_LongBall_Difficulty3_Commits_On_First_Click), Scenario_030b_LongBall_Difficulty3_Commits_On_First_Click),
+            new ScenarioDefinition(nameof(Scenario_030c_LongBall_Inaccurate_No_Interception_GK_Forfeit_AutoMovement), Scenario_030c_LongBall_Inaccurate_No_Interception_GK_Forfeit_AutoMovement),
+            new ScenarioDefinition(nameof(Scenario_030d_LongBall_Inaccurate_Delgado_Interception_Success_Broadcasts_AnyOtherScenario), Scenario_030d_LongBall_Inaccurate_Delgado_Interception_Success_Broadcasts_AnyOtherScenario),
+            new ScenarioDefinition(nameof(Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement), Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement),
+            new ScenarioDefinition(nameof(Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario), Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario),
+            new ScenarioDefinition(nameof(Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement), Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement),
+            new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario),
+            new ScenarioDefinition(nameof(Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall), Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall),
+            new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
+            new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
+            new ScenarioDefinition(nameof(Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal), Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal),
               
             // // // // // // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
             // Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC(),
@@ -751,6 +834,866 @@ public class GameTestScenarioRunner : MonoBehaviour
         PlayerToken token = PlayerToken.GetPlayerTokenByName(playerName);
         AssertTrue(token != null, $"PlayerToken '{playerName}' should exist for the stats preview test.");
         return token;
+    }
+
+    private HexCell RequireHex(HexCell hex, string message)
+    {
+        AssertTrue(hex != null, message);
+        return hex;
+    }
+
+    private IEnumerable<HexCell> GetAllInBoundsHexesOrdered(HexCell referenceHex = null)
+    {
+        referenceHex ??= firstTimePassManager != null && firstTimePassManager.ball != null
+            ? firstTimePassManager.ball.GetCurrentHex()
+            : null;
+
+        return hexgrid.cells
+            .Cast<HexCell>()
+            .Where(cell => cell != null && !cell.isOutOfBounds)
+            .OrderBy(cell => referenceHex != null ? HexGridUtils.GetHexStepDistance(referenceHex, cell) : 0)
+            .ThenBy(cell => cell.coordinates.x)
+            .ThenBy(cell => cell.coordinates.z);
+    }
+
+    private GroundPassValidationResult ValidateFtpTarget(HexCell targetHex)
+    {
+        return GroundPassCommon.ValidateStandardPassPath(hexgrid, firstTimePassManager.ball, targetHex, 6);
+    }
+
+    private HexCell FindFirstFtpTarget(Func<HexCell, GroundPassValidationResult, bool> predicate)
+    {
+        foreach (HexCell candidate in GetAllInBoundsHexesOrdered())
+        {
+            if (candidate == null || candidate == firstTimePassManager.ball.GetCurrentHex())
+            {
+                continue;
+            }
+
+            GroundPassValidationResult validation = ValidateFtpTarget(candidate);
+            if (predicate(candidate, validation))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private HexCell FindFirstSafeFtpTarget(HexCell excludedHex = null)
+    {
+        return FindFirstFtpTarget((candidate, validation) =>
+            candidate != excludedHex
+            && validation.IsValid
+            && GroundPassCommon.BuildOrderedInterceptionCandidates(hexgrid, firstTimePassManager.ball, candidate).Count == 0);
+    }
+
+    private HexCell FindFirstSafeFtpSpaceTargetReachableByPasser(PlayerToken passer)
+    {
+        if (passer == null || passer.GetCurrentHex() == null)
+        {
+            return null;
+        }
+
+        var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexgrid, passer.GetCurrentHex(), passer.pace);
+        HashSet<HexCell> reachableSet = reachableHexes != null
+            ? new HashSet<HexCell>(reachableHexes)
+            : new HashSet<HexCell>();
+
+        return FindFirstFtpTarget((candidate, validation) =>
+            validation.IsValid
+            && !candidate.isAttackOccupied
+            && reachableSet.Contains(candidate)
+            && GroundPassCommon.BuildOrderedInterceptionCandidates(hexgrid, firstTimePassManager.ball, candidate).Count == 0);
+    }
+
+    private HexCell FindFirstOutOfRangeFtpTarget()
+    {
+        return FindFirstFtpTarget((candidate, validation) =>
+            validation.FailureReason == PassValidationFailureReason.OutOfRange);
+    }
+
+    private FtpBlockedHoverSetup FindFtpBlockedHoverSetup(HexCell excludedTarget = null)
+    {
+        HexCell ballHex = firstTimePassManager.ball.GetCurrentHex();
+        if (ballHex == null)
+        {
+            return null;
+        }
+
+        List<HexCell> defenderHexes = hexgrid.GetDefenderHexes()
+            .Where(hex => hex != null && hex.GetOccupyingToken() != null)
+            .OrderBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z)
+            .ToList();
+
+        if (defenderHexes.Count == 0)
+        {
+            return null;
+        }
+
+        foreach (HexCell targetHex in GetAllInBoundsHexesOrdered(ballHex))
+        {
+            if (targetHex == null || targetHex == excludedTarget || targetHex == ballHex)
+            {
+                continue;
+            }
+
+            GroundPassValidationResult validation = ValidateFtpTarget(targetHex);
+            if (!validation.IsValid || validation.PathHexes == null)
+            {
+                continue;
+            }
+
+            List<HexCell> candidateBlockingHexes = validation.PathHexes
+                .Where(hex =>
+                    hex != null &&
+                    hex != ballHex &&
+                    hex != targetHex &&
+                    !hex.isAttackOccupied &&
+                    !hex.isDefenseOccupied)
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(ballHex, hex))
+                .ThenBy(hex => hex.coordinates.x)
+                .ThenBy(hex => hex.coordinates.z)
+                .ToList();
+
+            if (candidateBlockingHexes.Count == 0)
+            {
+                continue;
+            }
+
+            HexCell chosenBlockingHex = candidateBlockingHexes[0];
+            HexCell originalDefenderHex = defenderHexes[0];
+            PlayerToken defenderToken = originalDefenderHex.GetOccupyingToken();
+            if (defenderToken == null)
+            {
+                continue;
+            }
+
+            return new FtpBlockedHoverSetup
+            {
+                targetHex = targetHex,
+                defenderToken = defenderToken,
+                originalDefenderHex = originalDefenderHex,
+                blockingHex = chosenBlockingHex,
+            };
+        }
+
+        return null;
+    }
+
+    private List<HexCell> GetLegalSingleHexMoves(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return new List<HexCell>();
+        }
+
+        movementPhaseManager.HighlightValidMovementHexes(token, 1, false);
+        List<HexCell> legalDestinations = hexgrid.highlightedHexes
+            .Where(hex => hex != null)
+            .OrderBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z)
+            .ToList();
+        hexgrid.ClearHighlightedHexes();
+        return legalDestinations;
+    }
+
+    private FtpInterceptionMoveSetup FindFtpInterceptionMoveSetup(bool requireBlockingPath)
+    {
+        HexCell ballHex = firstTimePassManager.ball.GetCurrentHex();
+        if (ballHex == null)
+        {
+            return null;
+        }
+
+        foreach (HexCell targetHex in GetAllInBoundsHexesOrdered(ballHex))
+        {
+            if (targetHex == ballHex)
+            {
+                continue;
+            }
+
+            GroundPassValidationResult validation = ValidateFtpTarget(targetHex);
+            if (!validation.IsValid)
+            {
+                continue;
+            }
+
+            if (GroundPassCommon.BuildOrderedInterceptionCandidates(hexgrid, firstTimePassManager.ball, targetHex).Count != 0)
+            {
+                continue;
+            }
+
+            List<(PlayerToken token, HexCell originalHex, HexCell destinationHex)> attackerMoveOptions = new()
+            {
+                (null, null, null)
+            };
+
+            foreach (HexCell attackerHex in hexgrid.GetAttackerHexes().OrderBy(hex => hex.coordinates.x).ThenBy(hex => hex.coordinates.z))
+            {
+                PlayerToken attackerToken = attackerHex?.GetOccupyingToken();
+                if (attackerToken == null)
+                {
+                    continue;
+                }
+
+                foreach (HexCell attackerDestinationHex in GetLegalSingleHexMoves(attackerToken))
+                {
+                    attackerMoveOptions.Add((attackerToken, attackerHex, attackerDestinationHex));
+                }
+            }
+
+            foreach ((PlayerToken attackerToken, HexCell attackerHex, HexCell attackerDestinationHex) in attackerMoveOptions)
+            {
+                if (attackerToken != null && attackerDestinationHex != null)
+                {
+                    SetTokenHexForTest(attackerToken, attackerDestinationHex);
+                }
+
+                try
+                {
+                    List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexgrid, ballHex, targetHex, firstTimePassManager.ball.ballRadius);
+                    List<HexCell> relevantInterceptionHexes = GroundPassCommon.GetRelevantInterceptionHexes(pathHexes, targetHex);
+
+                    if (GroundPassCommon.BuildOrderedInterceptionCandidates(hexgrid, firstTimePassManager.ball, targetHex).Count != 0)
+                    {
+                        continue;
+                    }
+
+                    foreach (HexCell defenderHex in hexgrid.GetDefenderHexes().OrderBy(hex => hex.coordinates.x).ThenBy(hex => hex.coordinates.z))
+                    {
+                        PlayerToken defenderToken = defenderHex?.GetOccupyingToken();
+                        if (defenderToken == null || defenderToken.tackling > 4)
+                        {
+                            continue;
+                        }
+
+                        foreach (HexCell destinationHex in GetLegalSingleHexMoves(defenderToken))
+                        {
+                            bool isBlockingPath = pathHexes.Contains(destinationHex);
+                            bool isZoIOnly = !isBlockingPath && destinationHex
+                                .GetNeighbors(hexgrid)
+                                .Any(neighbor => neighbor != null && relevantInterceptionHexes.Contains(neighbor));
+
+                            if (requireBlockingPath != isBlockingPath)
+                            {
+                                continue;
+                            }
+
+                            if (!isBlockingPath && !isZoIOnly)
+                            {
+                                continue;
+                            }
+
+                            return new FtpInterceptionMoveSetup
+                            {
+                                targetHex = targetHex,
+                                attackerHex = attackerHex,
+                                attackerToken = attackerToken,
+                                attackerDestinationHex = attackerDestinationHex,
+                                defenderHex = defenderHex,
+                                defenderToken = defenderToken,
+                                defenderDestinationHex = destinationHex,
+                                isBlockingPath = isBlockingPath,
+                            };
+                        }
+                    }
+                }
+                finally
+                {
+                    if (attackerToken != null && attackerHex != null)
+                    {
+                        SetTokenHexForTest(attackerToken, attackerHex);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private void SimulateFirstTimePassHover(HexCell hex)
+    {
+        MethodInfo hoverMethod = typeof(FirstTimePassManager).GetMethod("OnHoverReceived", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(hoverMethod != null, "FirstTimePassManager private hover handler should exist for the FTP hover tests.");
+        hoverMethod?.Invoke(firstTimePassManager, new object[] { hex?.occupyingToken, hex });
+    }
+
+    private void PerformRiggedFirstTimePassInterceptionRoll(int rigRoll)
+    {
+        MethodInfo interceptionMethod = typeof(FirstTimePassManager).GetMethod("PerformFTPInterceptionRolls", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptionMethod != null, "FirstTimePassManager private interception roll method should exist for the FTP tests.");
+        interceptionMethod?.Invoke(firstTimePassManager, new object[] { (int?)rigRoll });
+    }
+
+    private void PerformRiggedLongBallAccuracyRoll(int rigRoll)
+    {
+        MethodInfo accuracyMethod = typeof(LongBallManager).GetMethod("PerformAccuracyRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(accuracyMethod != null, "LongBallManager private accuracy roll method should exist for the Long Ball tests.");
+        accuracyMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll });
+    }
+
+    private void PerformRiggedLongBallDirectionRoll(int rigRoll)
+    {
+        MethodInfo directionMethod = typeof(LongBallManager).GetMethod("PerformDirectionRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(directionMethod != null, "LongBallManager private direction roll method should exist for the Long Ball tests.");
+        directionMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll });
+    }
+
+    private IEnumerator PerformRiggedLongBallDistanceRoll(int rigRoll)
+    {
+        MethodInfo distanceMethod = typeof(LongBallManager).GetMethod("PerformDistanceRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(distanceMethod != null, "LongBallManager private distance roll method should exist for the Long Ball tests.");
+        IEnumerator coroutine = distanceMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll }) as IEnumerator;
+        AssertTrue(coroutine != null, "Long Ball distance roll should return a coroutine for the tests.");
+        if (coroutine != null)
+        {
+            yield return StartCoroutine(coroutine);
+        }
+    }
+
+    private void StartRiggedLongBallDistanceRollAsync(int rigRoll)
+    {
+        MethodInfo distanceMethod = typeof(LongBallManager).GetMethod("PerformDistanceRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(distanceMethod != null, "LongBallManager private distance roll method should exist for the Long Ball tests.");
+        IEnumerator coroutine = distanceMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll }) as IEnumerator;
+        AssertTrue(coroutine != null, "Long Ball distance roll should return a coroutine for the tests.");
+        if (coroutine != null)
+        {
+            StartCoroutine(coroutine);
+        }
+    }
+
+    private IEnumerator PerformRiggedLongBallInterceptionRoll(int rigRoll)
+    {
+        MethodInfo interceptionMethod = typeof(LongBallManager).GetMethod("PerformInterceptionCheck", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptionMethod != null, "LongBallManager private interception roll method should exist for the Long Ball tests.");
+        FieldInfo finalHexField = typeof(LongBallManager).GetField("finalHex", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(finalHexField != null, "LongBallManager private final hex field should exist for the Long Ball tests.");
+        HexCell landingHex = finalHexField?.GetValue(longBallManager) as HexCell;
+        IEnumerator coroutine = interceptionMethod?.Invoke(longBallManager, new object[] { landingHex, (int?)rigRoll }) as IEnumerator;
+        AssertTrue(coroutine != null, "Long Ball interception roll should return a coroutine for the tests.");
+        if (coroutine != null)
+        {
+            yield return StartCoroutine(coroutine);
+        }
+    }
+
+    private void StartRiggedLongBallInterceptionRollAsync(int rigRoll)
+    {
+        MethodInfo interceptionMethod = typeof(LongBallManager).GetMethod("PerformInterceptionCheck", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptionMethod != null, "LongBallManager private interception roll method should exist for the Long Ball tests.");
+        FieldInfo finalHexField = typeof(LongBallManager).GetField("finalHex", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(finalHexField != null, "LongBallManager private final hex field should exist for the Long Ball tests.");
+        HexCell landingHex = finalHexField?.GetValue(longBallManager) as HexCell;
+        IEnumerator coroutine = interceptionMethod?.Invoke(longBallManager, new object[] { landingHex, (int?)rigRoll }) as IEnumerator;
+        AssertTrue(coroutine != null, "Long Ball interception roll should return a coroutine for the tests.");
+        if (coroutine != null)
+        {
+            StartCoroutine(coroutine);
+        }
+    }
+
+    private int GetLongBallInterceptionCandidateCount()
+    {
+        FieldInfo interceptingDefendersField = typeof(LongBallManager).GetField("interceptingDefenders", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptingDefendersField != null, "LongBallManager private interception defender list should exist for the Long Ball tests.");
+        List<HexCell> interceptingDefenders = interceptingDefendersField?.GetValue(longBallManager) as List<HexCell>;
+        return interceptingDefenders?.Count ?? 0;
+    }
+
+    private bool IsWaitingForLongBallInterceptionRoll()
+    {
+        FieldInfo interceptionFlagField = typeof(LongBallManager).GetField("isWaitingForInterceptionRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptionFlagField != null, "LongBallManager private interception waiting flag should exist for the Long Ball tests.");
+        return interceptionFlagField != null && (bool)interceptionFlagField.GetValue(longBallManager);
+    }
+
+    private string GetFirstLongBallInterceptionCandidateName()
+    {
+        FieldInfo interceptingDefendersField = typeof(LongBallManager).GetField("interceptingDefenders", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptingDefendersField != null, "LongBallManager private interception defender list should exist for the Long Ball tests.");
+        List<HexCell> interceptingDefenders = interceptingDefendersField?.GetValue(longBallManager) as List<HexCell>;
+        return interceptingDefenders?.FirstOrDefault()?.GetOccupyingToken()?.playerName;
+    }
+
+    private IEnumerator StartPreparedLongBallToTarget(int difficulty, Vector2Int targetCoordinates, string expectedAccuracyThreshold)
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(difficulty));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        AssertTrue(longBallManager.isActivated, "Long Ball should be activated after pressing L.");
+        AssertTrue(longBallManager.isAwaitingTargetSelection, "Long Ball should be waiting for target selection.");
+
+        HexCell targetHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(targetCoordinates.x, 0, targetCoordinates.y)),
+            $"Long Ball target {targetCoordinates} should exist.");
+
+        Log($"Clicking {targetCoordinates} - Select Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(targetCoordinates, 0.1f));
+
+        if (difficulty == 3)
+        {
+            AssertTrue(!longBallManager.isAwaitingTargetSelection, "Difficulty 3 Long Ball should commit on the first valid click.");
+            AssertTrue(longBallManager.isWaitingForAccuracyRoll, "Difficulty 3 Long Ball should wait for accuracy immediately after the first valid click.");
+            if (!string.IsNullOrWhiteSpace(expectedAccuracyThreshold))
+            {
+                AssertTrue(
+                    longBallManager.GetInstructions().Contains(expectedAccuracyThreshold),
+                    $"Long Ball instructions should show an accuracy threshold of {expectedAccuracyThreshold}.",
+                    true,
+                    longBallManager.GetInstructions()
+                );
+            }
+        }
+        else
+        {
+            AssertTrue(longBallManager.currentTargetHex == targetHex, "Long Ball should accept the selected target.", targetHex, longBallManager.currentTargetHex);
+            Log($"Clicking {targetCoordinates} again - Confirm Long Ball target");
+            yield return StartCoroutine(gameInputManager.DelayedClick(targetCoordinates, 0.1f));
+            AssertTrue(longBallManager.isWaitingForAccuracyRoll, "Long Ball should be waiting for the accuracy roll after target confirmation.");
+            if (!string.IsNullOrWhiteSpace(expectedAccuracyThreshold))
+            {
+                AssertTrue(
+                    longBallManager.GetInstructions().Contains(expectedAccuracyThreshold),
+                    $"Long Ball instructions should show an accuracy threshold of {expectedAccuracyThreshold}.",
+                    true,
+                    longBallManager.GetInstructions()
+                );
+            }
+        }
+    }
+
+    private IEnumerator ForfeitActiveFinalThirds(int maxForfeits = 3)
+    {
+        int forfeitsUsed = 0;
+        while (finalThirdManager.isActivated && forfeitsUsed < maxForfeits)
+        {
+            Log("Pressing X - Forfeit current Final Third");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+            yield return new WaitForSeconds(0.2f);
+            forfeitsUsed++;
+        }
+        AssertTrue(!finalThirdManager.isActivated, "Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.");
+    }
+
+    private bool IsEligibleLongBallInterceptor(PlayerToken token)
+    {
+        return token != null
+            && !movementPhaseManager.stunnedTokens.Contains(token)
+            && !movementPhaseManager.stunnedforNext.Contains(token)
+            && !headerManager.defenderWillJump.Contains(token);
+    }
+
+    private bool LandingHexHasEligibleLongBallInterceptors(HexCell landingHex)
+    {
+        if (landingHex == null)
+        {
+            return false;
+        }
+
+        List<HexCell> eligibleDefenderHexes = hexgrid.GetDefenderHexes()
+            .Where(hex => hex != null && IsEligibleLongBallInterceptor(hex.GetOccupyingToken()))
+            .ToList();
+
+        return GroundPassCommon.BuildOrderedInterceptionCandidates(
+                hexgrid,
+                longBallManager.ball,
+                landingHex,
+                candidateDefenders: eligibleDefenderHexes,
+                isQuickThrow: true
+            )
+            .Count > 0;
+    }
+
+    private HexCell FindFirstCleanLongBallTarget(bool requireDangerous)
+    {
+        HexCell ballHex = longBallManager.ball.GetCurrentHex();
+        foreach (HexCell candidate in GetAllInBoundsHexesOrdered(ballHex))
+        {
+            if (candidate == null || candidate == ballHex || candidate.isInPenaltyBox != 0)
+            {
+                continue;
+            }
+
+            var (isValid, isDangerous) = longBallManager.ValidateLongBallTarget(candidate);
+            if (!isValid || isDangerous != requireDangerous)
+            {
+                continue;
+            }
+
+            if (LandingHexHasEligibleLongBallInterceptors(candidate))
+            {
+                continue;
+            }
+
+            return candidate;
+        }
+
+        return null;
+    }
+
+    private (HexCell intendedTarget, HexCell finalTarget, int directionRoll, int distanceRoll)? FindLongBallInaccuracySetup(
+        Func<HexCell, bool> finalTargetPredicate,
+        bool? requireDangerous = null)
+    {
+        HexCell ballHex = longBallManager.ball.GetCurrentHex();
+        foreach (HexCell intendedTarget in GetAllInBoundsHexesOrdered(ballHex))
+        {
+            if (intendedTarget == null || intendedTarget == ballHex)
+            {
+                continue;
+            }
+
+            var (isValid, isDangerous) = longBallManager.ValidateLongBallTarget(intendedTarget);
+            if (!isValid)
+            {
+                continue;
+            }
+
+            if (requireDangerous.HasValue && isDangerous != requireDangerous.Value)
+            {
+                continue;
+            }
+
+            for (int directionRoll = 0; directionRoll < 6; directionRoll++)
+            {
+                for (int distanceRoll = 1; distanceRoll <= 6; distanceRoll++)
+                {
+                    HexCell finalTarget = outOfBoundsManager.CalculateInaccurateTarget(intendedTarget, directionRoll, distanceRoll);
+                    if (finalTargetPredicate(finalTarget))
+                    {
+                        return (intendedTarget, finalTarget, directionRoll, distanceRoll);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private int GetFirstTimePassInterceptionCandidateCount()
+    {
+        FieldInfo interceptionCandidatesField = typeof(FirstTimePassManager).GetField("interceptionCandidates", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(interceptionCandidatesField != null, "FirstTimePassManager private interception candidate list should exist for the FTP tests.");
+        List<GroundInterceptionCandidate> candidates = interceptionCandidatesField?.GetValue(firstTimePassManager) as List<GroundInterceptionCandidate>;
+        return candidates?.Count ?? 0;
+    }
+
+    private static Vector2Int ToClickCoordinates(HexCell hex)
+    {
+        return new Vector2Int(hex.coordinates.x, hex.coordinates.z);
+    }
+
+    private void SetTokenHexForTest(PlayerToken token, HexCell destinationHex)
+    {
+        if (token == null || destinationHex == null)
+        {
+            return;
+        }
+
+        HexCell previousHex = token.GetCurrentHex();
+        if (previousHex != null)
+        {
+            previousHex.isAttackOccupied = false;
+            previousHex.isDefenseOccupied = false;
+            if (previousHex.occupyingToken == token)
+            {
+                previousHex.occupyingToken = null;
+            }
+        }
+
+        bool wasAttacker = token.isAttacker;
+        token.SetCurrentHex(destinationHex);
+        destinationHex.isAttackOccupied = wasAttacker;
+        destinationHex.isDefenseOccupied = !wasAttacker;
+        destinationHex.occupyingToken = token;
+
+        Vector3 destinationPosition = destinationHex.GetHexCenter();
+        float tokenHeight = token.transform.position.y > 0.01f ? token.transform.position.y : 0.2f;
+        token.transform.position = new Vector3(destinationPosition.x, tokenHeight, destinationPosition.z);
+    }
+
+    private IEnumerator WaitForFtpDefenderMovementPhase(float timeoutSeconds = 2f)
+    {
+        float elapsedSeconds = 0f;
+        while (elapsedSeconds < timeoutSeconds)
+        {
+            if (firstTimePassManager != null && firstTimePassManager.isWaitingForDefenderSelection)
+            {
+                yield break;
+            }
+
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+    }
+
+    private IEnumerator WaitForCondition(Func<bool> condition, float timeoutSeconds, string failureMessage)
+    {
+        float elapsedSeconds = 0f;
+        while (elapsedSeconds < timeoutSeconds)
+        {
+            if (condition())
+            {
+                yield break;
+            }
+
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+
+        AssertTrue(false, failureMessage);
+    }
+
+    private string GetFinalThirdCurrentTeamMoving()
+    {
+        if (finalThirdManager == null)
+        {
+            return null;
+        }
+
+        FieldInfo currentTeamField = typeof(FinalThirdManager).GetField("currentTeamMoving", BindingFlags.Instance | BindingFlags.NonPublic);
+        return currentTeamField?.GetValue(finalThirdManager) as string;
+    }
+
+    private void AssertColorApproximately(Color actual, Color expected, float tolerance, string message)
+    {
+        bool withinTolerance =
+            Mathf.Abs(actual.r - expected.r) <= tolerance &&
+            Mathf.Abs(actual.g - expected.g) <= tolerance &&
+            Mathf.Abs(actual.b - expected.b) <= tolerance &&
+            Mathf.Abs(actual.a - expected.a) <= tolerance;
+
+        AssertTrue(withinTolerance, message, expected, actual);
+    }
+
+    private IEnumerator PrepareFtpAvailabilityFromKickoff(int difficulty)
+    {
+        yield return new WaitForSeconds(3f);
+
+        MatchManager.Instance.difficulty_level = difficulty;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = difficulty;
+        }
+        Log($"Setting difficulty to {difficulty}");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.05f));
+        Log("Pressing P");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.2f));
+        Log("Clicking (-6, -6)");
+
+        if (difficulty != 3)
+        {
+            yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.2f));
+            Log("Clicking (-6, -6) again");
+        }
+
+        Log("Wait for the ball to move");
+        float timeoutSeconds = difficulty == 3 ? 8f : 5f;
+        float elapsedSeconds = 0f;
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToPlayer();
+        while (!availabilityCheck.passed && elapsedSeconds < timeoutSeconds)
+        {
+            yield return new WaitForSeconds(0.25f);
+            elapsedSeconds += 0.25f;
+            availabilityCheck = AssertCorrectAvailabilityAfterGBToPlayer();
+        }
+
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after Pass to Player",
+            true,
+            availabilityCheck.ToString()
+        );
+    }
+
+    private IEnumerator PrepareLongBallAvailabilityFromKickoff(int difficulty)
+    {
+        yield return new WaitForSeconds(3f);
+
+        MatchManager.Instance.difficulty_level = difficulty;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = difficulty;
+        }
+        Log($"Setting difficulty to {difficulty}");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Pressing Space");
+
+        AssertTrue(longBallManager.isAvailable, "Long Ball should be available after kickoff.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.05f));
+        Log("Pressing L");
+
+        AssertTrue(longBallManager.isActivated, "Long Ball should be activated after pressing L.");
+        AssertTrue(longBallManager.isAwaitingTargetSelection, "Long Ball should be waiting for target selection after pressing L.");
+        AssertTrue(!longBallManager.isAvailable, "Long Ball should no longer be available after activation.");
+    }
+
+    private IEnumerator PrepareManualLongBallBoardState(int difficulty)
+    {
+        yield return new WaitForSeconds(3f);
+
+        MatchManager.Instance.difficulty_level = difficulty;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = difficulty;
+        }
+        Log($"Setting difficulty to {difficulty}");
+
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Pressing P");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.05f));
+        Log("Clicking (-8, -4) - GBM target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -4), 0.1f));
+        if (difficulty != 3)
+        {
+            Log("Clicking (-8, -4) again - Confirm GBM");
+            yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -4), 0.1f));
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -4)) && (finalThirdManager.isActivated || movementPhaseManager.isActivated),
+            6f,
+            "Kickoff GBM should complete and place the ball on (-8,-4)."));
+
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated && GetFinalThirdCurrentTeamMoving() == "defense",
+            2f,
+            "Defensive Final Third should be active after forfeiting attack F3."));
+
+        Log("Clicking (18, 0) - Select Poulsen");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(18, 0), 0.1f));
+        yield return new WaitForSeconds(0.15f);
+        Log("Clicking (16, -4) - Move Poulsen");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -4), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                RequirePlayerToken("Poulsen").GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(16, 0, -4))
+                && !movementPhaseManager.isPlayerMoving,
+            3f,
+            "Poulsen should finish the defensive Final Third move to (16,-4)."));
+        Log("Pressing X - Forfeit rest of Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                movementPhaseManager.isActivated
+                && movementPhaseManager.isMovementPhaseAttack
+                && movementPhaseManager.isAwaitingTokenSelection
+                && !movementPhaseManager.isPlayerMoving
+                && !finalThirdManager.isActivated,
+            2f,
+            "Movement Phase attack turn should start after final-third forfeits."));
+
+        PlayerToken ulisses = RequirePlayerToken("Ulisses");
+        Log("Clicking (-8, -8) - Select Ulisses");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -8), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.selectedToken == ulisses && movementPhaseManager.isAwaitingHexDestination,
+            2f,
+            "Ulisses should be selected and waiting for a movement destination."));
+        Log("Clicking (-8, -4) - Move Ulisses onto the ball");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -4), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == ulisses
+                && ulisses.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -4))
+                && longBallManager.ball.GetCurrentHex() == ulisses.GetCurrentHex(),
+            3f,
+            "Ulisses should collect the ball on (-8,-4) during Long Ball prep."));
+
+        if (movementPhaseManager.isDribblerRunning)
+        {
+            Log("Pressing X - Forfeit Ulisses remaining pace");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => movementPhaseManager.isMovementPhaseAttack && !movementPhaseManager.isDribblerRunning,
+                2f,
+                "Ulisses should stop dribbler-running after forfeiting remaining pace."));
+        }
+
+        Log("Pressing X - Forfeit rest of Att MP");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated && movementPhaseManager.isMovementPhaseDef && movementPhaseManager.isAwaitingTokenSelection,
+            2f,
+            "Defensive Movement Phase should start after forfeiting attack MP."));
+
+        PlayerToken abraham = RequirePlayerToken("Abraham");
+        Log("Clicking (-12, 0) - Select Abraham");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-12, 0), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.selectedToken == abraham && movementPhaseManager.isAwaitingHexDestination,
+            2f,
+            "Abraham should be selected and waiting for a movement destination."));
+        Log("Clicking (-8, -3) - Move Abraham");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, -3), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                abraham.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -3))
+                && !movementPhaseManager.isPlayerMoving,
+            3f,
+            "Abraham should finish moving to (-8,-3)."));
+
+        if (movementPhaseManager.isWaitingForTackleDecision)
+        {
+            Log("Pressing N - Abraham stands without tackling");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.N, 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => movementPhaseManager.isMovementPhase2f2 || movementPhaseManager.isMovementPhaseDef,
+                2f,
+                "Movement Phase should continue after declining Abraham's tackle."));
+        }
+
+        if (movementPhaseManager.isMovementPhaseDef)
+        {
+            Log("Pressing X - Forfeit rest of Def MP");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhase2f2 && !movementPhaseManager.isPlayerMoving,
+            3f,
+            "Movement Phase should be in 2f2."));
+        Log("Pressing X - Forfeit 2f2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated,
+            2f,
+            "Final Third should be active after 2f2 ends."));
+
+        Log("Pressing X - Forfeit Att F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated && GetFinalThirdCurrentTeamMoving() == "defense",
+            2f,
+            "Defensive Final Third should start after forfeiting attack F3."));
+        Log("Pressing X - Forfeit Def F3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => !finalThirdManager.isActivated,
+            2f,
+            "Final Third should end after both sides forfeit."));
+
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterMovementComplete();
+        AssertTrue(
+            availabilityCheck.passed,
+            "Action Availability after manual Long Ball prep is correct",
+            true,
+            availabilityCheck.ToString()
+        );
+
+        AssertTrue(longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -4)), "Ball should be on (-8,-4) after Long Ball prep.", hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -4)), longBallManager.ball.GetCurrentHex());
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == RequirePlayerToken("Ulisses"), "Ulisses should be the last token after Long Ball prep.");
     }
 
     public void LinkRoomSceneComponents()
@@ -1910,6 +2853,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (-6, -6) again");
         yield return new WaitForSeconds(3f); // for the ball to move
         Log("Wait for the ball to move");
+        AvailabilityCheckResult availabilityAfterGbToPlayer = AssertCorrectAvailabilityAfterGBToPlayer();
+        AssertTrue(
+            availabilityAfterGbToPlayer.passed,
+            "Action Availability after kickoff Ground Ball to Player before FTP To Player",
+            true,
+            availabilityAfterGbToPlayer.ToString()
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.5f));
         Log("Pressing F");
         AvailabilityCheckResult availabilityFTPInit = AssertCorrectWaitinginFTPInitialization();
@@ -1990,6 +2940,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (-6, -6) again");
         yield return new WaitForSeconds(3f); // for the ball to move
         Log("Wait for the ball to move");
+        AvailabilityCheckResult availabilityAfterGbToPlayer = AssertCorrectAvailabilityAfterGBToPlayer();
+        AssertTrue(
+            availabilityAfterGbToPlayer.passed,
+            "Action Availability after kickoff Ground Ball to Player before FTP option switching",
+            true,
+            availabilityAfterGbToPlayer.ToString()
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.5f));
         Log("Pressing F");
         AvailabilityCheckResult availabilityFTPInit = AssertCorrectWaitinginFTPInitialization();
@@ -2116,6 +3073,613 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         LogFooterofTest("Ground ball to Player, FTP - M - FTP Commitment");
 
+    }
+
+    private IEnumerator Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment()
+    {
+        Log("▶️ Starting test scenario: 'FTP Difficulty 1 Hover Preview And Commitment'");
+        yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(1));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.2f));
+        Log("Pressing F");
+        AvailabilityCheckResult ftpInitialization = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            ftpInitialization.passed,
+            "FTP subsystem waiting status at Initialization on difficulty 1",
+            true,
+            ftpInitialization.ToString()
+        );
+
+        HexCell outOfRangeHex = RequireHex(FindFirstOutOfRangeFtpTarget(), "Difficulty 1 FTP test should find an out-of-range hover target.");
+        HexCell committedTargetHex = RequireHex(FindFirstSafeFtpTarget(), "Difficulty 1 FTP test should find a safe FTP target.");
+        HexCell alternateTargetHex = RequireHex(FindFirstSafeFtpTarget(committedTargetHex), "Difficulty 1 FTP test should find an alternate safe FTP target.");
+        FtpBlockedHoverSetup blockedHoverSetup = FindFtpBlockedHoverSetup(committedTargetHex);
+        AssertTrue(blockedHoverSetup != null, "Difficulty 1 FTP test should be able to create a blocked hover target.");
+        if (blockedHoverSetup == null)
+        {
+            yield break;
+        }
+
+        SimulateFirstTimePassHover(outOfRangeHex);
+        yield return null;
+        AssertTrue(
+            firstTimePassManager.GetInstructions().Contains("out of range"),
+            "FTP hover should explain the out-of-range validation failure",
+            true,
+            firstTimePassManager.GetInstructions()
+        );
+
+        SetTokenHexForTest(blockedHoverSetup.defenderToken, blockedHoverSetup.blockingHex);
+        SimulateFirstTimePassHover(blockedHoverSetup.targetHex);
+        yield return null;
+        AssertTrue(
+            firstTimePassManager.GetInstructions().Contains("blocked by defender"),
+            "FTP hover should explain the blocked-by-defender validation failure",
+            true,
+            firstTimePassManager.GetInstructions()
+        );
+        SetTokenHexForTest(blockedHoverSetup.defenderToken, blockedHoverSetup.originalDefenderHex);
+
+        SimulateFirstTimePassHover(committedTargetHex);
+        yield return null;
+        AssertTrue(
+            hexgrid.highlightedHexes.Contains(committedTargetHex),
+            "FTP hover should highlight the hovered safe target in difficulty 1",
+            true,
+            hexgrid.highlightedHexes.Contains(committedTargetHex)
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(committedTargetHex), 0.2f));
+        Log($"Clicking {committedTargetHex.coordinates} to commit the FTP target");
+        AssertTrue(
+            firstTimePassManager.currentTargetHex == committedTargetHex,
+            "FTP should lock the clicked target after the first click in difficulty 1",
+            committedTargetHex,
+            firstTimePassManager.currentTargetHex
+        );
+        AssertColorApproximately(
+            committedTargetHex.hexRenderer.material.color,
+            new Color(1f, 0.55f, 0f, 1f),
+            0.06f,
+            "FTP committed target should remain orange in difficulty 1.");
+
+        SimulateFirstTimePassHover(alternateTargetHex);
+        yield return null;
+        AssertColorApproximately(
+            committedTargetHex.hexRenderer.material.color,
+            new Color(1f, 0.55f, 0f, 1f),
+            0.06f,
+            "FTP committed target should stay orange while previewing another path in difficulty 1.");
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(committedTargetHex), 0.2f));
+        Log($"Clicking {committedTargetHex.coordinates} again to confirm the FTP target");
+        AvailabilityCheckResult ftpAttackerPhase = AssertCorrectWaitinginFTPAttackerMovementPhase();
+        AssertTrue(
+            ftpAttackerPhase.passed,
+            "FTP should enter attacker movement after confirming the target in difficulty 1",
+            true,
+            ftpAttackerPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to skip attacker movement");
+        yield return StartCoroutine(WaitForFtpDefenderMovementPhase());
+        AvailabilityCheckResult ftpDefenderPhase = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            ftpDefenderPhase.passed,
+            "FTP should enter defender movement after skipping the attacker move",
+            true,
+            ftpDefenderPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to skip defender movement");
+        yield return new WaitForSeconds(3f);
+
+        AvailabilityCheckResult finalAvailability = committedTargetHex.isAttackOccupied
+            ? AssertCorrectAvailabilityAfterFTPToPlayer()
+            : AssertCorrectAvailabilityAfterFTPToSpace();
+        AssertTrue(
+            finalAvailability.passed,
+            "FTP should resolve cleanly after both movement phases are skipped in difficulty 1",
+            true,
+            finalAvailability.ToString()
+        );
+
+        LogFooterofTest("FTP Difficulty 1 Hover Preview And Commitment");
+    }
+
+    private IEnumerator Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click()
+    {
+        Log("▶️ Starting test scenario: 'FTP Difficulty 3 Commits On F And First Click'");
+        yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(3));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.2f));
+        Log("Pressing F");
+        AssertTrue(
+            firstTimePassManager.isActivated,
+            "FTP should activate immediately on F in difficulty 3",
+            true,
+            firstTimePassManager.isActivated
+        );
+        AssertTrue(
+            firstTimePassManager.isAwaitingTargetSelection,
+            "FTP should be awaiting a target immediately after F in difficulty 3",
+            true,
+            firstTimePassManager.isAwaitingTargetSelection
+        );
+        AssertTrue(
+            !movementPhaseManager.isAvailable,
+            "Movement Phase should not remain selectable after FTP commits on F in difficulty 3",
+            false,
+            movementPhaseManager.isAvailable
+        );
+
+        HexCell safeTargetHex = RequireHex(FindFirstSafeFtpTarget(), "Difficulty 3 FTP test should find a safe FTP target.");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(safeTargetHex), 0.2f));
+        Log($"Clicking {safeTargetHex.coordinates} once to confirm the FTP target in difficulty 3");
+
+        AvailabilityCheckResult ftpAttackerPhase = AssertCorrectWaitinginFTPAttackerMovementPhase();
+        AssertTrue(
+            ftpAttackerPhase.passed,
+            "Difficulty 3 FTP should advance to attacker movement on the first valid target click",
+            true,
+            ftpAttackerPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to skip attacker movement");
+        AvailabilityCheckResult ftpDefenderPhase = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            ftpDefenderPhase.passed,
+            "FTP should enter defender movement after skipping the attacker move in difficulty 3",
+            true,
+            ftpDefenderPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to skip defender movement");
+        yield return new WaitForSeconds(3f);
+
+        AvailabilityCheckResult finalAvailability = safeTargetHex.isAttackOccupied
+            ? AssertCorrectAvailabilityAfterFTPToPlayer()
+            : AssertCorrectAvailabilityAfterFTPToSpace();
+        AssertTrue(
+            finalAvailability.passed,
+            "Difficulty 3 FTP should resolve cleanly after the first-click confirmation flow",
+            true,
+            finalAvailability.ToString()
+        );
+
+        LogFooterofTest("FTP Difficulty 3 Commits On F And First Click");
+    }
+
+    private IEnumerator Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5()
+    {
+        Log("▶️ Starting test scenario: 'FTP Defender Path Block Intercepts On 5+'");
+        yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(2));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.2f));
+        Log("Pressing F");
+        AvailabilityCheckResult ftpInitialization = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            ftpInitialization.passed,
+            "FTP subsystem waiting status at Initialization before the blocker interception test",
+            true,
+            ftpInitialization.ToString()
+        );
+
+        PlayerToken attackerToken = RequirePlayerToken("Cafferata");
+        PlayerToken defenderToken = RequirePlayerToken("Delgado");
+        HexCell ftpTargetHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(0, 0, -9)),
+            "FTP blocker interception test should find target hex (0, -9).");
+        HexCell attackerSourceHex = RequireHex(attackerToken.GetCurrentHex(), "Cafferata should be on the pitch for the FTP blocker interception test.");
+        HexCell attackerDestinationHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(0, 0, 1)),
+            "FTP blocker interception test should find Cafferata's destination hex (0, 1).");
+        HexCell defenderSourceHex = RequireHex(defenderToken.GetCurrentHex(), "Delgado should be on the pitch for the FTP blocker interception test.");
+        HexCell defenderDestinationHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(0, 0, -9)),
+            "FTP blocker interception test should find Delgado's destination hex (0, -9).");
+
+        AssertTrue(
+            attackerSourceHex.coordinates == new Vector3Int(0, 0, 0),
+            "Cafferata should start from (0, 0) in the FTP blocker interception test.",
+            new Vector3Int(0, 0, 0),
+            attackerSourceHex.coordinates
+        );
+        AssertTrue(
+            defenderSourceHex.coordinates == new Vector3Int(1, 0, -10),
+            "Delgado should start from (1, -10) in the FTP blocker interception test.",
+            new Vector3Int(1, 0, -10),
+            defenderSourceHex.coordinates
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ftpTargetHex), 0.2f));
+        Log($"Clicking {ftpTargetHex.coordinates} to select the FTP target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ftpTargetHex), 0.2f));
+        Log($"Clicking {ftpTargetHex.coordinates} again to confirm the FTP target");
+        AvailabilityCheckResult ftpAttackerPhase = AssertCorrectWaitinginFTPAttackerMovementPhase();
+        AssertTrue(
+            ftpAttackerPhase.passed,
+            "FTP should enter attacker movement after confirming the target for the blocker interception test",
+            true,
+            ftpAttackerPhase.ToString()
+        );
+
+        PlayerToken ftpPasser = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        AssertTrue(ftpPasser != null, "FTP blocker interception test should have a tracked passer.");
+        MatchManager.PlayerStats defenderStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(defenderToken.playerName);
+        MatchManager.PlayerStats passerStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(ftpPasser.playerName);
+        int interceptionsAttemptedBefore = defenderStatsBefore.interceptionsAttempted;
+        int interceptionsMadeBefore = defenderStatsBefore.interceptionsMade;
+        int possessionWonBefore = defenderStatsBefore.possessionWon;
+        int passerPossessionLostBefore = passerStatsBefore.possessionLost;
+        float xRecoveryBefore = defenderStatsBefore.xRecoveries;
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackerSourceHex), 0.2f));
+        Log($"Clicking {attackerSourceHex.coordinates} to select {attackerToken.playerName}");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackerDestinationHex), 0.2f));
+        Log($"Clicking {attackerDestinationHex.coordinates} to move {attackerToken.playerName} before the blocker interception");
+        yield return StartCoroutine(WaitForFtpDefenderMovementPhase());
+
+        AvailabilityCheckResult ftpDefenderPhase = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            ftpDefenderPhase.passed,
+            "FTP should enter defender movement before the blocker interception test",
+            true,
+            ftpDefenderPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(defenderSourceHex), 0.2f));
+        Log($"Clicking {defenderSourceHex.coordinates} to select {defenderToken.playerName}");
+        AssertTrue(
+            firstTimePassManager.isWaitingForDefenderMove,
+            "FTP should be waiting for the selected defender to move",
+            true,
+            firstTimePassManager.isWaitingForDefenderMove
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(defenderDestinationHex), 0.2f));
+        Log($"Clicking {defenderDestinationHex.coordinates} to move {defenderToken.playerName} onto the FTP path");
+        yield return new WaitForSeconds(1f);
+
+        AssertTrue(
+            firstTimePassManager.isWaitingForDiceRoll,
+            "FTP should enter the interception roll phase after a defender moves onto the path",
+            true,
+            firstTimePassManager.isWaitingForDiceRoll
+        );
+        AssertTrue(
+            GetFirstTimePassInterceptionCandidateCount() == 1,
+            "FTP blocker interception test should produce exactly one defender entry in the interception list",
+            1,
+            GetFirstTimePassInterceptionCandidateCount()
+        );
+        AssertTrue(
+            firstTimePassManager.GetInstructions().Contains("5+"),
+            "A low-tackling defender blocking the FTP path should get a 5+ interception instruction",
+            true,
+            firstTimePassManager.GetInstructions()
+        );
+
+        PerformRiggedFirstTimePassInterceptionRoll(5);
+        yield return new WaitForSeconds(3f);
+
+        AvailabilityCheckResult anyOtherAvailability = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            anyOtherAvailability.passed,
+            "FTP blocker interception should hand play to AnyOtherScenario",
+            true,
+            anyOtherAvailability.ToString()
+        );
+
+        MatchManager.PlayerStats defenderStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(defenderToken.playerName);
+        MatchManager.PlayerStats passerStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(ftpPasser.playerName);
+        AssertTrue(
+            defenderStatsAfter.interceptionsAttempted == interceptionsAttemptedBefore + 1,
+            "The blocking defender should log exactly one interception attempt",
+            interceptionsAttemptedBefore + 1,
+            defenderStatsAfter.interceptionsAttempted
+        );
+        AssertTrue(
+            defenderStatsAfter.interceptionsMade == interceptionsMadeBefore + 1,
+            "The blocking defender should log exactly one successful interception",
+            interceptionsMadeBefore + 1,
+            defenderStatsAfter.interceptionsMade
+        );
+        AssertTrue(
+            defenderStatsAfter.possessionWon == possessionWonBefore + 1,
+            "The blocking defender should log one possession won from the FTP interception",
+            possessionWonBefore + 1,
+            defenderStatsAfter.possessionWon
+        );
+        AssertTrue(
+            passerStatsAfter.possessionLost == passerPossessionLostBefore + 1,
+            "The FTP passer should log one possession lost from the successful blocker interception",
+            passerPossessionLostBefore + 1,
+            passerStatsAfter.possessionLost
+        );
+        AssertApproximately(
+            defenderStatsAfter.xRecoveries,
+            xRecoveryBefore + CalculateExpectedRecoveryFromTackling(defenderToken.tackling, 5),
+            0.0001f,
+            "The blocking defender should log xRecovery using the FTP 5+ interception rule");
+
+        LogFooterofTest("FTP Defender Path Block Intercepts On 5+");
+    }
+
+    private IEnumerator Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6()
+    {
+        Log("▶️ Starting test scenario: 'FTP Defender ZOI Recalculation Intercepts On 6'");
+        yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(2));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.2f));
+        Log("Pressing F");
+        AvailabilityCheckResult ftpInitialization = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            ftpInitialization.passed,
+            "FTP subsystem waiting status at Initialization before the ZOI interception test",
+            true,
+            ftpInitialization.ToString()
+        );
+
+        PlayerToken attackerToken = RequirePlayerToken("Cafferata");
+        PlayerToken defenderToken = RequirePlayerToken("Delgado");
+        HexCell ftpTargetHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(-1, 0, -9)),
+            "FTP ZOI interception test should find target hex (-1, -9).");
+        HexCell attackerSourceHex = RequireHex(attackerToken.GetCurrentHex(), "Cafferata should be on the pitch for the FTP ZOI interception test.");
+        HexCell attackerDestinationHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(0, 0, 1)),
+            "FTP ZOI interception test should find Cafferata's destination hex (0, 1).");
+        HexCell defenderSourceHex = RequireHex(defenderToken.GetCurrentHex(), "Delgado should be on the pitch for the FTP ZOI interception test.");
+        HexCell defenderDestinationHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(0, 0, -9)),
+            "FTP ZOI interception test should find Delgado's destination hex (0, -9).");
+
+        AssertTrue(
+            attackerSourceHex.coordinates == new Vector3Int(0, 0, 0),
+            "Cafferata should start from (0, 0) in the FTP ZOI interception test.",
+            new Vector3Int(0, 0, 0),
+            attackerSourceHex.coordinates
+        );
+        AssertTrue(
+            defenderSourceHex.coordinates == new Vector3Int(1, 0, -10),
+            "Delgado should start from (1, -10) in the FTP ZOI interception test.",
+            new Vector3Int(1, 0, -10),
+            defenderSourceHex.coordinates
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ftpTargetHex), 0.2f));
+        Log($"Clicking {ftpTargetHex.coordinates} to select the FTP target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ftpTargetHex), 0.2f));
+        Log($"Clicking {ftpTargetHex.coordinates} again to confirm the FTP target");
+        AvailabilityCheckResult ftpAttackerPhase = AssertCorrectWaitinginFTPAttackerMovementPhase();
+        AssertTrue(
+            ftpAttackerPhase.passed,
+            "FTP should enter attacker movement after confirming the target for the ZOI interception test",
+            true,
+            ftpAttackerPhase.ToString()
+        );
+
+        PlayerToken ftpPasser = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        AssertTrue(ftpPasser != null, "FTP ZOI interception test should have a tracked passer.");
+        MatchManager.PlayerStats defenderStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(defenderToken.playerName);
+        MatchManager.PlayerStats passerStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(ftpPasser.playerName);
+        int interceptionsAttemptedBefore = defenderStatsBefore.interceptionsAttempted;
+        int interceptionsMadeBefore = defenderStatsBefore.interceptionsMade;
+        int passerPossessionLostBefore = passerStatsBefore.possessionLost;
+        float xRecoveryBefore = defenderStatsBefore.xRecoveries;
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackerSourceHex), 0.2f));
+        Log($"Clicking {attackerSourceHex.coordinates} to select {attackerToken.playerName}");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackerDestinationHex), 0.2f));
+        Log($"Clicking {attackerDestinationHex.coordinates} to move {attackerToken.playerName} before the ZOI interception");
+        yield return StartCoroutine(WaitForFtpDefenderMovementPhase());
+
+        AvailabilityCheckResult ftpDefenderPhase = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            ftpDefenderPhase.passed,
+            "FTP should enter defender movement before the ZOI interception test",
+            true,
+            ftpDefenderPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(defenderSourceHex), 0.2f));
+        Log($"Clicking {defenderSourceHex.coordinates} to select {defenderToken.playerName}");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(defenderDestinationHex), 0.2f));
+        Log($"Clicking {defenderDestinationHex.coordinates} to move {defenderToken.playerName} into FTP interception range");
+        yield return new WaitForSeconds(1f);
+
+        AssertTrue(
+            firstTimePassManager.isWaitingForDiceRoll,
+            "FTP should enter the interception roll phase after a defender moves into ZOI influence",
+            true,
+            firstTimePassManager.isWaitingForDiceRoll
+        );
+        AssertTrue(
+            GetFirstTimePassInterceptionCandidateCount() == 1,
+            "FTP ZOI interception test should produce exactly one defender entry in the interception list",
+            1,
+            GetFirstTimePassInterceptionCandidateCount()
+        );
+        AssertTrue(
+            firstTimePassManager.GetInstructions().Contains("6"),
+            "A low-tackling defender entering ZOI influence should keep the standard 6 interception instruction",
+            true,
+            firstTimePassManager.GetInstructions()
+        );
+
+        PerformRiggedFirstTimePassInterceptionRoll(6);
+        yield return new WaitForSeconds(3f);
+
+        AvailabilityCheckResult anyOtherAvailability = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            anyOtherAvailability.passed,
+            "FTP ZOI interception should hand play to AnyOtherScenario",
+            true,
+            anyOtherAvailability.ToString()
+        );
+
+        MatchManager.PlayerStats defenderStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(defenderToken.playerName);
+        MatchManager.PlayerStats passerStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(ftpPasser.playerName);
+        AssertTrue(
+            defenderStatsAfter.interceptionsAttempted == interceptionsAttemptedBefore + 1,
+            "The ZOI defender should log exactly one interception attempt",
+            interceptionsAttemptedBefore + 1,
+            defenderStatsAfter.interceptionsAttempted
+        );
+        AssertTrue(
+            defenderStatsAfter.interceptionsMade == interceptionsMadeBefore + 1,
+            "The ZOI defender should log exactly one successful interception",
+            interceptionsMadeBefore + 1,
+            defenderStatsAfter.interceptionsMade
+        );
+        AssertTrue(
+            passerStatsAfter.possessionLost == passerPossessionLostBefore + 1,
+            "The FTP passer should log one possession lost from the successful ZOI interception",
+            passerPossessionLostBefore + 1,
+            passerStatsAfter.possessionLost
+        );
+        AssertApproximately(
+            defenderStatsAfter.xRecoveries,
+            xRecoveryBefore + CalculateExpectedRecoveryFromTackling(defenderToken.tackling),
+            0.0001f,
+            "The ZOI defender should log xRecovery using the standard FTP interception rule");
+
+        LogFooterofTest("FTP Defender ZOI Recalculation Intercepts On 6");
+    }
+
+    private IEnumerator Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space()
+    {
+        Log("▶️ Starting test scenario: 'FTP Passer Cannot Reclaim FTP To Space'");
+        yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(2));
+
+        PlayerToken ftpPasser = RequirePlayerToken("André Noruega");
+        HexCell passerHexBeforeFtp = RequireHex(ftpPasser.GetCurrentHex(), "The FTP passer should start on a valid hex.");
+        HexCell ftpTargetHex = RequireHex(
+            FindFirstSafeFtpSpaceTargetReachableByPasser(ftpPasser),
+            "FTP reclaim test should find a safe empty FTP target that the passer could otherwise reach in Movement Phase.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.2f));
+        Log("Pressing F");
+        AvailabilityCheckResult ftpInitialization = AssertCorrectWaitinginFTPInitialization();
+        AssertTrue(
+            ftpInitialization.passed,
+            "FTP subsystem waiting status at Initialization before the excluded-collector test",
+            true,
+            ftpInitialization.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ftpTargetHex), 0.2f));
+        Log($"Clicking {ftpTargetHex.coordinates} to select the FTP target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ftpTargetHex), 0.2f));
+        Log($"Clicking {ftpTargetHex.coordinates} again to confirm the FTP target");
+        AvailabilityCheckResult ftpAttackerPhase = AssertCorrectWaitinginFTPAttackerMovementPhase();
+        AssertTrue(
+            ftpAttackerPhase.passed,
+            "FTP should enter attacker movement before the excluded-collector test",
+            true,
+            ftpAttackerPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to skip attacker movement");
+        yield return StartCoroutine(WaitForFtpDefenderMovementPhase());
+        AvailabilityCheckResult ftpDefenderPhase = AssertCorrectWaitinginFTPDefenderMovementPhase();
+        AssertTrue(
+            ftpDefenderPhase.passed,
+            "FTP should enter defender movement before the excluded-collector test",
+            true,
+            ftpDefenderPhase.ToString()
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        Log("Pressing X to skip defender movement");
+        yield return new WaitForSeconds(3f);
+
+        AvailabilityCheckResult ftpToSpaceAvailability = AssertCorrectAvailabilityAfterFTPToSpace();
+        AssertTrue(
+            ftpToSpaceAvailability.passed,
+            "FTP to space should hand play to Movement Phase before the excluded-collector test",
+            true,
+            ftpToSpaceAvailability.ToString()
+        );
+        AssertTrue(
+            MatchManager.Instance.hangingPassType == "ground",
+            "FTP to space should leave a hanging ground pass",
+            "ground",
+            MatchManager.Instance.hangingPassType
+        );
+        AssertTrue(
+            MatchManager.Instance.hangingPassExcludedCollector == ftpPasser,
+            "FTP to space should exclude the FTP passer from collecting the hanging pass",
+            ftpPasser,
+            MatchManager.Instance.hangingPassExcludedCollector
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == ftpPasser,
+            "FTP to space should keep the passer as the last token to touch the ball on purpose",
+            ftpPasser,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+        );
+
+        HexCell ballHexAfterFtp = RequireHex(firstTimePassManager.ball.GetCurrentHex(), "The ball should still be on a valid hex after FTP to space.");
+        AssertTrue(
+            ballHexAfterFtp == ftpTargetHex,
+            "FTP to space should leave the ball on the selected target hex",
+            ftpTargetHex,
+            ballHexAfterFtp
+        );
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(passerHexBeforeFtp), 0.2f));
+        Log($"Clicking {passerHexBeforeFtp.coordinates} to select {ftpPasser.playerName} after the FTP to space");
+        AssertTrue(
+            movementPhaseManager.selectedToken == ftpPasser,
+            "Movement Phase should select the FTP passer for the excluded-collector test",
+            ftpPasser,
+            movementPhaseManager.selectedToken
+        );
+        AssertTrue(
+            !hexgrid.highlightedHexes.Contains(ballHexAfterFtp),
+            "The FTP passer should not have the hanging ball hex highlighted as a legal destination",
+            false,
+            hexgrid.highlightedHexes.Contains(ballHexAfterFtp)
+        );
+        AssertTrue(
+            !movementPhaseManager.isBallPickable,
+            "Movement Phase should not mark the hanging FTP ball as pickable for the excluded passer",
+            false,
+            movementPhaseManager.isBallPickable
+        );
+        bool committedStateBeforeBlockedClick = movementPhaseManager.isCommitted;
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ballHexAfterFtp), 0.2f));
+        Log($"Clicking {ballHexAfterFtp.coordinates} with the excluded FTP passer");
+        yield return new WaitForSeconds(0.25f);
+
+        AssertTrue(
+            ftpPasser.GetCurrentHex() == passerHexBeforeFtp,
+            "The excluded FTP passer should stay on the original hex after clicking the hanging ball",
+            passerHexBeforeFtp,
+            ftpPasser.GetCurrentHex()
+        );
+        AssertTrue(
+            firstTimePassManager.ball.GetCurrentHex() == ballHexAfterFtp,
+            "The hanging FTP ball should remain in place when the excluded passer clicks it",
+            ballHexAfterFtp,
+            firstTimePassManager.ball.GetCurrentHex()
+        );
+        AssertTrue(
+            movementPhaseManager.isCommitted == committedStateBeforeBlockedClick,
+            "Clicking the hanging FTP ball with the excluded passer should not change the existing Movement Phase commitment state",
+            committedStateBeforeBlockedClick,
+            movementPhaseManager.isCommitted
+        );
+
+        LogFooterofTest("FTP Passer Cannot Reclaim FTP To Space");
     }
 
     private IEnumerator Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status()
@@ -3153,6 +4717,24 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Calling PerformLeniencyTest(6)");
         movementPhaseManager.PerformLeniencyTest(6);
         yield return new WaitForSeconds(0.2f);
+        if (alreadyBooked)
+        {
+            AssertTrue(
+                MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").redCards == 1,
+                "Soares should log a red card when a steal foul produces a second yellow",
+                1,
+                MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").redCards
+            );
+        }
+        else
+        {
+            AssertTrue(
+                MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").yellowCards == 1,
+                "Soares should log a yellow card when a steal foul booking is shown",
+                1,
+                MatchManager.Instance.gameData.stats.GetPlayerStats("Soares").yellowCards
+            );
+        }
         AssertTrue(
             !movementPhaseManager.isWaitingForFoulDecision,
             "MP Should NOT be waiting for a foul decision after Leniency Roll",
@@ -3162,6 +4744,15 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Calling PerformInjuryTest(6)");
         movementPhaseManager.PerformInjuryTest(6);
         yield return new WaitForSeconds(0.8f);
+        if (!alreadyInjured)
+        {
+            AssertTrue(
+                MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").injuries == 1,
+                "Yaneva should log an injury when a steal foul injures her",
+                1,
+                MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").injuries
+            );
+        }
 
         bool playOnShouldBeBlocked = alreadyBooked || alreadyInjured;
         if (playOnShouldBeBlocked)
@@ -4290,6 +5881,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         var yaneva = PlayerToken.GetPlayerTokenByName("Yaneva");
         var gilbert = PlayerToken.GetPlayerTokenByName("Gilbert");
         var paterson = PlayerToken.GetPlayerTokenByName("Paterson");
+        var dribblerTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(yaneva.isHomeTeam);
+        var tacklerTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(gilbert.isHomeTeam);
         (float patersonXD, float patersonXT) = CalculateExpectedGroundDuel(yaneva.dribbling, paterson.tackling);
         (float gilbertXD, float gilbertXT) = CalculateExpectedGroundDuel(yaneva.dribbling, gilbert.tackling);
         AssertTrue(
@@ -4333,15 +5926,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             0.0001f,
             "Gilbert should record xTackles when the tackle duel starts");
         AssertApproximately(
-            MatchManager.Instance.gameData.stats.homeTeamStats.totalXTackles,
+            tacklerTeamStats.totalXTackles,
             patersonXT + gilbertXT,
             0.0001f,
-            "Home team xTackles should roll up the Paterson and Gilbert tackle duel expectations");
+            "The tacklers' team xTackles should roll up the Paterson and Gilbert tackle duel expectations");
         AssertApproximately(
-            MatchManager.Instance.gameData.stats.awayTeamStats.totalXDribbles,
+            dribblerTeamStats.totalXDribbles,
             patersonXD + gilbertXD,
             0.0001f,
-            "Away team xDribbles should roll up Yaneva's tackle duel expectations");
+            "The dribbler's team xDribbles should roll up Yaneva's tackle duel expectations");
 
         LogFooterofTest("MovementPhase Check InterceptionFoul Tackle Foul NewTackle SuccessfulTackle");
     }
@@ -5853,6 +7446,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName
         );
         AssertTrue(
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose == null,
+            "A defender-caused loose ball that hits an attacker should clear the previous token to avoid assists"
+        );
+        AssertTrue(
             movementPhaseManager.defendersMoved == 1,
             "MP - 1 defenders moved",
             1,
@@ -6269,6 +7866,16 @@ public class GameTestScenarioRunner : MonoBehaviour
             PlayerToken.GetPlayerTokenByName("McNulty"),
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
         );
+        AssertTrue(
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose == null,
+            "Picking up a defender-caused loose ball from space should clear the previous token chain"
+        );
+        AssertTrue(
+            !MatchManager.Instance.clearPreviousOnNextBallCollection,
+            "The loose-ball pickup ownership reset should be consumed once the ball is collected",
+            false,
+            MatchManager.Instance.clearPreviousOnNextBallCollection
+        );
 
         LogFooterofTest("MovementPhase Check Pick Up Ball, continue Dribble, tackle Loose, 2 missed interceptions");
     }
@@ -6392,6 +7999,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Loose Ball Should NOT be active any more",
             false,
             looseBallManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.clearPreviousOnNextBallCollection,
+            "A defender-caused loose ball left in space should keep the next-pickup ownership reset armed",
+            true,
+            MatchManager.Instance.clearPreviousOnNextBallCollection
         );
         AssertTrue(
             movementPhaseManager.isMovementPhaseDef,
@@ -6555,6 +8168,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Loose Ball Manager Should not be activated any more",
             false,
             looseBallManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose == null,
+            "A defender-caused loose ball that hits an attacker should clear the previous token in defensive MP"
         );
         AssertTrue(
             movementPhaseManager.isMovementPhaseDef,
@@ -6829,6 +8446,22 @@ public class GameTestScenarioRunner : MonoBehaviour
             looseBallManager.isActivated
         );
         AssertTrue(
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose == null,
+            "A defender-caused loose ball that hits an attacker should clear the previous token before snapshot handling"
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Toothnail"),
+            "A defender-caused loose ball that hits Toothnail should make Toothnail the last token to touch the ball on purpose",
+            PlayerToken.GetPlayerTokenByName("Toothnail"),
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+        );
+        AssertTrue(
+            !MatchManager.Instance.clearPreviousOnNextBallCollection,
+            "An immediate loose-ball hit on Toothnail should consume any pending next-pickup ownership reset",
+            false,
+            MatchManager.Instance.clearPreviousOnNextBallCollection
+        );
+        AssertTrue(
             movementPhaseManager.isMovementPhaseAttack,
             "MP Should still be at Attacking part",
             true,
@@ -6931,6 +8564,31 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(
             !goalFlowManager.isActivated
             , "GoalFlow is no longer activated"
+        );
+        var toothnail = PlayerToken.GetPlayerTokenByName("Toothnail");
+        var yaneva = PlayerToken.GetPlayerTokenByName("Yaneva");
+        var homeTeamStatsAfterLooseGoal = MatchManager.Instance.gameData.stats.GetTeamStats(yaneva.isHomeTeam);
+        AssertTrue(
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose == null,
+            "A Toothnail goal coming from a defender-caused loose ball should not restore a previous-token assist chain"
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats(yaneva.playerName).assists == 0,
+            "Yaneva should not be credited with an assist when Toothnail scores from a defender-caused loose ball",
+            0,
+            MatchManager.Instance.gameData.stats.GetPlayerStats(yaneva.playerName).assists
+        );
+        AssertTrue(
+            homeTeamStatsAfterLooseGoal.totalAssists == 0,
+            "The home team should not record an assist when Toothnail scores from a defender-caused loose ball",
+            0,
+            homeTeamStatsAfterLooseGoal.totalAssists
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats(toothnail.playerName).goals == 1,
+            "Toothnail should still be credited with the goal",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats(toothnail.playerName).goals
         );
         // AssertTrue(
         //     false,
@@ -7109,6 +8767,22 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Loose Ball Manager Should not be activated any more",
             false,
             looseBallManager.isActivated
+        );
+        AssertTrue(
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose == null,
+            "A defender-caused loose ball that hits an attacker should clear the previous token before continuing the attack"
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Toothnail"),
+            "A defender-caused loose ball that hits Toothnail should make Toothnail the last token to touch the ball on purpose",
+            PlayerToken.GetPlayerTokenByName("Toothnail"),
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+        );
+        AssertTrue(
+            !MatchManager.Instance.clearPreviousOnNextBallCollection,
+            "An immediate loose-ball hit on Toothnail should consume any pending next-pickup ownership reset",
+            false,
+            MatchManager.Instance.clearPreviousOnNextBallCollection
         );
         AssertTrue(
             movementPhaseManager.isMovementPhaseAttack,
@@ -10908,6 +12582,18 @@ public class GameTestScenarioRunner : MonoBehaviour
             );
             
         }
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Cafferata").assists == 1,
+            "Cafferata should be credited with exactly one assist for the headed goal",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Cafferata").assists
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetTeamStats(PlayerToken.GetPlayerTokenByName("Cafferata").isHomeTeam).totalAssists == 1,
+            "The assisting team should record exactly one assist for the headed goal",
+            1,
+            MatchManager.Instance.gameData.stats.GetTeamStats(PlayerToken.GetPlayerTokenByName("Cafferata").isHomeTeam).totalAssists
+        );
         LogFooterofTest("High Pass towards Attacker to head at Goal AND GOAL");
     }
     
@@ -11342,6 +13028,525 @@ public class GameTestScenarioRunner : MonoBehaviour
   // TODO: High Pass
   // TODO: Long Ball
 
+    private IEnumerator Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold()
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(1));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        AssertTrue(longBallManager.isActivated, "Long Ball should be activated.");
+        AssertTrue(longBallManager.isAwaitingTargetSelection, "Long Ball should be waiting for target selection.");
+
+        Log("Clicking (-8, 8) - Invalid target blocked by Abraham touching Ulisses");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-8, 8), 0.1f));
+        AssertTrue(longBallManager.currentTargetHex == null, "Long Ball should reject (-8,8) as blocked by an adjacent defender.");
+        AssertTrue(longBallManager.isAwaitingTargetSelection, "Long Ball should still be awaiting target selection after rejecting (-8,8).");
+
+        HexCell intendedTarget = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(6, 0, -7)), "Long Ball test target (6,-7) should exist.");
+        Log("Clicking (6, -7) - Select valid Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+        AssertTrue(longBallManager.currentTargetHex == intendedTarget, "Long Ball should accept (6,-7) as the selected target.", intendedTarget, longBallManager.currentTargetHex);
+
+        Log("Clicking (6, -7) again - Confirm Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+        AssertTrue(longBallManager.isWaitingForAccuracyRoll, "Long Ball should be waiting for the accuracy roll after confirmation.");
+        AssertTrue(
+            longBallManager.GetInstructions().Contains("3+"),
+            "Long Ball instructions should show a 3+ accuracy threshold for Ulisses.",
+            true,
+            longBallManager.GetInstructions()
+        );
+
+        Log("Rigging accurate Long Ball roll to 3");
+        PerformRiggedLongBallAccuracyRoll(3);
+        yield return new WaitForSeconds(2.3f);
+
+        if (longBallManager.isWaitingForDefLBMove)
+        {
+            Log("Pressing X - Forfeit GK pace move");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(availabilityCheck.passed, "Accurate Long Ball to space should auto-commit MP for attack.", true, availabilityCheck.ToString());
+        AssertTrue(MatchManager.Instance.hangingPassType == "aerial", "Accurate Long Ball to space should leave an aerial hanging pass.", "aerial", MatchManager.Instance.hangingPassType);
+        AssertTrue(longBallManager.ball.GetCurrentHex() == intendedTarget, "Ball should finish on the accurate long-ball target.", intendedTarget, longBallManager.ball.GetCurrentHex());
+
+        LogFooterofTest("Long Ball Difficulty 1 Invalid Target And Accurate Threshold");
+    }
+
+    private IEnumerator Scenario_030b_LongBall_Difficulty3_Commits_On_First_Click()
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(3));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        Log("Clicking (6, -7) - Difficulty 3 first valid target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+
+        AssertTrue(!longBallManager.isAwaitingTargetSelection, "Difficulty 3 Long Ball should commit on the first valid click.");
+        AssertTrue(longBallManager.isWaitingForAccuracyRoll, "Difficulty 3 Long Ball should wait for accuracy immediately after the first click.");
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.LongBall, "MatchManager should be in LongBall state after the first valid click.", MatchManager.GameState.LongBall, MatchManager.Instance.currentState);
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        AssertTrue(longBallManager.isWaitingForDirectionRoll, "After a failed accuracy roll, Long Ball should wait for the direction roll.");
+
+        LogFooterofTest("Long Ball Difficulty 3 First Click Commitment");
+    }
+
+    private IEnumerator Scenario_030c_LongBall_Inaccurate_No_Interception_GK_Forfeit_AutoMovement()
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(2));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        Log("Clicking (6, -7) - Select Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+        Log("Clicking (6, -7) again - Confirm Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        Log("Rigging Long Ball direction to SouthWest (1)");
+        PerformRiggedLongBallDirectionRoll(1);
+        AssertTrue(longBallManager.isWaitingForDistanceRoll, "Long Ball should wait for the distance roll after the direction roll.");
+
+        Log("Rigging Long Ball distance to 1 - No interceptions");
+        StartRiggedLongBallDistanceRollAsync(1);
+        yield return StartCoroutine(WaitForCondition(
+            () => longBallManager.isWaitingForDefLBMove,
+            4f,
+            "GK pace move should be offered after an inaccurate Long Ball with no defender interception."));
+
+        Log("Pressing X - Forfeit GK pace move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.3f);
+
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(availabilityCheck.passed, "After inaccurate Long Ball with no interceptions, MP should be auto-committed for attack.", true, availabilityCheck.ToString());
+
+        LogFooterofTest("Long Ball Inaccurate No Interception GK Forfeit AutoMovement");
+    }
+
+    private IEnumerator Scenario_030d_LongBall_Inaccurate_Delgado_Interception_Success_Broadcasts_AnyOtherScenario()
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(2));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        Log("Clicking (6, -7) - Select Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+        Log("Clicking (6, -7) again - Confirm Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        Log("Rigging Long Ball direction to SouthWest (1)");
+        PerformRiggedLongBallDirectionRoll(1);
+        Log("Rigging Long Ball distance to 4 - Offer Delgado interception");
+        StartRiggedLongBallDistanceRollAsync(4);
+        yield return StartCoroutine(WaitForCondition(
+            () => IsWaitingForLongBallInterceptionRoll(),
+            4f,
+            "Long Ball should be waiting for Delgado interception."));
+
+        PlayerToken delgado = RequirePlayerToken("Delgado");
+        MatchManager.PlayerStats delgadoStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(delgado.playerName);
+        float xRecoveryBefore = delgadoStatsBefore.xRecoveries;
+        int interceptionsAttemptedBefore = delgadoStatsBefore.interceptionsAttempted;
+        int interceptionsMadeBefore = delgadoStatsBefore.interceptionsMade;
+        int possessionWonBefore = delgadoStatsBefore.possessionWon;
+
+        Log("Rigging Delgado interception roll to 6");
+        yield return StartCoroutine(PerformRiggedLongBallInterceptionRoll(6));
+        yield return new WaitForSeconds(0.3f);
+
+        AvailabilityCheckResult anyOtherAvailability = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(anyOtherAvailability.passed, "Successful Delgado interception on a Long Ball should broadcast AnyOtherScenario.", true, anyOtherAvailability.ToString());
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == delgado, "Delgado should be the last token after the successful long-ball interception.", delgado, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+
+        MatchManager.PlayerStats delgadoStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(delgado.playerName);
+        AssertTrue(delgadoStatsAfter.interceptionsAttempted == interceptionsAttemptedBefore + 1, "Delgado should log one interception attempt.", interceptionsAttemptedBefore + 1, delgadoStatsAfter.interceptionsAttempted);
+        AssertTrue(delgadoStatsAfter.interceptionsMade == interceptionsMadeBefore + 1, "Delgado should log one successful interception.", interceptionsMadeBefore + 1, delgadoStatsAfter.interceptionsMade);
+        AssertTrue(delgadoStatsAfter.possessionWon == possessionWonBefore + 1, "Delgado should log one possession won from the long-ball interception.", possessionWonBefore + 1, delgadoStatsAfter.possessionWon);
+        AssertApproximately(delgadoStatsAfter.xRecoveries, xRecoveryBefore + CalculateExpectedRecoveryFromTackling(delgado.tackling), 0.0001f, "Delgado xRecovery should use the standard interception rule on the long ball.");
+
+        LogFooterofTest("Long Ball Inaccurate Delgado Interception Success");
+    }
+
+    private IEnumerator Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement()
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(2));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        Log("Clicking (6, -7) - Select Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+        Log("Clicking (6, -7) again - Confirm Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        Log("Rigging Long Ball direction to SouthWest (1)");
+        PerformRiggedLongBallDirectionRoll(1);
+        Log("Rigging Long Ball distance to 4 - Offer Delgado interception");
+        StartRiggedLongBallDistanceRollAsync(4);
+        yield return StartCoroutine(WaitForCondition(
+            () => IsWaitingForLongBallInterceptionRoll(),
+            4f,
+            "Long Ball should be waiting for Delgado interception."));
+
+        Log("Rigging Delgado interception roll to 1 - Fail");
+        StartRiggedLongBallInterceptionRollAsync(1);
+        yield return StartCoroutine(WaitForCondition(
+            () => longBallManager.isWaitingForDefLBMove,
+            4f,
+            "After Delgado fails the interception, GK pace move should be offered."));
+
+        Log("Pressing X - Forfeit GK pace move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.3f);
+
+        AvailabilityCheckResult failedInterceptionAvailability = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(failedInterceptionAvailability.passed, "After failed Delgado interception and forfeited GK move, MP should be auto-committed for attack.", true, failedInterceptionAvailability.ToString());
+
+        LogFooterofTest("Long Ball Inaccurate Delgado Interception Fails");
+    }
+
+    private IEnumerator Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario()
+    {
+        yield return StartCoroutine(PrepareManualLongBallBoardState(2));
+
+        Log("Pressing L - Start Long Ball");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.L, 0.1f));
+        Log("Clicking (6, -7) - Select Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+        Log("Clicking (6, -7) again - Confirm Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(6, -7), 0.1f));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        Log("Rigging Long Ball direction to SouthWest (1)");
+        PerformRiggedLongBallDirectionRoll(1);
+
+        PlayerToken delgado = RequirePlayerToken("Delgado");
+        MatchManager.PlayerStats delgadoStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(delgado.playerName);
+        int possessionWonBefore = delgadoStatsBefore.possessionWon;
+
+        Log("Rigging Long Ball distance to 5 - Ball lands directly on Delgado");
+        yield return StartCoroutine(PerformRiggedLongBallDistanceRoll(5));
+        yield return new WaitForSeconds(0.3f);
+
+        AvailabilityCheckResult directDefenderAvailability = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(directDefenderAvailability.passed, "Direct Long Ball recovery by Delgado should broadcast AnyOtherScenario.", true, directDefenderAvailability.ToString());
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == delgado, "Delgado should be the last token after direct Long Ball recovery.", delgado, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+
+        MatchManager.PlayerStats delgadoStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(delgado.playerName);
+        AssertTrue(delgadoStatsAfter.possessionWon == possessionWonBefore + 1, "Delgado should record one possession won from direct long-ball recovery.", possessionWonBefore + 1, delgadoStatsAfter.possessionWon);
+
+        LogFooterofTest("Long Ball Inaccurate Lands On Delgado");
+    }
+
+    private IEnumerator Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement()
+    {
+        yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(10, -6), "4+"));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        AssertTrue(longBallManager.isWaitingForDirectionRoll, "After a failed opposite-F3 accuracy roll, Long Ball should wait for the direction roll.");
+
+        Log("Rigging Long Ball direction to North (3)");
+        PerformRiggedLongBallDirectionRoll(3);
+        AssertTrue(longBallManager.isWaitingForDistanceRoll, "Long Ball should wait for the distance roll after the North direction roll.");
+
+        Log("Rigging Long Ball distance to 6 - Ball should land on Yaneva");
+        StartRiggedLongBallDistanceRollAsync(6);
+
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        yield return StartCoroutine(WaitForCondition(
+            () => longBallManager.ball.GetCurrentHex() == yaneva.GetCurrentHex() && longBallManager.isWaitingForDefLBMove,
+            4f,
+            "The inaccurate long ball should land on Yaneva and offer the defending GK pace move."));
+
+        Log("Pressing X - Forfeit GK pace move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.3f);
+
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == yaneva, "Yaneva should be the last token after the inaccurate long ball lands on her.", yaneva, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+        AssertTrue(finalThirdManager.isActivated, "Final Third should be offered after the inaccurate long ball resolves on Yaneva.");
+
+        yield return StartCoroutine(ForfeitActiveFinalThirds());
+
+        AvailabilityCheckResult postLongBallChoice = AssertCorrectAvailabilityAfterLongBallSnapshotChoice();
+        AssertTrue(
+            postLongBallChoice.passed,
+            "After the opposite-F3 inaccurate long ball lands on Yaneva, the attack should get Snapshot or Movement.",
+            true,
+            postLongBallChoice.ToString()
+        );
+
+        LogFooterofTest("Long Ball Opposite F3 Inaccurate On Yaneva");
+    }
+
+    private IEnumerator Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario()
+    {
+        yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(10, -6), "4+"));
+
+        PlayerToken kuzmic = RequirePlayerToken("Kuzmic");
+        PlayerToken passer = RequirePlayerToken("Ulisses");
+        MatchManager.PlayerStats kuzmicStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(kuzmic.playerName);
+        MatchManager.PlayerStats passerStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(passer.playerName);
+        int possessionWonBefore = kuzmicStatsBefore.possessionWon;
+        int passerPossessionLostBefore = passerStatsBefore.possessionLost;
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        Log("Rigging Long Ball direction to NorthEast (4)");
+        PerformRiggedLongBallDirectionRoll(4);
+        Log("Rigging Long Ball distance to 4 - Ball should enter the defensive box");
+        StartRiggedLongBallDistanceRollAsync(4);
+        yield return StartCoroutine(WaitForCondition(
+            () => goalKeeperManager.isActivated,
+            4f,
+            "Defending GK should be offered the 1-hex free move when the long ball lands in the defensive box."));
+
+        Log("Clicking (15, -1) - Move the defending GK for the free box move");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(15, -1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                kuzmic.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(15, 0, -1))
+                && !goalKeeperManager.isActivated
+                && !movementPhaseManager.isPlayerMoving,
+            4f,
+            "Kuzmic should complete the free box move to (15,-1)."));
+        yield return StartCoroutine(WaitForCondition(
+            () => longBallManager.isWaitingForDefLBMove,
+            4f,
+            "After the free GK move, Kuzmic should be offered the pace move."));
+
+        AssertTrue(!IsWaitingForLongBallInterceptionRoll(), "No interception should be offered in the defensive-box Kuzmic recovery case.");
+
+        HexCell ballHex = RequireHex(longBallManager.ball.GetCurrentHex(), "The ball should be on a valid hex before Kuzmic's pace recovery.");
+        Log($"Clicking {ballHex.coordinates} - Move Kuzmic to collect the long ball");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(ballHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                kuzmic.GetCurrentHex() == ballHex
+                && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == kuzmic
+                && finalThirdManager.isActivated,
+            4f,
+            "Final Third should be offered after Kuzmic recovers the long ball."));
+        yield return StartCoroutine(ForfeitActiveFinalThirds());
+
+        AvailabilityCheckResult anyOtherAvailability = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            anyOtherAvailability.passed,
+            "Kuzmic's defensive-box long-ball recovery should broadcast AnyOtherScenario after Final Thirds.",
+            true,
+            anyOtherAvailability.ToString()
+        );
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == kuzmic, "Kuzmic should be the last token after recovering the long ball.", kuzmic, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+
+        MatchManager.PlayerStats kuzmicStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(kuzmic.playerName);
+        MatchManager.PlayerStats passerStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(passer.playerName);
+        AssertTrue(kuzmicStatsAfter.possessionWon == possessionWonBefore + 1, "Kuzmic should log one possession won from the long-ball recovery.", possessionWonBefore + 1, kuzmicStatsAfter.possessionWon);
+        AssertTrue(passerStatsAfter.possessionLost == passerPossessionLostBefore + 1, "Ulisses should log one possession lost from Kuzmic's long-ball recovery.", passerPossessionLostBefore + 1, passerStatsAfter.possessionLost);
+
+        LogFooterofTest("Long Ball Box GK Free Move Then Kuzmic Recovery");
+    }
+
+    private IEnumerator Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall()
+    {
+        yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(10, -6), "4+"));
+
+        PlayerToken poulsen = RequirePlayerToken("Poulsen");
+        MatchManager.PlayerStats poulsenStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(poulsen.playerName);
+        int interceptionsAttemptedBefore = poulsenStatsBefore.interceptionsAttempted;
+        int interceptionsMadeBefore = poulsenStatsBefore.interceptionsMade;
+        float xRecoveryBefore = poulsenStatsBefore.xRecoveries;
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        Log("Rigging Long Ball direction to NorthEast (4)");
+        PerformRiggedLongBallDirectionRoll(4);
+        Log("Rigging Long Ball distance to 6 - Ball should enter the defensive box and offer Poulsen an interception");
+        StartRiggedLongBallDistanceRollAsync(6);
+        yield return StartCoroutine(WaitForCondition(
+            () => goalKeeperManager.isActivated,
+            4f,
+            "Defending GK should be offered the 1-hex free move before the Poulsen interception case."));
+
+        Log("Clicking (15, -1) - Move the defending GK for the free box move");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(15, -1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+            {
+                PlayerToken defendingGk = hexgrid.GetDefendingGK();
+                HexCell gkDestination = hexgrid.GetHexCellAt(new Vector3Int(15, 0, -1));
+                return defendingGk != null
+                    && gkDestination != null
+                    && defendingGk.GetCurrentHex() == gkDestination
+                    && !goalKeeperManager.isActivated
+                    && !movementPhaseManager.isPlayerMoving;
+            },
+            4f,
+            "The defending GK should complete the free move to (15,-1)."));
+        yield return StartCoroutine(WaitForCondition(
+            () => IsWaitingForLongBallInterceptionRoll(),
+            4f,
+            "After the free GK move, Poulsen should be offered a long-ball interception."));
+
+        AssertTrue(GetLongBallInterceptionCandidateCount() == 1, "Exactly one defender should be in the long-ball interception list for the Poulsen case.", 1, GetLongBallInterceptionCandidateCount());
+        AssertTrue(GetFirstLongBallInterceptionCandidateName() == poulsen.playerName, "Poulsen should be the defender offered the interception.", poulsen.playerName, GetFirstLongBallInterceptionCandidateName());
+
+        Log("Rigging Poulsen interception roll to 1 - Fail");
+        StartRiggedLongBallInterceptionRollAsync(1);
+        yield return StartCoroutine(WaitForCondition(
+            () => longBallManager.isWaitingForDefLBMove,
+            4f,
+            "After Poulsen fails the interception, GK pace move should be offered."));
+
+        MatchManager.PlayerStats poulsenStatsAfterInterception = MatchManager.Instance.gameData.stats.GetPlayerStats(poulsen.playerName);
+        AssertTrue(poulsenStatsAfterInterception.interceptionsAttempted == interceptionsAttemptedBefore + 1, "Poulsen should log one interception attempt.", interceptionsAttemptedBefore + 1, poulsenStatsAfterInterception.interceptionsAttempted);
+        AssertTrue(poulsenStatsAfterInterception.interceptionsMade == interceptionsMadeBefore, "Poulsen should not log a made interception after failing the roll.", interceptionsMadeBefore, poulsenStatsAfterInterception.interceptionsMade);
+        AssertApproximately(poulsenStatsAfterInterception.xRecoveries, xRecoveryBefore + CalculateExpectedRecoveryFromTackling(poulsen.tackling), 0.0001f, "Poulsen should still log xRecovery on the failed long-ball interception attempt.");
+
+        Log("Pressing X - Forfeit GK pace move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.3f);
+
+        AssertTrue(finalThirdManager.isActivated, "Final Third should be offered after the inaccurate long ball survives the failed Poulsen interception and GK pace forfeit.");
+        yield return StartCoroutine(ForfeitActiveFinalThirds());
+
+        AvailabilityCheckResult postLongBallAvailability = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(
+            postLongBallAvailability.passed,
+            "After the failed Poulsen interception and forfeited GK pace move, the attack should auto-commit to Movement Phase.",
+            true,
+            postLongBallAvailability.ToString()
+        );
+
+        LogFooterofTest("Long Ball Box Poulsen Interception Fails GK Forfeit");
+    }
+
+    private IEnumerator Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick()
+    {
+        yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(18, -12), null));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        AssertTrue(longBallManager.isWaitingForDirectionRoll, "After the failed long-ball accuracy roll, the manager should wait for the direction roll.");
+
+        Log("Rigging Long Ball direction to NorthEast (4)");
+        PerformRiggedLongBallDirectionRoll(4);
+        AssertTrue(longBallManager.isWaitingForDistanceRoll, "Long Ball should wait for the distance roll after the NorthEast direction roll.");
+
+        Log("Rigging Long Ball distance to 3 - Should resolve to Goal Kick");
+        yield return StartCoroutine(PerformRiggedLongBallDistanceRoll(3));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds
+                && longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0))
+                && !longBallManager.isActivated,
+            5f,
+            "Long Ball inaccurate NorthEast 3 from the corner target should resolve through OOB as a Goal Kick."));
+
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            "Long Ball inaccurate NorthEast 3 from the corner target should be recognized as a Goal Kick.",
+            MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            MatchManager.Instance.currentState
+        );
+        AssertTrue(
+            longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)),
+            "Goal Kick resolution should place the ball on the defending goal-kick spot.",
+            hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)),
+            longBallManager.ball.GetCurrentHex()
+        );
+
+        LogFooterofTest("Long Ball Corner Target Inaccurate NorthEast3 Is GoalKick");
+    }
+
+    private IEnumerator Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn()
+    {
+        yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(18, -12), null));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        AssertTrue(longBallManager.isWaitingForDirectionRoll, "After the failed long-ball accuracy roll, the manager should wait for the direction roll.");
+
+        Log("Rigging Long Ball direction to South (0)");
+        PerformRiggedLongBallDirectionRoll(0);
+        AssertTrue(longBallManager.isWaitingForDistanceRoll, "Long Ball should wait for the distance roll after the South direction roll.");
+
+        Log("Rigging Long Ball distance to 3 - Should resolve to Throw-In");
+        yield return StartCoroutine(PerformRiggedLongBallDistanceRoll(3));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                MatchManager.Instance.currentState == MatchManager.GameState.WaitingForThrowInTaker
+                && longBallManager.ball.GetCurrentHex() != null
+                && !longBallManager.ball.GetCurrentHex().isOutOfBounds
+                && !longBallManager.isActivated,
+            5f,
+            "Long Ball inaccurate South 3 from the corner target should resolve through OOB as a Throw-In."));
+
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.WaitingForThrowInTaker,
+            "Long Ball inaccurate South 3 from the corner target should be recognized as a Throw-In.",
+            MatchManager.GameState.WaitingForThrowInTaker,
+            MatchManager.Instance.currentState
+        );
+        AssertTrue(
+            longBallManager.ball.GetCurrentHex() != null && !longBallManager.ball.GetCurrentHex().isOutOfBounds,
+            "Throw-In resolution should return the ball to an in-bounds throw-in spot.",
+            true,
+            longBallManager.ball.GetCurrentHex()
+        );
+
+        LogFooterofTest("Long Ball Corner Target Inaccurate South3 Is ThrowIn");
+    }
+
+    private IEnumerator Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal()
+    {
+        yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(15, 4), null));
+
+        Log("Rigging inaccurate Long Ball roll to 1");
+        PerformRiggedLongBallAccuracyRoll(1);
+        AssertTrue(longBallManager.isWaitingForDirectionRoll, "After the failed long-ball accuracy roll, the manager should wait for the direction roll.");
+
+        Log("Rigging Long Ball direction to SouthEast (5)");
+        PerformRiggedLongBallDirectionRoll(5);
+        AssertTrue(longBallManager.isWaitingForDistanceRoll, "Long Ball should wait for the distance roll after the SouthEast direction roll.");
+
+        Log("Rigging Long Ball distance to 6 - Should resolve to Goal Kick and not a Goal");
+        yield return StartCoroutine(PerformRiggedLongBallDistanceRoll(6));
+        yield return StartCoroutine(WaitForCondition(
+            () =>
+                MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds
+                && longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0))
+                && !longBallManager.isActivated,
+            5f,
+            "Long Ball to (15,4) with SouthEast 6 inaccuracy should resolve through OOB as a Goal Kick."));
+
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            "Long Ball to (15,4) with SouthEast 6 inaccuracy should be recognized as a Goal Kick, not a Goal.",
+            MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            MatchManager.Instance.currentState
+        );
+        AssertTrue(
+            longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)),
+            "Goal Kick resolution should place the ball on the defending goal-kick spot rather than treating it as a goal.",
+            hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)),
+            longBallManager.ball.GetCurrentHex()
+        );
+
+        LogFooterofTest("Long Ball To 15 4 Inaccurate SouthEast6 Is GoalKick");
+    }
+
 
 
   private void AssertTrue(bool condition, string message, object expected = null, object actual = null)
@@ -11374,12 +13579,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         actual);
   }
 
-    private static float CalculateExpectedRecoveryFromTackling(int tackling)
+    private static float CalculateExpectedRecoveryFromTackling(int tackling, int minimumNaturalRollForSuccess = 6)
     {
         int successfulRolls = 0;
         for (int roll = 1; roll <= 6; roll++)
         {
-            if (roll == 6 || roll + tackling >= 10)
+            if (roll >= minimumNaturalRollForSuccess || roll + tackling >= 10)
             {
                 successfulRolls++;
             }
@@ -11500,6 +13705,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (highPassManager.isActivated) failures.Add("HighPass should not be activated");
         if (longBallManager.isActivated) failures.Add("LongBall should not be activated");
         if (!MatchManager.Instance.attackHasPossession) failures.Add("Attack has no possession after ball movement");
+        if (groundBallManager.imposedDistance != 6) failures.Add($"GroundBall imposed distance should be 6 in AnyOtherScenario, but was {groundBallManager.imposedDistance}");
 
         return new AvailabilityCheckResult(failures.Count == 0, failures);
     }
@@ -11572,6 +13778,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (firstTimePassManager.isWaitingForAttackerMove) failures.Add("FirstTimePass should NOT be waiting for defender move");
         if (!firstTimePassManager.isWaitingForDefenderSelection) failures.Add("FirstTimePass should be waiting for defender selection");
         if (firstTimePassManager.isWaitingForDiceRoll) failures.Add("FirstTimePass should NOT be waiting for dice roll");
+        if (MatchManager.Instance.currentState != MatchManager.GameState.FirstTimePassDefenderMovement) failures.Add($"MatchManager should be in {MatchManager.GameState.FirstTimePassDefenderMovement}");
 
         if (movementPhaseManager.isActivated) failures.Add("MovementPhase should not be activated");
         if (!firstTimePassManager.isActivated) failures.Add("FirstTimePass should be activated");
@@ -11623,6 +13830,31 @@ public class GameTestScenarioRunner : MonoBehaviour
         return new AvailabilityCheckResult(failures.Count == 0, failures);
     }
 
+    private AvailabilityCheckResult AssertCorrectAvailabilityAfterLongBallSnapshotChoice()
+    {
+        List<string> failures = new();
+
+        if (!movementPhaseManager.isAvailable) failures.Add("MovementPhase should be available");
+        if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
+
+        if (!shotManager.isAvailable) failures.Add("ShotManager should be available for a Snapshot choice");
+        if (shotManager.isActivated) failures.Add("ShotManager should NOT be activated");
+
+        if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
+        if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
+        if (highPassManager.isAvailable) failures.Add("HighPass should NOT be available");
+        if (longBallManager.isAvailable) failures.Add("LongBall should NOT be available");
+
+        if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
+        if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+        if (highPassManager.isActivated) failures.Add("HighPass should NOT be activated");
+        if (longBallManager.isActivated) failures.Add("LongBall should NOT be activated");
+
+        if (!MatchManager.Instance.attackHasPossession) failures.Add("Attack should have possession after long ball lands on an attacker");
+
+        return new AvailabilityCheckResult(failures.Count == 0, failures);
+    }
+
     private AvailabilityCheckResult AssertCorrectAvailabilityAfterMovementCommitment()
     {
         List<string> failures = new();
@@ -11648,6 +13880,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             if (movementPhaseManager.isActivated) failures.Add("MovementPhase should NOT be activated");
             if (!groundBallManager.isAvailable) failures.Add("GroundBall should be available");
             if (groundBallManager.isActivated) failures.Add("GroundBall should NOT be activated");
+            if (groundBallManager.imposedDistance != 11) failures.Add($"GroundBall imposed distance should be 11 after Movement Phase completion, but was {groundBallManager.imposedDistance}");
             if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
             if (firstTimePassManager.isActivated) failures.Add("FirstTimePass should NOT be activated");
             if (!highPassManager.isAvailable) failures.Add("HighPass should be available");

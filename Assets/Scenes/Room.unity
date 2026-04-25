@@ -2861,6 +2861,16 @@ MonoBehaviour:
     m_Bits: 128
   hoveredToken: {fileID: 0}
   hoveredHex: {fileID: 0}
+  hoverNameFontToTokenHeightRatio: 0.26
+  hoverNameOffsetToTokenHeightRatio: 0.08
+  hoverNameMinFontSize: 8
+  hoverNameMaxFontSize: 28
+  hoverNameMinOffsetPixels: 3
+  hoverNameMinWidthPixels: 52
+  hoverNameWidthToTokenRatio: 1.9
+  hoverNameHorizontalPaddingPixels: 8
+  hoverNameVerticalPaddingPixels: 2
+  hoverNameHeightToFontRatio: 1.05
   clickedToken: {fileID: 0}
   clickedHex: {fileID: 0}
   isDragging: 0
@@ -3660,9 +3670,12 @@ MonoBehaviour:
   LastTokenToTouchTheBallOnPurpose: {fileID: 0}
   PreviousTokenToTouchTheBallOnPurpose: {fileID: 0}
   hangingPassType: 
+  hangingPassExcludedCollector: {fileID: 0}
+  clearPreviousOnNextBallCollection: 0
   difficulty_level: 2
   refereeLeniency: 0
   isFTPAvailable: 0
+  pendingGroundBallDistance: 11
 --- !u!4 &622907911
 Transform:
   m_ObjectHideFlags: 0
@@ -4917,6 +4930,7 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
+  headerManager: {fileID: 2071234817}
   helperFunctions: {fileID: 1397543275}
   isAvailable: 0
   isActivated: 0
@@ -6196,12 +6210,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 15
   zoomSpeed: 15
-  dragSpeed: 30
   rotationSpeed: 1000
   minOrbitDistance: 12
   maxOrbitDistance: 90
   minPitch: 20
   maxPitch: 90
+  screenAxisSamplePixels: 96
   gameInputManager: {fileID: 417053521}
 --- !u!1 &968170741
 GameObject:
@@ -6391,6 +6405,9 @@ MonoBehaviour:
   toggleButton: {fileID: 982335044}
   collapsedX: 370
   animationSpeed: 5
+  playerCardPrefab: {fileID: 0}
+  goalkeeperCardPrefab: {fileID: 0}
+  externalScoreboardRoot: {fileID: 0}
 --- !u!1 &981550695
 GameObject:
   m_ObjectHideFlags: 0

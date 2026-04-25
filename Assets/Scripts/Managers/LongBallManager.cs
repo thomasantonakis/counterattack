@@ -16,6 +16,7 @@ public class LongBallManager : MonoBehaviour
     public LooseBallManager looseBallManager;
     public FinalThirdManager finalThirdManager;
     public GoalKeeperManager goalKeeperManager;
+    public HeaderManager headerManager;
     public HelperFunctions helperFunctions;
     [Header("Runtime")]
     public bool isAvailable = false;
@@ -60,7 +61,7 @@ public class LongBallManager : MonoBehaviour
             if (hex != null && hexGrid.highlightedHexes.Contains(hex))
             {
                 hexGrid.ClearHighlightedHexes();
-                MoveGKForLB(hex);
+                _ = MoveGKForLB(hex);
             }
             else
             {
@@ -71,34 +72,42 @@ public class LongBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (keyData.isConsumed) return;
         // return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.L)
         {
             MatchManager.Instance.TriggerLongPass();
+            keyData.isConsumed = true;
+            return;
         }
         if (isActivated)
         {
             if (isWaitingForAccuracyRoll && keyData.key == KeyCode.R)
             {
                 PerformAccuracyRoll(); // Handle accuracy roll
+                keyData.isConsumed = true;
             }
             else if (isWaitingForDirectionRoll && keyData.key == KeyCode.R)
             {
                 PerformDirectionRoll(); // Handle direction roll
+                keyData.isConsumed = true;
             }
             else if (isWaitingForDistanceRoll && keyData.key == KeyCode.R)
             {
                 StartCoroutine(PerformDistanceRoll()); // Handle distance roll
+                keyData.isConsumed = true;
             }
             else if (isWaitingForInterceptionRoll && keyData.key == KeyCode.R)
             {
-                StartCoroutine(PerformInterceptionCheck(finalHex)); 
+                StartCoroutine(PerformInterceptionCheck(finalHex));
+                keyData.isConsumed = true;
             }
             else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
             {
                 hexGrid.ClearHighlightedHexes();
                 Debug.Log($"GK chooses to not move for the Long Ball, moving on!");
                 isWaitingForDefLBMove = false;
+                keyData.isConsumed = true;
             }
         }
     }
@@ -140,102 +149,106 @@ public class LongBallManager : MonoBehaviour
     private void HandleLongBallBasedOnDifficulty(HexCell clickedHex)
     {
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
-        // Debug.Log("Hello from HandleLongBallBasedOnDifficulty");
-        // Centralized target validation
-        var (isValid, isDangerous) = ValidateLongBallTarget(clickedHex);
+        var (isValid, requiresTenPlusAccuracy) = ValidateLongBallTarget(clickedHex);
         if (!isValid)
         {
-            // Debug.LogWarning("Long Pass target is invalid");
             currentTargetHex = null;
+            isDangerous = false;
             hexGrid.ClearHighlightedHexes();
             return; // Reject invalid targets
         }
+        isDangerous = requiresTenPlusAccuracy;
         // Difficulty-based handling
         if (difficulty == 3) // Hard Mode: Immediate action
         {
-            currentTargetHex = clickedHex;  // Assign the current target hex
-            isWaitingForAccuracyRoll = true;  // Wait for accuracy roll
-            Debug.Log("Waiting for accuracy roll... Please Press R key.");
+            currentTargetHex = clickedHex;
+            ConfirmLongBallTargetSelection(clickedHex);
         }
-        else if (difficulty == 2) // Medium Mode: Require confirmation with a second click
+        else if (difficulty == 2 || difficulty == 1) // Confirm with second click
         {
-            if (clickedHex == currentTargetHex)  // If it's the same hex clicked twice
+            if (clickedHex == currentTargetHex)
             {
-                hexGrid.ClearHighlightedHexes();
-                Debug.Log("Long Ball confirmed by second click. Waiting for accuracy roll.");
-                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassAttempt);
-                isAwaitingTargetSelection = false;
-                CommitToThisAction();
-                isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
+                ConfirmLongBallTargetSelection(clickedHex);
             }
             else
             {
-                // First click: Set the target, highlight the path, and wait for confirmation
                 currentTargetHex = clickedHex;
-                // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
                 hexGrid.ClearHighlightedHexes();
-                HighlightLongPassArea(clickedHex);  // Optional: Visual feedback
-                Debug.Log("First click registered. Click again to confirm the Long Ball.");
+                HighlightAllValidLongPassTargets();
+                HighlightCommittedTarget();
+                Debug.Log("First click registered. Click the orange target again to confirm the Long Ball.");
             }
         }
-        else if (difficulty == 1) // Easy Mode: Require confirmation with a second click
-        {
-            if (clickedHex == currentTargetHex)  // If it's the same hex clicked twice
-            {
-                Debug.Log("Long Ball confirmed by second click. Waiting for accuracy roll.");
-                isWaitingForAccuracyRoll = true;  // Now ask for the accuracy roll
-            }
-            else
-            {
-                // First click: Set the target, highlight the path, and wait for confirmation
-                currentTargetHex = clickedHex;
-                hexGrid.ClearHighlightedHexes();
+    }
 
-                // You can highlight the path here if you want to provide visual feedback in Medium/Easy modes
-                HighlightAllValidLongPassTargets();  // Takes a couple of seconds
-                Debug.Log("First click registered. Click again to confirm the Long Ball.");
-            }
+    private void ConfirmLongBallTargetSelection(HexCell clickedHex)
+    {
+        currentTargetHex = clickedHex;
+        hexGrid.ClearHighlightedHexes();
+        HighlightCommittedTarget();
+        isAwaitingTargetSelection = false;
+        CommitToThisAction();
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            MatchManager.ActionType.AerialPassAttempt
+        );
+        isWaitingForAccuracyRoll = true;
+        Debug.Log("Long Ball confirmed. Waiting for accuracy roll. Please Press R key.");
+    }
+
+    private void HighlightCommittedTarget()
+    {
+        if (currentTargetHex == null)
+        {
+            return;
+        }
+
+        currentTargetHex.HighlightHex("passTargetCommitted");
+        if (!hexGrid.highlightedHexes.Contains(currentTargetHex))
+        {
+            hexGrid.highlightedHexes.Add(currentTargetHex);
         }
     }
 
     public (bool isValid, bool isDangerous) ValidateLongBallTarget(HexCell targetHex)
     {
         HexCell ballHex = ball.GetCurrentHex();
-        // Step 1: Ensure the ballHex and targetHex are valid
         if (ballHex == null || targetHex == null)
         {
             Debug.LogError("Ball or target hex is null!");
             return (false, false);
         }
-        // Step 2: Calculate the path between the ball and the target hex
+        if (targetHex.isOutOfBounds)
+        {
+            Debug.Log("You cannot target a Long Ball out of bounds");
+            return (false, false);
+        }
+
         List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
-        // Step 3: Check if the path is valid by ensuring no defense-occupied hexes block the path
-        foreach (HexCell hex in pathHexes) // add here "and in the ball's neighbors"
+
+        foreach (HexCell hex in pathHexes)
         {
             if (hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
             {
                 Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
-                return (false, false); // Invalid path
+                return (false, false);
             }
         }
-        // Step 4: Get defenders and their ZOI
+
         List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
         List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-        // add something here to exclude all defenderHexes and defenderNeighbors above from valid targets
         List<HexCell> attackerHexes = hexGrid.GetAttackerHexes();
         List<HexCell> invalidHexesinRangeOfAttackers = hexGrid.GetAttackerHexesinRange(attackerHexes, 5);
-        // Maybe remove from defenderNeighbors all Hexes that exist in defenderHexes
-        // Maybe remove from invalidHexesinRangeOfAttackers all Hexes that exist in attackerHexes
-        // So that the below debugs make sense.
+
         if (defenderHexes.Contains(targetHex) || defenderNeighbors.Contains(targetHex))
         {
             Debug.Log("You cannot target a Long Ball on a Defender or in their ZOI");
-            return (false, false); // Invalid path
+            return (false, false);
         }
         if (attackerHexes.Contains(targetHex) || invalidHexesinRangeOfAttackers.Contains(targetHex))
         {
             Debug.Log("You cannot target a Long Ball on an Attacker or 5 Hexes away from any Attacker");
-            return (false, false); // Invalid path
+            return (false, false);
         }
         if (targetHex.isInFinalThird * ballHex.isInFinalThird == -1)
         {
@@ -271,6 +284,7 @@ public class LongBallManager : MonoBehaviour
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
+            finalHex = currentTargetHex;
             StartCoroutine(HandleLongBallMovement(currentTargetHex));
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassTargeted);
             ResetLongPassRolls();  // Reset flags to finish long pass
@@ -287,10 +301,9 @@ public class LongBallManager : MonoBehaviour
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = rigRoll ?? returnedRoll;
-        // int diceRoll = Random.Range(0, 6);
-        directionIndex = diceRoll;  // Set the direction index for future use
-        string rolledDirection = looseBallManager.TranslateRollToDirection(diceRoll);
+        int directionRoll = rigRoll ?? Mathf.Clamp(returnedRoll - 1, 0, 5);
+        directionIndex = directionRoll;  // Set the direction index for future use
+        string rolledDirection = looseBallManager.TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled {directionIndex}: Moving in {rolledDirection} direction");
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
@@ -313,6 +326,7 @@ public class LongBallManager : MonoBehaviour
         {
             // Move the ball to the inaccurate final hex
             Debug.Log($"Inaccurate target hex calculated: {inaccurateTargetHex.coordinates}");
+            finalHex = inaccurateTargetHex;
             yield return StartCoroutine(HandleLongBallMovement(inaccurateTargetHex));
         }
         else
@@ -358,55 +372,100 @@ public class LongBallManager : MonoBehaviour
         // isMoving = false;  // Stop the movement
         // Ensure the ball ends exactly on the target hex
         ball.PlaceAtCell(targetHex);
+        finalHex = targetHex;
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
         // After movement completes, check if the ball is out of bounds
         if (isFromHandling) yield break;
         if (targetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");
-            // Debug.Log($"Passing currentTargetHex to HandleOutOfBounds: {currentTargetHex.coordinates}");
-            outOfBoundsManager.HandleOutOfBounds(targetHex, directionIndex, "inaccuracy");
+            outOfBoundsManager.HandleOutOfBounds(currentTargetHex, directionIndex, "inaccuracy");
             CleanUpLongBall();
         }
         else
         {
-            if (goalKeeperManager.ShouldGKMove(targetHex))
+            if (!targetHex.isDefenseOccupied && goalKeeperManager.ShouldGKMove(targetHex))
             {
                 yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
                 // TODO: Check if GK is already on the ball
             }
-            yield return StartCoroutine(HandleGKLongBallMove());
-            Debug.Log("Ball landed within bounds.");
             if (targetHex.isDefenseOccupied)
             {
-                // Ball Landed directly on a Defender
-                MatchManager.Instance.gameData.gameLog.LogEvent(targetHex.GetOccupyingToken()
-                    , MatchManager.ActionType.BallRecovery
-                    , recoveryType: "long"
-                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
-                );
-                MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
-                MatchManager.Instance.ChangePossession();
-                MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-                MatchManager.Instance.currentState = MatchManager.GameState.AnyOtherScenario;
+                yield return StartCoroutine(ResolveLongBallRecovery(targetHex.GetOccupyingToken(), targetHex));
+                yield break;
             }
             else if (targetHex.isAttackOccupied)
             {
-                // Ball has landed on an attacker 
-                MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-                MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-                MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
-                MatchManager.Instance.BroadcastEndOfLongBall();
+                yield return StartCoroutine(HandleGKLongBallMove());
+                yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(targetHex));
             }
             else
             {
-                // Landed neither on Def or Attacker. Check for defender's ZOI interception
-                CheckForLongBallInterception(targetHex);
                 MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+                bool waitingForInterception = CheckForLongBallInterception(targetHex);
+                if (!waitingForInterception)
+                {
+                    yield return StartCoroutine(HandleGKLongBallMove());
+                    yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(targetHex));
+                }
+                yield break;
             }
-            CleanUpLongBall();
-            finalThirdManager.TriggerFinalThirdPhase();
         }
+    }
+
+    private IEnumerator FinalizeLongBallAfterDefensiveResponses(HexCell targetHex)
+    {
+        if (targetHex == null)
+        {
+            yield break;
+        }
+
+        Debug.Log("Ball landed within bounds.");
+
+        if (targetHex.isDefenseOccupied)
+        {
+            yield return StartCoroutine(ResolveLongBallRecovery(targetHex.GetOccupyingToken(), targetHex));
+            yield break;
+        }
+
+        if (targetHex.isAttackOccupied)
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
+            MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
+            MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+            MatchManager.Instance.BroadcastEndOfLongBall();
+            finalThirdManager.TriggerFinalThirdPhase();
+            CleanUpLongBall();
+            yield break;
+        }
+
+        MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
+        MatchManager.Instance.SetHangingPass("aerial");
+        MatchManager.Instance.BroadcastEndOfLongBall();
+        finalThirdManager.TriggerFinalThirdPhase();
+        CleanUpLongBall();
+    }
+
+    private IEnumerator ResolveLongBallRecovery(PlayerToken recoveringToken, HexCell recoveryHex)
+    {
+        if (recoveringToken == null || recoveryHex == null)
+        {
+            yield break;
+        }
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            recoveringToken,
+            MatchManager.ActionType.BallRecovery,
+            recoveryType: "long",
+            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+        );
+        MatchManager.Instance.SetLastToken(recoveringToken);
+        MatchManager.Instance.ChangePossession();
+        MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
+        MatchManager.Instance.BroadcastAnyOtherScenario();
+        finalThirdManager.TriggerFinalThirdPhase();
+        CleanUpLongBall();
+        yield break;
     }
 
     public IEnumerator HandleGKLongBallMove()
@@ -439,7 +498,6 @@ public class LongBallManager : MonoBehaviour
 
     private async Task MoveGKForLB(HexCell hex)
     {
-        isWaitingForDefLBMove = false;
         hexGrid.ClearHighlightedHexes();
         // await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(
@@ -449,55 +507,50 @@ public class LongBallManager : MonoBehaviour
             , shouldCountForDistance: true
             , shouldCarryBall: false
         ));
+        isWaitingForDefLBMove = false;
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
     }
 
-    private void CheckForLongBallInterception(HexCell landingHex)
+    private bool CheckForLongBallInterception(HexCell landingHex)
     {
-        // Get all defenders and their ZOIs (neighbors)
-        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
-        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes);
-        // Initialize the interceptingDefenders list to avoid null reference
-        interceptingDefenders = new List<HexCell>();
-
-        // Check if the landing hex is in any defender's ZOI (neighbors)
-        if (defenderNeighbors.Contains(landingHex))
+        if (landingHex == null)
         {
-                // Log for debugging: Confirm the landing hex and defender neighbors
-            Debug.Log($"Landing hex {landingHex.coordinates} is in defender ZOI. Checking eligible defenders...");
-
-            // Get defenders who have the landing hex in their ZOI
-            foreach (HexCell defender in defenderHexes)
-            {
-                HexCell[] neighbors = defender.GetNeighbors(hexGrid);
-                // Debug.Log($"Defender at {defender.coordinates} has neighbors: {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
-
-                if (neighbors.Contains(landingHex))
-                {
-                    Debug.Log($"Defender at {defender.coordinates} can intercept at {landingHex.coordinates}");
-                    interceptingDefenders.Add(defender);  // Add the eligible defender to the list
-                }
-            }
-            // Check if there are any intercepting defenders
-            if (interceptingDefenders.Count > 0)
-            {
-                Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for interception. Please Press R key..");
-                isWaitingForInterceptionRoll = true;
-            }
-            else
-            {
-                Debug.Log("No defenders eligible for interception. Ball lands without interception. Number one");
-                MatchManager.Instance.hangingPassType = "aerial";
-                MatchManager.Instance.BroadcastEndOfLongBall();
-            }
+            interceptingDefenders = new List<HexCell>();
+            return false;
         }
-        else
+
+        HashSet<HexCell> landingNeighbors = landingHex
+            .GetNeighbors(hexGrid)
+            .Where(hex => hex != null)
+            .ToHashSet();
+
+        interceptingDefenders = hexGrid
+            .GetDefenderHexes()
+            .Where(hex => hex != null)
+            .Where(hex => IsEligibleLongBallInterceptor(hex.GetOccupyingToken()))
+            .Where(hex => landingNeighbors.Contains(hex))
+            .OrderBy(hex => HexGridUtils.GetHexStepDistance(landingHex, hex))
+            .ThenBy(hex => hex.GetOccupyingToken().tackling)
+            .ThenBy(hex => hex.GetOccupyingToken().playerName, System.StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (interceptingDefenders.Count > 0)
         {
-            Debug.Log("Landing hex is not in any defender's ZOI. No interception needed. Number two ");
-            // Long ball completed away from defenders
-            MatchManager.Instance.hangingPassType = "aerial";
-            MatchManager.Instance.BroadcastEndOfLongBall();
+            Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for long-ball interception. Please Press R key.");
+            isWaitingForInterceptionRoll = true;
+            return true;
         }
+
+        Debug.Log("Landing hex is not in any eligible defender ZOI. No interception needed.");
+        return false;
+    }
+
+    private bool IsEligibleLongBallInterceptor(PlayerToken token)
+    {
+        return token != null
+            && !movementPhaseManager.stunnedTokens.Contains(token)
+            && !movementPhaseManager.stunnedforNext.Contains(token)
+            && !headerManager.defenderWillJump.Contains(token);
     }
 
     private IEnumerator PerformInterceptionCheck(HexCell landingHex, int? rigRoll = null)
@@ -524,6 +577,11 @@ public class LongBallManager : MonoBehaviour
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;
             Debug.Log($"Total interception score for defender {defenderToken.name}: {totalInterceptionScore}");
+            MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                defenderToken,
+                ExpectedStatsCalculator.CalculateRecoveryProbability(defenderToken),
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                "long");
             MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
 
             if (diceRoll == 6 || totalInterceptionScore >= 10)
@@ -543,6 +601,7 @@ public class LongBallManager : MonoBehaviour
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 MatchManager.Instance.BroadcastAnyOtherScenario();
                 finalThirdManager.TriggerFinalThirdPhase();
+                CleanUpLongBall();
                 yield break;  // Stop the sequence once an interception is successful
             }
             else
@@ -553,8 +612,9 @@ public class LongBallManager : MonoBehaviour
 
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
-        finalThirdManager.TriggerFinalThirdPhase();
-        MatchManager.Instance.BroadcastEndOfLongBall();
+        isWaitingForInterceptionRoll = false;
+        yield return StartCoroutine(HandleGKLongBallMove());
+        yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(landingHex));
     }
 
     private void HighlightLongPassArea(HexCell targetHex)
@@ -626,7 +686,11 @@ public class LongBallManager : MonoBehaviour
 
             if (isValid)
             {
-                if (isDangerous)
+                if (hex == currentTargetHex)
+                {
+                    hex.HighlightHex("passTargetCommitted");
+                }
+                else if (isDangerous)
                 {
                     hex.HighlightHex("longPassDifficult");  // Highlight the Difficult hexes
                 }
@@ -677,16 +741,18 @@ public class LongBallManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
+        PlayerToken lastToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken defendingGK = hexGrid != null ? hexGrid.GetDefendingGK() : null;
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [L] to Play a Long Ball, ");
         if (isActivated) sb.Append("Long: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex 6 or more Hexes away from the closest Attacker, ");
         if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
-        if (isWaitingForAccuracyRoll) {sb.Append($"Press [R] to roll the accuracy check with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, a roll of {(isDangerous ? 10 : 9) - MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.highPass}+ is needed, ");}
+        if (isWaitingForAccuracyRoll && lastToken != null) {sb.Append($"Press [R] to roll the accuracy check with {lastToken.name}, a roll of {(isDangerous ? 10 : 9) - lastToken.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
         if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
-        if (isWaitingForDefLBMove) {sb.Append($"{hexGrid.GetDefendingGK().name} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
+        if (isWaitingForDefLBMove) {sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();

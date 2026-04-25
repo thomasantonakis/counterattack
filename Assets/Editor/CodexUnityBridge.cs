@@ -129,6 +129,10 @@ namespace CounterAttack.Editor
                     }));
                 case "get_match_summary":
                     return BridgeResponse.Ok(request, "Match summary captured.", JsonUtility.ToJson(BuildMatchSummary()));
+                case "get_ball_state":
+                    return BridgeResponse.Ok(request, "Ball state captured.", JsonUtility.ToJson(BuildBallState()));
+                case "get_player_token_state":
+                    return BridgeResponse.Ok(request, "Player token state captured.", JsonUtility.ToJson(BuildPlayerTokenState(ResolvePlayerToken(request))));
                 case "rebuild_room_board":
                     EnsureEditorMode(command);
                     RoomBoardEditorTools.RebuildPitchBoard();
@@ -372,6 +376,194 @@ namespace CounterAttack.Editor
             };
         }
 
+        private static BridgeBallStateData BuildBallState()
+        {
+            Ball ball = FindSceneObject<Ball>();
+            if (ball == null)
+            {
+                return new BridgeBallStateData
+                {
+                    found = false
+                };
+            }
+
+            HexCell currentHex = ball.GetCurrentHex();
+            return new BridgeBallStateData
+            {
+                found = true,
+                objectName = ball.name,
+                hierarchyPath = GetHierarchyPath(ball.transform),
+                isMoving = ball.isMoving,
+                worldPosition = SerializeVector3(ball.transform.position),
+                currentHex = BuildHexData(currentHex),
+                occupyingTokenName = currentHex?.GetOccupyingToken()?.name ?? string.Empty,
+                occupyingPlayerName = currentHex?.GetOccupyingToken()?.playerName ?? string.Empty
+            };
+        }
+
+        private static BridgePlayerTokenStateData BuildPlayerTokenState(PlayerToken token)
+        {
+            HexCell currentHex = token.GetCurrentHex();
+            return new BridgePlayerTokenStateData
+            {
+                found = token != null,
+                objectName = token.name,
+                playerName = token.playerName ?? string.Empty,
+                hierarchyPath = GetHierarchyPath(token.transform),
+                jerseyNumber = token.jerseyNumber,
+                isAttacker = token.isAttacker,
+                isHomeTeam = token.isHomeTeam,
+                isDribbler = token.IsDribbler,
+                isGoalKeeper = token.IsGoalKeeper,
+                isBooked = token.isBooked,
+                isInjured = token.isInjured,
+                isSentOff = token.isSentOff,
+                worldPosition = SerializeVector3(token.transform.position),
+                currentHex = BuildHexData(currentHex),
+                currentHexOccupyingTokenName = currentHex?.GetOccupyingToken()?.name ?? string.Empty,
+                currentHexOccupyingPlayerName = currentHex?.GetOccupyingToken()?.playerName ?? string.Empty
+            };
+        }
+
+        private static PlayerToken ResolvePlayerToken(BridgeRequest request)
+        {
+            string hierarchyPath = GetOptionalArg(request, "path");
+            string objectName = GetOptionalArg(request, "name");
+            string playerName = GetOptionalArg(request, "player_name");
+            string jerseyNumberRaw = GetOptionalArg(request, "jersey_number");
+            string teamRaw = GetOptionalArg(request, "team");
+            string isHomeTeamRaw = GetOptionalArg(request, "is_home_team");
+
+            bool hasLookupArg =
+                !string.IsNullOrWhiteSpace(hierarchyPath) ||
+                !string.IsNullOrWhiteSpace(objectName) ||
+                !string.IsNullOrWhiteSpace(playerName) ||
+                !string.IsNullOrWhiteSpace(jerseyNumberRaw) ||
+                !string.IsNullOrWhiteSpace(teamRaw) ||
+                !string.IsNullOrWhiteSpace(isHomeTeamRaw);
+
+            if (!hasLookupArg)
+            {
+                throw new InvalidOperationException("get_player_token_state requires one of: path, name, player_name, jersey_number, team, is_home_team.");
+            }
+
+            var tokens = UnityEngine.Object.FindObjectsByType<PlayerToken>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .Where(token => token != null && token.gameObject.scene.IsValid())
+                .ToArray();
+
+            if (!string.IsNullOrWhiteSpace(hierarchyPath))
+            {
+                PlayerToken exactPathMatch = tokens.FirstOrDefault(token =>
+                    GetHierarchyPath(token.transform).Equals(hierarchyPath, StringComparison.Ordinal));
+
+                if (exactPathMatch != null)
+                {
+                    return exactPathMatch;
+                }
+            }
+
+            int jerseyNumber = -1;
+            if (!string.IsNullOrWhiteSpace(jerseyNumberRaw) && !int.TryParse(jerseyNumberRaw, out jerseyNumber))
+            {
+                throw new InvalidOperationException($"Could not parse jersey_number '{jerseyNumberRaw}' as an integer.");
+            }
+
+            bool? isHomeTeam = ParseOptionalBool(isHomeTeamRaw);
+            if (!string.IsNullOrWhiteSpace(teamRaw))
+            {
+                isHomeTeam = teamRaw.Trim().Equals("home", StringComparison.OrdinalIgnoreCase)
+                    ? true
+                    : teamRaw.Trim().Equals("away", StringComparison.OrdinalIgnoreCase)
+                        ? false
+                        : throw new InvalidOperationException($"Unsupported team '{teamRaw}'. Expected 'home' or 'away'.");
+            }
+
+            var candidates = tokens.Where(token =>
+            {
+                if (!string.IsNullOrWhiteSpace(objectName) &&
+                    !token.name.Equals(objectName, StringComparison.OrdinalIgnoreCase) &&
+                    !(token.playerName ?? string.Empty).Equals(objectName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                if (!string.IsNullOrWhiteSpace(playerName) &&
+                    !(token.playerName ?? string.Empty).Equals(playerName, StringComparison.OrdinalIgnoreCase) &&
+                    !token.name.Equals(playerName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                if (jerseyNumber >= 0 && token.jerseyNumber != jerseyNumber)
+                {
+                    return false;
+                }
+
+                if (isHomeTeam.HasValue && token.isHomeTeam != isHomeTeam.Value)
+                {
+                    return false;
+                }
+
+                return true;
+            }).ToList();
+
+            if (candidates.Count == 1)
+            {
+                return candidates[0];
+            }
+
+            if (candidates.Count == 0)
+            {
+                throw new InvalidOperationException("Could not find a PlayerToken matching the provided lookup arguments.");
+            }
+
+            string candidateList = string.Join(", ", candidates
+                .Select(token => $"{token.name} [{token.playerName}] #{token.jerseyNumber} {(token.isHomeTeam ? "home" : "away")}"));
+            throw new InvalidOperationException($"PlayerToken lookup was ambiguous. Matches: {candidateList}");
+        }
+
+        private static bool? ParseOptionalBool(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            if (bool.TryParse(value, out bool parsed))
+            {
+                return parsed;
+            }
+
+            throw new InvalidOperationException($"Could not parse boolean value '{value}'.");
+        }
+
+        private static BridgeHexData BuildHexData(HexCell hex)
+        {
+            if (hex == null)
+            {
+                return new BridgeHexData();
+            }
+
+            return new BridgeHexData
+            {
+                found = true,
+                objectName = hex.name,
+                hierarchyPath = GetHierarchyPath(hex.transform),
+                coordinates = $"{hex.coordinates.x},{hex.coordinates.z}",
+                x = hex.coordinates.x,
+                z = hex.coordinates.z,
+                isAttackOccupied = hex.isAttackOccupied,
+                isDefenseOccupied = hex.isDefenseOccupied,
+                occupyingTokenName = hex.GetOccupyingToken()?.name ?? string.Empty,
+                occupyingPlayerName = hex.GetOccupyingToken()?.playerName ?? string.Empty
+            };
+        }
+
+        private static string SerializeVector3(Vector3 value)
+        {
+            return $"{value.x:F3},{value.y:F3},{value.z:F3}";
+        }
+
         [Serializable]
         private class BridgeRequest
         {
@@ -407,6 +599,55 @@ namespace CounterAttack.Editor
             public string awayTeamName;
             public int homeRosterCount;
             public int awayRosterCount;
+        }
+
+        [Serializable]
+        private class BridgeHexData
+        {
+            public bool found;
+            public string objectName;
+            public string hierarchyPath;
+            public string coordinates;
+            public int x;
+            public int z;
+            public bool isAttackOccupied;
+            public bool isDefenseOccupied;
+            public string occupyingTokenName;
+            public string occupyingPlayerName;
+        }
+
+        [Serializable]
+        private class BridgeBallStateData
+        {
+            public bool found;
+            public string objectName;
+            public string hierarchyPath;
+            public bool isMoving;
+            public string worldPosition;
+            public BridgeHexData currentHex;
+            public string occupyingTokenName;
+            public string occupyingPlayerName;
+        }
+
+        [Serializable]
+        private class BridgePlayerTokenStateData
+        {
+            public bool found;
+            public string objectName;
+            public string playerName;
+            public string hierarchyPath;
+            public int jerseyNumber;
+            public bool isAttacker;
+            public bool isHomeTeam;
+            public bool isDribbler;
+            public bool isGoalKeeper;
+            public bool isBooked;
+            public bool isInjured;
+            public bool isSentOff;
+            public string worldPosition;
+            public BridgeHexData currentHex;
+            public string currentHexOccupyingTokenName;
+            public string currentHexOccupyingPlayerName;
         }
 
         [Serializable]
