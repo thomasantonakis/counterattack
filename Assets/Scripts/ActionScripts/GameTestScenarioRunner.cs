@@ -338,6 +338,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     public FirstTimePassManager firstTimePassManager;
     public LooseBallManager looseBallManager;
     public OutOfBoundsManager outOfBoundsManager;
+    public ThrowInManager throwInManager;
     public FreeKickManager freeKickManager;
     public ShotManager shotManager;
     public FinalThirdManager finalThirdManager;
@@ -574,6 +575,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runManualStatsPreviewOnly = false;
         bool runFtpAuditOnly = false;
         bool runLongBallAuditOnly = false;
+        bool runHighPassAuditOnly = false;
+        bool runHighPassHeaderAuditOnly = true;
         bool runFromCurrentFailureOnly = false;
 
         if (runManualStatsPreviewOnly)
@@ -610,6 +613,25 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
                 new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
                 new ScenarioDefinition(nameof(Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal), Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal),
+            });
+        }
+        else if (runHighPassAuditOnly)
+        {
+            scenarios.AddRange(new[]
+            {
+                new ScenarioDefinition(nameof(Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits), Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits),
+                new ScenarioDefinition(nameof(Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click), Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click),
+            });
+        }
+        else if (runHighPassHeaderAuditOnly)
+        {
+            scenarios.AddRange(new[]
+            {
+                new ScenarioDefinition(nameof(Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits), Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits),
+                new ScenarioDefinition(nameof(Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click), Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click),
+                new ScenarioDefinition(nameof(Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header), Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header),
+                new ScenarioDefinition(nameof(Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice), Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice),
+                new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
             });
         }
         else
@@ -1120,6 +1142,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         hoverMethod?.Invoke(firstTimePassManager, new object[] { hex?.occupyingToken, hex });
     }
 
+    private void SimulateHighPassHover(HexCell hex)
+    {
+        MethodInfo hoverMethod = typeof(HighPassManager).GetMethod("OnHoverReceived", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(hoverMethod != null, "HighPassManager private hover handler should exist for the HP hover tests.");
+        hoverMethod?.Invoke(highPassManager, new object[] { hex?.occupyingToken, hex });
+    }
+
     private void PerformRiggedFirstTimePassInterceptionRoll(int rigRoll)
     {
         MethodInfo interceptionMethod = typeof(FirstTimePassManager).GetMethod("PerformFTPInterceptionRolls", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -1536,6 +1565,105 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(!longBallManager.isAvailable, "Long Ball should no longer be available after activation.");
     }
 
+    private IEnumerator PrepareHighPassAvailabilityFromKickoff(int difficulty)
+    {
+        yield return new WaitForSeconds(3f);
+
+        MatchManager.Instance.difficulty_level = difficulty;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = difficulty;
+        }
+        Log($"Setting difficulty to {difficulty}");
+
+        highPassManager.minPassDistance = 6;
+        Log($"Setting High Pass minimum distance to {highPassManager.minPassDistance}");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Pressing Space");
+
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
+            "Game should be in KickoffBlown after kickoff.",
+            MatchManager.GameState.KickoffBlown,
+            MatchManager.Instance.currentState
+        );
+        AssertTrue(highPassManager.isAvailable, "High Pass should be available in the kickoff test harness.");
+    }
+
+    private bool ValidateHighPassTargetForTest(HexCell targetHex)
+    {
+        MethodInfo validationMethod = typeof(HighPassManager).GetMethod("ValidateHighPassTarget", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(validationMethod != null, "HighPassManager private target validator should exist for the High Pass tests.");
+        return validationMethod != null && (bool)validationMethod.Invoke(highPassManager, new object[] { targetHex, false });
+    }
+
+    private HexCell FindFirstValidHighPassTarget(Func<HexCell, int, bool> predicate, HexCell excludedHex = null)
+    {
+        HexCell ballHex = highPassManager.ball.GetCurrentHex();
+        foreach (HexCell candidate in GetAllInBoundsHexesOrdered(ballHex))
+        {
+            if (candidate == null || candidate == ballHex || candidate == excludedHex)
+            {
+                continue;
+            }
+
+            int distance = HexGridUtils.GetHexStepDistance(ballHex, candidate);
+            if (!predicate(candidate, distance))
+            {
+                continue;
+            }
+
+            if (ValidateHighPassTargetForTest(candidate))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private HexCell FindFirstValidHighPassTargetAtMinimumDistance(HexCell excludedHex = null)
+    {
+        HexCell exactMinimumTarget = FindFirstValidHighPassTarget(
+            (_, distance) => distance == highPassManager.minPassDistance,
+            excludedHex
+        );
+
+        return exactMinimumTarget ?? FindFirstValidHighPassTarget(
+            (_, distance) => distance >= highPassManager.minPassDistance && distance <= 15,
+            excludedHex
+        );
+    }
+
+    private HexCell FindFirstTooCloseHighPassTarget()
+    {
+        HexCell ballHex = highPassManager.ball.GetCurrentHex();
+        return GetAllInBoundsHexesOrdered(ballHex)
+            .FirstOrDefault(candidate =>
+                candidate != null
+                && candidate != ballHex
+                && !candidate.isAttackOccupied
+                && !candidate.isDefenseOccupied
+                && HexGridUtils.GetHexStepDistance(ballHex, candidate) > 0
+                && HexGridUtils.GetHexStepDistance(ballHex, candidate) < highPassManager.minPassDistance);
+    }
+
+    private HexCell FindFirstDefenderOccupiedHighPassTarget()
+    {
+        HexCell ballHex = highPassManager.ball.GetCurrentHex();
+        return hexgrid.GetDefenderHexes()
+            .Where(hex => hex != null && hex.GetOccupyingToken() != null)
+            .OrderBy(hex => HexGridUtils.GetHexStepDistance(ballHex, hex))
+            .ThenBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z)
+            .FirstOrDefault(hex =>
+            {
+                int distance = HexGridUtils.GetHexStepDistance(ballHex, hex);
+                return distance >= highPassManager.minPassDistance && distance <= 15;
+            });
+    }
+
     private IEnumerator PrepareManualLongBallBoardState(int difficulty)
     {
         yield return new WaitForSeconds(3f);
@@ -1708,6 +1836,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         firstTimePassManager = FindObjectOfType<FirstTimePassManager>();
         looseBallManager = FindObjectOfType<LooseBallManager>();
         outOfBoundsManager = FindObjectOfType<OutOfBoundsManager>();
+        throwInManager = FindObjectOfType<ThrowInManager>();
         freeKickManager = FindObjectOfType<FreeKickManager>();
         shotManager = FindObjectOfType<ShotManager>();
         finalThirdManager = FindObjectOfType<FinalThirdManager>();
@@ -1728,6 +1857,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (firstTimePassManager == null) missingComponents.Add(nameof(firstTimePassManager));
         if (looseBallManager == null) missingComponents.Add(nameof(looseBallManager));
         if (outOfBoundsManager == null) missingComponents.Add(nameof(outOfBoundsManager));
+        if (throwInManager == null) missingComponents.Add(nameof(throwInManager));
         if (freeKickManager == null) missingComponents.Add(nameof(freeKickManager));
         if (shotManager == null) missingComponents.Add(nameof(shotManager));
         if (finalThirdManager == null) missingComponents.Add(nameof(finalThirdManager));
@@ -13545,6 +13675,454 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("Long Ball To 15 4 Inaccurate SouthEast6 Is GoalKick");
+    }
+
+    private IEnumerator Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits()
+    {
+        yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(1));
+
+        HexCell yanevaTarget = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)),
+            "High Pass target (10,0) should exist for the Yaneva locked-target test.");
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        AssertTrue(yanevaTarget.GetOccupyingToken() == yaneva, "Yaneva should occupy (10,0) for the locked-target HP test.", yaneva, yanevaTarget.GetOccupyingToken());
+
+        HexCell tooCloseTarget = RequireHex(FindFirstTooCloseHighPassTarget(), "High Pass difficulty 1 test should find an empty too-close target.");
+        HexCell defenderTarget = RequireHex(FindFirstDefenderOccupiedHighPassTarget(), "High Pass difficulty 1 test should find a defender-occupied target in range.");
+        HexCell distanceTarget = FindFirstValidHighPassTargetAtMinimumDistance(yanevaTarget) ?? yanevaTarget;
+        int distanceTargetSteps = HexGridUtils.GetHexStepDistance(highPassManager.ball.GetCurrentHex(), distanceTarget);
+
+        Log("Pressing C - Start High Pass on difficulty 1");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(highPassManager.isActivated, "High Pass should be activated after pressing C.");
+        AssertTrue(highPassManager.isWaitingForConfirmation, "Difficulty 1 High Pass should wait for target selection.");
+        AssertTrue(MatchManager.Instance.currentState != MatchManager.GameState.HighPass, "Difficulty 1 High Pass should not commit on C.");
+        AssertTrue(highPassManager.GetInstructions().Contains("6-15"), "High Pass instructions should show the configured 6-15 target range.", true, highPassManager.GetInstructions());
+        AssertTrue(
+            hexgrid.highlightedHexes.Contains(yanevaTarget),
+            "Difficulty 1 High Pass should highlight available targets immediately after pressing C.",
+            true,
+            hexgrid.highlightedHexes.Contains(yanevaTarget));
+        AssertColorApproximately(
+            yanevaTarget.hexRenderer.material.color,
+            Color.yellow,
+            0.06f,
+            "Difficulty 1 High Pass available targets should be yellow before commitment.");
+
+        SimulateHighPassHover(yanevaTarget);
+        yield return null;
+        AssertColorApproximately(
+            yanevaTarget.hexRenderer.material.color,
+            new Color(1f, 0.55f, 0f, 1f),
+            0.06f,
+            "Difficulty 1 High Pass hovered available target should be orange.");
+
+        SimulateHighPassHover(null);
+        yield return null;
+        AssertColorApproximately(
+            yanevaTarget.hexRenderer.material.color,
+            Color.yellow,
+            0.06f,
+            "Difficulty 1 High Pass available target should return to yellow when hover leaves.");
+
+        Log($"Clicking {tooCloseTarget.coordinates} - Reject target below minimum distance");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(tooCloseTarget), 0.1f));
+        AssertTrue(highPassManager.currentTargetHex == null, "High Pass should reject a target closer than the configured minimum.");
+        AssertTrue(highPassManager.isWaitingForConfirmation, "High Pass should keep waiting after a too-close target.");
+        AssertTrue(
+            hexgrid.highlightedHexes.Contains(yanevaTarget),
+            "Difficulty 1 High Pass should keep showing available targets after rejecting a too-close click.",
+            true,
+            hexgrid.highlightedHexes.Contains(yanevaTarget));
+
+        Log($"Clicking {defenderTarget.coordinates} - Reject defender-occupied target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(defenderTarget), 0.1f));
+        AssertTrue(highPassManager.currentTargetHex == null, "High Pass should reject a defender-occupied target.");
+        AssertTrue(highPassManager.isWaitingForConfirmation, "High Pass should keep waiting after a defender-occupied target.");
+        AssertTrue(
+            hexgrid.highlightedHexes.Contains(yanevaTarget),
+            "Difficulty 1 High Pass should keep showing available targets after rejecting a defender-occupied click.",
+            true,
+            hexgrid.highlightedHexes.Contains(yanevaTarget));
+
+        Log($"Clicking {distanceTarget.coordinates} - Select valid target at distance {distanceTargetSteps}");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(distanceTarget), 0.1f));
+        AssertTrue(distanceTargetSteps >= highPassManager.minPassDistance, "High Pass should accept targets at or beyond the configured minimum distance.", true, distanceTargetSteps >= highPassManager.minPassDistance);
+        AssertTrue(highPassManager.currentTargetHex == distanceTarget, "High Pass should keep the selected valid target pending confirmation.", distanceTarget, highPassManager.currentTargetHex);
+        AssertTrue(highPassManager.isWaitingForConfirmation, "Difficulty 1 High Pass should still require a second click after a valid first target.");
+        AssertTrue(MatchManager.Instance.currentState != MatchManager.GameState.HighPass, "Difficulty 1 High Pass should not commit after the first valid target click.");
+        AssertColorApproximately(
+            distanceTarget.hexRenderer.material.color,
+            new Color(1f, 0.55f, 0f, 1f),
+            0.06f,
+            "Difficulty 1 High Pass selected target should remain orange before confirmation.");
+
+        if (distanceTarget != yanevaTarget)
+        {
+            Log("Clicking (10, 0) - Switch pending target to Yaneva");
+            yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.1f));
+            AssertTrue(highPassManager.currentTargetHex == yanevaTarget, "High Pass should allow switching the pending target before confirmation.", yanevaTarget, highPassManager.currentTargetHex);
+            AssertTrue(highPassManager.isWaitingForConfirmation, "High Pass should still wait for confirmation after switching target.");
+            AssertColorApproximately(
+                yanevaTarget.hexRenderer.material.color,
+                new Color(1f, 0.55f, 0f, 1f),
+                0.06f,
+                "Difficulty 1 High Pass switched selected target should remain orange before confirmation.");
+        }
+
+        Log("Clicking (10, 0) again - Confirm HP target on Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAttackerSelection,
+            2f,
+            "High Pass should enter Attacker HP movement after target confirmation."));
+
+        AssertTrue(!highPassManager.isWaitingForConfirmation, "High Pass should stop waiting for target confirmation after the second click.");
+        AssertTrue(highPassManager.lockedAttacker == yaneva, "Yaneva should be locked because the initial target is on her.", yaneva, highPassManager.lockedAttacker);
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.HighPass, "Difficulty 1 High Pass should commit only after target confirmation.", MatchManager.GameState.HighPass, MatchManager.Instance.currentState);
+        AssertTrue(highPassManager.GetInstructions().Contains("[X]"), "Attacker HP movement instructions should offer X when the initial target is already on an attacker.", true, highPassManager.GetInstructions());
+
+        Log("Pressing X - Forfeit Attacker HP movement");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderSelection,
+            2f,
+            "High Pass should enter Defender HP movement after attacker HP movement is forfeited."));
+        AssertTrue(!highPassManager.isWaitingForAttackerSelection, "Attacker HP movement should end after X forfeit.");
+
+        Log("Clicking (14, 0) - Select defender before forfeiting Defender HP movement");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderSelection && highPassManager.isWaitingForDefenderMove,
+            2f,
+            "High Pass should let a selected defender preview HP movement before X forfeit."));
+        AssertTrue(highPassManager.GetInstructions().Contains("click another defender"), "Defender HP movement instructions should explain that clicking another defender switches selection.", true, highPassManager.GetInstructions());
+
+        Log("Pressing X - Forfeit Defender HP movement after defender selection");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAccuracyRoll,
+            2f,
+            "High Pass should wait for accuracy after Defender HP movement is forfeited."));
+        AssertTrue(!highPassManager.isWaitingForDefenderSelection, "Defender HP movement should end after X forfeit.");
+
+        LogFooterofTest("High Pass Difficulty 1 Target Selection And Forfeits");
+    }
+
+    private IEnumerator Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click()
+    {
+        yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(3));
+
+        HexCell yanevaTarget = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)),
+            "High Pass difficulty 3 target (10,0) should exist.");
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        AssertTrue(yanevaTarget.GetOccupyingToken() == yaneva, "Yaneva should occupy (10,0) for the difficulty 3 HP test.", yaneva, yanevaTarget.GetOccupyingToken());
+
+        Log("Pressing C - Start High Pass on difficulty 3");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(highPassManager.isActivated, "High Pass should activate after pressing C on difficulty 3.");
+        AssertTrue(highPassManager.isWaitingForConfirmation, "Difficulty 3 High Pass should still wait for target selection after committing.");
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.HighPass, "Difficulty 3 High Pass should commit immediately when C is pressed.", MatchManager.GameState.HighPass, MatchManager.Instance.currentState);
+        AssertTrue(highPassManager.GetInstructions().Contains("already committed"), "Difficulty 3 High Pass instructions should say the action is already committed.", true, highPassManager.GetInstructions());
+
+        Log("Clicking (10, 0) - First valid HP target confirms immediately");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAttackerSelection,
+            2f,
+            "Difficulty 3 High Pass should enter Attacker HP movement after the first valid target click."));
+
+        AssertTrue(!highPassManager.isWaitingForConfirmation, "Difficulty 3 High Pass should not require a second target click.");
+        AssertTrue(highPassManager.currentTargetHex == yanevaTarget, "Difficulty 3 High Pass should confirm the first valid target.", yanevaTarget, highPassManager.currentTargetHex);
+        AssertTrue(highPassManager.lockedAttacker == yaneva, "Yaneva should be locked on the confirmed difficulty 3 target.", yaneva, highPassManager.lockedAttacker);
+
+        Log("Pressing X - Forfeit Attacker HP movement");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderSelection,
+            2f,
+            "Difficulty 3 High Pass should enter Defender HP movement after attacker HP movement is forfeited."));
+
+        Log("Pressing X - Forfeit Defender HP movement immediately");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAccuracyRoll,
+            2f,
+            "Difficulty 3 High Pass should wait for accuracy after immediate Defender HP movement forfeit."));
+
+        LogFooterofTest("High Pass Difficulty 3 Commits On C And First Click");
+    }
+
+    private IEnumerator Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header()
+    {
+        yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(2));
+
+        HexCell targetHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)),
+            "High Pass in-box target (13,1) should exist.");
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+
+        Log("Pressing C - Start High Pass toward the defensive box");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(highPassManager.isActivated, "High Pass should activate before selecting the in-box target.");
+
+        Log("Clicking (13, 1) - Select in-box High Pass target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.1f));
+        AssertTrue(highPassManager.currentTargetHex == targetHex, "High Pass should accept the in-box target.", targetHex, highPassManager.currentTargetHex);
+
+        Log("Clicking (13, 1) again - Confirm in-box High Pass target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderSelection,
+            2f,
+            "High Pass should enter Defender HP movement after the in-box target is confirmed."));
+
+        Log("Clicking (14, 0) - Select Soares for Defender HP movement");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 0), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderMove,
+            2f,
+            "High Pass should wait for Soares' Defender HP destination."));
+
+        Log("Clicking (14, 1) - Move Soares for Defender HP movement");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(14, 1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAccuracyRoll,
+            3f,
+            "High Pass should wait for accuracy after Defender HP movement."));
+
+        Log("Rigging accurate High Pass roll to 6");
+        highPassManager.PerformAccuracyRoll(6);
+        yield return StartCoroutine(WaitForCondition(
+            () => goalKeeperManager.isActivated,
+            5f,
+            "High Pass into the attacked penalty box from outside should offer the usual 1-hex GK free move."));
+        AssertTrue(!headerManager.isActivated, "Header should not activate before GK/F3 handling is finished.");
+
+        Log("Clicking (16, 1) - Use GK free box move");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, 1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefGKChallengeDecision,
+            4f,
+            "High Pass should offer the second GK challenge move decision after the free box move."));
+
+        Log("Pressing X - Forfeit GK challenge move");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated && !highPassManager.isActivated,
+            4f,
+            "High Pass should finish and trigger Final Third before Header starts."));
+        AssertTrue(!headerManager.isActivated, "Header should wait while Final Third is active.");
+
+        yield return StartCoroutine(ForfeitActiveFinalThirds());
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isActivated,
+            4f,
+            "Header should activate after Final Thirds are resolved."));
+
+        AssertTrue(headerManager.attEligibleToHead.Contains(yaneva), "Yaneva should be eligible to head the accurate in-box High Pass.");
+        AssertTrue(headerManager.isWaitingForHeaderAtGoal, "Header should offer the header-at-goal decision when the final target can be headed at goal.");
+
+        LogFooterofTest("High Pass In Box GK Move F3 Then Header");
+    }
+
+    private IEnumerator PrepareDirectHeaderAuditState()
+    {
+        yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(2));
+
+        highPassManager.isAvailable = false;
+        highPassManager.isActivated = false;
+        longBallManager.isAvailable = false;
+        groundBallManager.isAvailable = false;
+        firstTimePassManager.isAvailable = false;
+        movementPhaseManager.isAvailable = false;
+
+        headerManager.ResetHeader();
+        headerManager.isActivated = true;
+        headerManager.isAvailable = false;
+        headerManager.isWaitingForAttackerSelection = false;
+        headerManager.isWaitingForDefenderSelection = false;
+        headerManager.isWaitingForControlOrHeaderDecision = false;
+        headerManager.isWaitingForControlOrHeaderDecisionDef = false;
+        headerManager.iswaitingForChallengeWinnerSelection = false;
+        headerManager.isWaitingForHeaderTargetSelection = false;
+        headerManager.isWaitingForHeaderAtGoal = false;
+        headerManager.headerAtGoalDeclared = false;
+        headerManager.attackFreeHeader = false;
+        headerManager.attackControlBall = false;
+        headerManager.defenseWonFreeHeader = false;
+        headerManager.defenseBallControl = false;
+
+        PlayerToken passer = RequirePlayerToken("Cafferata");
+        if (headerManager.ball.GetCurrentHex() == null && passer.GetCurrentHex() != null)
+        {
+            headerManager.ball.PlaceAtCell(passer.GetCurrentHex());
+        }
+
+        MatchManager.Instance.SetLastToken(passer);
+        MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
+    }
+
+    private static string GetHeaderSortNameForTest(PlayerToken token)
+    {
+        if (token == null) return "";
+        return string.IsNullOrWhiteSpace(token.playerName) ? token.name : token.playerName;
+    }
+
+    private static int GetHeaderAttributeForTest(PlayerToken token)
+    {
+        if (token == null) return 0;
+        return token.IsGoalKeeper ? token.aerial : token.heading;
+    }
+
+    private List<PlayerToken> BuildExpectedHeaderOrderForTest(IEnumerable<PlayerToken> tokens, bool keepGoalKeeperLast)
+    {
+        HexCell ballHex = headerManager.ball.GetCurrentHex();
+        return tokens
+            .Where(token => token != null)
+            .Distinct()
+            .OrderBy(token => keepGoalKeeperLast && token.IsGoalKeeper ? 1 : 0)
+            .ThenBy(token => HexGridUtils.GetHexStepDistance(ballHex, token.GetCurrentHex()))
+            .ThenByDescending(GetHeaderAttributeForTest)
+            .ThenBy(GetHeaderSortNameForTest)
+            .ToList();
+    }
+
+    private IEnumerator Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice()
+    {
+        yield return StartCoroutine(PrepareDirectHeaderAuditState());
+
+        PlayerToken nazef = RequirePlayerToken("Nazef");
+        PlayerToken kalla = RequirePlayerToken("Kalla");
+        PlayerToken gilbert = RequirePlayerToken("Gilbert");
+        PlayerToken stewart = RequirePlayerToken("Stewart");
+
+        headerManager.attEligibleToHead.Add(nazef);
+        headerManager.attEligibleToHead.Add(kalla);
+        headerManager.defEligibleToHead.Add(gilbert);
+        headerManager.defEligibleToHead.Add(stewart);
+        headerManager.hasEligibleAttackers = true;
+        headerManager.hasEligibleDefenders = true;
+        headerManager.isWaitingForAttackerSelection = true;
+
+        Log("Clicking Nazef - Nominate first attacking header challenger");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(nazef.GetCurrentHex()), 0.1f));
+        Log("Clicking Kalla - Nominate second attacking header challenger");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(kalla.GetCurrentHex()), 0.1f));
+        AssertTrue(headerManager.attackerWillJump.Count == 2, "Attack should be able to nominate two challengers before defense decides.", 2, headerManager.attackerWillJump.Count);
+
+        Log("Pressing Enter - Confirm attacking challengers");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForDefenderSelection,
+            2f,
+            "Header should move to defender nominations after attack confirms challengers."));
+
+        Log("Pressing Enter - Defense forfeits all header nominations");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForControlOrHeaderDecision,
+            2f,
+            "Defense forfeit should re-offer the unchallenged Header/Control choice to attack."));
+
+        AssertTrue(headerManager.attackerWillJump.Count == 0, "Previous contested attacker nominations should be cleared after defense forfeits.", 0, headerManager.attackerWillJump.Count);
+        AssertTrue(headerManager.defenderWillJump.Count == 0, "Defense nominations should remain empty after defense forfeits.", 0, headerManager.defenderWillJump.Count);
+        AssertTrue(!headerManager.hasEligibleDefenders, "Header should treat the next choice as unchallenged after defense forfeits.");
+        AssertTrue(headerManager.attEligibleToHead.Contains(nazef) && headerManager.attEligibleToHead.Contains(kalla), "Attack eligibility should remain available for the fresh unchallenged choice.");
+
+        Log("Pressing H - Attack chooses an unchallenged header");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.H, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForAttackerSelection,
+            2f,
+            "Unchallenged header with multiple attackers should ask attack to select 1-2 jumpers."));
+
+        Log("Clicking Nazef and Kalla again - Nominate unchallenged header jumpers");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(nazef.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(kalla.GetCurrentHex()), 0.1f));
+        AssertTrue(headerManager.attackerWillJump.Count == 2, "Attack should be able to nominate two players for the unchallenged header.", 2, headerManager.attackerWillJump.Count);
+
+        Log("Pressing Enter - Confirm unchallenged attacking header");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForHeaderTargetSelection || headerManager.isWaitingForHeaderAtGoal,
+            2f,
+            "Confirmed unchallenged header should advance toward header target selection."));
+
+        if (headerManager.isWaitingForHeaderAtGoal)
+        {
+            Log("Pressing H - Decline header at goal for this selection test");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.H, 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => headerManager.isWaitingForHeaderTargetSelection,
+                2f,
+                "Declining header at goal should continue to header target selection."));
+        }
+
+        AssertTrue(headerManager.challengeWinner != null && headerManager.attackerWillJump.Contains(headerManager.challengeWinner), "The unchallenged header winner should be one of the nominated attackers.", true, headerManager.challengeWinner);
+
+        LogFooterofTest("Header Defense Forfeit Reoffers Unchallenged Choice");
+    }
+
+    private IEnumerator Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast()
+    {
+        yield return StartCoroutine(PrepareDirectHeaderAuditState());
+
+        PlayerToken nazef = RequirePlayerToken("Nazef");
+        PlayerToken kalla = RequirePlayerToken("Kalla");
+        PlayerToken soares = RequirePlayerToken("Soares");
+        PlayerToken kuzmic = RequirePlayerToken("Kuzmic");
+        AssertTrue(kuzmic.IsGoalKeeper, "Kuzmic should be the defending GK for the Header roll-order test.");
+
+        nazef.heading = 6;
+        kalla.heading = 5;
+        soares.heading = 1;
+        kuzmic.aerial = 1;
+
+        headerManager.attackerWillJump.Add(kalla);
+        headerManager.attackerWillJump.Add(nazef);
+        headerManager.defenderWillJump.Add(kuzmic);
+        headerManager.defenderWillJump.Add(soares);
+        headerManager.hasEligibleAttackers = true;
+        headerManager.hasEligibleDefenders = true;
+
+        List<PlayerToken> expectedAttackers = BuildExpectedHeaderOrderForTest(headerManager.attackerWillJump, false);
+        List<PlayerToken> expectedDefenders = BuildExpectedHeaderOrderForTest(headerManager.defenderWillJump, true);
+        AssertTrue(expectedDefenders.Last() == kuzmic, "Defending GK should be ordered last among defenders before rolling.", kuzmic, expectedDefenders.Last());
+
+        Log("Starting direct Header challenge resolution");
+        StartCoroutine(headerManager.ResolveHeaderChallenge());
+
+        int[] rolls = { 6, 5, 1, 1 };
+        List<PlayerToken> expectedRollOrder = expectedAttackers.Concat(expectedDefenders).ToList();
+        for (int i = 0; i < expectedRollOrder.Count; i++)
+        {
+            int rollIndex = i;
+            yield return StartCoroutine(WaitForCondition(
+                () => headerManager.isWaitingForHeaderRoll,
+                2f,
+                $"Header should wait for roll #{rollIndex + 1}."));
+
+            AssertTrue(
+                headerManager.tokenRolling == expectedRollOrder[i],
+                $"Header roll #{i + 1} should use the expected token.",
+                expectedRollOrder[i],
+                headerManager.tokenRolling);
+
+            Log($"Rigging header roll #{i + 1} for {expectedRollOrder[i].playerName} to {rolls[i]}");
+            headerManager.PerformHeaderRoll(rolls[i]);
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForHeaderTargetSelection,
+            2f,
+            "Attack should win the rigged Header challenge and move to header target selection."));
+
+        AssertTrue(headerManager.challengeWinner == expectedAttackers[0], "The best ordered attacker should win the rigged Header challenge.", expectedAttackers[0], headerManager.challengeWinner);
+        AssertTrue(headerManager.defenderWillJump.Last() == kuzmic, "Defending GK should remain last in the defender challenge list.", kuzmic, headerManager.defenderWillJump.Last());
+
+        LogFooterofTest("Header Roll Order Attackers First Defenders GK Last");
     }
 
 

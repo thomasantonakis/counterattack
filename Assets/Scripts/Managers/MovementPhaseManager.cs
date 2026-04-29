@@ -112,6 +112,11 @@ public class MovementPhaseManager : MonoBehaviour
         RefreshHeldReachOverlay();
     }
 
+    private bool IsResolvingFoulSequence()
+    {
+        return isWaitingForYellowCardRoll || isWaitingForInjuryRoll || isWaitingForFoulDecision;
+    }
+
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (!isActivated) return;
@@ -119,6 +124,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (isPlayerMoving) return;
         if (shotManager.isActivated) return;
+        if (IsResolvingFoulSequence()) return;
         if (lookingForNutmegVictim)
         {
             // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
@@ -169,6 +175,12 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (hex == ballHex)
             {
+                if (!isBallPickable)
+                {
+                    Debug.LogWarning($"{selectedToken?.playerName ?? "Selected token"} cannot reach the ball with their available pace.");
+                    return;
+                }
+
                 if (!CanSelectedTokenCollectCurrentBall())
                 {
                     Debug.LogWarning($"{selectedToken?.playerName ?? "Selected token"} cannot collect this hanging pass.");
@@ -240,6 +252,35 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (looseBallManager.isActivated) return;
         if (shotManager.isActivated || shotManager.isWaitingForSnapshotDecisionFromLoose) return;
+        if (IsResolvingFoulSequence())
+        {
+            bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+            if (isWaitingForYellowCardRoll && (keyData.key == KeyCode.R || hasRollOverride))
+            {
+                PerformLeniencyTest(hasRollOverride ? rollOverride : null);
+                keyData.isConsumed = true;
+            }
+            else if (isWaitingForInjuryRoll && (keyData.key == KeyCode.R || hasRollOverride))
+            {
+                PerformInjuryTest(hasRollOverride ? rollOverride : null);
+                keyData.isConsumed = true;
+            }
+            else if (isWaitingForFoulDecision)
+            {
+                if (keyData.key == KeyCode.A)
+                {
+                    PlayAdvantage();
+                    keyData.isConsumed = true;
+                }
+                else if (keyData.key == KeyCode.F)
+                {
+                    TakeFreeKick();
+                    keyData.isConsumed = true;
+                }
+            }
+
+            return;
+        }
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
             MatchManager.Instance.TriggerMovement();
@@ -247,10 +288,13 @@ public class MovementPhaseManager : MonoBehaviour
             return;
         }
         
-        if (isWaitingForInterceptionDiceRoll && keyData.key == KeyCode.R)
+        bool hasInterceptionRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride interceptionRollOverride);
+        if (isWaitingForInterceptionDiceRoll && (keyData.key == KeyCode.R || hasInterceptionRollOverride))
         {
-            Debug.Log("R key detected for interception dice roll.");
-            StartCoroutine(PerformBallInterceptionDiceRoll());
+            Debug.Log(hasInterceptionRollOverride ? "Rigged interception dice roll detected." : "R key detected for interception dice roll.");
+            StartCoroutine(hasInterceptionRollOverride
+                ? PerformBallInterceptionDiceRoll(interceptionRollOverride)
+                : PerformBallInterceptionDiceRoll());
             keyData.isConsumed = true;
             return;
         }
@@ -322,7 +366,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.N)  // No tackle
             {
-                Debug.Log("No tackle chosen.");
+                Debug.Log($"{selectedToken.name} stands there without tackling.");
                 isWaitingForTackleDecision = false;
                 ResetTacklePhase();  // Reset tackle phase if no tackle is chosen
                 AdvanceMovementPhase();
@@ -351,20 +395,30 @@ public class MovementPhaseManager : MonoBehaviour
                 return;
             }
         }
-        if (isWaitingForTackleRoll && keyData.key == KeyCode.R)
+        bool hasTackleRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride tackleRollOverride);
+        if (isWaitingForTackleRoll && (keyData.key == KeyCode.R || hasTackleRollOverride))
         {
             if (!tackleDefenderRolled)
             {
-                PerformTackleDiceRoll(isDefender: true, 2);  // Defender rolls first
+                PerformTackleDiceRollInternal(isDefender: true, hasTackleRollOverride ? tackleRollOverride : null);  // Defender rolls first
+                keyData.isConsumed = true;
                 return;
             }
             else if (!tackleAttackerRolled)
             {
-                PerformTackleDiceRoll(isDefender: false, 6);  // Attacker rolls second
+                PerformTackleDiceRollInternal(isDefender: false, hasTackleRollOverride ? tackleRollOverride : null);  // Attacker rolls second
+                keyData.isConsumed = true;
                 return;
             }
         }
-        if (!isWaitingForReposition && !isWaitingForNutmegDecision && !isWaitingForNutmegDecisionWithoutMoving && !isWaitingForSnapshotDecision && keyData.key == KeyCode.X)
+        if (
+            !isWaitingForReposition
+            && !isWaitingForNutmegDecision
+            && !isWaitingForNutmegDecisionWithoutMoving
+            && !isWaitingForSnapshotDecision
+            && !isWaitingForTackleDecision
+            && keyData.key == KeyCode.X
+        )
         {
             CommitToAction();
             ForfeitTeamMovementPhase();
@@ -416,28 +470,6 @@ public class MovementPhaseManager : MonoBehaviour
                 AdvanceMovementPhase();
                 return;
             }
-        }
-        if (isWaitingForYellowCardRoll && keyData.key == KeyCode.R)
-        {
-            PerformLeniencyTest();
-            return;
-        }
-        if (isWaitingForInjuryRoll && keyData.key == KeyCode.R)
-        {
-            PerformInjuryTest();
-            return;
-        }
-        if (isWaitingForFoulDecision)
-        {
-            if (keyData.key == KeyCode.A)
-            {
-                PlayAdvantage();
-            }
-            else if (keyData.key == KeyCode.F)
-            {
-                TakeFreeKick();
-            }
-            return;
         }
     }
 
@@ -1159,22 +1191,13 @@ public class MovementPhaseManager : MonoBehaviour
 
     private List<PlayerToken> GetEligiblePostSuccessfulTackleStealers(HexCell targetHex)
     {
-        List<PlayerToken> eligibleDefs = new List<PlayerToken>();
-        HexCell[] neighbors = targetHex.GetNeighbors(hexGrid);
-        foreach (HexCell neighbor in neighbors)
-        {
-            PlayerToken token = neighbor.GetOccupyingToken();
-            if (token != null &&
-                !eligibleDefs.Contains(token) &&
-                neighbor.isDefenseOccupied &&
+        List<PlayerToken> eligibleDefs = GetAdjacentDefenders(targetHex)
+            .Where(token =>
                 token != repositionLoser &&
                 !stunnedTokens.Contains(token) &&
                 !stunnedforNext.Contains(token) &&
                 !headerManager.attackerWillJump.Contains(token))
-            {
-                eligibleDefs.Add(token);
-            }
-        }
+            .ToList();
 
         if (eligibleDefs.Count > 0)
         {
@@ -1190,6 +1213,28 @@ public class MovementPhaseManager : MonoBehaviour
         EndMovementPhase();
         MatchManager.Instance.BroadcastSuccessfulTackle();
         Debug.Log("Movement phase ended due to successful tackle.");
+    }
+
+    private List<PlayerToken> GetAdjacentDefenders(HexCell targetHex)
+    {
+        List<PlayerToken> adjacentDefenders = new List<PlayerToken>();
+        if (targetHex == null)
+        {
+            return adjacentDefenders;
+        }
+
+        HexCell[] neighbors = targetHex.GetNeighbors(hexGrid);
+        foreach (HexCell neighbor in neighbors)
+        {
+            PlayerToken token = neighbor.GetOccupyingToken();
+            if (token == null || !neighbor.isDefenseOccupied || adjacentDefenders.Contains(token))
+            {
+                continue;
+            }
+            adjacentDefenders.Add(token);
+        }
+
+        return adjacentDefenders;
     }
 
     // Coroutine to move the token one hex at a time
@@ -1423,14 +1468,8 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log("Calculating Eligible Defenders for Interception");
         }
 
-        List<PlayerToken> eligibleDefs = new List<PlayerToken>();
-        HexCell[] neighbors = targetHex.GetNeighbors(hexGrid);
-        foreach (HexCell neighbor in neighbors)
-        {
-            PlayerToken token = neighbor.GetOccupyingToken();
-            if (token != null && // null check
-                !eligibleDefs.Contains(token) && // Avoid duplicates
-                neighbor.isDefenseOccupied && // only defenders
+        List<PlayerToken> eligibleDefs = GetAdjacentDefenders(targetHex)
+            .Where(token =>
                 (nutmeggableDefenders == null || nutmeggableDefenders.Count == 0 || nutmeggableDefenders.Contains(token)) &&
                 !defendersTriedToIntercept.Contains(token) && // has not already tried to intercept during the dribblers movement
                 !headerManager.defenderWillJump.Contains(token) && // has not jumped in previous Header Challenge
@@ -1438,12 +1477,8 @@ public class MovementPhaseManager : MonoBehaviour
                 !stunnedforNext.Contains(token) &&
                 !headerManager.attackerWillJump.Contains(token) && // wtf is this? we are looking for defenders.
                 // if we are in MPDef, get only not moved, if in MP2f2, get all
-                (!movedTokens.Contains(token) || isMovementPhase2f2)
-            )
-            {
-                eligibleDefs.Add(token);
-            }
-        }
+                (!movedTokens.Contains(token) || isMovementPhase2f2))
+            .ToList();
         if (logResults && eligibleDefs.Count() > 0) {Debug.Log($"Interception List: {string.Join(", ", eligibleDefs.Select(d => d.name))}");}
         return eligibleDefs;
     }
@@ -1473,12 +1508,35 @@ public class MovementPhaseManager : MonoBehaviour
 
     public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = null)
     {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(PerformBallInterceptionDiceRoll(rollOverride));
+    }
+
+    public IEnumerator PerformBallInterceptionDiceRoll(RollInputOverride rollOverride)
+    {
+        yield return StartCoroutine(PerformBallInterceptionDiceRoll((RollInputOverride?)rollOverride));
+    }
+
+    private IEnumerator PerformBallInterceptionDiceRoll(RollInputOverride? rollOverride)
+    {
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
         {
             // Roll the dice (1 to 6)
             var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-            int diceRoll = rigroll ?? returnedRoll;
+            bool isRiggedJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride && rollOverride.Value.isJackpot;
+            int diceRoll = isRiggedJackpot
+                ? 6
+                : rollOverride.HasValue && rollOverride.Value.hasOverride
+                    ? rollOverride.Value.roll
+                    : returnedRoll;
             // Debug.Log($"Dice roll by defender at {selectedDefender.GetCurrentHex().coordinates}: {diceRoll}");
             isWaitingForInterceptionDiceRoll = false;
 
@@ -1501,6 +1559,7 @@ public class MovementPhaseManager : MonoBehaviour
                 defendersTriedToIntercept.Add(selectedDefender);
                 isResolvingPreNutmegSteals = false;
                 needsReposition = false;
+                isDribblerRunning = false;
                 yield return StartCoroutine(HandleFoulProcess(selectedToken, selectedDefender));
             }
             // Check interception condition: either roll a 6 or roll + tackling >= 10
@@ -1571,9 +1630,29 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void PerformTackleDiceRoll(bool isDefender, int? rigroll = null)
     {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformTackleDiceRollInternal(isDefender, rollOverride);
+    }
+
+    public void PerformTackleDiceRoll(bool isDefender, RollInputOverride rollOverride)
+    {
+        PerformTackleDiceRollInternal(isDefender, rollOverride);
+    }
+
+    private void PerformTackleDiceRollInternal(bool isDefender, RollInputOverride? rollOverride)
+    {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int roll = returnedJackpot ? 50 :returnedRoll;
-        int diceRoll = rigroll ?? roll;
+        int randomRoll = returnedJackpot ? 50 : returnedRoll;
+        int diceRoll = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? rollOverride.Value.isJackpot ? 50 : rollOverride.Value.roll
+            : randomRoll;
         
         // Random
         if (isDefender)
@@ -1820,6 +1899,10 @@ public class MovementPhaseManager : MonoBehaviour
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken, bool needsReposition = true)
     {
         Debug.Log("Handling foul resolution process...");
+        isDribblerRunning = false;
+        isAwaitingHexDestination = false;
+        isAwaitingTokenSelection = false;
+        hexGrid.ClearHighlightedHexes();
         // Phase 1: Yellow card decision
         Debug.Log("Press 'R' to roll for a Booking.");
         isWaitingForYellowCardRoll = true;
@@ -1845,7 +1928,7 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
         // Phase 3: Foul decision (Play On or Take the Foul)
-        Debug.Log("Press 'A' to Play On or 'Z' to Take the Foul.");
+        Debug.Log("Press 'A' to Play On or 'F' to Take the Foul.");
         isWaitingForFoulDecision = true;
         while (isWaitingForFoulDecision)
         {
@@ -1891,9 +1974,27 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void PerformLeniencyTest(int? rigroll = null)
     {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformLeniencyTest(rollOverride);
+    }
+
+    public void PerformLeniencyTest(RollInputOverride? rollOverride)
+    {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int roll = rigroll ?? returnedRoll;
-        Debug.Log($"Yellow card roll: {roll}");
+        bool isRiggedJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride && rollOverride.Value.isJackpot;
+        int roll = isRiggedJackpot
+            ? 6
+            : rollOverride.HasValue && rollOverride.Value.hasOverride
+                ? rollOverride.Value.roll
+                : returnedRoll;
+        Debug.Log(isRiggedJackpot ? "Yellow card roll: 6 (jackpot override)" : $"Yellow card roll: {roll}");
         PlayerToken fouledAttacker = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (roll >= MatchManager.Instance.refereeLeniency)
         {
@@ -1927,9 +2028,27 @@ public class MovementPhaseManager : MonoBehaviour
     
     public void PerformInjuryTest(int? rigroll = null)
     {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformInjuryTest(rollOverride);
+    }
+
+    public void PerformInjuryTest(RollInputOverride? rollOverride)
+    {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int roll = rigroll ?? returnedRoll;
-        Debug.Log($"Injury roll: {roll}");
+        bool isRiggedJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride && rollOverride.Value.isJackpot;
+        int roll = isRiggedJackpot
+            ? 6
+            : rollOverride.HasValue && rollOverride.Value.hasOverride
+                ? rollOverride.Value.roll
+                : returnedRoll;
+        Debug.Log(isRiggedJackpot ? "Injury roll: 6 (jackpot override)" : $"Injury roll: {roll}");
         // PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (roll >= attackerToken.resilience)
@@ -2286,8 +2405,24 @@ public class MovementPhaseManager : MonoBehaviour
         if (looseBallManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [M] to start a Movement Phase, "); //TODO: this is suppressed in case a Snapshot it available.
         if (isActivated) sb.Append("MP: ");
+        if (IsResolvingFoulSequence())
+        {
+            if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
+            if (isWaitingForInjuryRoll) sb.Append($"Press [R] to roll the injury check for {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} whose Resilience is {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.resilience}, ");
+            if (isWaitingForFoulDecision) sb.Append("Press [A] to play on, or [F] to take the foul, ");
+            if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
+            return sb.ToString();
+        }
         if (isAwaitingTokenSelection) sb.Append(GetTokenSelectionInstructions());
         if (isAwaitingHexDestination) sb.Append($"Click on a Free Hex to move {selectedToken.playerName} there!, ");
+        if (isAwaitingHexDestination && isBallPickable && CanSelectedTokenCollectCurrentBall())
+        {
+            sb.Append($"Press [V] to pick up the ball with {selectedToken.playerName}, ");
+        }
+        if (isAwaitingHexDestination && selectedToken != null && ballHex != null && !CanSelectedTokenCollectCurrentBall())
+        {
+            sb.Append($"{selectedToken?.playerName ?? "Selected token"} cannot collect this hanging pass, ");
+        }
         if (isWaitingForNutmegDecision) sb.Append("Press [N] to nutmeg, or [X] to allow interceptions, ");
         if (isWaitingForInterceptionDiceRoll) sb.Append($"Press [R] to roll for interception with {eligibleDefenders[0].playerName}, ");
         if (lookingForNutmegVictim) sb.Append("Click on one of the Nutmeggable Defenders to choose which one to nutmeg, ");
@@ -2307,12 +2442,10 @@ public class MovementPhaseManager : MonoBehaviour
                 if (isWaitingForTackleRoll && !tackleDefenderRolled ) sb.Append($"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling+1}, ");
                 if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the nutmeg. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
             }
-            if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
-            if (isWaitingForInjuryRoll) sb.Append($"Press [R] to roll the injury check for {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} whose Resilience is {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.resilience}, ");
             if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot");
             if (isWaitingForSnapshotDecision && !isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to end your move, ");
             if (isDribblerRunning && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedToken.playerName}'s remaining pace ({remainingDribblerPace}), ");
-            if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedToken.playerName}, or [X] to just stand there, ");
+            if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedToken.playerName}, or [N] to stand there without tackling, ");
             if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedToken.playerName} from there!, ");
             if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
             if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
@@ -2341,12 +2474,22 @@ public class MovementPhaseManager : MonoBehaviour
             return repositionWinner.isHomeTeam;
         }
 
+        if (isWaitingForYellowCardRoll && selectedDefender != null)
+        {
+            return selectedDefender.isHomeTeam;
+        }
+
+        if ((isWaitingForInjuryRoll || isWaitingForFoulDecision) && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != null)
+        {
+            return MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.isHomeTeam;
+        }
+
         if (lookingForNutmegVictim || isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving || isWaitingForSnapshotDecision)
         {
             return attackingTeamIsHome;
         }
 
-        if (isWaitingForInterceptionDiceRoll || isWaitingForTackleDecision || isWaitingForTackleDecisionWithoutMoving || isWaitingForYellowCardRoll || isWaitingForFoulDecision)
+        if (isWaitingForInterceptionDiceRoll || isWaitingForTackleDecision || isWaitingForTackleDecisionWithoutMoving)
         {
             return !attackingTeamIsHome;
         }
@@ -2362,11 +2505,6 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 return MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.isHomeTeam;
             }
-        }
-
-        if (isWaitingForInjuryRoll && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != null)
-        {
-            return MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.isHomeTeam;
         }
 
         if (isMovementPhaseDef)

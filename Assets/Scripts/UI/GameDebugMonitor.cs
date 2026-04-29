@@ -22,6 +22,7 @@ public class GameDebugMonitor : MonoBehaviour
     public FirstTimePassManager firstTimePassManager;
     public LooseBallManager looseBallManager;
     public OutOfBoundsManager outOfBoundsManager;
+    public ThrowInManager throwInManager;
     public FreeKickManager freeKickManager;
     public ShotManager shotManager;
     public FinalThirdManager finalThirdManager;
@@ -91,6 +92,7 @@ public class GameDebugMonitor : MonoBehaviour
         firstTimePassManager = FindObjectOfType<FirstTimePassManager>();
         looseBallManager = FindObjectOfType<LooseBallManager>();
         outOfBoundsManager = FindObjectOfType<OutOfBoundsManager>();
+        throwInManager = FindObjectOfType<ThrowInManager>();
         freeKickManager = FindObjectOfType<FreeKickManager>();
         shotManager = FindObjectOfType<ShotManager>();
         finalThirdManager = FindObjectOfType<FinalThirdManager>();
@@ -111,6 +113,7 @@ public class GameDebugMonitor : MonoBehaviour
         if (firstTimePassManager == null) missingComponents.Add(nameof(firstTimePassManager));
         if (looseBallManager == null) missingComponents.Add(nameof(looseBallManager));
         if (outOfBoundsManager == null) missingComponents.Add(nameof(outOfBoundsManager));
+        if (throwInManager == null) missingComponents.Add(nameof(throwInManager));
         if (freeKickManager == null) missingComponents.Add(nameof(freeKickManager));
         if (shotManager == null) missingComponents.Add(nameof(shotManager));
         if (finalThirdManager == null) missingComponents.Add(nameof(finalThirdManager));
@@ -148,6 +151,7 @@ public class GameDebugMonitor : MonoBehaviour
         builder.AppendLine(goalKeeperManager.GetDebugStatus());
         builder.AppendLine(finalThirdManager.GetDebugStatus());
         builder.AppendLine(looseBallManager.GetDebugStatus());
+        builder.AppendLine(throwInManager != null ? throwInManager.GetDebugStatus() : "TI: (not linked)");
         builder.AppendLine(headerManager.GetDebugStatus());
 
         debugText.text = builder.ToString();
@@ -177,6 +181,7 @@ public class GameDebugMonitor : MonoBehaviour
         AddIfNotEmpty(movementPhaseManager != null ? movementPhaseManager.GetInstructions() : string.Empty, ResolveInstructionSide(movementPhaseManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(goalKeeperManager != null ? goalKeeperManager.GetInstructions() : string.Empty, ResolveInstructionSide(goalKeeperManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(looseBallManager != null ? looseBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(looseBallManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(throwInManager != null ? throwInManager.GetInstructions() : string.Empty, ResolveInstructionSide(throwInManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(shotManager != null ? shotManager.GetInstructions() : string.Empty, ResolveInstructionSide(shotManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(groundBallManager != null ? groundBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(groundBallManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(firstTimePassManager != null ? firstTimePassManager.GetInstructions() : string.Empty, ResolveInstructionSide(firstTimePassManager?.IsInstructionExpectingHomeTeam()));

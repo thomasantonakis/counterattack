@@ -7,7 +7,9 @@ public class OutOfBoundsManager : MonoBehaviour
     public Ball ball;
     public HexGrid hexGrid;
     public FreeKickManager freeKickManager;
-    public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source)
+    public ThrowInManager throwInManager;
+
+    public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source, PlayerToken lastTouchToken = null)
     {
         if (currentTargetHex == null)
         {
@@ -43,7 +45,7 @@ public class OutOfBoundsManager : MonoBehaviour
             case "Top Throw-In":
             case "Bottom Throw-In":
                 Debug.Log("Handling a Throw-In.");
-                HandleThrowIn(lastInboundsHex, source);
+                HandleThrowIn(lastInboundsHex, source, lastTouchToken);
                 break;
             case "LeftGoal":
             case "RightGoal":
@@ -129,18 +131,38 @@ public class OutOfBoundsManager : MonoBehaviour
         return "unknown";  // Fallback case (this shouldn't happen if the boundaries are properly checked)
     }
 
-    private void HandleThrowIn(HexCell lastInboundsHex, string source)
+    private void HandleThrowIn(HexCell lastInboundsHex, string source, PlayerToken lastTouchToken)
     {
-        // TODO: Use Source to decide if we need to change possession or not.
-        StartCoroutine(ball.MoveToCell(lastInboundsHex));
-        Debug.Log("Moved the ball to last inboundHex.");
+        if (throwInManager == null)
+        {
+            Debug.LogError("ThrowInManager is not linked on OutOfBoundsManager.");
+            return;
+        }
+
+        MatchManager.TeamInAttack awardedTeam = DetermineThrowInAwardedTeam(source, lastTouchToken);
+        Debug.Log($"Throw-in awarded to: {awardedTeam} (source: {source}, lastTouch: {lastTouchToken?.name ?? "unknown"}).");
+        throwInManager.StartThrowInPreparation(lastInboundsHex, awardedTeam);
+    }
+
+    private MatchManager.TeamInAttack DetermineThrowInAwardedTeam(string source, PlayerToken lastTouchToken)
+    {
         if (source == "inaccuracy")
         {
-            MatchManager.Instance.ChangePossession();
-            Debug.Log("Changed Possession!");
+            return MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home
+                ? MatchManager.TeamInAttack.Away
+                : MatchManager.TeamInAttack.Home;
         }
-        MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
-        Debug.Log("Set the GameState to WaitingForThrowInTaker");
+
+        if (lastTouchToken != null)
+        {
+            return lastTouchToken.isHomeTeam
+                ? MatchManager.TeamInAttack.Away
+                : MatchManager.TeamInAttack.Home;
+        }
+
+        return MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home
+            ? MatchManager.TeamInAttack.Away
+            : MatchManager.TeamInAttack.Home;
     }
     
     public IEnumerator HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)

@@ -5,6 +5,64 @@ using System.Collections;
 using TMPro;
 using UnityEngine.UI;
 
+public struct RollInputOverride
+{
+    public bool hasOverride;
+    public int roll;
+    public bool isJackpot;
+
+    public static bool TryParse(KeyPressData keyData, out RollInputOverride rollOverride)
+    {
+        rollOverride = default;
+        if (keyData == null || !keyData.ctrl || !keyData.shift)
+        {
+            return false;
+        }
+
+        if (TryGetNumericRoll(keyData.key, out int roll))
+        {
+            rollOverride = new RollInputOverride
+            {
+                hasOverride = true,
+                roll = roll,
+                isJackpot = false
+            };
+            return true;
+        }
+
+        if (keyData.key == KeyCode.KeypadMultiply || keyData.key == KeyCode.Alpha8)
+        {
+            rollOverride = new RollInputOverride
+            {
+                hasOverride = true,
+                roll = 6,
+                isJackpot = true
+            };
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetNumericRoll(KeyCode key, out int roll)
+    {
+        roll = 0;
+        if (key >= KeyCode.Alpha1 && key <= KeyCode.Alpha6)
+        {
+            roll = key - KeyCode.Alpha0;
+            return true;
+        }
+
+        if (key >= KeyCode.Keypad1 && key <= KeyCode.Keypad6)
+        {
+            roll = key - KeyCode.Keypad0;
+            return true;
+        }
+
+        return false;
+    }
+}
+
 public class KeyPressData
     {
         public KeyCode key;

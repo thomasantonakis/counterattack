@@ -81,9 +81,11 @@ public class GroundBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (keyData.isConsumed) return;
         if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)
         {
             MatchManager.Instance.TriggerStandardPass();
+            keyData.isConsumed = true;
             return;
         }
         if (isAvailable
@@ -95,14 +97,18 @@ public class GroundBallManager : MonoBehaviour
             MatchManager.Instance.TriggerStandardPass();
             isQuickThrow = true;
             CommitToThisAction();
+            keyData.isConsumed = true;
             return;
         }
         if (isActivated)
         {
-            if (isWaitingForDiceRoll && keyData.key == KeyCode.R)
+            bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+            if (isWaitingForDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 // Check if waiting for dice rolls and the R key is pressed
-                PerformGroundInterceptionDiceRoll();  // Trigger the dice roll when R is pressed
+                PerformGroundInterceptionDiceRoll(hasRollOverride ? rollOverride : null);  // Trigger the dice roll when R is pressed
+                keyData.isConsumed = true;
+                return;
             }
         }
     }
@@ -482,67 +488,100 @@ public class GroundBallManager : MonoBehaviour
 
     public void PerformGroundInterceptionDiceRoll(int? rigroll = null)
     {
-        if (currentDefenderHex != null)
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformGroundInterceptionDiceRoll(rollOverride);
+    }
+
+    public void PerformGroundInterceptionDiceRoll(RollInputOverride? rollOverride)
+    {
+        if (currentDefenderHex == null)
         {
-            // Roll the dice (1 to 6)
-            // int diceRoll = 6; // God Mode
-            // int diceRoll = 1; // Stupid Mode
-            var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-            int diceRoll = rigroll ?? returnedRoll;
-            // Retrieve the defender token
-            PlayerToken defenderToken = currentDefenderHex.occupyingToken;
-            if (defenderToken == null)
-            {
-                Debug.LogError($"No PlayerToken found on defender's hex at {currentDefenderHex.coordinates}. This should not happen.");
-                return;
-            }
-            Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
-            MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
-                defenderToken,
-                ExpectedStatsCalculator.CalculateRecoveryProbability(defenderToken),
-                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
-                "standard");
-            MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
-            // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
-            isWaitingForDiceRoll = false;
-            // if (diceRoll == 6)
-            if (diceRoll == 6 || diceRoll + defenderToken.tackling >= 10)
-            {
-                // Defender successfully intercepts the pass
-                Debug.Log($"Pass intercepted by {defenderToken.name} at {currentDefenderHex.coordinates}!");
-                MatchManager.Instance.gameData.gameLog.LogEvent(
-                    defenderToken
-                    , MatchManager.ActionType.InterceptionSuccess
-                    , recoveryType: "standard"
-                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
-                );
-                MatchManager.Instance.SetLastToken(defenderToken);
-                StartCoroutine(HandleBallInterception(currentDefenderHex));
-            }
-            else
-            {
-                Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
-                // Move to the next defender, if any
-                defendingHexes.Remove(currentDefenderHex);
-                if (defendingHexes.Count > 0)
-                {
-                    currentDefenderHex = defendingHexes[0];  // Move to the next defender
-                    Debug.Log("Starting next dice roll sequence... Press R key.");
-                    isWaitingForDiceRoll = true; // Wait for the next dice roll
-                }
-                else
-                {
-                    // No more defenders to roll, pass is successful
-                    Debug.Log("Pass successful! No more defenders to roll.");
-                    // Ensure currentTargetHex is set before movement
-                    if (currentTargetHex == null)
-                    {
-                        Debug.LogError("currentTargetHex is null despite the pass being valid.");
-                    }
-                    _ = MoveTheBall(currentTargetHex);
-                }
-            }
+            return;
         }
+
+        // Roll the dice (1 to 6)
+        // int diceRoll = 6; // God Mode
+        // int diceRoll = 1; // Stupid Mode
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        // Retrieve the defender token
+        PlayerToken defenderToken = currentDefenderHex.occupyingToken;
+        if (defenderToken == null)
+        {
+            Debug.LogError($"No PlayerToken found on defender's hex at {currentDefenderHex.coordinates}. This should not happen.");
+            return;
+        }
+        Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
+        MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+            defenderToken,
+            ExpectedStatsCalculator.CalculateRecoveryProbability(defenderToken),
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            "standard");
+        MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
+        // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
+        isWaitingForDiceRoll = false;
+        // if (diceRoll == 6)
+        if (diceRoll == 6 || diceRoll + defenderToken.tackling >= 10)
+        {
+            ResolveGroundInterceptionSuccess(defenderToken);
+            return;
+        }
+
+        Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
+        AdvanceToNextInterceptorOrCompletePass();
+    }
+
+    private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
+    }
+
+    private void ResolveGroundInterceptionSuccess(PlayerToken defenderToken)
+    {
+        Debug.Log($"Pass intercepted by {defenderToken.name} at {currentDefenderHex.coordinates}!");
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            defenderToken
+            , MatchManager.ActionType.InterceptionSuccess
+            , recoveryType: "standard"
+            , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+        );
+        MatchManager.Instance.SetLastToken(defenderToken);
+        StartCoroutine(HandleBallInterception(currentDefenderHex));
+    }
+
+    private void AdvanceToNextInterceptorOrCompletePass()
+    {
+        // Move to the next defender, if any
+        defendingHexes.Remove(currentDefenderHex);
+        if (defendingHexes.Count > 0)
+        {
+            currentDefenderHex = defendingHexes[0];  // Move to the next defender
+            Debug.Log("Starting next dice roll sequence... Press R key.");
+            isWaitingForDiceRoll = true; // Wait for the next dice roll
+            return;
+        }
+
+        // No more defenders to roll, pass is successful
+        Debug.Log("Pass successful! No more defenders to roll.");
+        // Ensure currentTargetHex is set before movement
+        if (currentTargetHex == null)
+        {
+            Debug.LogError("currentTargetHex is null despite the pass being valid.");
+            return;
+        }
+        _ = MoveTheBall(currentTargetHex);
     }
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)

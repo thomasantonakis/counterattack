@@ -111,10 +111,11 @@ public class FirstTimePassManager : MonoBehaviour
             return;
         }
 
-        if (isWaitingForDiceRoll && keyData.key == KeyCode.R)
+        bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+        if (isWaitingForDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
             keyData.isConsumed = true;
-            PerformFTPInterceptionRolls();
+            PerformFTPInterceptionRolls(hasRollOverride ? rollOverride : null);
             return;
         }
 
@@ -653,6 +654,19 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void PerformFTPInterceptionRolls(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformFTPInterceptionRolls(rollOverride);
+    }
+
+    private void PerformFTPInterceptionRolls(RollInputOverride? rollOverride)
+    {
         if (currentDefenderHex == null)
         {
             Debug.LogError("Cannot roll FTP interception because no current defender hex is set.");
@@ -671,7 +685,7 @@ public class FirstTimePassManager : MonoBehaviour
         PlayerToken defenderToken = currentCandidate.DefenderToken;
         int tackling = defenderToken.tackling;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = rigRoll ?? returnedRoll;
+        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
 
         Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
         MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
@@ -718,6 +732,16 @@ public class FirstTimePassManager : MonoBehaviour
         Debug.Log("FTP successful! No more defenders to roll.");
         currentDefenderHex = null;
         StartCoroutine(MovePassNotIntercepted(currentTargetHex));
+    }
+
+    private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
     }
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)

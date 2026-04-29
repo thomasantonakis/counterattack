@@ -41,6 +41,25 @@ public class LooseBallManager : MonoBehaviour
     public PlayerToken ballHitThisToken;
     public PlayerToken potentialInterceptor;
 
+    public struct InaccuracyTargetResult
+    {
+        public HexCell StartHex;
+        public HexCell FinalHex;
+        public int DirectionIndex;
+        public int Distance;
+
+        public bool IsValid => FinalHex != null;
+        public bool IsOutOfBounds => FinalHex != null && FinalHex.isOutOfBounds;
+
+        public InaccuracyTargetResult(HexCell startHex, HexCell finalHex, int directionIndex, int distance)
+        {
+            StartHex = startHex;
+            FinalHex = finalHex;
+            DirectionIndex = directionIndex;
+            Distance = distance;
+        }
+    }
+
     private bool IsHeaderLooseBall(LooseBallSourceType sourceType)
     {
         return sourceType == LooseBallSourceType.HeaderDeflection;
@@ -111,6 +130,17 @@ public class LooseBallManager : MonoBehaviour
         MatchManager.Instance.ApplyBallCollectionOwnership(token);
     }
 
+    private IEnumerator MoveLooseBallToHex(HexCell targetHex, LooseBallSourceType sourceType)
+    {
+        if (IsHeaderLooseBall(sourceType) && longBallManager != null)
+        {
+            yield return StartCoroutine(longBallManager.HandleLongBallMovement(targetHex, true));
+            yield break;
+        }
+
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex));
+    }
+
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
@@ -132,20 +162,24 @@ public class LooseBallManager : MonoBehaviour
     {
         if (keyData.isConsumed) return;
         if (!isActivated) return;
-        if (isWaitingForDirectionRoll && keyData.key == KeyCode.R)
+        bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+        if (isWaitingForDirectionRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-            PerformDirectionRoll();
+            PerformDirectionRoll(hasRollOverride ? rollOverride : null);
             keyData.isConsumed = true;
+            return;
         }
-        if (isWaitingForDistanceRoll && keyData.key == KeyCode.R)
+        if (isWaitingForDistanceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-            PerformDistanceRoll();
+            PerformDistanceRoll(hasRollOverride ? rollOverride : null);
             keyData.isConsumed = true;
+            return;
         }
-        if (isWaitingForInterceptionRoll && keyData.key == KeyCode.R)
+        if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-            PerformInterceptionRoll();
+            PerformInterceptionRoll(hasRollOverride ? rollOverride : null);
             keyData.isConsumed = true;
+            return;
         }
     }
 
@@ -170,7 +204,76 @@ public class LooseBallManager : MonoBehaviour
         }
     }
 
+    public InaccuracyTargetResult CalculateFinalInaccuracyTarget(HexCell startHex, int directionIndex, int distance)
+    {
+        HexCell finalHex = CalculateDirectionalTarget(startHex, directionIndex, distance);
+        return new InaccuracyTargetResult(startHex, finalHex, directionIndex, distance);
+    }
+
+    public HexCell CalculateDirectionalTarget(HexCell startHex, int directionIndex, int distance)
+    {
+        if (startHex == null)
+        {
+            Debug.LogWarning("Cannot calculate inaccuracy target from a null start hex.");
+            return null;
+        }
+
+        if (hexGrid == null)
+        {
+            Debug.LogError("LooseBallManager has no HexGrid linked.");
+            return null;
+        }
+
+        if (directionIndex < 0 || directionIndex > 5)
+        {
+            Debug.LogWarning($"Invalid inaccuracy direction index: {directionIndex}");
+            return null;
+        }
+
+        if (distance < 0)
+        {
+            Debug.LogWarning($"Invalid inaccuracy distance: {distance}");
+            return null;
+        }
+
+        Vector3Int currentPosition = startHex.coordinates;
+        for (int i = 0; i < distance; i++)
+        {
+            HexCell currentHex = hexGrid.GetHexCellAt(currentPosition);
+            if (currentHex == null)
+            {
+                Debug.LogWarning($"Inaccuracy path left the known grid at {currentPosition}.");
+                return null;
+            }
+
+            Vector2Int[] directionVectors = currentHex.GetDirectionVectors();
+            Vector2Int direction2D = directionVectors[directionIndex];
+            currentPosition = new Vector3Int(currentPosition.x + direction2D.x, 0, currentPosition.z + direction2D.y);
+        }
+
+        HexCell finalHex = hexGrid.GetHexCellAt(currentPosition);
+        if (finalHex == null)
+        {
+            Debug.LogWarning($"Final inaccuracy target is outside the known grid at {currentPosition}.");
+        }
+
+        return finalHex;
+    }
+
     public void PerformDirectionRoll(int? rigroll = null)
+    {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformDirectionRoll(rollOverride);
+    }
+
+    public void PerformDirectionRoll(RollInputOverride? rollOverride)
     {
         // directionRoll = 0; // S  : PerformDirectionRoll(1)
         // directionRoll = 1; // SW : PerformDirectionRoll(2)
@@ -179,22 +282,61 @@ public class LooseBallManager : MonoBehaviour
         // directionRoll = 4; // NE : PerformDirectionRoll(5)
         // directionRoll = 5; // SE : PerformDirectionRoll(6)
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        directionRoll = rigroll -1 ?? returnedRoll - 1;
+        int roll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        directionRoll = roll - 1;
         isWaitingForDirectionRoll = false;
     }
+
     public void PerformDistanceRoll(int? rigroll = null)
     {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformDistanceRoll(rollOverride);
+    }
+
+    public void PerformDistanceRoll(RollInputOverride? rollOverride)
+    {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        distanceRoll = rigroll ?? returnedRoll;
+        distanceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         isWaitingForDistanceRoll = false;
     }
     
     public void PerformInterceptionRoll(int? rigroll = null)
     {
+        RollInputOverride? rollOverride = rigroll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigroll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformInterceptionRoll(rollOverride);
+    }
+
+    public void PerformInterceptionRoll(RollInputOverride? rollOverride)
+    {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        interceptionRoll = rigroll ?? returnedRoll;
+        interceptionRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         isWaitingForInterceptionRoll = false;
     }
+
+    private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
+    }
+
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType)
     {
         isActivated = true;
@@ -205,7 +347,7 @@ public class LooseBallManager : MonoBehaviour
         // Step 1: Move the ball to the starting token's hex
         HexCell defenderHex = startingToken.GetCurrentHex();
         // TODO: Do not offer GK Movement for this
-        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(startingToken.GetCurrentHex()));
+        yield return StartCoroutine(MoveLooseBallToHex(startingToken.GetCurrentHex(), sourceType));
         // ball.SetCurrentHex(defenderHex);
         List<int> spillDirections = new List<int>();
         if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
@@ -306,7 +448,14 @@ public class LooseBallManager : MonoBehaviour
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
 
         // Step 3: Calculate the final target hex
-        HexCell finalHex = outOfBoundsManager.CalculateInaccurateTarget(defenderHex, directionRoll, distanceRoll);
+        HexCell finalHex = CalculateFinalInaccuracyTarget(defenderHex, directionRoll, distanceRoll).FinalHex;
+
+        if (finalHex == null)
+        {
+            Debug.LogWarning("Loose Ball target hex calculation failed.");
+            EndLooseBallPhase();
+            yield break;
+        }
 
         Debug.Log($"Loose Ball target hex: {finalHex.coordinates}");
 
@@ -314,7 +463,13 @@ public class LooseBallManager : MonoBehaviour
         // HexCell currentHex = defenderHex;
         for (int i = 0; i < distanceRoll; i++)
         {
-            HexCell nextHex = outOfBoundsManager.CalculateInaccurateTarget(defenderHex, directionRoll, i+1);
+            HexCell nextHex = CalculateDirectionalTarget(defenderHex, directionRoll, i+1);
+            if (nextHex == null)
+            {
+                Debug.LogWarning("Loose Ball path calculation failed before reaching the rolled distance.");
+                EndLooseBallPhase();
+                yield break;
+            }
             // Debug.Log($"nextHex: {nextHex.coordinates}");
             path.Add(nextHex);
         }
@@ -340,7 +495,12 @@ public class LooseBallManager : MonoBehaviour
                     if (ShouldExtendPastJumpedToken(sourceType) && i == path.Count - 1)
                     {
                         Debug.Log("Moving a Hex further, as ball (after a header LB) landed on a jumped token.");
-                        HexCell additionalHex = outOfBoundsManager.CalculateInaccurateTarget(hex, directionRoll, 1);
+                        HexCell additionalHex = CalculateDirectionalTarget(hex, directionRoll, 1);
+                        if (additionalHex == null)
+                        {
+                            Debug.LogWarning("Could not extend loose ball path past jumped token.");
+                            continue;
+                        }
                         path.Add(additionalHex);
                     }
                     continue;
@@ -406,7 +566,7 @@ public class LooseBallManager : MonoBehaviour
                         Debug.Log($"{potentialInterceptor.name} successfully intercepted the ball!");
                         // Move the ball to the interceptor's hex
                         // Change possession
-                        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(neighbor));
+                        yield return StartCoroutine(MoveLooseBallToHex(neighbor, sourceType));
                         // Change possession to the defending team
                         MatchManager.Instance.ChangePossession();  
                         MatchManager.Instance.UpdatePossessionAfterPass(neighbor);  // Update possession
@@ -426,7 +586,7 @@ public class LooseBallManager : MonoBehaviour
         Debug.Log($"No more interception chances, Moving Ball to the last Hex of the Path");
         if (closestToken != null) {path.Add(closestToken.GetCurrentHex());}
         // Step 5.3: If no interception succeeded move the ball to the last Hex of the Path
-        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(path.Last()));
+        yield return StartCoroutine(MoveLooseBallToHex(path.Last(), sourceType));
         // Check what is going on with where the ball went.
         // Ball ended up on a Token
         if (closestToken != null)
@@ -544,7 +704,7 @@ public class LooseBallManager : MonoBehaviour
                 {
                     movementPhaseManager.EndMovementPhase(false);
                 }
-                outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground");
+                outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground", startingToken);
             }
         }
         EndLooseBallPhase();

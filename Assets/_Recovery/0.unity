@@ -4941,6 +4941,7 @@ MonoBehaviour:
   isWaitingForDistanceRoll: 0
   isWaitingForInterceptionRoll: 0
   isWaitingForDefLBMove: 0
+  isAvailableTargetsReady: 0
   currentTargetHex: {fileID: 0}
 --- !u!1 &757768960
 GameObject:
@@ -12639,6 +12640,7 @@ MonoBehaviour:
   isWaitingForAccuracyRoll: 0
   isWaitingForDirectionRoll: 0
   isWaitingForDistanceRoll: 0
+  isAvailableTargetsReady: 0
   lockedAttacker: {fileID: 0}
   currentTargetHex: {fileID: 0}
   intendedTargetHex: {fileID: 0}

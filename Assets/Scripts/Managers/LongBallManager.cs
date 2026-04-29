@@ -31,23 +31,32 @@ public class LongBallManager : MonoBehaviour
     [SerializeField]
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
     public bool isWaitingForDefLBMove = false;
+    public bool isAvailableTargetsReady = false;
     [Header("Important things")]
     public HexCell currentTargetHex;
     private int directionIndex;
     private HexCell finalHex;
     // private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
+    private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
+    private readonly List<HexCell> availableLongBallTargetHexes = new();
+    private HexCell hoveredLongBallTargetHex;
+    private Coroutine availableTargetPrecomputeRoutine;
+    private int availableTargetPrecomputeVersion = 0;
+    private bool pendingDifficultyOneTargetHighlightRefresh = false;
 
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
+        GameInputManager.OnHover += OnHoverReceived;
     }
 
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+        GameInputManager.OnHover -= OnHoverReceived;
     }
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
@@ -70,6 +79,24 @@ public class LongBallManager : MonoBehaviour
         }
     }
 
+    private void OnHoverReceived(PlayerToken token, HexCell hex)
+    {
+        if (!ShouldShowDifficultyOneTargetHighlights() || !isAvailableTargetsReady)
+        {
+            hoveredLongBallTargetHex = null;
+            return;
+        }
+
+        HexCell nextHoveredHex = availableLongBallTargetHexes.Contains(hex) ? hex : null;
+        if (hoveredLongBallTargetHex == nextHoveredHex)
+        {
+            return;
+        }
+
+        hoveredLongBallTargetHex = nextHoveredHex;
+        RefreshDifficultyOneLongBallTargetHighlights();
+    }
+
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
@@ -82,25 +109,30 @@ public class LongBallManager : MonoBehaviour
         }
         if (isActivated)
         {
-            if (isWaitingForAccuracyRoll && keyData.key == KeyCode.R)
+            bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+            if (isWaitingForAccuracyRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
-                PerformAccuracyRoll(); // Handle accuracy roll
+                PerformAccuracyRoll(hasRollOverride ? rollOverride : null); // Handle accuracy roll
                 keyData.isConsumed = true;
+                return;
             }
-            else if (isWaitingForDirectionRoll && keyData.key == KeyCode.R)
+            else if (isWaitingForDirectionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
-                PerformDirectionRoll(); // Handle direction roll
+                PerformDirectionRoll(hasRollOverride ? rollOverride : null); // Handle direction roll
                 keyData.isConsumed = true;
+                return;
             }
-            else if (isWaitingForDistanceRoll && keyData.key == KeyCode.R)
+            else if (isWaitingForDistanceRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
-                StartCoroutine(PerformDistanceRoll()); // Handle distance roll
+                StartCoroutine(PerformDistanceRoll(hasRollOverride ? rollOverride : null)); // Handle distance roll
                 keyData.isConsumed = true;
+                return;
             }
-            else if (isWaitingForInterceptionRoll && keyData.key == KeyCode.R)
+            else if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
-                StartCoroutine(PerformInterceptionCheck(finalHex));
+                StartCoroutine(PerformInterceptionCheck(finalHex, hasRollOverride ? rollOverride : null));
                 keyData.isConsumed = true;
+                return;
             }
             else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
             {
@@ -117,8 +149,118 @@ public class LongBallManager : MonoBehaviour
         isActivated = true;
         isAvailable = false;
         isAwaitingTargetSelection = true;
-        hexGrid.ClearHighlightedHexes(); 
+        if (MatchManager.Instance.difficulty_level == 1)
+        {
+            HighlightAllValidLongPassTargets();
+        }
+        else
+        {
+            hexGrid.ClearHighlightedHexes();
+        }
         Debug.Log("Long Ball activated. Please select a target hex.");
+    }
+
+    public void BeginAvailableTargetPrecompute()
+    {
+        if (!CanPrecomputeAvailableTargets())
+        {
+            ResetAvailableTargetPrecompute();
+            return;
+        }
+
+        if (isAvailableTargetsReady || availableTargetPrecomputeRoutine != null)
+        {
+            return;
+        }
+
+        int version = ++availableTargetPrecomputeVersion;
+        availableTargetPrecomputeRoutine = StartCoroutine(PrecomputeAvailableLongBallTargets(version));
+    }
+
+    public void ResetAvailableTargetPrecompute()
+    {
+        availableTargetPrecomputeVersion++;
+        if (availableTargetPrecomputeRoutine != null)
+        {
+            StopCoroutine(availableTargetPrecomputeRoutine);
+            availableTargetPrecomputeRoutine = null;
+        }
+
+        isAvailableTargetsReady = false;
+        availableLongBallTargetHexes.Clear();
+        hoveredLongBallTargetHex = null;
+        pendingDifficultyOneTargetHighlightRefresh = false;
+    }
+
+    private IEnumerator PrecomputeAvailableLongBallTargets(int version)
+    {
+        isAvailableTargetsReady = false;
+        availableLongBallTargetHexes.Clear();
+        hoveredLongBallTargetHex = null;
+
+        int processed = 0;
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (version != availableTargetPrecomputeVersion)
+            {
+                availableTargetPrecomputeRoutine = null;
+                yield break;
+            }
+
+            var (isValid, _) = hex != null && !hex.isOutOfBounds
+                ? ValidateLongBallTargetForPreview(hex)
+                : (false, false);
+            if (isValid)
+            {
+                availableLongBallTargetHexes.Add(hex);
+            }
+
+            processed++;
+            if (processed % TARGET_PRECOMPUTE_BATCH_SIZE == 0)
+            {
+                yield return null;
+            }
+        }
+
+        if (version == availableTargetPrecomputeVersion)
+        {
+            isAvailableTargetsReady = true;
+            if (pendingDifficultyOneTargetHighlightRefresh || ShouldShowDifficultyOneTargetHighlights())
+            {
+                pendingDifficultyOneTargetHighlightRefresh = false;
+                RefreshDifficultyOneLongBallTargetHighlights();
+                Debug.Log($"Successfully highlighted {availableLongBallTargetHexes.Count} precomputed valid hexes for Long Pass.");
+            }
+        }
+
+        availableTargetPrecomputeRoutine = null;
+    }
+
+    private bool EnsureAvailableTargetPrecomputeReady()
+    {
+        if (isAvailableTargetsReady)
+        {
+            return true;
+        }
+
+        pendingDifficultyOneTargetHighlightRefresh = ShouldShowDifficultyOneTargetHighlights();
+
+        if (availableTargetPrecomputeRoutine == null && CanPrecomputeAvailableTargets())
+        {
+            int version = ++availableTargetPrecomputeVersion;
+            availableTargetPrecomputeRoutine = StartCoroutine(PrecomputeAvailableLongBallTargets(version));
+        }
+
+        return false;
+    }
+
+    private bool CanPrecomputeAvailableTargets()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level == 1
+            && (isAvailable || ShouldShowDifficultyOneTargetHighlights())
+            && ball != null
+            && hexGrid != null;
     }
 
     public void CommitToThisAction()
@@ -154,7 +296,15 @@ public class LongBallManager : MonoBehaviour
         {
             currentTargetHex = null;
             isDangerous = false;
-            hexGrid.ClearHighlightedHexes();
+            hoveredLongBallTargetHex = null;
+            if (ShouldShowDifficultyOneTargetHighlights())
+            {
+                HighlightAllValidLongPassTargets();
+            }
+            else
+            {
+                hexGrid.ClearHighlightedHexes();
+            }
             return; // Reject invalid targets
         }
         isDangerous = requiresTenPlusAccuracy;
@@ -184,6 +334,7 @@ public class LongBallManager : MonoBehaviour
     private void ConfirmLongBallTargetSelection(HexCell clickedHex)
     {
         currentTargetHex = clickedHex;
+        ResetAvailableTargetPrecompute();
         hexGrid.ClearHighlightedHexes();
         HighlightCommittedTarget();
         isAwaitingTargetSelection = false;
@@ -212,15 +363,25 @@ public class LongBallManager : MonoBehaviour
 
     public (bool isValid, bool isDangerous) ValidateLongBallTarget(HexCell targetHex)
     {
+        return TryValidateLongBallTarget(targetHex, logWarnings: true);
+    }
+
+    private (bool isValid, bool isDangerous) ValidateLongBallTargetForPreview(HexCell targetHex)
+    {
+        return TryValidateLongBallTarget(targetHex, logWarnings: false);
+    }
+
+    private (bool isValid, bool isDangerous) TryValidateLongBallTarget(HexCell targetHex, bool logWarnings)
+    {
         HexCell ballHex = ball.GetCurrentHex();
         if (ballHex == null || targetHex == null)
         {
-            Debug.LogError("Ball or target hex is null!");
+            if (logWarnings) Debug.LogError("Ball or target hex is null!");
             return (false, false);
         }
         if (targetHex.isOutOfBounds)
         {
-            Debug.Log("You cannot target a Long Ball out of bounds");
+            if (logWarnings) Debug.Log("You cannot target a Long Ball out of bounds");
             return (false, false);
         }
 
@@ -230,7 +391,7 @@ public class LongBallManager : MonoBehaviour
         {
             if (hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
             {
-                Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
+                if (logWarnings) Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
                 return (false, false);
             }
         }
@@ -242,12 +403,12 @@ public class LongBallManager : MonoBehaviour
 
         if (defenderHexes.Contains(targetHex) || defenderNeighbors.Contains(targetHex))
         {
-            Debug.Log("You cannot target a Long Ball on a Defender or in their ZOI");
+            if (logWarnings) Debug.Log("You cannot target a Long Ball on a Defender or in their ZOI");
             return (false, false);
         }
         if (attackerHexes.Contains(targetHex) || invalidHexesinRangeOfAttackers.Contains(targetHex))
         {
-            Debug.Log("You cannot target a Long Ball on an Attacker or 5 Hexes away from any Attacker");
+            if (logWarnings) Debug.Log("You cannot target a Long Ball on an Attacker or 5 Hexes away from any Attacker");
             return (false, false);
         }
         if (targetHex.isInFinalThird * ballHex.isInFinalThird == -1)
@@ -259,11 +420,24 @@ public class LongBallManager : MonoBehaviour
 
     private void PerformAccuracyRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformAccuracyRoll(rollOverride);
+    }
+
+    private void PerformAccuracyRoll(RollInputOverride? rollOverride)
+    {
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Roll the dice (1 to 6)
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = rigRoll ?? returnedRoll;
+        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         // int diceRoll = 1; // Melina Mode
         Debug.Log($"Accuracy dice roll: {diceRoll}");
         isWaitingForAccuracyRoll = false;
@@ -302,6 +476,18 @@ public class LongBallManager : MonoBehaviour
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
         int directionRoll = rigRoll ?? Mathf.Clamp(returnedRoll - 1, 0, 5);
+        ApplyDirectionRoll(directionRoll);
+    }
+
+    private void PerformDirectionRoll(RollInputOverride? rollOverride)
+    {
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        int directionRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll) - 1;
+        ApplyDirectionRoll(Mathf.Clamp(directionRoll, 0, 5));
+    }
+
+    private void ApplyDirectionRoll(int directionRoll)
+    {
         directionIndex = directionRoll;  // Set the direction index for future use
         string rolledDirection = looseBallManager.TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled {directionIndex}: Moving in {rolledDirection} direction");
@@ -312,18 +498,36 @@ public class LongBallManager : MonoBehaviour
 
     private IEnumerator PerformDistanceRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(PerformDistanceRoll(rollOverride));
+    }
+
+    private IEnumerator PerformDistanceRoll(RollInputOverride? rollOverride)
+    {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int distanceRoll = rigRoll ?? returnedRoll;
+        int distanceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         // int distanceRoll = 6; // Melina Mode
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final inaccurate target hex
-        HexCell inaccurateTargetHex = outOfBoundsManager.CalculateInaccurateTarget(currentTargetHex, directionIndex, distanceRoll);
+        LooseBallManager.InaccuracyTargetResult result = looseBallManager.CalculateFinalInaccuracyTarget(currentTargetHex, directionIndex, distanceRoll);
+        HexCell inaccurateTargetHex = result.FinalHex;
         
         // Check if the final hex is valid (not out of bounds or blocked)
         if (inaccurateTargetHex != null)
         {
+            if (result.IsOutOfBounds)
+            {
+                Debug.Log("LooseBallManager resolved this inaccurate Long Ball out of bounds.");
+            }
             // Move the ball to the inaccurate final hex
             Debug.Log($"Inaccurate target hex calculated: {inaccurateTargetHex.coordinates}");
             finalHex = inaccurateTargetHex;
@@ -334,6 +538,16 @@ public class LongBallManager : MonoBehaviour
            Debug.LogWarning("Final hex calculation failed.");
         }
         ResetLongPassRolls();  // Reset flags to finish long pass
+    }
+
+    private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
     }
 
     private void ResetLongPassRolls()
@@ -379,7 +593,8 @@ public class LongBallManager : MonoBehaviour
         if (targetHex.isOutOfBounds)
         {
             Debug.Log("Ball landed out of bounds!");
-            outOfBoundsManager.HandleOutOfBounds(currentTargetHex, directionIndex, "inaccuracy");
+            // Start from the intended inbounds target so OOB can find the last inbounds hex along the inaccurate direction.
+            outOfBoundsManager.HandleOutOfBounds(currentTargetHex, directionIndex, "inaccuracy", MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
             CleanUpLongBall();
         }
         else
@@ -555,6 +770,19 @@ public class LongBallManager : MonoBehaviour
 
     private IEnumerator PerformInterceptionCheck(HexCell landingHex, int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(PerformInterceptionCheck(landingHex, rollOverride));
+    }
+
+    private IEnumerator PerformInterceptionCheck(HexCell landingHex, RollInputOverride? rollOverride)
+    {
         if (interceptingDefenders == null || interceptingDefenders.Count == 0)
         {
             Debug.Log("No defenders available for interception.");
@@ -572,7 +800,7 @@ public class LongBallManager : MonoBehaviour
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             // Roll the dice (1 to 6)
             var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-            int diceRoll = rigRoll ?? returnedRoll;
+            int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
             // int diceRoll = 6; // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;
@@ -673,39 +901,91 @@ public class LongBallManager : MonoBehaviour
 
     private void HighlightAllValidLongPassTargets()
     {
-        // Clear the previous highlights
-        hexGrid.ClearHighlightedHexes();
-
-        // Loop through all hexes on the grid
-        foreach (HexCell hex in hexGrid.cells)
+        int difficulty = MatchManager.Instance.difficulty_level;
+        if (difficulty == 1)
         {
-            if (hex == null  || hex.isOutOfBounds) continue;  // Skip null hexes
-
-            // Check if the hex is a valid target
-            var (isValid, isDangerous) = ValidateLongBallTarget(hex);
-
-            if (isValid)
+            if (!EnsureAvailableTargetPrecomputeReady())
             {
-                if (hex == currentTargetHex)
+                hexGrid.ClearHighlightedHexes();
+                Debug.Log("Long Pass target map is still calculating. Highlights will draw when ready.");
+                return;
+            }
+        }
+        else
+        {
+            hexGrid.ClearHighlightedHexes();
+
+            // Loop through all hexes on the grid
+            foreach (HexCell hex in hexGrid.cells)
+            {
+                if (hex == null  || hex.isOutOfBounds) continue;  // Skip null hexes
+
+                // Check if the hex is a valid target
+                var (isValid, isDangerous) = ValidateLongBallTarget(hex);
+
+                if (isValid)
                 {
-                    hex.HighlightHex("passTargetCommitted");
+                    if (hex == currentTargetHex)
+                    {
+                        hex.HighlightHex("passTargetCommitted");
+                    }
+                    else if (isDangerous)
+                    {
+                        hex.HighlightHex("longPassDifficult");  // Highlight the Difficult hexes
+                    }
+                    else
+                    {
+                        hex.HighlightHex("longPass"); // Highlight the valid hexes
+                    }
+
+                    hexGrid.highlightedHexes.Add(hex);  // Track highlighted hexes for later clearing
                 }
-                else if (isDangerous)
-                {
-                    hex.HighlightHex("longPassDifficult");  // Highlight the Difficult hexes
-                }
-                else
-                {
-                    hex.HighlightHex("longPass"); // Highlight the valid hexes
-                }
-               hexGrid.highlightedHexes.Add(hex);  // Track highlighted hexes for later clearing
             }
         }
 
-        Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for Long Pass.");
+        if (difficulty == 1)
+        {
+            RefreshDifficultyOneLongBallTargetHighlights();
+            Debug.Log($"Successfully highlighted {availableLongBallTargetHexes.Count} valid hexes for Long Pass.");
+        }
+        else
+        {
+            Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for Long Pass.");
+        }
     }
 
-    public void CleanUpLongBall()
+    private bool ShouldShowDifficultyOneTargetHighlights()
+    {
+        return isActivated
+            && isAwaitingTargetSelection
+            && MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level == 1;
+    }
+
+    private void RefreshDifficultyOneLongBallTargetHighlights()
+    {
+        hexGrid.ClearHighlightedHexes();
+
+        foreach (HexCell hex in availableLongBallTargetHexes)
+        {
+            if (hex == null)
+            {
+                continue;
+            }
+
+            string highlightReason = hex == currentTargetHex || hex == hoveredLongBallTargetHex
+                ? "passTargetCommitted"
+                : "PaceAvailable";
+            hex.HighlightHex(highlightReason);
+
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                hexGrid.highlightedHexes.Add(hex);
+            }
+        }
+    }
+
+    public void CleanUpLongBall(bool preserveTargetPrecompute = false)
     {
         isActivated = false;
         isAwaitingTargetSelection = false;
@@ -716,6 +996,12 @@ public class LongBallManager : MonoBehaviour
         isWaitingForInterceptionRoll = false;
         isWaitingForDefLBMove = false;
         currentTargetHex = null;
+        hoveredLongBallTargetHex = null;
+        pendingDifficultyOneTargetHighlightRefresh = false;
+        if (!preserveTargetPrecompute)
+        {
+            ResetAvailableTargetPrecompute();
+        }
     }
 
     public string GetDebugStatus()
@@ -748,7 +1034,7 @@ public class LongBallManager : MonoBehaviour
         if (isAvailable) sb.Append("Press [L] to Play a Long Ball, ");
         if (isActivated) sb.Append("Long: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex 6 or more Hexes away from the closest Attacker, ");
-        if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
+        if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the orange Hex again to confirm, ");
         if (isWaitingForAccuracyRoll && lastToken != null) {sb.Append($"Press [R] to roll the accuracy check with {lastToken.name}, a roll of {(isDangerous ? 10 : 9) - lastToken.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
         if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}

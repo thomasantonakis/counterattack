@@ -1061,9 +1061,11 @@ public class MatchManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (keyData.isConsumed) return;
         if (currentState == GameState.KickOffSetup && keyData.key == KeyCode.Space)
         {
             StartMatch();
+            keyData.isConsumed = true;
         }
     }
 
@@ -1076,6 +1078,7 @@ public class MatchManager : MonoBehaviour
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
+        RefreshAerialTargetPrecomputations();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.");
     }
@@ -1233,12 +1236,13 @@ public class MatchManager : MonoBehaviour
 
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass()
-    {  
+    {
+        bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
-        highPassManager.CleanUpHighPass();
-        longBallManager.CleanUpLongBall();
+        highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
+        longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
         ApplyPendingGroundBallDistance();
         groundBallManager.ActivateGroundBall();
@@ -1262,35 +1266,43 @@ public class MatchManager : MonoBehaviour
 
     public void TriggerHighPass()
     {
+        bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
-        highPassManager.CleanUpHighPass();
-        longBallManager.CleanUpLongBall();
+        highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
+        longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
         highPassManager.ActivateHighPass();
     }
     
     public void TriggerLongPass()
     {
+        bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
-        highPassManager.CleanUpHighPass();
-        longBallManager.CleanUpLongBall();
+        highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
+        longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
         longBallManager.ActivateLongBall();
     }
 
     public void TriggerFTP()
     {
+        bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
-        highPassManager.CleanUpHighPass();
-        longBallManager.CleanUpLongBall();
+        highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
+        longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
         firstTimePassManager.ActivateFTP();
+    }
+
+    private bool ShouldPreserveAerialTargetPrecomputeDuringPreview()
+    {
+        return difficulty_level == 1;
     }
 
     public void CommitToAction()
@@ -1303,6 +1315,7 @@ public class MatchManager : MonoBehaviour
         shotManager.isAvailable = false;
         isFTPAvailable = false;
         ResetPendingGroundBallOffer();
+        RefreshAerialTargetPrecomputations();
     }
 
     public void BroadcastSafeEndofMovementPhase()
@@ -1377,7 +1390,16 @@ public class MatchManager : MonoBehaviour
 
     private void RefreshAvailableActions()
     {
-        if (currentState == GameState.EndOfStandardPass)
+        if (currentState == GameState.KickoffBlown)
+        {
+            movementPhaseManager.isAvailable = false;
+            groundBallManager.isAvailable = true;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = true;
+            longBallManager.isAvailable = true;
+            shotManager.isAvailable = false;
+        }
+        else if (currentState == GameState.EndOfStandardPass)
         {
             movementPhaseManager.isAvailable = true;
             groundBallManager.isAvailable = false;
@@ -1507,6 +1529,47 @@ public class MatchManager : MonoBehaviour
         }
 
         ApplyPendingGroundBallDistance();
+        RefreshAerialTargetPrecomputations();
+    }
+
+    private void RefreshAerialTargetPrecomputations()
+    {
+        RefreshHighPassTargetPrecomputation();
+        RefreshLongBallTargetPrecomputation();
+    }
+
+    private void RefreshHighPassTargetPrecomputation()
+    {
+        if (highPassManager == null)
+        {
+            return;
+        }
+
+        if (highPassManager.isAvailable && difficulty_level == 1)
+        {
+            highPassManager.BeginAvailableTargetPrecompute();
+        }
+        else
+        {
+            highPassManager.ResetAvailableTargetPrecompute();
+        }
+    }
+
+    private void RefreshLongBallTargetPrecomputation()
+    {
+        if (longBallManager == null)
+        {
+            return;
+        }
+
+        if (longBallManager.isAvailable && difficulty_level == 1)
+        {
+            longBallManager.BeginAvailableTargetPrecompute();
+        }
+        else
+        {
+            longBallManager.ResetAvailableTargetPrecompute();
+        }
     }
 
     private bool ShouldShotBeAvailable()
@@ -1552,6 +1615,7 @@ public class MatchManager : MonoBehaviour
         longBallManager.isAvailable = true;
         if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
         else shotManager.isAvailable = false;
+        RefreshAerialTargetPrecomputations();
     }
     
     public void EnableCornerKickOptions()
@@ -1563,6 +1627,7 @@ public class MatchManager : MonoBehaviour
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = false;
         shotManager.isAvailable = false;
+        RefreshAerialTargetPrecomputations();
     }
     
     public void UpdatePlayerTokensAfterPossessionChange()

@@ -30,6 +30,11 @@ public class KickoffManager : MonoBehaviour
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (!isActivated) return;
+        if (MatchManager.Instance.currentState != MatchManager.GameState.KickOffSetup)
+        {
+            DeactivateSetup();
+            return;
+        }
         if (token != null && token != selectedToken)
         {
             SelectToken(token);
@@ -42,10 +47,17 @@ public class KickoffManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (keyData.isConsumed) return;
         if (!isActivated) return;
+        if (MatchManager.Instance.currentState != MatchManager.GameState.KickOffSetup)
+        {
+            DeactivateSetup();
+            return;
+        }
         if (keyData.key == KeyCode.Space)
         {
             ConfirmSetup();
+            keyData.isConsumed = true;
         }
     }
 
@@ -123,7 +135,15 @@ public class KickoffManager : MonoBehaviour
         movementPhaseManager.ResetMovementPhase();
         headerManager.ResetHeader();
         MatchManager.Instance.SetLastToken(ball.GetCurrentHex().GetOccupyingToken());
-        MatchManager.Instance.TriggerStandardPass();
+        DeactivateSetup();
+        MatchManager.Instance.StartMatch();
+    }
+
+    private void DeactivateSetup()
+    {
+        isActivated = false;
+        selectedToken = null;
+        spacePressCount = 0;
     }
 
 }

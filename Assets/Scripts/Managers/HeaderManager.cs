@@ -66,6 +66,8 @@ public class HeaderManager : MonoBehaviour
     public List<HexCell> interceptingDefenders = new List<HexCell>();
     public PlayerToken interceptingDefender;
     public int interceptionDiceRoll;
+    [Header("Tuning")]
+    public bool allowUnchallengedDefenseControl = true;
     private const int HEADER_SELECTION_RANGE = 2;
 
 
@@ -126,7 +128,7 @@ public class HeaderManager : MonoBehaviour
                 }
                 else if (attackerWillJump.Contains(token))
                 {
-                  Debug.LogWarning($"{token.name} has already declared to Jump for header. Rejecting input");
+                  Debug.LogWarning($"{token.name} has already declared to Jump for header. De-nominating token");
                   attackerWillJump.Remove(token);
                 }
                 else
@@ -175,10 +177,11 @@ public class HeaderManager : MonoBehaviour
         if (!isActivated) return;
         else
         {
-            if (isWaitingForInterceptionRoll && keyData.key == KeyCode.R)
+            bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+            if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 keyData.isConsumed = true;
-                PerformInterceptionRoll();
+                PerformInterceptionRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null);
             }
             else if (isWaitingForDefenderSelection)
             {
@@ -246,18 +249,18 @@ public class HeaderManager : MonoBehaviour
             // }
             else if (isWaitingForHeaderRoll)
             {
-                if (keyData.key == KeyCode.R)
+                if (keyData.key == KeyCode.R || hasRollOverride)
                 {
                     keyData.isConsumed = true;
-                    PerformHeaderRoll();
+                    PerformHeaderRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null);
                 }
             }
             else if (isWaitingForControlRoll)
             {
-                if (keyData.key == KeyCode.R)
+                if (keyData.key == KeyCode.R || hasRollOverride)
                 {
                     keyData.isConsumed = true;
-                    _ = PerformControlRoll(); // No need to await this here
+                    _ = PerformControlRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null); // No need to await this here
                 }
             }
             else if (isWaitingForHeaderAtGoal)
@@ -281,8 +284,12 @@ public class HeaderManager : MonoBehaviour
         hasEligibleDefenders = false;
         if (highPassManager.gkRushedOut) 
         {
-            defEligibleToHead.Add(hexGrid.GetDefendingGK());
-            // highPassManager.gkRushedOut = false;
+            PlayerToken gk = hexGrid.GetDefendingGK();
+            if (gk != null && !defEligibleToHead.Contains(gk))
+            {
+                defEligibleToHead.Add(gk);
+                hasEligibleDefenders = true;
+            }
         }
         List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, landingHex, HEADER_SELECTION_RANGE);
 
@@ -333,7 +340,14 @@ public class HeaderManager : MonoBehaviour
                 StartCoroutine(ResolveHeaderChallenge()); // TODO: Save and Hold without Resolve Header?
                 yield break;
             }
-            isWaitingForControlOrHeaderDecisionDef = true;
+            if (allowUnchallengedDefenseControl)
+            {
+                isWaitingForControlOrHeaderDecisionDef = true;
+            }
+            else
+            {
+                DefenseFreeHeader();
+            }
         }
         else if (!hasEligibleDefenders)
         {
@@ -488,23 +502,11 @@ public class HeaderManager : MonoBehaviour
     // Method to start the attacker's header selection
     public async Task StartAttackHeaderSelection()
     {
-        // This case is called after defense's forfeit of aerial challenge
-        // Since More than one attackers have declared that they want to jump
-        // They will all jump and one will be selected for them 
-        // to move forward and resolve the Free header
+        // This case can be reached after defense declines an aerial challenge.
+        // Clear previous contested nominations so the unchallenged choice starts fresh.
         if (isWaitingForControlOrHeaderDecision && attackerWillJump.Count > 0)
         {
-            isWaitingForControlOrHeaderDecision = false;
-            PlayerToken thomas = attackerWillJump
-                  .OrderBy(token => HexGridUtils.GetHexStepDistance(ball.GetCurrentHex(), token.GetCurrentHex()))
-                  // Closest token to the ball first
-                  .ThenByDescending(token => token.heading)
-                  // Break ties with the Heading
-                  .First(); // random?
-              challengeWinner = thomas;
-              Debug.Log($"Closest Attacker or Best heading {challengeWinner.name} auto-selected for the header.");
-              StartCoroutine(ResolveHeaderChallenge());
-              return;
+            attackerWillJump.Clear();
         }
         // This case is called when there are no eligible defenders
         // and Attackers have decided to Head
@@ -521,8 +523,9 @@ public class HeaderManager : MonoBehaviour
             }
             else
             {
-                Debug.Log($"More than one attackers are eligible to take the free Header, Please select 1");
-                iswaitingForChallengeWinnerSelection = true;
+                isWaitingForControlOrHeaderDecision = false;
+                Debug.Log($"More than one attackers are eligible to take the free Header. Please select 1-2 attackers and press Enter to confirm.");
+                isWaitingForAttackerSelection = true;
                 return;
             }
         }
@@ -707,6 +710,71 @@ public class HeaderManager : MonoBehaviour
         } 
     }
 
+    private string GetTokenSortName(PlayerToken token)
+    {
+        if (token == null) return "";
+        return string.IsNullOrWhiteSpace(token.playerName) ? token.name : token.playerName;
+    }
+
+    private int GetHeaderAttribute(PlayerToken token)
+    {
+        if (token == null) return 0;
+        return token.IsGoalKeeper ? token.aerial : token.heading;
+    }
+
+    private List<PlayerToken> GetOrderedHeaderTokens(IEnumerable<PlayerToken> tokens, bool keepGoalkeeperLast)
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+        return tokens
+            .Where(token => token != null)
+            .Distinct()
+            .OrderBy(token => keepGoalkeeperLast && token.IsGoalKeeper ? 1 : 0)
+            .ThenBy(token => HexGridUtils.GetHexStepDistance(ballHex, token.GetCurrentHex()))
+            .ThenByDescending(GetHeaderAttribute)
+            .ThenBy(GetTokenSortName)
+            .ToList();
+    }
+
+    private PlayerToken GetBestHeaderCandidate(List<PlayerToken> orderedTokens)
+    {
+        if (orderedTokens == null || orderedTokens.Count == 0) return null;
+
+        Dictionary<PlayerToken, int> rollOrder = orderedTokens
+            .Select((token, index) => new { token, index })
+            .ToDictionary(item => item.token, item => item.index);
+
+        return orderedTokens
+            .Where(token => tokenScores.ContainsKey(token))
+            .OrderByDescending(token => tokenScores[token].totalScore)
+            .ThenBy(token => rollOrder[token])
+            .FirstOrDefault();
+    }
+
+    private PlayerToken GetFreeHeaderWinner(List<PlayerToken> candidates)
+    {
+        return GetOrderedHeaderTokens(candidates, true).FirstOrDefault();
+    }
+
+    private void OfferUnchallengedAttackChoiceAfterDefenseForfeit()
+    {
+        Debug.Log("Defense declined to challenge the header. Attack is now unchallenged and may choose Header or Control again.");
+        isWaitingForDefenderSelection = false;
+        isWaitingForControlOrHeaderDecision = true;
+        isWaitingForControlOrHeaderDecisionDef = false;
+        isWaitingForAttackerSelection = false;
+        isWaitingForHeaderAtGoal = false;
+        headerAtGoalDeclared = false;
+        headerAtGoalTarget = null;
+        attackerWillJump.Clear();
+        defenderWillJump.Clear();
+        hasEligibleDefenders = false;
+        defEligibleToHead.Clear();
+        attackFreeHeader = false;
+        attackControlBall = false;
+        highPassManager.gkRushedOut = false;
+        hexGrid.ClearHighlightedHexes();
+    }
+
     // Coroutine for handling defender header selection
     public void HandleDefenderHeaderSelection(PlayerToken token)
     {
@@ -742,18 +810,23 @@ public class HeaderManager : MonoBehaviour
     {
         Debug.Log("[Enter] was pressed. Defender header selection confirmed.");
         isWaitingForDefenderSelection = false;
+        if (defenderWillJump.Count == 0)
+        {
+            OfferUnchallengedAttackChoiceAfterDefenseForfeit();
+            return;
+        }
         highPassManager.gkRushedOut = false;
         StartCoroutine(ResolveHeaderChallenge());
     }
 
     public void SelectAllAvailableDefenders()
     {
-        if (defEligibleToHead.Count <= 2)
+        if (defEligibleToHead.Count <= threshold)
         {
             // defenderWillJump.Clear();
             foreach (PlayerToken token in defEligibleToHead)
             {
-                defenderWillJump.Add(token);
+                if (!defenderWillJump.Contains(token)) defenderWillJump.Add(token);
             }
             Debug.Log("All available defenders selected to jump for the header.");
             ConfirmDefenderHeaderSelection();
@@ -766,7 +839,8 @@ public class HeaderManager : MonoBehaviour
 
     public IEnumerator ResolveHeaderChallenge()
     {
-        SetGKToRollLast(hexGrid.GetDefendingGK());
+        attackerWillJump = GetOrderedHeaderTokens(attackerWillJump, false);
+        defenderWillJump = GetOrderedHeaderTokens(defenderWillJump, true);
         // If both lists are empty, do nothing
         if (attackerWillJump.Count == 0 && defenderWillJump.Count == 0)
         {
@@ -779,8 +853,14 @@ public class HeaderManager : MonoBehaviour
             MatchManager.Instance.ClearHangingPass();
             if (attackFreeHeader)
             {
+                challengeWinner = GetFreeHeaderWinner(attackerWillJump);
+                if (challengeWinner == null)
+                {
+                    Debug.LogError("Attack free header could not find a nominated header winner.");
+                    yield break;
+                }
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-                // MatchManager.Instance.SetLastToken(attackerWillJump[0]); // Pick the first attacker that was selected as the header winner and passer
+                MatchManager.Instance.SetLastToken(challengeWinner);
                 Debug.Log("Attackers win the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
@@ -797,23 +877,29 @@ public class HeaderManager : MonoBehaviour
         if (attackerWillJump.Count == 0 && defenderWillJump.Count > 0)
         {
             Debug.Log("Only defenders are jumping. Defense wins the header automatically. Switching possession.");
+            challengeWinner = defenderWillJump[0];
             MatchManager.Instance.gameData.gameLog.LogEvent(
-                defenderWillJump[0]
+                challengeWinner
                 , MatchManager.ActionType.BallRecovery
                 , recoveryType: "freeheader"
                 , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
             );
-            MatchManager.Instance.SetLastToken(defenderWillJump[0]); // Add the first (and maybe only) Defender Token as the one that took the header.
-            // TODO: Check if this is a Shot or a pass
+            MatchManager.Instance.SetLastToken(challengeWinner);
             MatchManager.Instance.ChangePossession();
-            // TODO: Check if this is the GK, to attract the ball and play save and hold
-            // TODO: Check if this is is the GK, but the landing Hex is out of the box, so we continue with a header.
+            if (challengeWinner.IsGoalKeeper)
+            {
+                yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(challengeWinner.GetCurrentHex()));
+                Debug.Log($"{challengeWinner.name} (DefenseGK) wins the free header. Switching possession. Save and hold scenario.");
+                shotManager.isActivated = true;
+                shotManager.isWaitingForSaveandHoldScenario = true;
+                CleanUpHeader();
+                yield break;
+            }
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 , MatchManager.ActionType.PassAttempt
             );
             HighlightHexesForHeader(ball.GetCurrentHex(), 6);
-            challengeWinner = defenderWillJump[0];
             StartCoroutine(WaitForHeaderTargetSelection());
         }
         // **Scenario: Both Attackers & Defenders are Jumping**
@@ -840,17 +926,13 @@ public class HeaderManager : MonoBehaviour
                 while (isWaitingForHeaderRoll) yield return null;
             }
             
-            PlayerToken bestAttacker = attackerWillJump
-                .OrderByDescending(token => tokenScores[token].totalScore) // Sort by total score
-                .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll
-                .ThenBy(token => HexGridUtils.GetHexStepDistance(ballHex, token.GetCurrentHex())) // Closest token to the ball first
-                .First(); // random?
-            PlayerToken bestDefender = defenderWillJump
-                .OrderByDescending(token => tokenScores[token].totalScore) // Highest total score first
-                .ThenByDescending(token => token.IsGoalKeeper)             // Prefer goalkeepers (true before false)
-                .ThenByDescending(token => tokenScores[token].roll)        // Break ties with the roll (higher roll first)
-                .ThenBy(token => HexGridUtils.GetHexStepDistance(ballHex, token.GetCurrentHex())) // Closest token to the ball first
-                .First(); // random?
+            PlayerToken bestAttacker = GetBestHeaderCandidate(attackerWillJump);
+            PlayerToken bestDefender = GetBestHeaderCandidate(defenderWillJump);
+            if (bestAttacker == null || bestDefender == null)
+            {
+                Debug.LogError("Header challenge could not determine best scoring tokens.");
+                yield break;
+            }
 
             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeAttempt, connectedToken: bestDefender);
 
@@ -953,12 +1035,29 @@ public class HeaderManager : MonoBehaviour
 
     public void PerformHeaderRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformHeaderRoll(rollOverride);
+    }
+
+    public void PerformHeaderRoll(RollInputOverride? rollOverride)
+    {
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int roll = rigRoll ?? returnedRoll;
-        int totalScore = rigRoll == null && returnedJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
+        bool isRiggedJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride && rollOverride.Value.isJackpot;
+        bool isJackpot = isRiggedJackpot || (!rollOverride.HasValue && returnedJackpot);
+        int roll = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? rollOverride.Value.roll
+            : returnedRoll;
+        int totalScore = isJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
         // int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
         tokenScores[tokenRolling] = (roll, totalScore);
-        if (returnedJackpot) Debug.Log($"{attordef} {tokenRolling.name} rolled A JACKPOT!!");
+        if (isJackpot) Debug.Log($"{attordef} {tokenRolling.name} rolled A JACKPOT!!");
         else Debug.Log($"{attordef} {tokenRolling.name} rolled {roll} + {attributelabel}: {attribute}{penaltyInfo}= {totalScore}");
         isWaitingForHeaderRoll = false; // Proceed to the next token
     }
@@ -998,9 +1097,22 @@ public class HeaderManager : MonoBehaviour
 
     public async Task PerformControlRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        await PerformControlRoll(rollOverride);
+    }
+
+    public async Task PerformControlRoll(RollInputOverride? rollOverride)
+    {
         isWaitingForControlRoll = false;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int roll = rigRoll ?? returnedRoll;
+        int roll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         int totalScore = roll + challengeWinner.dribbling + (hasHeadingPenalty ? -1 : 0);
         Debug.Log($"Attacker {challengeWinner.name} rolled {roll} + Dribbling {challengeWinner.dribbling}{penaltyInfo} = {totalScore}");
         if (totalScore >= 9)
@@ -1028,7 +1140,7 @@ public class HeaderManager : MonoBehaviour
     {
         Debug.Log($"Highlighting hexes for header from {startHex.coordinates} with range {range}");
         List<HexCell> validHexes = HexGrid.GetHexesInRange(hexGrid, startHex, range)
-            .Where(hex => !hex.isDefenseOccupied).ToList();
+            .Where(hex => !hex.isOutOfBounds && !hex.isDefenseOccupied).ToList();
 
         foreach (HexCell hex in validHexes)
         {
@@ -1047,6 +1159,17 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
+    private IEnumerator MoveHeaderBallToTarget(HexCell targetHex)
+    {
+        if (longBallManager != null)
+        {
+            yield return StartCoroutine(longBallManager.HandleLongBallMovement(targetHex, true));
+            yield break;
+        }
+
+        yield return StartCoroutine(ball.MoveToCell(targetHex));
+    }
+
     private async Task MoveHeaderToTargetSelection(HexCell clickedHex)
     {
         hexGrid.ClearHighlightedHexes();
@@ -1054,7 +1177,7 @@ public class HeaderManager : MonoBehaviour
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
             , MatchManager.ActionType.PassAttempt
         );
-        await helperFunctions.StartCoroutineAndWait(ball.MoveToCell(clickedHex));
+        await helperFunctions.StartCoroutineAndWait(MoveHeaderBallToTarget(clickedHex));
         Debug.Log($"Ball moved to {clickedHex.coordinates}");
         MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
         if (clickedHex.isAttackOccupied)
@@ -1128,9 +1251,32 @@ public class HeaderManager : MonoBehaviour
 
     public void PerformInterceptionRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformInterceptionRoll(rollOverride);
+    }
+
+    public void PerformInterceptionRoll(RollInputOverride? rollOverride)
+    {
         isWaitingForInterceptionRoll = false;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        interceptionDiceRoll = rigRoll ?? returnedRoll;
+        interceptionDiceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+    }
+
+    private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
     }
 
     private IEnumerator PerformInterceptionCheck()
@@ -1269,8 +1415,8 @@ public class HeaderManager : MonoBehaviour
         }
         if (isWaitingForDefenderSelection)
         {
-            sb.Append($"Please 1-2 attackers among {string.Join(", ", defEligibleToHead.Select(t => t.name))} to jump for the header, ");
-            if (defEligibleToHead.Count <= 2) sb.Append($"Press [A] to select all available and confirm, ");
+            sb.Append($"Please select up to {threshold} defenders among {string.Join(", ", defEligibleToHead.Select(t => t.name))} to jump for the header, ");
+            if (defEligibleToHead.Count <= threshold) sb.Append($"Press [A] to select all available and confirm, ");
             if (defenderWillJump.Count == 0) sb.Append($"Press [Enter] to not challenge with anyone, ");
             else 
             {
@@ -1278,7 +1424,7 @@ public class HeaderManager : MonoBehaviour
               if (defenderWillJump.Count == threshold) sb.Append($"or deselect a nominated defender to nominate another, ");
             }
         }
-        if (isWaitingForHeaderRoll) sb.Append($"Press 'R' to roll for {attordef}: {tokenRolling.name} ({attributelabel}: {tokenRolling.heading}{penaltyInfo})., ");
+        if (isWaitingForHeaderRoll && tokenRolling != null) sb.Append($"Press 'R' to roll for {attordef}: {tokenRolling.name} ({attributelabel}: {attribute}{penaltyInfo})., ");
         if (isWaitingForHeaderTargetSelection) sb.Append($"{challengeWinner.name} won the header, Click on a Highlighted Hex to head the ball, ");
         if (isWaitingForInterceptionRoll) sb.Append($"Press [R] to roll for an interception with {interceptingDefender.name} (tackling: {interceptingDefender.tackling}), ");
         if (iswaitingForChallengeWinnerSelection) sb.Append($"Click on a Token to take the free Header or Control, ");

@@ -117,34 +117,35 @@ public class ShotManager : MonoBehaviour
             IdentifyShotType();
             return;
         }
-        if (isActivated && isWaitingForBlockDiceRoll && keyData.key == KeyCode.R)
+        bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+        if (isActivated && isWaitingForBlockDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
           keyData.isConsumed = true; // Consume the key event
-          StartCoroutine(StartShotBlockRoll());  // Pass the stored list
+          StartCoroutine(StartShotBlockRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null));  // Pass the stored list
           return;
         }
-        else if (isActivated && !isHeaderAtGoal && isWaitingForGKDiceRoll && keyData.key == KeyCode.R)
+        else if (isActivated && !isHeaderAtGoal && isWaitingForGKDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
           keyData.isConsumed = true; // Consume the key event
-          StartCoroutine(ResolveGKSavingAttempt(interceptors[0]));
+          StartCoroutine(ResolveGKSavingAttempt(interceptors[0], hasRollOverride ? (RollInputOverride?)rollOverride : null));
           return;
         }
-        else if (isActivated && isHeaderAtGoal && isWaitingForGKDiceRoll && keyData.key == KeyCode.R)
+        else if (isActivated && isHeaderAtGoal && isWaitingForGKDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
             keyData.isConsumed = true;
             isWaitingForGKDiceRoll = false;
-            PerformGKHeaderSave();
+            PerformGKHeaderSave(hasRollOverride ? (RollInputOverride?)rollOverride : null);
         }
-        else if (isActivated && isWaitingForShotRoll && keyData.key == KeyCode.R)
+        else if (isActivated && isWaitingForShotRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
           keyData.isConsumed = true; // Consume the key event
-          StartCoroutine(StartShotRoll());
+          StartCoroutine(StartShotRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null));
           return;
         }
-        else if (isActivated && isWaitingforHandlingTest && keyData.key == KeyCode.R)
+        else if (isActivated && isWaitingforHandlingTest && (keyData.key == KeyCode.R || hasRollOverride))
         {
           keyData.isConsumed = true; // Consume the key event
-          StartCoroutine(ResolveHandlingTest());
+          StartCoroutine(ResolveHandlingTest(hasRollOverride ? (RollInputOverride?)rollOverride : null));
           return;
         }
         else if (isActivated && isWaitingforBlockerSelection && keyData.key == KeyCode.X)
@@ -265,7 +266,7 @@ public class ShotManager : MonoBehaviour
             Debug.Log("No saveHex found, header at goal is a GOAL!");
             MatchManager.Instance.gameData.gameLog.LogEvent(attacker, MatchManager.ActionType.GoalScored);
             // Animate ball to target, then trigger goal flow
-            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(targetHex));
+            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex));
             goalFlowManager.StartGoalFlow(attacker);
             ResetShotProcess();
             return;
@@ -284,12 +285,26 @@ public class ShotManager : MonoBehaviour
 
     public async void PerformGKHeaderSave(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformGKHeaderSave(rollOverride);
+    }
+
+    public async void PerformGKHeaderSave(RollInputOverride? rollOverride)
+    {
         // Roll for GK
         PlayerToken gkToken = hexGrid.GetDefendingGK();
         isWaitingForGKDiceRoll = false;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int gkRoll = rigRoll ?? returnedRoll;
-        int totalSavingPower = rigRoll == null && returnedJackpot ? 50 : gkRoll + gkToken.saving + headerGkPenalty;
+        bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
+        int gkRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
+        int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + headerGkPenalty;
         if (totalSavingPower == 50) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
         else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {headerGkPenalty} = {totalSavingPower}");
 
@@ -638,6 +653,19 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator StartShotBlockRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(StartShotBlockRoll(rollOverride));
+    }
+
+    private IEnumerator StartShotBlockRoll(RollInputOverride? rollOverride)
+    {
         yield return null; // Wait for next frame
         if (currentDefenderBlockingHex != null)
         {
@@ -661,7 +689,7 @@ public class ShotManager : MonoBehaviour
 
                 // Roll the dice
                 var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-                int diceRoll = rigRoll ?? returnedRoll;
+                int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
                 
                 Debug.Log($"Dice roll by {defenderName} at {currentDefenderBlockingHex.coordinates}: {diceRoll}");
                 MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
@@ -750,10 +778,24 @@ public class ShotManager : MonoBehaviour
 
     public IEnumerator StartShotRoll(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(StartShotRoll(rollOverride));
+    }
+
+    public IEnumerator StartShotRoll(RollInputOverride? rollOverride)
+    {
         Debug.Log("Hello from the StartShotRoll");
         
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        shooterRoll = rigRoll ?? returnedRoll;
+        bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
+        shooterRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
         // shooterRoll = 2;
         isWaitingForShotRoll = false;
         totalShotPower = shooterRoll + shooter.shooting;
@@ -762,7 +804,7 @@ public class ShotManager : MonoBehaviour
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         if (shotType == "snapshot") totalShotPower -= 1; 
         if (shooter.GetCurrentHex().isInPenaltyBox == 0) totalShotPower -= 1;
-        totalShotPower = returnedJackpot ? 50 : totalShotPower;
+        totalShotPower = isJackpot ? 50 : totalShotPower;
         if (interceptors.Count > 0 && interceptors[0].gkPenalty != null) // Check if the GK is next
         {
             Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save. Press [R] to roll");
@@ -802,16 +844,30 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator ResolveGKSavingAttempt((PlayerToken defender, bool isCausingInvalidity, int? gkPenalty) gkEntry, int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(ResolveGKSavingAttempt(gkEntry, rollOverride));
+    }
+
+    private IEnumerator ResolveGKSavingAttempt((PlayerToken defender, bool isCausingInvalidity, int? gkPenalty) gkEntry, RollInputOverride? rollOverride)
+    {
         isWaitingForGKDiceRoll = false;
         yield return null;
         PlayerToken gkToken = gkEntry.defender;
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int gkRoll = rigRoll ?? returnedRoll;
+        bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
+        int gkRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
         int gkPenalty = gkEntry.gkPenalty ?? 0;
-        int totalSavingPower = returnedJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
+        int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 6;
-        if (returnedJackpot) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
+        if (isJackpot) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
         else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
         MatchManager.Instance.gameData.gameLog.LogEvent(
             gkToken
@@ -908,9 +964,22 @@ public class ShotManager : MonoBehaviour
 
     public IEnumerator ResolveHandlingTest(int? rigRoll = null)
     {
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        yield return StartCoroutine(ResolveHandlingTest(rollOverride));
+    }
+
+    public IEnumerator ResolveHandlingTest(RollInputOverride? rollOverride)
+    {
         PlayerToken gkToken = hexGrid.GetDefendingGK();
         var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int gkRoll = rigRoll ?? returnedRoll;
+        int gkRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         isWaitingforHandlingTest = false;
         // Handling Test
         if (gkRoll < gkToken.handling)
@@ -940,6 +1009,36 @@ public class ShotManager : MonoBehaviour
             StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GoalkeeperHandlingSpill));
         }
         ResetShotProcess();
+    }
+
+    private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
+    }
+
+    private int GetRollValueWithJackpot(RollInputOverride? rollOverride, int returnedRoll)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedRoll;
+        }
+
+        return rollOverride.Value.isJackpot ? 50 : rollOverride.Value.roll;
+    }
+
+    private bool IsJackpotRoll(RollInputOverride? rollOverride, bool returnedJackpot)
+    {
+        if (!rollOverride.HasValue || !rollOverride.Value.hasOverride)
+        {
+            return returnedJackpot;
+        }
+
+        return rollOverride.Value.isJackpot;
     }
 
     private void QuickThrow()
