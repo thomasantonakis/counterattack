@@ -83,6 +83,11 @@ public class CameraController : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (keyData.ctrl)
+        {
+            return;
+        }
+
         if (keyData.shift)
         {
             // Check if Shift is held

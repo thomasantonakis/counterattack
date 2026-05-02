@@ -286,6 +286,12 @@ public class GroundBallManager : MonoBehaviour
             return;
         }
 
+        if (hoveredHex == currentTargetHex)
+        {
+            latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending);
+            return;
+        }
+
         GroundPassValidationResult validation = ValidateGroundPassPath(hoveredHex, imposedDistance);
         hexGrid.ClearHighlightedHexes();
         HighlightCommittedTarget();
@@ -366,20 +372,24 @@ public class GroundBallManager : MonoBehaviour
     {
         if (!isDangerous || interceptionAttempts == 0)
         {
-            return "Safe pass preview. No interception attempts if you select this target.";
+            return currentTargetHex != null
+                ? "Preview target is safe. Click this hex to switch target, or click the orange target to confirm the current selection."
+                : "Preview target is safe. Click this hex to select it.";
         }
 
-        return $"Dangerous pass preview. {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if you select this target.";
+        return currentTargetHex != null
+            ? $"Preview target: {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if selected. Click this hex to switch target, or click the orange target to confirm the current selection."
+            : $"Preview target: {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if selected. Click this hex to select it.";
     }
 
     private string GetEasyModeCommittedTargetInstruction(int interceptionAttempts)
     {
         if (interceptionAttempts <= 0)
         {
-            return "Selected target is safe. No interception attempts if you confirm. Click the orange target again to confirm, or hover another hex to preview.";
+            return "Selected target is safe. Click again to confirm, or hover another valid hex to preview.";
         }
 
-        return $"Selected target will trigger {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if you confirm. Click the orange target again to confirm, or hover another hex to preview.";
+        return $"Selected target: {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if confirmed. Click again to confirm, or hover another valid hex to preview.";
     }
 
     public void HighlightValidGroundPassPath(List<HexCell> pathHexes, bool isDangerous)
@@ -732,23 +742,14 @@ public class GroundBallManager : MonoBehaviour
                     {
                         sb.Append($"{latestValidationInstruction} ");
                     }
+                    else if (currentTargetHex != null)
+                    {
+                        sb.Append($"{GetEasyModeCommittedTargetInstruction(diceRollsPending)} ");
+                    }
                     else
                     {
                         sb.Append($"Hover a target within {imposedDistance} hexes to preview the pass. ");
                     }
-
-                if (currentTargetHex != null)
-                {
-                    sb.Append("Orange hex is the intended target. Click it again to confirm, or click another valid target to switch. ");
-                    if (diceRollsPending > 0)
-                    {
-                        sb.Append($"Confirming this target will trigger {diceRollsPending} interception attempt{(diceRollsPending == 1 ? string.Empty : "s")}. ");
-                    }
-                    else
-                    {
-                        sb.Append("Confirming this target will not trigger any interception attempts. ");
-                    }
-                }
             }
             else
                 {
