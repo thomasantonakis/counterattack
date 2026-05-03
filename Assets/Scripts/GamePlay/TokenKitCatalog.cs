@@ -21,12 +21,26 @@ public sealed class TokenKitPreset
     }
 }
 
+public readonly struct TokenKitInstructionPalette
+{
+    public Color Primary { get; }
+    public Color Secondary { get; }
+
+    public TokenKitInstructionPalette(Color primary, Color secondary)
+    {
+        Primary = primary;
+        Secondary = secondary;
+    }
+}
+
 public static class TokenKitCatalog
 {
     // # @thomas Previous working threshold before temporary relaxation: 72f.
     // Temporarily disabled threshold was 101f. Current active threshold is 90f.
     public const float ClashThreshold = 90f;
     private const int FaceAverageSampleTextureSize = 64;
+    private const int FaceDominantSampleTextureSize = 64;
+    private const float SameColorTolerance = 0.015f;
 
     private const string SourceJsonRelativePath = "Tools/kit-picker-v1-11-supported.json";
 
@@ -119,6 +133,7 @@ public static class TokenKitCatalog
     private static IReadOnlyList<TokenKitPreset> activePresets;
     private static string loadedSourcePath;
     private static DateTime loadedSourceWriteUtc;
+    private static readonly Dictionary<string, TokenKitInstructionPalette> InstructionPaletteCache = new Dictionary<string, TokenKitInstructionPalette>();
 
     public static void ReloadFromSource()
     {
@@ -164,6 +179,39 @@ public static class TokenKitCatalog
         return GetBlueUtilityPreset().Style;
     }
 
+    public static TokenKitInstructionPalette ResolveInstructionPalette(string presetIdOrAlias, Color fallbackPrimary, Color fallbackSecondary)
+    {
+        TokenKitPreset preset = GetPresetByIdOrAlias(presetIdOrAlias);
+        if (preset?.Style == null)
+        {
+            return new TokenKitInstructionPalette(fallbackPrimary, EnsureDistinctSecondary(fallbackPrimary, fallbackSecondary));
+        }
+
+        return GetInstructionPalette(preset.Style);
+    }
+
+    public static TokenKitInstructionPalette GetInstructionPalette(TokenStyleDefinition style)
+    {
+        if (style == null)
+        {
+            return new TokenKitInstructionPalette(Color.black, Color.white);
+        }
+
+        string cacheKey = style.GetCacheKey();
+        if (InstructionPaletteCache.TryGetValue(cacheKey, out TokenKitInstructionPalette cachedPalette))
+        {
+            return cachedPalette;
+        }
+
+        Color primary = style.bodyColor;
+        Color secondary = GetDominantFaceColorExcludingBody(style);
+        secondary = EnsureDistinctSecondary(primary, secondary);
+
+        TokenKitInstructionPalette palette = new TokenKitInstructionPalette(primary, secondary);
+        InstructionPaletteCache[cacheKey] = palette;
+        return palette;
+    }
+
     public static float GetSimilarityScore(string presetIdOrAliasA, string presetIdOrAliasB)
     {
         TokenKitPreset presetA = GetPresetByIdOrAlias(presetIdOrAliasA);
@@ -187,6 +235,126 @@ public static class TokenKitCatalog
             (faceAverageScore * 0.30f);
 
         return Mathf.Round(weightedScore);
+    }
+
+    private static Color GetDominantFaceColorExcludingBody(TokenStyleDefinition style)
+    {
+        Texture2D faceTexture = TokenFacePreviewUtility.GetOrCreateFaceTexture(style, FaceDominantSampleTextureSize);
+        if (faceTexture == null)
+        {
+            return GetFirstDistinctConfiguredColor(style);
+        }
+
+        Color[] pixels = faceTexture.GetPixels();
+        if (pixels == null || pixels.Length == 0)
+        {
+            return GetFirstDistinctConfiguredColor(style);
+        }
+
+        Dictionary<int, ColorBucket> buckets = new Dictionary<int, ColorBucket>();
+        foreach (Color pixel in pixels)
+        {
+            if (pixel.a <= 0f || AreColorsEquivalent(pixel, style.bodyColor))
+            {
+                continue;
+            }
+
+            int key = QuantizeRgb(pixel);
+            if (buckets.TryGetValue(key, out ColorBucket bucket))
+            {
+                bucket.Count++;
+                bucket.Accumulated += new Vector3(pixel.r, pixel.g, pixel.b);
+                buckets[key] = bucket;
+            }
+            else
+            {
+                buckets[key] = new ColorBucket
+                {
+                    Count = 1,
+                    Accumulated = new Vector3(pixel.r, pixel.g, pixel.b)
+                };
+            }
+        }
+
+        int dominantCount = 0;
+        Vector3 dominantAccumulated = Vector3.zero;
+        foreach (ColorBucket bucket in buckets.Values)
+        {
+            if (bucket.Count <= dominantCount)
+            {
+                continue;
+            }
+
+            dominantCount = bucket.Count;
+            dominantAccumulated = bucket.Accumulated;
+        }
+
+        if (dominantCount <= 0)
+        {
+            return GetFirstDistinctConfiguredColor(style);
+        }
+
+        Vector3 average = dominantAccumulated / dominantCount;
+        return new Color(average.x, average.y, average.z, 1f);
+    }
+
+    private static Color GetFirstDistinctConfiguredColor(TokenStyleDefinition style)
+    {
+        Color[] candidates =
+        {
+            style.accentColor,
+            style.ringColor,
+            style.leftStripeColor,
+            style.leftMidStripeColor,
+            style.centerStripeColor,
+            style.rightMidStripeColor,
+            style.rightStripeColor,
+            style.numberColor
+        };
+
+        foreach (Color candidate in candidates)
+        {
+            if (candidate.a > 0f && !AreColorsEquivalent(candidate, style.bodyColor))
+            {
+                return candidate;
+            }
+        }
+
+        return GetReadableContrastColor(style.bodyColor);
+    }
+
+    private static Color EnsureDistinctSecondary(Color primary, Color secondary)
+    {
+        return AreColorsEquivalent(primary, secondary)
+            ? GetReadableContrastColor(primary)
+            : secondary;
+    }
+
+    private static Color GetReadableContrastColor(Color color)
+    {
+        float luminance = (0.2126f * color.r) + (0.7152f * color.g) + (0.0722f * color.b);
+        return luminance >= 0.5f ? Color.black : Color.white;
+    }
+
+    private static bool AreColorsEquivalent(Color a, Color b)
+    {
+        return Mathf.Abs(a.r - b.r) <= SameColorTolerance
+            && Mathf.Abs(a.g - b.g) <= SameColorTolerance
+            && Mathf.Abs(a.b - b.b) <= SameColorTolerance;
+    }
+
+    private static int QuantizeRgb(Color color)
+    {
+        int r = Mathf.RoundToInt(Mathf.Clamp01(color.r) * 255f);
+        int g = Mathf.RoundToInt(Mathf.Clamp01(color.g) * 255f);
+        int b = Mathf.RoundToInt(Mathf.Clamp01(color.b) * 255f);
+        return (r << 16) | (g << 8) | b;
+    }
+
+    private struct ColorBucket
+    {
+        public int Count;
+        public Vector3 Accumulated;
     }
 
     private static Color GetAverageFaceColor(TokenStyleDefinition style)

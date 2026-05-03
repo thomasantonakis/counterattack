@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Text;
 using System.Collections.Generic;
 
@@ -40,6 +41,12 @@ public class GameDebugMonitor : MonoBehaviour
     private StringBuilder builder = new();
     private StringBuilder instruction = new();
     private static readonly Color NeutralInstructionColor = Color.white;
+    private static readonly Color NeutralInstructionPanelColor = new Color(0f, 0f, 0f, 0.392f);
+    private Image instructionPanelImage;
+    private TokenKitInstructionPalette homeInstructionPalette;
+    private TokenKitInstructionPalette awayInstructionPalette;
+    private string cachedHomeKit = string.Empty;
+    private string cachedAwayKit = string.Empty;
 
     private void OnEnable()
     {
@@ -78,6 +85,8 @@ public class GameDebugMonitor : MonoBehaviour
     void Start()
     {
         LinkRoomSceneComponents();
+        CacheInstructionPanelImage();
+        RefreshInstructionPalettes();
     }
 
     public void LinkRoomSceneComponents()
@@ -161,6 +170,19 @@ public class GameDebugMonitor : MonoBehaviour
     {
         instruction.Clear();
 
+        string goalFlowInstruction = goalFlowManager != null ? goalFlowManager.GetInstructions() : string.Empty;
+        if (!string.IsNullOrWhiteSpace(goalFlowInstruction))
+        {
+            if (instructionText != null)
+            {
+                InstructionSide goalInstructionSide = ResolveInstructionSide(goalFlowManager.IsInstructionExpectingHomeTeam());
+                instructionText.text = goalFlowInstruction;
+                ApplyInstructionPalette(goalInstructionSide, goalFlowManager.ShouldFlashInstructionColors());
+            }
+
+            return;
+        }
+
         List<string> activeInstructions = new List<string>();
         InstructionSide activeInstructionSide = InstructionSide.Neutral;
 
@@ -194,7 +216,7 @@ public class GameDebugMonitor : MonoBehaviour
         if (instructionText != null)
         {
             instructionText.text = instruction.ToString();
-            instructionText.color = ResolveInstructionColor(activeInstructionSide);
+            ApplyInstructionPalette(activeInstructionSide);
         }
     }
 
@@ -208,34 +230,63 @@ public class GameDebugMonitor : MonoBehaviour
         return expectsHomeTeam.Value ? InstructionSide.Home : InstructionSide.Away;
     }
 
-    private static Color ResolveInstructionColor(InstructionSide side)
+    private void ApplyInstructionPalette(InstructionSide side, bool shouldFlash = false)
+    {
+        RefreshInstructionPalettes();
+
+        TokenKitInstructionPalette palette = side switch
+        {
+            InstructionSide.Home => homeInstructionPalette,
+            InstructionSide.Away => awayInstructionPalette,
+            _ => new TokenKitInstructionPalette(NeutralInstructionPanelColor, NeutralInstructionColor),
+        };
+
+        bool useSwappedColors = shouldFlash && Mathf.FloorToInt(Time.unscaledTime * 6f) % 2 == 1;
+        instructionText.color = useSwappedColors ? palette.Primary : palette.Secondary;
+
+        if (instructionPanelImage != null)
+        {
+            Color panelColor = useSwappedColors ? palette.Secondary : palette.Primary;
+            panelColor.a = side == InstructionSide.Neutral ? NeutralInstructionPanelColor.a : 0.82f;
+            instructionPanelImage.color = panelColor;
+        }
+    }
+
+    private void RefreshInstructionPalettes()
     {
         if (MatchManager.Instance?.gameData?.gameSettings == null)
         {
-            return NeutralInstructionColor;
+            homeInstructionPalette = new TokenKitInstructionPalette(NeutralInstructionPanelColor, NeutralInstructionColor);
+            awayInstructionPalette = homeInstructionPalette;
+            cachedHomeKit = string.Empty;
+            cachedAwayKit = string.Empty;
+            return;
         }
 
-        return side switch
+        string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit ?? string.Empty;
+        string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit ?? string.Empty;
+        if (homeKit == cachedHomeKit && awayKit == cachedAwayKit)
         {
-            InstructionSide.Home => ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.homeKit, NeutralInstructionColor),
-            InstructionSide.Away => ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.awayKit, NeutralInstructionColor),
-            _ => NeutralInstructionColor,
-        };
+            return;
+        }
+
+        homeInstructionPalette = TokenKitCatalog.ResolveInstructionPalette(homeKit, NeutralInstructionPanelColor, NeutralInstructionColor);
+        awayInstructionPalette = TokenKitCatalog.ResolveInstructionPalette(awayKit, NeutralInstructionPanelColor, NeutralInstructionColor);
+        cachedHomeKit = homeKit;
+        cachedAwayKit = awayKit;
     }
 
-    private static Color ResolveKitBodyColor(string kitIdOrAlias, Color fallbackColor)
+    private void CacheInstructionPanelImage()
     {
-        if (string.IsNullOrWhiteSpace(kitIdOrAlias))
+        if (instructionText == null)
         {
-            return fallbackColor;
+            return;
         }
 
-        TokenKitPreset preset = TokenKitCatalog.GetPresetByIdOrAlias(kitIdOrAlias);
-        if (preset?.Style == null)
+        instructionPanelImage = instructionText.GetComponentInParent<Image>();
+        if (instructionPanelImage == null)
         {
-            return fallbackColor;
+            Debug.LogWarning("Instruction text has no parent Image for kit-colored instruction panel background.");
         }
-
-        return preset.Style.bodyColor;
     }
 }

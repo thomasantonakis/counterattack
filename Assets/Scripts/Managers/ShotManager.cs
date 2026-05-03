@@ -34,6 +34,7 @@ public class ShotManager : MonoBehaviour
     public bool isWaitingForSaveandHoldScenario = false;
     public bool gkWasOfferedMoveForBox = false;
     public bool isWaitingForSnapshotDecisionFromLoose = false;
+    public bool isWaitingForShotCommitConfirmation = false;
     public string shotType; // "snapshot" or "fullPower"
     [Header("Important Runtime Items")]
     public PlayerToken shooter; // The token that is shooting
@@ -55,6 +56,13 @@ public class ShotManager : MonoBehaviour
     private PlayerToken headerAttacker;
     private HexCell headerTargetHex;
     private int headerGkPenalty = 0;
+    private readonly List<HexCell> shotCommitPreviewTargets = new();
+    private readonly List<HexCell> shotCommitPreviewPath = new();
+    private HexCell hoveredShotCommitPreviewTarget;
+    private readonly List<HexCell> shotTargetSelectionTargets = new();
+    private readonly List<HexCell> targetSelectionPreviewPath = new();
+    private HexCell hoveredTargetSelectionPreviewTarget;
+    private HexCell targetSelectionPreviewSaveHex;
 
     void Update()
     {}
@@ -62,19 +70,65 @@ public class ShotManager : MonoBehaviour
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnHover += OnHoverReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
 
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+        ClearShotCommitPreview();
+        ClearShotTargetSelectionHighlights();
     }
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (!isActivated) return;
         HandleClicksForSnapMovement(token, hex);
+    }
+
+    private void OnHoverReceived(PlayerToken token, HexCell hex)
+    {
+        if (isActivated && isWaitingForTargetSelection && MatchManager.Instance.difficulty_level == 1)
+        {
+            HexCell nextHoveredTarget = shotTargetSelectionTargets.Contains(hex) ? hex : null;
+            if (hoveredTargetSelectionPreviewTarget == nextHoveredTarget)
+            {
+                return;
+            }
+
+            hoveredTargetSelectionPreviewTarget = nextHoveredTarget;
+            RefreshTargetSelectionPreviewPath();
+            return;
+        }
+
+        if (hoveredTargetSelectionPreviewTarget != null || targetSelectionPreviewPath.Count > 0 || targetSelectionPreviewSaveHex != null)
+        {
+            hoveredTargetSelectionPreviewTarget = null;
+            ClearTargetSelectionPreviewPath();
+        }
+
+        if (!isAvailable || !isWaitingForShotCommitConfirmation || MatchManager.Instance.difficulty_level != 1)
+        {
+            if (hoveredShotCommitPreviewTarget != null || shotCommitPreviewPath.Count > 0)
+            {
+                hoveredShotCommitPreviewTarget = null;
+                ClearShotCommitPreviewPath();
+            }
+
+            return;
+        }
+
+        HexCell nextHoveredCommitTarget = shotCommitPreviewTargets.Contains(hex) ? hex : null;
+        if (hoveredShotCommitPreviewTarget == nextHoveredCommitTarget)
+        {
+            return;
+        }
+
+        hoveredShotCommitPreviewTarget = nextHoveredCommitTarget;
+        RefreshShotCommitPreviewPath();
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -87,6 +141,7 @@ public class ShotManager : MonoBehaviour
                 isAvailable = false;
                 isActivated = true;
                 isWaitingForSnapshotDecisionFromLoose = false;
+                isWaitingForShotCommitConfirmation = false;
                 Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
                 StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
                 keyData.isConsumed = true;
@@ -97,6 +152,7 @@ public class ShotManager : MonoBehaviour
                 isAvailable = false;
                 isActivated = false;
                 isWaitingForSnapshotDecisionFromLoose = false;
+                isWaitingForShotCommitConfirmation = false;
                 if (movementPhaseManager.isActivated)
                 {
                     Debug.Log($"Ball found itself (during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
@@ -111,9 +167,31 @@ public class ShotManager : MonoBehaviour
                 return;
             }
         }
+        if (isAvailable && isWaitingForShotCommitConfirmation)
+        {
+            if (keyData.key == KeyCode.S)
+            {
+                keyData.isConsumed = true;
+                isWaitingForShotCommitConfirmation = false;
+                ClearShotCommitPreview();
+                IdentifyShotType();
+                return;
+            }
+
+            isWaitingForShotCommitConfirmation = false;
+            ClearShotCommitPreview();
+        }
         if (isAvailable && keyData.key == KeyCode.S)
         {
             keyData.isConsumed = true; // Consume the key event
+            if (ShouldRequireShotCommitConfirmation())
+            {
+                isWaitingForShotCommitConfirmation = true;
+                ShowShotCommitPreviewTargets();
+                Debug.Log("Shot selected. Press [S] again to commit.");
+                return;
+            }
+
             IdentifyShotType();
             return;
         }
@@ -186,10 +264,283 @@ public class ShotManager : MonoBehaviour
             StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
         }
     }
+
+    public void CommitToThisAction()
+    {
+        MatchManager.Instance.CommitToAction();
+    }
+
+    private bool ShouldRequireShotCommitConfirmation()
+    {
+        return MatchManager.Instance.difficulty_level < 3
+            && !isActivated
+            && !isWaitingForSnapshotDecisionFromLoose
+            && !movementPhaseManager.isActivated
+            && !movementPhaseManager.isWaitingForSnapshotDecision
+            && movementPhaseManager.isAvailable;
+    }
+
+    private void ShowShotCommitPreviewTargets()
+    {
+        ClearShotCommitPreview();
+        if (MatchManager.Instance.difficulty_level != 1)
+        {
+            return;
+        }
+
+        PlayerToken shootingToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        HexCell shooterHex = shootingToken?.GetCurrentHex();
+        if (shooterHex == null || shooterHex.ShootingPaths == null)
+        {
+            return;
+        }
+
+        foreach (HexCell canShootToHex in shooterHex.ShootingPaths.Keys)
+        {
+            canShootToHex.HighlightHex("CanShootFrom", 1);
+            if (!hexGrid.highlightedHexes.Contains(canShootToHex))
+            {
+                hexGrid.highlightedHexes.Add(canShootToHex);
+            }
+            if (!shotCommitPreviewTargets.Contains(canShootToHex))
+            {
+                shotCommitPreviewTargets.Add(canShootToHex);
+            }
+            if (canShootToHex.transform.position.y == 0)
+            {
+                canShootToHex.transform.position += Vector3.up * 0.03f;
+            }
+        }
+    }
+
+    private void RefreshShotCommitPreviewPath()
+    {
+        ClearShotCommitPreviewPath();
+        if (hoveredShotCommitPreviewTarget == null)
+        {
+            return;
+        }
+
+        PlayerToken shootingToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        HexCell shooterHex = shootingToken?.GetCurrentHex();
+        if (shooterHex == null
+            || shooterHex.ShootingPaths == null
+            || !shooterHex.ShootingPaths.TryGetValue(hoveredShotCommitPreviewTarget, out List<HexCell> previewPath))
+        {
+            return;
+        }
+
+        foreach (HexCell pathHex in previewPath)
+        {
+            if (pathHex == null || pathHex == hoveredShotCommitPreviewTarget)
+            {
+                continue;
+            }
+
+            pathHex.HighlightHex("ballPath");
+            if (!hexGrid.highlightedHexes.Contains(pathHex))
+            {
+                hexGrid.highlightedHexes.Add(pathHex);
+            }
+            shotCommitPreviewPath.Add(pathHex);
+        }
+
+        hoveredShotCommitPreviewTarget.HighlightHex("CanShootFrom", 1);
+    }
+
+    private void ClearShotCommitPreviewPath()
+    {
+        foreach (HexCell pathHex in shotCommitPreviewPath)
+        {
+            if (pathHex == null) continue;
+            pathHex.ResetHighlight();
+            hexGrid.highlightedHexes.Remove(pathHex);
+        }
+        shotCommitPreviewPath.Clear();
+
+        foreach (HexCell targetHex in shotCommitPreviewTargets)
+        {
+            if (targetHex == null) continue;
+            targetHex.HighlightHex("CanShootFrom", 1);
+            if (!hexGrid.highlightedHexes.Contains(targetHex))
+            {
+                hexGrid.highlightedHexes.Add(targetHex);
+            }
+        }
+    }
+
+    private void ClearShotCommitPreview()
+    {
+        ClearShotCommitPreviewPath();
+        foreach (HexCell targetHex in shotCommitPreviewTargets)
+        {
+            if (targetHex == null) continue;
+            targetHex.ResetHighlight();
+            hexGrid.highlightedHexes.Remove(targetHex);
+            if (targetHex.transform.position.y > 0.001f)
+            {
+                targetHex.transform.position -= Vector3.up * 0.03f;
+            }
+        }
+
+        shotCommitPreviewTargets.Clear();
+        hoveredShotCommitPreviewTarget = null;
+    }
+
+    private void RefreshTargetSelectionPreviewPath()
+    {
+        ClearTargetSelectionPreviewPath();
+        if (hoveredTargetSelectionPreviewTarget == null || shooter == null)
+        {
+            return;
+        }
+
+        HexCell shooterHex = shooter.GetCurrentHex();
+        if (shooterHex == null
+            || shooterHex.ShootingPaths == null
+            || !shooterHex.ShootingPaths.TryGetValue(hoveredTargetSelectionPreviewTarget, out List<HexCell> previewPath))
+        {
+            return;
+        }
+
+        var (blockAttempts, previewSaveHex) = GetShotPreviewInterceptionInfo(previewPath);
+        string pathHighlight = blockAttempts > 1 ? "dangerousPass" : "ballPath";
+        foreach (HexCell pathHex in previewPath)
+        {
+            if (pathHex == null || pathHex == hoveredTargetSelectionPreviewTarget)
+            {
+                continue;
+            }
+
+            pathHex.HighlightHex(pathHighlight);
+            if (!hexGrid.highlightedHexes.Contains(pathHex))
+            {
+                hexGrid.highlightedHexes.Add(pathHex);
+            }
+            targetSelectionPreviewPath.Add(pathHex);
+        }
+
+        if (previewSaveHex != null)
+        {
+            previewSaveHex.HighlightHex("ShotSaveHex");
+            if (!hexGrid.highlightedHexes.Contains(previewSaveHex))
+            {
+                hexGrid.highlightedHexes.Add(previewSaveHex);
+            }
+            if (!targetSelectionPreviewPath.Contains(previewSaveHex))
+            {
+                targetSelectionPreviewPath.Add(previewSaveHex);
+            }
+            targetSelectionPreviewSaveHex = previewSaveHex;
+        }
+
+        hoveredTargetSelectionPreviewTarget.HighlightHex("CanShootFrom", 1);
+    }
+
+    private (int blockAttempts, HexCell previewSaveHex) GetShotPreviewInterceptionInfo(List<HexCell> path)
+    {
+        int blockAttempts = 0;
+        HexCell previewSaveHex = null;
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        HexCell gkHex = defendingGK?.GetCurrentHex();
+
+        if (defendingGK != null && gkHex != null && !alreadyInterceptedDefs.Contains(defendingGK))
+        {
+            List<HexCell> validSaveHexes = path
+                .Where(hex => hexGrid.GetSavableHexes().Contains(hex))
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(gkHex, hex))
+                .ToList();
+            previewSaveHex = validSaveHexes.FirstOrDefault();
+            if (previewSaveHex != null)
+            {
+                blockAttempts++;
+            }
+        }
+
+        HashSet<PlayerToken> previewDefenders = new();
+        foreach (HexCell pathHex in path)
+        {
+            if (pathHex == null || pathHex == gkHex) continue;
+
+            if (pathHex.isDefenseOccupied)
+            {
+                PlayerToken defenderOnPath = pathHex.GetOccupyingToken();
+                if (defenderOnPath != null && !alreadyInterceptedDefs.Contains(defenderOnPath))
+                {
+                    previewDefenders.Add(defenderOnPath);
+                }
+            }
+        }
+
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        defenderHexes.Remove(gkHex);
+        List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes) ?? new List<HexCell>();
+        foreach (HexCell pathHex in path)
+        {
+            if (pathHex == null || !defenderNeighbors.Contains(pathHex)) continue;
+
+            foreach (HexCell neighbor in pathHex.GetNeighbors(hexGrid))
+            {
+                if (neighbor == null || neighbor.isAttackOccupied || !neighbor.isDefenseOccupied) continue;
+
+                PlayerToken defenderInZOI = neighbor.GetOccupyingToken();
+                if (defenderInZOI != null && defenderInZOI != defendingGK && !alreadyInterceptedDefs.Contains(defenderInZOI))
+                {
+                    previewDefenders.Add(defenderInZOI);
+                }
+            }
+        }
+
+        blockAttempts += previewDefenders.Count;
+        return (blockAttempts, previewSaveHex);
+    }
+
+    private void ClearTargetSelectionPreviewPath()
+    {
+        foreach (HexCell pathHex in targetSelectionPreviewPath)
+        {
+            if (pathHex == null) continue;
+            pathHex.ResetHighlight();
+            hexGrid.highlightedHexes.Remove(pathHex);
+        }
+        targetSelectionPreviewPath.Clear();
+        targetSelectionPreviewSaveHex = null;
+
+        foreach (HexCell targetHex in shotTargetSelectionTargets)
+        {
+            if (targetHex == null) continue;
+            targetHex.HighlightHex("CanShootFrom", 1);
+            if (!hexGrid.highlightedHexes.Contains(targetHex))
+            {
+                hexGrid.highlightedHexes.Add(targetHex);
+            }
+        }
+    }
+
+    private void ClearShotTargetSelectionHighlights()
+    {
+        ClearTargetSelectionPreviewPath();
+        foreach (HexCell targetHex in shotTargetSelectionTargets)
+        {
+            if (targetHex == null) continue;
+            targetHex.ResetHighlight();
+            hexGrid.highlightedHexes.Remove(targetHex);
+            if (targetHex.transform.position.y > 0.001f)
+            {
+                targetHex.transform.position -= Vector3.up * 0.03f;
+            }
+        }
+
+        shotTargetSelectionTargets.Clear();
+        hoveredTargetSelectionPreviewTarget = null;
+    }
     
     public void StartShotProcess(PlayerToken shootingToken, string shotType)
     {
+        ClearShotCommitPreview();
+        ClearTargetSelectionPreviewPath();
         hexGrid.ClearHighlightedHexes();
+        isWaitingForShotCommitConfirmation = false;
         if (shootingToken == null)
         {
             Debug.LogError("Shooting token is NULL! Cannot proceed with shot.");
@@ -208,6 +559,7 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
+        CommitToThisAction();
         shooter = shootingToken;
         this.shotType = shotType;
         isActivated = true;
@@ -241,6 +593,10 @@ public class ShotManager : MonoBehaviour
     {
         isActivated = true;
         isHeaderAtGoal = true;
+        shooter = attacker;
+        totalShotPower = attackerTotalScore;
+        targetHex = headerTargetHex;
+        shotType = "header";
         this.headerAttacker = attacker;
         this.headerAttackerTotalScore = attackerTotalScore;
         this.headerTargetHex = headerTargetHex;
@@ -277,7 +633,7 @@ public class ShotManager : MonoBehaviour
         if (saveDistance == 3) headerGkPenalty = -1;
 
         // GK can attempt a save
-        Debug.Log($"GK {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {headerGkPenalty}. Waiting for GK dice roll...");
+        Debug.Log($"GK {defendingGK.name} can attempt a save at {saveHex.coordinates} with penalty {headerGkPenalty}. Header power is {headerAttackerTotalScore}. Waiting for GK dice roll...");
         // StartCoroutine(PerformGKHeaderSave(defendingGK, headerGkPenalty));
         // Debug.Log($"Press [R] to roll for GK save attempt (header at goal).");
         isWaitingForGKDiceRoll = true;
@@ -307,11 +663,20 @@ public class ShotManager : MonoBehaviour
         int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + headerGkPenalty;
         if (totalSavingPower == 50) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
         else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {headerGkPenalty} = {totalSavingPower}");
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            gkToken,
+            MatchManager.ActionType.SaveAttempt
+        );
 
         // Compare with attacker's total
         if (totalSavingPower == headerAttackerTotalScore)
         {
             Debug.Log($"{gkToken.name} ties the attacker's header! Loose Ball situation initiated.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                headerAttacker,
+                MatchManager.ActionType.ShotBlocked,
+                connectedToken: gkToken
+            );
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 gkToken
                 , MatchManager.ActionType.SaveMade
@@ -336,7 +701,7 @@ public class ShotManager : MonoBehaviour
             Debug.Log($"{headerAttacker.name} wins the header at goal! GOAL!");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex, headerAttackerTotalScore/2));
             MatchManager.Instance.gameData.gameLog.LogEvent(
-                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                        headerAttacker
                         , MatchManager.ActionType.GoalScored
                     );
             goalFlowManager.StartGoalFlow(headerAttacker);
@@ -431,6 +796,7 @@ public class ShotManager : MonoBehaviour
     public void HandleTargetSelection()
     {
         Debug.Log("Highlighting CanShootTo hexes for target selection.");
+        ClearShotTargetSelectionHighlights();
         HexCell shooterHex = shooter.GetCurrentHex();
         Dictionary<HexCell, List<HexCell>> shootingPaths = shooterHex.ShootingPaths;
 
@@ -439,6 +805,10 @@ public class ShotManager : MonoBehaviour
         {
             canShootToHex.HighlightHex("CanShootFrom", 1);
             hexGrid.highlightedHexes.Add(canShootToHex);
+            if (!shotTargetSelectionTargets.Contains(canShootToHex))
+            {
+                shotTargetSelectionTargets.Add(canShootToHex);
+            }
             if (canShootToHex.transform.position.y == 0)
             {
                 canShootToHex.transform.position += Vector3.up * 0.03f; // Raise it above the plane
@@ -451,6 +821,7 @@ public class ShotManager : MonoBehaviour
 
     public void HandleTargetClick(HexCell clickedTargethex)
     {
+        ClearTargetSelectionPreviewPath();
         targetHex = clickedTargethex;
         Debug.Log($"Target hex {targetHex.coordinates} selected. Preparing trajectory.");
         HexCell shooterHex = shooter.GetCurrentHex();
@@ -466,6 +837,7 @@ public class ShotManager : MonoBehaviour
         trajectoryPath = shooterHex.ShootingPaths[targetHex];
         HighlightTrajectoryPath();
         isWaitingForTargetSelection = false;
+        shotTargetSelectionTargets.Clear();
         StartCoroutine(StartInterceptionPhase());
     }
 
@@ -989,6 +1361,12 @@ public class ShotManager : MonoBehaviour
                 , MatchManager.ActionType.SaveMade
                 , saveType: "held"
             );
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                gkToken
+                , MatchManager.ActionType.BallRecovery
+                , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                , recoveryType: "shot"
+            );
             MatchManager.Instance.ChangePossession();
             MatchManager.Instance.SetLastToken(gkToken);
             Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
@@ -1062,8 +1440,13 @@ public class ShotManager : MonoBehaviour
         isWaitingforBlockerSelection = false;
         isWaitingForBlockDiceRoll = false;
         isWaitingForShotRoll = false;
+        isWaitingForGKDiceRoll = false;
+        isWaitingforHandlingTest = false;
+        isWaitingForSaveandHoldScenario = false;
+        isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
         isWaitingForTargetSelection = false;
+        ClearShotTargetSelectionHighlights();
         shooter = null;
         targetHex = null;
         trajectoryPath = null;
@@ -1080,6 +1463,7 @@ public class ShotManager : MonoBehaviour
         headerAttackerTotalScore = 0;
         headerAttacker = null;
         headerTargetHex = null;
+        headerGkPenalty = 0;
     }
 
     private IEnumerator ShootOffTargetRandomizer()
@@ -1191,10 +1575,15 @@ public class ShotManager : MonoBehaviour
         if (isWaitingforHandlingTest) sb.Append("isWaitingforHandlingTest, ");
         if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
         if (gkWasOfferedMoveForBox) sb.Append("gkWasOfferedMoveForBox, ");
+        if (isWaitingForShotCommitConfirmation) sb.Append("isWaitingForShotCommitConfirmation, ");
+        if (isHeaderAtGoal) sb.Append("isHeaderAtGoal, ");
         if (!string.IsNullOrEmpty(shotType)) sb.Append($"shotType: {shotType}, ");
         if (shooter != null) sb.Append($"shooter: {shooter.name}, ");
+        if (totalShotPower != 0) sb.Append($"totalShotPower: {totalShotPower}, ");
         if (targetHex != null) sb.Append($"targetHex: {targetHex.name}, ");
         if (saveHex != null) sb.Append($"saveHex: {saveHex.name}, ");
+        if (isHeaderAtGoal && headerAttacker != null) sb.Append($"headerAttacker: {headerAttacker.name}, ");
+        if (isHeaderAtGoal) sb.Append($"headerPower: {headerAttackerTotalScore}, headerGkPenalty: {headerGkPenalty}, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
@@ -1206,13 +1595,24 @@ public class ShotManager : MonoBehaviour
         if (finalThirdManager.isActivated) return "";
         if (goalKeeperManager.isActivated) return "";
         if (isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Snapshot directly from there, or [X] no continue without shoooting, ");
-        if (isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");
+        if (isAvailable && isWaitingForShotCommitConfirmation) sb.Append("Press [S] again to commit the Shot, ");
+        else if (isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");
         if (isActivated) sb.Append("Shot: ");
         if (isWaitingforBlockerSelection) sb.Append($"Click on a defender to move 2 Hexes in an attempt to block the Snapshot, ");
         if (isWaitingforBlockerMovement) sb.Append($"Click on a Highlighted Hex to move the blocker there, ");
         if (isWaitingForTargetSelection) sb.Append($"Click on a Hex in the Goal to target the Shot there, ");
         if (isWaitingForBlockDiceRoll) sb.Append($"Press [R] to roll for the block of the shot, ");
         if (isWaitingForShotRoll) sb.Append($"Press [R] to roll with {shooter} for the shot, ");
+        if (isHeaderAtGoal && isWaitingForGKDiceRoll)
+        {
+            PlayerToken defendingGK = hexGrid.GetDefendingGK();
+            string goalkeeperName = defendingGK != null ? defendingGK.name : "GK";
+            sb.Append($"Press [R] to roll with {goalkeeperName} for the header save (header power: {headerAttackerTotalScore}, saving penalty: {headerGkPenalty}), ");
+        }
+        else if (isWaitingForGKDiceRoll)
+        {
+            sb.Append($"Press [R] to roll for the GK save, ");
+        }
         if (isWaitingforHandlingTest) sb.Append($"Press [R] to roll for the Handling Test, ");
         if (isWaitingForSaveandHoldScenario) sb.Append($"Press [Q]uick Throw or [K] to Activate Final thirds, ");
 
@@ -1233,7 +1633,12 @@ public class ShotManager : MonoBehaviour
             return attackingTeamIsHome;
         }
 
-        if (isWaitingforBlockerSelection || isWaitingforBlockerMovement || isWaitingForBlockDiceRoll || isWaitingforHandlingTest || isWaitingForSaveandHoldScenario)
+        if (isWaitingforBlockerSelection
+            || isWaitingforBlockerMovement
+            || isWaitingForBlockDiceRoll
+            || isWaitingForGKDiceRoll
+            || isWaitingforHandlingTest
+            || isWaitingForSaveandHoldScenario)
         {
             return !attackingTeamIsHome;
         }

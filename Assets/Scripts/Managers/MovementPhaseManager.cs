@@ -739,6 +739,16 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (!hex.isAttackOccupied && !hex.isDefenseOccupied)
             {
+                bool isGoalHex = hex.isInGoal != 0;
+                bool canWalkIntoGoal = !isMovementPhaseDef
+                    && isDribblerRunning
+                    && token.GetCurrentHex() == ballHex
+                    && IsOpponentGoalForToken(token, hex);
+                if (isGoalHex && !canWalkIntoGoal)
+                {
+                    continue;
+                }
+
                 hexGrid.highlightedHexes.Add(hex);  // Store the valid hex directly in HexGrid's highlightedHexes list
 
                 // Retrieve the distance and ZOI data for the current hex
@@ -758,8 +768,7 @@ public class MovementPhaseManager : MonoBehaviour
                     !isMovementPhaseDef
                     && isDribblerRunning
                     && token.GetCurrentHex() == ballHex // token is on the ball
-                    && hex.isInGoal != 0 // the hex is in a goal
-                    // the hex is in the attaking part of the dribbler
+                    && IsOpponentGoalForToken(token, hex)
                 )
                 {
                     hex.HighlightHex("CanShootFrom");
@@ -1016,19 +1025,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void DribblerMoved1HexOrReposition()
     {
-        // Debug.Log($"BallHex: {ballHex.name}, {ballHex.isInGoal}");
-        // Debug.Log($"Ball's currentHex: {ball.GetCurrentHex().name}, {ball.GetCurrentHex().isInGoal}");
-        if (ball.GetCurrentHex().isInGoal != 0)
+        if (TryHandleMovementGoal(selectedToken, allowAssist: true))
         {
-            Debug.Log($"{selectedToken.name} walked or repositioned in the goal! It's a GOAL!!!!");
-            // @TODO: play-stopping outcomes (goal/set piece) currently call EndMovementPhase twice
-            // to fully clear both current-MP and next-MP temporary freeze state. Replace this with
-            // explicit stop-play cleanup when GoalFlow owns the restart path.
-            EndMovementPhase(false);
-            EndMovementPhase(false);
-            goalFlowManager.StartGoalFlow(ball.GetCurrentHex().GetOccupyingToken());
-            // TRIGGER The GOAL CELEBRATION
-            // LOG The GOAL
             return;
         }
         
@@ -1153,10 +1151,16 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void HandleSuccessfulTackleRepositionOutcome()
     {
+        selectedToken = repositionWinner;
+        if (TryHandleMovementGoal(repositionWinner, allowAssist: false))
+        {
+            isSuccessfulTackleRepositionPending = false;
+            return;
+        }
+
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.UpdatePossessionAfterPass(repositionWinner.GetCurrentHex());
         MatchManager.Instance.SetLastToken(repositionWinner);
-        selectedToken = repositionWinner;
         isSuccessfulTackleRepositionPending = false;
 
         if (TryStartPostSuccessfulTackleStealSequence())
@@ -1213,6 +1217,64 @@ public class MovementPhaseManager : MonoBehaviour
         EndMovementPhase();
         MatchManager.Instance.BroadcastSuccessfulTackle();
         Debug.Log("Movement phase ended due to successful tackle.");
+    }
+
+    private bool TryHandleMovementGoal(PlayerToken scoringToken, bool allowAssist)
+    {
+        HexCell ballGoalHex = ball.GetCurrentHex();
+        if (ballGoalHex == null || ballGoalHex.isInGoal == 0)
+        {
+            return false;
+        }
+
+        PlayerToken goalScorer = scoringToken != null ? scoringToken : ballGoalHex.GetOccupyingToken();
+        if (goalScorer == null)
+        {
+            Debug.LogError("Ball entered the goal, but no scoring token could be identified.");
+            return false;
+        }
+
+        if (!IsOpponentGoalForToken(goalScorer, ballGoalHex))
+        {
+            Debug.LogWarning($"{goalScorer.name} is on their own goal hex {ballGoalHex.coordinates}. No goal is awarded.");
+            return false;
+        }
+
+        Debug.Log($"{goalScorer.name} walked or repositioned in the goal! It's a GOAL!!!!");
+        if (MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != goalScorer)
+        {
+            MatchManager.Instance.SetLastToken(goalScorer);
+        }
+        if (!allowAssist)
+        {
+            MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
+        }
+        MatchManager.Instance.gameData.gameLog.LogEvent(goalScorer, MatchManager.ActionType.ShotAttempt, shotType: "shot");
+        MatchManager.Instance.gameData.gameLog.LogEvent(goalScorer, MatchManager.ActionType.ShotOnTarget);
+        MatchManager.Instance.gameData.gameLog.LogEvent(goalScorer, MatchManager.ActionType.GoalScored);
+        // @TODO: play-stopping outcomes (goal/set piece) currently call EndMovementPhase twice
+        // to fully clear both current-MP and next-MP temporary freeze state. Replace this with
+        // explicit stop-play cleanup when GoalFlow owns the restart path.
+        EndMovementPhase(false);
+        EndMovementPhase(false);
+        goalFlowManager.StartGoalFlow(goalScorer);
+        return true;
+    }
+
+    private bool IsOpponentGoalForToken(PlayerToken token, HexCell goalHex)
+    {
+        return token != null
+            && goalHex != null
+            && goalHex.isInGoal != 0
+            && goalHex.isInGoal == GetOpponentGoalSideForTeam(token);
+    }
+
+    private int GetOpponentGoalSideForTeam(PlayerToken token)
+    {
+        MatchManager.TeamAttackingDirection attackingDirection = token.isHomeTeam
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+        return attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight ? 1 : -1;
     }
 
     private List<PlayerToken> GetAdjacentDefenders(HexCell targetHex)
@@ -1573,7 +1635,7 @@ public class MovementPhaseManager : MonoBehaviour
                     MatchManager.ActionType.InterceptionSuccess,
                     recoveryType: "steal",
                     connectedToken: ballCarrier);
-                MatchManager.Instance.SetLastToken(selectedDefender);
+                MatchManager.Instance.ApplyBallCollectionOwnership(selectedDefender);
                 StartCoroutine(HandleBallInterception(selectedDefender.GetCurrentHex()));
                 ResetBallInterceptionDiceRolls();
             }
@@ -1799,7 +1861,10 @@ public class MovementPhaseManager : MonoBehaviour
         HexCell[] repositionHexesArray = loserHex.GetNeighbors(hexGrid);
         repositionHexes = new List<HexCell>(repositionHexesArray); // Convert array to list
         repositionHexes = repositionHexes
-            .Where(hex => hex != loserHex && !hex.isDefenseOccupied && !hex.isAttackOccupied)
+            .Where(hex => hex != loserHex
+                && !hex.isDefenseOccupied
+                && !hex.isAttackOccupied
+                && (hex.isInGoal == 0 || IsOpponentGoalForToken(repositionWinner, hex)))
             .ToList();
         return repositionHexes;
     }
@@ -1856,6 +1921,11 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogWarning($"Hex {hex.name} is not a valid repositioning option. Repositioning failed.");
             return;  // Exit if the hex is not a valid repositioning option
         }
+        if (hex.isInGoal != 0 && !IsOpponentGoalForToken(repositionWinner, hex))
+        {
+            Debug.LogWarning($"{repositionWinner.name} cannot reposition into their own goal at {hex.coordinates}.");
+            return;
+        }
 
         Debug.Log($"{repositionWinner.name} repositioning to {hex.name}.");
         HexCell winnerHex = repositionWinner.GetCurrentHex();
@@ -1893,6 +1963,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             return;
         }
+        selectedToken = repositionWinner;
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase) DribblerMoved1HexOrReposition();
     }
 

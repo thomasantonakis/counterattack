@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class GoalFlowManager : MonoBehaviour
 {
+    private enum GoalInstructionPhase
+    {
+        None,
+        Celebration,
+        Reset
+    }
+
     public HexGrid hexGrid;
     public PlayerTokenManager playerTokenManager;
     public MovementPhaseManager movementPhaseManager;
@@ -22,6 +29,12 @@ public class GoalFlowManager : MonoBehaviour
     private List<HexCell> resetFormationRight;
     public bool defendersAreBack = false;
     public bool attackersAreBack = false;
+    private GoalInstructionPhase instructionPhase = GoalInstructionPhase.None;
+    private bool goalScoringTeamIsHome;
+    private string goalScoringTeamName = string.Empty;
+    private string goalScorerName = string.Empty;
+    private string goalAssisterName = string.Empty;
+    private int scorerGoalCount;
     
     private void Start()
     {
@@ -158,6 +171,8 @@ public class GoalFlowManager : MonoBehaviour
     {
         // TODO: This should clean up everything from all Managers.
         isActivated = true;
+        CaptureGoalInstructionContext(shooterToken);
+        instructionPhase = GoalInstructionPhase.Celebration;
         hexGrid.RemoveHighlightsFromAllHexes();
         Debug.Log($"GOAL! {shooterToken.name} scores! Starting celebration...");
         StartCoroutine(DefenseCelebrationFlow(shooterToken));
@@ -189,7 +204,8 @@ public class GoalFlowManager : MonoBehaviour
         yield return StartCoroutine(MovePlayersToHexes(attackers, celebrationHexes, true, false));
         // 4️⃣ Wait a bit to celebrate
 
-        yield return new WaitForSeconds(2); // Small pause for celebration
+        yield return new WaitForSeconds(1); // Small pause for celebration
+        instructionPhase = GoalInstructionPhase.Reset;
         Debug.Log("Waited for 1 second, going back!");
         // 6️⃣ Move attackers back to their reset positions
         yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false));
@@ -223,6 +239,142 @@ public class GoalFlowManager : MonoBehaviour
         isActivated = false;
         attackersAreBack = false;
         defendersAreBack = false;
+        instructionPhase = GoalInstructionPhase.None;
+        goalScoringTeamName = string.Empty;
+        goalScorerName = string.Empty;
+        goalAssisterName = string.Empty;
+        scorerGoalCount = 0;
+    }
+
+    public string GetInstructions()
+    {
+        return instructionPhase switch
+        {
+            GoalInstructionPhase.Celebration => $"GOAL FOR {goalScoringTeamName}!!!",
+            GoalInstructionPhase.Reset => BuildGoalResetInstruction(),
+            _ => string.Empty,
+        };
+    }
+
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (instructionPhase == GoalInstructionPhase.None)
+        {
+            return null;
+        }
+
+        return goalScoringTeamIsHome;
+    }
+
+    public bool ShouldFlashInstructionColors()
+    {
+        return instructionPhase == GoalInstructionPhase.Celebration;
+    }
+
+    private void CaptureGoalInstructionContext(PlayerToken shooterToken)
+    {
+        if (shooterToken == null)
+        {
+            goalScoringTeamIsHome = true;
+            goalScoringTeamName = "Unknown Team";
+            goalScorerName = "Unknown Scorer";
+            goalAssisterName = string.Empty;
+            scorerGoalCount = 1;
+            return;
+        }
+
+        goalScoringTeamIsHome = shooterToken.isHomeTeam;
+        goalScoringTeamName = GetTeamName(shooterToken.isHomeTeam);
+        goalScorerName = string.IsNullOrWhiteSpace(shooterToken.playerName) ? shooterToken.name : shooterToken.playerName;
+        goalAssisterName = ResolveAssisterName(shooterToken);
+        scorerGoalCount = CountGoalsByScorer(goalScorerName, shooterToken.isHomeTeam);
+    }
+
+    private string BuildGoalResetInstruction()
+    {
+        string ordinalText = GetGoalOrdinalText(scorerGoalCount);
+        string scorerText = string.IsNullOrWhiteSpace(ordinalText)
+            ? $"Goal by {goalScorerName}!"
+            : $"{ordinalText} Goal by {goalScorerName}!";
+        string assistText = string.IsNullOrWhiteSpace(goalAssisterName)
+            ? string.Empty
+            : $" Assisted by {goalAssisterName}!";
+
+        return $"{scorerText}{assistText} {GetCurrentScoreText()}";
+    }
+
+    private string GetGoalOrdinalText(int goalCount)
+    {
+        return goalCount switch
+        {
+            2 => $"{goalCount}) {GetBraceLabel()}",
+            3 => $"{goalCount}) Hat trick",
+            4 => $"{goalCount}) Poker",
+            5 => $"{goalCount}) Re-Poker",
+            6 => $"{goalCount}) Double Hat trick",
+            > 6 => $"{goalCount}) Double Hat trick",
+            _ => string.Empty,
+        };
+    }
+
+    private string GetBraceLabel()
+    {
+        // Placeholder for a future nationality field on PlayerToken/RosterPlayer:
+        // return scorerIsItalian ? "Doppietta" : "Brace";
+        return "Brace";
+    }
+
+    private string ResolveAssisterName(PlayerToken shooterToken)
+    {
+        PlayerToken assistToken = MatchManager.Instance?.PreviousTokenToTouchTheBallOnPurpose;
+        if (assistToken == null || assistToken == shooterToken || assistToken.isHomeTeam != shooterToken.isHomeTeam)
+        {
+            return string.Empty;
+        }
+
+        return string.IsNullOrWhiteSpace(assistToken.playerName) ? assistToken.name : assistToken.playerName;
+    }
+
+    private int CountGoalsByScorer(string scorerName, bool isHomeTeam)
+    {
+        List<MatchManager.GoalEvent> goals = isHomeTeam
+            ? MatchManager.Instance?.homeScorers
+            : MatchManager.Instance?.awayScorers;
+
+        if (goals == null || string.IsNullOrWhiteSpace(scorerName))
+        {
+            return 1;
+        }
+
+        int count = goals.Count(goal => goal != null && goal.scorer == scorerName);
+        return Mathf.Max(1, count);
+    }
+
+    private string GetTeamName(bool isHomeTeam)
+    {
+        MatchManager.GameSettings settings = MatchManager.Instance?.gameData?.gameSettings;
+        if (settings == null)
+        {
+            return isHomeTeam ? "Home" : "Away";
+        }
+
+        string teamName = isHomeTeam ? settings.homeTeamName : settings.awayTeamName;
+        return string.IsNullOrWhiteSpace(teamName) ? (isHomeTeam ? "Home" : "Away") : teamName;
+    }
+
+    private string GetCurrentScoreText()
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager?.gameData?.stats == null)
+        {
+            return string.Empty;
+        }
+
+        string homeTeamName = GetTeamName(true);
+        string awayTeamName = GetTeamName(false);
+        int homeGoals = matchManager.gameData.stats.homeTeamStats.totalGoals;
+        int awayGoals = matchManager.gameData.stats.awayTeamStats.totalGoals;
+        return $"{homeTeamName} {homeGoals} - {awayGoals} {awayTeamName}";
     }
 
     // Determines the celebration hex list based on scorer's position

@@ -6,7 +6,7 @@
 | home | | away |
 |:----:|:-----------:|:----:|
 |      | ATTACKING         |      |
-| 0  | Total Shots | 0 |
+| 0 / 0.00  | Total Shots / xG | 0 / 0.00 |
 | 0 / 0  | On Target / Corners     | 0 / 0  |
 | 0 / 0  | Blocked / Off Target  | 0 / 0  |
 |      | PASSING        |      |

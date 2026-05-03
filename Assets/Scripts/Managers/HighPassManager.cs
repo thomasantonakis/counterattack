@@ -523,11 +523,6 @@ public class HighPassManager : MonoBehaviour
             CommitToThisAction();
         }
 
-        MatchManager.Instance.gameData.gameLog.LogEvent(
-            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
-            MatchManager.ActionType.AerialPassAttempt
-        );
-
         if (isCornerKick)
         {
             lockedAttacker = null;
@@ -747,6 +742,11 @@ public class HighPassManager : MonoBehaviour
             Debug.LogError("Error: No attacker token found on the ball's hex!");
             return;
         }
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            attackerToken,
+            MatchManager.ActionType.AerialPassAttempt
+        );
 
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");

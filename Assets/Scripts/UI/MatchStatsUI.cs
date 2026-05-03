@@ -1361,12 +1361,17 @@ public class MatchStatsUI : MonoBehaviour
             case "shon":
             case "totalshots":
                 return ($"{homeTeam.totalShots}", $"{awayTeam.totalShots}", false);
+            case "totalshotsxg":
+                return (FormatShotsAndExpectedGoals(homeTeam), FormatShotsAndExpectedGoals(awayTeam), true);
             case "ontargetcorners":
                 return ($"{homeTeam.totalShotsOnTarget}/{homeTeam.totalCorners}", $"{awayTeam.totalShotsOnTarget}/{awayTeam.totalCorners}", false);
             case "blockedoff":
             case "blkoff":
             case "blockedofftarget":
                 return ($"{homeTeam.totalShotsBlocked}/{homeTeam.totalShotsOffTarget}", $"{awayTeam.totalShotsBlocked}/{awayTeam.totalShotsOffTarget}", false);
+            case "xgoals":
+            case "xg":
+                return ($"{homeTeam.totalXGoals:0.00}", $"{awayTeam.totalXGoals:0.00}", true);
             case "assistscorners":
             case "astcor":
             case "asissts":
@@ -1417,7 +1422,7 @@ public class MatchStatsUI : MonoBehaviour
             case "xrecoveries":
             case "xrec":
             case "xrecoveriesmade":
-                return (FormatExpectedAndMade(homeTeam.totalXRecoveries, homeTeam.totalInterceptionsMade), FormatExpectedAndMade(awayTeam.totalXRecoveries, awayTeam.totalInterceptionsMade), true);
+                return (FormatExpectedAndMade(homeTeam.totalXRecoveries, homeTeam.totalPossessionWon), FormatExpectedAndMade(awayTeam.totalXRecoveries, awayTeam.totalPossessionWon), true);
             case "xdribbles":
             case "xdri":
             case "xdribblesmade":
@@ -1444,6 +1449,11 @@ public class MatchStatsUI : MonoBehaviour
     private static string FormatAerialTriplet(MatchManager.TeamStats stats)
     {
         return $"{stats.totalAerialPassesAttempted}/{stats.totalAerialPassesTargeted}/{stats.totalAerialPassesCompleted}";
+    }
+
+    private static string FormatShotsAndExpectedGoals(MatchManager.TeamStats stats)
+    {
+        return $"{stats.totalShots}/{stats.totalXGoals:0.00}";
     }
 
     private static string FormatExpected(float value)

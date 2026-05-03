@@ -132,12 +132,6 @@ public class LooseBallManager : MonoBehaviour
 
     private IEnumerator MoveLooseBallToHex(HexCell targetHex, LooseBallSourceType sourceType)
     {
-        if (IsHeaderLooseBall(sourceType) && longBallManager != null)
-        {
-            yield return StartCoroutine(longBallManager.HandleLongBallMovement(targetHex, true));
-            yield break;
-        }
-
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex));
     }
 
@@ -596,6 +590,13 @@ public class LooseBallManager : MonoBehaviour
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
             {
+                if (IsHeaderLooseBall(sourceType) && MatchManager.Instance.hangingPassType == "aerial")
+                {
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                        MatchManager.ActionType.AerialPassCompleted
+                    );
+                }
                 AssignLooseBallReceiver(closestToken, sourceType);
                 if (IsHeaderLooseBall(sourceType))
                 {
@@ -661,6 +662,7 @@ public class LooseBallManager : MonoBehaviour
             if (!path.Last().isOutOfBounds) // in bounds, still in play
             {
                 Debug.Log($"Ball did not hit anyone");
+                MatchManager.Instance.UpdatePossessionAfterPass(path.Last());
                 if (ShouldClearPreviousChainOnCollection(sourceType))
                 {
                     MatchManager.Instance.MarkNextBallCollectionToClearPrevious();

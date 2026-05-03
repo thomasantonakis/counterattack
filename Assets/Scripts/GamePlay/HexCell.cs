@@ -171,6 +171,9 @@ public class HexCell : MonoBehaviour
             case "dangerousPass":
                 colorToApply = Color.magenta;  // Use the provided color for the ball path
                 break;
+            case "ShotSaveHex":
+                colorToApply = new Color(1f, 0.48f, 0.05f, 1f);
+                break;
             case "impossiblePass":
                 colorToApply = Color.magenta * 0.5f;  // Use the provided color for the ball path
                 break;
@@ -196,6 +199,13 @@ public class HexCell : MonoBehaviour
                 colorToApply = new Color(1f, 0.72f, 0.18f, 1f);
                 break;
             case "PaceRiskHover":
+                colorToApply = new Color(1f, 0.48f, 0.05f, 1f);
+                break;
+            case "HeaderTargetFree":
+                colorToApply = Color.yellow;
+                break;
+            case "HeaderTargetRisk":
+            case "HeaderTargetHover":
                 colorToApply = new Color(1f, 0.48f, 0.05f, 1f);
                 break;
             case "ReachOverlayAttacker":

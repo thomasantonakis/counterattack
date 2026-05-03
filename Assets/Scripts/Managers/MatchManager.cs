@@ -211,6 +211,7 @@ public class MatchManager : MonoBehaviour
         public float xRecoveries;
         public float xDribbles;
         public float xTackles;
+        public float xGoals;
         public PlayerStats()
         {
             goals = 0;
@@ -241,6 +242,7 @@ public class MatchManager : MonoBehaviour
             xRecoveries = 0f;
             xDribbles = 0f;
             xTackles = 0f;
+            xGoals = 0f;
         }
     }
 
@@ -276,6 +278,7 @@ public class MatchManager : MonoBehaviour
         public float totalXRecoveries;
         public float totalXDribbles;
         public float totalXTackles;
+        public float totalXGoals;
 
         public TeamStats()
         {
@@ -308,6 +311,7 @@ public class MatchManager : MonoBehaviour
             totalXRecoveries = 0f;
             totalXDribbles = 0f;
             totalXTackles = 0f;
+            totalXGoals = 0f;
         }
         public void Reset()
         {
@@ -340,6 +344,7 @@ public class MatchManager : MonoBehaviour
             totalXRecoveries = 0f;
             totalXDribbles = 0f;
             totalXTackles = 0f;
+            totalXGoals = 0f;
         }
         public void AddPlayerStats(PlayerStats stats)
         {
@@ -370,6 +375,7 @@ public class MatchManager : MonoBehaviour
             totalXRecoveries += stats.xRecoveries;
             totalXDribbles += stats.xDribbles;
             totalXTackles += stats.xTackles;
+            totalXGoals += stats.xGoals;
         }
     }
 
@@ -559,6 +565,9 @@ public class MatchManager : MonoBehaviour
                         case "shot":
                             logEntry += $"takes a SHOT!";
                             break;
+                        case "header":
+                            logEntry += $"takes a headed shot!";
+                            break;
                         case "shot0":
                             logEntry += $"takes a SHOT! from outside the box";
                             break;
@@ -674,8 +683,6 @@ public class MatchManager : MonoBehaviour
                         case "held":
                             logEntry += "Saved and held!";
                             playerStats.attemptsSaved += value;
-                            playerStats.possessionWon += value;
-                            teamStats.totalPossessionWon += value;
                             break;
                         case "loose":
                             logEntry += "Saved for a loose ball";
@@ -750,6 +757,25 @@ public class MatchManager : MonoBehaviour
             string targetText = connectedToken != null ? $" against {connectedToken.name}" : string.Empty;
             string contextText = string.IsNullOrWhiteSpace(recoveryType) ? "recovery" : recoveryType;
             Debug.Log($"[Expected Stats] {token.name} records xRecovery {expectedValue:0.###} on {contextText}{targetText}");
+        }
+
+        public void LogExpectedGoal(
+            PlayerToken token,
+            float expectedValue,
+            string shotType = "")
+        {
+            if (token == null || stats == null)
+            {
+                return;
+            }
+
+            PlayerStats playerStats = stats.GetPlayerStats(token.playerName);
+            TeamStats teamStats = stats.GetTeamStats(token.isHomeTeam);
+            playerStats.xGoals += expectedValue;
+            teamStats.totalXGoals += expectedValue;
+
+            string contextText = string.IsNullOrWhiteSpace(shotType) ? "shot" : shotType;
+            Debug.Log($"[Expected Stats] {token.name} records xG {expectedValue:0.###} on {contextText}");
         }
 
         public void LogExpectedGroundDuel(
@@ -1202,6 +1228,7 @@ public class MatchManager : MonoBehaviour
 
     public void MarkNextBallCollectionToClearPrevious()
     {
+        // A loose ball in space breaks the purposeful-touch chain when it is next collected.
         clearPreviousOnNextBallCollection = true;
     }
 
@@ -1218,6 +1245,7 @@ public class MatchManager : MonoBehaviour
 
     public void SetLastTokenFromLooseBall(PlayerToken inputToken)
     {
+        // Loose-ball contact is not a purposeful pass, so the new holder starts a fresh chain.
         ClearLastTokenChain();
         SetLastToken(inputToken);
         clearPreviousOnNextBallCollection = false;
@@ -1321,6 +1349,7 @@ public class MatchManager : MonoBehaviour
     public void BroadcastSafeEndofMovementPhase()
     {
         currentState = GameState.EndOfMovementPhase;
+        UpdatePossessionAfterPass(ball.GetCurrentHex());
         OfferStandardGroundBallPass();
         RefreshAvailableActions();
     }
@@ -1575,6 +1604,13 @@ public class MatchManager : MonoBehaviour
     private bool ShouldShotBeAvailable()
     {
         bool shouldShotBeAvailable = false;
+        HexCell ballHex = ball.GetCurrentHex();
+        PlayerToken tokenOnBallHex = ballHex != null ? ballHex.GetOccupyingToken() : null;
+        bool ballIsPossessedByAttacker = ballHex != null
+            && ballHex.isAttackOccupied
+            && tokenOnBallHex != null
+            && tokenOnBallHex.isAttacker
+            && attackHasPossession;
         MatchManager.TeamAttackingDirection attackingDirection;
         if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
         {
@@ -1587,16 +1623,18 @@ public class MatchManager : MonoBehaviour
         if (
             (
                 attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attackers shoot to the Right
-                && ball.GetCurrentHex().CanShootFrom // Is in shooting distance
-                && ball.GetCurrentHex().coordinates.x > 0 // In Right Side of Pitch
-                && attackHasPossession // Ball is on an attacker
+                && ballHex != null
+                && ballHex.CanShootFrom // Is in shooting distance
+                && ballHex.coordinates.x > 0 // In Right Side of Pitch
+                && ballIsPossessedByAttacker // Ball is on an attacker
             )
             ||
             (
                 attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attackers shoot to the Left
-                && ball.GetCurrentHex().CanShootFrom // Is in shooting distance
-                && ball.GetCurrentHex().coordinates.x < 0 // In Left Side of Pitch
-                && attackHasPossession // Ball is on an attacker
+                && ballHex != null
+                && ballHex.CanShootFrom // Is in shooting distance
+                && ballHex.coordinates.x < 0 // In Left Side of Pitch
+                && ballIsPossessedByAttacker // Ball is on an attacker
             )
         )
         {
