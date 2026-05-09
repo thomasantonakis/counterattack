@@ -629,7 +629,7 @@ public class GroundBallManager : MonoBehaviour
         currentDefenderHex = null;
     }
 
-    public IEnumerator HandleGroundBallMovement(HexCell targetHex, int? speed = null)
+    public IEnumerator HandleGroundBallMovement(HexCell targetHex, int? speed = null, bool allowGKBoxMove = true)
     {
         // Ensure the ball and targetHex are valid
         if (ball == null)
@@ -646,7 +646,7 @@ public class GroundBallManager : MonoBehaviour
         // Set thegame status to StandardPassMoving
         // MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
         // Wait for the ball movement to complete
-        yield return StartCoroutine(ball.MoveToCell(targetHex, speed));
+        yield return StartCoroutine(ball.MoveToCell(targetHex, speed, allowGKBoxMove));
         // Adjust the ball's height based on occupancy (after movement is completed)
         ball.AdjustBallHeightBasedOnOccupancy();  // Ensure this method is public in Ball.cs
         // Now clear the highlights after the movement

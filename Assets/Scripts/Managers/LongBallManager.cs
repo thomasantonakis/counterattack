@@ -1027,10 +1027,10 @@ public class LongBallManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
-        PlayerToken lastToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        PlayerToken defendingGK = hexGrid != null ? hexGrid.GetDefendingGK() : null;
-        if (goalKeeperManager.isActivated) return "";
-        if (finalThirdManager.isActivated) return "";
+        MatchManager matchManager = MatchManager.Instance;
+        PlayerToken lastToken = matchManager != null ? matchManager.LastTokenToTouchTheBallOnPurpose : null;
+        if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
+        if (finalThirdManager != null && finalThirdManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [L] to Play a Long Ball, ");
         if (isActivated) sb.Append("Long: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex 6 or more Hexes away from the closest Attacker, ");
@@ -1038,7 +1038,11 @@ public class LongBallManager : MonoBehaviour
         if (isWaitingForAccuracyRoll && lastToken != null) {sb.Append($"Press [R] to roll the accuracy check with {lastToken.name}, a roll of {(isDangerous ? 10 : 9) - lastToken.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
         if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
-        if (isWaitingForDefLBMove) {sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
+        if (isWaitingForDefLBMove)
+        {
+            PlayerToken defendingGK = hexGrid != null ? hexGrid.GetDefendingGK() : null;
+            sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");
+        }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();

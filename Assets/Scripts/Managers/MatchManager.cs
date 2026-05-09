@@ -188,6 +188,8 @@ public class MatchManager : MonoBehaviour
         public int shotsOnTarget;
         public int shotsBlocked;
         public int shotsOffTarget;
+        public int shotBlocksAttempted;
+        public int shotBlocksMade;
         public int passesAttempted;
         public int passesCompleted;
         public int aerialPassesAttempted;
@@ -199,6 +201,8 @@ public class MatchManager : MonoBehaviour
         public int possessionLost;
         public int groundDuelsInvolved;
         public int groundDuelsWon;
+        public int dribblesMade;
+        public int tacklesMade;
         public int interceptionsAttempted;
         public int interceptionsMade;
         public int aerialChallengesInvolved;
@@ -219,6 +223,8 @@ public class MatchManager : MonoBehaviour
             shotsOnTarget = 0;
             shotsBlocked = 0;
             shotsOffTarget = 0;
+            shotBlocksAttempted = 0;
+            shotBlocksMade = 0;
             passesAttempted = 0;
             passesCompleted = 0;
             aerialPassesAttempted = 0;
@@ -230,6 +236,8 @@ public class MatchManager : MonoBehaviour
             possessionLost = 0;
             groundDuelsInvolved = 0;
             groundDuelsWon = 0;
+            dribblesMade = 0;
+            tacklesMade = 0;
             interceptionsAttempted = 0;
             interceptionsMade = 0;
             aerialChallengesInvolved = 0;
@@ -254,6 +262,8 @@ public class MatchManager : MonoBehaviour
         public int totalShotsOnTarget;
         public int totalShotsBlocked;
         public int totalShotsOffTarget;
+        public int totalShotBlocksAttempted;
+        public int totalShotBlocksMade;
         public int totalPassesAttempted;
         public int totalPassesCompleted;
         public int totalAerialPassesAttempted;
@@ -262,6 +272,8 @@ public class MatchManager : MonoBehaviour
         public int totalPacesRan;
         public int totalGroundDuelsInvolved;
         public int totalGroundDuelsWon;
+        public int totalDribblesMade;
+        public int totalTacklesMade;
         public int totalInterceptionsAttempted;
         public int totalInterceptionsMade;
         public int totalAerialChallengesInvolved;
@@ -287,6 +299,8 @@ public class MatchManager : MonoBehaviour
             totalShotsOnTarget = 0;
             totalShotsBlocked = 0;
             totalShotsOffTarget = 0;
+            totalShotBlocksAttempted = 0;
+            totalShotBlocksMade = 0;
             totalPassesAttempted = 0;
             totalPassesCompleted = 0;
             totalAerialPassesAttempted = 0;
@@ -295,6 +309,8 @@ public class MatchManager : MonoBehaviour
             totalPacesRan = 0;
             totalGroundDuelsInvolved = 0;
             totalGroundDuelsWon = 0;
+            totalDribblesMade = 0;
+            totalTacklesMade = 0;
             totalInterceptionsAttempted = 0;
             totalInterceptionsMade = 0;
             totalAerialChallengesInvolved = 0;
@@ -320,6 +336,8 @@ public class MatchManager : MonoBehaviour
             totalShotsOnTarget = 0;
             totalShotsBlocked = 0;
             totalShotsOffTarget = 0;
+            totalShotBlocksAttempted = 0;
+            totalShotBlocksMade = 0;
             totalPassesAttempted = 0;
             totalPassesCompleted = 0;
             totalAerialPassesAttempted = 0;
@@ -328,6 +346,8 @@ public class MatchManager : MonoBehaviour
             totalPacesRan = 0;
             totalGroundDuelsInvolved = 0;
             totalGroundDuelsWon = 0;
+            totalDribblesMade = 0;
+            totalTacklesMade = 0;
             totalInterceptionsAttempted = 0;
             totalInterceptionsMade = 0;
             totalAerialChallengesInvolved = 0;
@@ -353,6 +373,8 @@ public class MatchManager : MonoBehaviour
             totalShotsOnTarget += stats.shotsOnTarget;
             totalShotsBlocked += stats.shotsBlocked;
             totalShotsOffTarget += stats.shotsOffTarget;
+            totalShotBlocksAttempted += stats.shotBlocksAttempted;
+            totalShotBlocksMade += stats.shotBlocksMade;
             totalPassesAttempted += stats.passesAttempted;
             totalPassesCompleted += stats.passesCompleted;
             totalAerialPassesAttempted += stats.aerialPassesAttempted;
@@ -361,6 +383,8 @@ public class MatchManager : MonoBehaviour
             totalPacesRan += stats.pacesRan;
             totalGroundDuelsInvolved += stats.groundDuelsInvolved;
             totalGroundDuelsWon += stats.groundDuelsWon;
+            totalDribblesMade += stats.dribblesMade;
+            totalTacklesMade += stats.tacklesMade;
             totalInterceptionsAttempted += stats.interceptionsAttempted;
             totalInterceptionsMade += stats.interceptionsMade;
             totalAerialChallengesInvolved += stats.aerialChallengesInvolved;
@@ -586,11 +610,25 @@ public class MatchManager : MonoBehaviour
                     break;
 
                 case ActionType.ShotBlocked:
-                    logEntry += "has a shot blocked";
+                    logEntry += connectedToken != null
+                        ? $"has a shot blocked by {connectedToken.name}"
+                        : "has a shot blocked";
                     playerStats.shotsBlocked += value;
                     teamStats.totalShotsBlocked += value;
-                    connectedPlayerStats.interceptionsMade += value;
-                    connectedTeamStats.totalInterceptionsMade += value;
+                    break;
+
+                case ActionType.ShotBlockAttempt:
+                    logEntry += "attempts to block a shot";
+                    playerStats.shotBlocksAttempted += value;
+                    teamStats.totalShotBlocksAttempted += value;
+                    break;
+
+                case ActionType.ShotBlockMade:
+                    logEntry += connectedToken != null
+                        ? $"blocks a shot from {connectedToken.name}"
+                        : "blocks a shot";
+                    playerStats.shotBlocksMade += value;
+                    teamStats.totalShotBlocksMade += value;
                     break;
 
                 case ActionType.ShotOffTarget:
@@ -655,6 +693,16 @@ public class MatchManager : MonoBehaviour
                     }
                     playerStats.groundDuelsWon += value;
                     teamStats.totalGroundDuelsWon += value;
+                    if (tackleType == "successful")
+                    {
+                        playerStats.tacklesMade += value;
+                        teamStats.totalTacklesMade += value;
+                    }
+                    else if (tackleType == "nutmeg" || tackleType == "keep")
+                    {
+                        playerStats.dribblesMade += value;
+                        teamStats.totalDribblesMade += value;
+                    }
                     break;
 
                 case ActionType.AerialChallengeAttempt:
@@ -691,7 +739,6 @@ public class MatchManager : MonoBehaviour
                         case "corner":
                             logEntry += "Saved for corner Kick";
                             playerStats.attemptsSaved += value;
-                            connectedTeamStats.totalCorners += value;
                             break;
                         default:
                             logEntry = "UNKNOWN SAVETYPE";
@@ -843,6 +890,8 @@ public class MatchManager : MonoBehaviour
         ShotAttempt,
         ShotOnTarget,
         ShotBlocked,
+        ShotBlockAttempt,
+        ShotBlockMade,
         ShotOffTarget,
         GoalScored,
         BallRecovery,

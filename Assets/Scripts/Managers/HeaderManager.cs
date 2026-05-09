@@ -243,12 +243,14 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.H)
                 {
+                    keyData.isConsumed = true;
                     Debug.Log("Header option selected.");
                     attackFreeHeader = true;
                     StartAttackHeaderSelection();
                 }
                 else if (keyData.key == KeyCode.B)
                 {
+                    keyData.isConsumed = true;
                     Debug.Log("Ball Control was chosen by Attack");
                     attackControlBall = true;
                     StartAttackControlSelection();
@@ -258,10 +260,12 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.H)
                 {
+                    keyData.isConsumed = true;
                     DefenseFreeHeader();
                 }
                 else if (keyData.key == KeyCode.B)
                 {
+                    keyData.isConsumed = true;
                     DefenseContolBall();
                 }
             }
@@ -1404,7 +1408,7 @@ public class HeaderManager : MonoBehaviour
                 }
                 MatchManager.Instance.SetHangingPass("aerial");
                 // MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection));
+                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection, allowGKBoxMove: !headerAtGoalDeclared));
                 Debug.Log("Loose ball from header challenge.");
                 CleanUpHeader();
             }

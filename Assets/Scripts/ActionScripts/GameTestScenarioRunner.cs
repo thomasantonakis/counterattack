@@ -323,6 +323,45 @@ public class GameTestScenarioRunner : MonoBehaviour
         public HexCell blockingHex;
     }
 
+    private enum ShootingBranchStepType
+    {
+        ShotBlockRoll,
+        ShooterRoll,
+        GkSaveRoll,
+        HandlingRoll,
+        LooseDirectionRoll,
+        LooseDistanceRoll,
+        LooseInterceptionRoll,
+        GoalkeeperMove,
+        ExpectAnyOtherScenario,
+        ExpectMovementToAttack,
+        ExpectSaveAndHold,
+        ExpectCornerNorth,
+        ExpectCornerSouth,
+        ExpectGoal,
+        ExpectOwnGoal
+    }
+
+    private sealed class ShootingBranchStep
+    {
+        public ShootingBranchStepType Type;
+        public string PlayerName;
+        public int Roll;
+        public Vector2Int Coordinates;
+    }
+
+    private sealed class ShootingBranchDefinition
+    {
+        public ShootingBranchDefinition(string name, params ShootingBranchStep[] steps)
+        {
+            Name = name;
+            Steps = steps.ToList();
+        }
+
+        public string Name { get; }
+        public List<ShootingBranchStep> Steps { get; }
+    }
+
     // private bool shouldRunTests = false;
     private bool shouldRunTests = true;
     private string logFilePath;
@@ -353,6 +392,15 @@ public class GameTestScenarioRunner : MonoBehaviour
     private readonly Queue<string> onScreenLogLines = new();
     private const int MaxOnScreenLogLines = 15;
     private string currentScenarioName = string.Empty;
+    private readonly Dictionary<string, int> expectedShootingShotBlockAttempts = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> expectedShootingShotBlocksMade = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> expectedShootingLooseInterceptionAttempts = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> expectedShootingLooseRecoveriesMade = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, float> expectedShootingLooseXRecoveries = new(StringComparer.OrdinalIgnoreCase);
+    private float? expectedShootingXGoals;
+    private bool expectedShootingShotBlocked;
+    private bool expectedShootingShotOnTarget;
+    private bool expectedShootingShotOffTarget;
     
     private void Awake()
     {
@@ -569,6 +617,19 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
     }
 
+    private void AddShootingBranchScenarios(List<ScenarioDefinition> scenarios)
+    {
+        int shootingBranchIndex = 1;
+        foreach (ShootingBranchDefinition branch in BuildShootingBranchDefinitions())
+        {
+            ShootingBranchDefinition capturedBranch = branch;
+            scenarios.Add(new ScenarioDefinition(
+                $"Scenario_034_{shootingBranchIndex:00}_Shooting_{BuildScenarioSafeName(capturedBranch.Name)}",
+                () => Scenario_034_Shooting_Branch(capturedBranch)));
+            shootingBranchIndex++;
+        }
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -576,7 +637,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runFtpAuditOnly = false;
         bool runLongBallAuditOnly = false;
         bool runHighPassAuditOnly = false;
-        bool runHighPassHeaderAuditOnly = true;
+        bool runHighPassHeaderAuditOnly = false;
+        bool runShootingAuditOnly = false;
         bool runFromCurrentFailureOnly = false;
 
         if (runManualStatsPreviewOnly)
@@ -634,18 +696,15 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
             });
         }
+        else if (runShootingAuditOnly)
+        {
+            AddShootingBranchScenarios(scenarios);
+        }
         else
         {
             scenarios.AddRange(runFromCurrentFailureOnly ? new[]
             {
-            new ScenarioDefinition(nameof(Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in), Scenario_020_Movement_Phase_Check_Tackle_loose_interception_missed_hit_attacker_new_tackle_throw_in),
-            new ScenarioDefinition(nameof(Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions), Scenario_021_Movement_Phase_PickUp_continue_move_looseball_two_missed_interceptions),
-            new ScenarioDefinition(nameof(Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move), Scenario_022_Movement_Phase_Loose_ball_gets_in_pen_box_check_keeper_move),
-            new ScenarioDefinition(nameof(Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP), Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP),
-            new ScenarioDefinition(nameof(Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal), Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal),
-            new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
-            new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
-            new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
+            new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
             } : new[]
             {
             // Ground Ball regression suite
@@ -663,6 +722,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
             new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
+            new ScenarioDefinition(nameof(Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack), Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack),
             new ScenarioDefinition(nameof(Scenario_009_Movement_Phase_NO_interceptions_No_tackles), Scenario_009_Movement_Phase_NO_interceptions_No_tackles),
             new ScenarioDefinition(nameof(Scenario_010_Movement_Phase_failed_interceptions_No_tackles), Scenario_010_Movement_Phase_failed_interceptions_No_tackles),
             new ScenarioDefinition(nameof(Scenario_011_Movement_Phase_Successful_Interception), Scenario_011_Movement_Phase_Successful_Interception),
@@ -705,6 +765,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
             new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
             new ScenarioDefinition(nameof(Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal), Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal),
+            new ScenarioDefinition(nameof(Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits), Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits),
+            new ScenarioDefinition(nameof(Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click), Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click),
+            new ScenarioDefinition(nameof(Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header), Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header),
+            new ScenarioDefinition(nameof(Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice), Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice),
+            new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
               
             // // // // // // Scenario_026_HighPass_onAttacker_MoveAtt_moveDef_AccurateHP(),
             // Scenario_027_HighPass_on_Attacker_MoveAtt_moveDef_Accurate_HP_BC(),
@@ -754,6 +819,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_029_HeaderAtGoal_LooseBall_OWN_GOAL(),
             // Add more scenarios here
             });
+
+            AddShootingBranchScenarios(scenarios);
         }
 
         for (; currentTestIndex < scenarios.Count; currentTestIndex++)
@@ -1149,30 +1216,52 @@ public class GameTestScenarioRunner : MonoBehaviour
         hoverMethod?.Invoke(highPassManager, new object[] { hex?.occupyingToken, hex });
     }
 
+    private static MethodInfo GetPrivateInstanceMethod(Type ownerType, string methodName, params Type[] parameterTypes)
+    {
+        return ownerType.GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            null,
+            parameterTypes,
+            null);
+    }
+
     private void PerformRiggedFirstTimePassInterceptionRoll(int rigRoll)
     {
-        MethodInfo interceptionMethod = typeof(FirstTimePassManager).GetMethod("PerformFTPInterceptionRolls", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo interceptionMethod = GetPrivateInstanceMethod(
+            typeof(FirstTimePassManager),
+            "PerformFTPInterceptionRolls",
+            typeof(int?));
         AssertTrue(interceptionMethod != null, "FirstTimePassManager private interception roll method should exist for the FTP tests.");
         interceptionMethod?.Invoke(firstTimePassManager, new object[] { (int?)rigRoll });
     }
 
     private void PerformRiggedLongBallAccuracyRoll(int rigRoll)
     {
-        MethodInfo accuracyMethod = typeof(LongBallManager).GetMethod("PerformAccuracyRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo accuracyMethod = GetPrivateInstanceMethod(
+            typeof(LongBallManager),
+            "PerformAccuracyRoll",
+            typeof(int?));
         AssertTrue(accuracyMethod != null, "LongBallManager private accuracy roll method should exist for the Long Ball tests.");
         accuracyMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll });
     }
 
     private void PerformRiggedLongBallDirectionRoll(int rigRoll)
     {
-        MethodInfo directionMethod = typeof(LongBallManager).GetMethod("PerformDirectionRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo directionMethod = GetPrivateInstanceMethod(
+            typeof(LongBallManager),
+            "PerformDirectionRoll",
+            typeof(int?));
         AssertTrue(directionMethod != null, "LongBallManager private direction roll method should exist for the Long Ball tests.");
         directionMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll });
     }
 
     private IEnumerator PerformRiggedLongBallDistanceRoll(int rigRoll)
     {
-        MethodInfo distanceMethod = typeof(LongBallManager).GetMethod("PerformDistanceRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo distanceMethod = GetPrivateInstanceMethod(
+            typeof(LongBallManager),
+            "PerformDistanceRoll",
+            typeof(int?));
         AssertTrue(distanceMethod != null, "LongBallManager private distance roll method should exist for the Long Ball tests.");
         IEnumerator coroutine = distanceMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll }) as IEnumerator;
         AssertTrue(coroutine != null, "Long Ball distance roll should return a coroutine for the tests.");
@@ -1184,7 +1273,10 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private void StartRiggedLongBallDistanceRollAsync(int rigRoll)
     {
-        MethodInfo distanceMethod = typeof(LongBallManager).GetMethod("PerformDistanceRoll", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo distanceMethod = GetPrivateInstanceMethod(
+            typeof(LongBallManager),
+            "PerformDistanceRoll",
+            typeof(int?));
         AssertTrue(distanceMethod != null, "LongBallManager private distance roll method should exist for the Long Ball tests.");
         IEnumerator coroutine = distanceMethod?.Invoke(longBallManager, new object[] { (int?)rigRoll }) as IEnumerator;
         AssertTrue(coroutine != null, "Long Ball distance roll should return a coroutine for the tests.");
@@ -1196,7 +1288,11 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private IEnumerator PerformRiggedLongBallInterceptionRoll(int rigRoll)
     {
-        MethodInfo interceptionMethod = typeof(LongBallManager).GetMethod("PerformInterceptionCheck", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo interceptionMethod = GetPrivateInstanceMethod(
+            typeof(LongBallManager),
+            "PerformInterceptionCheck",
+            typeof(HexCell),
+            typeof(int?));
         AssertTrue(interceptionMethod != null, "LongBallManager private interception roll method should exist for the Long Ball tests.");
         FieldInfo finalHexField = typeof(LongBallManager).GetField("finalHex", BindingFlags.Instance | BindingFlags.NonPublic);
         AssertTrue(finalHexField != null, "LongBallManager private final hex field should exist for the Long Ball tests.");
@@ -1211,7 +1307,11 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private void StartRiggedLongBallInterceptionRollAsync(int rigRoll)
     {
-        MethodInfo interceptionMethod = typeof(LongBallManager).GetMethod("PerformInterceptionCheck", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo interceptionMethod = GetPrivateInstanceMethod(
+            typeof(LongBallManager),
+            "PerformInterceptionCheck",
+            typeof(HexCell),
+            typeof(int?));
         AssertTrue(interceptionMethod != null, "LongBallManager private interception roll method should exist for the Long Ball tests.");
         FieldInfo finalHexField = typeof(LongBallManager).GetField("finalHex", BindingFlags.Instance | BindingFlags.NonPublic);
         AssertTrue(finalHexField != null, "LongBallManager private final hex field should exist for the Long Ball tests.");
@@ -1822,6 +1922,1809 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         AssertTrue(longBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -4)), "Ball should be on (-8,-4) after Long Ball prep.", hexgrid.GetHexCellAt(new Vector3Int(-8, 0, -4)), longBallManager.ball.GetCurrentHex());
         AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == RequirePlayerToken("Ulisses"), "Ulisses should be the last token after Long Ball prep.");
+    }
+
+    private static ShootingBranchStep ShotBlock(string playerName, int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ShotBlockRoll, PlayerName = playerName, Roll = roll };
+    }
+
+    private static ShootingBranchStep ShooterRoll(string playerName, int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ShooterRoll, PlayerName = playerName, Roll = roll };
+    }
+
+    private static ShootingBranchStep GkSave(string playerName, int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.GkSaveRoll, PlayerName = playerName, Roll = roll };
+    }
+
+    private static ShootingBranchStep Handling(int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.HandlingRoll, Roll = roll };
+    }
+
+    private static ShootingBranchStep LooseDirection(int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.LooseDirectionRoll, Roll = roll };
+    }
+
+    private static ShootingBranchStep LooseDistance(int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.LooseDistanceRoll, Roll = roll };
+    }
+
+    private static ShootingBranchStep LooseInterception(string playerName, int roll)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.LooseInterceptionRoll, PlayerName = playerName, Roll = roll };
+    }
+
+    private static ShootingBranchStep GkMove(int x, int z)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.GoalkeeperMove, Coordinates = new Vector2Int(x, z) };
+    }
+
+    private static ShootingBranchStep ExpectAnyOther(string playerName = null)
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectAnyOtherScenario, PlayerName = playerName };
+    }
+
+    private static ShootingBranchStep ExpectMovementToAttack()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectMovementToAttack };
+    }
+
+    private static ShootingBranchStep ExpectSaveAndHold()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectSaveAndHold };
+    }
+
+    private static ShootingBranchStep ExpectCornerNorth()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectCornerNorth };
+    }
+
+    private static ShootingBranchStep ExpectCornerSouth()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectCornerSouth };
+    }
+
+    private static ShootingBranchStep ExpectGoal()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectGoal };
+    }
+
+    private static ShootingBranchStep ExpectOwnGoal()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectOwnGoal };
+    }
+
+    private List<ShootingBranchDefinition> BuildShootingBranchDefinitions()
+    {
+        ShootingBranchStep[] missedPatersonMissedMcNultySavedBase =
+        {
+            ShotBlock("Paterson", 4),
+            GkMove(15, -1),
+            ShotBlock("McNulty", 4),
+            ShotBlock("Soares", 3),
+            ShooterRoll("Yaneva", 4),
+            GkSave("Kuzmic", 2)
+        };
+
+        ShootingBranchStep[] looseBallByKuzmicBase =
+        {
+            ShotBlock("Paterson", 4),
+            GkMove(15, -1),
+            ShotBlock("McNulty", 4),
+            ShotBlock("Soares", 3),
+            ShooterRoll("Yaneva", 5),
+            GkSave("Kuzmic", 2)
+        };
+
+        ShootingBranchStep[] poulsenGoalLineBase =
+        {
+            ShotBlock("Paterson", 4),
+            GkMove(15, -1),
+            ShotBlock("McNulty", 4),
+            ShotBlock("Soares", 3),
+            ShooterRoll("Yaneva", 6),
+            GkSave("Kuzmic", 2)
+        };
+
+        List<ShootingBranchDefinition> branches = new()
+        {
+            new ShootingBranchDefinition(
+                "Blocked by Paterson Picked up by Gilbert",
+                ShotBlock("Paterson", 6),
+                LooseDirection(3),
+                LooseDistance(6),
+                LooseInterception("Gilbert", 6),
+                ExpectAnyOther("Gilbert")),
+
+            new ShootingBranchDefinition(
+                "Blocked by Paterson missed by Gilbert",
+                ShotBlock("Paterson", 6),
+                LooseDirection(3),
+                LooseDistance(6),
+                LooseInterception("Gilbert", 3),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Blocked by Paterson missed by Paterson",
+                ShotBlock("Paterson", 6),
+                LooseDirection(1),
+                LooseDistance(1),
+                LooseInterception("Paterson", 3),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Blocked by Paterson into the Box McNulty misses",
+                ShotBlock("Paterson", 6),
+                LooseDirection(6),
+                LooseDistance(5),
+                LooseInterception("McNulty", 3),
+                GkMove(15, -1),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Blocked by Paterson into the Box McNulty picks",
+                ShotBlock("Paterson", 6),
+                LooseDirection(6),
+                LooseDistance(5),
+                LooseInterception("McNulty", 6),
+                GkMove(15, -1),
+                ExpectAnyOther("McNulty")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty Paterson Picks",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(2),
+                LooseDistance(6),
+                LooseInterception("Paterson", 6),
+                ExpectAnyOther("Paterson")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty Paterson Misses",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(2),
+                LooseDistance(6),
+                LooseInterception("Paterson", 4),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty McNulty Picks",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(1),
+                LooseDistance(1),
+                LooseInterception("McNulty", 6),
+                ExpectAnyOther("McNulty")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty McNulty Misses",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(1),
+                LooseDistance(1),
+                LooseInterception("McNulty", 2),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty Soares Picks",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(6),
+                LooseDistance(3),
+                LooseInterception("Soares", 6),
+                ExpectAnyOther("Soares")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty Kuzmic Picks",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(6),
+                LooseDistance(3),
+                LooseInterception("Soares", 2),
+                LooseInterception("Kuzmic", 6),
+                ExpectAnyOther("Kuzmic")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson Blocked by McNulty Kuzmic Misses",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 6),
+                LooseDirection(6),
+                LooseDistance(3),
+                LooseInterception("Soares", 2),
+                LooseInterception("Kuzmic", 2),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson McNulty Blocked by Soares McNulty Picks",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 4),
+                ShotBlock("Soares", 6),
+                LooseDirection(2),
+                LooseDistance(6),
+                LooseInterception("McNulty", 6),
+                ExpectAnyOther("McNulty")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson McNulty Blocked by Soares McNulty Misses",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 4),
+                ShotBlock("Soares", 6),
+                LooseDirection(2),
+                LooseDistance(6),
+                LooseInterception("McNulty", 4),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson McNulty Blocked by Soares Kuzmic Picks",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 4),
+                ShotBlock("Soares", 6),
+                LooseDirection(6),
+                LooseDistance(6),
+                ExpectAnyOther("Kuzmic")),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson McNulty Blocked by Soares Kuzmic Misses",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 4),
+                ShotBlock("Soares", 6),
+                LooseDirection(5),
+                LooseDistance(4),
+                LooseInterception("Kuzmic", 2),
+                ExpectMovementToAttack()),
+
+            new ShootingBranchDefinition(
+                "Missed by Paterson McNulty Blocked by Soares Kuzmic Misses Own Goal",
+                ShotBlock("Paterson", 4),
+                GkMove(15, -1),
+                ShotBlock("McNulty", 4),
+                ShotBlock("Soares", 6),
+                LooseDirection(5),
+                LooseDistance(5),
+                LooseInterception("Kuzmic", 2),
+                ExpectOwnGoal()),
+
+            new ShootingBranchDefinition(
+                "Saved by Kuzmic and held",
+                missedPatersonMissedMcNultySavedBase.Concat(new[]
+                {
+                    Handling(1),
+                    ExpectSaveAndHold()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Saved by Kuzmic and Corner N",
+                missedPatersonMissedMcNultySavedBase.Concat(new[]
+                {
+                    Handling(6),
+                    LooseDirection(4),
+                    ExpectCornerNorth()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Saved by Kuzmic and Corner S",
+                missedPatersonMissedMcNultySavedBase.Concat(new[]
+                {
+                    Handling(6),
+                    LooseDirection(6),
+                    ExpectCornerSouth()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Saved by Kuzmic and Spill Soares Hits",
+                missedPatersonMissedMcNultySavedBase.Concat(new[]
+                {
+                    Handling(6),
+                    LooseDirection(2),
+                    LooseDistance(6),
+                    ExpectAnyOther("Soares")
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Saved by Kuzmic and Spill Soares Misses",
+                missedPatersonMissedMcNultySavedBase.Concat(new[]
+                {
+                    Handling(6),
+                    LooseDirection(3),
+                    LooseDistance(4),
+                    LooseInterception("Soares", 3),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Loose Ball by Kuzmic Poulsen Misses",
+                looseBallByKuzmicBase.Concat(new[]
+                {
+                    LooseDirection(6),
+                    LooseDistance(6),
+                    LooseInterception("Poulsen", 2),
+                    ExpectGoal()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Loose Ball by Kuzmic Poulsen Intercepts",
+                looseBallByKuzmicBase.Concat(new[]
+                {
+                    LooseDirection(6),
+                    LooseDistance(6),
+                    LooseInterception("Poulsen", 6),
+                    ExpectAnyOther("Poulsen")
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Loose Ball by Kuzmic Kalla Picks",
+                looseBallByKuzmicBase.Concat(new[]
+                {
+                    LooseDirection(4),
+                    LooseDistance(1),
+                    ExpectAnyOther("Kalla")
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Loose Ball by Kuzmic Soares Picks",
+                looseBallByKuzmicBase.Concat(new[]
+                {
+                    LooseDirection(3),
+                    LooseDistance(4),
+                    LooseInterception("Soares", 6),
+                    ExpectAnyOther("Soares")
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Loose Ball by Kuzmic Soares Misses",
+                looseBallByKuzmicBase.Concat(new[]
+                {
+                    LooseDirection(3),
+                    LooseDistance(4),
+                    LooseInterception("Soares", 2),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Poulsen Goal",
+                poulsenGoalLineBase.Concat(new[]
+                {
+                    ShotBlock("Poulsen", 1),
+                    ExpectGoal()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Poulsen Own Goal",
+                poulsenGoalLineBase.Concat(new[]
+                {
+                    ShotBlock("Poulsen", 6),
+                    LooseDirection(6),
+                    LooseDistance(2),
+                    ExpectOwnGoal()
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Poulsen Blocks Kuzmic Picks Up",
+                poulsenGoalLineBase.Concat(new[]
+                {
+                    ShotBlock("Poulsen", 6),
+                    LooseDirection(2),
+                    LooseDistance(6),
+                    LooseInterception("Kuzmic", 6),
+                    ExpectAnyOther("Kuzmic")
+                }).ToArray()),
+
+            new ShootingBranchDefinition(
+                "Poulsen Blocks Kuzmic Misses",
+                poulsenGoalLineBase.Concat(new[]
+                {
+                    ShotBlock("Poulsen", 6),
+                    LooseDirection(2),
+                    LooseDistance(6),
+                    LooseInterception("Kuzmic", 2),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+        };
+
+        return branches;
+    }
+
+    private void ResetShootingStatsExpectations()
+    {
+        expectedShootingShotBlockAttempts.Clear();
+        expectedShootingShotBlocksMade.Clear();
+        expectedShootingLooseInterceptionAttempts.Clear();
+        expectedShootingLooseRecoveriesMade.Clear();
+        expectedShootingLooseXRecoveries.Clear();
+        expectedShootingXGoals = null;
+        expectedShootingShotBlocked = false;
+        expectedShootingShotOnTarget = false;
+        expectedShootingShotOffTarget = false;
+    }
+
+    private static void IncrementExpectedCount(Dictionary<string, int> counts, string playerName, int amount = 1)
+    {
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            return;
+        }
+
+        counts.TryGetValue(playerName, out int current);
+        counts[playerName] = current + amount;
+    }
+
+    private static void IncrementExpectedFloat(Dictionary<string, float> values, string playerName, float amount)
+    {
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            return;
+        }
+
+        values.TryGetValue(playerName, out float current);
+        values[playerName] = current + amount;
+    }
+
+    private void RecordShootingShotBlockAttempt(PlayerToken blocker, int requiredNaturalRoll, int rigRoll)
+    {
+        string blockerName = GetTokenTestName(blocker);
+        IncrementExpectedCount(expectedShootingShotBlockAttempts, blockerName);
+
+        if (IsShootingBlockRollSuccessful(blocker, requiredNaturalRoll, rigRoll))
+        {
+            IncrementExpectedCount(expectedShootingShotBlocksMade, blockerName);
+            expectedShootingShotBlocked = true;
+            expectedShootingXGoals ??= CalculateCurrentShootingExpectedGoal();
+        }
+    }
+
+    private void RecordShootingLooseInterceptionAttempt(PlayerToken interceptor, int rigRoll)
+    {
+        string interceptorName = GetTokenTestName(interceptor);
+        IncrementExpectedCount(expectedShootingLooseInterceptionAttempts, interceptorName);
+        IncrementExpectedFloat(
+            expectedShootingLooseXRecoveries,
+            interceptorName,
+            ExpectedStatsCalculator.CalculateRecoveryProbability(interceptor));
+
+        if (IsLooseRecoveryRollSuccessful(interceptor, rigRoll))
+        {
+            IncrementExpectedCount(expectedShootingLooseRecoveriesMade, interceptorName);
+        }
+    }
+
+    private void RecordShootingGkSaveExpectation(object gkInteraction, int rigRoll)
+    {
+        expectedShootingXGoals ??= CalculateCurrentShootingExpectedGoal();
+
+        PlayerToken gk = GetShotInteractionDefender(gkInteraction);
+        int gkPenalty = GetShotInteractionNullableInt(gkInteraction, "gkPenalty") ?? 0;
+        int shotPower = shotManager != null ? shotManager.totalShotPower : 0;
+        int savePower = gk != null ? rigRoll + gk.saving + gkPenalty : rigRoll + gkPenalty;
+
+        if (savePower == shotPower)
+        {
+            expectedShootingShotBlocked = true;
+        }
+        else if (savePower > shotPower)
+        {
+            expectedShootingShotOnTarget = true;
+        }
+    }
+
+    private static bool IsShootingBlockRollSuccessful(PlayerToken blocker, int requiredNaturalRoll, int roll)
+    {
+        return blocker != null && (roll >= requiredNaturalRoll || roll + blocker.tackling >= 10);
+    }
+
+    private static bool IsLooseRecoveryRollSuccessful(PlayerToken interceptor, int roll)
+    {
+        return interceptor != null && (roll == 6 || roll + interceptor.tackling >= 10);
+    }
+
+    private float CalculateCurrentShootingExpectedGoal()
+    {
+        PlayerToken currentShooter = shotManager != null ? shotManager.shooter : null;
+        if (currentShooter == null)
+        {
+            currentShooter = RequirePlayerToken("Yaneva");
+        }
+
+        int shootingPenalty = CalculateShootingPenaltyForStatsTest(currentShooter, shotManager != null ? shotManager.shotType : null);
+        List<ExpectedStatsCalculator.ShotBlockerExpectation> blockExpectations = ReadExpectedShotBlockersFromShotManager();
+        object gkInteraction = ReadExpectedGoalGkInteractionFromShotManager();
+        PlayerToken savingGk = GetShotInteractionDefender(gkInteraction);
+        int savingPenalty = GetShotInteractionNullableInt(gkInteraction, "gkPenalty") ?? 0;
+
+        return ExpectedStatsCalculator.CalculateShotGoalProbability(
+            currentShooter,
+            shootingPenalty,
+            blockExpectations,
+            savingGk,
+            savingPenalty);
+    }
+
+    private int CalculateShootingPenaltyForStatsTest(PlayerToken currentShooter, string currentShotType)
+    {
+        int penalty = 0;
+        HexCell shooterHex = currentShooter != null ? currentShooter.GetCurrentHex() : null;
+        if (currentShotType == "snapshot") penalty++;
+        if (shooterHex != null && shooterHex.isInPenaltyBox == 0) penalty++;
+        if (shooterHex != null && shooterHex.isDifficultShotPosition) penalty++;
+        return Mathf.Min(penalty, 2);
+    }
+
+    private List<ExpectedStatsCalculator.ShotBlockerExpectation> ReadExpectedShotBlockersFromShotManager()
+    {
+        List<ExpectedStatsCalculator.ShotBlockerExpectation> blockExpectations = new();
+        FieldInfo field = typeof(ShotManager).GetField("expectedGoalOutfieldBlockInteractions", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(field != null, "ShotManager expected-goal blocker context should exist for Shooting stats tests.");
+        if (field?.GetValue(shotManager) is not System.Collections.IEnumerable interactions)
+        {
+            return blockExpectations;
+        }
+
+        foreach (object interaction in interactions)
+        {
+            PlayerToken defender = GetShotInteractionDefender(interaction);
+            if (defender == null)
+            {
+                continue;
+            }
+
+            blockExpectations.Add(new ExpectedStatsCalculator.ShotBlockerExpectation(
+                defender,
+                GetShotInteractionInt(interaction, "requiredNaturalRoll", 6)));
+        }
+
+        return blockExpectations;
+    }
+
+    private object ReadExpectedGoalGkInteractionFromShotManager()
+    {
+        FieldInfo field = typeof(ShotManager).GetField("expectedGoalGkSaveInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(field != null, "ShotManager expected-goal GK context should exist for Shooting stats tests.");
+        return field?.GetValue(shotManager);
+    }
+
+    private void AssertShootingBranchStats(ShootingBranchDefinition branch)
+    {
+        string context = $"Shooting branch '{branch.Name}' stats";
+        PlayerToken shooterToken = RequirePlayerToken("Yaneva");
+        MatchManager.PlayerStats shooterStats = MatchManager.Instance.gameData.stats.GetPlayerStats(shooterToken.playerName);
+        MatchManager.TeamStats shooterTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(shooterToken.isHomeTeam);
+        MatchManager.TeamStats defendingTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(!shooterToken.isHomeTeam);
+
+        int expectedGoals = branch.Steps.Any(step => step.Type == ShootingBranchStepType.ExpectGoal || step.Type == ShootingBranchStepType.ExpectOwnGoal) ? 1 : 0;
+        int expectedCorners = branch.Steps.Any(IsShootingCornerExpectation) ? 1 : 0;
+        int expectedBlockedShots = expectedShootingShotBlocked ? 1 : 0;
+        int expectedShotsOnTarget = expectedShootingShotOnTarget ? 1 : 0;
+        int expectedShotsOffTarget = expectedShootingShotOffTarget ? 1 : 0;
+        int expectedShotBlockAttempts = expectedShootingShotBlockAttempts.Values.Sum();
+        int expectedShotBlocksMade = expectedShootingShotBlocksMade.Values.Sum();
+
+        AssertTrue(shooterStats.shotsAttempted == 1, $"{context}: Yaneva should have exactly one shot attempt.", 1, shooterStats.shotsAttempted);
+        AssertTrue(shooterTeamStats.totalShots == 1, $"{context}: shooting team should have exactly one shot attempt.", 1, shooterTeamStats.totalShots);
+        AssertTrue(shooterStats.shotsBlocked == expectedBlockedShots, $"{context}: Yaneva blocked-shot count should match the resolved shot outcome.", expectedBlockedShots, shooterStats.shotsBlocked);
+        AssertTrue(shooterTeamStats.totalShotsBlocked == expectedBlockedShots, $"{context}: team blocked-shot total should match the resolved shot outcome.", expectedBlockedShots, shooterTeamStats.totalShotsBlocked);
+        AssertTrue(shooterStats.shotsOnTarget == expectedShotsOnTarget, $"{context}: Yaneva shot-on-target count should match the resolved shot outcome.", expectedShotsOnTarget, shooterStats.shotsOnTarget);
+        AssertTrue(shooterStats.shotsOffTarget == expectedShotsOffTarget, $"{context}: Yaneva off-target count should match the resolved shot outcome.", expectedShotsOffTarget, shooterStats.shotsOffTarget);
+        AssertTrue(shooterTeamStats.totalGoals == expectedGoals, $"{context}: shooting team goal total should match the outcome.", expectedGoals, shooterTeamStats.totalGoals);
+        AssertTrue(shooterTeamStats.totalCorners == expectedCorners, $"{context}: shooting team corner total should match the outcome.", expectedCorners, shooterTeamStats.totalCorners);
+        AssertTrue(defendingTeamStats.totalShotBlocksAttempted == expectedShotBlockAttempts, $"{context}: defensive team shot-block attempts should not be counted as recoveries.", expectedShotBlockAttempts, defendingTeamStats.totalShotBlocksAttempted);
+        AssertTrue(defendingTeamStats.totalShotBlocksMade == expectedShotBlocksMade, $"{context}: defensive team made shot blocks should match successful block rolls.", expectedShotBlocksMade, defendingTeamStats.totalShotBlocksMade);
+
+        if (expectedShootingXGoals.HasValue)
+        {
+            AssertApproximately(shooterStats.xGoals, expectedShootingXGoals.Value, 0.0001f, $"{context}: Yaneva xG should use the final shot-resolution formula.");
+        }
+        else
+        {
+            AssertTrue(shooterStats.xGoals > 0f && shooterStats.xGoals <= 1f, $"{context}: Yaneva should have one bounded xG entry.", "(0,1]", shooterStats.xGoals);
+        }
+        AssertApproximately(shooterTeamStats.totalXGoals, shooterStats.xGoals, 0.0001f, $"{context}: team xG should roll up Yaneva's xG.");
+
+        HashSet<string> involvedPlayers = new(StringComparer.OrdinalIgnoreCase);
+        foreach (string playerName in expectedShootingShotBlockAttempts.Keys) involvedPlayers.Add(playerName);
+        foreach (string playerName in expectedShootingLooseInterceptionAttempts.Keys) involvedPlayers.Add(playerName);
+        foreach (string playerName in expectedShootingLooseXRecoveries.Keys) involvedPlayers.Add(playerName);
+
+        foreach (string playerName in involvedPlayers)
+        {
+            MatchManager.PlayerStats playerStats = MatchManager.Instance.gameData.stats.GetPlayerStats(playerName);
+            int expectedPlayerShotBlockAttempts = expectedShootingShotBlockAttempts.TryGetValue(playerName, out int shotBlockAttempts) ? shotBlockAttempts : 0;
+            int expectedPlayerShotBlocksMade = expectedShootingShotBlocksMade.TryGetValue(playerName, out int shotBlocksMade) ? shotBlocksMade : 0;
+            int expectedPlayerLooseInterceptionAttempts = expectedShootingLooseInterceptionAttempts.TryGetValue(playerName, out int looseAttempts) ? looseAttempts : 0;
+            int expectedPlayerLooseRecoveriesMade = expectedShootingLooseRecoveriesMade.TryGetValue(playerName, out int looseRecoveries) ? looseRecoveries : 0;
+            float expectedPlayerXRecoveries = expectedShootingLooseXRecoveries.TryGetValue(playerName, out float xRecoveries) ? xRecoveries : 0f;
+
+            AssertTrue(playerStats.shotBlocksAttempted == expectedPlayerShotBlockAttempts, $"{context}: {playerName} shot-block attempts should be tracked separately from interceptions.", expectedPlayerShotBlockAttempts, playerStats.shotBlocksAttempted);
+            AssertTrue(playerStats.shotBlocksMade == expectedPlayerShotBlocksMade, $"{context}: {playerName} made shot blocks should match successful block rolls.", expectedPlayerShotBlocksMade, playerStats.shotBlocksMade);
+            AssertTrue(playerStats.interceptionsAttempted == expectedPlayerLooseInterceptionAttempts, $"{context}: {playerName} interception attempts should come only from loose-ball interception rolls.", expectedPlayerLooseInterceptionAttempts, playerStats.interceptionsAttempted);
+            AssertTrue(playerStats.interceptionsMade == 0, $"{context}: {playerName} should not receive made interceptions from shot blocks or loose-ball recoveries.", 0, playerStats.interceptionsMade);
+            AssertApproximately(playerStats.xRecoveries, expectedPlayerXRecoveries, 0.0001f, $"{context}: {playerName} xRecoveries should come only from loose-ball interception rolls.");
+            if (expectedPlayerLooseRecoveriesMade > 0)
+            {
+                AssertTrue(playerStats.possessionWon >= expectedPlayerLooseRecoveriesMade, $"{context}: {playerName} should record a recovery made after winning a loose-ball interception.", $">= {expectedPlayerLooseRecoveriesMade}", playerStats.possessionWon);
+            }
+        }
+
+        string expectedReceiverName = branch.Steps.LastOrDefault(step => step.Type == ShootingBranchStepType.ExpectAnyOtherScenario)?.PlayerName;
+        if (!string.IsNullOrWhiteSpace(expectedReceiverName))
+        {
+            PlayerToken receiver = RequirePlayerToken(expectedReceiverName);
+            if (receiver != null && receiver.isHomeTeam != shooterToken.isHomeTeam)
+            {
+                MatchManager.PlayerStats receiverStats = MatchManager.Instance.gameData.stats.GetPlayerStats(receiver.playerName);
+                AssertTrue(receiverStats.possessionWon >= 1, $"{context}: defensive receiver {expectedReceiverName} should record a recovery made.", ">= 1", receiverStats.possessionWon);
+            }
+        }
+
+        if (branch.Steps.Any(step => step.Type == ShootingBranchStepType.ExpectSaveAndHold))
+        {
+            MatchManager.PlayerStats gkStats = MatchManager.Instance.gameData.stats.GetPlayerStats("Kuzmic");
+            AssertTrue(gkStats.possessionWon >= 1, $"{context}: Kuzmic should record a recovery made when holding the save.", ">= 1", gkStats.possessionWon);
+        }
+    }
+
+    private static string BuildScenarioSafeName(string rawName)
+    {
+        if (string.IsNullOrWhiteSpace(rawName))
+        {
+            return "Unnamed";
+        }
+
+        StringBuilder builder = new(rawName.Length);
+        bool previousWasSeparator = false;
+        foreach (char c in rawName)
+        {
+            if (char.IsLetterOrDigit(c))
+            {
+                builder.Append(c);
+                previousWasSeparator = false;
+            }
+            else if (!previousWasSeparator)
+            {
+                builder.Append('_');
+                previousWasSeparator = true;
+            }
+        }
+
+        return builder.ToString().Trim('_');
+    }
+
+    private IEnumerator Scenario_034_Shooting_Branch(ShootingBranchDefinition branch)
+    {
+        Log($"Starting Shooting branch from sheet: {branch.Name}");
+        ResetShootingStatsExpectations();
+        yield return StartCoroutine(PrepareShootingBranchFromSheet());
+
+        foreach (ShootingBranchStep step in branch.Steps)
+        {
+            yield return StartCoroutine(ExecuteShootingBranchStep(branch, step));
+            if (testFailed)
+            {
+                yield break;
+            }
+        }
+
+        AssertShootingBranchStats(branch);
+        LogFooterofTest($"Shooting - {branch.Name}");
+    }
+
+    private IEnumerator PrepareShootingBranchFromSheet()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        MatchManager.Instance.difficulty_level = 2;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = 2;
+        }
+
+        Log("Setting difficulty to 2 for the shared Shooting sheet preparation.");
+
+        yield return StartCoroutine(PressShootingSheetKey("Camera preset 2", KeyCode.Alpha2));
+        yield return StartCoroutine(PressShootingSheetKey("KickOff", KeyCode.Space));
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
+            "Game should be in KickoffBlown after the Shooting prep kickoff.",
+            MatchManager.GameState.KickoffBlown,
+            MatchManager.Instance.currentState
+        );
+
+        yield return StartCoroutine(PressShootingSheetKey("StandardPass", KeyCode.P));
+        yield return StartCoroutine(ClickShootingSheetHex("Target (8,0)", new Vector2Int(8, 0)));
+        yield return StartCoroutine(ClickShootingSheetHex("ConfirmTarget (8,0)", new Vector2Int(8, 0)));
+        yield return StartCoroutine(WaitForCondition(
+            () => groundBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0)) && !groundBallManager.isActivated,
+            6f,
+            "Shooting prep Standard Pass should finish with the ball on (8,0)."));
+
+        yield return StartCoroutine(ForfeitShootingFinalThirds());
+
+        yield return StartCoroutine(PressShootingSheetKey("Call MP", KeyCode.M));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated && movementPhaseManager.isMovementPhaseAttack,
+            2f,
+            "Shooting prep should start attacking Movement Phase."));
+
+        yield return StartCoroutine(ClickShootingSheetHex("Click Yaneva (10,0)", new Vector2Int(10, 0)));
+        AssertTrue(movementPhaseManager.selectedToken == RequirePlayerToken("Yaneva"), "Yaneva should be selected before picking up the ball.");
+        yield return StartCoroutine(PressShootingSheetKey("Move Yaneva / pick up ball", KeyCode.V));
+        yield return StartCoroutine(WaitForTokenOnHex("Yaneva", new Vector2Int(8, 0), "Yaneva should pick up the ball on (8,0)."));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit Yaneva's Pace", KeyCode.X));
+
+        yield return StartCoroutine(ClickShootingSheetHex("Click Kalla (6,6)", new Vector2Int(6, 6)));
+        yield return StartCoroutine(MoveShootingToken("Kalla", new Vector2Int(11, 3)));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit AttMP", KeyCode.X));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhaseDef,
+            2f,
+            "Shooting prep should advance to defensive Movement Phase."));
+
+        yield return StartCoroutine(ClickShootingSheetHex("Click Paterson (4,3)", new Vector2Int(4, 3)));
+        yield return StartCoroutine(MoveShootingToken("Paterson", new Vector2Int(9, 1)));
+        yield return StartCoroutine(ClickShootingSheetHex("Click McNulty (5,5)", new Vector2Int(5, 5)));
+        yield return StartCoroutine(MoveShootingToken("McNulty", new Vector2Int(9, 2)));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit DefMP", KeyCode.X));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit 2f2", KeyCode.X));
+
+        yield return StartCoroutine(ForfeitShootingFinalThirds());
+
+        yield return StartCoroutine(PressShootingSheetKey("Call MP", KeyCode.M));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated && movementPhaseManager.isMovementPhaseAttack,
+            2f,
+            "Second Shooting prep Movement Phase should start for attack."));
+
+        yield return StartCoroutine(ClickShootingSheetHex("Click Kalla (11,3)", new Vector2Int(11, 3)));
+        yield return StartCoroutine(MoveShootingToken("Kalla", new Vector2Int(15, 1)));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit AttMP", KeyCode.X));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhaseDef,
+            2f,
+            "Second Shooting prep should advance to defense."));
+
+        yield return StartCoroutine(ClickShootingSheetHex("Click Paterson (9,1)", new Vector2Int(9, 1)));
+        yield return StartCoroutine(MoveShootingToken("Paterson", new Vector2Int(10, 0)));
+        yield return StartCoroutine(ClickShootingSheetHex("Click McNulty (9,2)", new Vector2Int(9, 2)));
+        yield return StartCoroutine(MoveShootingToken("McNulty", new Vector2Int(12, 0)));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit DefMP", KeyCode.X));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit 2f2", KeyCode.X));
+
+        yield return StartCoroutine(ForfeitShootingFinalThirds());
+
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isAvailable && movementPhaseManager.isAvailable,
+            3f,
+            "Shot and Movement Phase should be available at the end of the Shooting prep."));
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == RequirePlayerToken("Yaneva"), "Yaneva should be the shooter after the shared Shooting prep.");
+        AssertTrue(RequirePlayerToken("Yaneva").GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0)), "Yaneva should shoot from (8,0).");
+
+        yield return StartCoroutine(PressShootingSheetKey("Call Shot", KeyCode.S));
+        AssertTrue(shotManager.isWaitingForShotCommitConfirmation, "Difficulty 2 Shooting prep should require S confirmation for the shot.");
+        yield return StartCoroutine(PressShootingSheetKey("Confirm Shot", KeyCode.S));
+        AssertTrue(shotManager.isActivated, "ShotManager should activate after confirming the shot.");
+        AssertTrue(shotManager.shotType == "fullPower", "The shared Shooting prep should create a full-power shot.", "fullPower", shotManager.shotType);
+        AssertTrue(shotManager.isWaitingForTargetSelection, "ShotManager should wait for target selection after the shot is confirmed.");
+
+        yield return StartCoroutine(ClickShootingSheetHex("Call Shot Target (19,0)", new Vector2Int(19, 0)));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForBlockDiceRoll || shotManager.isWaitingForShotRoll || goalKeeperManager.isActivated,
+            3f,
+            "Shooting prep should enter the first shot interaction after choosing target (19,0)."));
+        AssertTrue(shotManager.targetHex == hexgrid.GetHexCellAt(new Vector3Int(19, 0, 0)), "Shot target should be (19,0).");
+    }
+
+    private IEnumerator ExecuteShootingBranchStep(ShootingBranchDefinition branch, ShootingBranchStep step)
+    {
+        if (IsShootingOutcomeExpectation(step.Type))
+        {
+            yield return StartCoroutine(ForfeitShootingFinalThirdsBeforeOutcomeCheck(branch.Name));
+        }
+
+        yield return StartCoroutine(WaitForShootingStepReady(branch, step));
+        AssertShootingStepPreconditions(branch, step);
+
+        switch (step.Type)
+        {
+            case ShootingBranchStepType.ShotBlockRoll:
+                yield return StartCoroutine(PerformRiggedShotBlockRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.ShooterRoll:
+                yield return StartCoroutine(PerformRiggedShooterRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.GkSaveRoll:
+                yield return StartCoroutine(PerformRiggedShotGkSaveRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.HandlingRoll:
+                yield return StartCoroutine(PerformRiggedShotHandlingRoll(step.Roll));
+                break;
+            case ShootingBranchStepType.LooseDirectionRoll:
+                yield return StartCoroutine(PerformRiggedLooseDirectionRoll(step.Roll));
+                break;
+            case ShootingBranchStepType.LooseDistanceRoll:
+                yield return StartCoroutine(PerformRiggedLooseDistanceRoll(step.Roll));
+                break;
+            case ShootingBranchStepType.LooseInterceptionRoll:
+                yield return StartCoroutine(PerformRiggedLooseInterceptionRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.GoalkeeperMove:
+                yield return StartCoroutine(MoveShootingGoalkeeperIfWaiting(step.Coordinates, false));
+                break;
+            case ShootingBranchStepType.ExpectAnyOtherScenario:
+                yield return StartCoroutine(AssertShootingAnyOtherScenario(branch, step.PlayerName));
+                break;
+            case ShootingBranchStepType.ExpectMovementToAttack:
+                yield return StartCoroutine(AssertShootingMovementToAttack(branch));
+                break;
+            case ShootingBranchStepType.ExpectSaveAndHold:
+                yield return StartCoroutine(AssertShootingSaveAndHold(branch));
+                break;
+            case ShootingBranchStepType.ExpectCornerNorth:
+                yield return StartCoroutine(AssertShootingCorner(branch, true));
+                break;
+            case ShootingBranchStepType.ExpectCornerSouth:
+                yield return StartCoroutine(AssertShootingCorner(branch, false));
+                break;
+            case ShootingBranchStepType.ExpectGoal:
+                yield return StartCoroutine(AssertShootingGoal(branch));
+                break;
+            case ShootingBranchStepType.ExpectOwnGoal:
+                yield return StartCoroutine(AssertShootingOwnGoal(branch));
+                break;
+            default:
+                AssertTrue(false, $"Unhandled Shooting branch step in {branch.Name}: {step.Type}");
+                break;
+        }
+
+        AssertShootingStepPostconditions(branch, step);
+    }
+
+    private static bool IsShootingOutcomeExpectation(ShootingBranchStepType stepType)
+    {
+        return stepType == ShootingBranchStepType.ExpectAnyOtherScenario
+            || stepType == ShootingBranchStepType.ExpectMovementToAttack
+            || stepType == ShootingBranchStepType.ExpectSaveAndHold
+            || stepType == ShootingBranchStepType.ExpectCornerNorth
+            || stepType == ShootingBranchStepType.ExpectCornerSouth
+            || stepType == ShootingBranchStepType.ExpectGoal
+            || stepType == ShootingBranchStepType.ExpectOwnGoal;
+    }
+
+    private static bool IsShootingCornerExpectation(ShootingBranchStep step)
+    {
+        return step != null
+            && (step.Type == ShootingBranchStepType.ExpectCornerNorth
+                || step.Type == ShootingBranchStepType.ExpectCornerSouth);
+    }
+
+    private static ShootingBranchStep GetNextShootingStep(ShootingBranchDefinition branch, ShootingBranchStep step)
+    {
+        int stepIndex = branch.Steps.IndexOf(step);
+        return stepIndex >= 0 && stepIndex + 1 < branch.Steps.Count
+            ? branch.Steps[stepIndex + 1]
+            : null;
+    }
+
+    private static bool HasPriorShootingStep(ShootingBranchDefinition branch, ShootingBranchStep step, ShootingBranchStepType stepType)
+    {
+        int stepIndex = branch.Steps.IndexOf(step);
+        if (stepIndex <= 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < stepIndex; i++)
+        {
+            if (branch.Steps[i].Type == stepType)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string GetExpectedShootingLooseBallLastTouch(ShootingBranchDefinition branch, ShootingBranchStep step)
+    {
+        return HasPriorShootingStep(branch, step, ShootingBranchStepType.HandlingRoll)
+            ? "Kuzmic"
+            : "Yaneva";
+    }
+
+    private IEnumerator WaitForShootingStepReady(ShootingBranchDefinition branch, ShootingBranchStep step)
+    {
+        switch (step.Type)
+        {
+            case ShootingBranchStepType.ShotBlockRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => shotManager.isWaitingForBlockDiceRoll,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for {step.PlayerName}'s shot block roll."));
+                break;
+            case ShootingBranchStepType.ShooterRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => shotManager.isWaitingForShotRoll,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for {step.PlayerName}'s shot roll."));
+                break;
+            case ShootingBranchStepType.GkSaveRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => shotManager.isWaitingForGKDiceRoll,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for {step.PlayerName}'s GK save roll."));
+                break;
+            case ShootingBranchStepType.HandlingRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => shotManager.isWaitingforHandlingTest,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for GK handling."));
+                break;
+            case ShootingBranchStepType.LooseDirectionRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => looseBallManager.isActivated && looseBallManager.isWaitingForDirectionRoll,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for loose-ball direction."));
+                break;
+            case ShootingBranchStepType.LooseDistanceRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => looseBallManager.isActivated && looseBallManager.isWaitingForDistanceRoll,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for loose-ball distance."));
+                break;
+            case ShootingBranchStepType.LooseInterceptionRoll:
+                yield return StartCoroutine(WaitForCondition(
+                    () => looseBallManager.isActivated && looseBallManager.isWaitingForInterceptionRoll,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should be waiting for {step.PlayerName}'s loose-ball interception."));
+                break;
+            case ShootingBranchStepType.GoalkeeperMove:
+                yield return StartCoroutine(WaitForCondition(
+                    () => goalKeeperManager.isActivated,
+                    4f,
+                    $"Shooting branch '{branch.Name}' should wake the defending GK for a free move to ({step.Coordinates.x},{step.Coordinates.y})."));
+                break;
+        }
+    }
+
+    private string GetShootingStateSummary()
+    {
+        return string.Join(" | ", new[]
+        {
+            shotManager != null ? shotManager.GetDebugStatus() : "Shot: <null>",
+            looseBallManager != null ? looseBallManager.GetDebugStatus() : "Loose: <null>",
+            goalKeeperManager != null ? goalKeeperManager.GetDebugStatus() : "GK: <null>",
+            movementPhaseManager != null ? movementPhaseManager.GetDebugStatus() : "Movement: <null>",
+            finalThirdManager != null ? finalThirdManager.GetDebugStatus() : "F3: <null>",
+            freeKickManager != null ? freeKickManager.GetDebugStatus() : "FreeKick: <null>",
+            goalFlowManager != null ? $"GoalFlow: isActivated={goalFlowManager.isActivated}" : "GoalFlow: <null>",
+            MatchManager.Instance != null ? MatchManager.Instance.GetDebugStatus() : "Match: <null>",
+            $"LTTBOP={GetTokenTestName(MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose) ?? "<null>"}",
+            $"Ball={groundBallManager?.ball?.GetCurrentHex()?.coordinates.ToString() ?? "<null>"}"
+        });
+    }
+
+    private HexCell GetShootingBallHex()
+    {
+        return groundBallManager != null && groundBallManager.ball != null
+            ? groundBallManager.ball.GetCurrentHex()
+            : null;
+    }
+
+    private AvailabilityCheckResult CheckShootingManagerState(
+        string context,
+        bool expectShotActive = false,
+        bool expectLooseActive = false,
+        bool expectGkActive = false,
+        bool expectMovementActive = false,
+        bool expectFinalThirdActive = false,
+        bool expectFreeKickActive = false,
+        bool expectGoalFlowActive = false)
+    {
+        List<string> failures = new();
+
+        if (shotManager.isActivated != expectShotActive) failures.Add($"ShotManager.isActivated should be {expectShotActive}");
+        if (looseBallManager.isActivated != expectLooseActive) failures.Add($"LooseBallManager.isActivated should be {expectLooseActive}");
+        if (goalKeeperManager.isActivated != expectGkActive) failures.Add($"GoalKeeperManager.isActivated should be {expectGkActive}");
+        if (movementPhaseManager.isActivated != expectMovementActive) failures.Add($"MovementPhaseManager.isActivated should be {expectMovementActive}");
+        if (finalThirdManager.isActivated != expectFinalThirdActive) failures.Add($"FinalThirdManager.isActivated should be {expectFinalThirdActive}");
+        if (freeKickManager.isActivated != expectFreeKickActive) failures.Add($"FreeKickManager.isActivated should be {expectFreeKickActive}");
+        if (goalFlowManager.isActivated != expectGoalFlowActive) failures.Add($"GoalFlowManager.isActivated should be {expectGoalFlowActive}");
+
+        if (groundBallManager.isActivated) failures.Add("GroundBallManager should not be activated during Shooting branch resolution");
+        if (firstTimePassManager.isActivated) failures.Add("FirstTimePassManager should not be activated during Shooting branch resolution");
+        if (highPassManager.isActivated) failures.Add("HighPassManager should not be activated during Shooting branch resolution");
+        if (longBallManager.isActivated) failures.Add("LongBallManager should not be activated during Shooting branch resolution");
+        if (headerManager.isActivated) failures.Add("HeaderManager should not be activated during Shooting branch resolution");
+
+        if (failures.Count > 0)
+        {
+            failures.Add($"{context} state: {GetShootingStateSummary()}");
+        }
+
+        return new AvailabilityCheckResult(failures.Count == 0, failures);
+    }
+
+    private void AssertShootingManagerState(
+        string context,
+        bool expectShotActive = false,
+        bool expectLooseActive = false,
+        bool expectGkActive = false,
+        bool expectMovementActive = false,
+        bool expectFinalThirdActive = false,
+        bool expectFreeKickActive = false,
+        bool expectGoalFlowActive = false)
+    {
+        AvailabilityCheckResult result = CheckShootingManagerState(
+            context,
+            expectShotActive,
+            expectLooseActive,
+            expectGkActive,
+            expectMovementActive,
+            expectFinalThirdActive,
+            expectFreeKickActive,
+            expectGoalFlowActive);
+        AssertTrue(result.passed, $"{context}: unexpected Shooting manager state.", true, result.ToString());
+    }
+
+    private void AssertShootingLastTouch(string expectedPlayerName, string context)
+    {
+        string actual = GetTokenTestName(MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose);
+        AssertTrue(
+            NamesMatch(actual, expectedPlayerName),
+            $"{context}: LastTokenToTouchTheBallOnPurpose should be {expectedPlayerName}.",
+            expectedPlayerName,
+            actual
+        );
+    }
+
+    private void AssertShootingBallOnToken(string expectedPlayerName, string context)
+    {
+        PlayerToken expectedToken = RequirePlayerToken(expectedPlayerName);
+        HexCell expectedHex = expectedToken != null ? expectedToken.GetCurrentHex() : null;
+        HexCell actualHex = GetShootingBallHex();
+        AssertTrue(
+            expectedHex != null && actualHex == expectedHex,
+            $"{context}: ball should be on {expectedPlayerName}'s hex.",
+            expectedHex != null ? expectedHex.coordinates.ToString() : "<null>",
+            actualHex != null ? actualHex.coordinates.ToString() : "<null>"
+        );
+    }
+
+    private void AssertShootingBallInGoal(string context)
+    {
+        HexCell ballHex = GetShootingBallHex();
+        AssertTrue(
+            ballHex != null && ballHex.isInGoal != 0,
+            $"{context}: ball should be on a goal hex.",
+            "goal hex",
+            ballHex != null ? ballHex.coordinates.ToString() : "<null>"
+        );
+    }
+
+    private void AssertShootingBallInEmptySpace(string context)
+    {
+        HexCell ballHex = GetShootingBallHex();
+        AssertTrue(ballHex != null, $"{context}: ball should have a resting hex after the loose-ball miss.");
+        if (ballHex == null)
+        {
+            return;
+        }
+
+        AssertTrue(
+            !ballHex.isAttackOccupied && !ballHex.isDefenseOccupied,
+            $"{context}: Movement-to-attack should start from an empty loose-ball hex.",
+            "empty hex",
+            $"{ballHex.coordinates}; attackOccupied={ballHex.isAttackOccupied}; defenseOccupied={ballHex.isDefenseOccupied}"
+        );
+    }
+
+    private void AssertShootingStepPreconditions(ShootingBranchDefinition branch, ShootingBranchStep step)
+    {
+        if (IsShootingOutcomeExpectation(step.Type))
+        {
+            return;
+        }
+
+        string context = $"Before Shooting branch '{branch.Name}' step {step.Type}";
+        switch (step.Type)
+        {
+            case ShootingBranchStepType.ShotBlockRoll:
+                AssertShootingManagerState(context, expectShotActive: true);
+                AssertTrue(shotManager.isWaitingForBlockDiceRoll, $"{context}: ShotManager should be waiting for a block roll.", true, shotManager.GetDebugStatus());
+                AssertTrue(!shotManager.isWaitingForShotRoll, $"{context}: ShotManager should not be waiting for the shooter roll yet.", false, shotManager.isWaitingForShotRoll);
+                AssertTrue(!shotManager.isWaitingForGKDiceRoll, $"{context}: ShotManager should not be waiting for a GK save roll.", false, shotManager.isWaitingForGKDiceRoll);
+                AssertTrue(NamesMatch(GetCurrentShotInteractionDefenderName(), step.PlayerName), $"{context}: wrong current shot blocker.", step.PlayerName, GetCurrentShotInteractionDefenderName());
+                AssertShootingLastTouch("Yaneva", context);
+                break;
+            case ShootingBranchStepType.ShooterRoll:
+                AssertShootingManagerState(context, expectShotActive: true);
+                AssertTrue(shotManager.isWaitingForShotRoll, $"{context}: ShotManager should be waiting for the shooter roll.", true, shotManager.GetDebugStatus());
+                AssertTrue(NamesMatch(GetTokenTestName(shotManager.shooter), step.PlayerName), $"{context}: wrong shooting token.", step.PlayerName, GetTokenTestName(shotManager.shooter));
+                AssertShootingLastTouch(step.PlayerName, context);
+                break;
+            case ShootingBranchStepType.GkSaveRoll:
+                AssertShootingManagerState(context, expectShotActive: true);
+                AssertTrue(shotManager.isWaitingForGKDiceRoll, $"{context}: ShotManager should be waiting for the GK save roll.", true, shotManager.GetDebugStatus());
+                AssertTrue(NamesMatch(GetCurrentShotInteractionDefenderName(), step.PlayerName), $"{context}: wrong current saving GK.", step.PlayerName, GetCurrentShotInteractionDefenderName());
+                AssertShootingLastTouch("Yaneva", context);
+                break;
+            case ShootingBranchStepType.HandlingRoll:
+                AssertShootingManagerState(context, expectShotActive: true);
+                AssertTrue(shotManager.isWaitingforHandlingTest, $"{context}: ShotManager should be waiting for the handling test.", true, shotManager.GetDebugStatus());
+                AssertShootingLastTouch("Yaneva", context);
+                break;
+            case ShootingBranchStepType.LooseDirectionRoll:
+                AssertShootingManagerState(context, expectLooseActive: true);
+                AssertTrue(looseBallManager.isWaitingForDirectionRoll, $"{context}: LooseBallManager should be waiting for the direction roll.", true, looseBallManager.GetDebugStatus());
+                AssertShootingLastTouch(GetExpectedShootingLooseBallLastTouch(branch, step), context);
+                break;
+            case ShootingBranchStepType.LooseDistanceRoll:
+                AssertShootingManagerState(context, expectLooseActive: true);
+                AssertTrue(looseBallManager.isWaitingForDistanceRoll, $"{context}: LooseBallManager should be waiting for the distance roll.", true, looseBallManager.GetDebugStatus());
+                AssertShootingLastTouch(GetExpectedShootingLooseBallLastTouch(branch, step), context);
+                break;
+            case ShootingBranchStepType.LooseInterceptionRoll:
+                AssertShootingManagerState(context, expectLooseActive: true);
+                AssertTrue(looseBallManager.isWaitingForInterceptionRoll, $"{context}: LooseBallManager should be waiting for an interception roll.", true, looseBallManager.GetDebugStatus());
+                AssertTrue(NamesMatch(GetCurrentLooseInterceptorName(), step.PlayerName), $"{context}: wrong loose-ball interceptor.", step.PlayerName, GetCurrentLooseInterceptorName());
+                break;
+            case ShootingBranchStepType.GoalkeeperMove:
+                AssertTrue(goalKeeperManager.isActivated, $"{context}: GoalKeeperManager should be activated for the defending GK free move.", true, GetShootingStateSummary());
+                AssertTrue(shotManager.isActivated || looseBallManager.isActivated, $"{context}: either ShotManager or LooseBallManager should still own the flow while GK moves.", true, GetShootingStateSummary());
+                PlayerToken defendingGk = hexgrid.GetDefendingGK();
+                AssertTrue(NamesMatch(GetTokenTestName(defendingGk), "Kuzmic"), $"{context}: defending GK should be Kuzmic.", "Kuzmic", GetTokenTestName(defendingGk));
+                HexCell destinationHex = hexgrid.GetHexCellAt(new Vector3Int(step.Coordinates.x, 0, step.Coordinates.y));
+                AssertTrue(destinationHex != null, $"{context}: GK destination hex should exist.", true, step.Coordinates);
+                if (destinationHex != null)
+                {
+                    bool destinationHighlighted = hexgrid.highlightedHexes.Contains(destinationHex);
+                    bool alreadyAtDestination = defendingGk != null && defendingGk.GetCurrentHex() == destinationHex;
+                    AssertTrue(
+                        destinationHighlighted || alreadyAtDestination,
+                        $"{context}: GK destination should be highlighted unless Kuzmic is already there.",
+                        destinationHex.coordinates,
+                        $"Kuzmic={defendingGk?.GetCurrentHex()?.coordinates.ToString() ?? "<null>"}; highlighted={string.Join(", ", hexgrid.highlightedHexes.Select(hex => hex.coordinates.ToString()))}");
+                }
+                AssertTrue(goalKeeperManager.GetInstructions().Contains("Defending GK"), $"{context}: GK instructions should be active.", true, goalKeeperManager.GetInstructions());
+                break;
+        }
+    }
+
+    private void AssertShootingStepPostconditions(ShootingBranchDefinition branch, ShootingBranchStep step)
+    {
+        if (IsShootingOutcomeExpectation(step.Type))
+        {
+            return;
+        }
+
+        string context = $"After Shooting branch '{branch.Name}' step {step.Type}";
+        switch (step.Type)
+        {
+            case ShootingBranchStepType.LooseDirectionRoll:
+                AssertTrue(looseBallManager.directionRoll == step.Roll - 1, $"{context}: loose-ball direction roll should be stored as zero-based value.", step.Roll - 1, looseBallManager.directionRoll);
+                if (IsShootingCornerExpectation(GetNextShootingStep(branch, step)))
+                {
+                    AssertShootingLastTouch("Kuzmic", context);
+                    break;
+                }
+
+                AssertShootingManagerState(context, expectLooseActive: true);
+                AssertTrue(looseBallManager.isWaitingForDistanceRoll, $"{context}: LooseBallManager should advance to distance roll.", true, looseBallManager.GetDebugStatus());
+                AssertShootingLastTouch(GetExpectedShootingLooseBallLastTouch(branch, step), context);
+                break;
+            case ShootingBranchStepType.LooseDistanceRoll:
+                AssertTrue(looseBallManager.distanceRoll == step.Roll, $"{context}: loose-ball distance roll should be stored.", step.Roll, looseBallManager.distanceRoll);
+                break;
+            case ShootingBranchStepType.GoalkeeperMove:
+                PlayerToken defendingGk = RequirePlayerToken("Kuzmic");
+                HexCell expectedHex = hexgrid.GetHexCellAt(new Vector3Int(step.Coordinates.x, 0, step.Coordinates.y));
+                AssertTrue(!goalKeeperManager.isActivated, $"{context}: GoalKeeperManager should deactivate after the GK move.", false, goalKeeperManager.GetDebugStatus());
+                AssertTrue(defendingGk.GetCurrentHex() == expectedHex, $"{context}: Kuzmic should finish the GK move on the scripted hex.", expectedHex, defendingGk.GetCurrentHex());
+                AssertTrue(!movementPhaseManager.isPlayerMoving, $"{context}: no player movement should remain in progress after GK move.", false, movementPhaseManager.isPlayerMoving);
+                break;
+            case ShootingBranchStepType.HandlingRoll:
+                PlayerToken handlingGk = hexgrid.GetDefendingGK();
+                bool handlingShouldHold = handlingGk != null && step.Roll < handlingGk.handling;
+                AssertTrue(
+                    handlingShouldHold ? shotManager.isWaitingForSaveandHoldScenario : looseBallManager.isActivated,
+                    $"{context}: handling roll should resolve to the expected hold/spill state.",
+                    true,
+                    GetShootingStateSummary());
+                AssertShootingLastTouch("Kuzmic", context);
+                break;
+        }
+    }
+
+    private IEnumerator PressShootingSheetKey(string label, KeyCode key, float delay = 0.1f)
+    {
+        Log($"{label}: pressing {key}");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(key, delay));
+        yield return new WaitForSeconds(0.15f);
+    }
+
+    private IEnumerator ClickShootingSheetHex(string label, Vector2Int coordinates, float delay = 0.1f)
+    {
+        Log($"{label}: clicking ({coordinates.x}, {coordinates.y})");
+        yield return StartCoroutine(gameInputManager.DelayedClick(coordinates, delay));
+        yield return new WaitForSeconds(0.15f);
+    }
+
+    private IEnumerator MoveShootingToken(string playerName, Vector2Int destination)
+    {
+        yield return StartCoroutine(ClickShootingSheetHex($"Move {playerName} to ({destination.x},{destination.y})", destination));
+        yield return StartCoroutine(WaitForTokenOnHex(playerName, destination, $"{playerName} should finish moving to ({destination.x},{destination.y})."));
+    }
+
+    private IEnumerator WaitForTokenOnHex(string playerName, Vector2Int coordinates, string failureMessage)
+    {
+        PlayerToken token = RequirePlayerToken(playerName);
+        HexCell expectedHex = hexgrid.GetHexCellAt(new Vector3Int(coordinates.x, 0, coordinates.y));
+        yield return StartCoroutine(WaitForCondition(
+            () => token.GetCurrentHex() == expectedHex && !movementPhaseManager.isPlayerMoving,
+            4f,
+            failureMessage));
+    }
+
+    private IEnumerator ForfeitShootingFinalThirds()
+    {
+        float elapsedSeconds = 0f;
+        while (!finalThirdManager.isActivated
+            && !movementPhaseManager.isAvailable
+            && !movementPhaseManager.isActivated
+            && elapsedSeconds < 1.5f)
+        {
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+
+        if (!finalThirdManager.isActivated)
+        {
+            yield return new WaitForSeconds(0.2f);
+            yield break;
+        }
+
+        yield return StartCoroutine(ForfeitActiveShootingFinalThirds("prep"));
+    }
+
+    private IEnumerator ForfeitShootingFinalThirdsBeforeOutcomeCheck(string branchName)
+    {
+        float elapsedSeconds = 0f;
+        while (!finalThirdManager.isActivated
+            && (looseBallManager.isActivated || shotManager.isActivated || goalKeeperManager.isActivated)
+            && elapsedSeconds < 6f)
+        {
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+
+        elapsedSeconds = 0f;
+        while (!finalThirdManager.isActivated
+            && !movementPhaseManager.isActivated
+            && !freeKickManager.isActivated
+            && !goalFlowManager.isActivated
+            && !shotManager.isWaitingForSaveandHoldScenario
+            && elapsedSeconds < 1f)
+        {
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+
+        if (!finalThirdManager.isActivated)
+        {
+            yield break;
+        }
+
+        Log($"Forfeiting Final Thirds before Shooting branch '{branchName}' outcome check.");
+        yield return StartCoroutine(ForfeitActiveShootingFinalThirds("outcome"));
+    }
+
+    private IEnumerator ForfeitActiveShootingFinalThirds(string phaseLabel)
+    {
+        if (!finalThirdManager.isActivated)
+        {
+            yield break;
+        }
+
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit AttF3", KeyCode.X));
+        yield return new WaitForSeconds(0.2f);
+        if (finalThirdManager.isActivated)
+        {
+            yield return StartCoroutine(PressShootingSheetKey("Forfeit DefF3", KeyCode.X));
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => !finalThirdManager.isActivated,
+            3f,
+            $"Final Third should finish after both sides forfeit during Shooting {phaseLabel}."));
+    }
+
+    private IEnumerator MoveShootingGoalkeeperIfWaiting(Vector2Int destination, bool allowAlreadyResolved)
+    {
+        if (!goalKeeperManager.isActivated)
+        {
+            float elapsedSeconds = 0f;
+            while (!goalKeeperManager.isActivated && elapsedSeconds < 2f)
+            {
+                yield return null;
+                elapsedSeconds += Time.deltaTime;
+            }
+
+            if (goalKeeperManager.isActivated)
+            {
+                Log($"GK move to ({destination.x},{destination.y}) became available after waiting.");
+            }
+        }
+
+        if (!goalKeeperManager.isActivated)
+        {
+            if (allowAlreadyResolved)
+            {
+                Log($"GK move to ({destination.x},{destination.y}) was already resolved or not required.");
+                yield break;
+            }
+
+            yield return StartCoroutine(WaitForCondition(
+                () => goalKeeperManager.isActivated,
+                2f,
+                "Defending GK should be waiting for a shooting free move."));
+        }
+
+        if (!goalKeeperManager.isActivated)
+        {
+            yield break;
+        }
+
+        PlayerToken defendingGk = hexgrid.GetDefendingGK();
+        HexCell destinationHex = hexgrid.GetHexCellAt(new Vector3Int(destination.x, 0, destination.y));
+        if (defendingGk != null && destinationHex != null && defendingGk.GetCurrentHex() == destinationHex)
+        {
+            Log($"Defending GK is already on ({destination.x},{destination.y}) for the Shooting branch; forfeiting the redundant GK move.");
+            yield return StartCoroutine(PressShootingSheetKey("Forfeit GK move already on target", KeyCode.X));
+            yield return StartCoroutine(WaitForCondition(
+                () => !goalKeeperManager.isActivated && !movementPhaseManager.isPlayerMoving,
+                4f,
+                "Defending GK should complete the shooting free move by staying on the scripted hex."));
+            yield break;
+        }
+
+        Log($"Moving defending GK to ({destination.x},{destination.y}) for the Shooting branch.");
+        yield return StartCoroutine(gameInputManager.DelayedClick(destination, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => !goalKeeperManager.isActivated && !movementPhaseManager.isPlayerMoving,
+            4f,
+            "Defending GK should complete the shooting free move."));
+    }
+
+    private IEnumerator PerformRiggedShotBlockRoll(string expectedDefenderName, int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForBlockDiceRoll,
+            3f,
+            $"Shot should be waiting for {expectedDefenderName}'s block roll."));
+
+        string currentDefenderName = GetCurrentShotInteractionDefenderName();
+        AssertTrue(
+            NamesMatch(currentDefenderName, expectedDefenderName),
+            $"Expected {expectedDefenderName} to be the next shot blocker.",
+            expectedDefenderName,
+            currentDefenderName
+        );
+
+        object currentInteraction = GetCurrentShotInteractionObject();
+        PlayerToken blocker = GetShotInteractionDefender(currentInteraction);
+        int requiredNaturalRoll = GetShotInteractionInt(currentInteraction, "requiredNaturalRoll", 6);
+        RecordShootingShotBlockAttempt(blocker, requiredNaturalRoll, rigRoll);
+
+        Log($"Rigging {expectedDefenderName} shot block roll to {rigRoll}");
+        IEnumerator coroutine = InvokePrivateShotCoroutine("StartShotBlockRoll", new object[] { (int?)rigRoll }, typeof(int?));
+        AssertTrue(coroutine != null, "Shot block roll coroutine should be available for the Shooting branch.");
+        if (coroutine != null)
+        {
+            yield return StartCoroutine(coroutine);
+        }
+
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator PerformRiggedShooterRoll(string expectedShooterName, int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForShotRoll,
+            3f,
+            $"Shot should be waiting for {expectedShooterName}'s shot roll."));
+
+        string shooterName = GetTokenTestName(shotManager.shooter);
+        AssertTrue(
+            NamesMatch(shooterName, expectedShooterName),
+            $"Expected {expectedShooterName} to be the shooter.",
+            expectedShooterName,
+            shooterName
+        );
+
+        Log($"Rigging {expectedShooterName} shot roll to {rigRoll}");
+        if (rigRoll == 1)
+        {
+            expectedShootingShotOffTarget = true;
+            expectedShootingXGoals ??= CalculateCurrentShootingExpectedGoal();
+        }
+        yield return StartCoroutine(shotManager.StartShotRoll(rigRoll));
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator PerformRiggedShotGkSaveRoll(string expectedGoalkeeperName, int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForGKDiceRoll,
+            3f,
+            $"Shot should be waiting for {expectedGoalkeeperName}'s save roll."));
+
+        string currentDefenderName = GetCurrentShotInteractionDefenderName();
+        AssertTrue(
+            NamesMatch(currentDefenderName, expectedGoalkeeperName),
+            $"Expected {expectedGoalkeeperName} to be the saving goalkeeper.",
+            expectedGoalkeeperName,
+            currentDefenderName
+        );
+
+        object currentInteraction = GetCurrentShotInteractionObject();
+        RecordShootingGkSaveExpectation(currentInteraction, rigRoll);
+        Log($"Rigging {expectedGoalkeeperName} save roll to {rigRoll}");
+        IEnumerator coroutine = InvokePrivateShotCoroutine("ResolveGKSavingAttempt", new[] { currentInteraction, (object)(int?)rigRoll }, currentInteraction?.GetType(), typeof(int?));
+        AssertTrue(coroutine != null, "GK save roll coroutine should be available for the Shooting branch.");
+        if (coroutine != null)
+        {
+            yield return StartCoroutine(coroutine);
+        }
+
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator PerformRiggedShotHandlingRoll(int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingforHandlingTest,
+            3f,
+            "Shot should be waiting for the GK handling test."));
+
+        Log($"Rigging GK handling roll to {rigRoll}");
+        StartCoroutine(shotManager.ResolveHandlingTest(rigRoll));
+
+        PlayerToken defendingGk = hexgrid.GetDefendingGK();
+        bool shouldHold = defendingGk != null && rigRoll < defendingGk.handling;
+        yield return StartCoroutine(WaitForCondition(
+            () => shouldHold
+                ? shotManager.isWaitingForSaveandHoldScenario
+                : looseBallManager.isActivated || !shotManager.isActivated,
+            4f,
+            "Handling test should resolve to Save-and-Hold or a loose ball."));
+    }
+
+    private IEnumerator PerformRiggedLooseDirectionRoll(int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => looseBallManager.isActivated && looseBallManager.isWaitingForDirectionRoll,
+            4f,
+            "LooseBallManager should be waiting for a direction roll."));
+
+        Log($"Rigging loose-ball direction roll to {rigRoll}");
+        looseBallManager.PerformDirectionRoll(rigRoll);
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator PerformRiggedLooseDistanceRoll(int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => looseBallManager.isActivated && looseBallManager.isWaitingForDistanceRoll,
+            4f,
+            "LooseBallManager should be waiting for a distance roll."));
+
+        Log($"Rigging loose-ball distance roll to {rigRoll}");
+        looseBallManager.PerformDistanceRoll(rigRoll);
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator PerformRiggedLooseInterceptionRoll(string expectedDefenderName, int rigRoll)
+    {
+        float elapsedSeconds = 0f;
+        while (looseBallManager.isActivated
+            && !looseBallManager.isWaitingForInterceptionRoll
+            && elapsedSeconds < 4f)
+        {
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+
+        if (!looseBallManager.isWaitingForInterceptionRoll)
+        {
+            AssertTrue(
+                false,
+                $"LooseBallManager should be waiting for {expectedDefenderName}'s interception roll.",
+                true,
+                looseBallManager.isWaitingForInterceptionRoll
+            );
+            yield break;
+        }
+
+        string currentDefenderName = GetCurrentLooseInterceptorName();
+        PlayerToken currentInterceptor = looseBallManager.potentialInterceptor;
+        AssertTrue(
+            NamesMatch(currentDefenderName, expectedDefenderName),
+            $"Expected {expectedDefenderName} to be the next loose-ball interceptor.",
+            expectedDefenderName,
+            currentDefenderName
+        );
+
+        RecordShootingLooseInterceptionAttempt(currentInterceptor, rigRoll);
+        Log($"Rigging {expectedDefenderName} loose-ball interception roll to {rigRoll}");
+        looseBallManager.PerformInterceptionRoll(rigRoll);
+        yield return new WaitForSeconds(0.3f);
+    }
+
+    private IEnumerator AssertShootingAnyOtherScenario(ShootingBranchDefinition branch, string expectedReceiverName)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => !looseBallManager.isActivated && !shotManager.isActivated && !goalKeeperManager.isActivated,
+            6f,
+            $"Shooting branch '{branch.Name}' should finish resolving before AnyOtherScenario availability is checked."));
+
+        string context = $"Shooting branch '{branch.Name}' AnyOtherScenario outcome";
+        AssertShootingManagerState(context);
+
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(
+            availabilityCheck.passed,
+            $"Shooting branch '{branch.Name}' should end in AnyOtherScenario availability.",
+            true,
+            availabilityCheck.ToString()
+        );
+
+        if (!string.IsNullOrWhiteSpace(expectedReceiverName))
+        {
+            string actualReceiverName = GetTokenTestName(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+            AssertTrue(
+                NamesMatch(actualReceiverName, expectedReceiverName),
+                $"Shooting branch '{branch.Name}' should end with {expectedReceiverName} as the last touch.",
+                expectedReceiverName,
+                actualReceiverName
+            );
+            AssertShootingBallOnToken(expectedReceiverName, context);
+        }
+    }
+
+    private IEnumerator AssertShootingMovementToAttack(ShootingBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => !looseBallManager.isActivated && movementPhaseManager.isActivated,
+            6f,
+            $"Shooting branch '{branch.Name}' should resolve into attacking Movement Phase."));
+
+        string context = $"Shooting branch '{branch.Name}' Movement-to-attack outcome";
+        AssertShootingManagerState(context, expectMovementActive: true);
+        AssertShootingLastTouch(GetExpectedShootingLooseBallLastTouch(branch, branch.Steps.Last()), context);
+        AssertShootingBallInEmptySpace(context);
+
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(
+            availabilityCheck.passed,
+            $"Shooting branch '{branch.Name}' should end with Movement Phase committed for attack.",
+            true,
+            availabilityCheck.ToString()
+        );
+    }
+
+    private IEnumerator AssertShootingSaveAndHold(ShootingBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForSaveandHoldScenario,
+            4f,
+            $"Shooting branch '{branch.Name}' should wait for Save-and-Hold choice."));
+
+        string context = $"Shooting branch '{branch.Name}' Save-and-Hold outcome";
+        AssertShootingManagerState(context, expectShotActive: true);
+        AssertTrue(shotManager.isWaitingForSaveandHoldScenario, $"Shooting branch '{branch.Name}' should be in Save-and-Hold.");
+        AssertShootingLastTouch("Kuzmic", context);
+        AssertShootingBallOnToken("Kuzmic", context);
+    }
+
+    private IEnumerator AssertShootingCorner(ShootingBranchDefinition branch, bool north)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => freeKickManager.isActivated && freeKickManager.isWaitingForKickerSelection,
+            6f,
+            $"Shooting branch '{branch.Name}' should resolve to a corner."));
+
+        string context = $"Shooting branch '{branch.Name}' {(north ? "north" : "south")} corner outcome";
+        AssertShootingManagerState(context, expectFreeKickActive: true);
+        AssertTrue(
+            freeKickManager.isWaitingForKickerSelection,
+            $"{context}: FreeKickManager should wait for the corner kicker selection.",
+            true,
+            freeKickManager.GetDebugStatus());
+        AssertShootingLastTouch("Kuzmic", context);
+        HexCell ballHex = freeKickManager.ball.GetCurrentHex();
+        AssertTrue(ballHex != null, $"Shooting branch '{branch.Name}' corner should place the ball on a corner spot.");
+        if (ballHex != null)
+        {
+            AssertTrue(
+                north ? ballHex.coordinates.z > 0 : ballHex.coordinates.z < 0,
+                $"Shooting branch '{branch.Name}' should resolve to the {(north ? "north" : "south")} corner.",
+                north ? "z > 0" : "z < 0",
+                ballHex.coordinates
+            );
+        }
+    }
+
+    private IEnumerator AssertShootingGoal(ShootingBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => goalFlowManager.isActivated,
+            6f,
+            $"Shooting branch '{branch.Name}' should activate GoalFlow."));
+
+        string context = $"Shooting branch '{branch.Name}' goal outcome";
+        AssertShootingManagerState(context, expectGoalFlowActive: true);
+        AssertTrue(goalFlowManager.isActivated, $"Shooting branch '{branch.Name}' should be in GoalFlow.");
+        AssertShootingLastTouch("Yaneva", context);
+        AssertShootingBallInGoal(context);
+        while (goalFlowManager.isActivated)
+        {
+            yield return null;
+        }
+        AssertTrue(!shotManager.isActivated && !looseBallManager.isActivated && !goalKeeperManager.isActivated, $"{context}: Shooting flow managers should remain inactive after GoalFlow closes.", true, GetShootingStateSummary());
+    }
+
+    private IEnumerator AssertShootingOwnGoal(ShootingBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => goalFlowManager.isActivated,
+            6f,
+            $"Shooting branch '{branch.Name}' should activate GoalFlow for an own-goal resolution."));
+
+        string context = $"Shooting branch '{branch.Name}' own-goal outcome";
+        AssertShootingManagerState(context, expectGoalFlowActive: true);
+        AssertTrue(goalFlowManager.isActivated, $"Shooting branch '{branch.Name}' should be in GoalFlow for the own-goal resolution.");
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != null, $"{context}: own-goal resolution should keep a scoring token.", true, GetTokenTestName(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose));
+        AssertShootingBallInGoal(context);
+        while (goalFlowManager.isActivated)
+        {
+            yield return null;
+        }
+        AssertTrue(!shotManager.isActivated && !looseBallManager.isActivated && !goalKeeperManager.isActivated, $"{context}: Shooting flow managers should remain inactive after GoalFlow closes.", true, GetShootingStateSummary());
+    }
+
+    private IEnumerator InvokePrivateShotCoroutine(string methodName, object[] parameters, params Type[] parameterTypes)
+    {
+        MethodInfo method = typeof(ShotManager)
+            .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+            .FirstOrDefault(candidate =>
+            {
+                if (candidate.Name != methodName)
+                {
+                    return false;
+                }
+
+                ParameterInfo[] methodParameters = candidate.GetParameters();
+                if (methodParameters.Length != parameterTypes.Length)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < parameterTypes.Length; i++)
+                {
+                    if (parameterTypes[i] != null && methodParameters[i].ParameterType != parameterTypes[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+        AssertTrue(method != null, $"ShotManager private coroutine '{methodName}' should exist for the Shooting branch tests.");
+        return method?.Invoke(shotManager, parameters) as IEnumerator;
+    }
+
+    private object GetCurrentShotInteractionObject()
+    {
+        FieldInfo field = typeof(ShotManager).GetField("currentShotInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(field != null, "ShotManager currentShotInteraction field should exist for the Shooting branch tests.");
+        return field?.GetValue(shotManager);
+    }
+
+    private string GetCurrentShotInteractionDefenderName()
+    {
+        object interaction = GetCurrentShotInteractionObject();
+        return GetTokenTestName(GetShotInteractionDefender(interaction));
+    }
+
+    private PlayerToken GetShotInteractionDefender(object interaction)
+    {
+        if (interaction == null)
+        {
+            return null;
+        }
+
+        FieldInfo defenderField = interaction.GetType().GetField("defender", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        return defenderField?.GetValue(interaction) as PlayerToken;
+    }
+
+    private int GetShotInteractionInt(object interaction, string fieldName, int fallback)
+    {
+        if (interaction == null)
+        {
+            return fallback;
+        }
+
+        FieldInfo field = interaction.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (field == null)
+        {
+            return fallback;
+        }
+
+        object value = field.GetValue(interaction);
+        return value is int intValue ? intValue : fallback;
+    }
+
+    private int? GetShotInteractionNullableInt(object interaction, string fieldName)
+    {
+        if (interaction == null)
+        {
+            return null;
+        }
+
+        FieldInfo field = interaction.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (field == null)
+        {
+            return null;
+        }
+
+        object value = field.GetValue(interaction);
+        return value is int intValue ? intValue : value as int?;
+    }
+
+    private string GetCurrentLooseInterceptorName()
+    {
+        return GetTokenTestName(looseBallManager.potentialInterceptor);
+    }
+
+    private static string GetTokenTestName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return null;
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+    }
+
+    private static bool NamesMatch(string actualName, string expectedName)
+    {
+        if (string.IsNullOrWhiteSpace(expectedName))
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(actualName))
+        {
+            return false;
+        }
+
+        return string.Equals(actualName, expectedName, StringComparison.OrdinalIgnoreCase)
+            || actualName.IndexOf(expectedName, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     public void LinkRoomSceneComponents()
@@ -3979,6 +5882,79 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         LogFooterofTest("MovementPhase reset when switching action before commitment");
     }
+
+    private IEnumerator Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("▶️ Starting test scenario: MovementPhase 2f2 forfeit auto-commit starts clean Attack MP");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        Log("Pressing 2");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 2), 0.2f));
+        Log("Clicking (3, 2)");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 2), 0.2f));
+        Log("Clicking (3, 2) again");
+        yield return StartCoroutine(WaitForCondition(
+            () => groundBallManager.isWaitingForDiceRoll,
+            2f,
+            "Dangerous pass to space should wait for interception rolls."));
+
+        groundBallManager.PerformGroundInterceptionDiceRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        groundBallManager.PerformGroundInterceptionDiceRoll(1);
+        yield return new WaitForSeconds(0.2f);
+        groundBallManager.PerformGroundInterceptionDiceRoll(1);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated
+                && movementPhaseManager.isCommitted
+                && movementPhaseManager.isMovementPhaseAttack
+                && !MatchManager.Instance.attackHasPossession,
+            5f,
+            "Pass to space should auto-commit a fresh attacking Movement Phase."));
+
+        AvailabilityCheckResult autoMovement = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(autoMovement.passed, "Action Availability after GB to space should be auto-committed Movement Phase.", true, autoMovement.ToString());
+        AssertTrue(movementPhaseManager.attackersMoved == 0, "Fresh auto-committed MP should start with zero attackers moved.", 0, movementPhaseManager.attackersMoved);
+        AssertTrue(movementPhaseManager.defendersMoved == 0, "Fresh auto-committed MP should start with zero defenders moved.", 0, movementPhaseManager.defendersMoved);
+        AssertTrue(movementPhaseManager.attackersMovedIn2f2 == 0, "Fresh auto-committed MP should start with zero 2f2 attackers moved.", 0, movementPhaseManager.attackersMovedIn2f2);
+
+        Log("Pressing X - Forfeit Attack MovementPhase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhaseDef,
+            2f,
+            "First X should move the current MP from Attack to Defense."));
+        AssertTrue(movementPhaseManager.attackersMoved == 4, "Attack MP forfeit should mark the current attack section complete.", 4, movementPhaseManager.attackersMoved);
+
+        Log("Pressing X - Forfeit Defense MovementPhase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhase2f2,
+            2f,
+            "Second X should move the current MP from Defense to 2f2."));
+        AssertTrue(movementPhaseManager.defendersMoved == 5, "Defense MP forfeit should mark the current defense section complete.", 5, movementPhaseManager.defendersMoved);
+
+        Log("Pressing X - Forfeit 2f2 MovementPhase");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated && movementPhaseManager.isCommitted,
+            3f,
+            "After 2f2 forfeit, no-possession state should auto-commit the next Movement Phase."));
+
+        AssertTrue(movementPhaseManager.isMovementPhaseAttack, "New auto-committed MP should begin in Attack, not inherit Defense.", true, movementPhaseManager.GetDebugStatus());
+        AssertTrue(!movementPhaseManager.isMovementPhaseDef, "New auto-committed MP should not be stuck in Defense.", false, movementPhaseManager.GetDebugStatus());
+        AssertTrue(!movementPhaseManager.isMovementPhase2f2, "New auto-committed MP should not remain in 2f2.", false, movementPhaseManager.GetDebugStatus());
+        AssertTrue(movementPhaseManager.attackersMoved == 0, "New auto-committed MP should reset attackersMoved after 2f2 forfeit.", 0, movementPhaseManager.attackersMoved);
+        AssertTrue(movementPhaseManager.defendersMoved == 0, "New auto-committed MP should reset defendersMoved after 2f2 forfeit.", 0, movementPhaseManager.defendersMoved);
+        AssertTrue(movementPhaseManager.attackersMovedIn2f2 == 0, "New auto-committed MP should reset attackersMovedIn2f2 after 2f2 forfeit.", 0, movementPhaseManager.attackersMovedIn2f2);
+        AssertTrue(movementPhaseManager.movedTokens.Count == 0, "New auto-committed MP should reset movedTokens after 2f2 forfeit.", 0, movementPhaseManager.movedTokens.Count);
+
+        LogFooterofTest("MovementPhase 2f2 forfeit auto-commit starts clean Attack MP");
+    }
     
     private IEnumerator Scenario_009_Movement_Phase_NO_interceptions_No_tackles()
     {
@@ -5671,7 +7647,25 @@ public class GameTestScenarioRunner : MonoBehaviour
             "MovementPhase Yaneva should have 0 remaining pace after three successful nutmegs",
             true,
             movementPhaseManager.remainingDribblerPace == 0
-        );        
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade == 3,
+            "Yaneva should have three dribbles made after three successful nutmegs",
+            3,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetTeamStats(PlayerToken.GetPlayerTokenByName("Yaneva").isHomeTeam).totalDribblesMade == 3,
+            "Yaneva's team should roll up three dribbles made after the successful nutmegs",
+            3,
+            MatchManager.Instance.gameData.stats.GetTeamStats(PlayerToken.GetPlayerTokenByName("Yaneva").isHomeTeam).totalDribblesMade
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetTeamStats(PlayerToken.GetPlayerTokenByName("Paterson").isHomeTeam).totalTacklesMade == 0,
+            "The defending team should not record tackles made when all three nutmeg duels are won by Yaneva",
+            0,
+            MatchManager.Instance.gameData.stats.GetTeamStats(PlayerToken.GetPlayerTokenByName("Paterson").isHomeTeam).totalTacklesMade
+        );
 
         LogFooterofTest("MovementPhase Check NutmegWithoutMovement And then 2 more successful nutmegs");
     }
@@ -6034,6 +8028,18 @@ public class GameTestScenarioRunner : MonoBehaviour
             MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").groundDuelsWon
         );
         AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").tacklesMade == 1,
+            "Gilbert should have 1 tackle made from the successful tackle duel",
+            1,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").tacklesMade
+        );
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade == 0,
+            "Yaneva should not record a dribble made when Gilbert wins the tackle duel",
+            0,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade
+        );
+        AssertTrue(
             MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").possessionWon == 1,
             "Gilbert should have 1 possession won from the successful tackle",
             1,
@@ -6065,6 +8071,18 @@ public class GameTestScenarioRunner : MonoBehaviour
             patersonXD + gilbertXD,
             0.0001f,
             "The dribbler's team xDribbles should roll up Yaneva's tackle duel expectations");
+        AssertTrue(
+            tacklerTeamStats.totalTacklesMade == 1,
+            "The tacklers' team should roll up one tackle made from Gilbert's successful tackle",
+            1,
+            tacklerTeamStats.totalTacklesMade
+        );
+        AssertTrue(
+            dribblerTeamStats.totalDribblesMade == 0,
+            "The dribbler's team should not record dribbles made when Yaneva loses the resolved tackle duel",
+            0,
+            dribblerTeamStats.totalDribblesMade
+        );
 
         LogFooterofTest("MovementPhase Check InterceptionFoul Tackle Foul NewTackle SuccessfulTackle");
     }
@@ -7160,8 +9178,14 @@ public class GameTestScenarioRunner : MonoBehaviour
             looseBallManager.isWaitingForInterceptionRoll
         );
         AssertTrue(
+            looseBallManager.potentialInterceptor != PlayerToken.GetPlayerTokenByName("Paterson"),
+            "Loose ball deflector should not be offered an interception when the tackle loose-ball distance is greater than 1.",
+            true,
+            looseBallManager.potentialInterceptor
+        );
+        AssertTrue(
             looseBallManager.potentialInterceptor == PlayerToken.GetPlayerTokenByName("Stewart"),
-            "Loose ball should be waiting for an interception from ",
+            "Loose ball should be waiting for Stewart's interception because their ZOI contains the path",
             PlayerToken.GetPlayerTokenByName("Stewart"),
             looseBallManager.potentialInterceptor
         );
@@ -7179,7 +9203,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         AssertTrue(
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == PlayerToken.GetPlayerTokenByName("Stewart"),
-            "Stewart should be the LastTokenToTouchTheBallOnPurpose",
+            "Stewart should be the LastTokenToTouchTheBallOnPurpose after intercepting the loose ball",
             PlayerToken.GetPlayerTokenByName("Stewart").playerName,
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName
         );
@@ -7344,15 +9368,27 @@ public class GameTestScenarioRunner : MonoBehaviour
             looseBallManager.isWaitingForInterceptionRoll
         );
         AssertTrue(
+            looseBallManager.potentialInterceptor != PlayerToken.GetPlayerTokenByName("Paterson"),
+            "Loose ball deflector should not be offered an interception before Stewart when the tackle loose-ball distance is greater than 1.",
+            true,
+            looseBallManager.potentialInterceptor
+        );
+        AssertTrue(
             looseBallManager.potentialInterceptor == PlayerToken.GetPlayerTokenByName("Stewart"),
-            "Loose ball should be waiting for an interception from ",
+            "Loose ball should be waiting for Stewart's interception because their ZOI contains the path",
             PlayerToken.GetPlayerTokenByName("Stewart"),
             looseBallManager.potentialInterceptor
         );
         yield return new WaitForSeconds(0.5f);
         Log("Pressing R - Interception Roll Missed - Should move on McNulty");
         looseBallManager.PerformInterceptionRoll(1);
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(0.5f);
+        AssertTrue(
+            !looseBallManager.isWaitingForInterceptionRoll || looseBallManager.potentialInterceptor != PlayerToken.GetPlayerTokenByName("McNulty"),
+            "McNulty should not receive a loose-ball interception roll when the ball is travelling directly onto them.",
+            true,
+            looseBallManager.potentialInterceptor
+        );
         yield return new WaitForSeconds(2.5f); // wait for the ball to move
         AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
         AssertTrue(
@@ -13699,6 +15735,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(MatchManager.Instance.currentState != MatchManager.GameState.HighPass, "Difficulty 1 High Pass should not commit on C.");
         AssertTrue(highPassManager.GetInstructions().Contains("6-15"), "High Pass instructions should show the configured 6-15 target range.", true, highPassManager.GetInstructions());
         AssertTrue(
+            highPassManager.isAvailableTargetsReady,
+            "Difficulty 1 High Pass should compute available target highlights before the runner continues.",
+            true,
+            highPassManager.isAvailableTargetsReady);
+        AssertTrue(
             hexgrid.highlightedHexes.Contains(yanevaTarget),
             "Difficulty 1 High Pass should highlight available targets immediately after pressing C.",
             true,
@@ -14034,21 +16075,16 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Pressing H - Attack chooses an unchallenged header");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.H, 0.1f));
         yield return StartCoroutine(WaitForCondition(
-            () => headerManager.isWaitingForAttackerSelection,
+            () => headerManager.iswaitingForChallengeWinnerSelection,
             2f,
-            "Unchallenged header with multiple attackers should ask attack to select 1-2 jumpers."));
+            "Unchallenged header with multiple attackers should ask attack to select exactly one header winner."));
 
-        Log("Clicking Nazef and Kalla again - Nominate unchallenged header jumpers");
+        Log("Clicking Nazef - Select the unchallenged free header winner");
         yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(nazef.GetCurrentHex()), 0.1f));
-        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(kalla.GetCurrentHex()), 0.1f));
-        AssertTrue(headerManager.attackerWillJump.Count == 2, "Attack should be able to nominate two players for the unchallenged header.", 2, headerManager.attackerWillJump.Count);
-
-        Log("Pressing Enter - Confirm unchallenged attacking header");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.KeypadEnter, 0.1f));
         yield return StartCoroutine(WaitForCondition(
             () => headerManager.isWaitingForHeaderTargetSelection || headerManager.isWaitingForHeaderAtGoal,
             2f,
-            "Confirmed unchallenged header should advance toward header target selection."));
+            "Selected unchallenged header winner should advance toward header target selection."));
 
         if (headerManager.isWaitingForHeaderAtGoal)
         {
@@ -14060,7 +16096,8 @@ public class GameTestScenarioRunner : MonoBehaviour
                 "Declining header at goal should continue to header target selection."));
         }
 
-        AssertTrue(headerManager.challengeWinner != null && headerManager.attackerWillJump.Contains(headerManager.challengeWinner), "The unchallenged header winner should be one of the nominated attackers.", true, headerManager.challengeWinner);
+        AssertTrue(headerManager.attackerWillJump.Count == 1, "Attack free header should keep exactly one selected attacker.", 1, headerManager.attackerWillJump.Count);
+        AssertTrue(headerManager.challengeWinner == nazef, "The unchallenged header winner should be the clicked attacker.", nazef, headerManager.challengeWinner);
 
         LogFooterofTest("Header Defense Forfeit Reoffers Unchallenged Choice");
     }

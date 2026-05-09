@@ -1426,11 +1426,11 @@ public class MatchStatsUI : MonoBehaviour
             case "xdribbles":
             case "xdri":
             case "xdribblesmade":
-                return (FormatExpectedAndMade(homeTeam.totalXDribbles, homeTeam.totalGroundDuelsWon), FormatExpectedAndMade(awayTeam.totalXDribbles, awayTeam.totalGroundDuelsWon), true);
+                return (FormatExpectedAndMade(homeTeam.totalXDribbles, homeTeam.totalDribblesMade), FormatExpectedAndMade(awayTeam.totalXDribbles, awayTeam.totalDribblesMade), true);
             case "xtackles":
             case "xtac":
             case "xtacklesmade":
-                return (FormatExpectedAndMade(homeTeam.totalXTackles, homeTeam.totalGroundDuelsWon), FormatExpectedAndMade(awayTeam.totalXTackles, awayTeam.totalGroundDuelsWon), true);
+                return (FormatExpectedAndMade(homeTeam.totalXTackles, homeTeam.totalTacklesMade), FormatExpectedAndMade(awayTeam.totalXTackles, awayTeam.totalTacklesMade), true);
             default:
                 return ("-", "-", false);
         }

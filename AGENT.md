@@ -4,6 +4,21 @@
 - Never leave the repo in a state with compilation errors.
 - After code changes, refresh or recompile Unity scripts before concluding the turn.
 
+## Unity Play Mode Rule
+- Codex must never start Unity Play Mode.
+- Do not press `Cmd+P` as a blind toggle. Only use it as a stop action when the user has explicitly said Unity is currently in Play Mode, or when the current logs/state clearly show an active or just-failed test run.
+- If Play Mode state is uncertain, do not press `Cmd+P`; ask the user to stop Play Mode or confirm it is running.
+- After making fixes, Codex may refresh/reload assets and check compilation, then must tell the user to press Play manually.
+- The user runs Play Mode and the test suite manually.
+
+## Unity Failure Fix Loop
+1. When the user reports a failed Unity scenario, first inspect bounded log slices from `Assets/TestResults.txt` and Unity `Editor.log`; never live-tail logs.
+2. After identifying the failure context from the logs, press `Cmd+P` only to stop Unity Play Mode before editing files.
+3. Edit and save the relevant files.
+4. Return focus to Unity and press `Cmd+R` to reload assets.
+5. Check Unity/script compilation after reload and fix any compilation errors until Unity is clean.
+6. Do not press Play after the fix; tell the user to press Play and rerun the suite.
+
 ## FTP Development Workflow
 - When working on First Time Pass (`FTP`), always implement the requested gameplay change first and add or update the relevant runner scenarios.
 - When useful, ask the user for exact click paths or token/hex sequences before finalizing a new FTP scenario.

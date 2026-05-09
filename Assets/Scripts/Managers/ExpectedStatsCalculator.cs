@@ -1,7 +1,20 @@
 using System;
+using System.Collections.Generic;
 
 public static class ExpectedStatsCalculator
 {
+    public readonly struct ShotBlockerExpectation
+    {
+        public readonly PlayerToken token;
+        public readonly int requiredNaturalRoll;
+
+        public ShotBlockerExpectation(PlayerToken token, int requiredNaturalRoll)
+        {
+            this.token = token;
+            this.requiredNaturalRoll = requiredNaturalRoll;
+        }
+    }
+
     public readonly struct AerialContestant
     {
         public readonly PlayerToken token;
@@ -185,6 +198,79 @@ public static class ExpectedStatsCalculator
         }
 
         return probability;
+    }
+
+    public static float CalculateShotGoalProbability(
+        PlayerToken shooter,
+        int shootingPenalty,
+        IEnumerable<ShotBlockerExpectation> blockAttempts,
+        PlayerToken goalkeeper = null,
+        int goalkeeperPenalty = 0)
+    {
+        if (shooter == null)
+        {
+            return 0f;
+        }
+
+        float noBlockProbability = 1f;
+        if (blockAttempts != null)
+        {
+            foreach (ShotBlockerExpectation blockAttempt in blockAttempts)
+            {
+                noBlockProbability *= 1f - CalculateShotBlockProbability(blockAttempt.token, blockAttempt.requiredNaturalRoll);
+            }
+        }
+
+        float goalAfterNoBlockProbability = 0f;
+        foreach (DiceOutcome shooterOutcome in DuelDiceOutcomes)
+        {
+            int naturalRoll = GetNaturalRoll(shooterOutcome);
+            if (naturalRoll <= 1)
+            {
+                continue;
+            }
+
+            int shotPower = shooterOutcome.effectiveRoll == 50
+                ? 50
+                : shooter.shooting + naturalRoll - shootingPenalty;
+
+            float concedeProbability = goalkeeper != null
+                ? CalculateKeeperConcedeProbability(shotPower, goalkeeper.saving, goalkeeperPenalty)
+                : 1f;
+
+            goalAfterNoBlockProbability += shooterOutcome.probability * concedeProbability;
+        }
+
+        return noBlockProbability * goalAfterNoBlockProbability;
+    }
+
+    public static float CalculateShotBlockProbability(PlayerToken blocker, int requiredNaturalRoll)
+    {
+        if (blocker == null)
+        {
+            return 0f;
+        }
+
+        float probability = 0f;
+        foreach (DiceOutcome outcome in DuelDiceOutcomes)
+        {
+            int naturalRoll = GetNaturalRoll(outcome);
+            bool succeeds = outcome.effectiveRoll == 50
+                || naturalRoll >= requiredNaturalRoll
+                || naturalRoll + blocker.tackling >= 10;
+
+            if (succeeds)
+            {
+                probability += outcome.probability;
+            }
+        }
+
+        return probability;
+    }
+
+    private static int GetNaturalRoll(DiceOutcome outcome)
+    {
+        return outcome.effectiveRoll == 50 ? 6 : outcome.effectiveRoll;
     }
 
     public static float CalculateRecoveryProbability(PlayerToken defender)

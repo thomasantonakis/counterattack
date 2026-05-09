@@ -142,7 +142,7 @@ public class Ball : MonoBehaviour
         AdjustBallHeightBasedOnOccupancy();
     }
 
-    public IEnumerator MoveToCell(HexCell newHex, int? roll = null)
+    public IEnumerator MoveToCell(HexCell newHex, int? roll = null, bool allowGKBoxMove = true, bool stopAfterGKBoxMove = false)
     {
         if (newHex == null)
         {
@@ -180,18 +180,26 @@ public class Ball : MonoBehaviour
                 }
                 // ✅ Check if GK should move
                 if (
-                    goalKeeperManager.ShouldGKMove(currentHex) // check if we're eligible for move
+                    allowGKBoxMove
                     && roll == null // this is not called from Shot Manager
                     && !isFromGoal
+                    && goalKeeperManager.ShouldGKMove(currentHex) // check if we're eligible for move
                 )
                 {
                     Debug.Log("🛑 GK move triggered! Pausing ball.");
                     isMoving = false;
                     // ✅ Store paused position before GK move
                     Vector3 pausedPosition = transform.position;
+                    HexCell pausedHex = currentHex;
                     yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
                     // ✅ Restore ball's paused position after GK move
                     transform.position = pausedPosition;
+                    if (stopAfterGKBoxMove)
+                    {
+                        currentCell = pausedHex;
+                        targetCell = null;
+                        yield break;
+                    }
                     isMoving = true; // Resume movement
                 }
             }

@@ -124,6 +124,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (isPlayerMoving) return;
         if (shotManager.isActivated) return;
+        if (highPassManager != null && highPassManager.isActivated) return;
         if (IsResolvingFoulSequence()) return;
         if (lookingForNutmegVictim)
         {
@@ -252,6 +253,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (looseBallManager.isActivated) return;
         if (shotManager.isActivated || shotManager.isWaitingForSnapshotDecisionFromLoose) return;
+        if (highPassManager != null && highPassManager.isActivated) return;
         if (IsResolvingFoulSequence())
         {
             bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
@@ -422,6 +424,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             CommitToAction();
             ForfeitTeamMovementPhase();
+            keyData.isConsumed = true;
         }
         if (isBallPickable && keyData.key == KeyCode.V)
         {
@@ -1497,12 +1500,14 @@ public class MovementPhaseManager : MonoBehaviour
                 EndMovementPhase();
                 MatchManager.Instance.BroadcastSafeEndofMovementPhase();
             }
+            return;
         }
         if (isMovementPhaseDef)
         {
             Debug.Log($"No more defenders wish to move. Attack gets 2f2 move.");
             defendersMoved = maxDefenderMoves-1;
             AdvanceMovementPhase();  // Reset the movement phase
+            return;
         }
         if (isMovementPhaseAttack)
         {
@@ -1520,6 +1525,7 @@ public class MovementPhaseManager : MonoBehaviour
                 attackersMoved = maxAttackerMoves-1;
                 AdvanceMovementPhase();  // Reset the movement phase
             }
+            return;
         }
     }
     

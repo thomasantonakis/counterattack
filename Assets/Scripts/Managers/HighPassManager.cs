@@ -391,6 +391,43 @@ public class HighPassManager : MonoBehaviour
         availableTargetPrecomputeRoutine = null;
     }
 
+    private void PrecomputeAvailableHighPassTargetsNow(bool refreshHighlights)
+    {
+        if (!CanPrecomputeAvailableTargets())
+        {
+            ResetAvailableTargetPrecompute();
+            return;
+        }
+
+        if (availableTargetPrecomputeRoutine != null)
+        {
+            StopCoroutine(availableTargetPrecomputeRoutine);
+            availableTargetPrecomputeRoutine = null;
+        }
+
+        availableTargetPrecomputeVersion++;
+        isAvailableTargetsReady = false;
+        availableHighPassTargetHexes.Clear();
+        hoveredHighPassTargetHex = null;
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex != null && !hex.isOutOfBounds && IsHighPassTargetAvailableForPreview(hex))
+            {
+                availableHighPassTargetHexes.Add(hex);
+            }
+        }
+
+        isAvailableTargetsReady = true;
+
+        if (refreshHighlights && ShouldShowDifficultyOneTargetHighlights())
+        {
+            pendingDifficultyOneTargetHighlightRefresh = false;
+            RefreshDifficultyOneHighPassTargetHighlights();
+            Debug.Log($"Successfully highlighted {availableHighPassTargetHexes.Count} immediately computed valid hexes for High Pass.");
+        }
+    }
+
     private bool EnsureAvailableTargetPrecomputeReady()
     {
         if (isAvailableTargetsReady)
@@ -1102,10 +1139,9 @@ public class HighPassManager : MonoBehaviour
 
     private void HighlightAllValidHighPassTargets()
     {
-        if (!EnsureAvailableTargetPrecomputeReady())
+        if (!isAvailableTargetsReady)
         {
-            hexGrid.ClearHighlightedHexes();
-            Debug.Log("High Pass target map is still calculating. Highlights will draw when ready.");
+            PrecomputeAvailableHighPassTargetsNow(refreshHighlights: true);
             return;
         }
 
@@ -1338,17 +1374,18 @@ public class HighPassManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
-        PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        MatchManager matchManager = MatchManager.Instance;
+        PlayerToken passer = matchManager != null ? matchManager.LastTokenToTouchTheBallOnPurpose : null;
         string passerName = passer != null ? passer.name : "the passer";
-        if (goalKeeperManager.isActivated) return "";
-        if (finalThirdManager.isActivated) return "";
-        if (freeKickManager.isWaitingForExecution) return "";
+        if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
+        if (finalThirdManager != null && finalThirdManager.isActivated) return "";
+        if (freeKickManager != null && freeKickManager.isWaitingForExecution) return "";
         if (isAvailable) sb.Append("Press [C] to Play a High Pass, ");
         if (isActivated) sb.Append("HP: ");
         if (isWaitingForConfirmation)
         {
             sb.Append($"Click on an inbounds Hex {minPassDistance}-{MAX_PASS_DISTANCE} Hexes from {passerName}, on or within 3 reachable Hexes of an attacker, ");
-            if (MatchManager.Instance.difficulty_level == 3) sb.Append("this High Pass is already committed, ");
+            if (matchManager != null && matchManager.difficulty_level == 3) sb.Append("this High Pass is already committed, ");
         }
         if (isWaitingForConfirmation && currentTargetHex != null) sb.Append($"or click the orange Hex again to confirm target, ");
         if (isWaitingForAttackerSelection && lockedAttacker == null) sb.Append($"Click an eligible attacker ({string.Join(", ", eligibleAttackers.Select(t => t.name))}) to move them to the target, ");

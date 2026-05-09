@@ -24,6 +24,7 @@ public class LooseBallManager : MonoBehaviour
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
     public ShotManager shotManager;
+    public GoalFlowManager goalFlowManager;
     public HelperFunctions helperFunctions;
     [Header("Flags")]
     public bool isActivated = false;
@@ -60,6 +61,12 @@ public class LooseBallManager : MonoBehaviour
         }
     }
 
+    private sealed class LooseBallGkCheckpointResult
+    {
+        public bool GkMoveOffered;
+        public bool RecoveredByGoalkeeper;
+    }
+
     private bool IsHeaderLooseBall(LooseBallSourceType sourceType)
     {
         return sourceType == LooseBallSourceType.HeaderDeflection;
@@ -68,6 +75,72 @@ public class LooseBallManager : MonoBehaviour
     private bool IsGoalkeeperHandlingSpill(LooseBallSourceType sourceType)
     {
         return sourceType == LooseBallSourceType.GoalkeeperHandlingSpill;
+    }
+
+    private bool TryHandleLooseBallGoal(HexCell goalHex, PlayerToken deflectingToken)
+    {
+        if (goalHex == null || goalHex.isInGoal == 0)
+        {
+            return false;
+        }
+
+        PlayerToken scoringToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        if (scoringToken == null)
+        {
+            scoringToken = deflectingToken;
+        }
+
+        if (scoringToken == null)
+        {
+            Debug.LogError($"Loose ball entered goal at {goalHex.coordinates}, but no scoring token could be identified.");
+            return false;
+        }
+
+        GoalFlowManager resolvedGoalFlowManager = goalFlowManager != null ? goalFlowManager : FindFirstObjectByType<GoalFlowManager>();
+        if (resolvedGoalFlowManager == null)
+        {
+            Debug.LogError("Loose ball entered goal, but GoalFlowManager is not linked.");
+            return false;
+        }
+
+        if (deflectingToken != null && deflectingToken != scoringToken)
+        {
+            Debug.Log($"Loose ball entered the goal at {goalHex.coordinates} after a deflection by {deflectingToken.name}. Awarding the goal to {scoringToken.name}.");
+        }
+        else
+        {
+            Debug.Log($"Loose ball entered the goal at {goalHex.coordinates}. Awarding the goal to {scoringToken.name}.");
+        }
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(scoringToken, MatchManager.ActionType.GoalScored);
+        MatchManager.Instance.ClearHangingPass();
+        MatchManager.Instance.SetLastToken(scoringToken);
+        if (movementPhaseManager != null && movementPhaseManager.isActivated)
+        {
+            movementPhaseManager.EndMovementPhase(false);
+            movementPhaseManager.EndMovementPhase(false);
+        }
+
+        resolvedGoalFlowManager.StartGoalFlow(scoringToken);
+        return true;
+    }
+
+    private static HexCell FindFirstGoalHexInPath(List<HexCell> path)
+    {
+        if (path == null)
+        {
+            return null;
+        }
+
+        foreach (HexCell hex in path)
+        {
+            if (hex != null && hex.isInGoal != 0)
+            {
+                return hex;
+            }
+        }
+
+        return null;
     }
 
     private bool ShouldAllowTokenImpactOnHex(LooseBallSourceType sourceType, int pathIndex, int pathCount)
@@ -110,6 +183,12 @@ public class LooseBallManager : MonoBehaviour
         return sourceType != LooseBallSourceType.InaccuratePass;
     }
 
+    private static bool ShouldOfferShortGroundBallAfterAttackerPickup(LooseBallSourceType sourceType, bool allowGKBoxMove)
+    {
+        return sourceType == LooseBallSourceType.GoalkeeperHandlingSpill
+            || (sourceType == LooseBallSourceType.GroundDeflection && !allowGKBoxMove);
+    }
+
     private bool IsTokenUnavailableForLooseBall(PlayerToken token)
     {
         return token == null
@@ -130,9 +209,247 @@ public class LooseBallManager : MonoBehaviour
         MatchManager.Instance.ApplyBallCollectionOwnership(token);
     }
 
-    private IEnumerator MoveLooseBallToHex(HexCell targetHex, LooseBallSourceType sourceType)
+    private IEnumerator MoveLooseBallToHex(HexCell targetHex, LooseBallSourceType sourceType, bool allowGKBoxMove)
     {
-        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex));
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, allowGKBoxMove: allowGKBoxMove));
+    }
+
+    private IEnumerator MoveLooseBallUntilGKBoxMove(HexCell targetHex)
+    {
+        if (ball == null)
+        {
+            Debug.LogError("LooseBallManager cannot move the ball to the defensive GK checkpoint because Ball is not linked.");
+            yield break;
+        }
+
+        yield return StartCoroutine(ball.MoveToCell(targetHex, null, true, stopAfterGKBoxMove: true));
+    }
+
+    private bool IsOpponentPenaltyBoxForCurrentPurposefulTouch(HexCell hex)
+    {
+        if (hex == null || hex.isInPenaltyBox == 0 || MatchManager.Instance == null)
+        {
+            return false;
+        }
+
+        PlayerToken lastPurposefulTouch = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        if (lastPurposefulTouch == null || !lastPurposefulTouch.isAttacker)
+        {
+            return false;
+        }
+
+        MatchManager.TeamAttackingDirection attackingDirection = lastPurposefulTouch.isHomeTeam
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+
+        return (attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight && hex.isInPenaltyBox == 1)
+            || (attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft && hex.isInPenaltyBox == -1);
+    }
+
+    private HexCell FindFirstOpponentPenaltyBoxHex(List<HexCell> movementPath)
+    {
+        if (movementPath == null)
+        {
+            return null;
+        }
+
+        return movementPath.FirstOrDefault(IsOpponentPenaltyBoxForCurrentPurposefulTouch);
+    }
+
+    private bool ShouldOfferLooseBallGKBoxMove(PlayerToken startingToken, LooseBallSourceType sourceType, List<HexCell> movementPath)
+    {
+        if (sourceType != LooseBallSourceType.GroundDeflection || startingToken == null || startingToken.IsGoalKeeper)
+        {
+            return false;
+        }
+
+        if (hexGrid == null || ball == null || hexGrid.CheckPenaltyBox(ball.transform.position) != 0)
+        {
+            return false;
+        }
+
+        return FindFirstOpponentPenaltyBoxHex(movementPath) != null;
+    }
+
+    private bool ShouldOfferPreRollGKBoxMove(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove)
+    {
+        if (!allowGKBoxMove)
+        {
+            return false;
+        }
+
+        if (sourceType != LooseBallSourceType.GroundDeflection || startingToken == null || startingToken.IsGoalKeeper)
+        {
+            return false;
+        }
+
+        if (hexGrid == null || ball == null || hexGrid.CheckPenaltyBox(ball.transform.position) != 0)
+        {
+            return false;
+        }
+
+        return IsOpponentPenaltyBoxForCurrentPurposefulTouch(startingToken.GetCurrentHex());
+    }
+
+    private List<HexCell> GetRemainingLooseBallPathFromCurrentBallHex(List<HexCell> movementPath)
+    {
+        if (movementPath == null)
+        {
+            return new List<HexCell>();
+        }
+
+        List<HexCell> validPath = movementPath.Where(hex => hex != null).ToList();
+        HexCell currentBallHex = ball != null ? ball.GetCurrentHex() : null;
+        int currentIndex = currentBallHex != null ? validPath.IndexOf(currentBallHex) : -1;
+        return currentIndex >= 0
+            ? validPath.Skip(currentIndex).ToList()
+            : validPath;
+    }
+
+    private bool TryFindDefendingGkDirectPickupHex(List<HexCell> movementPath, PlayerToken defendingGk, out HexCell pickupHex)
+    {
+        pickupHex = null;
+        HexCell gkHex = defendingGk != null ? defendingGk.GetCurrentHex() : null;
+        if (gkHex == null || movementPath == null)
+        {
+            return false;
+        }
+
+        pickupHex = movementPath.FirstOrDefault(hex => hex == gkHex);
+        return pickupHex != null;
+    }
+
+    private bool TryFindDefendingGkInterceptionHex(List<HexCell> movementPath, PlayerToken defendingGk, out HexCell interceptionHex)
+    {
+        interceptionHex = null;
+        HexCell gkHex = defendingGk != null ? defendingGk.GetCurrentHex() : null;
+        if (gkHex == null || movementPath == null)
+        {
+            return false;
+        }
+
+        foreach (HexCell hex in movementPath)
+        {
+            if (hex == null || hex.isAttackOccupied || hex.isDefenseOccupied)
+            {
+                continue;
+            }
+
+            if (hex.GetNeighbors(hexGrid).Contains(gkHex))
+            {
+                interceptionHex = hex;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void ResolveDefensiveLooseBallRecovery(PlayerToken recoveringToken, HexCell recoveryHex)
+    {
+        if (recoveringToken == null || recoveryHex == null)
+        {
+            Debug.LogError("Cannot resolve defensive loose-ball recovery with a null token or recovery hex.");
+            return;
+        }
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            recoveringToken,
+            MatchManager.ActionType.BallRecovery,
+            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            recoveryType: MatchManager.Instance.hangingPassType
+        );
+        MatchManager.Instance.ClearHangingPass();
+        MatchManager.Instance.SetLastTokenFromLooseBall(recoveringToken);
+        MatchManager.Instance.ChangePossession();
+        MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
+        if (movementPhaseManager != null)
+        {
+            movementPhaseManager.EndMovementPhase(true);
+        }
+        MatchManager.Instance.BroadcastAnyOtherScenario();
+    }
+
+    private IEnumerator OfferDefendingGKMoveAndRecoveryAfterInterceptions(
+        PlayerToken startingToken,
+        LooseBallSourceType sourceType,
+        List<HexCell> movementPath,
+        bool gkMoveAlreadyOffered,
+        LooseBallGkCheckpointResult result)
+    {
+        if (result == null)
+        {
+            yield break;
+        }
+
+        result.GkMoveOffered = gkMoveAlreadyOffered;
+        result.RecoveredByGoalkeeper = false;
+
+        if (gkMoveAlreadyOffered || !ShouldOfferLooseBallGKBoxMove(startingToken, sourceType, movementPath))
+        {
+            yield break;
+        }
+
+        HexCell firstBoxHex = FindFirstOpponentPenaltyBoxHex(movementPath);
+        HexCell movementTargetHex = movementPath != null ? movementPath.LastOrDefault(hex => hex != null) : null;
+        if (firstBoxHex == null || movementTargetHex == null)
+        {
+            yield break;
+        }
+
+        Debug.Log($"Loose ball movement enters the opponent penalty box at {firstBoxHex.coordinates}. Stopping on the line for the defending GK free move before continuing.");
+        yield return StartCoroutine(MoveLooseBallUntilGKBoxMove(movementTargetHex));
+        result.GkMoveOffered = true;
+
+        PlayerToken defendingGk = hexGrid != null ? hexGrid.GetDefendingGK() : null;
+        if (defendingGk == null)
+        {
+            yield break;
+        }
+
+        List<HexCell> remainingPath = GetRemainingLooseBallPathFromCurrentBallHex(movementPath);
+        if (TryFindDefendingGkDirectPickupHex(remainingPath, defendingGk, out HexCell pickupHex))
+        {
+            Debug.Log($"{defendingGk.name} moved directly onto the loose-ball path at {pickupHex.coordinates} and picks it up.");
+            yield return StartCoroutine(MoveLooseBallToHex(pickupHex, sourceType, allowGKBoxMove: false));
+            ResolveDefensiveLooseBallRecovery(defendingGk, pickupHex);
+            result.RecoveredByGoalkeeper = true;
+            yield break;
+        }
+
+        if (!TryFindDefendingGkInterceptionHex(remainingPath, defendingGk, out HexCell interceptionHex))
+        {
+            yield break;
+        }
+
+        potentialInterceptor = defendingGk;
+        Debug.Log($"{defendingGk.name} can intercept the loose ball after the GK free move near {interceptionHex.coordinates}.");
+        MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+            defendingGk,
+            ExpectedStatsCalculator.CalculateRecoveryProbability(defendingGk),
+            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            recoveryType: MatchManager.Instance.hangingPassType);
+        MatchManager.Instance.gameData.gameLog.LogEvent(defendingGk, MatchManager.ActionType.InterceptionAttempt);
+
+        isWaitingForInterceptionRoll = true;
+        while (isWaitingForInterceptionRoll)
+        {
+            yield return null;
+        }
+
+        if (interceptionRoll == 6 || defendingGk.tackling + interceptionRoll >= 10)
+        {
+            HexCell gkHex = defendingGk.GetCurrentHex();
+            Debug.Log($"{defendingGk.name} successfully intercepted the loose ball after the GK free move.");
+            yield return StartCoroutine(MoveLooseBallToHex(gkHex, sourceType, allowGKBoxMove: false));
+            ResolveDefensiveLooseBallRecovery(defendingGk, gkHex);
+            result.RecoveredByGoalkeeper = true;
+        }
+        else
+        {
+            Debug.Log($"{defendingGk.name} failed to intercept the loose ball after the GK free move.");
+            defendersTriedToIntercept.Add(defendingGk);
+        }
     }
 
     private void OnEnable()
@@ -331,17 +648,34 @@ public class LooseBallManager : MonoBehaviour
         return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
     }
 
-    public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType)
+    public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove = true)
     {
         isActivated = true;
         causingDeflection = startingToken; // TODO: I think this is redundant
         MatchManager.Instance.ClearPendingLooseBallCollectionReset();
         Debug.Log($"Loose Ball Resolution triggered by {startingToken.name} with resolution type: {sourceType}");
         path.Clear();
+        PlayerToken lastPurposefulTouchBeforeLooseBall = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
+        {
+            MatchManager.Instance.SetLastToken(startingToken);
+        }
+
+        bool allowGKBoxMoveForLooseBallMovement = allowGKBoxMove && !IsGoalkeeperHandlingSpill(sourceType);
         // Step 1: Move the ball to the starting token's hex
         HexCell defenderHex = startingToken.GetCurrentHex();
-        // TODO: Do not offer GK Movement for this
-        yield return StartCoroutine(MoveLooseBallToHex(startingToken.GetCurrentHex(), sourceType));
+        bool gkBoxMoveOfferedForThisLooseBall = false;
+        if (ShouldOfferPreRollGKBoxMove(startingToken, sourceType, allowGKBoxMove))
+        {
+            Debug.Log($"Loose ball source {startingToken.name} is on the opponent box line. Offering the defending GK free move before loose-ball direction and distance rolls.");
+            yield return StartCoroutine(MoveLooseBallUntilGKBoxMove(defenderHex));
+            gkBoxMoveOfferedForThisLooseBall = true;
+            yield return StartCoroutine(MoveLooseBallToHex(defenderHex, sourceType, allowGKBoxMove: false));
+        }
+        else
+        {
+            yield return StartCoroutine(MoveLooseBallToHex(defenderHex, sourceType, allowGKBoxMoveForLooseBallMovement));
+        }
         // ball.SetCurrentHex(defenderHex);
         List<int> spillDirections = new List<int>();
         if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
@@ -375,10 +709,14 @@ public class LooseBallManager : MonoBehaviour
                     startingToken
                     , MatchManager.ActionType.SaveMade
                     , saveType: "corner"
-                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+                    , connectedToken: lastPurposefulTouchBeforeLooseBall
                 );
-                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = null;
-                MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
+                if (lastPurposefulTouchBeforeLooseBall != null)
+                {
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        lastPurposefulTouchBeforeLooseBall,
+                        MatchManager.ActionType.CornerWon);
+                }
                 // HexCell lastInbound;
                 // This should be a CornerKick, and we should break
                 if (directionRoll == 2 || directionRoll == 3 || directionRoll == 4)
@@ -530,13 +868,18 @@ public class LooseBallManager : MonoBehaviour
             {
                 potentialInterceptor = neighbor?.GetOccupyingToken();
                 if (potentialInterceptor != null && // a token is there
-                    potentialInterceptor != startingToken && // not the one who caused the loose ball
+                    (potentialInterceptor != startingToken || distanceRoll == 1) && // the deflector can react only on a one-hex loose ball
                     potentialInterceptor != closestToken && // not the one who is the fallback hit
                     !potentialInterceptor.isAttacker && // exclude all attackers
                     !IsTokenUnavailableForLooseBall(potentialInterceptor) &&
                     !defendersTriedToIntercept.Contains(potentialInterceptor)) // Ensure the defender hasn't already tried
                 {
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");
+                    MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                        potentialInterceptor,
+                        ExpectedStatsCalculator.CalculateRecoveryProbability(potentialInterceptor),
+                        connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                        recoveryType: MatchManager.Instance.hangingPassType);
                     MatchManager.Instance.gameData.gameLog.LogEvent(potentialInterceptor, MatchManager.ActionType.InterceptionAttempt);
 
                     isWaitingForInterceptionRoll = true;
@@ -554,13 +897,33 @@ public class LooseBallManager : MonoBehaviour
                             , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                             , recoveryType: MatchManager.Instance.hangingPassType
                         );
-                        ball.SetCurrentHex(potentialInterceptor.GetCurrentHex());
-                        MatchManager.Instance.ClearHangingPass();
-                        MatchManager.Instance.SetLastTokenFromLooseBall(potentialInterceptor);
                         Debug.Log($"{potentialInterceptor.name} successfully intercepted the ball!");
                         // Move the ball to the interceptor's hex
-                        // Change possession
-                        yield return StartCoroutine(MoveLooseBallToHex(neighbor, sourceType));
+                        List<HexCell> interceptionMovementPath = path.Take(pathIndex + 1).Where(hex => hex != null).ToList();
+                        if (!interceptionMovementPath.Contains(neighbor))
+                        {
+                            interceptionMovementPath.Add(neighbor);
+                        }
+
+                        LooseBallGkCheckpointResult gkCheckpointResult = new();
+                        yield return StartCoroutine(OfferDefendingGKMoveAndRecoveryAfterInterceptions(
+                            startingToken,
+                            sourceType,
+                            interceptionMovementPath,
+                            gkBoxMoveOfferedForThisLooseBall,
+                            gkCheckpointResult));
+
+                        gkBoxMoveOfferedForThisLooseBall = gkCheckpointResult.GkMoveOffered;
+                        if (gkCheckpointResult.RecoveredByGoalkeeper)
+                        {
+                            EndLooseBallPhase();
+                            yield break;
+                        }
+
+                        bool allowGKBoxMoveForInterception = allowGKBoxMoveForLooseBallMovement && !gkBoxMoveOfferedForThisLooseBall;
+                        yield return StartCoroutine(MoveLooseBallToHex(neighbor, sourceType, allowGKBoxMoveForInterception));
+                        MatchManager.Instance.ClearHangingPass();
+                        MatchManager.Instance.SetLastTokenFromLooseBall(potentialInterceptor);
                         // Change possession to the defending team
                         MatchManager.Instance.ChangePossession();  
                         MatchManager.Instance.UpdatePossessionAfterPass(neighbor);  // Update possession
@@ -579,8 +942,39 @@ public class LooseBallManager : MonoBehaviour
         }
         Debug.Log($"No more interception chances, Moving Ball to the last Hex of the Path");
         if (closestToken != null) {path.Add(closestToken.GetCurrentHex());}
+
+        LooseBallGkCheckpointResult finalGkCheckpointResult = new();
+        yield return StartCoroutine(OfferDefendingGKMoveAndRecoveryAfterInterceptions(
+            startingToken,
+            sourceType,
+            path,
+            gkBoxMoveOfferedForThisLooseBall,
+            finalGkCheckpointResult));
+
+        gkBoxMoveOfferedForThisLooseBall = finalGkCheckpointResult.GkMoveOffered;
+        if (finalGkCheckpointResult.RecoveredByGoalkeeper)
+        {
+            EndLooseBallPhase();
+            yield break;
+        }
+
+        bool allowRemainingGKBoxMove = allowGKBoxMoveForLooseBallMovement && !gkBoxMoveOfferedForThisLooseBall;
+
+        HexCell looseBallGoalHex = FindFirstGoalHexInPath(path);
+        if (looseBallGoalHex != null)
+        {
+            Debug.Log($"Loose ball crossed the goal at {looseBallGoalHex.coordinates} after all interception attempts failed.");
+            yield return StartCoroutine(MoveLooseBallToHex(looseBallGoalHex, sourceType, allowRemainingGKBoxMove));
+            if (TryHandleLooseBallGoal(looseBallGoalHex, startingToken))
+            {
+                EndLooseBallPhase();
+                yield break;
+            }
+        }
+
         // Step 5.3: If no interception succeeded move the ball to the last Hex of the Path
-        yield return StartCoroutine(MoveLooseBallToHex(path.Last(), sourceType));
+        yield return StartCoroutine(MoveLooseBallToHex(path.Last(), sourceType, allowRemainingGKBoxMove));
+        HexCell looseBallRestingHex = path.Last();
         // Check what is going on with where the ball went.
         // Ball ended up on a Token
         if (closestToken != null)
@@ -611,7 +1005,7 @@ public class LooseBallManager : MonoBehaviour
                 {
                     Debug.LogWarning("There is no movement Phase going on, Attacker must choose what to do!");
                     finalThirdManager.TriggerFinalThirdPhase();
-                    MatchManager.Instance.BroadcastAnyOtherScenario(false);
+                    MatchManager.Instance.BroadcastAnyOtherScenario(ShouldOfferShortGroundBallAfterAttackerPickup(sourceType, allowGKBoxMoveForLooseBallMovement));
                     Debug.Log("Available Options are: [M]ovement Phase, Standard [P]ass, [L]ong Ball, [S]napshot");
                 }
                 else if (movementPhaseManager.isActivated)
@@ -647,6 +1041,7 @@ public class LooseBallManager : MonoBehaviour
                 MatchManager.Instance.gameData.gameLog.LogEvent(
                     closestToken
                     , MatchManager.ActionType.BallRecovery
+                    , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                     , recoveryType: MatchManager.Instance.hangingPassType
                 ); // TODO: check what is being picked up
                 AssignLooseBallReceiver(closestToken, sourceType);
@@ -659,10 +1054,16 @@ public class LooseBallManager : MonoBehaviour
         }
         else // ball hit no token and reached an empty Hex
         {
-            if (!path.Last().isOutOfBounds) // in bounds, still in play
+            if (TryHandleLooseBallGoal(looseBallRestingHex, startingToken))
+            {
+                EndLooseBallPhase();
+                yield break;
+            }
+
+            if (!looseBallRestingHex.isOutOfBounds) // in bounds, still in play
             {
                 Debug.Log($"Ball did not hit anyone");
-                MatchManager.Instance.UpdatePossessionAfterPass(path.Last());
+                MatchManager.Instance.UpdatePossessionAfterPass(looseBallRestingHex);
                 if (ShouldClearPreviousChainOnCollection(sourceType))
                 {
                     MatchManager.Instance.MarkNextBallCollectionToClearPrevious();

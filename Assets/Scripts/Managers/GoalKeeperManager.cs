@@ -111,6 +111,7 @@ public class GoalKeeperManager : MonoBehaviour
         if (hexGrid.highlightedHexes.Count == 0)
         {
             Debug.Log("GK has no valid move options. Skipping free move.");
+            isActivated = false;
             yield break;
         }
 
