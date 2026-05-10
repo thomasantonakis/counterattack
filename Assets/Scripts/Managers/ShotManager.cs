@@ -277,6 +277,12 @@ public class ShotManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
+        if (!isActivated
+            && MatchManager.Instance != null
+            && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution)
+        {
+            return;
+        }
         if (isAvailable && isWaitingForSnapshotDecisionFromLoose)
         {
             if (keyData.key == KeyCode.S)
@@ -459,6 +465,18 @@ public class ShotManager : MonoBehaviour
                 canShootToHex.transform.position += Vector3.up * 0.03f;
             }
         }
+    }
+
+    public void PreviewShotCommit()
+    {
+        isWaitingForShotCommitConfirmation = true;
+        ShowShotCommitPreviewTargets();
+    }
+
+    public void CancelShotCommitPreview()
+    {
+        isWaitingForShotCommitConfirmation = false;
+        ClearShotCommitPreview();
     }
 
     private void RefreshShotCommitPreviewPath()
@@ -2056,6 +2074,12 @@ public class ShotManager : MonoBehaviour
         StringBuilder sb = new();
         if (finalThirdManager.isActivated) return "";
         if (goalKeeperManager.isActivated) return "";
+        if (!isActivated
+            && MatchManager.Instance != null
+            && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution)
+        {
+            return "";
+        }
         if (isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Snapshot directly from there, or [X] no continue without shoooting, ");
         if (isAvailable && isWaitingForShotCommitConfirmation) sb.Append("Press [S] again to commit the Shot, ");
         else if (isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");

@@ -48,6 +48,16 @@ public class FreeKickManager : MonoBehaviour
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
 
+    private void Update()
+    {
+        if (isWaitingForExecution
+            && MatchManager.Instance != null
+            && MatchManager.Instance.currentState != MatchManager.GameState.FreeKickExecution)
+        {
+            FinishExecutionSelection();
+        }
+    }
+
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (!isActivated) return;
@@ -112,9 +122,7 @@ public class FreeKickManager : MonoBehaviour
         {
             if (token != null && potentialKickers.Contains(token))
             {
-                selectedKicker = token;
-                MatchManager.Instance.SetLastToken(selectedKicker); // I amnot sure about this yet.
-                AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+                SelectKickerAndAdvance(token);
                 return;
             }
         }
@@ -146,62 +154,169 @@ public class FreeKickManager : MonoBehaviour
         }
         if (isWaitingForExecution)
         {
-            if (isCornerKick)
+            bool keyWasHandled = isCornerKick
+                ? HandleCornerKickExecutionKey(keyData.key)
+                : HandleFreeKickExecutionKey(keyData.key);
+
+            if (keyWasHandled)
             {
-                if (keyData.key == KeyCode.C)
-                {
-                    hexGrid.ClearHighlightedHexes(); 
-                    highPassManager.ActivateHighPass();
-                    MatchManager.Instance.CommitToAction();
-                    highPassManager.isCornerKick = true;
-                    isCornerKick = false;
-                    isWaitingForExecution = false;
-                }
-                else if (keyData.key == KeyCode.P)
-                {
-                    hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.OfferShortGroundBallPass();
-                    MatchManager.Instance.TriggerStandardPass();
-                    MatchManager.Instance.CommitToAction();
-                    isCornerKick = false;
-                    isWaitingForExecution = false;
-                }
+                keyData.isConsumed = true;
             }
-            else
+        }
+    }
+
+    private bool HandleCornerKickExecutionKey(KeyCode key)
+    {
+        if (key == KeyCode.C)
+        {
+            CancelShotPreview();
+            hexGrid.ClearHighlightedHexes();
+            MatchManager.Instance.TriggerHighPass(isCornerKick: true);
+            FinishExecutionSelectionIfAutoCommitted();
+            return true;
+        }
+
+        if (key == KeyCode.P)
+        {
+            CancelShotPreview();
+            hexGrid.ClearHighlightedHexes();
+            MatchManager.Instance.OfferShortGroundBallPass();
+            MatchManager.Instance.TriggerStandardPass();
+            FinishExecutionSelectionIfAutoCommitted();
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool HandleFreeKickExecutionKey(KeyCode key)
+    {
+        if (key == KeyCode.L)
+        {
+            CancelShotPreview();
+            hexGrid.ClearHighlightedHexes();
+            MatchManager.Instance.TriggerLongPass();
+            if (ShouldAutoCommitExecutionChoice())
             {
-                if (keyData.key == KeyCode.L)
-                {
-                    hexGrid.ClearHighlightedHexes(); 
-                    MatchManager.Instance.TriggerLongPass();
-                    MatchManager.Instance.CommitToAction();
-                    isWaitingForExecution = false;
-                    isCornerKick = false;
-                }
-                else if (keyData.key == KeyCode.C)
-                {
-                    hexGrid.ClearHighlightedHexes();
-                    highPassManager.ActivateHighPass(); 
-                    highPassManager.isCornerKick = false;
-                    isWaitingForExecution = false;
-                    isCornerKick = false;
-                }
-                else if (keyData.key == KeyCode.P)
-                {
-                    hexGrid.ClearHighlightedHexes(); 
-                    groundBallManager.ActivateGroundBall();
-                    MatchManager.Instance.CommitToAction();
-                    isWaitingForExecution = false;
-                    isCornerKick = false;
-                }
-                else if (keyData.key == KeyCode.S)
-                {
-                    hexGrid.ClearHighlightedHexes();
-                    Debug.Log("Free Kick Shoot triggered."); 
-                    isWaitingForExecution = false;
-                    isCornerKick = false;
-                    // TODO: Implement Free Kick Shoot
-                }
+                MatchManager.Instance.longBallManager.CommitToThisAction();
+                FinishExecutionSelection();
             }
+            return true;
+        }
+
+        if (key == KeyCode.C)
+        {
+            CancelShotPreview();
+            hexGrid.ClearHighlightedHexes();
+            MatchManager.Instance.TriggerHighPass();
+            FinishExecutionSelectionIfAutoCommitted();
+            return true;
+        }
+
+        if (key == KeyCode.P)
+        {
+            CancelShotPreview();
+            hexGrid.ClearHighlightedHexes();
+            MatchManager.Instance.TriggerStandardPass();
+            FinishExecutionSelectionIfAutoCommitted();
+            return true;
+        }
+
+        if (key == KeyCode.S)
+        {
+            return HandleFreeKickShotSelection();
+        }
+
+        return false;
+    }
+
+    private bool HandleFreeKickShotSelection()
+    {
+        if (!IsFreeKickShotAvailable())
+        {
+            Debug.LogWarning("Shot is not available from this Free Kick.");
+            return false;
+        }
+
+        if (ShouldAutoCommitExecutionChoice() || MatchManager.Instance.shotManager.isWaitingForShotCommitConfirmation)
+        {
+            PlayerToken freeKickShooter = selectedKicker != null
+                ? selectedKicker
+                : MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+            if (!CanStartFreeKickShot(freeKickShooter))
+            {
+                return true;
+            }
+
+            // TODO: Replace the generic full-power shot handoff with the dedicated Free Kick shot resolver.
+            MatchManager.Instance.shotManager.StartShotProcess(freeKickShooter, "fullPower");
+            FinishExecutionSelection();
+            return true;
+        }
+
+        hexGrid.ClearHighlightedHexes();
+        MatchManager.Instance.shotManager.PreviewShotCommit();
+        Debug.Log("Free Kick Shot selected. Press [S] again to commit, or press [P], [C], [L] to choose another option.");
+        return true;
+    }
+
+    private bool IsFreeKickShotAvailable()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.shotManager != null
+            && MatchManager.Instance.shotManager.isAvailable;
+    }
+
+    private bool CanStartFreeKickShot(PlayerToken shooter)
+    {
+        if (shooter == null)
+        {
+            Debug.LogError("Cannot start Free Kick Shot without a selected taker.");
+            return false;
+        }
+
+        HexCell shooterHex = shooter.GetCurrentHex();
+        if (shooterHex == null)
+        {
+            Debug.LogError($"Cannot start Free Kick Shot because {shooter.name} is not on a hex.");
+            return false;
+        }
+
+        if (!shooterHex.CanShootFrom)
+        {
+            Debug.LogWarning($"Shot is no longer available from {shooter.name}'s current hex.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ShouldAutoCommitExecutionChoice()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level == 3;
+    }
+
+    private void FinishExecutionSelectionIfAutoCommitted()
+    {
+        if (ShouldAutoCommitExecutionChoice())
+        {
+            FinishExecutionSelection();
+        }
+    }
+
+    private void FinishExecutionSelection()
+    {
+        isWaitingForExecution = false;
+        isCornerKick = false;
+        CancelShotPreview();
+    }
+
+    private void CancelShotPreview()
+    {
+        if (MatchManager.Instance != null && MatchManager.Instance.shotManager != null)
+        {
+            MatchManager.Instance.shotManager.CancelShotCommitPreview();
         }
     }
 
@@ -227,37 +342,68 @@ public class FreeKickManager : MonoBehaviour
     {
         potentialKickers.Clear();
         Debug.Log("HandleKicker Selection: Calculating potential kickers...");
-        // Debug.Log("Calculating potential kickers...");
-        HexCell ballHex = ball.GetCurrentHex();
-        List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 1);
-        foreach (HexCell hex in nearbyHexes)
-        {
-            // Debug.Log($"Checking hex {hex.coordinates} for potential kickers. Is attack occupied? {hex.isAttackOccupied} By which Token? {hex.GetOccupyingToken()?.name}");
-            if (hex.isAttackOccupied)
-            {
-                // Debug.Log($"Attacker found on the ball or around it: {hex.GetOccupyingToken().name}");
-                potentialKickers.Add(hex.GetOccupyingToken());
-            }
-            else 
-            {
-              // Debug.Log($"No attacker on the ball or around it. Please select an attacker.");
-            }
-        }
+        potentialKickers.AddRange(GetPotentialKickersAroundBall());
     }
 
     private void CalculateDefendersThatNeedToMove()
-      {
-          shouldDefMoveTokens.Clear();
-          HexCell ballHex = ball.GetCurrentHex();
-          List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 2);
-          foreach (HexCell hex in nearbyHexes)
-          {
-              if (hex.isDefenseOccupied)
-              {
-                  shouldDefMoveTokens.Add(hex.GetOccupyingToken());
-              }
-          }
-      }
+    {
+        shouldDefMoveTokens.Clear();
+        shouldDefMoveTokens.AddRange(GetDefendersTooCloseToBall());
+    }
+
+    private List<PlayerToken> GetPotentialKickersAroundBall()
+    {
+        List<PlayerToken> kickers = new();
+        if (ball == null || hexGrid == null)
+        {
+            return kickers;
+        }
+
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null)
+        {
+            return kickers;
+        }
+
+        List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 1);
+        foreach (HexCell hex in nearbyHexes)
+        {
+            PlayerToken token = hex != null ? hex.GetOccupyingToken() : null;
+            if (token != null && token.isAttacker && !kickers.Contains(token))
+            {
+                kickers.Add(token);
+            }
+        }
+
+        return kickers;
+    }
+
+    private List<PlayerToken> GetDefendersTooCloseToBall()
+    {
+        List<PlayerToken> defenders = new();
+        if (ball == null || hexGrid == null)
+        {
+            return defenders;
+        }
+
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null)
+        {
+            return defenders;
+        }
+
+        List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, ballHex, 2);
+        foreach (HexCell hex in nearbyHexes)
+        {
+            PlayerToken token = hex != null ? hex.GetOccupyingToken() : null;
+            if (token != null && !token.isAttacker && !defenders.Contains(token))
+            {
+                defenders.Add(token);
+            }
+        }
+
+        return defenders;
+    }
     
     private IEnumerator HandleKickerSelection(PlayerToken clickedToken = null)
     {
@@ -293,6 +439,7 @@ public class FreeKickManager : MonoBehaviour
                 }
                 else
                 {
+                    // TODO: Decide how to resolve the rare set-piece case where every hex touching the fouled dribbler is occupied.
                     Debug.LogError("Target Hex is null!");
                 }
             }
@@ -349,8 +496,7 @@ public class FreeKickManager : MonoBehaviour
             else
             {
                 Debug.LogWarning($"Token {token.name} Selected to take the Set Piece!");
-                selectedKicker = token;
-                AdvanceToNextPhase(matchManager.currentState);
+                SelectKickerAndAdvance(token);
                 return;
             }
         }
@@ -598,6 +744,49 @@ public class FreeKickManager : MonoBehaviour
         // AdvanceToNextPhase(MatchManager.Instance.currentState);
     }
 
+    private void BeginFinalKickerSelection()
+    {
+        matchManager.currentState = MatchManager.GameState.FreeKickDefineKicker;
+        isWaitingforMovement3 = false;
+        isWaitingForSetupPhase = false;
+        ResetMoves();
+        CalculatePotentialKickers();
+
+        if (potentialKickers.Count > 1)
+        {
+            Debug.Log($"Multiple potential kickers available. Select one from the {potentialKickers.Count} near the ball!");
+            isWaitingForFinalKickerSelection = true;
+            return;
+        }
+
+        if (potentialKickers.Count == 1)
+        {
+            SelectKickerAndAdvance(potentialKickers[0]);
+            return;
+        }
+
+        Debug.LogError("No attackers are on or touching the ball. Cannot define a set-piece kicker.");
+        isWaitingForFinalKickerSelection = true;
+    }
+
+    private void SelectKickerAndAdvance(PlayerToken kicker)
+    {
+        if (kicker == null)
+        {
+            Debug.LogError("Cannot select a null set-piece kicker.");
+            return;
+        }
+
+        selectedKicker = kicker;
+        isWaitingForSetupPhase = false;
+        isWaitingforMovement3 = false;
+        isWaitingForFinalKickerSelection = false;
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(selectedKicker);
+        Debug.Log($"{selectedKicker.name} selected as the kicker!");
+        AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
+    }
+
     public void AdvanceToNextPhase(MatchManager.GameState currentPhase)
     {
         Debug.Log($"Advancing from {currentPhase} phase.");
@@ -646,8 +835,7 @@ public class FreeKickManager : MonoBehaviour
                 }
                 else
                 {
-                    matchManager.currentState = MatchManager.GameState.FreeKickDefineKicker;
-                    ResetMoves();
+                    BeginFinalKickerSelection();
                 }
                 break;
             case MatchManager.GameState.FreeKickAttMovement3:
@@ -655,22 +843,7 @@ public class FreeKickManager : MonoBehaviour
                 StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickDefMovement3, 1));
                 break;
             case MatchManager.GameState.FreeKickDefMovement3:
-                matchManager.currentState = MatchManager.GameState.FreeKickDefineKicker;
-                ResetMoves();
-                isWaitingforMovement3 = false;
-                isWaitingForSetupPhase = false;
-                if (potentialKickers.Count > 1)
-                {
-                    Debug.Log($"Multiple potential kickers available. Select one from the {potentialKickers.Count} near the ball!");
-                    isWaitingForFinalKickerSelection = true;
-                }
-                else
-                {
-                    selectedKicker = potentialKickers.FirstOrDefault();
-                    Debug.Log($"{selectedKicker.name} selected as the kicker!");
-                    MatchManager.Instance.SetLastToken(selectedKicker);
-                    AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
-                }
+                BeginFinalKickerSelection();
                 break;
             case MatchManager.GameState.FreeKickDefineKicker:
                 matchManager.currentState = MatchManager.GameState.FreeKickExecution;
@@ -760,6 +933,96 @@ public class FreeKickManager : MonoBehaviour
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
     }
+
+    private static string FormatTokenNames(IEnumerable<PlayerToken> tokens)
+    {
+        List<string> names = tokens
+            .Where(token => token != null)
+            .Select(token => !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name)
+            .ToList();
+
+        return names.Count > 0 ? string.Join(", ", names) : "none";
+    }
+
+    private void AppendSetPieceObligations(StringBuilder sb)
+    {
+        List<PlayerToken> currentKickers = GetPotentialKickersAroundBall();
+        List<PlayerToken> defendersTooClose = GetDefendersTooCloseToBall();
+        bool setupStillRunning = isWaitingForKickerSelection
+            || isWaitingForSetupPhase
+            || isWaitingforMovement3
+            || isWaitingForFinalKickerSelection;
+        bool hasUnresolvedObligation = currentKickers.Count == 0 || defendersTooClose.Count > 0;
+
+        if (!setupStillRunning && !hasUnresolvedObligation)
+        {
+            return;
+        }
+
+        sb.Append("Set-piece checks: ");
+        if (currentKickers.Count == 0)
+        {
+            sb.Append("no attacker on/touching the ball; ");
+        }
+        else
+        {
+            sb.Append($"attacker on/touching ball: {FormatTokenNames(currentKickers)}; ");
+        }
+
+        if (defendersTooClose.Count == 0)
+        {
+            sb.Append("no defenders within 2 hexes, ");
+            return;
+        }
+
+        sb.Append($"defenders within 2 hexes to move: {FormatTokenNames(defendersTooClose)}");
+        if (isWaitingForSetupPhase)
+        {
+            sb.Append($"; defender setup moves left: {remainingDefenderMoves}");
+        }
+        sb.Append(", ");
+    }
+
+    private bool AppendExecutionPreviewInstruction(StringBuilder sb)
+    {
+        MatchManager activeMatchManager = MatchManager.Instance;
+
+        if (groundBallManager != null && groundBallManager.isActivated && groundBallManager.isAwaitingTargetSelection)
+        {
+            string alternateOptions = isCornerKick ? "[C]" : "[C], [L], [S]";
+            sb.Append($"Standard Pass selected; click a target Hex, or press {alternateOptions} to change option, ");
+            return true;
+        }
+
+        if (highPassManager != null && highPassManager.isActivated && highPassManager.isWaitingForConfirmation)
+        {
+            string alternateOptions = isCornerKick ? "[P]" : "[P], [L], [S]";
+            sb.Append($"High Pass selected; click a valid target Hex, or press {alternateOptions} to change option, ");
+            return true;
+        }
+
+        if (!isCornerKick
+            && activeMatchManager != null
+            && activeMatchManager.longBallManager != null
+            && activeMatchManager.longBallManager.isActivated
+            && activeMatchManager.longBallManager.isAwaitingTargetSelection)
+        {
+            sb.Append("Long Ball selected; click a target Hex, or press [P], [C], [S] to change option, ");
+            return true;
+        }
+
+        if (!isCornerKick
+            && activeMatchManager != null
+            && activeMatchManager.shotManager != null
+            && activeMatchManager.shotManager.isWaitingForShotCommitConfirmation)
+        {
+            sb.Append("Shot selected; press [S] again to commit, or press [P], [C], [L] to change option, ");
+            return true;
+        }
+
+        return false;
+    }
+
     public string GetInstructions()
     {
         StringBuilder sb = new();
@@ -825,11 +1088,52 @@ public class FreeKickManager : MonoBehaviour
                         sb.Append("Click on a Defending Token to move or Press [X] to skip this sequence part, ");
                     }
                     break;
+                case MatchManager.GameState.FreeKickAttMovement3:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click a highlighted Hex to move {selectedToken.name} up to 3 hexes, click another attacker to switch, or Press [X] to skip this movement, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click an Attacking Token to move up to 3 hexes, or Press [X] to skip this movement, ");
+                    }
+                    break;
+                case MatchManager.GameState.FreeKickDefMovement3:
+                    if (selectedToken != null)
+                    {
+                        sb.Append($"Click a highlighted Hex to move {selectedToken.name} up to 3 hexes, click another defender to switch, or Press [X] to skip this movement, ");
+                    }
+                    else
+                    {
+                        sb.Append("Click a Defending Token to move up to 3 hexes, or Press [X] to skip this movement, ");
+                    }
+                    break;
             }
         }
-        if (isWaitingforMovement3) sb.Append("isWaitingforMovement3, ");
-        if (isWaitingForFinalKickerSelection) sb.Append("isWaitingForFinalKickerSelection, ");
-        if (isWaitingForExecution) sb.Append("Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements, ");
+        AppendSetPieceObligations(sb);
+        if (isWaitingForFinalKickerSelection) sb.Append($"Select the set-piece taker from attackers on/touching the ball: {FormatTokenNames(potentialKickers)}, ");
+        if (isWaitingForExecution)
+        {
+            bool previewInstructionAppended = AppendExecutionPreviewInstruction(sb);
+            if (!previewInstructionAppended && isCornerKick)
+            {
+                sb.Append("Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no more movements, ");
+            }
+            else if (!previewInstructionAppended)
+            {
+                bool shotIsAvailable = MatchManager.Instance != null
+                    && MatchManager.Instance.shotManager != null
+                    && MatchManager.Instance.shotManager.isAvailable;
+                if (shotIsAvailable)
+                {
+                    sb.Append("Standard [P]ass, High Pass [C], [L]ong Ball or [S]hot, ");
+                }
+                else
+                {
+                    sb.Append("Standard [P]ass, High Pass [C] or [L]ong Ball, ");
+                }
+            }
+        }
 
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
@@ -859,6 +1163,7 @@ public class FreeKickManager : MonoBehaviour
                 case MatchManager.GameState.FreeKickDef1:
                 case MatchManager.GameState.FreeKickDef2:
                 case MatchManager.GameState.FreeKickDef3:
+                case MatchManager.GameState.FreeKickDefMovement3:
                     return !attackingTeamIsHome;
                 default:
                     return attackingTeamIsHome;

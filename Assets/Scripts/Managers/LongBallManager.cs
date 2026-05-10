@@ -101,7 +101,10 @@ public class LongBallManager : MonoBehaviour
     {
         if (keyData.isConsumed) return;
         // return;
-        if (isAvailable && !isActivated && keyData.key == KeyCode.L)
+        if (isAvailable
+            && !isActivated
+            && !IsFreeKickExecutionActive()
+            && keyData.key == KeyCode.L)
         {
             MatchManager.Instance.TriggerLongPass();
             keyData.isConsumed = true;
@@ -1031,6 +1034,7 @@ public class LongBallManager : MonoBehaviour
         PlayerToken lastToken = matchManager != null ? matchManager.LastTokenToTouchTheBallOnPurpose : null;
         if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
         if (finalThirdManager != null && finalThirdManager.isActivated) return "";
+        if (IsFreeKickExecutionActive()) return "";
         if (isAvailable) sb.Append("Press [L] to Play a Long Ball, ");
         if (isActivated) sb.Append("Long: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex 6 or more Hexes away from the closest Attacker, ");
@@ -1046,6 +1050,12 @@ public class LongBallManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    private static bool IsFreeKickExecutionActive()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution;
     }
 
     public bool? IsInstructionExpectingHomeTeam()

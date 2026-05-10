@@ -1341,7 +1341,7 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    public void TriggerHighPass()
+    public void TriggerHighPass(bool isCornerKick = false)
     {
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         movementPhaseManager.ResetMovementPhase();
@@ -1350,6 +1350,7 @@ public class MatchManager : MonoBehaviour
         highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
         longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
+        highPassManager.isCornerKick = isCornerKick;
         highPassManager.ActivateHighPass();
     }
     

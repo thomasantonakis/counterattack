@@ -2040,12 +2040,27 @@ public class MovementPhaseManager : MonoBehaviour
     {
         Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
         isWaitingForFoulDecision = false;  // Cancel the decision phase
+        StartCoroutine(TakeFreeKickAfterFinalThirds());
+    }
+
+    private IEnumerator TakeFreeKickAfterFinalThirds()
+    {
         // End the movement phase and start the free `kick process
         // @TODO: play-stopping outcomes (goal/set piece) currently call EndMovementPhase twice
         // to fully clear both current-MP and next-MP temporary freeze state. Replace this with
         // explicit stop-play cleanup when set-piece prep owns the restart path.
         EndMovementPhase(false);  // End the movement phase
         EndMovementPhase();  // End the movement phase
+
+        if (finalThirdManager != null && finalThirdManager.isActivated)
+        {
+            Debug.Log("Waiting for Final Third movement to finish before starting Free Kick preparation.");
+            while (finalThirdManager.isActivated)
+            {
+                yield return null;
+            }
+        }
+
         freeKickManager.StartFreeKickPreparation();
     }
 
