@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 
 public class ShotManager : MonoBehaviour
 {
+    private const string FreeKickShotType = "freeKick";
+
     [Header("Dependencies")]
     public MovementPhaseManager movementPhaseManager;
     public GameInputManager gameInputManager;
@@ -66,6 +68,8 @@ public class ShotManager : MonoBehaviour
     private int headerGkPenalty = 0;
     private readonly List<HexCell> shotCommitPreviewTargets = new();
     private readonly List<HexCell> shotCommitPreviewPath = new();
+    private HexCell shotCommitPreviewOriginHex;
+    private HexCell freeKickShotOriginHex;
     private HexCell hoveredShotCommitPreviewTarget;
     private readonly List<HexCell> shotTargetSelectionTargets = new();
     private readonly List<HexCell> targetSelectionPreviewPath = new();
@@ -148,6 +152,52 @@ public class ShotManager : MonoBehaviour
         expectedGoalGkSaveInteraction = CloneShotInteraction(interaction);
     }
 
+    private bool IsFreeKickShot()
+    {
+        return shotType == FreeKickShotType;
+    }
+
+    private HexCell GetFreeKickShotOriginHex()
+    {
+        return freeKickShotOriginHex != null ? freeKickShotOriginHex : ball?.GetCurrentHex();
+    }
+
+    private HexCell GetShotOriginHex()
+    {
+        return IsFreeKickShot() ? GetFreeKickShotOriginHex() : shooter?.GetCurrentHex();
+    }
+
+    private HexCell GetShotCommitPreviewOriginHex()
+    {
+        if (shotCommitPreviewOriginHex != null)
+        {
+            return shotCommitPreviewOriginHex;
+        }
+
+        PlayerToken shootingToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        return shootingToken?.GetCurrentHex();
+    }
+
+    private bool IsValidShotOriginForAttackingDirection(HexCell originHex)
+    {
+        if (originHex == null || !originHex.CanShootFrom || originHex.ShootingPaths == null || originHex.ShootingPaths.Count == 0)
+        {
+            return false;
+        }
+
+        MatchManager.TeamAttackingDirection attackingDirection = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+
+        return (attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight && originHex.coordinates.x > 0)
+            || (attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft && originHex.coordinates.x < 0);
+    }
+
+    public bool IsFreeKickShotAvailableFromBall()
+    {
+        return IsValidShotOriginForAttackingDirection(ball?.GetCurrentHex());
+    }
+
     private void LogExpectedGoalForCurrentShot(string outcomeContext)
     {
         if (expectedGoalLogged || shooter == null || isHeaderAtGoal)
@@ -155,7 +205,7 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        int shootingPenalty = CalculateShootingPenalty(shooter.GetCurrentHex());
+        int shootingPenalty = CalculateShootingPenalty(GetShotOriginHex());
         List<ExpectedStatsCalculator.ShotBlockerExpectation> blockExpectations = expectedGoalOutfieldBlockInteractions
             .Where(interaction => interaction?.defender != null)
             .Select(interaction => new ExpectedStatsCalculator.ShotBlockerExpectation(
@@ -253,7 +303,7 @@ public class ShotManager : MonoBehaviour
             ClearTargetSelectionPreviewPath();
         }
 
-        if (!isAvailable || !isWaitingForShotCommitConfirmation || MatchManager.Instance.difficulty_level != 1)
+        if (!CanShowShotCommitPreview())
         {
             if (hoveredShotCommitPreviewTarget != null || shotCommitPreviewPath.Count > 0)
             {
@@ -272,6 +322,19 @@ public class ShotManager : MonoBehaviour
 
         hoveredShotCommitPreviewTarget = nextHoveredCommitTarget;
         RefreshShotCommitPreviewPath();
+    }
+
+    private bool CanShowShotCommitPreview()
+    {
+        if (!isWaitingForShotCommitConfirmation
+            || MatchManager.Instance == null
+            || MatchManager.Instance.difficulty_level != 1)
+        {
+            return false;
+        }
+
+        bool isFreeKickExecutionPreview = MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution;
+        return isAvailable || isFreeKickExecutionPreview;
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -442,14 +505,13 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        PlayerToken shootingToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        HexCell shooterHex = shootingToken?.GetCurrentHex();
-        if (shooterHex == null || shooterHex.ShootingPaths == null)
+        HexCell originHex = GetShotCommitPreviewOriginHex();
+        if (originHex == null || originHex.ShootingPaths == null)
         {
             return;
         }
 
-        foreach (HexCell canShootToHex in shooterHex.ShootingPaths.Keys)
+        foreach (HexCell canShootToHex in originHex.ShootingPaths.Keys)
         {
             canShootToHex.HighlightHex("CanShootFrom", 1);
             if (!hexGrid.highlightedHexes.Contains(canShootToHex))
@@ -469,6 +531,14 @@ public class ShotManager : MonoBehaviour
 
     public void PreviewShotCommit()
     {
+        shotCommitPreviewOriginHex = null;
+        isWaitingForShotCommitConfirmation = true;
+        ShowShotCommitPreviewTargets();
+    }
+
+    public void PreviewFreeKickShotCommit()
+    {
+        shotCommitPreviewOriginHex = ball?.GetCurrentHex();
         isWaitingForShotCommitConfirmation = true;
         ShowShotCommitPreviewTargets();
     }
@@ -477,6 +547,47 @@ public class ShotManager : MonoBehaviour
     {
         isWaitingForShotCommitConfirmation = false;
         ClearShotCommitPreview();
+        shotCommitPreviewOriginHex = null;
+    }
+
+    public void StartFreeKickShotProcess(PlayerToken shootingToken)
+    {
+        ClearShotCommitPreview();
+        ClearTargetSelectionPreviewPath();
+        hexGrid.ClearHighlightedHexes();
+        isWaitingForShotCommitConfirmation = false;
+        if (shootingToken == null)
+        {
+            Debug.LogError("Free Kick shooting token is NULL! Cannot proceed with shot.");
+            return;
+        }
+
+        HexCell shooterHex = shootingToken.GetCurrentHex();
+        if (shooterHex == null)
+        {
+            Debug.LogError($"Free Kick shooting token {shootingToken.name} is not on any hex! Cannot proceed with shot.");
+            return;
+        }
+
+        HexCell originHex = ball?.GetCurrentHex();
+        if (!IsValidShotOriginForAttackingDirection(originHex))
+        {
+            string originName = originHex != null ? originHex.coordinates.ToString() : "unknown";
+            Debug.LogError($"Free Kick ball hex {originName} is not a valid shooting origin!");
+            return;
+        }
+
+        CommitToThisAction();
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(shootingToken);
+        shooter = shootingToken;
+        freeKickShotOriginHex = originHex;
+        shotType = FreeKickShotType;
+        isActivated = true;
+        ResetExpectedGoalContext();
+        MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: FreeKickShotType);
+        Debug.Log("Free Kick Shot initiated. Proceeding to target selection.");
+        HandleTargetSelection();
     }
 
     private void RefreshShotCommitPreviewPath()
@@ -487,11 +598,10 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        PlayerToken shootingToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        HexCell shooterHex = shootingToken?.GetCurrentHex();
-        if (shooterHex == null
-            || shooterHex.ShootingPaths == null
-            || !shooterHex.ShootingPaths.TryGetValue(hoveredShotCommitPreviewTarget, out List<HexCell> previewPath))
+        HexCell originHex = GetShotCommitPreviewOriginHex();
+        if (originHex == null
+            || originHex.ShootingPaths == null
+            || !originHex.ShootingPaths.TryGetValue(hoveredShotCommitPreviewTarget, out List<HexCell> previewPath))
         {
             return;
         }
@@ -561,10 +671,10 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        HexCell shooterHex = shooter.GetCurrentHex();
-        if (shooterHex == null
-            || shooterHex.ShootingPaths == null
-            || !shooterHex.ShootingPaths.TryGetValue(hoveredTargetSelectionPreviewTarget, out List<HexCell> previewPath))
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null
+            || originHex.ShootingPaths == null
+            || !originHex.ShootingPaths.TryGetValue(hoveredTargetSelectionPreviewTarget, out List<HexCell> previewPath))
         {
             return;
         }
@@ -639,7 +749,7 @@ public class ShotManager : MonoBehaviour
         List<HexCell> defenderNeighbors = hexGrid.GetDefenderNeighbors(defenderHexes) ?? new List<HexCell>();
         foreach (HexCell pathHex in path)
         {
-            if (pathHex == null || !defenderNeighbors.Contains(pathHex)) continue;
+            if (pathHex == null || pathHex.isAttackOccupied || !defenderNeighbors.Contains(pathHex)) continue;
 
             foreach (HexCell neighbor in pathHex.GetNeighbors(hexGrid))
             {
@@ -954,8 +1064,15 @@ public class ShotManager : MonoBehaviour
     {
         Debug.Log("Highlighting CanShootTo hexes for target selection.");
         ClearShotTargetSelectionHighlights();
-        HexCell shooterHex = shooter.GetCurrentHex();
-        Dictionary<HexCell, List<HexCell>> shootingPaths = shooterHex.ShootingPaths;
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null || originHex.ShootingPaths == null)
+        {
+            Debug.LogError("Cannot select a shot target because the shot origin has no shooting paths.");
+            ResetShotProcess();
+            return;
+        }
+
+        Dictionary<HexCell, List<HexCell>> shootingPaths = originHex.ShootingPaths;
 
         // Highlight and raise all CanShootTo hexes
         foreach (var canShootToHex in shootingPaths.Keys)
@@ -981,8 +1098,15 @@ public class ShotManager : MonoBehaviour
         ClearTargetSelectionPreviewPath();
         targetHex = clickedTargethex;
         Debug.Log($"Target hex {targetHex.coordinates} selected. Preparing trajectory.");
-        HexCell shooterHex = shooter.GetCurrentHex();
-        Dictionary<HexCell, List<HexCell>> shootingPaths = shooterHex.ShootingPaths;
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null || originHex.ShootingPaths == null)
+        {
+            Debug.LogError("Cannot resolve shot target because the shot origin has no shooting paths.");
+            ResetShotProcess();
+            return;
+        }
+
+        Dictionary<HexCell, List<HexCell>> shootingPaths = originHex.ShootingPaths;
         foreach (var canShootToHex in shootingPaths.Keys)
         {
             canShootToHex.ResetHighlight();
@@ -991,11 +1115,18 @@ public class ShotManager : MonoBehaviour
               canShootToHex.transform.position -= Vector3.up * 0.03f; // Sink it below the plane
             }
         }
-        trajectoryPath = shooterHex.ShootingPaths[targetHex];
+        trajectoryPath = originHex.ShootingPaths[targetHex];
         HighlightTrajectoryPath();
         isWaitingForTargetSelection = false;
         shotTargetSelectionTargets.Clear();
-        StartCoroutine(StartInterceptionPhase());
+        if (IsFreeKickShot())
+        {
+            StartCoroutine(StartFreeKickShooterRollPhase());
+        }
+        else
+        {
+            StartCoroutine(StartInterceptionPhase());
+        }
     }
 
     private void HighlightTrajectoryPath()
@@ -1017,6 +1148,20 @@ public class ShotManager : MonoBehaviour
         StartCoroutine(OfferBlockRoll());
         yield return null;
 
+    }
+
+    private IEnumerator StartFreeKickShooterRollPhase()
+    {
+        Debug.Log("Free Kick Shot target selected. Shooter must roll before block attempts.");
+        alreadyInterceptedDefs ??= new List<PlayerToken>();
+        alreadyInterceptedDefs.Clear();
+        interceptors.Clear();
+        currentShotInteraction = null;
+        currentDefenderBlockingHex = null;
+        saveHex = null;
+        CaptureExpectedGoalInteractions(interceptors);
+        isWaitingForShotRoll = true;
+        yield return null;
     }
 
     private List<ShotInteraction> GatherInterceptors(List<HexCell> path)
@@ -1054,6 +1199,35 @@ public class ShotManager : MonoBehaviour
         return SortShotInteractions(shotInteractions);
     }
 
+    private List<ShotInteraction> GatherOutfieldBlockInteractions(List<HexCell> path)
+    {
+        List<ShotInteraction> shotInteractions = new();
+        if (path == null || path.Count == 0)
+        {
+            return shotInteractions;
+        }
+
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        foreach (PlayerToken defender in hexGrid.GetDefenders())
+        {
+            if (defender == null
+                || defender == defendingGK
+                || defender.IsGoalKeeper
+                || HasAlreadyInteracted(defender))
+            {
+                continue;
+            }
+
+            ShotInteraction outfieldInteraction = BuildOutfieldBlockInteraction(defender, path);
+            if (outfieldInteraction != null)
+            {
+                shotInteractions.Add(outfieldInteraction);
+            }
+        }
+
+        return SortShotInteractions(shotInteractions);
+    }
+
     private ShotInteraction BuildOutfieldBlockInteraction(PlayerToken defender, List<HexCell> path)
     {
         HexCell defenderHex = defender.GetCurrentHex();
@@ -1083,7 +1257,7 @@ public class ShotManager : MonoBehaviour
         for (int i = 0; i < path.Count; i++)
         {
             HexCell pathHex = path[i];
-            if (pathHex == null)
+            if (pathHex == null || pathHex.isAttackOccupied)
             {
                 continue;
             }
@@ -1175,11 +1349,11 @@ public class ShotManager : MonoBehaviour
 
     private List<ShotInteraction> SortShotInteractions(List<ShotInteraction> interactions)
     {
-        HexCell shooterHex = shooter?.GetCurrentHex();
+        HexCell originHex = GetShotOriginHex();
         return interactions
             .Where(interaction => interaction?.defender != null && interaction.interactionHex != null)
-            .OrderBy(interaction => shooterHex != null
-                ? HexGridUtils.GetHexStepDistance(shooterHex, interaction.interactionHex)
+            .OrderBy(interaction => originHex != null
+                ? HexGridUtils.GetHexStepDistance(originHex, interaction.interactionHex)
                 : interaction.pathIndex)
             .ThenBy(interaction => interaction.IsGK ? 1 : 0)
             .ThenBy(interaction => interaction.IsGK ? int.MaxValue : interaction.defender.tackling)
@@ -1207,7 +1381,14 @@ public class ShotManager : MonoBehaviour
     {
         if (ShouldOfferGKBoxMoveBeforeNextInteraction())
         {
-            yield return StartCoroutine(OfferGKBoxMoveAndRefreshGKInteraction());
+            if (IsFreeKickShot())
+            {
+                yield return StartCoroutine(OfferFreeKickGKBoxMoveOnly());
+            }
+            else
+            {
+                yield return StartCoroutine(OfferGKBoxMoveAndRefreshGKInteraction());
+            }
         }
 
         if (interceptors.Count == 0)
@@ -1245,8 +1426,8 @@ public class ShotManager : MonoBehaviour
             return false;
         }
 
-        HexCell shooterHex = shooter.GetCurrentHex();
-        if (shooterHex == null || shooterHex.isInPenaltyBox != 0)
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null || originHex.isInPenaltyBox != 0)
         {
             return false;
         }
@@ -1295,6 +1476,47 @@ public class ShotManager : MonoBehaviour
         goalKeeperManager.isActivated = false;
 
         RefreshGKInteractionOnly();
+    }
+
+    private IEnumerator OfferFreeKickGKBoxMoveOnly()
+    {
+        int firstPenaltyBoxPathIndex = GetFirstDefendingPenaltyBoxPathIndex();
+        HexCell firstPenaltyBoxHex = firstPenaltyBoxPathIndex >= 0 ? trajectoryPath[firstPenaltyBoxPathIndex] : null;
+        Debug.Log($"Free Kick Shot has logically entered the penalty box at {firstPenaltyBoxHex?.coordinates}. GK gets the ball-in-box free move before remaining outfield blocks.");
+
+        gkWasOfferedMoveForBox = true;
+        goalKeeperManager.isActivated = true;
+        yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+        goalKeeperManager.isActivated = false;
+    }
+
+    private IEnumerator StartFreeKickGKPhase()
+    {
+        currentShotInteraction = null;
+        currentDefenderBlockingHex = null;
+        interceptors.Clear();
+
+        if (ShouldOfferGKBoxMoveBeforeNextInteraction())
+        {
+            yield return StartCoroutine(OfferGKBoxMoveAndRefreshGKInteraction());
+        }
+        else
+        {
+            RefreshGKInteractionOnly();
+        }
+
+        ShotInteraction gkInteraction = interceptors.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
+        if (gkInteraction == null)
+        {
+            yield return StartCoroutine(ResolveShotGoal());
+            yield break;
+        }
+
+        currentShotInteraction = gkInteraction;
+        currentDefenderBlockingHex = gkInteraction.interactionHex;
+        saveHex = gkInteraction.interactionHex;
+        Debug.Log($"Free Kick Shot has reached GK {gkInteraction.defender.name}. Press [R] to roll for the save.");
+        isWaitingForGKDiceRoll = true;
     }
 
     private void RefreshGKInteractionOnly()
@@ -1393,7 +1615,18 @@ public class ShotManager : MonoBehaviour
                     currentShotInteraction = null;
                     currentDefenderBlockingHex = null;
 
-                    if (interceptors.Count > 0 || totalShotPower == 0)
+                    if (IsFreeKickShot() && interceptors.Count == 0)
+                    {
+                        if (shooterRoll == 1)
+                        {
+                            yield return StartCoroutine(ResolveShotOffTarget());
+                        }
+                        else
+                        {
+                            yield return StartCoroutine(StartFreeKickGKPhase());
+                        }
+                    }
+                    else if (interceptors.Count > 0 || totalShotPower == 0)
                     {
                         // There may be more defenders, a GK box-entry checkpoint, or the final shooter roll.
                         StartCoroutine(OfferBlockRoll());
@@ -1451,13 +1684,19 @@ public class ShotManager : MonoBehaviour
         shooterRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
         // shooterRoll = 2;
         isWaitingForShotRoll = false;
-        HexCell shooterHex = shooter.GetCurrentHex();
-        int shootingPenalty = CalculateShootingPenalty(shooterHex);
-        boxPenalty = shooterHex != null && shooterHex.isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
+        HexCell originHex = GetShotOriginHex();
+        int shootingPenalty = CalculateShootingPenalty(originHex);
+        boxPenalty = originHex != null && originHex.isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
-        difficultPenalty = shooterHex != null && shooterHex.isDifficultShotPosition ? ", -1 difficult shooting position" : "";
-        shootingPenaltyInfo = BuildShootingPenaltyInfo(shooterHex, shootingPenalty);
+        difficultPenalty = originHex != null && originHex.isDifficultShotPosition ? ", -1 difficult shooting position" : "";
+        shootingPenaltyInfo = BuildShootingPenaltyInfo(originHex, shootingPenalty);
         totalShotPower = isJackpot ? 50 : shooterRoll + shooter.shooting - shootingPenalty;
+
+        if (IsFreeKickShot())
+        {
+            yield return StartCoroutine(ContinueFreeKickShotAfterShooterRoll());
+            yield break;
+        }
 
         if (shooterRoll == 1)
         {
@@ -1490,9 +1729,56 @@ public class ShotManager : MonoBehaviour
         } 
     }
 
+    private IEnumerator ContinueFreeKickShotAfterShooterRoll()
+    {
+        Debug.Log($"{shooter.name} Free Kick Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo} = {totalShotPower}");
+
+        if (shooterRoll == 1)
+        {
+            Debug.Log("Free Kick Shot roll is a natural 1. Outfield blocks may still happen; if none succeeds, the shot is off target.");
+            interceptors = GatherOutfieldBlockInteractions(trajectoryPath);
+            CaptureExpectedGoalInteractions(interceptors);
+            if (interceptors.Count > 0)
+            {
+                yield return StartCoroutine(OfferBlockRoll());
+            }
+            else
+            {
+                yield return StartCoroutine(ResolveShotOffTarget());
+            }
+            yield break;
+        }
+
+        if (totalShotPower >= 9)
+        {
+            Debug.Log("Free Kick Shot has the perfect height. Outfield defender blocks are skipped.");
+            interceptors.Clear();
+            CaptureExpectedGoalInteractions(interceptors);
+            yield return StartCoroutine(StartFreeKickGKPhase());
+            yield break;
+        }
+
+        interceptors = GatherOutfieldBlockInteractions(trajectoryPath);
+        CaptureExpectedGoalInteractions(interceptors);
+        if (interceptors.Count > 0)
+        {
+            yield return StartCoroutine(OfferBlockRoll());
+        }
+        else
+        {
+            yield return StartCoroutine(StartFreeKickGKPhase());
+        }
+    }
+
     private int CalculateShootingPenalty(HexCell shooterHex)
     {
         int penalty = 0;
+        if (IsFreeKickShot())
+        {
+            if (shooterHex != null && shooterHex.isInPenaltyBox == 0) penalty++;
+            return penalty;
+        }
+
         if (shotType == "snapshot") penalty++;
         if (shooterHex != null && shooterHex.isInPenaltyBox == 0) penalty++;
         if (shooterHex != null && shooterHex.isDifficultShotPosition) penalty++;
@@ -1507,6 +1793,11 @@ public class ShotManager : MonoBehaviour
             return "";
         }
 
+        if (IsFreeKickShot())
+        {
+            return $", shooting penalties: -{appliedPenalty} (outside box)";
+        }
+
         List<string> reasons = new();
         if (shotType == "snapshot") reasons.Add("Snapshot");
         if (shooterHex != null && shooterHex.isInPenaltyBox == 0) reasons.Add("outside box");
@@ -1519,6 +1810,12 @@ public class ShotManager : MonoBehaviour
     private List<string> GetShootingPenaltyReasons(HexCell shooterHex)
     {
         List<string> reasons = new();
+        if (IsFreeKickShot())
+        {
+            if (shooterHex != null && shooterHex.isInPenaltyBox == 0) reasons.Add("outside the box");
+            return reasons;
+        }
+
         if (shotType == "snapshot") reasons.Add("snapshot");
         if (shooterHex != null && shooterHex.isInPenaltyBox == 0) reasons.Add("outside the box");
         if (shooterHex != null && shooterHex.isDifficultShotPosition) reasons.Add("difficult shot position");
@@ -1557,8 +1854,8 @@ public class ShotManager : MonoBehaviour
             return "Unknown shooter";
         }
 
-        HexCell shooterHex = shooter.GetCurrentHex();
-        string shootingInfo = $"Shooting: {shooter.shooting}{BuildShootingModifierInstruction(shooterHex)}";
+        HexCell originHex = GetShotOriginHex();
+        string shootingInfo = $"Shooting: {shooter.shooting}{BuildShootingModifierInstruction(originHex)}";
         if (!includeRoll || shooterRoll <= 0)
         {
             return $"{GetTokenInstructionName(shooter)} ({shootingInfo})";
@@ -1629,7 +1926,11 @@ public class ShotManager : MonoBehaviour
 
     private string BuildShotRollInstruction()
     {
-        string shotLabel = shotType == "snapshot" ? "Snapshot" : "Shot";
+        string shotLabel = shotType == "snapshot"
+            ? "Snapshot"
+            : IsFreeKickShot()
+                ? "Free Kick Shot"
+                : "Shot";
         return $"Click R to Roll for the {shotLabel} with {BuildShooterInstructionInfo(false)}";
     }
 
@@ -1666,6 +1967,25 @@ public class ShotManager : MonoBehaviour
             ? $"{GetTokenInstructionName(headerAttacker)} header power: {headerAttackerTotalScore}"
             : $"Header power: {headerAttackerTotalScore}";
         return $"Click R to Roll for a save with {GetTokenInstructionName(defendingGK)} ({BuildSavingAttributeInstruction(defendingGK, headerGkPenalty)}). {headerInfo}. {BuildNeededRollInstruction(neededRoll, " to save")}{tieInfo}";
+    }
+
+    private IEnumerator ResolveShotGoal()
+    {
+        Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo} = {totalShotPower}");
+        Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+        LogExpectedGoalForCurrentShot("goal");
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            MatchManager.ActionType.GoalScored
+        );
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, shooterRoll, allowGKBoxMove: false));
+        if (movementPhaseManager.isActivated)
+        {
+            movementPhaseManager.EndMovementPhase(false);
+            movementPhaseManager.stunnedTokens.Clear();
+        }
+        goalFlowManager.StartGoalFlow(shooter);
+        ResetShotProcess();
     }
 
     private IEnumerator ResolveShotOffTarget()
@@ -1921,6 +2241,8 @@ public class ShotManager : MonoBehaviour
         ResetExpectedGoalContext();
         ClearShotTargetSelectionHighlights();
         shooter = null;
+        freeKickShotOriginHex = null;
+        shotCommitPreviewOriginHex = null;
         targetHex = null;
         trajectoryPath = null;
         interceptors.Clear();
@@ -1973,10 +2295,10 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator FailedLob()
     {
-        HexCell shooterHex = shooter.GetCurrentHex();
-        int targetX = 22 * (shooterHex.coordinates.x > 0 ? 1 : -1);
-        float slope = (float)(targetHex.coordinates.z - shooterHex.coordinates.z) /
-                  (targetHex.coordinates.x - shooterHex.coordinates.x);
+        HexCell originHex = GetShotOriginHex();
+        int targetX = 22 * (originHex.coordinates.x > 0 ? 1 : -1);
+        float slope = (float)(targetHex.coordinates.z - originHex.coordinates.z) /
+                  (targetHex.coordinates.x - originHex.coordinates.x);
         int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
         int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(targetX, 0, intersectionZ)), true));
@@ -1985,11 +2307,11 @@ public class ShotManager : MonoBehaviour
     private IEnumerator NextToBar()
     {
         // TODO: Shoot right next to the bar
-        HexCell shooterHex = shooter.GetCurrentHex();
-        int targetX = 20 * (shooterHex.coordinates.x > 0 ? 1 : -1);
-        int shooterz = shooterHex.coordinates.z;
-        float slope = (float)(targetHex.coordinates.z - shooterHex.coordinates.z) /
-                  (targetHex.coordinates.x - shooterHex.coordinates.x);
+        HexCell originHex = GetShotOriginHex();
+        int targetX = 20 * (originHex.coordinates.x > 0 ? 1 : -1);
+        int shooterz = originHex.coordinates.z;
+        float slope = (float)(targetHex.coordinates.z - originHex.coordinates.z) /
+                  (targetHex.coordinates.x - originHex.coordinates.x);
         int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
         int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(targetX, 0, intersectionZ)), true));      
@@ -1998,7 +2320,7 @@ public class ShotManager : MonoBehaviour
     private IEnumerator oGamosTouKaragkiozi()
     {
         hexGrid.ClearHighlightedHexes();
-        HexCell shooterHex = shooter.GetCurrentHex();
+        HexCell originHex = GetShotOriginHex();
         // Step 1: Get Camera Position & Forward Direction
         Transform camTransform = Camera.main.transform;
         Vector3 cameraPosition = camTransform.position;
@@ -2011,7 +2333,7 @@ public class ShotManager : MonoBehaviour
         // Step 3: Move the Ball Towards the Camera (Fast)
         float moveDuration = 0.4f; // Ball flies toward the camera in 0.4 seconds
         float elapsedTime = 0f;
-        Vector3 startPos = shooterHex.GetHexCenter();
+        Vector3 startPos = originHex.GetHexCenter();
 
         while (elapsedTime < moveDuration)
         {
@@ -2025,7 +2347,7 @@ public class ShotManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Step 5: Move Ball to Final Hex Based on Shooter's X
-        int finalX = shooterHex.coordinates.x > 0 ? 22 : -22;
+        int finalX = originHex.coordinates.x > 0 ? 22 : -22;
         HexCell finalHex = hexGrid.GetHexCellAt(new Vector3Int(finalX, 0, 0));
 
         if (finalHex != null)

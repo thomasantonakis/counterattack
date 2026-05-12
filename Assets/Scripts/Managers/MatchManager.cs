@@ -592,6 +592,9 @@ public class MatchManager : MonoBehaviour
                         case "header":
                             logEntry += $"takes a headed shot!";
                             break;
+                        case "freeKick":
+                            logEntry += $"takes a Free Kick shot!";
+                            break;
                         case "shot0":
                             logEntry += $"takes a SHOT! from outside the box";
                             break;
@@ -1701,7 +1704,7 @@ public class MatchManager : MonoBehaviour
         firstTimePassManager.isAvailable = false;
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
-        if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
+        if (shotManager.IsFreeKickShotAvailableFromBall()) shotManager.isAvailable = true;
         else shotManager.isAvailable = false;
         RefreshAerialTargetPrecomputations();
     }

@@ -132,12 +132,12 @@ public class FreeKickManager : MonoBehaviour
     {
         if (!isActivated) return;
         if (finalThirdManager.isActivated) return;
-        if (keyData.isConsumed) return;
         if (isWaitingForKickerSelection)
         {
             if (keyData.key == KeyCode.X)
             {
                 Debug.Log("Player pressed X to skip kicker selection.");
+                keyData.isConsumed = true;
                 StartCoroutine(HandleKickerSelection());  // Pass no token to skip
                 return;
             }
@@ -148,10 +148,13 @@ public class FreeKickManager : MonoBehaviour
             {
                 Debug.Log("Player attempts to forfeit the remaining moves for this phase.");
                 selectedToken = null;  // Reset the selected token
+                hexGrid.ClearHighlightedHexes();
                 AttemptToAdvanceToNextPhase();
+                keyData.isConsumed = true;
                 return;
             }
         }
+        if (keyData.isConsumed) return;
         if (isWaitingForExecution)
         {
             bool keyWasHandled = isCornerKick
@@ -248,14 +251,13 @@ public class FreeKickManager : MonoBehaviour
                 return true;
             }
 
-            // TODO: Replace the generic full-power shot handoff with the dedicated Free Kick shot resolver.
-            MatchManager.Instance.shotManager.StartShotProcess(freeKickShooter, "fullPower");
+            MatchManager.Instance.shotManager.StartFreeKickShotProcess(freeKickShooter);
             FinishExecutionSelection();
             return true;
         }
 
         hexGrid.ClearHighlightedHexes();
-        MatchManager.Instance.shotManager.PreviewShotCommit();
+        MatchManager.Instance.shotManager.PreviewFreeKickShotCommit();
         Debug.Log("Free Kick Shot selected. Press [S] again to commit, or press [P], [C], [L] to choose another option.");
         return true;
     }
@@ -264,7 +266,7 @@ public class FreeKickManager : MonoBehaviour
     {
         return MatchManager.Instance != null
             && MatchManager.Instance.shotManager != null
-            && MatchManager.Instance.shotManager.isAvailable;
+            && MatchManager.Instance.shotManager.IsFreeKickShotAvailableFromBall();
     }
 
     private bool CanStartFreeKickShot(PlayerToken shooter)
@@ -282,9 +284,11 @@ public class FreeKickManager : MonoBehaviour
             return false;
         }
 
-        if (!shooterHex.CanShootFrom)
+        if (!IsFreeKickShotAvailable())
         {
-            Debug.LogWarning($"Shot is no longer available from {shooter.name}'s current hex.");
+            HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+            string ballHexName = ballHex != null ? ballHex.coordinates.ToString() : "unknown";
+            Debug.LogWarning($"Shot is no longer available from the Free Kick ball hex {ballHexName}.");
             return false;
         }
 
@@ -307,6 +311,7 @@ public class FreeKickManager : MonoBehaviour
 
     private void FinishExecutionSelection()
     {
+        isActivated = false;
         isWaitingForExecution = false;
         isCornerKick = false;
         CancelShotPreview();
@@ -330,7 +335,7 @@ public class FreeKickManager : MonoBehaviour
             spotkick = cornerKickSpot;
             Debug.Log("Starting Corner Kick Preparation...");
         }
-        // matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
+        matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
         isWaitingForKickerSelection = true;
         remainingDefenderMoves = 6;
         attackerMovesUsed = 0;
@@ -354,7 +359,7 @@ public class FreeKickManager : MonoBehaviour
     private List<PlayerToken> GetPotentialKickersAroundBall()
     {
         List<PlayerToken> kickers = new();
-        if (ball == null || hexGrid == null)
+        if (ball == null || hexGrid == null || hexGrid.cells == null)
         {
             return kickers;
         }
@@ -381,7 +386,7 @@ public class FreeKickManager : MonoBehaviour
     private List<PlayerToken> GetDefendersTooCloseToBall()
     {
         List<PlayerToken> defenders = new();
-        if (ball == null || hexGrid == null)
+        if (ball == null || hexGrid == null || hexGrid.cells == null)
         {
             return defenders;
         }
@@ -1029,10 +1034,13 @@ public class FreeKickManager : MonoBehaviour
         sb.Append("FK: ");
 
         if (!isActivated) return "";
+        MatchManager activeMatchManager = MatchManager.Instance != null ? MatchManager.Instance : matchManager;
+        if (activeMatchManager == null) return "";
+
         if (isWaitingForKickerSelection) sb.Append("Click on an Attacker Token to Move to the Set Piece Spot as potential Kicker, ");
         if (isWaitingForSetupPhase)
         {
-            switch (MatchManager.Instance.currentState)
+            switch (activeMatchManager.currentState)
             {
                 case MatchManager.GameState.FreeKickAttGK:
                     if (selectedToken != null)
@@ -1121,9 +1129,7 @@ public class FreeKickManager : MonoBehaviour
             }
             else if (!previewInstructionAppended)
             {
-                bool shotIsAvailable = MatchManager.Instance != null
-                    && MatchManager.Instance.shotManager != null
-                    && MatchManager.Instance.shotManager.isAvailable;
+                bool shotIsAvailable = IsFreeKickShotAvailable();
                 if (shotIsAvailable)
                 {
                     sb.Append("Standard [P]ass, High Pass [C], [L]ong Ball or [S]hot, ");

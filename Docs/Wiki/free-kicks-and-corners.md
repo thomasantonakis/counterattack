@@ -170,7 +170,7 @@ After a Free Kick setup completes, the manager enables:
 - `P` Standard Pass
 - `C` High Pass
 - `L` Long Ball
-- `S` Shot, if the taker is in shooting range
+- `S` Shot, if the placed ball hex is in shooting range
 
 During `FreeKickExecution`, `FreeKickManager` owns the action keys so the instruction box does not also show the normal Long Ball or Shot prompts.
 
@@ -194,17 +194,13 @@ Corner High Pass is handled by `HighPassManager` with `isCornerKick = true`. `Ma
 
 Long Ball and Shot are not enabled from Corner Kick execution.
 
-## Free-Kick Shot Status
+## Free-Kick Shot Flow
 
-Free-Kick Shot is only partially implemented.
+The current `FreeKickManager` recognizes `S` during Free Kick execution. On difficulty `< 3`, first `S` enters a shot pre-commit state and second `S` commits, matching the normal Shot Manager commit behavior. On difficulty `3`, `S` commits immediately.
 
-The current `FreeKickManager` recognizes `S` during Free Kick execution. On difficulty `< 3`, first `S` enters a shot pre-commit state and second `S` commits. On difficulty `3`, `S` commits immediately.
+The committed action uses a dedicated Free Kick shot branch in `ShotManager`:
 
-The committed action currently hands off to the generic full-power `ShotManager` flow. The dedicated Free Kick shot resolver still has a TODO because the intended flow differs from ordinary shots.
-
-The intended Free-Kick Shot flow is:
-
-1. Highlight valid `CanShootTo` target hexes.
+1. Highlight valid `CanShootTo` target hexes from the placed ball hex.
 2. Confirm the target.
 3. Roll for the shooter.
 4. Apply the outside-box shooting penalty when relevant.
@@ -216,11 +212,14 @@ The intended Free-Kick Shot flow is:
 
 If shot power is `< 9`:
 
-1. resolve outfield defender block attempts in order
+1. resolve outfield defender block attempts in normal shot order
 2. defenders on the shot path can block on `5+`
-3. defenders may also block with `Tackling + roll >= 10`
-4. a successful block starts a Loose Ball from that defender
-5. if no defender blocks, continue to goalkeeper save resolution
+3. defenders using ZOI can block on `6+`
+4. defenders may also block with `Tackling + roll >= 10`
+5. a successful block starts a Loose Ball from that defender
+6. if no defender blocks, continue to goalkeeper save resolution
+
+A natural shooter roll of `1` means the shot is off target, but outfield block attempts still happen first. If no outfield block succeeds, the shot resolves as off target.
 
 Final shot resolution should follow normal shot outcomes:
 
@@ -232,7 +231,6 @@ Final shot resolution should follow normal shot outcomes:
 
 The main known gaps are:
 
-- Free-Kick Shot execution is not implemented.
 - Corner spot occupancy needs a real resolution method.
 - The rare case where no adjacent free hex exists for the Free-Kick taker still needs a rule decision.
 - Corner High Pass should keep scenario coverage proving the corner flag is set before activation.

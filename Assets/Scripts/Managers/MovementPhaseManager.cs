@@ -254,6 +254,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (looseBallManager.isActivated) return;
         if (shotManager.isActivated || shotManager.isWaitingForSnapshotDecisionFromLoose) return;
         if (highPassManager != null && highPassManager.isActivated) return;
+        if (freeKickManager != null && freeKickManager.isActivated) return;
         if (IsResolvingFoulSequence())
         {
             bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
@@ -289,6 +290,7 @@ public class MovementPhaseManager : MonoBehaviour
             keyData.isConsumed = true;
             return;
         }
+        if (!isActivated) return;
         
         bool hasInterceptionRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride interceptionRollOverride);
         if (isWaitingForInterceptionDiceRoll && (keyData.key == KeyCode.R || hasInterceptionRollOverride))

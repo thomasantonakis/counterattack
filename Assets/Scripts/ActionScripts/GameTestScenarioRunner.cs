@@ -339,7 +339,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         ExpectCornerNorth,
         ExpectCornerSouth,
         ExpectGoal,
-        ExpectOwnGoal
+        ExpectOwnGoal,
+        ExpectOffTarget
     }
 
     private sealed class ShootingBranchStep
@@ -353,6 +354,18 @@ public class GameTestScenarioRunner : MonoBehaviour
     private sealed class ShootingBranchDefinition
     {
         public ShootingBranchDefinition(string name, params ShootingBranchStep[] steps)
+        {
+            Name = name;
+            Steps = steps.ToList();
+        }
+
+        public string Name { get; }
+        public List<ShootingBranchStep> Steps { get; }
+    }
+
+    private sealed class FreeKickShotBranchDefinition
+    {
+        public FreeKickShotBranchDefinition(string name, params ShootingBranchStep[] steps)
         {
             Name = name;
             Steps = steps.ToList();
@@ -630,6 +643,19 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
     }
 
+    private void AddFreeKickShotBranchScenarios(List<ScenarioDefinition> scenarios)
+    {
+        int branchIndex = 1;
+        foreach (FreeKickShotBranchDefinition branch in BuildFreeKickShotBranchDefinitions())
+        {
+            FreeKickShotBranchDefinition capturedBranch = branch;
+            scenarios.Add(new ScenarioDefinition(
+                $"Scenario_036_{branchIndex:00}_FreeKickShot_{BuildScenarioSafeName(capturedBranch.Name)}",
+                () => Scenario_036_FreeKickShot_Branch(capturedBranch)));
+            branchIndex++;
+        }
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -639,6 +665,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runHighPassAuditOnly = false;
         bool runHighPassHeaderAuditOnly = false;
         bool runShootingAuditOnly = false;
+        bool runFreeKickPrepOnly = false;
+        bool runFreeKickShotAuditOnly = false;
         bool runFromCurrentFailureOnly = false;
 
         if (runManualStatsPreviewOnly)
@@ -699,6 +727,14 @@ public class GameTestScenarioRunner : MonoBehaviour
         else if (runShootingAuditOnly)
         {
             AddShootingBranchScenarios(scenarios);
+        }
+        else if (runFreeKickPrepOnly)
+        {
+            scenarios.Add(new ScenarioDefinition(nameof(Scenario_035_FreeKick_Prep_Shot_Available), Scenario_035_FreeKick_Prep_Shot_Available));
+        }
+        else if (runFreeKickShotAuditOnly)
+        {
+            AddFreeKickShotBranchScenarios(scenarios);
         }
         else
         {
@@ -821,6 +857,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             });
 
             AddShootingBranchScenarios(scenarios);
+            scenarios.Add(new ScenarioDefinition(nameof(Scenario_035_FreeKick_Prep_Shot_Available), Scenario_035_FreeKick_Prep_Shot_Available));
+            AddFreeKickShotBranchScenarios(scenarios);
         }
 
         for (; currentTestIndex < scenarios.Count; currentTestIndex++)
@@ -922,6 +960,19 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         PlayerToken token = PlayerToken.GetPlayerTokenByName(playerName);
         AssertTrue(token != null, $"PlayerToken '{playerName}' should exist for the stats preview test.");
+        return token;
+    }
+
+    private PlayerToken RequirePlayerTokenMatching(string playerNameFragment)
+    {
+        PlayerToken token = PlayerToken.GetPlayerTokenByName(playerNameFragment);
+        if (token == null && !string.IsNullOrWhiteSpace(playerNameFragment))
+        {
+            token = FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+                .FirstOrDefault(candidate => NamesMatch(GetTokenTestName(candidate), playerNameFragment));
+        }
+
+        AssertTrue(token != null, $"PlayerToken containing '{playerNameFragment}' should exist for the stats test.");
         return token;
     }
 
@@ -1406,6 +1457,33 @@ public class GameTestScenarioRunner : MonoBehaviour
             forfeitsUsed++;
         }
         AssertTrue(!finalThirdManager.isActivated, "Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.");
+    }
+
+    private IEnumerator ResolvePendingFoulFinalThirdsBeforeFreeKick(string context)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated || freeKickManager.isWaitingForKickerSelection,
+            3f,
+            $"{context}: Final Thirds should either be active or the Free Kick should already be waiting for kicker selection."));
+
+        if (finalThirdManager.isActivated)
+        {
+            Log($"{context}: Pressing X - Forfeit Attack FinalThird");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+            yield return new WaitForSeconds(0.2f);
+
+            if (finalThirdManager.isActivated)
+            {
+                Log($"{context}: Pressing X - Forfeit Defense FinalThird");
+                yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => !finalThirdManager.isActivated && freeKickManager.isWaitingForKickerSelection,
+            3f,
+            $"{context}: FreeKickManager should wait for kicker selection after Final Thirds finish."));
     }
 
     private bool IsEligibleLongBallInterceptor(PlayerToken token)
@@ -1999,6 +2077,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectOwnGoal };
     }
 
+    private static ShootingBranchStep ExpectOffTarget()
+    {
+        return new ShootingBranchStep { Type = ShootingBranchStepType.ExpectOffTarget };
+    }
+
     private List<ShootingBranchDefinition> BuildShootingBranchDefinitions()
     {
         ShootingBranchStep[] missedPatersonMissedMcNultySavedBase =
@@ -2341,6 +2424,137 @@ public class GameTestScenarioRunner : MonoBehaviour
         return branches;
     }
 
+    private List<FreeKickShotBranchDefinition> BuildFreeKickShotBranchDefinitions()
+    {
+        ShootingBranchStep[] failedBlocksBase =
+        {
+            ShooterRoll("Noruega", 5),
+            GkMove(17, -1),
+            ShotBlock("Soares", 1)
+        };
+
+        return new List<FreeKickShotBranchDefinition>
+        {
+            new FreeKickShotBranchDefinition(
+                "Natural one missed blocks off target",
+                ShooterRoll("Noruega", 1),
+                GkMove(17, -1),
+                ShotBlock("Soares", 1),
+                ExpectOffTarget()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic save roll 2 goal",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 2),
+                    ExpectGoal()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic save roll 4 handling hold",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 4),
+                    Handling(1),
+                    ExpectSaveAndHold()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic save roll 4 handling spill corner south",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 4),
+                    Handling(6),
+                    LooseDirection(1),
+                    ExpectCornerSouth()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic save roll 4 spill Vladoiu hit",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 4),
+                    Handling(6),
+                    LooseDirection(2),
+                    LooseDistance(5),
+                    ExpectAnyOther("Vladoiu")
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic save roll 4 spill Vladoiu intercepts",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 4),
+                    Handling(6),
+                    LooseDirection(2),
+                    LooseDistance(2),
+                    LooseInterception("Vladoiu", 6),
+                    ExpectAnyOther("Vladoiu")
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic save roll 4 spill Vladoiu misses",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 4),
+                    Handling(6),
+                    LooseDirection(2),
+                    LooseDistance(2),
+                    LooseInterception("Vladoiu", 5),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic tie loose direction 1 distance 1 Kuzmic misses",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 3),
+                    LooseDirection(1),
+                    LooseDistance(1),
+                    LooseInterception("Kuzmic", 1),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic tie loose direction 1 distance 2 movement",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 3),
+                    LooseDirection(1),
+                    LooseDistance(2),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic tie loose direction 6 distance 4 goal",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 3),
+                    LooseDirection(6),
+                    LooseDistance(4),
+                    ExpectGoal()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 5 failed blocks Kuzmic tie loose Soares misses movement",
+                failedBlocksBase.Concat(new[]
+                {
+                    GkSave("Kuzmic", 3),
+                    LooseDirection(3),
+                    LooseDistance(6),
+                    LooseInterception("Soares", 4),
+                    ExpectMovementToAttack()
+                }).ToArray()),
+
+            new FreeKickShotBranchDefinition(
+                "Noruega 6 perfect height skips blocks Kuzmic save roll 3 goal",
+                ShooterRoll("Noruega", 6),
+                GkMove(17, -1),
+                GkSave("Kuzmic", 3),
+                ExpectGoal())
+        };
+    }
+
     private void ResetShootingStatsExpectations()
     {
         expectedShootingShotBlockAttempts.Clear();
@@ -2500,26 +2714,36 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private void AssertShootingBranchStats(ShootingBranchDefinition branch)
     {
-        string context = $"Shooting branch '{branch.Name}' stats";
-        PlayerToken shooterToken = RequirePlayerToken("Yaneva");
+        AssertShotBranchStats($"Shooting branch '{branch.Name}' stats", branch.Steps, "Yaneva");
+    }
+
+    private void AssertFreeKickShotBranchStats(FreeKickShotBranchDefinition branch)
+    {
+        AssertShotBranchStats($"Free Kick Shot branch '{branch.Name}' stats", branch.Steps, "Noruega");
+    }
+
+    private void AssertShotBranchStats(string context, IEnumerable<ShootingBranchStep> steps, string expectedShooterName)
+    {
+        List<ShootingBranchStep> branchSteps = steps?.ToList() ?? new List<ShootingBranchStep>();
+        PlayerToken shooterToken = RequirePlayerTokenMatching(expectedShooterName);
         MatchManager.PlayerStats shooterStats = MatchManager.Instance.gameData.stats.GetPlayerStats(shooterToken.playerName);
         MatchManager.TeamStats shooterTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(shooterToken.isHomeTeam);
         MatchManager.TeamStats defendingTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(!shooterToken.isHomeTeam);
 
-        int expectedGoals = branch.Steps.Any(step => step.Type == ShootingBranchStepType.ExpectGoal || step.Type == ShootingBranchStepType.ExpectOwnGoal) ? 1 : 0;
-        int expectedCorners = branch.Steps.Any(IsShootingCornerExpectation) ? 1 : 0;
+        int expectedGoals = branchSteps.Any(step => step.Type == ShootingBranchStepType.ExpectGoal || step.Type == ShootingBranchStepType.ExpectOwnGoal) ? 1 : 0;
+        int expectedCorners = branchSteps.Any(IsShootingCornerExpectation) ? 1 : 0;
         int expectedBlockedShots = expectedShootingShotBlocked ? 1 : 0;
         int expectedShotsOnTarget = expectedShootingShotOnTarget ? 1 : 0;
         int expectedShotsOffTarget = expectedShootingShotOffTarget ? 1 : 0;
         int expectedShotBlockAttempts = expectedShootingShotBlockAttempts.Values.Sum();
         int expectedShotBlocksMade = expectedShootingShotBlocksMade.Values.Sum();
 
-        AssertTrue(shooterStats.shotsAttempted == 1, $"{context}: Yaneva should have exactly one shot attempt.", 1, shooterStats.shotsAttempted);
+        AssertTrue(shooterStats.shotsAttempted == 1, $"{context}: {expectedShooterName} should have exactly one shot attempt.", 1, shooterStats.shotsAttempted);
         AssertTrue(shooterTeamStats.totalShots == 1, $"{context}: shooting team should have exactly one shot attempt.", 1, shooterTeamStats.totalShots);
-        AssertTrue(shooterStats.shotsBlocked == expectedBlockedShots, $"{context}: Yaneva blocked-shot count should match the resolved shot outcome.", expectedBlockedShots, shooterStats.shotsBlocked);
+        AssertTrue(shooterStats.shotsBlocked == expectedBlockedShots, $"{context}: {expectedShooterName} blocked-shot count should match the resolved shot outcome.", expectedBlockedShots, shooterStats.shotsBlocked);
         AssertTrue(shooterTeamStats.totalShotsBlocked == expectedBlockedShots, $"{context}: team blocked-shot total should match the resolved shot outcome.", expectedBlockedShots, shooterTeamStats.totalShotsBlocked);
-        AssertTrue(shooterStats.shotsOnTarget == expectedShotsOnTarget, $"{context}: Yaneva shot-on-target count should match the resolved shot outcome.", expectedShotsOnTarget, shooterStats.shotsOnTarget);
-        AssertTrue(shooterStats.shotsOffTarget == expectedShotsOffTarget, $"{context}: Yaneva off-target count should match the resolved shot outcome.", expectedShotsOffTarget, shooterStats.shotsOffTarget);
+        AssertTrue(shooterStats.shotsOnTarget == expectedShotsOnTarget, $"{context}: {expectedShooterName} shot-on-target count should match the resolved shot outcome.", expectedShotsOnTarget, shooterStats.shotsOnTarget);
+        AssertTrue(shooterStats.shotsOffTarget == expectedShotsOffTarget, $"{context}: {expectedShooterName} off-target count should match the resolved shot outcome.", expectedShotsOffTarget, shooterStats.shotsOffTarget);
         AssertTrue(shooterTeamStats.totalGoals == expectedGoals, $"{context}: shooting team goal total should match the outcome.", expectedGoals, shooterTeamStats.totalGoals);
         AssertTrue(shooterTeamStats.totalCorners == expectedCorners, $"{context}: shooting team corner total should match the outcome.", expectedCorners, shooterTeamStats.totalCorners);
         AssertTrue(defendingTeamStats.totalShotBlocksAttempted == expectedShotBlockAttempts, $"{context}: defensive team shot-block attempts should not be counted as recoveries.", expectedShotBlockAttempts, defendingTeamStats.totalShotBlocksAttempted);
@@ -2527,13 +2751,13 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         if (expectedShootingXGoals.HasValue)
         {
-            AssertApproximately(shooterStats.xGoals, expectedShootingXGoals.Value, 0.0001f, $"{context}: Yaneva xG should use the final shot-resolution formula.");
+            AssertApproximately(shooterStats.xGoals, expectedShootingXGoals.Value, 0.0001f, $"{context}: {expectedShooterName} xG should use the final shot-resolution formula.");
         }
         else
         {
-            AssertTrue(shooterStats.xGoals > 0f && shooterStats.xGoals <= 1f, $"{context}: Yaneva should have one bounded xG entry.", "(0,1]", shooterStats.xGoals);
+            AssertTrue(shooterStats.xGoals > 0f && shooterStats.xGoals <= 1f, $"{context}: {expectedShooterName} should have one bounded xG entry.", "(0,1]", shooterStats.xGoals);
         }
-        AssertApproximately(shooterTeamStats.totalXGoals, shooterStats.xGoals, 0.0001f, $"{context}: team xG should roll up Yaneva's xG.");
+        AssertApproximately(shooterTeamStats.totalXGoals, shooterStats.xGoals, 0.0001f, $"{context}: team xG should roll up {expectedShooterName}'s xG.");
 
         HashSet<string> involvedPlayers = new(StringComparer.OrdinalIgnoreCase);
         foreach (string playerName in expectedShootingShotBlockAttempts.Keys) involvedPlayers.Add(playerName);
@@ -2560,7 +2784,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             }
         }
 
-        string expectedReceiverName = branch.Steps.LastOrDefault(step => step.Type == ShootingBranchStepType.ExpectAnyOtherScenario)?.PlayerName;
+        string expectedReceiverName = branchSteps.LastOrDefault(step => step.Type == ShootingBranchStepType.ExpectAnyOtherScenario)?.PlayerName;
         if (!string.IsNullOrWhiteSpace(expectedReceiverName))
         {
             PlayerToken receiver = RequirePlayerToken(expectedReceiverName);
@@ -2571,7 +2795,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             }
         }
 
-        if (branch.Steps.Any(step => step.Type == ShootingBranchStepType.ExpectSaveAndHold))
+        if (branchSteps.Any(step => step.Type == ShootingBranchStepType.ExpectSaveAndHold))
         {
             MatchManager.PlayerStats gkStats = MatchManager.Instance.gameData.stats.GetPlayerStats("Kuzmic");
             AssertTrue(gkStats.possessionWon >= 1, $"{context}: Kuzmic should record a recovery made when holding the save.", ">= 1", gkStats.possessionWon);
@@ -2728,6 +2952,495 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(shotManager.targetHex == hexgrid.GetHexCellAt(new Vector3Int(19, 0, 0)), "Shot target should be (19,0).");
     }
 
+    private IEnumerator Scenario_035_FreeKick_Prep_Shot_Available()
+    {
+        Log("Starting Free Kick prep script: FK shot should be available from the foul spot.");
+        yield return StartCoroutine(PrepareFreeKickShotAvailableFromSheet());
+        LogFooterofTest("Free Kick prep shot available");
+    }
+
+    private IEnumerator Scenario_036_FreeKickShot_Branch(FreeKickShotBranchDefinition branch)
+    {
+        Log($"Starting Free Kick Shot branch from sheet: {branch.Name}");
+        ResetShootingStatsExpectations();
+        yield return StartCoroutine(PrepareFreeKickShotExecutionFromSheet());
+
+        foreach (ShootingBranchStep step in branch.Steps)
+        {
+            yield return StartCoroutine(ExecuteFreeKickShotBranchStep(branch, step));
+            if (testFailed)
+            {
+                yield break;
+            }
+        }
+
+        AssertFreeKickShotBranchStats(branch);
+        LogFooterofTest($"Free Kick Shot - {branch.Name}");
+    }
+
+    private IEnumerator PrepareFreeKickShotExecutionFromSheet()
+    {
+        yield return StartCoroutine(PrepareFreeKickShotAvailableFromSheet());
+        AssertFreeKickExecutionReady("Free Kick Shot branch should begin at FK execution selection.");
+
+        yield return StartCoroutine(PressShootingSheetKey("Noruega selects Shot preview", KeyCode.S));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForShotCommitConfirmation,
+            2f,
+            "Free Kick Shot should wait for second [S] confirmation at difficulty 2."));
+        AssertTrue(!shotManager.isActivated, "Free Kick Shot should not activate before the second [S] confirmation.");
+
+        yield return StartCoroutine(PressShootingSheetKey("Noruega confirms Shot", KeyCode.S));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isActivated && shotManager.isWaitingForTargetSelection,
+            3f,
+            "Free Kick Shot should wait for target selection after confirmation."));
+
+        yield return StartCoroutine(ClickShootingSheetHex("FK Shot target (19,-1)", new Vector2Int(19, -1)));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isActivated && shotManager.isWaitingForShotRoll,
+            3f,
+            "Free Kick Shot should wait for Noruega's shot roll after target selection."));
+
+        AssertFreeKickShotPathSetup();
+    }
+
+    private void AssertFreeKickShotPathSetup()
+    {
+        List<HexCell> path = GetShotTrajectoryPath();
+        AssertTrue(path != null && path.Count > 0, "Free Kick Shot should have a trajectory path after aiming at (19,-1).");
+        if (path == null)
+        {
+            return;
+        }
+
+        HexCell soaresHex = hexgrid.GetHexCellAt(new Vector3Int(14, 0, 0));
+        AssertTrue(path.Contains(soaresHex), "Free Kick Shot path should contain Soares' on-path block hex (14,0).", "(14,0)", PathCoordinates(path));
+        AssertTrue(RequirePlayerToken("Soares").GetCurrentHex() == soaresHex, "Soares should be on the FK shot path at (14,0).", "(14,0)", HexCoordinates(RequirePlayerToken("Soares").GetCurrentHex()));
+        AssertTrue(RequirePlayerToken("Kuzmic").GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(18, 0, 0)), "Kuzmic should start the FK shot resolution at (18,0).", "(18,0)", HexCoordinates(RequirePlayerToken("Kuzmic").GetCurrentHex()));
+    }
+
+    private IEnumerator ExecuteFreeKickShotBranchStep(FreeKickShotBranchDefinition branch, ShootingBranchStep step)
+    {
+        if (IsShootingOutcomeExpectation(step.Type))
+        {
+            yield return StartCoroutine(ForfeitShootingFinalThirdsBeforeOutcomeCheck(branch.Name));
+        }
+
+        switch (step.Type)
+        {
+            case ShootingBranchStepType.ShotBlockRoll:
+                yield return StartCoroutine(PerformRiggedShotBlockRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.ShooterRoll:
+                yield return StartCoroutine(PerformRiggedShooterRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.GkSaveRoll:
+                yield return StartCoroutine(PerformRiggedShotGkSaveRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.HandlingRoll:
+                yield return StartCoroutine(PerformRiggedShotHandlingRoll(step.Roll));
+                break;
+            case ShootingBranchStepType.LooseDirectionRoll:
+                yield return StartCoroutine(PerformRiggedLooseDirectionRoll(step.Roll));
+                break;
+            case ShootingBranchStepType.LooseDistanceRoll:
+                yield return StartCoroutine(PerformRiggedLooseDistanceRoll(step.Roll));
+                break;
+            case ShootingBranchStepType.LooseInterceptionRoll:
+                yield return StartCoroutine(PerformRiggedLooseInterceptionRoll(step.PlayerName, step.Roll));
+                break;
+            case ShootingBranchStepType.GoalkeeperMove:
+                yield return StartCoroutine(MoveShootingGoalkeeperIfWaiting(step.Coordinates, false));
+                break;
+            case ShootingBranchStepType.ExpectAnyOtherScenario:
+                yield return StartCoroutine(AssertFreeKickShotAnyOtherScenario(branch, step.PlayerName));
+                break;
+            case ShootingBranchStepType.ExpectMovementToAttack:
+                yield return StartCoroutine(AssertFreeKickShotMovementToAttack(branch));
+                break;
+            case ShootingBranchStepType.ExpectSaveAndHold:
+                yield return StartCoroutine(AssertFreeKickShotSaveAndHold(branch));
+                break;
+            case ShootingBranchStepType.ExpectCornerNorth:
+                yield return StartCoroutine(AssertFreeKickShotCorner(branch, true));
+                break;
+            case ShootingBranchStepType.ExpectCornerSouth:
+                yield return StartCoroutine(AssertFreeKickShotCorner(branch, false));
+                break;
+            case ShootingBranchStepType.ExpectGoal:
+                yield return StartCoroutine(AssertFreeKickShotGoal(branch));
+                break;
+            case ShootingBranchStepType.ExpectOffTarget:
+                yield return StartCoroutine(AssertFreeKickShotOffTarget(branch));
+                break;
+            default:
+                AssertTrue(false, $"Unhandled Free Kick Shot branch step in {branch.Name}: {step.Type}");
+                break;
+        }
+    }
+
+    private IEnumerator AssertFreeKickShotAnyOtherScenario(FreeKickShotBranchDefinition branch, string expectedReceiverName)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => !looseBallManager.isActivated && !shotManager.isActivated && !goalKeeperManager.isActivated,
+            6f,
+            $"Free Kick Shot branch '{branch.Name}' should finish resolving before AnyOtherScenario availability is checked."));
+
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
+        AssertTrue(availabilityCheck.passed, $"Free Kick Shot branch '{branch.Name}' should end in AnyOtherScenario availability.", true, availabilityCheck.ToString());
+
+        if (!string.IsNullOrWhiteSpace(expectedReceiverName))
+        {
+            AssertShootingLastTouch(expectedReceiverName, $"Free Kick Shot branch '{branch.Name}' AnyOtherScenario outcome");
+            AssertShootingBallOnToken(expectedReceiverName, $"Free Kick Shot branch '{branch.Name}' AnyOtherScenario outcome");
+        }
+    }
+
+    private IEnumerator AssertFreeKickShotMovementToAttack(FreeKickShotBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => !looseBallManager.isActivated && movementPhaseManager.isActivated,
+            6f,
+            $"Free Kick Shot branch '{branch.Name}' should resolve into attacking Movement Phase."));
+
+        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' Movement-to-attack outcome", expectMovementActive: true);
+        AssertShootingBallInEmptySpace($"Free Kick Shot branch '{branch.Name}' Movement-to-attack outcome");
+        AvailabilityCheckResult availabilityCheck = AssertCorrectAvailabilityAfterGBToSpace();
+        AssertTrue(availabilityCheck.passed, $"Free Kick Shot branch '{branch.Name}' should end with Movement Phase committed for attack.", true, availabilityCheck.ToString());
+    }
+
+    private IEnumerator AssertFreeKickShotSaveAndHold(FreeKickShotBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForSaveandHoldScenario,
+            4f,
+            $"Free Kick Shot branch '{branch.Name}' should wait for Save-and-Hold choice."));
+
+        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome", expectShotActive: true);
+        AssertShootingLastTouch("Kuzmic", $"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome");
+        AssertShootingBallOnToken("Kuzmic", $"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome");
+    }
+
+    private IEnumerator AssertFreeKickShotCorner(FreeKickShotBranchDefinition branch, bool north)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => freeKickManager.isActivated && freeKickManager.isWaitingForKickerSelection,
+            6f,
+            $"Free Kick Shot branch '{branch.Name}' should resolve to a corner."));
+
+        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' corner outcome", expectFreeKickActive: true);
+        AssertShootingLastTouch("Kuzmic", $"Free Kick Shot branch '{branch.Name}' corner outcome");
+        HexCell ballHex = freeKickManager.ball.GetCurrentHex();
+        AssertTrue(ballHex != null, $"Free Kick Shot branch '{branch.Name}' corner should place the ball on a corner spot.");
+        if (ballHex != null)
+        {
+            AssertTrue(north ? ballHex.coordinates.z > 0 : ballHex.coordinates.z < 0, $"Free Kick Shot branch '{branch.Name}' should resolve to the {(north ? "north" : "south")} corner.", north ? "z > 0" : "z < 0", ballHex.coordinates);
+        }
+    }
+
+    private IEnumerator AssertFreeKickShotGoal(FreeKickShotBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => goalFlowManager.isActivated,
+            6f,
+            $"Free Kick Shot branch '{branch.Name}' should activate GoalFlow."));
+
+        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' goal outcome", expectGoalFlowActive: true);
+        AssertShootingLastTouch("Noruega", $"Free Kick Shot branch '{branch.Name}' goal outcome");
+        AssertShootingBallInGoal($"Free Kick Shot branch '{branch.Name}' goal outcome");
+        while (goalFlowManager.isActivated)
+        {
+            yield return null;
+        }
+    }
+
+    private IEnumerator AssertFreeKickShotOffTarget(FreeKickShotBranchDefinition branch)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => !shotManager.isActivated && !looseBallManager.isActivated && !goalKeeperManager.isActivated && !goalFlowManager.isActivated,
+            6f,
+            $"Free Kick Shot branch '{branch.Name}' should finish as an off-target shot."));
+
+        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' off-target outcome");
+        AssertShootingLastTouch("Noruega", $"Free Kick Shot branch '{branch.Name}' off-target outcome");
+    }
+
+    private IEnumerator PrepareFreeKickShotAvailableFromSheet()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        MatchManager.Instance.difficulty_level = 2;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = 2;
+        }
+
+        Log("Setting difficulty to 2 for the Free Kick prep script.");
+        yield return StartCoroutine(PressShootingSheetKey("Camera preset 2", KeyCode.Alpha2));
+        yield return StartCoroutine(PressShootingSheetKey("KickOff", KeyCode.Space));
+        yield return StartCoroutine(PressShootingSheetKey("StandardPass", KeyCode.P));
+        yield return StartCoroutine(ClickShootingSheetHex("Target (8,0)", new Vector2Int(8, 0)));
+        yield return StartCoroutine(ClickShootingSheetHex("ConfirmTarget (8,0)", new Vector2Int(8, 0)));
+        yield return StartCoroutine(WaitForCondition(
+            () => groundBallManager.ball.GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0)) && !groundBallManager.isActivated,
+            6f,
+            "Free Kick prep Standard Pass should finish with the ball on (8,0)."));
+
+        yield return StartCoroutine(ForfeitShootingFinalThirds());
+
+        yield return StartCoroutine(PressShootingSheetKey("Call MP", KeyCode.M));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated && movementPhaseManager.isMovementPhaseAttack,
+            2f,
+            "Free Kick prep should start attacking Movement Phase."));
+
+        yield return StartCoroutine(ClickShootingSheetHex("Click Yaneva (10,0)", new Vector2Int(10, 0)));
+        AssertTrue(movementPhaseManager.selectedToken == RequirePlayerToken("Yaneva"), "Yaneva should be selected before picking up the ball.");
+        yield return StartCoroutine(PressShootingSheetKey("Move Yaneva / pick up ball", KeyCode.V));
+        yield return StartCoroutine(WaitForTokenOnHex("Yaneva", new Vector2Int(8, 0), "Yaneva should pick up the ball on (8,0)."));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit Yaneva's Pace", KeyCode.X));
+
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Kalla", new Vector2Int(6, 6), new Vector2Int(11, 3)));
+        yield return StartCoroutine(PressShootingSheetKey("Forfeit AttMP", KeyCode.X));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhaseDef,
+            2f,
+            "Free Kick prep should advance to defensive Movement Phase."));
+
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Paterson", new Vector2Int(4, 3), new Vector2Int(9, 0)));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForTackleDecision,
+            2f,
+            "Paterson should be able to tackle Yaneva after moving to (9,0)."));
+        yield return StartCoroutine(PressShootingSheetKey("Tackle", KeyCode.T));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForTackleRoll,
+            2f,
+            "Movement Phase should wait for tackle rolls after pressing T."));
+
+        Log("Tackle Roll: rigging Paterson to 1.");
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 1);
+        yield return new WaitForSeconds(0.2f);
+        Log("Dribble Roll: rigging Yaneva to 6.");
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForYellowCardRoll,
+            2f,
+            "Movement Phase should wait for the leniency test after Paterson fouls."));
+
+        Log("Leniency Test: rigging 6.");
+        movementPhaseManager.PerformLeniencyTest(6);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForInjuryRoll,
+            2f,
+            "Movement Phase should wait for the injury test after the leniency test."));
+
+        Log("Injury Test: rigging 2.");
+        movementPhaseManager.PerformInjuryTest(2);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForFoulDecision,
+            2f,
+            "Movement Phase should offer Play On or Take Free Kick after leniency and injury tests."));
+
+        yield return StartCoroutine(PressShootingSheetKey("Take Foul", KeyCode.F));
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated,
+            2f,
+            "Final Thirds should resolve before FreeKickManager starts kicker selection."));
+        AssertTrue(!freeKickManager.isWaitingForKickerSelection, "FreeKickManager should not listen for kicker selection while Final Thirds are active.");
+        yield return StartCoroutine(ForfeitShootingFinalThirds());
+        yield return StartCoroutine(WaitForCondition(
+            () => freeKickManager.isActivated && freeKickManager.isWaitingForKickerSelection,
+            4f,
+            "FreeKickManager should wait for kicker selection after Final Thirds finish."));
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.FreeKickKickerSelect,
+            "FreeKickManager should still be in the initial FreeKick state while waiting for the potential kicker.",
+            MatchManager.GameState.FreeKickKickerSelect,
+            MatchManager.Instance.currentState);
+
+        yield return StartCoroutine(ClickShootingSheetHex("Noruega Kicker (-6,-6)", new Vector2Int(-6, -6)));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickAttGK, "Free Kick should advance to attacking GK adjustment."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickAttGK", new Vector2Int(16, 0), MatchManager.GameState.FreeKickAttGK));
+        yield return StartCoroutine(ClickShootingSheetHex("AttGK Select (-16,0)", new Vector2Int(-16, 0)));
+        yield return StartCoroutine(ClickShootingSheetHex("AttGK Move (-14,0)", new Vector2Int(-14, 0)));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickDefGK1, "Free Kick should advance to first defending GK adjustment."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickDefGK1", new Vector2Int(-14, 0), MatchManager.GameState.FreeKickDefGK1));
+        yield return StartCoroutine(PressShootingSheetKey("DefGK Forfeit", KeyCode.X));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickAtt1, "Free Kick should advance to first attacking setup phase."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickAtt1", new Vector2Int(1, 10), MatchManager.GameState.FreeKickAtt1));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Jansen", new Vector2Int(10, 10), new Vector2Int(14, 2)));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Toothnail", new Vector2Int(8, 8), new Vector2Int(14, -1)));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickDef1, "Free Kick should advance to first defending setup phase."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickDef1", new Vector2Int(12, 12), MatchManager.GameState.FreeKickDef1));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Marell", new Vector2Int(1, 10), new Vector2Int(14, 3)));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Vladoiu", new Vector2Int(1, 2), new Vector2Int(14, -2)));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickAtt2, "Free Kick should advance to second attacking setup phase."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickAtt2", new Vector2Int(18, 0), MatchManager.GameState.FreeKickAtt2));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Murphy", new Vector2Int(12, 12), new Vector2Int(14, -3)));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Cafferata", new Vector2Int(0, 0), new Vector2Int(14, -6)));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickDef2, "Free Kick should advance to second defending setup phase."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickDef2", new Vector2Int(-4, -4), MatchManager.GameState.FreeKickDef2));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Poulsen", new Vector2Int(18, 0), new Vector2Int(14, 6)));
+        yield return StartCoroutine(PressShootingSheetKey("Defense Forfeit", KeyCode.X));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickAtt3, "Free Kick should advance to third attacking setup phase."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickAtt3", new Vector2Int(1, -10), MatchManager.GameState.FreeKickAtt3));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Pavlovic", new Vector2Int(-4, -4), new Vector2Int(13, -2)));
+        yield return StartCoroutine(PressShootingSheetKey("Attack Forfeit", KeyCode.X));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickDef3, "Free Kick should advance to third defending setup phase."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickDef3", new Vector2Int(13, -2), MatchManager.GameState.FreeKickDef3));
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Delgado", new Vector2Int(1, -10), new Vector2Int(1, -8)));
+        yield return StartCoroutine(AssertFinalDefensiveForfeitBlockedByPaterson());
+
+        yield return StartCoroutine(SelectAndMoveFreeKickPrepToken("Paterson", new Vector2Int(9, 0), new Vector2Int(-1, 7)));
+        yield return StartCoroutine(WaitForFreeKickState(MatchManager.GameState.FreeKickDefGK2, "Free Kick should advance to second defending GK adjustment."));
+
+        yield return StartCoroutine(AssertFreeKickOppositeTeamClickIgnored("FreeKickDefGK2", new Vector2Int(-14, 0), MatchManager.GameState.FreeKickDefGK2));
+        yield return StartCoroutine(ClickShootingSheetHex("DefGK Select (16,0)", new Vector2Int(16, 0)));
+        yield return StartCoroutine(ClickShootingSheetHex("DefGK Move (18,0)", new Vector2Int(18, 0)));
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDefineKicker
+                && freeKickManager.isWaitingForFinalKickerSelection,
+            3f,
+            "Free Kick should wait for final kicker selection after the second defending GK adjustment."));
+        AssertFreeKickFinalKickerSelectionReady("Free Kick should wait for final kicker selection after setup completes.");
+
+        yield return StartCoroutine(AssertFreeKickInvalidFinalKickerClickIgnored("Final kicker selection", new Vector2Int(-1, 7)));
+        yield return StartCoroutine(ClickShootingSheetHex("Select Kicker (7,-1)", new Vector2Int(7, -1)));
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution
+                && freeKickManager.isWaitingForExecution,
+            3f,
+            "Free Kick should enter execution after selecting the kicker."));
+        AssertFreeKickExecutionReady("Free Kick should enter execution after selecting the kicker.");
+
+        HexCell foulHex = hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0));
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == foulHex, "Free Kick ball should still be on the foul hex (8,0).", foulHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(foulHex != null && foulHex.CanShootFrom, "Foul hex (8,0) should be a CanShootFrom hex.");
+        AssertTrue(shotManager.isAvailable, "Shot should be available from the Free Kick ball position.");
+        AssertTrue(
+            string.Equals(freeKickManager.GetInstructions(), "FK: Standard [P]ass, High Pass [C], [L]ong Ball or [S]hot", StringComparison.Ordinal),
+            "Free Kick instructions should be the only execution prompt and should offer [S]hot.",
+            "FK: Standard [P]ass, High Pass [C], [L]ong Ball or [S]hot",
+            freeKickManager.GetInstructions());
+        AssertTrue(string.IsNullOrEmpty(longBallManager.GetInstructions()), "Long Ball instructions should stay silent while FK is waiting for execution.", "", longBallManager.GetInstructions());
+    }
+
+    private IEnumerator SelectAndMoveFreeKickPrepToken(string playerName, Vector2Int selectCoordinates, Vector2Int destination)
+    {
+        yield return StartCoroutine(ClickShootingSheetHex($"{playerName} Select ({selectCoordinates.x},{selectCoordinates.y})", selectCoordinates));
+        yield return StartCoroutine(MoveShootingToken(playerName, destination));
+    }
+
+    private IEnumerator WaitForFreeKickState(MatchManager.GameState expectedState, string failureMessage)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == expectedState && freeKickManager.isWaitingForSetupPhase,
+            3f,
+            failureMessage));
+        AssertTrue(MatchManager.Instance.currentState == expectedState, $"FK phase should be {expectedState}.", expectedState, MatchManager.Instance.currentState);
+        AssertTrue(freeKickManager.isActivated, $"{expectedState}: FreeKickManager should be active.");
+        AssertTrue(freeKickManager.isWaitingForSetupPhase, $"{expectedState}: FreeKickManager should be waiting for setup clicks.");
+        AssertTrue(!freeKickManager.isWaitingForFinalKickerSelection, $"{expectedState}: final kicker selection should not be active yet.");
+        AssertTrue(!freeKickManager.isWaitingForExecution, $"{expectedState}: execution should not be active yet.");
+    }
+
+    private IEnumerator AssertFreeKickOppositeTeamClickIgnored(string phaseLabel, Vector2Int coordinates, MatchManager.GameState expectedState)
+    {
+        PlayerToken previousSelectedToken = freeKickManager.selectedToken;
+        HexCell previousTargetHex = freeKickManager.targetHex;
+        string previousInstructions = freeKickManager.GetInstructions();
+
+        yield return StartCoroutine(ClickShootingSheetHex($"{phaseLabel} opposite-team click ({coordinates.x},{coordinates.y})", coordinates));
+
+        AssertTrue(MatchManager.Instance.currentState == expectedState, $"{phaseLabel}: opposite-team click should not change the FK phase.", expectedState, MatchManager.Instance.currentState);
+        AssertTrue(freeKickManager.selectedToken == previousSelectedToken, $"{phaseLabel}: opposite-team click should not select a token.", TokenName(previousSelectedToken), TokenName(freeKickManager.selectedToken));
+        AssertTrue(freeKickManager.targetHex == previousTargetHex, $"{phaseLabel}: opposite-team click should not set a target hex.", HexCoordinates(previousTargetHex), HexCoordinates(freeKickManager.targetHex));
+        AssertTrue(string.Equals(freeKickManager.GetInstructions(), previousInstructions, StringComparison.Ordinal), $"{phaseLabel}: opposite-team click should leave FK instructions unchanged.", previousInstructions, freeKickManager.GetInstructions());
+    }
+
+    private IEnumerator AssertFinalDefensiveForfeitBlockedByPaterson()
+    {
+        PlayerToken paterson = RequirePlayerToken("Paterson");
+        HexCell patersonHex = paterson != null ? paterson.GetCurrentHex() : null;
+        HexCell ballHex = groundBallManager.ball.GetCurrentHex();
+        int patersonDistance = patersonHex != null && ballHex != null ? HexGridUtils.GetHexStepDistance(ballHex, patersonHex) : int.MaxValue;
+
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDef3, "Paterson forfeit guard should run in the final defensive FK phase.", MatchManager.GameState.FreeKickDef3, MatchManager.Instance.currentState);
+        AssertTrue(patersonHex == hexgrid.GetHexCellAt(new Vector3Int(9, 0, 0)), "Paterson should still be on (9,0) before the blocked defensive forfeit.", "(9,0)", HexCoordinates(patersonHex));
+        AssertTrue(patersonDistance <= 2, "Paterson should still be close enough to the ball to block defensive forfeit.", "<= 2", patersonDistance);
+
+        yield return StartCoroutine(PressShootingSheetKey("Defense Forfeit blocked by Paterson", KeyCode.X));
+        yield return new WaitForSeconds(0.3f);
+
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDef3, "Defense forfeit should be blocked while Paterson still has to move.", MatchManager.GameState.FreeKickDef3, MatchManager.Instance.currentState);
+        AssertTrue(freeKickManager.isWaitingForSetupPhase, "Defense forfeit block should keep FK setup listening for the required defender move.");
+        AssertTrue(paterson.GetCurrentHex() == patersonHex, "Blocked defensive forfeit should not move Paterson.", HexCoordinates(patersonHex), HexCoordinates(paterson.GetCurrentHex()));
+    }
+
+    private IEnumerator AssertFreeKickInvalidFinalKickerClickIgnored(string phaseLabel, Vector2Int coordinates)
+    {
+        PlayerToken previousSelectedKicker = freeKickManager.selectedKicker;
+        string previousInstructions = freeKickManager.GetInstructions();
+
+        yield return StartCoroutine(ClickShootingSheetHex($"{phaseLabel} invalid kicker click ({coordinates.x},{coordinates.y})", coordinates));
+
+        AssertFreeKickFinalKickerSelectionReady($"{phaseLabel}: invalid kicker click should keep final kicker selection active.");
+        AssertTrue(freeKickManager.selectedKicker == previousSelectedKicker, $"{phaseLabel}: invalid kicker click should not replace the selected kicker.", TokenName(previousSelectedKicker), TokenName(freeKickManager.selectedKicker));
+        AssertTrue(string.Equals(freeKickManager.GetInstructions(), previousInstructions, StringComparison.Ordinal), $"{phaseLabel}: invalid kicker click should leave FK instructions unchanged.", previousInstructions, freeKickManager.GetInstructions());
+    }
+
+    private void AssertFreeKickFinalKickerSelectionReady(string message)
+    {
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.FreeKickDefineKicker, message, MatchManager.GameState.FreeKickDefineKicker, MatchManager.Instance.currentState);
+        AssertTrue(freeKickManager.isActivated, "FreeKickManager should remain active during final kicker selection.");
+        AssertTrue(freeKickManager.isWaitingForFinalKickerSelection, "FreeKickManager should listen only for final kicker selection.");
+        AssertTrue(!freeKickManager.isWaitingForSetupPhase, "FreeKickManager setup phase should be complete before final kicker selection.");
+        AssertTrue(!freeKickManager.isWaitingForExecution, "FreeKickManager execution should not start before final kicker selection.");
+    }
+
+    private void AssertFreeKickExecutionReady(string message)
+    {
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution, message, MatchManager.GameState.FreeKickExecution, MatchManager.Instance.currentState);
+        AssertTrue(freeKickManager.isActivated, "FreeKickManager should remain active during FK execution selection.");
+        AssertTrue(freeKickManager.isWaitingForExecution, "FreeKickManager should listen for FK execution keys.");
+        AssertTrue(!freeKickManager.isWaitingForSetupPhase, "FreeKickManager setup phase should be complete before execution.");
+        AssertTrue(!freeKickManager.isWaitingForFinalKickerSelection, "FreeKickManager final kicker selection should be complete before execution.");
+    }
+
+    private static string TokenName(PlayerToken token)
+    {
+        return token != null ? token.name : "<none>";
+    }
+
+    private static string HexCoordinates(HexCell hex)
+    {
+        return hex != null ? hex.coordinates.ToString() : "<none>";
+    }
+
+    private List<HexCell> GetShotTrajectoryPath()
+    {
+        FieldInfo field = typeof(ShotManager).GetField("trajectoryPath", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(field != null, "ShotManager trajectoryPath field should exist for Free Kick Shot branch tests.");
+        return field?.GetValue(shotManager) as List<HexCell>;
+    }
+
+    private static string PathCoordinates(IEnumerable<HexCell> path)
+    {
+        return path != null
+            ? string.Join(", ", path.Where(hex => hex != null).Select(hex => hex.coordinates.ToString()))
+            : "<none>";
+    }
+
     private IEnumerator ExecuteShootingBranchStep(ShootingBranchDefinition branch, ShootingBranchStep step)
     {
         if (IsShootingOutcomeExpectation(step.Type))
@@ -2801,7 +3514,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             || stepType == ShootingBranchStepType.ExpectCornerNorth
             || stepType == ShootingBranchStepType.ExpectCornerSouth
             || stepType == ShootingBranchStepType.ExpectGoal
-            || stepType == ShootingBranchStepType.ExpectOwnGoal;
+            || stepType == ShootingBranchStepType.ExpectOwnGoal
+            || stepType == ShootingBranchStepType.ExpectOffTarget;
     }
 
     private static bool IsShootingCornerExpectation(ShootingBranchStep step)
@@ -3334,7 +4048,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(coroutine != null, "Shot block roll coroutine should be available for the Shooting branch.");
         if (coroutine != null)
         {
-            yield return StartCoroutine(coroutine);
+            StartCoroutine(coroutine);
+            yield return StartCoroutine(WaitForCondition(
+                () => !shotManager.isWaitingForBlockDiceRoll,
+                3f,
+                $"Shot block roll for {expectedDefenderName} should be consumed."));
         }
 
         yield return new WaitForSeconds(0.2f);
@@ -3359,9 +4077,16 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (rigRoll == 1)
         {
             expectedShootingShotOffTarget = true;
+        }
+        StartCoroutine(shotManager.StartShotRoll(rigRoll));
+        yield return StartCoroutine(WaitForCondition(
+            () => !shotManager.isWaitingForShotRoll,
+            3f,
+            $"Shot roll for {expectedShooterName} should be consumed."));
+        if (rigRoll == 1)
+        {
             expectedShootingXGoals ??= CalculateCurrentShootingExpectedGoal();
         }
-        yield return StartCoroutine(shotManager.StartShotRoll(rigRoll));
         yield return new WaitForSeconds(0.2f);
     }
 
@@ -6869,6 +7594,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 false,
                 movementPhaseManager.isWaitingForFoulDecision
             );
+            yield return StartCoroutine(ResolvePendingFoulFinalThirdsBeforeFreeKick("Forced foul Free Kick"));
             AssertTrue(
                 freeKickManager.isWaitingForKickerSelection,
                 "FreeKickManager should start immediately when Play On is unavailable",
@@ -6899,6 +7625,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 false,
                 movementPhaseManager.isWaitingForFoulDecision
             );
+            yield return StartCoroutine(ResolvePendingFoulFinalThirdsBeforeFreeKick("Chosen foul Free Kick"));
             AssertTrue(
                 freeKickManager.isWaitingForKickerSelection,
                 "FreeKickManager should be waiting for Kicker Selection",
