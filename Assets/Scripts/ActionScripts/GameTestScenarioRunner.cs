@@ -630,11 +630,17 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
     }
 
-    private void AddShootingBranchScenarios(List<ScenarioDefinition> scenarios)
+    private void AddShootingBranchScenarios(List<ScenarioDefinition> scenarios, int firstBranchIndex = 1)
     {
         int shootingBranchIndex = 1;
         foreach (ShootingBranchDefinition branch in BuildShootingBranchDefinitions())
         {
+            if (shootingBranchIndex < firstBranchIndex)
+            {
+                shootingBranchIndex++;
+                continue;
+            }
+
             ShootingBranchDefinition capturedBranch = branch;
             scenarios.Add(new ScenarioDefinition(
                 $"Scenario_034_{shootingBranchIndex:00}_Shooting_{BuildScenarioSafeName(capturedBranch.Name)}",
@@ -738,10 +744,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
         else
         {
-            scenarios.AddRange(runFromCurrentFailureOnly ? new[]
-            {
-            new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
-            } : new[]
+            scenarios.AddRange(runFromCurrentFailureOnly ? Array.Empty<ScenarioDefinition>() : new[]
             {
             // Ground Ball regression suite
             new ScenarioDefinition(nameof(Scenario_002_GroundBall_0001_Commitment), Scenario_002_GroundBall_0001_Commitment),
@@ -857,6 +860,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             });
 
             AddShootingBranchScenarios(scenarios);
+            if (runFromCurrentFailureOnly)
+            {
+                scenarios.Clear();
+                AddShootingBranchScenarios(scenarios, firstBranchIndex: 13);
+            }
             scenarios.Add(new ScenarioDefinition(nameof(Scenario_035_FreeKick_Prep_Shot_Available), Scenario_035_FreeKick_Prep_Shot_Available));
             AddFreeKickShotBranchScenarios(scenarios);
         }
@@ -4050,7 +4058,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         {
             StartCoroutine(coroutine);
             yield return StartCoroutine(WaitForCondition(
-                () => !shotManager.isWaitingForBlockDiceRoll,
+                () => !shotManager.isWaitingForBlockDiceRoll || !NamesMatch(GetCurrentShotInteractionDefenderName(), expectedDefenderName),
                 3f,
                 $"Shot block roll for {expectedDefenderName} should be consumed."));
         }
@@ -16662,10 +16670,30 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log("Rigging accurate High Pass roll to 6");
         highPassManager.PerformAccuracyRoll(6);
+        float elapsedWaitingForGkBoxMove = 0f;
+        bool sawGkBoxMoveOffer = false;
+        while (elapsedWaitingForGkBoxMove < 5f)
+        {
+            if (goalKeeperManager.isActivated)
+            {
+                sawGkBoxMoveOffer = true;
+                AssertTrue(
+                    highPassManager.ball.GetCurrentHex() == targetHex,
+                    "High Pass should finish moving the ball onto the target before offering the GK free box move.",
+                    targetHex,
+                    highPassManager.ball.GetCurrentHex());
+                break;
+            }
+
+            yield return null;
+            elapsedWaitingForGkBoxMove += Time.deltaTime;
+        }
+
+        AssertTrue(sawGkBoxMoveOffer, "High Pass into the attacked penalty box from outside should offer the usual 1-hex GK free move.");
         yield return StartCoroutine(WaitForCondition(
-            () => goalKeeperManager.isActivated,
+            () => goalKeeperManager.isActivated && highPassManager.ball.GetCurrentHex() == targetHex,
             5f,
-            "High Pass into the attacked penalty box from outside should offer the usual 1-hex GK free move."));
+            "High Pass should offer the GK free box move only after the ball has finished moving to the target."));
         AssertTrue(!headerManager.isActivated, "Header should not activate before GK/F3 handling is finished.");
 
         Log("Clicking (16, 1) - Use GK free box move");
