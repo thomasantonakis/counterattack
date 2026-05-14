@@ -35,7 +35,6 @@ public class FinalThirdManager : MonoBehaviour
     private List<PlayerToken> currentMovableTokens;
     [SerializeField]
     private List<PlayerToken> movedTokens;
-    [SerializeField]
 
     private void OnEnable()
     {

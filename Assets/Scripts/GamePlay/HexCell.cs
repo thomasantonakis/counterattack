@@ -165,6 +165,9 @@ public class HexCell : MonoBehaviour
             case "passTargetCommitted":
                 colorToApply = new Color(1f, 0.55f, 0f, 1f);
                 break;
+            case "FreeKickSelectedMoveHover":
+                colorToApply = new Color(1f, 0.55f, 0f, 1f);
+                break;
             case "ballPath":
                 colorToApply = Color.blue;  // Use the provided color for the ball path
                 break;
