@@ -24,6 +24,8 @@ public class FinalThirdManager : MonoBehaviour
     private bool isWaitingForTokenSelection = false;
     [SerializeField]
     private bool isWaitingForTargetHex = false;
+    [SerializeField]
+    private bool isMovingToken = false;
     public bool forfeitWasPressed = false;
     public bool isWaitingForWhatToDo = false;
     [SerializeField]
@@ -62,6 +64,11 @@ public class FinalThirdManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.X)
             {
+                if (isMovingToken)
+                {
+                    return;
+                }
+
                 keyData.isConsumed = true;
                 ForfeitTurn();
             }
@@ -125,6 +132,11 @@ public class FinalThirdManager : MonoBehaviour
 
     public IEnumerator  HandleMouseInput(PlayerToken inputToken, HexCell inputCell)
     {
+        if (isMovingToken)
+        {
+            yield break;
+        }
+
         Debug.Log($"Hello from finalThirdManager.HandleMouseInput");
         if (
             inputToken != null // Clicked on a Token
@@ -181,7 +193,7 @@ public class FinalThirdManager : MonoBehaviour
             Debug.Log($"Selected token is now not null: {selectedToken}");
             isWaitingForTargetHex = true;
             isWaitingForTokenSelection = false;
-            yield return new WaitUntil(() => !isWaitingForTargetHex || forfeitWasPressed);
+            yield return new WaitUntil(() => (!isWaitingForTargetHex && !isMovingToken) || forfeitWasPressed);
             // ✅ Exit immediately if forfeit is triggered
             if (forfeitWasPressed)
             {
@@ -274,14 +286,16 @@ public class FinalThirdManager : MonoBehaviour
             Debug.LogWarning("Invalid move! You cannot land on the Ball's ZOI as it is held by the  attacking GK.");
             yield break;
         }
-        isWaitingForTargetHex = false;
         // Prevent duplicate movement
         PlayerToken movingToken = selectedToken;
         movedTokens.Add(selectedToken);
         // eligibleTokens.Remove(selectedToken);
         currentMovableTokens.Remove(selectedToken);
+        isWaitingForTargetHex = false;
+        isMovingToken = true;
         selectedToken = null;
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex, movingToken, false));
+        isMovingToken = false;
     }
 
     private IEnumerator NextF3Phase()
@@ -325,6 +339,8 @@ public class FinalThirdManager : MonoBehaviour
         currentTeamMoving = null;
         Debug.Log("Final Third Phase Completed. Resuming gameplay.");
         isWaitingForTokenSelection = false;
+        isWaitingForTargetHex = false;
+        isMovingToken = false;
         isActivated = false;
     }
 
@@ -335,6 +351,7 @@ public class FinalThirdManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Forfeiting Current F3 Moves.");
         isWaitingForTargetHex = false; // Avoid soft-locks
+        isMovingToken = false;
         isWaitingForTokenSelection = false; // Avoid soft-locks
         selectedToken = null;  // Clear selected token
         // Add remaining available tokens to the already moved ones.
@@ -408,6 +425,7 @@ public class FinalThirdManager : MonoBehaviour
         if (bothSides) sb.Append("bothSides, ");
         if (isWaitingForTokenSelection) sb.Append("isWaitingForTokenSelection, ");
         if (isWaitingForTargetHex) sb.Append("isWaitingForTargetHex, ");
+        if (isMovingToken) sb.Append("isMovingToken, ");
         if (isWaitingForWhatToDo) sb.Append("isWaitingForWhatToDo, ");
         if (thisIsTheSecond) sb.Append("thisIsTheSecond, ");
         if (!string.IsNullOrEmpty(currentTeamMoving) && (currentTeamMoving == "attack" || currentTeamMoving == "defense")) sb.Append($"currentTeamMoving: {GetTeamNameByCurrentTeamMoving()}, ");
@@ -437,8 +455,9 @@ public class FinalThirdManager : MonoBehaviour
             }
         }
         if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {GetTeamNameByCurrentTeamMoving()}, to select for movement, ");
-        if (isWaitingForTargetHex) sb.Append($" or Click on a Hex to move {selectedToken.name} there, ");
-        if (isActivated) sb.Append($"Press [X] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
+        if (isWaitingForTargetHex && selectedToken != null) sb.Append($" or Click on a Hex to move {selectedToken.name} there, ");
+        if (isMovingToken) sb.Append("moving selected F3 token, ");
+        if (isActivated && !isMovingToken) sb.Append($"Press [X] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
         if (isWaitingForWhatToDo) sb.Append($"Press [D] to Drop the ball, or [K] to take a Goal Kick, ");
         
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
