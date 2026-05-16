@@ -183,7 +183,7 @@ public class Ball : MonoBehaviour
                     allowGKBoxMove
                     && roll == null // this is not called from Shot Manager
                     && !isFromGoal
-                    && goalKeeperManager.ShouldGKMove(currentHex) // check if we're eligible for move
+                    && goalKeeperManager.ShouldGKMoveForPenaltyBox(currentPenaltyBoxStatus, currentHex) // check if we're eligible for move
                 )
                 {
                     Debug.Log("🛑 GK move triggered! Pausing ball.");

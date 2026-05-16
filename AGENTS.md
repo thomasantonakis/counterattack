@@ -1,8 +1,8 @@
 ## Unity Workflow Rules
 
 - Never start Unity from Codex. Do not launch Unity, run Unity batchmode, press Play, or press Cmd+P unless it is only to stop an already-running Play Mode session.
-- Before pressing Cmd+P, check that Unity is currently in Play Mode. If Unity is not in Play Mode, do not press Cmd+P because it would start Play Mode.
-- If Unity is in Play Mode, including when stopped at a failed assertion, activate Unity, press Cmd+P once to stop, and wait until Play Mode has stopped. Do not kill the Unity process.
+- Before pressing Cmd+P, check that Unity is currently in Play Mode. Treat paused Play Mode as Play Mode. If Unity is neither playing nor paused in Play Mode, do not press Cmd+P because it would start Play Mode.
+- If Unity is in Play Mode, including when paused or stopped at a failed assertion, activate Unity, press Cmd+P once to stop, and wait until Play Mode has stopped. Do not kill the Unity process.
 - After code changes, save assets, press Cmd+R in the already-open Unity editor to reload, then inspect `/Users/t.antonakis/Library/Logs/Unity/Editor.log` for compile errors.
 - Keep fixing compile errors until the open Unity editor reports clean scripts. Only then tell the user what was fixed.
 - Do not use `dotnet build Assembly-CSharp.csproj` as the Unity validation path for this project. It consumes time/tokens and does not stop or reload the open Unity editor.

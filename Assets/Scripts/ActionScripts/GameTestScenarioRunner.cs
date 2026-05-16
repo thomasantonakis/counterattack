@@ -375,6 +375,97 @@ public class GameTestScenarioRunner : MonoBehaviour
         public List<ShootingBranchStep> Steps { get; }
     }
 
+    private enum OobRestartExpectation
+    {
+        ThrowIn,
+        CornerKick,
+        GoalKick
+    }
+
+    private sealed class OobLongBallBranchDefinition
+    {
+        public OobLongBallBranchDefinition(
+            string name,
+            Vector2Int target,
+            int accuracyRoll,
+            int sheetDirectionRoll,
+            int distanceRoll,
+            OobRestartExpectation expectedRestart,
+            Vector2Int expectedReentryHex)
+        {
+            Name = name;
+            Target = target;
+            AccuracyRoll = accuracyRoll;
+            SheetDirectionRoll = sheetDirectionRoll;
+            DistanceRoll = distanceRoll;
+            ExpectedRestart = expectedRestart;
+            ExpectedReentryHex = expectedReentryHex;
+        }
+
+        public string Name { get; }
+        public Vector2Int Target { get; }
+        public int AccuracyRoll { get; }
+        public int SheetDirectionRoll { get; }
+        public int DistanceRoll { get; }
+        public OobRestartExpectation ExpectedRestart { get; }
+        public Vector2Int ExpectedReentryHex { get; }
+    }
+
+    private enum HeaderAtGoalOutcomeExpectation
+    {
+        Goal,
+        CornerKick,
+        MovementPhase,
+        SaveAndHold
+    }
+
+    private sealed class HeaderAtGoalBranchDefinition
+    {
+        public HeaderAtGoalBranchDefinition(
+            string name,
+            bool gkRush,
+            int attackerHeaderRoll,
+            int defenderHeaderRoll,
+            int? goalkeeperHeaderOrAerialRoll,
+            int? handlingRoll,
+            int? looseDirectionRoll,
+            int? looseDistanceRoll,
+            HeaderAtGoalOutcomeExpectation expectedOutcome,
+            Vector2Int? expectedBallHex = null,
+            string looseInterceptionPlayerName = null,
+            int? looseInterceptionRoll = null,
+            string forbiddenLooseInterceptorName = null)
+        {
+            Name = name;
+            GkRush = gkRush;
+            AttackerHeaderRoll = attackerHeaderRoll;
+            DefenderHeaderRoll = defenderHeaderRoll;
+            GoalkeeperHeaderOrAerialRoll = goalkeeperHeaderOrAerialRoll;
+            HandlingRoll = handlingRoll;
+            LooseDirectionRoll = looseDirectionRoll;
+            LooseDistanceRoll = looseDistanceRoll;
+            ExpectedOutcome = expectedOutcome;
+            ExpectedBallHex = expectedBallHex;
+            LooseInterceptionPlayerName = looseInterceptionPlayerName;
+            LooseInterceptionRoll = looseInterceptionRoll;
+            ForbiddenLooseInterceptorName = forbiddenLooseInterceptorName;
+        }
+
+        public string Name { get; }
+        public bool GkRush { get; }
+        public int AttackerHeaderRoll { get; }
+        public int DefenderHeaderRoll { get; }
+        public int? GoalkeeperHeaderOrAerialRoll { get; }
+        public int? HandlingRoll { get; }
+        public int? LooseDirectionRoll { get; }
+        public int? LooseDistanceRoll { get; }
+        public HeaderAtGoalOutcomeExpectation ExpectedOutcome { get; }
+        public Vector2Int? ExpectedBallHex { get; }
+        public string LooseInterceptionPlayerName { get; }
+        public int? LooseInterceptionRoll { get; }
+        public string ForbiddenLooseInterceptorName { get; }
+    }
+
     // private bool shouldRunTests = false;
     private bool shouldRunTests = true;
     private string logFilePath;
@@ -662,6 +753,38 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
     }
 
+    private void AddOobLongBallBranchScenarios(List<ScenarioDefinition> scenarios)
+    {
+        int branchIndex = 1;
+        foreach (OobLongBallBranchDefinition branch in BuildOobLongBallBranchDefinitions())
+        {
+            OobLongBallBranchDefinition capturedBranch = branch;
+            scenarios.Add(new ScenarioDefinition(
+                $"Scenario_037_{branchIndex:00}_OOB_LongBall_{BuildScenarioSafeName(capturedBranch.Name)}",
+                () => Scenario_037_OOB_LongBall_Branch(capturedBranch)));
+            branchIndex++;
+        }
+    }
+
+    private void AddHeaderAtGoalBranchScenarios(List<ScenarioDefinition> scenarios, int firstBranchIndex = 1)
+    {
+        int branchIndex = 1;
+        foreach (HeaderAtGoalBranchDefinition branch in BuildHeaderAtGoalBranchDefinitions())
+        {
+            if (branchIndex < firstBranchIndex)
+            {
+                branchIndex++;
+                continue;
+            }
+
+            HeaderAtGoalBranchDefinition capturedBranch = branch;
+            scenarios.Add(new ScenarioDefinition(
+                $"Scenario_038_{branchIndex:00}_HeaderAtGoal_{BuildScenarioSafeName(capturedBranch.Name)}",
+                () => Scenario_038_HeaderAtGoal_Branch(capturedBranch)));
+            branchIndex++;
+        }
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -673,9 +796,17 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runShootingAuditOnly = false;
         bool runFreeKickPrepOnly = false;
         bool runFreeKickShotAuditOnly = false;
+        bool runOobAuditOnly = false;
+        bool runHeaderAtGoalAuditOnly = false;
+        bool runReleasedOobAndHeaderAtGoalOnly = true;
         bool runFromCurrentFailureOnly = false;
 
-        if (runManualStatsPreviewOnly)
+        if (runReleasedOobAndHeaderAtGoalOnly)
+        {
+            AddOobLongBallBranchScenarios(scenarios);
+            AddHeaderAtGoalBranchScenarios(scenarios);
+        }
+        else if (runManualStatsPreviewOnly)
         {
             scenarios.Add(new ScenarioDefinition(nameof(Scenario_001_Stats_UI_Preview), Scenario_001_Stats_UI_Preview));
         }
@@ -706,10 +837,11 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement), Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement),
                 new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario),
                 new ScenarioDefinition(nameof(Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall), Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall),
-                new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
-                new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
-                new ScenarioDefinition(nameof(Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal), Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal),
+            new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
+            new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
+            new ScenarioDefinition(nameof(Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal), Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal),
             });
+            AddOobLongBallBranchScenarios(scenarios);
         }
         else if (runHighPassAuditOnly)
         {
@@ -729,6 +861,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice), Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice),
                 new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
             });
+            AddHeaderAtGoalBranchScenarios(scenarios);
         }
         else if (runShootingAuditOnly)
         {
@@ -741,6 +874,14 @@ public class GameTestScenarioRunner : MonoBehaviour
         else if (runFreeKickShotAuditOnly)
         {
             AddFreeKickShotBranchScenarios(scenarios);
+        }
+        else if (runOobAuditOnly)
+        {
+            AddOobLongBallBranchScenarios(scenarios);
+        }
+        else if (runHeaderAtGoalAuditOnly)
+        {
+            AddHeaderAtGoalBranchScenarios(scenarios);
         }
         else
         {
@@ -858,6 +999,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             // Scenario_029_HeaderAtGoal_LooseBall_OWN_GOAL(),
             // Add more scenarios here
             });
+            AddOobLongBallBranchScenarios(scenarios);
+            AddHeaderAtGoalBranchScenarios(scenarios);
 
             AddShootingBranchScenarios(scenarios);
             if (runFromCurrentFailureOnly)
@@ -1452,6 +1595,30 @@ public class GameTestScenarioRunner : MonoBehaviour
                 );
             }
         }
+    }
+
+    private IEnumerator StartKickoffLongBallToTarget(int difficulty, Vector2Int targetCoordinates)
+    {
+        yield return StartCoroutine(PrepareLongBallAvailabilityFromKickoff(difficulty));
+
+        HexCell targetHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(targetCoordinates.x, 0, targetCoordinates.y)),
+            $"Kickoff Long Ball target {targetCoordinates} should exist.");
+
+        Log($"Clicking {targetCoordinates} - Select kickoff Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(targetCoordinates, 0.1f));
+
+        if (difficulty == 3)
+        {
+            AssertTrue(!longBallManager.isAwaitingTargetSelection, "Difficulty 3 kickoff Long Ball should commit on the first valid click.");
+            AssertTrue(longBallManager.isWaitingForAccuracyRoll, "Difficulty 3 kickoff Long Ball should wait for accuracy after the target click.");
+            yield break;
+        }
+
+        AssertTrue(longBallManager.currentTargetHex == targetHex, "Kickoff Long Ball should accept the selected target.", targetHex, longBallManager.currentTargetHex);
+        Log($"Clicking {targetCoordinates} again - Confirm kickoff Long Ball target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(targetCoordinates, 0.1f));
+        AssertTrue(longBallManager.isWaitingForAccuracyRoll, "Kickoff Long Ball should be waiting for accuracy after target confirmation.");
     }
 
     private IEnumerator ForfeitActiveFinalThirds(int maxForfeits = 3)
@@ -2560,6 +2727,39 @@ public class GameTestScenarioRunner : MonoBehaviour
                 GkMove(17, -1),
                 GkSave("Kuzmic", 3),
                 ExpectGoal())
+        };
+    }
+
+    private List<OobLongBallBranchDefinition> BuildOobLongBallBranchDefinitions()
+    {
+        return new List<OobLongBallBranchDefinition>
+        {
+            new OobLongBallBranchDefinition("Left bottom direction 1 throw in away", new Vector2Int(-18, -12), 1, 1, 6, OobRestartExpectation.ThrowIn, new Vector2Int(-18, -12)),
+            new OobLongBallBranchDefinition("Left bottom direction 2 corner away", new Vector2Int(-18, -12), 1, 2, 6, OobRestartExpectation.CornerKick, new Vector2Int(-18, -12)),
+            new OobLongBallBranchDefinition("Left lower box direction 3 corner away", new Vector2Int(-14, -5), 1, 3, 6, OobRestartExpectation.CornerKick, new Vector2Int(-18, -12)),
+            new OobLongBallBranchDefinition("Left upper touchline direction 3 corner away", new Vector2Int(-18, 7), 1, 3, 6, OobRestartExpectation.CornerKick, new Vector2Int(-18, 12)),
+            new OobLongBallBranchDefinition("Right bottom direction 1 throw in away", new Vector2Int(18, -12), 1, 1, 6, OobRestartExpectation.ThrowIn, new Vector2Int(18, -12)),
+            new OobLongBallBranchDefinition("Right bottom direction 6 goal kick away", new Vector2Int(18, -12), 1, 6, 6, OobRestartExpectation.GoalKick, new Vector2Int(16, 0)),
+        };
+    }
+
+    private List<HeaderAtGoalBranchDefinition> BuildHeaderAtGoalBranchDefinitions()
+    {
+        return new List<HeaderAtGoalBranchDefinition>
+        {
+            new HeaderAtGoalBranchDefinition("No rush save roll 2 goal", false, 6, 4, 2, null, null, null, HeaderAtGoalOutcomeExpectation.Goal),
+            new HeaderAtGoalBranchDefinition("No rush save tie direction 5 distance 5 goal", false, 6, 4, 4, null, 5, 5, HeaderAtGoalOutcomeExpectation.Goal),
+            new HeaderAtGoalBranchDefinition("No rush save tie direction 6 distance 5 goal", false, 6, 4, 4, null, 6, 5, HeaderAtGoalOutcomeExpectation.Goal),
+            new HeaderAtGoalBranchDefinition("No rush save handling spill direction 5 corner north", false, 6, 4, 6, 6, 5, null, HeaderAtGoalOutcomeExpectation.CornerKick, new Vector2Int(18, 12)),
+            new HeaderAtGoalBranchDefinition("No rush save handling spill direction 1 corner south", false, 6, 4, 6, 6, 1, null, HeaderAtGoalOutcomeExpectation.CornerKick, new Vector2Int(18, -12)),
+            new HeaderAtGoalBranchDefinition("No rush save handling spill direction 2 distance 1 Kuzmic misses movement", false, 6, 4, 6, 6, 2, 1, HeaderAtGoalOutcomeExpectation.MovementPhase, looseInterceptionPlayerName: "Kuzmic", looseInterceptionRoll: 2),
+            new HeaderAtGoalBranchDefinition("No rush save handling hold", false, 6, 4, 6, 1, null, null, HeaderAtGoalOutcomeExpectation.SaveAndHold, new Vector2Int(16, 0)),
+            new HeaderAtGoalBranchDefinition("Rush aerial 6 GK wins challenge save and hold no handling", true, 6, 4, 6, null, null, null, HeaderAtGoalOutcomeExpectation.SaveAndHold, new Vector2Int(15, 2)),
+            new HeaderAtGoalBranchDefinition("Rush aerial 5 direction 6 distance 6 goal", true, 6, 4, 5, null, 6, 6, HeaderAtGoalOutcomeExpectation.Goal),
+            new HeaderAtGoalBranchDefinition("Rush aerial 5 direction 5 distance 6 corner north", true, 6, 4, 5, null, 5, 6, HeaderAtGoalOutcomeExpectation.CornerKick, new Vector2Int(18, 12)),
+            new HeaderAtGoalBranchDefinition("Rush aerial 5 direction 2 distance 1 movement no Kuzmic interception", true, 6, 4, 5, null, 2, 1, HeaderAtGoalOutcomeExpectation.MovementPhase, forbiddenLooseInterceptorName: "Kuzmic"),
+            new HeaderAtGoalBranchDefinition("Rush aerial 5 direction 2 distance 2 movement", true, 6, 4, 5, null, 2, 2, HeaderAtGoalOutcomeExpectation.MovementPhase, new Vector2Int(12, 1)),
+            new HeaderAtGoalBranchDefinition("Rush aerial 4 goal", true, 6, 4, 4, null, null, null, HeaderAtGoalOutcomeExpectation.Goal),
         };
     }
 
@@ -16448,6 +16648,98 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Long Ball To 15 4 Inaccurate SouthEast6 Is GoalKick");
     }
 
+    private IEnumerator Scenario_037_OOB_LongBall_Branch(OobLongBallBranchDefinition branch)
+    {
+        Log($"Starting OOB Long Ball branch: {branch.Name}");
+        yield return StartCoroutine(StartKickoffLongBallToTarget(2, branch.Target));
+
+        Log($"Rigging inaccurate kickoff Long Ball roll to {branch.AccuracyRoll}");
+        PerformRiggedLongBallAccuracyRoll(branch.AccuracyRoll);
+        AssertTrue(longBallManager.isWaitingForDirectionRoll, "After the failed kickoff long-ball accuracy roll, the manager should wait for direction.");
+
+        int zeroBasedDirection = branch.SheetDirectionRoll - 1;
+        Log($"Rigging kickoff Long Ball direction to sheet value {branch.SheetDirectionRoll} (manager value {zeroBasedDirection})");
+        PerformRiggedLongBallDirectionRoll(zeroBasedDirection);
+        AssertTrue(longBallManager.isWaitingForDistanceRoll, "Kickoff Long Ball should wait for distance after direction.");
+
+        Log($"Rigging kickoff Long Ball distance to {branch.DistanceRoll}");
+        yield return StartCoroutine(PerformRiggedLongBallDistanceRoll(branch.DistanceRoll));
+        yield return StartCoroutine(WaitForCondition(
+            () => IsOobBranchOutcomeReached(branch),
+            6f,
+            $"OOB branch '{branch.Name}' should resolve to {branch.ExpectedRestart} at {branch.ExpectedReentryHex}."));
+
+        AssertOobBranchOutcome(branch);
+        LogFooterofTest($"OOB Long Ball {branch.Name}");
+    }
+
+    private bool IsOobBranchOutcomeReached(OobLongBallBranchDefinition branch)
+    {
+        HexCell expectedHex = hexgrid.GetHexCellAt(new Vector3Int(branch.ExpectedReentryHex.x, 0, branch.ExpectedReentryHex.y));
+        HexCell ballHex = longBallManager.ball.GetCurrentHex();
+        bool isOnExpectedHex = expectedHex != null && ballHex == expectedHex;
+
+        return branch.ExpectedRestart switch
+        {
+            OobRestartExpectation.ThrowIn =>
+                MatchManager.Instance.currentState == MatchManager.GameState.WaitingForThrowInTaker
+                && isOnExpectedHex
+                && !longBallManager.isActivated,
+            OobRestartExpectation.CornerKick =>
+                freeKickManager.isActivated
+                && freeKickManager.isCornerKick
+                && freeKickManager.isWaitingForKickerSelection
+                && isOnExpectedHex
+                && !longBallManager.isActivated,
+            OobRestartExpectation.GoalKick =>
+                MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds
+                && isOnExpectedHex
+                && !longBallManager.isActivated,
+            _ => false
+        };
+    }
+
+    private void AssertOobBranchOutcome(OobLongBallBranchDefinition branch)
+    {
+        HexCell expectedHex = hexgrid.GetHexCellAt(new Vector3Int(branch.ExpectedReentryHex.x, 0, branch.ExpectedReentryHex.y));
+        HexCell ballHex = longBallManager.ball.GetCurrentHex();
+        AssertTrue(expectedHex != null, $"OOB branch '{branch.Name}' expected re-entry hex should exist.", true, branch.ExpectedReentryHex);
+        AssertTrue(ballHex == expectedHex, $"OOB branch '{branch.Name}' should place the ball on the expected re-entry hex.", expectedHex, ballHex);
+        AssertTrue(MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Away, $"OOB branch '{branch.Name}' should award the restart to Away.", MatchManager.TeamInAttack.Away, MatchManager.Instance.teamInAttack);
+
+        switch (branch.ExpectedRestart)
+        {
+            case OobRestartExpectation.ThrowIn:
+                AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.WaitingForThrowInTaker, $"OOB branch '{branch.Name}' should wait for throw-in taker.", MatchManager.GameState.WaitingForThrowInTaker, MatchManager.Instance.currentState);
+                break;
+            case OobRestartExpectation.CornerKick:
+                AssertTrue(freeKickManager.isActivated && freeKickManager.isCornerKick, $"OOB branch '{branch.Name}' should activate Corner Kick mode.", true, freeKickManager.GetDebugStatus());
+                AssertTrue(freeKickManager.isWaitingForKickerSelection, $"OOB branch '{branch.Name}' should wait for corner kicker selection.", true, freeKickManager.GetDebugStatus());
+                AssertOobBranchCornerLogged(branch);
+                break;
+            case OobRestartExpectation.GoalKick:
+                AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds, $"OOB branch '{branch.Name}' should wait for goal-kick Final Thirds.", MatchManager.GameState.WaitingForGoalKickFinalThirds, MatchManager.Instance.currentState);
+                break;
+        }
+    }
+
+    private void AssertOobBranchCornerLogged(OobLongBallBranchDefinition branch)
+    {
+        MatchManager.TeamStats awayTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(false);
+        MatchManager.TeamStats homeTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(true);
+
+        AssertTrue(
+            awayTeamStats.totalCorners == 1,
+            $"OOB branch '{branch.Name}' should log exactly one corner for Away.",
+            1,
+            awayTeamStats.totalCorners);
+        AssertTrue(
+            homeTeamStats.totalCorners == 0,
+            $"OOB branch '{branch.Name}' should not log a corner for Home.",
+            0,
+            homeTeamStats.totalCorners);
+    }
+
     private IEnumerator Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits()
     {
         yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(1));
@@ -16915,6 +17207,315 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(headerManager.defenderWillJump.Last() == kuzmic, "Defending GK should remain last in the defender challenge list.", kuzmic, headerManager.defenderWillJump.Last());
 
         LogFooterofTest("Header Roll Order Attackers First Defenders GK Last");
+    }
+
+    private IEnumerator Scenario_038_HeaderAtGoal_Branch(HeaderAtGoalBranchDefinition branch)
+    {
+        Log($"Starting Header at Goal branch: {branch.Name}");
+        yield return StartCoroutine(PrepareScriptedHeaderAtGoal(branch.GkRush));
+
+        yield return StartCoroutine(PerformHeaderAtGoalRoll("Yaneva", branch.AttackerHeaderRoll));
+        yield return StartCoroutine(PerformHeaderAtGoalRoll("Soares", branch.DefenderHeaderRoll));
+
+        if (branch.GoalkeeperHeaderOrAerialRoll.HasValue)
+        {
+            if (branch.GkRush)
+            {
+                yield return StartCoroutine(PerformHeaderAtGoalRoll("Kuzmic", branch.GoalkeeperHeaderOrAerialRoll.Value));
+            }
+            else
+            {
+                yield return StartCoroutine(PerformHeaderAtGoalGkSave(branch.GoalkeeperHeaderOrAerialRoll.Value));
+            }
+        }
+
+        if (branch.HandlingRoll.HasValue)
+        {
+            yield return StartCoroutine(PerformHeaderAtGoalHandling(branch.HandlingRoll.Value));
+        }
+
+        if (branch.LooseDirectionRoll.HasValue)
+        {
+            yield return StartCoroutine(PerformRiggedLooseDirectionRoll(branch.LooseDirectionRoll.Value));
+        }
+
+        if (branch.LooseDistanceRoll.HasValue)
+        {
+            yield return StartCoroutine(PerformRiggedLooseDistanceRoll(branch.LooseDistanceRoll.Value));
+        }
+
+        if (!string.IsNullOrWhiteSpace(branch.ForbiddenLooseInterceptorName))
+        {
+            yield return StartCoroutine(AssertLooseInterceptorNotOffered(branch.ForbiddenLooseInterceptorName));
+        }
+
+        if (!string.IsNullOrWhiteSpace(branch.LooseInterceptionPlayerName) && branch.LooseInterceptionRoll.HasValue)
+        {
+            yield return StartCoroutine(PerformRiggedLooseInterceptionRoll(branch.LooseInterceptionPlayerName, branch.LooseInterceptionRoll.Value));
+        }
+
+        yield return StartCoroutine(AssertHeaderAtGoalOutcome(branch));
+        LogFooterofTest($"Header at Goal {branch.Name}");
+    }
+
+    private IEnumerator PrepareScriptedHeaderAtGoal(bool gkRush)
+    {
+        yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(2));
+
+        Log("Pressing C - Start scripted High Pass");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(highPassManager.isActivated, "Scripted High Pass should activate after pressing C.");
+
+        Log("Clicking (13, 1) - Select scripted High Pass target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.1f));
+        AssertTrue(highPassManager.currentTargetHex == hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)), "Scripted High Pass should select (13,1).", hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)), highPassManager.currentTargetHex);
+
+        Log("Clicking (13, 1) again - Confirm scripted High Pass target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderSelection,
+            2f,
+            "Scripted High Pass should wait for defender HP movement."));
+
+        Log("Clicking (18, 0) - Select scripted defending token");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(18, 0), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderMove,
+            2f,
+            "Scripted High Pass should wait for the selected defender move."));
+
+        Log("Clicking (18, 3) - Move scripted defending token");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(18, 3), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAccuracyRoll,
+            4f,
+            "Scripted High Pass should wait for accuracy after defender movement."));
+
+        Log("Rigging scripted High Pass accuracy roll to 6");
+        highPassManager.PerformAccuracyRoll(6);
+        yield return StartCoroutine(WaitForCondition(
+            () => goalKeeperManager.isActivated,
+            5f,
+            "Scripted High Pass into the box should offer the defending GK box move."));
+
+        Log("Clicking (16, 1) - Move defending GK for box entry");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, 1), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefGKChallengeDecision,
+            4f,
+            "Scripted High Pass should offer the GK rush decision after the box move."));
+
+        if (gkRush)
+        {
+            Log("Clicking (15, 2) - Rush defending GK");
+            yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(15, 2), 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => finalThirdManager.isActivated && !highPassManager.isActivated,
+                4f,
+                "Scripted High Pass should trigger Final Third after GK rush."));
+        }
+        else
+        {
+            Log("Pressing X - Forfeit defending GK rush");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => finalThirdManager.isActivated && !highPassManager.isActivated,
+                4f,
+                "Scripted High Pass should trigger Final Third after GK rush forfeit."));
+        }
+
+        yield return StartCoroutine(ForfeitActiveFinalThirds());
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isActivated && headerManager.isWaitingForHeaderAtGoal,
+            5f,
+            "Scripted High Pass should activate Header and offer header-at-goal after F3."));
+
+        Log("Clicking (19, -2) - Declare headed shot target");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(19, -2), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForDefenderSelection,
+            3f,
+            "Header should wait for defensive challenges after headed shot target selection."));
+
+        Log("Pressing A - Defense challenges with all eligible defenders");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForHeaderRoll,
+            3f,
+            "Header should wait for challenge rolls after defense selects all challengers."));
+    }
+
+    private IEnumerator PerformHeaderAtGoalRoll(string expectedTokenName, int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => headerManager.isWaitingForHeaderRoll,
+            3f,
+            $"Header at Goal should wait for {expectedTokenName}'s header/aerial roll."));
+
+        AssertTrue(
+            NamesMatch(GetTokenTestName(headerManager.tokenRolling), expectedTokenName),
+            $"Header at Goal should roll with {expectedTokenName}.",
+            expectedTokenName,
+            GetTokenTestName(headerManager.tokenRolling));
+
+        Log($"Rigging Header at Goal roll for {expectedTokenName} to {rigRoll}");
+        headerManager.PerformHeaderRoll(rigRoll);
+        yield return new WaitForSeconds(0.25f);
+    }
+
+    private IEnumerator PerformHeaderAtGoalGkSave(int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isActivated && shotManager.isHeaderAtGoal && shotManager.isWaitingForGKDiceRoll,
+            4f,
+            "Header at Goal should wait for Kuzmic's saving roll."));
+
+        Log($"Rigging Kuzmic header save roll to {rigRoll}");
+        shotManager.PerformGKHeaderSave(rigRoll);
+        yield return new WaitForSeconds(0.4f);
+    }
+
+    private IEnumerator PerformHeaderAtGoalHandling(int rigRoll)
+    {
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingforHandlingTest,
+            4f,
+            "Header at Goal should wait for Kuzmic's handling roll."));
+
+        Log($"Rigging Kuzmic handling roll to {rigRoll}");
+        StartCoroutine(shotManager.ResolveHandlingTest(rigRoll));
+        yield return new WaitForSeconds(0.4f);
+    }
+
+    private IEnumerator AssertLooseInterceptorNotOffered(string forbiddenPlayerName)
+    {
+        float elapsedSeconds = 0f;
+        while (looseBallManager.isActivated
+            && !looseBallManager.isWaitingForInterceptionRoll
+            && !movementPhaseManager.isActivated
+            && !finalThirdManager.isActivated
+            && !freeKickManager.isActivated
+            && !goalFlowManager.isActivated
+            && elapsedSeconds < 1.5f)
+        {
+            yield return null;
+            elapsedSeconds += Time.deltaTime;
+        }
+
+        if (looseBallManager.isWaitingForInterceptionRoll)
+        {
+            string currentInterceptorName = GetCurrentLooseInterceptorName();
+            AssertTrue(
+                !NamesMatch(currentInterceptorName, forbiddenPlayerName),
+                $"Header at Goal should not offer {forbiddenPlayerName} a loose-ball interception after they jumped in the header challenge.",
+                $"not {forbiddenPlayerName}",
+                currentInterceptorName);
+        }
+    }
+
+    private IEnumerator AssertHeaderAtGoalOutcome(HeaderAtGoalBranchDefinition branch)
+    {
+        switch (branch.ExpectedOutcome)
+        {
+            case HeaderAtGoalOutcomeExpectation.Goal:
+                yield return StartCoroutine(WaitForCondition(
+                    () => goalFlowManager.isActivated,
+                    6f,
+                    $"Header at Goal branch '{branch.Name}' should activate GoalFlow."));
+                while (goalFlowManager.isActivated) yield return null;
+                AssertHeaderAtGoalResetAfterRightSideGoal(branch);
+                break;
+
+            case HeaderAtGoalOutcomeExpectation.CornerKick:
+                yield return StartCoroutine(WaitForCondition(
+                    () => freeKickManager.isActivated && freeKickManager.isCornerKick && freeKickManager.isWaitingForKickerSelection,
+                    6f,
+                    $"Header at Goal branch '{branch.Name}' should resolve to a corner kick."));
+                AssertHeaderAtGoalExpectedBallHex(branch);
+                AssertHeaderAtGoalCornerLogged(branch);
+                break;
+
+            case HeaderAtGoalOutcomeExpectation.MovementPhase:
+                yield return StartCoroutine(WaitForCondition(
+                    () => movementPhaseManager.isActivated || finalThirdManager.isActivated,
+                    6f,
+                    $"Header at Goal branch '{branch.Name}' should resolve toward movement for Home."));
+                if (branch.ExpectedBallHex.HasValue)
+                {
+                    AssertHeaderAtGoalExpectedBallHex(branch);
+                }
+                break;
+
+            case HeaderAtGoalOutcomeExpectation.SaveAndHold:
+                yield return StartCoroutine(WaitForCondition(
+                    () => shotManager.isWaitingForSaveandHoldScenario,
+                    6f,
+                    $"Header at Goal branch '{branch.Name}' should resolve to Save and Hold for Away."));
+                AssertHeaderAtGoalExpectedBallHex(branch);
+                break;
+        }
+    }
+
+    private void AssertHeaderAtGoalExpectedBallHex(HeaderAtGoalBranchDefinition branch)
+    {
+        if (!branch.ExpectedBallHex.HasValue)
+        {
+            return;
+        }
+
+        Vector2Int expectedCoordinates = branch.ExpectedBallHex.Value;
+        HexCell expectedHex = hexgrid.GetHexCellAt(new Vector3Int(expectedCoordinates.x, 0, expectedCoordinates.y));
+        HexCell ballHex = headerManager.ball.GetCurrentHex();
+        AssertTrue(expectedHex != null, $"Header at Goal branch '{branch.Name}' expected ball hex should exist.", true, expectedCoordinates);
+        AssertTrue(ballHex == expectedHex, $"Header at Goal branch '{branch.Name}' should place the ball on the expected hex.", expectedHex, ballHex);
+    }
+
+    private void AssertHeaderAtGoalCornerLogged(HeaderAtGoalBranchDefinition branch)
+    {
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        MatchManager.TeamStats attackingTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(yaneva.isHomeTeam);
+        MatchManager.TeamStats defendingTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(!yaneva.isHomeTeam);
+
+        AssertTrue(
+            attackingTeamStats.totalCorners == 1,
+            $"Header at Goal branch '{branch.Name}' should log exactly one corner for the attacking team.",
+            1,
+            attackingTeamStats.totalCorners);
+        AssertTrue(
+            defendingTeamStats.totalCorners == 0,
+            $"Header at Goal branch '{branch.Name}' should not log a corner for the defending team.",
+            0,
+            defendingTeamStats.totalCorners);
+    }
+
+    private void AssertHeaderAtGoalResetAfterRightSideGoal(HeaderAtGoalBranchDefinition branch)
+    {
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == yaneva,
+            $"Header at Goal branch '{branch.Name}' should credit the loose-ball goal to Yaneva.",
+            yaneva,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+        AssertTrue(
+            goalFlowManager.LastCompletedGoalSide == 1,
+            $"Header at Goal branch '{branch.Name}' should resolve as a right-side goal.",
+            1,
+            goalFlowManager.LastCompletedGoalSide);
+
+        PlayerToken kuzmic = RequirePlayerToken("Kuzmic");
+        HexCell yanevaHex = yaneva.GetCurrentHex();
+        HexCell kuzmicHex = kuzmic.GetCurrentHex();
+
+        AssertTrue(
+            yanevaHex != null && yanevaHex.coordinates.x < 0,
+            $"Header at Goal branch '{branch.Name}' should reset Home attackers to the left half after scoring at the right goal.",
+            "x < 0",
+            yanevaHex != null ? yanevaHex.coordinates : "null");
+        AssertTrue(
+            kuzmicHex != null && kuzmicHex.coordinates.x > 0,
+            $"Header at Goal branch '{branch.Name}' should reset Away defenders to the right half after conceding at the right goal.",
+            "x > 0",
+            kuzmicHex != null ? kuzmicHex.coordinates : "null");
     }
 
 

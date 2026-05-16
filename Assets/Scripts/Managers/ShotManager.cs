@@ -939,6 +939,7 @@ public class ShotManager : MonoBehaviour
         if (totalSavingPower == headerAttackerTotalScore)
         {
             Debug.Log($"{gkToken.name} ties the attacker's header! Loose Ball situation initiated.");
+            MatchManager.Instance.SetLastToken(headerAttacker);
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 headerAttacker,
                 MatchManager.ActionType.ShotBlocked,
@@ -1036,7 +1037,7 @@ public class ShotManager : MonoBehaviour
         else if (
             hex != null // we clicked a Hex
             && isWaitingForTargetSelection // We are indeed waiting for a targetSelection
-            && hexGrid.highlightedHexes.Contains(hex) // one of the target Hexes
+            && shotTargetSelectionTargets.Contains(hex) // one of the target Hexes
         )
         {
             Debug.Log($"Valid selected Target Hex: {hex.name}");
@@ -1078,7 +1079,10 @@ public class ShotManager : MonoBehaviour
         foreach (var canShootToHex in shootingPaths.Keys)
         {
             canShootToHex.HighlightHex("CanShootFrom", 1);
-            hexGrid.highlightedHexes.Add(canShootToHex);
+            if (!hexGrid.highlightedHexes.Contains(canShootToHex))
+            {
+                hexGrid.highlightedHexes.Add(canShootToHex);
+            }
             if (!shotTargetSelectionTargets.Contains(canShootToHex))
             {
                 shotTargetSelectionTargets.Add(canShootToHex);

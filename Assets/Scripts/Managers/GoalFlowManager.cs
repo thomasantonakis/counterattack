@@ -19,6 +19,10 @@ public class GoalFlowManager : MonoBehaviour
     public LongBallManager longBallManager;
     public KickoffManager kickoffManager;
     public bool isActivated = false;
+    public int LastCompletedGoalSide { get; private set; } = 0;
+    public HexCell LastCompletedGoalHex { get; private set; }
+    private int activeGoalSide = 0;
+    private HexCell activeGoalHex;
     // Celebration hex lists
     private List<HexCell> celebrationTopLeft;
     private List<HexCell> celebrationTopRight;
@@ -169,19 +173,28 @@ public class GoalFlowManager : MonoBehaviour
   
     public void StartGoalFlow(PlayerToken shooterToken)
     {
+        StartGoalFlow(shooterToken, null);
+    }
+
+    public void StartGoalFlow(PlayerToken shooterToken, HexCell scoredGoalHex)
+    {
         // TODO: This should clean up everything from all Managers.
+        activeGoalHex = scoredGoalHex;
+        activeGoalSide = ResolveScoredGoalSide(shooterToken, scoredGoalHex);
+        LastCompletedGoalHex = scoredGoalHex;
+        LastCompletedGoalSide = activeGoalSide;
         isActivated = true;
         CaptureGoalInstructionContext(shooterToken);
         instructionPhase = GoalInstructionPhase.Celebration;
         hexGrid.RemoveHighlightsFromAllHexes();
-        Debug.Log($"GOAL! {shooterToken.name} scores! Starting celebration...");
-        StartCoroutine(DefenseCelebrationFlow(shooterToken));
-        StartCoroutine(AttackCelebrationFlow(shooterToken));
+        Debug.Log($"GOAL! {shooterToken.name} scores! Starting celebration on goal side {activeGoalSide}.");
+        StartCoroutine(DefenseCelebrationFlow(shooterToken, activeGoalSide));
+        StartCoroutine(AttackCelebrationFlow(shooterToken, activeGoalSide));
         
         
     }
 
-    private IEnumerator AttackCelebrationFlow(PlayerToken shooterToken)
+    private IEnumerator AttackCelebrationFlow(PlayerToken shooterToken, int scoredGoalSide)
     {
         // 4️⃣ GK joins if after 85’ and team scored match-winner (basic logic here)
         // if (MatchManager.Instance.minutesPassed >= 85)
@@ -195,8 +208,8 @@ public class GoalFlowManager : MonoBehaviour
         // }
 
         // 1️⃣ Determine which corner flag the players should run to
-        List<HexCell> celebrationHexes = GetCelebrationHexes(shooterToken);
-        List<HexCell> attackerResetHexes = (shooterToken.GetCurrentHex().coordinates.x > 0) ? resetFormationLeft : resetFormationRight;
+        List<HexCell> celebrationHexes = GetCelebrationHexes(scoredGoalSide, activeGoalHex, shooterToken);
+        List<HexCell> attackerResetHexes = scoredGoalSide > 0 ? resetFormationLeft : resetFormationRight;
         HexCell defGkHex = (attackerResetHexes == resetFormationLeft) ? resetFormationRight[0] : resetFormationLeft[0];
         // 2️⃣ Get all attacking teammates
         List<PlayerToken> attackers = GetAttackTokens(shooterToken.isHomeTeam);
@@ -220,12 +233,12 @@ public class GoalFlowManager : MonoBehaviour
         CleanUpGoalFlow();
     }
 
-    private IEnumerator DefenseCelebrationFlow(PlayerToken shooterToken)
+    private IEnumerator DefenseCelebrationFlow(PlayerToken shooterToken, int scoredGoalSide)
     {
         // 1️⃣ Get all defender Tokens
         List<PlayerToken> defenders = GetAttackTokens(!shooterToken.isHomeTeam);
         // 2️⃣ Get the hexes where they should reset
-        List<HexCell> defenderResetHexes = (shooterToken.GetCurrentHex().coordinates.x < 0) ? resetFormationLeft : resetFormationRight;
+        List<HexCell> defenderResetHexes = scoredGoalSide > 0 ? resetFormationRight : resetFormationLeft;
         // 3️⃣ Wait and cry!
         yield return new WaitForSeconds(0); // Small pause for disappointment
         // 4️⃣ Move defenders to their reset positions
@@ -240,6 +253,8 @@ public class GoalFlowManager : MonoBehaviour
         attackersAreBack = false;
         defendersAreBack = false;
         instructionPhase = GoalInstructionPhase.None;
+        activeGoalSide = 0;
+        activeGoalHex = null;
         goalScoringTeamName = string.Empty;
         goalScorerName = string.Empty;
         goalAssisterName = string.Empty;
@@ -378,12 +393,32 @@ public class GoalFlowManager : MonoBehaviour
     }
 
     // Determines the celebration hex list based on scorer's position
-    private List<HexCell> GetCelebrationHexes(PlayerToken scorer)
+    private int ResolveScoredGoalSide(PlayerToken scorer, HexCell scoredGoalHex)
     {
-        if (scorer.GetCurrentHex().coordinates.z > 0)
-            return (scorer.GetCurrentHex().coordinates.x > 0) ? celebrationTopRight : celebrationTopLeft;
+        if (scoredGoalHex != null && scoredGoalHex.isInGoal != 0)
+        {
+            return scoredGoalHex.isInGoal;
+        }
+
+        if (scorer == null)
+        {
+            return 0;
+        }
+
+        MatchManager.TeamAttackingDirection scorerDirection = scorer.isHomeTeam
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+
+        return scorerDirection == MatchManager.TeamAttackingDirection.LeftToRight ? 1 : -1;
+    }
+
+    private List<HexCell> GetCelebrationHexes(int scoredGoalSide, HexCell scoredGoalHex, PlayerToken scorer)
+    {
+        int z = scoredGoalHex != null ? scoredGoalHex.coordinates.z : scorer.GetCurrentHex().coordinates.z;
+        if (z > 0)
+            return scoredGoalSide > 0 ? celebrationTopRight : celebrationTopLeft;
         else
-            return (scorer.GetCurrentHex().coordinates.x > 0) ? celebrationBottomRight : celebrationBottomLeft;
+            return scoredGoalSide > 0 ? celebrationBottomRight : celebrationBottomLeft;
     }
 
     private void TeleportPlayersToHexes(List<PlayerToken> players, List<HexCell> targetHexes)

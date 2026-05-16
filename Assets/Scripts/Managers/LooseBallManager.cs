@@ -121,7 +121,7 @@ public class LooseBallManager : MonoBehaviour
             movementPhaseManager.EndMovementPhase(false);
         }
 
-        resolvedGoalFlowManager.StartGoalFlow(scoringToken);
+        resolvedGoalFlowManager.StartGoalFlow(scoringToken, goalHex);
         return true;
     }
 
@@ -141,6 +141,20 @@ public class LooseBallManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private string ResolveOutOfBoundsSource(PlayerToken lastTouchToken)
+    {
+        if (lastTouchToken == null)
+        {
+            return "inaccuracy";
+        }
+
+        bool attackingTeamTouched = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home
+            ? lastTouchToken.isHomeTeam
+            : !lastTouchToken.isHomeTeam;
+
+        return attackingTeamTouched ? "inaccuracy" : "defendertouch";
     }
 
     private bool ShouldAllowTokenImpactOnHex(LooseBallSourceType sourceType, int pathIndex, int pathCount)
@@ -711,12 +725,6 @@ public class LooseBallManager : MonoBehaviour
                     , saveType: "corner"
                     , connectedToken: lastPurposefulTouchBeforeLooseBall
                 );
-                if (lastPurposefulTouchBeforeLooseBall != null)
-                {
-                    MatchManager.Instance.gameData.gameLog.LogEvent(
-                        lastPurposefulTouchBeforeLooseBall,
-                        MatchManager.ActionType.CornerWon);
-                }
                 // HexCell lastInbound;
                 // This should be a CornerKick, and we should break
                 if (directionRoll == 2 || directionRoll == 3 || directionRoll == 4)
@@ -727,14 +735,14 @@ public class LooseBallManager : MonoBehaviour
                         // Right Side
                         Debug.Log($"Ball went out of bounds on the Right Side, starting a Corner Kick form the North corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, 6)), true));
-                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 6)), "RightGoalLine", "defendertouch"));
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, 6)), "RightGoalLine", "defendertouch", startingToken, lastPurposefulTouchBeforeLooseBall));
                     }
                     else
                     {
                         // Left Side
                         Debug.Log($"Ball went out of bounds on the Left Side, starting a Corner Kick form the North corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, 6)), true));
-                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 6)), "LeftGoalLine", "defendertouch"));
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 6)), "LeftGoalLine", "defendertouch", startingToken, lastPurposefulTouchBeforeLooseBall));
                     }
                 }
                 else
@@ -745,14 +753,14 @@ public class LooseBallManager : MonoBehaviour
                         // Right Side
                         Debug.Log($"Ball went out of bounds on the Right Side, starting a Corner Kick form the South corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(22, 0, -6)), true));
-                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -6)), "RightGoalLine", "defendertouch"));
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(18, 0, -6)), "RightGoalLine", "defendertouch", startingToken, lastPurposefulTouchBeforeLooseBall));
                     }
                     else
                     {
                         // Left Side
                         Debug.Log($"Ball went out of bounds on the Left Side, starting a Corner Kick form the South corner");
                         yield return StartCoroutine(longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(-22, 0, -6)), true));
-                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -6)), "LeftGoalLine", "defendertouch"));
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -6)), "LeftGoalLine", "defendertouch", startingToken, lastPurposefulTouchBeforeLooseBall));
                     }
                 }
                 // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 
@@ -1107,7 +1115,7 @@ public class LooseBallManager : MonoBehaviour
                 {
                     movementPhaseManager.EndMovementPhase(false);
                 }
-                outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, "ground", startingToken);
+                outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, ResolveOutOfBoundsSource(startingToken), startingToken);
             }
         }
         EndLooseBallPhase();

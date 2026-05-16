@@ -104,7 +104,9 @@ public class FreeKickManager : MonoBehaviour
         if (isWaitingForKickerSelection)
         {
             if (token != null) StartCoroutine(HandleKickerSelection(token));
-            else Debug.Log($"There is no Token on {hex.name}. Doing nothing!");
+            else Debug.Log(hex != null
+                ? $"There is no Token on {hex.name}. Doing nothing!"
+                : "No token or valid hex clicked during kicker selection. Doing nothing!");
             return;
         }
         if (isWaitingForSetupPhase)
@@ -147,13 +149,20 @@ public class FreeKickManager : MonoBehaviour
             {
                 if (isWaitingforMovement3)
                 {
-                    Debug.Log($"Clicked token during free kick setup: {token.name}");
-                    StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));
-                    // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex));
+                    if (hex != null && selectedToken != null && hexGrid.highlightedHexes.Contains(hex))
+                    {
+                        Debug.Log($"Moving selected token {selectedToken.name} during free kick movement 3.");
+                        StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Please select a valid token, then click a highlighted Hex for free kick movement 3.");
+                    }
                     return;
                 }
-                else
-                Debug.LogWarning($"Hex {hex.name} is unoccupied. Please select a valid token.");
+                Debug.LogWarning(hex != null
+                    ? $"Hex {hex.name} is unoccupied. Please select a valid token."
+                    : "No token or valid hex clicked during free kick setup. Please select a valid token.");
                 return;
             } 
         }
@@ -1192,7 +1201,14 @@ public class FreeKickManager : MonoBehaviour
         {
             if (isCornerKick)
             {
-                sb.Append("High Pass selected; click a valid target Hex, or click the selected Hex again to confirm, ");
+                if (highPassManager.currentTargetHex == null)
+                {
+                    sb.Append("High Pass selected; click a valid target Hex, ");
+                }
+                else
+                {
+                    sb.Append("High Pass selected; click a valid target Hex, or click the selected Hex again to confirm, ");
+                }
                 return true;
             }
 

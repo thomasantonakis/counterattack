@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class OutOfBoundsManager : MonoBehaviour
@@ -8,6 +9,8 @@ public class OutOfBoundsManager : MonoBehaviour
     public HexGrid hexGrid;
     public FreeKickManager freeKickManager;
     public ThrowInManager throwInManager;
+    public OutOfBoundsPushManager outOfBoundsPushManager;
+    public PlayerTokenManager playerTokenManager;
 
     public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source, PlayerToken lastTouchToken = null)
     {
@@ -36,16 +39,16 @@ public class OutOfBoundsManager : MonoBehaviour
         {
             case "LeftGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Left Side.");
-                StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source));
+                StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source, lastTouchToken));
                 break;
             case "RightGoalLine":
                 Debug.Log("Goal Kick or Corner Kick for Right Side.");
-                StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source));
+                StartCoroutine(HandleGoalKickOrCorner(lastInboundsHex, outOfBoundsSide, source, lastTouchToken));
                 break;
             case "Top Throw-In":
             case "Bottom Throw-In":
                 Debug.Log("Handling a Throw-In.");
-                HandleThrowIn(lastInboundsHex, source, lastTouchToken);
+                StartCoroutine(HandleThrowIn(lastInboundsHex, source, lastTouchToken));
                 break;
             case "LeftGoal":
             case "RightGoal":
@@ -131,16 +134,22 @@ public class OutOfBoundsManager : MonoBehaviour
         return "unknown";  // Fallback case (this shouldn't happen if the boundaries are properly checked)
     }
 
-    private void HandleThrowIn(HexCell lastInboundsHex, string source, PlayerToken lastTouchToken)
+    private IEnumerator HandleThrowIn(HexCell lastInboundsHex, string source, PlayerToken lastTouchToken)
     {
         if (throwInManager == null)
         {
             Debug.LogError("ThrowInManager is not linked on OutOfBoundsManager.");
-            return;
+            yield break;
         }
 
         MatchManager.TeamInAttack awardedTeam = DetermineThrowInAwardedTeam(source, lastTouchToken);
         Debug.Log($"Throw-in awarded to: {awardedTeam} (source: {source}, lastTouch: {lastTouchToken?.name ?? "unknown"}).");
+        if (MatchManager.Instance.teamInAttack != awardedTeam)
+        {
+            MatchManager.Instance.ChangePossession();
+        }
+
+        yield return StartCoroutine(ResolveOutOfBoundsPush(lastInboundsHex));
         throwInManager.StartThrowInPreparation(lastInboundsHex, awardedTeam);
     }
 
@@ -165,7 +174,7 @@ public class OutOfBoundsManager : MonoBehaviour
             : MatchManager.TeamInAttack.Home;
     }
     
-    public IEnumerator HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source)
+    public IEnumerator HandleGoalKickOrCorner(HexCell lastInboundsHex, string outOfBoundsSide, string source, PlayerToken lastTouchToken = null, PlayerToken cornerWinnerToken = null)
     {
         Debug.Log($"Hello from OOM, {lastInboundsHex.name}, {outOfBoundsSide}, {source}");
         // Get the attacking team's direction
@@ -203,6 +212,7 @@ public class OutOfBoundsManager : MonoBehaviour
         )
         {
             Debug.Log("It's a Corner Kick");
+            LogCornerWon(source, lastTouchToken, cornerWinnerToken);
             if (source == "inaccuracy")
             {
                 MatchManager.Instance.ChangePossession();
@@ -213,6 +223,7 @@ public class OutOfBoundsManager : MonoBehaviour
                 {
                     Debug.Log("Left Side: Corner kick from the top-left corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12));
+                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
                     yield return StartCoroutine(ball.MoveToCell(spot));
                     freeKickManager.StartFreeKickPreparation(spot);
                 }
@@ -220,6 +231,7 @@ public class OutOfBoundsManager : MonoBehaviour
                 {
                     Debug.Log("Left Side: Corner kick from the bottom-left corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12));
+                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
                     yield return StartCoroutine(ball.MoveToCell(spot));
                     freeKickManager.StartFreeKickPreparation(spot);
                 }
@@ -230,6 +242,7 @@ public class OutOfBoundsManager : MonoBehaviour
                 {
                     Debug.Log("Right Side: Corner kick from the top-right corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12));
+                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
                     yield return StartCoroutine(ball.MoveToCell(spot));
                     freeKickManager.StartFreeKickPreparation(spot);
                 }
@@ -237,6 +250,7 @@ public class OutOfBoundsManager : MonoBehaviour
                 {
                     Debug.Log("Right Side: Corner kick from the bottom-right corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12));
+                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
                     yield return StartCoroutine(ball.MoveToCell(spot));
                     freeKickManager.StartFreeKickPreparation(spot);
                 }
@@ -275,16 +289,103 @@ public class OutOfBoundsManager : MonoBehaviour
             if (outOfBoundsSide == "RightGoalLine")  // Top half of the pitch
             {
                 Debug.Log("Right Side: Goal kick from center Hex at the 6-yard-box.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0))));
+                HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0));
+                yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
+                yield return StartCoroutine(ball.MoveToCell(spot));
                 MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
             }
             else
             {
                 Debug.Log("Left Side: Goal kick from center Hex at the 6-yard-box.");
-                StartCoroutine(ball.MoveToCell(hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 0))));
+                HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 0));
+                yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
+                yield return StartCoroutine(ball.MoveToCell(spot));
                 MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
             }
         }
+    }
+
+    private void LogCornerWon(string source, PlayerToken lastTouchToken, PlayerToken explicitCornerWinner)
+    {
+        PlayerToken cornerWinner = ResolveCornerWinner(source, lastTouchToken, explicitCornerWinner);
+        if (cornerWinner == null)
+        {
+            Debug.LogWarning($"Corner was awarded from source '{source}', but no token could be resolved for CornerWon logging.");
+            return;
+        }
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(cornerWinner, MatchManager.ActionType.CornerWon);
+    }
+
+    private PlayerToken ResolveCornerWinner(string source, PlayerToken lastTouchToken, PlayerToken explicitCornerWinner)
+    {
+        if (explicitCornerWinner != null)
+        {
+            return explicitCornerWinner;
+        }
+
+        if (source == "defendertouch")
+        {
+            PlayerToken lastPurposefulTouch = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+            if (lastPurposefulTouch != null && (lastTouchToken == null || lastPurposefulTouch.isHomeTeam != lastTouchToken.isHomeTeam))
+            {
+                return lastPurposefulTouch;
+            }
+
+            return FindRepresentativeTokenForTeam(MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home);
+        }
+
+        if (source == "inaccuracy")
+        {
+            bool awardedHome = MatchManager.Instance.teamInAttack != MatchManager.TeamInAttack.Home;
+            return FindRepresentativeTokenForTeam(awardedHome);
+        }
+
+        return null;
+    }
+
+    private PlayerToken FindRepresentativeTokenForTeam(bool isHomeTeam)
+    {
+        if (playerTokenManager == null)
+        {
+            playerTokenManager = UnityEngine.Object.FindFirstObjectByType<PlayerTokenManager>();
+        }
+
+        if (playerTokenManager == null || playerTokenManager.allTokens == null)
+        {
+            return null;
+        }
+
+        return playerTokenManager.allTokens.FirstOrDefault(token => token != null && token.isHomeTeam == isHomeTeam && !token.IsGoalKeeper)
+            ?? playerTokenManager.allTokens.FirstOrDefault(token => token != null && token.isHomeTeam == isHomeTeam);
+    }
+
+    private OutOfBoundsPushManager EnsureOutOfBoundsPushManager()
+    {
+        if (outOfBoundsPushManager == null)
+        {
+            outOfBoundsPushManager = UnityEngine.Object.FindFirstObjectByType<OutOfBoundsPushManager>();
+        }
+
+        if (outOfBoundsPushManager == null)
+        {
+            outOfBoundsPushManager = gameObject.AddComponent<OutOfBoundsPushManager>();
+        }
+
+        outOfBoundsPushManager.Configure(hexGrid, ball);
+        return outOfBoundsPushManager;
+    }
+
+    private IEnumerator ResolveOutOfBoundsPush(HexCell reentryHex)
+    {
+        OutOfBoundsPushManager manager = EnsureOutOfBoundsPushManager();
+        if (manager == null)
+        {
+            Debug.LogError("OutOfBoundsManager could not resolve an OutOfBoundsPushManager.");
+            yield break;
+        }
+
+        yield return StartCoroutine(manager.ResolveOutOfBoundsPush(reentryHex));
     }
 
     private void HandleGoalScored()

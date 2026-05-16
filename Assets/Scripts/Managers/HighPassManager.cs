@@ -46,6 +46,7 @@ public class HighPassManager : MonoBehaviour
     public bool gkRushedOut = false;
     public PlayerToken defGK = null;
     public bool isWaitingForDefGKChallengeDecision = false;
+    private bool canDefGKRushWithoutMoving = false;
     public bool isCornerKick = false;
     [Header("Tuning")]
     [Min(0)]
@@ -296,6 +297,20 @@ public class HighPassManager : MonoBehaviour
                 Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
                 isWaitingForDefGKChallengeDecision = false;
                 keyData.isConsumed = true;
+                return;
+            }
+            else if (isWaitingForDefGKChallengeDecision && keyData.key == KeyCode.G)
+            {
+                if (canDefGKRushWithoutMoving)
+                {
+                    ConfirmGKHighPassRushWithoutMove();
+                    keyData.isConsumed = true;
+                }
+                else
+                {
+                    Debug.LogWarning($"{defGK?.name ?? "Defending GK"} cannot rush without moving because their current hex cannot challenge this header.");
+                }
+                return;
             }
         }
     }
@@ -1029,8 +1044,9 @@ public class HighPassManager : MonoBehaviour
             Debug.Log("Ball landed within bounds.");
             // Check if the defending GK can challenge
             gkReachableHexes = CanDefendingGKChallenge();
+            canDefGKRushWithoutMoving = CanDefendingGKChallengeFromCurrentHex();
             // Debug.Log($"gkReachableHexes.Count: {gkReachableHexes.Count}");
-            if (gkReachableHexes.Count > 0)
+            if (gkReachableHexes.Count > 0 || canDefGKRushWithoutMoving)
             {
                 NotifyForGkRushAvailability();
                 while (isWaitingForDefGKChallengeDecision)
@@ -1051,7 +1067,8 @@ public class HighPassManager : MonoBehaviour
     private void NotifyForGkRushAvailability()
     {
         defGK = hexGrid.GetDefendingGK();
-        Debug.Log($"Defending GK {defGK.name} is to move closer and Challenge! Press [X] to forfeit or Click on a highlighted Hex to go and Jump wiith GK...");
+        string noMoveOption = canDefGKRushWithoutMoving ? " Press [G] to rush without moving." : "";
+        Debug.Log($"Defending GK {defGK.name} can rush out to challenge! Press [X] to forfeit, click a highlighted Hex to go and jump with GK.{noMoveOption}");
         isWaitingForDefGKChallengeDecision = true;
         hexGrid.ClearHighlightedHexes();
         foreach (HexCell hex in gkReachableHexes)
@@ -1071,6 +1088,16 @@ public class HighPassManager : MonoBehaviour
         List<HexCell> challengeHexes = HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2);
         // Find intersection of reachable hexes & valid challenge spots
         return reachableHexes.Intersect(challengeHexes).ToList();
+    }
+
+    private bool CanDefendingGKChallengeFromCurrentHex()
+    {
+        if (didGKMoveInDefPhase) return false;
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        if (defendingGK == null || finalTargetHex == null || finalTargetHex.isInPenaltyBox == 0) return false;
+
+        HexCell gkHex = defendingGK.GetCurrentHex();
+        return gkHex != null && HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2).Contains(gkHex);
     }
 
     private void HighlightCommittedHighPassTarget()
@@ -1312,8 +1339,35 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"🧤 {defGK.name} moving to {hex.name}");
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defGK, false));
         Debug.Log($"🧤 {defGK.name} moved to {hex.name}");
+        ConfirmGKHighPassRush();
+    }
+
+    private void ConfirmGKHighPassRushWithoutMove()
+    {
+        if (defGK == null)
+        {
+            defGK = hexGrid.GetDefendingGK();
+        }
+
+        if (defGK == null)
+        {
+            Debug.LogWarning("Cannot confirm GK High Pass rush without a defending GK.");
+            isWaitingForDefGKChallengeDecision = false;
+            return;
+        }
+
+        hexGrid.ClearHighlightedHexes();
+        Debug.Log($"🧤 {defGK.name} rushes out to challenge the High Pass without moving.");
+        ConfirmGKHighPassRush();
+    }
+
+    private void ConfirmGKHighPassRush()
+    {
         gkRushedOut = true;
-        headerManager.defenderWillJump.Add(defGK);
+        if (!headerManager.defenderWillJump.Contains(defGK))
+        {
+            headerManager.defenderWillJump.Add(defGK);
+        }
         isWaitingForDefGKChallengeDecision = false;
     }
 
@@ -1325,6 +1379,7 @@ public class HighPassManager : MonoBehaviour
         finalTargetHex = null;
         hoveredHighPassTargetHex = null;
         pendingDifficultyOneTargetHighlightRefresh = false;
+        canDefGKRushWithoutMoving = false;
         isCornerKick = false;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
@@ -1402,7 +1457,13 @@ public class HighPassManager : MonoBehaviour
         if (isWaitingForAccuracyRoll && passer != null) {sb.Append($"Press [R] to roll the accuracy check with {passer.name}, a roll of {8 - passer.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
         if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
-        if (isWaitingForDefGKChallengeDecision) {sb.Append($"{defGK.name} can rush out to challenge, click a highlighted hex to rush there, or Press [X] to not rush out, ");}
+        if (isWaitingForDefGKChallengeDecision)
+        {
+            sb.Append($"{defGK.name} can rush out to challenge");
+            if (gkReachableHexes.Count > 0) sb.Append(", click a highlighted hex to rush there");
+            if (canDefGKRushWithoutMoving) sb.Append(", Press [G] to rush without moving");
+            sb.Append(", or Press [X] to not rush out, ");
+        }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();

@@ -17,8 +17,8 @@ public class HexGrid : MonoBehaviour
     private const string HeadingPathsAssetPath = "Assets/Resources/shootingpaths/headingPaths.json";
 #endif
     private bool gridInitialized = false;  // Track if the grid is fully created
-    private int width = 48;  // Number of hex tiles in the grid's width
-    private int height = 36; // Number of hex tiles in the grid's heightb
+    private int width = 50;  // Covers x -25..24 so full-distance OOB rolls from either touchline still land on a known hex.
+    private int height = 38; // Covers z -19..18 for full-distance OOB rolls from the top/bottom pitch edges.
     public Vector3 gridCenter = new Vector3(0, 0, 0);  // Center of your grid
     float hexRadius = 0.5f;
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab

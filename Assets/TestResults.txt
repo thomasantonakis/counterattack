@@ -1,3 +1,657 @@
 ===== TEST LOG START =====
 
-==== START Test #1: Scenario_002_GroundBall_0001_Commitment ====
+==== START Test #1: Scenario_038_01_HeaderAtGoal_No_rush_save_roll_2_goal ====
+Starting Header at Goal branch: No rush save roll 2 goal
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 2
+✅ PASS: PlayerToken 'Yaneva' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'No rush save roll 2 goal' should credit the loose-ball goal to Yaneva. | Expected: 8. Yaneva (PlayerToken) | Actual: 8. Yaneva (PlayerToken)
+✅ PASS: Header at Goal branch 'No rush save roll 2 goal' should resolve as a right-side goal. | Expected: 1 | Actual: 1
+✅ PASS: PlayerToken 'Kuzmic' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'No rush save roll 2 goal' should reset Home attackers to the left half after scoring at the right goal. | Expected: x < 0 | Actual: (-4, 0, 4)
+✅ PASS: Header at Goal branch 'No rush save roll 2 goal' should reset Away defenders to the right half after conceding at the right goal. | Expected: x > 0 | Actual: (16, 0, 0)
+
+✅ Header at Goal No rush save roll 2 goal - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #1: Scenario_038_01_HeaderAtGoal_No_rush_save_roll_2_goal [PASSED] ====
+
+==== START Test #2: Scenario_038_02_HeaderAtGoal_No_rush_save_tie_direction_5_distance_5_goal ====
+Starting Header at Goal branch: No rush save tie direction 5 distance 5 goal
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 4
+Rigging loose-ball direction roll to 5
+Rigging loose-ball distance roll to 5
+✅ PASS: PlayerToken 'Yaneva' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'No rush save tie direction 5 distance 5 goal' should credit the loose-ball goal to Yaneva. | Expected: 8. Yaneva (PlayerToken) | Actual: 8. Yaneva (PlayerToken)
+✅ PASS: Header at Goal branch 'No rush save tie direction 5 distance 5 goal' should resolve as a right-side goal. | Expected: 1 | Actual: 1
+✅ PASS: PlayerToken 'Kuzmic' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'No rush save tie direction 5 distance 5 goal' should reset Home attackers to the left half after scoring at the right goal. | Expected: x < 0 | Actual: (-4, 0, 4)
+✅ PASS: Header at Goal branch 'No rush save tie direction 5 distance 5 goal' should reset Away defenders to the right half after conceding at the right goal. | Expected: x > 0 | Actual: (16, 0, 0)
+
+✅ Header at Goal No rush save tie direction 5 distance 5 goal - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #2: Scenario_038_02_HeaderAtGoal_No_rush_save_tie_direction_5_distance_5_goal [PASSED] ====
+
+==== START Test #3: Scenario_038_03_HeaderAtGoal_No_rush_save_tie_direction_6_distance_5_goal ====
+Starting Header at Goal branch: No rush save tie direction 6 distance 5 goal
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 4
+Rigging loose-ball direction roll to 6
+Rigging loose-ball distance roll to 5
+✅ PASS: PlayerToken 'Yaneva' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'No rush save tie direction 6 distance 5 goal' should credit the loose-ball goal to Yaneva. | Expected: 8. Yaneva (PlayerToken) | Actual: 8. Yaneva (PlayerToken)
+✅ PASS: Header at Goal branch 'No rush save tie direction 6 distance 5 goal' should resolve as a right-side goal. | Expected: 1 | Actual: 1
+✅ PASS: PlayerToken 'Kuzmic' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'No rush save tie direction 6 distance 5 goal' should reset Home attackers to the left half after scoring at the right goal. | Expected: x < 0 | Actual: (-4, 0, 4)
+✅ PASS: Header at Goal branch 'No rush save tie direction 6 distance 5 goal' should reset Away defenders to the right half after conceding at the right goal. | Expected: x > 0 | Actual: (16, 0, 0)
+
+✅ Header at Goal No rush save tie direction 6 distance 5 goal - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #3: Scenario_038_03_HeaderAtGoal_No_rush_save_tie_direction_6_distance_5_goal [PASSED] ====
+
+==== START Test #4: Scenario_038_04_HeaderAtGoal_No_rush_save_handling_spill_direction_5_corner_north ====
+Starting Header at Goal branch: No rush save handling spill direction 5 corner north
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 6
+Rigging Kuzmic handling roll to 6
+Rigging loose-ball direction roll to 5
+✅ PASS: Header at Goal branch 'No rush save handling spill direction 5 corner north' expected ball hex should exist. | Expected: True | Actual: (18, 12)
+✅ PASS: Header at Goal branch 'No rush save handling spill direction 5 corner north' should place the ball on the expected hex. | Expected: HexCell [18, 12] (HexCell) | Actual: HexCell [18, 12] (HexCell)
+
+✅ Header at Goal No rush save handling spill direction 5 corner north - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #4: Scenario_038_04_HeaderAtGoal_No_rush_save_handling_spill_direction_5_corner_north [PASSED] ====
+
+==== START Test #5: Scenario_038_05_HeaderAtGoal_No_rush_save_handling_spill_direction_1_corner_south ====
+Starting Header at Goal branch: No rush save handling spill direction 1 corner south
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 6
+Rigging Kuzmic handling roll to 6
+Rigging loose-ball direction roll to 1
+✅ PASS: Header at Goal branch 'No rush save handling spill direction 1 corner south' expected ball hex should exist. | Expected: True | Actual: (18, -12)
+✅ PASS: Header at Goal branch 'No rush save handling spill direction 1 corner south' should place the ball on the expected hex. | Expected: HexCell [18, -12] (HexCell) | Actual: HexCell [18, -12] (HexCell)
+
+✅ Header at Goal No rush save handling spill direction 1 corner south - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #5: Scenario_038_05_HeaderAtGoal_No_rush_save_handling_spill_direction_1_corner_south [PASSED] ====
+
+==== START Test #6: Scenario_038_06_HeaderAtGoal_No_rush_save_handling_spill_direction_2_distance_1_Kuzmic_misses_movement ====
+Starting Header at Goal branch: No rush save handling spill direction 2 distance 1 Kuzmic misses movement
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 6
+Rigging Kuzmic handling roll to 6
+Rigging loose-ball direction roll to 2
+Rigging loose-ball distance roll to 1
+✅ PASS: Expected Kuzmic to be the next loose-ball interceptor. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Kuzmic loose-ball interception roll to 2
+
+✅ Header at Goal No rush save handling spill direction 2 distance 1 Kuzmic misses movement - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #6: Scenario_038_06_HeaderAtGoal_No_rush_save_handling_spill_direction_2_distance_1_Kuzmic_misses_movement [PASSED] ====
+
+==== START Test #7: Scenario_038_07_HeaderAtGoal_No_rush_save_handling_hold ====
+Starting Header at Goal branch: No rush save handling hold
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Pressing X - Forfeit defending GK rush
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+Rigging Kuzmic header save roll to 6
+Rigging Kuzmic handling roll to 1
+✅ PASS: Header at Goal branch 'No rush save handling hold' expected ball hex should exist. | Expected: True | Actual: (16, 0)
+✅ PASS: Header at Goal branch 'No rush save handling hold' should place the ball on the expected hex. | Expected: HexCell [16, 0] (HexCell) | Actual: HexCell [16, 0] (HexCell)
+
+✅ Header at Goal No rush save handling hold - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #7: Scenario_038_07_HeaderAtGoal_No_rush_save_handling_hold [PASSED] ====
+
+==== START Test #8: Scenario_038_08_HeaderAtGoal_Rush_aerial_6_GK_wins_challenge_save_and_hold_no_handling ====
+Starting Header at Goal branch: Rush aerial 6 GK wins challenge save and hold no handling
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Clicking (15, 2) - Rush defending GK
+INPUT click -> hex: HexCell [15, 2] @ (15, 0, 2), token: None
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+✅ PASS: Header at Goal should roll with Kuzmic. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Header at Goal roll for Kuzmic to 6
+✅ PASS: Header at Goal branch 'Rush aerial 6 GK wins challenge save and hold no handling' expected ball hex should exist. | Expected: True | Actual: (15, 2)
+✅ PASS: Header at Goal branch 'Rush aerial 6 GK wins challenge save and hold no handling' should place the ball on the expected hex. | Expected: HexCell [15, 2] (HexCell) | Actual: HexCell [15, 2] (HexCell)
+
+✅ Header at Goal Rush aerial 6 GK wins challenge save and hold no handling - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #8: Scenario_038_08_HeaderAtGoal_Rush_aerial_6_GK_wins_challenge_save_and_hold_no_handling [PASSED] ====
+
+==== START Test #9: Scenario_038_09_HeaderAtGoal_Rush_aerial_5_direction_6_distance_6_goal ====
+Starting Header at Goal branch: Rush aerial 5 direction 6 distance 6 goal
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Clicking (15, 2) - Rush defending GK
+INPUT click -> hex: HexCell [15, 2] @ (15, 0, 2), token: None
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+✅ PASS: Header at Goal should roll with Kuzmic. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Header at Goal roll for Kuzmic to 5
+Rigging loose-ball direction roll to 6
+Rigging loose-ball distance roll to 6
+✅ PASS: PlayerToken 'Yaneva' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 6 distance 6 goal' should credit the loose-ball goal to Yaneva. | Expected: 8. Yaneva (PlayerToken) | Actual: 8. Yaneva (PlayerToken)
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 6 distance 6 goal' should resolve as a right-side goal. | Expected: 1 | Actual: 1
+✅ PASS: PlayerToken 'Kuzmic' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 6 distance 6 goal' should reset Home attackers to the left half after scoring at the right goal. | Expected: x < 0 | Actual: (-4, 0, 4)
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 6 distance 6 goal' should reset Away defenders to the right half after conceding at the right goal. | Expected: x > 0 | Actual: (16, 0, 0)
+
+✅ Header at Goal Rush aerial 5 direction 6 distance 6 goal - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #9: Scenario_038_09_HeaderAtGoal_Rush_aerial_5_direction_6_distance_6_goal [PASSED] ====
+
+==== START Test #10: Scenario_038_10_HeaderAtGoal_Rush_aerial_5_direction_5_distance_6_corner_north ====
+Starting Header at Goal branch: Rush aerial 5 direction 5 distance 6 corner north
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Clicking (15, 2) - Rush defending GK
+INPUT click -> hex: HexCell [15, 2] @ (15, 0, 2), token: None
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+✅ PASS: Header at Goal should roll with Kuzmic. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Header at Goal roll for Kuzmic to 5
+Rigging loose-ball direction roll to 5
+Rigging loose-ball distance roll to 6
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 5 distance 6 corner north' expected ball hex should exist. | Expected: True | Actual: (18, 12)
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 5 distance 6 corner north' should place the ball on the expected hex. | Expected: HexCell [18, 12] (HexCell) | Actual: HexCell [18, 12] (HexCell)
+
+✅ Header at Goal Rush aerial 5 direction 5 distance 6 corner north - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #10: Scenario_038_10_HeaderAtGoal_Rush_aerial_5_direction_5_distance_6_corner_north [PASSED] ====
+
+==== START Test #11: Scenario_038_11_HeaderAtGoal_Rush_aerial_5_direction_2_distance_1_movement_no_Kuzmic_interception ====
+Starting Header at Goal branch: Rush aerial 5 direction 2 distance 1 movement no Kuzmic interception
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Clicking (15, 2) - Rush defending GK
+INPUT click -> hex: HexCell [15, 2] @ (15, 0, 2), token: None
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+✅ PASS: Header at Goal should roll with Kuzmic. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Header at Goal roll for Kuzmic to 5
+Rigging loose-ball direction roll to 2
+Rigging loose-ball distance roll to 1
+
+✅ Header at Goal Rush aerial 5 direction 2 distance 1 movement no Kuzmic interception - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #11: Scenario_038_11_HeaderAtGoal_Rush_aerial_5_direction_2_distance_1_movement_no_Kuzmic_interception [PASSED] ====
+
+==== START Test #12: Scenario_038_12_HeaderAtGoal_Rush_aerial_5_direction_2_distance_2_movement ====
+Starting Header at Goal branch: Rush aerial 5 direction 2 distance 2 movement
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Clicking (15, 2) - Rush defending GK
+INPUT click -> hex: HexCell [15, 2] @ (15, 0, 2), token: None
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+✅ PASS: Header at Goal should roll with Kuzmic. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Header at Goal roll for Kuzmic to 5
+Rigging loose-ball direction roll to 2
+Rigging loose-ball distance roll to 2
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 2 distance 2 movement' expected ball hex should exist. | Expected: True | Actual: (12, 1)
+✅ PASS: Header at Goal branch 'Rush aerial 5 direction 2 distance 2 movement' should place the ball on the expected hex. | Expected: HexCell [12, 1] (HexCell) | Actual: HexCell [12, 1] (HexCell)
+
+✅ Header at Goal Rush aerial 5 direction 2 distance 2 movement - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #12: Scenario_038_12_HeaderAtGoal_Rush_aerial_5_direction_2_distance_2_movement [PASSED] ====
+
+==== START Test #13: Scenario_038_13_HeaderAtGoal_Rush_aerial_4_goal ====
+Starting Header at Goal branch: Rush aerial 4 goal
+Setting difficulty to 2
+Setting High Pass minimum distance to 6
+INPUT key -> Space | Consumed: True
+Pressing Space
+✅ PASS: Game should be in KickoffBlown after kickoff. | Expected: KickoffBlown | Actual: KickoffBlown
+✅ PASS: High Pass should be available in the kickoff test harness.
+Pressing C - Start scripted High Pass
+INPUT key -> C | Consumed: True
+✅ PASS: Scripted High Pass should activate after pressing C.
+Clicking (13, 1) - Select scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+✅ PASS: Scripted High Pass should select (13,1). | Expected: HexCell [13, 1] (HexCell) | Actual: HexCell [13, 1] (HexCell)
+Clicking (13, 1) again - Confirm scripted High Pass target
+INPUT click -> hex: HexCell [13, 1] @ (13, 0, 1), token: None
+Clicking (18, 0) - Select scripted defending token
+INPUT click -> hex: HexCell [18, 0] @ (18, 0, 0), token: 11. Poulsen
+Clicking (18, 3) - Move scripted defending token
+INPUT click -> hex: HexCell [18, 3] @ (18, 0, 3), token: None
+Rigging scripted High Pass accuracy roll to 6
+Clicking (16, 1) - Move defending GK for box entry
+INPUT click -> hex: HexCell [16, 1] @ (16, 0, 1), token: None
+Clicking (15, 2) - Rush defending GK
+INPUT click -> hex: HexCell [15, 2] @ (15, 0, 2), token: None
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+Pressing X - Forfeit current Final Third
+INPUT key -> X | Consumed: True
+✅ PASS: Final Third should no longer be active after forfeiting all pending Long Ball F3 moves.
+Clicking (19, -2) - Declare headed shot target
+INPUT click -> hex: HexCell [19, -2] @ (19, 0, -2), token: None
+Pressing A - Defense challenges with all eligible defenders
+INPUT key -> A | Consumed: True
+✅ PASS: Header at Goal should roll with Yaneva. | Expected: Yaneva | Actual: Yaneva
+Rigging Header at Goal roll for Yaneva to 6
+✅ PASS: Header at Goal should roll with Soares. | Expected: Soares | Actual: Soares
+Rigging Header at Goal roll for Soares to 4
+✅ PASS: Header at Goal should roll with Kuzmic. | Expected: Kuzmic | Actual: Kuzmic
+Rigging Header at Goal roll for Kuzmic to 4
+✅ PASS: PlayerToken 'Yaneva' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'Rush aerial 4 goal' should credit the loose-ball goal to Yaneva. | Expected: 8. Yaneva (PlayerToken) | Actual: 8. Yaneva (PlayerToken)
+✅ PASS: Header at Goal branch 'Rush aerial 4 goal' should resolve as a right-side goal. | Expected: 1 | Actual: 1
+✅ PASS: PlayerToken 'Kuzmic' should exist for the stats preview test.
+✅ PASS: Header at Goal branch 'Rush aerial 4 goal' should reset Home attackers to the left half after scoring at the right goal. | Expected: x < 0 | Actual: (-4, 0, 4)
+✅ PASS: Header at Goal branch 'Rush aerial 4 goal' should reset Away defenders to the right half after conceding at the right goal. | Expected: x > 0 | Actual: (16, 0, 0)
+
+✅ Header at Goal Rush aerial 4 goal - TEST PASSED COMPLETELY 🎉
+
+
+==== END Test #13: Scenario_038_13_HeaderAtGoal_Rush_aerial_4_goal [PASSED] ====
+🎉 ALL TESTS PASSED SUCCESSFULLY!

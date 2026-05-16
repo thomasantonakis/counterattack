@@ -1396,6 +1396,7 @@ public class MatchManager : MonoBehaviour
         shotManager.isAvailable = false;
         isFTPAvailable = false;
         ResetPendingGroundBallOffer();
+        ApplyPendingGroundBallDistance();
         RefreshAerialTargetPrecomputations();
     }
 

@@ -66,6 +66,11 @@ public class GoalKeeperManager : MonoBehaviour
             return false;
         }
 
+        return ShouldGKMoveForPenaltyBox(targetHex.isInPenaltyBox, targetHex);
+    }
+
+    public bool ShouldGKMoveForPenaltyBox(int penaltyBoxValue, HexCell referenceHex = null)
+    {
         PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (passer == null)
         {
@@ -77,9 +82,11 @@ public class GoalKeeperManager : MonoBehaviour
         bool isAttacker = passer.isAttacker;
         MatchManager.TeamAttackingDirection attackingDirection = isHomeTeam ? MatchManager.Instance.homeTeamDirection : MatchManager.Instance.awayTeamDirection;
 
-        int penaltyBoxValue = targetHex.isInPenaltyBox;
-
-        if (penaltyBoxValue == 0) return false; // Not in a penalty box
+        if (penaltyBoxValue == 0)
+        {
+            Debug.Log($"GK box move not offered: reference hex {referenceHex?.coordinates.ToString() ?? "<none>"} is not in a penalty box.");
+            return false;
+        }
 
         bool isTargetPenaltyBoxOfDefenders = 
             (attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight && penaltyBoxValue == 1) || 
@@ -87,12 +94,14 @@ public class GoalKeeperManager : MonoBehaviour
 
         if (isAttacker && isTargetPenaltyBoxOfDefenders)
         {
-            Debug.Log("⚽ Ball has entered the opponent's penalty box! 🧤 GK gets a free move.");
+            Debug.Log($"⚽ Ball has entered the opponent's penalty box ({penaltyBoxValue}) at {referenceHex?.coordinates.ToString() ?? "<boundary>"}. 🧤 GK gets a free move.");
             isActivated = true;
             return true;
         }
 
-
+        Debug.Log(
+            $"GK box move not offered: passer={passer.name}, passerIsAttacker={isAttacker}, " +
+            $"attackingDirection={attackingDirection}, penaltyBox={penaltyBoxValue}, referenceHex={referenceHex?.coordinates.ToString() ?? "<none>"}.");
         return false;
     }
 

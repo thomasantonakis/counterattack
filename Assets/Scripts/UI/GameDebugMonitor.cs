@@ -144,6 +144,12 @@ public class GameDebugMonitor : MonoBehaviour
 
     private void UpdateDebugDisplay()
     {
+        if (MatchManager.Instance == null)
+        {
+            debugText.text = "";
+            return;
+        }
+
         builder.Clear();
         builder.AppendLine("<b>GAME STATUS</b>");
 
