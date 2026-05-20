@@ -375,7 +375,16 @@ public class FinalThirdManager : MonoBehaviour
         isActivated = false;
         thisIsTheSecond = false;
         MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
-        string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
+        PlayerToken gkToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        if (gkToken == null)
+        {
+            Debug.LogError("Cannot take a Goal Kick because there is no goalkeeper on the ball hex.");
+            return;
+        }
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(gkToken);
+        MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(gkToken);
+        string gkWithBall = gkToken.name;
         Debug.Log($"{gkWithBall} will take a Gk High pass, Please click on any hex except from the oposite Final Third to target.");
     }
 

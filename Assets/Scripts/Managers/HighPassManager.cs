@@ -695,6 +695,16 @@ public class HighPassManager : MonoBehaviour
         // Step 5: Check if the target hex is occupied by an attacker
         if (targetHex.isAttackOccupied)
         {
+            PlayerToken targetToken = targetHex.GetOccupyingToken();
+            if (targetToken != null
+                && MatchManager.Instance != null
+                && !MatchManager.Instance.CanTokenCollectHangingPass(targetToken))
+            {
+                if (logWarnings) Debug.LogWarning($"{targetToken.name} cannot be the next player to touch the ball after taking the set piece.");
+                ClearValidatedHighPassAttackers(updateEligibleAttackers);
+                return false;
+            }
+
             // Store these attackers for movement phase
             SetValidatedHighPassAttackers(attackersWithinRange, updateEligibleAttackers);
             return true;  // If occupied by an attacker, the target is valid
@@ -750,6 +760,11 @@ public class HighPassManager : MonoBehaviour
 
             if (attackerToken != null)
             {
+                if (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(attackerToken))
+                {
+                    continue;
+                }
+
                 // Calculate reachable hexes for this attacker
                 reachableHexes = HexGridUtils.GetReachableHexes(hexGrid, attackerHex, range).Item1;
 

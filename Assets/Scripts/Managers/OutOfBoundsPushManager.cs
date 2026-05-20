@@ -63,6 +63,40 @@ public class OutOfBoundsPushManager : MonoBehaviour
         ball?.AdjustBallHeightBasedOnOccupancy();
     }
 
+    public IEnumerator ResolveAttackerOnRestartSpotPush(HexCell restartHex)
+    {
+        if (restartHex == null)
+        {
+            Debug.LogError("Attacker restart push failed: restart hex is null.");
+            yield break;
+        }
+
+        EnsureDependencies();
+
+        PlayerToken occupyingToken = restartHex.GetOccupyingToken();
+        if (occupyingToken == null)
+        {
+            yield break;
+        }
+
+        if (!occupyingToken.isAttacker)
+        {
+            Debug.Log($"Attacker restart push skipped: {restartHex.coordinates} is not occupied by an attacker.");
+            yield break;
+        }
+
+        HexCell destinationHex = GetAttackerRestartPushHex(occupyingToken, restartHex);
+        if (destinationHex == null)
+        {
+            Debug.LogError($"Attacker restart push failed: no legal destination found for {occupyingToken.name} on {restartHex.coordinates}.");
+            yield break;
+        }
+
+        Debug.Log($"Attacker restart push: moving {occupyingToken.name} from {restartHex.coordinates} to {destinationHex.coordinates}.");
+        yield return StartCoroutine(MoveTokenDirect(occupyingToken, destinationHex));
+        ball?.AdjustBallHeightBasedOnOccupancy();
+    }
+
     public HexCell GetDefensiveGoalHex(PlayerToken token)
     {
         if (token == null)
@@ -92,6 +126,12 @@ public class OutOfBoundsPushManager : MonoBehaviour
     {
         HexCell defensiveGoalHex = GetDefensiveGoalHex(token);
         return GetOutOfBoundsPushHex(tokenHex, defensiveGoalHex);
+    }
+
+    public HexCell GetAttackerRestartPushHex(PlayerToken token, HexCell tokenHex)
+    {
+        HexCell attackingGoalHex = GetAttackingGoalHex(token);
+        return GetOutOfBoundsPushHex(tokenHex, attackingGoalHex);
     }
 
     public HexCell GetOutOfBoundsPushHex(HexCell tokenHex, HexCell defensiveGoalHex)
@@ -152,13 +192,38 @@ public class OutOfBoundsPushManager : MonoBehaviour
     {
         if (hexGrid == null)
         {
-            hexGrid = UnityEngine.Object.FindFirstObjectByType<HexGrid>();
+            hexGrid = FindAnyObjectByType<HexGrid>();
         }
 
         if (ball == null)
         {
-            ball = UnityEngine.Object.FindFirstObjectByType<Ball>();
+            ball = FindAnyObjectByType<Ball>();
         }
+    }
+
+    private HexCell GetAttackingGoalHex(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return null;
+        }
+
+        EnsureDependencies();
+
+        MatchManager.TeamAttackingDirection attackingDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        if (MatchManager.Instance != null)
+        {
+            attackingDirection = token.isHomeTeam
+                ? MatchManager.Instance.homeTeamDirection
+                : MatchManager.Instance.awayTeamDirection;
+        }
+        else if (!token.isHomeTeam)
+        {
+            attackingDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        }
+
+        int attackingGoalX = attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight ? 18 : -18;
+        return hexGrid != null ? hexGrid.GetHexCellAt(new Vector3Int(attackingGoalX, 0, 0)) : null;
     }
 
     private bool IsLegalDestination(HexCell cell)

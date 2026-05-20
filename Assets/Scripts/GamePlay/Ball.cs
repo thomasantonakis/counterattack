@@ -140,6 +140,7 @@ public class Ball : MonoBehaviour
         currentCell = cell;  // Set the current hex to the given cell
         // transform.position = cell.GetHexCenter();  // Place at the center of the hex
         AdjustBallHeightBasedOnOccupancy();
+        goalKeeperManager?.NotifyBallPosition(currentCell);
     }
 
     public IEnumerator MoveToCell(HexCell newHex, int? roll = null, bool allowGKBoxMove = true, bool stopAfterGKBoxMove = false)
@@ -203,6 +204,10 @@ public class Ball : MonoBehaviour
                     isMoving = true; // Resume movement
                 }
             }
+            else if (previousPenaltyBoxStatus != 0 && currentPenaltyBoxStatus == 0)
+            {
+                goalKeeperManager?.NotifyBallPosition(null);
+            }
             // Update previous status
             previousPenaltyBoxStatus = currentPenaltyBoxStatus;
             // Check if the ball has reached the target
@@ -215,7 +220,26 @@ public class Ball : MonoBehaviour
             yield return null;  // Wait for the next frame
         }
         currentCell = targetCell;  // Update current cell
+        goalKeeperManager?.NotifyBallPosition(currentCell);
         targetCell = null;         // Clear target cell
+    }
+
+    public float CalculateMoveDuration(HexCell newHex, int? roll = null)
+    {
+        if (newHex == null)
+        {
+            return 0f;
+        }
+
+        float baseSpeed = 3.0f;
+        float speedMultiplier = 3.5f;
+        float adjustedSpeed = roll.HasValue ? baseSpeed + (roll.Value * speedMultiplier) : baseSpeed;
+        if (adjustedSpeed <= 0f)
+        {
+            return 0f;
+        }
+
+        return Vector3.Distance(transform.position, GetVisualPositionForCell(newHex)) / adjustedSpeed;
     }
 
     public HexCell GetCurrentHex()
@@ -225,7 +249,9 @@ public class Ball : MonoBehaviour
     
     public HexCell SetCurrentHex(HexCell newHex)
     {
-        return currentCell = newHex;
+        currentCell = newHex;
+        goalKeeperManager?.NotifyBallPosition(currentCell);
+        return currentCell;
     }
 
     private void OnMouseDown()

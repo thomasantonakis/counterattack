@@ -53,6 +53,11 @@ public class MatchManager : MonoBehaviour
         FreeKickDefMovement3,
         FreeKickDefineKicker,
         FreeKickExecution,
+        PenaltyKickerSelect,
+        PenaltyDef1,
+        PenaltyAtt,
+        PenaltyDef2,
+        PenaltyExecution,
         QuickThrow,
         ActivateFinalThirdsAfterSave,
         GoalKick,
@@ -595,6 +600,9 @@ public class MatchManager : MonoBehaviour
                         case "freeKick":
                             logEntry += $"takes a Free Kick shot!";
                             break;
+                        case "penalty":
+                            logEntry += $"takes a Penalty Kick!";
+                            break;
                         case "shot0":
                             logEntry += $"takes a SHOT! from outside the box";
                             break;
@@ -644,13 +652,15 @@ public class MatchManager : MonoBehaviour
                     logEntry += "scores a goal! ⚽";
                     playerStats.goals += value;
                     teamStats.totalGoals += value;
-                    PlayerToken assistToken = MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose;
+                    bool isPenaltyGoal = MatchManager.Instance.ConsumeNextGoalIsPenalty();
+                    bool suppressAssist = MatchManager.Instance.ConsumeSuppressAssistForNextGoal() || isPenaltyGoal;
+                    PlayerToken assistToken = suppressAssist ? null : MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose;
                     MatchManager.Instance.AddGoal(
                         token.playerName
                         , token.isHomeTeam
                         // , GetCurrentMinute()
                         , 10
-                        , false
+                        , isPenaltyGoal
                         , assistToken?.playerName
                     );
                     if (
@@ -946,6 +956,7 @@ public class MatchManager : MonoBehaviour
     public FirstTimePassManager firstTimePassManager;
     public MovementPhaseManager movementPhaseManager;
     public ShotManager shotManager;
+    public PenaltyKickManager penaltyKickManager;
     public PlayerTokenManager playerTokenManager;
     public MatchStatsUI matchStatsUI;
     public GameData gameData;
@@ -955,7 +966,10 @@ public class MatchManager : MonoBehaviour
     public PlayerToken PreviousTokenToTouchTheBallOnPurpose;
     public string hangingPassType;
     public PlayerToken hangingPassExcludedCollector;
+    public PlayerToken setPieceTakerExcludedFromNextTouch;
     public bool clearPreviousOnNextBallCollection;
+    private bool nextGoalIsPenalty;
+    private bool suppressAssistForNextGoal;
     public int difficulty_level;
     public int refereeLeniency;
     public bool isFTPAvailable = false;
@@ -1021,6 +1035,7 @@ public class MatchManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            EnsurePenaltyKickManager();
             // DontDestroyOnLoad(gameObject); // Keep MatchManager persistent
         }
         else
@@ -1029,6 +1044,48 @@ public class MatchManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
+
+    public PenaltyKickManager EnsurePenaltyKickManager()
+    {
+        if (penaltyKickManager == null)
+        {
+            penaltyKickManager = FindAnyObjectByType<PenaltyKickManager>();
+            Debug.Log($"PenaltyKickManager found in scene: {penaltyKickManager != null}");
+        }
+
+        if (penaltyKickManager == null)
+        {
+            penaltyKickManager = gameObject.AddComponent<PenaltyKickManager>();
+        }
+
+        penaltyKickManager.Configure(this, hexGrid, ball, movementPhaseManager, shotManager);
+        if (movementPhaseManager != null)
+        {
+            movementPhaseManager.penaltyKickManager = penaltyKickManager;
+        }
+
+        return penaltyKickManager;
+    }
+
+    public void MarkNextGoalAsPenalty(bool suppressAssist = true)
+    {
+        nextGoalIsPenalty = true;
+        suppressAssistForNextGoal = suppressAssist;
+    }
+
+    private bool ConsumeNextGoalIsPenalty()
+    {
+        bool value = nextGoalIsPenalty;
+        nextGoalIsPenalty = false;
+        return value;
+    }
+
+    private bool ConsumeSuppressAssistForNextGoal()
+    {
+        bool value = suppressAssistForNextGoal;
+        suppressAssistForNextGoal = false;
+        return value;
     }
 
     IEnumerator Start()
@@ -1057,6 +1114,7 @@ public class MatchManager : MonoBehaviour
         }
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
+        EnsurePenaltyKickManager();
         Debug.Log("⚠️ MatchManager Start() - Checking gameData...");
         if (gameData == null)
         {
@@ -1273,9 +1331,33 @@ public class MatchManager : MonoBehaviour
         hangingPassExcludedCollector = null;
     }
 
+    public void MarkSetPieceTakerForNextTouchExclusion(PlayerToken taker)
+    {
+        setPieceTakerExcludedFromNextTouch = taker;
+        if (taker != null)
+        {
+            Debug.Log($"{taker.name} took the set piece and cannot be the next player to touch the ball.");
+        }
+    }
+
+    public void ClearSetPieceTakerNextTouchExclusion(PlayerToken tokenWhoTouched = null)
+    {
+        if (setPieceTakerExcludedFromNextTouch == null)
+        {
+            return;
+        }
+
+        if (tokenWhoTouched == null || tokenWhoTouched != setPieceTakerExcludedFromNextTouch)
+        {
+            setPieceTakerExcludedFromNextTouch = null;
+        }
+    }
+
     public bool CanTokenCollectHangingPass(PlayerToken token)
     {
-        return token != null && (string.IsNullOrEmpty(hangingPassType) || hangingPassExcludedCollector != token);
+        return token != null
+            && setPieceTakerExcludedFromNextTouch != token
+            && (string.IsNullOrEmpty(hangingPassType) || hangingPassExcludedCollector != token);
     }
 
     public void MarkNextBallCollectionToClearPrevious()
@@ -1293,6 +1375,7 @@ public class MatchManager : MonoBehaviour
     {
         LastTokenToTouchTheBallOnPurpose = null;
         PreviousTokenToTouchTheBallOnPurpose = null;
+        ClearSetPieceTakerNextTouchExclusion();
     }
 
     public void SetLastTokenFromLooseBall(PlayerToken inputToken)
@@ -1318,6 +1401,7 @@ public class MatchManager : MonoBehaviour
     public void TriggerStandardPass()
     {
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
+        ClearPendingActionPreviews();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
@@ -1331,6 +1415,7 @@ public class MatchManager : MonoBehaviour
     public void TriggerMovement()
     {
         // All these resets are in case it is not comitted
+        ClearPendingActionPreviews();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
@@ -1347,6 +1432,7 @@ public class MatchManager : MonoBehaviour
     public void TriggerHighPass(bool isCornerKick = false)
     {
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
+        ClearPendingActionPreviews();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
@@ -1360,6 +1446,7 @@ public class MatchManager : MonoBehaviour
     public void TriggerLongPass()
     {
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
+        ClearPendingActionPreviews();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
@@ -1372,6 +1459,7 @@ public class MatchManager : MonoBehaviour
     public void TriggerFTP()
     {
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
+        ClearPendingActionPreviews();
         movementPhaseManager.ResetMovementPhase();
         groundBallManager.CleanUpPass();
         firstTimePassManager.CleanUpFTP();
@@ -1384,6 +1472,24 @@ public class MatchManager : MonoBehaviour
     private bool ShouldPreserveAerialTargetPrecomputeDuringPreview()
     {
         return difficulty_level == 1;
+    }
+
+    private void ClearPendingActionPreviews()
+    {
+        if (shotManager != null)
+        {
+            shotManager.CancelShotCommitPreview();
+        }
+    }
+
+    public void ClearNonShotActionPreviews()
+    {
+        movementPhaseManager?.ResetMovementPhase();
+        groundBallManager?.CleanUpPass();
+        firstTimePassManager?.CleanUpFTP();
+        highPassManager?.CleanUpHighPass();
+        longBallManager?.CleanUpLongBall();
+        RefreshAvailableActions();
     }
 
     public void CommitToAction()
@@ -2014,13 +2120,24 @@ public class MatchManager : MonoBehaviour
             return;
         }
 
+        if (setPieceTakerExcludedFromNextTouch == inputToken)
+        {
+            Debug.LogWarning($"{inputToken.name} cannot be the next player to touch the ball after taking the set piece.");
+            return;
+        }
+
         // If the input token is already the last token, do nothing
-        if (LastTokenToTouchTheBallOnPurpose == inputToken) return;
+        if (LastTokenToTouchTheBallOnPurpose == inputToken)
+        {
+            ClearSetPieceTakerNextTouchExclusion(inputToken);
+            return;
+        }
 
         // If there's no last token, simply set it
         if (LastTokenToTouchTheBallOnPurpose == null)
         {
             LastTokenToTouchTheBallOnPurpose = inputToken;
+            ClearSetPieceTakerNextTouchExclusion(inputToken);
             return;
         }
 
@@ -2033,11 +2150,13 @@ public class MatchManager : MonoBehaviour
             PreviousTokenToTouchTheBallOnPurpose = LastTokenToTouchTheBallOnPurpose;
             LastTokenToTouchTheBallOnPurpose = inputToken;
             Debug.Log($"Set LastTokenToTouchTheBallOnPurpose to {LastTokenToTouchTheBallOnPurpose.playerName}");
+            ClearSetPieceTakerNextTouchExclusion(inputToken);
         }
         else // New token is from the opposite team
         {
             PreviousTokenToTouchTheBallOnPurpose = null; // Reset previous token
             LastTokenToTouchTheBallOnPurpose = inputToken;
+            ClearSetPieceTakerNextTouchExclusion(inputToken);
         }
     }
 

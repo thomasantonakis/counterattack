@@ -19,13 +19,13 @@ namespace CounterAttack.Editor
         public static void RebuildPitchBoard()
         {
             var scene = EditorSceneManager.OpenScene(RoomScenePath, OpenSceneMode.Single);
-            HexGrid hexGrid = Object.FindFirstObjectByType<HexGrid>();
+            HexGrid hexGrid = Object.FindAnyObjectByType<HexGrid>();
             if (hexGrid == null)
             {
                 throw new System.InvalidOperationException("Room scene does not contain a HexGrid.");
             }
 
-            PitchLines pitchBoardVisuals = Object.FindFirstObjectByType<PitchLines>();
+            PitchLines pitchBoardVisuals = Object.FindAnyObjectByType<PitchLines>();
             if (pitchBoardVisuals == null)
             {
                 GameObject boardRoot = new GameObject("PitchBoardVisuals");
@@ -62,7 +62,7 @@ namespace CounterAttack.Editor
         public static void RebuildShootingPathAssets()
         {
             EditorSceneManager.OpenScene(RoomScenePath, OpenSceneMode.Single);
-            HexGrid hexGrid = Object.FindFirstObjectByType<HexGrid>();
+            HexGrid hexGrid = Object.FindAnyObjectByType<HexGrid>();
             if (hexGrid == null)
             {
                 throw new System.InvalidOperationException("Room scene does not contain a HexGrid.");

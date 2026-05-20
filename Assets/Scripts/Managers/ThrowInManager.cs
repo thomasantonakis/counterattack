@@ -13,6 +13,7 @@ public class ThrowInManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public HeaderManager headerManager;
     public FinalThirdManager finalThirdManager;
+    public OutOfBoundsPushManager outOfBoundsPushManager;
 
     [Header("Runtime Flags")]
     public bool isActivated = false;
@@ -27,11 +28,12 @@ public class ThrowInManager : MonoBehaviour
     [Header("Runtime Data")]
     public HexCell throwInHex;
     public PlayerToken selectedThrower;
+    public HexCell currentHeaderThrowTarget;
     public MatchManager.TeamInAttack awardedTeam;
     public int maxThrowDistance = 6;
-    public int maxHeaderLooseOffsetFromAttacker = 1;
 
     private const int DefaultGroundBallDistance = 11;
+    private const int ThrowInProtectedRadius = 2;
 
     private void OnEnable()
     {
@@ -95,21 +97,28 @@ public class ThrowInManager : MonoBehaviour
             return;
         }
 
-        if (isWaitingForGroundTarget && hex != null)
-        {
-            HandleThrowToFeet();
-            return;
-        }
-
         if (isWaitingForHeaderTarget && hex != null)
         {
             if (!IsValidHeaderThrowTarget(hex))
             {
-                Debug.Log($"Invalid throw-to-head target {hex.coordinates}. Choose a hex within 6 of thrower and close to an attacker.");
+                Debug.Log($"Invalid throw-to-head target {hex.coordinates}. Choose an attacker within 6 hexes of the throw-in taker.");
                 return;
             }
 
-            StartCoroutine(HandleThrowToHead(hex));
+            if (MatchManager.Instance.difficulty_level == 3 || currentHeaderThrowTarget == hex)
+            {
+                StartCoroutine(CommitThrowToHead(hex));
+                return;
+            }
+
+            currentHeaderThrowTarget = hex;
+            hexGrid.ClearHighlightedHexes();
+            currentHeaderThrowTarget.HighlightHex("passTargetCommitted");
+            if (!hexGrid.highlightedHexes.Contains(currentHeaderThrowTarget))
+            {
+                hexGrid.highlightedHexes.Add(currentHeaderThrowTarget);
+            }
+            Debug.Log($"Throw-to-head target selected: {hex.GetOccupyingToken()?.name ?? hex.name}. Click again to confirm, or choose another eligible attacker.");
             return;
         }
     }
@@ -131,7 +140,7 @@ public class ThrowInManager : MonoBehaviour
                 return;
             }
 
-            if (keyData.key == KeyCode.X)
+            if (keyData.key == KeyCode.T)
             {
                 keyData.isConsumed = true;
                 isWaitingForOptionalMovementDecision = false;
@@ -145,18 +154,35 @@ public class ThrowInManager : MonoBehaviour
             if (keyData.key == KeyCode.P)
             {
                 keyData.isConsumed = true;
-                isWaitingForThrowTypeSelection = false;
-                isWaitingForGroundTarget = true;
-                Debug.Log("Throw-in option selected: [P] to feet. Select target hex (up to 6).");
+                HandleThrowToFeet();
                 return;
             }
 
             if (keyData.key == KeyCode.C)
             {
+                List<HexCell> availableHeaderTargets = GetAvailableHeaderThrowTargets();
+                if (availableHeaderTargets.Count == 0)
+                {
+                    keyData.isConsumed = true;
+                    Debug.LogWarning("Throw-to-head is not available: no attacker is within 6 hexes of the throw-in taker.");
+                    return;
+                }
+
                 keyData.isConsumed = true;
                 isWaitingForThrowTypeSelection = false;
+                if (availableHeaderTargets.Count == 1)
+                {
+                    Debug.Log($"Throw-to-head auto-targeted: {availableHeaderTargets[0].GetOccupyingToken()?.name ?? availableHeaderTargets[0].name}.");
+                    StartCoroutine(CommitThrowToHead(availableHeaderTargets[0]));
+                    return;
+                }
+
                 isWaitingForHeaderTarget = true;
-                Debug.Log("Throw-in option selected: [C] to head. Select target hex (up to 6 and near attacker).");
+                currentHeaderThrowTarget = null;
+                HighlightHeaderThrowTargets(availableHeaderTargets);
+                Debug.Log(MatchManager.Instance.difficulty_level == 3
+                    ? "Throw-in option selected: [C] to head. Click an eligible attacker to commit."
+                    : "Throw-in option selected: [C] to head. Click an eligible attacker, then click again to confirm.");
                 return;
             }
         }
@@ -165,11 +191,19 @@ public class ThrowInManager : MonoBehaviour
     private IEnumerator HandleThrowerSelection(PlayerToken token)
     {
         selectedThrower = token;
+        yield return StartCoroutine(ResolveThrowInSpotOccupancy(selectedThrower));
         yield return StartCoroutine(MoveTokenToHex(selectedThrower, throwInHex));
         ball.PlaceAtCell(throwInHex);
+        MatchManager.Instance.ClearLastTokenChain();
         MatchManager.Instance.SetLastToken(selectedThrower);
+        MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(selectedThrower);
         isWaitingForTakerSelection = false;
         Debug.Log($"{selectedThrower.name} moved to throw-in hex at {throwInHex.coordinates}.");
+        finalThirdManager.TriggerFinalThirdPhase();
+        while (finalThirdManager.isActivated)
+        {
+            yield return null;
+        }
         StartCoroutine(RunMandatoryMovementPhaseThenPromptOptional());
     }
 
@@ -177,27 +211,31 @@ public class ThrowInManager : MonoBehaviour
     {
         isRunningMandatoryMovement = true;
         movementPhaseManager.ResetMovementPhase();
+        movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius, blockTackleWithoutMoving: true);
         movementPhaseManager.ActivateMovementPhase();
         movementPhaseManager.CommitToAction();
         while (movementPhaseManager.isActivated)
         {
             yield return null;
         }
+        movementPhaseManager.ClearThrowInRestrictions();
         isRunningMandatoryMovement = false;
         isWaitingForOptionalMovementDecision = true;
-        Debug.Log("Throw-in mandatory movement completed. Press [M] for one extra movement phase or [X] to throw now.");
+        Debug.Log("Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.");
     }
 
     private IEnumerator RunOptionalMovementPhaseThenThrow()
     {
         isRunningOptionalMovement = true;
         movementPhaseManager.ResetMovementPhase();
+        movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius);
         movementPhaseManager.ActivateMovementPhase();
         movementPhaseManager.CommitToAction();
         while (movementPhaseManager.isActivated)
         {
             yield return null;
         }
+        movementPhaseManager.ClearThrowInRestrictions();
         isRunningOptionalMovement = false;
         EnterThrowExecutionSelection();
     }
@@ -206,16 +244,20 @@ public class ThrowInManager : MonoBehaviour
     {
         isWaitingForThrowTypeSelection = true;
         MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
-        Debug.Log("Throw-in ready. Press [P] to throw to feet or [C] to throw to head.");
+        Debug.Log(GetAvailableHeaderThrowTargets().Count > 0
+            ? "Throw-in ready. Press [P] to throw to feet or [C] to throw to head."
+            : "Throw-in ready. Press [P] to throw to feet.");
     }
 
     private void HandleThrowToFeet()
     {
+        isWaitingForThrowTypeSelection = false;
         isWaitingForGroundTarget = false;
         groundBallManager.imposedDistance = maxThrowDistance;
         groundBallManager.ActivateGroundBall();
         MatchManager.Instance.CommitToAction();
         StartCoroutine(RestoreGroundBallDefaultDistanceWhenDone());
+        Debug.Log("Throw-in option selected: [P] to feet. Select target hex (up to 6).");
         ResetThrowInState();
     }
 
@@ -228,14 +270,41 @@ public class ThrowInManager : MonoBehaviour
         groundBallManager.imposedDistance = DefaultGroundBallDistance;
     }
 
-    private IEnumerator HandleThrowToHead(HexCell targetHex)
+    private IEnumerator CommitThrowToHead(HexCell targetHex)
     {
         isWaitingForHeaderTarget = false;
+        currentHeaderThrowTarget = targetHex;
+        MatchManager.Instance.CommitToAction();
         MatchManager.Instance.hangingPassType = "aerial";
         yield return StartCoroutine(ball.MoveToCell(targetHex));
         finalThirdManager.TriggerFinalThirdPhase();
         StartCoroutine(headerManager.FindEligibleHeaderTokens(targetHex));
         ResetThrowInState();
+    }
+
+    private IEnumerator ResolveThrowInSpotOccupancy(PlayerToken incomingThrower)
+    {
+        PlayerToken occupyingToken = throwInHex != null ? throwInHex.GetOccupyingToken() : null;
+        if (occupyingToken == null || occupyingToken == incomingThrower)
+        {
+            yield break;
+        }
+
+        EnsureOutOfBoundsPushManager();
+        if (outOfBoundsPushManager == null)
+        {
+            Debug.LogError("ThrowInManager cannot resolve occupied throw-in spot because OutOfBoundsPushManager is not linked.");
+            yield break;
+        }
+
+        if (occupyingToken.isAttacker)
+        {
+            yield return StartCoroutine(outOfBoundsPushManager.ResolveAttackerOnRestartSpotPush(throwInHex));
+        }
+        else
+        {
+            yield return StartCoroutine(outOfBoundsPushManager.ResolveOutOfBoundsPush(throwInHex));
+        }
     }
 
     private bool IsTokenEligibleThrower(PlayerToken token)
@@ -268,14 +337,39 @@ public class ThrowInManager : MonoBehaviour
             return false;
         }
 
-        List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, targetHex, maxHeaderLooseOffsetFromAttacker);
-        bool hasNearbyAwardedAttacker = nearbyHexes.Any(hex =>
-        {
-            PlayerToken token = hex.GetOccupyingToken();
-            return token != null && IsTokenEligibleThrower(token);
-        });
+        PlayerToken targetToken = targetHex.GetOccupyingToken();
+        return targetToken != null
+            && targetToken != selectedThrower
+            && targetToken.isAttacker
+            && IsTokenEligibleThrower(targetToken);
+    }
 
-        return hasNearbyAwardedAttacker;
+    private List<HexCell> GetAvailableHeaderThrowTargets()
+    {
+        if (selectedThrower == null || hexGrid == null || throwInHex == null)
+        {
+            return new List<HexCell>();
+        }
+
+        return HexGrid.GetHexesInRange(hexGrid, throwInHex, maxThrowDistance)
+            .Where(IsValidHeaderThrowTarget)
+            .OrderBy(hex => HexGridUtils.GetHexStepDistance(throwInHex, hex))
+            .ThenBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z)
+            .ToList();
+    }
+
+    private void HighlightHeaderThrowTargets(List<HexCell> targets)
+    {
+        hexGrid.ClearHighlightedHexes();
+        foreach (HexCell target in targets)
+        {
+            target.HighlightHex(target == currentHeaderThrowTarget ? "passTargetCommitted" : "passTarget");
+            if (!hexGrid.highlightedHexes.Contains(target))
+            {
+                hexGrid.highlightedHexes.Add(target);
+            }
+        }
     }
 
     private IEnumerator MoveTokenToHex(PlayerToken token, HexCell targetHex)
@@ -314,6 +408,16 @@ public class ThrowInManager : MonoBehaviour
         }
     }
 
+    private void EnsureOutOfBoundsPushManager()
+    {
+        if (outOfBoundsPushManager == null)
+        {
+            outOfBoundsPushManager = FindAnyObjectByType<OutOfBoundsPushManager>();
+        }
+
+        outOfBoundsPushManager?.Configure(hexGrid, ball);
+    }
+
     private void ResetThrowInState()
     {
         isActivated = false;
@@ -324,6 +428,7 @@ public class ThrowInManager : MonoBehaviour
         isWaitingForThrowTypeSelection = false;
         isWaitingForGroundTarget = false;
         isWaitingForHeaderTarget = false;
+        currentHeaderThrowTarget = null;
     }
 
     public string GetDebugStatus()
@@ -341,6 +446,7 @@ public class ThrowInManager : MonoBehaviour
         if (isWaitingForHeaderTarget) sb.Append("isWaitingForHeaderTarget, ");
         if (throwInHex != null) sb.Append($"throwInHex: {throwInHex.name}, ");
         if (selectedThrower != null) sb.Append($"selectedThrower: {selectedThrower.name}, ");
+        if (currentHeaderThrowTarget != null) sb.Append($"currentHeaderThrowTarget: {currentHeaderThrowTarget.name}, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
         return sb.ToString();
@@ -353,10 +459,21 @@ public class ThrowInManager : MonoBehaviour
         sb.Append("TI: ");
 
         if (isWaitingForTakerSelection) sb.Append("Select a player from awarded team to take throw-in, ");
-        if (isWaitingForOptionalMovementDecision) sb.Append("Press [M] for optional movement phase or [X] to throw now, ");
-        if (isWaitingForThrowTypeSelection) sb.Append("Press [P] for throw to feet or [C] for throw to head, ");
+        if (isWaitingForOptionalMovementDecision) sb.Append("Press [M] for optional movement phase or [T] to throw now, ");
+        if (isWaitingForThrowTypeSelection)
+        {
+            int headerTargetCount = GetAvailableHeaderThrowTargets().Count;
+            sb.Append(headerTargetCount > 0
+                ? "Press [P] for throw to feet or [C] for throw to head, "
+                : "Press [P] for throw to feet, ");
+        }
         if (isWaitingForGroundTarget) sb.Append("Select throw-to-feet target (up to 6 hexes), ");
-        if (isWaitingForHeaderTarget) sb.Append("Select throw-to-head target (up to 6, near attacker), ");
+        if (isWaitingForHeaderTarget)
+        {
+            sb.Append(MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3
+                ? "Select an eligible attacker within 6 for throw-to-head, "
+                : "Select an eligible attacker within 6, then click again to confirm throw-to-head, ");
+        }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
         return sb.ToString();

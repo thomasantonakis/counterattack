@@ -354,7 +354,7 @@ namespace CounterAttack.Editor
 
         private static BridgeMatchSummary BuildMatchSummary()
         {
-            MatchManager matchManager = UnityEngine.Object.FindFirstObjectByType<MatchManager>();
+            MatchManager matchManager = UnityEngine.Object.FindAnyObjectByType<MatchManager>();
             if (matchManager == null)
             {
                 return new BridgeMatchSummary

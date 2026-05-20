@@ -785,6 +785,18 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
     }
 
+    private void AddThrowInAuditScenarios(List<ScenarioDefinition> scenarios)
+    {
+        scenarios.AddRange(new[]
+        {
+            new ScenarioDefinition(nameof(Scenario_039a_ThrowIn_AttackerSpotDisplacement_And_RestrictedMandatoryMP), Scenario_039a_ThrowIn_AttackerSpotDisplacement_And_RestrictedMandatoryMP),
+            new ScenarioDefinition(nameof(Scenario_039b_ThrowIn_HeaderOption_Hidden_And_OneTargetAutoCommit), Scenario_039b_ThrowIn_HeaderOption_Hidden_And_OneTargetAutoCommit),
+            new ScenarioDefinition(nameof(Scenario_039c_ThrowIn_HeaderOption_Difficulty2_RequiresConfirmation), Scenario_039c_ThrowIn_HeaderOption_Difficulty2_RequiresConfirmation),
+            new ScenarioDefinition(nameof(Scenario_039d_ThrowIn_HeaderOption_Difficulty3_CommitsOnFirstTarget), Scenario_039d_ThrowIn_HeaderOption_Difficulty3_CommitsOnFirstTarget),
+            new ScenarioDefinition(nameof(Scenario_039e_ThrowIn_ToFeet_StartsGroundPassWithDistance6), Scenario_039e_ThrowIn_ToFeet_StartsGroundPassWithDistance6),
+        });
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -798,6 +810,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runFreeKickShotAuditOnly = false;
         bool runOobAuditOnly = false;
         bool runHeaderAtGoalAuditOnly = false;
+        bool runThrowInAuditOnly = false;
         bool runReleasedOobAndHeaderAtGoalOnly = true;
         bool runFromCurrentFailureOnly = false;
 
@@ -882,6 +895,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         else if (runHeaderAtGoalAuditOnly)
         {
             AddHeaderAtGoalBranchScenarios(scenarios);
+        }
+        else if (runThrowInAuditOnly)
+        {
+            AddThrowInAuditScenarios(scenarios);
         }
         else
         {
@@ -1796,6 +1813,92 @@ public class GameTestScenarioRunner : MonoBehaviour
         Vector3 destinationPosition = destinationHex.GetHexCenter();
         float tokenHeight = token.transform.position.y > 0.01f ? token.transform.position.y : 0.2f;
         token.transform.position = new Vector3(destinationPosition.x, tokenHeight, destinationPosition.z);
+    }
+
+    private IEnumerator PrepareThrowInAuditBoard(int difficulty)
+    {
+        yield return new WaitForSeconds(2f);
+
+        MatchManager.Instance.difficulty_level = difficulty;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = difficulty;
+        }
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+    }
+
+    private void EnsureTeamInAttackForTest(MatchManager.TeamInAttack team)
+    {
+        if (MatchManager.Instance.teamInAttack != team)
+        {
+            MatchManager.Instance.ChangePossession();
+        }
+    }
+
+    private void MoveHomeAttackersOutsideThrowRangeForTest(HexCell throwHex, params PlayerToken[] exceptions)
+    {
+        HashSet<PlayerToken> excludedTokens = new HashSet<PlayerToken>(exceptions.Where(token => token != null));
+        List<HexCell> fallbackHexes = GetAllInBoundsHexesOrdered()
+            .Where(hex => hex != null
+                && HexGridUtils.GetHexStepDistance(throwHex, hex) > 6
+                && !hex.isAttackOccupied
+                && !hex.isDefenseOccupied)
+            .ToList();
+
+        int fallbackIndex = 0;
+        foreach (PlayerToken token in FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+            .Where(candidate => candidate != null && candidate.isHomeTeam && candidate.isAttacker && !excludedTokens.Contains(candidate)))
+        {
+            AssertTrue(fallbackIndex < fallbackHexes.Count, "Throw-in audit should find enough empty distant hexes for home attackers.");
+            if (fallbackIndex >= fallbackHexes.Count)
+            {
+                return;
+            }
+
+            SetTokenHexForTest(token, fallbackHexes[fallbackIndex]);
+            fallbackIndex++;
+        }
+    }
+
+    private void SetTokenHexForThrowInTest(PlayerToken token, HexCell destinationHex)
+    {
+        PlayerToken occupyingToken = destinationHex?.GetOccupyingToken();
+        if (occupyingToken != null && occupyingToken != token)
+        {
+            HexCell fallbackHex = GetAllInBoundsHexesOrdered(destinationHex)
+                .FirstOrDefault(hex => hex != null
+                    && hex != destinationHex
+                    && !hex.isAttackOccupied
+                    && !hex.isDefenseOccupied);
+            AssertTrue(fallbackHex != null, "Throw-in audit should find an empty hex to clear a setup destination.");
+            if (fallbackHex == null)
+            {
+                return;
+            }
+
+            SetTokenHexForTest(occupyingToken, fallbackHex);
+        }
+
+        SetTokenHexForTest(token, destinationHex);
+    }
+
+    private void ArmThrowInExecutionForTest(PlayerToken thrower, HexCell throwHex)
+    {
+        throwInManager.isActivated = true;
+        throwInManager.isWaitingForTakerSelection = false;
+        throwInManager.isRunningMandatoryMovement = false;
+        throwInManager.isWaitingForOptionalMovementDecision = false;
+        throwInManager.isRunningOptionalMovement = false;
+        throwInManager.isWaitingForThrowTypeSelection = true;
+        throwInManager.isWaitingForGroundTarget = false;
+        throwInManager.isWaitingForHeaderTarget = false;
+        throwInManager.throwInHex = throwHex;
+        throwInManager.selectedThrower = thrower;
+        throwInManager.currentHeaderThrowTarget = null;
+        throwInManager.awardedTeam = MatchManager.TeamInAttack.Home;
+        throwInManager.ball.PlaceAtCell(throwHex);
+        MatchManager.Instance.SetLastToken(thrower);
     }
 
     private IEnumerator WaitForFtpDefenderMovementPhase(float timeoutSeconds = 2f)
@@ -16608,6 +16711,191 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("Long Ball Corner Target Inaccurate South3 Is ThrowIn");
+    }
+
+    private IEnumerator Scenario_039a_ThrowIn_AttackerSpotDisplacement_And_RestrictedMandatoryMP()
+    {
+        yield return StartCoroutine(PrepareThrowInAuditBoard(2));
+
+        HexCell throwHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 12)), "Throw-in audit throw hex (0,12) should exist.");
+        HexCell takerStartHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(-4, 0, 8)), "Throw-in audit taker start hex (-4,8) should exist.");
+        HexCell closeDefenderHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(1, 0, 10)), "Throw-in audit close defender hex (1,10) should exist.");
+        HexCell safeDefenderHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 8)), "Throw-in audit safe defender hex (0,8) should exist.");
+        PlayerToken taker = RequirePlayerToken("Cafferata");
+        PlayerToken attackerOnSpot = RequirePlayerToken("Yaneva");
+        PlayerToken closeDefender = RequirePlayerToken("Delgado");
+
+        SetTokenHexForThrowInTest(attackerOnSpot, throwHex);
+        SetTokenHexForThrowInTest(taker, takerStartHex);
+        SetTokenHexForThrowInTest(closeDefender, closeDefenderHex);
+
+        throwInManager.StartThrowInPreparation(throwHex, MatchManager.TeamInAttack.Home);
+        yield return StartCoroutine(WaitForCondition(
+            () => throwInManager.isWaitingForTakerSelection,
+            2f,
+            "Throw-in audit should wait for taker selection."));
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(takerStartHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isActivated && movementPhaseManager.isMovementPhaseAttack,
+            5f,
+            "Throw-in should start its mandatory attacker movement phase after taker selection."));
+
+        AssertTrue(taker.GetCurrentHex() == throwHex, "Clicked taker should be placed on the throw-in hex.", throwHex, taker.GetCurrentHex());
+        AssertTrue(throwInManager.ball.GetCurrentHex() == throwHex, "Throw-in ball should stay on the taker.", throwHex, throwInManager.ball.GetCurrentHex());
+        AssertTrue(attackerOnSpot.GetCurrentHex() != throwHex, "Existing attacker on the throw-in spot should be displaced before the taker is placed.", false, attackerOnSpot.GetCurrentHex() == throwHex);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(throwHex), 0.1f));
+        AssertTrue(movementPhaseManager.selectedToken != taker, "Throw-in taker must not be selectable during restricted movement.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhaseDef,
+            3f,
+            "Throw-in mandatory movement should advance to defensive movement after attack forfeits."));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        AssertTrue(movementPhaseManager.isActivated && movementPhaseManager.isMovementPhaseDef, "Defensive forfeit should be blocked while a defender remains within 2 hexes of the thrower.");
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(closeDefenderHex), 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(safeDefenderHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => closeDefender.GetCurrentHex() == safeDefenderHex,
+            5f,
+            "Close defender should be able to move out of the protected throw-in zone."));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhase2f2 || throwInManager.isWaitingForOptionalMovementDecision,
+            3f,
+            "Throw-in mandatory movement should advance after the close defender moves away."));
+
+        if (movementPhaseManager.isMovementPhase2f2)
+        {
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => throwInManager.isWaitingForOptionalMovementDecision,
+            5f,
+            "Throw-in should prompt only [M]/[X] after mandatory movement completes."));
+        AssertTrue(!finalThirdManager.isActivated, "Throw-in mandatory movement completion should not trigger a new Final Third phase.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        AssertTrue(throwInManager.isWaitingForThrowTypeSelection, "Throw-in [X] after mandatory movement should force throw-type selection.");
+
+        LogFooterofTest("Throw-In Attacker Spot Displacement And Restricted Mandatory MP");
+    }
+
+    private IEnumerator Scenario_039b_ThrowIn_HeaderOption_Hidden_And_OneTargetAutoCommit()
+    {
+        yield return StartCoroutine(PrepareThrowInAuditBoard(2));
+
+        HexCell throwHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 12)), "Throw-in audit throw hex (0,12) should exist.");
+        HexCell targetHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(3, 0, 10)), "Throw-in audit header target hex (3,10) should exist.");
+        PlayerToken taker = RequirePlayerToken("Cafferata");
+        PlayerToken target = RequirePlayerToken("Yaneva");
+
+        SetTokenHexForThrowInTest(taker, throwHex);
+        MoveHomeAttackersOutsideThrowRangeForTest(throwHex, taker);
+        ArmThrowInExecutionForTest(taker, throwHex);
+        AssertTrue(!throwInManager.GetInstructions().Contains("[C]"), "Throw-in should not offer [C] when no attacker is within 6 hexes.", false, throwInManager.GetInstructions().Contains("[C]"));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(throwInManager.isWaitingForThrowTypeSelection, "Pressing [C] with no valid header target should leave throw-type selection active.");
+
+        SetTokenHexForThrowInTest(target, targetHex);
+        ArmThrowInExecutionForTest(taker, throwHex);
+        AssertTrue(throwInManager.GetInstructions().Contains("[C]"), "Throw-in should offer [C] when one attacker is within 6 hexes.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => throwInManager.ball.GetCurrentHex() == targetHex && !throwInManager.isActivated,
+            5f,
+            "Throw-in [C] with one eligible attacker should auto-target and commit."));
+
+        LogFooterofTest("Throw-In Header Option Hidden And One Target Auto Commit");
+    }
+
+    private IEnumerator Scenario_039c_ThrowIn_HeaderOption_Difficulty2_RequiresConfirmation()
+    {
+        yield return StartCoroutine(PrepareThrowInAuditBoard(2));
+
+        HexCell throwHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 12)), "Throw-in audit throw hex (0,12) should exist.");
+        HexCell firstTargetHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(3, 0, 10)), "Throw-in audit first header target hex (3,10) should exist.");
+        HexCell secondTargetHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(-3, 0, 10)), "Throw-in audit second header target hex (-3,10) should exist.");
+        PlayerToken taker = RequirePlayerToken("Cafferata");
+        PlayerToken firstTarget = RequirePlayerToken("Yaneva");
+        PlayerToken secondTarget = RequirePlayerToken("Kalla");
+
+        SetTokenHexForThrowInTest(taker, throwHex);
+        SetTokenHexForThrowInTest(firstTarget, firstTargetHex);
+        SetTokenHexForThrowInTest(secondTarget, secondTargetHex);
+        MoveHomeAttackersOutsideThrowRangeForTest(throwHex, taker, firstTarget, secondTarget);
+        ArmThrowInExecutionForTest(taker, throwHex);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(throwInManager.isWaitingForHeaderTarget, "Difficulty 2 throw-to-head with multiple attackers should wait for a target click.");
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(firstTargetHex), 0.1f));
+        AssertTrue(throwInManager.isWaitingForHeaderTarget, "Difficulty 2 throw-to-head should remain pending after the first target click.");
+        AssertTrue(throwInManager.currentHeaderThrowTarget == firstTargetHex, "Difficulty 2 first target click should preview the selected header target.", firstTargetHex, throwInManager.currentHeaderThrowTarget);
+        AssertTrue(throwInManager.ball.GetCurrentHex() == throwHex, "Difficulty 2 throw-to-head should not move the ball before confirmation.", throwHex, throwInManager.ball.GetCurrentHex());
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(firstTargetHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => throwInManager.ball.GetCurrentHex() == firstTargetHex && !throwInManager.isActivated,
+            5f,
+            "Difficulty 2 throw-to-head should commit only on second click."));
+
+        LogFooterofTest("Throw-In Header Option Difficulty2 Requires Confirmation");
+    }
+
+    private IEnumerator Scenario_039d_ThrowIn_HeaderOption_Difficulty3_CommitsOnFirstTarget()
+    {
+        yield return StartCoroutine(PrepareThrowInAuditBoard(3));
+
+        HexCell throwHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 12)), "Throw-in audit throw hex (0,12) should exist.");
+        HexCell firstTargetHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(3, 0, 10)), "Throw-in audit first header target hex (3,10) should exist.");
+        HexCell secondTargetHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(-3, 0, 10)), "Throw-in audit second header target hex (-3,10) should exist.");
+        PlayerToken taker = RequirePlayerToken("Cafferata");
+        PlayerToken firstTarget = RequirePlayerToken("Yaneva");
+        PlayerToken secondTarget = RequirePlayerToken("Kalla");
+
+        SetTokenHexForThrowInTest(taker, throwHex);
+        SetTokenHexForThrowInTest(firstTarget, firstTargetHex);
+        SetTokenHexForThrowInTest(secondTarget, secondTargetHex);
+        MoveHomeAttackersOutsideThrowRangeForTest(throwHex, taker, firstTarget, secondTarget);
+        ArmThrowInExecutionForTest(taker, throwHex);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
+        AssertTrue(throwInManager.isWaitingForHeaderTarget, "Difficulty 3 throw-to-head with multiple attackers should wait for the target command/click.");
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(firstTargetHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => throwInManager.ball.GetCurrentHex() == firstTargetHex && !throwInManager.isActivated,
+            5f,
+            "Difficulty 3 throw-to-head should commit on the first target click."));
+
+        LogFooterofTest("Throw-In Header Option Difficulty3 Commits On First Target");
+    }
+
+    private IEnumerator Scenario_039e_ThrowIn_ToFeet_StartsGroundPassWithDistance6()
+    {
+        yield return StartCoroutine(PrepareThrowInAuditBoard(2));
+
+        HexCell throwHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 12)), "Throw-in audit throw hex (0,12) should exist.");
+        PlayerToken taker = RequirePlayerToken("Cafferata");
+
+        SetTokenHexForThrowInTest(taker, throwHex);
+        MoveHomeAttackersOutsideThrowRangeForTest(throwHex, taker);
+        ArmThrowInExecutionForTest(taker, throwHex);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        AssertTrue(groundBallManager.isActivated || groundBallManager.isAwaitingTargetSelection, "Throw-in [P] should activate standard ground pass targeting.");
+        AssertTrue(groundBallManager.imposedDistance == 6, "Throw-in [P] should impose max ground pass distance 6.", 6, groundBallManager.imposedDistance);
+
+        LogFooterofTest("Throw-In To Feet Starts Ground Pass With Distance 6");
     }
 
     private IEnumerator Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal()

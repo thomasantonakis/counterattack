@@ -3597,6 +3597,7 @@ MonoBehaviour:
   firstTimePassManager: {fileID: 886834329}
   movementPhaseManager: {fileID: 1390513032}
   shotManager: {fileID: 1740884027}
+  penaltyKickManager: {fileID: 920114098}
   playerTokenManager: {fileID: 501380953}
   matchStatsUI: {fileID: 977372731}
   gameData:
@@ -3699,6 +3700,7 @@ MonoBehaviour:
   PreviousTokenToTouchTheBallOnPurpose: {fileID: 0}
   hangingPassType: 
   hangingPassExcludedCollector: {fileID: 0}
+  setPieceTakerExcludedFromNextTouch: {fileID: 0}
   clearPreviousOnNextBallCollection: 0
   difficulty_level: 1
   refereeLeniency: 0
@@ -6032,6 +6034,64 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907445073}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 592.76624, y: 367.47797, z: -9.04914}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &920114097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 920114099}
+  - component: {fileID: 920114098}
+  m_Layer: 0
+  m_Name: PenaltyKickManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &920114098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920114097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4ab2fab8e9cb46a7bec22f0b8c1ba0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenaltyKickManager
+  matchManager: {fileID: 622907910}
+  hexGrid: {fileID: 1405702520}
+  ball: {fileID: 390494642}
+  movementPhaseManager: {fileID: 1390513032}
+  shotManager: {fileID: 1740884027}
+  isActivated: 0
+  isWaitingForKickerSelection: 0
+  isWaitingForSetupPhase: 0
+  isWaitingForExecution: 0
+  takingSide: 0
+  selectedKicker: {fileID: 0}
+  selectedToken: {fileID: 0}
+  penaltySpot: {fileID: 0}
+  defendingGKSpot: {fileID: 0}
+--- !u!4 &920114099
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920114097}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 592.76624, y: 367.47797, z: -9.04914}
@@ -8483,6 +8543,7 @@ MonoBehaviour:
   freeKickManager: {fileID: 1688718062}
   throwInManager: {fileID: 1856973853}
   outOfBoundsPushManager: {fileID: 907445074}
+  playerTokenManager: {fileID: 501380953}
 --- !u!4 &1326402187
 Transform:
   m_ObjectHideFlags: 0
@@ -8850,6 +8911,7 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   headerManager: {fileID: 2071234817}
   freeKickManager: {fileID: 1688718062}
+  penaltyKickManager: {fileID: 920114098}
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   goalKeeperManager: {fileID: 272854143}
@@ -11585,6 +11647,7 @@ MonoBehaviour:
   looseBallManager: {fileID: 757768961}
   finalThirdManager: {fileID: 1012232483}
   longBallManager: {fileID: 748552023}
+  outOfBoundsManager: {fileID: 1326402186}
   goalKeeperManager: {fileID: 272854143}
   goalFlowManager: {fileID: 2034852868}
   gkPushManager: {fileID: 1080259694}
@@ -12718,6 +12781,7 @@ MonoBehaviour:
   groundBallManager: {fileID: 1703800862}
   headerManager: {fileID: 2071234817}
   finalThirdManager: {fileID: 1012232483}
+  outOfBoundsPushManager: {fileID: 907445074}
   isActivated: 0
   isWaitingForTakerSelection: 0
   isRunningMandatoryMovement: 0
@@ -12728,9 +12792,9 @@ MonoBehaviour:
   isWaitingForHeaderTarget: 0
   throwInHex: {fileID: 0}
   selectedThrower: {fileID: 0}
+  currentHeaderThrowTarget: {fileID: 0}
   awardedTeam: 0
   maxThrowDistance: 6
-  maxHeaderLooseOffsetFromAttacker: 1
 --- !u!4 &1856973854
 Transform:
   m_ObjectHideFlags: 0
@@ -12993,6 +13057,7 @@ MonoBehaviour:
   outOfBoundsManager: {fileID: 1326402186}
   throwInManager: {fileID: 1856973853}
   freeKickManager: {fileID: 1688718062}
+  penaltyKickManager: {fileID: 920114098}
   shotManager: {fileID: 1740884027}
   finalThirdManager: {fileID: 1012232483}
   goalFlowManager: {fileID: 2034852868}
@@ -15109,3 +15174,4 @@ SceneRoots:
   - {fileID: 1856973854}
   - {fileID: 1080259695}
   - {fileID: 907445075}
+  - {fileID: 920114099}

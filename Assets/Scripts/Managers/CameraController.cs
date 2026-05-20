@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        hexGrid = FindFirstObjectByType<HexGrid>();
+        hexGrid = FindAnyObjectByType<HexGrid>();
         orbitPivot = GetDefaultOrbitPivot();
         EnsurePitchBounds();
 

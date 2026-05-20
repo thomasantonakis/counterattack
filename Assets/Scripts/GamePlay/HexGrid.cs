@@ -98,7 +98,7 @@ public class HexGrid : MonoBehaviour
 
     private void BindMatchManager()
     {
-        MatchManager resolvedMatchManager = MatchManager.Instance ?? FindObjectOfType<MatchManager>();
+        MatchManager resolvedMatchManager = MatchManager.Instance ?? FindAnyObjectByType<MatchManager>();
         if (resolvedMatchManager == null || resolvedMatchManager == matchManager)
         {
             return;
@@ -259,12 +259,15 @@ public class HexGrid : MonoBehaviour
             cell.isOutOfBounds = true;
         }
 
-        // Example: Set penalty boxes (hard-coded positions for now)
-        if (x >= 12 && x <= 18 && ((x % 2 == 0) ? z > -8 && z < 8 : z >= -8 && z <= 7 ))  
+        bool isPenaltyBoxColumn = Mathf.Abs(x) >= 12 && Mathf.Abs(x) <= 18;
+        bool isPenaltyBoxRow = x % 2 == 0
+            ? z >= -7 && z <= 7
+            : z >= -8 && z <= 7;
+        if (isPenaltyBoxColumn && isPenaltyBoxRow && x > 0)
         {
             cell.isInPenaltyBox = 1;
         }
-        if (x >= -18 && x <= -12 && ((x % 2 == 0) ? z > -8 && z < 8 : z >= -8 && z < 7 ))  
+        if (isPenaltyBoxColumn && isPenaltyBoxRow && x < 0)
         {
             cell.isInPenaltyBox = -1;
         }
@@ -300,7 +303,7 @@ public class HexGrid : MonoBehaviour
         if (
             ( x == 12 && z >= -3 && z <= 3) ||
             ( x == 11 && z >= -2 && z <= 1) ||
-            ( x == 10 && z == 0) 
+            ( x == 10 && z >= -1 && z <= 1) 
         )
         {
             cell.isInCircle = 1;
@@ -308,7 +311,7 @@ public class HexGrid : MonoBehaviour
         if (
             ( x == -12 && z >= -3 && z <= 3) ||
             ( x == -11 && z >= -2 && z <= 1) ||
-            ( x == -10 && z == 0) 
+            ( x == -10 && z >= -1 && z <= 1) 
         )
         {
             cell.isInCircle = -1;

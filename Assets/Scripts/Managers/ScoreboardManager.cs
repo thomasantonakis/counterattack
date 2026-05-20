@@ -18,7 +18,7 @@ public class ScoreboardManager : MonoBehaviour
 
         if (matchManager == null)
         {
-            matchManager = MatchManager.Instance ?? FindFirstObjectByType<MatchManager>();
+            matchManager = MatchManager.Instance ?? FindAnyObjectByType<MatchManager>();
         }
 
         if (matchManager == null)
@@ -56,7 +56,7 @@ public class ScoreboardManager : MonoBehaviour
         Debug.Log("ScoreboardManager: Running LoadTeamNames");
         if (matchManager == null)
         {
-            matchManager = MatchManager.Instance ?? FindFirstObjectByType<MatchManager>();
+            matchManager = MatchManager.Instance ?? FindAnyObjectByType<MatchManager>();
         }
 
         if (homeTeamText == null || awayTeamText == null)
@@ -86,7 +86,7 @@ public class ScoreboardManager : MonoBehaviour
     {
         if (matchManager == null)
         {
-            matchManager = MatchManager.Instance ?? FindFirstObjectByType<MatchManager>();
+            matchManager = MatchManager.Instance ?? FindAnyObjectByType<MatchManager>();
         }
 
         if (homeScoreText == null || awayScoreText == null || timeText == null)

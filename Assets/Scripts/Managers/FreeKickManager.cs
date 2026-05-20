@@ -967,6 +967,7 @@ public class FreeKickManager : MonoBehaviour
         isWaitingForFinalKickerSelection = false;
         MatchManager.Instance.ClearLastTokenChain();
         MatchManager.Instance.SetLastToken(selectedKicker);
+        MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(selectedKicker);
         Debug.Log($"{selectedKicker.name} selected as the kicker!");
         AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
     }
@@ -1192,8 +1193,29 @@ public class FreeKickManager : MonoBehaviour
 
         if (groundBallManager != null && groundBallManager.isActivated && groundBallManager.isAwaitingTargetSelection)
         {
-            string alternateOptions = isCornerKick ? "[C]" : "[C], [L], [S]";
-            sb.Append($"Standard Pass selected; click a target Hex, or press {alternateOptions} to change option, ");
+            if (isCornerKick)
+            {
+                if (groundBallManager.currentTargetHex == null)
+                {
+                    sb.Append("Short Standard Pass selected; click a target Hex within 6 hexes, or press [C] to switch to Cross, ");
+                }
+                else
+                {
+                    sb.Append("Short Standard Pass target selected; click the same selected Hex again to confirm, click another target to change, or press [C] to switch to Cross, ");
+                }
+            }
+            else
+            {
+                string alternateOptions = FormatFreeKickExecutionOptions(KeyCode.P);
+                if (groundBallManager.currentTargetHex == null)
+                {
+                    sb.Append($"Standard Pass selected; click a target Hex, or press {alternateOptions} to change option, ");
+                }
+                else
+                {
+                    sb.Append($"Standard Pass target selected; click the same selected Hex again to confirm, click another target to change, or press {alternateOptions} to change option, ");
+                }
+            }
             return true;
         }
 
@@ -1203,17 +1225,24 @@ public class FreeKickManager : MonoBehaviour
             {
                 if (highPassManager.currentTargetHex == null)
                 {
-                    sb.Append("High Pass selected; click a valid target Hex, ");
+                    sb.Append("Cross selected; click a valid attacker target Hex, or press [P] to switch to Short Standard Pass, ");
                 }
                 else
                 {
-                    sb.Append("High Pass selected; click a valid target Hex, or click the selected Hex again to confirm, ");
+                    sb.Append("Cross target selected; click the same selected Hex again to confirm, click another valid attacker target to change, or press [P] to switch to Short Standard Pass, ");
                 }
                 return true;
             }
 
-            string alternateOptions = isCornerKick ? "[P]" : "[P], [L], [S]";
-            sb.Append($"High Pass selected; click a valid target Hex, or press {alternateOptions} to change option, ");
+            string alternateOptions = FormatFreeKickExecutionOptions(KeyCode.C);
+            if (highPassManager.currentTargetHex == null)
+            {
+                sb.Append($"High Pass selected; click a valid target Hex, or press {alternateOptions} to change option, ");
+            }
+            else
+            {
+                sb.Append($"High Pass target selected; click the same selected Hex again to confirm, click another valid target to change, or press {alternateOptions} to change option, ");
+            }
             return true;
         }
 
@@ -1223,7 +1252,15 @@ public class FreeKickManager : MonoBehaviour
             && activeMatchManager.longBallManager.isActivated
             && activeMatchManager.longBallManager.isAwaitingTargetSelection)
         {
-            sb.Append("Long Ball selected; click a target Hex, or press [P], [C], [S] to change option, ");
+            string alternateOptions = FormatFreeKickExecutionOptions(KeyCode.L);
+            if (activeMatchManager.longBallManager.currentTargetHex == null)
+            {
+                sb.Append($"Long Ball selected; click a target Hex, or press {alternateOptions} to change option, ");
+            }
+            else
+            {
+                sb.Append($"Long Ball target selected; click the same selected Hex again to confirm, click another target to change, or press {alternateOptions} to change option, ");
+            }
             return true;
         }
 
@@ -1232,11 +1269,21 @@ public class FreeKickManager : MonoBehaviour
             && activeMatchManager.shotManager != null
             && activeMatchManager.shotManager.isWaitingForShotCommitConfirmation)
         {
-            sb.Append("Shot selected; press [S] again to commit, or press [P], [C], [L] to change option, ");
+            sb.Append($"Shot selected; press [S] again to commit, or press {FormatFreeKickExecutionOptions(KeyCode.S)} to change option, ");
             return true;
         }
 
         return false;
+    }
+
+    private string FormatFreeKickExecutionOptions(KeyCode selectedOption)
+    {
+        List<string> options = new();
+        if (selectedOption != KeyCode.P) options.Add("[P]");
+        if (selectedOption != KeyCode.C) options.Add("[C]");
+        if (selectedOption != KeyCode.L) options.Add("[L]");
+        if (selectedOption != KeyCode.S && IsFreeKickShotAvailable()) options.Add("[S]");
+        return string.Join(", ", options);
     }
 
     public string GetInstructions()

@@ -348,7 +348,7 @@ public class OutOfBoundsManager : MonoBehaviour
     {
         if (playerTokenManager == null)
         {
-            playerTokenManager = UnityEngine.Object.FindFirstObjectByType<PlayerTokenManager>();
+            playerTokenManager = FindAnyObjectByType<PlayerTokenManager>();
         }
 
         if (playerTokenManager == null || playerTokenManager.allTokens == null)
@@ -364,7 +364,7 @@ public class OutOfBoundsManager : MonoBehaviour
     {
         if (outOfBoundsPushManager == null)
         {
-            outOfBoundsPushManager = UnityEngine.Object.FindFirstObjectByType<OutOfBoundsPushManager>();
+            outOfBoundsPushManager = FindAnyObjectByType<OutOfBoundsPushManager>();
         }
 
         if (outOfBoundsPushManager == null)

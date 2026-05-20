@@ -67,7 +67,7 @@ public class PlayerToken : MonoBehaviour
             {
                 currentHex.occupyingToken = null;
             }
-            else
+            else if (currentHex.occupyingToken != null)
             {
                 Debug.LogWarning($"Hex {currentHex.coordinates} does not have {name} as its occupying token!");
             }

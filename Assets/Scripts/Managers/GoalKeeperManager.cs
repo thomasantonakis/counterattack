@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class GoalKeeperManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class GoalKeeperManager : MonoBehaviour
     public HexGrid hexGrid;
     public Ball ball;
     public bool isActivated = false;
+    private PlayerToken activeDefendingGK;
+    private int consumedBoxMovePenaltyBox;
 
     private void OnEnable()
     {
@@ -52,10 +55,32 @@ public class GoalKeeperManager : MonoBehaviour
 
     private async Task MoveGKforBox(HexCell hex)
     {
+        PlayerToken defenderGK = GetActiveDefendingGK();
+        if (defenderGK == null)
+        {
+            Debug.LogError("Cannot move defending GK because no active defending goalkeeper was captured for this box move.");
+            isActivated = false;
+            return;
+        }
+
         hexGrid.ClearHighlightedHexes();
-        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
+        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defenderGK, false));
         isActivated = false;
-        Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
+        Debug.Log($"🧤 {defenderGK.name} moved to {hex.name}");
+    }
+
+    public void NotifyBallPosition(HexCell ballHex)
+    {
+        if (ballHex == null || ballHex.isInPenaltyBox == 0)
+        {
+            if (consumedBoxMovePenaltyBox != 0)
+            {
+                Debug.Log("GK box move memory reset because the ball is outside the penalty box.");
+            }
+
+            consumedBoxMovePenaltyBox = 0;
+            activeDefendingGK = null;
+        }
     }
 
     public bool ShouldGKMove(HexCell targetHex)
@@ -84,7 +109,14 @@ public class GoalKeeperManager : MonoBehaviour
 
         if (penaltyBoxValue == 0)
         {
+            NotifyBallPosition(referenceHex);
             Debug.Log($"GK box move not offered: reference hex {referenceHex?.coordinates.ToString() ?? "<none>"} is not in a penalty box.");
+            return false;
+        }
+
+        if (consumedBoxMovePenaltyBox == penaltyBoxValue)
+        {
+            Debug.Log($"GK box move not offered: a defending GK box move has already been offered for this penalty-box entry ({penaltyBoxValue}).");
             return false;
         }
 
@@ -94,8 +126,16 @@ public class GoalKeeperManager : MonoBehaviour
 
         if (isAttacker && isTargetPenaltyBoxOfDefenders)
         {
+            activeDefendingGK = FindDefendingGoalkeeperForAttackingTeam(isHomeTeam);
+            if (activeDefendingGK == null)
+            {
+                Debug.LogError($"GK box move not offered: no defending goalkeeper found against attacker {passer.name}.");
+                return false;
+            }
+
             Debug.Log($"⚽ Ball has entered the opponent's penalty box ({penaltyBoxValue}) at {referenceHex?.coordinates.ToString() ?? "<boundary>"}. 🧤 GK gets a free move.");
             isActivated = true;
+            consumedBoxMovePenaltyBox = penaltyBoxValue;
             return true;
         }
 
@@ -107,11 +147,12 @@ public class GoalKeeperManager : MonoBehaviour
 
     public IEnumerator HandleGKFreeMove()
     {
-        PlayerToken defenderGK = hexGrid.GetDefendingGK();
+        PlayerToken defenderGK = GetActiveDefendingGK();
 
         if (defenderGK == null)
         {
             Debug.LogError("No defending goalkeeper found!");
+            isActivated = false;
             yield break;
         }
 
@@ -130,6 +171,24 @@ public class GoalKeeperManager : MonoBehaviour
         {
             yield return null;
         }
+    }
+
+    private PlayerToken FindDefendingGoalkeeperForAttackingTeam(bool attackingTeamIsHome)
+    {
+        return FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+            .FirstOrDefault(token => token != null
+                && token.IsGoalKeeper
+                && token.isHomeTeam != attackingTeamIsHome);
+    }
+
+    private PlayerToken GetActiveDefendingGK()
+    {
+        if (activeDefendingGK != null)
+        {
+            return activeDefendingGK;
+        }
+
+        return hexGrid.GetDefendingGK();
     }
 
     public string GetDebugStatus()
@@ -159,6 +218,7 @@ public class GoalKeeperManager : MonoBehaviour
             return null;
         }
 
-        return MatchManager.Instance.teamInAttack != MatchManager.TeamInAttack.Home;
+        PlayerToken defenderGK = GetActiveDefendingGK();
+        return defenderGK != null ? defenderGK.isHomeTeam : MatchManager.Instance.teamInAttack != MatchManager.TeamInAttack.Home;
     }
 }

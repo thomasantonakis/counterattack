@@ -31,7 +31,7 @@ public class GKPushManager : MonoBehaviour
         }
     }
 
-    public IEnumerator ResolveGKPush(PlayerToken goalkeeper, HexCell saveHex)
+    public IEnumerator ResolveGKPush(PlayerToken goalkeeper, HexCell saveHex, float? synchronizedDuration = null)
     {
         if (goalkeeper == null || saveHex == null)
         {
@@ -60,7 +60,7 @@ public class GKPushManager : MonoBehaviour
             Debug.LogWarning($"GKPush v1 supports same-X saves only. GK at {gkHex.coordinates}, save hex {saveHex.coordinates}.");
             if (!IsOccupied(saveHex) || saveHex.GetOccupyingToken() == goalkeeper)
             {
-                yield return StartCoroutine(MoveTokenDirect(goalkeeper, saveHex, goalkeeper.isAttacker));
+                yield return StartCoroutine(MoveTokenDirect(goalkeeper, saveHex, goalkeeper.isAttacker, synchronizedDuration));
                 ball?.AdjustBallHeightBasedOnOccupancy();
             }
             yield break;
@@ -69,21 +69,27 @@ public class GKPushManager : MonoBehaviour
         int zDirection = saveHex.coordinates.z > gkHex.coordinates.z ? 1 : -1;
         int pushDistance = Mathf.Abs(saveHex.coordinates.z - gkHex.coordinates.z);
         List<PushMove> pushMoves = CollectPushMoves(goalkeeper, gkHex, pushDistance, zDirection);
-        pushMoves.Sort((left, right) => right.stepFromGoalkeeper.CompareTo(left.stepFromGoalkeeper));
 
         if (!AssignDestinations(pushMoves, saveHex, pushDistance, zDirection))
         {
             yield break;
         }
 
-        foreach (PushMove move in pushMoves)
+        if (synchronizedDuration.HasValue)
         {
-            Debug.Log($"GKPush: moving {move.token.name} from {move.originHex.coordinates} to {move.destinationHex.coordinates}.");
-            yield return StartCoroutine(MoveTokenDirect(move.token, move.destinationHex, move.wasAttacker));
+            yield return StartCoroutine(MoveTokensTogether(pushMoves, goalkeeper, saveHex, synchronizedDuration.Value));
         }
+        else
+        {
+            foreach (PushMove move in pushMoves)
+            {
+                Debug.Log($"GKPush: moving {move.token.name} from {move.originHex.coordinates} to {move.destinationHex.coordinates}.");
+                yield return StartCoroutine(MoveTokenDirect(move.token, move.destinationHex, move.wasAttacker));
+            }
 
-        Debug.Log($"GKPush: moving {goalkeeper.name} from {gkHex.coordinates} to save hex {saveHex.coordinates}.");
-        yield return StartCoroutine(MoveTokenDirect(goalkeeper, saveHex, goalkeeper.isAttacker));
+            Debug.Log($"GKPush: moving {goalkeeper.name} from {gkHex.coordinates} to save hex {saveHex.coordinates}.");
+            yield return StartCoroutine(MoveTokenDirect(goalkeeper, saveHex, goalkeeper.isAttacker));
+        }
         ball?.AdjustBallHeightBasedOnOccupancy();
     }
 
@@ -91,98 +97,161 @@ public class GKPushManager : MonoBehaviour
     {
         if (hexGrid == null)
         {
-            hexGrid = UnityEngine.Object.FindFirstObjectByType<HexGrid>();
+            hexGrid = Object.FindAnyObjectByType<HexGrid>();
         }
 
         if (ball == null)
         {
-            ball = UnityEngine.Object.FindFirstObjectByType<Ball>();
+            ball = Object.FindAnyObjectByType<Ball>();
         }
     }
 
     private List<PushMove> CollectPushMoves(PlayerToken goalkeeper, HexCell gkHex, int pushDistance, int zDirection)
     {
-        List<PushMove> pushMoves = new();
+        List<PushMove> sweptPathMoves = new();
 
         for (int step = 1; step <= pushDistance; step++)
         {
-            Vector3Int coordinates = new Vector3Int(
-                gkHex.coordinates.x,
-                0,
-                gkHex.coordinates.z + (step * zDirection)
-            );
-            HexCell pathHex = TryGetCell(coordinates);
-            if (pathHex == null)
+            PushMove move = TryCreatePushMoveAtStep(goalkeeper, gkHex, step, zDirection);
+            if (move != null)
             {
-                continue;
+                sweptPathMoves.Add(move);
             }
-
-            PlayerToken occupant = pathHex.GetOccupyingToken();
-            if (occupant == null)
-            {
-                if (pathHex.isAttackOccupied || pathHex.isDefenseOccupied)
-                {
-                    Debug.LogWarning($"GKPush found occupied flags without a token at {pathHex.coordinates}; treating it as empty.");
-                }
-
-                continue;
-            }
-
-            if (occupant == goalkeeper)
-            {
-                continue;
-            }
-
-            pushMoves.Add(new PushMove
-            {
-                token = occupant,
-                originHex = pathHex,
-                wasAttacker = occupant.isAttacker,
-                stepFromGoalkeeper = step
-            });
         }
 
-        return pushMoves;
+        return sweptPathMoves
+            .OrderBy(move => move.stepFromGoalkeeper)
+            .ToList();
+    }
+
+    private PushMove TryCreatePushMoveAtStep(PlayerToken goalkeeper, HexCell gkHex, int step, int zDirection)
+    {
+        Vector3Int coordinates = new Vector3Int(
+            gkHex.coordinates.x,
+            0,
+            gkHex.coordinates.z + (step * zDirection)
+        );
+        HexCell pathHex = TryGetCell(coordinates);
+        if (pathHex == null)
+        {
+            return null;
+        }
+
+        PlayerToken occupant = pathHex.GetOccupyingToken();
+        if (occupant == null)
+        {
+            if (pathHex.isAttackOccupied || pathHex.isDefenseOccupied)
+            {
+                Debug.LogWarning($"GKPush found occupied flags without a token at {pathHex.coordinates}; treating it as empty.");
+            }
+
+            return null;
+        }
+
+        if (occupant == goalkeeper)
+        {
+            return null;
+        }
+
+        return new PushMove
+        {
+            token = occupant,
+            originHex = pathHex,
+            wasAttacker = occupant.isAttacker,
+            stepFromGoalkeeper = step
+        };
     }
 
     private bool AssignDestinations(List<PushMove> pushMoves, HexCell saveHex, int pushDistance, int zDirection)
     {
         HashSet<HexCell> reservedDestinations = new() { saveHex };
+        HashSet<PlayerToken> movingTokens = pushMoves
+            .Where(move => move.token != null)
+            .Select(move => move.token)
+            .ToHashSet();
+        HashSet<HexCell> movingOriginHexes = pushMoves
+            .Where(move => move.originHex != null)
+            .Select(move => move.originHex)
+            .ToHashSet();
 
-        foreach (PushMove move in pushMoves)
+        int index = 0;
+        while (index < pushMoves.Count)
         {
-            Vector3Int directCoordinates = new Vector3Int(
-                move.originHex.coordinates.x,
+            PushMove move = pushMoves[index];
+            Vector3Int desiredCoordinates = new Vector3Int(
+                saveHex.coordinates.x,
                 0,
-                move.originHex.coordinates.z + (pushDistance * zDirection)
+                saveHex.coordinates.z + ((index + 1) * zDirection)
             );
-            HexCell directDestination = TryGetCell(directCoordinates);
-
-            if (IsLegalDestination(directDestination, reservedDestinations))
+            HexCell directDestination = TryGetCell(desiredCoordinates);
+            if (directDestination == null || directDestination == move.originHex)
             {
-                move.destinationHex = directDestination;
+                Debug.LogError($"GKPush failed: no valid same-column destination found for {move.token.name} pushed from {move.originHex.coordinates} toward {desiredCoordinates}.");
+                return false;
             }
-            else
+
+            PlayerToken destinationOccupant = directDestination.GetOccupyingToken();
+            if (destinationOccupant != null && !movingTokens.Contains(destinationOccupant))
             {
-                move.destinationHex = FindFallbackDestination(move, directCoordinates, reservedDestinations);
-                if (move.destinationHex == null)
+                pushMoves.Add(new PushMove
                 {
-                    Debug.LogError($"GKPush failed: no legal destination found for {move.token.name} pushed from {move.originHex.coordinates}.");
-                    return false;
-                }
-
-                Debug.LogWarning($"GKPush overflow: {move.token.name} cannot move to {directCoordinates}; using {move.destinationHex.coordinates}.");
+                    token = destinationOccupant,
+                    originHex = directDestination,
+                    wasAttacker = destinationOccupant.isAttacker,
+                    stepFromGoalkeeper = pushDistance + pushMoves.Count + 1
+                });
+                movingTokens.Add(destinationOccupant);
+                movingOriginHexes.Add(directDestination);
             }
 
+            if (!IsLegalDestination(directDestination, reservedDestinations, movingTokens, movingOriginHexes))
+            {
+                Debug.LogError($"GKPush failed: same-column destination {directDestination.coordinates} is blocked for {move.token.name}.");
+                return false;
+            }
+
+            move.destinationHex = directDestination;
             reservedDestinations.Add(move.destinationHex);
+            index++;
         }
 
         return true;
     }
 
-    private HexCell FindFallbackDestination(PushMove move, Vector3Int desiredCoordinates, HashSet<HexCell> reservedDestinations)
+    private HexCell FindSameColumnDestination(PushMove move, Vector3Int desiredCoordinates, int zDirection, HashSet<HexCell> reservedDestinations, HashSet<PlayerToken> movingTokens, HashSet<HexCell> movingOriginHexes)
     {
-        List<HexCell> legalCandidates = GetLegalFallbackCandidates(reservedDestinations);
+        for (int offset = 1; offset <= hexGrid.GridHeight; offset++)
+        {
+            Vector3Int candidateCoordinates = new Vector3Int(
+                desiredCoordinates.x,
+                0,
+                desiredCoordinates.z + ((offset - 1) * zDirection)
+            );
+            HexCell candidate = TryGetCell(candidateCoordinates);
+            if (candidate == null)
+            {
+                return null;
+            }
+
+            if (candidate == move.originHex)
+            {
+                continue;
+            }
+
+            if (IsLegalDestination(candidate, reservedDestinations, movingTokens, movingOriginHexes))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private HexCell FindFallbackDestination(PushMove move, Vector3Int desiredCoordinates, HashSet<HexCell> reservedDestinations, HashSet<PlayerToken> movingTokens)
+    {
+        List<HexCell> legalCandidates = GetLegalFallbackCandidates(reservedDestinations, movingTokens)
+            .Where(candidate => candidate != move.originHex)
+            .ToList();
         if (legalCandidates.Count == 0)
         {
             return null;
@@ -212,7 +281,7 @@ public class GKPushManager : MonoBehaviour
         return SelectBestFallback(legalCandidates, move.originHex, desiredCoordinates, defensiveXSign);
     }
 
-    private List<HexCell> GetLegalFallbackCandidates(HashSet<HexCell> reservedDestinations)
+    private List<HexCell> GetLegalFallbackCandidates(HashSet<HexCell> reservedDestinations, HashSet<PlayerToken> movingTokens)
     {
         List<HexCell> candidates = new();
         if (hexGrid?.cells == null)
@@ -222,7 +291,7 @@ public class GKPushManager : MonoBehaviour
 
         foreach (HexCell cell in hexGrid.cells)
         {
-            if (IsLegalDestination(cell, reservedDestinations))
+            if (IsLegalDestination(cell, reservedDestinations, movingTokens))
             {
                 candidates.Add(cell);
             }
@@ -264,19 +333,40 @@ public class GKPushManager : MonoBehaviour
         return attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight ? -1 : 1;
     }
 
-    private bool IsLegalDestination(HexCell cell, HashSet<HexCell> reservedDestinations)
+    private bool IsLegalDestination(HexCell cell, HashSet<HexCell> reservedDestinations, HashSet<PlayerToken> movingTokens, HashSet<HexCell> movingOriginHexes = null)
     {
         return cell != null
             && !reservedDestinations.Contains(cell)
             && !cell.isOutOfBounds
             && cell.isInGoal == 0
-            && !IsOccupied(cell);
+            && !IsOccupiedByNonMovingToken(cell, movingTokens, movingOriginHexes);
     }
 
     private bool IsOccupied(HexCell cell)
     {
         return cell != null
             && (cell.GetOccupyingToken() != null || cell.isAttackOccupied || cell.isDefenseOccupied);
+    }
+
+    private bool IsOccupiedByNonMovingToken(HexCell cell, HashSet<PlayerToken> movingTokens, HashSet<HexCell> movingOriginHexes = null)
+    {
+        if (cell == null)
+        {
+            return false;
+        }
+
+        if (movingOriginHexes != null && movingOriginHexes.Contains(cell))
+        {
+            return false;
+        }
+
+        PlayerToken occupant = cell.GetOccupyingToken();
+        if (occupant != null)
+        {
+            return movingTokens == null || !movingTokens.Contains(occupant);
+        }
+
+        return cell.isAttackOccupied || cell.isDefenseOccupied;
     }
 
     private HexCell TryGetCell(Vector3Int coordinates)
@@ -298,7 +388,66 @@ public class GKPushManager : MonoBehaviour
         return hexGrid.GetHexCellAt(coordinates);
     }
 
-    private IEnumerator MoveTokenDirect(PlayerToken token, HexCell targetHex, bool wasAttacker)
+    private IEnumerator MoveTokensTogether(List<PushMove> pushMoves, PlayerToken goalkeeper, HexCell saveHex, float duration)
+    {
+        List<(PlayerToken token, HexCell destinationHex, bool wasAttacker)> moves = pushMoves
+            .Select(move => (move.token, move.destinationHex, move.wasAttacker))
+            .ToList();
+        moves.Add((goalkeeper, saveHex, goalkeeper.isAttacker));
+
+        foreach ((PlayerToken token, HexCell _, bool _) in moves)
+        {
+            HexCell originHex = token?.GetCurrentHex();
+            if (originHex == null)
+            {
+                continue;
+            }
+
+            originHex.isAttackOccupied = false;
+            originHex.isDefenseOccupied = false;
+            if (originHex.occupyingToken == token)
+            {
+                originHex.occupyingToken = null;
+            }
+            originHex.ResetHighlight();
+        }
+
+        foreach ((PlayerToken _, HexCell destinationHex, bool wasAttacker) in moves)
+        {
+            if (destinationHex == null)
+            {
+                continue;
+            }
+
+            destinationHex.isAttackOccupied = wasAttacker;
+            destinationHex.isDefenseOccupied = !wasAttacker;
+        }
+
+        int remainingMoves = moves.Count;
+        foreach (PushMove move in pushMoves)
+        {
+            Debug.Log($"GKPush: moving {move.token.name} from {move.originHex.coordinates} to {move.destinationHex.coordinates}.");
+            StartCoroutine(MoveTokenAlongGroundAndSignal(move.token, move.destinationHex, duration, () => remainingMoves--));
+        }
+
+        Debug.Log($"GKPush: moving {goalkeeper.name} from {goalkeeper.GetCurrentHex()?.coordinates} to save hex {saveHex.coordinates}.");
+        StartCoroutine(MoveTokenAlongGroundAndSignal(goalkeeper, saveHex, duration, () => remainingMoves--));
+
+        while (remainingMoves > 0)
+        {
+            yield return null;
+        }
+    }
+
+    private IEnumerator MoveTokenAlongGroundAndSignal(PlayerToken token, HexCell targetHex, float duration, System.Action onComplete)
+    {
+        yield return StartCoroutine(MoveTokenAlongGround(token, targetHex, duration));
+        token.SetCurrentHex(targetHex);
+        targetHex.ResetHighlight();
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator MoveTokenDirect(PlayerToken token, HexCell targetHex, bool wasAttacker, float? duration = null)
     {
         if (token == null || targetHex == null)
         {
@@ -315,6 +464,10 @@ public class GKPushManager : MonoBehaviour
         {
             originHex.isAttackOccupied = false;
             originHex.isDefenseOccupied = false;
+            if (originHex.occupyingToken == token)
+            {
+                originHex.occupyingToken = null;
+            }
             originHex.ResetHighlight();
         }
 
@@ -329,7 +482,38 @@ public class GKPushManager : MonoBehaviour
             targetHex.isDefenseOccupied = true;
         }
 
-        yield return StartCoroutine(token.JumpToHex(targetHex));
+        yield return StartCoroutine(MoveTokenAlongGround(token, targetHex, duration ?? GetDefaultMoveDuration(originHex, targetHex)));
+        token.SetCurrentHex(targetHex);
         targetHex.ResetHighlight();
+    }
+
+    private IEnumerator MoveTokenAlongGround(PlayerToken token, HexCell targetHex, float duration)
+    {
+        Vector3 startPosition = token.transform.position;
+        Vector3 targetPosition = new(targetHex.GetHexCenter().x, startPosition.y, targetHex.GetHexCenter().z);
+        if (duration <= 0f)
+        {
+            token.transform.position = targetPosition;
+            yield break;
+        }
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration);
+            token.transform.position = Vector3.Lerp(startPosition, targetPosition, progress);
+            yield return null;
+        }
+
+        token.transform.position = targetPosition;
+    }
+
+    private float GetDefaultMoveDuration(HexCell originHex, HexCell targetHex)
+    {
+        int distance = originHex != null && targetHex != null
+            ? Mathf.Max(1, HexGridUtils.GetHexStepDistance(originHex, targetHex))
+            : 1;
+        return distance * 0.3f;
     }
 }

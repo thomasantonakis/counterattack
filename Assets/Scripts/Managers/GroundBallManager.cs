@@ -360,6 +360,15 @@ public class GroundBallManager : MonoBehaviour
     public GroundPassValidationResult ValidateGroundPassPath(HexCell targetHex, int distance)
     {
         hexGrid.ClearHighlightedHexes();
+        PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
+        if (targetToken != null
+            && MatchManager.Instance != null
+            && !MatchManager.Instance.CanTokenCollectHangingPass(targetToken))
+        {
+            Debug.LogWarning($"{targetToken.name} cannot be the next player to touch the ball after taking the set piece.");
+            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetExcludedFromNextTouch);
+        }
+
         return GroundPassCommon.ValidateStandardPassPath(hexGrid, ball, targetHex, distance, isQuickThrow);
     }
 

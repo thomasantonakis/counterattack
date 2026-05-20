@@ -343,9 +343,14 @@ public class HeaderManager : MonoBehaviour
         foreach (HexCell hex in nearbyHexes)
         {
             PlayerToken token = hex.GetOccupyingToken();
-            // TODO: Exclude kicker from the list of eligible attackers
             if (token != null)
             {
+                if (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(token))
+                {
+                    Debug.Log($"{token.name} is not eligible to head because they took the set piece or are excluded from collecting this ball.");
+                    continue;
+                }
+
                 Debug.Log($"Eligible to head: {token.name} at {hex.coordinates}");
                 if (token.isAttacker)
                 {
@@ -832,6 +837,16 @@ public class HeaderManager : MonoBehaviour
         }
         if (attEligibleToHead.Count != 0)
         {
+            List<PlayerToken> outfieldDefenders = GetEligibleOutfieldHeaderDefenders().ToList();
+            PlayerToken eligibleGoalkeeper = GetEligibleDefendingGoalkeeperForHeader();
+            bool goalkeeperAlreadySelected = eligibleGoalkeeper != null && defenderWillJump.Contains(eligibleGoalkeeper);
+            if (goalkeeperAlreadySelected && outfieldDefenders.Count == 0)
+            {
+                Debug.Log($"{eligibleGoalkeeper.name} is already challenging as GK and no outfield defenders can challenge. Confirming defender header selection automatically.");
+                ConfirmDefenderHeaderSelection();
+                return;
+            }
+
             Debug.Log("Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.");
             isWaitingForDefenderSelection = true;
             HighlightCandidateTokenHexes(defEligibleToHead);
@@ -1723,7 +1738,7 @@ public class HeaderManager : MonoBehaviour
         headerTargetThreatByHex.Clear();
         hoveredHeaderTargetHex = null;
         List<HexCell> validHexes = HexGrid.GetHexesInRange(hexGrid, startHex, range)
-            .Where(hex => !hex.isOutOfBounds && !hex.isDefenseOccupied).ToList();
+            .Where(hex => !hex.isOutOfBounds && !hex.isDefenseOccupied && CanHeaderTargetHexBeCollected(hex)).ToList();
 
         List<HexCell> interceptingDefenderHexes = GetHeaderInterceptionDefenderHexes();
         foreach (HexCell hex in validHexes)
@@ -1747,6 +1762,14 @@ public class HeaderManager : MonoBehaviour
                 : headerTargetThreatByHex[hex] ? "HeaderTargetRisk" : "HeaderTargetFree";
             hex.HighlightHex(highlightReason);
         }
+    }
+
+    private bool CanHeaderTargetHexBeCollected(HexCell hex)
+    {
+        PlayerToken token = hex != null ? hex.GetOccupyingToken() : null;
+        return token == null
+            || MatchManager.Instance == null
+            || MatchManager.Instance.CanTokenCollectHangingPass(token);
     }
 
     private List<HexCell> GetHeaderInterceptionDefenderHexes()

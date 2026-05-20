@@ -41,6 +41,7 @@ public class LooseBallManager : MonoBehaviour
     public PlayerToken causingDeflection;
     public PlayerToken ballHitThisToken;
     public PlayerToken potentialInterceptor;
+    private bool nextLooseBallGoalIsPenalty;
 
     public struct InaccuracyTargetResult
     {
@@ -77,6 +78,11 @@ public class LooseBallManager : MonoBehaviour
         return sourceType == LooseBallSourceType.GoalkeeperHandlingSpill;
     }
 
+    public void MarkNextLooseBallGoalAsPenalty()
+    {
+        nextLooseBallGoalIsPenalty = true;
+    }
+
     private bool TryHandleLooseBallGoal(HexCell goalHex, PlayerToken deflectingToken)
     {
         if (goalHex == null || goalHex.isInGoal == 0)
@@ -96,7 +102,7 @@ public class LooseBallManager : MonoBehaviour
             return false;
         }
 
-        GoalFlowManager resolvedGoalFlowManager = goalFlowManager != null ? goalFlowManager : FindFirstObjectByType<GoalFlowManager>();
+        GoalFlowManager resolvedGoalFlowManager = goalFlowManager != null ? goalFlowManager : FindAnyObjectByType<GoalFlowManager>();
         if (resolvedGoalFlowManager == null)
         {
             Debug.LogError("Loose ball entered goal, but GoalFlowManager is not linked.");
@@ -110,6 +116,12 @@ public class LooseBallManager : MonoBehaviour
         else
         {
             Debug.Log($"Loose ball entered the goal at {goalHex.coordinates}. Awarding the goal to {scoringToken.name}.");
+        }
+
+        if (nextLooseBallGoalIsPenalty)
+        {
+            MatchManager.Instance.MarkNextGoalAsPenalty();
+            nextLooseBallGoalIsPenalty = false;
         }
 
         MatchManager.Instance.gameData.gameLog.LogEvent(scoringToken, MatchManager.ActionType.GoalScored);
@@ -206,6 +218,7 @@ public class LooseBallManager : MonoBehaviour
     private bool IsTokenUnavailableForLooseBall(PlayerToken token)
     {
         return token == null
+            || (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(token))
             || movementPhaseManager.stunnedTokens.Contains(token)
             || movementPhaseManager.stunnedforNext.Contains(token)
             || headerManager.defenderWillJump.Contains(token)
@@ -1134,6 +1147,7 @@ public class LooseBallManager : MonoBehaviour
         potentialInterceptor = null;
         causingDeflection = null;
         ballHitThisToken = null;
+        nextLooseBallGoalIsPenalty = false;
         path.Clear();
     }
 

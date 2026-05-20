@@ -92,6 +92,7 @@ Assets/Scripts/
   OutOfBoundsClickBlocker.cs
   OutOfBoundsManager.cs
   OutOfBoundsPushManager.cs
+  PenaltyKickManager.cs
   PlayerCardDragHandler.cs
   PlayerSlotDragHandler.cs
   PlayerSlotDropHandler.cs
