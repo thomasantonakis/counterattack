@@ -964,6 +964,7 @@ public class MatchManager : MonoBehaviour
     // public PlayerToken PreviousTokenToTouchTheBallOnPurpose { get; private set; }
     public PlayerToken LastTokenToTouchTheBallOnPurpose;
     public PlayerToken PreviousTokenToTouchTheBallOnPurpose;
+    private PlayerToken pendingGoalKickRestartTaker;
     public string hangingPassType;
     public PlayerToken hangingPassExcludedCollector;
     public PlayerToken setPieceTakerExcludedFromNextTouch;
@@ -1203,6 +1204,13 @@ public class MatchManager : MonoBehaviour
             StartMatch();
             keyData.isConsumed = true;
         }
+        else if (currentState == GameState.GoalKick
+            && pendingGoalKickRestartTaker != null
+            && keyData.key == KeyCode.K)
+        {
+            TriggerGoalkeeperKick();
+            keyData.isConsumed = true;
+        }
     }
 
     // Example method to start the match
@@ -1398,7 +1406,7 @@ public class MatchManager : MonoBehaviour
     }
 
     // Method to trigger the standard pass attempt mode (on key press, like "P")
-    public void TriggerStandardPass()
+    public void TriggerStandardPass(PlayerToken pendingSetPieceTaker = null)
     {
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         ClearPendingActionPreviews();
@@ -1409,7 +1417,39 @@ public class MatchManager : MonoBehaviour
         longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
         ApplyPendingGroundBallDistance();
+        PlayerToken setPieceTaker = pendingSetPieceTaker ?? pendingGoalKickRestartTaker;
+        if (setPieceTaker != null)
+        {
+            groundBallManager.SetPendingSetPieceTakerForCommit(setPieceTaker);
+        }
         groundBallManager.ActivateGroundBall();
+    }
+
+    public void TriggerGoalkeeperKick(PlayerToken explicitGoalkeeper = null, bool commitImmediately = false)
+    {
+        PlayerToken gkToken = explicitGoalkeeper ?? pendingGoalKickRestartTaker ?? ball.GetCurrentHex()?.GetOccupyingToken();
+        if (gkToken == null)
+        {
+            Debug.LogError("Cannot take a Goalkeeper Kick because no goalkeeper restart taker is available.");
+            return;
+        }
+
+        bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
+        ClearPendingActionPreviews();
+        movementPhaseManager.ResetMovementPhase();
+        groundBallManager.CleanUpPass();
+        firstTimePassManager.CleanUpFTP();
+        highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
+        longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
+        RefreshAvailableActions();
+        ClearLastTokenChain();
+        ForceGoalKickRestartTakerAsLastToken(gkToken);
+        if (gkToken.GetCurrentHex() != null)
+        {
+            ball.PlaceAtCell(gkToken.GetCurrentHex());
+        }
+        highPassManager.SetPendingSetPieceTakerForCommit(gkToken);
+        highPassManager.ActivateGoalkeeperKick(commitImmediately);
     }
 
     public void TriggerMovement()
@@ -1501,6 +1541,10 @@ public class MatchManager : MonoBehaviour
         longBallManager.isAvailable = false;
         shotManager.isAvailable = false;
         isFTPAvailable = false;
+        if (currentState == GameState.StandardPass || currentState == GameState.HighPass)
+        {
+            pendingGoalKickRestartTaker = null;
+        }
         ResetPendingGroundBallOffer();
         ApplyPendingGroundBallDistance();
         RefreshAerialTargetPrecomputations();
@@ -1568,6 +1612,34 @@ public class MatchManager : MonoBehaviour
         currentState = GameState.ActivateFinalThirdsAfterSave;
         OfferStandardGroundBallPass();
         RefreshAvailableActions();
+    }
+
+    public void BroadcastGoalKickRestartOptions(PlayerToken goalkeeper)
+    {
+        pendingGoalKickRestartTaker = goalkeeper;
+        currentState = GameState.GoalKick;
+        OfferStandardGroundBallPass();
+        if (goalkeeper != null)
+        {
+            ClearLastTokenChain();
+            ForceGoalKickRestartTakerAsLastToken(goalkeeper);
+            if (goalkeeper.GetCurrentHex() != null)
+            {
+                ball.PlaceAtCell(goalkeeper.GetCurrentHex());
+            }
+        }
+        RefreshAvailableActions();
+    }
+
+    private void ForceGoalKickRestartTakerAsLastToken(PlayerToken goalkeeper)
+    {
+        if (goalkeeper == null)
+        {
+            return;
+        }
+
+        PreviousTokenToTouchTheBallOnPurpose = null;
+        LastTokenToTouchTheBallOnPurpose = goalkeeper;
     }
 
     public void BroadcastHeaderCompleted()
@@ -1715,6 +1787,15 @@ public class MatchManager : MonoBehaviour
             // highPassManager.isAvailable = false;
             // longBallManager.isAvailable = false;
             // shotManager.isAvailable = false;
+        }
+        else if (currentState == GameState.GoalKick)
+        {
+            movementPhaseManager.isAvailable = false;
+            groundBallManager.isAvailable = true;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = true;
+            longBallManager.isAvailable = false;
+            shotManager.isAvailable = false;
         }
 
         ApplyPendingGroundBallDistance();

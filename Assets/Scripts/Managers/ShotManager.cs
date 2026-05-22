@@ -427,6 +427,7 @@ public class ShotManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (!isActivated
             && MatchManager.Instance != null
             && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution)
@@ -2465,7 +2466,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForSaveandHoldScenario = false;  // Cancel the decision phase
         Debug.Log("GK Decided to activate F3 Moves");
         MatchManager.Instance.BroadcastActivateFinalThirdsAfterSave();
-        finalThirdManager.TriggerFinalThirdPhase(true);
+        finalThirdManager.TriggerSaveAndHoldFinalThirds();
     }
 
     private void ResetShotProcess()
@@ -2727,12 +2728,16 @@ public class ShotManager : MonoBehaviour
             return attackingTeamIsHome;
         }
 
+        if (isWaitingForSaveandHoldScenario)
+        {
+            return attackingTeamIsHome;
+        }
+
         if (isWaitingforBlockerSelection
             || isWaitingforBlockerMovement
             || isWaitingForBlockDiceRoll
             || isWaitingForGKDiceRoll
-            || isWaitingforHandlingTest
-            || isWaitingForSaveandHoldScenario)
+            || isWaitingforHandlingTest)
         {
             return !attackingTeamIsHome;
         }

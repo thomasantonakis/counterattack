@@ -35,6 +35,7 @@ public class GroundBallManager : MonoBehaviour
     private List<HexCell> interceptionHexes = new List<HexCell>();  // List of interception hexes
     public int diceRollsPending = 0;          // Number of pending dice rolls
     private string latestValidationInstruction = string.Empty;
+    private PlayerToken pendingSetPieceTakerForCommit = null;
 
     private void OnEnable()
     {
@@ -132,6 +133,12 @@ public class GroundBallManager : MonoBehaviour
 
     public void CommitToThisAction()
     {
+        if (pendingSetPieceTakerForCommit != null)
+        {
+            MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(pendingSetPieceTakerForCommit);
+            pendingSetPieceTakerForCommit = null;
+        }
+
         if (isQuickThrow)
         {
             MatchManager.Instance.currentState = MatchManager.GameState.QuickThrow;
@@ -363,7 +370,8 @@ public class GroundBallManager : MonoBehaviour
         PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
         if (targetToken != null
             && MatchManager.Instance != null
-            && !MatchManager.Instance.CanTokenCollectHangingPass(targetToken))
+            && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
+                || targetToken == pendingSetPieceTakerForCommit))
         {
             Debug.LogWarning($"{targetToken.name} cannot be the next player to touch the ball after taking the set piece.");
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetExcludedFromNextTouch);
@@ -627,6 +635,12 @@ public class GroundBallManager : MonoBehaviour
         // imposedDistance = 11;  // Reset imposed distance
         ResetGroundPassInterceptionDiceRolls();
         isQuickThrow = false;  // Reset quick throw state
+        pendingSetPieceTakerForCommit = null;
+    }
+
+    public void SetPendingSetPieceTakerForCommit(PlayerToken taker)
+    {
+        pendingSetPieceTakerForCommit = taker;
     }
 
     void ResetGroundPassInterceptionDiceRolls()

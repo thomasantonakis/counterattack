@@ -32,6 +32,7 @@ public class HighPassManager : MonoBehaviour
     public bool isWaitingForDirectionRoll = false; // Flag to check for Direction roll
     public bool isWaitingForDistanceRoll = false; // Flag to check for Distance roll
     public bool isAvailableTargetsReady = false;
+    public bool isGoalkeeperKick = false;
     [Header("Basic Selections")]
     public PlayerToken lockedAttacker;  // The attacker who is locked on the target hex
     public HexCell currentTargetHex;
@@ -61,6 +62,7 @@ public class HighPassManager : MonoBehaviour
     private Coroutine availableTargetPrecomputeRoutine;
     private int availableTargetPrecomputeVersion = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
+    private PlayerToken pendingSetPieceTakerForCommit = null;
 
     private void OnEnable()
     {
@@ -84,7 +86,7 @@ public class HighPassManager : MonoBehaviour
         {
             if (isWaitingForConfirmation)
             {
-                HandleHighPassProcess(hex);
+                HandleHighPassProcess(hex, isGoalkeeperKick);
                 return;
             }
             if (isWaitingForAttackerSelection)
@@ -252,7 +254,11 @@ public class HighPassManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
-        if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.C)
+        if (isAvailable
+            && !isActivated
+            && !freeKickManager.isWaitingForExecution
+            && MatchManager.Instance.currentState != MatchManager.GameState.GoalKick
+            && keyData.key == KeyCode.C)
         {
             MatchManager.Instance.TriggerHighPass();
             keyData.isConsumed = true;
@@ -320,6 +326,7 @@ public class HighPassManager : MonoBehaviour
         isActivated = true;
         isAvailable = false;  // Make it non available to avoid restarting this action again.
         isWaitingForConfirmation = true;
+        isGoalkeeperKick = false;
         if (MatchManager.Instance.difficulty_level == 3)
         {
             // TODO: Before offering [C], preflight that at least one valid High Pass target exists after a successful tackle or safe Movement Phase.
@@ -331,6 +338,25 @@ public class HighPassManager : MonoBehaviour
             HighlightAllValidHighPassTargets();
         }
         Debug.Log("HighPassManager activated. Waiting for target selection...");
+    }
+
+    public void ActivateGoalkeeperKick(bool commitImmediately = false)
+    {
+        ball.SelectBall();
+        isActivated = true;
+        isAvailable = false;
+        isWaitingForConfirmation = true;
+        isGoalkeeperKick = true;
+        ResetAvailableTargetPrecompute();
+        if (commitImmediately || MatchManager.Instance.difficulty_level == 3)
+        {
+            MatchManager.Instance.CommitToAction();
+        }
+        if (MatchManager.Instance.difficulty_level < 3)
+        {
+            HighlightAllValidHighPassTargets();
+        }
+        Debug.Log("Goalkeeper Kick activated. Waiting for target selection...");
     }
 
     public void BeginAvailableTargetPrecompute()
@@ -473,12 +499,19 @@ public class HighPassManager : MonoBehaviour
 
     private void CommitToThisAction()
     {
+        if (pendingSetPieceTakerForCommit != null)
+        {
+            MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(pendingSetPieceTakerForCommit);
+            pendingSetPieceTakerForCommit = null;
+        }
+
         MatchManager.Instance.currentState = MatchManager.GameState.HighPass;  // Update game state
         MatchManager.Instance.CommitToAction();
     }
 
     public void HandleHighPassProcess(HexCell clickedHex, bool isGK = false)
     {
+        bool effectiveIsGK = isGK || isGoalkeeperKick;
         if (clickedHex != null)
         { 
             Debug.Log($"Clicked hex: {clickedHex.coordinates}");
@@ -491,16 +524,17 @@ public class HighPassManager : MonoBehaviour
             else
             {
                 // Now handle the pass based on difficulty
-                HandleHighPassBasedOnDifficulty(clickedHex, isGK);
+                HandleHighPassBasedOnDifficulty(clickedHex, effectiveIsGK);
             }   
         }
     }
 
     private void HandleHighPassBasedOnDifficulty(HexCell clickedHex, bool isGK = false)
     {
+        bool effectiveIsGK = isGK || isGoalkeeperKick;
         int difficulty = MatchManager.Instance.difficulty_level;  // Get current difficulty
         // Centralized target validation
-        bool isValid = ValidateHighPassTarget(clickedHex, isGK);
+        bool isValid = ValidateHighPassTarget(clickedHex, effectiveIsGK);
         // If the clicked hex is not valid, reset everything and reject the click
         if (!isValid)
         {
@@ -524,8 +558,10 @@ public class HighPassManager : MonoBehaviour
         // Difficulty-based handling
         if (difficulty == 3) // Hard Mode: Immediate action
         {
-            Debug.Log("High Pass target confirmed. Difficulty 3 was already committed on [C].");
-            ConfirmHighPassTargetSelection(clickedHex, false);
+            Debug.Log(effectiveIsGK
+                ? "Goalkeeper Kick target confirmed."
+                : "High Pass target confirmed. Difficulty 3 was already committed on [C].");
+            ConfirmHighPassTargetSelection(clickedHex, effectiveIsGK);
         }
         else if (difficulty == 2 || difficulty == 1)  // Medium/Easy Mode: Require confirmation with a second click
         {
@@ -543,7 +579,11 @@ public class HighPassManager : MonoBehaviour
 
                 if (!isCornerKick)
                 {
-                    if (difficulty == 1)
+                    if (effectiveIsGK)
+                    {
+                        HighlightAllValidHighPassTargets();
+                    }
+                    else if (difficulty == 1)
                     {
                         HighlightAllValidHighPassTargets();
                         eligibleAttackers = GetAttackersWithinRangeOfHex(currentTargetHex, ATTACKER_MOVE_RANGE);
@@ -603,7 +643,7 @@ public class HighPassManager : MonoBehaviour
 
     private bool IsHighPassTargetAvailableForPreview(HexCell targetHex)
     {
-        return TryValidateHighPassTarget(targetHex, isGK: false, updateEligibleAttackers: false, logWarnings: false);
+        return TryValidateHighPassTarget(targetHex, isGK: isGoalkeeperKick, updateEligibleAttackers: false, logWarnings: false);
     }
 
     private bool TryValidateHighPassTarget(HexCell targetHex, bool isGK, bool updateEligibleAttackers, bool logWarnings)
@@ -628,10 +668,16 @@ public class HighPassManager : MonoBehaviour
             ClearValidatedHighPassAttackers(updateEligibleAttackers);
             return false;
         }
+        int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         if (isGK)
         {
-            // Specific HP from GK after a save and hold or GoalKick
-            // reject only targets in the opposite final thirds.
+            if (distance < minPassDistance)
+            {
+                if (logWarnings) Debug.LogWarning($"Goalkeeper Kick is too close. Minimum steps allowed: {minPassDistance}. Current steps: {distance}");
+                ClearValidatedHighPassAttackers(updateEligibleAttackers);
+                return false;
+            }
+
             if (ballHex.isInFinalThird * targetHex.isInFinalThird == -1)
             {
                 if (logWarnings) Debug.LogWarning($"GK High Pass cannot be targeted in the opposite Final Third");
@@ -641,7 +687,6 @@ public class HighPassManager : MonoBehaviour
         }
         else if (isCornerKick)
         {
-            int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
             // Check the distance limit
             if (
                 !targetHex.isAttackOccupied // Target is not attack occupied
@@ -664,7 +709,6 @@ public class HighPassManager : MonoBehaviour
         {
             // Regular HP
             // Alternative Step 4
-            int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
             // Check the distance limit
             if (distance > MAX_PASS_DISTANCE)
             {
@@ -698,7 +742,8 @@ public class HighPassManager : MonoBehaviour
             PlayerToken targetToken = targetHex.GetOccupyingToken();
             if (targetToken != null
                 && MatchManager.Instance != null
-                && !MatchManager.Instance.CanTokenCollectHangingPass(targetToken))
+                && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
+                    || targetToken == pendingSetPieceTakerForCommit))
             {
                 if (logWarnings) Debug.LogWarning($"{targetToken.name} cannot be the next player to touch the ball after taking the set piece.");
                 ClearValidatedHighPassAttackers(updateEligibleAttackers);
@@ -1196,7 +1241,8 @@ public class HighPassManager : MonoBehaviour
         return isActivated
             && isWaitingForConfirmation
             && MatchManager.Instance != null
-            && MatchManager.Instance.difficulty_level == 1
+            && (MatchManager.Instance.difficulty_level == 1
+                || (isGoalkeeperKick && MatchManager.Instance.difficulty_level < 3))
             && !isCornerKick;
     }
 
@@ -1396,6 +1442,8 @@ public class HighPassManager : MonoBehaviour
         pendingDifficultyOneTargetHighlightRefresh = false;
         canDefGKRushWithoutMoving = false;
         isCornerKick = false;
+        isGoalkeeperKick = false;
+        pendingSetPieceTakerForCommit = null;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
         if (!preserveTargetPrecompute)
@@ -1416,6 +1464,11 @@ public class HighPassManager : MonoBehaviour
         // didGKMoveInDefPhase = false; // Reset in headerManager.FindEligibleHeaderTokens()
     }
 
+    public void SetPendingSetPieceTakerForCommit(PlayerToken taker)
+    {
+        pendingSetPieceTakerForCommit = taker;
+    }
+
     public string GetDebugStatus()
     {
         StringBuilder sb = new();
@@ -1423,6 +1476,7 @@ public class HighPassManager : MonoBehaviour
 
         if (isActivated) sb.Append("isActivated, ");
         if (isAvailable) sb.Append("isAvailable, ");
+        if (isGoalkeeperKick) sb.Append("isGoalkeeperKick, ");
         if (isWaitingForConfirmation) sb.Append("isAwaitingTargetSelection, ");
         if (isWaitingForAttackerSelection) sb.Append("isWaitingForAttackerSelection, ");
         if (isWaitingForAttackerMove) sb.Append("isWaitingForAttackerMove, ");
@@ -1450,11 +1504,28 @@ public class HighPassManager : MonoBehaviour
         if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
         if (finalThirdManager != null && finalThirdManager.isActivated) return "";
         if (freeKickManager != null && freeKickManager.isWaitingForExecution) return "";
-        if (isAvailable) sb.Append("Press [C] to Play a High Pass, ");
+        if (isAvailable)
+        {
+            if (MatchManager.Instance != null && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick)
+            {
+                sb.Append("Press [K] to take a Goalkeeper Kick, ");
+            }
+            else
+            {
+                sb.Append("Press [C] to Play a High Pass, ");
+            }
+        }
         if (isActivated) sb.Append("HP: ");
         if (isWaitingForConfirmation)
         {
-            sb.Append($"Click on an inbounds Hex {minPassDistance}-{MAX_PASS_DISTANCE} Hexes from {passerName}, on or within 3 reachable Hexes of an attacker, ");
+            if (isGoalkeeperKick)
+            {
+                sb.Append($"Click on an inbounds Hex at least {minPassDistance} Hexes from {passerName}, not in the opposite Final Third, on or within 3 reachable Hexes of an attacker, ");
+            }
+            else
+            {
+                sb.Append($"Click on an inbounds Hex {minPassDistance}-{MAX_PASS_DISTANCE} Hexes from {passerName}, on or within 3 reachable Hexes of an attacker, ");
+            }
             if (matchManager != null && matchManager.difficulty_level == 3) sb.Append("this High Pass is already committed, ");
         }
         if (isWaitingForConfirmation && currentTargetHex != null) sb.Append($"or click the orange Hex again to confirm target, ");

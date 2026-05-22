@@ -6,6 +6,13 @@ using System.Linq;
 
 public class FinalThirdManager : MonoBehaviour
 {
+    private enum FinalThirdContext
+    {
+        None,
+        SaveAndHoldK,
+        OobGoalKick
+    }
+
     [Header("Dependencies")]
     public Ball ball;
     public HexGrid hexGrid;
@@ -28,8 +35,17 @@ public class FinalThirdManager : MonoBehaviour
     private bool isMovingToken = false;
     public bool forfeitWasPressed = false;
     public bool isWaitingForWhatToDo = false;
+    public bool isWaitingForSetPieceGoalKickChoice = false;
+    [SerializeField]
+    private bool useThomasDropBallAutoMovementRule = false;
     [SerializeField]
     private bool thisIsTheSecond = false;
+    [SerializeField]
+    private FinalThirdContext finalThirdContext = FinalThirdContext.None;
+    [SerializeField]
+    private HexCell setPieceGoalKickSpot = null;
+    [SerializeField]
+    private PlayerToken setPieceGoalKickGoalkeeper = null;
     [Header("Runtime Items")]
     [SerializeField]
     private List<PlayerToken> eligibleTokens;
@@ -60,9 +76,10 @@ public class FinalThirdManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (keyData.isConsumed) return;
         if (isActivated)
         {
-            if (keyData.key == KeyCode.X)
+            if (!isWaitingForWhatToDo && keyData.key == KeyCode.X)
             {
                 if (isMovingToken)
                 {
@@ -72,12 +89,14 @@ public class FinalThirdManager : MonoBehaviour
                 keyData.isConsumed = true;
                 ForfeitTurn();
             }
-            if (isWaitingForWhatToDo && keyData.key == KeyCode.D)
+            if (isWaitingForWhatToDo && !isWaitingForSetPieceGoalKickChoice && keyData.key == KeyCode.D)
             {
+                keyData.isConsumed = true;
                 DropBall();
             }
-            if (isWaitingForWhatToDo && keyData.key == KeyCode.K)
+            else if (isWaitingForWhatToDo && !isWaitingForSetPieceGoalKickChoice && keyData.key == KeyCode.K)
             {
+                keyData.isConsumed = true;
                 GKKick();
             }
         }
@@ -85,6 +104,38 @@ public class FinalThirdManager : MonoBehaviour
 
 
     public void TriggerFinalThirdPhase(bool bothSides = false)
+    {
+        ClearSpecialFinalThirdContext();
+        TriggerFinalThirdPhaseInternal(bothSides);
+    }
+
+    public void TriggerSaveAndHoldFinalThirds()
+    {
+        ClearSpecialFinalThirdContext();
+        finalThirdContext = FinalThirdContext.SaveAndHoldK;
+        TriggerFinalThirdPhaseInternal(true);
+    }
+
+    public void TriggerOobGoalKickFinalThirds(HexCell goalKickSpot, PlayerToken goalkeeper)
+    {
+        ClearSpecialFinalThirdContext();
+        finalThirdContext = FinalThirdContext.OobGoalKick;
+        setPieceGoalKickSpot = goalKickSpot;
+        setPieceGoalKickGoalkeeper = goalkeeper;
+        StartCoroutine(TriggerOobGoalKickFinalThirdsAfterGoalkeeperReady());
+    }
+
+    private IEnumerator TriggerOobGoalKickFinalThirdsAfterGoalkeeperReady()
+    {
+        if (!IsOobGoalKickSpotBlockedByNonGoalkeeper())
+        {
+            yield return StartCoroutine(MoveGoalkeeperToGoalKickSpotIfNeeded());
+        }
+
+        TriggerFinalThirdPhaseInternal(true);
+    }
+
+    private void TriggerFinalThirdPhaseInternal(bool bothSides = false)
     {
         isActivated = true;
         this.bothSides = bothSides;
@@ -100,11 +151,31 @@ public class FinalThirdManager : MonoBehaviour
         
         if (eligibleTokens.Count == 0)
         {
+            if (IsFirstOobGoalKickFinalThird() && !IsOobGoalKickSpotBlockedByNonGoalkeeper())
+            {
+                StartCoroutine(MoveGoalkeeperAndStartOppositeFinalThird());
+                return;
+            }
+
+            if (thisIsTheSecond)
+            {
+                if (IsSaveAndHoldKContext() || IsOobGoalKickContext())
+                {
+                    Debug.Log("No Tokens in the opposite Final Third. Moving to the goalkeeper post-F3 decision.");
+                    EnterGoalkeeperDecisionAfterDoubleFinalThirds();
+                }
+                else
+                {
+                    Debug.Log("No Tokens in the opposite Final Third. Ending generic Final Third phase.");
+                    EndF3Phase();
+                }
+                return;
+            }
+
             isActivated = false;
             Debug.Log("No Tokens in the Final Third! Skipping!");
             return; // No Eligible Tokens
         }
-        Debug.Log("Hello from FinalThird Manager!");
         movedTokens = new List<PlayerToken>();
         currentTeamMoving = "attack";
         StartCoroutine(HandleF3Movement());
@@ -118,6 +189,20 @@ public class FinalThirdManager : MonoBehaviour
             .Where(token => !headerManager.attackerWillJump.Contains(token))
             .Where(token => !headerManager.defenderWillJump.Contains(token))
             .ToList();
+
+        if (IsFirstOobGoalKickFinalThird())
+        {
+            PlayerToken spotOccupant = setPieceGoalKickSpot != null ? setPieceGoalKickSpot.GetOccupyingToken() : null;
+            if (spotOccupant != null
+                && spotOccupant != setPieceGoalKickGoalkeeper
+                && spotOccupant.GetCurrentHex() != null
+                && spotOccupant.GetCurrentHex().isInFinalThird == -f3Side
+                && !initList.Contains(spotOccupant))
+            {
+                initList.Add(spotOccupant);
+            }
+        }
+
         return initList;
     }
     
@@ -137,7 +222,6 @@ public class FinalThirdManager : MonoBehaviour
             yield break;
         }
 
-        Debug.Log($"Hello from finalThirdManager.HandleMouseInput");
         if (
             inputToken != null // Clicked on a Token
             && (
@@ -148,7 +232,6 @@ public class FinalThirdManager : MonoBehaviour
             )
         )
         {
-            Debug.Log($"Passing {inputToken} to HandleTokenSelectionForF3");
             HandleTokenSelectionForF3(inputToken);
         }
         if (
@@ -158,18 +241,35 @@ public class FinalThirdManager : MonoBehaviour
             && inputCell != null // We clicked on a Hex
         )
         {
-            Debug.Log($"Passing {inputCell.name} to ConfirmTokenMove");
             yield return StartCoroutine(ConfirmTokenMove(inputCell));
         }
     }
 
     private IEnumerator HandleF3Movement()
     {
-        Debug.Log($"Hello from HandleF3Movement, currentTeamMoving: {currentTeamMoving}");
         isWaitingForTokenSelection = true;
         currentMovableTokens = GetCurrentTeamTokens();
+        if (IsFirstOobGoalKickFinalThird())
+        {
+            currentMovableTokens.Remove(setPieceGoalKickGoalkeeper);
+        }
+        ApplyOobGoalKickSpotBlockerMovableTokenRule();
+        ApplyOobGoalKickDefenseClearanceMovableTokenRules();
 
         if (currentMovableTokens.Count == 0)  // <- Add this check
+        {
+            if (IsOobGoalKickSpotBlockedByCurrentTeam())
+            {
+                PlayerToken blocker = setPieceGoalKickSpot.GetOccupyingToken();
+                currentMovableTokens.Add(blocker);
+                if (!eligibleTokens.Contains(blocker))
+                {
+                    eligibleTokens.Add(blocker);
+                }
+            }
+        }
+
+        if (currentMovableTokens.Count == 0)
         {
             Debug.Log($"No movable tokens for {currentTeamMoving}. Skipping...");
             StartCoroutine(NextF3Phase());
@@ -182,7 +282,6 @@ public class FinalThirdManager : MonoBehaviour
         {
             isWaitingForTargetHex = false;
             isWaitingForTokenSelection = true;
-            Debug.Log($"Running F3");
             yield return new WaitUntil(() => selectedToken != null || forfeitWasPressed);
             // ✅ Exit immediately if forfeit is triggered
             if (forfeitWasPressed)
@@ -190,7 +289,6 @@ public class FinalThirdManager : MonoBehaviour
                 Debug.Log("Forfeit detected during F3 movement. Exiting movement phase.");
                 break;
             }
-            Debug.Log($"Selected token is now not null: {selectedToken}");
             isWaitingForTargetHex = true;
             isWaitingForTokenSelection = false;
             yield return new WaitUntil(() => (!isWaitingForTargetHex && !isMovingToken) || forfeitWasPressed);
@@ -200,7 +298,6 @@ public class FinalThirdManager : MonoBehaviour
                 Debug.Log("Forfeit detected while waiting for target hex. Exiting movement phase.");
                 break;
             }
-            Debug.Log($"isWaitingForTargetHex is now false");
         }
         forfeitWasPressed = false; // ✅ Reset flag after movement phase
         Debug.Log($"{currentTeamMoving} Final Third Movement Phase Done.");
@@ -259,9 +356,26 @@ public class FinalThirdManager : MonoBehaviour
             isWaitingForTokenSelection = true;
             return;
         }
+        if (token == setPieceGoalKickGoalkeeper && IsFirstOobGoalKickFinalThird())
+        {
+            Debug.Log("The goal-kick goalkeeper does not need a Final Third move before taking the Goal Kick.");
+            selectedToken = null;
+            isWaitingForTargetHex = false;
+            isWaitingForTokenSelection = true;
+            return;
+        }
+        if (!currentMovableTokens.Contains(token))
+        {
+            Debug.Log($"{token.name} is not currently movable in this Final Third step.");
+            selectedToken = null;
+            isWaitingForTargetHex = false;
+            isWaitingForTokenSelection = true;
+            return;
+        }
         selectedToken = token;
-        // Highlight valid movement hexes (6 hexes)
-        movementPhaseManager.HighlightValidMovementHexes(selectedToken, 6);
+        int movementRange = GetF3MovementRangeForToken(selectedToken);
+        movementPhaseManager.HighlightValidMovementHexes(selectedToken, movementRange);
+        ApplyContextualMovementHighlights(selectedToken);
         Debug.Log($"{token.name} selected for F3 move.");
         isWaitingForTokenSelection = false;
         isWaitingForTargetHex = true;
@@ -275,33 +389,56 @@ public class FinalThirdManager : MonoBehaviour
             Debug.LogWarning("Invalid move! Selected hex is not in the highlighted movement options.");
             yield break;
         }
-        if (targetHex.isInPenaltyBox == 0 && selectedToken == ball.GetCurrentHex().GetOccupyingToken())
+        bool isNonGoalkeeperClearingGoalKickSpot = IsNonGoalkeeperClearingGoalKickSpot(selectedToken);
+        if (targetHex.isInPenaltyBox == 0
+            && selectedToken == ball.GetCurrentHex().GetOccupyingToken()
+            && IsFirstSaveAndHoldKFinalThird()
+            && !isNonGoalkeeperClearingGoalKickSpot)
         {
             Debug.LogWarning("It would be best if the GoalKeeper does not walk out of the box with the ball in their hands to avoid a RED CARD!");
             yield break;
         }
+        if (IsFirstOobGoalKickFinalThird()
+            && targetHex == setPieceGoalKickSpot
+            && selectedToken != setPieceGoalKickGoalkeeper)
+        {
+            Debug.LogWarning("The Goal Kick spot must be left free for the goalkeeper.");
+            yield break;
+        }
         List<HexCell> gkZoi = ball.GetCurrentHex().GetNeighbors(hexGrid).ToList();
-        if (bothSides && gkZoi.Contains(targetHex) && currentTeamMoving != "attack")
+        if (IsSaveAndHoldCurrentSideDefenseTurn() && gkZoi.Contains(targetHex))
         {
             Debug.LogWarning("Invalid move! You cannot land on the Ball's ZOI as it is held by the  attacking GK.");
             yield break;
         }
-        // Prevent duplicate movement
         PlayerToken movingToken = selectedToken;
-        movedTokens.Add(selectedToken);
-        // eligibleTokens.Remove(selectedToken);
-        currentMovableTokens.Remove(selectedToken);
+        bool startedOnGoalKickSpotAsNonGoalkeeper = IsNonGoalkeeperClearingGoalKickSpot(movingToken);
+        bool shouldCarryBall = movingToken == ball.GetCurrentHex()?.GetOccupyingToken()
+            && !startedOnGoalKickSpotAsNonGoalkeeper;
+
+        movedTokens.Add(movingToken);
+        currentMovableTokens.Remove(movingToken);
         isWaitingForTargetHex = false;
         isMovingToken = true;
         selectedToken = null;
-        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex, movingToken, false));
+        yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(
+            targetHex,
+            movingToken,
+            isCalledDuringMovement: false,
+            shouldCountForDistance: true,
+            shouldCarryBall: shouldCarryBall));
+
+        if (startedOnGoalKickSpotAsNonGoalkeeper && !IsOobGoalKickSpotBlockedByNonGoalkeeper())
+        {
+            yield return StartCoroutine(MoveGoalkeeperToGoalKickSpotIfNeeded());
+        }
+
         isMovingToken = false;
     }
 
     private IEnumerator NextF3Phase()
     {
         forfeitWasPressed = false;
-        Debug.Log($"Hello from Nextf3, currentTeamMoving: {currentTeamMoving}");
         if (currentTeamMoving == "attack")
         {
             currentTeamMoving = "defense";
@@ -312,25 +449,76 @@ public class FinalThirdManager : MonoBehaviour
         {
             if (bothSides)
             {
+                if (IsFirstOobGoalKickFinalThird())
+                {
+                    if (HasOobGoalKickDefensiveTokensInPenaltyBox())
+                    {
+                        Debug.LogWarning("Goal Kick side penalty box still has non-goalkeeper defensive tokens. Continuing defensive clearance before opposite-side Final Thirds.");
+                        currentTeamMoving = "defense";
+                        StartCoroutine(HandleF3Movement());
+                        yield break;
+                    }
+
+                    if (IsOobGoalKickSpotBlockedByNonGoalkeeper())
+                    {
+                        PlayerToken blocker = setPieceGoalKickSpot.GetOccupyingToken();
+                        Debug.LogWarning($"{blocker.name} must leave the Goal Kick spot before opposite-side Final Thirds can begin.");
+                        currentTeamMoving = blocker.isAttacker ? "attack" : "defense";
+                        if (!eligibleTokens.Contains(blocker))
+                        {
+                            eligibleTokens.Add(blocker);
+                        }
+                        StartCoroutine(HandleF3Movement());
+                        yield break;
+                    }
+
+                    yield return StartCoroutine(MoveGoalkeeperToGoalKickSpotIfNeeded());
+                }
+
                 Debug.Log("First F3 phase finished, waiting for second...");
                 thisIsTheSecond = true;
-                TriggerFinalThirdPhase(); // without both sides
+                TriggerFinalThirdPhaseInternal(); // without both sides
             }
             else 
             {
-                EndF3Phase();
-                if (thisIsTheSecond)
-                {
-                    isWaitingForWhatToDo = true;
-                    isActivated = true;
-                    Debug.Log($"GK has to decide what to do: [D]rop the ball and play on? OR Play the GK [Kick] as a High pass enywhere except the opposite Final Third?");
-                }
+                if (thisIsTheSecond && (IsSaveAndHoldKContext() || IsOobGoalKickContext())) EnterGoalkeeperDecisionAfterDoubleFinalThirds();
+                else EndF3Phase();
             }
         }
         yield break;
     }
 
-    private void EndF3Phase()
+    private void EnterGoalkeeperDecisionAfterDoubleFinalThirds()
+    {
+        bool isOobGoalKickChoice = IsOobGoalKickContext();
+        if (isOobGoalKickChoice)
+        {
+            if (!EnsureSetPieceGoalKickGoalkeeperReady())
+            {
+                return;
+            }
+
+            PlayerToken goalkeeper = setPieceGoalKickGoalkeeper;
+            EndF3Phase(preserveGoalKickContext: true);
+            isWaitingForWhatToDo = false;
+            isWaitingForSetPieceGoalKickChoice = false;
+            isActivated = false;
+            thisIsTheSecond = false;
+            bothSides = false;
+            MatchManager.Instance.BroadcastGoalKickRestartOptions(goalkeeper);
+            ClearSetPieceGoalKickContext();
+            Debug.Log("Goal Kick restart ready: MatchManager is offering [P] Standard Pass or [K] Goalkeeper Kick.");
+            return;
+        }
+
+        EndF3Phase(preserveGoalKickContext: isOobGoalKickChoice);
+        isWaitingForWhatToDo = true;
+        isWaitingForSetPieceGoalKickChoice = isOobGoalKickChoice;
+        isActivated = true;
+        Debug.Log($"GK has to decide what to do: [D]rop the ball and play on? OR Play the GK [Kick] as a High pass enywhere except the opposite Final Third?");
+    }
+
+    private void EndF3Phase(bool preserveGoalKickContext = false)
     {
         forfeitWasPressed = false;
         eligibleTokens.Clear();
@@ -342,10 +530,25 @@ public class FinalThirdManager : MonoBehaviour
         isWaitingForTargetHex = false;
         isMovingToken = false;
         isActivated = false;
+        if (!preserveGoalKickContext && !bothSides && thisIsTheSecond)
+        {
+            ClearSpecialFinalThirdContext();
+            isWaitingForSetPieceGoalKickChoice = false;
+        }
+        if (!preserveGoalKickContext)
+        {
+            thisIsTheSecond = false;
+            this.bothSides = false;
+        }
     }
 
     public void ForfeitTurn()
     {
+        if (!CanForfeitCurrentF3Move(logWarnings: true))
+        {
+            return;
+        }
+
         // yield return null;
         forfeitWasPressed = true;
         hexGrid.ClearHighlightedHexes();
@@ -359,21 +562,400 @@ public class FinalThirdManager : MonoBehaviour
         currentMovableTokens.Clear();
     }
 
+    private bool CanForfeitCurrentF3Move(bool logWarnings)
+    {
+        if (IsOobGoalKickSpotBlockedByCurrentTeam())
+        {
+            if (logWarnings)
+            {
+                PlayerToken blocker = setPieceGoalKickSpot.GetOccupyingToken();
+                Debug.LogWarning($"{blocker.name} must move off the Goal Kick spot before this Final Third move can be forfeited.");
+            }
+            return false;
+        }
+
+        if (IsOobGoalKickDefenseClearanceTurn() && HasOobGoalKickDefensiveTokensInPenaltyBox())
+        {
+            if (logWarnings)
+            {
+                Debug.LogWarning("All non-goalkeeper defensive tokens must leave the Goal Kick side penalty box before this Final Third move can be forfeited.");
+            }
+            return false;
+        }
+
+        if (IsSaveAndHoldCurrentSideDefenseTurn() && HasDefenderInBallHoldingGoalkeeperZoi())
+        {
+            if (logWarnings)
+            {
+                Debug.LogWarning("Defenders must clear the goalkeeper's zone of influence before this Final Third move can be forfeited.");
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool IsSaveAndHoldKContext()
+    {
+        return finalThirdContext == FinalThirdContext.SaveAndHoldK;
+    }
+
+    private bool IsOobGoalKickContext()
+    {
+        return finalThirdContext == FinalThirdContext.OobGoalKick;
+    }
+
+    private bool IsFirstSaveAndHoldKFinalThird()
+    {
+        return IsSaveAndHoldKContext()
+            && bothSides
+            && !thisIsTheSecond;
+    }
+
+    private bool IsFirstOobGoalKickFinalThird()
+    {
+        return IsOobGoalKickContext()
+            && bothSides
+            && !thisIsTheSecond
+            && setPieceGoalKickSpot != null;
+    }
+
+    private bool IsSaveAndHoldCurrentSideDefenseTurn()
+    {
+        return IsFirstSaveAndHoldKFinalThird() && currentTeamMoving == "defense";
+    }
+
+    private bool IsOobGoalKickSpotBlockedByNonGoalkeeper()
+    {
+        if (!IsOobGoalKickContext() || setPieceGoalKickSpot == null)
+        {
+            return false;
+        }
+
+        PlayerToken occupant = setPieceGoalKickSpot.GetOccupyingToken();
+        return occupant != null && occupant != setPieceGoalKickGoalkeeper;
+    }
+
+    private bool IsOobGoalKickSpotBlockedByCurrentTeam()
+    {
+        if (!IsOobGoalKickSpotBlockedByNonGoalkeeper())
+        {
+            return false;
+        }
+
+        PlayerToken occupant = setPieceGoalKickSpot.GetOccupyingToken();
+        return currentTeamMoving == "attack"
+            ? occupant.isAttacker
+            : currentTeamMoving == "defense" && !occupant.isAttacker;
+    }
+
+    private bool IsNonGoalkeeperClearingGoalKickSpot(PlayerToken token)
+    {
+        return IsFirstOobGoalKickFinalThird()
+            && token != null
+            && token != setPieceGoalKickGoalkeeper
+            && token.GetCurrentHex() == setPieceGoalKickSpot;
+    }
+
+    private bool IsOobGoalKickDefenseClearanceTurn()
+    {
+        return IsFirstOobGoalKickFinalThird() && currentTeamMoving == "defense";
+    }
+
+    private bool IsOobGoalKickCurrentSideDefenderToken(PlayerToken token)
+    {
+        if (!IsOobGoalKickDefenseClearanceTurn()
+            || token == null
+            || token == setPieceGoalKickGoalkeeper
+            || token.isAttacker
+            || setPieceGoalKickSpot == null)
+        {
+            return false;
+        }
+
+        HexCell tokenHex = token.GetCurrentHex();
+        return tokenHex != null;
+    }
+
+    private bool IsOobGoalKickDefenseClearanceToken(PlayerToken token)
+    {
+        if (!IsOobGoalKickCurrentSideDefenderToken(token))
+        {
+            return false;
+        }
+
+        HexCell tokenHex = token.GetCurrentHex();
+        return tokenHex != null
+            && tokenHex.isInPenaltyBox == setPieceGoalKickSpot.isInPenaltyBox;
+    }
+
+    private bool HasOobGoalKickDefensiveTokensInPenaltyBox()
+    {
+        if (!IsOobGoalKickDefenseClearanceTurn())
+        {
+            return false;
+        }
+
+        return playerTokenManager.allTokens.Any(IsOobGoalKickDefenseClearanceToken);
+    }
+
+    private bool HasDefenderInBallHoldingGoalkeeperZoi()
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null)
+        {
+            return false;
+        }
+
+        HashSet<HexCell> goalkeeperZoi = new(ballHex.GetNeighbors(hexGrid));
+        return playerTokenManager.allTokens
+            .Where(token => token != null && !token.isAttacker)
+            .Select(token => token.GetCurrentHex())
+            .Any(hex => hex != null && goalkeeperZoi.Contains(hex));
+    }
+
+    private void ApplyOobGoalKickDefenseClearanceMovableTokenRules()
+    {
+        if (!IsOobGoalKickDefenseClearanceTurn())
+        {
+            return;
+        }
+
+        List<PlayerToken> clearanceTokens = playerTokenManager.allTokens
+            .Where(IsOobGoalKickDefenseClearanceToken)
+            .ToList();
+
+        if (clearanceTokens.Count == 0)
+        {
+            return;
+        }
+
+        foreach (PlayerToken clearanceToken in clearanceTokens)
+        {
+            if (!eligibleTokens.Contains(clearanceToken))
+            {
+                eligibleTokens.Add(clearanceToken);
+            }
+
+            movedTokens.Remove(clearanceToken);
+            if (!currentMovableTokens.Contains(clearanceToken))
+            {
+                currentMovableTokens.Add(clearanceToken);
+            }
+        }
+    }
+
+    private void ApplyOobGoalKickSpotBlockerMovableTokenRule()
+    {
+        if (!IsOobGoalKickSpotBlockedByCurrentTeam())
+        {
+            return;
+        }
+
+        PlayerToken blocker = setPieceGoalKickSpot.GetOccupyingToken();
+        if (blocker == null)
+        {
+            return;
+        }
+
+        if (!eligibleTokens.Contains(blocker))
+        {
+            eligibleTokens.Add(blocker);
+        }
+
+        if (!currentMovableTokens.Contains(blocker))
+        {
+            currentMovableTokens.Add(blocker);
+        }
+
+        movedTokens.Remove(blocker);
+    }
+
+    private int GetF3MovementRangeForToken(PlayerToken token)
+    {
+        if (IsOobGoalKickCurrentSideDefenderToken(token))
+        {
+            return GetMinimumOobGoalKickDefenderExitRange(token);
+        }
+
+        return 6;
+    }
+
+    private int GetMinimumOobGoalKickDefenderExitRange(PlayerToken token)
+    {
+        HexCell startHex = token != null ? token.GetCurrentHex() : null;
+        if (startHex == null)
+        {
+            return 6;
+        }
+
+        for (int range = 6; range <= 30; range++)
+        {
+            var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexGrid, startHex, range);
+            if (reachableHexes.Any(IsOobGoalKickDefenderExitDestination))
+            {
+                return range;
+            }
+        }
+
+        Debug.LogWarning($"{token.name} has no reachable exit hex from the Goal Kick side penalty box. Keeping the normal F3 range.");
+        return 6;
+    }
+
+    private void ApplyContextualMovementHighlights(PlayerToken token)
+    {
+        if (IsOobGoalKickCurrentSideDefenderToken(token))
+        {
+            FilterHighlightedHexes(IsOobGoalKickDefenderExitDestination);
+            if (hexGrid.highlightedHexes.Count == 0)
+            {
+                Debug.LogWarning($"{token.name} has no legal Goal Kick clearance destination from {token.GetCurrentHex()?.coordinates.ToString() ?? "unknown hex"}.");
+            }
+            return;
+        }
+
+        if (IsFirstSaveAndHoldKFinalThird() && currentTeamMoving == "attack" && token == ball.GetCurrentHex()?.GetOccupyingToken())
+        {
+            FilterHighlightedHexes(hex => hex != null && !hex.isOutOfBounds && hex.isInPenaltyBox != 0);
+            return;
+        }
+
+        if (IsSaveAndHoldCurrentSideDefenseTurn())
+        {
+            List<HexCell> gkZoi = ball.GetCurrentHex().GetNeighbors(hexGrid).ToList();
+            FilterHighlightedHexes(hex => hex != null && !hex.isOutOfBounds && !gkZoi.Contains(hex));
+            return;
+        }
+
+        FilterHighlightedHexes(hex => hex != null && !hex.isOutOfBounds);
+    }
+
+    private void FilterHighlightedHexes(System.Func<HexCell, bool> predicate)
+    {
+        List<HexCell> filteredHexes = hexGrid.highlightedHexes
+            .Where(predicate)
+            .ToList();
+        hexGrid.ClearHighlightedHexes();
+        foreach (HexCell hex in filteredHexes)
+        {
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                hexGrid.highlightedHexes.Add(hex);
+                hex.HighlightHex("PaceAvailable");
+            }
+        }
+    }
+
+    private bool IsOobGoalKickDefenderExitDestination(HexCell hex)
+    {
+        return hex != null
+            && !hex.isOutOfBounds
+            && (setPieceGoalKickSpot == null || hex.isInPenaltyBox != setPieceGoalKickSpot.isInPenaltyBox)
+            && hex != setPieceGoalKickSpot
+            && !hex.isAttackOccupied
+            && !hex.isDefenseOccupied;
+    }
+
+    private IEnumerator MoveGoalkeeperAndStartOppositeFinalThird()
+    {
+        yield return StartCoroutine(MoveGoalkeeperToGoalKickSpotIfNeeded());
+        Debug.Log("No Tokens in the Goal Kick side Final Third. Moving to opposite-side Final Thirds.");
+        thisIsTheSecond = true;
+        TriggerFinalThirdPhaseInternal();
+    }
+
+    private IEnumerator MoveGoalkeeperToGoalKickSpotIfNeeded()
+    {
+        if (setPieceGoalKickGoalkeeper == null || setPieceGoalKickSpot == null)
+        {
+            yield break;
+        }
+
+        if (setPieceGoalKickGoalkeeper.GetCurrentHex() == setPieceGoalKickSpot)
+        {
+            ball.PlaceAtCell(setPieceGoalKickSpot);
+            MatchManager.Instance.SetLastToken(setPieceGoalKickGoalkeeper);
+            yield break;
+        }
+
+        HexCell oldHex = setPieceGoalKickGoalkeeper.GetCurrentHex();
+        if (oldHex != null && (oldHex.GetOccupyingToken() == null || oldHex.GetOccupyingToken() == setPieceGoalKickGoalkeeper))
+        {
+            oldHex.occupyingToken = null;
+            oldHex.isAttackOccupied = false;
+            oldHex.isDefenseOccupied = false;
+            oldHex.ResetHighlight();
+        }
+
+        setPieceGoalKickSpot.occupyingToken = null;
+        setPieceGoalKickSpot.isAttackOccupied = true;
+        setPieceGoalKickSpot.isDefenseOccupied = false;
+        setPieceGoalKickGoalkeeper.isAttacker = true;
+        yield return StartCoroutine(setPieceGoalKickGoalkeeper.JumpToHex(setPieceGoalKickSpot));
+        ball.PlaceAtCell(setPieceGoalKickSpot);
+        setPieceGoalKickSpot.HighlightHex("isAttackOccupied");
+        MatchManager.Instance.SetLastToken(setPieceGoalKickGoalkeeper);
+        Debug.Log($"{setPieceGoalKickGoalkeeper.name} moves onto the cleared Goal Kick spot to take the Goal Kick.");
+    }
+
     public void DropBall()
     {
         isWaitingForWhatToDo = false;
+        isWaitingForSetPieceGoalKickChoice = false;
         isActivated = false;
         thisIsTheSecond = false;
-        MatchManager.Instance.currentState = MatchManager.GameState.SuccessfulTackle; // Check this
-        string gkWithBall = ball.GetCurrentHex().GetOccupyingToken().name;
-        Debug.Log($"{gkWithBall} drops the ball at feet. Available things to do: Standard [P]ass / [M]ovement Phase / [C] High Pass / [L]ong Ball.");
+        bothSides = false;
+        string gkWithBall = ball.GetCurrentHex()?.GetOccupyingToken()?.name ?? "The goalkeeper";
+        ClearSpecialFinalThirdContext();
+
+        if (useThomasDropBallAutoMovementRule)
+        {
+            movementPhaseManager.ResetMovementPhase();
+            movementPhaseManager.ActivateMovementPhase();
+            movementPhaseManager.CommitToAction();
+            Debug.Log($"{gkWithBall} drops the ball at feet and commits to Movement Phase.");
+            return;
+        }
+
+        MatchManager.Instance.BroadcastSafeEndofMovementPhase();
+        Debug.Log($"{gkWithBall} drops the ball at feet. Normal end-of-movement options are available.");
+    }
+
+    public void StandardGoalKickPass()
+    {
+        if (!EnsureSetPieceGoalKickGoalkeeperReady())
+        {
+            return;
+        }
+
+        isWaitingForWhatToDo = false;
+        isWaitingForSetPieceGoalKickChoice = false;
+        isActivated = false;
+        thisIsTheSecond = false;
+        bothSides = false;
+        MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
+        MatchManager.Instance.OfferStandardGroundBallPass();
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(setPieceGoalKickGoalkeeper);
+        string gkName = setPieceGoalKickGoalkeeper.name;
+        Vector3Int kickCoordinates = ball.GetCurrentHex().coordinates;
+        MatchManager.Instance.TriggerStandardPass(setPieceGoalKickGoalkeeper);
+        ClearSetPieceGoalKickContext();
+        Debug.Log($"{gkName} will take a Goal Kick Standard Pass from {kickCoordinates}.");
     }
     
     public void GKKick()
     {
+        if (isWaitingForSetPieceGoalKickChoice && !EnsureSetPieceGoalKickGoalkeeperReady())
+        {
+            return;
+        }
+
         isWaitingForWhatToDo = false;
+        isWaitingForSetPieceGoalKickChoice = false;
         isActivated = false;
         thisIsTheSecond = false;
+        bothSides = false;
         MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
         PlayerToken gkToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (gkToken == null)
@@ -381,11 +963,48 @@ public class FinalThirdManager : MonoBehaviour
             Debug.LogError("Cannot take a Goal Kick because there is no goalkeeper on the ball hex.");
             return;
         }
-        MatchManager.Instance.ClearLastTokenChain();
-        MatchManager.Instance.SetLastToken(gkToken);
-        MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(gkToken);
         string gkWithBall = gkToken.name;
-        Debug.Log($"{gkWithBall} will take a Gk High pass, Please click on any hex except from the oposite Final Third to target.");
+        MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
+        MatchManager.Instance.TriggerGoalkeeperKick(gkToken, commitImmediately: true);
+        ClearSetPieceGoalKickContext();
+        Debug.Log($"{gkWithBall} will take a GK High Pass. Please click a valid target at least {highPassManager.minPassDistance} hexes away and outside the opposite Final Third.");
+    }
+
+    private bool EnsureSetPieceGoalKickGoalkeeperReady()
+    {
+        if (!IsOobGoalKickContext())
+        {
+            return true;
+        }
+
+        if (setPieceGoalKickGoalkeeper == null || setPieceGoalKickSpot == null)
+        {
+            Debug.LogError("Cannot take the Goal Kick because the set-piece goalkeeper or spot is missing.");
+            return false;
+        }
+
+        if (setPieceGoalKickGoalkeeper.GetCurrentHex() != setPieceGoalKickSpot)
+        {
+            Debug.LogError("Cannot take the Goal Kick because the goalkeeper is not on the Goal Kick spot.");
+            return false;
+        }
+
+        ball.PlaceAtCell(setPieceGoalKickSpot);
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(setPieceGoalKickGoalkeeper);
+        return true;
+    }
+
+    private void ClearSetPieceGoalKickContext()
+    {
+        ClearSpecialFinalThirdContext();
+    }
+
+    private void ClearSpecialFinalThirdContext()
+    {
+        finalThirdContext = FinalThirdContext.None;
+        setPieceGoalKickSpot = null;
+        setPieceGoalKickGoalkeeper = null;
     }
 
     private string GetTeamNameByCurrentTeamMoving()
@@ -436,6 +1055,7 @@ public class FinalThirdManager : MonoBehaviour
         if (isWaitingForTargetHex) sb.Append("isWaitingForTargetHex, ");
         if (isMovingToken) sb.Append("isMovingToken, ");
         if (isWaitingForWhatToDo) sb.Append("isWaitingForWhatToDo, ");
+        if (isWaitingForSetPieceGoalKickChoice) sb.Append("isWaitingForSetPieceGoalKickChoice, ");
         if (thisIsTheSecond) sb.Append("thisIsTheSecond, ");
         if (!string.IsNullOrEmpty(currentTeamMoving) && (currentTeamMoving == "attack" || currentTeamMoving == "defense")) sb.Append($"currentTeamMoving: {GetTeamNameByCurrentTeamMoving()}, ");
         if (selectedToken != null) sb.Append($"selectedToken: {selectedToken.name}, ");
@@ -447,7 +1067,7 @@ public class FinalThirdManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
-        if (isActivated)
+        if (isActivated && !isWaitingForWhatToDo)
         {
             sb.Append("F3: ");
             if (bothSides)
@@ -466,8 +1086,9 @@ public class FinalThirdManager : MonoBehaviour
         if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {GetTeamNameByCurrentTeamMoving()}, to select for movement, ");
         if (isWaitingForTargetHex && selectedToken != null) sb.Append($" or Click on a Hex to move {selectedToken.name} there, ");
         if (isMovingToken) sb.Append("moving selected F3 token, ");
-        if (isActivated && !isMovingToken) sb.Append($"Press [X] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
-        if (isWaitingForWhatToDo) sb.Append($"Press [D] to Drop the ball, or [K] to take a Goal Kick, ");
+        if (isActivated && !isWaitingForWhatToDo && !isMovingToken && CanForfeitCurrentF3Move(logWarnings: false)) sb.Append($"Press [X] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
+        if (isWaitingForSetPieceGoalKickChoice) sb.Append($"Press [P] to take a Goal Kick Standard Pass, or [K] to take a Goalkeeper Kick, ");
+        else if (isWaitingForWhatToDo) sb.Append($"Press [D] to Drop the ball and commit to Movement Phase, or [K] to take a Goal Kick, ");
         
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
@@ -485,7 +1106,7 @@ public class FinalThirdManager : MonoBehaviour
         {
             "attack" => attackingTeamIsHome,
             "defense" => !attackingTeamIsHome,
-            _ => isWaitingForWhatToDo ? !attackingTeamIsHome : null,
+            _ => isWaitingForWhatToDo ? attackingTeamIsHome : null,
         };
     }
 

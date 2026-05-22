@@ -862,6 +862,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             {
                 new ScenarioDefinition(nameof(Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits), Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits),
                 new ScenarioDefinition(nameof(Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click), Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click),
+                new ScenarioDefinition(nameof(Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation), Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation),
             });
         }
         else if (runHighPassHeaderAuditOnly)
@@ -871,6 +872,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits), Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits),
                 new ScenarioDefinition(nameof(Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click), Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click),
                 new ScenarioDefinition(nameof(Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header), Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header),
+                new ScenarioDefinition(nameof(Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation), Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation),
                 new ScenarioDefinition(nameof(Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice), Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice),
                 new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
             });
@@ -965,6 +967,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits), Scenario_032a_HighPass_Difficulty1_TargetSelection_And_Forfeits),
             new ScenarioDefinition(nameof(Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click), Scenario_032b_HighPass_Difficulty3_Commits_On_C_And_First_Click),
             new ScenarioDefinition(nameof(Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header), Scenario_032c_HighPass_InBox_GKMove_F3_Then_Header),
+            new ScenarioDefinition(nameof(Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation), Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation),
             new ScenarioDefinition(nameof(Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice), Scenario_033a_Header_DefenseForfeit_Reoffers_UnchallengedChoice),
             new ScenarioDefinition(nameof(Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast), Scenario_033b_Header_RollOrder_AttackersFirst_Defenders_GKLast),
               
@@ -1148,6 +1151,34 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         AssertTrue(hex != null, message);
         return hex;
+    }
+
+    private void PlaceTokenForScenario(PlayerToken token, HexCell hex, bool asAttacker)
+    {
+        if (token == null || hex == null)
+        {
+            return;
+        }
+
+        HexCell oldHex = token.GetCurrentHex();
+        if (oldHex != null && oldHex.occupyingToken == token)
+        {
+            oldHex.occupyingToken = null;
+            oldHex.isAttackOccupied = false;
+            oldHex.isDefenseOccupied = false;
+        }
+
+        if (hex.occupyingToken != null && hex.occupyingToken != token)
+        {
+            hex.occupyingToken.SetCurrentHex(null);
+        }
+
+        hex.occupyingToken = null;
+        hex.isAttackOccupied = asAttacker;
+        hex.isDefenseOccupied = !asAttacker;
+        token.SetCurrentHex(hex);
+        token.isAttacker = asAttacker;
+        token.transform.position = hex.GetHexCenter();
     }
 
     private IEnumerable<HexCell> GetAllInBoundsHexesOrdered(HexCell referenceHex = null)
@@ -17301,6 +17332,87 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(headerManager.isWaitingForHeaderAtGoal, "Header should offer the header-at-goal decision when the final target can be headed at goal.");
 
         LogFooterofTest("High Pass In Box GK Move F3 Then Header");
+    }
+
+    private IEnumerator Scenario_032d_GK_Kick_Target_Rules_And_Normal_HP_Continuation()
+    {
+        yield return StartCoroutine(PrepareHighPassAvailabilityFromKickoff(2));
+
+        PlayerToken gk = RequirePlayerToken("Kuzmic");
+        PlayerToken teammate = MatchManager.Instance.playerTokenManager.allTokens
+            .FirstOrDefault(token => token != null && token.isHomeTeam == gk.isHomeTeam && !token.IsGoalKeeper);
+        AssertTrue(teammate != null, "GK Kick scenario should find a non-GK teammate for the goalkeeper.");
+
+        if ((MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home) != gk.isHomeTeam)
+        {
+            MatchManager.Instance.ChangePossession();
+        }
+
+        HexCell gkHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)), "GK Kick scenario should find the right penalty-box GK hex.");
+        HexCell tooCloseHex = RequireHex(
+            gkHex.GetNeighbors(hexgrid).FirstOrDefault(hex => hex != null && !hex.isOutOfBounds),
+            "GK Kick scenario should find a neighboring too-close target.");
+        HexCell longMiddleTarget = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, 0)), "GK Kick scenario should find the central long target.");
+        HexCell oppositeFinalThirdTarget = RequireHex(
+            hexgrid.cells.Cast<HexCell>()
+                .Where(hex => hex != null && !hex.isOutOfBounds && hex.isInFinalThird == -gkHex.isInFinalThird)
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(gkHex, hex))
+                .FirstOrDefault(hex => HexGridUtils.GetHexStepDistance(gkHex, hex) >= highPassManager.minPassDistance),
+            "GK Kick scenario should find a target in the opposite Final Third.");
+
+        int longTargetDistance = HexGridUtils.GetHexStepDistance(gkHex, longMiddleTarget);
+        AssertTrue(longTargetDistance > 15, "GK Kick long middle target should be beyond normal High Pass max range.", "> 15", longTargetDistance);
+
+        PlaceTokenForScenario(gk, gkHex, asAttacker: true);
+        PlaceTokenForScenario(teammate, longMiddleTarget, asAttacker: true);
+        highPassManager.ball.PlaceAtCell(gkHex);
+        MatchManager.Instance.attackHasPossession = true;
+        MatchManager.Instance.currentState = MatchManager.GameState.GoalKick;
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(gk);
+        MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(gk);
+
+        highPassManager.CleanUpHighPass();
+        highPassManager.ActivateGoalkeeperKick();
+        AssertTrue(highPassManager.isGoalkeeperKick, "HighPassManager should be in GK Kick mode.");
+        AssertTrue(highPassManager.isWaitingForConfirmation, "GK Kick should wait for target confirmation.");
+
+        Log($"Clicking too-close GK Kick target {tooCloseHex.coordinates}");
+        highPassManager.HandleHighPassProcess(tooCloseHex, true);
+        AssertTrue(highPassManager.currentTargetHex == null, "GK Kick should reject targets below minPassDistance.");
+        AssertTrue(highPassManager.isWaitingForConfirmation, "GK Kick should keep waiting after rejecting a too-close target.");
+
+        PlaceTokenForScenario(teammate, oppositeFinalThirdTarget, asAttacker: true);
+        Log($"Clicking opposite-F3 GK Kick target {oppositeFinalThirdTarget.coordinates}");
+        highPassManager.HandleHighPassProcess(oppositeFinalThirdTarget, true);
+        AssertTrue(highPassManager.currentTargetHex == null, "GK Kick should reject the opposite Final Third even when a teammate is on the target.");
+
+        PlaceTokenForScenario(teammate, longMiddleTarget, asAttacker: true);
+        Log($"Clicking long GK Kick target {longMiddleTarget.coordinates}");
+        highPassManager.HandleHighPassProcess(longMiddleTarget, true);
+        AssertTrue(
+            highPassManager.currentTargetHex == longMiddleTarget,
+            "GK Kick should accept a valid target beyond the normal 15-hex High Pass maximum.",
+            longMiddleTarget,
+            highPassManager.currentTargetHex);
+
+        Log($"Clicking long GK Kick target {longMiddleTarget.coordinates} again to confirm");
+        highPassManager.HandleHighPassProcess(longMiddleTarget, true);
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForAttackerSelection,
+            2f,
+            "Confirmed GK Kick should continue into the normal High Pass attacker movement phase."));
+        AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.HighPass, "Confirmed GK Kick should transition to HighPass state.", MatchManager.GameState.HighPass, MatchManager.Instance.currentState);
+        AssertTrue(highPassManager.lockedAttacker == teammate, "GK Kick should lock the teammate on the confirmed target.", teammate, highPassManager.lockedAttacker);
+
+        Log("Pressing X - Forfeit attacker movement after confirmed GK Kick");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => highPassManager.isWaitingForDefenderSelection,
+            2f,
+            "GK Kick should proceed to normal High Pass defender movement after attacker movement is forfeited."));
+
+        LogFooterofTest("GK Kick Target Rules And Normal HP Continuation");
     }
 
     private IEnumerator PrepareDirectHeaderAuditState()

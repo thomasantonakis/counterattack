@@ -11,6 +11,7 @@ public class OutOfBoundsManager : MonoBehaviour
     public ThrowInManager throwInManager;
     public OutOfBoundsPushManager outOfBoundsPushManager;
     public PlayerTokenManager playerTokenManager;
+    public FinalThirdManager finalThirdManager;
 
     public void HandleOutOfBounds(HexCell currentTargetHex, int directionIndex, string source, PlayerToken lastTouchToken = null)
     {
@@ -290,19 +291,56 @@ public class OutOfBoundsManager : MonoBehaviour
             {
                 Debug.Log("Right Side: Goal kick from center Hex at the 6-yard-box.");
                 HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0));
-                yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
-                yield return StartCoroutine(ball.MoveToCell(spot));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
+                yield return StartCoroutine(PrepareGoalKickRestart(spot));
             }
             else
             {
                 Debug.Log("Left Side: Goal kick from center Hex at the 6-yard-box.");
                 HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 0));
-                yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
-                yield return StartCoroutine(ball.MoveToCell(spot));
-                MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
+                yield return StartCoroutine(PrepareGoalKickRestart(spot));
             }
         }
+    }
+
+    private IEnumerator PrepareGoalKickRestart(HexCell spot)
+    {
+        yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
+        yield return StartCoroutine(ball.MoveToCell(spot, allowGKBoxMove: false));
+
+        PlayerToken gkToken = GetAttackingGoalkeeper();
+        if (gkToken != null)
+        {
+            MatchManager.Instance.ClearLastTokenChain();
+            MatchManager.Instance.SetLastToken(gkToken);
+        }
+        else
+        {
+            Debug.LogWarning("Goal Kick restart could not find the attacking goalkeeper after possession changed.");
+        }
+
+        MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
+
+        FinalThirdManager resolvedFinalThirdManager = finalThirdManager != null
+            ? finalThirdManager
+            : FindFirstObjectByType<FinalThirdManager>();
+        if (resolvedFinalThirdManager == null)
+        {
+            Debug.LogError("Goal Kick restart cannot trigger Final Thirds because FinalThirdManager is missing.");
+            yield break;
+        }
+
+        resolvedFinalThirdManager.TriggerOobGoalKickFinalThirds(spot, gkToken);
+    }
+
+    private PlayerToken GetAttackingGoalkeeper()
+    {
+        if (playerTokenManager == null)
+        {
+            return null;
+        }
+
+        return playerTokenManager.allTokens
+            .FirstOrDefault(token => token != null && token.IsGoalKeeper && token.isAttacker);
     }
 
     private void LogCornerWon(string source, PlayerToken lastTouchToken, PlayerToken explicitCornerWinner)
