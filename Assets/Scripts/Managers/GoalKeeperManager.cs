@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ public class GoalKeeperManager : MonoBehaviour
     public HelperFunctions helperFunctions;
     public HexGrid hexGrid;
     public Ball ball;
+    public ShotManager shotManager;
+    public GKPushManager gkPushManager;
     public bool isActivated = false;
     private PlayerToken activeDefendingGK;
     private int consumedBoxMovePenaltyBox;
@@ -130,8 +133,9 @@ public class GoalKeeperManager : MonoBehaviour
         return ShouldGKMoveForPenaltyBox(targetHex.isInPenaltyBox, targetHex);
     }
 
-    public bool ShouldGKMoveForPenaltyBox(int penaltyBoxValue, HexCell referenceHex = null)
+    public bool CanOfferGKMoveForPenaltyBox(int penaltyBoxValue, HexCell referenceHex, out PlayerToken defendingGK)
     {
+        defendingGK = null;
         PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (passer == null)
         {
@@ -162,16 +166,13 @@ public class GoalKeeperManager : MonoBehaviour
 
         if (isAttacker && isTargetPenaltyBoxOfDefenders)
         {
-            activeDefendingGK = FindDefendingGoalkeeperForAttackingTeam(isHomeTeam);
-            if (activeDefendingGK == null)
+            defendingGK = FindDefendingGoalkeeperForAttackingTeam(isHomeTeam);
+            if (defendingGK == null)
             {
                 Debug.LogError($"GK box move not offered: no defending goalkeeper found against attacker {passer.name}.");
                 return false;
             }
 
-            Debug.Log($"⚽ Ball has entered the opponent's penalty box ({penaltyBoxValue}) at {referenceHex?.coordinates.ToString() ?? "<boundary>"}. 🧤 GK gets a free move.");
-            isActivated = true;
-            consumedBoxMovePenaltyBox = penaltyBoxValue;
             return true;
         }
 
@@ -179,6 +180,207 @@ public class GoalKeeperManager : MonoBehaviour
             $"GK box move not offered: passer={passer.name}, passerIsAttacker={isAttacker}, " +
             $"attackingDirection={attackingDirection}, penaltyBox={penaltyBoxValue}, referenceHex={referenceHex?.coordinates.ToString() ?? "<none>"}.");
         return false;
+    }
+
+    public bool ShouldGKMoveForPenaltyBox(int penaltyBoxValue, HexCell referenceHex = null)
+    {
+        if (!CanOfferGKMoveForPenaltyBox(penaltyBoxValue, referenceHex, out PlayerToken defendingGK))
+        {
+            return false;
+        }
+
+        activeDefendingGK = defendingGK;
+        Debug.Log($"⚽ Ball has entered the opponent's penalty box ({penaltyBoxValue}) at {referenceHex?.coordinates.ToString() ?? "<boundary>"}. 🧤 GK gets a free move.");
+        isActivated = true;
+        consumedBoxMovePenaltyBox = penaltyBoxValue;
+        return true;
+    }
+
+    public bool TryStartGKMoveForPenaltyBox(int penaltyBoxValue, HexCell referenceHex, out PlayerToken defendingGK)
+    {
+        defendingGK = null;
+        if (!CanOfferGKMoveForPenaltyBox(penaltyBoxValue, referenceHex, out PlayerToken resolvedGK))
+        {
+            return false;
+        }
+
+        defendingGK = resolvedGK;
+        activeDefendingGK = resolvedGK;
+        Debug.Log($"⚽ Ball has entered the opponent's penalty box ({penaltyBoxValue}) at {referenceHex?.coordinates.ToString() ?? "<boundary>"}. 🧤 GK gets a free move.");
+        isActivated = true;
+        consumedBoxMovePenaltyBox = penaltyBoxValue;
+        return true;
+    }
+
+    public PlayerToken GetCurrentDefendingGoalkeeper()
+    {
+        return GetActiveDefendingGK();
+    }
+
+    public bool IsGoalkeeperOwnPenaltyHex(PlayerToken goalkeeper, HexCell hex)
+    {
+        if (goalkeeper == null || hex == null || hex.isInPenaltyBox == 0 || MatchManager.Instance == null)
+        {
+            return false;
+        }
+
+        MatchManager.TeamAttackingDirection direction = goalkeeper.isHomeTeam
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+        int ownPenaltyBox = direction == MatchManager.TeamAttackingDirection.LeftToRight ? -1 : 1;
+        return hex.isInPenaltyBox == ownPenaltyBox;
+    }
+
+    public List<HexCell> GetGoalkeeperWallHexes(PlayerToken goalkeeper, bool includeGoalkeeperHex)
+    {
+        List<HexCell> wallHexes = new();
+        HexCell gkHex = goalkeeper != null ? goalkeeper.GetCurrentHex() : null;
+        if (gkHex == null || hexGrid == null)
+        {
+            return wallHexes;
+        }
+
+        for (int offset = -3; offset <= 3; offset++)
+        {
+            if (!includeGoalkeeperHex && offset == 0)
+            {
+                continue;
+            }
+
+            HexCell candidate = hexGrid.GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + offset));
+            if (candidate != null && IsGoalkeeperOwnPenaltyHex(goalkeeper, candidate))
+            {
+                wallHexes.Add(candidate);
+            }
+        }
+
+        return wallHexes;
+    }
+
+    public int CalculateGoalkeeperWallPenalty(PlayerToken goalkeeper, HexCell wallHex)
+    {
+        HexCell gkHex = goalkeeper != null ? goalkeeper.GetCurrentHex() : null;
+        if (gkHex == null || wallHex == null)
+        {
+            return 0;
+        }
+
+        int distance = HexGridUtils.GetHexStepDistance(gkHex, wallHex);
+        return distance == 3 ? -1 : 0;
+    }
+
+    public bool TryFindFirstGoalkeeperWallHexOnPath(
+        List<HexCell> path,
+        PlayerToken goalkeeper,
+        bool includeGoalkeeperHex,
+        out HexCell wallHex,
+        out int pathIndex,
+        out int savingPenalty)
+    {
+        wallHex = null;
+        pathIndex = -1;
+        savingPenalty = 0;
+
+        if (path == null || goalkeeper == null)
+        {
+            return false;
+        }
+
+        HashSet<HexCell> wallHexes = GetGoalkeeperWallHexes(goalkeeper, includeGoalkeeperHex).ToHashSet();
+        for (int i = 0; i < path.Count; i++)
+        {
+            HexCell candidate = path[i];
+            if (candidate == null || !wallHexes.Contains(candidate))
+            {
+                continue;
+            }
+
+            wallHex = candidate;
+            pathIndex = i;
+            savingPenalty = CalculateGoalkeeperWallPenalty(goalkeeper, candidate);
+            return true;
+        }
+
+        return false;
+    }
+
+    public HexCell FindClosestGoalkeeperWallHexOnPath(List<HexCell> path, PlayerToken goalkeeper, bool includeGoalkeeperHex)
+    {
+        HexCell gkHex = goalkeeper != null ? goalkeeper.GetCurrentHex() : null;
+        if (path == null || gkHex == null)
+        {
+            return null;
+        }
+
+        HashSet<HexCell> wallHexes = GetGoalkeeperWallHexes(goalkeeper, includeGoalkeeperHex).ToHashSet();
+        return path
+            .Select((hex, index) => new { hex, index })
+            .Where(entry => entry.hex != null && wallHexes.Contains(entry.hex))
+            .OrderBy(entry => HexGridUtils.GetHexStepDistance(gkHex, entry.hex))
+            .ThenBy(entry => entry.hex == gkHex ? 0 : 1)
+            .ThenBy(entry => entry.index)
+            .Select(entry => entry.hex)
+            .FirstOrDefault();
+    }
+
+    public IEnumerator ResolveGoalkeeperSaveAndHold(PlayerToken goalkeeper, HexCell saveHex, string recoveryType)
+    {
+        if (goalkeeper == null || saveHex == null)
+        {
+            Debug.LogError("Cannot resolve goalkeeper Save and Hold because goalkeeper or save hex is null.");
+            yield break;
+        }
+
+        if (ball != null && ball.GetCurrentHex() != saveHex)
+        {
+            yield return StartCoroutine(ball.MoveToCell(saveHex, null, allowGKBoxMove: false));
+        }
+
+        GKPushManager manager = ResolveGKPushManager();
+        if (manager != null)
+        {
+            yield return StartCoroutine(manager.ResolveGKPush(goalkeeper, saveHex));
+        }
+
+        PlayerToken recoveredFrom = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+
+        if (!goalkeeper.isAttacker)
+        {
+            MatchManager.Instance.ChangePossession();
+        }
+
+        MatchManager.Instance.SetLastToken(goalkeeper);
+        ball?.PlaceAtCell(saveHex);
+        MatchManager.Instance.UpdatePossessionAfterPass(saveHex);
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            goalkeeper,
+            MatchManager.ActionType.SaveMade,
+            saveType: "held"
+        );
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            goalkeeper,
+            MatchManager.ActionType.BallRecovery,
+            connectedToken: recoveredFrom,
+            recoveryType: recoveryType
+        );
+
+        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(goalkeeper, saveHex, triggerFinalThirdsForAnyOther: false);
+    }
+
+    private GKPushManager ResolveGKPushManager()
+    {
+        if (gkPushManager == null)
+        {
+            gkPushManager = FindAnyObjectByType<GKPushManager>();
+        }
+
+        if (gkPushManager == null)
+        {
+            gkPushManager = gameObject.AddComponent<GKPushManager>();
+        }
+
+        gkPushManager.Configure(hexGrid, ball);
+        return gkPushManager;
     }
 
     public IEnumerator HandleGKFreeMove()

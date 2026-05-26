@@ -43,3 +43,6 @@ Thumbs.db
 Assets/Logs/
 # Assets/AssetStoreTools*
 *.log
+# CodeGraph local index
+
+.codegraph/

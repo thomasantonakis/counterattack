@@ -1100,11 +1100,18 @@ public class HexGrid : MonoBehaviour
         List<HexCell> saveableHexes = new List<HexCell>();
         if (gkHex != null)
         {
-            saveableHexes.Add(gkHex);
-            for (int i = 1; i <= 3; i++)  // Add 3 hexes forward and backward in the same column
+            MatchManager.TeamAttackingDirection gkDirection = defendingGK.isHomeTeam
+                ? MatchManager.Instance.homeTeamDirection
+                : MatchManager.Instance.awayTeamDirection;
+            int ownPenaltyBox = gkDirection == MatchManager.TeamAttackingDirection.LeftToRight ? -1 : 1;
+
+            for (int i = -3; i <= 3; i++)  // Add GK hex plus 3 hexes forward and backward in the same column
             {
-                saveableHexes.Add(GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + i)));
-                saveableHexes.Add(GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z - i)));
+                HexCell saveableHex = GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + i));
+                if (saveableHex != null && saveableHex.isInPenaltyBox == ownPenaltyBox)
+                {
+                    saveableHexes.Add(saveableHex);
+                }
             }
         }
         return saveableHexes;

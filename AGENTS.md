@@ -41,3 +41,10 @@
 8. When the user asks for full FTP regression, comment all FTP-related tests back in and run them together.
 9. If the full FTP regression fails, go back to the selective loop above.
 10. When FTP is stable and the user asks for broader regression, comment in all audited tests so far and run the wider suite before merging.
+
+
+## CodeGraph usage
+
+This repo may have a `.codegraph/` index. When available, use CodeGraph first for architecture, symbol lookup, impact analysis, callers/callees, and code navigation before falling back to grep/read loops.
+
+For Unity-specific behavior, remember that CodeGraph indexes source code but may not fully understand scene, prefab, inspector, or serialized asset wiring. Verify Unity object references manually when needed.

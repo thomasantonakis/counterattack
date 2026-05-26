@@ -1603,9 +1603,7 @@ public class MatchManager : MonoBehaviour
             firstTimePassManager.isAvailable = false;
             highPassManager.isAvailable = false;
             longBallManager.isAvailable = false;
-            shotManager.isAvailable = false;
-            shotManager.isActivated = true;
-            shotManager.isWaitingForSaveandHoldScenario = true;
+            shotManager.EnterSaveAndHoldDecision();
             Debug.Log($"{recoveringToken.name} recovered the ball in their own penalty box. Save and hold scenario.");
             return true;
         }

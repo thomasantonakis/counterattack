@@ -35,8 +35,14 @@ public class FirstTimePassManager : MonoBehaviour
     private HexCell hoveredMovementHex = null;
     private string latestValidationInstruction = string.Empty;
     private bool currentTargetPreviewIsDangerous = false;
+    private bool currentTargetPreviewHasConditionalGoalkeeperInteraction = false;
     private int currentTargetPreviewAttempts = 0;
     private List<GroundInterceptionCandidate> interceptionCandidates = new List<GroundInterceptionCandidate>();
+    private readonly List<GroundBallPathInteraction> pathInteractions = new();
+    private readonly HashSet<PlayerToken> attemptedOutfieldInterceptors = new();
+    private GroundBallPathInteraction currentPathInteraction = null;
+    private bool currentFtpGkWallAttempted = false;
+    private bool currentFtpGkBoxMoveHandled = false;
 
     private void OnEnable()
     {
@@ -54,7 +60,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
-        if (!isActivated)
+        if (IsFinalThirdRunning() || !isActivated)
         {
             return;
         }
@@ -79,7 +85,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
-        if (!isActivated || MatchManager.Instance == null)
+        if (IsFinalThirdRunning() || !isActivated || MatchManager.Instance == null)
         {
             return;
         }
@@ -118,6 +124,11 @@ public class FirstTimePassManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed)
+        {
+            return;
+        }
+
+        if (IsFinalThirdRunning())
         {
             return;
         }
@@ -202,9 +213,13 @@ public class FirstTimePassManager : MonoBehaviour
     {
         int difficulty = MatchManager.Instance.difficulty_level;
         GroundPassValidationResult validation = ValidateFTPTargetPath(clickedHex);
+        List<GroundBallPathInteraction> previewInteractions = validation.IsValid
+            ? BuildOrderedPathInteractions(clickedHex)
+            : new List<GroundBallPathInteraction>();
         int previewAttempts = validation.IsValid
-            ? GroundPassCommon.BuildOrderedInterceptionCandidates(hexGrid, ball, clickedHex).Count
+            ? GroundPassCommon.CountDangerousInteractions(previewInteractions)
             : 0;
+        bool hasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(previewInteractions);
 
         if (!validation.IsValid)
         {
@@ -228,7 +243,8 @@ public class FirstTimePassManager : MonoBehaviour
         if (difficulty == 3)
         {
             currentTargetHex = clickedHex;
-            currentTargetPreviewIsDangerous = validation.IsDangerous;
+            currentTargetPreviewIsDangerous = previewAttempts > 0;
+            currentTargetPreviewHasConditionalGoalkeeperInteraction = hasConditionalGoalkeeperInteraction;
             currentTargetPreviewAttempts = previewAttempts;
             ConfirmTargetSelection();
             return;
@@ -257,7 +273,8 @@ public class FirstTimePassManager : MonoBehaviour
         if (currentTargetHex == null || clickedHex != currentTargetHex)
         {
             currentTargetHex = clickedHex;
-            currentTargetPreviewIsDangerous = validation.IsDangerous;
+            currentTargetPreviewIsDangerous = previewAttempts > 0;
+            currentTargetPreviewHasConditionalGoalkeeperInteraction = hasConditionalGoalkeeperInteraction;
             currentTargetPreviewAttempts = previewAttempts;
             hoveredPreviewHex = null;
             RenderEasyModeSelectedTargetPreview(validation);
@@ -359,10 +376,13 @@ public class FirstTimePassManager : MonoBehaviour
             return;
         }
 
-        int previewAttempts = GroundPassCommon.BuildOrderedInterceptionCandidates(hexGrid, ball, hoveredHex).Count;
-        HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
+        List<GroundBallPathInteraction> previewInteractions = BuildOrderedPathInteractions(hoveredHex);
+        int previewAttempts = GroundPassCommon.CountDangerousInteractions(previewInteractions);
+        bool hasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(previewInteractions);
+        bool previewIsDangerous = previewAttempts > 0;
+        HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, previewIsDangerous);
         HighlightCommittedTarget();
-        latestValidationInstruction = GetEasyModePreviewInstruction(validation.IsDangerous, previewAttempts);
+        latestValidationInstruction = GetEasyModePreviewInstruction(previewIsDangerous, previewAttempts, hasConditionalGoalkeeperInteraction);
     }
 
     private void RenderEasyModeSelectedTargetPreview(GroundPassValidationResult? knownValidation = null)
@@ -382,9 +402,11 @@ public class FirstTimePassManager : MonoBehaviour
             return;
         }
 
-        currentTargetPreviewIsDangerous = validation.IsDangerous;
-        currentTargetPreviewAttempts = GroundPassCommon.BuildOrderedInterceptionCandidates(hexGrid, ball, currentTargetHex).Count;
-        HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, validation.IsDangerous);
+        List<GroundBallPathInteraction> previewInteractions = BuildOrderedPathInteractions(currentTargetHex);
+        currentTargetPreviewAttempts = GroundPassCommon.CountDangerousInteractions(previewInteractions);
+        currentTargetPreviewIsDangerous = currentTargetPreviewAttempts > 0;
+        currentTargetPreviewHasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(previewInteractions);
+        HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, currentTargetPreviewIsDangerous);
         latestValidationInstruction = GetEasyModeCommittedTargetInstruction();
     }
 
@@ -648,10 +670,15 @@ public class FirstTimePassManager : MonoBehaviour
         }
     }
 
-    private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts)
+    private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts, bool hasConditionalGoalkeeperInteraction)
     {
         if (!isDangerous || interceptionAttempts <= 0)
         {
+            if (hasConditionalGoalkeeperInteraction)
+            {
+                return "FTP preview enters the box: GK free move comes first, so current GK dive/interception threats are conditional and recalculate after that move. Click to lock this target.";
+            }
+
             return "Safe FTP preview before the 1-hex moves. Click to lock this target.";
         }
 
@@ -662,6 +689,11 @@ public class FirstTimePassManager : MonoBehaviour
     {
         if (!currentTargetPreviewIsDangerous || currentTargetPreviewAttempts <= 0)
         {
+            if (currentTargetPreviewHasConditionalGoalkeeperInteraction)
+            {
+                return "Selected FTP target enters the box: GK free move comes first, so current GK dive/interception threats are conditional and recalculate after that move. Click the orange target again to confirm, or hover another hex to preview.";
+            }
+
             return "Selected FTP target is currently safe. Click the orange target again to confirm, or hover another hex to preview. The path will be recalculated after the 1-hex moves.";
         }
 
@@ -719,10 +751,12 @@ public class FirstTimePassManager : MonoBehaviour
     public void CompleteDefenderMovementPhase()
     {
         interceptionCandidates = BuildPostMovementInterceptionCandidates();
+        pathInteractions.Clear();
+        pathInteractions.AddRange(BuildPostMovementPathInteractions());
 
-        if (interceptionCandidates.Count > 0)
+        if (pathInteractions.Count > 0)
         {
-            Debug.Log($"Interception chance after FTP movement phases: {interceptionCandidates.Count} defenders can intercept the pass.");
+            Debug.Log($"Ball path interactions after FTP movement phases: {pathInteractions.Count}.");
             StartFTPInterceptionDiceRollSequence();
         }
         else
@@ -761,6 +795,42 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         return candidates;
+    }
+
+    private List<GroundBallPathInteraction> BuildOrderedPathInteractions(
+        HexCell targetHex,
+        int minPathIndex = 0,
+        bool includeGoalkeeperBoxMove = true,
+        IEnumerable<HexCell> blockingDefenderHexes = null)
+    {
+        return GroundPassCommon.BuildOrderedBallPathInteractions(
+            hexGrid,
+            ball,
+            goalKeeperManager,
+            targetHex,
+            blockingDefenderHexes: blockingDefenderHexes,
+            excludeOutfieldDefenders: attemptedOutfieldInterceptors,
+            includeGoalkeeperWall: !currentFtpGkWallAttempted,
+            includeGoalkeeperBoxMove: includeGoalkeeperBoxMove && !currentFtpGkBoxMoveHandled,
+            minPathIndex: minPathIndex
+        );
+    }
+
+    private List<GroundBallPathInteraction> BuildPostMovementPathInteractions(int minPathIndex = 0, bool includeGoalkeeperBoxMove = true)
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null || currentTargetHex == null)
+        {
+            Debug.LogError("Cannot recalculate FTP path interactions because the ball hex or target hex is null.");
+            return new List<GroundBallPathInteraction>();
+        }
+
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        HashSet<HexCell> blockingDefenderHexes = new HashSet<HexCell>(
+            pathHexes.Where(hex => hex != null && hex.isDefenseOccupied)
+        );
+
+        return BuildOrderedPathInteractions(currentTargetHex, minPathIndex, includeGoalkeeperBoxMove, blockingDefenderHexes);
     }
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
@@ -822,7 +892,7 @@ public class FirstTimePassManager : MonoBehaviour
             MatchManager.Instance.SetHangingPass("ground", MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
         }
 
-        yield return StartCoroutine(HandleGroundBallMovement(hex));
+        yield return StartCoroutine(HandleGroundBallMovement(hex, allowGKBoxMove: false));
         MatchManager.Instance.UpdatePossessionAfterPass(hex);
         finalThirdManager.TriggerFinalThirdPhase();
         MatchManager.Instance.BroadcastEndofFirstTimePass();
@@ -849,15 +919,122 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void StartFTPInterceptionDiceRollSequence()
     {
-        if (interceptionCandidates.Count == 0)
+        if (pathInteractions.Count == 0)
         {
-            Debug.LogWarning("No defenders available for FTP interception rolls.");
+            Debug.LogWarning("No FTP path interactions available.");
             return;
         }
 
-        currentDefenderHex = interceptionCandidates[0].DefenderHex;
-        isWaitingForDiceRoll = true;
-        Debug.Log("Starting FTP interception dice roll sequence... Press [R] to roll.");
+        ProcessCurrentFtpPathInteraction();
+    }
+
+    private void ProcessCurrentFtpPathInteraction()
+    {
+        if (pathInteractions.Count == 0)
+        {
+            Debug.Log("FTP successful! No more path interactions to resolve.");
+            currentDefenderHex = null;
+            StartCoroutine(MovePassNotIntercepted(currentTargetHex));
+            return;
+        }
+
+        currentPathInteraction = pathInteractions[0];
+        currentDefenderHex = currentPathInteraction.DefenderHex;
+
+        switch (currentPathInteraction.Type)
+        {
+            case GroundBallPathInteractionType.GoalkeeperBoxMove:
+                StartCoroutine(ResolveGoalkeeperBoxMoveInteraction(currentPathInteraction));
+                break;
+            case GroundBallPathInteractionType.GoalkeeperDirectPickup:
+                StartCoroutine(ResolveGoalkeeperDirectPickup(currentPathInteraction));
+                break;
+            case GroundBallPathInteractionType.GoalkeeperWallSave:
+                int neededRoll = Mathf.Max(1, 10 - currentPathInteraction.DefenderToken.saving - currentPathInteraction.GkPenalty);
+                Debug.Log($"{currentPathInteraction.DefenderToken.name} can dive for a GK Wall save at {currentPathInteraction.InteractionHex.coordinates}. Needs {neededRoll}+ with Saving {currentPathInteraction.DefenderToken.saving} and penalty {currentPathInteraction.GkPenalty}, or natural 6/Jackpot. Press [R] to roll.");
+                isWaitingForDiceRoll = true;
+                break;
+            case GroundBallPathInteractionType.OutfieldInterception:
+                Debug.Log($"Selected FTP defender for interception: {currentPathInteraction.DefenderToken.name}. Press [R] to roll.");
+                isWaitingForDiceRoll = true;
+                break;
+        }
+    }
+
+    private IEnumerator ResolveGoalkeeperBoxMoveInteraction(GroundBallPathInteraction interaction)
+    {
+        isWaitingForDiceRoll = false;
+        pathInteractions.Remove(interaction);
+        currentFtpGkBoxMoveHandled = true;
+
+        if (interaction != null
+            && goalKeeperManager.TryStartGKMoveForPenaltyBox(interaction.InteractionHex.isInPenaltyBox, interaction.InteractionHex, out _))
+        {
+            yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+        }
+
+        pathInteractions.Clear();
+        pathInteractions.AddRange(BuildPostMovementPathInteractions(minPathIndex: 0, includeGoalkeeperBoxMove: false));
+        ProcessCurrentFtpPathInteraction();
+    }
+
+    private IEnumerator ResolveGoalkeeperDirectPickup(GroundBallPathInteraction interaction)
+    {
+        if (interaction?.DefenderToken == null || interaction.InteractionHex == null)
+        {
+            pathInteractions.Remove(interaction);
+            ProcessCurrentFtpPathInteraction();
+            yield break;
+        }
+
+        Debug.Log($"{interaction.DefenderToken.name} recovers the FTP directly at {interaction.InteractionHex.coordinates}.");
+        yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
+            interaction.DefenderToken,
+            interaction.InteractionHex,
+            "direct"));
+        CleanUpFTP();
+    }
+
+    private IEnumerator ResolveGoalkeeperWallSaveRoll(GroundBallPathInteraction interaction, RollInputOverride? rollOverride)
+    {
+        isWaitingForDiceRoll = false;
+        currentFtpGkWallAttempted = true;
+        if (interaction?.DefenderToken == null || interaction.InteractionHex == null)
+        {
+            pathInteractions.Remove(interaction);
+            ProcessCurrentFtpPathInteraction();
+            yield break;
+        }
+
+        PlayerToken goalkeeper = interaction.DefenderToken;
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        bool isJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? rollOverride.Value.isJackpot
+            : returnedJackpot;
+        int diceRoll = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll
+            : returnedRoll;
+        int savingTotal = diceRoll + goalkeeper.saving + interaction.GkPenalty;
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(goalkeeper, MatchManager.ActionType.SaveAttempt);
+        Debug.Log(isJackpot
+            ? $"{goalkeeper.name} rolls a Jackpot for the FTP GK Wall save at {interaction.InteractionHex.coordinates}."
+            : $"{goalkeeper.name} rolls {diceRoll} + Saving {goalkeeper.saving} + Penalty {interaction.GkPenalty} = {savingTotal} for the FTP GK Wall save.");
+
+        if (isJackpot || diceRoll == 6 || savingTotal >= 10)
+        {
+            Debug.Log($"{goalkeeper.name} catches the First-Time Pass from the GK Wall.");
+            yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
+                goalkeeper,
+                interaction.InteractionHex,
+                "gkWall"));
+            CleanUpFTP();
+            yield break;
+        }
+
+        Debug.Log($"{goalkeeper.name} failed the FTP GK Wall save. Play continues.");
+        pathInteractions.Remove(interaction);
+        ProcessCurrentFtpPathInteraction();
     }
 
     private void PerformFTPInterceptionRolls(int? rigRoll = null)
@@ -875,14 +1052,19 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void PerformFTPInterceptionRolls(RollInputOverride? rollOverride)
     {
-        if (currentDefenderHex == null)
+        if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
+        {
+            StartCoroutine(ResolveGoalkeeperWallSaveRoll(currentPathInteraction, rollOverride));
+            return;
+        }
+
+        if (currentDefenderHex == null || currentPathInteraction == null)
         {
             Debug.LogError("Cannot roll FTP interception because no current defender hex is set.");
             return;
         }
 
-        GroundInterceptionCandidate currentCandidate = interceptionCandidates
-            .FirstOrDefault(candidate => candidate.DefenderHex == currentDefenderHex);
+        GroundInterceptionCandidate currentCandidate = currentPathInteraction.InterceptionCandidate;
 
         if (currentCandidate == null || currentCandidate.DefenderToken == null)
         {
@@ -927,13 +1109,12 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
-        interceptionCandidates.Remove(currentCandidate);
+        attemptedOutfieldInterceptors.Add(defenderToken);
+        pathInteractions.Remove(currentPathInteraction);
 
-        if (interceptionCandidates.Count > 0)
+        if (pathInteractions.Count > 0)
         {
-            currentDefenderHex = interceptionCandidates[0].DefenderHex;
-            isWaitingForDiceRoll = true;
-            Debug.Log("Starting next FTP interception roll... Press [R] to roll.");
+            ProcessCurrentFtpPathInteraction();
             return;
         }
 
@@ -954,7 +1135,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
-        yield return StartCoroutine(HandleGroundBallMovement(defenderHex));
+        yield return StartCoroutine(HandleGroundBallMovement(defenderHex, allowGKBoxMove: false));
         PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
@@ -965,11 +1146,16 @@ public class FirstTimePassManager : MonoBehaviour
     private void ResetFTPInterceptionDiceRolls()
     {
         interceptionCandidates.Clear();
+        pathInteractions.Clear();
+        attemptedOutfieldInterceptors.Clear();
         currentDefenderHex = null;
+        currentPathInteraction = null;
         isWaitingForDiceRoll = false;
+        currentFtpGkWallAttempted = false;
+        currentFtpGkBoxMoveHandled = false;
     }
 
-    public IEnumerator HandleGroundBallMovement(HexCell targetHex)
+    public IEnumerator HandleGroundBallMovement(HexCell targetHex, bool allowGKBoxMove = true)
     {
         if (ball == null)
         {
@@ -984,7 +1170,7 @@ public class FirstTimePassManager : MonoBehaviour
             yield break;
         }
 
-        yield return StartCoroutine(ball.MoveToCell(targetHex));
+        yield return StartCoroutine(ball.MoveToCell(targetHex, null, allowGKBoxMove));
         ball.AdjustBallHeightBasedOnOccupancy();
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Highlights cleared after ball movement.");
@@ -1118,10 +1304,22 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isWaitingForDiceRoll)
         {
-            PlayerToken currentDefender = currentDefenderHex != null ? currentDefenderHex.GetOccupyingToken() : null;
-            if (currentDefender != null)
+            if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
             {
-                sb.Append($"Press [R] to roll for interception with {currentDefender.name}, a roll of {GetCurrentInterceptionRollDescription()} is needed, ");
+                PlayerToken gkToken = currentPathInteraction.DefenderToken;
+                int neededRoll = Mathf.Max(1, 10 - gkToken.saving - currentPathInteraction.GkPenalty);
+                string penaltyText = currentPathInteraction.GkPenalty == 0
+                    ? ""
+                    : $", dive penalty {currentPathInteraction.GkPenalty}";
+                sb.Append($"Press [R] to roll a GK dive with {gkToken.name}: needs {neededRoll}+ with Saving {gkToken.saving}{penaltyText}, or natural 6/Jackpot, ");
+            }
+            else
+            {
+                PlayerToken currentDefender = currentDefenderHex != null ? currentDefenderHex.GetOccupyingToken() : null;
+                if (currentDefender != null)
+                {
+                    sb.Append($"Press [R] to roll for interception with {currentDefender.name}, a roll of {GetCurrentInterceptionRollDescription()} is needed, ");
+                }
             }
         }
 
@@ -1131,7 +1329,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     public bool? IsInstructionExpectingHomeTeam()
     {
-        if (MatchManager.Instance == null || (!isActivated && !isAvailable))
+        if (MatchManager.Instance == null || IsFinalThirdRunning() || (!isActivated && !isAvailable))
         {
             return null;
         }
@@ -1176,6 +1374,12 @@ public class FirstTimePassManager : MonoBehaviour
     private void ResetTargetPreviewState()
     {
         currentTargetPreviewIsDangerous = false;
+        currentTargetPreviewHasConditionalGoalkeeperInteraction = false;
         currentTargetPreviewAttempts = 0;
+    }
+
+    private bool IsFinalThirdRunning()
+    {
+        return finalThirdManager != null && finalThirdManager.isActivated;
     }
 }

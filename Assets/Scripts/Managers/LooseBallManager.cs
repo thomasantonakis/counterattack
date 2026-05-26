@@ -25,6 +25,7 @@ public class LooseBallManager : MonoBehaviour
     public FinalThirdManager finalThirdManager;
     public ShotManager shotManager;
     public GoalFlowManager goalFlowManager;
+    public GoalKeeperManager goalKeeperManager;
     public HelperFunctions helperFunctions;
     [Header("Flags")]
     public bool isActivated = false;
@@ -442,6 +443,47 @@ public class LooseBallManager : MonoBehaviour
             ResolveDefensiveLooseBallRecovery(defendingGk, pickupHex);
             result.RecoveredByGoalkeeper = true;
             yield break;
+        }
+
+        GoalKeeperManager resolvedGoalKeeperManager = goalKeeperManager != null
+            ? goalKeeperManager
+            : FindAnyObjectByType<GoalKeeperManager>();
+        if (resolvedGoalKeeperManager != null)
+        {
+            goalKeeperManager = resolvedGoalKeeperManager;
+        }
+
+        if (resolvedGoalKeeperManager != null
+            && resolvedGoalKeeperManager.TryFindFirstGoalkeeperWallHexOnPath(
+                remainingPath,
+                defendingGk,
+                includeGoalkeeperHex: false,
+                out HexCell wallSaveHex,
+                out _,
+                out int wallSavingPenalty))
+        {
+            potentialInterceptor = defendingGk;
+            Debug.Log($"{defendingGk.name} can dive from the GK Wall at {wallSaveHex.coordinates} after the GK free move. Press [R] to roll.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(defendingGk, MatchManager.ActionType.SaveAttempt);
+
+            isWaitingForInterceptionRoll = true;
+            while (isWaitingForInterceptionRoll)
+            {
+                yield return null;
+            }
+
+            int savingTotal = interceptionRoll + defendingGk.saving + wallSavingPenalty;
+            if (interceptionRoll == 6 || savingTotal >= 10)
+            {
+                Debug.Log($"{defendingGk.name} successfully catches the loose ball from the GK Wall.");
+                yield return StartCoroutine(MoveLooseBallToHex(wallSaveHex, sourceType, allowGKBoxMove: false));
+                yield return StartCoroutine(resolvedGoalKeeperManager.ResolveGoalkeeperSaveAndHold(defendingGk, wallSaveHex, "gkWall"));
+                result.RecoveredByGoalkeeper = true;
+                yield break;
+            }
+
+            Debug.Log($"{defendingGk.name} failed the GK Wall loose-ball save.");
+            defendersTriedToIntercept.Add(defendingGk);
         }
 
         if (!TryFindDefendingGkInterceptionHex(remainingPath, defendingGk, out HexCell interceptionHex))

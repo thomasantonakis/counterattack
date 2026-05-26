@@ -510,6 +510,16 @@ public class ShotManager : MonoBehaviour
         if (isAvailable && keyData.key == KeyCode.S)
         {
             keyData.isConsumed = true; // Consume the key event
+            if (!CanStartShotFromCurrentPossession(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose))
+            {
+                Debug.LogWarning("Shot input ignored because the ball is not held by the attacking team in a valid shooting position.");
+                isAvailable = false;
+                isWaitingForSnapshotDecisionFromLoose = false;
+                isWaitingForShotCommitConfirmation = false;
+                ClearShotCommitPreview();
+                return;
+            }
+
             if (MatchManager.Instance != null && !movementPhaseManager.isCommitted)
             {
                 MatchManager.Instance.ClearNonShotActionPreviews();
@@ -574,7 +584,7 @@ public class ShotManager : MonoBehaviour
           CompleteDefenderMovement();
           return;
         }
-        else if (isActivated && isWaitingForSaveandHoldScenario)
+        else if (isWaitingForSaveandHoldScenario)
         {
           if (keyData.key == KeyCode.Q)
           {
@@ -599,6 +609,66 @@ public class ShotManager : MonoBehaviour
         {
             StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
         }
+    }
+
+    public void EnterSaveAndHoldDecision()
+    {
+        isAvailable = false;
+        isActivated = false;
+        isWaitingforBlockerSelection = false;
+        isWaitingForBlockDiceRoll = false;
+        isWaitingForShotRoll = false;
+        isWaitingForGKDiceRoll = false;
+        isWaitingforHandlingTest = false;
+        isWaitingForShotCommitConfirmation = false;
+        isWaitingforBlockerMovement = false;
+        isWaitingForTargetSelection = false;
+        isWaitingForSnapshotDecisionFromLoose = false;
+        isHeaderAtGoal = false;
+        shooter = null;
+        totalShotPower = 0;
+        shooterRoll = 0;
+        shooterRollWasJackpot = false;
+        boxPenalty = null;
+        snapPenalty = null;
+        difficultPenalty = null;
+        shootingPenaltyInfo = null;
+        tokenMoveforDeflection = null;
+        targetHex = null;
+        saveHex = null;
+        currentDefenderBlockingHex = null;
+        trajectoryPath = null;
+        interceptors.Clear();
+        currentShotInteraction = null;
+        alreadyInterceptedDefs?.Clear();
+        headerAttackerTotalScore = 0;
+        headerAttacker = null;
+        headerTargetHex = null;
+        headerGkPenalty = 0;
+        ResetExpectedGoalContext();
+        ClearShotCommitPreview();
+        ClearShotTargetSelectionHighlights();
+        isWaitingForSaveandHoldScenario = true;
+    }
+
+    private bool CanStartShotFromCurrentPossession(PlayerToken shootingToken)
+    {
+        if (shootingToken == null || MatchManager.Instance == null || ball == null)
+        {
+            return false;
+        }
+
+        HexCell ballHex = ball.GetCurrentHex();
+        HexCell shooterHex = shootingToken.GetCurrentHex();
+        if (ballHex == null || shooterHex == null || ballHex != shooterHex)
+        {
+            return false;
+        }
+
+        return MatchManager.Instance.attackHasPossession
+            && ballHex.isAttackOccupied
+            && shootingToken.isAttacker
+            && IsValidShotOriginForAttackingDirection(shooterHex);
     }
 
     public void CommitToThisAction()
@@ -1153,6 +1223,15 @@ public class ShotManager : MonoBehaviour
         if (!shooterHex.CanShootFrom)
         {
             Debug.LogError($"Token {shootingToken.name} is on hex {shooterHex.coordinates}, but this hex is not a valid shooting hex!");
+            return;
+        }
+        if (!CanStartShotFromCurrentPossession(shootingToken))
+        {
+            Debug.LogWarning($"Shot cancelled for {shootingToken.name}: current possession, ball hex, or attacking direction does not allow a shot from {shooterHex.coordinates}.");
+            isActivated = false;
+            isAvailable = false;
+            isWaitingForSnapshotDecisionFromLoose = false;
+            isWaitingForShotCommitConfirmation = false;
             return;
         }
 
@@ -1752,6 +1831,12 @@ public class ShotManager : MonoBehaviour
         if (path == null || gkHex == null)
         {
             return null;
+        }
+
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        if (goalKeeperManager != null && defendingGK != null)
+        {
+            return goalKeeperManager.FindClosestGoalkeeperWallHexOnPath(path, defendingGK, includeGoalkeeperHex: true);
         }
 
         List<HexCell> saveableHexes = hexGrid.GetSavableHexes();
@@ -2659,7 +2744,7 @@ public class ShotManager : MonoBehaviour
                 movementPhaseManager.EndMovementPhase(false);
                 // movementPhaseManager.stunnedTokens.Clear();
             }
-            isWaitingForSaveandHoldScenario = true;
+            EnterSaveAndHoldDecision();
             while (isWaitingForSaveandHoldScenario)
             {
                 yield return null;  // Wait for the next frame
@@ -2970,18 +3055,18 @@ public class ShotManager : MonoBehaviour
 
     public bool? IsInstructionExpectingHomeTeam()
     {
-        if (MatchManager.Instance == null || (!isActivated && !isAvailable))
+        if (MatchManager.Instance == null || (!isActivated && !isAvailable && !isWaitingForSaveandHoldScenario))
         {
             return null;
         }
 
         bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
-        if (!isActivated)
+        if (isWaitingForSaveandHoldScenario)
         {
             return attackingTeamIsHome;
         }
 
-        if (isWaitingForSaveandHoldScenario)
+        if (!isActivated)
         {
             return attackingTeamIsHome;
         }

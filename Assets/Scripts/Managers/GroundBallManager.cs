@@ -27,8 +27,15 @@ public class GroundBallManager : MonoBehaviour
     [SerializeField]
     public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
     public bool passIsDangerous = false;      // To check if the pass is dangerous
+    private bool passHasPathInteractions = false;
     private HexCell currentDefenderHex = null;                      // The defender hex currently rolling the dice
     private HexCell hoveredPreviewHex = null;
+    private readonly List<GroundBallPathInteraction> pathInteractions = new();
+    private readonly HashSet<PlayerToken> attemptedOutfieldInterceptors = new();
+    private GroundBallPathInteraction currentPathInteraction = null;
+    private bool currentPassGkWallAttempted = false;
+    private bool currentPassGkBoxMoveHandled = false;
+    private bool previewHasConditionalGoalkeeperInteraction = false;
     [SerializeField]
     public List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
     [SerializeField]
@@ -185,6 +192,8 @@ public class GroundBallManager : MonoBehaviour
         {
             currentTargetHex = null;
             passIsDangerous = false;
+            passHasPathInteractions = false;
+            previewHasConditionalGoalkeeperInteraction = false;
             if (difficulty == 3)
             {
                 latestValidationInstruction = GetValidationFailureInstruction(validation.FailureReason);
@@ -201,10 +210,12 @@ public class GroundBallManager : MonoBehaviour
             CommitToThisAction();
             LogGroundPassAttempt();
             PopulateGroundPathInterceptions(clickedHex, false);
-            if (passIsDangerous)
+            if (passHasPathInteractions)
             {
-                diceRollsPending = defendingHexes.Count;
-                Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                diceRollsPending = GroundPassCommon.CountDangerousInteractions(BuildOrderedPathInteractions(clickedHex));
+                Debug.Log(passIsDangerous
+                    ? $"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls..."
+                    : "Pass enters the box and will offer the defending GK free move before continuing.");
                 StartGroundPassInterceptionDiceRollSequence();
             }
             else
@@ -221,6 +232,8 @@ public class GroundBallManager : MonoBehaviour
             {
                 currentTargetHex = clickedHex;
                 passIsDangerous = false;
+                passHasPathInteractions = false;
+                previewHasConditionalGoalkeeperInteraction = false;
                 diceRollsPending = 0;
                 ResetGroundPassInterceptionDiceRolls();
                 HighlightMediumModeTargets(clickedHex);
@@ -234,10 +247,12 @@ public class GroundBallManager : MonoBehaviour
                 CommitToThisAction();
                 LogGroundPassAttempt();
                 PopulateGroundPathInterceptions(clickedHex);
-                if (passIsDangerous)
+                if (passHasPathInteractions)
                 {
-                    diceRollsPending = defendingHexes.Count; // is this relevant here?
-                    Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                    diceRollsPending = GroundPassCommon.CountDangerousInteractions(BuildOrderedPathInteractions(clickedHex));
+                    Debug.Log(passIsDangerous
+                        ? $"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls..."
+                        : "Pass enters the box and will offer the defending GK free move before continuing.");
                     StartGroundPassInterceptionDiceRollSequence();
                 }
                 else
@@ -265,10 +280,12 @@ public class GroundBallManager : MonoBehaviour
                 CommitToThisAction();
                 LogGroundPassAttempt();
                 PopulateGroundPathInterceptions(clickedHex);
-                if (passIsDangerous)
+                if (passHasPathInteractions)
                 {
-                    diceRollsPending = defendingHexes.Count;
-                    Debug.Log($"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls...");
+                    diceRollsPending = GroundPassCommon.CountDangerousInteractions(BuildOrderedPathInteractions(clickedHex));
+                    Debug.Log(passIsDangerous
+                        ? $"Dangerous pass detected. Waiting for {diceRollsPending} dice rolls..."
+                        : "Pass enters the box and will offer the defending GK free move before continuing.");
                     StartGroundPassInterceptionDiceRollSequence();
                 }
                 else
@@ -346,7 +363,7 @@ public class GroundBallManager : MonoBehaviour
         if (hoveredHex == null)
         {
             latestValidationInstruction = currentTargetHex != null
-                ? GetEasyModeCommittedTargetInstruction(diceRollsPending)
+                ? GetEasyModeCommittedTargetInstruction(diceRollsPending, previewHasConditionalGoalkeeperInteraction)
                 : $"Hover a target within {imposedDistance} hexes to preview the pass.";
             return;
         }
@@ -368,10 +385,13 @@ public class GroundBallManager : MonoBehaviour
         }
 
         PopulateGroundPathInterceptions(hoveredHex, false);
-        int previewAttempts = defendingHexes.Count;
-        HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
+        List<GroundBallPathInteraction> previewInteractions = BuildOrderedPathInteractions(hoveredHex);
+        int previewAttempts = GroundPassCommon.CountDangerousInteractions(previewInteractions);
+        previewHasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(previewInteractions);
+        bool previewIsDangerous = passIsDangerous;
+        HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, previewIsDangerous);
         HighlightCommittedTarget();
-        latestValidationInstruction = GetEasyModePreviewInstruction(validation.IsDangerous, previewAttempts);
+        latestValidationInstruction = GetEasyModePreviewInstruction(previewIsDangerous, previewAttempts, previewHasConditionalGoalkeeperInteraction);
     }
 
     private void RenderEasyModeSelectedTargetPreview(GroundPassValidationResult? knownValidation = null)
@@ -392,9 +412,11 @@ public class GroundBallManager : MonoBehaviour
         }
 
         PopulateGroundPathInterceptions(currentTargetHex, false);
-        diceRollsPending = defendingHexes.Count;
-        HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, validation.IsDangerous);
-        latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending);
+        List<GroundBallPathInteraction> previewInteractions = BuildOrderedPathInteractions(currentTargetHex);
+        diceRollsPending = GroundPassCommon.CountDangerousInteractions(previewInteractions);
+        previewHasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(previewInteractions);
+        HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, passIsDangerous);
+        latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending, previewHasConditionalGoalkeeperInteraction);
     }
 
     private void HighlightCommittedTarget()
@@ -466,10 +488,17 @@ public class GroundBallManager : MonoBehaviour
         return GroundPassCommon.GetValidationFailureInstruction(failureReason);
     }
 
-    private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts)
+    private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts, bool hasConditionalGoalkeeperInteraction)
     {
         if (!isDangerous || interceptionAttempts == 0)
         {
+            if (hasConditionalGoalkeeperInteraction)
+            {
+                return currentTargetHex != null
+                    ? "Preview target enters the box: GK free move comes first, so current GK dive/interception threats are conditional and recalculate after that move. Click this hex to switch target, or click the orange target to confirm the current selection."
+                    : "Preview target enters the box: GK free move comes first, so current GK dive/interception threats are conditional and recalculate after that move. Click this hex to select it.";
+            }
+
             return currentTargetHex != null
                 ? "Preview target is safe. Click this hex to switch target, or click the orange target to confirm the current selection."
                 : "Preview target is safe. Click this hex to select it.";
@@ -480,10 +509,15 @@ public class GroundBallManager : MonoBehaviour
             : $"Preview target: {interceptionAttempts} interception attempt{(interceptionAttempts == 1 ? string.Empty : "s")} if selected. Click this hex to select it.";
     }
 
-    private string GetEasyModeCommittedTargetInstruction(int interceptionAttempts)
+    private string GetEasyModeCommittedTargetInstruction(int interceptionAttempts, bool hasConditionalGoalkeeperInteraction = false)
     {
         if (interceptionAttempts <= 0)
         {
+            if (hasConditionalGoalkeeperInteraction)
+            {
+                return "Selected target enters the box: GK free move comes first, so current GK dive/interception threats are conditional and recalculate after that move. Click again to confirm, or hover another valid hex to preview.";
+            }
+
             return "Selected target is safe. Click again to confirm, or hover another valid hex to preview.";
         }
 
@@ -510,6 +544,7 @@ public class GroundBallManager : MonoBehaviour
 
         // Initialize danger variables
         passIsDangerous = false;
+        passHasPathInteractions = false;
         interceptionHexes.Clear();
         defendingHexes.Clear();
 
@@ -522,9 +557,32 @@ public class GroundBallManager : MonoBehaviour
             }
         }
 
-        List<GroundInterceptionCandidate> orderedInterceptors = BuildOrderedInterceptionCandidates(targetHex);
-        foreach (GroundInterceptionCandidate candidate in orderedInterceptors)
+        List<GroundBallPathInteraction> orderedInteractions = BuildOrderedPathInteractions(targetHex);
+        foreach (GroundBallPathInteraction interaction in orderedInteractions)
         {
+            if (interaction.Type == GroundBallPathInteractionType.GoalkeeperBoxMove)
+            {
+                Debug.Log($"Defending GK free box move will be offered when the pass reaches {interaction.InteractionHex.coordinates}.");
+                continue;
+            }
+
+            if (interaction.Type == GroundBallPathInteractionType.GoalkeeperDirectPickup)
+            {
+                Debug.Log($"{interaction.DefenderToken.name} is directly on the pass path at {interaction.InteractionHex.coordinates} and can recover the ball.");
+                interceptionHexes.Add(interaction.InteractionHex);
+                defendingHexes.Add(interaction.DefenderHex);
+                continue;
+            }
+
+            if (interaction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
+            {
+                Debug.Log($"{interaction.DefenderToken.name} can dive from the GK Wall at {interaction.InteractionHex.coordinates} with penalty {interaction.GkPenalty}.");
+                interceptionHexes.Add(interaction.InteractionHex);
+                defendingHexes.Add(interaction.DefenderHex);
+                continue;
+            }
+
+            GroundInterceptionCandidate candidate = interaction.InterceptionCandidate;
             string defenderName = candidate.DefenderToken.playerName;
             int defenderTackling = candidate.DefenderToken.tackling;
             int defenderJersey = candidate.DefenderToken.jerseyNumber;
@@ -540,12 +598,14 @@ public class GroundBallManager : MonoBehaviour
             defendingHexes.Add(candidate.DefenderHex);
         }
 
-        passIsDangerous = defendingHexes.Count > 0;
+        passHasPathInteractions = orderedInteractions.Count > 0;
+        previewHasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(orderedInteractions);
+        passIsDangerous = GroundPassCommon.CountDangerousInteractions(orderedInteractions) > 0;
     }
 
     private async Task MoveTheBall(HexCell trgDestHex)
     {
-        await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex)); // Execute pass
+        await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex, allowGKBoxMove: false)); // Execute pass
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         finalThirdManager.TriggerFinalThirdPhase();
         MatchManager.Instance.BroadcastEndofGroundBallPass();
@@ -576,21 +636,18 @@ public class GroundBallManager : MonoBehaviour
 
     void StartGroundPassInterceptionDiceRollSequence()
     {
-        Debug.Log($"Defenders with interception chances: {defendingHexes.Count}");
-        if (defendingHexes.Count > 0)
+        pathInteractions.Clear();
+        pathInteractions.AddRange(BuildOrderedPathInteractions(currentTargetHex));
+        Debug.Log($"Ball path interactions: {pathInteractions.Count}");
+        if (pathInteractions.Count > 0)
         {
-            // Start the dice roll process for each defender
-            Debug.Log("Starting dice roll sequence... Press R key.");
-            defendingHexes = BuildOrderedInterceptionCandidates(currentTargetHex, defendingHexes)
-                .Select(candidate => candidate.DefenderHex)
-                .ToList();
-            currentDefenderHex = defendingHexes[0];  // Start with the closest defender
-            isWaitingForDiceRoll = true;
+            Debug.Log("Starting ball path interaction sequence...");
+            ProcessCurrentPathInteraction();
         }
         else
         {
-            Debug.LogWarning("No defenders in ZOI. This should never appear unless the path is clear.");
-            return;
+            Debug.LogWarning("No path interactions are available. Completing pass.");
+            _ = MoveTheBall(currentTargetHex);
         }
     }
 
@@ -609,7 +666,13 @@ public class GroundBallManager : MonoBehaviour
 
     public void PerformGroundInterceptionDiceRoll(RollInputOverride? rollOverride)
     {
-        if (currentDefenderHex == null)
+        if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
+        {
+            StartCoroutine(ResolveGoalkeeperWallSaveRoll(currentPathInteraction, rollOverride));
+            return;
+        }
+
+        if (currentDefenderHex == null || currentPathInteraction == null)
         {
             return;
         }
@@ -671,13 +734,17 @@ public class GroundBallManager : MonoBehaviour
 
     private void AdvanceToNextInterceptorOrCompletePass()
     {
-        // Move to the next defender, if any
-        defendingHexes.Remove(currentDefenderHex);
-        if (defendingHexes.Count > 0)
+        if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.OutfieldInterception)
         {
-            currentDefenderHex = defendingHexes[0];  // Move to the next defender
-            Debug.Log("Starting next dice roll sequence... Press R key.");
-            isWaitingForDiceRoll = true; // Wait for the next dice roll
+            attemptedOutfieldInterceptors.Add(currentPathInteraction.DefenderToken);
+        }
+
+        pathInteractions.Remove(currentPathInteraction);
+        currentPathInteraction = null;
+        currentDefenderHex = null;
+        if (pathInteractions.Count > 0)
+        {
+            ProcessCurrentPathInteraction();
             return;
         }
 
@@ -694,7 +761,7 @@ public class GroundBallManager : MonoBehaviour
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
-        yield return StartCoroutine(HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
+        yield return StartCoroutine(HandleGroundBallMovement(defenderHex, allowGKBoxMove: false));  // Move the ball to the defender's hex
         PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
         // Call UpdatePossessionAfterPass after the ball has moved to the defender's hex
         MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
@@ -729,8 +796,15 @@ public class GroundBallManager : MonoBehaviour
         // Reset variables after the dice roll sequence
         defendingHexes.Clear();
         interceptionHexes.Clear();
+        pathInteractions.Clear();
+        attemptedOutfieldInterceptors.Clear();
         diceRollsPending = 0;
+        passHasPathInteractions = false;
         currentDefenderHex = null;
+        currentPathInteraction = null;
+        currentPassGkWallAttempted = false;
+        currentPassGkBoxMoveHandled = false;
+        previewHasConditionalGoalkeeperInteraction = false;
     }
 
     public IEnumerator HandleGroundBallMovement(HexCell targetHex, int? speed = null, bool allowGKBoxMove = true)
@@ -769,6 +843,129 @@ public class GroundBallManager : MonoBehaviour
             candidateDefenders,
             isQuickThrow
         );
+    }
+
+    private List<GroundBallPathInteraction> BuildOrderedPathInteractions(
+        HexCell targetHex,
+        int minPathIndex = 0,
+        bool includeGoalkeeperBoxMove = true)
+    {
+        return GroundPassCommon.BuildOrderedBallPathInteractions(
+            hexGrid,
+            ball,
+            goalKeeperManager,
+            targetHex,
+            isQuickThrow: isQuickThrow,
+            excludeOutfieldDefenders: attemptedOutfieldInterceptors,
+            includeGoalkeeperWall: !currentPassGkWallAttempted,
+            includeGoalkeeperBoxMove: includeGoalkeeperBoxMove && !currentPassGkBoxMoveHandled,
+            minPathIndex: minPathIndex
+        );
+    }
+
+    private void ProcessCurrentPathInteraction()
+    {
+        if (pathInteractions.Count == 0)
+        {
+            Debug.Log("Pass successful! No more path interactions to resolve.");
+            _ = MoveTheBall(currentTargetHex);
+            return;
+        }
+
+        currentPathInteraction = pathInteractions[0];
+        currentDefenderHex = currentPathInteraction.DefenderHex;
+
+        switch (currentPathInteraction.Type)
+        {
+            case GroundBallPathInteractionType.GoalkeeperBoxMove:
+                StartCoroutine(ResolveGoalkeeperBoxMoveInteraction(currentPathInteraction));
+                break;
+            case GroundBallPathInteractionType.GoalkeeperDirectPickup:
+                StartCoroutine(ResolveGoalkeeperDirectPickup(currentPathInteraction));
+                break;
+            case GroundBallPathInteractionType.GoalkeeperWallSave:
+                int neededRoll = Mathf.Max(1, 10 - currentPathInteraction.DefenderToken.saving - currentPathInteraction.GkPenalty);
+                Debug.Log($"{currentPathInteraction.DefenderToken.name} can dive for a GK Wall save at {currentPathInteraction.InteractionHex.coordinates}. Needs {neededRoll}+ with Saving {currentPathInteraction.DefenderToken.saving} and penalty {currentPathInteraction.GkPenalty}, or natural 6/Jackpot. Press [R] to roll.");
+                isWaitingForDiceRoll = true;
+                break;
+            case GroundBallPathInteractionType.OutfieldInterception:
+                Debug.Log($"Selected defender for interception: {currentPathInteraction.DefenderToken.name}. Press [R] to roll.");
+                isWaitingForDiceRoll = true;
+                break;
+        }
+    }
+
+    private IEnumerator ResolveGoalkeeperBoxMoveInteraction(GroundBallPathInteraction interaction)
+    {
+        isWaitingForDiceRoll = false;
+        pathInteractions.Remove(interaction);
+        currentPassGkBoxMoveHandled = true;
+
+        if (interaction != null
+            && goalKeeperManager.TryStartGKMoveForPenaltyBox(interaction.InteractionHex.isInPenaltyBox, interaction.InteractionHex, out _))
+        {
+            yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+        }
+
+        pathInteractions.Clear();
+        pathInteractions.AddRange(BuildOrderedPathInteractions(currentTargetHex, minPathIndex: 0, includeGoalkeeperBoxMove: false));
+        ProcessCurrentPathInteraction();
+    }
+
+    private IEnumerator ResolveGoalkeeperDirectPickup(GroundBallPathInteraction interaction)
+    {
+        if (interaction?.DefenderToken == null || interaction.InteractionHex == null)
+        {
+            AdvanceToNextInterceptorOrCompletePass();
+            yield break;
+        }
+
+        Debug.Log($"{interaction.DefenderToken.name} recovers the pass directly at {interaction.InteractionHex.coordinates}.");
+        yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
+            interaction.DefenderToken,
+            interaction.InteractionHex,
+            "direct"));
+        CleanUpPass();
+    }
+
+    private IEnumerator ResolveGoalkeeperWallSaveRoll(GroundBallPathInteraction interaction, RollInputOverride? rollOverride)
+    {
+        isWaitingForDiceRoll = false;
+        currentPassGkWallAttempted = true;
+        if (interaction?.DefenderToken == null || interaction.InteractionHex == null)
+        {
+            AdvanceToNextInterceptorOrCompletePass();
+            yield break;
+        }
+
+        PlayerToken goalkeeper = interaction.DefenderToken;
+        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
+        bool isJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? rollOverride.Value.isJackpot
+            : returnedJackpot;
+        int diceRoll = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll
+            : returnedRoll;
+        int savingTotal = diceRoll + goalkeeper.saving + interaction.GkPenalty;
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(goalkeeper, MatchManager.ActionType.SaveAttempt);
+        Debug.Log(isJackpot
+            ? $"{goalkeeper.name} rolls a Jackpot for the GK Wall save at {interaction.InteractionHex.coordinates}."
+            : $"{goalkeeper.name} rolls {diceRoll} + Saving {goalkeeper.saving} + Penalty {interaction.GkPenalty} = {savingTotal} for the GK Wall save.");
+
+        if (isJackpot || diceRoll == 6 || savingTotal >= 10)
+        {
+            Debug.Log($"{goalkeeper.name} catches the ground pass from the GK Wall.");
+            yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
+                goalkeeper,
+                interaction.InteractionHex,
+                "gkWall"));
+            CleanUpPass();
+            yield break;
+        }
+
+        Debug.Log($"{goalkeeper.name} failed the GK Wall save. Play continues.");
+        AdvanceToNextInterceptorOrCompletePass();
     }
 
     public List<HexCell> CalculateThickPath(HexCell startHex, HexCell endHex, float ballRadius)
@@ -854,7 +1051,7 @@ public class GroundBallManager : MonoBehaviour
                     }
                     else if (currentTargetHex != null)
                     {
-                        sb.Append($"{GetEasyModeCommittedTargetInstruction(diceRollsPending)} ");
+                        sb.Append($"{GetEasyModeCommittedTargetInstruction(diceRollsPending, previewHasConditionalGoalkeeperInteraction)} ");
                     }
                     else
                     {
@@ -880,8 +1077,20 @@ public class GroundBallManager : MonoBehaviour
         }
         if (isWaitingForDiceRoll)
         {
-            string rollneeded = currentDefenderHex.GetOccupyingToken().tackling <= 4 ? "6" : currentDefenderHex.GetOccupyingToken().tackling == 6 ? "4+": "5+";
-            sb.Append($"Press [R] to roll for interception with {currentDefenderHex.GetOccupyingToken().name}, a roll of {rollneeded} is needed, ");
+            if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
+            {
+                PlayerToken gkToken = currentPathInteraction.DefenderToken;
+                int neededRoll = Mathf.Max(1, 10 - gkToken.saving - currentPathInteraction.GkPenalty);
+                string penaltyText = currentPathInteraction.GkPenalty == 0
+                    ? ""
+                    : $", dive penalty {currentPathInteraction.GkPenalty}";
+                sb.Append($"Press [R] to roll a GK dive with {gkToken.name}: needs {neededRoll}+ with Saving {gkToken.saving}{penaltyText}, or natural 6/Jackpot, ");
+            }
+            else
+            {
+                string rollneeded = currentDefenderHex.GetOccupyingToken().tackling <= 4 ? "6" : currentDefenderHex.GetOccupyingToken().tackling == 6 ? "4+": "5+";
+                sb.Append($"Press [R] to roll for interception with {currentDefenderHex.GetOccupyingToken().name}, a roll of {rollneeded} is needed, ");
+            }
         }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma

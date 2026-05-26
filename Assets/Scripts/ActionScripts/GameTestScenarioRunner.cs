@@ -802,6 +802,15 @@ public class GameTestScenarioRunner : MonoBehaviour
         scenarios.Add(new ScenarioDefinition(nameof(Scenario_040_SetPiecePolicy_PenaltyStopPlay_NoF3), Scenario_040_SetPiecePolicy_PenaltyStopPlay_NoF3));
     }
 
+    private void AddGkWallAuditScenarios(List<ScenarioDefinition> scenarios)
+    {
+        scenarios.AddRange(new[]
+        {
+            new ScenarioDefinition(nameof(Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip), Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip),
+            new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
+        });
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -817,6 +826,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runHeaderAtGoalAuditOnly = false;
         bool runThrowInAuditOnly = false;
         bool runSetPiecePolicyOnly = false;
+        bool runGkWallAuditOnly = false;
         bool runReleasedOobAndHeaderAtGoalOnly = true;
         bool runFromCurrentFailureOnly = false;
 
@@ -912,6 +922,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         {
             AddSetPiecePolicyScenarios(scenarios);
         }
+        else if (runGkWallAuditOnly)
+        {
+            AddGkWallAuditScenarios(scenarios);
+        }
         else
         {
             scenarios.AddRange(runFromCurrentFailureOnly ? Array.Empty<ScenarioDefinition>() : new[]
@@ -929,6 +943,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
             new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
             new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
+            new ScenarioDefinition(nameof(Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip), Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip),
+            new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
             new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
             new ScenarioDefinition(nameof(Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack), Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack),
@@ -1070,6 +1086,167 @@ public class GameTestScenarioRunner : MonoBehaviour
             SceneManager.LoadScene("DummyLoader");
         }
         Log("🎉 ALL TESTS PASSED SUCCESSFULLY!");
+    }
+
+    private IEnumerator Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip()
+    {
+        yield return new WaitForSeconds(1f);
+
+        ConfigureRightBoxGkWallAuditState();
+
+        PlayerToken passer = RequirePlayerToken("Ulisses");
+        PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
+        PlayerToken outfieldDefender = RequirePlayerToken("Poulsen");
+
+        HexCell passerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, -2)), "GK Wall audit passer hex (10,-2) should exist.");
+        HexCell goalkeeperHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)), "GK Wall audit goalkeeper hex (16,0) should exist.");
+        HexCell defenderHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(18, 0, -3)), "GK Wall audit defender hex (18,-3) should exist.");
+        HexCell targetHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(18, 0, -2)), "GK Wall audit target hex (18,-2) should exist.");
+
+        ClearHexForGkWallScenario(targetHex);
+        PlaceTokenForGkWallScenario(passer, passerHex, asAttacker: true);
+        PlaceTokenForGkWallScenario(goalkeeper, goalkeeperHex, asAttacker: false);
+        PlaceTokenForGkWallScenario(outfieldDefender, defenderHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(passerHex);
+        MatchManager.Instance.SetLastToken(passer);
+
+        List<GroundBallPathInteraction> orderedInteractions = GroundPassCommon.BuildOrderedBallPathInteractions(
+            hexgrid,
+            groundBallManager.ball,
+            goalKeeperManager,
+            targetHex,
+            includeGoalkeeperBoxMove: false);
+
+        int wallIndex = orderedInteractions.FindIndex(interaction => interaction.Type == GroundBallPathInteractionType.GoalkeeperWallSave);
+        int outfieldIndex = orderedInteractions.FindIndex(interaction => interaction.Type == GroundBallPathInteractionType.OutfieldInterception && interaction.DefenderToken == outfieldDefender);
+        AssertTrue(wallIndex >= 0, "Ground pass across the GK Wall should create a GK Wall save candidate.");
+        AssertTrue(outfieldIndex >= 0, "Ground pass should still keep the later outfield interception candidate.");
+        AssertTrue(wallIndex < outfieldIndex, "GK Wall save should be ordered before the later outfield interception.", wallIndex, outfieldIndex);
+
+        HexCell safeBoxTarget = GetAllInBoundsHexesOrdered(passerHex)
+            .Where(candidate => candidate != null
+                && candidate.isInPenaltyBox == goalkeeperHex.isInPenaltyBox
+                && HexGridUtils.GetHexStepDistance(passerHex, candidate) <= 11)
+            .FirstOrDefault(candidate =>
+            {
+                List<GroundBallPathInteraction> candidateInteractions = GroundPassCommon.BuildOrderedBallPathInteractions(
+                    hexgrid,
+                    groundBallManager.ball,
+                    goalKeeperManager,
+                    candidate,
+                    candidateDefenders: Enumerable.Empty<HexCell>());
+                return candidateInteractions.Count == 1
+                    && candidateInteractions[0].Type == GroundBallPathInteractionType.GoalkeeperBoxMove
+                    && GroundPassCommon.CountDangerousInteractions(candidateInteractions) == 0;
+            });
+
+        AssertTrue(safeBoxTarget != null, "GK Wall audit should find an in-box pass where the only interaction is the procedural GK box move.");
+
+        HexCell directPasserHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, 0)), "GK Wall audit direct passer hex (10,0) should exist.");
+        PlaceTokenForGkWallScenario(passer, directPasserHex, asAttacker: true);
+        PlaceTokenForGkWallScenario(goalkeeper, goalkeeperHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(directPasserHex);
+        MatchManager.Instance.SetLastToken(passer);
+
+        List<GroundBallPathInteraction> directInteractions = GroundPassCommon.BuildOrderedBallPathInteractions(
+            hexgrid,
+            groundBallManager.ball,
+            goalKeeperManager,
+            goalkeeperHex,
+            includeGoalkeeperBoxMove: false);
+
+        AssertTrue(
+            directInteractions.Any(interaction => interaction.Type == GroundBallPathInteractionType.GoalkeeperDirectPickup),
+            "Direct pass into the GK hex should resolve as direct GK pickup.");
+        AssertTrue(
+            !directInteractions.Any(interaction => interaction.Type == GroundBallPathInteractionType.GoalkeeperWallSave),
+            "Direct pass into the GK hex should not also offer a GK Wall roll.");
+
+        LogFooterofTest("GK Wall Path Ordering And Direct GK Skip");
+    }
+
+    private IEnumerator Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex()
+    {
+        yield return new WaitForSeconds(1f);
+
+        ConfigureRightBoxGkWallAuditState();
+
+        PlayerToken passer = RequirePlayerToken("Ulisses");
+        PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
+        PlayerToken attackerOnSaveHex = RequirePlayerToken("Yaneva");
+
+        HexCell passerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, -2)), "GK Wall save helper passer hex (10,-2) should exist.");
+        HexCell goalkeeperHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)), "GK Wall save helper goalkeeper hex (16,0) should exist.");
+        HexCell saveHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, -2)), "GK Wall save helper save hex (16,-2) should exist.");
+        HexCell pushDestinationHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, -3)), "GK Wall save helper push destination hex (16,-3) should exist.");
+
+        ClearHexForGkWallScenario(pushDestinationHex);
+        PlaceTokenForGkWallScenario(passer, passerHex, asAttacker: true);
+        PlaceTokenForGkWallScenario(goalkeeper, goalkeeperHex, asAttacker: false);
+        PlaceTokenForGkWallScenario(attackerOnSaveHex, saveHex, asAttacker: true);
+        groundBallManager.ball.PlaceAtCell(passerHex);
+        MatchManager.Instance.SetLastToken(passer);
+
+        yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(goalkeeper, saveHex, "gkWall"));
+
+        AssertTrue(goalkeeper.GetCurrentHex() == saveHex, "Successful GK Wall save should GKPush the goalkeeper to the save hex.", saveHex, goalkeeper.GetCurrentHex());
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == saveHex, "Successful GK Wall save should leave the ball on the save hex.", saveHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(attackerOnSaveHex.GetCurrentHex() != saveHex, "GKPush should displace the attacker that occupied the save hex.");
+        AssertTrue(!shotManager.isActivated && shotManager.isWaitingForSaveandHoldScenario, "Successful GK Wall save should enter Save-and-Hold without activating a shot.");
+        AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == goalkeeper, "Goalkeeper should be last touch after Save-and-Hold recovery.", goalkeeper, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+
+        LogFooterofTest("GK Wall Save And Hold Pushes To Save Hex");
+    }
+
+    private void ConfigureRightBoxGkWallAuditState()
+    {
+        MatchManager.Instance.difficulty_level = 3;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = 3;
+        }
+
+        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+    }
+
+    private void PlaceTokenForGkWallScenario(PlayerToken token, HexCell destinationHex, bool asAttacker)
+    {
+        if (token == null || destinationHex == null)
+        {
+            return;
+        }
+
+        token.isAttacker = asAttacker;
+        SetTokenHexForThrowInTest(token, destinationHex);
+    }
+
+    private void ClearHexForGkWallScenario(HexCell hex)
+    {
+        if (hex == null)
+        {
+            return;
+        }
+
+        PlayerToken occupyingToken = hex.GetOccupyingToken();
+        if (occupyingToken != null)
+        {
+            HexCell fallbackHex = GetAllInBoundsHexesOrdered(hex)
+                .FirstOrDefault(candidate => candidate != null
+                    && candidate != hex
+                    && !candidate.isAttackOccupied
+                    && !candidate.isDefenseOccupied);
+            AssertTrue(fallbackHex != null, "GK Wall audit should find an empty fallback hex.");
+            if (fallbackHex != null)
+            {
+                SetTokenHexForTest(occupyingToken, fallbackHex);
+            }
+        }
+
+        hex.occupyingToken = null;
+        hex.isAttackOccupied = false;
+        hex.isDefenseOccupied = false;
     }
 
     private IEnumerator Scenario_001_Stats_UI_Preview()
@@ -3470,7 +3647,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             4f,
             $"Free Kick Shot branch '{branch.Name}' should wait for Save-and-Hold choice."));
 
-        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome", expectShotActive: true);
+        AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome");
         AssertShootingLastTouch("Kuzmic", $"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome");
         AssertShootingBallOnToken("Kuzmic", $"Free Kick Shot branch '{branch.Name}' Save-and-Hold outcome");
     }
@@ -4619,7 +4796,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             $"Shooting branch '{branch.Name}' should wait for Save-and-Hold choice."));
 
         string context = $"Shooting branch '{branch.Name}' Save-and-Hold outcome";
-        AssertShootingManagerState(context, expectShotActive: true);
+        AssertShootingManagerState(context);
         AssertTrue(shotManager.isWaitingForSaveandHoldScenario, $"Shooting branch '{branch.Name}' should be in Save-and-Hold.");
         AssertShootingLastTouch("Kuzmic", context);
         AssertShootingBallOnToken("Kuzmic", context);
@@ -16600,7 +16777,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             4f,
             "Save-and-Hold should be offered after Kuzmic recovers the long ball in his own penalty box."));
         AssertTrue(!finalThirdManager.isActivated, "Generic Final Third should not be offered before Save-and-Hold choice.");
-        AssertTrue(shotManager.isActivated, "ShotManager should be active for Kuzmic's Save-and-Hold choice.");
+        AssertTrue(!shotManager.isActivated, "ShotManager should not be active for Kuzmic's Save-and-Hold choice.");
         AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == kuzmic, "Kuzmic should be the last token after recovering the long ball.", kuzmic, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
 
         MatchManager.PlayerStats kuzmicStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(kuzmic.playerName);

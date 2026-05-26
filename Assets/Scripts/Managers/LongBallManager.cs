@@ -38,6 +38,8 @@ public class LongBallManager : MonoBehaviour
     private HexCell finalHex;
     // private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
+    private bool currentLongBallGkMoveHandled = false;
+    private readonly HashSet<PlayerToken> attemptedLongBallInterceptors = new();
     private readonly List<HexCell> defenderLongBallMoveHexes = new();
     private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
     private readonly List<HexCell> availableLongBallTargetHexes = new();
@@ -138,6 +140,13 @@ public class LongBallManager : MonoBehaviour
                 keyData.isConsumed = true;
                 return;
             }
+            else if (isWaitingForDefLBMove && keyData.key == KeyCode.V && CanGoalkeeperClaimLongBallLandingHex())
+            {
+                Debug.Log($"{hexGrid.GetDefendingGK().name} claims the long ball at {finalHex.coordinates}.");
+                _ = MoveGKForLB(finalHex);
+                keyData.isConsumed = true;
+                return;
+            }
             else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
             {
                 hexGrid.ClearHighlightedHexes();
@@ -154,6 +163,8 @@ public class LongBallManager : MonoBehaviour
         isActivated = true;
         isAvailable = false;
         isAwaitingTargetSelection = true;
+        currentLongBallGkMoveHandled = false;
+        attemptedLongBallInterceptors.Clear();
         if (MatchManager.Instance.difficulty_level < 3)
         {
             HighlightAllValidLongPassTargets();
@@ -616,8 +627,7 @@ public class LongBallManager : MonoBehaviour
             }
             else if (targetHex.isAttackOccupied)
             {
-                yield return StartCoroutine(HandleGKLongBallMove());
-                yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(targetHex));
+                yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(targetHex));
             }
             else
             {
@@ -625,12 +635,27 @@ public class LongBallManager : MonoBehaviour
                 bool waitingForInterception = CheckForLongBallInterception(targetHex);
                 if (!waitingForInterception)
                 {
-                    yield return StartCoroutine(HandleGKLongBallMove());
-                    yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(targetHex));
+                    yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(targetHex));
                 }
                 yield break;
             }
         }
+    }
+
+    private IEnumerator HandleGKMoveThenRecheckInterceptions(HexCell landingHex)
+    {
+        if (!currentLongBallGkMoveHandled)
+        {
+            yield return StartCoroutine(HandleGKLongBallMove());
+        }
+
+        bool waitingForInterception = CheckForLongBallInterception(landingHex);
+        if (waitingForInterception)
+        {
+            yield break;
+        }
+
+        yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(landingHex));
     }
 
     private IEnumerator FinalizeLongBallAfterDefensiveResponses(HexCell targetHex)
@@ -689,6 +714,12 @@ public class LongBallManager : MonoBehaviour
 
     public IEnumerator HandleGKLongBallMove()
     {
+        if (currentLongBallGkMoveHandled)
+        {
+            yield break;
+        }
+
+        currentLongBallGkMoveHandled = true;
         isWaitingForDefLBMove = true;
         PlayerToken defenderGK = hexGrid.GetDefendingGK();
 
@@ -743,6 +774,14 @@ public class LongBallManager : MonoBehaviour
         return defenderLongBallMoveHexes.Contains(hex);
     }
 
+    private bool CanGoalkeeperClaimLongBallLandingHex()
+    {
+        return finalHex != null
+            && !finalHex.isAttackOccupied
+            && !finalHex.isDefenseOccupied
+            && defenderLongBallMoveHexes.Contains(finalHex);
+    }
+
     private async Task MoveGKForLB(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
@@ -776,6 +815,7 @@ public class LongBallManager : MonoBehaviour
             .GetDefenderHexes()
             .Where(hex => hex != null)
             .Where(hex => IsEligibleLongBallInterceptor(hex.GetOccupyingToken()))
+            .Where(hex => !attemptedLongBallInterceptors.Contains(hex.GetOccupyingToken()))
             .Where(hex => landingNeighbors.Contains(hex))
             .OrderBy(hex => HexGridUtils.GetHexStepDistance(landingHex, hex))
             .ThenBy(hex => hex.GetOccupyingToken().tackling)
@@ -844,6 +884,7 @@ public class LongBallManager : MonoBehaviour
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
                 "long");
             MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
+            attemptedLongBallInterceptors.Add(defenderToken);
 
             if (diceRoll == 6 || totalInterceptionScore >= 10)
             {
@@ -873,8 +914,7 @@ public class LongBallManager : MonoBehaviour
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
         isWaitingForInterceptionRoll = false;
-        yield return StartCoroutine(HandleGKLongBallMove());
-        yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(landingHex));
+        yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(landingHex));
     }
 
     private void HighlightLongPassArea(HexCell targetHex)
@@ -997,6 +1037,8 @@ public class LongBallManager : MonoBehaviour
         isWaitingForDistanceRoll = false;
         isWaitingForInterceptionRoll = false;
         isWaitingForDefLBMove = false;
+        currentLongBallGkMoveHandled = false;
+        attemptedLongBallInterceptors.Clear();
         defenderLongBallMoveHexes.Clear();
         currentTargetHex = null;
         hoveredLongBallTargetHex = null;
@@ -1053,10 +1095,63 @@ public class LongBallManager : MonoBehaviour
             {
                 sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");
             }
+            if (CanGoalkeeperClaimLongBallLandingHex())
+            {
+                sb.Append($"Press [V] to move {defendingGK?.name ?? "the defending GK"} to the ball and claim it, ");
+            }
+        }
+        if (isWaitingForInterceptionRoll)
+        {
+            sb.Append(BuildLongBallInterceptionRollInstruction());
         }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    private string BuildLongBallInterceptionRollInstruction()
+    {
+        if (interceptingDefenders == null || interceptingDefenders.Count == 0)
+        {
+            return "Press [R] to roll for the long-ball interception, ";
+        }
+
+        List<string> defenderRolls = interceptingDefenders
+            .Where(hex => hex != null && hex.GetOccupyingToken() != null)
+            .Select(hex =>
+            {
+                PlayerToken defender = hex.GetOccupyingToken();
+                return $"{defender.name} needs {GetLongBallInterceptionRollText(defender)}";
+            })
+            .ToList();
+
+        if (defenderRolls.Count == 0)
+        {
+            return "Press [R] to roll for the long-ball interception, ";
+        }
+
+        return $"Press [R] to roll long-ball interception: {string.Join("; ", defenderRolls)}, ";
+    }
+
+    private string GetLongBallInterceptionRollText(PlayerToken defender)
+    {
+        if (defender == null)
+        {
+            return "a valid roll";
+        }
+
+        int neededRoll = 10 - defender.tackling;
+        if (neededRoll <= 1)
+        {
+            return "1+";
+        }
+
+        if (neededRoll <= 6)
+        {
+            return $"{neededRoll}+";
+        }
+
+        return "natural 6";
     }
 
     private static bool IsFreeKickExecutionActive()

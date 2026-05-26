@@ -39,8 +39,86 @@ public sealed class GroundInterceptionCandidate
     public bool IsBlockingPath;
 }
 
+public enum GroundBallPathInteractionType
+{
+    OutfieldInterception,
+    GoalkeeperWallSave,
+    GoalkeeperBoxMove,
+    GoalkeeperDirectPickup
+}
+
+public sealed class GroundBallPathInteraction
+{
+    public GroundBallPathInteractionType Type;
+    public GroundInterceptionCandidate InterceptionCandidate;
+    public PlayerToken DefenderToken;
+    public HexCell DefenderHex;
+    public HexCell InteractionHex;
+    public int PathIndex;
+    public int GkPenalty;
+
+    public bool RequiresRoll => Type == GroundBallPathInteractionType.OutfieldInterception
+        || Type == GroundBallPathInteractionType.GoalkeeperWallSave;
+}
+
 public static class GroundPassCommon
 {
+    public static bool IsDangerousInteraction(GroundBallPathInteraction interaction)
+    {
+        return interaction != null && interaction.Type != GroundBallPathInteractionType.GoalkeeperBoxMove;
+    }
+
+    public static bool IsDefinitePreviewDangerousInteraction(
+        GroundBallPathInteraction interaction,
+        IEnumerable<GroundBallPathInteraction> allInteractions)
+    {
+        if (!IsDangerousInteraction(interaction))
+        {
+            return false;
+        }
+
+        int firstBoxMoveIndex = allInteractions?
+            .Where(candidate => candidate != null && candidate.Type == GroundBallPathInteractionType.GoalkeeperBoxMove)
+            .Select(candidate => candidate.PathIndex)
+            .DefaultIfEmpty(-1)
+            .Min() ?? -1;
+
+        if (firstBoxMoveIndex >= 0
+            && interaction.PathIndex >= firstBoxMoveIndex
+            && interaction.DefenderToken != null
+            && interaction.DefenderToken.IsGoalKeeper)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static int CountDangerousInteractions(IEnumerable<GroundBallPathInteraction> interactions)
+    {
+        List<GroundBallPathInteraction> interactionList = interactions?.Where(interaction => interaction != null).ToList()
+            ?? new List<GroundBallPathInteraction>();
+        return interactionList.Count(interaction => IsDefinitePreviewDangerousInteraction(interaction, interactionList));
+    }
+
+    public static bool HasConditionalGoalkeeperInteractionAfterBoxMove(IEnumerable<GroundBallPathInteraction> interactions)
+    {
+        List<GroundBallPathInteraction> interactionList = interactions?.Where(interaction => interaction != null).ToList()
+            ?? new List<GroundBallPathInteraction>();
+        int firstBoxMoveIndex = interactionList
+            .Where(interaction => interaction.Type == GroundBallPathInteractionType.GoalkeeperBoxMove)
+            .Select(interaction => interaction.PathIndex)
+            .DefaultIfEmpty(-1)
+            .Min();
+
+        return firstBoxMoveIndex >= 0
+            && interactionList.Any(interaction =>
+                IsDangerousInteraction(interaction)
+                && interaction.PathIndex >= firstBoxMoveIndex
+                && interaction.DefenderToken != null
+                && interaction.DefenderToken.IsGoalKeeper);
+    }
+
     public static GroundPassValidationResult ValidateStandardPassPath(
         HexGrid hexGrid,
         Ball ball,
@@ -76,7 +154,8 @@ public static class GroundPassCommon
         {
             foreach (HexCell hex in pathHexes)
             {
-                if (hex != null && hex.isDefenseOccupied)
+                PlayerToken pathOccupant = hex != null ? hex.GetOccupyingToken() : null;
+                if (hex != null && hex.isDefenseOccupied && (pathOccupant == null || !pathOccupant.IsGoalKeeper))
                 {
                     Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
                     return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.BlockedByDefender);
@@ -182,6 +261,162 @@ public static class GroundPassCommon
             .ToList();
     }
 
+    public static List<GroundBallPathInteraction> BuildOrderedBallPathInteractions(
+        HexGrid hexGrid,
+        Ball ball,
+        GoalKeeperManager goalKeeperManager,
+        HexCell targetHex,
+        IEnumerable<HexCell> candidateDefenders = null,
+        bool isQuickThrow = false,
+        IEnumerable<HexCell> blockingDefenderHexes = null,
+        IEnumerable<PlayerToken> excludeOutfieldDefenders = null,
+        bool includeGoalkeeperWall = true,
+        bool includeGoalkeeperBoxMove = true,
+        bool includeGoalkeeperDirectPickup = true,
+        int minPathIndex = 0
+    )
+    {
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        if (hexGrid == null || ballHex == null || targetHex == null)
+        {
+            return new List<GroundBallPathInteraction>();
+        }
+
+        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
+        HashSet<PlayerToken> excludedDefenders = excludeOutfieldDefenders != null
+            ? excludeOutfieldDefenders.Where(token => token != null).ToHashSet()
+            : new HashSet<PlayerToken>();
+        List<GroundBallPathInteraction> interactions = new();
+
+        foreach (GroundInterceptionCandidate candidate in BuildOrderedInterceptionCandidates(
+            hexGrid,
+            ball,
+            targetHex,
+            candidateDefenders,
+            isQuickThrow,
+            blockingDefenderHexes))
+        {
+            if (candidate?.DefenderToken == null || excludedDefenders.Contains(candidate.DefenderToken))
+            {
+                continue;
+            }
+
+            int pathIndex = pathHexes.IndexOf(candidate.ClosestInterceptionHex);
+            if (pathIndex < minPathIndex)
+            {
+                continue;
+            }
+
+            interactions.Add(new GroundBallPathInteraction
+            {
+                Type = GroundBallPathInteractionType.OutfieldInterception,
+                InterceptionCandidate = candidate,
+                DefenderToken = candidate.DefenderToken,
+                DefenderHex = candidate.DefenderHex,
+                InteractionHex = candidate.ClosestInterceptionHex,
+                PathIndex = pathIndex,
+                GkPenalty = 0
+            });
+        }
+
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        HexCell gkHex = defendingGK != null ? defendingGK.GetCurrentHex() : null;
+        if (defendingGK != null && gkHex != null)
+        {
+            int directPickupIndex = pathHexes.IndexOf(gkHex);
+            bool hasPendingDirectGoalkeeperPickup = includeGoalkeeperDirectPickup && directPickupIndex >= minPathIndex;
+            if (includeGoalkeeperDirectPickup && directPickupIndex >= minPathIndex)
+            {
+                interactions.RemoveAll(interaction =>
+                    interaction.Type == GroundBallPathInteractionType.OutfieldInterception
+                    && interaction.DefenderToken == defendingGK);
+                interactions.Add(new GroundBallPathInteraction
+                {
+                    Type = GroundBallPathInteractionType.GoalkeeperDirectPickup,
+                    DefenderToken = defendingGK,
+                    DefenderHex = gkHex,
+                    InteractionHex = gkHex,
+                    PathIndex = directPickupIndex,
+                    GkPenalty = 0
+                });
+            }
+
+            if (includeGoalkeeperWall
+                && !hasPendingDirectGoalkeeperPickup
+                && goalKeeperManager != null
+                && goalKeeperManager.TryFindFirstGoalkeeperWallHexOnPath(
+                    pathHexes,
+                    defendingGK,
+                    includeGoalkeeperHex: false,
+                    out HexCell wallHex,
+                    out int wallPathIndex,
+                    out int gkPenalty)
+                && wallPathIndex >= minPathIndex)
+            {
+                interactions.RemoveAll(interaction =>
+                    interaction.Type == GroundBallPathInteractionType.OutfieldInterception
+                    && interaction.DefenderToken == defendingGK);
+                interactions.Add(new GroundBallPathInteraction
+                {
+                    Type = GroundBallPathInteractionType.GoalkeeperWallSave,
+                    DefenderToken = defendingGK,
+                    DefenderHex = gkHex,
+                    InteractionHex = wallHex,
+                    PathIndex = wallPathIndex,
+                    GkPenalty = gkPenalty
+                });
+            }
+        }
+
+        if (includeGoalkeeperBoxMove
+            && goalKeeperManager != null
+            && ballHex.isInPenaltyBox == 0)
+        {
+            for (int i = Mathf.Max(0, minPathIndex); i < pathHexes.Count; i++)
+            {
+                HexCell pathHex = pathHexes[i];
+                if (pathHex == null || pathHex.isInPenaltyBox == 0)
+                {
+                    continue;
+                }
+
+                if (goalKeeperManager.CanOfferGKMoveForPenaltyBox(pathHex.isInPenaltyBox, pathHex, out PlayerToken boxMoveGk))
+                {
+                    interactions.Add(new GroundBallPathInteraction
+                    {
+                        Type = GroundBallPathInteractionType.GoalkeeperBoxMove,
+                        DefenderToken = boxMoveGk,
+                        DefenderHex = boxMoveGk != null ? boxMoveGk.GetCurrentHex() : null,
+                        InteractionHex = pathHex,
+                        PathIndex = i,
+                        GkPenalty = 0
+                    });
+                }
+
+                break;
+            }
+        }
+
+        return interactions
+            .Where(interaction => interaction != null && interaction.InteractionHex != null)
+            .OrderBy(interaction => interaction.PathIndex)
+            .ThenBy(interaction => GetInteractionPriority(interaction.Type))
+            .ThenBy(interaction => interaction.DefenderToken != null ? interaction.DefenderToken.playerName : string.Empty, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static int GetInteractionPriority(GroundBallPathInteractionType type)
+    {
+        return type switch
+        {
+            GroundBallPathInteractionType.GoalkeeperBoxMove => 0,
+            GroundBallPathInteractionType.GoalkeeperDirectPickup => 1,
+            GroundBallPathInteractionType.OutfieldInterception => 2,
+            GroundBallPathInteractionType.GoalkeeperWallSave => 3,
+            _ => 10,
+        };
+    }
+
     public static List<HexCell> GetRelevantInterceptionHexes(List<HexCell> pathHexes, HexCell targetHex, bool isQuickThrow = false)
     {
         if (pathHexes == null)
@@ -222,7 +457,19 @@ public static class GroundPassCommon
         }
 
         path.Remove(startHex);
-        return path;
+        Vector3 lineDirection = endPos - startPos;
+        float lineLengthSquared = lineDirection.sqrMagnitude;
+        if (lineLengthSquared <= Mathf.Epsilon)
+        {
+            return path;
+        }
+
+        return path
+            .OrderBy(hex => Vector3.Dot(hex.GetHexCenter() - startPos, lineDirection) / lineLengthSquared)
+            .ThenBy(hex => DistanceFromPointToLine(hex.GetHexCenter(), startPos, endPos))
+            .ThenBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z)
+            .ToList();
     }
 
     public static List<HexCell> GetCandidateGroundPathHexes(HexGrid hexGrid, HexCell startHex, HexCell endHex)
