@@ -66,7 +66,8 @@ public class GroundBallManager : MonoBehaviour
             return;
         }
 
-        if (MatchManager.Instance.difficulty_level != 1)
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager == null || (matchManager.difficulty_level != 1 && matchManager.difficulty_level != 2))
         {
             return;
         }
@@ -77,7 +78,14 @@ public class GroundBallManager : MonoBehaviour
         }
 
         hoveredPreviewHex = hex;
-        UpdateEasyModeHoverPreview(hex);
+        if (matchManager.difficulty_level == 1)
+        {
+            UpdateEasyModeHoverPreview(hex);
+        }
+        else
+        {
+            UpdateMediumModeHoverPreview(hex);
+        }
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -212,11 +220,12 @@ public class GroundBallManager : MonoBehaviour
             if (currentTargetHex == null || clickedHex != currentTargetHex)
             {
                 currentTargetHex = clickedHex;
-                PopulateGroundPathInterceptions(clickedHex);
-                HighlightValidGroundPassPath(validation.PathHexes, validation.IsDangerous);
-                diceRollsPending = defendingHexes.Count; // is this relevant here?
-                if (diceRollsPending == 0) Debug.Log($"The Stanard pass cannot be intercepted. Click again to confirm or elsewhere to try another path.");
-                else Debug.Log($"Dangerous pass detected. If you confirm there will be {diceRollsPending} dice rolls...");
+                passIsDangerous = false;
+                diceRollsPending = 0;
+                ResetGroundPassInterceptionDiceRolls();
+                HighlightMediumModeTargets(clickedHex);
+                latestValidationInstruction = "Click the orange target again to confirm, or choose another valid target.";
+                Debug.Log("Standard pass target selected. Click again to confirm or elsewhere to try another target.");
             }
             // Medium Mode: Wait for a second click for confirmation
             else 
@@ -247,11 +256,8 @@ public class GroundBallManager : MonoBehaviour
             if (currentTargetHex == null || clickedHex != currentTargetHex)
             {
                 currentTargetHex = clickedHex;
-                PopulateGroundPathInterceptions(clickedHex, false);
-                diceRollsPending = defendingHexes.Count;
                 hoveredPreviewHex = null;
-                HighlightCommittedTarget();
-                latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending);
+                RenderEasyModeSelectedTargetPreview(validation);
             }
             else
             {
@@ -275,6 +281,58 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
+    private void UpdateMediumModeHoverPreview(HexCell hoveredHex)
+    {
+        if (!isActivated || !isAwaitingTargetSelection || MatchManager.Instance.difficulty_level != 2)
+        {
+            return;
+        }
+
+        hexGrid.ClearHighlightedHexes();
+
+        if (hoveredHex == null)
+        {
+            HighlightCommittedTarget();
+            latestValidationInstruction = currentTargetHex != null
+                ? "Click the orange target again to confirm, or choose another valid target."
+                : $"Hover a target within {imposedDistance} hexes, then click it to select.";
+            return;
+        }
+
+        GroundPassValidationResult validation = ValidateGroundPassPath(hoveredHex, imposedDistance);
+        hexGrid.ClearHighlightedHexes();
+        HighlightCommittedTarget();
+
+        if (!validation.IsValid)
+        {
+            latestValidationInstruction = GetValidationFailureInstruction(validation.FailureReason);
+            return;
+        }
+
+        HighlightMediumModeTargets(hoveredHex);
+        latestValidationInstruction = hoveredHex == currentTargetHex
+            ? "Click the orange target again to confirm, or choose another valid target."
+            : currentTargetHex != null
+                ? "Click this orange target to switch selection, or click the selected orange target again to confirm."
+                : "Click this orange target to select it.";
+    }
+
+    private void HighlightMediumModeTargets(HexCell hoveredHex)
+    {
+        HighlightCommittedTarget();
+
+        if (hoveredHex == null || hoveredHex == currentTargetHex)
+        {
+            return;
+        }
+
+        hoveredHex.HighlightHex("passTargetCommitted");
+        if (!hexGrid.highlightedHexes.Contains(hoveredHex))
+        {
+            hexGrid.highlightedHexes.Add(hoveredHex);
+        }
+    }
+
     private void UpdateEasyModeHoverPreview(HexCell hoveredHex)
     {
         if (!isActivated || !isAwaitingTargetSelection || MatchManager.Instance.difficulty_level != 1)
@@ -295,7 +353,7 @@ public class GroundBallManager : MonoBehaviour
 
         if (hoveredHex == currentTargetHex)
         {
-            latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending);
+            RenderEasyModeSelectedTargetPreview();
             return;
         }
 
@@ -314,6 +372,29 @@ public class GroundBallManager : MonoBehaviour
         HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
         HighlightCommittedTarget();
         latestValidationInstruction = GetEasyModePreviewInstruction(validation.IsDangerous, previewAttempts);
+    }
+
+    private void RenderEasyModeSelectedTargetPreview(GroundPassValidationResult? knownValidation = null)
+    {
+        if (currentTargetHex == null)
+        {
+            return;
+        }
+
+        GroundPassValidationResult validation = knownValidation ?? ValidateGroundPassPath(currentTargetHex, imposedDistance);
+        hexGrid.ClearHighlightedHexes();
+
+        if (!validation.IsValid)
+        {
+            HighlightCommittedTarget();
+            latestValidationInstruction = GetValidationFailureInstruction(validation.FailureReason);
+            return;
+        }
+
+        PopulateGroundPathInterceptions(currentTargetHex, false);
+        diceRollsPending = defendingHexes.Count;
+        HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, validation.IsDangerous);
+        latestValidationInstruction = GetEasyModeCommittedTargetInstruction(diceRollsPending);
     }
 
     private void HighlightCommittedTarget()
@@ -614,13 +695,13 @@ public class GroundBallManager : MonoBehaviour
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
         yield return StartCoroutine(HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
+        PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
         // Call UpdatePossessionAfterPass after the ball has moved to the defender's hex
         MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
-        finalThirdManager.TriggerFinalThirdPhase();
         ResetGroundPassInterceptionDiceRolls();
         CleanUpPass();
-        MatchManager.Instance.BroadcastAnyOtherScenario();
+        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex);
     }
     
     public void CleanUpPass()
@@ -740,13 +821,19 @@ public class GroundBallManager : MonoBehaviour
         if (finalThirdManager.isActivated) return "";
         if (freeKickManager.isWaitingForExecution) return "";
         if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
+        MatchManager matchManager = MatchManager.Instance;
         if (isActivated)
         {
             sb.Append("SP: ");
         }
         if (isAwaitingTargetSelection)
         {
-            if (MatchManager.Instance.difficulty_level == 3)
+            if (matchManager == null)
+            {
+                return sb.ToString();
+            }
+
+            if (matchManager.difficulty_level == 3)
             {
                 if (!string.IsNullOrWhiteSpace(latestValidationInstruction))
                 {
@@ -776,9 +863,18 @@ public class GroundBallManager : MonoBehaviour
             }
             else
                 {
-                    sb.Append($"Click on a Hex up to {imposedDistance} Hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
-                    if (currentTargetHex != null) sb.Append($"or click the yellow Hex again to confirm, ");
-                    if (currentTargetHex != null && diceRollsPending > 0) sb.Append($"there will be {diceRollsPending} attempts to intercept the pass, ");
+                    if (!string.IsNullOrWhiteSpace(latestValidationInstruction))
+                    {
+                        sb.Append($"{latestValidationInstruction} ");
+                    }
+                    else if (currentTargetHex != null)
+                    {
+                        sb.Append("Click the orange target again to confirm, or choose another valid target. ");
+                    }
+                    else
+                    {
+                        sb.Append($"Hover a target within {imposedDistance} hexes, then click it to select. ");
+                    }
                 }
             }
         }

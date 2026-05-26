@@ -13,10 +13,12 @@ public class GoalKeeperManager : MonoBehaviour
     public bool isActivated = false;
     private PlayerToken activeDefendingGK;
     private int consumedBoxMovePenaltyBox;
+    private HexCell hoveredGKMoveHex;
 
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnHover += OnHoverReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
 
@@ -24,7 +26,39 @@ public class GoalKeeperManager : MonoBehaviour
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnHoverReceived(PlayerToken token, HexCell hex)
+    {
+        if (!isActivated || MatchManager.Instance == null || MatchManager.Instance.difficulty_level >= 3)
+        {
+            if (hoveredGKMoveHex != null)
+            {
+                hoveredGKMoveHex.HighlightHex("PaceAvailable");
+                hoveredGKMoveHex = null;
+            }
+
+            return;
+        }
+
+        HexCell nextHoveredHex = hexGrid.highlightedHexes.Contains(hex) ? hex : null;
+        if (hoveredGKMoveHex == nextHoveredHex)
+        {
+            return;
+        }
+
+        if (hoveredGKMoveHex != null)
+        {
+            hoveredGKMoveHex.HighlightHex("PaceAvailable");
+        }
+
+        hoveredGKMoveHex = nextHoveredHex;
+        if (hoveredGKMoveHex != null)
+        {
+            hoveredGKMoveHex.HighlightHex("MovementDestinationHover");
+        }
     }
     
     private void OnClickReceived(PlayerToken token, HexCell hex)
@@ -47,6 +81,7 @@ public class GoalKeeperManager : MonoBehaviour
         if (isActivated && keyData.key == KeyCode.X)
         {
             hexGrid.ClearHighlightedHexes();
+            hoveredGKMoveHex = null;
             Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
             isActivated = false;
             keyData.isConsumed = true;
@@ -64,6 +99,7 @@ public class GoalKeeperManager : MonoBehaviour
         }
 
         hexGrid.ClearHighlightedHexes();
+        hoveredGKMoveHex = null;
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defenderGK, false));
         isActivated = false;
         Debug.Log($"🧤 {defenderGK.name} moved to {hex.name}");

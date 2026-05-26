@@ -131,7 +131,10 @@ public class HighPassManager : MonoBehaviour
                             Debug.Log($"Attacker {token.name} selected.");
                             selectedToken = token;
                             hexGrid.ClearHighlightedHexes();
-                            movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);
+                            if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+                            {
+                                movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);
+                            }
                             isWaitingForAttackerMove = true;
                         }
                         else if (selectedToken == token)
@@ -142,10 +145,15 @@ public class HighPassManager : MonoBehaviour
                 }
                 else // if (isWaitingForAttackerMove)
                 {
-                    if (token == null && hexGrid.highlightedHexes.Contains(hex))
+                    if (token == null && IsValidAttackerHighPassMoveHex(hex))
                     {
                         Debug.Log($"Valid Hex to move the Attacker.");
                         StartCoroutine(MoveSelectedAttackerToHex(hex));
+                        return;
+                    }
+                    if (MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3)
+                    {
+                        Debug.LogWarning($"Click a reachable hex to move {selectedToken?.name ?? "the selected attacker"}, or press [X] to forfeit Attacker HP movement.");
                         return;
                     }
                     if (
@@ -174,7 +182,10 @@ public class HighPassManager : MonoBehaviour
                         Debug.Log($"Attacker {token.name} selected.");
                         selectedToken = token;
                         hexGrid.ClearHighlightedHexes();
-                        movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);
+                        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+                        {
+                            movementPhaseManager.HighlightValidMovementHexes(selectedToken, ATTACKER_MOVE_RANGE);
+                        }
                         isWaitingForAttackerMove = true;
                     }
                     else if (selectedToken == token)
@@ -185,10 +196,15 @@ public class HighPassManager : MonoBehaviour
             }
             else if (isWaitingForDefenderSelection)
             {
-                if (isWaitingForDefenderMove && hexGrid.highlightedHexes.Contains(hex))
+                if (isWaitingForDefenderMove && IsValidDefenderHighPassMoveHex(hex))
                 {
                     Debug.Log($"Valid Hex to move the Defender.");
                     StartCoroutine(MoveSelectedDefenderToHex(hex));
+                    return;
+                }
+                if (isWaitingForDefenderMove && MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3)
+                {
+                    Debug.LogWarning($"Click a reachable hex to move {selectedToken?.name ?? "the selected defender"}, or press [X] to forfeit Defender HP movement.");
                     return;
                 }
                 if (
@@ -210,7 +226,10 @@ public class HighPassManager : MonoBehaviour
                     Debug.Log($"Defender {token.name} selected.");
                     selectedToken = token;
                     hexGrid.ClearHighlightedHexes();
-                    movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);
+                    if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+                    {
+                        movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);
+                    }
                     isWaitingForDefenderMove = true;
                 }
                 else if (selectedToken == token)
@@ -333,7 +352,7 @@ public class HighPassManager : MonoBehaviour
             CommitToThisAction();
             Debug.Log("High Pass committed on [C]. Select a valid target to continue.");
         }
-        else if (MatchManager.Instance.difficulty_level == 1 && !isCornerKick)
+        else if (MatchManager.Instance.difficulty_level < 3 && !isCornerKick)
         {
             HighlightAllValidHighPassTargets();
         }
@@ -490,7 +509,7 @@ public class HighPassManager : MonoBehaviour
     private bool CanPrecomputeAvailableTargets()
     {
         return MatchManager.Instance != null
-            && MatchManager.Instance.difficulty_level == 1
+            && MatchManager.Instance.difficulty_level < 3
             && !isCornerKick
             && (isAvailable || ShouldShowDifficultyOneTargetHighlights())
             && ball != null
@@ -583,14 +602,13 @@ public class HighPassManager : MonoBehaviour
                     {
                         HighlightAllValidHighPassTargets();
                     }
-                    else if (difficulty == 1)
+                    else if (difficulty < 3)
                     {
                         HighlightAllValidHighPassTargets();
-                        eligibleAttackers = GetAttackersWithinRangeOfHex(currentTargetHex, ATTACKER_MOVE_RANGE);
-                    }
-                    else
-                    {
-                        HighlightHighPassArea(clickedHex);
+                        if (difficulty == 1)
+                        {
+                            eligibleAttackers = GetAttackersWithinRangeOfHex(currentTargetHex, ATTACKER_MOVE_RANGE);
+                        }
                     }
                 }
 
@@ -1241,8 +1259,7 @@ public class HighPassManager : MonoBehaviour
         return isActivated
             && isWaitingForConfirmation
             && MatchManager.Instance != null
-            && (MatchManager.Instance.difficulty_level == 1
-                || (isGoalkeeperKick && MatchManager.Instance.difficulty_level < 3))
+            && MatchManager.Instance.difficulty_level < 3
             && !isCornerKick;
     }
 
@@ -1257,15 +1274,20 @@ public class HighPassManager : MonoBehaviour
                 continue;
             }
 
+            bool shouldPaintTarget = MatchManager.Instance.difficulty_level == 1
+                || hex == currentTargetHex
+                || hex == hoveredHighPassTargetHex;
+            if (!shouldPaintTarget)
+            {
+                continue;
+            }
+
             string highlightReason = hex == currentTargetHex || hex == hoveredHighPassTargetHex
                 ? "passTargetCommitted"
                 : "PaceAvailable";
             hex.HighlightHex(highlightReason);
 
-            if (!hexGrid.highlightedHexes.Contains(hex))
-            {
-                hexGrid.highlightedHexes.Add(hex);
-            }
+            if (!hexGrid.highlightedHexes.Contains(hex)) hexGrid.highlightedHexes.Add(hex);
         }
     }
 
@@ -1314,6 +1336,11 @@ public class HighPassManager : MonoBehaviour
     private void HighlightEligibleAttackerHexes()
     {
         hexGrid.ClearHighlightedHexes();
+        if (MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3)
+        {
+            return;
+        }
+
         foreach (PlayerToken attacker in eligibleAttackers)
         {
             HexCell attackerHex = attacker != null ? attacker.GetCurrentHex() : null;
@@ -1328,6 +1355,26 @@ public class HighPassManager : MonoBehaviour
                 hexGrid.highlightedHexes.Add(attackerHex);
             }
         }
+    }
+
+    private bool IsValidAttackerHighPassMoveHex(HexCell hex)
+    {
+        if (hex == null || selectedToken == null)
+        {
+            return false;
+        }
+
+        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+        {
+            return hexGrid.highlightedHexes.Contains(hex);
+        }
+
+        if (hex.isAttackOccupied || hex.isDefenseOccupied || hex.isOutOfBounds)
+        {
+            return false;
+        }
+
+        return HexGridUtils.GetReachableHexes(hexGrid, selectedToken.GetCurrentHex(), ATTACKER_MOVE_RANGE).Item1.Contains(hex);
     }
 
     private void ForfeitAttackerHighPassMove()
@@ -1376,6 +1423,26 @@ public class HighPassManager : MonoBehaviour
         selectedToken = null;  // Ensure no token is auto-selected
         // Find the defending goalkeeper and intialize the flag to false
         didGKMoveInDefPhase = false;
+    }
+
+    private bool IsValidDefenderHighPassMoveHex(HexCell hex)
+    {
+        if (hex == null || selectedToken == null)
+        {
+            return false;
+        }
+
+        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+        {
+            return hexGrid.highlightedHexes.Contains(hex);
+        }
+
+        if (hex.isAttackOccupied || hex.isDefenseOccupied || hex.isOutOfBounds)
+        {
+            return false;
+        }
+
+        return HexGridUtils.GetReachableHexes(hexGrid, selectedToken.GetCurrentHex(), DEFENDER_MOVE_RANGE).Item1.Contains(hex);
     }
 
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
@@ -1532,13 +1599,29 @@ public class HighPassManager : MonoBehaviour
         if (isWaitingForAttackerSelection && lockedAttacker == null) sb.Append($"Click an eligible attacker ({string.Join(", ", eligibleAttackers.Select(t => t.name))}) to move them to the target, ");
         if (isWaitingForAttackerSelection && lockedAttacker != null)
         {
-            if (selectedToken == null) sb.Append($"Click on an Attacker (not {lockedAttacker.name}) to show the range, or Press [X] to forfeit Attacker HP movement, ");
-            else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, click another attacker to switch player, or Press [X] to forfeit Attacker HP movement, ");
+            if (matchManager != null && matchManager.difficulty_level == 3)
+            {
+                if (selectedToken == null) sb.Append($"Click on an Attacker (not {lockedAttacker.name}) to select them, or Press [X] to forfeit Attacker HP movement, ");
+                else sb.Append($"Click a reachable Hex to move {selectedToken.name}, or Press [X] to forfeit Attacker HP movement, ");
+            }
+            else
+            {
+                if (selectedToken == null) sb.Append($"Click on an Attacker (not {lockedAttacker.name}) to show the range, or Press [X] to forfeit Attacker HP movement, ");
+                else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, click another attacker to switch player, or Press [X] to forfeit Attacker HP movement, ");
+            }
         }
         if (isWaitingForDefenderSelection)
         {
-            if (!isWaitingForDefenderMove) sb.Append($"Click on a Defender to show the moveable range, or Press [X] to forfeit Defender HP movement, ");
-            else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, click another defender to switch player, or Press [X] to forfeit Defender HP movement, ");
+            if (matchManager != null && matchManager.difficulty_level == 3)
+            {
+                if (!isWaitingForDefenderMove) sb.Append($"Click on a Defender to select them, or Press [X] to forfeit Defender HP movement, ");
+                else sb.Append($"Click a reachable Hex to move {selectedToken.name}, or Press [X] to forfeit Defender HP movement, ");
+            }
+            else
+            {
+                if (!isWaitingForDefenderMove) sb.Append($"Click on a Defender to show the moveable range, or Press [X] to forfeit Defender HP movement, ");
+                else sb.Append($"Click on highlighted Hex to move {selectedToken.name}, click another defender to switch player, or Press [X] to forfeit Defender HP movement, ");
+            }
         }
         if (isWaitingForAccuracyRoll && passer != null) {sb.Append($"Press [R] to roll the accuracy check with {passer.name}, a roll of {8 - passer.highPass}+ is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}

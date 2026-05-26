@@ -3,6 +3,16 @@ using System.Collections.Generic;
 
 public static class HexGridUtils
 {
+    public static string FormatHexCoordinates(HexCell hex)
+    {
+        return hex == null ? "unknown" : FormatHexCoordinates(hex.coordinates);
+    }
+
+    public static string FormatHexCoordinates(Vector3Int coordinates)
+    {
+        return $"({coordinates.x}, {coordinates.z})";
+    }
+
     public static Vector3Int AxialToCube(Vector3Int axialCoords)
     {
         int x = axialCoords.x;

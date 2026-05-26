@@ -224,17 +224,13 @@ public class OutOfBoundsManager : MonoBehaviour
                 {
                     Debug.Log("Left Side: Corner kick from the top-left corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-18, 0, 12));
-                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
-                    yield return StartCoroutine(ball.MoveToCell(spot));
-                    freeKickManager.StartFreeKickPreparation(spot);
+                    yield return StartCoroutine(PrepareCornerRestart(spot));
                 }
                 else
                 {
                     Debug.Log("Left Side: Corner kick from the bottom-left corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(-18, 0, -12));
-                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
-                    yield return StartCoroutine(ball.MoveToCell(spot));
-                    freeKickManager.StartFreeKickPreparation(spot);
+                    yield return StartCoroutine(PrepareCornerRestart(spot));
                 }
             }
             else
@@ -243,17 +239,13 @@ public class OutOfBoundsManager : MonoBehaviour
                 {
                     Debug.Log("Right Side: Corner kick from the top-right corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(18, 0, 12));
-                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
-                    yield return StartCoroutine(ball.MoveToCell(spot));
-                    freeKickManager.StartFreeKickPreparation(spot);
+                    yield return StartCoroutine(PrepareCornerRestart(spot));
                 }
                 else
                 {
                     Debug.Log("Right Side: Corner kick from the bottom-right corner.");
                     HexCell spot = hexGrid.GetHexCellAt(new Vector3Int(18, 0, -12));
-                    yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
-                    yield return StartCoroutine(ball.MoveToCell(spot));
-                    freeKickManager.StartFreeKickPreparation(spot);
+                    yield return StartCoroutine(PrepareCornerRestart(spot));
                 }
             }
         }
@@ -300,6 +292,31 @@ public class OutOfBoundsManager : MonoBehaviour
                 yield return StartCoroutine(PrepareGoalKickRestart(spot));
             }
         }
+    }
+
+    private IEnumerator PrepareCornerRestart(HexCell spot)
+    {
+        yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
+        yield return StartCoroutine(ball.MoveToCell(spot));
+
+        FinalThirdManager resolvedFinalThirdManager = finalThirdManager != null
+            ? finalThirdManager
+            : FindFirstObjectByType<FinalThirdManager>();
+
+        if (resolvedFinalThirdManager != null)
+        {
+            resolvedFinalThirdManager.TriggerFinalThirdPhase();
+            while (resolvedFinalThirdManager.isActivated)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Corner restart could not offer Final Thirds because FinalThirdManager is missing.");
+        }
+
+        freeKickManager.StartFreeKickPreparation(spot);
     }
 
     private IEnumerator PrepareGoalKickRestart(HexCell spot)

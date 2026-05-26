@@ -1996,8 +1996,7 @@ public class HeaderManager : MonoBehaviour
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 // ball.AdjustBallHeightBasedOnOccupancy();
                 ball.PlaceAtCell(defenderHex);
-                MatchManager.Instance.BroadcastAnyOtherScenario();
-                finalThirdManager.TriggerFinalThirdPhase();
+                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(interceptingDefender, defenderHex);
                 yield break;  // Stop the sequence once an interception is successful
             }
             else

@@ -20,6 +20,7 @@ public class MovementPhaseManager : MonoBehaviour
     public GoalFlowManager goalFlowManager;
     public ShotManager shotManager;
     public HighPassManager highPassManager;
+    public GameInputManager gameInputManager;
     public HelperFunctions helperFunctions;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
@@ -85,6 +86,7 @@ public class MovementPhaseManager : MonoBehaviour
     private readonly Dictionary<HexCell, bool> movementThreatByHex = new();
     private readonly HashSet<HexCell> heldReachOverlayHexes = new();
     private HexCell hoveredMovementHex;
+    private HexCell hoveredRepositionHex;
     private bool showAttackerReachOverlay;
     private bool showDefenderReachOverlay;
     private bool showSafeDribblerReachOverlay;
@@ -323,6 +325,24 @@ public class MovementPhaseManager : MonoBehaviour
         if (shotManager != null && shotManager.isActivated)
         {
             return;
+        }
+
+        if (ShouldShowEasyRepositionHover())
+        {
+            HexCell nextHoveredRepositionHex = repositionHexes.Contains(hex) ? hex : null;
+            if (hoveredRepositionHex != nextHoveredRepositionHex)
+            {
+                hoveredRepositionHex = nextHoveredRepositionHex;
+                RefreshRepositionHighlights();
+            }
+
+            return;
+        }
+
+        if (hoveredRepositionHex != null)
+        {
+            hoveredRepositionHex = null;
+            RefreshRepositionHighlights();
         }
 
         if (!ShouldShowEasyMovementThreats())
@@ -890,7 +910,8 @@ public class MovementPhaseManager : MonoBehaviour
             reachableHexes.Remove(ballHex);
             distanceData.Remove(ballHex);
         }
-        bool showThreatHints = ShouldShowEasyMovementThreats() && token == selectedToken;
+        bool showThreatHints = ShouldShowEasyMovementThreats() && token == selectedToken && token.IsDribbler && isDribblerRunning;
+        RefreshCurrentMovementHoverFromInput();
 
         foreach (HexCell hex in reachableHexes)
         {
@@ -916,14 +937,17 @@ public class MovementPhaseManager : MonoBehaviour
                 // Retrieve the distance and ZOI data for the current hex
                 var (hexDistance, enteredZOI) = distanceData[hex];
 
+                bool isHoveredMovementDestination = hoveredMovementHex == hex && ShouldShowEasyMovementThreats();
+
                 // Highlight the hex based on ZOI entry and range
                 if (hexDistance <= movementRange && hex.isInGoal == 0)
                 {
-                    bool triggersStealAttempt = showThreatHints && DoesMovementHexTriggerStealAttempt(hex);
+                    bool triggersStealAttempt = showThreatHints
+                        && (DoesMovementHexTriggerStealAttempt(hex) || DoesMovementHexOfferNutmegQuestion(token, hex, hexDistance));
                     movementThreatByHex[hex] = triggersStealAttempt;
-                    string highlightReason = triggersStealAttempt
-                        ? hoveredMovementHex == hex ? "PaceRiskHover" : "PaceRisk"
-                        : "PaceAvailable";
+                    string highlightReason = isHoveredMovementDestination
+                        ? "MovementDestinationHover"
+                        : triggersStealAttempt ? "PaceRisk" : "PaceAvailable";
                     hex.HighlightHex(highlightReason);
                 }
                 if (
@@ -933,7 +957,7 @@ public class MovementPhaseManager : MonoBehaviour
                     && IsOpponentGoalForToken(token, hex)
                 )
                 {
-                    hex.HighlightHex("CanShootFrom");
+                    hex.HighlightHex(isHoveredMovementDestination ? "MovementDestinationHover" : "MovementGoal");
                     hex.transform.position += Vector3.up * 0.03f;
                 }
             }
@@ -983,14 +1007,31 @@ public class MovementPhaseManager : MonoBehaviour
         HighlightValidMovementHexes(selectedToken, lastMovementHighlightRange);
     }
 
+    private void RefreshCurrentMovementHoverFromInput()
+    {
+        if (!ShouldShowEasyMovementThreats())
+        {
+            return;
+        }
+
+        GameInputManager resolvedInputManager = gameInputManager != null
+            ? gameInputManager
+            : FindAnyObjectByType<GameInputManager>();
+        if (resolvedInputManager == null)
+        {
+            return;
+        }
+
+        hoveredMovementHex = resolvedInputManager.hoveredHex;
+    }
+
     private bool ShouldShowEasyMovementThreats()
     {
         return MatchManager.Instance != null
-            && MatchManager.Instance.difficulty_level == 1
+            && MatchManager.Instance.difficulty_level < 3
             && isActivated
             && isAwaitingHexDestination
             && selectedToken != null
-            && selectedToken.IsDribbler
             && !isWaitingForInterceptionDiceRoll
             && !isWaitingForReposition;
     }
@@ -1003,6 +1044,45 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         return CollectEligibleDefendersForInterception(targetHex, false).Count > 0;
+    }
+
+    private bool DoesMovementHexOfferNutmegQuestion(PlayerToken dribbler, HexCell targetHex, int movementDistance)
+    {
+        if (dribbler == null
+            || targetHex == null
+            || !dribbler.IsDribbler
+            || !isDribblerRunning
+            || remainingDribblerPace - movementDistance < 2)
+        {
+            return false;
+        }
+
+        HexCell[] dribblerNeighbors = targetHex.GetNeighbors(hexGrid);
+        foreach (HexCell neighborHex in dribblerNeighbors)
+        {
+            PlayerToken defender = neighborHex?.GetOccupyingToken();
+            if (defender == null
+                || defender.isAttacker
+                || stunnedTokens.Contains(defender)
+                || stunnedforNext.Contains(defender)
+                || defendersTriedToIntercept.Contains(defender))
+            {
+                continue;
+            }
+
+            foreach (HexCell defenderNeighborHex in neighborHex.GetNeighbors(hexGrid))
+            {
+                if (defenderNeighborHex != null
+                    && !defenderNeighborHex.isAttackOccupied
+                    && !defenderNeighborHex.isDefenseOccupied
+                    && !dribblerNeighbors.Contains(defenderNeighborHex))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // Check if the clicked hex is a valid one
@@ -1100,9 +1180,10 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);  // Update possession
             MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
             MatchManager.Instance.ClearHangingPass();
-            EndMovementPhase();
+            PlayerToken recoveringToken = selectedToken;
+            EndMovementPhase(false);
             MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;  // Update game state
-            MatchManager.Instance.BroadcastAnyOtherScenario();
+            MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, targetHex);
             remainingDribblerPace = 0;
         }
         // Defender does not land on Ball Hex
@@ -1871,12 +1952,13 @@ public class MovementPhaseManager : MonoBehaviour
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
+        PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : selectedDefender;
 
         // Change possession to the defending team
         MatchManager.Instance.ChangePossession();  
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
-        EndMovementPhase(true);
-        MatchManager.Instance.BroadcastAnyOtherScenario();
+        EndMovementPhase(false);
+        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex);
     }
 
     public void PerformTackleDiceRoll(bool isDefender, int? rigroll = null)
@@ -2077,20 +2159,47 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log($"{repositionWinner.name} won the tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there or Press X to stay put.");
         }
         // Highlight repositioning options
-        foreach (HexCell hex in repositionHexes)
-        {
-            if (!hex.isDefenseOccupied && !hex.isAttackOccupied)
-            {
-                hex.HighlightHex("reposition");
-                hexGrid.highlightedHexes.Add(hex);
-                if (hex.isInGoal != 0) hex.transform.position += Vector3.up * 0.03f;
-            }
-        }
+        hoveredRepositionHex = null;
+        RefreshRepositionHighlights();
         isWaitingForReposition = true;
         while (isWaitingForReposition)
         {
             yield return null;
         }
+    }
+
+    private void RefreshRepositionHighlights()
+    {
+        foreach (HexCell hex in repositionHexes)
+        {
+            if (hex == null || hex.isDefenseOccupied || hex.isAttackOccupied)
+            {
+                continue;
+            }
+
+            string highlightReason = hoveredRepositionHex == hex
+                ? "MovementDestinationHover"
+                : hex.isInGoal != 0 ? "MovementGoal" : "reposition";
+            hex.HighlightHex(highlightReason);
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                hexGrid.highlightedHexes.Add(hex);
+            }
+            if (hex.isInGoal != 0 && hex.transform.position.y == 0)
+            {
+                hex.transform.position += Vector3.up * 0.03f;
+            }
+        }
+    }
+
+    private bool ShouldShowEasyRepositionHover()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level < 3
+            && isActivated
+            && isWaitingForReposition
+            && repositionHexes != null
+            && repositionHexes.Count > 0;
     }
 
     private async Task AsyncRepositionTokenToHex(HexCell hex)
@@ -2133,6 +2242,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
         hexGrid.ClearHighlightedHexes();
+        hoveredRepositionHex = null;
         await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); // Move the token
         ball.PlaceAtCell(hex); // Move the ball
         // clickedHex.ResetHighlight();
@@ -2252,12 +2362,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator TakeFreeKickAfterFinalThirds()
     {
-        // End the movement phase and start the free `kick process
-        // @TODO: play-stopping outcomes (goal/set piece) currently call EndMovementPhase twice
-        // to fully clear both current-MP and next-MP temporary freeze state. Replace this with
-        // explicit stop-play cleanup when set-piece prep owns the restart path.
-        EndMovementPhase(false);  // End the movement phase
-        EndMovementPhase();  // End the movement phase
+        EndMovementPhaseForStopPlay(triggerF3: true);
 
         if (finalThirdManager != null && finalThirdManager.isActivated)
         {
@@ -2273,17 +2378,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator TakePenaltyKickAfterFinalThirds()
     {
-        EndMovementPhase(false);
-        EndMovementPhase();
-
-        if (finalThirdManager != null && finalThirdManager.isActivated)
-        {
-            Debug.Log("Waiting for Final Third movement to finish before starting Penalty Kick preparation.");
-            while (finalThirdManager.isActivated)
-            {
-                yield return null;
-            }
-        }
+        EndMovementPhaseForStopPlay(triggerF3: false);
 
         pendingFoulIsPenalty = false;
         PenaltyKickManager manager = ResolvePenaltyKickManager();
@@ -2294,6 +2389,12 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         manager.StartPenaltyPreparation();
+    }
+
+    internal void EndMovementPhaseForStopPlay(bool triggerF3)
+    {
+        EndMovementPhase(false);
+        EndMovementPhase(triggerF3);
     }
 
     private PenaltyKickManager ResolvePenaltyKickManager()
@@ -2788,8 +2889,18 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else
             {
-                if (isWaitingForTackleRoll && !tackleDefenderRolled ) sb.Append($"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling+1}, ");
-                if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the nutmeg. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
+                if (isWaitingForTackleRoll && !tackleDefenderRolled && nutmegVictim != null)
+                {
+                    sb.Append($"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling + 1}; needs {FOUL_THRESHOLD + 1}+ to avoid a foul, ");
+                }
+                if (isWaitingForTackleRoll && tackleDefenderRolled)
+                {
+                    PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+                    if (attackerToken != null)
+                    {
+                        sb.Append($"Press [R] to roll with {attackerToken.playerName} for the nutmeg. Dribbling: {attackerToken.dribbling}; {BuildNutmegAttackerRollNeed(attackerToken)}, ");
+                    }
+                }
             }
             if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot");
             if (isWaitingForSnapshotDecision && !isDribblerRunning && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to end your move, ");
@@ -2802,6 +2913,42 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    private string BuildNutmegAttackerRollNeed(PlayerToken attackerToken)
+    {
+        if (attackerToken == null || nutmegVictim == null)
+        {
+            return "roll to resolve";
+        }
+
+        int defenderTotal = defenderDiceRoll == 50
+            ? 50
+            : defenderDiceRoll + nutmegVictim.tackling + 1;
+        int rollToWin = defenderTotal - attackerToken.dribbling + 1;
+        int rollToTie = defenderTotal - attackerToken.dribbling;
+
+        if (defenderDiceRoll == 50)
+        {
+            return "needs JACKPOT to tie";
+        }
+
+        if (rollToWin <= 1)
+        {
+            return "needs 1+ to win";
+        }
+
+        if (rollToWin <= 6)
+        {
+            return $"needs {rollToWin}+ to win";
+        }
+
+        if (rollToTie >= 1 && rollToTie <= 6)
+        {
+            return $"needs JACKPOT to win; {rollToTie}+ ties";
+        }
+
+        return "needs JACKPOT to win";
     }
 
     public bool? IsInstructionExpectingHomeTeam()
@@ -2845,6 +2992,19 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (isWaitingForTackleRoll)
         {
+            if (isNutmegInProgress)
+            {
+                if (!tackleDefenderRolled && nutmegVictim != null)
+                {
+                    return nutmegVictim.isHomeTeam;
+                }
+
+                if (MatchManager.Instance.LastTokenToTouchTheBallOnPurpose != null)
+                {
+                    return MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.isHomeTeam;
+                }
+            }
+
             if (!tackleDefenderRolled && selectedDefender != null)
             {
                 return selectedDefender.isHomeTeam;

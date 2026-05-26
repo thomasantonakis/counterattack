@@ -32,6 +32,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     private HexCell currentDefenderHex = null;
     private HexCell hoveredPreviewHex = null;
+    private HexCell hoveredMovementHex = null;
     private string latestValidationInstruction = string.Empty;
     private bool currentTargetPreviewIsDangerous = false;
     private int currentTargetPreviewAttempts = 0;
@@ -78,18 +79,40 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
-        if (!isActivated || !isAwaitingTargetSelection || MatchManager.Instance.difficulty_level != 1)
+        if (!isActivated || MatchManager.Instance == null)
         {
             return;
         }
 
-        if (hoveredPreviewHex == hex)
+        int difficulty = MatchManager.Instance.difficulty_level;
+        if (isAwaitingTargetSelection && (difficulty == 1 || difficulty == 2))
         {
+            if (hoveredPreviewHex == hex)
+            {
+                return;
+            }
+
+            hoveredPreviewHex = hex;
+            if (difficulty == 1)
+            {
+                UpdateEasyModeHoverPreview(hex);
+            }
+            else
+            {
+                UpdateMediumModeHoverPreview(hex);
+            }
+
             return;
         }
 
-        hoveredPreviewHex = hex;
-        UpdateEasyModeHoverPreview(hex);
+        if (difficulty == 2
+            && selectedToken != null
+            && (isWaitingForAttackerMove || isWaitingForDefenderMove)
+            && hoveredMovementHex != hex)
+        {
+            hoveredMovementHex = hex;
+            UpdateMediumModeMovementHover(hex);
+        }
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -146,6 +169,7 @@ public class FirstTimePassManager : MonoBehaviour
         isAvailable = false;
         isAwaitingTargetSelection = true;
         hoveredPreviewHex = null;
+        hoveredMovementHex = null;
         latestValidationInstruction = string.Empty;
         ResetTargetPreviewState();
         ResetFTPInterceptionDiceRolls();
@@ -217,14 +241,13 @@ public class FirstTimePassManager : MonoBehaviour
             if (currentTargetHex == null || clickedHex != currentTargetHex)
             {
                 currentTargetHex = clickedHex;
-                currentTargetPreviewIsDangerous = validation.IsDangerous;
-                currentTargetPreviewAttempts = previewAttempts;
-                HighlightValidFTPPath(validation.PathHexes, validation.IsDangerous);
-                Debug.Log($"First click registered. Click again to confirm the First-Time Pass. Current path is {(validation.IsDangerous ? "dangerous" : "safe")} before the 1-hex moves.");
+                ResetTargetPreviewState();
+                HighlightMediumModeTargets(clickedHex);
+                latestValidationInstruction = "Click the orange target again to confirm, or choose another valid target.";
+                Debug.Log("First-Time Pass target selected. Click again to confirm or elsewhere to try another target.");
             }
             else
             {
-                HighlightValidFTPPath(validation.PathHexes, validation.IsDangerous);
                 ConfirmTargetSelection();
             }
 
@@ -237,9 +260,7 @@ public class FirstTimePassManager : MonoBehaviour
             currentTargetPreviewIsDangerous = validation.IsDangerous;
             currentTargetPreviewAttempts = previewAttempts;
             hoveredPreviewHex = null;
-            hexGrid.ClearHighlightedHexes();
-            HighlightCommittedTarget();
-            latestValidationInstruction = GetEasyModeCommittedTargetInstruction();
+            RenderEasyModeSelectedTargetPreview(validation);
         }
         else
         {
@@ -250,6 +271,58 @@ public class FirstTimePassManager : MonoBehaviour
     private GroundPassValidationResult ValidateFTPTargetPath(HexCell targetHex)
     {
         return GroundPassCommon.ValidateStandardPassPath(hexGrid, ball, targetHex, FtpMaxDistance);
+    }
+
+    private void UpdateMediumModeHoverPreview(HexCell hoveredHex)
+    {
+        if (!isActivated || !isAwaitingTargetSelection || MatchManager.Instance.difficulty_level != 2)
+        {
+            return;
+        }
+
+        hexGrid.ClearHighlightedHexes();
+
+        if (hoveredHex == null)
+        {
+            HighlightCommittedTarget();
+            latestValidationInstruction = currentTargetHex != null
+                ? "Click the orange target again to confirm, or choose another valid target."
+                : $"Hover a target within {FtpMaxDistance} hexes, then click it to select.";
+            return;
+        }
+
+        GroundPassValidationResult validation = ValidateFTPTargetPath(hoveredHex);
+        hexGrid.ClearHighlightedHexes();
+        HighlightCommittedTarget();
+
+        if (!validation.IsValid)
+        {
+            latestValidationInstruction = GroundPassCommon.GetValidationFailureInstruction(validation.FailureReason);
+            return;
+        }
+
+        HighlightMediumModeTargets(hoveredHex);
+        latestValidationInstruction = hoveredHex == currentTargetHex
+            ? "Click the orange target again to confirm, or choose another valid target."
+            : currentTargetHex != null
+                ? "Click this orange target to switch selection, or click the selected orange target again to confirm."
+                : "Click this orange target to select it.";
+    }
+
+    private void HighlightMediumModeTargets(HexCell hoveredHex)
+    {
+        HighlightCommittedTarget();
+
+        if (hoveredHex == null || hoveredHex == currentTargetHex)
+        {
+            return;
+        }
+
+        hoveredHex.HighlightHex("passTargetCommitted");
+        if (!hexGrid.highlightedHexes.Contains(hoveredHex))
+        {
+            hexGrid.highlightedHexes.Add(hoveredHex);
+        }
     }
 
     private void UpdateEasyModeHoverPreview(HexCell hoveredHex)
@@ -270,6 +343,12 @@ public class FirstTimePassManager : MonoBehaviour
             return;
         }
 
+        if (hoveredHex == currentTargetHex)
+        {
+            RenderEasyModeSelectedTargetPreview();
+            return;
+        }
+
         GroundPassValidationResult validation = ValidateFTPTargetPath(hoveredHex);
         hexGrid.ClearHighlightedHexes();
         HighlightCommittedTarget();
@@ -284,6 +363,29 @@ public class FirstTimePassManager : MonoBehaviour
         HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, validation.IsDangerous);
         HighlightCommittedTarget();
         latestValidationInstruction = GetEasyModePreviewInstruction(validation.IsDangerous, previewAttempts);
+    }
+
+    private void RenderEasyModeSelectedTargetPreview(GroundPassValidationResult? knownValidation = null)
+    {
+        if (currentTargetHex == null)
+        {
+            return;
+        }
+
+        GroundPassValidationResult validation = knownValidation ?? ValidateFTPTargetPath(currentTargetHex);
+        hexGrid.ClearHighlightedHexes();
+
+        if (!validation.IsValid)
+        {
+            HighlightCommittedTarget();
+            latestValidationInstruction = GroundPassCommon.GetValidationFailureInstruction(validation.FailureReason);
+            return;
+        }
+
+        currentTargetPreviewIsDangerous = validation.IsDangerous;
+        currentTargetPreviewAttempts = GroundPassCommon.BuildOrderedInterceptionCandidates(hexGrid, ball, currentTargetHex).Count;
+        HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, validation.IsDangerous);
+        latestValidationInstruction = GetEasyModeCommittedTargetInstruction();
     }
 
     private void ConfirmTargetSelection()
@@ -303,6 +405,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         isAwaitingTargetSelection = false;
         hoveredPreviewHex = null;
+        hoveredMovementHex = null;
         latestValidationInstruction = string.Empty;
         MatchManager.Instance.gameData.gameLog.LogEvent(
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
@@ -314,10 +417,17 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void HandleAttackerSelectionClick(PlayerToken token, HexCell hex)
     {
-        if (isWaitingForAttackerMove && hex != null && hexGrid.highlightedHexes.Contains(hex))
+        int difficulty = MatchManager.Instance.difficulty_level;
+        if (isWaitingForAttackerMove && IsValidFtpMovementDestination(hex))
         {
             Debug.Log("Valid Hex to move the Attacker.");
             StartCoroutine(MoveSelectedAttackerToHex(hex));
+            return;
+        }
+
+        if (difficulty == 3 && selectedToken != null)
+        {
+            Debug.LogWarning($"Attacker {selectedToken.name} is already selected. Click a reachable hex or press [X] to skip.");
             return;
         }
 
@@ -326,6 +436,7 @@ public class FirstTimePassManager : MonoBehaviour
             Debug.LogWarning("Invalid token or not an attacker clicked. Please click on an attacker or press [X] to skip.");
             hexGrid.ClearHighlightedHexes();
             selectedToken = null;
+            hoveredMovementHex = null;
             isWaitingForAttackerMove = false;
             return;
         }
@@ -334,8 +445,12 @@ public class FirstTimePassManager : MonoBehaviour
         {
             Debug.Log($"Attacker {token.name} selected.");
             selectedToken = token;
+            hoveredMovementHex = null;
             hexGrid.ClearHighlightedHexes();
-            movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);
+            if (difficulty == 1)
+            {
+                movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);
+            }
             isWaitingForAttackerMove = true;
         }
         else
@@ -346,10 +461,17 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void HandleDefenderSelectionClick(PlayerToken token, HexCell hex)
     {
-        if (isWaitingForDefenderMove && hex != null && hexGrid.highlightedHexes.Contains(hex))
+        int difficulty = MatchManager.Instance.difficulty_level;
+        if (isWaitingForDefenderMove && IsValidFtpMovementDestination(hex))
         {
             Debug.Log("Valid Hex to move the Defender.");
             StartCoroutine(MoveSelectedDefenderToHex(hex));
+            return;
+        }
+
+        if (difficulty == 3 && selectedToken != null)
+        {
+            Debug.LogWarning($"Defender {selectedToken.name} is already selected. Click a reachable hex or press [X] to skip.");
             return;
         }
 
@@ -358,6 +480,7 @@ public class FirstTimePassManager : MonoBehaviour
             Debug.LogWarning("Invalid token or not a defender clicked. Please click on a defender or press [X] to skip.");
             hexGrid.ClearHighlightedHexes();
             selectedToken = null;
+            hoveredMovementHex = null;
             isWaitingForDefenderMove = false;
             return;
         }
@@ -366,14 +489,93 @@ public class FirstTimePassManager : MonoBehaviour
         {
             Debug.Log($"Defender {token.name} selected.");
             selectedToken = token;
+            hoveredMovementHex = null;
             hexGrid.ClearHighlightedHexes();
-            movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);
+            if (difficulty == 1)
+            {
+                HighlightFtpDefenderMovementHexes();
+            }
             isWaitingForDefenderMove = true;
         }
         else
         {
             Debug.Log($"Defender {token.name} already selected. Click a highlighted Hex to move, click another defender to switch, or press [X] to skip.");
         }
+    }
+
+    private bool IsValidFtpMovementDestination(HexCell hex)
+    {
+        return hex != null
+            && selectedToken != null
+            && GetValidFtpMovementDestinations(selectedToken).Contains(hex);
+    }
+
+    private List<HexCell> GetValidFtpMovementDestinations(PlayerToken token)
+    {
+        HexCell currentHex = token != null ? token.GetCurrentHex() : null;
+        if (currentHex == null)
+        {
+            return new List<HexCell>();
+        }
+
+        return HexGridUtils.GetReachableHexes(hexGrid, currentHex, 1).Item1
+            .Where(hex => hex != null && !hex.isAttackOccupied && !hex.isDefenseOccupied && !hex.isOutOfBounds)
+            .ToList();
+    }
+
+    private void UpdateMediumModeMovementHover(HexCell hoveredHex)
+    {
+        hexGrid.ClearHighlightedHexes();
+
+        if (hoveredHex == null || !IsValidFtpMovementDestination(hoveredHex))
+        {
+            return;
+        }
+
+        hoveredHex.HighlightHex("MovementDestinationHover");
+        if (!hexGrid.highlightedHexes.Contains(hoveredHex))
+        {
+            hexGrid.highlightedHexes.Add(hoveredHex);
+        }
+    }
+
+    private void HighlightFtpDefenderMovementHexes()
+    {
+        hexGrid.ClearHighlightedHexes();
+
+        foreach (HexCell hex in GetValidFtpMovementDestinations(selectedToken))
+        {
+            string highlightReason = GetFtpDefenderDestinationHighlightReason(hex);
+            hex.HighlightHex(highlightReason);
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                hexGrid.highlightedHexes.Add(hex);
+            }
+        }
+    }
+
+    private string GetFtpDefenderDestinationHighlightReason(HexCell destinationHex)
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+        if (ballHex == null || currentTargetHex == null || destinationHex == null)
+        {
+            return "PaceAvailable";
+        }
+
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        if (pathHexes.Contains(destinationHex))
+        {
+            return "dangerousPass";
+        }
+
+        HashSet<HexCell> relevantInterceptionHexes = new HashSet<HexCell>(
+            GroundPassCommon.GetRelevantInterceptionHexes(pathHexes, currentTargetHex)
+        );
+        bool influencesPath = destinationHex
+            .GetNeighbors(hexGrid)
+            .Any(hex => hex != null && relevantInterceptionHexes.Contains(hex));
+
+        return influencesPath ? "ballPath" : "PaceAvailable";
     }
 
     public void HighlightValidFTPPath(List<HexCell> pathHexes, bool isDangerous)
@@ -469,6 +671,7 @@ public class FirstTimePassManager : MonoBehaviour
     private void StartAttackerMovementPhase()
     {
         hexGrid.ClearHighlightedHexes();
+        hoveredMovementHex = null;
         isWaitingForAttackerSelection = true;
         isWaitingForAttackerMove = false;
         isWaitingForDefenderSelection = false;
@@ -481,6 +684,7 @@ public class FirstTimePassManager : MonoBehaviour
     public void StartDefenderMovementPhase()
     {
         hexGrid.ClearHighlightedHexes();
+        hoveredMovementHex = null;
         isWaitingForAttackerSelection = false;
         isWaitingForAttackerMove = false;
         isWaitingForDefenderSelection = true;
@@ -494,6 +698,7 @@ public class FirstTimePassManager : MonoBehaviour
     {
         Debug.Log("Attacker FTP movement skipped.");
         hexGrid.ClearHighlightedHexes();
+        hoveredMovementHex = null;
         selectedToken = null;
         isWaitingForAttackerSelection = false;
         isWaitingForAttackerMove = false;
@@ -504,6 +709,7 @@ public class FirstTimePassManager : MonoBehaviour
     {
         Debug.Log("Defender FTP movement skipped.");
         hexGrid.ClearHighlightedHexes();
+        hoveredMovementHex = null;
         selectedToken = null;
         isWaitingForDefenderSelection = false;
         isWaitingForDefenderMove = false;
@@ -560,6 +766,7 @@ public class FirstTimePassManager : MonoBehaviour
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
+        hoveredMovementHex = null;
         isWaitingForAttackerMove = false;
         isWaitingForAttackerSelection = false;
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
@@ -578,6 +785,7 @@ public class FirstTimePassManager : MonoBehaviour
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
+        hoveredMovementHex = null;
         isWaitingForDefenderMove = false;
         isWaitingForDefenderSelection = false;
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
@@ -747,11 +955,11 @@ public class FirstTimePassManager : MonoBehaviour
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
         yield return StartCoroutine(HandleGroundBallMovement(defenderHex));
+        PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
-        finalThirdManager.TriggerFinalThirdPhase();
-        MatchManager.Instance.BroadcastAnyOtherScenario();
+        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex);
     }
 
     private void ResetFTPInterceptionDiceRolls()
@@ -846,11 +1054,11 @@ public class FirstTimePassManager : MonoBehaviour
                 }
                 else if (currentTargetHex == null)
                 {
-                    sb.Append($"Click on a Hex up to {FtpMaxDistance} hexes away from {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name}, ");
+                    sb.Append($"Hover a target within {FtpMaxDistance} hexes, then click it to select, ");
                 }
                 else
                 {
-                    sb.Append("Click the highlighted target again to confirm the First-Time Pass, ");
+                    sb.Append("Click the orange target again to confirm the First-Time Pass, ");
                 }
             }
             else
@@ -868,25 +1076,43 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isWaitingForAttackerSelection)
         {
+            int difficulty = MatchManager.Instance.difficulty_level;
             if (selectedToken == null)
             {
-                sb.Append("Click on an Attacker to show a 1-hex move, or press [X] to skip, ");
+                sb.Append(difficulty == 3
+                    ? "Click on an Attacker to select them for a 1-hex move, or press [X] to skip, "
+                    : difficulty == 2
+                        ? "Click on an Attacker for a 1-hex move, or press [X] to skip, "
+                        : "Click on an Attacker to show a 1-hex move, or press [X] to skip, ");
             }
             else
             {
-                sb.Append($"Click on a highlighted Hex to move {selectedToken.name}, click another attacker to switch player, or press [X] to skip, ");
+                sb.Append(difficulty == 3
+                    ? $"Click a reachable Hex to move {selectedToken.name}, or press [X] to skip, "
+                    : difficulty == 2
+                        ? $"Hover a valid destination to preview it orange, click a valid Hex to move {selectedToken.name}, click another attacker to switch player, or press [X] to skip, "
+                        : $"Click on a highlighted Hex to move {selectedToken.name}, click another attacker to switch player, or press [X] to skip, ");
             }
         }
 
         if (isWaitingForDefenderSelection)
         {
+            int difficulty = MatchManager.Instance.difficulty_level;
             if (selectedToken == null)
             {
-                sb.Append("Click on a Defender to show a 1-hex move, or press [X] to skip, ");
+                sb.Append(difficulty == 3
+                    ? "Click on a Defender to select them for a 1-hex move, or press [X] to skip, "
+                    : difficulty == 2
+                        ? "Click on a Defender for a 1-hex move, or press [X] to skip, "
+                        : "Click on a Defender to show a 1-hex move, or press [X] to skip, ");
             }
             else
             {
-                sb.Append($"Click on a highlighted Hex to move {selectedToken.name}, click another defender to switch player, or press [X] to skip, ");
+                sb.Append(difficulty == 3
+                    ? $"Click a reachable Hex to move {selectedToken.name}, or press [X] to skip, "
+                    : difficulty == 2
+                        ? $"Hover a valid destination to preview it orange, click a valid Hex to move {selectedToken.name}, click another defender to switch player, or press [X] to skip, "
+                        : $"Click on a highlighted Hex to move {selectedToken.name}; yellow gives no interception, blue gives a mild chance, purple gives an increased chance; click another defender to switch player, or press [X] to skip, ");
             }
         }
 

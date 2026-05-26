@@ -1593,6 +1593,45 @@ public class MatchManager : MonoBehaviour
         RefreshAvailableActions();
     }
 
+    public bool BroadcastDefensiveRecoveryOutcome(PlayerToken recoveringToken, HexCell recoveryHex, bool triggerFinalThirdsForAnyOther = true)
+    {
+        if (IsGoalkeeperHoldingInOwnPenaltyBox(recoveringToken, recoveryHex))
+        {
+            currentState = GameState.ActivateFinalThirdsAfterSave;
+            movementPhaseManager.isAvailable = false;
+            groundBallManager.isAvailable = false;
+            firstTimePassManager.isAvailable = false;
+            highPassManager.isAvailable = false;
+            longBallManager.isAvailable = false;
+            shotManager.isAvailable = false;
+            shotManager.isActivated = true;
+            shotManager.isWaitingForSaveandHoldScenario = true;
+            Debug.Log($"{recoveringToken.name} recovered the ball in their own penalty box. Save and hold scenario.");
+            return true;
+        }
+
+        BroadcastAnyOtherScenario();
+        FinalThirdManager resolvedFinalThirdManager = FindAnyObjectByType<FinalThirdManager>();
+        if (triggerFinalThirdsForAnyOther && resolvedFinalThirdManager != null)
+        {
+            resolvedFinalThirdManager.TriggerFinalThirdPhase();
+        }
+
+        return false;
+    }
+
+    private bool IsGoalkeeperHoldingInOwnPenaltyBox(PlayerToken token, HexCell recoveryHex)
+    {
+        if (token == null || recoveryHex == null || !token.IsGoalKeeper || recoveryHex.isInPenaltyBox == 0)
+        {
+            return false;
+        }
+
+        TeamAttackingDirection direction = token.isHomeTeam ? homeTeamDirection : awayTeamDirection;
+        int ownPenaltyBox = direction == TeamAttackingDirection.LeftToRight ? -1 : 1;
+        return recoveryHex.isInPenaltyBox == ownPenaltyBox;
+    }
+
     public void BroadcastBallControl()
     {
         currentState = GameState.BallControl;

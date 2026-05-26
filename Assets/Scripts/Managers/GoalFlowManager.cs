@@ -555,6 +555,7 @@ public class GoalFlowManager : MonoBehaviour
     {
       yield return groundBallManager.HandleGroundBallMovement(hex);
       yield return longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)), true);
+      MatchManager.Instance.currentState = MatchManager.GameState.KickOffSetup;
       kickoffManager.StartPreKickoffPhase();
     }
 

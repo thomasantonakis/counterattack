@@ -392,9 +392,9 @@ public class LooseBallManager : MonoBehaviour
         MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
         if (movementPhaseManager != null)
         {
-            movementPhaseManager.EndMovementPhase(true);
+            movementPhaseManager.EndMovementPhase(false);
         }
-        MatchManager.Instance.BroadcastAnyOtherScenario();
+        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, recoveryHex);
     }
 
     private IEnumerator OfferDefendingGKMoveAndRecoveryAfterInterceptions(
@@ -948,8 +948,8 @@ public class LooseBallManager : MonoBehaviour
                         // Change possession to the defending team
                         MatchManager.Instance.ChangePossession();  
                         MatchManager.Instance.UpdatePossessionAfterPass(neighbor);  // Update possession
-                        movementPhaseManager.EndMovementPhase(true);
-                        MatchManager.Instance.BroadcastAnyOtherScenario();
+                        movementPhaseManager.EndMovementPhase(false);
+                        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(potentialInterceptor, neighbor);
                         EndLooseBallPhase();
                         yield break; // End ball movement
                     }
@@ -1069,8 +1069,8 @@ public class LooseBallManager : MonoBehaviour
                 // Change possession to the defending team
                 MatchManager.Instance.ChangePossession();  
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
-                movementPhaseManager.EndMovementPhase(true); // Includes F3 check
-                MatchManager.Instance.BroadcastAnyOtherScenario();
+                movementPhaseManager.EndMovementPhase(false);
+                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(closestToken, defenderHex);
              }
         }
         else // ball hit no token and reached an empty Hex

@@ -38,6 +38,7 @@ public class LongBallManager : MonoBehaviour
     private HexCell finalHex;
     // private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
+    private readonly List<HexCell> defenderLongBallMoveHexes = new();
     private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
     private readonly List<HexCell> availableLongBallTargetHexes = new();
     private HexCell hoveredLongBallTargetHex;
@@ -67,14 +68,14 @@ public class LongBallManager : MonoBehaviour
         }
         else if (isWaitingForDefLBMove)
         {
-            if (hex != null && hexGrid.highlightedHexes.Contains(hex))
+            if (hex != null && IsValidDefenderLongBallMoveHex(hex))
             {
                 hexGrid.ClearHighlightedHexes();
                 _ = MoveGKForLB(hex);
             }
             else
             {
-                Debug.LogWarning($"Cannot move GK there. Please click on a Highlighted Hex or Press [X] to forfeit GK Movement!");
+                Debug.LogWarning($"Cannot move GK there. Please click a reachable Hex or Press [X] to forfeit GK Movement!");
             }
         }
     }
@@ -140,6 +141,7 @@ public class LongBallManager : MonoBehaviour
             else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
             {
                 hexGrid.ClearHighlightedHexes();
+                defenderLongBallMoveHexes.Clear();
                 Debug.Log($"GK chooses to not move for the Long Ball, moving on!");
                 isWaitingForDefLBMove = false;
                 keyData.isConsumed = true;
@@ -152,7 +154,7 @@ public class LongBallManager : MonoBehaviour
         isActivated = true;
         isAvailable = false;
         isAwaitingTargetSelection = true;
-        if (MatchManager.Instance.difficulty_level == 1)
+        if (MatchManager.Instance.difficulty_level < 3)
         {
             HighlightAllValidLongPassTargets();
         }
@@ -260,7 +262,7 @@ public class LongBallManager : MonoBehaviour
     private bool CanPrecomputeAvailableTargets()
     {
         return MatchManager.Instance != null
-            && MatchManager.Instance.difficulty_level == 1
+            && MatchManager.Instance.difficulty_level < 3
             && (isAvailable || ShouldShowDifficultyOneTargetHighlights())
             && ball != null
             && hexGrid != null;
@@ -680,8 +682,7 @@ public class LongBallManager : MonoBehaviour
         MatchManager.Instance.SetLastToken(recoveringToken);
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
-        MatchManager.Instance.BroadcastAnyOtherScenario();
-        finalThirdManager.TriggerFinalThirdPhase();
+        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, recoveryHex);
         CleanUpLongBall();
         yield break;
     }
@@ -697,21 +698,49 @@ public class LongBallManager : MonoBehaviour
             yield break;
         }
 
-        movementPhaseManager.HighlightValidMovementHexes(defenderGK, defenderGK.pace);
+        defenderLongBallMoveHexes.Clear();
+        defenderLongBallMoveHexes.AddRange(HexGridUtils.GetReachableHexes(hexGrid, defenderGK.GetCurrentHex(), defenderGK.pace).Item1
+            .Where(hex => hex != null && !hex.isAttackOccupied && !hex.isDefenseOccupied && !hex.isOutOfBounds));
 
-        if (hexGrid.highlightedHexes.Count == 0)
+        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+        {
+            movementPhaseManager.HighlightValidMovementHexes(defenderGK, defenderGK.pace);
+        }
+        else
+        {
+            hexGrid.ClearHighlightedHexes();
+        }
+
+        if (defenderLongBallMoveHexes.Count == 0)
         {
             Debug.Log("GK has no valid move options. Skipping free move.");
             isWaitingForDefLBMove = false;
             yield break;
         }
 
-        Debug.Log("🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.");
+        Debug.Log(MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3
+            ? "🧤 GK Free Long Ball Move: Click a reachable hex to move, or press [X] to skip."
+            : "🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.");
 
         while (isWaitingForDefLBMove)
         {
             yield return null;
         }
+    }
+
+    private bool IsValidDefenderLongBallMoveHex(HexCell hex)
+    {
+        if (hex == null)
+        {
+            return false;
+        }
+
+        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
+        {
+            return hexGrid.highlightedHexes.Contains(hex);
+        }
+
+        return defenderLongBallMoveHexes.Contains(hex);
     }
 
     private async Task MoveGKForLB(HexCell hex)
@@ -726,6 +755,7 @@ public class LongBallManager : MonoBehaviour
             , shouldCarryBall: false
         ));
         isWaitingForDefLBMove = false;
+        defenderLongBallMoveHexes.Clear();
         Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
     }
 
@@ -830,8 +860,7 @@ public class LongBallManager : MonoBehaviour
                 yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
-                MatchManager.Instance.BroadcastAnyOtherScenario();
-                finalThirdManager.TriggerFinalThirdPhase();
+                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(defenderToken, defenderHex);
                 CleanUpLongBall();
                 yield break;  // Stop the sequence once an interception is successful
             }
@@ -905,55 +934,20 @@ public class LongBallManager : MonoBehaviour
     private void HighlightAllValidLongPassTargets()
     {
         int difficulty = MatchManager.Instance.difficulty_level;
-        if (difficulty == 1)
+        if (difficulty < 3)
         {
             if (!EnsureAvailableTargetPrecomputeReady())
             {
                 hexGrid.ClearHighlightedHexes();
-                Debug.Log("Long Pass target map is still calculating. Highlights will draw when ready.");
+                Debug.Log("Long Pass target map is still calculating. Target highlights will draw when ready.");
                 return;
             }
         }
-        else
-        {
-            hexGrid.ClearHighlightedHexes();
 
-            // Loop through all hexes on the grid
-            foreach (HexCell hex in hexGrid.cells)
-            {
-                if (hex == null  || hex.isOutOfBounds) continue;  // Skip null hexes
-
-                // Check if the hex is a valid target
-                var (isValid, isDangerous) = ValidateLongBallTarget(hex);
-
-                if (isValid)
-                {
-                    if (hex == currentTargetHex)
-                    {
-                        hex.HighlightHex("passTargetCommitted");
-                    }
-                    else if (isDangerous)
-                    {
-                        hex.HighlightHex("longPassDifficult");  // Highlight the Difficult hexes
-                    }
-                    else
-                    {
-                        hex.HighlightHex("longPass"); // Highlight the valid hexes
-                    }
-
-                    hexGrid.highlightedHexes.Add(hex);  // Track highlighted hexes for later clearing
-                }
-            }
-        }
-
-        if (difficulty == 1)
+        if (difficulty < 3)
         {
             RefreshDifficultyOneLongBallTargetHighlights();
-            Debug.Log($"Successfully highlighted {availableLongBallTargetHexes.Count} valid hexes for Long Pass.");
-        }
-        else
-        {
-            Debug.Log($"Successfully highlighted {hexGrid.highlightedHexes.Count} valid hexes for Long Pass.");
+            Debug.Log($"Successfully prepared {availableLongBallTargetHexes.Count} valid hexes for Long Pass.");
         }
     }
 
@@ -962,7 +956,7 @@ public class LongBallManager : MonoBehaviour
         return isActivated
             && isAwaitingTargetSelection
             && MatchManager.Instance != null
-            && MatchManager.Instance.difficulty_level == 1;
+            && MatchManager.Instance.difficulty_level < 3;
     }
 
     private void RefreshDifficultyOneLongBallTargetHighlights()
@@ -976,15 +970,20 @@ public class LongBallManager : MonoBehaviour
                 continue;
             }
 
+            bool shouldPaintTarget = MatchManager.Instance.difficulty_level == 1
+                || hex == currentTargetHex
+                || hex == hoveredLongBallTargetHex;
+            if (!shouldPaintTarget)
+            {
+                continue;
+            }
+
             string highlightReason = hex == currentTargetHex || hex == hoveredLongBallTargetHex
                 ? "passTargetCommitted"
                 : "PaceAvailable";
             hex.HighlightHex(highlightReason);
 
-            if (!hexGrid.highlightedHexes.Contains(hex))
-            {
-                hexGrid.highlightedHexes.Add(hex);
-            }
+            if (!hexGrid.highlightedHexes.Contains(hex)) hexGrid.highlightedHexes.Add(hex);
         }
     }
 
@@ -998,6 +997,7 @@ public class LongBallManager : MonoBehaviour
         isWaitingForDistanceRoll = false;
         isWaitingForInterceptionRoll = false;
         isWaitingForDefLBMove = false;
+        defenderLongBallMoveHexes.Clear();
         currentTargetHex = null;
         hoveredLongBallTargetHex = null;
         pendingDifficultyOneTargetHighlightRefresh = false;
@@ -1045,7 +1045,14 @@ public class LongBallManager : MonoBehaviour
         if (isWaitingForDefLBMove)
         {
             PlayerToken defendingGK = hexGrid != null ? hexGrid.GetDefendingGK() : null;
-            sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");
+            if (matchManager != null && matchManager.difficulty_level == 3)
+            {
+                sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a reachable Hex to rush there, or Press [X] to not rush out, ");
+            }
+            else
+            {
+                sb.Append($"{(defendingGK != null ? defendingGK.name : "The defending GK")} can move according to their pace, click a highlighted hex to rush there, or Press [X] to not rush out, ");
+            }
         }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma

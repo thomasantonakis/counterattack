@@ -78,6 +78,7 @@ public class ShotManager : MonoBehaviour
     private readonly List<HexCell> targetSelectionPreviewPath = new();
     private HexCell hoveredTargetSelectionPreviewTarget;
     private HexCell targetSelectionPreviewSaveHex;
+    private HexCell hoveredSnapshotBlockerMovementHex;
 
     private enum ShotInteractionType
     {
@@ -371,7 +372,25 @@ public class ShotManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
-        if (isActivated && isWaitingForTargetSelection && MatchManager.Instance.difficulty_level == 1)
+        if (isActivated && isWaitingforBlockerMovement && MatchManager.Instance != null && MatchManager.Instance.difficulty_level < 3)
+        {
+            HexCell nextHoveredBlockerHex = hexGrid.highlightedHexes.Contains(hex) ? hex : null;
+            if (hoveredSnapshotBlockerMovementHex != nextHoveredBlockerHex)
+            {
+                hoveredSnapshotBlockerMovementHex = nextHoveredBlockerHex;
+                RefreshSnapshotBlockerMovementHighlights();
+            }
+
+            return;
+        }
+
+        if (hoveredSnapshotBlockerMovementHex != null)
+        {
+            hoveredSnapshotBlockerMovementHex = null;
+            RefreshSnapshotBlockerMovementHighlights();
+        }
+
+        if (isActivated && isWaitingForTargetSelection && MatchManager.Instance != null && MatchManager.Instance.difficulty_level < 3)
         {
             HexCell nextHoveredTarget = shotTargetSelectionTargets.Contains(hex) ? hex : null;
             if (hoveredTargetSelectionPreviewTarget == nextHoveredTarget)
@@ -380,7 +399,14 @@ public class ShotManager : MonoBehaviour
             }
 
             hoveredTargetSelectionPreviewTarget = nextHoveredTarget;
-            RefreshTargetSelectionPreviewPath();
+            if (MatchManager.Instance.difficulty_level == 1)
+            {
+                RefreshTargetSelectionPreviewPath();
+            }
+            else
+            {
+                RefreshTargetSelectionHoverOnly();
+            }
             return;
         }
 
@@ -815,8 +841,9 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        var (blockAttempts, previewSaveHex) = GetShotPreviewInterceptionInfo(previewPath);
-        string pathHighlight = blockAttempts > 1 ? "dangerousPass" : "ballPath";
+        var (outfieldBlockAttempts, previewSaveHex) = GetShotPreviewInterceptionInfo(previewPath);
+        bool hasDefensiveShotInteraction = outfieldBlockAttempts > 0 || previewSaveHex != null;
+        string pathHighlight = hasDefensiveShotInteraction ? "dangerousPass" : "ballPath";
         foreach (HexCell pathHex in previewPath)
         {
             if (pathHex == null || pathHex == hoveredTargetSelectionPreviewTarget)
@@ -834,7 +861,6 @@ public class ShotManager : MonoBehaviour
 
         if (previewSaveHex != null)
         {
-            previewSaveHex.HighlightHex("ShotSaveHex");
             if (!hexGrid.highlightedHexes.Contains(previewSaveHex))
             {
                 hexGrid.highlightedHexes.Add(previewSaveHex);
@@ -846,12 +872,22 @@ public class ShotManager : MonoBehaviour
             targetSelectionPreviewSaveHex = previewSaveHex;
         }
 
-        hoveredTargetSelectionPreviewTarget.HighlightHex("CanShootFrom", 1);
+        hoveredTargetSelectionPreviewTarget.HighlightHex("ShotTargetHover");
     }
 
-    private (int blockAttempts, HexCell previewSaveHex) GetShotPreviewInterceptionInfo(List<HexCell> path)
+    private void RefreshTargetSelectionHoverOnly()
     {
-        int blockAttempts = 0;
+        ClearTargetSelectionPreviewPath();
+        if (hoveredTargetSelectionPreviewTarget == null)
+        {
+            return;
+        }
+
+        hoveredTargetSelectionPreviewTarget.HighlightHex("ShotTargetHover");
+    }
+
+    private (int outfieldBlockAttempts, HexCell previewSaveHex) GetShotPreviewInterceptionInfo(List<HexCell> path)
+    {
         HexCell previewSaveHex = null;
         PlayerToken defendingGK = hexGrid.GetDefendingGK();
         HexCell gkHex = defendingGK?.GetCurrentHex();
@@ -859,10 +895,6 @@ public class ShotManager : MonoBehaviour
         if (defendingGK != null && gkHex != null && !HasAlreadyInteracted(defendingGK))
         {
             previewSaveHex = GetClosestGKSaveHexOnPath(path, gkHex);
-            if (previewSaveHex != null)
-            {
-                blockAttempts++;
-            }
         }
 
         HashSet<PlayerToken> previewDefenders = new();
@@ -899,8 +931,165 @@ public class ShotManager : MonoBehaviour
             }
         }
 
-        blockAttempts += previewDefenders.Count;
-        return (blockAttempts, previewSaveHex);
+        return (previewDefenders.Count, previewSaveHex);
+    }
+
+    private string BuildShotTargetSelectionPreviewInstruction()
+    {
+        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level != 1)
+        {
+            return string.Empty;
+        }
+
+        if (hoveredTargetSelectionPreviewTarget == null)
+        {
+            return "Hover a target to preview blockers and the goalkeeper save. ";
+        }
+
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null
+            || originHex.ShootingPaths == null
+            || !originHex.ShootingPaths.TryGetValue(hoveredTargetSelectionPreviewTarget, out List<HexCell> previewPath))
+        {
+            return string.Empty;
+        }
+
+        List<ShotInteraction> previewInteractions = BuildShotTargetPreviewInteractions(previewPath);
+        List<ShotInteraction> outfieldBlocks = previewInteractions
+            .Where(interaction => interaction != null && !interaction.IsGK)
+            .ToList();
+        ShotInteraction gkSave = previewInteractions.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
+
+        if (outfieldBlocks.Count == 0 && gkSave == null)
+        {
+            return "No defender block or goalkeeper save is currently previewed. ";
+        }
+
+        List<string> parts = new();
+        if (outfieldBlocks.Count > 0)
+        {
+            string blockers = string.Join(", ", outfieldBlocks.Select(BuildPreviewBlockerInstruction));
+            parts.Add($"Blockers: {blockers}");
+        }
+
+        if (gkSave != null)
+        {
+            parts.Add(BuildPreviewGkSaveInstruction(gkSave));
+        }
+
+        return $"{string.Join(". ", parts)}. ";
+    }
+
+    private List<ShotInteraction> BuildShotTargetPreviewInteractions(List<HexCell> path)
+    {
+        List<ShotInteraction> previewInteractions = new();
+        if (path == null || path.Count == 0)
+        {
+            return previewInteractions;
+        }
+
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        foreach (PlayerToken defender in hexGrid.GetDefenders())
+        {
+            if (defender == null
+                || defender == defendingGK
+                || defender.IsGoalKeeper
+                || HasAlreadyInteracted(defender))
+            {
+                continue;
+            }
+
+            ShotInteraction interaction = BuildPreviewOutfieldBlockInteraction(defender, path);
+            if (interaction != null)
+            {
+                previewInteractions.Add(interaction);
+            }
+        }
+
+        if (defendingGK != null && !HasAlreadyInteracted(defendingGK))
+        {
+            HexCell gkHex = defendingGK.GetCurrentHex();
+            HexCell candidateSaveHex = GetClosestGKSaveHexOnPath(path, gkHex);
+            if (candidateSaveHex != null)
+            {
+                int saveDistance = HexGridUtils.GetHexStepDistance(gkHex, candidateSaveHex);
+                int pathIndex = path.IndexOf(candidateSaveHex);
+                previewInteractions.Add(new ShotInteraction
+                {
+                    defender = defendingGK,
+                    interactionHex = candidateSaveHex,
+                    type = ShotInteractionType.GKSave,
+                    pathIndex = pathIndex >= 0 ? pathIndex : int.MaxValue,
+                    requiredNaturalRoll = 0,
+                    gkPenalty = CalculateGKSavePenalty(defendingGK, saveDistance)
+                });
+            }
+        }
+
+        return SortShotInteractions(previewInteractions);
+    }
+
+    private ShotInteraction BuildPreviewOutfieldBlockInteraction(PlayerToken defender, List<HexCell> path)
+    {
+        HexCell defenderHex = defender.GetCurrentHex();
+        if (defenderHex == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < path.Count; i++)
+        {
+            HexCell pathHex = path[i];
+            if (pathHex != null && pathHex.GetOccupyingToken() == defender)
+            {
+                return new ShotInteraction
+                {
+                    defender = defender,
+                    interactionHex = pathHex,
+                    type = ShotInteractionType.OutfieldBlock,
+                    pathIndex = i,
+                    requiredNaturalRoll = 5,
+                    gkPenalty = null
+                };
+            }
+        }
+
+        for (int i = 0; i < path.Count; i++)
+        {
+            HexCell pathHex = path[i];
+            if (pathHex == null || pathHex.isAttackOccupied)
+            {
+                continue;
+            }
+
+            if (pathHex.GetNeighbors(hexGrid).Contains(defenderHex))
+            {
+                return new ShotInteraction
+                {
+                    defender = defender,
+                    interactionHex = pathHex,
+                    type = ShotInteractionType.OutfieldBlock,
+                    pathIndex = i,
+                    requiredNaturalRoll = 6,
+                    gkPenalty = null
+                };
+            }
+        }
+
+        return null;
+    }
+
+    private string BuildPreviewBlockerInstruction(ShotInteraction interaction)
+    {
+        string blockType = interaction.requiredNaturalRoll == 5 ? "on-path" : "ZOI";
+        int neededRoll = GetOutfieldBlockRequiredRoll(interaction);
+        return $"{GetTokenInstructionName(interaction.defender)} ({blockType}, {BuildNeededRollInstruction(neededRoll, "")})";
+    }
+
+    private string BuildPreviewGkSaveInstruction(ShotInteraction gkSave)
+    {
+        string saveHexInfo = gkSave.interactionHex != null ? $" at {HexGridUtils.FormatHexCoordinates(gkSave.interactionHex)}" : string.Empty;
+        return $"GK save: {GetTokenInstructionName(gkSave.defender)}{saveHexInfo} ({BuildSavingAttributeInstruction(gkSave.defender, gkSave.gkPenalty ?? 0)})";
     }
 
     private void ClearTargetSelectionPreviewPath()
@@ -1122,22 +1311,19 @@ public class ShotManager : MonoBehaviour
             // Attacker Phase: Ensure the token is an attacker
             if (!token.isAttacker)
             {
-                // Trying to move an Attacker: Accept, Highlight and wait for click on Hex
-                if (tokenMoveforDeflection != null && tokenMoveforDeflection != token)
-                {
-                    Debug.Log($"Switching Defender selection to {token.name}. Clearing previous highlights.");
-                    hexGrid.ClearHighlightedHexes();  // Clear the previous highlights
-                }
-
-                Debug.Log($"Selecting defender {token.name}. Highlighting reachable hexes.");
-                tokenMoveforDeflection = token;  // Set selected token
-                movementPhaseManager.HighlightValidMovementHexes(token, 2, false);  // Highlight reachable hexes within 3 moves
-                isWaitingforBlockerSelection = false;
-                isWaitingforBlockerMovement = true;
+                SelectSnapshotBlocker(token);
             }
             else {
                 Debug.LogWarning("Attacker clicked, while waiting for a defender to select.");
             }
+
+            return;
+        }
+
+        if (CanSwitchSnapshotBlocker(token))
+        {
+            SelectSnapshotBlocker(token);
+            return;
         }
 
         if (hex != null && isWaitingforBlockerMovement)
@@ -1162,6 +1348,10 @@ public class ShotManager : MonoBehaviour
             else
             {
                 Debug.LogWarning("Clicked hex is not a valid movement target.");
+                if (token == null)
+                {
+                    ClearSnapshotBlockerSelection();
+                }
             }
         }
         else if (
@@ -1177,6 +1367,61 @@ public class ShotManager : MonoBehaviour
         {
             Debug.LogWarning("No valid hex or token clicked.");
         }
+    }
+
+    private bool CanSwitchSnapshotBlocker(PlayerToken token)
+    {
+        return shotType == "snapshot"
+            && MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level < 3
+            && isWaitingforBlockerMovement
+            && token != null
+            && !token.isAttacker
+            && token != tokenMoveforDeflection;
+    }
+
+    private void SelectSnapshotBlocker(PlayerToken token)
+    {
+        if (tokenMoveforDeflection != null && tokenMoveforDeflection != token)
+        {
+            Debug.Log($"Switching Defender selection to {token.name}. Clearing previous highlights.");
+            hexGrid.ClearHighlightedHexes();
+        }
+
+        Debug.Log($"Selecting defender {token.name}. Highlighting reachable hexes.");
+        tokenMoveforDeflection = token;
+        hoveredSnapshotBlockerMovementHex = null;
+        movementPhaseManager.HighlightValidMovementHexes(token, 2, false);
+        isWaitingforBlockerSelection = false;
+        isWaitingforBlockerMovement = true;
+    }
+
+    private void RefreshSnapshotBlockerMovementHighlights()
+    {
+        if (tokenMoveforDeflection == null)
+        {
+            return;
+        }
+
+        movementPhaseManager.HighlightValidMovementHexes(tokenMoveforDeflection, 2, false);
+        if (hoveredSnapshotBlockerMovementHex != null && hexGrid.highlightedHexes.Contains(hoveredSnapshotBlockerMovementHex))
+        {
+            hoveredSnapshotBlockerMovementHex.HighlightHex("MovementDestinationHover");
+        }
+    }
+
+    private void ClearSnapshotBlockerSelection()
+    {
+        if (tokenMoveforDeflection != null)
+        {
+            Debug.Log($"Clearing selected snapshot blocker {tokenMoveforDeflection.name} after invalid destination click.");
+        }
+
+        tokenMoveforDeflection = null;
+        hoveredSnapshotBlockerMovementHex = null;
+        hexGrid.ClearHighlightedHexes();
+        isWaitingforBlockerMovement = false;
+        isWaitingforBlockerSelection = true;
     }
 
     private void StartDefenderMovementPhase()
@@ -1215,6 +1460,7 @@ public class ShotManager : MonoBehaviour
     public void CompleteDefenderMovement()
     {
         Debug.Log("Defender movement phase complete. Proceeding to target selection.");
+        hoveredSnapshotBlockerMovementHex = null;
         isWaitingforBlockerMovement = false;
         HandleTargetSelection();
     }
@@ -1278,7 +1524,10 @@ public class ShotManager : MonoBehaviour
             }
         }
         trajectoryPath = originHex.ShootingPaths[targetHex];
-        HighlightTrajectoryPath();
+        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level != 2)
+        {
+            HighlightTrajectoryPath();
+        }
         isWaitingForTargetSelection = false;
         shotTargetSelectionTargets.Clear();
         if (IsFreeKickShot() || IsPenaltyShot())
@@ -2697,7 +2946,11 @@ public class ShotManager : MonoBehaviour
         if (isActivated) sb.Append("Shot: ");
         if (isWaitingforBlockerSelection) sb.Append($"Click on a defender to move 2 Hexes in an attempt to block the Snapshot, ");
         if (isWaitingforBlockerMovement) sb.Append($"Click on a Highlighted Hex to move the blocker there, ");
-        if (isWaitingForTargetSelection) sb.Append($"Click on a Hex in the Goal to target the Shot there, ");
+        if (isWaitingForTargetSelection)
+        {
+            sb.Append("Click on a Hex in the Goal to target the Shot there, ");
+            sb.Append(BuildShotTargetSelectionPreviewInstruction());
+        }
         if (isWaitingForBlockDiceRoll) sb.Append($"{BuildBlockRollInstruction()}, ");
         if (isWaitingForShotRoll) sb.Append($"{BuildShotRollInstruction()}, ");
         if (isHeaderAtGoal && isWaitingForGKDiceRoll)

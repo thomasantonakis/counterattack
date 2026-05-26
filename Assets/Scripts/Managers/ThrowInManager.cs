@@ -240,22 +240,28 @@ public class ThrowInManager : MonoBehaviour
         EnterThrowExecutionSelection();
     }
 
-    private void EnterThrowExecutionSelection()
+    internal void EnterThrowExecutionSelection()
     {
+        int headerTargetCount = GetAvailableHeaderThrowTargets().Count;
+        if (headerTargetCount == 0)
+        {
+            Debug.Log("Throw-in ready. No throw-to-head target is available, auto-selecting throw to feet.");
+            HandleThrowToFeet();
+            return;
+        }
+
         isWaitingForThrowTypeSelection = true;
         MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
-        Debug.Log(GetAvailableHeaderThrowTargets().Count > 0
-            ? "Throw-in ready. Press [P] to throw to feet or [C] to throw to head."
-            : "Throw-in ready. Press [P] to throw to feet.");
+        Debug.Log("Throw-in ready. Press [P] to throw to feet or [C] to throw to head.");
     }
 
     private void HandleThrowToFeet()
     {
         isWaitingForThrowTypeSelection = false;
         isWaitingForGroundTarget = false;
+        MatchManager.Instance.CommitToAction();
         groundBallManager.imposedDistance = maxThrowDistance;
         groundBallManager.ActivateGroundBall();
-        MatchManager.Instance.CommitToAction();
         StartCoroutine(RestoreGroundBallDefaultDistanceWhenDone());
         Debug.Log("Throw-in option selected: [P] to feet. Select target hex (up to 6).");
         ResetThrowInState();

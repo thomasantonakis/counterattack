@@ -797,6 +797,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         });
     }
 
+    private void AddSetPiecePolicyScenarios(List<ScenarioDefinition> scenarios)
+    {
+        scenarios.Add(new ScenarioDefinition(nameof(Scenario_040_SetPiecePolicy_PenaltyStopPlay_NoF3), Scenario_040_SetPiecePolicy_PenaltyStopPlay_NoF3));
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -811,6 +816,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runOobAuditOnly = false;
         bool runHeaderAtGoalAuditOnly = false;
         bool runThrowInAuditOnly = false;
+        bool runSetPiecePolicyOnly = false;
         bool runReleasedOobAndHeaderAtGoalOnly = true;
         bool runFromCurrentFailureOnly = false;
 
@@ -848,7 +854,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement), Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement),
                 new ScenarioDefinition(nameof(Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario), Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario),
                 new ScenarioDefinition(nameof(Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement), Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement),
-                new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario),
+                new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_SaveAndHold), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_SaveAndHold),
                 new ScenarioDefinition(nameof(Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall), Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall),
             new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
             new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
@@ -901,6 +907,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         else if (runThrowInAuditOnly)
         {
             AddThrowInAuditScenarios(scenarios);
+        }
+        else if (runSetPiecePolicyOnly)
+        {
+            AddSetPiecePolicyScenarios(scenarios);
         }
         else
         {
@@ -959,7 +969,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement), Scenario_030e_LongBall_Inaccurate_Delgado_Interception_Fails_GK_Forfeit_AutoMovement),
             new ScenarioDefinition(nameof(Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario), Scenario_030f_LongBall_Inaccurate_Lands_On_Delgado_Broadcasts_AnyOtherScenario),
             new ScenarioDefinition(nameof(Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement), Scenario_031a_LongBall_OppositeF3_Inaccurate_On_Yaneva_Offers_Snapshot_Or_Movement),
-            new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario),
+            new ScenarioDefinition(nameof(Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_SaveAndHold), Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_SaveAndHold),
             new ScenarioDefinition(nameof(Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall), Scenario_031c_LongBall_Box_Poulsen_Interception_Fails_GK_Forfeit_EndOfLongBall),
             new ScenarioDefinition(nameof(Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick), Scenario_031d_LongBall_CornerTarget_Inaccurate_NorthEast3_Is_GoalKick),
             new ScenarioDefinition(nameof(Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn), Scenario_031e_LongBall_CornerTarget_Inaccurate_South3_Is_ThrowIn),
@@ -1930,6 +1940,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         throwInManager.awardedTeam = MatchManager.TeamInAttack.Home;
         throwInManager.ball.PlaceAtCell(throwHex);
         MatchManager.Instance.SetLastToken(thrower);
+        throwInManager.EnterThrowExecutionSelection();
     }
 
     private IEnumerator WaitForFtpDefenderMovementPhase(float timeoutSeconds = 2f)
@@ -3467,9 +3478,16 @@ public class GameTestScenarioRunner : MonoBehaviour
     private IEnumerator AssertFreeKickShotCorner(FreeKickShotBranchDefinition branch, bool north)
     {
         yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated,
+            6f,
+            $"Free Kick Shot branch '{branch.Name}' should offer Final Thirds before corner setup."));
+        AssertTrue(!freeKickManager.isWaitingForKickerSelection, $"Free Kick Shot branch '{branch.Name}' should not wait for corner kicker selection while Final Thirds are active.");
+        yield return StartCoroutine(ForfeitShootingFinalThirdsBeforeOutcomeCheck(branch.Name));
+
+        yield return StartCoroutine(WaitForCondition(
             () => freeKickManager.isActivated && freeKickManager.isWaitingForKickerSelection,
             6f,
-            $"Free Kick Shot branch '{branch.Name}' should resolve to a corner."));
+            $"Free Kick Shot branch '{branch.Name}' should resolve to corner setup after Final Thirds."));
 
         AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' corner outcome", expectFreeKickActive: true);
         AssertShootingLastTouch("Kuzmic", $"Free Kick Shot branch '{branch.Name}' corner outcome");
@@ -11800,6 +11818,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             !goalFlowManager.isActivated
             , "GoalFlow is no longer activated"
         );
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.KickOffSetup,
+            "GoalFlow should finish in KickOffSetup without offering Final Thirds.",
+            MatchManager.GameState.KickOffSetup,
+            MatchManager.Instance.currentState
+        );
+        AssertTrue(!finalThirdManager.isActivated, "GoalFlow completion should not activate Final Thirds.");
         var toothnail = PlayerToken.GetPlayerTokenByName("Toothnail");
         var yaneva = PlayerToken.GetPlayerTokenByName("Yaneva");
         var homeTeamStatsAfterLooseGoal = MatchManager.Instance.gameData.stats.GetTeamStats(yaneva.isHomeTeam);
@@ -16526,7 +16551,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Long Ball Opposite F3 Inaccurate On Yaneva");
     }
 
-    private IEnumerator Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_Broadcasts_AnyOtherScenario()
+    private IEnumerator Scenario_031b_LongBall_Box_GK_Free_Move_Then_Kuzmic_Recovery_SaveAndHold()
     {
         yield return StartCoroutine(StartPreparedLongBallToTarget(2, new Vector2Int(10, -6), "4+"));
 
@@ -16571,18 +16596,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             () =>
                 kuzmic.GetCurrentHex() == ballHex
                 && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == kuzmic
-                && finalThirdManager.isActivated,
+                && shotManager.isWaitingForSaveandHoldScenario,
             4f,
-            "Final Third should be offered after Kuzmic recovers the long ball."));
-        yield return StartCoroutine(ForfeitActiveFinalThirds());
-
-        AvailabilityCheckResult anyOtherAvailability = AssertCorrectAvailabilityAnyOtherScenario();
-        AssertTrue(
-            anyOtherAvailability.passed,
-            "Kuzmic's defensive-box long-ball recovery should broadcast AnyOtherScenario after Final Thirds.",
-            true,
-            anyOtherAvailability.ToString()
-        );
+            "Save-and-Hold should be offered after Kuzmic recovers the long ball in his own penalty box."));
+        AssertTrue(!finalThirdManager.isActivated, "Generic Final Third should not be offered before Save-and-Hold choice.");
+        AssertTrue(shotManager.isActivated, "ShotManager should be active for Kuzmic's Save-and-Hold choice.");
         AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == kuzmic, "Kuzmic should be the last token after recovering the long ball.", kuzmic, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
 
         MatchManager.PlayerStats kuzmicStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(kuzmic.playerName);
@@ -16812,8 +16830,34 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Throw-in should prompt only [M]/[X] after mandatory movement completes."));
         AssertTrue(!finalThirdManager.isActivated, "Throw-in mandatory movement completion should not trigger a new Final Third phase.");
 
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => throwInManager.isRunningOptionalMovement && movementPhaseManager.isActivated,
+            3f,
+            "Throw-in [M] should start the optional restricted Movement Phase."));
+
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
-        AssertTrue(throwInManager.isWaitingForThrowTypeSelection, "Throw-in [X] after mandatory movement should force throw-type selection.");
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhaseDef,
+            3f,
+            "Throw-in optional movement should advance to defensive movement after attack forfeits."));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isMovementPhase2f2 || throwInManager.isWaitingForThrowTypeSelection,
+            3f,
+            "Throw-in optional movement should advance after defense forfeits."));
+
+        if (movementPhaseManager.isMovementPhase2f2)
+        {
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => groundBallManager.isActivated || groundBallManager.isAwaitingTargetSelection,
+            5f,
+            "Throw-in optional movement should auto-select throw to feet when no header target is available."));
+        AssertTrue(!finalThirdManager.isActivated, "Throw-in optional movement completion should not trigger a new Final Third phase.");
+        AssertTrue(groundBallManager.imposedDistance == 6, "Auto-selected throw to feet should impose max ground pass distance 6.", 6, groundBallManager.imposedDistance);
 
         LogFooterofTest("Throw-In Attacker Spot Displacement And Restricted Mandatory MP");
     }
@@ -16830,10 +16874,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         SetTokenHexForThrowInTest(taker, throwHex);
         MoveHomeAttackersOutsideThrowRangeForTest(throwHex, taker);
         ArmThrowInExecutionForTest(taker, throwHex);
-        AssertTrue(!throwInManager.GetInstructions().Contains("[C]"), "Throw-in should not offer [C] when no attacker is within 6 hexes.", false, throwInManager.GetInstructions().Contains("[C]"));
-
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.C, 0.1f));
-        AssertTrue(throwInManager.isWaitingForThrowTypeSelection, "Pressing [C] with no valid header target should leave throw-type selection active.");
+        AssertTrue(!throwInManager.isWaitingForThrowTypeSelection, "Throw-in should not wait for [P]/[C] when no attacker is within 6 hexes.");
+        AssertTrue(groundBallManager.isActivated || groundBallManager.isAwaitingTargetSelection, "Throw-in should auto-select throw to feet when no attacker is within 6 hexes.");
+        AssertTrue(groundBallManager.imposedDistance == 6, "Auto-selected throw to feet should impose max ground pass distance 6.", 6, groundBallManager.imposedDistance);
+        groundBallManager.CleanUpPass();
+        groundBallManager.imposedDistance = 11;
 
         SetTokenHexForThrowInTest(target, targetHex);
         ArmThrowInExecutionForTest(taker, throwHex);
@@ -16922,11 +16967,36 @@ public class GameTestScenarioRunner : MonoBehaviour
         MoveHomeAttackersOutsideThrowRangeForTest(throwHex, taker);
         ArmThrowInExecutionForTest(taker, throwHex);
 
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
-        AssertTrue(groundBallManager.isActivated || groundBallManager.isAwaitingTargetSelection, "Throw-in [P] should activate standard ground pass targeting.");
+        AssertTrue(groundBallManager.isActivated || groundBallManager.isAwaitingTargetSelection, "Throw-in should auto-activate standard ground pass targeting when no header target is available.");
         AssertTrue(groundBallManager.imposedDistance == 6, "Throw-in [P] should impose max ground pass distance 6.", 6, groundBallManager.imposedDistance);
 
         LogFooterofTest("Throw-In To Feet Starts Ground Pass With Distance 6");
+    }
+
+    private IEnumerator Scenario_040_SetPiecePolicy_PenaltyStopPlay_NoF3()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting Set Piece policy check: Penalty stop-play cleanup must not offer Final Thirds.");
+
+        movementPhaseManager.ResetMovementPhase();
+        movementPhaseManager.ActivateMovementPhase();
+        movementPhaseManager.CommitToAction();
+        movementPhaseManager.EndMovementPhaseForStopPlay(triggerF3: false);
+
+        AssertTrue(!movementPhaseManager.isActivated, "Penalty stop-play cleanup should end Movement Phase.");
+        AssertTrue(!finalThirdManager.isActivated, "Penalty stop-play cleanup should not activate Final Thirds.");
+
+        PenaltyKickManager penaltyKickManager = MatchManager.Instance.EnsurePenaltyKickManager();
+        penaltyKickManager.StartPenaltyPreparation();
+
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.PenaltyKickerSelect,
+            "Penalty restart should go directly to penalty taker selection.",
+            MatchManager.GameState.PenaltyKickerSelect,
+            MatchManager.Instance.currentState);
+        AssertTrue(!finalThirdManager.isActivated, "Penalty preparation should not activate Final Thirds.");
+
+        LogFooterofTest("Set Piece Policy Penalty Stop Play No F3");
     }
 
     private IEnumerator Scenario_031f_LongBall_To_15_4_Inaccurate_SouthEast6_Is_GoalKick_Not_Goal()
@@ -16983,6 +17053,15 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log($"Rigging kickoff Long Ball distance to {branch.DistanceRoll}");
         yield return StartCoroutine(PerformRiggedLongBallDistanceRoll(branch.DistanceRoll));
+        if (branch.ExpectedRestart == OobRestartExpectation.CornerKick)
+        {
+            yield return StartCoroutine(WaitForCondition(
+                () => finalThirdManager.isActivated,
+                4f,
+                $"OOB branch '{branch.Name}' should offer Final Thirds before corner setup."));
+            AssertTrue(!freeKickManager.isWaitingForKickerSelection, $"OOB branch '{branch.Name}' should not wait for corner kicker selection while Final Thirds are active.");
+            yield return StartCoroutine(ForfeitActiveFinalThirds());
+        }
         yield return StartCoroutine(WaitForCondition(
             () => IsOobBranchOutcomeReached(branch),
             6f,
@@ -17038,6 +17117,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 break;
             case OobRestartExpectation.GoalKick:
                 AssertTrue(MatchManager.Instance.currentState == MatchManager.GameState.WaitingForGoalKickFinalThirds, $"OOB branch '{branch.Name}' should wait for goal-kick Final Thirds.", MatchManager.GameState.WaitingForGoalKickFinalThirds, MatchManager.Instance.currentState);
+                AssertTrue(!freeKickManager.isActivated || !freeKickManager.isCornerKick, $"OOB branch '{branch.Name}' should not activate generic Corner/Free Kick setup for a Goal Kick.", false, freeKickManager.GetDebugStatus());
                 break;
         }
     }
@@ -17828,9 +17908,15 @@ public class GameTestScenarioRunner : MonoBehaviour
 
             case HeaderAtGoalOutcomeExpectation.CornerKick:
                 yield return StartCoroutine(WaitForCondition(
+                    () => finalThirdManager.isActivated,
+                    6f,
+                    $"Header at Goal branch '{branch.Name}' should offer Final Thirds before corner setup."));
+                AssertTrue(!freeKickManager.isWaitingForKickerSelection, $"Header at Goal branch '{branch.Name}' should not wait for corner kicker selection while Final Thirds are active.");
+                yield return StartCoroutine(ForfeitActiveFinalThirds());
+                yield return StartCoroutine(WaitForCondition(
                     () => freeKickManager.isActivated && freeKickManager.isCornerKick && freeKickManager.isWaitingForKickerSelection,
                     6f,
-                    $"Header at Goal branch '{branch.Name}' should resolve to a corner kick."));
+                    $"Header at Goal branch '{branch.Name}' should resolve to corner setup after Final Thirds."));
                 AssertHeaderAtGoalExpectedBallHex(branch);
                 AssertHeaderAtGoalCornerLogged(branch);
                 break;
