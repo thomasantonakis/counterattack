@@ -301,7 +301,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
         FinalThirdManager resolvedFinalThirdManager = finalThirdManager != null
             ? finalThirdManager
-            : FindFirstObjectByType<FinalThirdManager>();
+            : FindAnyObjectByType<FinalThirdManager>();
 
         if (resolvedFinalThirdManager != null)
         {
@@ -339,7 +339,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
         FinalThirdManager resolvedFinalThirdManager = finalThirdManager != null
             ? finalThirdManager
-            : FindFirstObjectByType<FinalThirdManager>();
+            : FindAnyObjectByType<FinalThirdManager>();
         if (resolvedFinalThirdManager == null)
         {
             Debug.LogError("Goal Kick restart cannot trigger Final Thirds because FinalThirdManager is missing.");

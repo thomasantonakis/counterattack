@@ -20,7 +20,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         canvasGroup = GetComponent<CanvasGroup>();
         layoutElement = GetComponent<LayoutElement>();
         // Find DraftManager in the scene when the slot is created
-        draftManager = FindObjectOfType<DraftManager>();
+        draftManager = FindAnyObjectByType<DraftManager>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)

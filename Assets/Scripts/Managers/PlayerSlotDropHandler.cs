@@ -9,7 +9,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
     private void Start()
     {
         // Find DraftManager in the scene when the slot is created
-        draftManager = FindObjectOfType<DraftManager>();
+        draftManager = FindAnyObjectByType<DraftManager>();
     }
     public void OnDrop(PointerEventData eventData)
     {

@@ -413,7 +413,7 @@ public class GoalKeeperManager : MonoBehaviour
 
     private PlayerToken FindDefendingGoalkeeperForAttackingTeam(bool attackingTeamIsHome)
     {
-        return FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+        return FindObjectsByType<PlayerToken>()
             .FirstOrDefault(token => token != null
                 && token.IsGoalKeeper
                 && token.isHomeTeam != attackingTeamIsHome);

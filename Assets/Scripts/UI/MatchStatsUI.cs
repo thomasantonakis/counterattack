@@ -494,7 +494,7 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        ScoreboardManager scoreboardManager = FindObjectsByType<ScoreboardManager>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        ScoreboardManager scoreboardManager = FindObjectsByType<ScoreboardManager>(FindObjectsInactive.Include)
             .FirstOrDefault();
 
         if (scoreboardManager != null)
@@ -1595,7 +1595,7 @@ public class MatchStatsUI : MonoBehaviour
             return new List<LineupPlayerRow>();
         }
 
-        Dictionary<int, PlayerToken> liveTokens = FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+        Dictionary<int, PlayerToken> liveTokens = FindObjectsByType<PlayerToken>()
             .Where(token => token != null && token.isHomeTeam == isHomeTeam)
             .GroupBy(token => token.jerseyNumber)
             .ToDictionary(group => group.Key, group => group.First());

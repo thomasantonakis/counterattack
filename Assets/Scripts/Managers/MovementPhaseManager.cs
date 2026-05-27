@@ -234,7 +234,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isWaitingForReposition)
         {
             Debug.Log($"Passing the Handling of {repositionWinner.name}'s repositioning to {hex.coordinates} in AsyncRepositionTokenToHex.");
-            AsyncRepositionTokenToHex(hex);
+            _ = AsyncRepositionTokenToHex(hex);
             return;
         }
         if (isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving)
@@ -259,7 +259,7 @@ public class MovementPhaseManager : MonoBehaviour
                     // TODO: reject, if we are waiting for nutmeg decision, we must reply, in order to force interceptions.
                     CommitToAction();
                     isAwaitingHexDestination = false;
-                    AsyncMoveTokenToHexWhileWaitingForNutmegDecision(hex);
+                    _ = AsyncMoveTokenToHexWhileWaitingForNutmegDecision(hex);
                 }
                 else
                 {
@@ -294,7 +294,7 @@ public class MovementPhaseManager : MonoBehaviour
                 }
 
                 CommitToAction();
-                AsyncMoveTokenToHexRegularly(hex);
+                _ = AsyncMoveTokenToHexRegularly(hex);
                 return;
             }
             if (IsHexValidForMovement(hex)) // The clicked Hex is one of the Highlighted.)
@@ -304,7 +304,7 @@ public class MovementPhaseManager : MonoBehaviour
                 isAwaitingHexDestination = false;
                 isAwaitingTokenSelection = false;
                 isWaitingForSnapshotDecision = false;
-                AsyncMoveTokenToHexRegularly(hex);
+                _ = AsyncMoveTokenToHexRegularly(hex);
             }
             else
             {
@@ -401,7 +401,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.A)
                 {
-                    PlayAdvantage();
+                    _ = PlayAdvantage();
                     keyData.isConsumed = true;
                 }
                 else if (keyData.key == KeyCode.F)
@@ -608,7 +608,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isBallPickable && keyData.key == KeyCode.V)
         {
             CommitToAction();
-            AsyncMoveTokenToHexRegularly(ball.GetCurrentHex());
+            _ = AsyncMoveTokenToHexRegularly(ball.GetCurrentHex());
             keyData.isConsumed = true;
             return;
         }

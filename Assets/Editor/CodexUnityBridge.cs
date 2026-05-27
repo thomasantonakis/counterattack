@@ -280,7 +280,7 @@ namespace CounterAttack.Editor
             string hierarchyPath = GetOptionalArg(request, "path");
             if (!string.IsNullOrWhiteSpace(hierarchyPath))
             {
-                Transform exactMatch = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                Transform exactMatch = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include)
                     .FirstOrDefault(candidate => GetHierarchyPath(candidate).Equals(hierarchyPath, StringComparison.Ordinal));
                 if (exactMatch != null)
                 {
@@ -289,7 +289,7 @@ namespace CounterAttack.Editor
             }
 
             string objectName = GetRequiredArg(request, "name");
-            Transform nameMatch = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            Transform nameMatch = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include)
                 .FirstOrDefault(candidate => candidate.name.Equals(objectName, StringComparison.Ordinal));
             if (nameMatch == null)
             {
@@ -447,7 +447,7 @@ namespace CounterAttack.Editor
                 throw new InvalidOperationException("get_player_token_state requires one of: path, name, player_name, jersey_number, team, is_home_team.");
             }
 
-            var tokens = UnityEngine.Object.FindObjectsByType<PlayerToken>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            var tokens = UnityEngine.Object.FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
                 .Where(token => token != null && token.gameObject.scene.IsValid())
                 .ToArray();
 

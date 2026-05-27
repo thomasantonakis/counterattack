@@ -19,7 +19,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     {
         canvasGroup = GetComponent<CanvasGroup>();
         // Find DraftManager in the scene when the slot is created
-        draftManager = FindObjectOfType<DraftManager>();
+        draftManager = FindAnyObjectByType<DraftManager>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)

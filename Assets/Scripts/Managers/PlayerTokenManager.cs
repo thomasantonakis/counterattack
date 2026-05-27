@@ -46,7 +46,7 @@ public class PlayerTokenManager : MonoBehaviour
     {
         // Start the coroutine to wait for the grid to initialize before creating teams
         StartCoroutine(InitializeTeamsAfterGridIsReady(10, 10));
-        var matchManager = FindObjectOfType<MatchManager>();
+        var matchManager = FindAnyObjectByType<MatchManager>();
         if (matchManager == null)
         {
             Debug.LogError("MatchManager not found. Cannot subscribe to game settings load event.");
@@ -58,7 +58,7 @@ public class PlayerTokenManager : MonoBehaviour
     }
     // private void OnDestroy()
     // {
-    //     var matchManager = FindObjectOfType<MatchManager>();
+    //     var matchManager = FindAnyObjectByType<MatchManager>();
     //     if (matchManager != null)
     //     {
     //         // Unsubscribe to avoid memory leaks
@@ -68,7 +68,7 @@ public class PlayerTokenManager : MonoBehaviour
     // private void InitializeTokens()
     // {
     //     Debug.Log("Game settings loaded. Initializing tokens...");
-    //     var matchManager = FindObjectOfType<MatchManager>();
+    //     var matchManager = FindAnyObjectByType<MatchManager>();
     //     if (matchManager == null || matchManager.gameData == null || matchManager.gameData.rosters == null)
     //     {
     //         Debug.LogError("MatchManager or rosters not found. Cannot initialize tokens.");
@@ -196,7 +196,7 @@ public class PlayerTokenManager : MonoBehaviour
             return;  // Prevent further execution
         }
         // Load settings from Match Manager on the lineups
-        var matchManager = FindObjectOfType<MatchManager>();
+        var matchManager = FindAnyObjectByType<MatchManager>();
         if (matchManager == null || matchManager.gameData == null || matchManager.gameData.rosters == null)
         {
             Debug.LogError("MatchManager or rosters not found. Cannot initialize tokens.");

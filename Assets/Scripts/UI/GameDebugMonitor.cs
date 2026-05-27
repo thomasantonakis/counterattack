@@ -93,24 +93,24 @@ public class GameDebugMonitor : MonoBehaviour
     public void LinkRoomSceneComponents()
     {
         // Attempt to assign all managers
-        gameInputManager = FindObjectOfType<GameInputManager>();
-        groundBallManager = FindObjectOfType<GroundBallManager>();
-        movementPhaseManager = FindObjectOfType<MovementPhaseManager>();
-        highPassManager = FindObjectOfType<HighPassManager>();
-        headerManager = FindObjectOfType<HeaderManager>();
-        longBallManager = FindObjectOfType<LongBallManager>();
-        firstTimePassManager = FindObjectOfType<FirstTimePassManager>();
-        looseBallManager = FindObjectOfType<LooseBallManager>();
-        outOfBoundsManager = FindObjectOfType<OutOfBoundsManager>();
-        throwInManager = FindObjectOfType<ThrowInManager>();
-        freeKickManager = FindObjectOfType<FreeKickManager>();
-        penaltyKickManager = FindObjectOfType<PenaltyKickManager>();
-        shotManager = FindObjectOfType<ShotManager>();
-        finalThirdManager = FindObjectOfType<FinalThirdManager>();
-        goalFlowManager = FindObjectOfType<GoalFlowManager>();
-        kickoffManager = FindObjectOfType<KickoffManager>();
-        goalKeeperManager = FindObjectOfType<GoalKeeperManager>();
-        hexgrid = FindObjectOfType<HexGrid>();
+        gameInputManager = FindAnyObjectByType<GameInputManager>();
+        groundBallManager = FindAnyObjectByType<GroundBallManager>();
+        movementPhaseManager = FindAnyObjectByType<MovementPhaseManager>();
+        highPassManager = FindAnyObjectByType<HighPassManager>();
+        headerManager = FindAnyObjectByType<HeaderManager>();
+        longBallManager = FindAnyObjectByType<LongBallManager>();
+        firstTimePassManager = FindAnyObjectByType<FirstTimePassManager>();
+        looseBallManager = FindAnyObjectByType<LooseBallManager>();
+        outOfBoundsManager = FindAnyObjectByType<OutOfBoundsManager>();
+        throwInManager = FindAnyObjectByType<ThrowInManager>();
+        freeKickManager = FindAnyObjectByType<FreeKickManager>();
+        penaltyKickManager = FindAnyObjectByType<PenaltyKickManager>();
+        shotManager = FindAnyObjectByType<ShotManager>();
+        finalThirdManager = FindAnyObjectByType<FinalThirdManager>();
+        goalFlowManager = FindAnyObjectByType<GoalFlowManager>();
+        kickoffManager = FindAnyObjectByType<KickoffManager>();
+        goalKeeperManager = FindAnyObjectByType<GoalKeeperManager>();
+        hexgrid = FindAnyObjectByType<HexGrid>();
 
         // Track missing components
         List<string> missingComponents = new List<string>();

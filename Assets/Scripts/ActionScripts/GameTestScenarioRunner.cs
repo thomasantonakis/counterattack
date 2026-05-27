@@ -567,7 +567,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         testLogText = textObject.AddComponent<TextMeshProUGUI>();
         testLogText.font = ResolveOverlayFontAsset();
         testLogText.fontSize = 20f;
-        testLogText.enableWordWrapping = true;
+        testLogText.textWrappingMode = TextWrappingModes.Normal;
         testLogText.overflowMode = TextOverflowModes.Overflow;
         testLogText.color = Color.white;
         testLogText.alignment = TextAlignmentOptions.TopLeft;
@@ -588,7 +588,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             return TMP_Settings.defaultFontAsset;
         }
 
-        TMP_Text anySceneText = FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        TMP_Text anySceneText = FindObjectsByType<TMP_Text>(FindObjectsInactive.Include)
             .FirstOrDefault(text => text != null && text.font != null);
         if (anySceneText != null)
         {
@@ -1328,7 +1328,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         PlayerToken token = PlayerToken.GetPlayerTokenByName(playerNameFragment);
         if (token == null && !string.IsNullOrWhiteSpace(playerNameFragment))
         {
-            token = FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+            token = FindObjectsByType<PlayerToken>()
                 .FirstOrDefault(candidate => NamesMatch(GetTokenTestName(candidate), playerNameFragment));
         }
 
@@ -2067,7 +2067,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             .ToList();
 
         int fallbackIndex = 0;
-        foreach (PlayerToken token in FindObjectsByType<PlayerToken>(FindObjectsSortMode.None)
+        foreach (PlayerToken token in FindObjectsByType<PlayerToken>()
             .Where(candidate => candidate != null && candidate.isHomeTeam && candidate.isAttacker && !excludedTokens.Contains(candidate)))
         {
             AssertTrue(fallbackIndex < fallbackHexes.Count, "Throw-in audit should find enough empty distant hexes for home attackers.");
@@ -4994,23 +4994,23 @@ public class GameTestScenarioRunner : MonoBehaviour
     public void LinkRoomSceneComponents()
     {
         // Attempt to assign all managers
-        gameInputManager = FindObjectOfType<GameInputManager>();
-        groundBallManager = FindObjectOfType<GroundBallManager>();
-        movementPhaseManager = FindObjectOfType<MovementPhaseManager>();
-        highPassManager = FindObjectOfType<HighPassManager>();
-        headerManager = FindObjectOfType<HeaderManager>();
-        longBallManager = FindObjectOfType<LongBallManager>();
-        firstTimePassManager = FindObjectOfType<FirstTimePassManager>();
-        looseBallManager = FindObjectOfType<LooseBallManager>();
-        outOfBoundsManager = FindObjectOfType<OutOfBoundsManager>();
-        throwInManager = FindObjectOfType<ThrowInManager>();
-        freeKickManager = FindObjectOfType<FreeKickManager>();
-        shotManager = FindObjectOfType<ShotManager>();
-        finalThirdManager = FindObjectOfType<FinalThirdManager>();
-        goalFlowManager = FindObjectOfType<GoalFlowManager>();
-        kickoffManager = FindObjectOfType<KickoffManager>();
-        goalKeeperManager = FindObjectOfType<GoalKeeperManager>();
-        hexgrid = FindObjectOfType<HexGrid>();
+        gameInputManager = FindAnyObjectByType<GameInputManager>();
+        groundBallManager = FindAnyObjectByType<GroundBallManager>();
+        movementPhaseManager = FindAnyObjectByType<MovementPhaseManager>();
+        highPassManager = FindAnyObjectByType<HighPassManager>();
+        headerManager = FindAnyObjectByType<HeaderManager>();
+        longBallManager = FindAnyObjectByType<LongBallManager>();
+        firstTimePassManager = FindAnyObjectByType<FirstTimePassManager>();
+        looseBallManager = FindAnyObjectByType<LooseBallManager>();
+        outOfBoundsManager = FindAnyObjectByType<OutOfBoundsManager>();
+        throwInManager = FindAnyObjectByType<ThrowInManager>();
+        freeKickManager = FindAnyObjectByType<FreeKickManager>();
+        shotManager = FindAnyObjectByType<ShotManager>();
+        finalThirdManager = FindAnyObjectByType<FinalThirdManager>();
+        goalFlowManager = FindAnyObjectByType<GoalFlowManager>();
+        kickoffManager = FindAnyObjectByType<KickoffManager>();
+        goalKeeperManager = FindAnyObjectByType<GoalKeeperManager>();
+        hexgrid = FindAnyObjectByType<HexGrid>();
 
         // Track missing components
         List<string> missingComponents = new List<string>();
@@ -15715,7 +15715,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return Scenario_028b_Defense_Ball_Controls_McNulty();
         yield return new WaitForSeconds(0.5f);
         Log("Pressing R - McNulty Fails the Control Attempt");
-        headerManager.PerformControlRoll(1);
+        _ = headerManager.PerformControlRoll(1);
         yield return new WaitForSeconds(1.5f);
         AssertTrue(
             !headerManager.isWaitingForControlRoll,
@@ -15869,7 +15869,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return Scenario_028b_Defense_Ball_Controls_McNulty();
         yield return new WaitForSeconds(0.5f);
         Log("Pressing R - McNulty Fails the Control Attempt");
-        headerManager.PerformControlRoll(6);
+        _ = headerManager.PerformControlRoll(6);
         yield return new WaitForSeconds(1.5f); 
         AvailabilityCheckResult successfulTackle = AssertCorrectAvailabilityAfterSuccessfulTackle();
         AssertTrue(

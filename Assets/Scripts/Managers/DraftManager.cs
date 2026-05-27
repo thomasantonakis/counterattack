@@ -491,7 +491,7 @@ public class DraftManager : MonoBehaviour
         else if (cardsAssignedThisRound >= 4)
         {
             // Check if the draft is complete
-            DraftUIManager draftUIManager = FindObjectOfType<DraftUIManager>();
+            DraftUIManager draftUIManager = FindAnyObjectByType<DraftUIManager>();
             draftUIManager.CheckIfDraftIsComplete();  // Enable the Start Game button if the draft is complete
         }
         if (draftPool.Count == 0)
@@ -499,7 +499,7 @@ public class DraftManager : MonoBehaviour
             Debug.Log("No more cards to deal. Draft pool is empty.");
         }
 
-        DraftUIManager liveDraftUi = FindObjectOfType<DraftUIManager>();
+        DraftUIManager liveDraftUi = FindAnyObjectByType<DraftUIManager>();
         if (liveDraftUi != null)
         {
             liveDraftUi.RefreshDraftStateUI();
@@ -555,7 +555,7 @@ public class DraftManager : MonoBehaviour
 
         // Reset the round
         cardsAssignedThisRound = 0;
-        DraftUIManager draftUIManager = FindObjectOfType<DraftUIManager>();
+        DraftUIManager draftUIManager = FindAnyObjectByType<DraftUIManager>();
         if (draftUIManager != null)
         {
             draftUIManager.RefreshDraftStateUI();

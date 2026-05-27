@@ -242,7 +242,7 @@ public class HighPassManager : MonoBehaviour
                 if (hex != null && gkReachableHexes.Contains(hex))
                 {
                     hexGrid.ClearHighlightedHexes();
-                    MoveGKForHP(hex);
+                    _ = MoveGKForHP(hex);
                 }
                 else
                 {

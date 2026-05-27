@@ -35,7 +35,7 @@ public static class TokenFacePreviewUtility
     private const float PreviewNumberOffsetPixelsPerUnit = 50f;
 
     private static readonly Dictionary<string, Texture2D> SharedFaceTextures = new Dictionary<string, Texture2D>();
-    private static readonly Dictionary<int, TMP_FontAsset> OriginalFontAssets = new Dictionary<int, TMP_FontAsset>();
+    private static readonly Dictionary<EntityId, TMP_FontAsset> OriginalFontAssets = new Dictionary<EntityId, TMP_FontAsset>();
     private static TMP_FontAsset getafeFontAsset;
 
     public static Texture2D GetOrCreateFaceTexture(TokenStyleDefinition style, int textureSize = DefaultTextureSize)
@@ -284,25 +284,25 @@ public static class TokenFacePreviewUtility
 
     private static TMP_FontAsset ResolveFontAsset(TMP_Text numberText, TokenNumberFont fontKind)
     {
-        int instanceId = numberText.GetInstanceID();
-        if (!OriginalFontAssets.ContainsKey(instanceId))
+        EntityId entityId = numberText.GetEntityId();
+        if (!OriginalFontAssets.ContainsKey(entityId))
         {
-            OriginalFontAssets[instanceId] = numberText.font;
+            OriginalFontAssets[entityId] = numberText.font;
         }
 
         switch (fontKind)
         {
             case TokenNumberFont.Getafe:
-                return GetOrCreateGetafeFontAsset() ?? GetDefaultFontAsset(instanceId, numberText);
+                return GetOrCreateGetafeFontAsset() ?? GetDefaultFontAsset(entityId, numberText);
             case TokenNumberFont.Default:
             default:
-                return GetDefaultFontAsset(instanceId, numberText);
+                return GetDefaultFontAsset(entityId, numberText);
         }
     }
 
-    private static TMP_FontAsset GetDefaultFontAsset(int instanceId, TMP_Text numberText)
+    private static TMP_FontAsset GetDefaultFontAsset(EntityId entityId, TMP_Text numberText)
     {
-        if (OriginalFontAssets.TryGetValue(instanceId, out TMP_FontAsset originalFont) && originalFont != null)
+        if (OriginalFontAssets.TryGetValue(entityId, out TMP_FontAsset originalFont) && originalFont != null)
         {
             return originalFont;
         }

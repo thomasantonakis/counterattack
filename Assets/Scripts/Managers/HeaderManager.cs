@@ -164,7 +164,7 @@ public class HeaderManager : MonoBehaviour
               {
                 // TODO: Can I pass to a Jumped Token?
                 isWaitingForHeaderTargetSelection = false;
-                MoveHeaderToTargetSelection(hex);
+                _ = MoveHeaderToTargetSelection(hex);
                 return;
               }
             }
@@ -234,7 +234,7 @@ public class HeaderManager : MonoBehaviour
                 if (IsHeaderSelectionConfirmKey(keyData.key))
                 {
                     keyData.isConsumed = true;
-                    ConfirmAttackerHeaderSelection();
+                    _ = ConfirmAttackerHeaderSelection();
                 }
                 if (keyData.key == KeyCode.A)
                 {
@@ -249,7 +249,7 @@ public class HeaderManager : MonoBehaviour
                     keyData.isConsumed = true;
                     Debug.Log("Header option selected.");
                     attackFreeHeader = true;
-                    StartAttackHeaderSelection();
+                    _ = StartAttackHeaderSelection();
                 }
                 else if (keyData.key == KeyCode.B)
                 {
@@ -802,7 +802,7 @@ public class HeaderManager : MonoBehaviour
             }
             Debug.Log("All available attackers selected to jump for the header.");
             isWaitingForAttackerSelection = false;
-            ConfirmAttackerHeaderSelection();
+            _ = ConfirmAttackerHeaderSelection();
         }
         else
         {

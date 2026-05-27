@@ -24,7 +24,7 @@ public class DraftUIManager : MonoBehaviour
     void Start()
     {
         // Find the DraftManager script in the scene
-        draftManager = FindObjectOfType<DraftManager>();
+        draftManager = FindAnyObjectByType<DraftManager>();
 
         // The match can only start after every outfield slot has been filled by the draft.
         startGameButton.interactable = false;
@@ -40,7 +40,7 @@ public class DraftUIManager : MonoBehaviour
 
         if (draftManager == null)
         {
-            draftManager = FindObjectOfType<DraftManager>();
+            draftManager = FindAnyObjectByType<DraftManager>();
         }
 
         if (draftManager == null)

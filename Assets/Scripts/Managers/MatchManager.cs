@@ -1032,7 +1032,7 @@ public class MatchManager : MonoBehaviour
     private void Awake()
     {
         Debug.Log("MatchManager Awake() - Starting Initialization");
-        Debug.Log($"⚠️ MatchManager Awake() - Instance ID: {GetInstanceID()}");
+        Debug.Log($"⚠️ MatchManager Awake() - Entity ID: {GetEntityId()}");
         
         // Set up the singleton instance
         if (Instance == null)
@@ -1093,7 +1093,7 @@ public class MatchManager : MonoBehaviour
 
     IEnumerator Start()
     {
-        Debug.Log($"⚠️ MatchManager Start() - Instance ID: {GetInstanceID()}");
+        Debug.Log($"⚠️ MatchManager Start() - Entity ID: {GetEntityId()}");
         LoadGameSettingsFromJson();
         yield return new WaitUntil(() => gameData != null && gameData.rosters != null && gameData.rosters.home.Count > 10 && gameData.rosters.away.Count > 10);
         if (gameData != null && gameData.gameSettings != null)

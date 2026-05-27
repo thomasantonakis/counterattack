@@ -215,7 +215,7 @@ public class PlayerToken : MonoBehaviour
     // Helper method to find a token (example implementation, adjust to your game's logic)
     private PlayerToken FindPlayerTokenByNameOrID(string nameOrID)
     {
-        PlayerToken[] allTokens = FindObjectsByType<PlayerToken>(FindObjectsSortMode.None);
+        PlayerToken[] allTokens = FindObjectsByType<PlayerToken>();
         foreach (var token in allTokens)
         {
             if (token.name == nameOrID) // Adjust based on your identifier
@@ -273,7 +273,7 @@ public class PlayerToken : MonoBehaviour
 
     public static PlayerToken GetPlayerTokenByName(string playerName)
 {
-    PlayerToken[] allTokens = FindObjectsOfType<PlayerToken>();
+    PlayerToken[] allTokens = FindObjectsByType<PlayerToken>();
     foreach (var token in allTokens)
     {
         if (token.playerName == playerName || token.name == playerName)

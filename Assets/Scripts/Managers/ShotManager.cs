@@ -367,7 +367,7 @@ public class ShotManager : MonoBehaviour
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
         if (!isActivated) return;
-        HandleClicksForSnapMovement(token, hex);
+        _ = HandleClicksForSnapMovement(token, hex);
     }
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
@@ -1310,7 +1310,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForGKDiceRoll = true;
     }
 
-    public async void PerformGKHeaderSave(int? rigRoll = null)
+    public void PerformGKHeaderSave(int? rigRoll = null)
     {
         RollInputOverride? rollOverride = rigRoll.HasValue
             ? new RollInputOverride
