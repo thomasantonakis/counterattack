@@ -39,6 +39,8 @@ public class GoalFlowManager : MonoBehaviour
     private string goalScorerName = string.Empty;
     private string goalAssisterName = string.Empty;
     private int scorerGoalCount;
+    private readonly Dictionary<PlayerToken, HexCell> plannedPostGoalResetHexes = new();
+    private bool postGoalResetFinalized = false;
     
     private void Start()
     {
@@ -184,10 +186,15 @@ public class GoalFlowManager : MonoBehaviour
         LastCompletedGoalHex = scoredGoalHex;
         LastCompletedGoalSide = activeGoalSide;
         isActivated = true;
+        attackersAreBack = false;
+        defendersAreBack = false;
+        plannedPostGoalResetHexes.Clear();
+        postGoalResetFinalized = false;
         CaptureGoalInstructionContext(shooterToken);
         instructionPhase = GoalInstructionPhase.Celebration;
         hexGrid.RemoveHighlightsFromAllHexes();
-        Debug.Log($"GOAL! {shooterToken.name} scores! Starting celebration on goal side {activeGoalSide}.");
+        string shooterName = shooterToken != null ? shooterToken.name : "Unknown scorer";
+        Debug.Log($"GOAL! {shooterName} scores! Starting celebration on goal side {activeGoalSide}.");
         StartCoroutine(DefenseCelebrationFlow(shooterToken, activeGoalSide));
         StartCoroutine(AttackCelebrationFlow(shooterToken, activeGoalSide));
         
@@ -210,7 +217,6 @@ public class GoalFlowManager : MonoBehaviour
         // 1️⃣ Determine which corner flag the players should run to
         List<HexCell> celebrationHexes = GetCelebrationHexes(scoredGoalSide, activeGoalHex, shooterToken);
         List<HexCell> attackerResetHexes = scoredGoalSide > 0 ? resetFormationLeft : resetFormationRight;
-        HexCell defGkHex = (attackerResetHexes == resetFormationLeft) ? resetFormationRight[0] : resetFormationLeft[0];
         // 2️⃣ Get all attacking teammates
         List<PlayerToken> attackers = GetAttackTokens(shooterToken.isHomeTeam);
         // 3️⃣ Move all attackers to their celebration positions
@@ -221,16 +227,10 @@ public class GoalFlowManager : MonoBehaviour
         instructionPhase = GoalInstructionPhase.Reset;
         Debug.Log("Waited for 1 second, going back!");
         // 6️⃣ Move attackers back to their reset positions
-        yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false));
+        yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false, true));
         attackersAreBack = true;
-        // foreach (var token in playerTokenManager.allTokens)
-        // {
-        //     Debug.Log($"[AFTER Celebration] {token.name} - isAttacker: {token.isAttacker}");
-        // }
-        MatchManager.Instance.MakeSureEveryOneIsCorrectlyAssigned();
-        yield return StartCoroutine(MoveBallBackToKickOffHex(defGkHex));
-        MatchManager.Instance.ChangePossession();
-        CleanUpGoalFlow();
+        yield return new WaitUntil(() => defendersAreBack);
+        FinalizePostGoalReset(shooterToken);
     }
 
     private IEnumerator DefenseCelebrationFlow(PlayerToken shooterToken, int scoredGoalSide)
@@ -243,8 +243,238 @@ public class GoalFlowManager : MonoBehaviour
         yield return new WaitForSeconds(0); // Small pause for disappointment
         // 4️⃣ Move defenders to their reset positions
         // TeleportPlayersToHexes(defenders, defenderResetHexes);
-        yield return StartCoroutine(MovePlayersToHexes(defenders, defenderResetHexes, false, true));
+        yield return StartCoroutine(MovePlayersToHexes(defenders, defenderResetHexes, false, true, true));
         defendersAreBack = true;
+    }
+
+    private void FinalizePostGoalReset(PlayerToken scorerToken)
+    {
+        if (postGoalResetFinalized)
+        {
+            return;
+        }
+
+        postGoalResetFinalized = true;
+        MatchManager matchManager = MatchManager.Instance;
+        bool kickoffTeamIsHome = scorerToken != null ? !scorerToken.isHomeTeam : !goalScoringTeamIsHome;
+
+        if (matchManager != null)
+        {
+            matchManager.teamInAttack = kickoffTeamIsHome
+                ? MatchManager.TeamInAttack.Home
+                : MatchManager.TeamInAttack.Away;
+            matchManager.attackHasPossession = true;
+            matchManager.ClearLastTokenChain();
+        }
+
+        ReconcilePostGoalTokenHexes(kickoffTeamIsHome);
+        PlaceBallOnKickoffHex();
+
+        if (matchManager != null)
+        {
+            matchManager.currentState = MatchManager.GameState.PostGoalKickOffSetup;
+        }
+
+        kickoffManager.StartPostGoalKickoffSetupPhase();
+        Debug.Log($"[GoalFlow] Post-goal reset complete. {(kickoffTeamIsHome ? "Home" : "Away")} team is attacking for kickoff.");
+        CleanUpGoalFlow();
+    }
+
+    private void ReconcilePostGoalTokenHexes(bool attackingTeamIsHome)
+    {
+        if (hexGrid == null || hexGrid.cells == null || playerTokenManager == null)
+        {
+            Debug.LogError("[GoalFlow] Cannot reconcile post-goal reset because grid or token manager is missing.");
+            return;
+        }
+
+        ClearAllHexOccupancy();
+
+        HashSet<HexCell> claimedHexes = new HashSet<HexCell>();
+        foreach (PlayerToken token in playerTokenManager.allTokens)
+        {
+            if (token == null)
+            {
+                continue;
+            }
+
+            HexCell targetHex = ResolvePostGoalTargetHex(token, claimedHexes);
+            if (targetHex == null)
+            {
+                Debug.LogError($"[GoalFlow] Could not resolve a post-goal hex for {token.name}.");
+                continue;
+            }
+
+            claimedHexes.Add(targetHex);
+            bool tokenIsAttacker = token.isHomeTeam == attackingTeamIsHome;
+            token.isAttacker = tokenIsAttacker;
+            targetHex.isAttackOccupied = tokenIsAttacker;
+            targetHex.isDefenseOccupied = !tokenIsAttacker;
+            token.SetCurrentHex(targetHex);
+            targetHex.ResetHighlight();
+            targetHex.HighlightHex(tokenIsAttacker ? "isAttackOccupied" : "isDefenseOccupied");
+        }
+
+        ValidatePostGoalReconciliation();
+    }
+
+    private void ClearAllHexOccupancy()
+    {
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex == null)
+            {
+                continue;
+            }
+
+            hex.occupyingToken = null;
+            hex.isAttackOccupied = false;
+            hex.isDefenseOccupied = false;
+            hex.ResetHighlight();
+        }
+    }
+
+    private HexCell ResolvePostGoalTargetHex(PlayerToken token, HashSet<HexCell> claimedHexes)
+    {
+        if (plannedPostGoalResetHexes.TryGetValue(token, out HexCell plannedHex)
+            && IsAvailablePostGoalHex(plannedHex, claimedHexes))
+        {
+            return plannedHex;
+        }
+
+        HexCell currentHex = token.GetCurrentHex();
+        if (IsAvailablePostGoalHex(currentHex, claimedHexes))
+        {
+            return currentHex;
+        }
+
+        HexCell positionHex = GetHexAtTokenPosition(token);
+        if (IsAvailablePostGoalHex(positionHex, claimedHexes))
+        {
+            return positionHex;
+        }
+
+        foreach (HexCell resetHex in GetResetHexesForTeamAfterGoal(token.isHomeTeam))
+        {
+            if (IsAvailablePostGoalHex(resetHex, claimedHexes))
+            {
+                return resetHex;
+            }
+        }
+
+        return FindNearestAvailablePostGoalHex(token, claimedHexes);
+    }
+
+    private IEnumerable<HexCell> GetResetHexesForTeamAfterGoal(bool isHomeTeam)
+    {
+        List<HexCell> scoringTeamResetHexes = activeGoalSide > 0 ? resetFormationLeft : resetFormationRight;
+        List<HexCell> concedingTeamResetHexes = activeGoalSide > 0 ? resetFormationRight : resetFormationLeft;
+        return isHomeTeam == goalScoringTeamIsHome ? scoringTeamResetHexes : concedingTeamResetHexes;
+    }
+
+    private HexCell GetHexAtTokenPosition(PlayerToken token)
+    {
+        if (token == null || hexGrid == null)
+        {
+            return null;
+        }
+
+        Vector3Int coordinates = hexGrid.WorldToHexCoords(token.transform.position);
+        return hexGrid.GetHexCellAt(coordinates);
+    }
+
+    private HexCell FindNearestAvailablePostGoalHex(PlayerToken token, HashSet<HexCell> claimedHexes)
+    {
+        HexCell nearestHex = null;
+        float nearestDistance = float.PositiveInfinity;
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (!IsAvailablePostGoalHex(hex, claimedHexes))
+            {
+                continue;
+            }
+
+            float distance = Vector3.SqrMagnitude(hex.GetHexCenter() - token.transform.position);
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestHex = hex;
+            }
+        }
+
+        return nearestHex;
+    }
+
+    private bool IsAvailablePostGoalHex(HexCell hex, HashSet<HexCell> claimedHexes)
+    {
+        return hex != null
+            && !claimedHexes.Contains(hex)
+            && !hex.isOutOfBounds
+            && hex.isInGoal == 0;
+    }
+
+    private void ValidatePostGoalReconciliation()
+    {
+        int issueCount = 0;
+        foreach (PlayerToken token in playerTokenManager.allTokens)
+        {
+            if (token == null)
+            {
+                continue;
+            }
+
+            HexCell tokenHex = token.GetCurrentHex();
+            if (tokenHex == null)
+            {
+                issueCount++;
+                Debug.LogError($"[GoalFlow] {token.name} has no current hex after post-goal reconciliation.");
+                continue;
+            }
+
+            if (tokenHex.GetOccupyingToken() != token)
+            {
+                issueCount++;
+                Debug.LogError($"[GoalFlow] {token.name} points to {tokenHex.coordinates}, but that hex does not point back to the token.");
+            }
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex == null || hex.GetOccupyingToken() == null)
+            {
+                continue;
+            }
+
+            if (hex.GetOccupyingToken().GetCurrentHex() != hex)
+            {
+                issueCount++;
+                Debug.LogError($"[GoalFlow] Hex {hex.coordinates} points to {hex.GetOccupyingToken().name}, but the token points elsewhere.");
+            }
+        }
+
+        if (issueCount == 0)
+        {
+            Debug.Log("[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.");
+        }
+    }
+
+    private void PlaceBallOnKickoffHex()
+    {
+        HexCell kickoffHex = hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0));
+        if (kickoffHex == null)
+        {
+            Debug.LogError("[GoalFlow] Cannot place ball on kickoff because hex (0, 0) was not found.");
+            return;
+        }
+
+        Ball resetBall = groundBallManager != null ? groundBallManager.ball : MatchManager.Instance?.ball;
+        if (resetBall == null)
+        {
+            Debug.LogError("[GoalFlow] Cannot place ball on kickoff because no ball reference is available.");
+            return;
+        }
+
+        resetBall.PlaceAtCell(kickoffHex);
     }
 
     private void CleanUpGoalFlow()
@@ -259,6 +489,7 @@ public class GoalFlowManager : MonoBehaviour
         goalScorerName = string.Empty;
         goalAssisterName = string.Empty;
         scorerGoalCount = 0;
+        plannedPostGoalResetHexes.Clear();
     }
 
     public string GetInstructions()
@@ -450,7 +681,12 @@ public class GoalFlowManager : MonoBehaviour
     }
 
     // Moves all players in a team to their target hexes
-    private IEnumerator MovePlayersToHexes(List<PlayerToken> players, List<HexCell> targetHexes, bool isForward, bool isDefense)
+    private IEnumerator MovePlayersToHexes(
+        List<PlayerToken> players,
+        List<HexCell> targetHexes,
+        bool isForward,
+        bool isDefense,
+        bool recordPostGoalResetHexes = false)
     {
         if (players.Count > targetHexes.Count)
         {
@@ -483,6 +719,10 @@ public class GoalFlowManager : MonoBehaviour
                 continue;
             }
             assignedHexes.Add(targetHex); // Mark this hex as taken
+            if (recordPostGoalResetHexes)
+            {
+                plannedPostGoalResetHexes[player] = targetHex;
+            }
             // Debug.Log($"[GoalFlow] Moving {players[i].name} to Hex {targetHexes[i].coordinates}");
             // Start moving everyone at the same time
             // Coroutine moveCoroutine = StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHexes[i], players[i], false, false));
@@ -549,14 +789,6 @@ public class GoalFlowManager : MonoBehaviour
     private List<PlayerToken> GetAttackTokens(bool teamID)
     {
         return playerTokenManager.allTokens.Where(token => token.isHomeTeam == teamID).ToList();
-    }
-
-    private IEnumerator MoveBallBackToKickOffHex(HexCell hex)
-    {
-      yield return groundBallManager.HandleGroundBallMovement(hex);
-      yield return longBallManager.HandleLongBallMovement(hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0)), true);
-      MatchManager.Instance.currentState = MatchManager.GameState.KickOffSetup;
-      kickoffManager.StartPreKickoffPhase();
     }
 
     // private IEnumerator JumpPlayer(PlayerToken token, float height = 2f, float totalDuration = 0.6f)

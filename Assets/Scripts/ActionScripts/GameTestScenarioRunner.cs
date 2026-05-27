@@ -851,6 +851,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
                 new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
                 new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
+                new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
             });
         }
         else if (runLongBallAuditOnly)
@@ -943,6 +944,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
             new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
             new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
+            new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
             new ScenarioDefinition(nameof(Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip), Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip),
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
@@ -6975,6 +6977,224 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("FTP Passer Cannot Reclaim FTP To Space");
+    }
+
+    private IEnumerator Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked()
+    {
+        Log("▶️ Starting test scenario: 'Ground/FTP Defending GK Path Blocked'");
+        yield return new WaitForSeconds(1f);
+
+        MatchManager.Instance.difficulty_level = 1;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = 1;
+        }
+
+        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+
+        PlayerToken passer = RequirePlayerToken("Cafferata");
+        PlayerToken defendingGk = hexgrid.GetDefendingGK();
+        AssertTrue(passer != null, "GK path blocker regression should find a home outfield passer.");
+        AssertTrue(defendingGk != null && defendingGk.IsGoalKeeper, "GK path blocker regression should find the defending GK.");
+        if (passer == null || defendingGk == null)
+        {
+            yield break;
+        }
+
+        HexCell ballHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(0, 0, 0)),
+            "GK path blocker regression should find the kick-off spot.");
+        HexCell blockingHex = null;
+        HexCell targetHex = null;
+
+        foreach (HexCell candidateBlockingHex in ballHex.GetNeighbors(hexgrid)
+            .Where(hex => hex != null && hex.coordinates.x <= 0)
+            .OrderBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z))
+        {
+            targetHex = GetAllInBoundsHexesOrdered(ballHex)
+                .Where(candidate => candidate != null
+                    && candidate != ballHex
+                    && candidate != candidateBlockingHex
+                    && candidate.coordinates.x <= 0
+                    && HexGridUtils.GetHexStepDistance(ballHex, candidate) > 1
+                    && HexGridUtils.GetHexStepDistance(ballHex, candidate) <= 6)
+                .FirstOrDefault(candidate =>
+                    GroundPassCommon.CalculateThickPath(hexgrid, ballHex, candidate, groundBallManager.ball.ballRadius)
+                        .Contains(candidateBlockingHex));
+
+            if (targetHex != null)
+            {
+                blockingHex = candidateBlockingHex;
+                break;
+            }
+        }
+
+        AssertTrue(blockingHex != null, "GK path blocker regression should find a center-line neighbor that lies on a pass path.");
+        AssertTrue(targetHex != null, "GK path blocker regression should find a target behind the blocking GK within FTP range.");
+        if (blockingHex == null || targetHex == null)
+        {
+            yield break;
+        }
+
+        ClearHexForGkWallScenario(ballHex);
+        ClearHexForGkWallScenario(blockingHex);
+        ClearHexForGkWallScenario(targetHex);
+        PlaceTokenForGkWallScenario(passer, ballHex, asAttacker: true);
+        PlaceTokenForGkWallScenario(defendingGk, blockingHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(ballHex);
+        if (firstTimePassManager.ball != null && firstTimePassManager.ball != groundBallManager.ball)
+        {
+            firstTimePassManager.ball.PlaceAtCell(ballHex);
+        }
+
+        MatchManager.Instance.SetLastToken(passer);
+        AssertTrue(
+            GroundPassCommon.CalculateThickPath(hexgrid, ballHex, targetHex, groundBallManager.ball.ballRadius).Contains(blockingHex),
+            "Regression setup should put the defending GK on the calculated pass path.",
+            true,
+            GroundPassCommon.CalculateThickPath(hexgrid, ballHex, targetHex, groundBallManager.ball.ballRadius).Contains(blockingHex)
+        );
+
+        groundBallManager.isQuickThrow = false;
+        groundBallManager.isKickoffPass = true;
+        GroundPassValidationResult kickoffValidation = groundBallManager.ValidateGroundPassPath(targetHex, 1);
+        AssertTrue(
+            !kickoffValidation.IsValid && kickoffValidation.FailureReason == PassValidationFailureReason.BlockedByDefender,
+            "DIFF=1 kick-off ground pass should reject a defending GK occupying the path before applying own-half interception suppression.",
+            PassValidationFailureReason.BlockedByDefender,
+            kickoffValidation.FailureReason
+        );
+
+        groundBallManager.isKickoffPass = false;
+        GroundPassValidationResult groundBallValidation = groundBallManager.ValidateGroundPassPath(targetHex, 99);
+        AssertTrue(
+            !groundBallValidation.IsValid && groundBallValidation.FailureReason == PassValidationFailureReason.BlockedByDefender,
+            "Ground Ball Pass should reject a defending GK occupying the path.",
+            PassValidationFailureReason.BlockedByDefender,
+            groundBallValidation.FailureReason
+        );
+
+        GroundPassValidationResult ftpValidation = ValidateFtpTarget(targetHex);
+        AssertTrue(
+            !ftpValidation.IsValid && ftpValidation.FailureReason == PassValidationFailureReason.BlockedByDefender,
+            "First-Time Pass should reject a defending GK occupying the path.",
+            PassValidationFailureReason.BlockedByDefender,
+            ftpValidation.FailureReason
+        );
+
+        PlayerToken interceptor = RequirePlayerToken("Delgado");
+        HexCell halfwayTargetHex = null;
+        HexCell halfwayInterceptorHex = null;
+
+        foreach (HexCell candidateTargetHex in GetAllInBoundsHexesOrdered(ballHex)
+            .Where(hex => hex != null
+                && hex != ballHex
+                && hex.coordinates.x == 0
+                && HexGridUtils.GetHexStepDistance(ballHex, hex) > 1
+                && HexGridUtils.GetHexStepDistance(ballHex, hex) <= 6)
+            .OrderBy(hex => Mathf.Abs(hex.coordinates.z))
+            .ThenBy(hex => hex.coordinates.z))
+        {
+            List<HexCell> candidatePath = GroundPassCommon.CalculateThickPath(
+                hexgrid,
+                ballHex,
+                candidateTargetHex,
+                groundBallManager.ball.ballRadius);
+            List<HexCell> relevantInterceptionHexes = GroundPassCommon.GetRelevantInterceptionHexes(candidatePath, candidateTargetHex);
+
+            halfwayInterceptorHex = relevantInterceptionHexes
+                .SelectMany(hex => hex.GetNeighbors(hexgrid))
+                .Where(hex => hex != null
+                    && !candidatePath.Contains(hex)
+                    && hex != ballHex
+                    && hex != candidateTargetHex)
+                .OrderBy(hex => HexGridUtils.GetHexStepDistance(ballHex, hex))
+                .ThenBy(hex => hex.coordinates.x)
+                .ThenBy(hex => hex.coordinates.z)
+                .FirstOrDefault();
+
+            if (halfwayInterceptorHex != null)
+            {
+                halfwayTargetHex = candidateTargetHex;
+                break;
+            }
+        }
+
+        AssertTrue(halfwayTargetHex != null, "Kick-off halfway-line regression should find an x=0 target.");
+        AssertTrue(halfwayInterceptorHex != null, "Kick-off halfway-line regression should find a defender hex that influences the path without blocking it.");
+        if (halfwayTargetHex == null || halfwayInterceptorHex == null)
+        {
+            yield break;
+        }
+
+        List<HexCell> halfwayPath = GroundPassCommon.CalculateThickPath(
+            hexgrid,
+            ballHex,
+            halfwayTargetHex,
+            groundBallManager.ball.ballRadius);
+        HashSet<HexCell> halfwayReservedHexes = new HashSet<HexCell>(halfwayPath.Where(hex => hex != null));
+        halfwayReservedHexes.Add(halfwayInterceptorHex);
+        bool clearedHalfwaySetup = true;
+        foreach (HexCell reservedHex in halfwayReservedHexes.Where(hex => hex != null && hex != ballHex).ToList())
+        {
+            PlayerToken occupyingToken = reservedHex.GetOccupyingToken();
+            if (occupyingToken != null && occupyingToken != passer && occupyingToken != interceptor)
+            {
+                HexCell fallbackHex = GetAllInBoundsHexesOrdered(reservedHex)
+                    .FirstOrDefault(hex => hex != null
+                        && !halfwayReservedHexes.Contains(hex)
+                        && hex != ballHex
+                        && !hex.isAttackOccupied
+                        && !hex.isDefenseOccupied);
+                AssertTrue(fallbackHex != null, "Kick-off halfway-line regression should find an empty fallback hex.");
+                if (fallbackHex == null)
+                {
+                    clearedHalfwaySetup = false;
+                    break;
+                }
+
+                SetTokenHexForTest(occupyingToken, fallbackHex);
+            }
+
+            reservedHex.occupyingToken = null;
+            reservedHex.isAttackOccupied = false;
+            reservedHex.isDefenseOccupied = false;
+        }
+        if (!clearedHalfwaySetup)
+        {
+            yield break;
+        }
+
+        PlaceTokenForGkWallScenario(passer, ballHex, asAttacker: true);
+        PlaceTokenForGkWallScenario(interceptor, halfwayInterceptorHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(ballHex);
+        if (firstTimePassManager.ball != null && firstTimePassManager.ball != groundBallManager.ball)
+        {
+            firstTimePassManager.ball.PlaceAtCell(ballHex);
+        }
+        MatchManager.Instance.SetLastToken(passer);
+
+        groundBallManager.isQuickThrow = false;
+        groundBallManager.isKickoffPass = true;
+        GroundPassValidationResult halfwayKickoffValidation = groundBallManager.ValidateGroundPassPath(halfwayTargetHex, 99);
+        AssertTrue(
+            halfwayKickoffValidation.IsValid,
+            "DIFF=1 kick-off pass to the halfway line should remain target-valid.",
+            true,
+            halfwayKickoffValidation.IsValid
+        );
+        AssertTrue(
+            halfwayKickoffValidation.IsDangerous,
+            "DIFF=1 kick-off pass to x=0 should still offer interceptions.",
+            true,
+            halfwayKickoffValidation.IsDangerous
+        );
+        groundBallManager.isKickoffPass = false;
+
+        LogFooterofTest("Ground/FTP Defending GK Path Blocked");
     }
 
     private IEnumerator Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status()

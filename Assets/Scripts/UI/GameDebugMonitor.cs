@@ -215,6 +215,7 @@ public class GameDebugMonitor : MonoBehaviour
         AddIfNotEmpty(looseBallManager != null ? looseBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(looseBallManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(throwInManager != null ? throwInManager.GetInstructions() : string.Empty, ResolveInstructionSide(throwInManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(shotManager != null ? shotManager.GetInstructions() : string.Empty, ResolveInstructionSide(shotManager?.IsInstructionExpectingHomeTeam()));
+        AddIfNotEmpty(kickoffManager != null ? kickoffManager.GetInstructions() : string.Empty, ResolveInstructionSide(kickoffManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(groundBallManager != null ? groundBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(groundBallManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(firstTimePassManager != null ? firstTimePassManager.GetInstructions() : string.Empty, ResolveInstructionSide(firstTimePassManager?.IsInstructionExpectingHomeTeam()));
         AddIfNotEmpty(freeKickManager != null ? freeKickManager.GetInstructions() : string.Empty, ResolveInstructionSide(freeKickManager?.IsInstructionExpectingHomeTeam()));

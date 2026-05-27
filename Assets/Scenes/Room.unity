@@ -2034,6 +2034,8 @@ MonoBehaviour:
   helperFunctions: {fileID: 1397543275}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
+  shotManager: {fileID: 1740884027}
+  gkPushManager: {fileID: 1080259694}
   isActivated: 0
 --- !u!4 &272854144
 Transform:
@@ -2173,6 +2175,7 @@ MonoBehaviour:
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
   freeKickManager: {fileID: 1688718062}
+  groundBallManager: {fileID: 1703800862}
   movementPhaseManager: {fileID: 1390513032}
   headerManager: {fileID: 2071234817}
   selectedToken: {fileID: 0}
@@ -5013,6 +5016,7 @@ MonoBehaviour:
   finalThirdManager: {fileID: 1012232483}
   shotManager: {fileID: 1740884027}
   goalFlowManager: {fileID: 2034852868}
+  goalKeeperManager: {fileID: 272854143}
   helperFunctions: {fileID: 1397543275}
   isActivated: 0
   isWaitingForDirectionRoll: 0
@@ -7086,7 +7090,12 @@ MonoBehaviour:
   isMovingToken: 0
   forfeitWasPressed: 0
   isWaitingForWhatToDo: 0
+  isWaitingForSetPieceGoalKickChoice: 0
+  useThomasDropBallAutoMovementRule: 0
   thisIsTheSecond: 0
+  finalThirdContext: 0
+  setPieceGoalKickSpot: {fileID: 0}
+  setPieceGoalKickGoalkeeper: {fileID: 0}
   eligibleTokens: []
   currentMovableTokens: []
   movedTokens: []
@@ -8544,6 +8553,7 @@ MonoBehaviour:
   throwInManager: {fileID: 1856973853}
   outOfBoundsPushManager: {fileID: 907445074}
   playerTokenManager: {fileID: 501380953}
+  finalThirdManager: {fileID: 1012232483}
 --- !u!4 &1326402187
 Transform:
   m_ObjectHideFlags: 0
@@ -8918,6 +8928,7 @@ MonoBehaviour:
   goalFlowManager: {fileID: 2034852868}
   shotManager: {fileID: 1740884027}
   highPassManager: {fileID: 1859472972}
+  gameInputManager: {fileID: 417053521}
   helperFunctions: {fileID: 1397543275}
   hexGrid: {fileID: 1405702520}
   ball: {fileID: 390494642}
@@ -8948,6 +8959,7 @@ MonoBehaviour:
   isWaitingForFoulDecision: 0
   isWaitingForNutmegDecision: 0
   isWaitingForNutmegDecisionWithoutMoving: 0
+  isWaitingForGKWallDiveDecision: 0
   lookingForNutmegVictim: 0
   isNutmegInProgress: 0
   repositionWinner: {fileID: 0}
@@ -11591,6 +11603,7 @@ MonoBehaviour:
   isAwaitingTargetSelection: 0
   imposedDistance: 11
   isQuickThrow: 0
+  isKickoffPass: 0
   currentTargetHex: {fileID: 0}
   isWaitingForDiceRoll: 0
   passIsDangerous: 0
@@ -12862,6 +12875,7 @@ MonoBehaviour:
   isWaitingForDirectionRoll: 0
   isWaitingForDistanceRoll: 0
   isAvailableTargetsReady: 0
+  isGoalkeeperKick: 0
   lockedAttacker: {fileID: 0}
   currentTargetHex: {fileID: 0}
   intendedTargetHex: {fileID: 0}

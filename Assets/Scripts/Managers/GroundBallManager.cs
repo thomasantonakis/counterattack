@@ -23,6 +23,7 @@ public class GroundBallManager : MonoBehaviour
     // TODO: Formalize Short Pass as a first-class Ground Ball Pass mode instead of mutating this distance ad hoc.
     public int imposedDistance = 11;
     public bool isQuickThrow = false;
+    public bool isKickoffPass = false;
     public HexCell currentTargetHex = null;   // The currently selected target hex
     [SerializeField]
     public bool isWaitingForDiceRoll = false; // To check if we are waiting for dice rolls
@@ -36,6 +37,7 @@ public class GroundBallManager : MonoBehaviour
     private bool currentPassGkWallAttempted = false;
     private bool currentPassGkBoxMoveHandled = false;
     private bool previewHasConditionalGoalkeeperInteraction = false;
+    private PlayerToken currentPasser = null;
     [SerializeField]
     public List<HexCell> defendingHexes = new List<HexCell>();     // List of defenders responsible for each interception hex
     [SerializeField]
@@ -146,8 +148,23 @@ public class GroundBallManager : MonoBehaviour
         Debug.Log("GroundBallManager activated. Waiting for target selection...");
     }
 
+    public void ActivateKickoffGroundBall(PlayerToken kickoffTaker)
+    {
+        CleanUpPass();
+        isKickoffPass = true;
+        currentPasser = kickoffTaker;
+        if (kickoffTaker != null)
+        {
+            SetPendingSetPieceTakerForCommit(kickoffTaker);
+        }
+
+        ActivateGroundBall();
+        CommitToThisAction();
+    }
+
     public void CommitToThisAction()
     {
+        CaptureCurrentPasser();
         if (pendingSetPieceTakerForCommit != null)
         {
             MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(pendingSetPieceTakerForCommit);
@@ -480,7 +497,16 @@ public class GroundBallManager : MonoBehaviour
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetExcludedFromNextTouch);
         }
 
-        return GroundPassCommon.ValidateStandardPassPath(hexGrid, ball, targetHex, distance, isQuickThrow);
+        bool useEasyOwnHalfKickoffRules = IsEasyOwnHalfKickoffPassTarget(targetHex);
+        return GroundPassCommon.ValidateStandardPassPath(
+            hexGrid,
+            ball,
+            targetHex,
+            distance,
+            isQuickThrow,
+            ignoreMaxDistance: useEasyOwnHalfKickoffRules,
+            suppressInterceptions: useEasyOwnHalfKickoffRules
+        );
     }
 
     private string GetValidationFailureInstruction(PassValidationFailureReason failureReason)
@@ -623,15 +649,61 @@ public class GroundBallManager : MonoBehaviour
 
     public void LogGroundPassAttempt()
     {
-        PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken passer = ResolveCurrentPasser();
+        if (passer == null)
+        {
+            Debug.LogWarning("Ground pass attempt was not logged because no passer token is available.");
+            return;
+        }
+
         MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassAttempt);
     }
     
     public void LogGroundPassSucess()
     {
-        PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
-        MatchManager.Instance.SetLastToken(currentTargetHex.GetOccupyingToken());
+        PlayerToken passer = ResolveCurrentPasser();
+        if (passer == null)
+        {
+            Debug.LogWarning("Ground pass completion was not logged because no passer token is available.");
+        }
+        else
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassCompleted); // Log CompletedPass
+        }
+
+        PlayerToken receiver = currentTargetHex != null ? currentTargetHex.GetOccupyingToken() : null;
+        if (receiver != null)
+        {
+            MatchManager.Instance.SetLastToken(receiver);
+        }
+        else
+        {
+            string targetCoordinates = currentTargetHex != null ? currentTargetHex.coordinates.ToString() : "null";
+            Debug.LogWarning($"Ground pass completed to {targetCoordinates}, but no receiving token was found.");
+        }
+    }
+
+    private void CaptureCurrentPasser()
+    {
+        if (currentPasser != null)
+        {
+            return;
+        }
+
+        currentPasser = MatchManager.Instance != null
+            ? MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+            : null;
+
+        if (currentPasser == null)
+        {
+            currentPasser = ball != null ? ball.GetCurrentHex()?.GetOccupyingToken() : null;
+        }
+    }
+
+    private PlayerToken ResolveCurrentPasser()
+    {
+        CaptureCurrentPasser();
+        return currentPasser;
     }
 
     void StartGroundPassInterceptionDiceRollSequence()
@@ -783,6 +855,8 @@ public class GroundBallManager : MonoBehaviour
         // imposedDistance = 11;  // Reset imposed distance
         ResetGroundPassInterceptionDiceRolls();
         isQuickThrow = false;  // Reset quick throw state
+        isKickoffPass = false;
+        currentPasser = null;
         pendingSetPieceTakerForCommit = null;
     }
 
@@ -850,6 +924,11 @@ public class GroundBallManager : MonoBehaviour
         int minPathIndex = 0,
         bool includeGoalkeeperBoxMove = true)
     {
+        if (IsEasyOwnHalfKickoffPassTarget(targetHex))
+        {
+            return new List<GroundBallPathInteraction>();
+        }
+
         return GroundPassCommon.BuildOrderedBallPathInteractions(
             hexGrid,
             ball,
@@ -861,6 +940,23 @@ public class GroundBallManager : MonoBehaviour
             includeGoalkeeperBoxMove: includeGoalkeeperBoxMove && !currentPassGkBoxMoveHandled,
             minPathIndex: minPathIndex
         );
+    }
+
+    private bool IsEasyOwnHalfKickoffPassTarget(HexCell targetHex)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        if (!isKickoffPass || targetHex == null || matchManager == null || matchManager.difficulty_level != 1)
+        {
+            return false;
+        }
+
+        MatchManager.TeamAttackingDirection attackingDirection = matchManager.teamInAttack == MatchManager.TeamInAttack.Home
+            ? matchManager.homeTeamDirection
+            : matchManager.awayTeamDirection;
+
+        return attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight
+            ? targetHex.coordinates.x < 0
+            : targetHex.coordinates.x > 0;
     }
 
     private void ProcessCurrentPathInteraction()

@@ -124,7 +124,9 @@ public static class GroundPassCommon
         Ball ball,
         HexCell targetHex,
         int maxDistance,
-        bool isQuickThrow = false
+        bool isQuickThrow = false,
+        bool ignoreMaxDistance = false,
+        bool suppressInterceptions = false
     )
     {
         HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
@@ -136,7 +138,7 @@ public static class GroundPassCommon
 
         List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
         int distanceBetweenHexes = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
-        if (distanceBetweenHexes > maxDistance)
+        if (!ignoreMaxDistance && distanceBetweenHexes > maxDistance)
         {
             Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {maxDistance}. Current steps: {distanceBetweenHexes}");
             return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.OutOfRange);
@@ -154,8 +156,7 @@ public static class GroundPassCommon
         {
             foreach (HexCell hex in pathHexes)
             {
-                PlayerToken pathOccupant = hex != null ? hex.GetOccupyingToken() : null;
-                if (hex != null && hex.isDefenseOccupied && (pathOccupant == null || !pathOccupant.IsGoalKeeper))
+                if (hex != null && hex.isDefenseOccupied)
                 {
                     Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
                     return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.BlockedByDefender);
@@ -163,12 +164,13 @@ public static class GroundPassCommon
             }
         }
 
-        bool isDangerous = BuildOrderedInterceptionCandidates(
-            hexGrid,
-            ball,
-            targetHex,
-            isQuickThrow: isQuickThrow
-        ).Count > 0;
+        bool isDangerous = !suppressInterceptions
+            && BuildOrderedInterceptionCandidates(
+                hexGrid,
+                ball,
+                targetHex,
+                isQuickThrow: isQuickThrow
+            ).Count > 0;
 
         return new GroundPassValidationResult(true, isDangerous, pathHexes, PassValidationFailureReason.None);
     }

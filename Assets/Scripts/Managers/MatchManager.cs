@@ -17,6 +17,8 @@ public class MatchManager : MonoBehaviour
     public enum GameState
     {
         KickOffSetup, // Free movements of Players in each own Half
+        PostGoalKickOffSetup,
+        KickOffTakerSelection,
         KickoffBlown, // Only a Standard Pass is available
         MovementPhase,
         EndOfMovementPhase,
@@ -1216,12 +1218,26 @@ public class MatchManager : MonoBehaviour
     // Example method to start the match
     public void StartMatch()
     {
+        HexCell kickoffHex = ball != null ? ball.GetCurrentHex() : null;
+        PlayerToken kickoffToken = kickoffHex != null ? kickoffHex.GetOccupyingToken() : null;
+        if (kickoffHex == null)
+        {
+            Debug.LogWarning("Cannot start match because the ball is not on a hex yet.");
+            return;
+        }
+
+        if (kickoffToken == null)
+        {
+            Debug.LogWarning($"Cannot start match because no token is on the ball hex {kickoffHex.coordinates}.");
+            return;
+        }
+
         currentState = GameState.KickoffBlown;
         OfferStandardGroundBallPass();
         groundBallManager.isAvailable = true;
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
-        LastTokenToTouchTheBallOnPurpose = ball.GetCurrentHex().GetOccupyingToken();
+        LastTokenToTouchTheBallOnPurpose = kickoffToken;
         RefreshAerialTargetPrecomputations();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.");
