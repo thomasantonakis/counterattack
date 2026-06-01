@@ -282,7 +282,7 @@ public class LongBallManager : MonoBehaviour
     public void CommitToThisAction()
     {
         MatchManager.Instance.currentState = MatchManager.GameState.LongBall;
-        MatchManager.Instance.CommitToAction();
+        MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.LongBall);
     }
     
     public void HandleLongBallProcess(HexCell clickedHex)
@@ -678,16 +678,26 @@ public class LongBallManager : MonoBehaviour
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
             MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-            MatchManager.Instance.BroadcastEndOfLongBall();
-            finalThirdManager.TriggerFinalThirdPhase();
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.LongBall,
+                () =>
+                {
+                    MatchManager.Instance.BroadcastEndOfLongBall();
+                    finalThirdManager.TriggerFinalThirdPhase();
+                });
             CleanUpLongBall();
             yield break;
         }
 
         MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
         MatchManager.Instance.SetHangingPass("aerial");
-        MatchManager.Instance.BroadcastEndOfLongBall();
-        finalThirdManager.TriggerFinalThirdPhase();
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.LongBall,
+            () =>
+            {
+                MatchManager.Instance.BroadcastEndOfLongBall();
+                finalThirdManager.TriggerFinalThirdPhase();
+            });
         CleanUpLongBall();
     }
 
@@ -707,7 +717,9 @@ public class LongBallManager : MonoBehaviour
         MatchManager.Instance.SetLastToken(recoveringToken);
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
-        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, recoveryHex);
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.LongBall,
+            () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, recoveryHex));
         CleanUpLongBall();
         yield break;
     }
@@ -901,7 +913,9 @@ public class LongBallManager : MonoBehaviour
                 yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
-                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(defenderToken, defenderHex);
+                MatchManager.Instance.ResolveActionBeforeFinalThird(
+                    MatchManager.MatchActionKind.LongBall,
+                    () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(defenderToken, defenderHex));
                 CleanUpLongBall();
                 yield break;  // Stop the sequence once an interception is successful
             }

@@ -114,7 +114,7 @@ public class ScoreboardManager : MonoBehaviour
 
         if (timeText != null)
         {
-            timeText.text = "00:00";
+            timeText.text = matchManager != null ? matchManager.GetClockDisplayText() : "00:00";
         }
     }
 
@@ -132,7 +132,7 @@ public class ScoreboardManager : MonoBehaviour
         separatorText = EnsureText(separatorText, "ScoreboardSeparator", root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -6f), new Vector2(30f, 34f));
         homeScoreText = EnsureText(homeScoreText, "HomeScoreText", root, new Vector2(0f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -42f), new Vector2(185f, 34f));
         awayScoreText = EnsureText(awayScoreText, "AwayScoreText", root, new Vector2(0.5f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -42f), new Vector2(185f, 34f));
-        timeText = EnsureText(timeText, "TimeText", root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -76f), new Vector2(92f, 28f));
+        timeText = EnsureText(timeText, "TimeText", root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -76f), new Vector2(130f, 48f));
 
         ConfigureSecondaryText(separatorText, 24f, TextAlignmentOptions.Center);
         ConfigureSecondaryText(homeScoreText, 28f, TextAlignmentOptions.Center);

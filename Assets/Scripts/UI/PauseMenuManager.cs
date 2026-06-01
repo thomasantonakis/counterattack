@@ -32,6 +32,8 @@ public class PauseMenuManager : MonoBehaviour
         {
             Debug.LogError("Pause panel reference is missing!");
         }
+
+        EndGamePanelManager.EnsureScenePanel();
     }
 
     void Update()
@@ -52,6 +54,7 @@ public class PauseMenuManager : MonoBehaviour
         // Debug.Log("Pausing game and showing pause panel");
         // Display the pause menu
         pausePanel.SetActive(true);
+        MatchManager.Instance?.SetPauseMenuOpen(true);
         // Debug to confirm visibility
         // Debug.Log($"Pause panel active status: {pausePanel.activeSelf}");
         isPaused = true;
@@ -63,6 +66,7 @@ public class PauseMenuManager : MonoBehaviour
         // Debug.Log("Resuming game and hiding pause panel");
         // Hide the pause menu
         pausePanel.SetActive(false);
+        MatchManager.Instance?.SetPauseMenuOpen(false);
         // Debug to confirm visibility
         // Debug.Log($"Pause panel active status: {pausePanel.activeSelf}");
         isPaused = false;
@@ -92,6 +96,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         // Implement your logic for "Save Match As" functionality
         Debug.Log("Back To Main Menu Scene!");
+        MatchManager.Instance?.SetPauseMenuOpen(false);
         SceneManager.LoadScene("MainMenu");  // Adjust to your actual Main Menu scene name
     }
 

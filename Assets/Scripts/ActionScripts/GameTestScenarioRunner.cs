@@ -811,6 +811,18 @@ public class GameTestScenarioRunner : MonoBehaviour
         });
     }
 
+    private void AddRestartClockAndSetPieceScenarios(List<ScenarioDefinition> scenarios)
+    {
+        scenarios.AddRange(new[]
+        {
+            new ScenarioDefinition(nameof(Scenario_042a_RestartClock_GoalKickDoubleF3_Live_ChoicePaused), Scenario_042a_RestartClock_GoalKickDoubleF3_Live_ChoicePaused),
+            new ScenarioDefinition(nameof(Scenario_042b_RestartClock_Corner3Hex_Live), Scenario_042b_RestartClock_Corner3Hex_Live),
+            new ScenarioDefinition(nameof(Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi), Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi),
+            new ScenarioDefinition(nameof(Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears), Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears),
+            new ScenarioDefinition(nameof(Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit), Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit),
+        });
+    }
+
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
@@ -832,6 +844,7 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         if (runReleasedOobAndHeaderAtGoalOnly)
         {
+            AddRestartClockAndSetPieceScenarios(scenarios);
             AddOobLongBallBranchScenarios(scenarios);
             AddHeaderAtGoalBranchScenarios(scenarios);
         }
@@ -1198,6 +1211,240 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == goalkeeper, "Goalkeeper should be last touch after Save-and-Hold recovery.", goalkeeper, MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
 
         LogFooterofTest("GK Wall Save And Hold Pushes To Save Hex");
+    }
+
+    private IEnumerator Scenario_042a_RestartClock_GoalKickDoubleF3_Live_ChoicePaused()
+    {
+        yield return new WaitForSeconds(1f);
+
+        yield return StartCoroutine(AssertClockAdvancesForState(
+            MatchManager.GameState.WaitingForGoalKickFinalThirds,
+            "OOB GoalKick double-F3 should keep the match clock live."));
+
+        yield return StartCoroutine(AssertClockFrozenForState(
+            MatchManager.GameState.GoalKick,
+            "GoalKick restart choice should pause the match clock."));
+
+        LogFooterofTest("Restart Clock GoalKick Double F3 Live Choice Paused");
+    }
+
+    private IEnumerator Scenario_042b_RestartClock_Corner3Hex_Live()
+    {
+        yield return new WaitForSeconds(1f);
+
+        freeKickManager.isCornerKick = true;
+        yield return StartCoroutine(AssertClockAdvancesForState(
+            MatchManager.GameState.FreeKickAttMovement3,
+            "Corner Kick attacking 3-hex movement should keep the match clock live."));
+
+        freeKickManager.isCornerKick = true;
+        yield return StartCoroutine(AssertClockAdvancesForState(
+            MatchManager.GameState.FreeKickDefMovement3,
+            "Corner Kick defending 3-hex movement should keep the match clock live after attack movement starts."));
+
+        freeKickManager.isCornerKick = false;
+        yield return StartCoroutine(AssertClockFrozenForState(
+            MatchManager.GameState.FreeKickAttMovement3,
+            "Non-corner FreeKick setup 3-hex movement should remain clock-paused."));
+
+        LogFooterofTest("Restart Clock Corner 3 Hex Live");
+    }
+
+    private IEnumerator Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi()
+    {
+        yield return new WaitForSeconds(1f);
+
+        HexCell cornerSpot = GetRestartTestCornerSpot();
+        PlayerToken spotOccupant = RequirePlayerToken("Yaneva");
+        PlayerToken selectedTaker = RequirePlayerToken("Kalla");
+        HexCell takerStart = GetEmptyRestartTestHex(cornerSpot, cornerSpot);
+
+        PlaceTokenForScenario(spotOccupant, cornerSpot, asAttacker: true);
+        PlaceTokenForScenario(selectedTaker, takerStart, asAttacker: true);
+        freeKickManager.ball.PlaceAtCell(cornerSpot);
+        freeKickManager.StartFreeKickPreparation(cornerSpot);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(selectedTaker.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => !freeKickManager.isWaitingForKickerSelection && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttGK,
+            3f,
+            "Corner Kick with an attacker on the spot should advance after moving the selected taker to ZOI."));
+
+        AssertTrue(spotOccupant.GetCurrentHex() == cornerSpot, "Existing attacking corner-spot occupant should stay on the corner spot.", cornerSpot, spotOccupant.GetCurrentHex());
+        AssertTrue(selectedTaker.GetCurrentHex() != cornerSpot, "Selected corner taker should not displace an attacking teammate from the corner spot.", false, selectedTaker.GetCurrentHex() == cornerSpot);
+        AssertTrue(IsInCornerSpotZoi(cornerSpot, selectedTaker.GetCurrentHex()), "Selected corner taker should move to the corner spot ZOI.", true, HexCoordinates(selectedTaker.GetCurrentHex()));
+
+        LogFooterofTest("Corner Kick Occupied Attacker Spot Taker Moves To ZOI");
+    }
+
+    private IEnumerator Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears()
+    {
+        yield return new WaitForSeconds(1f);
+
+        HexCell cornerSpot = GetRestartTestCornerSpot();
+        PlayerToken defender = RequirePlayerToken("Delgado");
+        PlayerToken selectedTaker = RequirePlayerToken("Kalla");
+        HexCell takerStart = GetEmptyRestartTestHex(cornerSpot, cornerSpot);
+
+        PlaceTokenForScenario(defender, cornerSpot, asAttacker: false);
+        PlaceTokenForScenario(selectedTaker, takerStart, asAttacker: true);
+        freeKickManager.ball.PlaceAtCell(cornerSpot);
+        freeKickManager.StartFreeKickPreparation(cornerSpot);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(selectedTaker.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => !freeKickManager.isWaitingForKickerSelection && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttGK,
+            3f,
+            "Corner Kick with a defender on the spot should clear the defender and advance setup."));
+
+        AssertTrue(selectedTaker.GetCurrentHex() == cornerSpot, "Selected corner taker should move onto a defender-occupied corner spot after the defender clears.", cornerSpot, selectedTaker.GetCurrentHex());
+        AssertTrue(defender.GetCurrentHex() != cornerSpot, "Defender should be moved off the corner spot.", false, defender.GetCurrentHex() == cornerSpot);
+        AssertTrue(IsInCornerSpotZoi(cornerSpot, defender.GetCurrentHex()), "Defender clearing the corner spot should move to the corner spot ZOI.", true, HexCoordinates(defender.GetCurrentHex()));
+
+        List<PlayerToken> requiredDefenders = GetPrivateInstanceField<List<PlayerToken>>(freeKickManager, "shouldDefMoveTokens");
+        AssertTrue(requiredDefenders != null && requiredDefenders.Contains(defender), "Corner Kick defender-too-close obligations should be recalculated after automatic defender displacement.");
+
+        LogFooterofTest("Corner Kick Occupied Defender Spot Defender Clears");
+    }
+
+    private IEnumerator Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        MatchManager.Instance.currentState = MatchManager.GameState.WaitingForGoalKickFinalThirds;
+
+        HexCell goalKickSpot = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)), "GoalKick F3 test should find the right GoalKick spot.");
+        HexCell goalkeeperStart = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(15, 0, 0)), "GoalKick F3 test should find a goalkeeper start hex.");
+        HexCell defenderHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, -2)), "GoalKick F3 test should find a defender penalty-box hex.");
+        PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
+        PlayerToken defender = RequirePlayerToken("Poulsen");
+
+        MoveTokensOutOfFinalThirdForRestartTest(goalKickSpot.isInFinalThird, goalkeeper, defender);
+        PlaceTokenForScenario(goalkeeper, goalkeeperStart, asAttacker: true);
+        PlaceTokenForScenario(defender, defenderHex, asAttacker: false);
+        finalThirdManager.ball.PlaceAtCell(goalKickSpot);
+
+        finalThirdManager.TriggerOobGoalKickFinalThirds(goalKickSpot, goalkeeper);
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated && GetFinalThirdCurrentTeamMoving() == "defense",
+            4f,
+            "OOB GoalKick F3 should skip the empty attacking outfield step and reach defensive clearance."));
+
+        string instructions = finalThirdManager.GetInstructions();
+        string defenderName = GetTokenTestName(defender);
+        AssertTrue(instructions.Contains(defenderName), "GoalKick F3 instructions should name the defender that must clear the penalty box.", defenderName, instructions);
+        AssertTrue(instructions.Contains("must leave the penalty box"), "GoalKick F3 instructions should explain the defensive clearance obligation.", true, instructions);
+
+        LogFooterofTest("GoalKick F3 Defensive Clearance Instruction And No Attack Autoforfeit");
+    }
+
+    private IEnumerator AssertClockAdvancesForState(MatchManager.GameState state, string message)
+    {
+        ArmMatchClockForRestartTest(state);
+        float beforeSeconds = GetMatchClockRegulationSecondsForTest();
+        yield return new WaitForSeconds(0.15f);
+        float afterSeconds = GetMatchClockRegulationSecondsForTest();
+        AssertTrue(afterSeconds > beforeSeconds + 0.05f, message, $"> {beforeSeconds}", afterSeconds);
+    }
+
+    private IEnumerator AssertClockFrozenForState(MatchManager.GameState state, string message)
+    {
+        ArmMatchClockForRestartTest(state);
+        float beforeSeconds = GetMatchClockRegulationSecondsForTest();
+        yield return new WaitForSeconds(0.15f);
+        float afterSeconds = GetMatchClockRegulationSecondsForTest();
+        AssertTrue(Mathf.Abs(afterSeconds - beforeSeconds) < 0.01f, message, beforeSeconds, afterSeconds);
+    }
+
+    private void ArmMatchClockForRestartTest(MatchManager.GameState state)
+    {
+        MatchManager match = MatchManager.Instance;
+        match.freeKickManager = freeKickManager;
+        match.currentState = state;
+        match.currentHalf = 1;
+        match.useFastClock = true;
+        match.fastClockMultiplier = 60f;
+        match.isClockRunning = true;
+        match.isHalfExpired = false;
+        match.extraActionsDetermined = false;
+        match.extraActionsTotal = 0;
+        match.extraActionsRemaining = 0;
+        SetPrivateInstanceField(match, "currentHalfRegulationSeconds", 60f);
+        SetPrivateInstanceField(match, "isMatchComplete", false);
+        SetPrivateInstanceField(match, "isHalfTimeFlowRunning", false);
+    }
+
+    private float GetMatchClockRegulationSecondsForTest()
+    {
+        return GetPrivateInstanceField<float>(MatchManager.Instance, "currentHalfRegulationSeconds");
+    }
+
+    private HexCell GetRestartTestCornerSpot()
+    {
+        Vector3Int[] candidateCoordinates =
+        {
+            new Vector3Int(18, 0, 12),
+            new Vector3Int(18, 0, -12),
+            new Vector3Int(-18, 0, 12),
+            new Vector3Int(-18, 0, -12),
+        };
+
+        foreach (Vector3Int coordinates in candidateCoordinates)
+        {
+            HexCell candidate = hexgrid.GetHexCellAt(coordinates);
+            if (candidate != null)
+            {
+                return candidate;
+            }
+        }
+
+        AssertTrue(false, "Restart tests should find at least one corner spot.");
+        return null;
+    }
+
+    private HexCell GetEmptyRestartTestHex(HexCell referenceHex, params HexCell[] excludedHexes)
+    {
+        HashSet<HexCell> excluded = new(excludedHexes.Where(hex => hex != null));
+        HexCell destination = GetAllInBoundsHexesOrdered(referenceHex)
+            .FirstOrDefault(hex => hex != null
+                && !excluded.Contains(hex)
+                && !hex.isAttackOccupied
+                && !hex.isDefenseOccupied
+                && hex.GetOccupyingToken() == null);
+
+        AssertTrue(destination != null, "Restart test should find an empty in-bounds hex.");
+        return destination;
+    }
+
+    private bool IsInCornerSpotZoi(HexCell cornerSpot, HexCell checkedHex)
+    {
+        return cornerSpot != null
+            && checkedHex != null
+            && cornerSpot.GetNeighbors(hexgrid).Contains(checkedHex);
+    }
+
+    private void MoveTokensOutOfFinalThirdForRestartTest(int finalThirdSide, params PlayerToken[] exceptions)
+    {
+        HashSet<PlayerToken> exceptionSet = new(exceptions.Where(token => token != null));
+        foreach (PlayerToken token in FindObjectsByType<PlayerToken>())
+        {
+            if (token == null || exceptionSet.Contains(token) || token.GetCurrentHex()?.isInFinalThird != finalThirdSide)
+            {
+                continue;
+            }
+
+            bool wasAttacker = token.isAttacker;
+            HexCell destination = GetAllInBoundsHexesOrdered(token.GetCurrentHex())
+                .FirstOrDefault(hex => hex != null
+                    && hex.isInFinalThird == 0
+                    && hex.isInPenaltyBox == 0
+                    && !hex.isAttackOccupied
+                    && !hex.isDefenseOccupied
+                    && hex.GetOccupyingToken() == null);
+            AssertTrue(destination != null, $"Restart test should find a neutral destination for {token.name}.");
+            PlaceTokenForScenario(token, destination, wasAttacker);
+        }
     }
 
     private void ConfigureRightBoxGkWallAuditState()
@@ -1663,6 +1910,33 @@ public class GameTestScenarioRunner : MonoBehaviour
             null,
             parameterTypes,
             null);
+    }
+
+    private void SetPrivateInstanceField(object target, string fieldName, object value)
+    {
+        AssertTrue(target != null, $"Target object should exist before setting private field '{fieldName}'.");
+        if (target == null)
+        {
+            return;
+        }
+
+        FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(field != null, $"{target.GetType().Name}.{fieldName} private field should exist for the test.");
+        field?.SetValue(target, value);
+    }
+
+    private T GetPrivateInstanceField<T>(object target, string fieldName)
+    {
+        AssertTrue(target != null, $"Target object should exist before reading private field '{fieldName}'.");
+        if (target == null)
+        {
+            return default;
+        }
+
+        FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(field != null, $"{target.GetType().Name}.{fieldName} private field should exist for the test.");
+        object value = field?.GetValue(target);
+        return value is T typedValue ? typedValue : default;
     }
 
     private void PerformRiggedFirstTimePassInterceptionRoll(int rigRoll)

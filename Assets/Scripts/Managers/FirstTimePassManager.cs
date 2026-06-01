@@ -187,7 +187,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (MatchManager.Instance.difficulty_level == 3)
         {
-            MatchManager.Instance.CommitToAction();
+            MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.FirstTimePass);
         }
 
         Debug.Log("FirstTimePassManager activated. Waiting for target selection...");
@@ -422,7 +422,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (MatchManager.Instance.difficulty_level != 3)
         {
-            MatchManager.Instance.CommitToAction();
+            MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.FirstTimePass);
         }
 
         isAwaitingTargetSelection = false;
@@ -894,8 +894,13 @@ public class FirstTimePassManager : MonoBehaviour
 
         yield return StartCoroutine(HandleGroundBallMovement(hex, allowGKBoxMove: false));
         MatchManager.Instance.UpdatePossessionAfterPass(hex);
-        finalThirdManager.TriggerFinalThirdPhase();
-        MatchManager.Instance.BroadcastEndofFirstTimePass();
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.FirstTimePass,
+            () =>
+            {
+                finalThirdManager.TriggerFinalThirdPhase();
+                MatchManager.Instance.BroadcastEndofFirstTimePass();
+            });
         CleanUpFTP();
     }
 
@@ -1140,7 +1145,9 @@ public class FirstTimePassManager : MonoBehaviour
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
-        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex);
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.FirstTimePass,
+            () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex));
     }
 
     private void ResetFTPInterceptionDiceRolls()

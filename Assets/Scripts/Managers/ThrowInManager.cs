@@ -47,7 +47,7 @@ public class ThrowInManager : MonoBehaviour
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
 
-    public void StartThrowInPreparation(HexCell inboundsHex, MatchManager.TeamInAttack throwInAwardedTeam)
+    public void StartThrowInPreparation(HexCell inboundsHex, MatchManager.TeamInAttack throwInAwardedTeam, bool moveBallToHex = true)
     {
         if (inboundsHex == null)
         {
@@ -66,7 +66,10 @@ public class ThrowInManager : MonoBehaviour
         throwInHex = inboundsHex;
         awardedTeam = throwInAwardedTeam;
         EnsureAwardedTeamInAttack();
-        StartCoroutine(ball.MoveToCell(throwInHex));
+        if (moveBallToHex)
+        {
+            StartCoroutine(ball.MoveToCell(throwInHex));
+        }
         MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
         isWaitingForTakerSelection = true;
         Debug.Log($"Throw-in preparation started at {throwInHex.coordinates} for {awardedTeam}. Select the taker.");
@@ -213,7 +216,7 @@ public class ThrowInManager : MonoBehaviour
         movementPhaseManager.ResetMovementPhase();
         movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius, blockTackleWithoutMoving: true);
         movementPhaseManager.ActivateMovementPhase();
-        movementPhaseManager.CommitToAction();
+        movementPhaseManager.CommitToAction(consumesExtraAction: false);
         while (movementPhaseManager.isActivated)
         {
             yield return null;
@@ -230,14 +233,17 @@ public class ThrowInManager : MonoBehaviour
         movementPhaseManager.ResetMovementPhase();
         movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius);
         movementPhaseManager.ActivateMovementPhase();
-        movementPhaseManager.CommitToAction();
+        movementPhaseManager.CommitToAction(consumesExtraAction: true);
         while (movementPhaseManager.isActivated)
         {
             yield return null;
         }
         movementPhaseManager.ClearThrowInRestrictions();
         isRunningOptionalMovement = false;
-        EnterThrowExecutionSelection();
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.MovementPhase,
+            EnterThrowExecutionSelection,
+            consumesExtraAction: true);
     }
 
     internal void EnterThrowExecutionSelection()
@@ -259,7 +265,7 @@ public class ThrowInManager : MonoBehaviour
     {
         isWaitingForThrowTypeSelection = false;
         isWaitingForGroundTarget = false;
-        MatchManager.Instance.CommitToAction();
+        MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.StandardPass);
         groundBallManager.imposedDistance = maxThrowDistance;
         groundBallManager.ActivateGroundBall();
         StartCoroutine(RestoreGroundBallDefaultDistanceWhenDone());
@@ -280,7 +286,7 @@ public class ThrowInManager : MonoBehaviour
     {
         isWaitingForHeaderTarget = false;
         currentHeaderThrowTarget = targetHex;
-        MatchManager.Instance.CommitToAction();
+        MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.Header);
         MatchManager.Instance.hangingPassType = "aerial";
         yield return StartCoroutine(ball.MoveToCell(targetHex));
         finalThirdManager.TriggerFinalThirdPhase();

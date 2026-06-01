@@ -260,10 +260,15 @@ public class MatchStatsUI : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            TogglePanel();
+        }
+
         UpdateLineupHoverFromStatsText();
     }
 
-    private void TogglePanel()
+    public void TogglePanel()
     {
         isExpanded = !isExpanded;
         StopAllCoroutines();
@@ -310,6 +315,51 @@ public class MatchStatsUI : MonoBehaviour
         int currentLineIndex = 0;
         AppendScoreboard(builder, scoreboardLayout, homeTeamName, awayTeamName, homeTeam.totalGoals, awayTeam.totalGoals, ref currentLineIndex);
 
+        AppendScoreAndStatsRows(builder, statsLayout, homeTeamName, awayTeamName, homeTeam, awayTeam, ref currentLineIndex);
+
+        AppendLineupsTable(builder, lineupLayout, homeTeamName, awayTeamName, ref currentLineIndex);
+
+        statsText.text = builder.ToString().TrimEnd();
+        statsText.ForceMeshUpdate();
+        RebuildLineupHoverRows();
+        UpdateScorersDisplay();
+        RefreshHoverCards();
+    }
+
+    public string BuildScoreAndStatsRecapText(float textWidthOverride = 0f)
+    {
+        if (MatchManager.Instance == null || MatchManager.Instance.gameData == null)
+        {
+            return "Match data not available";
+        }
+
+        MatchManager.TeamStats homeTeam = MatchManager.Instance.gameData.stats.homeTeamStats;
+        MatchManager.TeamStats awayTeam = MatchManager.Instance.gameData.stats.awayTeamStats;
+
+        RefreshTemplateIfNeeded();
+        RefreshTeamColors();
+
+        string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
+        string awayTeamName = MatchManager.Instance.gameData.gameSettings.awayTeamName;
+        ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, 5, false, ScoreboardMonospaceStepPx, textWidthOverride);
+        ColumnLayout statsLayout = GetColumnLayout(StatsSideColumnRatio, StatsCenterColumnRatio, 10, false, MonospaceStepPx, textWidthOverride);
+
+        StringBuilder builder = new();
+        int currentLineIndex = 0;
+        AppendScoreboard(builder, scoreboardLayout, homeTeamName, awayTeamName, homeTeam.totalGoals, awayTeam.totalGoals, ref currentLineIndex, includeClock: false);
+        AppendScoreAndStatsRows(builder, statsLayout, homeTeamName, awayTeamName, homeTeam, awayTeam, ref currentLineIndex);
+        return builder.ToString().TrimEnd();
+    }
+
+    private void AppendScoreAndStatsRows(
+        StringBuilder builder,
+        ColumnLayout statsLayout,
+        string homeTeamName,
+        string awayTeamName,
+        MatchManager.TeamStats homeTeam,
+        MatchManager.TeamStats awayTeam,
+        ref int currentLineIndex)
+    {
         foreach (TemplateRow row in templateRows)
         {
             switch (row.kind)
@@ -326,14 +376,6 @@ public class MatchStatsUI : MonoBehaviour
                     break;
             }
         }
-
-        AppendLineupsTable(builder, lineupLayout, homeTeamName, awayTeamName, ref currentLineIndex);
-
-        statsText.text = builder.ToString().TrimEnd();
-        statsText.ForceMeshUpdate();
-        RebuildLineupHoverRows();
-        UpdateScorersDisplay();
-        RefreshHoverCards();
     }
 
     public void UpdateScorersDisplay()
@@ -1171,9 +1213,21 @@ public class MatchStatsUI : MonoBehaviour
         }
     }
 
-    private void AppendScoreboard(StringBuilder builder, ColumnLayout layout, string homeTeamName, string awayTeamName, int homeGoals, int awayGoals, ref int currentLineIndex)
+    private void AppendScoreboard(
+        StringBuilder builder,
+        ColumnLayout layout,
+        string homeTeamName,
+        string awayTeamName,
+        int homeGoals,
+        int awayGoals,
+        ref int currentLineIndex,
+        bool includeClock = true)
     {
         AppendLine(builder, BuildScoreboardHeaderRow(homeTeamName, awayTeamName, homeGoals, awayGoals, layout), ref currentLineIndex);
+        if (includeClock)
+        {
+            AppendScoreboardClockRows(builder, layout, ref currentLineIndex);
+        }
 
         List<ScoreboardScorerSummary> homeScorers = BuildScoreboardScorerSummaries(MatchManager.Instance?.homeScorers);
         List<ScoreboardScorerSummary> awayScorers = BuildScoreboardScorerSummaries(MatchManager.Instance?.awayScorers);
@@ -1187,6 +1241,21 @@ public class MatchStatsUI : MonoBehaviour
         }
 
         AppendLine(builder, string.Empty, ref currentLineIndex);
+    }
+
+    private void AppendScoreboardClockRows(StringBuilder builder, ColumnLayout layout, ref int currentLineIndex)
+    {
+        string clockDisplay = MatchManager.Instance != null ? MatchManager.Instance.GetClockDisplayText() : "00:00";
+        string[] clockLines = clockDisplay.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        if (clockLines.Length == 0)
+        {
+            clockLines = new[] { "00:00" };
+        }
+
+        foreach (string clockLine in clockLines)
+        {
+            AppendLine(builder, BuildScoreboardClockRow(clockLine.Trim(), layout), ref currentLineIndex);
+        }
     }
 
     private string BuildHeaderRow(string homeTeamName, string awayTeamName, int homeGoals, int awayGoals, ColumnLayout layout)
@@ -1222,6 +1291,16 @@ public class MatchStatsUI : MonoBehaviour
             scoreboardRightColumnAlignment);
 
         return BuildRichThreeColumnRow(homeText, centerText, awayText, layout);
+    }
+
+    private string BuildScoreboardClockRow(string clockText, ColumnLayout layout)
+    {
+        int fullWidthChars = layout.leftChars + layout.centerChars + layout.rightChars;
+        string fullWidthText = AlignRich(
+            $"<size=88%><b><color={SoftAccentColor}>{TrimToWidth(clockText, fullWidthChars)}</color></b></size>",
+            fullWidthChars,
+            ColumnTextAlignment.Center);
+        return $"<space={layout.sidePaddingPx:0.##}px><mspace={layout.monospaceStepPx:0.##}px>{fullWidthText}</mspace>";
     }
 
     private string BuildScoreboardScorerRow(ScoreboardScorerSummary homeSummary, ScoreboardScorerSummary awaySummary, ColumnLayout layout)
@@ -1729,13 +1808,19 @@ public class MatchStatsUI : MonoBehaviour
 
         IEnumerable<string> minutes = summary.goals
             .OrderBy(goal => goal.minute)
-            .Select(goal => $"{FormatScoreMinute(goal.minute)}{(goal.isPenalty ? "(p)" : string.Empty)}");
+            .Select(goal => $"{FormatScoreMinute(goal)}{(goal.isPenalty ? "(p)" : string.Empty)}");
 
         return $"{summary.scorer} {string.Join(", ", minutes)}";
     }
 
-    private static string FormatScoreMinute(int minute)
+    private static string FormatScoreMinute(MatchManager.GoalEvent goal)
     {
+        if (goal != null && !string.IsNullOrWhiteSpace(goal.minuteLabel))
+        {
+            return goal.minuteLabel;
+        }
+
+        int minute = goal != null ? goal.minute : 0;
         if (minute > 90)
         {
             return $"90'+{minute - 90}'";
@@ -1987,9 +2072,17 @@ public class MatchStatsUI : MonoBehaviour
         return string.IsNullOrWhiteSpace(value) ? "Team" : value.Trim();
     }
 
-    private ColumnLayout GetColumnLayout(float sideColumnRatio, float centerColumnRatio, int minCenterChars, bool preferOddCenter = false, float monospaceStepPxOverride = MonospaceStepPx)
+    private ColumnLayout GetColumnLayout(
+        float sideColumnRatio,
+        float centerColumnRatio,
+        int minCenterChars,
+        bool preferOddCenter = false,
+        float monospaceStepPxOverride = MonospaceStepPx,
+        float textWidthOverride = 0f)
     {
-        float textWidth = statsText != null ? Mathf.Max(220f, statsText.rectTransform.rect.width) : 320f;
+        float textWidth = textWidthOverride > 0f
+            ? Mathf.Max(220f, textWidthOverride)
+            : statsText != null ? Mathf.Max(220f, statsText.rectTransform.rect.width) : 320f;
         float sidePaddingPx = textWidth * SidePaddingRatio;
         float contentWidth = Mathf.Max(180f, textWidth - (sidePaddingPx * 2f));
         float monospaceStep = Mathf.Max(3f, monospaceStepPxOverride);

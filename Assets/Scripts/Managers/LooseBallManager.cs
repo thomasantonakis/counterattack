@@ -819,7 +819,7 @@ public class LooseBallManager : MonoBehaviour
                     }
                 }
                 // Just decide where to put the ball and how to trigger the OutOfboundsManager to call the 
-                EndLooseBallPhase();
+                EndLooseBallPhase(completeDeferredShotResolution: false);
                 yield break;
             }
             else
@@ -1030,7 +1030,7 @@ public class LooseBallManager : MonoBehaviour
             yield return StartCoroutine(MoveLooseBallToHex(looseBallGoalHex, sourceType, allowRemainingGKBoxMove));
             if (TryHandleLooseBallGoal(looseBallGoalHex, startingToken))
             {
-                EndLooseBallPhase();
+                EndLooseBallPhase(completeDeferredShotResolution: false);
                 yield break;
             }
         }
@@ -1119,7 +1119,7 @@ public class LooseBallManager : MonoBehaviour
         {
             if (TryHandleLooseBallGoal(looseBallRestingHex, startingToken))
             {
-                EndLooseBallPhase();
+                EndLooseBallPhase(completeDeferredShotResolution: false);
                 yield break;
             }
 
@@ -1173,11 +1173,22 @@ public class LooseBallManager : MonoBehaviour
                 outOfBoundsManager.HandleOutOfBounds(startingToken.GetCurrentHex(), directionRoll, ResolveOutOfBoundsSource(startingToken), startingToken);
             }
         }
-        EndLooseBallPhase();
+        EndLooseBallPhase(completeDeferredShotResolution: !looseBallRestingHex.isOutOfBounds);
     }
 
-    public void EndLooseBallPhase()
+    public void EndLooseBallPhase(bool completeDeferredShotResolution = true)
     {
+        if (completeDeferredShotResolution)
+        {
+            ShotManager resolvedShotManager = shotManager != null
+                ? shotManager
+                : FindAnyObjectByType<ShotManager>();
+            if (resolvedShotManager != null && resolvedShotManager.HasDeferredShotActionResolution)
+            {
+                resolvedShotManager.CompleteDeferredShotActionResolution(() => MatchManager.Instance?.RefreshAvailableActionsForCurrentState());
+            }
+        }
+
         isActivated = false;
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = false;

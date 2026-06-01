@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,8 @@ public class GoalFlowManager : MonoBehaviour
     private int scorerGoalCount;
     private readonly Dictionary<PlayerToken, HexCell> plannedPostGoalResetHexes = new();
     private bool postGoalResetFinalized = false;
+    private bool suppressPostGoalResetAfterCelebration = false;
+    private Action postGoalResetSuppressedCallback;
     
     private void Start()
     {
@@ -172,6 +175,47 @@ public class GoalFlowManager : MonoBehaviour
         };
         return list;
     }
+
+    public IEnumerator MoveTeamsToHalfTimeResetFormation(bool attackingTeamIsHome)
+    {
+        EnsureResetFormationsReady();
+        plannedPostGoalResetHexes.Clear();
+
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager == null)
+        {
+            Debug.LogError("[GoalFlow] Cannot run half-time reset because MatchManager is missing.");
+            yield break;
+        }
+
+        List<HexCell> homeResetHexes = GetResetFormationForDirection(matchManager.homeTeamDirection);
+        List<HexCell> awayResetHexes = GetResetFormationForDirection(matchManager.awayTeamDirection);
+        Coroutine homeMove = StartCoroutine(MovePlayersToHexes(GetAttackTokens(true), homeResetHexes, false, true, true));
+        Coroutine awayMove = StartCoroutine(MovePlayersToHexes(GetAttackTokens(false), awayResetHexes, false, true, true));
+        yield return homeMove;
+        yield return awayMove;
+        ReconcilePostGoalTokenHexes(attackingTeamIsHome);
+    }
+
+    private void EnsureResetFormationsReady()
+    {
+        if (resetFormationLeft == null || resetFormationLeft.Count == 0)
+        {
+            resetFormationLeft = GenerateResetLeft();
+        }
+
+        if (resetFormationRight == null || resetFormationRight.Count == 0)
+        {
+            resetFormationRight = GenerateResetRight();
+        }
+    }
+
+    private List<HexCell> GetResetFormationForDirection(MatchManager.TeamAttackingDirection direction)
+    {
+        return direction == MatchManager.TeamAttackingDirection.LeftToRight
+            ? resetFormationLeft
+            : resetFormationRight;
+    }
   
     public void StartGoalFlow(PlayerToken shooterToken)
     {
@@ -190,6 +234,8 @@ public class GoalFlowManager : MonoBehaviour
         defendersAreBack = false;
         plannedPostGoalResetHexes.Clear();
         postGoalResetFinalized = false;
+        suppressPostGoalResetAfterCelebration = false;
+        postGoalResetSuppressedCallback = null;
         CaptureGoalInstructionContext(shooterToken);
         instructionPhase = GoalInstructionPhase.Celebration;
         hexGrid.RemoveHighlightsFromAllHexes();
@@ -224,6 +270,14 @@ public class GoalFlowManager : MonoBehaviour
         // 4️⃣ Wait a bit to celebrate
 
         yield return new WaitForSeconds(1); // Small pause for celebration
+        if (suppressPostGoalResetAfterCelebration)
+        {
+            attackersAreBack = true;
+            yield return new WaitUntil(() => defendersAreBack);
+            CompleteGoalFlowWithoutPostGoalReset();
+            yield break;
+        }
+
         instructionPhase = GoalInstructionPhase.Reset;
         Debug.Log("Waited for 1 second, going back!");
         // 6️⃣ Move attackers back to their reset positions
@@ -241,10 +295,36 @@ public class GoalFlowManager : MonoBehaviour
         List<HexCell> defenderResetHexes = scoredGoalSide > 0 ? resetFormationRight : resetFormationLeft;
         // 3️⃣ Wait and cry!
         yield return new WaitForSeconds(0); // Small pause for disappointment
+        if (suppressPostGoalResetAfterCelebration)
+        {
+            defendersAreBack = true;
+            yield break;
+        }
+
         // 4️⃣ Move defenders to their reset positions
         // TeleportPlayersToHexes(defenders, defenderResetHexes);
         yield return StartCoroutine(MovePlayersToHexes(defenders, defenderResetHexes, false, true, true));
         defendersAreBack = true;
+    }
+
+    public void CompleteAfterCelebrationWithoutPostGoalReset(Action onComplete)
+    {
+        suppressPostGoalResetAfterCelebration = true;
+        postGoalResetSuppressedCallback = onComplete;
+    }
+
+    private void CompleteGoalFlowWithoutPostGoalReset()
+    {
+        if (postGoalResetFinalized)
+        {
+            return;
+        }
+
+        postGoalResetFinalized = true;
+        Action onComplete = postGoalResetSuppressedCallback;
+        Debug.Log("[GoalFlow] Goal celebration complete. Post-goal kickoff reset suppressed because the half or match has ended.");
+        CleanUpGoalFlow();
+        onComplete?.Invoke();
     }
 
     private void FinalizePostGoalReset(PlayerToken scorerToken)
@@ -260,6 +340,7 @@ public class GoalFlowManager : MonoBehaviour
 
         if (matchManager != null)
         {
+            matchManager.ClearGoalKickRestartTaker();
             matchManager.teamInAttack = kickoffTeamIsHome
                 ? MatchManager.TeamInAttack.Home
                 : MatchManager.TeamInAttack.Away;
@@ -475,6 +556,7 @@ public class GoalFlowManager : MonoBehaviour
         }
 
         resetBall.PlaceAtCell(kickoffHex);
+        MatchManager.Instance?.ClearGoalKickRestartTaker();
     }
 
     private void CleanUpGoalFlow()
@@ -490,6 +572,8 @@ public class GoalFlowManager : MonoBehaviour
         goalAssisterName = string.Empty;
         scorerGoalCount = 0;
         plannedPostGoalResetHexes.Clear();
+        suppressPostGoalResetAfterCelebration = false;
+        postGoalResetSuppressedCallback = null;
     }
 
     public string GetInstructions()
@@ -696,7 +780,7 @@ public class GoalFlowManager : MonoBehaviour
         List<HexCell> shuffledHexes = targetHexes;
         if (isForward)
         {
-            shuffledHexes = targetHexes.OrderBy(h => Random.value).ToList();
+            shuffledHexes = targetHexes.OrderBy(h => UnityEngine.Random.value).ToList();
         }
 
         // Store assigned hexes to prevent double assignments

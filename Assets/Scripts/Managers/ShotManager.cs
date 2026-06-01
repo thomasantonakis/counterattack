@@ -78,6 +78,13 @@ public class ShotManager : MonoBehaviour
     private readonly List<HexCell> targetSelectionPreviewPath = new();
     private HexCell hoveredTargetSelectionPreviewTarget;
     private HexCell targetSelectionPreviewSaveHex;
+    private MatchManager.MatchActionKind committedShotActionKind = MatchManager.MatchActionKind.None;
+    private bool shotActionResolutionPending;
+    private bool shotActionResolvedRecorded;
+    private bool deferShotActionResolutionUntilExternalRestart;
+    private bool snapshotActionRecorded;
+    private bool pendingSnapshotEndedMovementPhase;
+    private bool pendingSnapshotEndedMovementConsumesExtraAction;
     private HexCell hoveredSnapshotBlockerMovementHex;
 
     private enum ShotInteractionType
@@ -299,6 +306,7 @@ public class ShotManager : MonoBehaviour
     {
         int movementRoll = GetShotMovementRoll();
         float ballTravelDuration = ball != null ? ball.CalculateMoveDuration(saveHex, movementRoll) : 0f;
+        RecordSnapshotBallStartedIfNeeded();
         Coroutine ballMovement = StartCoroutine(groundBallManager.HandleGroundBallMovement(saveHex, movementRoll, allowGKBoxMove: false));
         Coroutine goalkeeperMovement = StartCoroutine(MoveGoalkeeperToSaveHex(gkToken, ballTravelDuration));
         yield return ballMovement;
@@ -308,6 +316,7 @@ public class ShotManager : MonoBehaviour
     private IEnumerator MovePenaltyGoalBallAndGoalkeeper(PlayerToken gkToken, int gkRoll)
     {
         HexCell goalkeeperDiveHex = GetPenaltyGoalkeeperDiveHex(gkToken, gkRoll);
+        RecordSnapshotBallStartedIfNeeded();
         Coroutine ballMovement = StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, GetShotMovementRoll(), allowGKBoxMove: false));
         Coroutine goalkeeperMovement = null;
         if (goalkeeperDiveHex != null && gkToken != null && gkToken.GetCurrentHex() != goalkeeperDiveHex)
@@ -453,11 +462,21 @@ public class ShotManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
+        if (MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll) return;
         if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (!isActivated
             && MatchManager.Instance != null
             && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution)
         {
+            return;
+        }
+        if (keyData.key == KeyCode.S && IsSnapshotSuppressedByFinalExtraMovement())
+        {
+            keyData.isConsumed = true;
+            isWaitingForSnapshotDecisionFromLoose = false;
+            isWaitingForShotCommitConfirmation = false;
+            ClearShotCommitPreview();
+            Debug.Log("Shot input ignored because snapshots are not available during the final allowed stoppage movement phase.");
             return;
         }
         if (isAvailable && isWaitingForSnapshotDecisionFromLoose)
@@ -671,9 +690,140 @@ public class ShotManager : MonoBehaviour
             && IsValidShotOriginForAttackingDirection(shooterHex);
     }
 
-    public void CommitToThisAction()
+    public void CommitToThisAction(MatchManager.MatchActionKind actionKind = MatchManager.MatchActionKind.Shot)
     {
-        MatchManager.Instance.CommitToAction();
+        committedShotActionKind = actionKind;
+        shotActionResolutionPending = actionKind == MatchManager.MatchActionKind.Shot;
+        shotActionResolvedRecorded = false;
+        deferShotActionResolutionUntilExternalRestart = false;
+        snapshotActionRecorded = false;
+        MatchManager.Instance.CommitToAction(actionKind);
+    }
+
+    private bool IsSnapshotSuppressedByFinalExtraMovement()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.IsFinalExtraMovementPhaseSnapshotSuppressed();
+    }
+
+    private void RecordSnapshotBallStartedIfNeeded()
+    {
+        if (snapshotActionRecorded || shotType != "snapshot")
+        {
+            return;
+        }
+
+        snapshotActionRecorded = true;
+        MatchManager.Instance?.RecordSnapshotBallStarted();
+    }
+
+    private void RecordShotActionResolvedIfNeeded()
+    {
+        if (shotActionResolvedRecorded || !shotActionResolutionPending)
+        {
+            return;
+        }
+
+        if (deferShotActionResolutionUntilExternalRestart)
+        {
+            return;
+        }
+
+        CompleteShotActionResolution(null);
+    }
+
+    private bool CompleteShotActionResolution(Action continuation)
+    {
+        if (shotActionResolvedRecorded || !shotActionResolutionPending)
+        {
+            continuation?.Invoke();
+            return false;
+        }
+
+        shotActionResolvedRecorded = true;
+        shotActionResolutionPending = false;
+        MatchManager.Instance?.ResolveActionBeforeFinalThird(MatchManager.MatchActionKind.Shot, continuation);
+        return MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll;
+    }
+
+    private void DeferShotActionResolutionUntilExternalRestart()
+    {
+        if (shotActionResolvedRecorded || !shotActionResolutionPending)
+        {
+            return;
+        }
+
+        deferShotActionResolutionUntilExternalRestart = true;
+    }
+
+    public bool HasDeferredShotActionResolution => deferShotActionResolutionUntilExternalRestart;
+
+    public bool CompleteDeferredShotActionResolution(Action continuation = null)
+    {
+        if (!deferShotActionResolutionUntilExternalRestart)
+        {
+            return false;
+        }
+
+        deferShotActionResolutionUntilExternalRestart = false;
+        Action resolvedContinuation = continuation;
+        if (resolvedContinuation == null && MatchManager.Instance != null)
+        {
+            resolvedContinuation = MatchManager.Instance.RefreshAvailableActionsForCurrentState;
+        }
+
+        bool waitingForExtraRoll = CompleteShotActionResolution(resolvedContinuation);
+        if (!waitingForExtraRoll)
+        {
+            RecordSnapshotEndedMovementPhaseIfNeeded();
+        }
+
+        committedShotActionKind = MatchManager.MatchActionKind.None;
+        shotActionResolvedRecorded = false;
+        return waitingForExtraRoll;
+    }
+
+    private void EndMovementPhaseForShotResolutionIfNeeded(bool clearStunnedTokens)
+    {
+        if (movementPhaseManager == null || !movementPhaseManager.isActivated)
+        {
+            return;
+        }
+
+        bool isSnapshot = shotType == "snapshot";
+        bool consumesExtraAction = movementPhaseManager.committedMovementConsumesExtraAction;
+        movementPhaseManager.EndMovementPhase(false);
+        if (clearStunnedTokens)
+        {
+            movementPhaseManager.stunnedTokens.Clear();
+        }
+
+        if (isSnapshot)
+        {
+            pendingSnapshotEndedMovementPhase = true;
+            pendingSnapshotEndedMovementConsumesExtraAction = consumesExtraAction;
+        }
+    }
+
+    private void RecordSnapshotEndedMovementPhaseIfNeeded()
+    {
+        if (!pendingSnapshotEndedMovementPhase)
+        {
+            return;
+        }
+
+        if (deferShotActionResolutionUntilExternalRestart)
+        {
+            return;
+        }
+
+        bool consumesExtraAction = pendingSnapshotEndedMovementConsumesExtraAction;
+        pendingSnapshotEndedMovementPhase = false;
+        pendingSnapshotEndedMovementConsumesExtraAction = false;
+        MatchManager.Instance?.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.MovementPhase,
+            null,
+            consumesExtraAction);
     }
 
     private bool ShouldRequireShotCommitConfirmation()
@@ -766,7 +916,7 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        CommitToThisAction();
+        CommitToThisAction(MatchManager.MatchActionKind.Shot);
         MatchManager.Instance.ClearLastTokenChain();
         MatchManager.Instance.SetLastToken(shootingToken);
         shooter = shootingToken;
@@ -1235,7 +1385,7 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        CommitToThisAction();
+        CommitToThisAction(shotType == "snapshot" ? MatchManager.MatchActionKind.None : MatchManager.MatchActionKind.Shot);
         shooter = shootingToken;
         this.shotType = shotType;
         isActivated = true;
@@ -2080,6 +2230,7 @@ public class ShotManager : MonoBehaviour
     private IEnumerator StartShotBlockRoll(RollInputOverride? rollOverride)
     {
         yield return null; // Wait for next frame
+        RecordSnapshotBallStartedIfNeeded();
         ShotInteraction currentDefenderEntry = currentShotInteraction;
         if (currentDefenderEntry != null && currentDefenderBlockingHex != null)
         {
@@ -2127,7 +2278,8 @@ public class ShotManager : MonoBehaviour
                         , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                     );
                     MatchManager.Instance.SetHangingPass("shot"); // TODO: WHY?
-                    StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false));
+                    DeferShotActionResolutionUntilExternalRestart();
+                    yield return StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false));
                     ResetShotProcess();
                 }
                 else
@@ -2164,14 +2316,12 @@ public class ShotManager : MonoBehaviour
                         else
                         {
                             Debug.Log($"{shooter.name} Shot roll: {shooterRoll}, that's a GOAL!!");
+                            RecordSnapshotBallStartedIfNeeded();
                             LogExpectedGoalForCurrentShot("goal");
                             LogGoalScoredForCurrentShot(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+                            DeferShotActionResolutionUntilExternalRestart();
                             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, GetShotMovementRoll(), allowGKBoxMove: false));
-                            if (movementPhaseManager.isActivated)
-                            {
-                                movementPhaseManager.EndMovementPhase(false);
-                                movementPhaseManager.stunnedTokens.Clear();
-                            }
+                            EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
                             goalFlowManager.StartGoalFlow(shooter);
                             ResetShotProcess();
                         }
@@ -2240,13 +2390,12 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo}= {totalShotPower}");
                 Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+                RecordSnapshotBallStartedIfNeeded();
                 LogExpectedGoalForCurrentShot("goal");
                 LogGoalScoredForCurrentShot(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
-            if (movementPhaseManager.isActivated)
-            {
-                movementPhaseManager.EndMovementPhase(false);
-                movementPhaseManager.stunnedTokens.Clear();
-            }
+            DeferShotActionResolutionUntilExternalRestart();
+            EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
+            RecordSnapshotBallStartedIfNeeded();
             yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, GetShotMovementRoll(), allowGKBoxMove: false));
             goalFlowManager.StartGoalFlow(shooter);
             ResetShotProcess();
@@ -2532,14 +2681,12 @@ public class ShotManager : MonoBehaviour
     {
         Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo} = {totalShotPower}");
         Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+        RecordSnapshotBallStartedIfNeeded();
         LogExpectedGoalForCurrentShot("goal");
         LogGoalScoredForCurrentShot(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+        DeferShotActionResolutionUntilExternalRestart();
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, GetShotMovementRoll(), allowGKBoxMove: false));
-        if (movementPhaseManager.isActivated)
-        {
-            movementPhaseManager.EndMovementPhase(false);
-            movementPhaseManager.stunnedTokens.Clear();
-        }
+        EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
         goalFlowManager.StartGoalFlow(shooter);
         ResetShotProcess();
     }
@@ -2568,12 +2715,10 @@ public class ShotManager : MonoBehaviour
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
             , MatchManager.ActionType.ShotOffTarget
         );
+        RecordSnapshotBallStartedIfNeeded();
+        DeferShotActionResolutionUntilExternalRestart();
         yield return StartCoroutine(ShootOffTargetRandomizer());
-        if (movementPhaseManager.isActivated)
-        {
-            movementPhaseManager.EndMovementPhase(false);
-            movementPhaseManager.stunnedTokens.Clear();
-        }
+        EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
         ResetShotProcess();
     }
 
@@ -2646,7 +2791,8 @@ public class ShotManager : MonoBehaviour
             {
                 looseBallManager.MarkNextLooseBallGoalAsPenalty();
             }
-            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false));
+            DeferShotActionResolutionUntilExternalRestart();
+            yield return StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false));
             ResetShotProcess();
         }
         else if (totalSavingPower > totalShotPower)
@@ -2657,11 +2803,7 @@ public class ShotManager : MonoBehaviour
                 , MatchManager.ActionType.ShotOnTarget
             );
             yield return StartCoroutine(MoveBallAndGoalkeeperToSaveHex(gkToken));
-            if (movementPhaseManager.isActivated)
-            {
-                movementPhaseManager.EndMovementPhase(false);
-                // movementPhaseManager.stunnedTokens.Clear();
-            }
+            EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: false);
             // yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
@@ -2681,21 +2823,20 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo} = {totalShotPower}");
                 Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+                RecordSnapshotBallStartedIfNeeded();
                 LogExpectedGoalForCurrentShot("goal");
                 LogGoalScoredForCurrentShot(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+                DeferShotActionResolutionUntilExternalRestart();
                 if (IsPenaltyShot())
                 {
                     yield return StartCoroutine(MovePenaltyGoalBallAndGoalkeeper(gkToken, gkRoll));
                 }
                 else
                 {
+                    RecordSnapshotBallStartedIfNeeded();
                     yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, GetShotMovementRoll(), allowGKBoxMove: false));
                 }
-                if (movementPhaseManager.isActivated)
-                {
-                    movementPhaseManager.EndMovementPhase(false);
-                    movementPhaseManager.stunnedTokens.Clear();
-                }
+                EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
                 goalFlowManager.StartGoalFlow(shooter);
                 ResetShotProcess();
             }
@@ -2738,13 +2879,33 @@ public class ShotManager : MonoBehaviour
             );
             MatchManager.Instance.ChangePossession();
             MatchManager.Instance.SetLastToken(gkToken);
-            Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball! Press [Q]uickThrow, or [K] to activate Final Thirds");
-            if (movementPhaseManager.isActivated)
+            Debug.Log($"{gkToken.name} rolled {gkRoll} and holds the ball.");
+            EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: false);
+            bool waitingForExtraRoll = CompleteShotActionResolution(null);
+            if (!waitingForExtraRoll
+                && MatchManager.Instance != null
+                && MatchManager.Instance.TryEnterExtraActionsRollBeforeRestart(null))
             {
-                movementPhaseManager.EndMovementPhase(false);
-                // movementPhaseManager.stunnedTokens.Clear();
+                waitingForExtraRoll = true;
             }
+
+            if (waitingForExtraRoll)
+            {
+                while (MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll)
+                {
+                    yield return null;
+                }
+
+                if (MatchManager.Instance == null
+                    || MatchManager.Instance.currentState == MatchManager.GameState.HalfTime
+                    || MatchManager.Instance.currentState == MatchManager.GameState.MatchEnded)
+                {
+                    yield break;
+                }
+            }
+
             EnterSaveAndHoldDecision();
+            Debug.Log($"{gkToken.name} held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds");
             while (isWaitingForSaveandHoldScenario)
             {
                 yield return null;  // Wait for the next frame
@@ -2753,7 +2914,8 @@ public class ShotManager : MonoBehaviour
         else 
         {
             Debug.Log($"{gkToken.name} rolled {gkRoll} and can't hold it!");
-            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GoalkeeperHandlingSpill, allowGKBoxMove: false));
+            DeferShotActionResolutionUntilExternalRestart();
+            yield return StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GoalkeeperHandlingSpill, allowGKBoxMove: false));
         }
         ResetShotProcess();
     }
@@ -2805,6 +2967,9 @@ public class ShotManager : MonoBehaviour
 
     private void ResetShotProcess()
     {
+        RecordShotActionResolvedIfNeeded();
+        RecordSnapshotEndedMovementPhaseIfNeeded();
+        MatchManager.Instance?.ClearPendingShotGoalTimeLabel();
         isActivated = false;
         isWaitingforBlockerSelection = false;
         isWaitingForBlockDiceRoll = false;
@@ -2839,6 +3004,15 @@ public class ShotManager : MonoBehaviour
         currentDefenderBlockingHex = null;
         gkWasOfferedMoveForBox = false;
         shotType = null;
+        if (!deferShotActionResolutionUntilExternalRestart)
+        {
+            committedShotActionKind = MatchManager.MatchActionKind.None;
+            shotActionResolutionPending = false;
+            shotActionResolvedRecorded = false;
+            pendingSnapshotEndedMovementPhase = false;
+            pendingSnapshotEndedMovementConsumesExtraAction = false;
+        }
+        snapshotActionRecorded = false;
         isHeaderAtGoal = false;
         headerAttackerTotalScore = 0;
         headerAttacker = null;
@@ -3017,17 +3191,19 @@ public class ShotManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
-        if (finalThirdManager.isActivated) return "";
-        if (goalKeeperManager.isActivated) return "";
+        if (MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll) return "";
+        if (finalThirdManager != null && finalThirdManager.isActivated) return "";
+        if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
         if (!isActivated
             && MatchManager.Instance != null
             && MatchManager.Instance.currentState == MatchManager.GameState.FreeKickExecution)
         {
             return "";
         }
-        if (isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Snapshot directly from there, or [X] no continue without shoooting, ");
-        if (isAvailable && isWaitingForShotCommitConfirmation) sb.Append("Press [S] again to commit the Shot, ");
-        else if (isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");
+        bool snapshotSuppressed = IsSnapshotSuppressedByFinalExtraMovement();
+        if (!snapshotSuppressed && isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Snapshot directly from there, or [X] no continue without shoooting, ");
+        if (!snapshotSuppressed && isAvailable && isWaitingForShotCommitConfirmation) sb.Append("Press [S] again to commit the Shot, ");
+        else if (!snapshotSuppressed && isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");
         if (isActivated) sb.Append("Shot: ");
         if (isWaitingforBlockerSelection) sb.Append($"Click on a defender to move 2 Hexes in an attempt to block the Snapshot, ");
         if (isWaitingforBlockerMovement) sb.Append($"Click on a Highlighted Hex to move the blocker there, ");

@@ -271,6 +271,11 @@ public class FinalThirdManager : MonoBehaviour
 
         if (currentMovableTokens.Count == 0)
         {
+            if (TryAdvanceEmptyOobGoalKickStep())
+            {
+                yield break;
+            }
+
             Debug.Log($"No movable tokens for {currentTeamMoving}. Skipping...");
             StartCoroutine(NextF3Phase());
             yield break;
@@ -505,11 +510,25 @@ public class FinalThirdManager : MonoBehaviour
             isActivated = false;
             thisIsTheSecond = false;
             bothSides = false;
-            MatchManager.Instance.BroadcastGoalKickRestartOptions(goalkeeper);
-            ClearSetPieceGoalKickContext();
-            Debug.Log("Goal Kick restart ready: MatchManager is offering [P] Standard Pass or [K] Goalkeeper Kick.");
-            return;
-        }
+                ShotManager shotManager = MatchManager.Instance != null
+                    ? MatchManager.Instance.shotManager
+                    : FindAnyObjectByType<ShotManager>();
+                if (shotManager != null && shotManager.HasDeferredShotActionResolution)
+                {
+                    shotManager.CompleteDeferredShotActionResolution(() =>
+                    {
+                        MatchManager.Instance.BroadcastGoalKickRestartOptions(goalkeeper);
+                        ClearSetPieceGoalKickContext();
+                        Debug.Log("Goal Kick restart ready after stoppage roll: MatchManager is offering [P] Standard Pass or [K] Goalkeeper Kick.");
+                    });
+                    return;
+                }
+
+                MatchManager.Instance.BroadcastGoalKickRestartOptions(goalkeeper);
+                ClearSetPieceGoalKickContext();
+                Debug.Log("Goal Kick restart ready: MatchManager is offering [P] Standard Pass or [K] Goalkeeper Kick.");
+                return;
+            }
 
         EndF3Phase(preserveGoalKickContext: isOobGoalKickChoice);
         isWaitingForWhatToDo = true;
@@ -593,6 +612,32 @@ public class FinalThirdManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool TryAdvanceEmptyOobGoalKickStep()
+    {
+        if (!IsFirstOobGoalKickFinalThird())
+        {
+            return false;
+        }
+
+        if (currentTeamMoving == "attack")
+        {
+            Debug.Log("No attacking outfield Goal Kick-side Final Third moves are required. Checking defensive clearance.");
+            StartCoroutine(NextF3Phase());
+            return true;
+        }
+
+        if (currentTeamMoving == "defense"
+            && !HasOobGoalKickDefensiveTokensInPenaltyBox()
+            && !IsOobGoalKickSpotBlockedByCurrentTeam())
+        {
+            Debug.Log("No defensive Goal Kick-side clearance is required. Continuing Goal Kick Final Third flow.");
+            StartCoroutine(NextF3Phase());
+            return true;
+        }
+
+        return false;
     }
 
     private bool IsSaveAndHoldKContext()
@@ -691,12 +736,19 @@ public class FinalThirdManager : MonoBehaviour
 
     private bool HasOobGoalKickDefensiveTokensInPenaltyBox()
     {
+        return GetOobGoalKickDefensiveTokensInPenaltyBox().Count > 0;
+    }
+
+    private List<PlayerToken> GetOobGoalKickDefensiveTokensInPenaltyBox()
+    {
         if (!IsOobGoalKickDefenseClearanceTurn())
         {
-            return false;
+            return new List<PlayerToken>();
         }
 
-        return playerTokenManager.allTokens.Any(IsOobGoalKickDefenseClearanceToken);
+        return playerTokenManager.allTokens
+            .Where(IsOobGoalKickDefenseClearanceToken)
+            .ToList();
     }
 
     private bool HasDefenderInBallHoldingGoalkeeperZoi()
@@ -721,9 +773,7 @@ public class FinalThirdManager : MonoBehaviour
             return;
         }
 
-        List<PlayerToken> clearanceTokens = playerTokenManager.allTokens
-            .Where(IsOobGoalKickDefenseClearanceToken)
-            .ToList();
+        List<PlayerToken> clearanceTokens = GetOobGoalKickDefensiveTokensInPenaltyBox();
 
         if (clearanceTokens.Count == 0)
         {
@@ -917,7 +967,7 @@ public class FinalThirdManager : MonoBehaviour
             return;
         }
 
-        MatchManager.Instance.BroadcastSafeEndofMovementPhase();
+        MatchManager.Instance.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         Debug.Log($"{gkWithBall} drops the ball at feet. Normal end-of-movement options are available.");
     }
 
@@ -1083,6 +1133,7 @@ public class FinalThirdManager : MonoBehaviour
                 }
             }
         }
+        AppendOobGoalKickInstructionDetails(sb);
         if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {GetTeamNameByCurrentTeamMoving()}, to select for movement, ");
         if (isWaitingForTargetHex && selectedToken != null) sb.Append($" or Click on a Hex to move {selectedToken.name} there, ");
         if (isMovingToken) sb.Append("moving selected F3 token, ");
@@ -1092,6 +1143,44 @@ public class FinalThirdManager : MonoBehaviour
         
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    private void AppendOobGoalKickInstructionDetails(StringBuilder sb)
+    {
+        if (!IsFirstOobGoalKickFinalThird())
+        {
+            return;
+        }
+
+        if (IsOobGoalKickSpotBlockedByNonGoalkeeper())
+        {
+            PlayerToken blocker = setPieceGoalKickSpot.GetOccupyingToken();
+            if (blocker != null)
+            {
+                sb.Append($"Goal Kick spot is occupied by {FormatTokenNames(new[] { blocker })}; clear the spot for the goalkeeper, ");
+            }
+        }
+
+        if (!IsOobGoalKickDefenseClearanceTurn())
+        {
+            return;
+        }
+
+        List<PlayerToken> requiredDefenders = GetOobGoalKickDefensiveTokensInPenaltyBox();
+        if (requiredDefenders.Count > 0)
+        {
+            sb.Append($"Goal Kick clearance: {FormatTokenNames(requiredDefenders)} must leave the penalty box, ");
+        }
+    }
+
+    private static string FormatTokenNames(IEnumerable<PlayerToken> tokens)
+    {
+        List<string> names = tokens
+            .Where(token => token != null)
+            .Select(token => !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name)
+            .ToList();
+
+        return names.Count > 0 ? string.Join(", ", names) : "none";
     }
 
     public bool? IsInstructionExpectingHomeTeam()

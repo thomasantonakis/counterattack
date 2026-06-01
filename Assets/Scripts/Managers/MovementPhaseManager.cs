@@ -56,6 +56,7 @@ public class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForNutmegDecision = false;
     public bool isWaitingForNutmegDecisionWithoutMoving = false;
     public bool isWaitingForGKWallDiveDecision = false;
+    public bool committedMovementConsumesExtraAction = true;
     // public bool isWaitingForSnapshotDecisionFromLoose = false;
     public bool lookingForNutmegVictim = false;
     public bool isNutmegInProgress = false;
@@ -492,6 +493,13 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.S)
                 {
+                    keyData.isConsumed = true;
+                    if (IsSnapshotSuppressedByFinalExtraMovement())
+                    {
+                        Debug.Log("Snapshot input ignored because this movement phase is the final allowed stoppage action.");
+                        return;
+                    }
+
                     isWaitingForSnapshotDecision = false;
                     isDribblerRunning = false;
                     remainingDribblerPace = 0;
@@ -523,6 +531,13 @@ public class MovementPhaseManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.S)
             {
+                keyData.isConsumed = true;
+                if (IsSnapshotSuppressedByFinalExtraMovement())
+                {
+                    Debug.Log("Snapshot input ignored because this movement phase is the final allowed stoppage action.");
+                    return;
+                }
+
                 isWaitingForSnapshotDecision = false;
                 Debug.Log($"Non Dribbler {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
                 shotManager.StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
@@ -712,7 +727,7 @@ public class MovementPhaseManager : MonoBehaviour
         isAwaitingTokenSelection = true;
     }
 
-    public void CommitToAction()
+    public void CommitToAction(bool consumesExtraAction = true)
     {
         if (isCommitted) return;
         string phaseSection = isMovementPhaseAttack
@@ -730,8 +745,15 @@ public class MovementPhaseManager : MonoBehaviour
         );
         // TODO: add one action taken to the counter with an identifier
         isCommitted = true;  // Set the committed flag to true
+        committedMovementConsumesExtraAction = consumesExtraAction;
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhase;  // Update game state
-        MatchManager.Instance.CommitToAction();
+        MatchManager.Instance.CommitToAction(consumesExtraAction ? MatchManager.MatchActionKind.MovementPhase : MatchManager.MatchActionKind.None);
+    }
+
+    private bool IsSnapshotSuppressedByFinalExtraMovement()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.IsFinalExtraMovementPhaseSnapshotSuppressed();
     }
 
     // This method will be called when a player token is clicked
@@ -1221,9 +1243,13 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
             MatchManager.Instance.ClearHangingPass();
             PlayerToken recoveringToken = selectedToken;
+            bool consumesExtraAction = committedMovementConsumesExtraAction;
             EndMovementPhase(false);
             MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;  // Update game state
-            MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, targetHex);
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.MovementPhase,
+                () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, targetHex),
+                consumesExtraAction);
             remainingDribblerPace = 0;
         }
         // Defender does not land on Ball Hex
@@ -2076,8 +2102,12 @@ public class MovementPhaseManager : MonoBehaviour
         // Change possession to the defending team
         MatchManager.Instance.ChangePossession();  
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
+        bool consumesExtraAction = committedMovementConsumesExtraAction;
         EndMovementPhase(false);
-        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex);
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.MovementPhase,
+            () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex),
+            consumesExtraAction);
     }
 
     public void PerformTackleDiceRoll(bool isDefender, int? rigroll = null)
@@ -2552,7 +2582,20 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator TakeFreeKickAfterFinalThirds()
     {
+        MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
         EndMovementPhaseForStopPlay(triggerF3: true);
+
+        while (MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll)
+        {
+            yield return null;
+        }
+
+        if (MatchManager.Instance != null
+            && (MatchManager.Instance.currentState == MatchManager.GameState.HalfTime
+                || MatchManager.Instance.currentState == MatchManager.GameState.MatchEnded))
+        {
+            yield break;
+        }
 
         if (finalThirdManager != null && finalThirdManager.isActivated)
         {
@@ -2568,8 +2611,6 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator TakePenaltyKickAfterFinalThirds()
     {
-        EndMovementPhaseForStopPlay(triggerF3: false);
-
         pendingFoulIsPenalty = false;
         PenaltyKickManager manager = ResolvePenaltyKickManager();
         if (manager == null)
@@ -2578,13 +2619,49 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
 
-        manager.StartPenaltyPreparation();
+        bool penaltyPreparationStarted = false;
+        EndMovementPhaseForStopPlay(
+            triggerF3: false,
+            continuation: () =>
+            {
+                manager.StartPenaltyPreparation();
+                penaltyPreparationStarted = true;
+            },
+            allowContinuationAfterFinalExtraAction: true);
+
+        while (!penaltyPreparationStarted
+            && MatchManager.Instance != null
+            && MatchManager.Instance.IsWaitingForExtraActionsRoll)
+        {
+            yield return null;
+        }
     }
 
     internal void EndMovementPhaseForStopPlay(bool triggerF3)
     {
+        EndMovementPhaseForStopPlay(triggerF3, null);
+    }
+
+    internal void EndMovementPhaseForStopPlay(
+        bool triggerF3,
+        Action continuation,
+        bool allowContinuationAfterFinalExtraAction = false)
+    {
+        bool consumesExtraAction = committedMovementConsumesExtraAction;
         EndMovementPhase(false);
-        EndMovementPhase(triggerF3);
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.MovementPhase,
+            () =>
+            {
+                if (triggerF3 && finalThirdManager != null)
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                }
+
+                continuation?.Invoke();
+            },
+            consumesExtraAction,
+            allowContinuationAfterFinalExtraAction);
     }
 
     private PenaltyKickManager ResolvePenaltyKickManager()
@@ -2820,7 +2897,6 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void EndMovementPhase(bool triggerF3 = true)
     {
-        bool shouldTriggerF3 = triggerF3 && !IsThrowInMovementRestricted();
         ResetMovementPhase();  // Reset the moved tokens and phase counters
         nutmeggableDefenders.Clear();
         stunnedTokens.Clear();
@@ -2832,7 +2908,6 @@ public class MovementPhaseManager : MonoBehaviour
         remainingDribblerPace = 0;  // Reset the remaining dribbler pace
         defendersTriedToIntercept.Clear();  // Clear the list of defenders who tried to intercept
         Debug.Log("Movement phase is over.");
-        if (shouldTriggerF3) finalThirdManager.TriggerFinalThirdPhase();
     }
 
     public List<PlayerToken> GetNutmeggableDefenders(PlayerToken dribbler, HexGrid hexGrid)
@@ -3043,15 +3118,19 @@ public class MovementPhaseManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
-        if (goalKeeperManager.isActivated) return "";
-        if (finalThirdManager.isActivated) return "";
-        if (shotManager.isActivated) return "";
-        if (looseBallManager.isActivated) return "";
+        if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
+        if (finalThirdManager != null && finalThirdManager.isActivated) return "";
+        if (shotManager != null && shotManager.isActivated) return "";
+        if (looseBallManager != null && looseBallManager.isActivated) return "";
         if (isAvailable) sb.Append("Press [M] to start a Movement Phase, "); //TODO: this is suppressed in case a Snapshot it available.
         if (isActivated) sb.Append("MP: ");
         if (IsResolvingFoulSequence())
         {
-            if (isWaitingForYellowCardRoll) sb.Append($"Press [R] to roll the leniency check for {selectedDefender.playerName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
+            if (isWaitingForYellowCardRoll)
+            {
+                string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
+                sb.Append($"Press [R] to roll the leniency check for {defenderName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
+            }
             if (isWaitingForInjuryRoll) sb.Append($"Press [R] to roll the injury check for {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} whose Resilience is {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.resilience}, ");
             if (isWaitingForFoulDecision)
             {
@@ -3063,17 +3142,28 @@ public class MovementPhaseManager : MonoBehaviour
             return sb.ToString();
         }
         if (isAwaitingTokenSelection) sb.Append(GetTokenSelectionInstructions());
-        if (isAwaitingHexDestination) sb.Append($"Click on a Free Hex to move {selectedToken.playerName} there!, ");
+        if (isAwaitingHexDestination)
+        {
+            string movingTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
+            sb.Append($"Click on a Free Hex to move {movingTokenName} there!, ");
+        }
         if (isAwaitingHexDestination && isBallPickable && CanSelectedTokenCollectCurrentBall())
         {
-            sb.Append($"Press [V] to pick up the ball with {selectedToken.playerName}, ");
+            string movingTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
+            sb.Append($"Press [V] to pick up the ball with {movingTokenName}, ");
         }
         if (isAwaitingHexDestination && selectedToken != null && ballHex != null && !CanSelectedTokenCollectCurrentBall())
         {
             sb.Append($"{selectedToken?.playerName ?? "Selected token"} cannot collect this hanging pass, ");
         }
         if (isWaitingForNutmegDecision && !isWaitingForGKWallDiveDecision) sb.Append("Press [N] to nutmeg, or [X] to allow interceptions, ");
-        if (isWaitingForInterceptionDiceRoll) sb.Append($"Press [R] to roll for interception with {eligibleDefenders[0].playerName}, ");
+        if (isWaitingForInterceptionDiceRoll)
+        {
+            string defenderName = eligibleDefenders != null && eligibleDefenders.Count > 0 && eligibleDefenders[0] != null
+                ? eligibleDefenders[0].playerName
+                : "the defender";
+            sb.Append($"Press [R] to roll for interception with {defenderName}, ");
+        }
         if (lookingForNutmegVictim) sb.Append("Click on one of the Nutmeggable Defenders to choose which one to nutmeg, ");
         // if (isWaitingForSnapshotDecisionFromLoose)
         // {
@@ -3085,7 +3175,12 @@ public class MovementPhaseManager : MonoBehaviour
             {
             if (isWaitingForGKWallDiveDecision) sb.Append(BuildGKDiveDecisionInstruction());
             if (isWaitingForTackleRoll && !tackleDefenderRolled && isGkWallDiveInProgress) sb.Append(BuildGKDiveGoalkeeperRollInstruction());
-            else if (isWaitingForTackleRoll && !tackleDefenderRolled) sb.Append($"Press [R] to roll with {selectedDefender.playerName} for the tackle. Tackling: {selectedDefender.tackling}, ");
+            else if (isWaitingForTackleRoll && !tackleDefenderRolled)
+            {
+                string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
+                string tacklingText = selectedDefender != null ? selectedDefender.tackling.ToString() : "?";
+                sb.Append($"Press [R] to roll with {defenderName} for the tackle. Tackling: {tacklingText}, ");
+            }
                 if (isWaitingForTackleRoll && tackleDefenderRolled && isGkWallDiveInProgress) sb.Append(BuildGKDiveDribblerRollInstruction());
                 else if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
             }
@@ -3104,11 +3199,22 @@ public class MovementPhaseManager : MonoBehaviour
                     }
                 }
             }
-            if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot");
-            if (isWaitingForSnapshotDecision && !isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll) sb.Append($"Press [S] to take a Snapshot, or [X] to end your move, ");
-            if (isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedToken.playerName}'s remaining pace ({remainingDribblerPace}), ");
-            if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedToken.playerName}, or [N] to stand there without tackling, ");
-            if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedToken.playerName} from there!, ");
+            if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll)
+            {
+                sb.Append(IsSnapshotSuppressedByFinalExtraMovement()
+                    ? $"Press [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot"
+                    : $"Press [S] to take a Snapshot, or [X] to forfeit rest of remaining pace ({remainingDribblerPace}) and not shoot");
+            }
+            if (isWaitingForSnapshotDecision && !isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll)
+            {
+                sb.Append(IsSnapshotSuppressedByFinalExtraMovement()
+                    ? "Press [X] to end your move, "
+                    : "Press [S] to take a Snapshot, or [X] to end your move, ");
+            }
+            string selectedTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
+            if (isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedTokenName}'s remaining pace ({remainingDribblerPace}), ");
+            if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedTokenName}, or [N] to stand there without tackling, ");
+            if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedTokenName} from there!, ");
             if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
             if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
         // }

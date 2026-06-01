@@ -391,6 +391,7 @@ public class FreeKickManager : MonoBehaviour
     public void StartFreeKickPreparation(HexCell cornerKickSpot = null)
     {
         isActivated = true;
+        matchManager.PauseMatchClockForSetPiecePrep();
         if (cornerKickSpot == null) Debug.Log("Starting Free Kick Preparation...");
         else
         {
@@ -493,10 +494,12 @@ public class FreeKickManager : MonoBehaviour
             Debug.Log($"Selected {clickedToken.name} as the kicker.");
             if (isCornerKick)
             {
-                // TODO :this is quite optimistic.
-                // There might be cases that an attacker might already be on the spotkick
-                // maybe even a defender.
-                yield return StartCoroutine(MoveTokenToHex(clickedToken, spotkick));
+                bool placementSucceeded = false;
+                yield return StartCoroutine(PlaceCornerKickTaker(clickedToken, success => placementSucceeded = success));
+                if (!placementSucceeded)
+                {
+                    yield break;
+                }
             }
             else
             {
@@ -516,9 +519,94 @@ public class FreeKickManager : MonoBehaviour
         isWaitingForKickerSelection = false;
         hexGrid.ClearHighlightedHexes(); 
         CalculatePotentialKickers();
+        CalculateDefendersThatNeedToMove();
         // Transition to the first phase
         StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAttGK, 1));
         yield break;  // Exit early since we already handled the token            
+    }
+
+    private IEnumerator PlaceCornerKickTaker(PlayerToken selectedTaker, System.Action<bool> onComplete)
+    {
+        if (selectedTaker == null || spotkick == null)
+        {
+            Debug.LogWarning("Corner Kick taker placement failed because the selected taker or corner spot is missing.");
+            onComplete?.Invoke(false);
+            yield break;
+        }
+
+        PlayerToken spotOccupant = spotkick.GetOccupyingToken();
+        if (spotOccupant == null || spotOccupant == selectedTaker)
+        {
+            if (selectedTaker.GetCurrentHex() != spotkick)
+            {
+                yield return StartCoroutine(MoveTokenToHex(selectedTaker, spotkick));
+            }
+
+            onComplete?.Invoke(true);
+            yield break;
+        }
+
+        if (spotOccupant.isAttacker)
+        {
+            HexCell takerZoiHex = GetBestCornerSpotZoiHex(selectedTaker);
+            if (takerZoiHex == null)
+            {
+                Debug.LogWarning($"Corner Kick taker placement failed: {spotkick.coordinates} is occupied by {spotOccupant.name} and no free ZOI hex is available for {selectedTaker.name}.");
+                onComplete?.Invoke(false);
+                yield break;
+            }
+
+            if (selectedTaker.GetCurrentHex() != takerZoiHex)
+            {
+                yield return StartCoroutine(MoveTokenToHex(selectedTaker, takerZoiHex));
+            }
+
+            Debug.Log($"{selectedTaker.name} moves to {takerZoiHex.coordinates} in the corner spot ZOI because {spotOccupant.name} already occupies the corner spot.");
+            onComplete?.Invoke(true);
+            yield break;
+        }
+
+        HexCell defenderZoiHex = GetBestCornerSpotZoiHex(spotOccupant);
+        if (defenderZoiHex == null)
+        {
+            Debug.LogWarning($"Corner Kick taker placement failed: defender {spotOccupant.name} occupies {spotkick.coordinates}, but no free ZOI hex is available to clear the corner spot.");
+            onComplete?.Invoke(false);
+            yield break;
+        }
+
+        yield return StartCoroutine(MoveTokenToHex(spotOccupant, defenderZoiHex));
+        Debug.Log($"{spotOccupant.name} clears the corner spot to {defenderZoiHex.coordinates}.");
+
+        if (selectedTaker.GetCurrentHex() != spotkick)
+        {
+            yield return StartCoroutine(MoveTokenToHex(selectedTaker, spotkick));
+        }
+
+        onComplete?.Invoke(true);
+    }
+
+    private HexCell GetBestCornerSpotZoiHex(PlayerToken movingToken)
+    {
+        if (spotkick == null || hexGrid == null || movingToken == null)
+        {
+            return null;
+        }
+
+        HexCell currentHex = movingToken.GetCurrentHex();
+        return spotkick.GetNeighbors(hexGrid)
+            .Where(hex => hex != null && !hex.isOutOfBounds)
+            .Where(hex =>
+            {
+                PlayerToken occupant = hex.GetOccupyingToken();
+                bool occupiedByMovingToken = occupant == movingToken;
+                return occupiedByMovingToken
+                    || (occupant == null && !hex.isAttackOccupied && !hex.isDefenseOccupied);
+            })
+            .OrderBy(hex => currentHex != null ? HexGridUtils.GetHexStepDistance(currentHex.coordinates, hex.coordinates) : 0)
+            .ThenBy(hex => HexGridUtils.GetHexStepDistance(hex.coordinates, new Vector3Int(0, 0, 0)))
+            .ThenBy(hex => hex.coordinates.x)
+            .ThenBy(hex => hex.coordinates.z)
+            .FirstOrDefault();
     }
 
     private HexCell GetClosestAvailableHexToBall()
@@ -935,6 +1023,7 @@ public class FreeKickManager : MonoBehaviour
         isWaitingForSetupPhase = false;
         ResetMoves();
         CalculatePotentialKickers();
+        matchManager.ResumeMatchClockForLivePlay();
 
         if (potentialKickers.Count > 1)
         {
@@ -1016,6 +1105,7 @@ public class FreeKickManager : MonoBehaviour
                 {
                     isWaitingforMovement3 = true;
                     matchManager.currentState = MatchManager.GameState.FreeKickAttMovement3;
+                    matchManager.ResumeMatchClockForLivePlay();
                     StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAttMovement3, 1));
                 }
                 else
@@ -1049,6 +1139,18 @@ public class FreeKickManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public bool ShouldPauseMatchClockForState(MatchManager.GameState state)
+    {
+        if (isCornerKick
+            && (state == MatchManager.GameState.FreeKickAttMovement3
+                || state == MatchManager.GameState.FreeKickDefMovement3))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void FreeKickCleanup()

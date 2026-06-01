@@ -750,6 +750,23 @@ public class HeaderManager : MonoBehaviour
         return shouldShotBeAvailable;
     }
 
+    private MatchManager.TeamAttackingDirection GetCurrentAttackingDirection()
+    {
+        return MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+    }
+
+    private int GetAttackingGoalSide()
+    {
+        return GetCurrentAttackingDirection() == MatchManager.TeamAttackingDirection.LeftToRight ? 1 : -1;
+    }
+
+    private string GetAttackingGoalLineSide()
+    {
+        return GetAttackingGoalSide() > 0 ? "RightGoalLine" : "LeftGoalLine";
+    }
+
     public void HandleAttackerHeaderSelection(PlayerToken token)
   {
     if (attackerWillJump.Count < 2)
@@ -1283,8 +1300,7 @@ public class HeaderManager : MonoBehaviour
             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOffTarget);
             yield return StartCoroutine(FailedLob());
             Debug.Log("Header at goal is off target.");
-            string side = bestAttacker.GetCurrentHex().coordinates.z > 0 ? "RightGoalLine" : "LeftGoalLine";
-            StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(bestAttacker.GetCurrentHex(), side, "inaccuracy"));
+            StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(bestAttacker.GetCurrentHex(), GetAttackingGoalLineSide(), "inaccuracy", bestAttacker));
             CleanUpHeader();
             ResetHeader();
         }
@@ -1563,8 +1579,7 @@ public class HeaderManager : MonoBehaviour
                         MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOffTarget);
                         yield return StartCoroutine(FailedLob());
                         Debug.Log("off target");
-                        string side = bestAttacker.GetCurrentHex().coordinates.z > 0 ? "RightGoalLine" : "LeftGoalLine";
-                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(bestAttacker.GetCurrentHex(), side, "inaccuracy"));
+                        StartCoroutine(outOfBoundsManager.HandleGoalKickOrCorner(bestAttacker.GetCurrentHex(), GetAttackingGoalLineSide(), "inaccuracy", bestAttacker));
                         CleanUpHeader();
                         ResetHeader();
                     }
@@ -1662,7 +1677,7 @@ public class HeaderManager : MonoBehaviour
     private IEnumerator FailedLob()
     {
         HexCell shooterHex = ball.GetCurrentHex();
-        int targetX = 22 * (shooterHex.coordinates.x > 0 ? 1 : -1);
+        int targetX = 22 * GetAttackingGoalSide();
         float slope = (float)(headerAtGoalTarget.coordinates.z - shooterHex.coordinates.z) /
                   (headerAtGoalTarget.coordinates.x - shooterHex.coordinates.x);
         int intercept = headerAtGoalTarget.coordinates.z - Mathf.RoundToInt(slope * headerAtGoalTarget.coordinates.x);
@@ -1720,15 +1735,23 @@ public class HeaderManager : MonoBehaviour
                 , MatchManager.ActionType.AerialPassCompleted
             );
             MatchManager.Instance.SetLastToken(challengeWinner);
-            MatchManager.Instance.BroadcastBallControl();
             CleanUpHeader();
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.BallControl,
+                () => MatchManager.Instance.BroadcastBallControl());
         }
         else
         {
-            Debug.Log($"{challengeWinner.name} failed to control the ball! Loose ball from {challengeWinner.name}");
-            MatchManager.Instance.SetHangingPass("control");
-            StartCoroutine(looseBallManager.ResolveLooseBall(challengeWinner, LooseBallSourceType.GroundDeflection));
+            PlayerToken failedControlToken = challengeWinner;
+            Debug.Log($"{failedControlToken.name} failed to control the ball! Loose ball from {failedControlToken.name}");
             CleanUpHeader();
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.BallControl,
+                () =>
+                {
+                    MatchManager.Instance.SetHangingPass("control");
+                    StartCoroutine(looseBallManager.ResolveLooseBall(failedControlToken, LooseBallSourceType.GroundDeflection));
+                });
         }
     }
 
@@ -1827,15 +1850,20 @@ public class HeaderManager : MonoBehaviour
         MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
         if (clickedHex.isAttackOccupied)
         {
-            MatchManager.Instance.BroadcastHeaderCompleted();
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 , MatchManager.ActionType.PassCompleted
             );
             MatchManager.Instance.SetLastToken(clickedHex.GetOccupyingToken());
             ball.AdjustBallHeightBasedOnOccupancy();
-            finalThirdManager.TriggerFinalThirdPhase();
             CleanUpHeader();
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.Header,
+                () =>
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                    MatchManager.Instance.BroadcastHeaderCompleted();
+                });
         }
         else
         {
@@ -1888,9 +1916,14 @@ public class HeaderManager : MonoBehaviour
         {
             Debug.Log("Landing hex is not in any defender's ZOI. No interception needed.");
             CleanUpHeader();
-            finalThirdManager.TriggerFinalThirdPhase();
-            MatchManager.Instance.SetHangingPass("ground");
-            MatchManager.Instance.BroadcastHeaderCompleted();
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.Header,
+                () =>
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                    MatchManager.Instance.SetHangingPass("ground");
+                    MatchManager.Instance.BroadcastHeaderCompleted();
+                });
         }
     }
 
@@ -1959,7 +1992,9 @@ public class HeaderManager : MonoBehaviour
         if (interceptingDefenders == null || interceptingDefenders.Count == 0)
         {
             Debug.Log("No defenders available for interception.");
-            finalThirdManager.TriggerFinalThirdPhase();
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.Header,
+                () => finalThirdManager.TriggerFinalThirdPhase());
             yield break;
         }
 
@@ -1996,7 +2031,11 @@ public class HeaderManager : MonoBehaviour
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 // ball.AdjustBallHeightBasedOnOccupancy();
                 ball.PlaceAtCell(defenderHex);
-                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(interceptingDefender, defenderHex);
+                PlayerToken recoveringHeaderDefender = interceptingDefender;
+                CleanUpHeader();
+                MatchManager.Instance.ResolveActionBeforeFinalThird(
+                    MatchManager.MatchActionKind.Header,
+                    () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringHeaderDefender, defenderHex));
                 yield break;  // Stop the sequence once an interception is successful
             }
             else
@@ -2008,9 +2047,14 @@ public class HeaderManager : MonoBehaviour
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("All defenders failed to intercept. Ball remains at the landing hex.");
         CleanUpHeader();
-        finalThirdManager.TriggerFinalThirdPhase();
-        MatchManager.Instance.SetHangingPass("ground");
-        MatchManager.Instance.BroadcastHeaderCompleted();
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.Header,
+            () =>
+            {
+                finalThirdManager.TriggerFinalThirdPhase();
+                MatchManager.Instance.SetHangingPass("ground");
+                MatchManager.Instance.BroadcastHeaderCompleted();
+            });
     }
 
     private void CleanUpHeader()

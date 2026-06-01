@@ -319,12 +319,28 @@ public class KickoffManager : MonoBehaviour
 
         if (setupConfirmCount >= 2)
         {
+            ShotManager shotManager = MatchManager.Instance != null
+                ? MatchManager.Instance.shotManager
+                : FindAnyObjectByType<ShotManager>();
+            if (shotManager != null && shotManager.HasDeferredShotActionResolution)
+            {
+                shotManager.CompleteDeferredShotActionResolution(BeginKickoffTakerSelection);
+                return;
+            }
+
+            if (MatchManager.Instance != null
+                && MatchManager.Instance.TryEnterExtraActionsRollBeforeRestart(BeginKickoffTakerSelection))
+            {
+                return;
+            }
+
             BeginKickoffTakerSelection();
         }
     }
 
     private void BeginKickoffTakerSelection()
     {
+        MatchManager.Instance?.ClearGoalKickRestartTaker();
         setupConfirmCount = 0;
         selectedToken = null;
         flowPhase = KickoffFlowPhase.TakerSelection;

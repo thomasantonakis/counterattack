@@ -369,7 +369,7 @@ public class HighPassManager : MonoBehaviour
         ResetAvailableTargetPrecompute();
         if (commitImmediately || MatchManager.Instance.difficulty_level == 3)
         {
-            MatchManager.Instance.CommitToAction();
+            MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.HighPass);
         }
         if (MatchManager.Instance.difficulty_level < 3)
         {
@@ -525,7 +525,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         MatchManager.Instance.currentState = MatchManager.GameState.HighPass;  // Update game state
-        MatchManager.Instance.CommitToAction();
+        MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.HighPass);
     }
 
     public void HandleHighPassProcess(HexCell clickedHex, bool isGK = false)
@@ -1114,7 +1114,9 @@ public class HighPassManager : MonoBehaviour
         {
             Debug.Log("Ball landed out of bounds!");
             Debug.Log($"Passing targetHex to HandleOutOfBounds: {currentTargetHex.coordinates}");
-            outOfBoundsManager.HandleOutOfBounds(currentTargetHex, directionIndex, "inaccuracy", MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.HighPass,
+                () => outOfBoundsManager.HandleOutOfBounds(currentTargetHex, directionIndex, "inaccuracy", MatchManager.Instance.LastTokenToTouchTheBallOnPurpose));
         }
         else
         {
@@ -1136,8 +1138,13 @@ public class HighPassManager : MonoBehaviour
             {
                 Debug.Log("GK cannot rush out to challenge.");
             }
-            finalThirdManager.TriggerFinalThirdPhase();
-            StartCoroutine(headerManager.FindEligibleHeaderTokens(finalTargetHex));
+            MatchManager.Instance.ResolveActionBeforeFinalThird(
+                MatchManager.MatchActionKind.HighPass,
+                () =>
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                    StartCoroutine(headerManager.FindEligibleHeaderTokens(finalTargetHex));
+                });
         }
         CleanUpHighPass();
     }

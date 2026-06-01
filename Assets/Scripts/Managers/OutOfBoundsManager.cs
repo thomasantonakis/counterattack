@@ -151,7 +151,9 @@ public class OutOfBoundsManager : MonoBehaviour
         }
 
         yield return StartCoroutine(ResolveOutOfBoundsPush(lastInboundsHex));
-        throwInManager.StartThrowInPreparation(lastInboundsHex, awardedTeam);
+        yield return StartCoroutine(ball.MoveToCell(lastInboundsHex));
+        yield return StartCoroutine(CompleteDeferredShotResolutionBeforeRestart());
+        throwInManager.StartThrowInPreparation(lastInboundsHex, awardedTeam, moveBallToHex: false);
     }
 
     private MatchManager.TeamInAttack DetermineThrowInAwardedTeam(string source, PlayerToken lastTouchToken)
@@ -298,6 +300,8 @@ public class OutOfBoundsManager : MonoBehaviour
     {
         yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
         yield return StartCoroutine(ball.MoveToCell(spot));
+        MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
+        yield return StartCoroutine(CompleteDeferredShotResolutionBeforeRestart());
 
         FinalThirdManager resolvedFinalThirdManager = finalThirdManager != null
             ? finalThirdManager
@@ -441,6 +445,23 @@ public class OutOfBoundsManager : MonoBehaviour
         }
 
         yield return StartCoroutine(manager.ResolveOutOfBoundsPush(reentryHex));
+    }
+
+    private IEnumerator CompleteDeferredShotResolutionBeforeRestart()
+    {
+        ShotManager shotManager = MatchManager.Instance != null
+            ? MatchManager.Instance.shotManager
+            : FindAnyObjectByType<ShotManager>();
+        if (shotManager == null || !shotManager.HasDeferredShotActionResolution)
+        {
+            yield break;
+        }
+
+        bool waitingForExtraRoll = shotManager.CompleteDeferredShotActionResolution(() => { });
+        if (waitingForExtraRoll)
+        {
+            yield return new WaitUntil(() => MatchManager.Instance == null || !MatchManager.Instance.IsWaitingForExtraActionsRoll);
+        }
     }
 
     private void HandleGoalScored()

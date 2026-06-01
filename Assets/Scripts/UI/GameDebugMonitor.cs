@@ -14,6 +14,7 @@ public class GameDebugMonitor : MonoBehaviour
     }
 
     public static GameDebugMonitor Instance;
+    public MatchManager matchManager;
     public GameInputManager gameInputManager;
     public GroundBallManager groundBallManager;
     public MovementPhaseManager movementPhaseManager;
@@ -93,6 +94,7 @@ public class GameDebugMonitor : MonoBehaviour
     public void LinkRoomSceneComponents()
     {
         // Attempt to assign all managers
+        matchManager = FindAnyObjectByType<MatchManager>();
         gameInputManager = FindAnyObjectByType<GameInputManager>();
         groundBallManager = FindAnyObjectByType<GroundBallManager>();
         movementPhaseManager = FindAnyObjectByType<MovementPhaseManager>();
@@ -115,6 +117,7 @@ public class GameDebugMonitor : MonoBehaviour
         // Track missing components
         List<string> missingComponents = new List<string>();
 
+        if (matchManager == null) missingComponents.Add(nameof(matchManager));
         if (gameInputManager == null) missingComponents.Add(nameof(gameInputManager));
         if (groundBallManager == null) missingComponents.Add(nameof(groundBallManager));
         if (movementPhaseManager == null) missingComponents.Add(nameof(movementPhaseManager));
@@ -195,6 +198,18 @@ public class GameDebugMonitor : MonoBehaviour
 
         List<string> activeInstructions = new List<string>();
         InstructionSide activeInstructionSide = InstructionSide.Neutral;
+
+        string matchInstruction = matchManager != null ? matchManager.GetInstructions() : string.Empty;
+        if (!string.IsNullOrWhiteSpace(matchInstruction))
+        {
+            if (instructionText != null)
+            {
+                instructionText.text = matchInstruction;
+                ApplyInstructionPalette(ResolveInstructionSide(matchManager.IsInstructionExpectingHomeTeam()));
+            }
+
+            return;
+        }
 
         void AddIfNotEmpty(string s, InstructionSide side)
         {

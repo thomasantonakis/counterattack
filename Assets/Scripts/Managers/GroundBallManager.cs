@@ -179,7 +179,7 @@ public class GroundBallManager : MonoBehaviour
         {
             MatchManager.Instance.currentState = MatchManager.GameState.StandardPass;
         }
-        MatchManager.Instance.CommitToAction();
+        MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.StandardPass);
     }
     
     public void HandleGroundBallPath(HexCell clickedHex, bool isGk = false)
@@ -633,8 +633,13 @@ public class GroundBallManager : MonoBehaviour
     {
         await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex, allowGKBoxMove: false)); // Execute pass
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
-        finalThirdManager.TriggerFinalThirdPhase();
-        MatchManager.Instance.BroadcastEndofGroundBallPass();
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.StandardPass,
+            () =>
+            {
+                finalThirdManager.TriggerFinalThirdPhase();
+                MatchManager.Instance.BroadcastEndofGroundBallPass();
+            });
         Debug.Log($"Pass completed to {trgDestHex.coordinates}");
         if (trgDestHex.isAttackOccupied)
         {
@@ -840,7 +845,9 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
         ResetGroundPassInterceptionDiceRolls();
         CleanUpPass();
-        MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex);
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.StandardPass,
+            () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex));
     }
     
     public void CleanUpPass()

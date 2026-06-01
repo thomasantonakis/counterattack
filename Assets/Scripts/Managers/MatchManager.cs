@@ -63,6 +63,22 @@ public class MatchManager : MonoBehaviour
         QuickThrow,
         ActivateFinalThirdsAfterSave,
         GoalKick,
+        HalfTime,
+        MatchEnded,
+    }
+
+    public enum MatchActionKind
+    {
+        None,
+        MovementPhase,
+        StandardPass,
+        FirstTimePass,
+        HighPass,
+        LongBall,
+        Header,
+        BallControl,
+        Shot,
+        Snapshot,
     }
     
     [Serializable]
@@ -660,10 +676,10 @@ public class MatchManager : MonoBehaviour
                     MatchManager.Instance.AddGoal(
                         token.playerName
                         , token.isHomeTeam
-                        // , GetCurrentMinute()
-                        , 10
+                        , MatchManager.Instance.GetCurrentGoalMinute()
                         , isPenaltyGoal
                         , assistToken?.playerName
+                        , MatchManager.Instance.GetCurrentGoalMinuteLabel()
                     );
                     if (
                         assistToken != null &&
@@ -879,16 +895,18 @@ public class MatchManager : MonoBehaviour
     {
         public string scorer;
         public int minute;
+        public string minuteLabel;
         public bool isPenalty;
         public string assist;  // Optional
 
         public override string ToString()
         {
+            string displayMinute = string.IsNullOrWhiteSpace(minuteLabel) ? $"{minute}'" : minuteLabel;
             if (isPenalty)
-                return $"{scorer} {minute}'(p)";
+                return $"{scorer} {displayMinute}(p)";
             if (!string.IsNullOrEmpty(assist))
-                return $"{scorer} {minute}' (A: {assist})";
-            return $"{scorer} {minute}'";
+                return $"{scorer} {displayMinute} (A: {assist})";
+            return $"{scorer} {displayMinute}";
         }
     }
 
@@ -959,7 +977,12 @@ public class MatchManager : MonoBehaviour
     public MovementPhaseManager movementPhaseManager;
     public ShotManager shotManager;
     public PenaltyKickManager penaltyKickManager;
+    public FreeKickManager freeKickManager;
     public PlayerTokenManager playerTokenManager;
+    public FinalThirdManager finalThirdManager;
+    public GoalFlowManager goalFlowManager;
+    public KickoffManager kickoffManager;
+    public HelperFunctions helperFunctions;
     public MatchStatsUI matchStatsUI;
     public GameData gameData;
     // public PlayerToken LastTokenToTouchTheBallOnPurpose { get; private set; }
@@ -979,6 +1002,31 @@ public class MatchManager : MonoBehaviour
     private const int StandardGroundBallDistance = 11;
     private const int ShortGroundBallDistance = 6;
     [SerializeField] private int pendingGroundBallDistance = StandardGroundBallDistance;
+    [Header("Match Clock")]
+    public bool useFastClock = false;
+    public float fastClockMultiplier = 60f;
+    public int currentHalf = 1;
+    public int completedActionsThisHalf = 0;
+    public int totalCompletedActions = 0;
+    public bool isClockRunning = false;
+    public bool isHalfExpired = false;
+    public bool extraActionsDetermined = false;
+    public int extraActionsTotal = 0;
+    public int extraActionsRemaining = 0;
+    [SerializeField] private float currentHalfRegulationSeconds = 0f;
+    [SerializeField] private bool isWaitingForExtraActionsRoll = false;
+    [SerializeField] private bool isMatchComplete = false;
+    [SerializeField] private bool isHalfTimeFlowRunning = false;
+    [SerializeField] private bool isPauseMenuOpen = false;
+    [SerializeField] private bool isHalfEndPendingAfterGoalFlow = false;
+    [SerializeField] private MatchActionKind currentCommittedActionKind = MatchActionKind.None;
+    [SerializeField] private bool hasUnresolvedCommittedExtraAction = false;
+    [SerializeField] private int committedExtraActionNumber = 0;
+    [SerializeField] private string pendingShotGoalTimeLabel = string.Empty;
+    [SerializeField] private int pendingShotGoalExtraActionNumber = 0;
+    private TeamInAttack firstHalfKickoffTeam = TeamInAttack.Home;
+    private Action pendingHalfGateContinuation;
+    public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
 
     public void RecordSubstitutionEvent(string playerOffName, string playerOnName, int value = 1)
     {
@@ -1098,6 +1146,7 @@ public class MatchManager : MonoBehaviour
         yield return new WaitUntil(() => gameData != null && gameData.rosters != null && gameData.rosters.home.Count > 10 && gameData.rosters.away.Count > 10);
         if (gameData != null && gameData.gameSettings != null)
         {
+            ClampLoadedMatchSettings();
             difficulty_level = gameData.gameSettings.playerAssistance;
         }
         if (gameData != null && gameData.gameSettings != null)
@@ -1145,8 +1194,11 @@ public class MatchManager : MonoBehaviour
         Debug.Log("Game initialized in KickOffSetup state.");
         // Initialize the attacking team and direction
         teamInAttack = TeamInAttack.Home;  // Home team starts with the ball
+        firstHalfKickoffTeam = teamInAttack;
         homeTeamDirection = TeamAttackingDirection.LeftToRight;  // Set home team attacking direction to LeftToRight
         awayTeamDirection = TeamAttackingDirection.RightToLeft;  // Away team will attack in the opposite direction
+        ResetMatchClockForNewMatch();
+        ResolveClockDependencies();
     }
 
     private void Update()
@@ -1162,6 +1214,256 @@ public class MatchManager : MonoBehaviour
         //     // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
         //     // You can also trigger transitions between game states based on player actions
         // }
+        UpdateMatchClock();
+    }
+
+    private void ClampLoadedMatchSettings()
+    {
+        if (gameData?.gameSettings == null)
+        {
+            return;
+        }
+
+        gameData.gameSettings.halfDuration = Mathf.Clamp(gameData.gameSettings.halfDuration, 15, 60);
+        gameData.gameSettings.numberOfHalfs = Mathf.Clamp(gameData.gameSettings.numberOfHalfs, 1, 2);
+    }
+
+    private void ResetMatchClockForNewMatch()
+    {
+        currentHalf = 1;
+        currentHalfRegulationSeconds = 0f;
+        completedActionsThisHalf = 0;
+        totalCompletedActions = 0;
+        isClockRunning = false;
+        isHalfExpired = false;
+        extraActionsDetermined = false;
+        extraActionsTotal = 0;
+        extraActionsRemaining = 0;
+        isWaitingForExtraActionsRoll = false;
+        isMatchComplete = false;
+        isHalfTimeFlowRunning = false;
+        isPauseMenuOpen = false;
+        isHalfEndPendingAfterGoalFlow = false;
+        pendingHalfGateContinuation = null;
+        currentCommittedActionKind = MatchActionKind.None;
+        hasUnresolvedCommittedExtraAction = false;
+        committedExtraActionNumber = 0;
+        pendingShotGoalTimeLabel = string.Empty;
+        pendingShotGoalExtraActionNumber = 0;
+    }
+
+    private void ResolveClockDependencies()
+    {
+        if (finalThirdManager == null)
+        {
+            finalThirdManager = FindAnyObjectByType<FinalThirdManager>();
+        }
+
+        if (goalFlowManager == null)
+        {
+            goalFlowManager = FindAnyObjectByType<GoalFlowManager>();
+        }
+
+        if (kickoffManager == null)
+        {
+            kickoffManager = FindAnyObjectByType<KickoffManager>();
+        }
+
+        if (freeKickManager == null)
+        {
+            freeKickManager = FindAnyObjectByType<FreeKickManager>();
+        }
+
+        if (helperFunctions == null)
+        {
+            helperFunctions = FindAnyObjectByType<HelperFunctions>();
+        }
+    }
+
+    private void UpdateMatchClock()
+    {
+        if (!CanAdvanceMatchClock())
+        {
+            return;
+        }
+
+        float multiplier = useFastClock ? Mathf.Max(1f, fastClockMultiplier) : 1f;
+        currentHalfRegulationSeconds += Time.deltaTime * multiplier;
+        float halfLimitSeconds = GetHalfDurationSeconds();
+        if (currentHalfRegulationSeconds >= halfLimitSeconds)
+        {
+            currentHalfRegulationSeconds = halfLimitSeconds;
+            isHalfExpired = true;
+            isClockRunning = false;
+            Debug.Log($"Half {currentHalf} regulation time expired. Current action may finish before stoppage actions are determined.");
+        }
+    }
+
+    private bool CanAdvanceMatchClock()
+    {
+        return isClockRunning
+            && !isHalfExpired
+            && !isMatchComplete
+            && !isHalfTimeFlowRunning
+            && !isPauseMenuOpen
+            && !IsClockPausedForCurrentState();
+    }
+
+    private bool IsClockPausedForCurrentState()
+    {
+        if (goalFlowManager != null && goalFlowManager.isActivated)
+        {
+            return true;
+        }
+
+        return currentState == GameState.KickOffSetup
+            || currentState == GameState.PostGoalKickOffSetup
+            || currentState == GameState.KickOffTakerSelection
+            || currentState == GameState.WaitingForThrowInTaker
+            || currentState == GameState.GoalKick
+            || currentState == GameState.HalfTime
+            || currentState == GameState.MatchEnded
+            || IsFreeKickClockPaused(currentState)
+            || currentState.ToString().StartsWith("Penalty", StringComparison.Ordinal);
+    }
+
+    private bool IsFreeKickClockPaused(GameState state)
+    {
+        if (!IsFreeKickPreparationState(state))
+        {
+            return false;
+        }
+
+        if (freeKickManager == null)
+        {
+            freeKickManager = FindAnyObjectByType<FreeKickManager>();
+        }
+
+        return freeKickManager == null || freeKickManager.ShouldPauseMatchClockForState(state);
+    }
+
+    private static bool IsFreeKickPreparationState(GameState state)
+    {
+        return state == GameState.FreeKickKickerSelect
+            || state == GameState.FreeKickAttGK
+            || state == GameState.FreeKickDefGK1
+            || state == GameState.FreeKickAtt1
+            || state == GameState.FreeKickAtt2
+            || state == GameState.FreeKickAtt3
+            || state == GameState.FreeKickDef1
+            || state == GameState.FreeKickDef2
+            || state == GameState.FreeKickDef3
+            || state == GameState.FreeKickDefGK2
+            || state == GameState.FreeKickAttMovement3
+            || state == GameState.FreeKickDefMovement3;
+    }
+
+    public void PauseMatchClockForSetPiecePrep()
+    {
+        isClockRunning = false;
+    }
+
+    public void ResumeMatchClockForLivePlay()
+    {
+        if (!isHalfExpired && !isMatchComplete)
+        {
+            isClockRunning = true;
+        }
+    }
+
+    public void SetPauseMenuOpen(bool isOpen)
+    {
+        isPauseMenuOpen = isOpen;
+    }
+
+    private float GetHalfDurationSeconds()
+    {
+        int durationMinutes = gameData?.gameSettings != null
+            ? Mathf.Clamp(gameData.gameSettings.halfDuration, 15, 60)
+            : 45;
+        return durationMinutes * 60f;
+    }
+
+    private int GetConfiguredNumberOfHalfs()
+    {
+        return gameData?.gameSettings != null
+            ? Mathf.Clamp(gameData.gameSettings.numberOfHalfs, 1, 2)
+            : 2;
+    }
+
+    private int GetDisplayRegulationSeconds()
+    {
+        int halfDurationSeconds = Mathf.RoundToInt(GetHalfDurationSeconds());
+        int priorHalfSeconds = (currentHalf - 1) * halfDurationSeconds;
+        return priorHalfSeconds + Mathf.FloorToInt(currentHalfRegulationSeconds);
+    }
+
+    public string GetClockDisplayText()
+    {
+        string regulation = FormatClockSeconds(GetDisplayRegulationSeconds());
+        if (!isHalfExpired)
+        {
+            return regulation;
+        }
+
+        if (!extraActionsDetermined)
+        {
+            return $"{regulation}\n00:00 (+?)";
+        }
+
+        int playedExtraActions = Mathf.Clamp(extraActionsTotal - extraActionsRemaining, 0, extraActionsTotal);
+        return $"{regulation}\n0{playedExtraActions}:00 (+{extraActionsTotal})";
+    }
+
+    private static string FormatClockSeconds(int totalSeconds)
+    {
+        int minutes = Mathf.Max(0, totalSeconds) / 60;
+        int seconds = Mathf.Max(0, totalSeconds) % 60;
+        return $"{minutes:00}:{seconds:00}";
+    }
+
+    public int GetCurrentGoalMinute()
+    {
+        if (isHalfExpired && extraActionsDetermined)
+        {
+            int halfBaseMinute = Mathf.RoundToInt((currentHalf * GetHalfDurationSeconds()) / 60f);
+            if (pendingShotGoalExtraActionNumber > 0)
+            {
+                return halfBaseMinute + pendingShotGoalExtraActionNumber;
+            }
+
+            int extraActionNumber = ResolveCurrentGoalExtraActionNumber();
+            return halfBaseMinute + Mathf.Max(0, extraActionNumber);
+        }
+
+        return Mathf.Max(1, Mathf.CeilToInt(GetDisplayRegulationSeconds() / 60f));
+    }
+
+    public string GetCurrentGoalMinuteLabel()
+    {
+        if (!string.IsNullOrWhiteSpace(pendingShotGoalTimeLabel))
+        {
+            return pendingShotGoalTimeLabel;
+        }
+
+        if (isHalfExpired && extraActionsDetermined)
+        {
+            int halfBaseMinute = Mathf.RoundToInt((currentHalf * GetHalfDurationSeconds()) / 60f);
+            int extraActionNumber = ResolveCurrentGoalExtraActionNumber();
+            return $"{halfBaseMinute}'+{Mathf.Max(1, extraActionNumber)}'";
+        }
+
+        return $"{GetCurrentGoalMinute()}'";
+    }
+
+    private int ResolveCurrentGoalExtraActionNumber()
+    {
+        if (committedExtraActionNumber > 0)
+        {
+            return committedExtraActionNumber;
+        }
+
+        return Mathf.Clamp(extraActionsTotal - extraActionsRemaining + 1, 1, Mathf.Max(1, extraActionsTotal));
     }
 
     // public void PrintGameLog()
@@ -1201,6 +1503,14 @@ public class MatchManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
+        bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
+        if (isWaitingForExtraActionsRoll && (keyData.key == KeyCode.R || hasRollOverride))
+        {
+            DetermineExtraActions(hasRollOverride ? (RollInputOverride?)rollOverride : null);
+            keyData.isConsumed = true;
+            return;
+        }
+
         if (currentState == GameState.KickOffSetup && keyData.key == KeyCode.Space)
         {
             StartMatch();
@@ -1238,6 +1548,8 @@ public class MatchManager : MonoBehaviour
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = kickoffToken;
+        firstHalfKickoffTeam = teamInAttack;
+        isClockRunning = true;
         RefreshAerialTargetPrecomputations();
         // Start the timer or wait for the next Action to be called to start it.
         Debug.Log("Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.");
@@ -1421,6 +1733,292 @@ public class MatchManager : MonoBehaviour
         SetLastToken(inputToken);
     }
 
+    public void ResolveActionBeforeFinalThird(
+        MatchActionKind actionKind,
+        Action continuation,
+        bool consumesExtraAction = true,
+        bool allowContinuationAfterFinalExtraAction = false)
+    {
+        RecordResolvedAction(actionKind, consumesExtraAction);
+
+        if (isHalfExpired && !extraActionsDetermined)
+        {
+            pendingHalfGateContinuation = continuation;
+            EnterExtraActionsRollPrompt();
+            return;
+        }
+
+        if (ShouldWhistleForHalfEnd())
+        {
+            if (allowContinuationAfterFinalExtraAction && continuation != null)
+            {
+                continuation.Invoke();
+                return;
+            }
+
+            BeginHalfEndFlow();
+            return;
+        }
+
+        continuation?.Invoke();
+    }
+
+    public void RecordResolvedAction(MatchActionKind actionKind, bool consumesExtraAction = true)
+    {
+        if (actionKind == MatchActionKind.None || !consumesExtraAction)
+        {
+            return;
+        }
+
+        completedActionsThisHalf++;
+        totalCompletedActions++;
+
+        if (isHalfExpired && extraActionsDetermined && extraActionsRemaining > 0)
+        {
+            extraActionsRemaining = Mathf.Max(0, extraActionsRemaining - 1);
+        }
+
+        if (actionKind == currentCommittedActionKind)
+        {
+            hasUnresolvedCommittedExtraAction = false;
+            committedExtraActionNumber = 0;
+            currentCommittedActionKind = MatchActionKind.None;
+        }
+    }
+
+    public void RecordSnapshotBallStarted()
+    {
+        int snapshotExtraActionNumber = ResolveSnapshotExtraActionNumber();
+        RecordResolvedAction(MatchActionKind.Snapshot);
+        if (isHalfExpired && extraActionsDetermined)
+        {
+            int halfBaseMinute = Mathf.RoundToInt((currentHalf * GetHalfDurationSeconds()) / 60f);
+            pendingShotGoalTimeLabel = $"{halfBaseMinute}'+{snapshotExtraActionNumber}'";
+            pendingShotGoalExtraActionNumber = snapshotExtraActionNumber;
+        }
+    }
+
+    public void ClearPendingShotGoalTimeLabel()
+    {
+        pendingShotGoalTimeLabel = string.Empty;
+        pendingShotGoalExtraActionNumber = 0;
+    }
+
+    private int ResolveSnapshotExtraActionNumber()
+    {
+        if (!isHalfExpired || !extraActionsDetermined)
+        {
+            return 0;
+        }
+
+        if (hasUnresolvedCommittedExtraAction && currentCommittedActionKind == MatchActionKind.MovementPhase)
+        {
+            return Mathf.Clamp(committedExtraActionNumber + 1, 1, Mathf.Max(1, extraActionsTotal));
+        }
+
+        return ResolveCurrentGoalExtraActionNumber();
+    }
+
+    private bool ShouldWhistleForHalfEnd()
+    {
+        return isHalfExpired && extraActionsDetermined && extraActionsRemaining <= 0;
+    }
+
+    private void EnterExtraActionsRollPrompt()
+    {
+        isWaitingForExtraActionsRoll = true;
+        if (movementPhaseManager != null) movementPhaseManager.isAvailable = false;
+        if (groundBallManager != null) groundBallManager.isAvailable = false;
+        if (firstTimePassManager != null) firstTimePassManager.isAvailable = false;
+        if (highPassManager != null) highPassManager.isAvailable = false;
+        if (longBallManager != null) longBallManager.isAvailable = false;
+        if (shotManager != null) shotManager.isAvailable = false;
+        Debug.Log($"Half {currentHalf} regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].");
+    }
+
+    private void DetermineExtraActions(RollInputOverride? rollOverride = null)
+    {
+        int roll = rollOverride.HasValue && rollOverride.Value.hasOverride
+            ? Mathf.Clamp(rollOverride.Value.roll, 1, 6)
+            : UnityEngine.Random.Range(1, 7);
+        extraActionsTotal = Mathf.Min(refereeLeniency + roll, 7);
+        extraActionsRemaining = extraActionsTotal;
+        extraActionsDetermined = true;
+        isWaitingForExtraActionsRoll = false;
+        Debug.Log($"Stoppage actions determined: referee leniency {refereeLeniency} + roll {roll} = {refereeLeniency + roll}, capped to {extraActionsTotal}.");
+
+        Action continuation = pendingHalfGateContinuation;
+        pendingHalfGateContinuation = null;
+        if (extraActionsRemaining <= 0)
+        {
+            BeginHalfEndFlow();
+            return;
+        }
+
+        continuation?.Invoke();
+    }
+
+    public bool TryEnterExtraActionsRollBeforeRestart(Action restartContinuation)
+    {
+        if (!isHalfExpired || extraActionsDetermined || isMatchComplete)
+        {
+            return false;
+        }
+
+        pendingHalfGateContinuation = restartContinuation;
+        EnterExtraActionsRollPrompt();
+        Debug.Log("Post-regulation goal restart is waiting for stoppage actions roll before kick-off setup.");
+        return true;
+    }
+
+    private void BeginHalfEndFlow()
+    {
+        pendingHalfGateContinuation = null;
+        isWaitingForExtraActionsRoll = false;
+        isClockRunning = false;
+        hasUnresolvedCommittedExtraAction = false;
+        committedExtraActionNumber = 0;
+        currentCommittedActionKind = MatchActionKind.None;
+        ClearAvailableActionsForHalfBreak();
+
+        if (TryDeferHalfEndUntilGoalCelebration())
+        {
+            return;
+        }
+
+        CompleteHalfEndFlow();
+    }
+
+    private bool TryDeferHalfEndUntilGoalCelebration()
+    {
+        ResolveClockDependencies();
+        if (goalFlowManager == null || !goalFlowManager.isActivated)
+        {
+            return false;
+        }
+
+        if (isHalfEndPendingAfterGoalFlow)
+        {
+            return true;
+        }
+
+        isHalfEndPendingAfterGoalFlow = true;
+        bool matchWillEnd = currentHalf >= GetConfiguredNumberOfHalfs();
+        goalFlowManager.CompleteAfterCelebrationWithoutPostGoalReset(CompleteDeferredHalfEndAfterGoal);
+        Debug.Log(matchWillEnd
+            ? "Full-time is pending after the goal celebration. Suppressing post-goal reset."
+            : "Half-time is pending after the goal celebration. Suppressing post-goal reset and waiting for half-time reset.");
+        return true;
+    }
+
+    private void CompleteDeferredHalfEndAfterGoal()
+    {
+        isHalfEndPendingAfterGoalFlow = false;
+        CompleteHalfEndFlow();
+    }
+
+    private void CompleteHalfEndFlow()
+    {
+        if (currentHalf >= GetConfiguredNumberOfHalfs())
+        {
+            currentState = GameState.MatchEnded;
+            isMatchComplete = true;
+            isPauseMenuOpen = false;
+            Debug.Log("Full-time whistle. Match ended.");
+            EndGamePanelManager.ShowMatchEndedPanel();
+            return;
+        }
+
+        StartCoroutine(RunHalfTimeFlow());
+    }
+
+    private void ClearAvailableActionsForHalfBreak()
+    {
+        if (movementPhaseManager != null) movementPhaseManager.isAvailable = false;
+        if (groundBallManager != null) groundBallManager.isAvailable = false;
+        if (firstTimePassManager != null) firstTimePassManager.isAvailable = false;
+        if (highPassManager != null) highPassManager.isAvailable = false;
+        if (longBallManager != null) longBallManager.isAvailable = false;
+        if (shotManager != null) shotManager.isAvailable = false;
+        isFTPAvailable = false;
+    }
+
+    private IEnumerator RunHalfTimeFlow()
+    {
+        isHalfTimeFlowRunning = true;
+        currentState = GameState.HalfTime;
+        Debug.Log("Half-time whistle. Switching sides and resetting teams for the next kick-off.");
+        ResolveClockDependencies();
+        SwitchSides();
+        currentHalf++;
+        currentHalfRegulationSeconds = 0f;
+        completedActionsThisHalf = 0;
+        isHalfExpired = false;
+        extraActionsDetermined = false;
+        extraActionsTotal = 0;
+        extraActionsRemaining = 0;
+        pendingShotGoalTimeLabel = string.Empty;
+        pendingShotGoalExtraActionNumber = 0;
+
+        TeamInAttack secondHalfKickoffTeam = firstHalfKickoffTeam == TeamInAttack.Home
+            ? TeamInAttack.Away
+            : TeamInAttack.Home;
+        teamInAttack = secondHalfKickoffTeam;
+        attackHasPossession = true;
+        ClearLastTokenChain();
+
+        if (goalFlowManager != null)
+        {
+            yield return StartCoroutine(goalFlowManager.MoveTeamsToHalfTimeResetFormation(teamInAttack == TeamInAttack.Home));
+        }
+        else
+        {
+            Debug.LogWarning("Half-time reset could not move teams because GoalFlowManager is missing.");
+        }
+
+        PlaceBallOnKickoffHex();
+        currentState = GameState.PostGoalKickOffSetup;
+        isClockRunning = true;
+        kickoffManager?.StartPostGoalKickoffSetupPhase();
+        isHalfTimeFlowRunning = false;
+    }
+
+    private void PlaceBallOnKickoffHex()
+    {
+        if (hexGrid == null || ball == null)
+        {
+            Debug.LogError("Cannot place ball for kick-off because MatchManager is missing HexGrid or Ball.");
+            return;
+        }
+
+        HexCell kickoffHex = hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0));
+        if (kickoffHex == null)
+        {
+            Debug.LogError("Cannot place ball for kick-off because hex (0,0) was not found.");
+            return;
+        }
+
+        ball.PlaceAtCell(kickoffHex);
+        ClearGoalKickRestartTaker();
+    }
+
+    public void ClearGoalKickRestartTaker()
+    {
+        pendingGoalKickRestartTaker = null;
+    }
+
+    public bool IsFinalExtraMovementPhaseSnapshotSuppressed()
+    {
+        return isHalfExpired
+            && extraActionsDetermined
+            && extraActionsRemaining <= 1
+            && currentCommittedActionKind == MatchActionKind.MovementPhase
+            && hasUnresolvedCommittedExtraAction
+            && movementPhaseManager != null
+            && movementPhaseManager.isActivated
+            && movementPhaseManager.isCommitted;
+    }
+
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass(PlayerToken pendingSetPieceTaker = null)
     {
@@ -1548,7 +2146,7 @@ public class MatchManager : MonoBehaviour
         RefreshAvailableActions();
     }
 
-    public void CommitToAction()
+    public void CommitToAction(MatchActionKind actionKind = MatchActionKind.None)
     {
         movementPhaseManager.isAvailable = false;
         groundBallManager.isAvailable = false;
@@ -1564,20 +2162,66 @@ public class MatchManager : MonoBehaviour
         ResetPendingGroundBallOffer();
         ApplyPendingGroundBallDistance();
         RefreshAerialTargetPrecomputations();
+        RegisterCommittedAction(actionKind);
+        if (!isHalfExpired && !isMatchComplete)
+        {
+            isClockRunning = true;
+        }
     }
 
-    public void BroadcastSafeEndofMovementPhase()
+    private void RegisterCommittedAction(MatchActionKind actionKind)
     {
-        currentState = GameState.EndOfMovementPhase;
-        UpdatePossessionAfterPass(ball.GetCurrentHex());
-        OfferStandardGroundBallPass();
-        RefreshAvailableActions();
+        if (actionKind == MatchActionKind.None)
+        {
+            return;
+        }
+
+        currentCommittedActionKind = actionKind;
+        hasUnresolvedCommittedExtraAction = false;
+        committedExtraActionNumber = 0;
+        pendingShotGoalTimeLabel = string.Empty;
+
+        if (isHalfExpired && extraActionsDetermined && extraActionsRemaining > 0)
+        {
+            hasUnresolvedCommittedExtraAction = true;
+            committedExtraActionNumber = Mathf.Clamp(extraActionsTotal - extraActionsRemaining + 1, 1, Mathf.Max(1, extraActionsTotal));
+        }
+    }
+
+    public void BroadcastSafeEndofMovementPhase(bool countMovementAction = true, bool triggerFinalThird = true)
+    {
+        ResolveActionBeforeFinalThird(
+            MatchActionKind.MovementPhase,
+            () =>
+            {
+                if (triggerFinalThird && finalThirdManager != null)
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                }
+
+                currentState = GameState.EndOfMovementPhase;
+                UpdatePossessionAfterPass(ball.GetCurrentHex());
+                OfferStandardGroundBallPass();
+                RefreshAvailableActions();
+            },
+            countMovementAction);
     }
     public void BroadcastSuccessfulTackle()
     {
-        currentState = GameState.SuccessfulTackle;
-        OfferStandardGroundBallPass();
-        RefreshAvailableActions();
+        ResolveActionBeforeFinalThird(
+            MatchActionKind.MovementPhase,
+            () =>
+            {
+                if (finalThirdManager != null)
+                {
+                    finalThirdManager.TriggerFinalThirdPhase();
+                }
+
+                currentState = GameState.SuccessfulTackle;
+                OfferStandardGroundBallPass();
+                RefreshAvailableActions();
+            },
+            movementPhaseManager == null || movementPhaseManager.committedMovementConsumesExtraAction);
     }
     
     public void BroadcastEndofGroundBallPass()
@@ -1855,6 +2499,11 @@ public class MatchManager : MonoBehaviour
         RefreshAerialTargetPrecomputations();
     }
 
+    public void RefreshAvailableActionsForCurrentState()
+    {
+        RefreshAvailableActions();
+    }
+
     private void RefreshAerialTargetPrecomputations()
     {
         RefreshHighPassTargetPrecomputation();
@@ -1897,6 +2546,11 @@ public class MatchManager : MonoBehaviour
 
     private bool ShouldShotBeAvailable()
     {
+        if (IsFinalExtraMovementPhaseSnapshotSuppressed())
+        {
+            return false;
+        }
+
         bool shouldShotBeAvailable = false;
         HexCell ballHex = ball.GetCurrentHex();
         PlayerToken tokenOnBallHex = ballHex != null ? ballHex.GetOccupyingToken() : null;
@@ -2294,9 +2948,9 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    public void AddGoal(string scorer, bool isHomeTeam, int minute, bool isPenalty, string assist = null)
+    public void AddGoal(string scorer, bool isHomeTeam, int minute, bool isPenalty, string assist = null, string minuteLabel = null)
     {
-        GoalEvent goal = new GoalEvent { scorer = scorer, minute = minute, isPenalty = isPenalty, assist = assist };
+        GoalEvent goal = new GoalEvent { scorer = scorer, minute = minute, minuteLabel = minuteLabel, isPenalty = isPenalty, assist = assist };
         
         if (isHomeTeam)
             homeScorers.Add(goal);
@@ -2359,12 +3013,47 @@ public class MatchManager : MonoBehaviour
 
         sb.Append($"currentState: {currentState}, ");
         sb.Append($"teamInAttack: {teamInAttack}, ");
+        sb.Append($"clock: H{currentHalf} {GetClockDisplayText().Replace("\n", " ")}, ");
+        sb.Append($"actionsHalf/total: {completedActionsThisHalf}/{totalCompletedActions}, ");
+        if (isClockRunning) sb.Append("clockRunning, ");
+        if (isPauseMenuOpen) sb.Append("pauseMenuOpen, ");
+        if (isHalfExpired) sb.Append("halfExpired, ");
+        if (isWaitingForExtraActionsRoll) sb.Append("waitingExtraActionsRoll, ");
+        if (extraActionsDetermined) sb.Append($"extras: {extraActionsRemaining}/{extraActionsTotal}, ");
         if (attackHasPossession) sb.Append($"attackHasPossession, ");
         if (LastTokenToTouchTheBallOnPurpose != null) sb.Append($"LastTokenToTouchTheBallOnPurpose: {LastTokenToTouchTheBallOnPurpose.name}, ");
         if (PreviousTokenToTouchTheBallOnPurpose != null) sb.Append($"PreviousTokenToTouchTheBallOnPurpose: {PreviousTokenToTouchTheBallOnPurpose.name}, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    public string GetInstructions()
+    {
+        if (!isWaitingForExtraActionsRoll)
+        {
+            return string.Empty;
+        }
+
+        string attackingTeamName = teamInAttack == TeamInAttack.Home
+            ? gameData?.gameSettings?.homeTeamName
+            : gameData?.gameSettings?.awayTeamName;
+        if (string.IsNullOrWhiteSpace(attackingTeamName))
+        {
+            attackingTeamName = "Attacking team";
+        }
+
+        return $"Half {currentHalf} regulation time is up. {attackingTeamName}: press [R] to roll a normal D6 for stoppage actions. Referee leniency: {refereeLeniency}.";
+    }
+
+    public bool? IsInstructionExpectingHomeTeam()
+    {
+        if (!isWaitingForExtraActionsRoll)
+        {
+            return null;
+        }
+
+        return teamInAttack == TeamInAttack.Home;
     }
 
   

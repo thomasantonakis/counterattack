@@ -57,7 +57,7 @@ public class CreateNewGameManager : MonoBehaviour
     {
         createGameButton.onClick.AddListener(SaveGameSettingsToJson);
         // Half Duration Set minimum and maximum values of the slider
-        halfDurationSlider.minValue = 30;  // Minimum half duration
+        halfDurationSlider.minValue = 15;  // Minimum half duration
         halfDurationSlider.maxValue = 60;  // Maximum half duration
         halfDurationSlider.wholeNumbers = true;  // Restrict the slider to integer values
         halfDurationSlider.value = 45;  // Default to 45 minutes
