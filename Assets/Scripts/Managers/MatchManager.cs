@@ -9,6 +9,7 @@ using System.Text;
 
 public class MatchManager : MonoBehaviour
 {
+    public const int MaxSubstitutionsPerTeam = 3;
     private const string EditorRoomDirectPlayTestSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
     private const string EditorRoomDirectPlayWorkingCopyFolderName = "__RoomPlaytests";
     private const string EditorRoomDirectPlayWorkingCopyFileName = "__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
@@ -1018,6 +1019,10 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private bool isMatchComplete = false;
     [SerializeField] private bool isHalfTimeFlowRunning = false;
     [SerializeField] private bool isPauseMenuOpen = false;
+    [SerializeField] private bool areSubstitutionsAvailable = false;
+    [SerializeField] private string substitutionsAvailabilityReason = string.Empty;
+    [SerializeField] private int homeSubstitutionsUsed = 0;
+    [SerializeField] private int awaySubstitutionsUsed = 0;
     [SerializeField] private bool isHalfEndPendingAfterGoalFlow = false;
     [SerializeField] private MatchActionKind currentCommittedActionKind = MatchActionKind.None;
     [SerializeField] private bool hasUnresolvedCommittedExtraAction = false;
@@ -1027,6 +1032,51 @@ public class MatchManager : MonoBehaviour
     private TeamInAttack firstHalfKickoffTeam = TeamInAttack.Home;
     private Action pendingHalfGateContinuation;
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
+    public bool IsPauseMenuOpen => isPauseMenuOpen;
+    public bool IsGameplayInputBlocked => isPauseMenuOpen;
+    public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
+    public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
+    public event Action OnSubstitutionStateChanged;
+
+    public bool HasPlayingTokensRequiringSubstitution()
+    {
+        if (playerTokenManager == null)
+        {
+            return FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+                .Any(token => token != null && token.isPlaying && token.requiresSubstitution);
+        }
+
+        return playerTokenManager.GetPlayingTokens(true).Any(token => token.requiresSubstitution)
+            || playerTokenManager.GetPlayingTokens(false).Any(token => token.requiresSubstitution);
+    }
+
+    public void HandleDoubleInjuredToken(PlayerToken token)
+    {
+        if (token == null || !token.isPlaying)
+        {
+            return;
+        }
+
+        if (GetSubstitutionsRemaining(token.isHomeTeam) <= 0)
+        {
+            Debug.LogWarning($"{token.name} cannot continue and no substitutions remain. Removing token from play.");
+            playerTokenManager?.RemoveActiveToken(token);
+            OnSubstitutionStateChanged?.Invoke();
+            return;
+        }
+
+        SetSubstitutionsAvailable(true, "Double injury requires substitution");
+        PauseMenuManager pauseMenuManager = FindAnyObjectByType<PauseMenuManager>();
+        if (pauseMenuManager != null)
+        {
+            pauseMenuManager.OpenSubstitutionsForForcedSubstitution();
+        }
+        else
+        {
+            SetPauseMenuOpen(true);
+            Debug.LogWarning("PauseMenuManager not found. Double-injured token requires substitution before play can continue.");
+        }
+    }
 
     public void RecordSubstitutionEvent(string playerOffName, string playerOnName, int value = 1)
     {
@@ -1054,6 +1104,123 @@ public class MatchManager : MonoBehaviour
     public int GetPlayerSubOffCount(string playerName)
     {
         return GetPlayerEventCount(playerSubOffCounts, playerName);
+    }
+
+    public void SetSubstitutionsAvailable(bool available, string reason = "")
+    {
+        string normalizedReason = reason ?? string.Empty;
+        if (areSubstitutionsAvailable == available && substitutionsAvailabilityReason == normalizedReason)
+        {
+            return;
+        }
+
+        areSubstitutionsAvailable = available;
+        substitutionsAvailabilityReason = normalizedReason;
+        OnSubstitutionStateChanged?.Invoke();
+        Debug.Log(available
+            ? $"Substitutions are now available: {substitutionsAvailabilityReason}"
+            : $"Substitutions are no longer available: {substitutionsAvailabilityReason}");
+    }
+
+    public int GetSubstitutionsUsed(bool isHomeTeam)
+    {
+        return isHomeTeam ? homeSubstitutionsUsed : awaySubstitutionsUsed;
+    }
+
+    public int GetSubstitutionsRemaining(bool isHomeTeam)
+    {
+        return Mathf.Max(0, MaxSubstitutionsPerTeam - GetSubstitutionsUsed(isHomeTeam));
+    }
+
+    public bool CanRegisterSubstitution(PlayerToken playerOff, PlayerToken playerOn, out string error)
+    {
+        error = string.Empty;
+        if (playerOff == null || playerOn == null)
+        {
+            error = "Both outgoing and incoming players are required.";
+            return false;
+        }
+
+        if (!areSubstitutionsAvailable)
+        {
+            error = "Substitutions are not available right now.";
+            return false;
+        }
+
+        if (playerOff.isHomeTeam != playerOn.isHomeTeam)
+        {
+            error = "Both players must belong to the same team.";
+            return false;
+        }
+
+        if (!playerOff.isPlaying || playerOff.GetCurrentHex() == null)
+        {
+            error = $"{playerOff.name} is not currently playing.";
+            return false;
+        }
+
+        if (playerOff.isSentOff)
+        {
+            error = $"{playerOff.name} has been sent off and cannot be substituted.";
+            return false;
+        }
+
+        if (playerOn.isPlaying)
+        {
+            error = $"{playerOn.name} is already playing.";
+            return false;
+        }
+
+        if (playerOn.wasSubbedOff)
+        {
+            error = $"{playerOn.name} has already been subbed off and cannot return.";
+            return false;
+        }
+
+        if (playerOff.IsGoalKeeper)
+        {
+            if (!playerOn.IsGoalKeeper || playerOn.jerseyNumber != 12)
+            {
+                error = "The goalkeeper can only be replaced by the bench goalkeeper.";
+                return false;
+            }
+        }
+        else if (playerOn.IsGoalKeeper)
+        {
+            error = "An outfield player cannot be replaced by a goalkeeper.";
+            return false;
+        }
+
+        if (GetSubstitutionsRemaining(playerOff.isHomeTeam) <= 0)
+        {
+            error = $"{(playerOff.isHomeTeam ? "Home" : "Away")} has no substitutions remaining.";
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool RegisterSubstitution(PlayerToken playerOff, PlayerToken playerOn, out string error)
+    {
+        if (!CanRegisterSubstitution(playerOff, playerOn, out error))
+        {
+            return false;
+        }
+
+        if (playerOff.isHomeTeam)
+        {
+            homeSubstitutionsUsed++;
+            gameData.stats.homeTeamStats.totalSubstiutions++;
+        }
+        else
+        {
+            awaySubstitutionsUsed++;
+            gameData.stats.awayTeamStats.totalSubstiutions++;
+        }
+
+        RecordSubstitutionEvent(playerOff.playerName, playerOn.playerName);
+        OnSubstitutionStateChanged?.Invoke();
+        return true;
     }
 
     private static void IncrementPlayerEventCount(Dictionary<string, int> counts, string playerName, int value)
@@ -1179,6 +1346,7 @@ public class MatchManager : MonoBehaviour
             Debug.LogWarning("⚠️ gameData.stats was NULL in Start! Reinitializing...");
             gameData.stats = new Stats();
         }
+        InitializeSubstitutionCountsFromStats();
 
         if (gameData.gameLog == null)
         {
@@ -1199,6 +1367,14 @@ public class MatchManager : MonoBehaviour
         awayTeamDirection = TeamAttackingDirection.RightToLeft;  // Away team will attack in the opposite direction
         ResetMatchClockForNewMatch();
         ResolveClockDependencies();
+    }
+
+    private void InitializeSubstitutionCountsFromStats()
+    {
+        gameData.stats.homeTeamStats ??= new TeamStats();
+        gameData.stats.awayTeamStats ??= new TeamStats();
+        homeSubstitutionsUsed = Mathf.Clamp(gameData.stats.homeTeamStats.totalSubstiutions, 0, MaxSubstitutionsPerTeam);
+        awaySubstitutionsUsed = Mathf.Clamp(gameData.stats.awayTeamStats.totalSubstiutions, 0, MaxSubstitutionsPerTeam);
     }
 
     private void Update()
@@ -2148,6 +2324,11 @@ public class MatchManager : MonoBehaviour
 
     public void CommitToAction(MatchActionKind actionKind = MatchActionKind.None)
     {
+        if (actionKind != MatchActionKind.None)
+        {
+            SetSubstitutionsAvailable(false, $"Committed to {actionKind}");
+        }
+
         movementPhaseManager.isAvailable = false;
         groundBallManager.isAvailable = false;
         firstTimePassManager.isAvailable = false;

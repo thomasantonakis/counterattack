@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d60e3676e02c49cbbb48a5d2c5fbbf4, type: 3}
+  m_Name: MatchStatsTemplate
+  m_EditorClassIdentifier:
+  statsRows:
+  - kind: 1
+    centerLabel: ATTACKING
+  - kind: 2
+    centerLabel: Total Shots / xG
+  - kind: 2
+    centerLabel: On Target / Corners
+  - kind: 2
+    centerLabel: Blocked / Off Target
+  - kind: 1
+    centerLabel: PASSING
+  - kind: 2
+    centerLabel: Assists
+  - kind: 2
+    centerLabel: Ground (Att./Made)
+  - kind: 2
+    centerLabel: Aerial(Att./Trg./Made)
+  - kind: 1
+    centerLabel: Game Play
+  - kind: 2
+    centerLabel: Distance Covered
+  - kind: 2
+    centerLabel: Possession
+  - kind: 1
+    centerLabel: DUELS
+  - kind: 2
+    centerLabel: Ground Att. / Won
+  - kind: 2
+    centerLabel: Air Att. / Won
+  - kind: 1
+    centerLabel: DISCIPLINE
+  - kind: 2
+    centerLabel: Yellow / Red Cards
+  - kind: 2
+    centerLabel: Injuries / Subs Used
+  - kind: 1
+    centerLabel: OPTA STATS
+  - kind: 2
+    centerLabel: xRecoveries / Made
+  - kind: 2
+    centerLabel: xDribbles / Made
+  - kind: 2
+    centerLabel: xTackles / Made
+  showLineups: 1
+  lineupHeaderLabel: XI
+  scoreboardLeftColumnAlignment: 2
+  scoreboardCenterColumnAlignment: 1
+  scoreboardRightColumnAlignment: 0
+  lineupLeftColumnAlignment: 2
+  lineupCenterColumnAlignment: 1
+  lineupRightColumnAlignment: 0

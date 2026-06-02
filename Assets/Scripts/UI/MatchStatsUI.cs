@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using System.Text;
-using System.IO;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -15,13 +14,6 @@ using UnityEditor;
 
 public class MatchStatsUI : MonoBehaviour
 {
-    private enum TemplateTableKind
-    {
-        Scoreboard,
-        Stats,
-        Lineups,
-    }
-
     private enum TemplateRowKind
     {
         Header,
@@ -40,6 +32,32 @@ public class MatchStatsUI : MonoBehaviour
     {
         public TemplateRowKind kind;
         public string centerLabel;
+    }
+
+    [Serializable]
+    private sealed class StatsTemplateRowDefinition
+    {
+        public TemplateRowKind kind;
+        public string centerLabel;
+
+        public StatsTemplateRowDefinition()
+        {
+        }
+
+        public StatsTemplateRowDefinition(TemplateRowKind kind, string centerLabel)
+        {
+            this.kind = kind;
+            this.centerLabel = centerLabel;
+        }
+
+        public TemplateRow ToRuntimeRow()
+        {
+            return new TemplateRow
+            {
+                kind = kind,
+                centerLabel = centerLabel,
+            };
+        }
     }
 
     private sealed class ScoreboardScorerSummary
@@ -112,6 +130,19 @@ public class MatchStatsUI : MonoBehaviour
     private float statsLineSpacing = 10f;
     private float statsParagraphSpacing = 0f;
     [SerializeField] private GameObject externalScoreboardRoot;
+    [Header("Stats Template")]
+    [Tooltip("Designer-owned stats layout asset. If empty, UI/MatchStatsTemplate is loaded from Resources.")]
+    [SerializeField] private MatchStatsTemplateAsset statsTemplateAsset;
+    [Tooltip("Fallback rows used only when no stats template asset is assigned or found in Resources.")]
+    [SerializeField] private List<StatsTemplateRowDefinition> statsTemplateRows = BuildDefaultStatsTemplateRows();
+    [SerializeField] private bool showLineups = true;
+    [SerializeField] private string lineupHeaderLabel = "XI";
+    [SerializeField] private ColumnTextAlignment scoreboardLeftColumnAlignment = ColumnTextAlignment.Right;
+    [SerializeField] private ColumnTextAlignment scoreboardCenterColumnAlignment = ColumnTextAlignment.Center;
+    [SerializeField] private ColumnTextAlignment scoreboardRightColumnAlignment = ColumnTextAlignment.Left;
+    [SerializeField] private ColumnTextAlignment lineupLeftColumnAlignment = ColumnTextAlignment.Right;
+    [SerializeField] private ColumnTextAlignment lineupCenterColumnAlignment = ColumnTextAlignment.Center;
+    [SerializeField] private ColumnTextAlignment lineupRightColumnAlignment = ColumnTextAlignment.Left;
 
     private bool isExpanded = true;
     private Vector2 onScreenPos;
@@ -149,18 +180,8 @@ public class MatchStatsUI : MonoBehaviour
     private const string LineupColumnGap = "   ";
     private static readonly Regex RichTagRegex = new("<.*?>", RegexOptions.Compiled);
     private readonly List<TemplateRow> templateRows = new();
-    private string lineupHeaderLabel = "Lineups";
-    private bool showLineups;
-    private string statsTemplatePath;
-    private DateTime statsTemplateWriteUtc;
     private string currentHomeColor = HomeColor;
     private string currentAwayColor = AwayColor;
-    private ColumnTextAlignment scoreboardLeftColumnAlignment = ColumnTextAlignment.Right;
-    private ColumnTextAlignment scoreboardCenterColumnAlignment = ColumnTextAlignment.Center;
-    private ColumnTextAlignment scoreboardRightColumnAlignment = ColumnTextAlignment.Left;
-    private ColumnTextAlignment lineupLeftColumnAlignment = ColumnTextAlignment.Right;
-    private ColumnTextAlignment lineupCenterColumnAlignment = ColumnTextAlignment.Center;
-    private ColumnTextAlignment lineupRightColumnAlignment = ColumnTextAlignment.Left;
     private RectTransform hoverCardsRoot;
     private RectTransform homeHoverCardAnchor;
     private RectTransform awayHoverCardAnchor;
@@ -210,10 +231,38 @@ public class MatchStatsUI : MonoBehaviour
     private const float PreviewValueBadgeSize = 56f;
     private const int BaselineLineupRowCount = 16;
     private const float LineSpacingAdjustmentPerLineupRow = 0.75f;
+    private const string StatsTemplateResourcePath = "UI/MatchStatsTemplate";
+
+    private static List<StatsTemplateRowDefinition> BuildDefaultStatsTemplateRows()
+    {
+        return new List<StatsTemplateRowDefinition>
+        {
+            new(TemplateRowKind.Section, "ATTACKING"),
+            new(TemplateRowKind.Metric, "Total Shots / xG"),
+            new(TemplateRowKind.Metric, "On Target / Corners"),
+            new(TemplateRowKind.Metric, "Blocked / Off Target"),
+            new(TemplateRowKind.Section, "PASSING"),
+            new(TemplateRowKind.Metric, "Assists"),
+            new(TemplateRowKind.Metric, "Ground (Att./Made)"),
+            new(TemplateRowKind.Metric, "Aerial(Att./Trg./Made)"),
+            new(TemplateRowKind.Section, "Game Play"),
+            new(TemplateRowKind.Metric, "Distance Covered"),
+            new(TemplateRowKind.Metric, "Possession"),
+            new(TemplateRowKind.Section, "DUELS"),
+            new(TemplateRowKind.Metric, "Ground Att. / Won"),
+            new(TemplateRowKind.Metric, "Air Att. / Won"),
+            new(TemplateRowKind.Section, "DISCIPLINE"),
+            new(TemplateRowKind.Metric, "Yellow / Red Cards"),
+            new(TemplateRowKind.Metric, "Injuries / Subs Used"),
+            new(TemplateRowKind.Section, "OPTA STATS"),
+            new(TemplateRowKind.Metric, "xRecoveries / Made"),
+            new(TemplateRowKind.Metric, "xDribbles / Made"),
+            new(TemplateRowKind.Metric, "xTackles / Made"),
+        };
+    }
 
     private void Awake()
     {
-        statsTemplatePath = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Docs", "Wiki", "stats.md"));
         LoadStatsTemplate();
         ApplyRuntimeVisualStyle();
         ConfigurePanelLayout();
@@ -260,6 +309,12 @@ public class MatchStatsUI : MonoBehaviour
 
     private void Update()
     {
+        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        {
+            UpdateLineupHoverFromStatsText();
+            return;
+        }
+
         if (Input.GetKeyUp(KeyCode.E))
         {
             TogglePanel();
@@ -298,7 +353,6 @@ public class MatchStatsUI : MonoBehaviour
         MatchManager.TeamStats homeTeam = MatchManager.Instance.gameData.stats.homeTeamStats;
         MatchManager.TeamStats awayTeam = MatchManager.Instance.gameData.stats.awayTeamStats;
 
-        RefreshTemplateIfNeeded();
         RefreshTeamColors();
 
         string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
@@ -336,7 +390,6 @@ public class MatchStatsUI : MonoBehaviour
         MatchManager.TeamStats homeTeam = MatchManager.Instance.gameData.stats.homeTeamStats;
         MatchManager.TeamStats awayTeam = MatchManager.Instance.gameData.stats.awayTeamStats;
 
-        RefreshTemplateIfNeeded();
         RefreshTeamColors();
 
         string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
@@ -1103,114 +1156,94 @@ public class MatchStatsUI : MonoBehaviour
     private void LoadStatsTemplate()
     {
         templateRows.Clear();
-        lineupHeaderLabel = "Lineups";
-        showLineups = false;
-        scoreboardLeftColumnAlignment = ColumnTextAlignment.Right;
-        scoreboardCenterColumnAlignment = ColumnTextAlignment.Center;
-        scoreboardRightColumnAlignment = ColumnTextAlignment.Left;
-        lineupLeftColumnAlignment = ColumnTextAlignment.Right;
-        lineupCenterColumnAlignment = ColumnTextAlignment.Center;
-        lineupRightColumnAlignment = ColumnTextAlignment.Left;
 
-        string templatePath = string.IsNullOrWhiteSpace(statsTemplatePath)
-            ? Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Docs", "Wiki", "stats.md"))
-            : statsTemplatePath;
-        if (File.Exists(templatePath))
+        MatchStatsTemplateAsset templateAsset = statsTemplateAsset != null
+            ? statsTemplateAsset
+            : Resources.Load<MatchStatsTemplateAsset>(StatsTemplateResourcePath);
+        if (templateAsset != null)
         {
-            statsTemplateWriteUtc = File.GetLastWriteTimeUtc(templatePath);
-            int tableIndex = 0;
-            bool insideTable = false;
-            foreach (string rawLine in File.ReadAllLines(templatePath))
+            LoadStatsTemplateAsset(templateAsset);
+            if (templateRows.Count > 0)
             {
-                string line = rawLine.Trim();
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    if (insideTable)
-                    {
-                        tableIndex++;
-                        insideTable = false;
-                    }
-                    continue;
-                }
-
-                if (!line.StartsWith("|"))
-                {
-                    continue;
-                }
-
-                insideTable = true;
-
-                string[] segments = line.Split('|');
-                if (segments.Length < 5)
-                {
-                    continue;
-                }
-
-                string left = segments[1].Trim();
-                string center = segments[2].Trim();
-                string right = segments[3].Trim();
-                TemplateTableKind tableKind = tableIndex switch
-                {
-                    0 => TemplateTableKind.Scoreboard,
-                    1 => TemplateTableKind.Stats,
-                    _ => TemplateTableKind.Lineups,
-                };
-
-                if (IsAlignmentRow(left, center, right))
-                {
-                    if (tableKind == TemplateTableKind.Scoreboard)
-                    {
-                        scoreboardLeftColumnAlignment = ParseAlignment(left, ColumnTextAlignment.Right);
-                        scoreboardCenterColumnAlignment = ParseAlignment(center, ColumnTextAlignment.Center);
-                        scoreboardRightColumnAlignment = ParseAlignment(right, ColumnTextAlignment.Left);
-                    }
-                    else if (tableKind == TemplateTableKind.Lineups)
-                    {
-                        lineupLeftColumnAlignment = ParseAlignment(left, ColumnTextAlignment.Right);
-                        lineupCenterColumnAlignment = ParseAlignment(center, ColumnTextAlignment.Center);
-                        lineupRightColumnAlignment = ParseAlignment(right, ColumnTextAlignment.Left);
-                    }
-                    continue;
-                }
-
-                if (string.IsNullOrWhiteSpace(center))
-                {
-                    continue;
-                }
-
-                if (tableKind == TemplateTableKind.Stats)
-                {
-                    if (center.StartsWith("score", System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        templateRows.Add(new TemplateRow { kind = TemplateRowKind.Header, centerLabel = center });
-                    }
-                    else if (string.IsNullOrWhiteSpace(left) && string.IsNullOrWhiteSpace(right))
-                    {
-                        templateRows.Add(new TemplateRow { kind = TemplateRowKind.Section, centerLabel = center });
-                    }
-                    else
-                    {
-                        templateRows.Add(new TemplateRow { kind = TemplateRowKind.Metric, centerLabel = center });
-                    }
-                }
-                else
-                {
-                    if (!showLineups)
-                    {
-                        lineupHeaderLabel = center;
-                        showLineups = true;
-                    }
-                }
+                return;
             }
+        }
+
+        if (statsTemplateRows == null || statsTemplateRows.Count == 0)
+        {
+            statsTemplateRows = BuildDefaultStatsTemplateRows();
+        }
+
+        foreach (StatsTemplateRowDefinition row in statsTemplateRows)
+        {
+            if (row == null || string.IsNullOrWhiteSpace(row.centerLabel))
+            {
+                continue;
+            }
+
+            templateRows.Add(row.ToRuntimeRow());
         }
 
         if (templateRows.Count == 0)
         {
-            templateRows.Add(new TemplateRow { kind = TemplateRowKind.Section, centerLabel = "ATT" });
-            templateRows.Add(new TemplateRow { kind = TemplateRowKind.Metric, centerLabel = "Sh / On" });
-            templateRows.Add(new TemplateRow { kind = TemplateRowKind.Metric, centerLabel = "Blk / Off" });
-            templateRows.Add(new TemplateRow { kind = TemplateRowKind.Metric, centerLabel = "Ast / Cor" });
+            foreach (StatsTemplateRowDefinition row in BuildDefaultStatsTemplateRows())
+            {
+                templateRows.Add(row.ToRuntimeRow());
+            }
         }
+    }
+
+    private void LoadStatsTemplateAsset(MatchStatsTemplateAsset templateAsset)
+    {
+        showLineups = templateAsset.showLineups;
+        lineupHeaderLabel = string.IsNullOrWhiteSpace(templateAsset.lineupHeaderLabel)
+            ? "XI"
+            : templateAsset.lineupHeaderLabel;
+        scoreboardLeftColumnAlignment = ConvertAlignment(templateAsset.scoreboardLeftColumnAlignment);
+        scoreboardCenterColumnAlignment = ConvertAlignment(templateAsset.scoreboardCenterColumnAlignment);
+        scoreboardRightColumnAlignment = ConvertAlignment(templateAsset.scoreboardRightColumnAlignment);
+        lineupLeftColumnAlignment = ConvertAlignment(templateAsset.lineupLeftColumnAlignment);
+        lineupCenterColumnAlignment = ConvertAlignment(templateAsset.lineupCenterColumnAlignment);
+        lineupRightColumnAlignment = ConvertAlignment(templateAsset.lineupRightColumnAlignment);
+
+        if (templateAsset.statsRows == null)
+        {
+            return;
+        }
+
+        foreach (MatchStatsTemplateAsset.RowDefinition row in templateAsset.statsRows)
+        {
+            if (row == null || string.IsNullOrWhiteSpace(row.centerLabel))
+            {
+                continue;
+            }
+
+            templateRows.Add(new TemplateRow
+            {
+                kind = ConvertRowKind(row.kind),
+                centerLabel = row.centerLabel,
+            });
+        }
+    }
+
+    private static TemplateRowKind ConvertRowKind(MatchStatsTemplateAsset.RowKind rowKind)
+    {
+        return rowKind switch
+        {
+            MatchStatsTemplateAsset.RowKind.Header => TemplateRowKind.Header,
+            MatchStatsTemplateAsset.RowKind.Section => TemplateRowKind.Section,
+            _ => TemplateRowKind.Metric,
+        };
+    }
+
+    private static ColumnTextAlignment ConvertAlignment(MatchStatsTemplateAsset.TextAlignment alignment)
+    {
+        return alignment switch
+        {
+            MatchStatsTemplateAsset.TextAlignment.Left => ColumnTextAlignment.Left,
+            MatchStatsTemplateAsset.TextAlignment.Right => ColumnTextAlignment.Right,
+            _ => ColumnTextAlignment.Center,
+        };
     }
 
     private void AppendScoreboard(
@@ -2098,20 +2131,6 @@ public class MatchStatsUI : MonoBehaviour
         return new ColumnLayout(sidePaddingPx, monospaceStep, leftChars, centerChars, rightChars, dividerChars);
     }
 
-    private void RefreshTemplateIfNeeded()
-    {
-        if (string.IsNullOrWhiteSpace(statsTemplatePath) || !File.Exists(statsTemplatePath))
-        {
-            return;
-        }
-
-        DateTime currentWriteUtc = File.GetLastWriteTimeUtc(statsTemplatePath);
-        if (currentWriteUtc > statsTemplateWriteUtc)
-        {
-            LoadStatsTemplate();
-        }
-    }
-
     private void RefreshTeamColors()
     {
         currentHomeColor = ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.homeKit, HomeColor);
@@ -2170,57 +2189,6 @@ public class MatchStatsUI : MonoBehaviour
             $"<space={layout.sidePaddingPx:0.##}px><mspace={layout.monospaceStepPx:0.##}px>{left}" +
             $"  <color={DividerColor}>{center}</color>  " +
             $"{right}</mspace>";
-    }
-
-    private static bool IsAlignmentRow(string left, string center, string right)
-    {
-        return IsAlignmentCell(left) && IsAlignmentCell(center) && IsAlignmentCell(right);
-    }
-
-    private static bool IsAlignmentCell(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return false;
-        }
-
-        foreach (char character in value)
-        {
-            if (character != '-' && character != ':')
-            {
-                return false;
-            }
-        }
-
-        return value.Contains('-');
-    }
-
-    private static ColumnTextAlignment ParseAlignment(string cell, ColumnTextAlignment fallback)
-    {
-        if (string.IsNullOrWhiteSpace(cell))
-        {
-            return fallback;
-        }
-
-        bool alignLeft = cell.StartsWith(":");
-        bool alignRight = cell.EndsWith(":");
-
-        if (alignLeft && alignRight)
-        {
-            return ColumnTextAlignment.Center;
-        }
-
-        if (alignRight)
-        {
-            return ColumnTextAlignment.Right;
-        }
-
-        if (alignLeft)
-        {
-            return ColumnTextAlignment.Left;
-        }
-
-        return fallback;
     }
 
 }

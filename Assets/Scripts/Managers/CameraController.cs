@@ -57,6 +57,13 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        {
+            isRotating = false;
+            hasDragAnchor = false;
+            return;
+        }
+
         HandleCameraInput();
         // HandlePresetKeys();
     }
@@ -83,6 +90,11 @@ public class CameraController : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        {
+            return;
+        }
+
         if (keyData.ctrl)
         {
             return;

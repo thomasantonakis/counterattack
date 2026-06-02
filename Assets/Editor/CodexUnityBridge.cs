@@ -149,6 +149,14 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     CreateNewGameSceneEditorTools.SetupKitPreviewUi();
                     return BridgeResponse.Ok(request, "Create New Game kit preview UI configured.");
+                case "rebuild_substitution_panel_prefab":
+                    EnsureEditorMode(command);
+                    SubstitutionPanelPrefabEditorTools.RebuildSubstitutionPanelPrefab();
+                    return BridgeResponse.Ok(request, "Substitution panel prefab rebuilt.");
+                case "ensure_pause_substitutions_button":
+                    EnsureEditorMode(command);
+                    PauseMenuEditorTools.EnsureSubstitutionsButton();
+                    return BridgeResponse.Ok(request, "Pause menu substitutions button ensured.");
                 case "reload_kit_presets":
                     EnsureEditorMode(command);
                     TokenKitCatalog.ReloadFromSource();

@@ -402,6 +402,7 @@ public class KickoffManager : MonoBehaviour
             yield break;
         }
 
+        MatchManager.Instance.SetSubstitutionsAvailable(false, "Kick-off Standard Pass committed");
         resolvedGroundBallManager.ActivateKickoffGroundBall(taker);
         isMovingKickoffTaker = false;
         DeactivateSetup();

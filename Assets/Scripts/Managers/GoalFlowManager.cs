@@ -241,6 +241,7 @@ public class GoalFlowManager : MonoBehaviour
         hexGrid.RemoveHighlightsFromAllHexes();
         string shooterName = shooterToken != null ? shooterToken.name : "Unknown scorer";
         Debug.Log($"GOAL! {shooterName} scores! Starting celebration on goal side {activeGoalSide}.");
+        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Goal scored");
         StartCoroutine(DefenseCelebrationFlow(shooterToken, activeGoalSide));
         StartCoroutine(AttackCelebrationFlow(shooterToken, activeGoalSide));
         

@@ -1018,6 +1018,9 @@ public class FreeKickManager : MonoBehaviour
 
     private void BeginFinalKickerSelection()
     {
+        matchManager.SetSubstitutionsAvailable(false, isCornerKick
+            ? "Corner Kick final kicker selection"
+            : "Free Kick final kicker selection");
         matchManager.currentState = MatchManager.GameState.FreeKickDefineKicker;
         isWaitingforMovement3 = false;
         isWaitingForSetupPhase = false;

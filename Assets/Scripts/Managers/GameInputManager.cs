@@ -152,10 +152,17 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
-      HandleMouseHover();
-      UpdateHoverNameLabel();
-      DetectMouseDrag();     // Drag overrides click
-      HandleKeyPresses();
+        if (IsGameplayInputBlocked())
+        {
+            ClearHover();
+            isDragging = false;
+            return;
+        }
+
+        HandleMouseHover();
+        UpdateHoverNameLabel();
+        DetectMouseDrag();     // Drag overrides click
+        HandleKeyPresses();
     }
 
     private void HandleMouseHover()
@@ -240,6 +247,13 @@ public class GameInputManager : MonoBehaviour
             }
             else
             {
+                if (newClickedToken != null && !newClickedToken.isPlaying)
+                {
+                    clickedToken = null;
+                    clickedHex = null;
+                    return;
+                }
+
                 if (logIsOn) Debug.Log("Updating Clicked Items");
                 // ✅ Only update clicked items when they change
                 if (newClickedToken != clickedToken || newClickedHex != clickedHex)
@@ -322,7 +336,7 @@ public class GameInputManager : MonoBehaviour
             if (logIsOn)
             {
                 if (clickedBallToken != null) {Debug.Log($"Raycast hit the Ball, and {clickedBallToken.name} controls it, on {clickedBallHex.name}");}
-                else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex.name}");}
+                else {Debug.Log($"Raycast hit the Ball, on {clickedBallHex?.name ?? "no hex"}");}
             }
         }
         PlayerToken clickedToken = hit.collider.GetComponent<PlayerToken>();
@@ -330,7 +344,7 @@ public class GameInputManager : MonoBehaviour
         if (clickedToken != null)
         {
             clickedTokenHex = clickedToken.GetCurrentHex();
-            if (logIsOn) Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex.name}.");
+            if (logIsOn) Debug.Log($"Raycast hit {clickedToken.name} on {clickedTokenHex?.name ?? "no hex"}.");
         }
         HexCell clickedHex = hit.collider.GetComponent<HexCell>();
         PlayerToken tokenOnClickedHex = null;
@@ -354,7 +368,7 @@ public class GameInputManager : MonoBehaviour
         if (logIsOn)
         {
             Debug.Log($"Inferred Clicked Token: {inferredToken?.name}");
-            Debug.Log($"Inferred Clicked Hex: {inferredHexCell.name}"); 
+            Debug.Log($"Inferred Clicked Hex: {inferredHexCell?.name ?? "none"}");
         }
         return (inferredToken, inferredHexCell, false);      
     }
@@ -543,6 +557,11 @@ public class GameInputManager : MonoBehaviour
 
     public void SimulateClickAt(Vector2Int hexCoords)
     {
+        if (IsGameplayInputBlocked())
+        {
+            return;
+        }
+
         Vector3Int coords = new Vector3Int(hexCoords.x, 0, hexCoords.y);
         HexCell hex = hexGrid.GetHexCellAt(coords);
         if (hex == null)
@@ -559,6 +578,11 @@ public class GameInputManager : MonoBehaviour
 
     public void SimulateKeyDataPress(KeyCode key, bool shift = false, bool ctrl = false, bool alt = false)
     {
+        if (IsGameplayInputBlocked())
+        {
+            return;
+        }
+
         var keyData = new KeyPressData(key,shift,ctrl,alt);
         Debug.Log($"🧪 Simulated key press -> {FormatKeyChord(keyData)}");
         OnKeyPress?.Invoke(keyData);
@@ -591,6 +615,11 @@ public class GameInputManager : MonoBehaviour
         if (keyData.shift) builder.Append("Shift+");
         builder.Append(keyData.key);
         return builder.ToString();
+    }
+
+    private static bool IsGameplayInputBlocked()
+    {
+        return MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked;
     }
 
     public string GetDebugStatus()

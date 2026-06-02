@@ -212,6 +212,7 @@ public class ThrowInManager : MonoBehaviour
 
     private IEnumerator RunMandatoryMovementPhaseThenPromptOptional()
     {
+        MatchManager.Instance?.SetSubstitutionsAvailable(false, "Throw-in mandatory movement");
         isRunningMandatoryMovement = true;
         movementPhaseManager.ResetMovementPhase();
         movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius, blockTackleWithoutMoving: true);

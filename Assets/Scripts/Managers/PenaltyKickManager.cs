@@ -266,6 +266,7 @@ public class PenaltyKickManager : MonoBehaviour
         isWaitingForExecution = true;
         matchManager.currentState = MatchManager.GameState.PenaltyExecution;
         Debug.Log("Penalty setup complete. Select a shot target.");
+        matchManager.SetSubstitutionsAvailable(false, "Penalty shot target selection");
         shotManager.StartPenaltyShotProcess(selectedKicker, penaltySpot);
         isActivated = false;
         isWaitingForExecution = false;

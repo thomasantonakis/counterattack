@@ -29,6 +29,10 @@ public class PlayerToken : MonoBehaviour
     public bool isInjured { get; private set; } = false;
     public bool isSentOff { get; private set; } = false;
     public bool requiresSubstitution { get; private set; } = false;
+    public bool isPlaying { get; private set; } = true;
+    public bool wasSubbedOff { get; private set; } = false;
+    public bool wasSubbedOn { get; private set; } = false;
+    public bool IsCurrentPlayingToken => isPlaying && currentHex != null && !wasSubbedOff;
     void Awake()
     {
         // Debug.Log($"{name}: PlayerToken Awake called");
@@ -61,11 +65,34 @@ public class PlayerToken : MonoBehaviour
     // Set the hex where the token will be located
     public void SetCurrentHex(HexCell newHex)
     {
+        if (newHex == currentHex)
+        {
+            if (currentHex != null && currentHex.occupyingToken == null)
+            {
+                currentHex.occupyingToken = this;
+            }
+
+            if (currentHex != null)
+            {
+                UpdateTeamStatusBasedOnHex();
+            }
+            UpdateDribblerStatus();
+            return;
+        }
+
         if (currentHex != null)
         {
             if (currentHex.occupyingToken == this) // Ensure it only clears itself
             {
                 currentHex.occupyingToken = null;
+                if (isAttacker)
+                {
+                    currentHex.isAttackOccupied = false;
+                }
+                else
+                {
+                    currentHex.isDefenseOccupied = false;
+                }
             }
             else if (currentHex.occupyingToken != null)
             {
@@ -86,8 +113,59 @@ public class PlayerToken : MonoBehaviour
         }
 
         currentHex = newHex;  // Assign the new hex to the token
-        UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
+        if (currentHex != null)
+        {
+            UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
+        }
         UpdateDribblerStatus(); // Ensure dribbler status is recalculated
+    }
+
+    public void MarkAsStarter()
+    {
+        isPlaying = true;
+        wasSubbedOff = false;
+        wasSubbedOn = false;
+        gameObject.SetActive(true);
+    }
+
+    public void MarkAsBench()
+    {
+        SetCurrentHex(null);
+        isPlaying = false;
+        wasSubbedOff = false;
+        wasSubbedOn = false;
+        gameObject.SetActive(true);
+    }
+
+    public void MarkSubbedOn()
+    {
+        isPlaying = true;
+        wasSubbedOn = true;
+        gameObject.SetActive(true);
+    }
+
+    public void MarkSubbedOff()
+    {
+        SetCurrentHex(null);
+        isPlaying = false;
+        wasSubbedOff = true;
+        requiresSubstitution = false;
+        gameObject.SetActive(false);
+    }
+
+    public void MarkSubbedOffToBench(Vector3 benchPosition)
+    {
+        SetCurrentHex(null);
+        isPlaying = false;
+        wasSubbedOff = true;
+        requiresSubstitution = false;
+        transform.position = benchPosition;
+        gameObject.SetActive(true);
+    }
+
+    public void ClearSubstitutionRequirement()
+    {
+        requiresSubstitution = false;
     }
 
     public void UpdateDribblerStatus()
@@ -99,6 +177,11 @@ public class PlayerToken : MonoBehaviour
     // Update isAttacker based on the current hex state
     private void UpdateTeamStatusBasedOnHex()
     {
+        if (currentHex == null)
+        {
+            return;
+        }
+
         if (currentHex.isAttackOccupied)
         {
             isAttacker = true;
@@ -167,6 +250,7 @@ public class PlayerToken : MonoBehaviour
         {
             Debug.LogWarning($"{name} suffers a second injury and now requires substitution.");
             requiresSubstitution = true;
+            MatchManager.Instance?.HandleDoubleInjuredToken(this);
         }
     }
 

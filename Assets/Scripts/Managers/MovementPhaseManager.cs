@@ -126,6 +126,15 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void Update()
     {
+        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        {
+            if (showAttackerReachOverlay || showDefenderReachOverlay || showSafeDribblerReachOverlay)
+            {
+                ClearHeldReachOverlay();
+            }
+            return;
+        }
+
         RefreshHeldReachOverlay();
     }
 
@@ -2556,6 +2565,7 @@ public class MovementPhaseManager : MonoBehaviour
     private void TakeFreeKick()
     {
         Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
+        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Foul awarded");
         isWaitingForFoulDecision = false;  // Cancel the decision phase
         pendingFoulIsPenalty = false;
         StartCoroutine(TakeFreeKickAfterFinalThirds());
@@ -2576,6 +2586,7 @@ public class MovementPhaseManager : MonoBehaviour
     private void TakePenaltyKick()
     {
         Debug.Log("Attacker chooses to take the foul in the box. Transitioning to Penalty Kick.");
+        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Penalty awarded");
         isWaitingForFoulDecision = false;
         StartCoroutine(TakePenaltyKickAfterFinalThirds());
     }

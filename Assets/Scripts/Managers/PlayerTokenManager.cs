@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;  // Import TextMeshPro namespace
 
@@ -11,6 +12,7 @@ public class PlayerTokenManager : MonoBehaviour
     public HexGrid hexgrid;
     public GameObject textPrefab; // A prefab for TextMeshPro object for jersey numbers (you'll create this prefab)
     public List<PlayerToken> allTokens = new List<PlayerToken>();
+    public List<PlayerToken> benchTokens = new List<PlayerToken>();
     // Spawn positions for the players
     private Vector3Int[] homeTeamPositions = new Vector3Int[]
     {
@@ -221,28 +223,9 @@ public class PlayerTokenManager : MonoBehaviour
                 continue;
             }
 
-            // Debug.Log($"Spawning player at hex: {spawnHexes[i].name}");
             Vector3 hexCenter = spawnHexes[i].GetHexCenter();
-            Vector3 playerPosition = new Vector3(hexCenter.x, 0.2f, hexCenter.z);  // Position snapped to the hex center, y set to -0.2
-            // TODO: Change the KitPrefab for GKs
-            GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity, parentObject.transform);
-            // player.name = $"{teamType}Player{i+2}";
-            // Set GameObject name based on roster and jersey number
+            Vector3 playerPosition = new Vector3(hexCenter.x, 0.2f, hexCenter.z);
             string jerseyNumber = (i + 1).ToString();
-            string playerName = teamType == "Home"
-                ? homeRoster.ContainsKey(jerseyNumber) ? homeRoster[jerseyNumber].name : "Unknown"
-                : awayRoster.ContainsKey(jerseyNumber) ? awayRoster[jerseyNumber].name : "Unknown";
-
-            player.name = $"{jerseyNumber}. {playerName}";
-            // Ensure this player token is assigned the correct layer
-            player.layer = LayerMask.NameToLayer("Token");
-            // Attach PlayerToken component and set the current hex
-            PlayerToken token = player.GetComponent<PlayerToken>();
-            if (token == null)
-            {
-                token = player.AddComponent<PlayerToken>();
-            }
-            allTokens.Add(token);
             MatchManager.RosterPlayer rosterPlayer = teamType == "Home"
                 ? homeRoster.ContainsKey(jerseyNumber) ? homeRoster[jerseyNumber] : null
                 : awayRoster.ContainsKey(jerseyNumber) ? awayRoster[jerseyNumber] : null;
@@ -252,46 +235,206 @@ public class PlayerTokenManager : MonoBehaviour
                 Debug.LogWarning($"RosterPlayer not found for jersey {jerseyNumber} in {teamType} roster.");
                 continue;  // Skip this token if no roster data is found
             }
-            token.InitializeAttributesFromRoster(rosterPlayer, int.Parse(jerseyNumber));
-            // Log the hex before assigning it
-            // Debug.Log($"Spawning player {player.name} at hex: {spawnHexes[i].name}");
+
+            PlayerToken token = CreateTokenObject(
+                kitPrefab,
+                parentObject.transform,
+                teamType,
+                rosterPlayer,
+                int.Parse(jerseyNumber),
+                playerPosition,
+                tokenStyle);
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
-            token.isHomeTeam = teamType == "Home";  // Set isHomeTeam based on team type
-            PlayerTokenVisuals visuals = player.GetComponent<PlayerTokenVisuals>();
-            if (visuals == null)
-            {
-                visuals = player.AddComponent<PlayerTokenVisuals>();
-            }
-            visuals.ApplyStyle(tokenStyle);
-            // After assignment, confirm it was assigned
-            // Debug.Log($"{player.name} assigned hex: {token.GetCurrentHex()?.name}");
-            // Instantiate the TextMeshPro object for the jersey number
-            GameObject numberTextObj = Instantiate(textPrefab, playerPosition, Quaternion.identity, player.transform);  // Make the text a child of the player
-            if (numberTextObj == null)
-            {
-                Debug.LogError("Failed to instantiate the TextMeshPro object for jersey numbers.");
-                continue;
-            }
-            // Keep number placement in token-local space so style-specific face offsets remain predictable.
-            numberTextObj.transform.localPosition = new Vector3(0f, 1.06f, 0f);
-            numberTextObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);  // Rotate the text to lay flat, facing upwards
-
-            // Get the TextMeshPro component and assign the jersey number
-            TextMeshPro numberText = numberTextObj.GetComponent<TextMeshPro>();
-            if (numberText == null)
-            {
-                Debug.LogError("Failed to get TextMeshPro component from instantiated jersey number prefab.");
-                continue;
-            }
-            // numberText.text = (i + 1).ToString();  // Assign jersey numbers starting from 1
-            // numberText.text = (i + 1).ToString() + ((i == 5 || i == 8) ? "." : "");
-            numberText.text = (i + 1 == 6 || i + 1 == 9) ? $"<u>{i + 1}</u>" : (i + 1).ToString(); // Underline 6 and 9 for acecssibility
-
-            numberText.fontSize = 3;  // Set font size, tweak as needed
-            numberText.alignment = TextAlignmentOptions.Center;  // Center the text on top of the token
-            numberText.GetComponent<MeshRenderer>().sortingOrder = 10;  // Ensure the number is rendered on top
-            visuals.ApplyNumberStyle(numberText, tokenStyle);
+            token.MarkAsStarter();
+            allTokens.Add(token);
         }
+
+        Dictionary<string, MatchManager.RosterPlayer> teamRoster = teamType == "Home" ? homeRoster : awayRoster;
+        CreateBenchTokens(kitPrefab, parentObject.transform, teamType, teamRoster, spawnHexes.Count, tokenStyle);
+    }
+
+    private void CreateBenchTokens(
+        GameObject kitPrefab,
+        Transform parentTransform,
+        string teamType,
+        Dictionary<string, MatchManager.RosterPlayer> roster,
+        int starterCount,
+        TokenStyleDefinition tokenStyle)
+    {
+        bool isHomeTeam = teamType == "Home";
+        int squadSize = GetConfiguredSquadSize(roster);
+        int benchIndex = 0;
+        foreach (var entry in roster
+            .Select(pair => new
+            {
+                JerseyText = pair.Key,
+                Player = pair.Value,
+                ParsedJersey = int.TryParse(pair.Key, out int parsedJersey) ? parsedJersey : int.MaxValue
+            })
+            .Where(entry => entry.ParsedJersey > starterCount
+                && entry.ParsedJersey <= squadSize
+                && entry.ParsedJersey < int.MaxValue)
+            .OrderBy(entry => entry.ParsedJersey))
+        {
+            Vector3 benchPosition = GetBenchTokenPosition(isHomeTeam, benchIndex);
+            PlayerToken token = CreateTokenObject(
+                kitPrefab,
+                parentTransform,
+                teamType,
+                entry.Player,
+                entry.ParsedJersey,
+                benchPosition,
+                tokenStyle);
+            token.isAttacker = false;
+            token.MarkAsBench();
+            benchTokens.Add(token);
+            benchIndex++;
+        }
+    }
+
+    private int GetConfiguredSquadSize(Dictionary<string, MatchManager.RosterPlayer> roster)
+    {
+        int configuredSquadSize = MatchManager.Instance?.gameData?.gameSettings?.squadSize ?? 0;
+        if (configuredSquadSize > 0)
+        {
+            return configuredSquadSize;
+        }
+
+        return roster
+            .Select(pair => int.TryParse(pair.Key, out int parsedJersey) ? parsedJersey : 0)
+            .DefaultIfEmpty(11)
+            .Max();
+    }
+
+    private Vector3 GetBenchTokenPosition(bool isHomeTeam, int benchIndex)
+    {
+        float x = isHomeTeam ? -4f - benchIndex : 4f + benchIndex;
+        return new Vector3(x, 0.2f, -14f);
+    }
+
+    private PlayerToken CreateTokenObject(
+        GameObject kitPrefab,
+        Transform parentTransform,
+        string teamType,
+        MatchManager.RosterPlayer rosterPlayer,
+        int jerseyNumber,
+        Vector3 playerPosition,
+        TokenStyleDefinition tokenStyle)
+    {
+        GameObject player = Instantiate(kitPrefab, playerPosition, Quaternion.identity, parentTransform);
+        player.name = $"{jerseyNumber}. {rosterPlayer.name}";
+        player.layer = LayerMask.NameToLayer("Token");
+
+        PlayerToken token = player.GetComponent<PlayerToken>();
+        if (token == null)
+        {
+            token = player.AddComponent<PlayerToken>();
+        }
+
+        token.InitializeAttributesFromRoster(rosterPlayer, jerseyNumber);
+        token.isHomeTeam = teamType == "Home";
+
+        PlayerTokenVisuals visuals = player.GetComponent<PlayerTokenVisuals>();
+        if (visuals == null)
+        {
+            visuals = player.AddComponent<PlayerTokenVisuals>();
+        }
+        visuals.ApplyStyle(tokenStyle);
+        AddNumberText(player, playerPosition, jerseyNumber, visuals, tokenStyle);
+        return token;
+    }
+
+    private void AddNumberText(
+        GameObject player,
+        Vector3 playerPosition,
+        int jerseyNumber,
+        PlayerTokenVisuals visuals,
+        TokenStyleDefinition tokenStyle)
+    {
+        GameObject numberTextObj = Instantiate(textPrefab, playerPosition, Quaternion.identity, player.transform);
+        if (numberTextObj == null)
+        {
+            Debug.LogError("Failed to instantiate the TextMeshPro object for jersey numbers.");
+            return;
+        }
+
+        numberTextObj.transform.localPosition = new Vector3(0f, 1.06f, 0f);
+        numberTextObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+        TextMeshPro numberText = numberTextObj.GetComponent<TextMeshPro>();
+        if (numberText == null)
+        {
+            Debug.LogError("Failed to get TextMeshPro component from instantiated jersey number prefab.");
+            return;
+        }
+
+        numberText.text = (jerseyNumber == 6 || jerseyNumber == 9) ? $"<u>{jerseyNumber}</u>" : jerseyNumber.ToString();
+        numberText.fontSize = 3;
+        numberText.alignment = TextAlignmentOptions.Center;
+        numberText.GetComponent<MeshRenderer>().sortingOrder = 10;
+        visuals.ApplyNumberStyle(numberText, tokenStyle);
+    }
+
+    public List<PlayerToken> GetPlayingTokens(bool isHomeTeam)
+    {
+        return allTokens
+            .Where(token => token != null && token.isPlaying && token.isHomeTeam == isHomeTeam)
+            .ToList();
+    }
+
+    public List<PlayerToken> GetAvailableBenchTokens(bool isHomeTeam)
+    {
+        return benchTokens
+            .Where(token => token != null
+                && token.gameObject.activeSelf
+                && !token.isPlaying
+                && !token.wasSubbedOff
+                && token.isHomeTeam == isHomeTeam)
+            .ToList();
+    }
+
+    public void MoveBenchTokenToActive(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        benchTokens.Remove(token);
+        if (!allTokens.Contains(token))
+        {
+            allTokens.Add(token);
+        }
+        token.MarkSubbedOn();
+    }
+
+    public void RemoveActiveToken(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        allTokens.Remove(token);
+        benchTokens.Remove(token);
+        token.MarkSubbedOff();
+    }
+
+    public void MoveActiveTokenToBenchSlot(PlayerToken token, Vector3 benchPosition)
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        allTokens.Remove(token);
+        if (!benchTokens.Contains(token))
+        {
+            benchTokens.Add(token);
+        }
+
+        token.isAttacker = false;
+        token.MarkSubbedOffToBench(benchPosition);
     }
 
     private GameObject GetTokenBasePrefab()

@@ -8,11 +8,13 @@ public class PauseMenuManager : MonoBehaviour
     public Button resumeButton;
     public Button saveMatchButton;
     public Button saveMatchAsButton;
+    public Button substitutionsButton;
     public Button editSettings;
     public Button backToMainMenuButton;
     public Button quitButton;
 
     private bool isPaused = false;
+    private SubstitutionMenuManager substitutionMenuManager;
 
     void Awake()
     {
@@ -23,6 +25,12 @@ public class PauseMenuManager : MonoBehaviour
         editSettings.onClick.AddListener(EditSettings);
         backToMainMenuButton.onClick.AddListener(BackToMainMenuInGame);
         quitButton.onClick.AddListener(QuitMatch);
+        substitutionMenuManager = GetComponent<SubstitutionMenuManager>();
+        if (substitutionMenuManager == null)
+        {
+            substitutionMenuManager = gameObject.AddComponent<SubstitutionMenuManager>();
+        }
+        substitutionMenuManager.Configure(this, pausePanel, substitutionsButton, resumeButton);
         // Hide the pause menu on awake
         if (pausePanel != null)
         {
@@ -41,6 +49,12 @@ public class PauseMenuManager : MonoBehaviour
         // Toggle the pause menu when the Escape key is pressed
         if (Input.GetKeyUp(KeyCode.Escape))
         {
+            if (substitutionMenuManager != null && substitutionMenuManager.IsOpen)
+            {
+                substitutionMenuManager.CloseToPauseMenu();
+                return;
+            }
+
             if (isPaused)
                 ResumeGame();
             else
@@ -55,17 +69,37 @@ public class PauseMenuManager : MonoBehaviour
         // Display the pause menu
         pausePanel.SetActive(true);
         MatchManager.Instance?.SetPauseMenuOpen(true);
+        substitutionMenuManager?.RefreshOpenButtonState();
         // Debug to confirm visibility
         // Debug.Log($"Pause panel active status: {pausePanel.activeSelf}");
         isPaused = true;
     }
 
+    public void OpenSubstitutionsForForcedSubstitution()
+    {
+        PauseGame();
+        substitutionMenuManager?.OpenSubstitutionMenu();
+    }
+
     public void ResumeGame()
     {
+        if (MatchManager.Instance != null && MatchManager.Instance.HasPlayingTokensRequiringSubstitution())
+        {
+            Debug.LogWarning("Cannot resume while a double-injured player remains on the pitch.");
+            PauseGame();
+            substitutionMenuManager?.OpenSubstitutionMenu();
+            return;
+        }
+
         // Debug to see if the panel is being hidden
         // Debug.Log("Resuming game and hiding pause panel");
         // Hide the pause menu
         pausePanel.SetActive(false);
+        if (substitutionMenuManager != null && substitutionMenuManager.IsOpen)
+        {
+            substitutionMenuManager.CloseToPauseMenu();
+            pausePanel.SetActive(false);
+        }
         MatchManager.Instance?.SetPauseMenuOpen(false);
         // Debug to confirm visibility
         // Debug.Log($"Pause panel active status: {pausePanel.activeSelf}");

@@ -153,6 +153,7 @@ public class OutOfBoundsManager : MonoBehaviour
         yield return StartCoroutine(ResolveOutOfBoundsPush(lastInboundsHex));
         yield return StartCoroutine(ball.MoveToCell(lastInboundsHex));
         yield return StartCoroutine(CompleteDeferredShotResolutionBeforeRestart());
+        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Throw-in awarded");
         throwInManager.StartThrowInPreparation(lastInboundsHex, awardedTeam, moveBallToHex: false);
     }
 
@@ -298,6 +299,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private IEnumerator PrepareCornerRestart(HexCell spot)
     {
+        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Corner Kick awarded");
         yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
         yield return StartCoroutine(ball.MoveToCell(spot));
         MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
@@ -325,6 +327,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private IEnumerator PrepareGoalKickRestart(HexCell spot)
     {
+        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Goal Kick awarded");
         yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
         yield return StartCoroutine(ball.MoveToCell(spot, allowGKBoxMove: false));
 
@@ -361,7 +364,7 @@ public class OutOfBoundsManager : MonoBehaviour
         }
 
         return playerTokenManager.allTokens
-            .FirstOrDefault(token => token != null && token.IsGoalKeeper && token.isAttacker);
+            .FirstOrDefault(token => token != null && token.isPlaying && token.IsGoalKeeper && token.isAttacker);
     }
 
     private void LogCornerWon(string source, PlayerToken lastTouchToken, PlayerToken explicitCornerWinner)

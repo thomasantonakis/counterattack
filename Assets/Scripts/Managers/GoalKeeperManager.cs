@@ -415,6 +415,7 @@ public class GoalKeeperManager : MonoBehaviour
     {
         return FindObjectsByType<PlayerToken>()
             .FirstOrDefault(token => token != null
+                && token.isPlaying
                 && token.IsGoalKeeper
                 && token.isHomeTeam != attackingTeamIsHome);
     }

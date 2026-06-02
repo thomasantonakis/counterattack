@@ -1,3 +1,8 @@
+> Runtime source of truth: the Stats side menu template is the
+> `MatchStatsTemplateAsset` assigned to `MatchStatsUI`, or the default
+> `Assets/Resources/UI/MatchStatsTemplate.asset` loaded by builds. Keep this
+> file as documentation/reference for the current layout, not as runtime data.
+
 | home | score (0-0) | away |
 |----:|:-----------:|:----|
 | earliest scorer's name (comma separated, minutes of all their goals, ascending with a flag of if it was from penalty)  |  | Sessay 21', 30'(p), 90'+4' |
@@ -10,7 +15,7 @@
 | 0 / 0  | On Target / Corners     | 0 / 0  |
 | 0 / 0  | Blocked / Off Target  | 0 / 0  |
 |      | PASSING        |      |
-| 0 | Asissts   | 0  |
+| 0 | Assists   | 0  |
 | 0 / 0  | Ground (Att./Made)    | 0 / 0  |
 | 0 / 0 / 0| Aerial(Att./Trg./Made)   | 0 / 0 / 0|
 |      | Game Play        |      |
