@@ -962,6 +962,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
             new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
+            new ScenarioDefinition(nameof(Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache), Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache),
             new ScenarioDefinition(nameof(Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack), Scenario_008c_Movement_Phase_Forfeit_2f2_AutoCommit_Starts_Clean_Attack),
             new ScenarioDefinition(nameof(Scenario_009_Movement_Phase_NO_interceptions_No_tackles), Scenario_009_Movement_Phase_NO_interceptions_No_tackles),
             new ScenarioDefinition(nameof(Scenario_010_Movement_Phase_failed_interceptions_No_tackles), Scenario_010_Movement_Phase_failed_interceptions_No_tackles),
@@ -7711,7 +7712,58 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         LogFooterofTest("MovementPhase 2f2 forfeit auto-commit starts clean Attack MP");
     }
-    
+
+    private IEnumerator Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("▶️ Starting test scenario: HexGrid goal distance and dangerous tackle cache");
+
+        HexCell rightShotHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(14, 0, 0)),
+            "Distance cache should find hex (14, 0).");
+        AssertTrue(
+            rightShotHex.DistanceToRightGoal == 5,
+            "Hex (14, 0) should be 5 steps from the right goal target hexes.",
+            5,
+            rightShotHex.DistanceToRightGoal);
+        AssertTrue(
+            rightShotHex.DistanceToLeftGoal == 33,
+            "Hex (14, 0) should be 33 steps from the left goal target hexes.",
+            33,
+            rightShotHex.DistanceToLeftGoal);
+
+        HexCell dribblerHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(-14, 0, 0)),
+            "Dangerous tackle cache should find dribbler hex (-14, 0).");
+        MatchManager.TeamAttackingDirection attackingLeft = MatchManager.TeamAttackingDirection.RightToLeft;
+
+        AssertDangerousTackleCache(dribblerHex, attackingLeft, new Vector2Int(-13, -1), true);
+        AssertDangerousTackleCache(dribblerHex, attackingLeft, new Vector2Int(-13, 0), true);
+        AssertDangerousTackleCache(dribblerHex, attackingLeft, new Vector2Int(-14, -1), false);
+        AssertDangerousTackleCache(dribblerHex, attackingLeft, new Vector2Int(-14, 1), false);
+        AssertDangerousTackleCache(dribblerHex, attackingLeft, new Vector2Int(-15, -1), false);
+        AssertDangerousTackleCache(dribblerHex, attackingLeft, new Vector2Int(-15, 0), false);
+
+        LogFooterofTest("HexGrid goal distance and dangerous tackle cache");
+    }
+
+    private void AssertDangerousTackleCache(
+        HexCell dribblerHex,
+        MatchManager.TeamAttackingDirection attackingDirection,
+        Vector2Int tacklingCoordinates,
+        bool expectedDangerous)
+    {
+        HexCell tacklingHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(tacklingCoordinates.x, 0, tacklingCoordinates.y)),
+            $"Dangerous tackle cache should find hex ({tacklingCoordinates.x}, {tacklingCoordinates.y}).");
+        bool actualDangerous = dribblerHex.IsDangerousTacklingPosition(attackingDirection, tacklingHex);
+        AssertTrue(
+            actualDangerous == expectedDangerous,
+            $"Hex ({tacklingCoordinates.x}, {tacklingCoordinates.y}) dangerous tackle cache should be {expectedDangerous}.",
+            expectedDangerous,
+            actualDangerous);
+    }
+
     private IEnumerator Scenario_009_Movement_Phase_NO_interceptions_No_tackles()
     {
         yield return new WaitForSeconds(1.5f); // Allow scene to stabilize

@@ -60,6 +60,7 @@ public class HexGrid : MonoBehaviour
         }
 
         LoadPrecomputedShootingPaths();
+        CalculateGoalDistanceAndDangerousTackleCaches();
         // HighlightShootingHexes();
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(12, 0, 0)).GetHexCenter()}");
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()}");
@@ -335,6 +336,116 @@ public class HexGrid : MonoBehaviour
         // else if (cell.isDifficultShotPosition) cell.GetComponent<Renderer>().material.color = Color.magenta;
         // else if (cell.isInPenaltyBox) cell.GetComponent<Renderer>().material.color = Color.yellow;
         // else if (cell.isInFinalThird) cell.GetComponent<Renderer>().material.color = Color.green;
+    }
+
+    private void CalculateGoalDistanceAndDangerousTackleCaches()
+    {
+        List<HexCell> inboundHexes = GetAllCells()
+            .Where(hex => hex != null && !hex.isOutOfBounds)
+            .ToList();
+        List<HexCell> leftGoalHexes = GetAllCells()
+            .Where(hex => hex != null && hex.isInGoal == -1)
+            .ToList();
+        List<HexCell> rightGoalHexes = GetAllCells()
+            .Where(hex => hex != null && hex.isInGoal == 1)
+            .ToList();
+
+        foreach (HexCell hex in GetAllCells())
+        {
+            if (hex == null)
+            {
+                continue;
+            }
+
+            hex.DistanceToLeftGoal = CalculateMinimumGoalDistance(hex, leftGoalHexes);
+            hex.DistanceToRightGoal = CalculateMinimumGoalDistance(hex, rightGoalHexes);
+            hex.ResetDangerousTacklingPositions();
+        }
+
+        foreach (HexCell dribblerHex in inboundHexes)
+        {
+            CalculateDangerousTacklingPositionsForDirection(dribblerHex, MatchManager.TeamAttackingDirection.LeftToRight);
+            CalculateDangerousTacklingPositionsForDirection(dribblerHex, MatchManager.TeamAttackingDirection.RightToLeft);
+        }
+
+        Debug.Log("Finished calculating goal distances and dangerous tackling positions.");
+    }
+
+    private IEnumerable<HexCell> GetAllCells()
+    {
+        foreach (HexCell cell in cells)
+        {
+            yield return cell;
+        }
+    }
+
+    private static int CalculateMinimumGoalDistance(HexCell hex, List<HexCell> goalHexes)
+    {
+        if (hex == null || goalHexes == null || goalHexes.Count == 0)
+        {
+            return int.MaxValue;
+        }
+
+        int minimumDistance = int.MaxValue;
+        foreach (HexCell goalHex in goalHexes)
+        {
+            if (goalHex == null)
+            {
+                continue;
+            }
+
+            int distance = HexGridUtils.GetHexStepDistance(hex, goalHex);
+            if (distance < minimumDistance)
+            {
+                minimumDistance = distance;
+            }
+        }
+
+        return minimumDistance;
+    }
+
+    private void CalculateDangerousTacklingPositionsForDirection(
+        HexCell dribblerHex,
+        MatchManager.TeamAttackingDirection attackingDirection)
+    {
+        int dribblerGoalDistance = dribblerHex.GetDistanceToAttackingGoal(attackingDirection);
+        if (dribblerGoalDistance == int.MaxValue)
+        {
+            return;
+        }
+
+        foreach (HexCell tacklingHex in dribblerHex.GetNeighbors(this))
+        {
+            if (!IsInboundPlayableHex(tacklingHex))
+            {
+                continue;
+            }
+
+            int optimalRepositionDistance = int.MaxValue;
+            foreach (HexCell finalHex in tacklingHex.GetNeighbors(this))
+            {
+                if (finalHex == dribblerHex || !IsInboundPlayableHex(finalHex))
+                {
+                    continue;
+                }
+
+                int finalDistance = finalHex.GetDistanceToAttackingGoal(attackingDirection);
+                if (finalDistance < optimalRepositionDistance)
+                {
+                    optimalRepositionDistance = finalDistance;
+                }
+            }
+
+            if (optimalRepositionDistance >= dribblerGoalDistance)
+            {
+                dribblerHex.AddDangerousTacklingPosition(attackingDirection, tacklingHex);
+            }
+        }
+    }
+
+    private static bool IsInboundPlayableHex(HexCell hex)
+    {
+        return hex != null && !hex.isOutOfBounds && hex.isInGoal == 0;
     }
     
     private bool ShouldBeDarkHex(int x, int z)

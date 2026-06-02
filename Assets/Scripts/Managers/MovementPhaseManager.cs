@@ -104,6 +104,8 @@ public class MovementPhaseManager : MonoBehaviour
     private int throwInProtectedRadius;
     private bool throwInBlocksTackleWithoutMoving;
     private bool pendingFoulIsPenalty;
+    private bool pendingDangerousTackleFoul;
+    private bool pendingAutomaticTakeFoulAfterInjury;
     private int lastMovementHighlightRange;
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
@@ -881,6 +883,7 @@ public class MovementPhaseManager : MonoBehaviour
                         // Defender is adjacent, enable tackle decision
                         Debug.Log($"{selectedToken.name} is adjacent to {ballHolder.name}. Press 'T' to tackle or select a hex to move.");
                         isWaitingForTackleDecisionWithoutMoving = true;
+                        HighlightDangerousTackleWithoutMovingHex(selectedToken);
                     }
                 }
             }
@@ -1009,8 +1012,10 @@ public class MovementPhaseManager : MonoBehaviour
                     bool triggersStealAttempt = showThreatHints
                         && (DoesMovementHexTriggerStealAttempt(hex) || DoesMovementHexOfferNutmegQuestion(token, hex, hexDistance));
                     movementThreatByHex[hex] = triggersStealAttempt;
+                    bool isDangerousTackleDestination = IsDangerousTackleDestinationForCurrentDribbler(token, hex);
                     string highlightReason = isHoveredMovementDestination
                         ? "MovementDestinationHover"
+                        : isDangerousTackleDestination ? "DangerousTackle"
                         : triggersStealAttempt ? "PaceRisk" : "PaceAvailable";
                     hex.HighlightHex(highlightReason);
                 }
@@ -1147,6 +1152,87 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private bool IsDangerousTackleDestinationForCurrentDribbler(PlayerToken defenderToken, HexCell destinationHex)
+    {
+        if (MatchManager.Instance == null
+            || MatchManager.Instance.difficulty_level != 1
+            || !isMovementPhaseDef
+            || !MatchManager.Instance.attackHasPossession
+            || defenderToken == null
+            || defenderToken.isAttacker
+            || destinationHex == null
+            || destinationHex.isInGoal != 0)
+        {
+            return false;
+        }
+
+        PlayerToken dribbler = ball?.GetCurrentHex()?.GetOccupyingToken();
+        HexCell dribblerHex = dribbler?.GetCurrentHex();
+        if (dribbler == null
+            || !dribbler.isAttacker
+            || dribblerHex == null
+            || !dribblerHex.GetNeighbors(hexGrid).Contains(destinationHex))
+        {
+            return false;
+        }
+
+        return TryGetAttackingDirectionForToken(dribbler, out MatchManager.TeamAttackingDirection attackingDirection)
+            && dribblerHex.IsDangerousTacklingPosition(attackingDirection, destinationHex);
+    }
+
+    private void HighlightDangerousTackleWithoutMovingHex(PlayerToken defenderToken)
+    {
+        HexCell defenderHex = defenderToken?.GetCurrentHex();
+        if (!IsDangerousTackleDestinationForCurrentDribbler(defenderToken, defenderHex))
+        {
+            return;
+        }
+
+        if (!hexGrid.highlightedHexes.Contains(defenderHex))
+        {
+            hexGrid.highlightedHexes.Add(defenderHex);
+        }
+
+        defenderHex.HighlightHex("DangerousTackle");
+    }
+
+    private bool IsCurrentNormalTackleDangerous(PlayerToken attackerToken, PlayerToken defenderToken)
+    {
+        if (attackerToken == null
+            || defenderToken == null
+            || isNutmegInProgress
+            || isGkWallDiveInProgress)
+        {
+            return false;
+        }
+
+        HexCell attackerHex = attackerToken.GetCurrentHex();
+        HexCell defenderHex = defenderToken.GetCurrentHex();
+        if (attackerHex == null || defenderHex == null)
+        {
+            return false;
+        }
+
+        return TryGetAttackingDirectionForToken(attackerToken, out MatchManager.TeamAttackingDirection attackingDirection)
+            && attackerHex.IsDangerousTacklingPosition(attackingDirection, defenderHex);
+    }
+
+    private static bool TryGetAttackingDirectionForToken(
+        PlayerToken token,
+        out MatchManager.TeamAttackingDirection attackingDirection)
+    {
+        attackingDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        if (token == null || MatchManager.Instance == null)
+        {
+            return false;
+        }
+
+        attackingDirection = token.isHomeTeam
+            ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection;
+        return true;
     }
 
     // Check if the clicked hex is a valid one
@@ -2194,9 +2280,15 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log(isGkWallDiveInProgress
             ? $"Defender Name: {selectedDefender.name} with Saving: {selectedDefender.saving}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}"
             : $"Defender Name: {selectedDefender.name} with tackling: {defenderTackling}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}");
-        if (defenderDiceRoll <= FOUL_THRESHOLD)
+        bool isDangerousNormalTackle = IsCurrentNormalTackleDangerous(attackerToken, selectedDefender);
+        int foulThreshold = isDangerousNormalTackle ? 2 : FOUL_THRESHOLD;
+        pendingDangerousTackleFoul = false;
+        if (defenderDiceRoll <= foulThreshold)
         {
-            Debug.Log("Defender committed a foul.");
+            pendingDangerousTackleFoul = isDangerousNormalTackle;
+            Debug.Log(isDangerousNormalTackle
+                ? "Defender committed a foul from a dangerous tackling position."
+                : "Defender committed a foul.");
             if (isGkWallDiveInProgress)
             {
                 movementInterruptedByGKWallDive = true;
@@ -2521,9 +2613,12 @@ public class MovementPhaseManager : MonoBehaviour
             yield return null;  // Wait for the next frame
         }
         Debug.Log("Foul process completed.");
-        if (ShouldForceFreeKickAfterFoul(attackerToken, defenderToken))
+        bool forceTakeFoul = pendingAutomaticTakeFoulAfterInjury
+            || ShouldForceFreeKickAfterFoul(attackerToken, defenderToken);
+        pendingAutomaticTakeFoulAfterInjury = false;
+        if (forceTakeFoul)
         {
-            Debug.Log("Play On is not available because a player cannot continue.");
+            Debug.Log("Play On is not available after the foul resolution.");
             TakeAwardedFoul();
             yield break;
         }
@@ -2584,17 +2679,6 @@ public class MovementPhaseManager : MonoBehaviour
         {
             TakeFreeKick();
         }
-    }
-
-    private IEnumerator HandleAutomaticTakeFoul()
-    {
-        Debug.Log("Auto-taking awarded foul after disciplinary resolution.");
-        isWaitingForInjuryRoll = false;
-        isWaitingForFoulDecision = false;
-        
-        // Skip directly to taking the foul
-        yield return null;
-        TakeAwardedFoul();
     }
 
     private void TakePenaltyKick()
@@ -2744,6 +2828,15 @@ public class MovementPhaseManager : MonoBehaviour
         PlayerToken fouledAttacker = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (roll >= MatchManager.Instance.refereeLeniency)
         {
+            if (pendingDangerousTackleFoul)
+            {
+                Debug.Log($"Dangerous tackle leniency failed: defender {selectedDefender.name} receives a straight red card.");
+                pendingDangerousTackleFoul = false;
+                SendOffSelectedDefender(fouledAttacker);
+                pendingAutomaticTakeFoulAfterInjury = true;
+                isWaitingForYellowCardRoll = false;
+                return;
+            }
             Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
             bool wasBooked = selectedDefender.isBooked;
             selectedDefender.ReceiveYellowCard();
@@ -2772,12 +2865,49 @@ public class MovementPhaseManager : MonoBehaviour
                 }
 
                 isWaitingForYellowCardRoll = false;
-                StartCoroutine(HandleAutomaticTakeFoul());
+                pendingAutomaticTakeFoulAfterInjury = true;
                 return;
             }
         }
         else
         {
+            if (pendingDangerousTackleFoul)
+            {
+                Debug.Log("Dangerous tackle leniency passed: defender still receives a yellow card.");
+                pendingDangerousTackleFoul = false;
+                Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
+                bool wasBooked = selectedDefender.isBooked;
+                selectedDefender.ReceiveYellowCard();
+                if (!wasBooked && selectedDefender.isBooked)
+                {
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        selectedDefender,
+                        MatchManager.ActionType.YellowCardShown,
+                        connectedToken: fouledAttacker
+                    );
+                }
+                if (selectedDefender.isSentOff)
+                {
+                    Debug.Log($"{selectedDefender.name} cannot continue after a second yellow.");
+                    MatchManager.Instance.gameData.gameLog.LogEvent(
+                        selectedDefender,
+                        MatchManager.ActionType.RedCardShown,
+                        connectedToken: fouledAttacker
+                    );
+
+                    if (selectedDefender.IsGoalKeeper)
+                    {
+                        Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
+                        MatchManager.Instance.HandleSentOff(selectedDefender);
+                    }
+
+                    isWaitingForYellowCardRoll = false;
+                    pendingAutomaticTakeFoulAfterInjury = true;
+                    return;
+                }
+                isWaitingForYellowCardRoll = false;
+                return;
+            }
             Debug.Log($"Defender {selectedDefender.name} escapes a yellow card.");
             
             // Check if defender is already booked and failed leniency test
@@ -2785,11 +2915,36 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log($"AUTOMATIC TAKE FOUL: {selectedDefender.name} was already booked and failed leniency test!");
                 isWaitingForYellowCardRoll = false;
-                StartCoroutine(HandleAutomaticTakeFoul());
+                pendingAutomaticTakeFoulAfterInjury = true;
                 return;
             }
         }
+        pendingDangerousTackleFoul = false;
         isWaitingForYellowCardRoll = false;
+    }
+
+    private void SendOffSelectedDefender(PlayerToken fouledAttacker)
+    {
+        if (selectedDefender == null)
+        {
+            return;
+        }
+
+        if (!selectedDefender.isSentOff)
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                selectedDefender,
+                MatchManager.ActionType.RedCardShown,
+                connectedToken: fouledAttacker
+            );
+            selectedDefender.MarkSentOff();
+        }
+
+        if (selectedDefender.IsGoalKeeper)
+        {
+            Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
+            MatchManager.Instance.HandleSentOff(selectedDefender);
+        }
     }
     
     public void PerformInjuryTest(int? rigroll = null)
@@ -2934,6 +3089,8 @@ public class MovementPhaseManager : MonoBehaviour
         tackleAttackerRolled = false;
         tackleDefenderRolled = false;
         needsReposition = false;
+        pendingDangerousTackleFoul = false;
+        pendingAutomaticTakeFoulAfterInjury = false;
         isSuccessfulTackleRepositionPending = false;
         isResolvingPostSuccessfulTackleSteals = false;
         isResolvingPreNutmegSteals = false;

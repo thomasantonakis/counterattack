@@ -34,6 +34,11 @@ public class HexCell : MonoBehaviour
     public PlayerToken occupyingToken;
     public bool CanShootFrom = false; // Displayed in Inspector
     public bool CanHeadFrom = false; // Displayed in Inspector
+    [Header("Goal Distance Cache")]
+    public int DistanceToLeftGoal = int.MaxValue;
+    public int DistanceToRightGoal = int.MaxValue;
+    [SerializeField] private List<HexCell> dangerousTacklingPositionsAttackingLeft = new List<HexCell>();
+    [SerializeField] private List<HexCell> dangerousTacklingPositionsAttackingRight = new List<HexCell>();
     public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
     public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
@@ -205,6 +210,7 @@ public class HexCell : MonoBehaviour
                 colorToApply = new Color(1f, 0.48f, 0.05f, 1f);
                 break;
             case "PaceRisk":
+            case "DangerousTackle":
                 colorToApply = new Color(0.66f, 0.23f, 1f, 1f);
                 break;
             case "PaceRiskHover":
@@ -462,6 +468,45 @@ public class HexCell : MonoBehaviour
     public PlayerToken GetOccupyingToken()
     {
         return occupyingToken;
+    }
+
+    public void ResetDangerousTacklingPositions()
+    {
+        dangerousTacklingPositionsAttackingLeft.Clear();
+        dangerousTacklingPositionsAttackingRight.Clear();
+    }
+
+    public void AddDangerousTacklingPosition(MatchManager.TeamAttackingDirection attackingDirection, HexCell tacklingHex)
+    {
+        if (tacklingHex == null)
+        {
+            return;
+        }
+
+        List<HexCell> targetList = GetDangerousTacklingPositions(attackingDirection);
+        if (!targetList.Contains(tacklingHex))
+        {
+            targetList.Add(tacklingHex);
+        }
+    }
+
+    public bool IsDangerousTacklingPosition(MatchManager.TeamAttackingDirection attackingDirection, HexCell tacklingHex)
+    {
+        return tacklingHex != null && GetDangerousTacklingPositions(attackingDirection).Contains(tacklingHex);
+    }
+
+    public int GetDistanceToAttackingGoal(MatchManager.TeamAttackingDirection attackingDirection)
+    {
+        return attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight
+            ? DistanceToRightGoal
+            : DistanceToLeftGoal;
+    }
+
+    private List<HexCell> GetDangerousTacklingPositions(MatchManager.TeamAttackingDirection attackingDirection)
+    {
+        return attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight
+            ? dangerousTacklingPositionsAttackingRight
+            : dangerousTacklingPositionsAttackingLeft;
     }
 
 }
