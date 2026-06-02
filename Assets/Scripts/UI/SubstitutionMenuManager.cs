@@ -705,13 +705,49 @@ public class SubstitutionMenuManager : MonoBehaviour
         }
 
         bool needsGoalkeeper = row.selectedOutgoing.IsGoalKeeper;
-        return tokenManager.GetAvailableBenchTokens(row.isHomeTeam)
-            .Where(token => token != null && !token.wasSubbedOff)
-            .Where(token => needsGoalkeeper
-                ? token.IsGoalKeeper && token.jerseyNumber == 12
-                : !token.IsGoalKeeper)
-            .OrderBy(token => token.jerseyNumber)
-            .ToList();
+        
+        if (needsGoalkeeper)
+        {
+            List<PlayerToken> candidates = tokenManager.GetAvailableBenchTokens(row.isHomeTeam)
+                .Where(token => token != null && !token.wasSubbedOff)
+                .ToList();
+            
+            List<PlayerToken> result = new List<PlayerToken>();
+            
+            // If bench GK was sent off, allow outfield players to become GK
+            bool benchGKSentOff = MatchManager.Instance.IsBenchGoalkeeperSentOff(row.isHomeTeam);
+            if (benchGKSentOff)
+            {
+                // Allow both goalkeepers and outfield players
+                result.AddRange(candidates
+                    .Where(token => token.IsGoalKeeper && token.jerseyNumber == 12)
+                    .OrderBy(token => token.jerseyNumber)
+                    .ToList());
+                
+                result.AddRange(candidates
+                    .Where(token => !token.IsGoalKeeper)
+                    .OrderBy(token => token.jerseyNumber)
+                    .ToList());
+            }
+            else
+            {
+                // Normal case: only allow bench goalkeeper
+                result.AddRange(candidates
+                    .Where(token => token.IsGoalKeeper && token.jerseyNumber == 12)
+                    .OrderBy(token => token.jerseyNumber)
+                    .ToList());
+            }
+            
+            return result;
+        }
+        else
+        {
+            return tokenManager.GetAvailableBenchTokens(row.isHomeTeam)
+                .Where(token => token != null && !token.wasSubbedOff)
+                .Where(token => !token.IsGoalKeeper)
+                .OrderBy(token => token.jerseyNumber)
+                .ToList();
+        }
     }
 
     private bool IsSelectedAsOutgoingElsewhere(SelectionRow currentRow, PlayerToken token)
@@ -841,6 +877,13 @@ public class SubstitutionMenuManager : MonoBehaviour
                 {
                     matchManager.ball.PlaceAtCell(destinationHex);
                 }
+            }
+
+            // Check if outfield player is being brought on as GK
+            if (outgoing.IsGoalKeeper && !incoming.IsGoalKeeper)
+            {
+                Debug.Log($"Converting {incoming.playerName} to goalkeeper role.");
+                matchManager.ConvertOutfieldToGK(incoming);
             }
 
             Debug.Log($"Substitution confirmed: {outgoing.name} off, {incoming.name} on.");

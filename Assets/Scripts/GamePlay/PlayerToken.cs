@@ -9,7 +9,9 @@ public class PlayerToken : MonoBehaviour
     public bool isHomeTeam;  // Whether the token belongs to the home team
     public HexCell currentHex { get; private set; }   // Reference to the current hex this token occupies
     public bool IsDribbler => isAttacker && currentHex == ball?.GetCurrentHex();
-    public bool IsGoalKeeper => saving > 0 && handling > 0 && aerial > 0;
+    private bool _isGk = false;
+    public bool isGk => _isGk || (saving > 0 && handling > 0 && aerial > 0);
+    public bool IsGoalKeeper => isGk;
     [SerializeField] private bool isDribblerDebug;
     [SerializeField] private HexCell occupiedHexDebug;
     private static Ball ball;
@@ -163,6 +165,27 @@ public class PlayerToken : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    public void MarkSentOff()
+    {
+        SetCurrentHex(null);
+        isPlaying = false;
+        isSentOff = true;
+        requiresSubstitution = false;
+        gameObject.SetActive(false);
+        Debug.Log($"{playerName} (Jersey {jerseyNumber}) has been sent off. Token deactivated.");
+    }
+
+    public void ConvertToGK()
+    {
+        _isGk = true;
+        saving = 0;
+        aerial = 0;
+        handling = 0;
+        shooting = 0;
+        heading = 0;
+        Debug.Log($"{playerName} (Jersey {jerseyNumber}) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace={pace}, Dribbling={dribbling}, HighPass={highPass}, Resilience={resilience}");
+    }
+
     public void ClearSubstitutionRequirement()
     {
         requiresSubstitution = false;
@@ -212,6 +235,10 @@ public class PlayerToken : MonoBehaviour
         aerial = rosterPlayer.aerial;
         saving = rosterPlayer.saving;
         handling = rosterPlayer.handling;
+        
+        // Mark as goalkeeper if jersey 1 or 12 (goalkeeper positions)
+        _isGk = (jersey == 1 || jersey == 12);
+        
         // Debug.Log($"Initialized attributes for {playerName} (Jersey {jerseyNumber}): Pace: {pace}, Dribbling: {dribbling}, HighPass: {highPass}, Resilience: {resilience}"
         //   + $", Heading: {heading}, Shooting: {shooting}, Tackling: {tackling}, Aerial: {aerial}, Saving: {saving}, Handling: {handling}");
         // TestBookAndInjureTokens();  // Test booking and injuring tokens
@@ -231,6 +258,7 @@ public class PlayerToken : MonoBehaviour
         {
             Debug.LogWarning($"{name} receives a second yellow and is sent off.");
             isSentOff = true;
+            MarkSentOff();
         }
     }
 

@@ -1078,6 +1078,66 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public void HandleSentOff(PlayerToken token)
+    {
+        if (token == null || !token.isPlaying)
+        {
+            return;
+        }
+
+        token.MarkSentOff();
+        Debug.Log($"{token.playerName} (Jersey {token.jerseyNumber}) has been sent off.");
+        
+        // If goalkeeper is sent off, require substitution
+        if (token.IsGoalKeeper)
+        {
+            Debug.Log($"Goalkeeper {token.playerName} has been sent off. Forcing substitution.");
+            token.requiresSubstitution = true;
+            
+            if (GetSubstitutionsRemaining(token.isHomeTeam) <= 0)
+            {
+                Debug.LogWarning($"Goalkeeper {token.playerName} sent off but no substitutions remain. Allowing emergency outfield player as GK.");
+            }
+            
+            SetSubstitutionsAvailable(true, "Goalkeeper sent off - substitution required");
+            PauseMenuManager pauseMenuManager = FindAnyObjectByType<PauseMenuManager>();
+            if (pauseMenuManager != null)
+            {
+                pauseMenuManager.OpenSubstitutionsForForcedSubstitution();
+            }
+            else
+            {
+                SetPauseMenuOpen(true);
+                Debug.LogWarning("PauseMenuManager not found. Goalkeeper requires substitution before play can continue.");
+            }
+        }
+        
+        OnSubstitutionStateChanged?.Invoke();
+    }
+
+    public void ConvertOutfieldToGK(PlayerToken token)
+    {
+        if (token == null || token.IsGoalKeeper)
+        {
+            Debug.LogWarning($"Cannot convert {token?.playerName ?? "null"} to goalkeeper - invalid player.");
+            return;
+        }
+        
+        Debug.Log($"Converting {token.playerName} (Jersey {token.jerseyNumber}) from outfield player to goalkeeper.");
+        token.ConvertToGK();
+    }
+
+    public bool IsBenchGoalkeeperSentOff(bool isHomeTeam)
+    {
+        if (playerTokenManager == null)
+        {
+            return false;
+        }
+        
+        List<PlayerToken> benchTokens = playerTokenManager.GetAvailableBenchTokens(isHomeTeam);
+        return benchTokens.Any(token => token != null && token.IsGoalKeeper && token.isSentOff);
+    }
+
     public void RecordSubstitutionEvent(string playerOffName, string playerOnName, int value = 1)
     {
         if (value <= 0)

@@ -2583,6 +2583,17 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
+    private IEnumerator HandleAutomaticTakeFoul()
+    {
+        Debug.Log("Auto-taking foul due to booked defender failing leniency test...");
+        isWaitingForInjuryRoll = false;
+        isWaitingForFoulDecision = false;
+        
+        // Skip directly to taking the foul
+        yield return null;
+        TakeAwardedFoul();
+    }
+
     private void TakePenaltyKick()
     {
         Debug.Log("Attacker chooses to take the foul in the box. Transitioning to Penalty Kick.");
@@ -2739,11 +2750,27 @@ public class MovementPhaseManager : MonoBehaviour
                     MatchManager.ActionType.RedCardShown,
                     connectedToken: fouledAttacker
                 );
+                
+                // Handle GK sent off
+                if (selectedDefender.IsGoalKeeper)
+                {
+                    Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
+                    MatchManager.Instance.HandleSentOff(selectedDefender);
+                }
             }
         }
         else
         {
             Debug.Log($"Defender {selectedDefender.name} escapes a yellow card.");
+            
+            // Check if defender is already booked and failed leniency test
+            if (selectedDefender.isBooked)
+            {
+                Debug.Log($"AUTOMATIC TAKE FOUL: {selectedDefender.name} was already booked and failed leniency test!");
+                isWaitingForYellowCardRoll = false;
+                StartCoroutine(HandleAutomaticTakeFoul());
+                return;
+            }
         }
         isWaitingForYellowCardRoll = false;
     }
