@@ -1021,6 +1021,11 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private bool isPauseMenuOpen = false;
     [SerializeField] private bool areSubstitutionsAvailable = false;
     [SerializeField] private string substitutionsAvailabilityReason = string.Empty;
+    [SerializeField] private bool goalkeeperReplacementRequired = false;
+    [SerializeField] private bool goalkeeperReplacementTeamIsHome = true;
+    [SerializeField] private bool emergencyGoalkeeperNominationRequired = false;
+    [SerializeField] private bool emergencyGoalkeeperNominationTeamIsHome = true;
+    [SerializeField] private string emergencyGoalkeeperNominationReason = string.Empty;
     [SerializeField] private int homeSubstitutionsUsed = 0;
     [SerializeField] private int awaySubstitutionsUsed = 0;
     [SerializeField] private bool isHalfEndPendingAfterGoalFlow = false;
@@ -1036,6 +1041,9 @@ public class MatchManager : MonoBehaviour
     public bool IsGameplayInputBlocked => isPauseMenuOpen;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
+    public bool IsAnyGoalkeeperReplacementRequired => goalkeeperReplacementRequired;
+    public bool IsEmergencyGoalkeeperNominationRequired => emergencyGoalkeeperNominationRequired;
+    public string EmergencyGoalkeeperNominationReason => emergencyGoalkeeperNominationReason;
     public event Action OnSubstitutionStateChanged;
 
     public bool HasPlayingTokensRequiringSubstitution()
@@ -1080,26 +1088,42 @@ public class MatchManager : MonoBehaviour
 
     public void HandleSentOff(PlayerToken token)
     {
-        if (token == null || !token.isPlaying)
+        if (token == null)
         {
             return;
         }
 
-        token.MarkSentOff();
-        Debug.Log($"{token.playerName} (Jersey {token.jerseyNumber}) has been sent off.");
-        
-        // If goalkeeper is sent off, require substitution
-        if (token.IsGoalKeeper)
+        bool wasGoalkeeper = token.IsGoalKeeper;
+        bool isHomeTeam = token.isHomeTeam;
+        if (!token.isSentOff || token.isPlaying)
         {
-            Debug.Log($"Goalkeeper {token.playerName} has been sent off. Forcing substitution.");
-            token.requiresSubstitution = true;
-            
-            if (GetSubstitutionsRemaining(token.isHomeTeam) <= 0)
-            {
-                Debug.LogWarning($"Goalkeeper {token.playerName} sent off but no substitutions remain. Allowing emergency outfield player as GK.");
-            }
-            
-            SetSubstitutionsAvailable(true, "Goalkeeper sent off - substitution required");
+            token.MarkSentOff();
+        }
+        Debug.Log($"{token.playerName} (Jersey {token.jerseyNumber}) has been sent off.");
+
+        if (wasGoalkeeper)
+        {
+            HandleGoalkeeperSentOff(isHomeTeam, token.playerName);
+        }
+
+        OnSubstitutionStateChanged?.Invoke();
+    }
+
+    private void HandleGoalkeeperSentOff(bool isHomeTeam, string goalkeeperName)
+    {
+        PauseMatchClockForSetPiecePrep();
+        bool hasSubstitutionsRemaining = GetSubstitutionsRemaining(isHomeTeam) > 0;
+        bool hasBenchGoalkeeper = HasAvailableBenchGoalkeeper(isHomeTeam);
+
+        goalkeeperReplacementRequired = hasSubstitutionsRemaining && hasBenchGoalkeeper;
+        goalkeeperReplacementTeamIsHome = isHomeTeam;
+        emergencyGoalkeeperNominationRequired = !goalkeeperReplacementRequired;
+        emergencyGoalkeeperNominationTeamIsHome = isHomeTeam;
+
+        if (goalkeeperReplacementRequired)
+        {
+            emergencyGoalkeeperNominationReason = string.Empty;
+            SetSubstitutionsAvailable(true, "Goalkeeper sent off - replace an outfield player with a bench goalkeeper");
             PauseMenuManager pauseMenuManager = FindAnyObjectByType<PauseMenuManager>();
             if (pauseMenuManager != null)
             {
@@ -1108,11 +1132,147 @@ public class MatchManager : MonoBehaviour
             else
             {
                 SetPauseMenuOpen(true);
-                Debug.LogWarning("PauseMenuManager not found. Goalkeeper requires substitution before play can continue.");
+                Debug.LogWarning("PauseMenuManager not found. Goalkeeper replacement must be completed before play can continue.");
             }
+
+            Debug.Log($"Goalkeeper {goalkeeperName} has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.");
+            return;
         }
-        
+
+        string missingReason = !hasSubstitutionsRemaining
+            ? "no substitutions remain"
+            : "no bench goalkeeper is available";
+        emergencyGoalkeeperNominationReason = $"Goalkeeper sent off and {missingReason}. Nominate a playing outfield player as emergency goalkeeper.";
+        SetSubstitutionsAvailable(false, emergencyGoalkeeperNominationReason);
+        OpenEmergencyGoalkeeperNominationPause();
+        Debug.LogWarning(emergencyGoalkeeperNominationReason);
+    }
+
+    public bool IsGoalkeeperReplacementRequired(bool isHomeTeam)
+    {
+        return goalkeeperReplacementRequired && goalkeeperReplacementTeamIsHome == isHomeTeam;
+    }
+
+    public bool IsEmergencyGoalkeeperNominationRequiredForTeam(bool isHomeTeam)
+    {
+        return emergencyGoalkeeperNominationRequired && emergencyGoalkeeperNominationTeamIsHome == isHomeTeam;
+    }
+
+    public bool HasAvailableBenchGoalkeeper(bool isHomeTeam)
+    {
+        if (playerTokenManager == null)
+        {
+            return false;
+        }
+
+        return playerTokenManager.GetAvailableBenchTokens(isHomeTeam)
+            .Any(token => token != null && token.IsGoalKeeper && !token.isSentOff && !token.wasSubbedOff);
+    }
+
+    public bool HasActiveGoalkeeper(bool isHomeTeam)
+    {
+        if (playerTokenManager == null)
+        {
+            return FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+                .Any(token => token != null
+                    && token.isHomeTeam == isHomeTeam
+                    && token.isPlaying
+                    && !token.isSentOff
+                    && token.GetCurrentHex() != null
+                    && token.IsGoalKeeper);
+        }
+
+        return playerTokenManager.GetPlayingTokens(isHomeTeam)
+            .Any(token => token != null && !token.isSentOff && token.GetCurrentHex() != null && token.IsGoalKeeper);
+    }
+
+    public List<PlayerToken> GetEmergencyGoalkeeperNominees(bool isHomeTeam)
+    {
+        if (!IsEmergencyGoalkeeperNominationRequiredForTeam(isHomeTeam) || playerTokenManager == null)
+        {
+            return new List<PlayerToken>();
+        }
+
+        return playerTokenManager.GetPlayingTokens(isHomeTeam)
+            .Where(token => token != null
+                && !token.IsGoalKeeper
+                && !token.isSentOff
+                && token.GetCurrentHex() != null)
+            .OrderBy(token => token.jerseyNumber)
+            .ToList();
+    }
+
+    public bool NominateEmergencyGoalkeeper(PlayerToken token, out string error)
+    {
+        error = string.Empty;
+        if (token == null)
+        {
+            error = "A player must be selected as emergency goalkeeper.";
+            return false;
+        }
+
+        if (!IsEmergencyGoalkeeperNominationRequiredForTeam(token.isHomeTeam))
+        {
+            error = "This team does not need to nominate an emergency goalkeeper.";
+            return false;
+        }
+
+        if (!token.isPlaying || token.GetCurrentHex() == null || token.isSentOff)
+        {
+            error = $"{token.playerName} is not an eligible playing outfield player.";
+            return false;
+        }
+
+        if (token.IsGoalKeeper)
+        {
+            error = $"{token.playerName} is already a goalkeeper.";
+            return false;
+        }
+
+        ConvertOutfieldToGK(token);
+        CompleteGoalkeeperReplacement(token.isHomeTeam);
+        Debug.Log($"{token.playerName} (Jersey {token.jerseyNumber}) has been nominated as emergency goalkeeper.");
+        return true;
+    }
+
+    public void CompleteGoalkeeperReplacement(bool isHomeTeam)
+    {
+        bool wasEmergencyNomination = IsEmergencyGoalkeeperNominationRequiredForTeam(isHomeTeam);
+        if (!IsGoalkeeperReplacementRequired(isHomeTeam) && !wasEmergencyNomination)
+        {
+            return;
+        }
+
+        if (!HasActiveGoalkeeper(isHomeTeam))
+        {
+            Debug.LogWarning($"{(isHomeTeam ? "Home" : "Away")} still has no active goalkeeper.");
+            return;
+        }
+
+        goalkeeperReplacementRequired = false;
+        emergencyGoalkeeperNominationRequired = false;
+        emergencyGoalkeeperNominationReason = string.Empty;
+        SetSubstitutionsAvailable(false, "Goalkeeper replacement completed");
+        if (wasEmergencyNomination)
+        {
+            SetPauseMenuOpen(false);
+        }
         OnSubstitutionStateChanged?.Invoke();
+    }
+
+    public void OpenEmergencyGoalkeeperNominationPause()
+    {
+        if (!emergencyGoalkeeperNominationRequired)
+        {
+            return;
+        }
+
+        SetPauseMenuOpen(true);
+    }
+
+    public bool IsBenchGoalkeeperSentOff(bool isHomeTeam)
+    {
+        return !HasAvailableBenchGoalkeeper(isHomeTeam);
     }
 
     public void ConvertOutfieldToGK(PlayerToken token)
@@ -1122,20 +1282,9 @@ public class MatchManager : MonoBehaviour
             Debug.LogWarning($"Cannot convert {token?.playerName ?? "null"} to goalkeeper - invalid player.");
             return;
         }
-        
+
         Debug.Log($"Converting {token.playerName} (Jersey {token.jerseyNumber}) from outfield player to goalkeeper.");
         token.ConvertToGK();
-    }
-
-    public bool IsBenchGoalkeeperSentOff(bool isHomeTeam)
-    {
-        if (playerTokenManager == null)
-        {
-            return false;
-        }
-        
-        List<PlayerToken> benchTokens = playerTokenManager.GetAvailableBenchTokens(isHomeTeam);
-        return benchTokens.Any(token => token != null && token.IsGoalKeeper && token.isSentOff);
     }
 
     public void RecordSubstitutionEvent(string playerOffName, string playerOnName, int value = 1)
@@ -1213,6 +1362,12 @@ public class MatchManager : MonoBehaviour
             return false;
         }
 
+        if (goalkeeperReplacementRequired && !IsGoalkeeperReplacementRequired(playerOff.isHomeTeam))
+        {
+            error = "Only the team whose goalkeeper was sent off can substitute right now.";
+            return false;
+        }
+
         if (!playerOff.isPlaying || playerOff.GetCurrentHex() == null)
         {
             error = $"{playerOff.name} is not currently playing.";
@@ -1237,7 +1392,22 @@ public class MatchManager : MonoBehaviour
             return false;
         }
 
-        if (playerOff.IsGoalKeeper)
+        bool isGoalkeeperReplacement = IsGoalkeeperReplacementRequired(playerOff.isHomeTeam);
+        if (isGoalkeeperReplacement)
+        {
+            if (playerOff.IsGoalKeeper)
+            {
+                error = "A sent-off goalkeeper must be replaced by taking off a playing outfield player.";
+                return false;
+            }
+
+            if (!playerOn.IsGoalKeeper)
+            {
+                error = "A bench goalkeeper must come on after a goalkeeper is sent off.";
+                return false;
+            }
+        }
+        else if (playerOff.IsGoalKeeper)
         {
             if (!playerOn.IsGoalKeeper || playerOn.jerseyNumber != 12)
             {
@@ -3271,6 +3441,32 @@ public class MatchManager : MonoBehaviour
 
     public string GetInstructions()
     {
+        if (goalkeeperReplacementRequired)
+        {
+            string teamName = goalkeeperReplacementTeamIsHome
+                ? gameData?.gameSettings?.homeTeamName
+                : gameData?.gameSettings?.awayTeamName;
+            if (string.IsNullOrWhiteSpace(teamName))
+            {
+                teamName = goalkeeperReplacementTeamIsHome ? "Home" : "Away";
+            }
+
+            return $"{teamName}: goalkeeper sent off. Open substitutions and take off a playing outfielder to bring on the bench goalkeeper.";
+        }
+
+        if (emergencyGoalkeeperNominationRequired)
+        {
+            string teamName = emergencyGoalkeeperNominationTeamIsHome
+                ? gameData?.gameSettings?.homeTeamName
+                : gameData?.gameSettings?.awayTeamName;
+            if (string.IsNullOrWhiteSpace(teamName))
+            {
+                teamName = emergencyGoalkeeperNominationTeamIsHome ? "Home" : "Away";
+            }
+
+            return $"{teamName}: goalkeeper sent off. No bench goalkeeper substitution is available; nominate a playing outfielder as emergency goalkeeper.";
+        }
+
         if (!isWaitingForExtraActionsRoll)
         {
             return string.Empty;
@@ -3289,6 +3485,16 @@ public class MatchManager : MonoBehaviour
 
     public bool? IsInstructionExpectingHomeTeam()
     {
+        if (goalkeeperReplacementRequired)
+        {
+            return goalkeeperReplacementTeamIsHome;
+        }
+
+        if (emergencyGoalkeeperNominationRequired)
+        {
+            return emergencyGoalkeeperNominationTeamIsHome;
+        }
+
         if (!isWaitingForExtraActionsRoll)
         {
             return null;

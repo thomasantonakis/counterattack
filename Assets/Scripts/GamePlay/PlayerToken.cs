@@ -10,7 +10,7 @@ public class PlayerToken : MonoBehaviour
     public HexCell currentHex { get; private set; }   // Reference to the current hex this token occupies
     public bool IsDribbler => isAttacker && currentHex == ball?.GetCurrentHex();
     private bool _isGk = false;
-    public bool isGk => _isGk || (saving > 0 && handling > 0 && aerial > 0);
+    public bool isGk => _isGk;
     public bool IsGoalKeeper => isGk;
     [SerializeField] private bool isDribblerDebug;
     [SerializeField] private HexCell occupiedHexDebug;
@@ -30,7 +30,7 @@ public class PlayerToken : MonoBehaviour
     public bool isBooked { get; private set; } = false;
     public bool isInjured { get; private set; } = false;
     public bool isSentOff { get; private set; } = false;
-    public bool requiresSubstitution { get; private set; } = false;
+    public bool requiresSubstitution { get; set; } = false;
     public bool isPlaying { get; private set; } = true;
     public bool wasSubbedOff { get; private set; } = false;
     public bool wasSubbedOn { get; private set; } = false;
@@ -167,12 +167,29 @@ public class PlayerToken : MonoBehaviour
 
     public void MarkSentOff()
     {
+        HexCell sentOffHex = currentHex;
+        ClearSentOffHex(sentOffHex);
         SetCurrentHex(null);
+        ClearSentOffHex(sentOffHex);
+
         isPlaying = false;
         isSentOff = true;
         requiresSubstitution = false;
         gameObject.SetActive(false);
         Debug.Log($"{playerName} (Jersey {jerseyNumber}) has been sent off. Token deactivated.");
+    }
+
+    private void ClearSentOffHex(HexCell hex)
+    {
+        if (hex == null)
+        {
+            return;
+        }
+
+        hex.occupyingToken = null;
+        hex.isAttackOccupied = false;
+        hex.isDefenseOccupied = false;
+        hex.ResetHighlight();
     }
 
     public void ConvertToGK()

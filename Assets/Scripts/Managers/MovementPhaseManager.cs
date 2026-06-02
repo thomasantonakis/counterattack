@@ -2565,7 +2565,10 @@ public class MovementPhaseManager : MonoBehaviour
     private void TakeFreeKick()
     {
         Debug.Log("Attacker chooses to take the foul. Transitioning to Free Kick.");
-        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Foul awarded");
+        if (CanExposeSetPieceSubstitutions())
+        {
+            MatchManager.Instance?.SetSubstitutionsAvailable(true, "Foul awarded");
+        }
         isWaitingForFoulDecision = false;  // Cancel the decision phase
         pendingFoulIsPenalty = false;
         StartCoroutine(TakeFreeKickAfterFinalThirds());
@@ -2585,7 +2588,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator HandleAutomaticTakeFoul()
     {
-        Debug.Log("Auto-taking foul due to booked defender failing leniency test...");
+        Debug.Log("Auto-taking awarded foul after disciplinary resolution.");
         isWaitingForInjuryRoll = false;
         isWaitingForFoulDecision = false;
         
@@ -2597,9 +2600,19 @@ public class MovementPhaseManager : MonoBehaviour
     private void TakePenaltyKick()
     {
         Debug.Log("Attacker chooses to take the foul in the box. Transitioning to Penalty Kick.");
-        MatchManager.Instance?.SetSubstitutionsAvailable(true, "Penalty awarded");
+        if (CanExposeSetPieceSubstitutions())
+        {
+            MatchManager.Instance?.SetSubstitutionsAvailable(true, "Penalty awarded");
+        }
         isWaitingForFoulDecision = false;
         StartCoroutine(TakePenaltyKickAfterFinalThirds());
+    }
+
+    private static bool CanExposeSetPieceSubstitutions()
+    {
+        return MatchManager.Instance == null
+            || (!MatchManager.Instance.IsAnyGoalkeeperReplacementRequired
+                && !MatchManager.Instance.IsEmergencyGoalkeeperNominationRequired);
     }
 
     private IEnumerator TakeFreeKickAfterFinalThirds()
@@ -2757,6 +2770,10 @@ public class MovementPhaseManager : MonoBehaviour
                     Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
                     MatchManager.Instance.HandleSentOff(selectedDefender);
                 }
+
+                isWaitingForYellowCardRoll = false;
+                StartCoroutine(HandleAutomaticTakeFoul());
+                return;
             }
         }
         else

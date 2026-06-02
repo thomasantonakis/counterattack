@@ -152,7 +152,7 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
-        if (IsGameplayInputBlocked())
+        if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
         {
             ClearHover();
             isDragging = false;
@@ -262,8 +262,36 @@ public class GameInputManager : MonoBehaviour
                     clickedHex = newClickedHex;
                 }
             }
+
+            if (TryHandleEmergencyGoalkeeperNomination(clickedToken))
+            {
+                return;
+            }
+
             OnClick?.Invoke(clickedToken, clickedHex);  // 📣 Broadcast the click event
         }
+    }
+
+    private bool TryHandleEmergencyGoalkeeperNomination(PlayerToken token)
+    {
+        MatchManager activeMatchManager = MatchManager.Instance;
+        if (activeMatchManager == null || !activeMatchManager.IsEmergencyGoalkeeperNominationRequired)
+        {
+            return false;
+        }
+
+        if (token == null)
+        {
+            Debug.LogWarning("Select a playing outfield player to nominate as emergency goalkeeper.");
+            return true;
+        }
+
+        if (!activeMatchManager.NominateEmergencyGoalkeeper(token, out string error))
+        {
+            Debug.LogWarning(error);
+        }
+
+        return true;
     }
     
     private void ClearHover()
@@ -557,7 +585,7 @@ public class GameInputManager : MonoBehaviour
 
     public void SimulateClickAt(Vector2Int hexCoords)
     {
-        if (IsGameplayInputBlocked())
+        if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
         {
             return;
         }
@@ -573,6 +601,11 @@ public class GameInputManager : MonoBehaviour
         PlayerToken token = hex.GetOccupyingToken();
 
         Debug.Log($"🧪 Simulated click -> hex: {hex.name} @ {coords}, token: {(token != null ? token.name : "None")}");
+        if (TryHandleEmergencyGoalkeeperNomination(token))
+        {
+            return;
+        }
+
         OnClick?.Invoke(token, hex);
     }
 
@@ -620,6 +653,11 @@ public class GameInputManager : MonoBehaviour
     private static bool IsGameplayInputBlocked()
     {
         return MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked;
+    }
+
+    private static bool IsEmergencyGoalkeeperNominationInputActive()
+    {
+        return MatchManager.Instance != null && MatchManager.Instance.IsEmergencyGoalkeeperNominationRequired;
     }
 
     public string GetDebugStatus()

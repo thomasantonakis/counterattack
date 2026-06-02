@@ -184,6 +184,7 @@ public class FinalThirdManager : MonoBehaviour
     private List<PlayerToken> GetAllTokens(int f3Side)
     {
         List<PlayerToken> initList = playerTokenManager.allTokens
+            .Where(IsActiveTokenOnPitch)
             .Where(token => token.GetCurrentHex().isInFinalThird == -f3Side)  // Opposite F3
             .Where(token => !movementPhaseManager.stunnedTokens.Contains(token))
             .Where(token => !headerManager.attackerWillJump.Contains(token))
@@ -204,6 +205,14 @@ public class FinalThirdManager : MonoBehaviour
         }
 
         return initList;
+    }
+
+    private static bool IsActiveTokenOnPitch(PlayerToken token)
+    {
+        return token != null
+            && token.isPlaying
+            && !token.isSentOff
+            && token.GetCurrentHex() != null;
     }
     
     private List<PlayerToken> GetCurrentTeamTokens()
@@ -1061,7 +1070,6 @@ public class FinalThirdManager : MonoBehaviour
     {
         if (MatchManager.Instance == null)
         {
-            Debug.LogWarning("MatchManager instance is null!");
             return "Unknown Team";
         }
 
@@ -1116,6 +1124,11 @@ public class FinalThirdManager : MonoBehaviour
 
     public string GetInstructions()
     {
+        if (MatchManager.Instance == null)
+        {
+            return string.Empty;
+        }
+
         StringBuilder sb = new();
         if (isActivated && !isWaitingForWhatToDo)
         {

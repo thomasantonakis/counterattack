@@ -92,6 +92,7 @@ public class MatchStatsUI : MonoBehaviour
         public string displayName;
         public PlayerToken liveToken;
         public int jerseyNumber;
+        public bool isGoalkeeper;
         public bool isBooked;
         public bool isSentOff;
         public int goals;
@@ -101,6 +102,7 @@ public class MatchStatsUI : MonoBehaviour
         public int injuries;
         public int subOns;
         public int subOffs;
+        public bool isSubbedOff;
     }
 
     private sealed class LineupHoverEntry
@@ -1732,7 +1734,7 @@ public class MatchStatsUI : MonoBehaviour
             return new List<LineupPlayerRow>();
         }
 
-        Dictionary<int, PlayerToken> liveTokens = FindObjectsByType<PlayerToken>()
+        Dictionary<int, PlayerToken> liveTokens = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
             .Where(token => token != null && token.isHomeTeam == isHomeTeam)
             .GroupBy(token => token.jerseyNumber)
             .ToDictionary(group => group.Key, group => group.First());
@@ -1749,6 +1751,7 @@ public class MatchStatsUI : MonoBehaviour
                     jerseyNumber = jerseyNumber,
                     displayName = liveToken != null ? liveToken.playerName : entry.Value.name,
                     liveToken = liveToken,
+                    isGoalkeeper = liveToken != null ? liveToken.IsGoalKeeper : IsNaturalGoalkeeperJersey(jerseyNumber),
                     isBooked = liveToken != null ? liveToken.isBooked : playerStats.yellowCards > 0,
                     isSentOff = liveToken != null ? liveToken.isSentOff : playerStats.redCards > 0,
                     goals = playerStats.goals,
@@ -1758,6 +1761,7 @@ public class MatchStatsUI : MonoBehaviour
                     injuries = playerStats.injuries,
                     subOns = MatchManager.Instance.GetPlayerSubOnCount(entry.Value.name),
                     subOffs = MatchManager.Instance.GetPlayerSubOffCount(entry.Value.name),
+                    isSubbedOff = liveToken != null ? liveToken.wasSubbedOff : MatchManager.Instance.GetPlayerSubOffCount(entry.Value.name) > 0,
                 };
             })
             .OrderBy(row => row.jerseyNumber)
@@ -1798,9 +1802,19 @@ public class MatchStatsUI : MonoBehaviour
         }
 
         int nameWidth = width;
-        string coloredName = $"<color={GetLineupPlayerColor(player)}>{TrimToWidth(player.displayName, nameWidth)}</color>";
+        string displayName = player.isGoalkeeper ? $"{player.displayName} (GK)" : player.displayName;
+        string trimmedName = TrimToWidth(displayName, nameWidth);
+        string formattedName = player.isSentOff || player.isSubbedOff
+            ? $"<s>{trimmedName}</s>"
+            : trimmedName;
+        string coloredName = $"<color={GetLineupPlayerColor(player)}>{formattedName}</color>";
 
         return AlignRich(coloredName, width, alignment);
+    }
+
+    private static bool IsNaturalGoalkeeperJersey(int jerseyNumber)
+    {
+        return jerseyNumber == 1 || jerseyNumber == 12;
     }
 
     private static void AppendLine(StringBuilder builder, string line, ref int currentLineIndex)
