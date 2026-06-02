@@ -4,11 +4,11 @@ using UnityEngine.SceneManagement;
 
 public sealed class DisplayResolutionBootstrap : MonoBehaviour
 {
-    private const float TargetAspect = 16f / 9f;
     private const float ScreenCheckIntervalSeconds = 0.25f;
     private static DisplayResolutionBootstrap instance;
 
     private readonly Dictionary<RectTransform, AnchorSnapshot> canvasChildAnchors = new();
+    private Camera clearCamera;
     private int lastScreenWidth;
     private int lastScreenHeight;
     private Rect currentViewport = new(0f, 0f, 1f, 1f);
@@ -49,6 +49,7 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
 
         instance = this;
         ConfigureBuildResolution();
+        EnsureClearCamera();
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 
@@ -100,35 +101,18 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
     {
         int screenWidth = Mathf.Max(1, Screen.width);
         int screenHeight = Mathf.Max(1, Screen.height);
-        bool screenChanged = screenWidth != lastScreenWidth || screenHeight != lastScreenHeight;
-        if (!force && !screenChanged)
-        {
-            return;
-        }
 
         lastScreenWidth = screenWidth;
         lastScreenHeight = screenHeight;
         currentViewport = CalculateViewport(screenWidth, screenHeight);
+        EnsureClearCamera();
         ApplyCameraViewport(currentViewport);
         ApplyCanvasSafeArea(currentViewport);
     }
 
     private static Rect CalculateViewport(int screenWidth, int screenHeight)
     {
-        float windowAspect = (float)screenWidth / screenHeight;
-        if (Mathf.Approximately(windowAspect, TargetAspect))
-        {
-            return new Rect(0f, 0f, 1f, 1f);
-        }
-
-        if (windowAspect > TargetAspect)
-        {
-            float normalizedWidth = TargetAspect / windowAspect;
-            return new Rect((1f - normalizedWidth) * 0.5f, 0f, normalizedWidth, 1f);
-        }
-
-        float normalizedHeight = windowAspect / TargetAspect;
-        return new Rect(0f, (1f - normalizedHeight) * 0.5f, 1f, normalizedHeight);
+        return new Rect(0f, 0f, 1f, 1f);
     }
 
     private static void ApplyCameraViewport(Rect viewport)
@@ -136,13 +120,37 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
         Camera[] cameras = FindObjectsByType<Camera>(FindObjectsInactive.Include);
         foreach (Camera targetCamera in cameras)
         {
-            if (targetCamera == null || targetCamera.targetTexture != null)
+            if (targetCamera == null
+                || targetCamera.targetTexture != null
+                || targetCamera.GetComponent<DisplayClearCameraMarker>() != null)
             {
                 continue;
             }
 
             targetCamera.rect = viewport;
         }
+    }
+
+    private void EnsureClearCamera()
+    {
+        if (clearCamera != null)
+        {
+            clearCamera.rect = new Rect(0f, 0f, 1f, 1f);
+            return;
+        }
+
+        GameObject clearCameraObject = new("Display Clear Camera");
+        clearCameraObject.transform.SetParent(transform, false);
+        clearCameraObject.AddComponent<DisplayClearCameraMarker>();
+
+        clearCamera = clearCameraObject.AddComponent<Camera>();
+        clearCamera.clearFlags = CameraClearFlags.SolidColor;
+        clearCamera.backgroundColor = Color.black;
+        clearCamera.cullingMask = 0;
+        clearCamera.depth = -10000f;
+        clearCamera.rect = new Rect(0f, 0f, 1f, 1f);
+        clearCamera.allowHDR = false;
+        clearCamera.allowMSAA = false;
     }
 
     private void ApplyCanvasSafeArea(Rect viewport)
@@ -209,5 +217,9 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
         return new Vector2(
             viewport.xMin + (anchor.x * viewport.width),
             viewport.yMin + (anchor.y * viewport.height));
+    }
+
+    private sealed class DisplayClearCameraMarker : MonoBehaviour
+    {
     }
 }

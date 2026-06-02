@@ -125,10 +125,16 @@ public class MatchStatsUI : MonoBehaviour
     public float animationSpeed = 5f;
     public PlayerCard playerCardPrefab;
     public GoalkeeperCard goalkeeperCardPrefab;
-    private float statsFontSizeMin = 13f;
-    private float statsFontSizeMax = 19f;
-    private float statsLineSpacing = 10f;
-    private float statsParagraphSpacing = 0f;
+    [Header("Stats Panel Layout")]
+    [SerializeField] private float statsFontSizeMin = 9f;
+    [SerializeField] private float statsFontSizeMax = 13f;
+    [SerializeField] private float statsLineSpacing = 3f;
+    [SerializeField] private float statsParagraphSpacing = 0f;
+    [SerializeField, Range(0.05f, 0.7f)] private float tablesBottomAnchor = 0.29f;
+    [SerializeField, Range(0f, 0.2f)] private float cardsBottomPadding = 0.01f;
+    [SerializeField, Range(0.05f, 0.5f)] private float cardsTopAnchor = 0.25f;
+    [SerializeField, Range(0.4f, 1f)] private float previewCardWidthFill = 0.98f;
+    [SerializeField, Range(0.4f, 1f)] private float previewCardHeightFill = 0.92f;
     [SerializeField] private GameObject externalScoreboardRoot;
     [Header("Stats Template")]
     [Tooltip("Designer-owned stats layout asset. If empty, UI/MatchStatsTemplate is loaded from Resources.")]
@@ -160,6 +166,8 @@ public class MatchStatsUI : MonoBehaviour
     private const string CardYellowColor = "#F4D35E";
     private const string CardRedColor = "#FF6B6B";
     private const string EmptyLabel = "none";
+    private const string PlayerCardResourcePath = "UI/PlayerCardPrefab";
+    private const string GoalkeeperCardResourcePath = "UI/GoalKeeperCardPrefab";
     private static readonly Color PreviewOutfieldFrameColor = new(0.22f, 0.30f, 0.40f, 1f);
     private static readonly Color PreviewGoalkeeperFrameColor = new(0.45f, 0.40f, 0.51f, 1f);
     private static readonly Color PreviewNameColor = new(0.20f, 0.27f, 0.37f, 1f);
@@ -199,15 +207,10 @@ public class MatchStatsUI : MonoBehaviour
     private Sprite previewValueBadgeSprite;
 
     private const float TablesTopPadding = 0f;
-    private const float TablesBottomAnchor = 0.43f;
-    private const float CardsBottomPadding = 0.03f;
-    private const float CardsTopAnchor = 0.39f;
     private const float CardColumnGap = 0.035f;
     private const float CardPrefabWidth = 330f;
     private const float CardPrefabHeight = 500f;
     private const float PreviewCardBottomInset = 6f;
-    private const float PreviewCardWidthFill = 0.98f;
-    private const float PreviewCardHeightFill = 0.99f;
     private const float PreviewFaceWidth = 286f;
     private const float PreviewFaceHeight = 392f;
     private const float PreviewFaceYOffset = 30f;
@@ -290,6 +293,7 @@ public class MatchStatsUI : MonoBehaviour
         onScreenPos = panel.anchoredPosition;
         offScreenPos = new Vector2(collapsedX, onScreenPos.y);
         toggleButton.onClick.AddListener(TogglePanel);
+        EnsureHoverCards();
         UpdateToggleGlyph();
         UpdateExternalScoreboardVisibility();
         UpdateStatsUI();
@@ -321,6 +325,14 @@ public class MatchStatsUI : MonoBehaviour
         }
 
         UpdateLineupHoverFromStatsText();
+    }
+
+    private void LateUpdate()
+    {
+        UpdateHoverCardScale(homeHoverCard, homeHoverCardAnchor);
+        UpdateHoverCardScale(awayHoverCard, awayHoverCardAnchor);
+        UpdateHoverCardScale(homeGoalkeeperHoverCard, homeHoverCardAnchor);
+        UpdateHoverCardScale(awayGoalkeeperHoverCard, awayHoverCardAnchor);
     }
 
     public void TogglePanel()
@@ -476,6 +488,7 @@ public class MatchStatsUI : MonoBehaviour
         {
             ConfigureText(statsText, statsFontSizeMin, Mathf.Max(statsFontSizeMin, statsFontSizeMax), TextAlignmentOptions.TopLeft, false);
             statsText.richText = true;
+            statsText.overflowMode = TextOverflowModes.Masking;
             statsText.lineSpacing = statsLineSpacing;
             statsText.paragraphSpacing = statsParagraphSpacing;
         }
@@ -506,7 +519,7 @@ public class MatchStatsUI : MonoBehaviour
         if (statsText != null)
         {
             RectTransform statsRect = statsText.rectTransform;
-            statsRect.anchorMin = new Vector2(SidePaddingRatio, TablesBottomAnchor);
+            statsRect.anchorMin = new Vector2(SidePaddingRatio, tablesBottomAnchor);
             statsRect.anchorMax = new Vector2(1f - SidePaddingRatio, 1f - TablesTopPadding);
             statsRect.pivot = new Vector2(0.5f, 1f);
             statsRect.offsetMin = Vector2.zero;
@@ -531,8 +544,8 @@ public class MatchStatsUI : MonoBehaviour
         if (hoverCardsRoot == null)
         {
             hoverCardsRoot = CreateChildRect("HoverCardsRoot", panel);
-            hoverCardsRoot.anchorMin = new Vector2(SidePaddingRatio, CardsBottomPadding);
-            hoverCardsRoot.anchorMax = new Vector2(1f - SidePaddingRatio, CardsTopAnchor);
+            hoverCardsRoot.anchorMin = new Vector2(SidePaddingRatio, cardsBottomPadding);
+            hoverCardsRoot.anchorMax = new Vector2(1f - SidePaddingRatio, cardsTopAnchor);
             hoverCardsRoot.offsetMin = Vector2.zero;
             hoverCardsRoot.offsetMax = Vector2.zero;
         }
@@ -637,7 +650,7 @@ public class MatchStatsUI : MonoBehaviour
         card.gameObject.SetActive(false);
     }
 
-    private static float CalculateCardScale(RectTransform anchor, RectTransform cardRect)
+    private float CalculateCardScale(RectTransform anchor, RectTransform cardRect)
     {
         float availableWidth = anchor.rect.width;
         float availableHeight = anchor.rect.height;
@@ -649,8 +662,8 @@ public class MatchStatsUI : MonoBehaviour
         float sourceWidth = Mathf.Max(cardRect.rect.width, CardPrefabWidth);
         float sourceHeight = Mathf.Max(cardRect.rect.height, CardPrefabHeight);
         return Mathf.Min(
-            (availableWidth * PreviewCardWidthFill) / sourceWidth,
-            (availableHeight * PreviewCardHeightFill) / sourceHeight);
+            (availableWidth * previewCardWidthFill) / sourceWidth,
+            (availableHeight * previewCardHeightFill) / sourceHeight);
     }
 
     private void HandleHoverTokenChanged(PlayerToken token, HexCell hex)
@@ -728,6 +741,12 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
+        playerCardPrefab = Resources.Load<PlayerCard>(PlayerCardResourcePath);
+        if (playerCardPrefab != null)
+        {
+            return;
+        }
+
 #if UNITY_EDITOR
         playerCardPrefab = AssetDatabase.LoadAssetAtPath<PlayerCard>("Assets/Prefabs/PlayerCardPrefab.prefab");
 #endif
@@ -735,6 +754,12 @@ public class MatchStatsUI : MonoBehaviour
 
     private void EnsureGoalkeeperCardPrefab()
     {
+        if (goalkeeperCardPrefab != null)
+        {
+            return;
+        }
+
+        goalkeeperCardPrefab = Resources.Load<GoalkeeperCard>(GoalkeeperCardResourcePath);
         if (goalkeeperCardPrefab != null)
         {
             return;
@@ -753,7 +778,7 @@ public class MatchStatsUI : MonoBehaviour
         }
     }
 
-    private static void UpdateHoverCardScale(Component card, RectTransform anchor)
+    private void UpdateHoverCardScale(Component card, RectTransform anchor)
     {
         if (card == null || anchor == null)
         {
@@ -1772,38 +1797,10 @@ public class MatchStatsUI : MonoBehaviour
             return AlignTo("-", width, alignment);
         }
 
-        string decorations = BuildLineupDecorations(player);
-        int decorationWidth = VisibleLength(decorations);
-        int spacingWidth = string.IsNullOrEmpty(decorations) ? 0 : 1;
-        int nameWidth = Mathf.Max(1, width - decorationWidth - spacingWidth);
+        int nameWidth = width;
         string coloredName = $"<color={GetLineupPlayerColor(player)}>{TrimToWidth(player.displayName, nameWidth)}</color>";
 
-        string content = isHomeSide
-            ? string.IsNullOrEmpty(decorations) ? coloredName : $"{decorations} {coloredName}"
-            : string.IsNullOrEmpty(decorations) ? coloredName : $"{coloredName} {decorations}";
-
-        return AlignRich(content, width, alignment);
-    }
-
-    private static string BuildLineupDecorations(LineupPlayerRow player)
-    {
-        StringBuilder builder = new();
-        AppendRepeatedIcon(builder, "⬆️", player.subOns);
-        AppendRepeatedIcon(builder, "⚽", player.goals);
-        AppendRepeatedIcon(builder, "👟", player.assists);
-        AppendRepeatedIcon(builder, "🟨", player.yellowCards);
-        AppendRepeatedIcon(builder, "🟥", player.redCards);
-        AppendRepeatedIcon(builder, "🚑", player.injuries);
-        AppendRepeatedIcon(builder, "⬇️", player.subOffs);
-        return builder.ToString();
-    }
-
-    private static void AppendRepeatedIcon(StringBuilder builder, string icon, int count)
-    {
-        for (int index = 0; index < count; index++)
-        {
-            builder.Append(icon);
-        }
+        return AlignRich(coloredName, width, alignment);
     }
 
     private static void AppendLine(StringBuilder builder, string line, ref int currentLineIndex)
@@ -2133,24 +2130,8 @@ public class MatchStatsUI : MonoBehaviour
 
     private void RefreshTeamColors()
     {
-        currentHomeColor = ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.homeKit, HomeColor);
-        currentAwayColor = ResolveKitBodyColor(MatchManager.Instance.gameData.gameSettings.awayKit, AwayColor);
-    }
-
-    private static string ResolveKitBodyColor(string kitIdOrAlias, string fallbackColor)
-    {
-        if (string.IsNullOrWhiteSpace(kitIdOrAlias))
-        {
-            return fallbackColor;
-        }
-
-        TokenKitPreset preset = TokenKitCatalog.GetPresetByIdOrAlias(kitIdOrAlias);
-        if (preset == null || preset.Style == null)
-        {
-            return fallbackColor;
-        }
-
-        return "#" + ColorUtility.ToHtmlStringRGB(preset.Style.bodyColor);
+        currentHomeColor = NeutralPlayerColor;
+        currentAwayColor = NeutralPlayerColor;
     }
 
     private static bool ShouldInsertBenchSeparator(List<LineupPlayerRow> homeLineup, List<LineupPlayerRow> awayLineup, int index)
