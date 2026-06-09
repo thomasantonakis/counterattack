@@ -72,6 +72,17 @@ public class ThrowInManager : MonoBehaviour
         }
         MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
         isWaitingForTakerSelection = true;
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.started",
+            "throw_in",
+            "preparation_started",
+            sourceHex: ball.GetCurrentHex(),
+            targetHex: throwInHex,
+            details: new Dictionary<string, string>
+            {
+                ["awardedTeam"] = awardedTeam.ToString(),
+                ["moveBallToHex"] = moveBallToHex.ToString()
+            });
         Debug.Log($"Throw-in preparation started at {throwInHex.coordinates} for {awardedTeam}. Select the taker.");
     }
 
@@ -137,16 +148,18 @@ public class ThrowInManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.M)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ThrowInManager));
                 isWaitingForOptionalMovementDecision = false;
+                RecordThrowInSelection("optional_movement_selected", "M");
                 StartCoroutine(RunOptionalMovementPhaseThenThrow());
                 return;
             }
 
             if (keyData.key == KeyCode.T)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ThrowInManager));
                 isWaitingForOptionalMovementDecision = false;
+                RecordThrowInSelection("throw_now_selected", "T");
                 EnterThrowExecutionSelection();
                 return;
             }
@@ -156,7 +169,8 @@ public class ThrowInManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.P)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ThrowInManager));
+                RecordThrowInSelection("throw_to_feet_selected", "P");
                 HandleThrowToFeet();
                 return;
             }
@@ -166,13 +180,21 @@ public class ThrowInManager : MonoBehaviour
                 List<HexCell> availableHeaderTargets = GetAvailableHeaderThrowTargets();
                 if (availableHeaderTargets.Count == 0)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(ThrowInManager));
+                    MatchManager.Instance.RecordGameplayOutcome(
+                        "restart.option_unavailable",
+                        "throw_in",
+                        "throw_to_head_unavailable",
+                        actor: selectedThrower,
+                        sourceHex: throwInHex,
+                        details: new Dictionary<string, string> { ["key"] = "C" });
                     Debug.LogWarning("Throw-to-head is not available: no attacker is within 6 hexes of the throw-in taker.");
                     return;
                 }
 
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ThrowInManager));
                 isWaitingForThrowTypeSelection = false;
+                RecordThrowInSelection("throw_to_head_selected", "C");
                 if (availableHeaderTargets.Count == 1)
                 {
                     Debug.Log($"Throw-to-head auto-targeted: {availableHeaderTargets[0].GetOccupyingToken()?.name ?? availableHeaderTargets[0].name}.");
@@ -201,6 +223,22 @@ public class ThrowInManager : MonoBehaviour
         MatchManager.Instance.SetLastToken(selectedThrower);
         MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(selectedThrower);
         isWaitingForTakerSelection = false;
+        MatchManager.Instance.RecordActionSelection(
+            "throw_in",
+            selectedThrower,
+            throwInHex,
+            new Dictionary<string, string>
+            {
+                ["selection"] = "taker",
+                ["awardedTeam"] = awardedTeam.ToString()
+            });
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.taker_selected",
+            "throw_in",
+            "taker_selected",
+            actor: selectedThrower,
+            sourceHex: selectedThrower.GetCurrentHex(),
+            targetHex: throwInHex);
         Debug.Log($"{selectedThrower.name} moved to throw-in hex at {throwInHex.coordinates}.");
         finalThirdManager.TriggerFinalThirdPhase();
         while (finalThirdManager.isActivated)
@@ -213,6 +251,12 @@ public class ThrowInManager : MonoBehaviour
     private IEnumerator RunMandatoryMovementPhaseThenPromptOptional()
     {
         MatchManager.Instance?.SetSubstitutionsAvailable(false, "Throw-in mandatory movement");
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.phase",
+            "throw_in",
+            "mandatory_movement_started",
+            actor: selectedThrower,
+            sourceHex: throwInHex);
         isRunningMandatoryMovement = true;
         movementPhaseManager.ResetMovementPhase();
         movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius, blockTackleWithoutMoving: true);
@@ -225,11 +269,23 @@ public class ThrowInManager : MonoBehaviour
         movementPhaseManager.ClearThrowInRestrictions();
         isRunningMandatoryMovement = false;
         isWaitingForOptionalMovementDecision = true;
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.phase",
+            "throw_in",
+            "mandatory_movement_completed",
+            actor: selectedThrower,
+            sourceHex: throwInHex);
         Debug.Log("Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.");
     }
 
     private IEnumerator RunOptionalMovementPhaseThenThrow()
     {
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.phase",
+            "throw_in",
+            "optional_movement_started",
+            actor: selectedThrower,
+            sourceHex: throwInHex);
         isRunningOptionalMovement = true;
         movementPhaseManager.ResetMovementPhase();
         movementPhaseManager.ApplyThrowInRestrictions(selectedThrower, throwInHex, ThrowInProtectedRadius);
@@ -241,6 +297,12 @@ public class ThrowInManager : MonoBehaviour
         }
         movementPhaseManager.ClearThrowInRestrictions();
         isRunningOptionalMovement = false;
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.phase",
+            "throw_in",
+            "optional_movement_completed",
+            actor: selectedThrower,
+            sourceHex: throwInHex);
         MatchManager.Instance.ResolveActionBeforeFinalThird(
             MatchManager.MatchActionKind.MovementPhase,
             EnterThrowExecutionSelection,
@@ -259,6 +321,13 @@ public class ThrowInManager : MonoBehaviour
 
         isWaitingForThrowTypeSelection = true;
         MatchManager.Instance.currentState = MatchManager.GameState.WaitingForThrowInTaker;
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.execution_ready",
+            "throw_in",
+            "ready",
+            actor: selectedThrower,
+            sourceHex: throwInHex,
+            details: new Dictionary<string, string> { ["headerTargetCount"] = headerTargetCount.ToString() });
         Debug.Log("Throw-in ready. Press [P] to throw to feet or [C] to throw to head.");
     }
 
@@ -266,6 +335,13 @@ public class ThrowInManager : MonoBehaviour
     {
         isWaitingForThrowTypeSelection = false;
         isWaitingForGroundTarget = false;
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.committed",
+            "throw_in",
+            "throw_to_feet_committed",
+            actor: selectedThrower,
+            sourceHex: throwInHex,
+            details: new Dictionary<string, string> { ["maxThrowDistance"] = maxThrowDistance.ToString() });
         MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.StandardPass);
         groundBallManager.imposedDistance = maxThrowDistance;
         groundBallManager.ActivateGroundBall();
@@ -287,12 +363,40 @@ public class ThrowInManager : MonoBehaviour
     {
         isWaitingForHeaderTarget = false;
         currentHeaderThrowTarget = targetHex;
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.committed",
+            "throw_in",
+            "throw_to_head_committed",
+            actor: selectedThrower,
+            sourceHex: throwInHex,
+            targetHex: targetHex,
+            details: new Dictionary<string, string> { ["maxThrowDistance"] = maxThrowDistance.ToString() });
         MatchManager.Instance.CommitToAction(MatchManager.MatchActionKind.Header);
         MatchManager.Instance.hangingPassType = "aerial";
         yield return StartCoroutine(ball.MoveToCell(targetHex));
         finalThirdManager.TriggerFinalThirdPhase();
         StartCoroutine(headerManager.FindEligibleHeaderTokens(targetHex));
         ResetThrowInState();
+    }
+
+    private void RecordThrowInSelection(string outcome, string key)
+    {
+        MatchManager.Instance.RecordActionSelection(
+            "throw_in",
+            selectedThrower,
+            throwInHex,
+            new Dictionary<string, string>
+            {
+                ["selection"] = outcome,
+                ["key"] = key
+            });
+        MatchManager.Instance.RecordGameplayOutcome(
+            "restart.option_selected",
+            "throw_in",
+            outcome,
+            actor: selectedThrower,
+            sourceHex: throwInHex,
+            details: new Dictionary<string, string> { ["key"] = key });
     }
 
     private IEnumerator ResolveThrowInSpotOccupancy(PlayerToken incomingThrower)

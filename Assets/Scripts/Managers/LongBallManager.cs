@@ -110,7 +110,7 @@ public class LongBallManager : MonoBehaviour
             && keyData.key == KeyCode.L)
         {
             MatchManager.Instance.TriggerLongPass();
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(LongBallManager));
             return;
         }
         if (isActivated)
@@ -119,32 +119,32 @@ public class LongBallManager : MonoBehaviour
             if (isWaitingForAccuracyRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 PerformAccuracyRoll(hasRollOverride ? rollOverride : null); // Handle accuracy roll
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(LongBallManager));
                 return;
             }
             else if (isWaitingForDirectionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 PerformDirectionRoll(hasRollOverride ? rollOverride : null); // Handle direction roll
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(LongBallManager));
                 return;
             }
             else if (isWaitingForDistanceRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 StartCoroutine(PerformDistanceRoll(hasRollOverride ? rollOverride : null)); // Handle distance roll
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(LongBallManager));
                 return;
             }
             else if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 StartCoroutine(PerformInterceptionCheck(finalHex, hasRollOverride ? rollOverride : null));
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(LongBallManager));
                 return;
             }
             else if (isWaitingForDefLBMove && keyData.key == KeyCode.V && CanGoalkeeperClaimLongBallLandingHex())
             {
                 Debug.Log($"{hexGrid.GetDefendingGK().name} claims the long ball at {finalHex.coordinates}.");
                 _ = MoveGKForLB(finalHex);
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(LongBallManager));
                 return;
             }
             else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
@@ -153,7 +153,7 @@ public class LongBallManager : MonoBehaviour
                 defenderLongBallMoveHexes.Clear();
                 Debug.Log($"GK chooses to not move for the Long Ball, moving on!");
                 isWaitingForDefLBMove = false;
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(LongBallManager));
             }
         }
     }
@@ -451,12 +451,6 @@ public class LongBallManager : MonoBehaviour
     {
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
-        // Roll the dice (1 to 6)
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
-        // int diceRoll = 1; // Melina Mode
-        Debug.Log($"Accuracy dice roll: {diceRoll}");
-        isWaitingForAccuracyRoll = false;
         // Get the passer's highPass attribute
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         if (attackerToken == null)
@@ -465,10 +459,26 @@ public class LongBallManager : MonoBehaviour
             return;
         }
 
+        int accuracyThreshold = isDangerous ? 10 : 9;
+        GameplayDiceRollResult accuracyRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "long_ball_accuracy",
+            rollOverride,
+            actor: attackerToken,
+            sourceHex: attackerToken.GetCurrentHex(),
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["highPassAttribute"] = attackerToken.highPass.ToString(),
+                ["threshold"] = accuracyThreshold.ToString(),
+                ["isDangerous"] = isDangerous.ToString()
+            });
+        int diceRoll = accuracyRoll.roll;
+        // int diceRoll = 1; // Melina Mode
+        Debug.Log($"Accuracy dice roll: {diceRoll}");
+        isWaitingForAccuracyRoll = false;
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
-        int accuracyThreshold = isDangerous ? 10 : 9 ;
         int totalAccuracy = diceRoll + highPassAttribute;
         if (totalAccuracy >= accuracyThreshold)
         {
@@ -489,16 +499,26 @@ public class LongBallManager : MonoBehaviour
 
     private void PerformDirectionRoll(int? rigRoll = null)
     {
-        // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int directionRoll = rigRoll ?? Mathf.Clamp(returnedRoll - 1, 0, 5);
-        ApplyDirectionRoll(directionRoll);
+        RollInputOverride? rollOverride = rigRoll.HasValue
+            ? new RollInputOverride
+            {
+                hasOverride = true,
+                roll = rigRoll.Value,
+                isJackpot = false
+            }
+            : null;
+        PerformDirectionRoll(rollOverride);
     }
 
     private void PerformDirectionRoll(RollInputOverride? rollOverride)
     {
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int directionRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll) - 1;
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "long_ball_direction",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex(),
+            targetHex: currentTargetHex);
+        int directionRoll = diceResult.roll - 1;
         ApplyDirectionRoll(Mathf.Clamp(directionRoll, 0, 5));
     }
 
@@ -528,8 +548,17 @@ public class LongBallManager : MonoBehaviour
     private IEnumerator PerformDistanceRoll(RollInputOverride? rollOverride)
     {
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int distanceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "long_ball_distance",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex(),
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["directionIndex"] = directionIndex.ToString()
+            });
+        int distanceRoll = diceResult.roll;
         // int distanceRoll = 6; // Melina Mode
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
@@ -883,9 +912,18 @@ public class LongBallManager : MonoBehaviour
                 continue;
             }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
-            // Roll the dice (1 to 6)
-            var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-            int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+            GameplayDiceRollResult interceptionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+                "long_ball_interception",
+                rollOverride,
+                actor: defenderToken,
+                relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                sourceHex: defenderHex,
+                targetHex: landingHex,
+                details: new Dictionary<string, string>
+                {
+                    ["defenderTackling"] = defenderToken.tackling.ToString()
+                });
+            int diceRoll = interceptionRoll.roll;
             // int diceRoll = 6; // Ensure proper range (1-6)
             Debug.Log($"Dice roll for defender {defenderToken.name} at {defenderHex.coordinates}: {diceRoll}");
             int totalInterceptionScore = diceRoll + defenderToken.tackling;

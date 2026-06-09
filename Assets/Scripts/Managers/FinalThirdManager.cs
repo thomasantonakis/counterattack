@@ -53,6 +53,8 @@ public class FinalThirdManager : MonoBehaviour
     private List<PlayerToken> currentMovableTokens;
     [SerializeField]
     private List<PlayerToken> movedTokens;
+    [SerializeField]
+    private List<PlayerToken> forfeitedTokens;
 
     private void OnEnable()
     {
@@ -70,6 +72,12 @@ public class FinalThirdManager : MonoBehaviour
     {
         if (isActivated)
         {
+            GameInputManager.ConsumeCurrentClick(
+                nameof(FinalThirdManager),
+                GetFinalThirdClickAction(token, hex),
+                GetFinalThirdClickOutcome(token, hex),
+                BuildFinalThirdClickDetails(token, hex),
+                consumedByHomeTeam: IsInstructionExpectingHomeTeam());
             StartCoroutine(HandleMouseInput(token, hex));
         }
     }
@@ -79,27 +87,33 @@ public class FinalThirdManager : MonoBehaviour
         if (keyData.isConsumed) return;
         if (isActivated)
         {
-            if (!isWaitingForWhatToDo && keyData.key == KeyCode.X)
+            if (!isWaitingForWhatToDo && IsForfeitKey(keyData.key))
             {
                 if (isMovingToken)
                 {
                     return;
                 }
 
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(FinalThirdManager), IsInstructionExpectingHomeTeam());
                 ForfeitTurn();
             }
             if (isWaitingForWhatToDo && !isWaitingForSetPieceGoalKickChoice && keyData.key == KeyCode.D)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(FinalThirdManager), IsInstructionExpectingHomeTeam());
                 DropBall();
             }
             else if (isWaitingForWhatToDo && !isWaitingForSetPieceGoalKickChoice && keyData.key == KeyCode.K)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(FinalThirdManager), IsInstructionExpectingHomeTeam());
                 GKKick();
             }
         }
+    }
+
+    private static bool IsForfeitKey(KeyCode key)
+    {
+        return key == KeyCode.Return
+            || key == KeyCode.KeypadEnter;
     }
 
 
@@ -177,7 +191,14 @@ public class FinalThirdManager : MonoBehaviour
             return; // No Eligible Tokens
         }
         movedTokens = new List<PlayerToken>();
+        forfeitedTokens = new List<PlayerToken>();
         currentTeamMoving = "attack";
+        MatchManager.Instance?.RecordFinalThirdPhaseStarted(
+            FormatFinalThirdContext(),
+            bothSides,
+            thisIsTheSecond,
+            currentTeamMoving,
+            eligibleTokens.Count);
         StartCoroutine(HandleF3Movement());
     }
 
@@ -548,10 +569,30 @@ public class FinalThirdManager : MonoBehaviour
 
     private void EndF3Phase(bool preserveGoalKickContext = false)
     {
+        string context = FormatFinalThirdContext();
+        bool completedBothSides = bothSides;
+        bool completedSecondPhase = thisIsTheSecond;
+        string movedTokenKeys = FormatTokenKeys(movedTokens);
+        string forfeitedTokenKeys = FormatTokenKeys(forfeitedTokens);
+        bool shouldRefreshAvailableActions = !preserveGoalKickContext
+            && !IsSaveAndHoldKContext()
+            && !IsOobGoalKickContext();
+
+        MatchManager.Instance?.RecordFinalThirdPhaseEnded(
+            context,
+            completedBothSides,
+            completedSecondPhase,
+            movedTokenKeys,
+            forfeitedTokenKeys);
+
         forfeitWasPressed = false;
         eligibleTokens.Clear();
         currentMovableTokens.Clear();
         movedTokens.Clear();
+        if (forfeitedTokens != null)
+        {
+            forfeitedTokens.Clear();
+        }
         currentTeamMoving = null;
         Debug.Log("Final Third Phase Completed. Resuming gameplay.");
         isWaitingForTokenSelection = false;
@@ -568,6 +609,83 @@ public class FinalThirdManager : MonoBehaviour
             thisIsTheSecond = false;
             this.bothSides = false;
         }
+
+        if (shouldRefreshAvailableActions)
+        {
+            MatchManager.Instance?.RefreshAvailableActionsForCurrentState();
+        }
+    }
+
+    private string GetFinalThirdClickAction(PlayerToken token, HexCell hex)
+    {
+        if (isWaitingForTokenSelection || token != null)
+        {
+            return "final_third_token_selection";
+        }
+
+        if (isWaitingForTargetHex)
+        {
+            return "final_third_target_selection";
+        }
+
+        return "final_third_click";
+    }
+
+    private string GetFinalThirdClickOutcome(PlayerToken token, HexCell hex)
+    {
+        if (isWaitingForTokenSelection || token != null)
+        {
+            return token != null ? "selected" : "invalid_token";
+        }
+
+        if (isWaitingForTargetHex)
+        {
+            return hex != null && hexGrid != null && hexGrid.highlightedHexes.Contains(hex)
+                ? "target_selected"
+                : "invalid_target";
+        }
+
+        return "consumed";
+    }
+
+    private Dictionary<string, string> BuildFinalThirdClickDetails(PlayerToken token, HexCell hex)
+    {
+        return new Dictionary<string, string>
+        {
+            ["clickedTokenKey"] = MatchManager.GetStableTokenKey(token) ?? string.Empty,
+            ["clickedHex"] = FormatHex(hex),
+            ["selectedTokenKey"] = MatchManager.GetStableTokenKey(selectedToken) ?? string.Empty,
+            ["currentTeamMoving"] = currentTeamMoving ?? string.Empty,
+            ["isWaitingForTokenSelection"] = isWaitingForTokenSelection.ToString(),
+            ["isWaitingForTargetHex"] = isWaitingForTargetHex.ToString(),
+            ["context"] = FormatFinalThirdContext()
+        };
+    }
+
+    private string FormatFinalThirdContext()
+    {
+        return finalThirdContext.ToString();
+    }
+
+    private static string FormatTokenKeys(IEnumerable<PlayerToken> tokens)
+    {
+        if (tokens == null)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            ",",
+            tokens
+                .Select(MatchManager.GetStableTokenKey)
+                .Where(tokenKey => !string.IsNullOrWhiteSpace(tokenKey)));
+    }
+
+    private static string FormatHex(HexCell hex)
+    {
+        return hex == null
+            ? string.Empty
+            : $"{hex.coordinates.x},{hex.coordinates.z}";
     }
 
     public void ForfeitTurn()
@@ -585,8 +703,23 @@ public class FinalThirdManager : MonoBehaviour
         isMovingToken = false;
         isWaitingForTokenSelection = false; // Avoid soft-locks
         selectedToken = null;  // Clear selected token
-        // Add remaining available tokens to the already moved ones.
-        movedTokens.AddRange(currentMovableTokens);
+        if (forfeitedTokens == null)
+        {
+            forfeitedTokens = new List<PlayerToken>();
+        }
+
+        if (currentMovableTokens == null)
+        {
+            return;
+        }
+
+        foreach (PlayerToken token in currentMovableTokens)
+        {
+            if (token != null && !forfeitedTokens.Contains(token))
+            {
+                forfeitedTokens.Add(token);
+            }
+        }
         currentMovableTokens.Clear();
     }
 
@@ -1150,7 +1283,7 @@ public class FinalThirdManager : MonoBehaviour
         if (isWaitingForTokenSelection) sb.Append($"Click on a Token from {GetTeamNameByCurrentTeamMoving()}, to select for movement, ");
         if (isWaitingForTargetHex && selectedToken != null) sb.Append($" or Click on a Hex to move {selectedToken.name} there, ");
         if (isMovingToken) sb.Append("moving selected F3 token, ");
-        if (isActivated && !isWaitingForWhatToDo && !isMovingToken && CanForfeitCurrentF3Move(logWarnings: false)) sb.Append($"Press [X] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
+        if (isActivated && !isWaitingForWhatToDo && !isMovingToken && CanForfeitCurrentF3Move(logWarnings: false)) sb.Append($"Press [Enter] to Forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 Move, ");
         if (isWaitingForSetPieceGoalKickChoice) sb.Append($"Press [P] to take a Goal Kick Standard Pass, or [K] to take a Goalkeeper Kick, ");
         else if (isWaitingForWhatToDo) sb.Append($"Press [D] to Drop the ball and commit to Movement Phase, or [K] to take a Goal Kick, ");
         

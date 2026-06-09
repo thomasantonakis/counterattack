@@ -213,19 +213,19 @@ public class HeaderManager : MonoBehaviour
             bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
             if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HeaderManager));
                 PerformInterceptionRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null);
             }
             else if (isWaitingForDefenderSelection)
             {
                 if (IsHeaderSelectionConfirmKey(keyData.key))
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     ConfirmDefenderHeaderSelection();
                 }
                 if (keyData.key == KeyCode.A)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     SelectAllAvailableDefenders();
                 }
             }
@@ -233,12 +233,12 @@ public class HeaderManager : MonoBehaviour
             {
                 if (IsHeaderSelectionConfirmKey(keyData.key))
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     _ = ConfirmAttackerHeaderSelection();
                 }
                 if (keyData.key == KeyCode.A)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     SelectAllAvailableAttackers();
                 }
             }
@@ -246,14 +246,14 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.H)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     Debug.Log("Header option selected.");
                     attackFreeHeader = true;
                     _ = StartAttackHeaderSelection();
                 }
                 else if (keyData.key == KeyCode.B)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     Debug.Log("Ball Control was chosen by Attack");
                     attackControlBall = true;
                     StartAttackControlSelection();
@@ -263,12 +263,12 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.H)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     DefenseFreeHeader();
                 }
                 else if (keyData.key == KeyCode.B)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     DefenseContolBall();
                 }
             }
@@ -292,7 +292,7 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.R || hasRollOverride)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     PerformHeaderRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null);
                 }
             }
@@ -300,7 +300,7 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.R || hasRollOverride)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     _ = PerformControlRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null); // No need to await this here
                 }
             }
@@ -308,7 +308,7 @@ public class HeaderManager : MonoBehaviour
             {
                 if (keyData.key == KeyCode.H)
                 {
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HeaderManager));
                     isWaitingForHeaderAtGoal = false;
                     headerAtGoalDeclared = false;
                     ClearHeaderAtGoalTargets();
@@ -1660,12 +1660,21 @@ public class HeaderManager : MonoBehaviour
 
     public void PerformHeaderRoll(RollInputOverride? rollOverride)
     {
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isRiggedJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride && rollOverride.Value.isJackpot;
-        bool isJackpot = isRiggedJackpot || (!rollOverride.HasValue && returnedJackpot);
-        int roll = rollOverride.HasValue && rollOverride.Value.hasOverride
-            ? rollOverride.Value.roll
-            : returnedRoll;
+        GameplayDiceRollResult headerRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "header_challenge",
+            rollOverride,
+            actor: tokenRolling,
+            sourceHex: tokenRolling != null ? tokenRolling.GetCurrentHex() : null,
+            targetHex: ball.GetCurrentHex(),
+            details: new Dictionary<string, string>
+            {
+                ["side"] = attordef,
+                ["attribute"] = attribute.ToString(),
+                ["attributeLabel"] = attributelabel,
+                ["hasHeadingPenalty"] = hasHeadingPenalty.ToString()
+            });
+        bool isJackpot = headerRoll.isJackpot;
+        int roll = headerRoll.roll;
         int totalScore = isJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
         // int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
         tokenScores[tokenRolling] = (roll, totalScore);
@@ -1717,11 +1726,20 @@ public class HeaderManager : MonoBehaviour
     public async Task PerformControlRoll(RollInputOverride? rollOverride)
     {
         isWaitingForControlRoll = false;
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isRiggedJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride && rollOverride.Value.isJackpot;
-        bool isJackpot = isRiggedJackpot || (!rollOverride.HasValue && returnedJackpot);
-        int roll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         int controlPenalty = GetControlPenalty(challengeWinner);
+        GameplayDiceRollResult controlRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "header_control",
+            rollOverride,
+            actor: challengeWinner,
+            sourceHex: challengeWinner != null ? challengeWinner.GetCurrentHex() : null,
+            targetHex: ball.GetCurrentHex(),
+            details: new Dictionary<string, string>
+            {
+                ["dribbling"] = challengeWinner != null ? challengeWinner.dribbling.ToString() : string.Empty,
+                ["controlPenalty"] = controlPenalty.ToString()
+            });
+        bool isJackpot = controlRoll.isJackpot;
+        int roll = controlRoll.roll;
         int totalScore = isJackpot ? 50 : roll + challengeWinner.dribbling + controlPenalty;
         string controlPenaltyInfo = controlPenalty < 0 ? $", penalty ({controlPenalty})" : "";
         if (isJackpot) Debug.Log($"{challengeWinner.name} rolled A JACKPOT for ball control!!");
@@ -1943,8 +1961,12 @@ public class HeaderManager : MonoBehaviour
     public void PerformInterceptionRoll(RollInputOverride? rollOverride)
     {
         isWaitingForInterceptionRoll = false;
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        interceptionDiceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "header_interception",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex());
+        interceptionDiceRoll = diceResult.roll;
     }
 
     private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)

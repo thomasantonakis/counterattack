@@ -64,8 +64,196 @@ public class GroundBallManager : MonoBehaviour
     {
         if (isAwaitingTargetSelection)
         {
+            RecordGroundPassTargetClick(hex);
             HandleGroundBallPath(hex);
         }
+    }
+
+    private void RecordGroundPassTargetClick(HexCell targetHex)
+    {
+        HexCell currentTargetBeforeClick = currentTargetHex;
+        int difficulty = MatchManager.Instance != null ? MatchManager.Instance.difficulty_level : 0;
+        GroundPassValidationResult validation = ValidateGroundPassPath(targetHex, imposedDistance);
+        bool willCommit = validation.IsValid && WillTargetClickCommitPass(targetHex, difficulty);
+        GameplayActionPreview preview = BuildGroundPassTargetPreview(targetHex, validation, willCommit);
+        HexCell currentTargetAfterClick = PredictCurrentTargetHexAfterClick(targetHex, validation);
+        string targetSelectionTransition = ResolveTargetSelectionTransition(
+            currentTargetBeforeClick,
+            currentTargetAfterClick,
+            targetHex,
+            validation,
+            willCommit);
+
+        Dictionary<string, string> details = new Dictionary<string, string>
+        {
+            ["selectedAction"] = isQuickThrow ? "quick_throw" : "standard_pass",
+            ["phase"] = "target_selection",
+            ["difficulty"] = difficulty.ToString(),
+            ["isValid"] = FormatBool(validation.IsValid),
+            ["failureReason"] = validation.FailureReason.ToString(),
+            ["willCommit"] = FormatBool(willCommit),
+            ["targetHex"] = FormatHex(targetHex),
+            ["currentTargetHexBeforeClick"] = FormatHex(currentTargetBeforeClick),
+            ["currentTargetHexAfterClick"] = FormatHex(currentTargetAfterClick),
+            ["clickedMatchesCurrentTargetBefore"] = FormatBool(currentTargetBeforeClick != null && targetHex == currentTargetBeforeClick),
+            ["targetSelectionTransition"] = targetSelectionTransition,
+            ["targetTokenKey"] = preview.targetTokenKey ?? string.Empty,
+            ["imposedMaxDistance"] = preview.imposedMaxDistance.ToString(),
+            ["targetHexStepDistance"] = preview.targetHexStepDistance.ToString(),
+            ["isDangerous"] = FormatBool(preview.isDangerous),
+            ["pathInteractionCount"] = preview.pathInteractionCount.ToString(),
+            ["interceptionAttemptCount"] = preview.interceptionAttemptCount.ToString(),
+            ["outfieldInterceptionCount"] = preview.outfieldInterceptionCount.ToString(),
+            ["rollInteractionCount"] = preview.rollInteractionCount.ToString(),
+            ["hasConditionalGoalkeeperInteraction"] = FormatBool(preview.hasConditionalGoalkeeperInteraction)
+        };
+
+        GameInputManager.ConsumeCurrentClick(
+            nameof(GroundBallManager),
+            isQuickThrow ? "quick_throw_target_selection" : "standard_pass_target_selection",
+            validation.IsValid ? willCommit ? "target_confirmed" : "target_selected" : "invalid_target",
+            details,
+            preview);
+    }
+
+    private HexCell PredictCurrentTargetHexAfterClick(HexCell targetHex, GroundPassValidationResult validation)
+    {
+        return validation.IsValid ? targetHex : null;
+    }
+
+    private static string ResolveTargetSelectionTransition(
+        HexCell currentTargetBeforeClick,
+        HexCell currentTargetAfterClick,
+        HexCell clickedTargetHex,
+        GroundPassValidationResult validation,
+        bool willCommit)
+    {
+        if (!validation.IsValid)
+        {
+            return currentTargetBeforeClick != null
+                ? "selected_to_cleared"
+                : "invalid_no_selection";
+        }
+
+        if (willCommit)
+        {
+            return currentTargetBeforeClick == clickedTargetHex
+                ? "selected_to_confirmed"
+                : "valid_target_committed";
+        }
+
+        if (currentTargetBeforeClick == null && currentTargetAfterClick != null)
+        {
+            return "none_to_selected";
+        }
+
+        if (currentTargetBeforeClick != null && currentTargetBeforeClick != currentTargetAfterClick)
+        {
+            return "selected_to_switched";
+        }
+
+        return "selected_to_selected";
+    }
+
+    private bool WillTargetClickCommitPass(HexCell targetHex, int difficulty)
+    {
+        if (targetHex == null)
+        {
+            return false;
+        }
+
+        return difficulty == 3 || (currentTargetHex != null && targetHex == currentTargetHex);
+    }
+
+    private GameplayActionPreview BuildGroundPassTargetPreview(
+        HexCell targetHex,
+        GroundPassValidationResult validation,
+        bool willCommit)
+    {
+        PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        int targetDistance = ballHex != null && targetHex != null
+            ? HexGridUtils.GetHexStepDistance(ballHex, targetHex)
+            : 0;
+        List<GroundBallPathInteraction> interactions = validation.IsValid
+            ? BuildOrderedPathInteractions(targetHex)
+            : new List<GroundBallPathInteraction>();
+
+        return new GameplayActionPreview
+        {
+            action = isQuickThrow ? "quick_throw" : "standard_pass",
+            phase = "target_selection",
+            isValid = validation.IsValid,
+            failureReason = validation.FailureReason.ToString(),
+            willCommit = willCommit,
+            targetHex = RoomHexCoordinates.FromHex(targetHex),
+            targetTokenKey = MatchManager.GetStableTokenKey(targetToken),
+            imposedMaxDistance = imposedDistance,
+            targetHexStepDistance = targetDistance,
+            isDangerous = validation.IsDangerous,
+            pathHexCount = validation.PathHexes?.Count ?? 0,
+            pathInteractionCount = interactions.Count,
+            interceptionAttemptCount = interactions.Count(interaction => interaction?.Type == GroundBallPathInteractionType.OutfieldInterception),
+            outfieldInterceptionCount = interactions.Count(interaction => interaction?.Type == GroundBallPathInteractionType.OutfieldInterception),
+            rollInteractionCount = interactions.Count(interaction => interaction != null && interaction.RequiresRoll),
+            hasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(interactions),
+            pathInteractions = interactions.Select(interaction => BuildPathInteractionPreview(interaction, interactions)).ToList()
+        };
+    }
+
+    private GameplayPathInteractionPreview BuildPathInteractionPreview(
+        GroundBallPathInteraction interaction,
+        List<GroundBallPathInteraction> allInteractions)
+    {
+        if (interaction == null)
+        {
+            return null;
+        }
+
+        PlayerToken defender = interaction.DefenderToken;
+        GroundInterceptionCandidate candidate = interaction.InterceptionCandidate;
+        return new GameplayPathInteractionPreview
+        {
+            type = interaction.Type.ToString(),
+            defenderTokenKey = MatchManager.GetStableTokenKey(defender),
+            defenderHex = RoomHexCoordinates.FromHex(interaction.DefenderHex),
+            interactionHex = RoomHexCoordinates.FromHex(interaction.InteractionHex),
+            pathIndex = interaction.PathIndex,
+            tackling = defender != null ? defender.tackling : 0,
+            saving = defender != null ? defender.saving : 0,
+            gkPenalty = interaction.GkPenalty,
+            requiredRoll = CalculateRequiredRoll(interaction),
+            requiresRoll = interaction.RequiresRoll,
+            isDefinite = GroundPassCommon.IsDefinitePreviewDangerousInteraction(interaction, allInteractions),
+            distanceFromBall = candidate != null ? candidate.ClosestInterceptionDistanceFromBall : 0
+        };
+    }
+
+    private static int CalculateRequiredRoll(GroundBallPathInteraction interaction)
+    {
+        if (interaction?.DefenderToken == null)
+        {
+            return 0;
+        }
+
+        return interaction.Type switch
+        {
+            GroundBallPathInteractionType.OutfieldInterception => interaction.DefenderToken.tackling >= 4
+                ? Mathf.Max(1, 10 - interaction.DefenderToken.tackling)
+                : 6,
+            GroundBallPathInteractionType.GoalkeeperWallSave => Mathf.Max(1, 10 - interaction.DefenderToken.saving - interaction.GkPenalty),
+            _ => 0
+        };
+    }
+
+    private static string FormatHex(HexCell hex)
+    {
+        return hex == null ? string.Empty : $"{hex.coordinates.x},{hex.coordinates.z}";
+    }
+
+    private static string FormatBool(bool value)
+    {
+        return value ? "true" : "false";
     }
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
@@ -103,7 +291,7 @@ public class GroundBallManager : MonoBehaviour
         if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)
         {
             MatchManager.Instance.TriggerStandardPass();
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(GroundBallManager));
             return;
         }
         if (isAvailable
@@ -112,10 +300,8 @@ public class GroundBallManager : MonoBehaviour
             keyData.key == KeyCode.Q
         )
         {
-            MatchManager.Instance.TriggerStandardPass();
-            isQuickThrow = true;
-            CommitToThisAction();
-            keyData.isConsumed = true;
+            MatchManager.Instance.TriggerQuickThrowPass();
+            keyData.Consume(nameof(GroundBallManager));
             return;
         }
         if (isActivated)
@@ -125,7 +311,7 @@ public class GroundBallManager : MonoBehaviour
             {
                 // Check if waiting for dice rolls and the R key is pressed
                 PerformGroundInterceptionDiceRoll(hasRollOverride ? rollOverride : null);  // Trigger the dice roll when R is pressed
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(GroundBallManager));
                 return;
             }
         }
@@ -754,11 +940,6 @@ public class GroundBallManager : MonoBehaviour
             return;
         }
 
-        // Roll the dice (1 to 6)
-        // int diceRoll = 6; // God Mode
-        // int diceRoll = 1; // Stupid Mode
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
         // Retrieve the defender token
         PlayerToken defenderToken = currentDefenderHex.occupyingToken;
         if (defenderToken == null)
@@ -766,6 +947,20 @@ public class GroundBallManager : MonoBehaviour
             Debug.LogError($"No PlayerToken found on defender's hex at {currentDefenderHex.coordinates}. This should not happen.");
             return;
         }
+
+        GameplayDiceRollResult interceptionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "pass_interception",
+            rollOverride,
+            actor: defenderToken,
+            relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: currentDefenderHex,
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["passType"] = "standard",
+                ["defenderTackling"] = defenderToken.tackling.ToString()
+            });
+        int diceRoll = interceptionRoll.roll;
         Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
         MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
             defenderToken,
@@ -1042,13 +1237,21 @@ public class GroundBallManager : MonoBehaviour
         }
 
         PlayerToken goalkeeper = interaction.DefenderToken;
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride
-            ? rollOverride.Value.isJackpot
-            : returnedJackpot;
-        int diceRoll = rollOverride.HasValue && rollOverride.Value.hasOverride
-            ? rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll
-            : returnedRoll;
+        GameplayDiceRollResult saveRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "pass_gk_wall_save",
+            rollOverride,
+            actor: goalkeeper,
+            relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: interaction.InteractionHex,
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["passType"] = "standard",
+                ["goalkeeperSaving"] = goalkeeper.saving.ToString(),
+                ["gkPenalty"] = interaction.GkPenalty.ToString()
+            });
+        bool isJackpot = saveRoll.isJackpot;
+        int diceRoll = saveRoll.roll;
         int savingTotal = diceRoll + goalkeeper.saving + interaction.GkPenalty;
 
         MatchManager.Instance.gameData.gameLog.LogEvent(goalkeeper, MatchManager.ActionType.SaveAttempt);
@@ -1112,6 +1315,63 @@ public class GroundBallManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    public void PopulateInstructionLogSnapshot(GameplayInstructionSnapshot snapshot)
+    {
+        if (snapshot == null)
+        {
+            return;
+        }
+
+        snapshot.details ??= new Dictionary<string, string>();
+        snapshot.relatedTokenKeys ??= new List<string>();
+        snapshot.currentTargetHex = RoomHexCoordinates.FromHex(currentTargetHex);
+
+        AddInstructionDetail(snapshot.details, "isActivated", FormatBool(isActivated));
+        AddInstructionDetail(snapshot.details, "isAvailable", FormatBool(isAvailable));
+        AddInstructionDetail(snapshot.details, "isAwaitingTargetSelection", FormatBool(isAwaitingTargetSelection));
+        AddInstructionDetail(snapshot.details, "isWaitingForDiceRoll", FormatBool(isWaitingForDiceRoll));
+        AddInstructionDetail(snapshot.details, "currentTargetHex", FormatHex(currentTargetHex));
+        AddInstructionDetail(snapshot.details, "diceRollsPending", diceRollsPending);
+        AddInstructionDetail(snapshot.details, "imposedDistance", imposedDistance);
+        AddInstructionDetail(snapshot.details, "passIsDangerous", FormatBool(passIsDangerous));
+        AddInstructionDetail(snapshot.details, "passHasPathInteractions", FormatBool(passHasPathInteractions));
+
+        if (currentPathInteraction != null)
+        {
+            PlayerToken defender = currentPathInteraction.DefenderToken;
+            snapshot.actorTokenKey = MatchManager.GetStableTokenKey(defender);
+            AddInstructionDetail(snapshot.details, "pathInteractionType", currentPathInteraction.Type);
+            AddInstructionDetail(snapshot.details, "defenderTokenKey", MatchManager.GetStableTokenKey(defender));
+            AddInstructionDetail(snapshot.details, "defenderHex", FormatHex(currentPathInteraction.DefenderHex));
+            AddInstructionDetail(snapshot.details, "currentDefenderHex", FormatHex(currentDefenderHex));
+            AddInstructionDetail(snapshot.details, "interactionHex", FormatHex(currentPathInteraction.InteractionHex));
+            AddInstructionDetail(snapshot.details, "requiresRoll", FormatBool(currentPathInteraction.RequiresRoll));
+            AddInstructionDetail(snapshot.details, "gkPenalty", currentPathInteraction.GkPenalty);
+
+            string passerTokenKey = MatchManager.GetStableTokenKey(MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose);
+            if (!string.IsNullOrWhiteSpace(passerTokenKey)
+                && passerTokenKey != snapshot.actorTokenKey
+                && !snapshot.relatedTokenKeys.Contains(passerTokenKey))
+            {
+                snapshot.relatedTokenKeys.Add(passerTokenKey);
+            }
+        }
+    }
+
+    private static void AddInstructionDetail(Dictionary<string, string> details, string key, object value)
+    {
+        if (details == null || string.IsNullOrWhiteSpace(key) || value == null)
+        {
+            return;
+        }
+
+        string text = value.ToString();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            details[key] = text;
+        }
     }
 
     public string GetInstructions()

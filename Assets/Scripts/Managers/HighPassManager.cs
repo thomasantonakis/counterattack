@@ -84,6 +84,7 @@ public class HighPassManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (isActivated)
         {
+            RecordHighPassClick(token, hex);
             if (isWaitingForConfirmation)
             {
                 HandleHighPassProcess(hex, isGoalkeeperKick);
@@ -252,6 +253,135 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
+    private void RecordHighPassClick(PlayerToken token, HexCell hex)
+    {
+        GameplayActionPreview preview = null;
+        Dictionary<string, string> details = BuildHighPassClickDetails(token, hex, out string action, out string outcome, out preview);
+        GameInputManager.ConsumeCurrentClick(
+            nameof(HighPassManager),
+            action,
+            outcome,
+            details,
+            preview,
+            IsInstructionExpectingHomeTeam());
+    }
+
+    private Dictionary<string, string> BuildHighPassClickDetails(
+        PlayerToken token,
+        HexCell hex,
+        out string action,
+        out string outcome,
+        out GameplayActionPreview preview)
+    {
+        action = GetHighPassClickAction();
+        outcome = "consumed";
+        preview = null;
+
+        Dictionary<string, string> details = new Dictionary<string, string>
+        {
+            ["selectedAction"] = isGoalkeeperKick ? "goalkeeper_kick" : "high_pass",
+            ["phase"] = GetHighPassClickPhase(),
+            ["difficulty"] = MatchManager.Instance != null ? MatchManager.Instance.difficulty_level.ToString() : string.Empty,
+            ["isGoalkeeperKick"] = FormatBool(isGoalkeeperKick),
+            ["isCornerKick"] = FormatBool(isCornerKick),
+            ["clickedTokenKey"] = MatchManager.GetStableTokenKey(token) ?? string.Empty,
+            ["clickedHex"] = FormatHex(hex),
+            ["selectedTokenKey"] = MatchManager.GetStableTokenKey(selectedToken) ?? string.Empty,
+            ["lockedAttackerTokenKey"] = MatchManager.GetStableTokenKey(lockedAttacker) ?? string.Empty,
+            ["currentTargetHexBeforeClick"] = FormatHex(currentTargetHex)
+        };
+
+        if (isWaitingForConfirmation)
+        {
+            int difficulty = MatchManager.Instance != null ? MatchManager.Instance.difficulty_level : 0;
+            bool isValid = IsHighPassTargetAvailableForPreview(hex);
+            bool willConfirm = isValid && WillHighPassTargetClickConfirm(hex, difficulty);
+            HexCell currentTargetAfterClick = PredictCurrentTargetHexAfterClick(hex, isValid);
+            string failureReason = isValid ? "None" : ResolveHighPassTargetFailureReason(hex, isGoalkeeperKick);
+            preview = BuildHighPassTargetPreview(hex, isValid, failureReason, willConfirm);
+
+            details["isValid"] = FormatBool(isValid);
+            details["failureReason"] = failureReason;
+            details["willCommit"] = FormatBool(willConfirm);
+            details["targetHex"] = FormatHex(hex);
+            details["currentTargetHexAfterClick"] = FormatHex(currentTargetAfterClick);
+            details["clickedMatchesCurrentTargetBefore"] = FormatBool(currentTargetHex != null && hex == currentTargetHex);
+            details["targetSelectionTransition"] = ResolveTargetSelectionTransition(
+                currentTargetHex,
+                currentTargetAfterClick,
+                hex,
+                isValid,
+                willConfirm);
+            details["targetTokenKey"] = preview.targetTokenKey ?? string.Empty;
+            details["imposedMinDistance"] = minPassDistance.ToString();
+            details["imposedMaxDistance"] = MAX_PASS_DISTANCE.ToString();
+            details["targetHexStepDistance"] = preview.targetHexStepDistance.ToString();
+            outcome = isValid
+                ? willConfirm ? "target_confirmed" : "target_selected"
+                : "invalid_target";
+        }
+
+        return details;
+    }
+
+    private string GetHighPassClickAction()
+    {
+        if (isWaitingForConfirmation)
+        {
+            return "high_pass_target_selection";
+        }
+
+        if (isWaitingForAttackerSelection)
+        {
+            return isWaitingForAttackerMove
+                ? "high_pass_attacker_move"
+                : "high_pass_attacker_selection";
+        }
+
+        if (isWaitingForDefenderSelection)
+        {
+            return isWaitingForDefenderMove
+                ? "high_pass_defender_move"
+                : "high_pass_defender_selection";
+        }
+
+        if (isWaitingForDefGKChallengeDecision)
+        {
+            return "high_pass_goalkeeper_rush_selection";
+        }
+
+        return "high_pass_click";
+    }
+
+    private string GetHighPassClickPhase()
+    {
+        if (isWaitingForConfirmation)
+        {
+            return "target_selection";
+        }
+
+        if (isWaitingForAttackerSelection)
+        {
+            return isWaitingForAttackerMove
+                ? "attacker_move"
+                : "attacker_selection";
+        }
+
+        if (isWaitingForDefenderSelection)
+        {
+            return isWaitingForDefenderMove
+                ? "defender_move"
+                : "defender_selection";
+        }
+
+        if (isWaitingForDefGKChallengeDecision)
+        {
+            return "goalkeeper_rush";
+        }
+
+        return "unknown";
+    }
+
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
         if (!ShouldShowDifficultyOneTargetHighlights() || !isAvailableTargetsReady)
@@ -280,7 +410,7 @@ public class HighPassManager : MonoBehaviour
             && keyData.key == KeyCode.C)
         {
             MatchManager.Instance.TriggerHighPass();
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(HighPassManager));
             return;
         }
         if (isActivated)
@@ -289,31 +419,31 @@ public class HighPassManager : MonoBehaviour
             if (isWaitingForAttackerSelection && lockedAttacker != null && keyData.key == KeyCode.X)
             {
                 ForfeitAttackerHighPassMove();
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HighPassManager));
                 return;
             }
             else if (isWaitingForDefenderSelection && keyData.key == KeyCode.X)
             {
                 ForfeitDefenderHighPassMove();
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HighPassManager));
                 return;
             }
             else if (isWaitingForAccuracyRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 PerformAccuracyRoll(hasRollOverride ? rollOverride : null); // Handle accuracy roll
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HighPassManager));
                 return;
             }
             else if (isWaitingForDirectionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 PerformDirectionRoll(hasRollOverride ? rollOverride : null); // Handle direction roll
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HighPassManager));
                 return;
             }
             else if (isWaitingForDistanceRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 PerformDistanceRoll(hasRollOverride ? rollOverride : null); // Handle distance roll
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HighPassManager));
                 return;
             }
             else if (isWaitingForDefGKChallengeDecision && keyData.key == KeyCode.X)
@@ -321,7 +451,7 @@ public class HighPassManager : MonoBehaviour
                 hexGrid.ClearHighlightedHexes();
                 Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
                 isWaitingForDefGKChallengeDecision = false;
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(HighPassManager));
                 return;
             }
             else if (isWaitingForDefGKChallengeDecision && keyData.key == KeyCode.G)
@@ -329,7 +459,7 @@ public class HighPassManager : MonoBehaviour
                 if (canDefGKRushWithoutMoving)
                 {
                     ConfirmGKHighPassRushWithoutMove();
-                    keyData.isConsumed = true;
+                    keyData.Consume(nameof(HighPassManager));
                 }
                 else
                 {
@@ -618,6 +748,177 @@ public class HighPassManager : MonoBehaviour
         }
     }
 
+    private HexCell PredictCurrentTargetHexAfterClick(HexCell targetHex, bool isValid)
+    {
+        return isValid ? targetHex : null;
+    }
+
+    private bool WillHighPassTargetClickConfirm(HexCell targetHex, int difficulty)
+    {
+        if (targetHex == null)
+        {
+            return false;
+        }
+
+        return difficulty == 3 || (currentTargetHex != null && targetHex == currentTargetHex);
+    }
+
+    private string ResolveTargetSelectionTransition(
+        HexCell currentTargetBeforeClick,
+        HexCell currentTargetAfterClick,
+        HexCell clickedTargetHex,
+        bool isValid,
+        bool willConfirm)
+    {
+        if (!isValid)
+        {
+            return currentTargetBeforeClick != null
+                ? "selected_to_cleared"
+                : "invalid_no_selection";
+        }
+
+        if (willConfirm)
+        {
+            return currentTargetBeforeClick == clickedTargetHex
+                ? "selected_to_confirmed"
+                : "valid_target_confirmed";
+        }
+
+        if (currentTargetBeforeClick == null && currentTargetAfterClick != null)
+        {
+            return "none_to_selected";
+        }
+
+        if (currentTargetBeforeClick != null && currentTargetBeforeClick != currentTargetAfterClick)
+        {
+            return "selected_to_switched";
+        }
+
+        return "selected_to_selected";
+    }
+
+    private GameplayActionPreview BuildHighPassTargetPreview(
+        HexCell targetHex,
+        bool isValid,
+        string failureReason,
+        bool willConfirm)
+    {
+        PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        int targetDistance = ballHex != null && targetHex != null
+            ? HexGridUtils.GetHexStepDistance(ballHex, targetHex)
+            : 0;
+        int pathHexCount = 0;
+        if (isValid && ballHex != null && targetHex != null && groundBallManager != null)
+        {
+            pathHexCount = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius)?.Count ?? 0;
+        }
+
+        return new GameplayActionPreview
+        {
+            action = isGoalkeeperKick ? "goalkeeper_kick" : "high_pass",
+            phase = "target_selection",
+            isValid = isValid,
+            failureReason = failureReason,
+            willCommit = willConfirm,
+            targetHex = RoomHexCoordinates.FromHex(targetHex),
+            targetTokenKey = MatchManager.GetStableTokenKey(targetToken),
+            imposedMaxDistance = MAX_PASS_DISTANCE,
+            targetHexStepDistance = targetDistance,
+            pathHexCount = pathHexCount
+        };
+    }
+
+    private string ResolveHighPassTargetFailureReason(HexCell targetHex, bool isGK)
+    {
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        if (ballHex == null || targetHex == null)
+        {
+            return "NullBallOrTarget";
+        }
+
+        if (targetHex.isOutOfBounds)
+        {
+            return "OutOfBounds";
+        }
+
+        if (targetHex.isDefenseOccupied)
+        {
+            return "TargetOccupiedByDefender";
+        }
+
+        int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
+        if (isGK)
+        {
+            if (distance < minPassDistance)
+            {
+                return "TooClose";
+            }
+
+            if (ballHex.isInFinalThird * targetHex.isInFinalThird == -1)
+            {
+                return "GoalkeeperKickOppositeFinalThird";
+            }
+        }
+        else if (isCornerKick)
+        {
+            if (!targetHex.isAttackOccupied)
+            {
+                return "CornerKickTargetNotAttacker";
+            }
+
+            if (ballHex.isInFinalThird * targetHex.isInPenaltyBox != 1
+                && distance > MAX_PASS_DISTANCE)
+            {
+                return "CornerKickOutOfRangeOrNotInBox";
+            }
+        }
+        else
+        {
+            if (distance > MAX_PASS_DISTANCE)
+            {
+                return "OutOfRange";
+            }
+
+            if (distance < minPassDistance)
+            {
+                return "TooClose";
+            }
+        }
+
+        List<HexCell> pathHexes = groundBallManager != null
+            ? groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius)
+            : null;
+        if (pathHexes != null)
+        {
+            foreach (HexCell hex in pathHexes)
+            {
+                if (hex != null && hex.isDefenseOccupied && ballHex.GetNeighbors(hexGrid).Contains(hex))
+                {
+                    return "BlockedByAdjacentDefender";
+                }
+            }
+        }
+
+        if (targetHex.isAttackOccupied)
+        {
+            PlayerToken targetToken = targetHex.GetOccupyingToken();
+            if (targetToken != null
+                && MatchManager.Instance != null
+                && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
+                    || targetToken == pendingSetPieceTakerForCommit))
+            {
+                return "TargetExcludedFromNextTouch";
+            }
+
+            return "None";
+        }
+
+        return GetAttackersWithinRangeOfHex(targetHex, ATTACKER_MOVE_RANGE).Count > 0
+            ? "None"
+            : "NoReachableAttacker";
+    }
+
     private void ConfirmHighPassTargetSelection(HexCell clickedHex, bool commitNow)
     {
         currentTargetHex = clickedHex;
@@ -861,11 +1162,6 @@ public class HighPassManager : MonoBehaviour
         lockedAttacker = null;
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
-        // Roll the dice (1 to 6)
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
-        // int diceRoll = 6; // Melina Mode
-        isWaitingForAccuracyRoll = false;
         PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
         if (attackerToken == null)
         {
@@ -873,6 +1169,20 @@ public class HighPassManager : MonoBehaviour
             return;
         }
 
+        GameplayDiceRollResult accuracyRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "high_pass_accuracy",
+            rollOverride,
+            actor: attackerToken,
+            sourceHex: attackerToken.GetCurrentHex(),
+            targetHex: intendedTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["highPassAttribute"] = attackerToken.highPass.ToString(),
+                ["threshold"] = ACCURACY_THRESHOLD.ToString()
+            });
+        int diceRoll = accuracyRoll.roll;
+        // int diceRoll = 6; // Melina Mode
+        isWaitingForAccuracyRoll = false;
         MatchManager.Instance.gameData.gameLog.LogEvent(
             attackerToken,
             MatchManager.ActionType.AerialPassAttempt
@@ -922,8 +1232,13 @@ public class HighPassManager : MonoBehaviour
         // directionRoll = 4; // NE : PerformDirectionRoll(5)
         // directionRoll = 5; // SE : PerformDirectionRoll(6)
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll) - 1;
+        GameplayDiceRollResult directionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "high_pass_direction",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex(),
+            targetHex: currentTargetHex);
+        int diceRoll = directionRoll.roll - 1;
         // int diceRoll = 0; // South Mode
         directionIndex = diceRoll;  // Set the direction index for future use
         int diceRollLabel = diceRoll + 1;
@@ -950,8 +1265,17 @@ public class HighPassManager : MonoBehaviour
     public void PerformDistanceRoll(RollInputOverride? rollOverride)
     {
         Debug.Log("Performing Direction roll to find Long Pass destination.");
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int distanceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "high_pass_distance",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex(),
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["directionIndex"] = directionIndex.ToString()
+            });
+        int distanceRoll = diceResult.roll;
         // int distanceRoll = 5; // Melina Mode
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
@@ -1567,6 +1891,73 @@ public class HighPassManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    public void PopulateInstructionLogSnapshot(GameplayInstructionSnapshot snapshot)
+    {
+        if (snapshot == null)
+        {
+            return;
+        }
+
+        snapshot.details ??= new Dictionary<string, string>();
+        snapshot.relatedTokenKeys ??= new List<string>();
+        snapshot.currentTargetHex = RoomHexCoordinates.FromHex(currentTargetHex);
+
+        PlayerToken passer = MatchManager.Instance != null
+            ? MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
+            : null;
+        if (passer != null)
+        {
+            snapshot.actorTokenKey = MatchManager.GetStableTokenKey(passer);
+        }
+
+        AddInstructionDetail(snapshot.details, "highPassIsActivated", FormatBool(isActivated));
+        AddInstructionDetail(snapshot.details, "highPassIsAvailable", FormatBool(isAvailable));
+        AddInstructionDetail(snapshot.details, "highPassIsAwaitingTargetSelection", FormatBool(isWaitingForConfirmation));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForAttackerSelection", FormatBool(isWaitingForAttackerSelection));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForAttackerMove", FormatBool(isWaitingForAttackerMove));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForDefenderSelection", FormatBool(isWaitingForDefenderSelection));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForDefenderMove", FormatBool(isWaitingForDefenderMove));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForAccuracyRoll", FormatBool(isWaitingForAccuracyRoll));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForDirectionRoll", FormatBool(isWaitingForDirectionRoll));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForDistanceRoll", FormatBool(isWaitingForDistanceRoll));
+        AddInstructionDetail(snapshot.details, "highPassIsWaitingForDefGKChallengeDecision", FormatBool(isWaitingForDefGKChallengeDecision));
+        AddInstructionDetail(snapshot.details, "highPassIsGoalkeeperKick", FormatBool(isGoalkeeperKick));
+        AddInstructionDetail(snapshot.details, "highPassIsCornerKick", FormatBool(isCornerKick));
+        AddInstructionDetail(snapshot.details, "highPassCurrentTargetHex", FormatHex(currentTargetHex));
+        AddInstructionDetail(snapshot.details, "highPassIntendedTargetHex", FormatHex(intendedTargetHex));
+        AddInstructionDetail(snapshot.details, "highPassFinalTargetHex", FormatHex(finalTargetHex));
+        AddInstructionDetail(snapshot.details, "highPassSelectedTokenKey", MatchManager.GetStableTokenKey(selectedToken));
+        AddInstructionDetail(snapshot.details, "highPassLockedAttackerTokenKey", MatchManager.GetStableTokenKey(lockedAttacker));
+        AddInstructionDetail(snapshot.details, "highPassMinDistance", minPassDistance);
+        AddInstructionDetail(snapshot.details, "highPassMaxDistance", MAX_PASS_DISTANCE);
+    }
+
+    private static void AddInstructionDetail(Dictionary<string, string> details, string key, object value)
+    {
+        if (details == null || string.IsNullOrWhiteSpace(key) || value == null)
+        {
+            return;
+        }
+
+        string text = value.ToString();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            details[key] = text;
+        }
+    }
+
+    private static string FormatHex(HexCell hex)
+    {
+        return hex == null
+            ? string.Empty
+            : $"{hex.coordinates.x},{hex.coordinates.z}";
+    }
+
+    private static string FormatBool(bool value)
+    {
+        return value ? "true" : "false";
     }
 
     public string GetInstructions()

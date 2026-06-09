@@ -133,7 +133,7 @@ public class KickoffManager : MonoBehaviour
         if (currentState == MatchManager.GameState.KickOffSetup && keyData.key == KeyCode.Space)
         {
             ConfirmInitialSetup();
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(KickoffManager));
             return;
         }
 
@@ -141,7 +141,7 @@ public class KickoffManager : MonoBehaviour
             && (keyData.key == KeyCode.Return || keyData.key == KeyCode.KeypadEnter))
         {
             ConfirmPostGoalSetup();
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(KickoffManager));
         }
     }
 

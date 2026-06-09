@@ -546,19 +546,19 @@ public class LooseBallManager : MonoBehaviour
         if (isWaitingForDirectionRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
             PerformDirectionRoll(hasRollOverride ? rollOverride : null);
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(LooseBallManager));
             return;
         }
         if (isWaitingForDistanceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
             PerformDistanceRoll(hasRollOverride ? rollOverride : null);
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(LooseBallManager));
             return;
         }
         if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
             PerformInterceptionRoll(hasRollOverride ? rollOverride : null);
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(LooseBallManager));
             return;
         }
     }
@@ -661,8 +661,12 @@ public class LooseBallManager : MonoBehaviour
         // directionRoll = 3; // N  : PerformDirectionRoll(4)
         // directionRoll = 4; // NE : PerformDirectionRoll(5)
         // directionRoll = 5; // SE : PerformDirectionRoll(6)
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int roll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "loose_ball_direction",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex());
+        int roll = diceResult.roll;
         directionRoll = roll - 1;
         isWaitingForDirectionRoll = false;
     }
@@ -682,8 +686,16 @@ public class LooseBallManager : MonoBehaviour
 
     public void PerformDistanceRoll(RollInputOverride? rollOverride)
     {
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        distanceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "loose_ball_distance",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex(),
+            details: new Dictionary<string, string>
+            {
+                ["directionIndex"] = directionRoll.ToString()
+            });
+        distanceRoll = diceResult.roll;
         isWaitingForDistanceRoll = false;
     }
     
@@ -702,8 +714,17 @@ public class LooseBallManager : MonoBehaviour
 
     public void PerformInterceptionRoll(RollInputOverride? rollOverride)
     {
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        interceptionRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "loose_ball_interception",
+            rollOverride,
+            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: ball.GetCurrentHex(),
+            details: new Dictionary<string, string>
+            {
+                ["directionIndex"] = directionRoll.ToString(),
+                ["distanceRoll"] = distanceRoll.ToString()
+            });
+        interceptionRoll = diceResult.roll;
         isWaitingForInterceptionRoll = false;
     }
 

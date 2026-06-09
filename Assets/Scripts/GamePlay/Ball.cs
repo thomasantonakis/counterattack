@@ -59,7 +59,16 @@ public class Ball : MonoBehaviour
 
         if (startingHex != null)
         {
-            PlaceAtCell(startingHex);
+            MatchManager.Instance?.BeginGameplayEventLoggingSuppression();
+            try
+            {
+                PlaceAtCell(startingHex);
+            }
+            finally
+            {
+                MatchManager.Instance?.EndGameplayEventLoggingSuppression();
+            }
+
             Debug.Log("Ball placed at initial hex: " + startingHex.coordinates);
         }
         else
@@ -67,6 +76,7 @@ public class Ball : MonoBehaviour
             Debug.LogError("Starting hex is null!");
         }
         AdjustBallHeightBasedOnOccupancy();
+        MatchManager.Instance?.RecordInitialSetupSnapshot();
     }
 
     // This method is called when players are ready
@@ -137,10 +147,12 @@ public class Ball : MonoBehaviour
             return;
         }
 
+        HexCell previousCell = currentCell;
         currentCell = cell;  // Set the current hex to the given cell
         // transform.position = cell.GetHexCenter();  // Place at the center of the hex
         AdjustBallHeightBasedOnOccupancy();
         goalKeeperManager?.NotifyBallPosition(currentCell);
+        MatchManager.Instance?.RecordBallMove(previousCell, currentCell, "place_at_cell");
     }
 
     public IEnumerator MoveToCell(HexCell newHex, int? roll = null, bool allowGKBoxMove = true, bool stopAfterGKBoxMove = false)
@@ -157,6 +169,7 @@ public class Ball : MonoBehaviour
         float speedMultiplier = 3.5f;  // Scaling factor for shot power influence
         float adjustedSpeed = roll.HasValue ? baseSpeed + (roll.Value * speedMultiplier) : baseSpeed;
 
+        HexCell startCell = currentCell;
         targetCell = newHex;
         isMoving = true;
         Vector3 targetPosition = GetVisualPositionForCell(targetCell);
@@ -221,6 +234,7 @@ public class Ball : MonoBehaviour
         }
         currentCell = targetCell;  // Update current cell
         goalKeeperManager?.NotifyBallPosition(currentCell);
+        MatchManager.Instance?.RecordBallMove(startCell, currentCell, "move_to_cell", roll);
         targetCell = null;         // Clear target cell
     }
 
@@ -249,8 +263,10 @@ public class Ball : MonoBehaviour
     
     public HexCell SetCurrentHex(HexCell newHex)
     {
+        HexCell previousCell = currentCell;
         currentCell = newHex;
         goalKeeperManager?.NotifyBallPosition(currentCell);
+        MatchManager.Instance?.RecordBallMove(previousCell, currentCell, "set_current_hex");
         return currentCell;
     }
 

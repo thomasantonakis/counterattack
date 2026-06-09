@@ -77,6 +77,17 @@ public class PenaltyKickManager : MonoBehaviour
         matchManager.currentState = MatchManager.GameState.PenaltyKickerSelect;
         hexGrid.ClearHighlightedHexes();
         Debug.Log($"Penalty awarded. Select the penalty taker. Spot: {penaltySpot?.coordinates}, defending GK spot: {defendingGKSpot?.coordinates}.");
+        matchManager.RecordGameplayOutcome(
+            "restart.started",
+            "penalty",
+            "preparation_started",
+            sourceHex: ball?.GetCurrentHex(),
+            targetHex: penaltySpot,
+            details: new Dictionary<string, string>
+            {
+                ["takingSide"] = takingSide.ToString(),
+                ["defendingGKSpot"] = FormatHex(defendingGKSpot)
+            });
         TryMoveRequiredTokensToSpots();
     }
 
@@ -140,13 +151,13 @@ public class PenaltyKickManager : MonoBehaviour
         if (isWaitingForSetupPhase && keyData.key == KeyCode.X)
         {
             Debug.LogWarning("Penalty setup confirmation uses [Enter], not [X].");
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(PenaltyKickManager));
             return;
         }
 
         if (isWaitingForSetupPhase && (keyData.key == KeyCode.Return || keyData.key == KeyCode.KeypadEnter))
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(PenaltyKickManager));
             AttemptToAdvanceSetupPhase();
         }
     }
@@ -211,6 +222,18 @@ public class PenaltyKickManager : MonoBehaviour
         selectedKicker = token;
         isWaitingForKickerSelection = false;
         Debug.Log($"{selectedKicker.name} selected as penalty taker.");
+        matchManager.RecordActionSelection(
+            "penalty",
+            selectedKicker,
+            penaltySpot,
+            new Dictionary<string, string> { ["selection"] = "kicker" });
+        matchManager.RecordGameplayOutcome(
+            "restart.taker_selected",
+            "penalty",
+            "taker_selected",
+            actor: selectedKicker,
+            sourceHex: selectedKicker.GetCurrentHex(),
+            targetHex: penaltySpot);
         TryMoveRequiredTokensToSpots();
         BeginSetupPhase(MatchManager.GameState.PenaltyDef1);
     }
@@ -223,6 +246,13 @@ public class PenaltyKickManager : MonoBehaviour
         ClearSetupMoveHover();
         hexGrid.ClearHighlightedHexes();
         TryMoveRequiredTokensToSpots();
+        matchManager.RecordGameplayOutcome(
+            "restart.phase",
+            "penalty",
+            "setup_phase_started",
+            actor: selectedKicker,
+            sourceHex: penaltySpot,
+            details: new Dictionary<string, string> { ["phase"] = state.ToString() });
         Debug.Log($"Penalty setup phase started: {state}.");
     }
 
@@ -267,6 +297,17 @@ public class PenaltyKickManager : MonoBehaviour
         matchManager.currentState = MatchManager.GameState.PenaltyExecution;
         Debug.Log("Penalty setup complete. Select a shot target.");
         matchManager.SetSubstitutionsAvailable(false, "Penalty shot target selection");
+        matchManager.RecordActionSelection(
+            "penalty",
+            selectedKicker,
+            penaltySpot,
+            new Dictionary<string, string> { ["selection"] = "shot" });
+        matchManager.RecordGameplayOutcome(
+            "restart.committed",
+            "penalty",
+            "shot_execution_started",
+            actor: selectedKicker,
+            sourceHex: penaltySpot);
         shotManager.StartPenaltyShotProcess(selectedKicker, penaltySpot);
         isActivated = false;
         isWaitingForExecution = false;
@@ -539,5 +580,10 @@ public class PenaltyKickManager : MonoBehaviour
             .Select(token => !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name)
             .ToList();
         return names.Count > 0 ? string.Join(", ", names) : "none";
+    }
+
+    private static string FormatHex(HexCell hex)
+    {
+        return hex == null ? string.Empty : $"{hex.coordinates.x},{hex.coordinates.z}";
     }
 }

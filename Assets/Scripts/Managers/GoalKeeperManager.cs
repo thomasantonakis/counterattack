@@ -70,12 +70,36 @@ public class GoalKeeperManager : MonoBehaviour
         {
             if (!hexGrid.highlightedHexes.Contains(hex))
             {
-                Debug.Log($"🧤 Invalid move! {hex.name} is not a highlighted hex.");
+                GameInputManager.ConsumeCurrentClick(
+                    nameof(GoalKeeperManager),
+                    "goalkeeper_free_move_target_selection",
+                    "invalid_target",
+                    BuildGoalkeeperClickDetails(token, hex),
+                    consumedByHomeTeam: IsInstructionExpectingHomeTeam());
+                Debug.Log($"🧤 Invalid move! {hex?.name ?? "<none>"} is not a highlighted hex.");
                 return;
             }
+
+            GameInputManager.ConsumeCurrentClick(
+                nameof(GoalKeeperManager),
+                "goalkeeper_free_move_target_selection",
+                "target_selected",
+                BuildGoalkeeperClickDetails(token, hex),
+                consumedByHomeTeam: IsInstructionExpectingHomeTeam());
             // MoveGKforBox(hex);
             _ = MoveGKforBox(hex); // Explicitly discard the task to silence the warning 
         }
+    }
+
+    private Dictionary<string, string> BuildGoalkeeperClickDetails(PlayerToken clickedToken, HexCell clickedHex)
+    {
+        PlayerToken defenderGK = GetActiveDefendingGK();
+        return new Dictionary<string, string>
+        {
+            ["goalkeeperTokenKey"] = MatchManager.GetStableTokenKey(defenderGK) ?? string.Empty,
+            ["clickedTokenKey"] = MatchManager.GetStableTokenKey(clickedToken) ?? string.Empty,
+            ["clickedHex"] = clickedHex != null ? $"{clickedHex.coordinates.x},{clickedHex.coordinates.z}" : string.Empty
+        };
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -86,8 +110,8 @@ public class GoalKeeperManager : MonoBehaviour
             hexGrid.ClearHighlightedHexes();
             hoveredGKMoveHex = null;
             Debug.Log($"GK chooses to not rush out for the High Pass, moving on!");
+            keyData.Consume(nameof(GoalKeeperManager), IsInstructionExpectingHomeTeam());
             isActivated = false;
-            keyData.isConsumed = true;
         }
     }
 

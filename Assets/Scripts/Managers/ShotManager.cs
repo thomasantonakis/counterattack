@@ -472,7 +472,7 @@ public class ShotManager : MonoBehaviour
         }
         if (keyData.key == KeyCode.S && IsSnapshotSuppressedByFinalExtraMovement())
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(ShotManager));
             isWaitingForSnapshotDecisionFromLoose = false;
             isWaitingForShotCommitConfirmation = false;
             ClearShotCommitPreview();
@@ -489,7 +489,7 @@ public class ShotManager : MonoBehaviour
                 isWaitingForShotCommitConfirmation = false;
                 Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
                 StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ShotManager));
                 return;
             }
             if (keyData.key == KeyCode.X)
@@ -508,7 +508,7 @@ public class ShotManager : MonoBehaviour
                     // TODO: this should be "Any other Scenario"
                     Debug.LogWarning($"Ball found itself (NOT during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
                 }
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ShotManager));
                 return;
             }
         }
@@ -516,7 +516,7 @@ public class ShotManager : MonoBehaviour
         {
             if (keyData.key == KeyCode.S)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(ShotManager));
                 isWaitingForShotCommitConfirmation = false;
                 ClearShotCommitPreview();
                 IdentifyShotType();
@@ -528,7 +528,7 @@ public class ShotManager : MonoBehaviour
         }
         if (isAvailable && keyData.key == KeyCode.S)
         {
-            keyData.isConsumed = true; // Consume the key event
+            keyData.Consume(nameof(ShotManager)); // Consume the key event
             if (!CanStartShotFromCurrentPossession(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose))
             {
                 Debug.LogWarning("Shot input ignored because the ball is not held by the attacking team in a valid shooting position.");
@@ -546,6 +546,11 @@ public class ShotManager : MonoBehaviour
 
             if (ShouldRequireShotCommitConfirmation())
             {
+                MatchManager.Instance.RecordActionSelection(
+                    "shot",
+                    MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                    ball?.GetCurrentHex(),
+                    new Dictionary<string, string> { ["selection"] = "preview" });
                 isWaitingForShotCommitConfirmation = true;
                 ShowShotCommitPreviewTargets();
                 Debug.Log("Shot selected. Press [S] again to commit.");
@@ -558,13 +563,13 @@ public class ShotManager : MonoBehaviour
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
         if (isActivated && isWaitingForBlockDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-          keyData.isConsumed = true; // Consume the key event
+          keyData.Consume(nameof(ShotManager)); // Consume the key event
           StartCoroutine(StartShotBlockRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null));  // Pass the stored list
           return;
         }
         else if (isActivated && !isHeaderAtGoal && isWaitingForGKDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-          keyData.isConsumed = true; // Consume the key event
+          keyData.Consume(nameof(ShotManager)); // Consume the key event
           if (interceptors.Count == 0 || !interceptors[0].IsGK)
           {
               Debug.LogWarning("GK roll requested, but the current shot interaction is not a GK save.");
@@ -575,31 +580,31 @@ public class ShotManager : MonoBehaviour
         }
         else if (isActivated && isHeaderAtGoal && isWaitingForGKDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(ShotManager));
             isWaitingForGKDiceRoll = false;
             PerformGKHeaderSave(hasRollOverride ? (RollInputOverride?)rollOverride : null);
         }
         else if (isActivated && isWaitingForShotRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-          keyData.isConsumed = true; // Consume the key event
+          keyData.Consume(nameof(ShotManager)); // Consume the key event
           StartCoroutine(StartShotRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null));
           return;
         }
         else if (isActivated && isWaitingforHandlingTest && (keyData.key == KeyCode.R || hasRollOverride))
         {
-          keyData.isConsumed = true; // Consume the key event
+          keyData.Consume(nameof(ShotManager)); // Consume the key event
           StartCoroutine(ResolveHandlingTest(hasRollOverride ? (RollInputOverride?)rollOverride : null));
           return;
         }
         else if (isActivated && isWaitingforBlockerSelection && keyData.key == KeyCode.X)
         {
-          keyData.isConsumed = true; // Consume the key event
+          keyData.Consume(nameof(ShotManager)); // Consume the key event
           StartDefenderMovementPhase();
           return;
         }
         else if (isActivated && isWaitingForTargetSelection && keyData.key == KeyCode.X)
         {
-          keyData.isConsumed = true; // Consume the key event
+          keyData.Consume(nameof(ShotManager)); // Consume the key event
           CompleteDefenderMovement();
           return;
         }
@@ -607,12 +612,12 @@ public class ShotManager : MonoBehaviour
         {
           if (keyData.key == KeyCode.Q)
           {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(ShotManager));
             QuickThrow();
           }
           if (keyData.key == KeyCode.K)
           {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(ShotManager));
             ActivateFinalThirds();
           }
         }
@@ -916,6 +921,11 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
+        MatchManager.Instance.RecordActionSelection(
+            "shot",
+            shootingToken,
+            originHex,
+            new Dictionary<string, string> { ["shotType"] = FreeKickShotType });
         CommitToThisAction(MatchManager.MatchActionKind.Shot);
         MatchManager.Instance.ClearLastTokenChain();
         MatchManager.Instance.SetLastToken(shootingToken);
@@ -959,6 +969,11 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
+        MatchManager.Instance.RecordActionSelection(
+            "shot",
+            shootingToken,
+            penaltySpot,
+            new Dictionary<string, string> { ["shotType"] = PenaltyShotType });
         CommitToThisAction();
         MatchManager.Instance.ClearLastTokenChain();
         MatchManager.Instance.SetLastToken(shootingToken);
@@ -1385,6 +1400,11 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
+        MatchManager.Instance.RecordActionSelection(
+            shotType == "snapshot" ? "snapshot" : "shot",
+            shootingToken,
+            shooterHex,
+            new Dictionary<string, string> { ["shotType"] = shotType });
         CommitToThisAction(shotType == "snapshot" ? MatchManager.MatchActionKind.None : MatchManager.MatchActionKind.Shot);
         shooter = shootingToken;
         this.shotType = shotType;
@@ -1478,9 +1498,20 @@ public class ShotManager : MonoBehaviour
         // Roll for GK
         PlayerToken gkToken = hexGrid.GetDefendingGK();
         isWaitingForGKDiceRoll = false;
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
-        int gkRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult saveRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "header_at_goal_gk_save",
+            rollOverride,
+            actor: gkToken,
+            relatedToken: headerAttacker,
+            sourceHex: gkToken != null ? gkToken.GetCurrentHex() : null,
+            targetHex: saveHex,
+            details: new Dictionary<string, string>
+            {
+                ["gkPenalty"] = headerGkPenalty.ToString(),
+                ["attackerTotalScore"] = headerAttackerTotalScore.ToString()
+            });
+        bool isJackpot = saveRoll.isJackpot;
+        int gkRoll = saveRoll.roll;
         int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + headerGkPenalty;
         if (totalSavingPower == 50) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
         else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {headerGkPenalty} = {totalSavingPower}");
@@ -2250,10 +2281,20 @@ public class ShotManager : MonoBehaviour
                     yield break;  // Exit the coroutine here to wait for the shot roll
                 }
 
-                // Roll the dice
-                var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-                bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
-                int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+                GameplayDiceRollResult blockRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+                    "shot_block",
+                    rollOverride,
+                    actor: defenderToken,
+                    relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                    sourceHex: currentDefenderBlockingHex,
+                    targetHex: targetHex,
+                    details: new Dictionary<string, string>
+                    {
+                        ["defenderTackling"] = tackling.ToString(),
+                        ["requiredNaturalRoll"] = currentDefenderEntry.requiredNaturalRoll.ToString()
+                    });
+                bool isJackpot = blockRoll.isJackpot;
+                int diceRoll = blockRoll.roll;
                 
                 if (isJackpot) Debug.Log($"{defenderName} rolls A JACKPOT for the block at {currentDefenderBlockingHex.coordinates}!");
                 else Debug.Log($"Dice roll by {defenderName} at {currentDefenderBlockingHex.coordinates}: {diceRoll}");
@@ -2349,13 +2390,23 @@ public class ShotManager : MonoBehaviour
     {
         Debug.Log("Hello from the StartShotRoll");
         
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
+        HexCell originHex = GetShotOriginHex();
+        GameplayDiceRollResult shotRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "shot_roll",
+            rollOverride,
+            actor: shooter,
+            sourceHex: originHex,
+            targetHex: targetHex,
+            details: new Dictionary<string, string>
+            {
+                ["shotType"] = shotType,
+                ["shooterShooting"] = shooter != null ? shooter.shooting.ToString() : string.Empty
+            });
+        bool isJackpot = shotRoll.isJackpot;
         shooterRollWasJackpot = isJackpot;
-        shooterRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
+        shooterRoll = shotRoll.roll;
         // shooterRoll = 2;
         isWaitingForShotRoll = false;
-        HexCell originHex = GetShotOriginHex();
         int shootingPenalty = CalculateShootingPenalty(originHex);
         boxPenalty = originHex != null && originHex.isInPenaltyBox == 0 ? ", -1 outside the Penalty Box" : "";
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
@@ -2753,10 +2804,21 @@ public class ShotManager : MonoBehaviour
             yield break;
         }
 
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isJackpot = IsJackpotRoll(rollOverride, returnedJackpot);
-        int gkRoll = GetRollValueWithJackpot(rollOverride, returnedRoll);
         int gkPenalty = gkEntry.gkPenalty ?? 0;
+        GameplayDiceRollResult saveRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "shot_gk_save",
+            rollOverride,
+            actor: gkToken,
+            relatedToken: shooter,
+            sourceHex: gkToken != null ? gkToken.GetCurrentHex() : null,
+            targetHex: saveHex,
+            details: new Dictionary<string, string>
+            {
+                ["gkPenalty"] = gkPenalty.ToString(),
+                ["totalShotPower"] = totalShotPower.ToString()
+            });
+        bool isJackpot = saveRoll.isJackpot;
+        int gkRoll = saveRoll.roll;
         int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 6;
@@ -2860,8 +2922,18 @@ public class ShotManager : MonoBehaviour
     public IEnumerator ResolveHandlingTest(RollInputOverride? rollOverride)
     {
         PlayerToken gkToken = hexGrid.GetDefendingGK();
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int gkRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult handlingRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "goalkeeper_handling",
+            rollOverride,
+            actor: gkToken,
+            relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: gkToken != null ? gkToken.GetCurrentHex() : null,
+            targetHex: saveHex,
+            details: new Dictionary<string, string>
+            {
+                ["goalkeeperHandling"] = gkToken != null ? gkToken.handling.ToString() : string.Empty
+            });
+        int gkRoll = handlingRoll.roll;
         isWaitingforHandlingTest = false;
         // Handling Test
         if (gkRoll < gkToken.handling)
@@ -3022,8 +3094,13 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator ShootOffTargetRandomizer()
     {
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = returnedRoll;
+        GameplayDiceRollResult randomizerRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "shot_off_target_randomizer",
+            actor: shooter,
+            sourceHex: GetShotOriginHex(),
+            targetHex: targetHex,
+            jackpotEnabled: false);
+        int diceRoll = randomizerRoll.roll;
         // int diceRoll = 6;
         switch (diceRoll)
         {

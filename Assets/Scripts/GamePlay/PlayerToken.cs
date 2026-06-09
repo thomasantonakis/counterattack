@@ -82,6 +82,7 @@ public class PlayerToken : MonoBehaviour
             return;
         }
 
+        HexCell previousHex = currentHex;
         if (currentHex != null)
         {
             if (currentHex.occupyingToken == this) // Ensure it only clears itself
@@ -120,6 +121,7 @@ public class PlayerToken : MonoBehaviour
             UpdateTeamStatusBasedOnHex();  // Update isAttacker based on the hex status
         }
         UpdateDribblerStatus(); // Ensure dribbler status is recalculated
+        MatchManager.Instance?.RecordTokenMove(this, previousHex, newHex, "set_current_hex");
     }
 
     public void MarkAsStarter()
@@ -206,6 +208,53 @@ public class PlayerToken : MonoBehaviour
     public void ClearSubstitutionRequirement()
     {
         requiresSubstitution = false;
+    }
+
+    public void RestoreRuntimeState(RoomTokenSnapshot snapshot, HexCell restoredHex, Vector3 inactivePosition)
+    {
+        if (snapshot == null)
+        {
+            return;
+        }
+
+        isHomeTeam = snapshot.teamSide == "Home";
+        playerName = snapshot.playerName;
+        jerseyNumber = snapshot.jerseyNumber;
+        isAttacker = snapshot.isAttacker;
+        isBooked = snapshot.isBooked;
+        isInjured = snapshot.isInjured;
+        isSentOff = snapshot.isSentOff;
+        requiresSubstitution = snapshot.requiresSubstitution;
+        isPlaying = snapshot.isPlaying;
+        wasSubbedOff = snapshot.wasSubbedOff;
+        wasSubbedOn = snapshot.wasSubbedOn;
+        _isGk = snapshot.isGoalKeeper;
+
+        pace = snapshot.pace;
+        dribbling = snapshot.dribbling;
+        highPass = snapshot.highPass;
+        resilience = snapshot.resilience;
+        heading = snapshot.heading;
+        shooting = snapshot.shooting;
+        tackling = snapshot.tackling;
+        aerial = snapshot.aerial;
+        saving = snapshot.saving;
+        handling = snapshot.handling;
+
+        if (restoredHex != null)
+        {
+            Vector3 hexCenter = restoredHex.GetHexCenter();
+            transform.position = new Vector3(hexCenter.x, 0.2f, hexCenter.z);
+            SetCurrentHex(restoredHex);
+        }
+        else
+        {
+            SetCurrentHex(null);
+            transform.position = inactivePosition;
+        }
+
+        gameObject.SetActive(!isSentOff && (isPlaying || !wasSubbedOff || restoredHex == null));
+        UpdateDribblerStatus();
     }
 
     public void UpdateDribblerStatus()

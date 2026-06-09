@@ -135,7 +135,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isAvailable && !isActivated && keyData.key == KeyCode.F)
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(FirstTimePassManager));
             MatchManager.Instance.TriggerFTP();
             return;
         }
@@ -148,7 +148,7 @@ public class FirstTimePassManager : MonoBehaviour
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
         if (isWaitingForDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(FirstTimePassManager));
             PerformFTPInterceptionRolls(hasRollOverride ? rollOverride : null);
             return;
         }
@@ -160,14 +160,14 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isWaitingForAttackerSelection)
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(FirstTimePassManager));
             SkipAttackerMovementPhase();
             return;
         }
 
         if (isWaitingForDefenderSelection)
         {
-            keyData.isConsumed = true;
+            keyData.Consume(nameof(FirstTimePassManager));
             SkipDefenderMovementPhase();
         }
     }
@@ -1012,13 +1012,21 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         PlayerToken goalkeeper = interaction.DefenderToken;
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        bool isJackpot = rollOverride.HasValue && rollOverride.Value.hasOverride
-            ? rollOverride.Value.isJackpot
-            : returnedJackpot;
-        int diceRoll = rollOverride.HasValue && rollOverride.Value.hasOverride
-            ? rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll
-            : returnedRoll;
+        GameplayDiceRollResult saveRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "ftp_gk_wall_save",
+            rollOverride,
+            actor: goalkeeper,
+            relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: interaction.InteractionHex,
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["passType"] = "first_time_pass",
+                ["goalkeeperSaving"] = goalkeeper.saving.ToString(),
+                ["gkPenalty"] = interaction.GkPenalty.ToString()
+            });
+        bool isJackpot = saveRoll.isJackpot;
+        int diceRoll = saveRoll.roll;
         int savingTotal = diceRoll + goalkeeper.saving + interaction.GkPenalty;
 
         MatchManager.Instance.gameData.gameLog.LogEvent(goalkeeper, MatchManager.ActionType.SaveAttempt);
@@ -1079,8 +1087,20 @@ public class FirstTimePassManager : MonoBehaviour
 
         PlayerToken defenderToken = currentCandidate.DefenderToken;
         int tackling = defenderToken.tackling;
-        var (returnedRoll, returnedJackpot) = helperFunctions.DiceRoll();
-        int diceRoll = GetRollValueWithoutJackpot(rollOverride, returnedRoll);
+        GameplayDiceRollResult interceptionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
+            "ftp_interception",
+            rollOverride,
+            actor: defenderToken,
+            relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: currentDefenderHex,
+            targetHex: currentTargetHex,
+            details: new Dictionary<string, string>
+            {
+                ["passType"] = "first_time_pass",
+                ["defenderTackling"] = tackling.ToString(),
+                ["isBlockingPath"] = currentCandidate.IsBlockingPath.ToString()
+            });
+        int diceRoll = interceptionRoll.roll;
 
         Debug.Log($"Dice roll by {defenderToken.name} at {currentDefenderHex.coordinates}: {diceRoll}");
         MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(

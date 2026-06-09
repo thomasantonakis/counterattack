@@ -185,7 +185,7 @@ public class FreeKickManager : MonoBehaviour
             if (keyData.key == KeyCode.X)
             {
                 Debug.Log("Player pressed X to skip kicker selection.");
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(FreeKickManager));
                 StartCoroutine(HandleKickerSelection());  // Pass no token to skip
                 return;
             }
@@ -199,7 +199,7 @@ public class FreeKickManager : MonoBehaviour
                 selectedToken = null;  // Reset the selected token
                 hexGrid.ClearHighlightedHexes();
                 AttemptToAdvanceToNextPhase();
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(FreeKickManager));
                 return;
             }
         }
@@ -212,7 +212,7 @@ public class FreeKickManager : MonoBehaviour
 
             if (keyWasHandled)
             {
-                keyData.isConsumed = true;
+                keyData.Consume(nameof(FreeKickManager));
             }
         }
     }
@@ -221,6 +221,7 @@ public class FreeKickManager : MonoBehaviour
     {
         if (key == KeyCode.C)
         {
+            RecordSetPieceSelection("cross_selected", KeyCode.C);
             CancelShotPreview();
             hexGrid.ClearHighlightedHexes();
             MatchManager.Instance.TriggerHighPass(isCornerKick: true);
@@ -230,6 +231,7 @@ public class FreeKickManager : MonoBehaviour
 
         if (key == KeyCode.P)
         {
+            RecordSetPieceSelection("short_pass_selected", KeyCode.P);
             CancelShotPreview();
             hexGrid.ClearHighlightedHexes();
             MatchManager.Instance.OfferShortGroundBallPass();
@@ -245,6 +247,7 @@ public class FreeKickManager : MonoBehaviour
     {
         if (key == KeyCode.L)
         {
+            RecordSetPieceSelection("long_ball_selected", KeyCode.L);
             CancelShotPreview();
             hexGrid.ClearHighlightedHexes();
             MatchManager.Instance.TriggerLongPass();
@@ -258,6 +261,7 @@ public class FreeKickManager : MonoBehaviour
 
         if (key == KeyCode.C)
         {
+            RecordSetPieceSelection("cross_selected", KeyCode.C);
             CancelShotPreview();
             hexGrid.ClearHighlightedHexes();
             MatchManager.Instance.TriggerHighPass();
@@ -267,6 +271,7 @@ public class FreeKickManager : MonoBehaviour
 
         if (key == KeyCode.P)
         {
+            RecordSetPieceSelection("standard_pass_selected", KeyCode.P);
             CancelShotPreview();
             hexGrid.ClearHighlightedHexes();
             MatchManager.Instance.TriggerStandardPass();
@@ -301,11 +306,18 @@ public class FreeKickManager : MonoBehaviour
             }
 
             ClearNonShotExecutionPreviews();
+            RecordSetPieceOutcome(
+                "restart.committed",
+                "shot_committed",
+                freeKickShooter,
+                MatchManager.Instance.ball?.GetCurrentHex(),
+                new Dictionary<string, string> { ["key"] = KeyCode.S.ToString() });
             MatchManager.Instance.shotManager.StartFreeKickShotProcess(freeKickShooter);
             FinishExecutionSelection();
             return true;
         }
 
+        RecordSetPieceSelection("shot_previewed", KeyCode.S);
         ClearNonShotExecutionPreviews();
         hexGrid.ClearHighlightedHexes();
         MatchManager.Instance.shotManager.PreviewFreeKickShotCommit();
@@ -405,6 +417,11 @@ public class FreeKickManager : MonoBehaviour
         attackerMovesUsed = 0;
         defenderMovesUsed = 0;
         CalculateDefendersThatNeedToMove();
+        RecordSetPieceOutcome(
+            "restart.started",
+            "preparation_started",
+            targetHex: CurrentSetPieceHex(),
+            details: new Dictionary<string, string> { ["isCornerKick"] = isCornerKick.ToString() });
     }
 
     private void CalculatePotentialKickers()
@@ -520,6 +537,12 @@ public class FreeKickManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes(); 
         CalculatePotentialKickers();
         CalculateDefendersThatNeedToMove();
+        RecordSetPieceOutcome(
+            "restart.taker_selected",
+            clickedToken == null ? "taker_skipped" : "initial_taker_selected",
+            clickedToken,
+            clickedToken != null ? clickedToken.GetCurrentHex() : CurrentSetPieceHex(),
+            new Dictionary<string, string> { ["phase"] = "initial_kicker_selection" });
         // Transition to the first phase
         StartCoroutine(HandleSetupPhase(MatchManager.GameState.FreeKickAttGK, 1));
         yield break;  // Exit early since we already handled the token            
@@ -1061,6 +1084,17 @@ public class FreeKickManager : MonoBehaviour
         MatchManager.Instance.SetLastToken(selectedKicker);
         MatchManager.Instance.MarkSetPieceTakerForNextTouchExclusion(selectedKicker);
         Debug.Log($"{selectedKicker.name} selected as the kicker!");
+        MatchManager.Instance.RecordActionSelection(
+            CurrentSetPieceActionName(),
+            selectedKicker,
+            CurrentSetPieceHex(),
+            new Dictionary<string, string> { ["selection"] = "final_kicker" });
+        RecordSetPieceOutcome(
+            "restart.taker_selected",
+            "final_kicker_selected",
+            selectedKicker,
+            selectedKicker.GetCurrentHex(),
+            new Dictionary<string, string> { ["phase"] = "final_kicker_selection" });
         AdvanceToNextPhase(MatchManager.GameState.FreeKickDefineKicker);
     }
 
@@ -1127,6 +1161,11 @@ public class FreeKickManager : MonoBehaviour
                 matchManager.currentState = MatchManager.GameState.FreeKickExecution;
                 isWaitingForFinalKickerSelection = false;
                 isWaitingForExecution = true;
+                RecordSetPieceOutcome(
+                    "restart.execution_ready",
+                    "ready",
+                    selectedKicker,
+                    CurrentSetPieceHex());
                 // FreeKickCleanup();
                 if (isCornerKick)
                 {
@@ -1175,6 +1214,66 @@ public class FreeKickManager : MonoBehaviour
         selectedToken = null;
         targetHex = null;
         shouldDefMoveTokens.Clear();
+    }
+
+    private string CurrentSetPieceActionName()
+    {
+        return isCornerKick ? "corner" : "free_kick";
+    }
+
+    private HexCell CurrentSetPieceHex()
+    {
+        return isCornerKick && spotkick != null ? spotkick : ball?.GetCurrentHex();
+    }
+
+    private PlayerToken CurrentSetPieceActor()
+    {
+        return selectedKicker != null ? selectedKicker : MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose;
+    }
+
+    private void RecordSetPieceSelection(string outcome, KeyCode key)
+    {
+        MatchManager.Instance.RecordActionSelection(
+            CurrentSetPieceActionName(),
+            CurrentSetPieceActor(),
+            CurrentSetPieceHex(),
+            new Dictionary<string, string>
+            {
+                ["selection"] = outcome,
+                ["key"] = key.ToString()
+            });
+        RecordSetPieceOutcome(
+            "restart.option_selected",
+            outcome,
+            CurrentSetPieceActor(),
+            CurrentSetPieceHex(),
+            new Dictionary<string, string> { ["key"] = key.ToString() });
+    }
+
+    private void RecordSetPieceOutcome(
+        string kind,
+        string outcome,
+        PlayerToken actor = null,
+        HexCell targetHex = null,
+        Dictionary<string, string> details = null)
+    {
+        if (MatchManager.Instance == null)
+        {
+            return;
+        }
+
+        Dictionary<string, string> eventDetails = details != null
+            ? new Dictionary<string, string>(details)
+            : new Dictionary<string, string>();
+        eventDetails["restartType"] = CurrentSetPieceActionName();
+        MatchManager.Instance.RecordGameplayOutcome(
+            kind,
+            CurrentSetPieceActionName(),
+            outcome,
+            actor: actor ?? CurrentSetPieceActor(),
+            sourceHex: CurrentSetPieceHex(),
+            targetHex: targetHex,
+            details: eventDetails);
     }
 
     public IEnumerator MoveTokenToHex(PlayerToken token, HexCell targetHex)
