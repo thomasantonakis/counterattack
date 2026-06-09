@@ -14,6 +14,7 @@ public class Player
     public int Shooting { get; set; }
     public int Tackling { get; set; }
     public string Type { get; set; }
+    public int SquadNumber { get; set; }
 
     // Constructor that takes a dictionary
     public Player(Dictionary<string, string> playerData)
@@ -21,6 +22,10 @@ public class Player
         Name = playerData["Name"];
         Country = playerData["Nationality"];
         Type = playerData["Type"];
+        SquadNumber = playerData.TryGetValue("sqno", out string squadNumberValue)
+            && int.TryParse(squadNumberValue, out int parsedSquadNumber)
+                ? parsedSquadNumber
+                : 0;
 
         // Local variables for parsing
         int pace, dribbling, heading, highPass, resilience, shooting, tackling;

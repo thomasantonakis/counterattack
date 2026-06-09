@@ -4,11 +4,15 @@ using System.IO; // For file operations
 
 public class ApplicationManager : MonoBehaviour
 {
+    public const string HotSeatGameMode = "Hot Seat";
+    public const string SinglePlayerGameMode = "Single Player";
+
     public static ApplicationManager Instance { get; private set; }
     public List<Player> PlayerList { get; private set; }
     // Stores the latest save reference so adjacent scenes keep operating on the same JSON.
     public string LastSavedFileName { get; set; }
     public bool HasExplicitSaveContext { get; private set; }
+    public string SelectedRoomGameMode { get; private set; } = HotSeatGameMode;
 
     void Awake()
     {
@@ -78,5 +82,12 @@ public class ApplicationManager : MonoBehaviour
     {
         LastSavedFileName = string.Empty;
         HasExplicitSaveContext = false;
+    }
+
+    public void SetSelectedRoomGameMode(string gameMode)
+    {
+        SelectedRoomGameMode = string.IsNullOrWhiteSpace(gameMode)
+            ? HotSeatGameMode
+            : gameMode.Trim();
     }
 }

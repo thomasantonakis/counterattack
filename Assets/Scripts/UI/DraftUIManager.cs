@@ -28,6 +28,7 @@ public class DraftUIManager : MonoBehaviour
 
         // The match can only start after every outfield slot has been filled by the draft.
         startGameButton.interactable = false;
+        CheckIfDraftIsComplete();
     }
 
     public void RefreshDraftStateUI()
@@ -45,6 +46,28 @@ public class DraftUIManager : MonoBehaviour
 
         if (draftManager == null)
         {
+            return;
+        }
+
+        if (draftManager.IsFreeDraftMode())
+        {
+            if (draftManager.IsDraftComplete())
+            {
+                draftTurnText.text = "FREE DRAFT COMPLETE";
+                draftBatchText.text = draftManager.GetFreeDraftPhaseName();
+                draftMetaText.text = "All roster slots are filled. Start Game is now available.";
+                return;
+            }
+
+            string freeDraftTurn = draftManager.GetCurrentTeamTurn();
+            if (string.IsNullOrEmpty(freeDraftTurn))
+            {
+                return;
+            }
+
+            draftTurnText.text = $"{freeDraftTurn.ToUpperInvariant()} PICKS NOW";
+            draftBatchText.text = $"{draftManager.GetFreeDraftPhaseName()} • {draftManager.GetFreeDraftProgressText()}";
+            draftMetaText.text = "Drag a row into the active roster, or double-click to assign the next valid slot.";
             return;
         }
 
@@ -273,8 +296,12 @@ public class DraftUIManager : MonoBehaviour
     // Method to check if the draft is complete and enable the Start Game button
     public void CheckIfDraftIsComplete()
     {
-        // In the regular hot-seat flow, the draft is complete once there are no undealt outfielders left.
-        if (draftManager.draftPool.Count == 0)  // If all cards have been dealt
+        if (draftManager == null)
+        {
+            draftManager = FindAnyObjectByType<DraftManager>();
+        }
+
+        if (draftManager != null && draftManager.IsDraftComplete())
         {
             startGameButton.interactable = true;  // Enable the Start Game button
         }

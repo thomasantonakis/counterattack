@@ -33,13 +33,43 @@ public readonly struct TokenKitInstructionPalette
     }
 }
 
+public readonly struct TokenKitSimilarityBreakdown
+{
+    public float OverallScore { get; }
+    public float BodyColorSimilarity { get; }
+    public float TopFaceSimilarity { get; }
+    public float TopFaceMeanColorSimilarity { get; }
+    public bool IsClash { get; }
+
+    public TokenKitSimilarityBreakdown(
+        float overallScore,
+        float bodyColorSimilarity,
+        float topFaceSimilarity,
+        float topFaceMeanColorSimilarity,
+        bool isClash)
+    {
+        OverallScore = overallScore;
+        BodyColorSimilarity = bodyColorSimilarity;
+        TopFaceSimilarity = topFaceSimilarity;
+        TopFaceMeanColorSimilarity = topFaceMeanColorSimilarity;
+        IsClash = isClash;
+    }
+}
+
 public static class TokenKitCatalog
 {
-    // # @thomas Previous working threshold before temporary relaxation: 72f.
-    // Temporarily disabled threshold was 101f. Current active threshold is 90f.
-    public const float ClashThreshold = 90f;
+    // Similarity scores are percentages from 0 to 100.
+    public const float ClashThreshold = 77f;
     private const int FaceAverageSampleTextureSize = 64;
     private const int FaceDominantSampleTextureSize = 64;
+    private const int FacePatternSampleTextureSize = 32;
+    private const float FaceInnerRadius = 0.85f;
+    public const float KitComponentClashThreshold = 77f;
+    private const float BodySimilarityWeight = 2f / 3f;
+    private const float TopFaceSimilarityWeight = 1f / 3f;
+    private const float SharedWhiteTopFaceWeight = 0.20f;
+    private const float WhiteishLuminanceThreshold = 0.78f;
+    private const float WhiteishChromaThreshold = 0.16f;
     private const float SameColorTolerance = 0.015f;
 
     private const string SourceJsonRelativePath = "Tools/kit-picker-v1-11-supported.json";
@@ -214,27 +244,36 @@ public static class TokenKitCatalog
 
     public static float GetSimilarityScore(string presetIdOrAliasA, string presetIdOrAliasB)
     {
+        return GetSimilarityBreakdown(presetIdOrAliasA, presetIdOrAliasB).OverallScore;
+    }
+
+    public static TokenKitSimilarityBreakdown GetSimilarityBreakdown(string presetIdOrAliasA, string presetIdOrAliasB)
+    {
         TokenKitPreset presetA = GetPresetByIdOrAlias(presetIdOrAliasA);
         TokenKitPreset presetB = GetPresetByIdOrAlias(presetIdOrAliasB);
         if (presetA == null || presetB == null)
         {
-            return 0f;
+            return new TokenKitSimilarityBreakdown(0f, 0f, 0f, 0f, false);
         }
 
         TokenStyleDefinition styleA = presetA.Style;
         TokenStyleDefinition styleB = presetB.Style;
 
         float bodyScore = GetColorSimilarity(styleA.bodyColor, styleB.bodyColor);
-        float faceAverageScore = GetColorSimilarity(GetAverageFaceColor(styleA), GetAverageFaceColor(styleB));
+        float faceMeanScore = GetColorSimilarity(GetAverageFaceColor(styleA), GetAverageFaceColor(styleB));
+        float topFaceScore = GetTopFaceSimilarity(styleA, styleB, faceMeanScore);
 
-        // # @thomas This is the kit similarity formula. The body color dominates because that is what reads
-        // first on the pitch. The remaining weight is the average rendered top-face color, sampled from the
-        // actual token-face texture so each family/pattern/stripe width contributes naturally.
-        float weightedScore =
-            (bodyScore * 0.70f) +
-            (faceAverageScore * 0.30f);
+        float weightedScore = (bodyScore * BodySimilarityWeight) + (topFaceScore * TopFaceSimilarityWeight);
+        bool isClash = bodyScore > KitComponentClashThreshold
+            || topFaceScore > KitComponentClashThreshold
+            || weightedScore >= ClashThreshold;
 
-        return Mathf.Round(weightedScore);
+        return new TokenKitSimilarityBreakdown(
+            weightedScore,
+            bodyScore,
+            topFaceScore,
+            faceMeanScore,
+            isClash);
     }
 
     private static Color GetDominantFaceColorExcludingBody(TokenStyleDefinition style)
@@ -332,8 +371,13 @@ public static class TokenKitCatalog
 
     private static Color GetReadableContrastColor(Color color)
     {
-        float luminance = (0.2126f * color.r) + (0.7152f * color.g) + (0.0722f * color.b);
+        float luminance = GetLuminance(color);
         return luminance >= 0.5f ? Color.black : Color.white;
+    }
+
+    private static float GetLuminance(Color color)
+    {
+        return (0.2126f * color.r) + (0.7152f * color.g) + (0.0722f * color.b);
     }
 
     private static bool AreColorsEquivalent(Color a, Color b)
@@ -357,6 +401,20 @@ public static class TokenKitCatalog
         public Vector3 Accumulated;
     }
 
+    private readonly struct TopFacePalette
+    {
+        public Color Primary { get; }
+        public Color Secondary { get; }
+        public bool IsValid { get; }
+
+        public TopFacePalette(Color primary, Color secondary, bool isValid)
+        {
+            Primary = primary;
+            Secondary = secondary;
+            IsValid = isValid;
+        }
+    }
+
     private static Color GetAverageFaceColor(TokenStyleDefinition style)
     {
         Texture2D faceTexture = TokenFacePreviewUtility.GetOrCreateFaceTexture(style, FaceAverageSampleTextureSize);
@@ -374,8 +432,14 @@ public static class TokenKitCatalog
         Vector4 accumulated = Vector4.zero;
         float contributingPixelCount = 0f;
 
-        foreach (Color pixel in pixels)
+        for (int i = 0; i < pixels.Length; i++)
         {
+            if (!IsInnerFacePixel(i, FaceDominantSampleTextureSize))
+            {
+                continue;
+            }
+
+            Color pixel = pixels[i];
             if (pixel.a <= 0f)
             {
                 continue;
@@ -427,10 +491,6 @@ public static class TokenKitCatalog
             presets = new List<TokenKitPreset>(LegacyFallbackPresets);
         }
 
-        EnsureUtilityPreset(presets, GetBlueUtilityPreset());
-        EnsureUtilityPreset(presets, GetRedUtilityPreset());
-        EnsureAlias(presets, "000", "Blue", "Blues");
-        EnsureAlias(presets, "001", "Red");
         EnsureAlias(presets, "028", "R&W", "Red and White Stripes");
 
         return presets;
@@ -769,13 +829,264 @@ public static class TokenKitCatalog
 
     private static float GetColorSimilarity(Color a, Color b)
     {
-        float distance = Mathf.Sqrt(
-            Mathf.Pow(a.r - b.r, 2f) +
-            Mathf.Pow(a.g - b.g, 2f) +
-            Mathf.Pow(a.b - b.b, 2f));
+        float normalizedDistance = Mathf.Clamp01(GetColorDistance(a, b));
+        float closeness = 1f - normalizedDistance;
+        return closeness * closeness * 100f;
+    }
 
-        float normalizedDistance = distance / Mathf.Sqrt(3f);
-        return Mathf.Clamp01(1f - normalizedDistance) * 100f;
+    private static float GetTopFaceSimilarity(TokenStyleDefinition styleA, TokenStyleDefinition styleB, float faceMeanScore)
+    {
+        float directPixelScore = GetTopFacePixelSimilarity(styleA, styleB, swapSecondPalette: false);
+        float swappedPixelScore = GetTopFacePixelSimilarity(styleA, styleB, swapSecondPalette: true);
+        float structuredScore = GetStructuredTopFaceSimilarity(styleA, styleB);
+
+        float renderedScore = Mathf.Max(directPixelScore, swappedPixelScore);
+        float renderedMeanScore = (renderedScore * 0.90f) + (faceMeanScore * 0.10f);
+        return Mathf.Clamp(Mathf.Max(structuredScore, renderedMeanScore), 0f, 100f);
+    }
+
+    private static float GetTopFacePixelSimilarity(TokenStyleDefinition styleA, TokenStyleDefinition styleB, bool swapSecondPalette)
+    {
+        Texture2D faceTextureA = TokenFacePreviewUtility.GetOrCreateFaceTexture(styleA, FacePatternSampleTextureSize);
+        Texture2D faceTextureB = TokenFacePreviewUtility.GetOrCreateFaceTexture(styleB, FacePatternSampleTextureSize);
+        if (faceTextureA == null || faceTextureB == null)
+        {
+            return 0f;
+        }
+
+        Color[] pixelsA = faceTextureA.GetPixels();
+        Color[] pixelsB = faceTextureB.GetPixels();
+        if (pixelsA == null || pixelsB == null || pixelsA.Length == 0 || pixelsA.Length != pixelsB.Length)
+        {
+            return 0f;
+        }
+
+        TopFacePalette paletteB = swapSecondPalette ? GetTopFacePalette(styleB) : default;
+        float accumulatedSimilarity = 0f;
+        float contributingPixelCount = 0f;
+        for (int i = 0; i < pixelsA.Length; i++)
+        {
+            if (!IsInnerFacePixel(i, FacePatternSampleTextureSize))
+            {
+                continue;
+            }
+
+            Color pixelA = pixelsA[i];
+            Color pixelB = pixelsB[i];
+            if (pixelA.a <= 0f || pixelB.a <= 0f)
+            {
+                continue;
+            }
+
+            if (swapSecondPalette && paletteB.IsValid)
+            {
+                pixelB = SwapPaletteColor(pixelB, paletteB);
+            }
+
+            float comparisonWeight = GetTopFaceColorPairWeight(pixelA, pixelB);
+            accumulatedSimilarity += GetColorSimilarity(pixelA, pixelB) * comparisonWeight;
+            contributingPixelCount += comparisonWeight;
+        }
+
+        return contributingPixelCount <= 0f ? 0f : accumulatedSimilarity / contributingPixelCount;
+    }
+
+    private static float GetStructuredTopFaceSimilarity(TokenStyleDefinition styleA, TokenStyleDefinition styleB)
+    {
+        if (styleA == null || styleB == null)
+        {
+            return 0f;
+        }
+
+        if (styleA.family == styleB.family
+            && (styleA.family == TokenStyleFamily.VerticalStripes || styleA.family == TokenStyleFamily.HorizontalStripes))
+        {
+            float stripeScore = GetStripeSlotSimilarity(styleA, styleB);
+            float modeScore = styleA.centerStripeMode == styleB.centerStripeMode ? 100f : 35f;
+            return (stripeScore * 0.92f) + (modeScore * 0.08f);
+        }
+
+        if (styleA.family == styleB.family)
+        {
+            return GetSurfacePatternSimilarity(styleA, styleB);
+        }
+
+        return 0f;
+    }
+
+    private static float GetStripeSlotSimilarity(TokenStyleDefinition styleA, TokenStyleDefinition styleB)
+    {
+        Color[] slotsA = GetStripeSlots(styleA);
+        Color[] slotsB = GetStripeSlots(styleB);
+        float directScore = GetAverageSlotSimilarity(slotsA, slotsB);
+
+        TopFacePalette paletteB = GetTopFacePalette(styleB);
+        if (!paletteB.IsValid)
+        {
+            return directScore;
+        }
+
+        Color[] swappedSlotsB = new Color[slotsB.Length];
+        for (int i = 0; i < slotsB.Length; i++)
+        {
+            swappedSlotsB[i] = SwapPaletteColor(slotsB[i], paletteB);
+        }
+
+        float swappedScore = GetAverageSlotSimilarity(slotsA, swappedSlotsB);
+        return Mathf.Max(directScore, swappedScore);
+    }
+
+    private static Color[] GetStripeSlots(TokenStyleDefinition style)
+    {
+        return new[]
+        {
+            style.leftStripeColor,
+            style.leftMidStripeColor,
+            style.centerStripeColor,
+            style.rightMidStripeColor,
+            style.rightStripeColor
+        };
+    }
+
+    private static float GetAverageSlotSimilarity(Color[] slotsA, Color[] slotsB)
+    {
+        if (slotsA == null || slotsB == null || slotsA.Length == 0 || slotsA.Length != slotsB.Length)
+        {
+            return 0f;
+        }
+
+        float accumulated = 0f;
+        float totalWeight = 0f;
+        for (int i = 0; i < slotsA.Length; i++)
+        {
+            float comparisonWeight = GetTopFaceColorPairWeight(slotsA[i], slotsB[i]);
+            accumulated += GetColorSimilarity(slotsA[i], slotsB[i]) * comparisonWeight;
+            totalWeight += comparisonWeight;
+        }
+
+        return totalWeight <= 0f ? 0f : accumulated / totalWeight;
+    }
+
+    private static float GetTopFaceColorPairWeight(Color a, Color b)
+    {
+        return IsWhiteishTopFaceColor(a) && IsWhiteishTopFaceColor(b)
+            ? SharedWhiteTopFaceWeight
+            : 1f;
+    }
+
+    private static bool IsWhiteishTopFaceColor(Color color)
+    {
+        float luminance = GetLuminance(color);
+        float maxChannel = Mathf.Max(color.r, Mathf.Max(color.g, color.b));
+        float minChannel = Mathf.Min(color.r, Mathf.Min(color.g, color.b));
+        float chroma = maxChannel - minChannel;
+        return luminance >= WhiteishLuminanceThreshold && chroma <= WhiteishChromaThreshold;
+    }
+
+    private static TopFacePalette GetTopFacePalette(TokenStyleDefinition style)
+    {
+        Texture2D faceTexture = TokenFacePreviewUtility.GetOrCreateFaceTexture(style, FaceDominantSampleTextureSize);
+        if (faceTexture == null)
+        {
+            return new TopFacePalette(style.bodyColor, style.accentColor, true);
+        }
+
+        Color[] pixels = faceTexture.GetPixels();
+        if (pixels == null || pixels.Length == 0)
+        {
+            return new TopFacePalette(style.bodyColor, style.accentColor, true);
+        }
+
+        Dictionary<int, ColorBucket> buckets = new Dictionary<int, ColorBucket>();
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            if (!IsInnerFacePixel(i, FaceAverageSampleTextureSize))
+            {
+                continue;
+            }
+
+            Color pixel = pixels[i];
+            if (pixel.a <= 0f)
+            {
+                continue;
+            }
+
+            int key = QuantizeRgb(pixel);
+            if (buckets.TryGetValue(key, out ColorBucket bucket))
+            {
+                bucket.Count++;
+                bucket.Accumulated += new Vector3(pixel.r, pixel.g, pixel.b);
+                buckets[key] = bucket;
+            }
+            else
+            {
+                buckets[key] = new ColorBucket
+                {
+                    Count = 1,
+                    Accumulated = new Vector3(pixel.r, pixel.g, pixel.b)
+                };
+            }
+        }
+
+        List<Color> dominantColors = buckets.Values
+            .OrderByDescending(bucket => bucket.Count)
+            .Select(bucket => new Color(
+                bucket.Accumulated.x / bucket.Count,
+                bucket.Accumulated.y / bucket.Count,
+                bucket.Accumulated.z / bucket.Count,
+                1f))
+            .ToList();
+
+        if (dominantColors.Count == 0)
+        {
+            return new TopFacePalette(style.bodyColor, style.accentColor, true);
+        }
+
+        Color primary = dominantColors[0];
+        Color secondary = style.accentColor;
+        bool foundSecondary = false;
+        foreach (Color candidate in dominantColors)
+        {
+            if (AreColorsEquivalent(candidate, primary))
+            {
+                continue;
+            }
+
+            secondary = candidate;
+            foundSecondary = true;
+            break;
+        }
+
+        if (!foundSecondary)
+        {
+            secondary = GetFirstDistinctConfiguredColor(style);
+        }
+
+        return new TopFacePalette(primary, secondary, true);
+    }
+
+    private static Color SwapPaletteColor(Color pixel, TopFacePalette palette)
+    {
+        float primaryDistance = GetColorDistance(pixel, palette.Primary);
+        float secondaryDistance = GetColorDistance(pixel, palette.Secondary);
+        return primaryDistance <= secondaryDistance ? palette.Secondary : palette.Primary;
+    }
+
+    private static float GetColorDistance(Color a, Color b)
+    {
+        return Mathf.Sqrt(
+            (0.2126f * Mathf.Pow(a.r - b.r, 2f)) +
+            (0.7152f * Mathf.Pow(a.g - b.g, 2f)) +
+            (0.0722f * Mathf.Pow(a.b - b.b, 2f)));
+    }
+
+    private static bool IsInnerFacePixel(int pixelIndex, int textureSize)
+    {
+        int x = pixelIndex % textureSize;
+        int y = pixelIndex / textureSize;
+        float u = ((x + 0.5f) / textureSize * 2f) - 1f;
+        float v = ((y + 0.5f) / textureSize * 2f) - 1f;
+        return Mathf.Sqrt((u * u) + (v * v)) <= FaceInnerRadius;
     }
 
     private static float GetSurfacePatternSimilarity(TokenStyleDefinition styleA, TokenStyleDefinition styleB)

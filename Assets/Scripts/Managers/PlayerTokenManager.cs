@@ -109,8 +109,12 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        string homeGkKit = MatchManager.Instance.gameData.gameSettings.homeGKKit;
+        string awayGkKit = MatchManager.Instance.gameData.gameSettings.awayGKKit;
         TokenStyleDefinition homeTokenStyle = TokenKitCatalog.ResolveStyle(homeKit);
         TokenStyleDefinition awayTokenStyle = TokenKitCatalog.ResolveStyle(awayKit);
+        TokenStyleDefinition homeGkTokenStyle = TokenKitCatalog.ResolveStyle(string.IsNullOrWhiteSpace(homeGkKit) ? homeKit : homeGkKit);
+        TokenStyleDefinition awayGkTokenStyle = TokenKitCatalog.ResolveStyle(string.IsNullOrWhiteSpace(awayGkKit) ? awayKit : awayGkKit);
         GameObject tokenBasePrefab = GetTokenBasePrefab();
         List<HexCell> homeTeamHexes = new List<HexCell>();
         List<HexCell> awayTeamHexes = new List<HexCell>();
@@ -128,8 +132,17 @@ public class PlayerTokenManager : MonoBehaviour
             hex.HighlightHex("isDefenseOccupied");
             awayTeamHexes.Add(hex);
         } 
-        CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle);
-        CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle);
+        MatchManager.Instance?.BeginGameplayEventLoggingSuppression();
+        try
+        {
+            CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle, homeGkTokenStyle);
+            CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle, awayGkTokenStyle);
+        }
+        finally
+        {
+            MatchManager.Instance?.EndGameplayEventLoggingSuppression();
+        }
+
         // After players are instantiated
         MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
@@ -138,8 +151,12 @@ public class PlayerTokenManager : MonoBehaviour
         // Load GameSettings data from the MatchManager
         string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit;
         string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit;
+        string homeGkKit = MatchManager.Instance.gameData.gameSettings.homeGKKit;
+        string awayGkKit = MatchManager.Instance.gameData.gameSettings.awayGKKit;
         TokenStyleDefinition homeTokenStyle = TokenKitCatalog.ResolveStyle(homeKit);
         TokenStyleDefinition awayTokenStyle = TokenKitCatalog.ResolveStyle(awayKit);
+        TokenStyleDefinition homeGkTokenStyle = TokenKitCatalog.ResolveStyle(string.IsNullOrWhiteSpace(homeGkKit) ? homeKit : homeGkKit);
+        TokenStyleDefinition awayGkTokenStyle = TokenKitCatalog.ResolveStyle(string.IsNullOrWhiteSpace(awayGkKit) ? awayKit : awayGkKit);
         GameObject tokenBasePrefab = GetTokenBasePrefab();
         // Create an empty list of HexCells
         List<HexCell> potentialSpawns = new List<HexCell>();
@@ -177,12 +194,21 @@ public class PlayerTokenManager : MonoBehaviour
             awayTeamHexes.Add(awayHex);  // Add to away team hexes
             potentialSpawns.RemoveAt(randomIndex);
         }
-        CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle);
-        CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle);
+        MatchManager.Instance?.BeginGameplayEventLoggingSuppression();
+        try
+        {
+            CreateTeam(tokenBasePrefab, "Home", homeTeamHexes, homeTokenStyle, homeGkTokenStyle);
+            CreateTeam(tokenBasePrefab, "Away", awayTeamHexes, awayTokenStyle, awayGkTokenStyle);
+        }
+        finally
+        {
+            MatchManager.Instance?.EndGameplayEventLoggingSuppression();
+        }
+
         // After players are instantiated
         MatchManager.Instance.NotifyPlayersInstantiated();  // Notify that players are instantiated
     }
-    void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes, TokenStyleDefinition tokenStyle)
+    void CreateTeam(GameObject kitPrefab, string teamType, List<HexCell> spawnHexes, TokenStyleDefinition tokenStyle, TokenStyleDefinition goalkeeperTokenStyle)
     {
         // Find or create the "Player Tokens" parent object in the scene
         GameObject parentObject = GameObject.Find("Player Tokens");
@@ -236,6 +262,9 @@ public class PlayerTokenManager : MonoBehaviour
                 continue;  // Skip this token if no roster data is found
             }
 
+            TokenStyleDefinition resolvedTokenStyle = IsGoalkeeperRosterPlayer(rosterPlayer, int.Parse(jerseyNumber))
+                ? goalkeeperTokenStyle
+                : tokenStyle;
             PlayerToken token = CreateTokenObject(
                 kitPrefab,
                 parentObject.transform,
@@ -243,14 +272,14 @@ public class PlayerTokenManager : MonoBehaviour
                 rosterPlayer,
                 int.Parse(jerseyNumber),
                 playerPosition,
-                tokenStyle);
+                resolvedTokenStyle);
             token.SetCurrentHex(spawnHexes[i]);  // This will dynamically set isAttacker based on the hex status
             token.MarkAsStarter();
             allTokens.Add(token);
         }
 
         Dictionary<string, MatchManager.RosterPlayer> teamRoster = teamType == "Home" ? homeRoster : awayRoster;
-        CreateBenchTokens(kitPrefab, parentObject.transform, teamType, teamRoster, spawnHexes.Count, tokenStyle);
+        CreateBenchTokens(kitPrefab, parentObject.transform, teamType, teamRoster, spawnHexes.Count, tokenStyle, goalkeeperTokenStyle);
     }
 
     private void CreateBenchTokens(
@@ -259,7 +288,8 @@ public class PlayerTokenManager : MonoBehaviour
         string teamType,
         Dictionary<string, MatchManager.RosterPlayer> roster,
         int starterCount,
-        TokenStyleDefinition tokenStyle)
+        TokenStyleDefinition tokenStyle,
+        TokenStyleDefinition goalkeeperTokenStyle)
     {
         bool isHomeTeam = teamType == "Home";
         int squadSize = GetConfiguredSquadSize(roster);
@@ -277,6 +307,9 @@ public class PlayerTokenManager : MonoBehaviour
             .OrderBy(entry => entry.ParsedJersey))
         {
             Vector3 benchPosition = GetBenchTokenPosition(isHomeTeam, benchIndex);
+            TokenStyleDefinition resolvedTokenStyle = IsGoalkeeperRosterPlayer(entry.Player, entry.ParsedJersey)
+                ? goalkeeperTokenStyle
+                : tokenStyle;
             PlayerToken token = CreateTokenObject(
                 kitPrefab,
                 parentTransform,
@@ -284,7 +317,7 @@ public class PlayerTokenManager : MonoBehaviour
                 entry.Player,
                 entry.ParsedJersey,
                 benchPosition,
-                tokenStyle);
+                resolvedTokenStyle);
             token.isAttacker = false;
             token.MarkAsBench();
             benchTokens.Add(token);
@@ -306,10 +339,24 @@ public class PlayerTokenManager : MonoBehaviour
             .Max();
     }
 
+    private static bool IsGoalkeeperRosterPlayer(MatchManager.RosterPlayer rosterPlayer, int jerseyNumber)
+    {
+        return jerseyNumber == 1
+            || jerseyNumber == 12
+            || rosterPlayer.aerial > 0
+            || rosterPlayer.saving > 0
+            || rosterPlayer.handling > 0;
+    }
+
     private Vector3 GetBenchTokenPosition(bool isHomeTeam, int benchIndex)
     {
         float x = isHomeTeam ? -4f - benchIndex : 4f + benchIndex;
         return new Vector3(x, 0.2f, -14f);
+    }
+
+    public Vector3 GetBenchTokenPositionForRestore(bool isHomeTeam, int benchIndex)
+    {
+        return GetBenchTokenPosition(isHomeTeam, benchIndex);
     }
 
     private PlayerToken CreateTokenObject(

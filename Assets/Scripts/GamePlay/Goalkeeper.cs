@@ -14,6 +14,7 @@ public class Goalkeeper
     public int Handling { get; set; }
     public int HighPass { get; set; }
     public string Type { get; set; }
+    public int SquadNumber { get; set; }
 
     // Constructor that takes a dictionary
     public Goalkeeper(Dictionary<string, string> playerData)
@@ -21,6 +22,10 @@ public class Goalkeeper
         Name = playerData["Name"];
         Country = playerData["Nationality"];
         Type = playerData["Type"];
+        SquadNumber = playerData.TryGetValue("sqno", out string squadNumberValue)
+            && int.TryParse(squadNumberValue, out int parsedSquadNumber)
+                ? parsedSquadNumber
+                : 0;
 
         // Local variables for parsing
         int pace, dribbling, aerial, highPass, resilience, saving, handling;
