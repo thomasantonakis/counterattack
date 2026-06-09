@@ -114,7 +114,7 @@ namespace CounterAttack.Editor
             remaining.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
 
             GameObject rowsContainer = CreateRect("SubstitutionRows", column.transform);
-            rowsContainer.AddComponent<LayoutElement>().preferredHeight = 104f;
+            rowsContainer.AddComponent<LayoutElement>().preferredHeight = 140f;
             VerticalLayoutGroup rowsLayout = rowsContainer.AddComponent<VerticalLayoutGroup>();
             rowsLayout.spacing = 4;
             rowsLayout.childControlWidth = true;
@@ -122,7 +122,7 @@ namespace CounterAttack.Editor
             rowsLayout.childForceExpandWidth = true;
             rowsLayout.childForceExpandHeight = false;
 
-            SubstitutionDropdownRowView[] rows = new SubstitutionDropdownRowView[MatchManager.MaxSubstitutionsPerTeam];
+            SubstitutionDropdownRowView[] rows = new SubstitutionDropdownRowView[MatchManager.ExtraTimeMaxSubstitutionsPerTeam];
             for (int index = 0; index < rows.Length; index++)
             {
                 rows[index] = CreateDropdownRow(rowsContainer.transform, isHomeTeam, index);
@@ -205,7 +205,7 @@ namespace CounterAttack.Editor
 
             RectTransform rows = column.Find("SubstitutionRows") as RectTransform;
             DestroyLayoutDriver(rows.gameObject);
-            SetStretchBottom(rows, 12f, 12f, 112f, 12f);
+            SetStretchBottom(rows, 12f, 12f, 148f, 12f);
             ConfigureSubstitutionRows(rows);
         }
 

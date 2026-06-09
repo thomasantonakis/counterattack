@@ -534,6 +534,7 @@ public class RoomSubstitutionSnapshot
 {
     public int homeSubstitutionsUsed;
     public int awaySubstitutionsUsed;
+    public bool extraTimeSubstitutionCreditGranted;
     public bool areSubstitutionsAvailable;
     public string substitutionsAvailabilityReason;
     public bool goalkeeperReplacementRequired;

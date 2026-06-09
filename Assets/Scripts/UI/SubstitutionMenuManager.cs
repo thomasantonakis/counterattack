@@ -347,7 +347,7 @@ public class SubstitutionMenuManager : MonoBehaviour
         remainingText.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
 
         GameObject rowsContainer = CreateRect("SubstitutionRows", column.transform);
-        rowsContainer.AddComponent<LayoutElement>().preferredHeight = 104f;
+        rowsContainer.AddComponent<LayoutElement>().preferredHeight = 140f;
         VerticalLayoutGroup rowsLayout = rowsContainer.AddComponent<VerticalLayoutGroup>();
         rowsLayout.spacing = 4;
         rowsLayout.childControlWidth = true;
@@ -355,7 +355,7 @@ public class SubstitutionMenuManager : MonoBehaviour
         rowsLayout.childForceExpandWidth = true;
         rowsLayout.childForceExpandHeight = false;
 
-        SubstitutionDropdownRowView[] rows = new SubstitutionDropdownRowView[MatchManager.MaxSubstitutionsPerTeam];
+        SubstitutionDropdownRowView[] rows = new SubstitutionDropdownRowView[MatchManager.ExtraTimeMaxSubstitutionsPerTeam];
         for (int index = 0; index < rows.Length; index++)
         {
             rows[index] = CreateSelectionRowView(rowsContainer.transform, isHomeTeam, index);

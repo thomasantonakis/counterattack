@@ -13,6 +13,7 @@ using TMPro;
 public class MatchManager : MonoBehaviour
 {
     public const int MaxSubstitutionsPerTeam = 3;
+    public const int ExtraTimeMaxSubstitutionsPerTeam = MaxSubstitutionsPerTeam + 1;
     private const int StandardHalfDurationMinutes = 45;
     private const int StandardNumberOfHalfs = 2;
     private const int ExtraTimeHalfDurationMinutes = 15;
@@ -1089,6 +1090,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private string emergencyGoalkeeperNominationReason = string.Empty;
     [SerializeField] private int homeSubstitutionsUsed = 0;
     [SerializeField] private int awaySubstitutionsUsed = 0;
+    [SerializeField] private bool extraTimeSubstitutionCreditGranted = false;
     [SerializeField] private bool isHalfEndPendingAfterGoalFlow = false;
     [SerializeField] private MatchActionKind currentCommittedActionKind = MatchActionKind.None;
     [SerializeField] private bool hasUnresolvedCommittedExtraAction = false;
@@ -1460,7 +1462,14 @@ public class MatchManager : MonoBehaviour
 
     public int GetSubstitutionsRemaining(bool isHomeTeam)
     {
-        return Mathf.Max(0, MaxSubstitutionsPerTeam - GetSubstitutionsUsed(isHomeTeam));
+        return Mathf.Max(0, GetSubstitutionLimit(isHomeTeam) - GetSubstitutionsUsed(isHomeTeam));
+    }
+
+    public int GetSubstitutionLimit(bool isHomeTeam)
+    {
+        return extraTimeSubstitutionCreditGranted
+            ? ExtraTimeMaxSubstitutionsPerTeam
+            : MaxSubstitutionsPerTeam;
     }
 
     public bool CanRegisterSubstitution(PlayerToken playerOff, PlayerToken playerOn, out string error)
@@ -3232,8 +3241,8 @@ public class MatchManager : MonoBehaviour
     {
         gameData.stats.homeTeamStats ??= new TeamStats();
         gameData.stats.awayTeamStats ??= new TeamStats();
-        homeSubstitutionsUsed = Mathf.Clamp(gameData.stats.homeTeamStats.totalSubstiutions, 0, MaxSubstitutionsPerTeam);
-        awaySubstitutionsUsed = Mathf.Clamp(gameData.stats.awayTeamStats.totalSubstiutions, 0, MaxSubstitutionsPerTeam);
+        homeSubstitutionsUsed = Mathf.Clamp(gameData.stats.homeTeamStats.totalSubstiutions, 0, GetSubstitutionLimit(true));
+        awaySubstitutionsUsed = Mathf.Clamp(gameData.stats.awayTeamStats.totalSubstiutions, 0, GetSubstitutionLimit(false));
     }
 
     private void Update()
@@ -3350,6 +3359,7 @@ public class MatchManager : MonoBehaviour
         committedExtraActionNumber = 0;
         pendingShotGoalTimeLabel = string.Empty;
         pendingShotGoalExtraActionNumber = 0;
+        extraTimeSubstitutionCreditGranted = false;
     }
 
     private void ResolveClockDependencies()
@@ -4120,6 +4130,7 @@ public class MatchManager : MonoBehaviour
     {
         if (currentHalf == GetConfiguredNumberOfHalfs() && ShouldStartExtraTime())
         {
+            GrantExtraTimeSubstitutionCreditIfNeeded();
             StartCoroutine(RunHalfTimeFlow());
             return;
         }
@@ -4136,6 +4147,27 @@ public class MatchManager : MonoBehaviour
     private bool ShouldStartExtraTime()
     {
         return IsStandardTwoHalfMatch() && IsScoreTied() && TieBreakerIncludesExtraTime();
+    }
+
+    private void GrantExtraTimeSubstitutionCreditIfNeeded()
+    {
+        if (extraTimeSubstitutionCreditGranted)
+        {
+            return;
+        }
+
+        extraTimeSubstitutionCreditGranted = true;
+        OnSubstitutionStateChanged?.Invoke();
+        Debug.Log("Extra time reached. Each team receives one additional substitution.");
+        RecordGameplayOutcome(
+            "substitution.extra_time_credit",
+            "substitution",
+            "granted",
+            details: CreateDetails(
+                ("homeLimit", GetSubstitutionLimit(true)),
+                ("awayLimit", GetSubstitutionLimit(false)),
+                ("homeRemaining", GetSubstitutionsRemaining(true)),
+                ("awayRemaining", GetSubstitutionsRemaining(false))));
     }
 
     private void CompleteMatchAfterFinalHalf()
@@ -4982,6 +5014,7 @@ public class MatchManager : MonoBehaviour
             {
                 homeSubstitutionsUsed = homeSubstitutionsUsed,
                 awaySubstitutionsUsed = awaySubstitutionsUsed,
+                extraTimeSubstitutionCreditGranted = extraTimeSubstitutionCreditGranted,
                 areSubstitutionsAvailable = areSubstitutionsAvailable,
                 substitutionsAvailabilityReason = substitutionsAvailabilityReason,
                 goalkeeperReplacementRequired = goalkeeperReplacementRequired,
@@ -5343,12 +5376,14 @@ public class MatchManager : MonoBehaviour
     {
         if (substitutions == null)
         {
+            extraTimeSubstitutionCreditGranted = IsExtraTimeHalf(currentHalf);
             InitializeSubstitutionCountsFromStats();
             return;
         }
 
-        homeSubstitutionsUsed = Mathf.Clamp(substitutions.homeSubstitutionsUsed, 0, MaxSubstitutionsPerTeam);
-        awaySubstitutionsUsed = Mathf.Clamp(substitutions.awaySubstitutionsUsed, 0, MaxSubstitutionsPerTeam);
+        extraTimeSubstitutionCreditGranted = substitutions.extraTimeSubstitutionCreditGranted || IsExtraTimeHalf(currentHalf);
+        homeSubstitutionsUsed = Mathf.Clamp(substitutions.homeSubstitutionsUsed, 0, GetSubstitutionLimit(true));
+        awaySubstitutionsUsed = Mathf.Clamp(substitutions.awaySubstitutionsUsed, 0, GetSubstitutionLimit(false));
         areSubstitutionsAvailable = substitutions.areSubstitutionsAvailable;
         substitutionsAvailabilityReason = substitutions.substitutionsAvailabilityReason ?? string.Empty;
         goalkeeperReplacementRequired = substitutions.goalkeeperReplacementRequired;
