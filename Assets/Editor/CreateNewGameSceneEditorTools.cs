@@ -16,9 +16,10 @@ namespace CounterAttack.Editor
         private const float DropdownPreviewGap = 8f;
         private const float PreviewSize = 60f;
         private const float DropdownTemplateHeight = 220f;
-        private const float SimilarityY = -430f;
+        private const float GoalkeeperKitRowGap = 76f;
+        private const float SimilarityY = -506f;
         private const float SimilarityHeight = 24f;
-        private const float ValidationY = -456f;
+        private const float ValidationY = -532f;
         private const float ValidationHeight = 26f;
 
         [MenuItem("CounterAttack/Create New Game/Setup Kit Preview UI")]
@@ -48,18 +49,33 @@ namespace CounterAttack.Editor
                     : TMP_Settings.defaultFontAsset;
 
                 LayoutKitRow(homeDropdown, awayDropdown, commonParent);
+                TMP_Dropdown homeGKDropdown = EnsureDropdown(commonParent, "Home GK Kit Dropdown", manager.homeKitDropdown);
+                TMP_Dropdown awayGKDropdown = EnsureDropdown(commonParent, "Away GK Kit Dropdown", manager.awayKitDropdown);
+                RectTransform homeGKDropdownTransform = homeGKDropdown.GetComponent<RectTransform>();
+                RectTransform awayGKDropdownTransform = awayGKDropdown.GetComponent<RectTransform>();
+                LayoutGoalkeeperKitRow(homeDropdown, awayDropdown, homeGKDropdownTransform, awayGKDropdownTransform);
                 ResizeDropdownTemplate(manager.homeKitDropdown);
                 ResizeDropdownTemplate(manager.awayKitDropdown);
+                ResizeDropdownTemplate(homeGKDropdown);
+                ResizeDropdownTemplate(awayGKDropdown);
 
                 PreviewWidgetRefs homePreview = EnsurePreviewWidget(commonParent, "Home Kit Preview", GetPreviewPosition(homeDropdown, commonParent), fontAsset);
                 PreviewWidgetRefs awayPreview = EnsurePreviewWidget(commonParent, "Away Kit Preview", GetPreviewPosition(awayDropdown, commonParent), fontAsset);
+                PreviewWidgetRefs homeGKPreview = EnsurePreviewWidget(commonParent, "Home GK Kit Preview", GetPreviewPosition(homeGKDropdownTransform, commonParent), fontAsset);
+                PreviewWidgetRefs awayGKPreview = EnsurePreviewWidget(commonParent, "Away GK Kit Preview", GetPreviewPosition(awayGKDropdownTransform, commonParent), fontAsset);
                 TMP_Text similarityText = EnsureSimilarityLabel(commonParent, fontAsset, commonParent.sizeDelta.x);
                 TMP_Text validationText = EnsureValidationLabel(commonParent, fontAsset, commonParent.sizeDelta.x);
 
+                manager.homeGKKitDropdown = homeGKDropdown;
+                manager.awayGKKitDropdown = awayGKDropdown;
                 manager.homeKitPreviewImage = homePreview.Image;
                 manager.homeKitPreviewNumberText = homePreview.NumberText;
                 manager.awayKitPreviewImage = awayPreview.Image;
                 manager.awayKitPreviewNumberText = awayPreview.NumberText;
+                manager.homeGKKitPreviewImage = homeGKPreview.Image;
+                manager.homeGKKitPreviewNumberText = homeGKPreview.NumberText;
+                manager.awayGKKitPreviewImage = awayGKPreview.Image;
+                manager.awayGKKitPreviewNumberText = awayGKPreview.NumberText;
                 manager.kitSimilarityText = similarityText;
                 manager.kitValidationText = validationText;
 
@@ -96,6 +112,27 @@ namespace CounterAttack.Editor
             EditorUtility.SetDirty(awayDropdown);
         }
 
+        private static void LayoutGoalkeeperKitRow(
+            RectTransform homeDropdown,
+            RectTransform awayDropdown,
+            RectTransform homeGKDropdown,
+            RectTransform awayGKDropdown)
+        {
+            homeGKDropdown.sizeDelta = homeDropdown.sizeDelta;
+            awayGKDropdown.sizeDelta = awayDropdown.sizeDelta;
+            homeGKDropdown.anchorMin = homeDropdown.anchorMin;
+            homeGKDropdown.anchorMax = homeDropdown.anchorMax;
+            awayGKDropdown.anchorMin = awayDropdown.anchorMin;
+            awayGKDropdown.anchorMax = awayDropdown.anchorMax;
+            homeGKDropdown.pivot = homeDropdown.pivot;
+            awayGKDropdown.pivot = awayDropdown.pivot;
+            homeGKDropdown.anchoredPosition = new Vector2(homeDropdown.anchoredPosition.x, homeDropdown.anchoredPosition.y - GoalkeeperKitRowGap);
+            awayGKDropdown.anchoredPosition = new Vector2(awayDropdown.anchoredPosition.x, awayDropdown.anchoredPosition.y - GoalkeeperKitRowGap);
+
+            EditorUtility.SetDirty(homeGKDropdown);
+            EditorUtility.SetDirty(awayGKDropdown);
+        }
+
         private static Vector2 GetPreviewPosition(RectTransform dropdownTransform, RectTransform panel)
         {
             float panelWidth = panel.sizeDelta.x;
@@ -127,6 +164,23 @@ namespace CounterAttack.Editor
             {
                 EditorUtility.SetDirty(scrollRect);
             }
+        }
+
+        private static TMP_Dropdown EnsureDropdown(RectTransform parent, string dropdownName, TMP_Dropdown sourceDropdown)
+        {
+            Transform existing = parent.Find(dropdownName);
+            if (existing != null && existing.TryGetComponent(out TMP_Dropdown existingDropdown))
+            {
+                return existingDropdown;
+            }
+
+            TMP_Dropdown dropdown = Object.Instantiate(sourceDropdown, parent, false);
+            Undo.RegisterCreatedObjectUndo(dropdown.gameObject, $"Create {dropdownName}");
+            dropdown.name = dropdownName;
+            dropdown.gameObject.SetActive(true);
+            dropdown.ClearOptions();
+            dropdown.RefreshShownValue();
+            return dropdown;
         }
 
         private static PreviewWidgetRefs EnsurePreviewWidget(RectTransform parent, string widgetName, Vector2 anchoredPosition, TMP_FontAsset fontAsset)

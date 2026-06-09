@@ -14,6 +14,11 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log($"OnDrop called for {gameObject.name}");
+        if (eventData == null || eventData.pointerDrag == null)
+        {
+            return;
+        }
+
         // Dragging an already-assigned roster slot is a reordering action, not a new draft pick.
         // Allowed only inside the same roster panel:
         // - outfielders can swap with outfielders
@@ -26,8 +31,9 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             if (draggedSlot.validRosterName == droppedRosterName)
             {
                 // Determine if the target slot is a GK slot (either 1 or 12)
-                bool isCurrentSlotGK = gameObject.name.Contains("-1-") || gameObject.name.Contains("-12-");
-                bool isDraggedSlotGK = draggedSlot.gameObject.name.Contains("-1-") || draggedSlot.gameObject.name.Contains("-12-");
+                PlayerSlotDropHandler draggedDropHandler = draggedSlot.GetComponent<PlayerSlotDropHandler>();
+                bool isCurrentSlotGK = IsGoalkeeperRosterSlot();
+                bool isDraggedSlotGK = draggedDropHandler != null && draggedDropHandler.IsGoalkeeperRosterSlot();
 
                 if (isCurrentSlotGK && isDraggedSlotGK)
                 {
@@ -52,6 +58,17 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
                 Debug.LogError($"Invalid drop: '{gameObject.name}' and '{draggedSlot.name}' are not in the same roster panel.");
             }
         }
+
+        FreeDraftTableRowDragHandler freeDraftRow = eventData.pointerDrag.GetComponent<FreeDraftTableRowDragHandler>();
+        if (freeDraftRow != null)
+        {
+            if (draftManager != null && draftManager.AssignFreeDraftCandidateToSlot(freeDraftRow, this))
+            {
+                freeDraftRow.MarkConsumed();
+            }
+
+            return;
+        }
         
         // Dropping a draft card is a new selection from the current 4-card batch.
         PlayerCardDragHandler cardDragHandler = eventData.pointerDrag.GetComponent<PlayerCardDragHandler>();
@@ -64,8 +81,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
                 return;  // Reject the drop if it's not a valid team panel
             }
             // Outfield cards can never be dropped into goalkeeper slots 1 or 12.
-            bool isCurrentSlotGK = gameObject.name.Contains("-1-") || gameObject.name.Contains("-12-");
-            if (isCurrentSlotGK)
+            if (IsGoalkeeperRosterSlot())
             {
                 Debug.LogWarning($"Invalid drop: Cannot place a player card in a goalkeeper slot {gameObject.name}.");
                 return;  // Reject the drop if it's a GK slot
@@ -113,6 +129,30 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
 
         // If the slot has more than two parts, it's populated with a player's name
         return nameParts.Length > 2;  // More than 2 parts means it's named something like "Away-6-PlayerName"
+    }
+
+    public bool IsGoalkeeperRosterSlot()
+    {
+        int jerseyNumber = GetJerseyNumber();
+        return jerseyNumber == 1 || jerseyNumber == 12;
+    }
+
+    public int GetJerseyNumber()
+    {
+        string[] nameParts = gameObject.name.Split('-');
+        if (nameParts.Length > 1 && int.TryParse(nameParts[1], out int jerseyNumber))
+        {
+            return jerseyNumber;
+        }
+
+        Transform contentWrapper = transform.Find("ContentWrapper");
+        TMP_Text jerseyText = contentWrapper != null ? contentWrapper.Find("Jersey#")?.GetComponent<TMP_Text>() : null;
+        if (jerseyText != null && int.TryParse(jerseyText.text.Trim(), out jerseyNumber))
+        {
+            return jerseyNumber;
+        }
+
+        return -1;
     }
 
     private PlayerSlotDropHandler FindNextAvailableSlot()
@@ -214,6 +254,10 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         gameObject.name = string.IsNullOrWhiteSpace(currentSlotFields[1].text) ? currentSlotBaseName : $"{currentSlotBaseName}-{currentSlotFields[1].text}";
         draggedSlot.name = string.IsNullOrWhiteSpace(draggedSlotFields[1].text) ? draggedSlotBaseName : $"{draggedSlotBaseName}-{draggedSlotFields[1].text}";
         Debug.Log($"Slot renaming completed: {gameObject.name} and {draggedSlot.name}");
+        if (draftManager != null)
+        {
+            draftManager.RefreshRosterAverages();
+        }
     }
 
     public void UpdateGoalkeeperSlot(Goalkeeper gk)
@@ -260,7 +304,49 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         handlingText.color = GetAttributeColor(gk.Handling);
 
         // Rename the slot by appending the goalkeeper's name
-        gameObject.name = $"{gameObject.name}-{gk.Name}";  // Append GK name to the slot name
+        gameObject.name = $"{GetSlotBaseName()}-{gk.Name}";  // Append GK name to the slot name
+        Debug.Log($"Slot renamed to: {gameObject.name}");
+    }
+
+    public void UpdatePlayerSlot(Player player)
+    {
+        Transform contentWrapper = transform.Find("ContentWrapper");
+
+        if (contentWrapper == null)
+        {
+            Debug.LogError("ContentWrapper not found in PlayerSlot prefab");
+            return;
+        }
+
+        TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
+        playerNameText.text = player.Name;
+        playerNameText.color = Color.black;
+
+        TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
+        TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
+        TMP_Text headingText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();
+        TMP_Text highPassText = contentWrapper.Find("HighPassInSlot").GetComponent<TMP_Text>();
+        TMP_Text resilienceText = contentWrapper.Find("ResilienceInSlot").GetComponent<TMP_Text>();
+        TMP_Text shootingText = contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>();
+        TMP_Text tacklingText = contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>();
+
+        paceText.text = player.Pace.ToString();
+        dribblingText.text = player.Dribbling.ToString();
+        headingText.text = player.Heading.ToString();
+        highPassText.text = player.HighPass.ToString();
+        resilienceText.text = player.Resilience.ToString();
+        shootingText.text = player.Shooting.ToString();
+        tacklingText.text = player.Tackling.ToString();
+
+        paceText.color = GetAttributeColor(player.Pace);
+        dribblingText.color = GetAttributeColor(player.Dribbling);
+        headingText.color = GetAttributeColor(player.Heading);
+        highPassText.color = GetAttributeColor(player.HighPass);
+        resilienceText.color = GetAttributeColor(player.Resilience);
+        shootingText.color = GetAttributeColor(player.Shooting);
+        tacklingText.color = GetAttributeColor(player.Tackling);
+
+        gameObject.name = $"{GetSlotBaseName()}-{player.Name}";
         Debug.Log($"Slot renamed to: {gameObject.name}");
     }
 
@@ -308,8 +394,19 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         tacklingText.color = GetAttributeColor(int.Parse(card.tacklingValueText.text));
 
         // Rename the slot by appending the player's name
-        gameObject.name = $"{gameObject.name}-{card.playerNameText.text}";  // Append player name to the slot name
+        gameObject.name = $"{GetSlotBaseName()}-{card.playerNameText.text}";  // Append player name to the slot name
         Debug.Log($"Slot renamed to: {gameObject.name}");
+    }
+
+    private string GetSlotBaseName()
+    {
+        string[] nameParts = gameObject.name.Split('-');
+        if (nameParts.Length >= 2)
+        {
+            return $"{nameParts[0]}-{nameParts[1]}";
+        }
+
+        return gameObject.name;
     }
 
     private Color GetAttributeColor(int value)
