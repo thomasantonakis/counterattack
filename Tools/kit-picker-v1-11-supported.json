@@ -1,9 +1,25 @@
 {
-  "088": {
+  "juve": {
     "examples": "Juventus",
     "pattern": "VerticalStripes",
     "config": {
       "bodyColor": "#1A1A18",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#1A1A18",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#1A1A18",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#1A1A18",
+      "centerStripeMode": "BreakUnderNumber",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
+  "juvea": {
+    "examples": "Juventus Away",
+    "pattern": "VerticalStripes",
+    "config": {
+      "bodyColor": "#E6E6E6",
       "ringColor": "#1A1A18",
       "leftStripeColor": "#1A1A18",
       "leftMidStripeColor": "#E6E6E6",
@@ -21,6 +37,28 @@
     "config": {
       "bodyColor": "#AA141F",
       "accentColor": "#AA141F",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "022": {
+    "examples": "Blue",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#004389",
+      "accentColor": "#004389",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "163": {
+    "examples": "Napoli",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#6099CE",
+      "accentColor": "#6099CE",
       "ringColor": "#E6E6E6",
       "numberColor": "#E6E6E6",
       "font": "Default"
@@ -48,44 +86,22 @@
       "font": "Default"
     }
   },
-  "022": {
-    "examples": "Blue",
-    "pattern": "Plain",
-    "config": {
-      "bodyColor": "#004389",
-      "accentColor": "#004389",
-      "ringColor": "#E6E6E6",
-      "numberColor": "#E6E6E6",
-      "font": "Default"
-    }
-  },
-  "163": {
-    "examples": "Napoli",
-    "pattern": "Plain",
-    "config": {
-      "bodyColor": "#6099CE",
-      "accentColor": "#6099CE",
-      "ringColor": "#E6E6E6",
-      "numberColor": "#E6E6E6",
-      "font": "Default"
-    }
-  },
   "095": {
-      "example": "Celtic",
-      "pattern": "HorizontalStripes",
-      "config": {
-        "bodyColor": "#E6E6E6",
-        "ringColor": "#E6E6E6",
-        "topStripeColor": "#00863A",
-        "topMidStripeColor": "#E6E6E6",
-        "centerStripeColor": "#00863A",
-        "bottomMidStripeColor": "#E6E6E6",
-        "bottomStripeColor": "#00863A",
-        "centerStripeMode": "BreakUnderNumber",
-        "numberColor": "#1A1A18",
-        "font": "Default"
-      }
-    },
+    "example": "Celtic",
+    "pattern": "HorizontalStripes",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#E6E6E6",
+      "topStripeColor": "#00863A",
+      "topMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#00863A",
+      "bottomMidStripeColor": "#E6E6E6",
+      "bottomStripeColor": "#00863A",
+      "centerStripeMode": "BreakUnderNumber",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
   "087": {
     "examples": "Blaugrana",
     "pattern": "VerticalStripes",
@@ -107,12 +123,12 @@
     "pattern": "VerticalStripes",
     "config": {
       "bodyColor": "#1A1A18",
-      "ringColor": "#1A1A18",
-      "leftStripeColor": "#1A1A18",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#B0201E",
       "leftMidStripeColor": "#E6E6E6",
-      "centerStripeColor": "#1A1A18",
+      "centerStripeColor": "#B0201E",
       "rightMidStripeColor": "#E6E6E6",
-      "rightStripeColor": "#1A1A18",
+      "rightStripeColor": "#B0201E",
       "centerStripeMode": "BreakUnderNumber",
       "numberColor": "#1A1A18",
       "font": "Default"
@@ -134,14 +150,19 @@
       "font": "Default"
     }
   },
-  "031": {
-    "examples": "Wolves",
-    "pattern": "Plain",
+  "028a": {
+    "examples": "Olympiacos Away",
+    "pattern": "VerticalStripes",
     "config": {
-      "bodyColor": "#E6610D",
-      "accentColor": "#E6610D",
-      "ringColor": "#2B2718",
-      "numberColor": "#2B2718",
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#E6E6E6",
+      "leftStripeColor": "#B0201E",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#B0201E",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#B0201E",
+      "centerStripeMode": "BreakUnderNumber",
+      "numberColor": "#B0201E",
       "font": "Default"
     }
   },
@@ -210,7 +231,7 @@
     }
   },
   "068": {
-    "examples": "Atl Madrid",
+    "examples": "Atleti",
     "pattern": "VerticalStripes",
     "config": {
       "bodyColor": "#1E4A67",
@@ -226,24 +247,60 @@
     }
   },
   "210": {
-      "examples": "River",
-      "pattern": "singleStriped",
-      "config": {
-        "bodyColor": "#E6E6E6",
-        "stripeColor": "#BB2A22",
-        "numberColor": "#1A1A18",
-        "stripeWidth": 0.2,
-        "stripeRotation": 135,
-        "font": "Default"
-      }
-    },
+    "examples": "River",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "stripeColor": "#BB2A22",
+      "numberColor": "#1A1A18",
+      "stripeWidth": 0.2,
+      "stripeRotation": 135,
+      "font": "Default"
+    }
+  },
+  "210away": {
+    "examples": "River Away",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#1A1A18",
+      "stripeColor": "#BB2A22",
+      "numberColor": "#E6E6E6",
+      "stripeWidth": 0.2,
+      "stripeRotation": 135,
+      "font": "Default"
+    }
+  },
   "211": {
     "examples": "Boca",
     "pattern": "singleStriped",
     "config": {
-      "bodyColor": "#306F9C",
-      "stripeColor": "#CFCB46",
+      "bodyColor": "#0F2C81",
+      "stripeColor": "#F0CE5C",
       "numberColor": "#E6E6E6",
+      "stripeWidth": 0.5,
+      "stripeRotation": 0,
+      "font": "Default"
+    }
+  },
+  "211a": {
+    "examples": "Boca Away",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "stripeColor": "#0F2C81",
+      "numberColor": "#F0CE5C",
+      "stripeWidth": 0.5,
+      "stripeRotation": 0,
+      "font": "Default"
+    }
+  },
+  "211aa": {
+    "examples": "Boca Away 2",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "stripeColor": "#F0CE5C",
+      "numberColor": "#0F2C81",
       "stripeWidth": 0.5,
       "stripeRotation": 0,
       "font": "Default"
@@ -266,7 +323,7 @@
     "config": {
       "bodyColor": "#502854",
       "accentColor": "#502854",
-      "ringColor": "#502854",
+      "ringColor": "#E6E6E6",
       "numberColor": "#E6E6E6",
       "font": "Default"
     }
@@ -324,39 +381,6 @@
       "ringColor": "#1A1A18",
       "numberColor": "#C77896",
       "font": "Default"
-    }
-  },
-  "171": {
-    "examples": "Spain",
-    "pattern": "Plain",
-    "config": {
-      "bodyColor": "#A52D1E",
-      "accentColor": "#A52D1E",
-      "ringColor": "#304896",
-      "numberColor": "#F8DA65",
-      "font": "Default"
-    }
-  },
-  "132": {
-    "examples": "Brazil",
-    "pattern": "Plain",
-    "config": {
-      "bodyColor": "#DFBE3F",
-      "accentColor": "#DFBE3F",
-      "ringColor": "#74A13E",
-      "numberColor": "#1C3F82",
-      "font": "Default"
-    }
-  },
-  "174": {
-    "examples": "Germany",
-    "pattern": "Plain",
-    "config": {
-      "bodyColor": "#E6E6E6",
-      "accentColor": "#E6E6E6",
-      "ringColor": "#1A1A18",
-      "numberColor": "#1A1A18",
-      "font": "Getafe"
     }
   },
   "220": {
@@ -423,12 +447,6 @@
       "font": "Default"
     }
   },
-
-
-
-
-
-
   "089": {
     "examples": "Vitesse",
     "pattern": "VerticalStripes",
@@ -530,17 +548,6 @@
       "accentColor": "#E39BC5",
       "ringColor": "#1A1A18",
       "numberColor": "#1A1A18",
-      "font": "Default"
-    }
-  },
-  "166": {
-    "examples": "England",
-    "pattern": "Plain",
-    "config": {
-      "bodyColor": "#E6E8EC",
-      "accentColor": "#E6E8EC",
-      "ringColor": "#223A7A",
-      "numberColor": "#223A7A",
       "font": "Default"
     }
   },
@@ -759,19 +766,508 @@
     }
   },
   "093": {
-      "example": "Zwolle",
-      "pattern": "HorizontalStripes",
-      "config": {
-        "bodyColor": "#0F5F92",
-        "ringColor": "#0F5F92",
-        "topStripeColor": "#E6E6E6",
-        "topMidStripeColor": "#0F5F92",
-        "centerStripeColor": "#E6E6E6",
-        "bottomMidStripeColor": "#0F5F92",
-        "bottomStripeColor": "#E6E6E6",
-        "centerStripeMode": "BreakUnderNumber",
-        "numberColor": "#E6E6E6",
-        "font": "Default"
-      }
+    "example": "Zwolle",
+    "pattern": "HorizontalStripes",
+    "config": {
+      "bodyColor": "#0F5F92",
+      "ringColor": "#0F5F92",
+      "topStripeColor": "#E6E6E6",
+      "topMidStripeColor": "#0F5F92",
+      "centerStripeColor": "#E6E6E6",
+      "bottomMidStripeColor": "#0F5F92",
+      "bottomStripeColor": "#E6E6E6",
+      "centerStripeMode": "BreakUnderNumber",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
     }
+  },
+  "031": {
+    "examples": "Wolves",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6610D",
+      "accentColor": "#E6610D",
+      "ringColor": "#2B2718",
+      "numberColor": "#2B2718",
+      "font": "Default"
+    }
+  },
+  "arg": {
+    "examples": "Argentina",
+    "pattern": "VerticalStripes",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#1A1A18",
+      "leftStripeColor": "#4e87e3",
+      "leftMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#4e87e3",
+      "rightMidStripeColor": "#E6E6E6",
+      "rightStripeColor": "#4e87e3",
+      "centerStripeMode": "BreakUnderNumber",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
+  "args": {
+    "examples": "Argentina Away",
+    "pattern": "Sleeved",
+    "config": {
+      "bodyColor": "#2a35d8",
+      "sleeveColor": "#1A1A18",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "bel": {
+    "examples": "Belgium",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#9F2D33",
+      "accentColor": "#9F2D33",
+      "ringColor": "#F4BD47",
+      "numberColor": "#F4BD47",
+      "font": "Default"
+    }
+  },
+  "belaway": {
+    "examples": "Belgium Away",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#1A1A18",
+      "topStripeColor": "#F4BD47",
+      "bottomStripeColor": "#9F2D33",
+      "numberColor": "#F4BD47",
+      "font": "Default"
+    }
+  },
+  "bra": {
+    "examples": "Brazil",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#DFBE3F",
+      "accentColor": "#DFBE3F",
+      "ringColor": "#1C3F82",
+      "numberColor": "#74A13E",
+      "font": "Default"
+    }
+  },
+  "braw": {
+    "examples": "Brazil Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#1C3F82",
+      "accentColor": "#1C3F82",
+      "ringColor": "#DFBE3F",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "eng": {
+    "examples": "England",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#AB2727",
+      "numberColor": "#17182F",
+      "font": "Default"
+    }
+  },
+  "engaway": {
+    "examples": "England Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#AA2922",
+      "accentColor": "#AA2922",
+      "ringColor": "#17182F",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "fra": {
+    "examples": "France",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#060d8e",
+      "topStripeColor": "#E6E6E6",
+      "bottomStripeColor": "#c51d17",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "fraaway": {
+    "examples": "France Away",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "topStripeColor": "#060d8e",
+      "bottomStripeColor": "#c51d17",
+      "numberColor": "#060d8e",
+      "font": "Default"
+    }
+  },
+  "ger": {
+    "examples": "Germany",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "topStripeColor": "#e02108",
+      "bottomStripeColor": "#F6C64D",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
+  "geraway": {
+    "examples": "Germany Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#4CA76F",
+      "accentColor": "#4CA76F",
+      "ringColor": "#1A1A18",
+      "numberColor": "#E6E6E6",
+      "font": "Getafe"
+    }
+  },
+  "gre": {
+    "examples": "Greece",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "stripeColor": "#0003ab",
+      "numberColor": "#E6E6E6",
+      "stripeWidth": 0.7,
+      "stripeRotation": 90,
+      "font": "Default"
+    }
+  },
+  "grea": {
+    "examples": "Greece Away",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#0003ab",
+      "stripeColor": "#E6E6E6",
+      "numberColor": "#0003ab",
+      "stripeWidth": 0.7,
+      "stripeRotation": 90,
+      "font": "Default"
+    }
+  },
+  "ireland": {
+    "examples": "Ireland",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#1F4D2B",
+      "accentColor": "#1F4D2B",
+      "ringColor": "#EF8537",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "irelandaway": {
+    "examples": "Ireland Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#EF8537",
+      "numberColor": "#1F4D2B",
+      "font": "Default"
+    }
+  },
+  "ita": {
+    "examples": "Italy",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#0088ff",
+      "accentColor": "#0088ff",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "itaa": {
+    "examples": "Italy Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#0a7031",
+      "numberColor": "#b92823",
+      "font": "Default"
+    }
+  },
+  "civ": {
+    "examples": "Ivory Coast",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#EF843D",
+      "accentColor": "#EF843D",
+      "ringColor": "#326740",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "civa": {
+    "examples": "Ivory Coast Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#326740",
+      "accentColor": "#326740",
+      "ringColor": "#EF843D",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "japan": {
+    "examples": "Japan",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#101F6A",
+      "accentColor": "#101F6A",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#DCC451",
+      "font": "Default"
+    }
+  },
+  "japana": {
+    "examples": "Japan Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#BC2F31",
+      "ringColor": "#E6E6E6",
+      "numberColor": "#2B2718",
+      "font": "Default"
+    }
+  },
+  "mex": {
+    "examples": "Mexico",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#256214",
+      "topStripeColor": "#E6E6E6",
+      "bottomStripeColor": "#b92823",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "Mexaway": {
+    "examples": "Mexico Away",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "topStripeColor": "#256214",
+      "bottomStripeColor": "#b92823",
+      "numberColor": "#256214",
+      "font": "Default"
+    }
+  },
+  "ned": {
+    "examples": "Netherlands",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#ef782e",
+      "accentColor": "#ef782e",
+      "ringColor": "#2B2718",
+      "numberColor": "#2B2718",
+      "font": "Default"
+    }
+  },
+  "nedaway2": {
+    "examples": "Netherlands Away",
+    "pattern": "Roma",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "topStripeColor": "#ef782e",
+      "bottomStripeColor": "#ef782e",
+      "numberColor": "#ef782e",
+      "font": "Default"
+    }
+  },
+  "nigeria": {
+    "examples": "Nigeria",
+    "pattern": "singleStriped",
+    "config": {
+      "bodyColor": "#3E8165",
+      "stripeColor": "#E6E6E6",
+      "numberColor": "#1A1A18",
+      "stripeWidth": 0.3,
+      "stripeRotation": 90,
+      "font": "Default"
+    }
+  },
+  "nigeriaaway": {
+    "examples": "Nigeria Away",
+    "pattern": "Sleeved",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "sleeveColor": "#3E8165",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
+  "por": {
+    "examples": "Portugal",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#C23934",
+      "accentColor": "#C23934",
+      "ringColor": "#2D5737",
+      "numberColor": "#D9C27C",
+      "font": "Default"
+    }
+  },
+  "poraway": {
+    "examples": "Portugal Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#C23934",
+      "numberColor": "#2D5737",
+      "font": "Default"
+    }
+  },
+  "sco": {
+    "examples": "Scotland",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#131D30",
+      "accentColor": "#131D30",
+      "ringColor": "#EFE54D",
+      "numberColor": "#E5E4E4",
+      "font": "Default"
+    }
+  },
+  "scoa": {
+    "examples": "Scotland Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#131D30",
+      "ringColor": "#EFE54D",
+      "numberColor": "#E5E4E4",
+      "font": "Default"
+    }
+  },
+  "esp": {
+    "examples": "Spain",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#A52D1E",
+      "accentColor": "#A52D1E",
+      "ringColor": "#304896",
+      "numberColor": "#F8DA65",
+      "font": "Default"
+    }
+  },
+  "espa": {
+    "examples": "Spain Away",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "accentColor": "#E6E6E6",
+      "ringColor": "#F8DA65",
+      "numberColor": "#A52D1E",
+      "font": "Default"
+    }
+  },
+  "usa": {
+    "example": "USA",
+    "pattern": "HorizontalStripes",
+    "config": {
+      "bodyColor": "#E6E6E6",
+      "ringColor": "#17275D",
+      "topStripeColor": "#BD2827",
+      "topMidStripeColor": "#E6E6E6",
+      "centerStripeColor": "#BD2827",
+      "bottomMidStripeColor": "#E6E6E6",
+      "bottomStripeColor": "#BD2827",
+      "centerStripeMode": "BreakUnderNumber",
+      "numberColor": "#060D36",
+      "font": "Default"
+    }
+  },
+  "usaa": {
+    "example": "USA Away",
+    "pattern": "HorizontalStripes",
+    "config": {
+      "bodyColor": "#1D48A9",
+      "ringColor": "#E6E6E6",
+      "topStripeColor": "#BD2827",
+      "topMidStripeColor": "#BD2827",
+      "centerStripeColor": "#E6E6E6",
+      "bottomMidStripeColor": "##1D48A9",
+      "bottomStripeColor": "##1D48A9",
+      "centerStripeMode": "Solid",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
+  "gk1": {
+    "example": "Black",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#1A1A18",
+      "accentColor": "#1A1A18",
+      "ringColor": "#1A1A18",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "gk2": {
+    "example": "Green",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#66DD88",
+      "accentColor": "#66DD88",
+      "ringColor": "#1A1A18",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "gk3": {
+    "example": "Orange",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E96F46",
+      "accentColor": "#E96F46",
+      "ringColor": "#E96F46",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "gk4": {
+    "example": "LightBlue",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#9ACBF0",
+      "accentColor": "#9ACBF0",
+      "ringColor": "#9ACBF0",
+      "numberColor": "#E6E6E6",
+      "font": "Default"
+    }
+  },
+  "gk6": {
+    "example": "Yellow",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#EBFE53",
+      "accentColor": "#EBFE53",
+      "ringColor": "#EBFE53",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  },
+  "gk5": {
+    "example": "Pink",
+    "pattern": "Plain",
+    "config": {
+      "bodyColor": "#E759E5",
+      "accentColor": "#E759E5",
+      "ringColor": "#E759E5",
+      "numberColor": "#1A1A18",
+      "font": "Default"
+    }
+  }
 }
