@@ -132,7 +132,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
             }
             parent = parent.parent;
         }
-        Debug.LogError($"IsDroppedInValidRosterPanel: Could not detect valid panel for '{droppedTransform.name}', detected '{droppedTransform.parent?.name ?? "None"}' instead.");
+        Debug.LogWarning($"IsDroppedInValidRosterPanel: Could not detect valid panel for '{droppedTransform.name}', detected '{droppedTransform.parent?.name ?? "None"}' instead.");
         return false;
     }
 

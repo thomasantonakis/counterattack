@@ -55,7 +55,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             }
             else
             {
-                Debug.LogError($"Invalid drop: '{gameObject.name}' and '{draggedSlot.name}' are not in the same roster panel.");
+                Debug.LogWarning($"Invalid drop: '{gameObject.name}' and '{draggedSlot.name}' are not in the same roster panel.");
             }
         }
 
