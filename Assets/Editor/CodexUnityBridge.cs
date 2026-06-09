@@ -157,6 +157,10 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     PauseMenuEditorTools.EnsureSubstitutionsButton();
                     return BridgeResponse.Ok(request, "Pause menu substitutions button ensured.");
+                case "ensure_pause_edit_settings_panel":
+                    EnsureEditorMode(command);
+                    PauseMenuEditorTools.EnsureEditSettingsPanel();
+                    return BridgeResponse.Ok(request, "Pause menu Edit Settings panel ensured.");
                 case "reload_kit_presets":
                     EnsureEditorMode(command);
                     TokenKitCatalog.ReloadFromSource();

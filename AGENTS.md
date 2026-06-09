@@ -1,6 +1,7 @@
 ## Unity Workflow Rules
 
 - Never start Unity from Codex. Do not launch Unity, run Unity batchmode, press Play, or press Cmd+P unless it is only to stop an already-running Play Mode session.
+- Never create UI or other visual structures only at runtime. Whenever creating or changing visuals, author them as scene or prefab objects available in edit mode so the designer can inspect and edit them before Play Mode.
 - Before pressing Cmd+P, check that Unity is currently in Play Mode. Treat paused Play Mode as Play Mode. If Unity is neither playing nor paused in Play Mode, do not press Cmd+P because it would start Play Mode.
 - If Unity is in Play Mode, including when paused or stopped at a failed assertion, activate Unity, press Cmd+P once to stop, and wait until Play Mode has stopped. Do not kill the Unity process.
 - After code changes, save assets, press Cmd+R in the already-open Unity editor to reload, then inspect `/Users/t.antonakis/Library/Logs/Unity/Editor.log` for compile errors.
@@ -48,3 +49,7 @@
 This repo may have a `.codegraph/` index. When available, use CodeGraph first for architecture, symbol lookup, impact analysis, callers/callees, and code navigation before falling back to grep/read loops.
 
 For Unity-specific behavior, remember that CodeGraph indexes source code but may not fully understand scene, prefab, inspector, or serialized asset wiring. Verify Unity object references manually when needed.
+
+## Save Log Inspection
+
+- When discussing saved gameplay events, always inspect the current test save at `/Users/t.antonakis/Library/Application Support/DefaultCompany/CA from Chatgpt/SavedGames/__RoomPlaytests/__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json` first. The user overwrites this file during manual testing and references its event sequence numbers in prompts.
