@@ -17,13 +17,26 @@ public class EndGamePanelManager : MonoBehaviour
     private const float RecapHorizontalPadding = 34f;
 
     private GameObject root;
+    private TMP_Text titleText;
     private TMP_Text recapText;
     private ScrollRect recapScroll;
     private Button mainMenuButton;
+    private string titleOverride;
+    private string recapOverride;
 
     public static void ShowMatchEndedPanel()
     {
         EndGamePanelManager manager = ResolveOrCreate();
+        manager.titleOverride = null;
+        manager.recapOverride = null;
+        manager.ShowPanel();
+    }
+
+    public static void ShowPenaltyShootoutPendingPanel()
+    {
+        EndGamePanelManager manager = ResolveOrCreate();
+        manager.titleOverride = "Penalties";
+        manager.recapOverride = "The match is tied after extra time. Penalty shootout flow is pending.";
         manager.ShowPanel();
     }
 
@@ -76,7 +89,12 @@ public class EndGamePanelManager : MonoBehaviour
     private void ShowPanel()
     {
         EnsurePanel();
-        recapText.text = BuildRecapText();
+        if (titleText != null)
+        {
+            titleText.text = string.IsNullOrWhiteSpace(titleOverride) ? "Full Time" : titleOverride;
+        }
+
+        recapText.text = string.IsNullOrWhiteSpace(recapOverride) ? BuildRecapText() : recapOverride;
         root.SetActive(true);
         Canvas.ForceUpdateCanvases();
         Debug.Log("[EndGamePanel] Match recap panel shown.");
@@ -98,6 +116,7 @@ public class EndGamePanelManager : MonoBehaviour
             Destroy(root);
             root = null;
             recapText = null;
+            titleText = null;
             recapScroll = null;
             mainMenuButton = null;
         }
@@ -122,7 +141,7 @@ public class EndGamePanelManager : MonoBehaviour
         panelImage.color = PanelColor;
         panelImage.raycastTarget = true;
 
-        TMP_Text titleText = CreateText("Title", panelRect, "Full Time", 34f, TitleColor, TextAlignmentOptions.Center);
+        titleText = CreateText("Title", panelRect, "Full Time", 34f, TitleColor, TextAlignmentOptions.Center);
         RectTransform titleRect = titleText.rectTransform;
         titleRect.anchorMin = new Vector2(0f, 1f);
         titleRect.anchorMax = new Vector2(1f, 1f);
