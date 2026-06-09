@@ -110,7 +110,7 @@ public class SubstitutionMenuManager : MonoBehaviour
             openButton = CreateButton(pausePanel.transform, "SubstitutionsButton", "Substitutions");
         }
 
-        openButton.onClick.AddListener(OpenSubstitutionMenu);
+        openButton.onClick.AddListener(OnOpenButtonClicked);
     }
 
     public void RefreshOpenButtonState()
@@ -143,6 +143,42 @@ public class SubstitutionMenuManager : MonoBehaviour
     }
 
     public bool IsOpen => substitutionPanel != null && substitutionPanel.activeSelf;
+
+    private void OnOpenButtonClicked()
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        bool canOpen = CanOpenSubstitutionMenu();
+        LogSubstitutionUiClick(
+            "open_button",
+            "open_substitutions",
+            ("available", canOpen),
+            ("homeRemaining", matchManager != null ? matchManager.GetSubstitutionsRemaining(true) : 0),
+            ("awayRemaining", matchManager != null ? matchManager.GetSubstitutionsRemaining(false) : 0),
+            ("goalkeeperReplacementRequired", matchManager != null && matchManager.IsAnyGoalkeeperReplacementRequired));
+        OpenSubstitutionMenu();
+    }
+
+    private void OnBackButtonClicked()
+    {
+        LogSubstitutionUiClick(
+            "back_button",
+            "back_to_pause_menu",
+            ("selectedRowCount", CountSelectedRows()),
+            ("selectedSubstitutions", BuildSelectedSubstitutionsSummary()));
+        CloseToPauseMenu();
+    }
+
+    private void OnConfirmButtonClicked()
+    {
+        List<SelectionRow> validRows = GetValidRows();
+        LogSubstitutionUiClick(
+            "confirm_button",
+            "confirm_substitutions",
+            ("validSelectionCount", validRows.Count),
+            ("requiredSubstitutionsSelected", AreRequiredSubstitutionsSelected()),
+            ("selectedSubstitutions", BuildSelectedSubstitutionsSummary()));
+        ConfirmSubstitutions();
+    }
 
     public void OpenSubstitutionMenu()
     {
@@ -269,8 +305,8 @@ public class SubstitutionMenuManager : MonoBehaviour
         confirmButton = substitutionView.confirmButton;
         backButton.onClick.RemoveAllListeners();
         confirmButton.onClick.RemoveAllListeners();
-        backButton.onClick.AddListener(CloseToPauseMenu);
-        confirmButton.onClick.AddListener(ConfirmSubstitutions);
+        backButton.onClick.AddListener(OnBackButtonClicked);
+        confirmButton.onClick.AddListener(OnConfirmButtonClicked);
     }
 
     private void CreateTeamColumn(Transform parent, bool isHomeTeam)
@@ -638,6 +674,12 @@ public class SubstitutionMenuManager : MonoBehaviour
             ? row.outgoingOptions[value]
             : null;
         row.selectedIncoming = null;
+        LogSubstitutionUiClick(
+            "outgoing_dropdown",
+            "select_outgoing_player",
+            ("team", FormatTeamSide(row.isHomeTeam)),
+            ("row", GetTeamRowNumber(row)),
+            ("selectedToken", FormatTokenForLog(row.selectedOutgoing)));
         RebuildDropdownOptions();
         if (row.selectedOutgoing != null)
         {
@@ -655,6 +697,13 @@ public class SubstitutionMenuManager : MonoBehaviour
         row.selectedIncoming = value >= 0 && value < row.incomingOptions.Count
             ? row.incomingOptions[value]
             : null;
+        LogSubstitutionUiClick(
+            "incoming_dropdown",
+            "select_incoming_player",
+            ("team", FormatTeamSide(row.isHomeTeam)),
+            ("row", GetTeamRowNumber(row)),
+            ("selectedToken", FormatTokenForLog(row.selectedIncoming)),
+            ("outgoingToken", FormatTokenForLog(row.selectedOutgoing)));
         RebuildDropdownOptions();
     }
 
@@ -839,6 +888,59 @@ public class SubstitutionMenuManager : MonoBehaviour
                 && row.selectedIncoming != null
                 && matchManager.CanRegisterSubstitution(row.selectedOutgoing, row.selectedIncoming, out _))
             .ToList();
+    }
+
+    private void LogSubstitutionUiClick(
+        string control,
+        string action,
+        params (string Key, object Value)[] details)
+    {
+        MatchManager.Instance?.RecordUiClick("substitutions_panel", control, action, "clicked", details);
+    }
+
+    private int CountSelectedRows()
+    {
+        return selectionRows.Count(row => row.selectedOutgoing != null || row.selectedIncoming != null);
+    }
+
+    private int GetTeamRowNumber(SelectionRow targetRow)
+    {
+        if (targetRow == null)
+        {
+            return 0;
+        }
+
+        List<SelectionRow> teamRows = selectionRows
+            .Where(row => row.isHomeTeam == targetRow.isHomeTeam)
+            .ToList();
+        int index = teamRows.IndexOf(targetRow);
+        return index >= 0 ? index + 1 : 0;
+    }
+
+    private string BuildSelectedSubstitutionsSummary()
+    {
+        IEnumerable<string> selectedRows = selectionRows
+            .Where(row => row.selectedOutgoing != null || row.selectedIncoming != null)
+            .Select(row => $"{FormatTeamSide(row.isHomeTeam)}:{FormatTokenForLog(row.selectedOutgoing)}->{FormatTokenForLog(row.selectedIncoming)}");
+        return string.Join("; ", selectedRows);
+    }
+
+    private static string FormatTeamSide(bool isHomeTeam)
+    {
+        return isHomeTeam ? "Home" : "Away";
+    }
+
+    private static string FormatTokenForLog(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "-";
+        }
+
+        string playerName = string.IsNullOrWhiteSpace(token.playerName)
+            ? token.name
+            : token.playerName;
+        return $"{MatchManager.GetStableTokenKey(token)}:{playerName}";
     }
 
     private void ConfirmSubstitutions()
