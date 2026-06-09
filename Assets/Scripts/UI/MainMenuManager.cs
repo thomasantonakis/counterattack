@@ -3,14 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+    private const string CreateLoadRoomSceneName = "CreateLoadRoom";
+
     public void PlaySinglePlayerGame()
     {
-        Debug.Log("Starting Single Player Game!");
+        OpenCreateLoadRoom(ApplicationManager.SinglePlayerGameMode);
     }
 
     public void PlayHotSeatGame()
     {
-        SceneManager.LoadScene("HotSeat"); // Replace with your game scene name
+        OpenCreateLoadRoom(ApplicationManager.HotSeatGameMode);
     }
 
     public void PlayMultiPlayerGame()
@@ -42,5 +44,13 @@ public class MainMenuManager : MonoBehaviour
     {
         Debug.Log("Game Quit!");
         Application.Quit(); // This will close the application
+    }
+
+    private static void OpenCreateLoadRoom(string gameMode)
+    {
+        ApplicationManager.EnsureInstanceExists();
+        ApplicationManager.Instance.SetSelectedRoomGameMode(gameMode);
+        Debug.Log($"Opening {gameMode} create/load room.");
+        SceneManager.LoadScene(CreateLoadRoomSceneName);
     }
 }
