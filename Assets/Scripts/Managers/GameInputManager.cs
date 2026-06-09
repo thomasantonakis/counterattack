@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using TMPro;
@@ -70,6 +71,8 @@ public class KeyPressData
         public bool ctrl;
         public bool alt;
         public bool isConsumed;
+        public string consumedBy;
+        public bool? consumedByHomeTeam;
 
         public KeyPressData(KeyCode key, bool shift, bool ctrl, bool alt)
         {
@@ -78,13 +81,118 @@ public class KeyPressData
             this.ctrl = ctrl;
             this.alt = alt;
             this.isConsumed = false; // set default here
+            this.consumedBy = string.Empty;
+            this.consumedByHomeTeam = null;
+        }
+
+        public void Consume(string consumer, bool? consumedByHomeTeam = null)
+        {
+            isConsumed = true;
+            if (string.IsNullOrWhiteSpace(consumedBy))
+            {
+                consumedBy = consumer ?? string.Empty;
+            }
+
+            if (!this.consumedByHomeTeam.HasValue)
+            {
+                this.consumedByHomeTeam = consumedByHomeTeam;
+            }
+        }
+
+        public void SetConsumedTeamIfMissing(bool? isHomeTeam)
+        {
+            if (!consumedByHomeTeam.HasValue)
+            {
+                consumedByHomeTeam = isHomeTeam;
+            }
         }
 
         public override string ToString()
         {
-            return $"{(ctrl ? "Ctrl+" : "")}{(alt ? "Alt+" : "")}{(shift ? "Shift+" : "")}{key}, , Consumed: {isConsumed}";
+            return $"{(ctrl ? "Ctrl+" : "")}{(alt ? "Alt+" : "")}{(shift ? "Shift+" : "")}{key}, Consumed: {isConsumed}, ConsumedBy: {consumedBy}";
         }
     }
+
+public class ClickInputData
+{
+    public PlayerToken token;
+    public HexCell hex;
+    public bool isOutOfBounds;
+    public bool isConsumed;
+    public string consumedBy;
+    public bool? consumedByHomeTeam;
+    public string action;
+    public string outcome;
+    public Dictionary<string, string> details;
+    public GameplayActionPreview actionPreview;
+
+    public ClickInputData(PlayerToken token, HexCell hex, bool isOutOfBounds)
+    {
+        this.token = token;
+        this.hex = hex;
+        this.isOutOfBounds = isOutOfBounds;
+        isConsumed = false;
+        consumedBy = string.Empty;
+        consumedByHomeTeam = null;
+        action = "click";
+        outcome = isOutOfBounds ? "out_of_bounds" : "dispatched";
+        details = new Dictionary<string, string>();
+    }
+
+    public void Consume(
+        string consumer,
+        string actionName,
+        string outcomeName,
+        Dictionary<string, string> resultDetails = null,
+        GameplayActionPreview preview = null,
+        bool? consumedByHomeTeam = null)
+    {
+        isConsumed = true;
+        if (string.IsNullOrWhiteSpace(consumedBy))
+        {
+            consumedBy = consumer ?? string.Empty;
+        }
+
+        if (!this.consumedByHomeTeam.HasValue)
+        {
+            this.consumedByHomeTeam = consumedByHomeTeam;
+        }
+
+        if (!string.IsNullOrWhiteSpace(actionName))
+        {
+            action = actionName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(outcomeName))
+        {
+            outcome = outcomeName;
+        }
+
+        if (resultDetails != null)
+        {
+            foreach (KeyValuePair<string, string> detail in resultDetails)
+            {
+                if (!string.IsNullOrWhiteSpace(detail.Key) && detail.Value != null)
+                {
+                    details[detail.Key] = detail.Value;
+                }
+            }
+        }
+
+        if (preview != null)
+        {
+            actionPreview = preview;
+        }
+    }
+
+    public void SetConsumedTeamIfMissing(bool? isHomeTeam)
+    {
+        if (!consumedByHomeTeam.HasValue)
+        {
+            consumedByHomeTeam = isHomeTeam;
+        }
+    }
+}
 
 public class GameInputManager : MonoBehaviour
 {
@@ -143,6 +251,7 @@ public class GameInputManager : MonoBehaviour
     private Canvas hoverNameCanvas;
     private RectTransform hoverNameRect;
     private TextMeshProUGUI hoverNameLabel;
+    private static ClickInputData currentClick;
 
     void Update()
     {
@@ -265,11 +374,41 @@ public class GameInputManager : MonoBehaviour
 
             if (TryHandleEmergencyGoalkeeperNomination(clickedToken))
             {
+                ClickInputData emergencyClickData = new ClickInputData(clickedToken, clickedHex, isOOBClick);
+                GameplayEvent emergencyClickEvent = MatchManager.Instance?.BeginInputClick(emergencyClickData);
+                emergencyClickData.Consume(
+                    nameof(MatchManager),
+                    "emergency_goalkeeper_nomination",
+                    "selected");
+                MatchManager.Instance?.CompleteInputClick(emergencyClickEvent, emergencyClickData);
                 return;
             }
 
-            OnClick?.Invoke(clickedToken, clickedHex);  // 📣 Broadcast the click event
+            ClickInputData clickData = new ClickInputData(clickedToken, clickedHex, isOOBClick);
+            GameplayEvent clickEvent = MatchManager.Instance?.BeginInputClick(clickData);
+            currentClick = clickData;
+            try
+            {
+                OnClick?.Invoke(clickedToken, clickedHex);  // 📣 Broadcast the click event
+            }
+            finally
+            {
+                currentClick = null;
+                clickData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(clickData.consumedBy));
+                MatchManager.Instance?.CompleteInputClick(clickEvent, clickData);
+            }
         }
+    }
+
+    public static void ConsumeCurrentClick(
+        string consumer,
+        string actionName,
+        string outcomeName,
+        Dictionary<string, string> resultDetails = null,
+        GameplayActionPreview preview = null,
+        bool? consumedByHomeTeam = null)
+    {
+        currentClick?.Consume(consumer, actionName, outcomeName, resultDetails, preview, consumedByHomeTeam);
     }
 
     private bool TryHandleEmergencyGoalkeeperNomination(PlayerToken token)
@@ -311,6 +450,7 @@ public class GameInputManager : MonoBehaviour
         foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
         {
             if (!Input.GetKeyDown(kcode)) continue;
+            if (IsMouseButtonKeyCode(kcode)) continue;
             if (kcode is
                 KeyCode.LeftShift or KeyCode.RightShift or 
                 KeyCode.LeftControl or KeyCode.RightControl or 
@@ -329,9 +469,58 @@ public class GameInputManager : MonoBehaviour
                 Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)
             );
             if (logIsOn) Debug.Log($"📢 KeyPress: {data}");
-            OnKeyPress?.Invoke(data);
+            GameplayEvent inputEvent = MatchManager.Instance?.BeginInputKey(data);
+            try
+            {
+                OnKeyPress?.Invoke(data);
+            }
+            finally
+            {
+                data.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(data.consumedBy));
+                MatchManager.Instance?.CompleteInputKey(inputEvent, data);
+            }
             break; // Stop after first match
         }
+    }
+
+    private bool? ResolveInputTeamForConsumer(string consumer)
+    {
+        if (string.IsNullOrWhiteSpace(consumer))
+        {
+            return null;
+        }
+
+        return consumer switch
+        {
+            nameof(GroundBallManager) => groundBallManager != null ? groundBallManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(FirstTimePassManager) => firstTimePassManager != null ? firstTimePassManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(LongBallManager) => longBallManager != null ? longBallManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(HighPassManager) => highPassManager != null ? highPassManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(MovementPhaseManager) => movementPhaseManager != null ? movementPhaseManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(LooseBallManager) => looseBallManager != null ? looseBallManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(HeaderManager) => headerManager != null ? headerManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(FreeKickManager) => freeKickManager != null ? freeKickManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(ShotManager) => shotManager != null ? shotManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(FinalThirdManager) => finalThirdManager != null ? finalThirdManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(KickoffManager) => kickoffManager != null ? kickoffManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(GoalKeeperManager) => goalKeeperManager != null ? goalKeeperManager.IsInstructionExpectingHomeTeam() : null,
+            nameof(ThrowInManager) => FindAnyObjectByType<ThrowInManager>()?.IsInstructionExpectingHomeTeam(),
+            nameof(PenaltyKickManager) => FindAnyObjectByType<PenaltyKickManager>()?.IsInstructionExpectingHomeTeam(),
+            nameof(GoalFlowManager) => FindAnyObjectByType<GoalFlowManager>()?.IsInstructionExpectingHomeTeam(),
+            nameof(MatchManager) => matchManager != null ? matchManager.IsInstructionExpectingHomeTeam() : null,
+            _ => null
+        };
+    }
+
+    private static bool IsMouseButtonKeyCode(KeyCode key)
+    {
+        return key is KeyCode.Mouse0
+            or KeyCode.Mouse1
+            or KeyCode.Mouse2
+            or KeyCode.Mouse3
+            or KeyCode.Mouse4
+            or KeyCode.Mouse5
+            or KeyCode.Mouse6;
     }
 
     private void HandleHexClick(HexCell hex)
@@ -606,7 +795,19 @@ public class GameInputManager : MonoBehaviour
             return;
         }
 
-        OnClick?.Invoke(token, hex);
+        ClickInputData clickData = new ClickInputData(token, hex, isOutOfBounds: false);
+        GameplayEvent clickEvent = MatchManager.Instance?.BeginInputClick(clickData);
+        currentClick = clickData;
+        try
+        {
+            OnClick?.Invoke(token, hex);
+        }
+        finally
+        {
+            currentClick = null;
+            clickData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(clickData.consumedBy));
+            MatchManager.Instance?.CompleteInputClick(clickEvent, clickData);
+        }
     }
 
     public void SimulateKeyDataPress(KeyCode key, bool shift = false, bool ctrl = false, bool alt = false)
@@ -618,7 +819,16 @@ public class GameInputManager : MonoBehaviour
 
         var keyData = new KeyPressData(key,shift,ctrl,alt);
         Debug.Log($"🧪 Simulated key press -> {FormatKeyChord(keyData)}");
-        OnKeyPress?.Invoke(keyData);
+        GameplayEvent inputEvent = MatchManager.Instance?.BeginInputKey(keyData);
+        try
+        {
+            OnKeyPress?.Invoke(keyData);
+        }
+        finally
+        {
+            keyData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(keyData.consumedBy));
+            MatchManager.Instance?.CompleteInputKey(inputEvent, keyData);
+        }
     }
 
     public IEnumerator DelayedClick(Vector2Int pos, float delay)

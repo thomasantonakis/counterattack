@@ -90,7 +90,9 @@ public class CameraController : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
-        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        if (keyData == null
+            || keyData.isConsumed
+            || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked))
         {
             return;
         }
@@ -100,23 +102,48 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        if (keyData.shift)
+        if (TryGetPresetIndex(keyData.key, out int presetIndex))
         {
-            // Check if Shift is held
-            // Press Shift + 1, 2, 3, or 4 to save the current camera state to the preset slots
-            if (keyData.key == KeyCode.Alpha1) SaveCurrentCameraToPreset(1);
-            if (keyData.key == KeyCode.Alpha2) SaveCurrentCameraToPreset(2);
-            if (keyData.key == KeyCode.Alpha3) SaveCurrentCameraToPreset(3);
-            if (keyData.key == KeyCode.Alpha4) SaveCurrentCameraToPreset(4);
+            if (keyData.shift)
+            {
+                SaveCurrentCameraToPreset(presetIndex);
+            }
+            else
+            {
+                SetCameraToPreset(presetIndex);
+            }
+
+            keyData.Consume(nameof(CameraController));
+            return;
         }
-        else
+
+        if (IsCameraNavigationKey(keyData.key))
         {
-            // Press 1, 2, 3, or 4 to move the camera to preset slots when Shift is NOT held
-            if (keyData.key == KeyCode.Alpha1) SetCameraToPreset(1);
-            if (keyData.key == KeyCode.Alpha2) SetCameraToPreset(2);
-            if (keyData.key == KeyCode.Alpha3) SetCameraToPreset(3);
-            if (keyData.key == KeyCode.Alpha4) SetCameraToPreset(4);
+            keyData.Consume(nameof(CameraController));
         }
+    }
+
+    private static bool TryGetPresetIndex(KeyCode key, out int presetIndex)
+    {
+        presetIndex = key switch
+        {
+            KeyCode.Alpha1 => 1,
+            KeyCode.Alpha2 => 2,
+            KeyCode.Alpha3 => 3,
+            KeyCode.Alpha4 => 4,
+            _ => 0
+        };
+        return presetIndex > 0;
+    }
+
+    private static bool IsCameraNavigationKey(KeyCode key)
+    {
+        return key == KeyCode.UpArrow
+            || key == KeyCode.DownArrow
+            || key == KeyCode.LeftArrow
+            || key == KeyCode.RightArrow
+            || key == KeyCode.Equals
+            || key == KeyCode.Minus;
     }
 
     void SetCameraToPreset(int presetIndex)

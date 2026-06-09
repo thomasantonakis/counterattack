@@ -10746,6 +10746,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             1,
             MatchManager.Instance.gameData.stats.GetPlayerStats("Cafferata").passesCompleted
         );
+        AssertTrue(
+            !movementPhaseManager.isWaitingForInterceptionDiceRoll,
+            "Picking up a free ball during MovementPhase should not immediately offer a ZOI steal attempt",
+            false,
+            movementPhaseManager.isWaitingForInterceptionDiceRoll
+        );
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
 
         Log("Move Nazef to (7, 5)");

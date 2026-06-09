@@ -50,6 +50,11 @@ public class GameDebugMonitor : MonoBehaviour
     private string cachedHomeKit = string.Empty;
     private string cachedAwayKit = string.Empty;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void OnEnable()
     {
         GameInputManager.OnKeyPress += OnKeyReceived;
@@ -58,6 +63,14 @@ public class GameDebugMonitor : MonoBehaviour
     private void OnDisable()
     {
         GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     private void OnKeyReceived(KeyPressData key)
@@ -181,70 +194,148 @@ public class GameDebugMonitor : MonoBehaviour
 
     private void UpdateInstructionText()
     {
-        instruction.Clear();
+        GameplayInstructionSnapshot snapshot = BuildCurrentInstructionSnapshot(
+            out InstructionSide activeInstructionSide,
+            out bool shouldFlashInstruction);
+        if (instructionText != null)
+        {
+            instructionText.text = snapshot != null ? snapshot.instructionText : string.Empty;
+            ApplyInstructionPalette(activeInstructionSide, shouldFlashInstruction);
+        }
+
+        MatchManager.Instance?.RecordInstructionSnapshotIfChanged(snapshot);
+    }
+
+    public GameplayInstructionSnapshot GetCurrentInstructionSnapshotForLog()
+    {
+        return BuildCurrentInstructionSnapshot(out _, out _);
+    }
+
+    private GameplayInstructionSnapshot BuildCurrentInstructionSnapshot(
+        out InstructionSide activeInstructionSide,
+        out bool shouldFlashInstruction)
+    {
+        activeInstructionSide = InstructionSide.Neutral;
+        shouldFlashInstruction = false;
 
         string goalFlowInstruction = goalFlowManager != null ? goalFlowManager.GetInstructions() : string.Empty;
         if (!string.IsNullOrWhiteSpace(goalFlowInstruction))
         {
-            if (instructionText != null)
-            {
-                InstructionSide goalInstructionSide = ResolveInstructionSide(goalFlowManager.IsInstructionExpectingHomeTeam());
-                instructionText.text = goalFlowInstruction;
-                ApplyInstructionPalette(goalInstructionSide, goalFlowManager.ShouldFlashInstructionColors());
-            }
-
-            return;
+            activeInstructionSide = ResolveInstructionSide(goalFlowManager.IsInstructionExpectingHomeTeam());
+            shouldFlashInstruction = goalFlowManager.ShouldFlashInstructionColors();
+            return CreateInstructionSnapshot(
+                nameof(GoalFlowManager),
+                goalFlowInstruction,
+                activeInstructionSide,
+                shouldFlashInstruction);
         }
-
-        List<string> activeInstructions = new List<string>();
-        InstructionSide activeInstructionSide = InstructionSide.Neutral;
 
         string matchInstruction = matchManager != null ? matchManager.GetInstructions() : string.Empty;
         if (!string.IsNullOrWhiteSpace(matchInstruction))
         {
-            if (instructionText != null)
-            {
-                instructionText.text = matchInstruction;
-                ApplyInstructionPalette(ResolveInstructionSide(matchManager.IsInstructionExpectingHomeTeam()));
-            }
+            activeInstructionSide = ResolveInstructionSide(matchManager.IsInstructionExpectingHomeTeam());
+            return CreateInstructionSnapshot(nameof(MatchManager), matchInstruction, activeInstructionSide, false);
+        }
 
+        instruction.Clear();
+        List<string> activeInstructions = new List<string>();
+        List<string> activeManagers = new List<string>();
+        InstructionSide resolvedInstructionSide = InstructionSide.Neutral;
+
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(FinalThirdManager), finalThirdManager != null ? finalThirdManager.GetInstructions() : string.Empty, ResolveInstructionSide(finalThirdManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(MovementPhaseManager), movementPhaseManager != null ? movementPhaseManager.GetInstructions() : string.Empty, ResolveInstructionSide(movementPhaseManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(GoalKeeperManager), goalKeeperManager != null ? goalKeeperManager.GetInstructions() : string.Empty, ResolveInstructionSide(goalKeeperManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(LooseBallManager), looseBallManager != null ? looseBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(looseBallManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(ThrowInManager), throwInManager != null ? throwInManager.GetInstructions() : string.Empty, ResolveInstructionSide(throwInManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(ShotManager), shotManager != null ? shotManager.GetInstructions() : string.Empty, ResolveInstructionSide(shotManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(KickoffManager), kickoffManager != null ? kickoffManager.GetInstructions() : string.Empty, ResolveInstructionSide(kickoffManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(GroundBallManager), groundBallManager != null ? groundBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(groundBallManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(FirstTimePassManager), firstTimePassManager != null ? firstTimePassManager.GetInstructions() : string.Empty, ResolveInstructionSide(firstTimePassManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(FreeKickManager), freeKickManager != null ? freeKickManager.GetInstructions() : string.Empty, ResolveInstructionSide(freeKickManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(PenaltyKickManager), penaltyKickManager != null ? penaltyKickManager.GetInstructions() : string.Empty, ResolveInstructionSide(penaltyKickManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(HighPassManager), highPassManager != null ? highPassManager.GetInstructions() : string.Empty, ResolveInstructionSide(highPassManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(LongBallManager), longBallManager != null ? longBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(longBallManager?.IsInstructionExpectingHomeTeam()));
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(HeaderManager), headerManager != null ? headerManager.GetInstructions() : string.Empty, ResolveInstructionSide(headerManager?.IsInstructionExpectingHomeTeam()));
+
+        if (activeInstructions.Count == 0)
+        {
+            return null;
+        }
+
+        activeInstructionSide = resolvedInstructionSide;
+        instruction.Append(string.Join(" / ", activeInstructions));
+        return CreateInstructionSnapshot(
+            string.Join(",", activeManagers),
+            instruction.ToString(),
+            activeInstructionSide,
+            false);
+    }
+
+    private GameplayInstructionSnapshot CreateInstructionSnapshot(
+        string managerName,
+        string instructionTextValue,
+        InstructionSide side,
+        bool shouldFlashInstruction)
+    {
+        if (string.IsNullOrWhiteSpace(instructionTextValue))
+        {
+            return null;
+        }
+
+        string trimmedInstruction = instructionTextValue.Trim();
+        List<string> expectedKeys = ExtractExpectedKeys(trimmedInstruction);
+        GameplayInstructionSnapshot snapshot = new GameplayInstructionSnapshot
+        {
+            isAwaitingInput = true,
+            manager = managerName,
+            instructionText = trimmedInstruction,
+            expectedTeam = FormatInstructionSide(side),
+            instructionSide = FormatInstructionSide(side),
+            expectedInput = InferExpectedInput(trimmedInstruction, expectedKeys),
+            expectedKeys = expectedKeys,
+            details = new Dictionary<string, string>
+            {
+                ["shouldFlash"] = shouldFlashInstruction.ToString()
+            }
+        };
+
+        if (!string.IsNullOrWhiteSpace(managerName)
+            && managerName.Contains(nameof(GroundBallManager))
+            && groundBallManager != null)
+        {
+            groundBallManager.PopulateInstructionLogSnapshot(snapshot);
+        }
+
+        if (!string.IsNullOrWhiteSpace(managerName)
+            && managerName.Contains(nameof(HighPassManager))
+            && highPassManager != null)
+        {
+            highPassManager.PopulateInstructionLogSnapshot(snapshot);
+        }
+
+        return snapshot;
+    }
+
+    private static void AddInstructionIfNotEmpty(
+        List<string> activeManagers,
+        List<string> activeInstructions,
+        ref InstructionSide resolvedInstructionSide,
+        string managerName,
+        string instruction,
+        InstructionSide side)
+    {
+        if (string.IsNullOrWhiteSpace(instruction))
+        {
             return;
         }
 
-        void AddIfNotEmpty(string s, InstructionSide side)
+        if (resolvedInstructionSide == InstructionSide.Neutral && side != InstructionSide.Neutral)
         {
-            if (!string.IsNullOrWhiteSpace(s))
-            {
-                if (activeInstructionSide == InstructionSide.Neutral && side != InstructionSide.Neutral)
-                {
-                    activeInstructionSide = side;
-                }
-
-                activeInstructions.Add(s);
-            }
+            resolvedInstructionSide = side;
         }
 
-        AddIfNotEmpty(finalThirdManager != null ? finalThirdManager.GetInstructions() : string.Empty, ResolveInstructionSide(finalThirdManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(movementPhaseManager != null ? movementPhaseManager.GetInstructions() : string.Empty, ResolveInstructionSide(movementPhaseManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(goalKeeperManager != null ? goalKeeperManager.GetInstructions() : string.Empty, ResolveInstructionSide(goalKeeperManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(looseBallManager != null ? looseBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(looseBallManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(throwInManager != null ? throwInManager.GetInstructions() : string.Empty, ResolveInstructionSide(throwInManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(shotManager != null ? shotManager.GetInstructions() : string.Empty, ResolveInstructionSide(shotManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(kickoffManager != null ? kickoffManager.GetInstructions() : string.Empty, ResolveInstructionSide(kickoffManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(groundBallManager != null ? groundBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(groundBallManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(firstTimePassManager != null ? firstTimePassManager.GetInstructions() : string.Empty, ResolveInstructionSide(firstTimePassManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(freeKickManager != null ? freeKickManager.GetInstructions() : string.Empty, ResolveInstructionSide(freeKickManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(penaltyKickManager != null ? penaltyKickManager.GetInstructions() : string.Empty, ResolveInstructionSide(penaltyKickManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(highPassManager != null ? highPassManager.GetInstructions() : string.Empty, ResolveInstructionSide(highPassManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(longBallManager != null ? longBallManager.GetInstructions() : string.Empty, ResolveInstructionSide(longBallManager?.IsInstructionExpectingHomeTeam()));
-        AddIfNotEmpty(headerManager != null ? headerManager.GetInstructions() : string.Empty, ResolveInstructionSide(headerManager?.IsInstructionExpectingHomeTeam()));
-
-        instruction.Append(string.Join(" / ", activeInstructions));
-        if (instructionText != null)
-        {
-            instructionText.text = instruction.ToString();
-            ApplyInstructionPalette(activeInstructionSide);
-        }
+        activeManagers.Add(managerName);
+        activeInstructions.Add(instruction);
     }
 
     private static InstructionSide ResolveInstructionSide(bool? expectsHomeTeam)
@@ -255,6 +346,136 @@ public class GameDebugMonitor : MonoBehaviour
         }
 
         return expectsHomeTeam.Value ? InstructionSide.Home : InstructionSide.Away;
+    }
+
+    private static string FormatInstructionSide(InstructionSide side)
+    {
+        return side switch
+        {
+            InstructionSide.Home => "Home",
+            InstructionSide.Away => "Away",
+            _ => "Neutral",
+        };
+    }
+
+    private static List<string> ExtractExpectedKeys(string instructionTextValue)
+    {
+        List<string> keys = new List<string>();
+        if (string.IsNullOrWhiteSpace(instructionTextValue))
+        {
+            return keys;
+        }
+
+        int searchIndex = 0;
+        while (searchIndex < instructionTextValue.Length)
+        {
+            int startIndex = instructionTextValue.IndexOf('[', searchIndex);
+            if (startIndex < 0)
+            {
+                break;
+            }
+
+            int endIndex = instructionTextValue.IndexOf(']', startIndex + 1);
+            if (endIndex < 0)
+            {
+                break;
+            }
+
+            string key = instructionTextValue.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+            if (!string.IsNullOrWhiteSpace(key) && !keys.Contains(key))
+            {
+                keys.Add(key);
+            }
+
+            searchIndex = endIndex + 1;
+        }
+
+        string lowerInstruction = instructionTextValue.ToLowerInvariant();
+        if ((lowerInstruction.Contains("press r") || lowerInstruction.Contains("click r"))
+            && !keys.Contains("R"))
+        {
+            keys.Add("R");
+        }
+
+        return keys;
+    }
+
+    private static string InferExpectedInput(string instructionTextValue, List<string> expectedKeys)
+    {
+        if (string.IsNullOrWhiteSpace(instructionTextValue))
+        {
+            return "none";
+        }
+
+        string lowerInstruction = instructionTextValue.ToLowerInvariant();
+        bool expectsKey = expectedKeys != null && expectedKeys.Count > 0;
+        bool expectsTokenClick = lowerInstruction.Contains("click on a token")
+            || lowerInstruction.Contains("click a token")
+            || lowerInstruction.Contains("click on an attacker")
+            || lowerInstruction.Contains("click an attacker")
+            || lowerInstruction.Contains("click on a defender")
+            || lowerInstruction.Contains("click a defender")
+            || lowerInstruction.Contains("click on a player")
+            || lowerInstruction.Contains("click a player");
+        bool expectsHexClick = lowerInstruction.Contains("click on a hex")
+            || lowerInstruction.Contains("click a hex")
+            || lowerInstruction.Contains("click on an inbounds hex")
+            || lowerInstruction.Contains("click an inbounds hex")
+            || lowerInstruction.Contains("click a reachable hex")
+            || lowerInstruction.Contains("click on an empty hex")
+            || lowerInstruction.Contains("click an empty hex")
+            || lowerInstruction.Contains("click on highlighted hex")
+            || lowerInstruction.Contains("click a highlighted hex")
+            || lowerInstruction.Contains("click this hex")
+            || lowerInstruction.Contains("click it to select")
+            || lowerInstruction.Contains("click again to confirm")
+            || lowerInstruction.Contains("click the orange target")
+            || lowerInstruction.Contains("click this orange target")
+            || lowerInstruction.Contains("click the selected orange target")
+            || lowerInstruction.Contains("click on a valid target")
+            || lowerInstruction.Contains("click a valid target")
+            || lowerInstruction.Contains("choose another valid target");
+        bool expectsClick = expectsTokenClick
+            || expectsHexClick
+            || lowerInstruction.Contains("click on")
+            || lowerInstruction.Contains("click the")
+            || lowerInstruction.Contains("click this")
+            || lowerInstruction.Contains("click a")
+            || lowerInstruction.Contains("click another")
+            || lowerInstruction.Contains("choose another");
+        bool expectsHover = lowerInstruction.Contains("hover ");
+        string clickInput = expectsTokenClick
+            ? "click_token"
+            : expectsHexClick
+                ? "click_hex"
+                : "click";
+
+        if (expectsKey && (expectsClick || expectsHover))
+        {
+            return expectsClick ? $"key_or_{clickInput}" : "key_or_hover";
+        }
+
+        if (expectsKey)
+        {
+            return "key";
+        }
+
+        if (expectsHover && expectsClick)
+        {
+            return $"hover_or_{clickInput}";
+        }
+
+        if (expectsHover)
+        {
+            return "hover_hex";
+        }
+
+        if (expectsClick)
+        {
+            return clickInput;
+        }
+
+        return "unknown";
     }
 
     private void ApplyInstructionPalette(InstructionSide side, bool shouldFlash = false)

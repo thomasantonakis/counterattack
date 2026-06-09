@@ -10,6 +10,9 @@ public class HexCell : MonoBehaviour
     private static readonly int BorderColorProperty = Shader.PropertyToID("_BorderColor");
     private static readonly int ColorProperty = Shader.PropertyToID("_Color");
     private static readonly int BaseColorProperty = Shader.PropertyToID("_BaseColor");
+    private const bool DefaultShowOccupancyHighlights = false;
+    private static bool globalShowOccupancyHighlights = DefaultShowOccupancyHighlights;
+    private static bool isPropagatingOccupancyHighlightSetting;
 
     public Vector3Int coordinates;
     public float hexRadius;
@@ -21,6 +24,9 @@ public class HexCell : MonoBehaviour
     public bool isDifficultShotPosition = false;
     public int isInCircle = 0; // -1 Left, 0 No, 1 Right, 5 Center
     public bool isDark = false;
+    [Header("Occupancy Highlighting")]
+    [Tooltip("When enabled, occupied hexes are tinted green/red. When disabled, occupancy flags still work but occupied hexes keep the pitch color unless a temporary gameplay highlight is applied.")]
+    public bool showOccupancyHighlights = false;
     public bool isDefenseOccupied = false;
     public bool isAttackOccupied = false;
     public TextMeshPro coordinatesText;  // Reference for the TextMeshPro
@@ -42,9 +48,13 @@ public class HexCell : MonoBehaviour
     public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
     public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
+    private string currentHighlightReason;
+    private bool hasInitializedOccupancyHighlightInstance;
+    private bool lastKnownShowOccupancyHighlights = DefaultShowOccupancyHighlights;
 
     void Awake()
     {
+        InitializeOccupancyHighlightSetting();
         borderRenderer = GetComponent<MeshRenderer>();
         if (borderRenderer == null)
         {
@@ -70,16 +80,94 @@ public class HexCell : MonoBehaviour
         }
 
         ApplyFillScale();
+        RefreshOccupancyHighlightDisplay();
+    }
+
+    private void OnEnable()
+    {
+        InitializeOccupancyHighlightSetting();
+    }
+
+    private void Update()
+    {
+        DetectOccupancyHighlightToggleChange();
     }
 
     private void OnValidate()
     {
+        if (!isPropagatingOccupancyHighlightSetting
+            && hasInitializedOccupancyHighlightInstance
+            && showOccupancyHighlights != lastKnownShowOccupancyHighlights)
+        {
+            SetGlobalOccupancyHighlightsVisible(showOccupancyHighlights);
+        }
+
         if (fillRenderer == null)
         {
             fillRenderer = ResolveFillRenderer();
         }
 
         ApplyFillScale();
+    }
+
+    private void InitializeOccupancyHighlightSetting()
+    {
+        showOccupancyHighlights = globalShowOccupancyHighlights;
+        lastKnownShowOccupancyHighlights = showOccupancyHighlights;
+        hasInitializedOccupancyHighlightInstance = true;
+        RefreshOccupancyHighlightDisplay();
+    }
+
+    private void DetectOccupancyHighlightToggleChange()
+    {
+        if (!hasInitializedOccupancyHighlightInstance)
+        {
+            InitializeOccupancyHighlightSetting();
+            return;
+        }
+
+        if (isPropagatingOccupancyHighlightSetting)
+        {
+            lastKnownShowOccupancyHighlights = showOccupancyHighlights;
+            return;
+        }
+
+        if (showOccupancyHighlights != lastKnownShowOccupancyHighlights)
+        {
+            SetGlobalOccupancyHighlightsVisible(showOccupancyHighlights);
+        }
+    }
+
+    public void SetOccupancyHighlightsVisible(bool visible)
+    {
+        SetGlobalOccupancyHighlightsVisible(visible);
+    }
+
+    public static void SetGlobalOccupancyHighlightsVisible(bool visible)
+    {
+        globalShowOccupancyHighlights = visible;
+
+        HexCell[] cells = FindObjectsByType<HexCell>(FindObjectsInactive.Include);
+        isPropagatingOccupancyHighlightSetting = true;
+        try
+        {
+            foreach (HexCell cell in cells)
+            {
+                if (cell == null)
+                {
+                    continue;
+                }
+
+                cell.showOccupancyHighlights = visible;
+                cell.lastKnownShowOccupancyHighlights = visible;
+                cell.hasInitializedOccupancyHighlightInstance = true;
+                cell.RefreshOccupancyHighlightDisplay();
+            }
+        }
+        finally
+        {
+            isPropagatingOccupancyHighlightSetting = false;
+        }
     }
 
     public void InitializeHex(Color initialColor)
@@ -92,6 +180,7 @@ public class HexCell : MonoBehaviour
         // Set the original color and apply it to the hex
         originalColor = initialColor;
         ApplyHexFillColor(originalColor);
+        RefreshOccupancyHighlightDisplay();
     }
 
     public void SetBorderColor(Color borderColor)
@@ -159,6 +248,7 @@ public class HexCell : MonoBehaviour
 
         // Apply the color to the hex based on the reason
         // Debug.Log($"Highlighting hex {name} for reason: {reason}");
+        currentHighlightReason = reason;
         switch (reason)
         {
             case "hover":
@@ -198,10 +288,10 @@ public class HexCell : MonoBehaviour
                 colorToApply = Color.blue * 2f;
                 break;
             case "isDefenseOccupied":
-                colorToApply = Color.red;
+                colorToApply = ShouldShowOccupancyHighlights() ? Color.red : originalColor;
                 break;
             case "isAttackOccupied":
-                colorToApply = Color.green;
+                colorToApply = ShouldShowOccupancyHighlights() ? Color.green : originalColor;
                 break;
             case "PaceAvailable":
                 colorToApply = Color.yellow;
@@ -275,16 +365,17 @@ public class HexCell : MonoBehaviour
         {
             return;
         }
+        currentHighlightReason = null;
         // if (isInGoal != 0 && transform.position.y > 0)
         // {
         //    transform.position -= Vector3.up * 0.03f; // Put it back.
         // }
         // If the hex is defense-occupied, reset it to red, else reset to the original color
-        if (isDefenseOccupied)
+        if (ShouldShowOccupancyHighlights() && isDefenseOccupied)
         {
             ApplyHexFillColor(Color.red);
         }
-        else if (isAttackOccupied)
+        else if (ShouldShowOccupancyHighlights() && isAttackOccupied)
         {
             ApplyHexFillColor(Color.green);
         }
@@ -292,6 +383,23 @@ public class HexCell : MonoBehaviour
         {
             ApplyHexFillColor(originalColor);  // Reset to either light or dark green
         }
+    }
+
+    private bool ShouldShowOccupancyHighlights()
+    {
+        return globalShowOccupancyHighlights;
+    }
+
+    private void RefreshOccupancyHighlightDisplay()
+    {
+        if (!string.IsNullOrEmpty(currentHighlightReason)
+            && currentHighlightReason != "isAttackOccupied"
+            && currentHighlightReason != "isDefenseOccupied")
+        {
+            return;
+        }
+
+        ResetHighlight();
     }
 
     private void ApplyHexFillColor(Color fillColor)
