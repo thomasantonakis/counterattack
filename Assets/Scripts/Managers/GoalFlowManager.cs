@@ -44,6 +44,49 @@ public class GoalFlowManager : MonoBehaviour
     private bool postGoalResetFinalized = false;
     private bool suppressPostGoalResetAfterCelebration = false;
     private Action postGoalResetSuppressedCallback;
+
+    public static Vector3Int[] GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection direction)
+    {
+        return direction == MatchManager.TeamAttackingDirection.LeftToRight
+            ? CreateResetLeftCoordinates()
+            : CreateResetRightCoordinates();
+    }
+
+    private static Vector3Int[] CreateResetLeftCoordinates()
+    {
+        return new Vector3Int[]
+        {
+            new Vector3Int(-16, 0, 0), // 1
+            new Vector3Int(-10, 0, -8), // 2
+            new Vector3Int(-10, 0, 8), // 3
+            new Vector3Int(-10, 0, 4), // 4
+            new Vector3Int(-10, 0, -4), // 5
+            new Vector3Int(-4, 0, -4), // 6
+            new Vector3Int(-4, 0, -8), // 7 RM
+            new Vector3Int(-4, 0, 4), // 8
+            new Vector3Int(-2, 0, 3), // 9
+            new Vector3Int(-2, 0, -3), // 10
+            new Vector3Int(-4, 0, 8) // 11 LM
+        };
+    }
+
+    private static Vector3Int[] CreateResetRightCoordinates()
+    {
+        return new Vector3Int[]
+        {
+            new Vector3Int(16, 0, 0), // 1
+            new Vector3Int(10, 0, 8), // 2
+            new Vector3Int(10, 0, -8), // 3
+            new Vector3Int(10, 0, -4), // 4
+            new Vector3Int(10, 0, 4), // 5
+            new Vector3Int(4, 0, 4), // 6
+            new Vector3Int(4, 0, 8), // 7 RM
+            new Vector3Int(4, 0, -4), // 8
+            new Vector3Int(2, 0, 3), // 9
+            new Vector3Int(2, 0, -3), // 10
+            new Vector3Int(4, 0, -8) // 11 LM
+        };
+    }
     
     private void Start()
     {
@@ -140,39 +183,22 @@ public class GoalFlowManager : MonoBehaviour
     
     private List<HexCell> GenerateResetLeft()
     {
-        List<HexCell> list = new List<HexCell>
-        {
-            hexGrid.GetHexCellAt(new Vector3Int(-16, 0, 0)), // 1
-            hexGrid.GetHexCellAt(new Vector3Int(-10, 0, -8)), // 2
-            hexGrid.GetHexCellAt(new Vector3Int(-10, 0, 8)), // 3
-            hexGrid.GetHexCellAt(new Vector3Int(-10, 0, 4)), // 4
-            hexGrid.GetHexCellAt(new Vector3Int(-10, 0, -4)), // 5
-            hexGrid.GetHexCellAt(new Vector3Int(-4, 0, -4)), // 6
-            hexGrid.GetHexCellAt(new Vector3Int(-4, 0, -8)), // 7 RM
-            hexGrid.GetHexCellAt(new Vector3Int(-4, 0, 4)), // 8
-            hexGrid.GetHexCellAt(new Vector3Int(-2, 0, 3)), // 9
-            hexGrid.GetHexCellAt(new Vector3Int(-2, 0, -3)), // 10
-            hexGrid.GetHexCellAt(new Vector3Int(-4, 0, 8)) // 11 LM
-        };
-        return list;
+        return ResolveHexCells(CreateResetLeftCoordinates());
     }
     
     private List<HexCell> GenerateResetRight()
     {
-        List<HexCell> list = new List<HexCell>
+        return ResolveHexCells(CreateResetRightCoordinates());
+    }
+
+    private List<HexCell> ResolveHexCells(Vector3Int[] coordinates)
+    {
+        List<HexCell> list = new List<HexCell>();
+        foreach (Vector3Int coordinate in coordinates)
         {
-            hexGrid.GetHexCellAt(new Vector3Int(16, 0, 0)), // 1
-            hexGrid.GetHexCellAt(new Vector3Int(10, 0, 8)), // 2
-            hexGrid.GetHexCellAt(new Vector3Int(10, 0, -8)), // 3
-            hexGrid.GetHexCellAt(new Vector3Int(10, 0, -4)), // 4
-            hexGrid.GetHexCellAt(new Vector3Int(10, 0, 4)), // 5
-            hexGrid.GetHexCellAt(new Vector3Int(4, 0, 4)), // 6
-            hexGrid.GetHexCellAt(new Vector3Int(4, 0, 8)), // 7 RM
-            hexGrid.GetHexCellAt(new Vector3Int(4, 0, -4)), // 8
-            hexGrid.GetHexCellAt(new Vector3Int(2, 0, 3)), // 9
-            hexGrid.GetHexCellAt(new Vector3Int(2, 0, -3)), // 10
-            hexGrid.GetHexCellAt(new Vector3Int(4, 0, -8)) // 11 LM
-        };
+            list.Add(hexGrid.GetHexCellAt(coordinate));
+        }
+
         return list;
     }
 

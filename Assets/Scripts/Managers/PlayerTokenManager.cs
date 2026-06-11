@@ -100,8 +100,24 @@ public class PlayerTokenManager : MonoBehaviour
         yield return new WaitUntil(() => hexgrid != null && hexgrid.IsGridInitialized());  // Check if grid is ready
 
         // Now proceed to instantiate teams
-        InstantiateTeams(homeTeamPositions, awayTeamPositions);
+        ResolveInitialTeamPositions(out Vector3Int[] homePositions, out Vector3Int[] awayPositions);
+        InstantiateTeams(homePositions, awayPositions);
         // InstantiateRandomTeams(homeTeamCount, awayTeamCount);
+    }
+
+    private void ResolveInitialTeamPositions(out Vector3Int[] homePositions, out Vector3Int[] awayPositions)
+    {
+        homePositions = homeTeamPositions;
+        awayPositions = awayTeamPositions;
+
+        if (Application.isEditor)
+        {
+            return;
+        }
+
+        homePositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection.LeftToRight);
+        awayPositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection.RightToLeft);
+        Debug.Log("Using post-goal reset formations for standalone room start. Home starts on the left attacking right; Away starts on the right attacking left.");
     }
 
     private void InstantiateTeams(Vector3Int[] home, Vector3Int[] away)

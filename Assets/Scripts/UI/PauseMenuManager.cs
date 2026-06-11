@@ -3,7 +3,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class PauseMenuManager : MonoBehaviour
 {
@@ -36,11 +38,24 @@ public class PauseMenuManager : MonoBehaviour
     public Button captureLogFileButton;
     public Button editSettingsBackButton;
     public TextMeshProUGUI logFileStatusText;
+    public TMP_Dropdown editTiebreakerDropdown;
+    public TMP_Dropdown editPlayerAssistanceDropdown;
+    public TMP_Dropdown editWeatherDropdown;
+    public TMP_Dropdown editBallColorDropdown;
+    public TMP_Dropdown editHomeKitDropdown;
+    public TMP_Dropdown editAwayKitDropdown;
+    public TMP_Dropdown editHomeGKKitDropdown;
+    public TMP_Dropdown editAwayGKKitDropdown;
 
     private bool isPaused = false;
     private bool isSaveAvailable = false;
     private string saveUnavailableReason = string.Empty;
     private SubstitutionMenuManager substitutionMenuManager;
+    private bool suppressEditSettingsEvents = false;
+    private IReadOnlyList<TokenKitPreset> editOutfieldKitPresets = Array.Empty<TokenKitPreset>();
+    private IReadOnlyList<TokenKitPreset> editHomeKitPresets = Array.Empty<TokenKitPreset>();
+    private IReadOnlyList<TokenKitPreset> editAwayKitPresets = Array.Empty<TokenKitPreset>();
+    private IReadOnlyList<TokenKitPreset> editGkKitPresets = Array.Empty<TokenKitPreset>();
 
     void Awake()
     {
@@ -449,6 +464,14 @@ public class PauseMenuManager : MonoBehaviour
         captureLogFileButton ??= FindChildComponent<Button>(panelTransform, "CaptureLogFileButton");
         editSettingsBackButton ??= FindChildComponent<Button>(panelTransform, "EditSettingsBackButton");
         logFileStatusText ??= FindChildComponent<TextMeshProUGUI>(panelTransform, "LogFileStatusText");
+        editTiebreakerDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditTiebreakerDropdown");
+        editPlayerAssistanceDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditPlayerAssistanceDropdown");
+        editWeatherDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditWeatherDropdown");
+        editBallColorDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditBallColorDropdown");
+        editHomeKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditHomeKitDropdown");
+        editAwayKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditAwayKitDropdown");
+        editHomeGKKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditHomeGKKitDropdown");
+        editAwayGKKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditAwayGKKitDropdown");
     }
 
     private void ConfigureSaveUi()
@@ -490,28 +513,51 @@ public class PauseMenuManager : MonoBehaviour
 
     private void EnsureEditSettingsUi()
     {
-        Transform panelParent = pausePanel != null && pausePanel.transform.parent != null
-            ? pausePanel.transform.parent
-            : transform;
+        BindEditSettingsUiReferences();
 
-        if (editSettingsPanel == null)
+        if (!HasEditSettingsUiReferences(out string missingReferences))
         {
-            editSettingsPanel = CreateRuntimeEditSettingsPanel(panelParent);
+            Debug.LogError($"Edit Settings UI is missing scene-authored references: {missingReferences}. Run CounterAttack/Room/Ensure Pause Menu Edit Settings Panel in edit mode.");
         }
 
-        Transform panelTransform = editSettingsPanel.transform;
-        captureLogFileButton ??= FindChildComponent<Button>(panelTransform, "CaptureLogFileButton")
-            ?? CreateRuntimeButton(panelTransform, "CaptureLogFileButton", "Capture Logfile");
-        editSettingsBackButton ??= FindChildComponent<Button>(panelTransform, "EditSettingsBackButton")
-            ?? CreateRuntimeButton(panelTransform, "EditSettingsBackButton", "Back");
-        logFileStatusText ??= FindChildComponent<TextMeshProUGUI>(panelTransform, "LogFileStatusText")
-            ?? CreateRuntimeStatusText(panelTransform);
+        if (editSettingsPanel != null)
+        {
+            editSettingsPanel.SetActive(false);
+        }
+    }
 
-        editSettingsPanel.SetActive(false);
+    private bool HasEditSettingsUiReferences(out string missingReferences)
+    {
+        List<string> missing = new();
+        AddMissingReference(missing, editSettingsPanel, nameof(editSettingsPanel));
+        AddMissingReference(missing, captureLogFileButton, nameof(captureLogFileButton));
+        AddMissingReference(missing, editSettingsBackButton, nameof(editSettingsBackButton));
+        AddMissingReference(missing, logFileStatusText, nameof(logFileStatusText));
+        AddMissingReference(missing, editTiebreakerDropdown, nameof(editTiebreakerDropdown));
+        AddMissingReference(missing, editPlayerAssistanceDropdown, nameof(editPlayerAssistanceDropdown));
+        AddMissingReference(missing, editWeatherDropdown, nameof(editWeatherDropdown));
+        AddMissingReference(missing, editBallColorDropdown, nameof(editBallColorDropdown));
+        AddMissingReference(missing, editHomeKitDropdown, nameof(editHomeKitDropdown));
+        AddMissingReference(missing, editAwayKitDropdown, nameof(editAwayKitDropdown));
+        AddMissingReference(missing, editHomeGKKitDropdown, nameof(editHomeGKKitDropdown));
+        AddMissingReference(missing, editAwayGKKitDropdown, nameof(editAwayGKKitDropdown));
+
+        missingReferences = string.Join(", ", missing);
+        return missing.Count == 0;
+    }
+
+    private static void AddMissingReference<T>(List<string> missing, T reference, string fieldName) where T : UnityEngine.Object
+    {
+        if (reference == null)
+        {
+            missing.Add(fieldName);
+        }
     }
 
     private void ConfigureEditSettingsUi()
     {
+        ConfigureEditSettingsDropdownListeners();
+
         if (captureLogFileButton != null)
         {
             captureLogFileButton.onClick.AddListener(OnCaptureLogFileButtonClicked);
@@ -523,6 +569,29 @@ public class PauseMenuManager : MonoBehaviour
         }
 
         ClearLogFileStatus();
+    }
+
+    private void ConfigureEditSettingsDropdownListeners()
+    {
+        ConfigureEditSettingsDropdownListener(editTiebreakerDropdown);
+        ConfigureEditSettingsDropdownListener(editPlayerAssistanceDropdown);
+        ConfigureEditSettingsDropdownListener(editWeatherDropdown);
+        ConfigureEditSettingsDropdownListener(editBallColorDropdown);
+        ConfigureEditSettingsDropdownListener(editHomeKitDropdown);
+        ConfigureEditSettingsDropdownListener(editAwayKitDropdown);
+        ConfigureEditSettingsDropdownListener(editHomeGKKitDropdown);
+        ConfigureEditSettingsDropdownListener(editAwayGKKitDropdown);
+    }
+
+    private void ConfigureEditSettingsDropdownListener(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        dropdown.onValueChanged.RemoveListener(OnEditSettingsDropdownChanged);
+        dropdown.onValueChanged.AddListener(OnEditSettingsDropdownChanged);
     }
 
     private void ShowPauseSaveStatus(string message, bool isError)
@@ -626,6 +695,333 @@ public class PauseMenuManager : MonoBehaviour
         return ready;
     }
 
+    private void RefreshEditSettingsControls()
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        MatchManager.GameSettings settings = matchManager?.gameData?.gameSettings;
+        if (settings == null)
+        {
+            ShowLogFileStatus("Match settings are not available.", isError: true);
+            return;
+        }
+
+        suppressEditSettingsEvents = true;
+        try
+        {
+            RefreshEditKitPresetLists(settings);
+            PopulateEditDropdown(editTiebreakerDropdown, GetTiebreakerOptions(settings), settings.tiebreaker);
+            PopulateEditDropdown(editPlayerAssistanceDropdown, new List<string> { "1", "2", "3" }, settings.playerAssistance.ToString());
+            PopulateEditDropdown(editWeatherDropdown, new List<string> { "Clear", "Rain", "Snow" }, settings.weatherConditions);
+            string normalizedBallColor = GetValidBallColorForWeather(settings.weatherConditions, settings.ballColor);
+            PopulateEditDropdown(editBallColorDropdown, GetBallColorOptions(settings.weatherConditions), normalizedBallColor);
+            PopulateEditKitDropdown(editHomeKitDropdown, editHomeKitPresets, settings.homeKit);
+            PopulateEditKitDropdown(editAwayKitDropdown, editAwayKitPresets, settings.awayKit);
+            PopulateEditKitDropdown(editHomeGKKitDropdown, editGkKitPresets, settings.homeGKKit);
+            PopulateEditKitDropdown(editAwayGKKitDropdown, editGkKitPresets, settings.awayGKKit);
+
+            if (!string.Equals(settings.ballColor, normalizedBallColor, StringComparison.OrdinalIgnoreCase))
+            {
+                settings.ballColor = normalizedBallColor;
+                matchManager?.ApplyLiveGameSettingsChanges();
+            }
+
+            bool canChangeTiebreaker = matchManager == null || matchManager.CanChangeTiebreaker();
+            if (editTiebreakerDropdown != null)
+            {
+                editTiebreakerDropdown.interactable = canChangeTiebreaker;
+            }
+
+            if (!canChangeTiebreaker)
+            {
+                ShowLogFileStatus("Tiebreaker is locked after full regulation time has ended.", isError: false);
+            }
+        }
+        finally
+        {
+            suppressEditSettingsEvents = false;
+        }
+
+        ValidateEditKitSelection(out string validationMessage);
+        if (!string.IsNullOrWhiteSpace(validationMessage))
+        {
+            ShowLogFileStatus(validationMessage, isError: true);
+        }
+    }
+
+    private void RefreshEditKitPresetLists(MatchManager.GameSettings settings)
+    {
+        List<TokenKitPreset> allPresets = TokenKitCatalog.GetAllPresets().Where(preset => preset != null).ToList();
+        editOutfieldKitPresets = allPresets
+            .Where(preset => !IsGoalkeeperKitPreset(preset))
+            .ToList();
+        editGkKitPresets = allPresets
+            .Where(IsGoalkeeperKitPreset)
+            .ToList();
+
+        if (IsInternationalMatch(settings))
+        {
+            editHomeKitPresets = GetInternationalTeamKitPresets(settings.homeTeamName);
+            editAwayKitPresets = GetInternationalTeamKitPresets(settings.awayTeamName);
+        }
+        else
+        {
+            editHomeKitPresets = editOutfieldKitPresets;
+            editAwayKitPresets = editOutfieldKitPresets;
+        }
+    }
+
+    private static bool IsGoalkeeperKitPreset(TokenKitPreset preset)
+    {
+        return preset != null && preset.Id.StartsWith("gk", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsInternationalMatch(MatchManager.GameSettings settings)
+    {
+        return settings != null
+            && string.Equals(settings.matchType, "International", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private IReadOnlyList<TokenKitPreset> GetInternationalTeamKitPresets(string teamName)
+    {
+        if (string.IsNullOrWhiteSpace(teamName))
+        {
+            return editOutfieldKitPresets;
+        }
+
+        List<TokenKitPreset> teamKits = editOutfieldKitPresets
+            .Where(preset => string.Equals(preset.DisplayName, teamName, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(preset.DisplayName, $"{teamName} Away", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return teamKits.Count > 0 ? teamKits : editOutfieldKitPresets;
+    }
+
+    private static List<string> GetTiebreakerOptions(MatchManager.GameSettings settings)
+    {
+        bool fullLengthTwoHalfMatch = settings != null
+            && Mathf.Clamp(settings.halfDuration, 15, 60) == 45
+            && Mathf.Clamp(settings.numberOfHalfs, 1, 2) == 2;
+
+        return fullLengthTwoHalfMatch
+            ? new List<string> { "Extra Time & Penalties", "Penalties", "Extra Time", "None" }
+            : new List<string> { "Penalties", "None" };
+    }
+
+    private static List<string> GetBallColorOptions(string weather)
+    {
+        return string.Equals(weather, "Snow", StringComparison.OrdinalIgnoreCase)
+            ? new List<string> { "Orange" }
+            : new List<string> { "White", "Orange", "Yellow" };
+    }
+
+    private static string GetValidBallColorForWeather(string weather, string selectedColor)
+    {
+        List<string> options = GetBallColorOptions(weather);
+        int selectedIndex = options.FindIndex(option => string.Equals(option, selectedColor, StringComparison.OrdinalIgnoreCase));
+        return options[selectedIndex >= 0 ? selectedIndex : 0];
+    }
+
+    private static void PopulateEditDropdown(TMP_Dropdown dropdown, List<string> options, string selectedValue)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        dropdown.ClearOptions();
+        dropdown.AddOptions(options);
+        int selectedIndex = options.FindIndex(option => string.Equals(option, selectedValue, StringComparison.OrdinalIgnoreCase));
+        dropdown.SetValueWithoutNotify(selectedIndex >= 0 ? selectedIndex : 0);
+        dropdown.RefreshShownValue();
+    }
+
+    private static void PopulateEditKitDropdown(TMP_Dropdown dropdown, IReadOnlyList<TokenKitPreset> presets, string selectedKit)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        List<string> options = presets?.Select(preset => preset.DisplayName).ToList() ?? new List<string>();
+        dropdown.ClearOptions();
+        dropdown.AddOptions(options);
+        int selectedIndex = FindEditKitIndex(presets, selectedKit);
+        dropdown.SetValueWithoutNotify(selectedIndex >= 0 ? selectedIndex : 0);
+        dropdown.RefreshShownValue();
+    }
+
+    private static int FindEditKitIndex(IReadOnlyList<TokenKitPreset> presets, string selectedKit)
+    {
+        if (presets == null || presets.Count == 0 || string.IsNullOrWhiteSpace(selectedKit))
+        {
+            return -1;
+        }
+
+        TokenKitPreset selectedPreset = TokenKitCatalog.GetPresetByIdOrAlias(selectedKit);
+        for (int i = 0; i < presets.Count; i++)
+        {
+            TokenKitPreset preset = presets[i];
+            if (preset == null)
+            {
+                continue;
+            }
+
+            if (selectedPreset != null && string.Equals(preset.Id, selectedPreset.Id, StringComparison.OrdinalIgnoreCase))
+            {
+                return i;
+            }
+
+            if (string.Equals(preset.DisplayName, selectedKit, StringComparison.OrdinalIgnoreCase))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private void OnEditSettingsDropdownChanged(int _)
+    {
+        if (suppressEditSettingsEvents)
+        {
+            return;
+        }
+
+        ApplyEditSettingsFromControls();
+    }
+
+    private void ApplyEditSettingsFromControls()
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        MatchManager.GameSettings settings = matchManager?.gameData?.gameSettings;
+        if (settings == null)
+        {
+            ShowLogFileStatus("Match settings are not available.", isError: true);
+            return;
+        }
+
+        suppressEditSettingsEvents = true;
+        try
+        {
+            string selectedWeather = GetDropdownText(editWeatherDropdown);
+            string selectedBallColor = GetValidBallColorForWeather(selectedWeather, GetDropdownText(editBallColorDropdown));
+            PopulateEditDropdown(editBallColorDropdown, GetBallColorOptions(selectedWeather), selectedBallColor);
+            RefreshEditKitPresetLists(settings);
+        }
+        finally
+        {
+            suppressEditSettingsEvents = false;
+        }
+
+        if (!ValidateEditKitSelection(out string validationMessage))
+        {
+            ShowLogFileStatus(validationMessage, isError: true);
+            return;
+        }
+
+        bool tiebreakerLocked = matchManager != null && !matchManager.CanChangeTiebreaker();
+        if (!tiebreakerLocked)
+        {
+            settings.tiebreaker = GetDropdownText(editTiebreakerDropdown);
+        }
+
+        if (int.TryParse(GetDropdownText(editPlayerAssistanceDropdown), out int playerAssistance))
+        {
+            settings.playerAssistance = Mathf.Clamp(playerAssistance, 1, 3);
+        }
+
+        string appliedWeather = GetDropdownText(editWeatherDropdown);
+        settings.weatherConditions = appliedWeather;
+        settings.ballColor = GetValidBallColorForWeather(appliedWeather, GetDropdownText(editBallColorDropdown));
+        settings.homeKit = GetSelectedEditKitDisplayName(editHomeKitDropdown, editHomeKitPresets);
+        settings.awayKit = GetSelectedEditKitDisplayName(editAwayKitDropdown, editAwayKitPresets);
+        settings.homeGKKit = GetSelectedEditKitDisplayName(editHomeGKKitDropdown, editGkKitPresets);
+        settings.awayGKKit = GetSelectedEditKitDisplayName(editAwayGKKitDropdown, editGkKitPresets);
+
+        matchManager?.ApplyLiveGameSettingsChanges();
+        ShowLogFileStatus(
+            tiebreakerLocked
+                ? "Settings updated. Tiebreaker remains locked after full regulation time."
+                : "Settings updated.",
+            isError: false);
+    }
+
+    private bool ValidateEditKitSelection(out string validationMessage)
+    {
+        validationMessage = string.Empty;
+        TokenKitPreset home = GetSelectedEditKitPreset(editHomeKitDropdown, editHomeKitPresets);
+        TokenKitPreset away = GetSelectedEditKitPreset(editAwayKitDropdown, editAwayKitPresets);
+        TokenKitPreset homeGk = GetSelectedEditKitPreset(editHomeGKKitDropdown, editGkKitPresets);
+        TokenKitPreset awayGk = GetSelectedEditKitPreset(editAwayGKKitDropdown, editGkKitPresets);
+
+        validationMessage = BuildFirstKitClashMessage(home, away, homeGk, awayGk);
+        return string.IsNullOrWhiteSpace(validationMessage);
+    }
+
+    private string BuildFirstKitClashMessage(TokenKitPreset home, TokenKitPreset away, TokenKitPreset homeGk, TokenKitPreset awayGk)
+    {
+        string message = BuildKitClashMessage(home, away, "Home", "Away");
+        if (!string.IsNullOrWhiteSpace(message)) return message;
+
+        if (homeGk != null && awayGk != null && string.Equals(homeGk.Id, awayGk.Id, StringComparison.OrdinalIgnoreCase))
+        {
+            return "Home and away goalkeepers cannot use the same kit.";
+        }
+
+        message = BuildKitClashMessage(homeGk, awayGk, "Home GK", "Away GK");
+        if (!string.IsNullOrWhiteSpace(message)) return message;
+        message = BuildKitClashMessage(homeGk, home, "Home GK", "Home outfield");
+        if (!string.IsNullOrWhiteSpace(message)) return message;
+        message = BuildKitClashMessage(homeGk, away, "Home GK", "Away outfield");
+        if (!string.IsNullOrWhiteSpace(message)) return message;
+        message = BuildKitClashMessage(awayGk, home, "Away GK", "Home outfield");
+        if (!string.IsNullOrWhiteSpace(message)) return message;
+        return BuildKitClashMessage(awayGk, away, "Away GK", "Away outfield");
+    }
+
+    private static string BuildKitClashMessage(TokenKitPreset first, TokenKitPreset second, string firstLabel, string secondLabel)
+    {
+        if (first == null || second == null)
+        {
+            return string.Empty;
+        }
+
+        TokenKitSimilarityBreakdown similarity = TokenKitCatalog.GetSimilarityBreakdown(first.Id, second.Id);
+        if (!similarity.IsClash)
+        {
+            return string.Empty;
+        }
+
+        return $"{firstLabel} ({first.DisplayName}) is too similar to {secondLabel} ({second.DisplayName}).";
+    }
+
+    private static string GetDropdownText(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.options.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        int index = Mathf.Clamp(dropdown.value, 0, dropdown.options.Count - 1);
+        return dropdown.options[index].text;
+    }
+
+    private static TokenKitPreset GetSelectedEditKitPreset(TMP_Dropdown dropdown, IReadOnlyList<TokenKitPreset> presets)
+    {
+        if (dropdown == null || presets == null || presets.Count == 0)
+        {
+            return null;
+        }
+
+        int index = Mathf.Clamp(dropdown.value, 0, presets.Count - 1);
+        return presets[index];
+    }
+
+    private static string GetSelectedEditKitDisplayName(TMP_Dropdown dropdown, IReadOnlyList<TokenKitPreset> presets)
+    {
+        return GetSelectedEditKitPreset(dropdown, presets)?.DisplayName ?? GetDropdownText(dropdown);
+    }
+
     private static T FindChildComponent<T>(Transform root, string childName) where T : Component
     {
         if (root == null)
@@ -666,6 +1062,12 @@ public class PauseMenuManager : MonoBehaviour
     {
         BindEditSettingsUiReferences();
         EnsureEditSettingsUi();
+        if (!HasEditSettingsUiReferences(out string missingReferences))
+        {
+            ShowPauseSaveStatus($"Edit Settings UI is not configured in the scene: {missingReferences}.", isError: true);
+            return;
+        }
+
         ClearPauseSaveStatus();
         ClearLogFileStatus();
 
@@ -678,6 +1080,8 @@ public class PauseMenuManager : MonoBehaviour
         {
             editSettingsPanel.SetActive(true);
         }
+
+        RefreshEditSettingsControls();
 
         MatchManager.Instance?.SetPauseMenuOpen(true);
         isPaused = true;
@@ -740,124 +1144,5 @@ public class PauseMenuManager : MonoBehaviour
         // Implement your logic for quitting the match (return to main menu)
         Debug.Log("Game Quit!");
         Application.Quit(); // This will close the application
-    }
-
-    private GameObject CreateRuntimeEditSettingsPanel(Transform parent)
-    {
-        GameObject panel = new("EditSettingsPanel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(VerticalLayoutGroup));
-        panel.transform.SetParent(parent, worldPositionStays: false);
-
-        RectTransform rect = panel.transform as RectTransform;
-        if (rect != null)
-        {
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(1f, 1f);
-            rect.anchoredPosition = Vector2.zero;
-            rect.sizeDelta = Vector2.zero;
-        }
-
-        Image image = panel.GetComponent<Image>();
-        image.color = new Color(0f, 0f, 0f, 0.55f);
-        image.raycastTarget = true;
-
-        VerticalLayoutGroup layout = panel.GetComponent<VerticalLayoutGroup>();
-        layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.spacing = 30f;
-        layout.childControlWidth = false;
-        layout.childControlHeight = false;
-        layout.childForceExpandWidth = false;
-        layout.childForceExpandHeight = false;
-
-        return panel;
-    }
-
-    private Button CreateRuntimeButton(Transform parent, string buttonName, string label)
-    {
-        Button button;
-        if (resumeButton != null)
-        {
-            button = Instantiate(resumeButton, parent);
-            button.onClick.RemoveAllListeners();
-        }
-        else
-        {
-            GameObject buttonObject = new(buttonName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
-            buttonObject.transform.SetParent(parent, worldPositionStays: false);
-            Image image = buttonObject.GetComponent<Image>();
-            image.color = Color.white;
-            button = buttonObject.GetComponent<Button>();
-            button.targetGraphic = image;
-
-            TextMeshProUGUI labelText = CreateRuntimeButtonLabel(buttonObject.transform);
-            labelText.text = label;
-        }
-
-        button.name = buttonName;
-        RectTransform rect = button.transform as RectTransform;
-        if (rect != null)
-        {
-            rect.sizeDelta = new Vector2(300f, 56f);
-        }
-
-        SetButtonText(button, label);
-        return button;
-    }
-
-    private TextMeshProUGUI CreateRuntimeButtonLabel(Transform parent)
-    {
-        GameObject textObject = new("Text (TMP)", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-        textObject.transform.SetParent(parent, worldPositionStays: false);
-        RectTransform rect = textObject.transform as RectTransform;
-        if (rect != null)
-        {
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.anchoredPosition = Vector2.zero;
-            rect.sizeDelta = Vector2.zero;
-        }
-
-        TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
-        text.alignment = TextAlignmentOptions.Center;
-        text.fontSize = 24f;
-        text.color = new Color(0.196f, 0.196f, 0.196f, 1f);
-        if (TMP_Settings.defaultFontAsset != null)
-        {
-            text.font = TMP_Settings.defaultFontAsset;
-        }
-
-        return text;
-    }
-
-    private TextMeshProUGUI CreateRuntimeStatusText(Transform parent)
-    {
-        GameObject textObject = new("LogFileStatusText", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-        textObject.transform.SetParent(parent, worldPositionStays: false);
-        RectTransform rect = textObject.transform as RectTransform;
-        if (rect != null)
-        {
-            rect.sizeDelta = new Vector2(1000f, 120f);
-        }
-
-        TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
-        text.alignment = TextAlignmentOptions.Center;
-        text.fontSize = 20f;
-        text.textWrappingMode = TextWrappingModes.Normal;
-        text.overflowMode = TextOverflowModes.Overflow;
-        text.color = MutedTextColor;
-        if (TMP_Settings.defaultFontAsset != null)
-        {
-            text.font = TMP_Settings.defaultFontAsset;
-        }
-
-        return text;
-    }
-
-    private static void SetButtonText(Button button, string text)
-    {
-        TMP_Text label = button != null ? button.GetComponentInChildren<TMP_Text>(includeInactive: true) : null;
-        if (label != null)
-        {
-            label.text = text;
-        }
     }
 }
