@@ -13,6 +13,7 @@ namespace CounterAttack.Editor
         private const string LineMaterialPath = GeneratedMaterialsFolder + "/PitchLine.mat";
         private const string NetMaterialPath = GeneratedMaterialsFolder + "/GoalNet.mat";
         private const string BlockerMaterialPath = GeneratedMaterialsFolder + "/OutOfBoundsBlocker.mat";
+        private const string ActionLabelBackgroundMaterialPath = GeneratedMaterialsFolder + "/PitchActionLabelBackground.mat";
         private const string DotSpritePath = "Assets/Resources/circle.png";
 
         [MenuItem("CounterAttack/Room/Rebuild Pitch Board")]
@@ -38,6 +39,7 @@ namespace CounterAttack.Editor
             Material lineMaterial = LoadOrCreateColorMaterial(LineMaterialPath, Color.white);
             Material netMaterial = LoadOrCreateColorMaterial(NetMaterialPath, new Color(0.92f, 0.92f, 0.92f, 1f));
             Material blockerMaterial = LoadOrCreateColorMaterial(BlockerMaterialPath, new Color(0.11f, 0.35f, 0.85f, 1f));
+            Material actionLabelBackgroundMaterial = LoadOrCreateColorMaterial(ActionLabelBackgroundMaterialPath, new Color(0.78f, 0.05f, 0.05f, 0.92f));
             Sprite dotSprite = AssetDatabase.LoadAssetAtPath<Sprite>(DotSpritePath);
 
             if (dotSprite == null)
@@ -46,7 +48,7 @@ namespace CounterAttack.Editor
             }
 
             pitchBoardVisuals.hexGrid = hexGrid;
-            pitchBoardVisuals.ConfigureGeneratedAssets(lineMaterial, netMaterial, blockerMaterial, dotSprite);
+            pitchBoardVisuals.ConfigureGeneratedAssets(lineMaterial, netMaterial, blockerMaterial, actionLabelBackgroundMaterial, dotSprite);
             pitchBoardVisuals.RebuildSceneVisuals();
 
             EditorUtility.SetDirty(pitchBoardVisuals);
@@ -78,8 +80,8 @@ namespace CounterAttack.Editor
         [MenuItem("CounterAttack/Room/Rebuild Pitch Board And Path Assets")]
         public static void RebuildPitchBoardAndPathAssets()
         {
-            RebuildPitchBoard();
             RebuildShootingPathAssets();
+            RebuildPitchBoard();
         }
 
         private static void EnsureFolder(string assetPath)

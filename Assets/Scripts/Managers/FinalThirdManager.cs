@@ -1345,4 +1345,61 @@ public class FinalThirdManager : MonoBehaviour
         };
     }
 
+    public bool TryGetPitchActionLabelState(out int finalThirdSide, out bool expectingHomeTeam)
+    {
+        finalThirdSide = GetActiveFinalThirdSideForPitchLabels();
+        expectingHomeTeam = false;
+
+        bool? instructionExpectingHomeTeam = IsInstructionExpectingHomeTeam();
+        if (!instructionExpectingHomeTeam.HasValue || finalThirdSide == 0)
+        {
+            return false;
+        }
+
+        expectingHomeTeam = instructionExpectingHomeTeam.Value;
+        return true;
+    }
+
+    private int GetActiveFinalThirdSideForPitchLabels()
+    {
+        int side = GetFinalThirdSideFromTokens(currentMovableTokens);
+        if (side != 0)
+        {
+            return side;
+        }
+
+        side = selectedToken != null ? selectedToken.GetCurrentHex()?.isInFinalThird ?? 0 : 0;
+        if (side != 0)
+        {
+            return side;
+        }
+
+        side = GetFinalThirdSideFromTokens(eligibleTokens);
+        if (side != 0)
+        {
+            return side;
+        }
+
+        return ball != null ? ball.GetCurrentHex()?.isInFinalThird ?? 0 : 0;
+    }
+
+    private static int GetFinalThirdSideFromTokens(IEnumerable<PlayerToken> tokens)
+    {
+        if (tokens == null)
+        {
+            return 0;
+        }
+
+        foreach (PlayerToken token in tokens)
+        {
+            int side = token != null ? token.GetCurrentHex()?.isInFinalThird ?? 0 : 0;
+            if (side != 0)
+            {
+                return side;
+            }
+        }
+
+        return 0;
+    }
+
 }

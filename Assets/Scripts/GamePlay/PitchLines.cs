@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PitchLines : MonoBehaviour
@@ -8,34 +9,79 @@ public class PitchLines : MonoBehaviour
     private const string DotsRootName = "PitchDots";
     private const string NetsRootName = "GoalNets";
     private const string BlockersRootName = "OutOfBoundsBlockers";
+    private const string ActionLabelsRootName = "PitchActionLabels";
 
     private const float LineLift = 0.03f;
     private const float DotLift = 0.031f;
     private const float GoalNetLift = 0.06f;
     private const float OutOfBoundsLift = 0.05f;
-
     private const int FullCircleSegments = 96;
     private const int PenaltyArcSegments = 48;
     private const int CornerArcSegments = 24;
 
+    // Change these four world positions/scales to move the editable pitch labels.
+    private static readonly PitchActionLabelSpec[] ActionLabelSpecs =
+    {
+        new("NorthWest F3", "FINAL THIRD", -1, new Vector3(-9.63f, 0.06f, 11f), new Vector3(8.18f, 1f, 0.33f)),
+        new("SouthWest F3", "FINAL THIRD", -1, new Vector3(-9.63f, 0.06f, -11f), new Vector3(8.18f, 1f, 0.33f)),
+        new("NorthEast F3", "FINAL THIRD", 1, new Vector3(9.63f, 0.06f, 11f), new Vector3(8.18f, 1f, 0.33f)),
+        new("SouthEast F3", "FINAL THIRD", 1, new Vector3(9.63f, 0.06f, -11f), new Vector3(8.18f, 1f, 0.33f)),
+    };
+
+    private static readonly Color DefaultActionLabelBackgroundColor = new Color(0.78f, 0.05f, 0.05f, 0.92f);
+    private static readonly Color DefaultActionLabelTextColor = Color.white;
+    private static readonly Color FallbackHomeBackgroundColor = new Color(0.05f, 0.22f, 0.62f, 0.92f);
+    private static readonly Color FallbackAwayBackgroundColor = new Color(0.78f, 0.36f, 0.08f, 0.92f);
+    private static readonly Vector2 DefaultActionLabelTextAreaSize = new Vector2(1.76f, 0.31f);
+    private const float DefaultActionLabelFontSize = 1.5f;
+
     [Header("Dependencies")]
     public HexGrid hexGrid;
+    [SerializeField] private FinalThirdManager finalThirdManager;
 
     [Header("Generated Assets")]
     [SerializeField] private Material lineMaterial;
     [SerializeField] private Material netMaterial;
     [SerializeField] private Material blockerMaterial;
+    [SerializeField] private Material actionLabelBackgroundMaterial;
     [SerializeField] private Sprite dotSprite;
     [SerializeField] private Transform generatedRoot;
 
+    [Header("Pitch Action Labels")]
+    [SerializeField] private Vector2 actionLabelTextAreaSize = DefaultActionLabelTextAreaSize;
+    [SerializeField] private float actionLabelFontSize = DefaultActionLabelFontSize;
+    [SerializeField] private List<PitchActionLabelItem> actionLabels = new();
+
+    private MaterialPropertyBlock actionLabelPropertyBlock;
+    private string cachedHomeKit = string.Empty;
+    private string cachedAwayKit = string.Empty;
+    private TokenKitInstructionPalette homeInstructionPalette;
+    private TokenKitInstructionPalette awayInstructionPalette;
+
     // The Room board visuals are scene-owned. This builder recreates the serialized child
     // hierarchy in edit mode so play mode only consumes the authored result.
-    public void ConfigureGeneratedAssets(Material lines, Material nets, Material blockers, Sprite dots)
+    public void ConfigureGeneratedAssets(Material lines, Material nets, Material blockers, Material actionLabelBackground, Sprite dots)
     {
         lineMaterial = lines;
         netMaterial = nets;
         blockerMaterial = blockers;
+        actionLabelBackgroundMaterial = actionLabelBackground;
         dotSprite = dots;
+        actionLabelTextAreaSize = DefaultActionLabelTextAreaSize;
+        actionLabelFontSize = DefaultActionLabelFontSize;
+    }
+
+    private void Start()
+    {
+        ResolveRuntimeDependencies();
+        CacheActionLabelsFromScene();
+        RefreshInstructionPalettes(force: true);
+        UpdateActionLabelColors();
+    }
+
+    private void Update()
+    {
+        UpdateActionLabelColors();
     }
 
     public void RebuildSceneVisuals()
@@ -46,7 +92,7 @@ public class PitchLines : MonoBehaviour
             return;
         }
 
-        if (lineMaterial == null || netMaterial == null || blockerMaterial == null || dotSprite == null)
+        if (lineMaterial == null || netMaterial == null || blockerMaterial == null || actionLabelBackgroundMaterial == null || dotSprite == null)
         {
             Debug.LogError("PitchBoardVisuals is missing the shared assets needed to rebuild scene visuals.");
             return;
@@ -61,11 +107,13 @@ public class PitchLines : MonoBehaviour
         Transform dotsRoot = EnsureContainer(DotsRootName, generatedRoot);
         Transform netsRoot = EnsureContainer(NetsRootName, generatedRoot);
         Transform blockersRoot = EnsureContainer(BlockersRootName, generatedRoot);
+        Transform actionLabelsRoot = EnsureContainer(ActionLabelsRootName, generatedRoot);
 
         BuildPitchMarkings(markingsRoot, ignoreRaycastLayer);
         BuildPitchDots(dotsRoot, ignoreRaycastLayer);
         BuildGoalNets(netsRoot, ignoreRaycastLayer);
         BuildOutOfBoundsBlockers(blockersRoot);
+        BuildActionLabels(actionLabelsRoot, ignoreRaycastLayer);
     }
 
     private void BuildPitchMarkings(Transform root, int layer)
@@ -153,6 +201,162 @@ public class PitchLines : MonoBehaviour
             new Vector3(verticalOffset * 2f, verticalOffset * 2f, 1f),
             root
         );
+    }
+
+    private void BuildActionLabels(Transform root, int layer)
+    {
+        actionLabels.Clear();
+
+        foreach (PitchActionLabelSpec spec in ActionLabelSpecs)
+        {
+            GameObject labelRoot = new GameObject(spec.Name);
+            labelRoot.transform.SetParent(root, false);
+            labelRoot.transform.position = spec.Position;
+            labelRoot.transform.localScale = spec.Scale;
+            labelRoot.layer = layer;
+
+            GameObject backgroundObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            backgroundObject.name = "Background";
+            backgroundObject.transform.SetParent(labelRoot.transform, false);
+            backgroundObject.transform.localPosition = Vector3.zero;
+            backgroundObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            backgroundObject.transform.localScale = Vector3.one;
+            backgroundObject.layer = layer;
+
+            MeshRenderer backgroundRenderer = backgroundObject.GetComponent<MeshRenderer>();
+            backgroundRenderer.sharedMaterial = actionLabelBackgroundMaterial;
+
+            Collider backgroundCollider = backgroundObject.GetComponent<Collider>();
+            if (backgroundCollider != null)
+            {
+                if (Application.isPlaying)
+                {
+                    Destroy(backgroundCollider);
+                }
+                else
+                {
+                    DestroyImmediate(backgroundCollider);
+                }
+            }
+
+            GameObject textObject = new GameObject("Text");
+            textObject.transform.SetParent(labelRoot.transform, false);
+            textObject.transform.localPosition = new Vector3(0f, 0.012f, 0f);
+            textObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            textObject.transform.localScale = GetInverseHorizontalLabelScale(spec.Scale);
+            textObject.layer = layer;
+
+            TextMeshPro text = textObject.AddComponent<TextMeshPro>();
+            text.text = spec.Text;
+            text.alignment = TextAlignmentOptions.Center;
+            text.fontSize = actionLabelFontSize;
+            text.fontStyle = FontStyles.Bold;
+            text.color = DefaultActionLabelTextColor;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            text.overflowMode = TextOverflowModes.Overflow;
+            text.rectTransform.sizeDelta = actionLabelTextAreaSize;
+
+            actionLabels.Add(new PitchActionLabelItem(spec.Side, text, backgroundRenderer));
+        }
+
+        UpdateActionLabelColors();
+    }
+
+    private void ResolveRuntimeDependencies()
+    {
+        if (finalThirdManager == null)
+        {
+            finalThirdManager = FindAnyObjectByType<FinalThirdManager>();
+        }
+    }
+
+    private void CacheActionLabelsFromScene()
+    {
+        actionLabels.RemoveAll(label => label == null || label.Text == null || label.Background == null);
+    }
+
+    private void UpdateActionLabelColors()
+    {
+        if (actionLabels == null || actionLabels.Count == 0)
+        {
+            return;
+        }
+
+        ResolveRuntimeDependencies();
+        RefreshInstructionPalettes(force: false);
+
+        int activeSide = 0;
+        bool expectingHomeTeam = false;
+        bool hasActiveFinalThirdLabel = finalThirdManager != null
+            && finalThirdManager.TryGetPitchActionLabelState(out activeSide, out expectingHomeTeam);
+
+        TokenKitInstructionPalette activePalette = expectingHomeTeam
+            ? homeInstructionPalette
+            : awayInstructionPalette;
+        bool useSwappedColors = hasActiveFinalThirdLabel && Mathf.FloorToInt(Time.unscaledTime) % 2 == 1;
+
+        foreach (PitchActionLabelItem label in actionLabels)
+        {
+            bool shouldHighlight = hasActiveFinalThirdLabel && label.Side == activeSide;
+            Color backgroundColor = DefaultActionLabelBackgroundColor;
+            Color textColor = DefaultActionLabelTextColor;
+            if (shouldHighlight)
+            {
+                backgroundColor = useSwappedColors ? activePalette.Secondary : activePalette.Primary;
+                textColor = useSwappedColors ? activePalette.Primary : activePalette.Secondary;
+            }
+            ApplyActionLabelColors(label, backgroundColor, textColor);
+        }
+    }
+
+    private void RefreshInstructionPalettes(bool force)
+    {
+        if (MatchManager.Instance?.gameData?.gameSettings == null)
+        {
+            cachedHomeKit = string.Empty;
+            cachedAwayKit = string.Empty;
+            homeInstructionPalette = new TokenKitInstructionPalette(FallbackHomeBackgroundColor, Color.white);
+            awayInstructionPalette = new TokenKitInstructionPalette(FallbackAwayBackgroundColor, Color.white);
+            return;
+        }
+
+        string homeKit = MatchManager.Instance.gameData.gameSettings.homeKit ?? string.Empty;
+        string awayKit = MatchManager.Instance.gameData.gameSettings.awayKit ?? string.Empty;
+        if (!force && homeKit == cachedHomeKit && awayKit == cachedAwayKit)
+        {
+            return;
+        }
+
+        homeInstructionPalette = TokenKitCatalog.ResolveInstructionPalette(homeKit, FallbackHomeBackgroundColor, Color.white);
+        awayInstructionPalette = TokenKitCatalog.ResolveInstructionPalette(awayKit, FallbackAwayBackgroundColor, Color.white);
+        cachedHomeKit = homeKit;
+        cachedAwayKit = awayKit;
+    }
+
+    private void ApplyActionLabelColors(PitchActionLabelItem label, Color backgroundColor, Color textColor)
+    {
+        if (label.Text != null)
+        {
+            label.Text.color = textColor;
+        }
+
+        if (label.Background == null)
+        {
+            return;
+        }
+
+        actionLabelPropertyBlock ??= new MaterialPropertyBlock();
+        label.Background.GetPropertyBlock(actionLabelPropertyBlock);
+        actionLabelPropertyBlock.SetColor("_Color", backgroundColor);
+        actionLabelPropertyBlock.SetColor("_BaseColor", backgroundColor);
+        label.Background.SetPropertyBlock(actionLabelPropertyBlock);
+    }
+
+    private static Vector3 GetInverseHorizontalLabelScale(Vector3 parentScale)
+    {
+        float inverseX = !Mathf.Approximately(parentScale.x, 0f) ? 1f / parentScale.x : 1f;
+        float inverseY = !Mathf.Approximately(parentScale.z, 0f) ? 1f / parentScale.z : 1f;
+        return new Vector3(inverseX, inverseY, 1f);
     }
 
     private void CreateLineMesh(string name, Vector3 start, Vector3 end, float thickness, float lift, Material material, Transform parent, int layer)
@@ -363,5 +567,42 @@ public class PitchLines : MonoBehaviour
     private Vector3 Midpoint(int x, int z, int index)
     {
         return hexGrid.GetHexEdgeMidpointsForCoordinates(new Vector3Int(x, 0, z))[index];
+    }
+
+    private readonly struct PitchActionLabelSpec
+    {
+        public string Name { get; }
+        public string Text { get; }
+        public int Side { get; }
+        public Vector3 Position { get; }
+        public Vector3 Scale { get; }
+
+        public PitchActionLabelSpec(string name, string text, int side, Vector3 position, Vector3 scale)
+        {
+            Name = name;
+            Text = text;
+            Side = side;
+            Position = position;
+            Scale = scale;
+        }
+    }
+
+    [System.Serializable]
+    private sealed class PitchActionLabelItem
+    {
+        [SerializeField] private int side;
+        [SerializeField] private TextMeshPro text;
+        [SerializeField] private MeshRenderer background;
+
+        public int Side => side;
+        public TextMeshPro Text => text;
+        public MeshRenderer Background => background;
+
+        public PitchActionLabelItem(int side, TextMeshPro text, MeshRenderer background)
+        {
+            this.side = side;
+            this.text = text;
+            this.background = background;
+        }
     }
 }
