@@ -7,6 +7,7 @@ using System;
 using TMPro;  // Import TextMeshPro namespace
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json; // Now it will recognize JsonConvert
+using Newtonsoft.Json.Linq;
 using UnityEngine.EventSystems;
 using System.Linq;
 
@@ -18,6 +19,11 @@ public class CreateNewGameManager : MonoBehaviour
     private const string TieBreakerNone = "None";
     private const string MatchTypeInternational = "International";
     private const string DraftInternational = "International";
+    private const string DraftSceneName = "Draft";
+    private const string FreeDraftSceneName = "FreeDraft";
+    private const string CreateLoadRoomSceneName = "CreateLoadRoom";
+    private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
+    private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
     private const float KitDropdownScrollSensitivity = 55f;
 
     public TMP_Dropdown gameModeDropdown;
@@ -60,6 +66,7 @@ public class CreateNewGameManager : MonoBehaviour
     public Toggle includeNonTabletopiaGKToggle;
     public Toggle includeInternationalsGKToggle;
     public Button createGameButton;
+    public Button backToGameModeMenuButton;
 
     private const string DefaultHomeKitId = "088";
     private const string DefaultAwayKitId = "021";
@@ -79,6 +86,8 @@ public class CreateNewGameManager : MonoBehaviour
     private TMP_Dropdown activeClosedKitDropdown;
     private bool isRefreshingInternationalTeamUi;
     private bool suppressKitSelectionChanged;
+    private bool isEditingExistingDraftSettings;
+    private string existingDraftSettingsFilePath = string.Empty;
 
     private void Update()
     {
@@ -117,6 +126,8 @@ public class CreateNewGameManager : MonoBehaviour
         
         // Example: Set default options for squad size at the start of the game
         SetDropDownOptions();
+        ConfigureBackToGameModeMenuButton();
+        SetCreateGameButtonEnabled(!IsSinglePlayerCreateMode());
         // Subscribe to field changes, which dynamically adjusts other fields' options
         matchTypeDropdown.onValueChanged.AddListener(delegate { AdjustSquadSizeOptionsBasedOnMatchType(); });
         matchTypeDropdown.onValueChanged.AddListener(delegate { OnMatchTypeChanged(); });
@@ -135,6 +146,7 @@ public class CreateNewGameManager : MonoBehaviour
         InitializeInternationalTeamSelectionUi();
         InitializeKitSelectionUi();
         OnMatchTypeChanged();
+        TryRestoreExistingSettingsFromDraftReturn();
     }
 
     private void HandleCreateGameKeyboardNavigation()
@@ -207,8 +219,14 @@ public class CreateNewGameManager : MonoBehaviour
         List<string> gameModeOptions = new List<string> { "Single Player", "Hot Seat", "Multi Player" };  // Define options
         gameModeDropdown.ClearOptions();  // Clear any existing options
         gameModeDropdown.AddOptions(gameModeOptions);  // Add the default options
-        // This scene is only used for hot-seat setup, so lock the mode to that value.
-        gameModeDropdown.value = 1;
+        string requestedGameMode = GetRequestedCreateLoadGameMode();
+        int gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, requestedGameMode, StringComparison.OrdinalIgnoreCase));
+        if (gameModeIndex < 0)
+        {
+            gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, ApplicationManager.HotSeatGameMode, StringComparison.OrdinalIgnoreCase));
+        }
+
+        gameModeDropdown.SetValueWithoutNotify(Mathf.Max(0, gameModeIndex));
         gameModeDropdown.interactable = false;
         gameModeDropdown.RefreshShownValue();
         List<string> numberOfHalvesOptions = new List<string> { "2", "1" };  // Define options
@@ -1237,7 +1255,343 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        createGameButton.interactable = enabled;
+        createGameButton.interactable = enabled && !IsSinglePlayerCreateMode();
+    }
+
+    public void BackToCreateLoadRoomMenu()
+    {
+        PlayerPrefs.DeleteKey(CreateNewGameReturnSourcePlayerPrefsKey);
+        PlayerPrefs.Save();
+        ApplicationManager.EnsureInstanceExists();
+        ApplicationManager.Instance.SetSelectedRoomGameMode(GetSelectedCreateMenuGameMode());
+        SceneManager.LoadScene(CreateLoadRoomSceneName);
+    }
+
+    public void BackToHotSeatMenu()
+    {
+        BackToCreateLoadRoomMenu();
+    }
+
+    private string GetRequestedCreateLoadGameMode()
+    {
+        ApplicationManager.EnsureInstanceExists();
+        string requestedGameMode = ApplicationManager.Instance.SelectedRoomGameMode;
+        return string.IsNullOrWhiteSpace(requestedGameMode)
+            ? ApplicationManager.HotSeatGameMode
+            : requestedGameMode.Trim();
+    }
+
+    private string GetSelectedCreateMenuGameMode()
+    {
+        if (gameModeDropdown != null
+            && gameModeDropdown.options.Count > 0
+            && gameModeDropdown.value >= 0
+            && gameModeDropdown.value < gameModeDropdown.options.Count)
+        {
+            return gameModeDropdown.options[gameModeDropdown.value].text;
+        }
+
+        return GetRequestedCreateLoadGameMode();
+    }
+
+    private bool IsSinglePlayerCreateMode()
+    {
+        return string.Equals(GetSelectedCreateMenuGameMode(), ApplicationManager.SinglePlayerGameMode, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ConfigureBackToGameModeMenuButton()
+    {
+        Button backButton = ResolveBackToGameModeMenuButton();
+        if (backButton == null)
+        {
+            return;
+        }
+
+        TMP_Text label = backButton.GetComponentInChildren<TMP_Text>(true);
+        if (label != null)
+        {
+            label.text = $"Back to {GetSelectedCreateMenuGameMode()} Menu";
+        }
+    }
+
+    private Button ResolveBackToGameModeMenuButton()
+    {
+        if (backToGameModeMenuButton != null)
+        {
+            return backToGameModeMenuButton;
+        }
+
+        GameObject buttonObject = GameObject.Find("Back to Game Mode Menu")
+            ?? GameObject.Find("Back to Hot Seat Menu");
+        if (buttonObject != null)
+        {
+            backToGameModeMenuButton = buttonObject.GetComponent<Button>();
+        }
+
+        return backToGameModeMenuButton;
+    }
+
+    private void TryRestoreExistingSettingsFromDraftReturn()
+    {
+        string returnSource = PlayerPrefs.GetString(CreateNewGameReturnSourcePlayerPrefsKey, string.Empty);
+        if (!IsDraftReturnSource(returnSource))
+        {
+            return;
+        }
+
+        PlayerPrefs.DeleteKey(CreateNewGameReturnSourcePlayerPrefsKey);
+        PlayerPrefs.Save();
+
+        string settingsFilePath = ResolveExistingGameSettingsFilePath();
+        if (string.IsNullOrWhiteSpace(settingsFilePath))
+        {
+            Debug.LogWarning($"CreateNewHSGameScene was opened from {returnSource}, but no existing game-settings JSON was found.");
+            return;
+        }
+
+        GameSettings restoredSettings = LoadGameSettingsFromJson(settingsFilePath);
+        if (restoredSettings == null)
+        {
+            Debug.LogWarning($"CreateNewHSGameScene could not restore game settings from: {settingsFilePath}");
+            return;
+        }
+
+        existingDraftSettingsFilePath = settingsFilePath;
+        isEditingExistingDraftSettings = true;
+
+        ApplicationManager.EnsureInstanceExists();
+        ApplicationManager.Instance.SetActiveSaveFilePath(settingsFilePath);
+        PlayerPrefs.SetString(CurrentGameSettingsPlayerPrefsKey, settingsFilePath);
+        PlayerPrefs.Save();
+
+        ApplyExistingSettingsToUi(restoredSettings);
+        Debug.Log($"Restored create-game settings from existing draft save: {settingsFilePath}");
+    }
+
+    private static bool IsDraftReturnSource(string returnSource)
+    {
+        return string.Equals(returnSource, DraftSceneName, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(returnSource, FreeDraftSceneName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string ResolveExistingGameSettingsFilePath()
+    {
+        ApplicationManager.EnsureInstanceExists();
+
+        string explicitFilePath = ApplicationManager.Instance.GetLastSavedFilePath();
+        if (!string.IsNullOrWhiteSpace(explicitFilePath) && File.Exists(explicitFilePath))
+        {
+            return explicitFilePath;
+        }
+
+        string playerPrefsPath = PlayerPrefs.GetString(CurrentGameSettingsPlayerPrefsKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(playerPrefsPath))
+        {
+            return string.Empty;
+        }
+
+        string resolvedPlayerPrefsPath = Path.IsPathRooted(playerPrefsPath)
+            ? playerPrefsPath
+            : Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), playerPrefsPath);
+
+        return File.Exists(resolvedPlayerPrefsPath)
+            ? resolvedPlayerPrefsPath
+            : string.Empty;
+    }
+
+    private GameSettings LoadGameSettingsFromJson(string settingsFilePath)
+    {
+        try
+        {
+            JObject root = JObject.Parse(File.ReadAllText(settingsFilePath));
+            JToken settingsToken = root["gameSettings"];
+            return settingsToken?.ToObject<GameSettings>();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"Failed to read create-game settings from '{settingsFilePath}': {ex.Message}");
+            return null;
+        }
+    }
+
+    private void ApplyExistingSettingsToUi(GameSettings settings)
+    {
+        if (settings == null)
+        {
+            return;
+        }
+
+        SelectDropdownOption(gameModeDropdown, settings.gameMode, GetRequestedCreateLoadGameMode());
+        ConfigureBackToGameModeMenuButton();
+        SetCreateGameButtonEnabled(!IsSinglePlayerCreateMode());
+
+        if (halfDurationSlider != null)
+        {
+            halfDurationSlider.SetValueWithoutNotify(Mathf.Clamp(settings.halfDuration, halfDurationSlider.minValue, halfDurationSlider.maxValue));
+            UpdateHalfDurationSliderText(halfDurationSlider.value);
+        }
+
+        if (playerAssistanceSlider != null)
+        {
+            playerAssistanceSlider.SetValueWithoutNotify(Mathf.Clamp(settings.playerAssistance, playerAssistanceSlider.minValue, playerAssistanceSlider.maxValue));
+            UpdatePlayerAssistanceSliderText(playerAssistanceSlider.value);
+        }
+
+        SelectDropdownOption(numberOfHalvesDropdown, settings.numberOfHalfs.ToString(), "2");
+        RefreshTiebreakerOptions();
+        SelectDropdownOption(tiebreakerDropdown, settings.tiebreaker, TieBreakerNone);
+        SelectDropdownOption(matchTypeDropdown, settings.matchType, "Regular");
+
+        SetInputFieldTextWithoutNotify(homeTeamInputField, settings.homeTeamName);
+        SetInputFieldTextWithoutNotify(awayTeamInputField, settings.awayTeamName);
+
+        if (IsInternationalSettings(settings))
+        {
+            SelectDropdownOption(homeInternationalTeamDropdown, settings.homeTeamName);
+            SelectDropdownOption(awayInternationalTeamDropdown, settings.awayTeamName);
+        }
+
+        OnMatchTypeChanged();
+        SelectDropdownOption(squadSizeDropdown, settings.squadSize, IsInternationalMatchSelected() ? "18" : "16");
+
+        if (IsInternationalMatchSelected())
+        {
+            SyncInternationalTeamInputFields();
+            SetInternationalDraftDropdownOptions();
+        }
+        else
+        {
+            ApplyExistingRosterSourceToggles(settings);
+            SelectDropdownOption(draftDropdown, settings.draft, "Regular");
+            SelectDropdownOption(gkDraftDropdown, settings.gkDraft, "Deal");
+        }
+
+        SelectDropdownOption(refereeDropdown, settings.referee, "Random");
+        SelectDropdownOption(weatherDropdown, settings.weatherConditions, "Clear");
+        AdjustBallColorBasedOnWeather();
+        string restoredBallColor = string.Equals(GetSelectedDropdownText(weatherDropdown), "Snow", StringComparison.OrdinalIgnoreCase)
+            ? "Orange"
+            : settings.ballColor;
+        SelectDropdownOption(ballColorDropdown, restoredBallColor, "White");
+
+        ApplySavedKitSelections(settings);
+    }
+
+    private static bool IsInternationalSettings(GameSettings settings)
+    {
+        return settings != null
+            && string.Equals(settings.matchType, MatchTypeInternational, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ApplyExistingRosterSourceToggles(GameSettings settings)
+    {
+        SetToggleWithoutNotify(includeTabletopiaToggle, settings.includeTabletopia);
+        SetToggleWithoutNotify(includeNonTabletopiaToggle, settings.includeNonTabletopia);
+        SetToggleWithoutNotify(includeInternationalsToggle, settings.includeInternationals);
+        SetToggleWithoutNotify(includeTabletopiaGKToggle, settings.includeTabletopiaGK);
+        SetToggleWithoutNotify(includeNonTabletopiaGKToggle, settings.includeNonTabletopiaGK);
+        SetToggleWithoutNotify(includeInternationalsGKToggle, settings.includeInternationalsGK);
+
+        if (!IsToggleOn(includeTabletopiaToggle) && !IsToggleOn(includeNonTabletopiaToggle) && !IsToggleOn(includeInternationalsToggle))
+        {
+            SetToggleWithoutNotify(includeTabletopiaToggle, true);
+        }
+
+        if (!IsToggleOn(includeTabletopiaGKToggle) && !IsToggleOn(includeNonTabletopiaGKToggle) && !IsToggleOn(includeInternationalsGKToggle))
+        {
+            SetToggleWithoutNotify(includeTabletopiaGKToggle, true);
+        }
+    }
+
+    private void ApplySavedKitSelections(GameSettings settings)
+    {
+        RefreshInternationalTeamKitOptions();
+        suppressKitSelectionChanged = true;
+        try
+        {
+            PopulateKitDropdown(homeKitDropdown, string.IsNullOrWhiteSpace(settings.homeKit) ? DefaultHomeKitId : settings.homeKit);
+            PopulateKitDropdown(awayKitDropdown, string.IsNullOrWhiteSpace(settings.awayKit) ? DefaultAwayKitId : settings.awayKit);
+            PopulateKitDropdown(homeGKKitDropdown, string.IsNullOrWhiteSpace(settings.homeGKKit) ? DefaultHomeGKKitId : settings.homeGKKit);
+            PopulateKitDropdown(awayGKKitDropdown, string.IsNullOrWhiteSpace(settings.awayGKKit) ? DefaultAwayGKKitId : settings.awayGKKit);
+        }
+        finally
+        {
+            suppressKitSelectionChanged = false;
+        }
+
+        UpdateKitPreviews();
+        UpdateKitValidationForCurrentSelection();
+    }
+
+    private static void SelectDropdownOption(TMP_Dropdown dropdown, string selectedValue, string fallbackValue = null)
+    {
+        if (dropdown == null || dropdown.options.Count == 0)
+        {
+            return;
+        }
+
+        int selectedIndex = FindDropdownOptionIndex(dropdown, selectedValue);
+        if (selectedIndex < 0 && !string.IsNullOrWhiteSpace(fallbackValue))
+        {
+            selectedIndex = FindDropdownOptionIndex(dropdown, fallbackValue);
+        }
+
+        dropdown.SetValueWithoutNotify(selectedIndex >= 0 ? selectedIndex : 0);
+        dropdown.RefreshShownValue();
+    }
+
+    private static int FindDropdownOptionIndex(TMP_Dropdown dropdown, string selectedValue)
+    {
+        if (dropdown == null || string.IsNullOrWhiteSpace(selectedValue))
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < dropdown.options.Count; i++)
+        {
+            if (string.Equals(dropdown.options[i].text, selectedValue, StringComparison.OrdinalIgnoreCase))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static string GetSelectedDropdownText(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.options.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        int index = Mathf.Clamp(dropdown.value, 0, dropdown.options.Count - 1);
+        return dropdown.options[index].text;
+    }
+
+    private static void SetInputFieldTextWithoutNotify(TMP_InputField inputField, string value)
+    {
+        if (inputField == null)
+        {
+            return;
+        }
+
+        inputField.SetTextWithoutNotify(value ?? string.Empty);
+    }
+
+    private static void SetToggleWithoutNotify(Toggle toggle, bool isOn)
+    {
+        if (toggle == null)
+        {
+            return;
+        }
+
+        toggle.SetIsOnWithoutNotify(isOn);
+    }
+
+    private static bool IsToggleOn(Toggle toggle)
+    {
+        return toggle != null && toggle.isOn;
     }
 
     // Adjust the squad size dropdown based on match type selection
@@ -1351,6 +1705,13 @@ public class CreateNewGameManager : MonoBehaviour
 
     public void SaveGameSettingsToJson()
     {
+        if (IsSinglePlayerCreateMode())
+        {
+            SetCreateGameButtonEnabled(false);
+            Debug.LogWarning("Create and Start is disabled for Single Player create-game mode.");
+            return;
+        }
+
         TokenKitSimilarityBreakdown currentSimilarity = TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown), GetSelectedKitPresetId(awayKitDropdown));
         string kitValidationMessage = GetKitValidationMessage(currentSimilarity);
         if (!string.IsNullOrWhiteSpace(kitValidationMessage))
@@ -1399,45 +1760,22 @@ public class CreateNewGameManager : MonoBehaviour
         settings.homeGKKit = GetSelectedKitPreset(homeGKKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(homeGKKitDropdown);
         settings.awayGKKit = GetSelectedKitPreset(awayGKKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(awayGKKitDropdown);
 
-        var gameData = new
-        {
-            saveSchemaVersion = RoomSaveService.SaveSchemaVersion,
-            eventLogSchemaVersion = GameplayEvent.CurrentSchemaVersion,
-            createdUtc = DateTime.UtcNow.ToString("o"),
-            lastSavedUtc = DateTime.UtcNow.ToString("o"),
-            gameSettings = settings,  // Grouped under "gameSettings"
-            events = new List<GameplayEvent>(),
-            runtimeSnapshot = (object)null
-        };
-        string json = JsonConvert.SerializeObject(gameData, Formatting.Indented);
-
-        // Generate random alphanumeric prefix
-        string randomPrefix = GenerateRandomString(16);
-        // Get current timestamp
-        string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
-
-        // Sanitize team names to avoid invalid characters in filenames
-        string homeTeam = SanitizeFileName(GetHomeTeamNameForSettings());
-        string awayTeam = SanitizeFileName(GetAwayTeamNameForSettings());
-        string gameMode = SanitizeFileName(gameModeDropdown.options[gameModeDropdown.value].text);
-
-        // Construct dynamic filename
-        string fileName = $"{randomPrefix}_{timestamp}__{gameMode}__{homeTeam}__{awayTeam}.json";
-
-        // Path where you want to save the file
-        // string path = Path.Combine(Application.persistentDataPath, fileName);
-        ApplicationManager.EnsureInstanceExists();
-        string path = Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), fileName);
+        string path = ResolveGameSettingsSavePath(settings, out bool updatedExistingSave);
+        string json = updatedExistingSave
+            ? BuildUpdatedExistingGameDataJson(path, settings)
+            : BuildNewGameDataJson(settings);
 
         // Write the file
         File.WriteAllText(path, json);
         // Persist the exact save reference so Draft/Room keep mutating the same JSON file.
         ApplicationManager.Instance.SetActiveSaveFilePath(path);
-        PlayerPrefs.SetString("currentGameSettings", path);
+        PlayerPrefs.SetString(CurrentGameSettingsPlayerPrefsKey, path);
         PlayerPrefs.Save();
 
         // Log where the file was saved
-        Debug.Log($"Game settings saved to {path}");
+        Debug.Log(updatedExistingSave
+            ? $"Existing draft game settings updated at {path}"
+            : $"Game settings saved to {path}");
 
         // Check the draft and gkDraft settings to determine the scene to load
         if ((settings.draft == "Regular" && settings.gkDraft == "Deal")
@@ -1453,9 +1791,102 @@ public class CreateNewGameManager : MonoBehaviour
         }
     }
 
+    private string ResolveGameSettingsSavePath(GameSettings settings, out bool updatedExistingSave)
+    {
+        ApplicationManager.EnsureInstanceExists();
+        updatedExistingSave = isEditingExistingDraftSettings
+            && !string.IsNullOrWhiteSpace(existingDraftSettingsFilePath)
+            && File.Exists(existingDraftSettingsFilePath)
+            && !RoomSaveService.IsProtectedSavePath(existingDraftSettingsFilePath);
+
+        if (updatedExistingSave)
+        {
+            return existingDraftSettingsFilePath;
+        }
+
+        return BuildNewGameSettingsFilePath(settings);
+    }
+
+    private string BuildNewGameSettingsFilePath(GameSettings settings)
+    {
+        // Generate random alphanumeric prefix
+        string randomPrefix = GenerateRandomString(16);
+        // Get current timestamp
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+
+        // Sanitize team names to avoid invalid characters in filenames
+        string homeTeam = SanitizeFileName(settings.homeTeamName);
+        string awayTeam = SanitizeFileName(settings.awayTeamName);
+        string gameMode = SanitizeFileName(settings.gameMode);
+
+        // Construct dynamic filename
+        string fileName = $"{randomPrefix}_{timestamp}__{gameMode}__{homeTeam}__{awayTeam}.json";
+
+        return Path.Combine(ApplicationManager.Instance.GetSaveFolderPath(), fileName);
+    }
+
+    private string BuildNewGameDataJson(GameSettings settings)
+    {
+        string nowUtc = DateTime.UtcNow.ToString("o");
+        var gameData = new
+        {
+            saveSchemaVersion = RoomSaveService.SaveSchemaVersion,
+            eventLogSchemaVersion = GameplayEvent.CurrentSchemaVersion,
+            createdUtc = nowUtc,
+            lastSavedUtc = nowUtc,
+            gameSettings = settings,  // Grouped under "gameSettings"
+            events = new List<GameplayEvent>(),
+            runtimeSnapshot = (object)null
+        };
+
+        return JsonConvert.SerializeObject(gameData, Formatting.Indented);
+    }
+
+    private string BuildUpdatedExistingGameDataJson(string path, GameSettings settings)
+    {
+        try
+        {
+            DateTime nowUtc = DateTime.UtcNow;
+            JObject root = JObject.Parse(File.ReadAllText(path));
+            string createdUtc = root.Value<string>("createdUtc");
+            if (string.IsNullOrWhiteSpace(createdUtc))
+            {
+                createdUtc = File.GetCreationTimeUtc(path).ToString("o");
+            }
+
+            root["saveSchemaVersion"] = RoomSaveService.SaveSchemaVersion;
+            root["eventLogSchemaVersion"] = GameplayEvent.CurrentSchemaVersion;
+            root["createdUtc"] = createdUtc;
+            root["lastSavedUtc"] = nowUtc.ToString("o");
+            root["gameSettings"] = JToken.FromObject(settings);
+
+            if (root["events"] == null)
+            {
+                root["events"] = new JArray();
+            }
+
+            if (root["runtimeSnapshot"] == null)
+            {
+                root["runtimeSnapshot"] = JValue.CreateNull();
+            }
+
+            return root.ToString(Formatting.Indented);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"Failed to update existing draft save '{path}'. Rebuilding game settings JSON: {ex.Message}");
+            return BuildNewGameDataJson(settings);
+        }
+    }
+
     // Helper function to sanitize file names by removing invalid characters
     private string SanitizeFileName(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
         // Replace invalid characters with underscores
         foreach (char c in Path.GetInvalidFileNameChars())
         {

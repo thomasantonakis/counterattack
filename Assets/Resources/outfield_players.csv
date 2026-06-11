@@ -22,23 +22,23 @@ Dillon,England,6,3,5,5,2,5,1,Not TableTopia,
 Delpech,France,4,5,4,5,4,5,2,TableTopia,
 M'barek,France,5,4,4,5,4,5,2,World Cup,9
 Sauer,Germany,5,4,3,6,5,3,4,Not TableTopia,
-Schröder,Germany,5,5,2,6,5,5,2,World Cup,
+Schröder,Germany,5,5,2,6,5,5,2,World Cup,11
 Antonakis,Greece,5,2,5,6,6,1,6,World Cup,11
 Savvakis,Greece,5,4,3,6,5,4,3,TableTopia,
 O'Leary,Ireland,5,2,6,6,6,1,5,World Cup,5
-Barbieri,Italy,3,5,3,6,5,3,5,World Cup,
+Barbieri,Italy,3,5,3,6,5,3,5,World Cup,6
 Rizzo,Italy,4,1,6,6,5,2,6,Not TableTopia,
 Bamba,Ivory Coast,5,3,3,6,4,4,4,Not TableTopia,
-Yéyé,Ivory Coast,6,3,4,6,4,5,1,World Cup,
-Sato,Japan,6,5,2,6,5,4,2,World Cup,
+Yéyé,Ivory Coast,6,3,4,6,4,5,1,World Cup,9
+Sato,Japan,6,5,2,6,5,4,2,World Cup,10
 de los Cobos,Mexico,5,4,4,5,3,6,1,World Cup,9
 Brandén,Netherlands,5,2,5,6,6,2,5,World Cup,4
 Werdekker,Netherlands,4,3,3,6,4,4,5,TableTopia,
 Troost,Netherlands,6,3,4,5,4,4,3,Not TableTopia,
-Ekpenyong,Nigeria,6,2,5,6,5,1,5,World Cup,
+Ekpenyong,Nigeria,6,2,5,6,5,1,5,World Cup,4
 João Santos,Portugal,5,6,3,6,5,3,2,World Cup,9
 Spence,Scotland,4,4,6,5,5,4,2,Not TableTopia,
-Piper,Scotland,5,2,5,6,4,1,6,World Cup,
+Piper,Scotland,5,2,5,6,4,1,6,World Cup,4
 Juantegui,Spain,4,4,3,6,6,4,4,World Cup,14
 Nylin,Sweden,4,5,5,5,6,4,2,Not TableTopia,
 Thoma,Switzerland,5,2,5,6,6,2,5,Not TableTopia,
@@ -64,28 +64,28 @@ Goaley,England,4,4,3,6,5,4,3,TableTopia,
 Gilbert,England,4,4,3,6,4,4,3,TableTopia,
 Césaire,France,5,5,2,6,5,4,2,World Cup,7
 Grumiaux,France,4,5,3,6,5,3,3,World Cup,8
-Schmitt,Germany,4,5,3,5,5,5,2,World Cup,
-Tokaç ,Germany,4,5,3,4,4,6,2,World Cup,
+Schmitt,Germany,4,5,3,5,5,5,2,World Cup,7
+Tokaç ,Germany,4,5,3,4,4,6,2,World Cup,9
 Tilias,Greece,4,4,3,5,5,2,6,World Cup,5
 McNulty,Ireland,5,4,4,5,1,5,1,TableTopia,
 Farrell,Ireland,4,3,6,5,4,5,1,World Cup,18
-Carminucci,Italy,4,3,4,5,6,5,3,World Cup,
-Di Capua,Italy,4,2,5,6,5,1,6,World Cup,
-Kuya,Ivory Coast,6,4,3,6,4,4,1,World Cup,
-Okada,Japan,6,4,3,5,6,2,4,World Cup,
-Kamekawa,Japan,6,3,3,6,5,5,1,World Cup,
+Carminucci,Italy,4,3,4,5,6,5,3,World Cup,9
+Di Capua,Italy,4,2,5,6,5,1,6,World Cup,4
+Kuya,Ivory Coast,6,4,3,6,4,4,1,World Cup,7
+Okada,Japan,6,4,3,5,6,2,4,World Cup,2
+Kamekawa,Japan,6,3,3,6,5,5,1,World Cup,9
 Pavez,Mexico,4,5,1,6,5,5,3,World Cup,4
 De Sil,Netherlands,4,4,3,6,5,3,4,World Cup,13
 Lemmens,Netherlands,5,5,2,6,4,4,2,World Cup,11
-Afolabi,Nigeria,6,2,4,6,6,2,4,World Cup,
-Yekini,Nigeria,6,4,3,6,5,3,2,World Cup,
+Afolabi,Nigeria,6,2,4,6,6,2,4,World Cup,8
+Yekini,Nigeria,6,4,3,6,5,3,2,World Cup,13
 Devine,Northern Ireland,5,5,3,5,5,4,2,Not TableTopia,
 Infante,Portugal,4,6,2,6,5,3,3,World Cup,10
 Teixeira,Portugal,5,6,2,5,4,4,2,World Cup,7
 Soares,Portugal,5,5,3,6,4,4,1,TableTopia,
 Cuzman,Romania,4,4,3,5,6,5,3,TableTopia,
-Kimble,Scotland,5,4,3,4,6,3,5,World Cup,
-McGrevey,Scotland,5,1,5,5,6,2,6,World Cup,
+Kimble,Scotland,5,4,3,4,6,3,5,World Cup,11
+McGrevey,Scotland,5,1,5,5,6,2,6,World Cup,6
 Stewart,Scotland,5,4,3,5,5,4,3,TableTopia,
 Arabolza,Spain,5,2,5,6,6,1,5,World Cup,6
 Queralt,Spain,5,4,4,5,6,5,1,World Cup,7
@@ -217,37 +217,37 @@ Gakou,France,5,2,4,5,5,2,3,World Cup,2
 Yacoubou,France,4,5,3,5,5,3,1,World Cup,11
 Touquet,France,5,4,2,5,4,3,2,World Cup,14
 Le Nimois,France,4,1,5,5,3,1,5,World Cup,4
-Kostoski,Germany,4,4,1,5,6,6,1,World Cup,
-Poengsen,Germany,5,3,2,5,6,2,4,World Cup,
-Awerbuch,Germany,4,4,2,6,5,4,1,World Cup,
-Jäger,Germany,4,2,4,5,5,3,3,World Cup,
-Konrad,Germany,4,3,2,5,5,4,3,World Cup,
-Studnicka ,Germany,4,2,2,6,5,4,3,World Cup,
-Urban,Germany,4,1,5,4,5,4,3,World Cup,
-von Liebe,Germany,3,3,5,3,5,6,1,World Cup,
-Zeitler,Germany,4,3,3,6,5,4,1,World Cup,
-Förderer,Germany,4,2,3,6,4,2,4,World Cup,
+Kostoski,Germany,4,4,1,5,6,6,1,World Cup,10
+Poengsen,Germany,5,3,2,5,6,2,4,World Cup,8
+Awerbuch,Germany,4,4,2,6,5,4,1,World Cup,16
+Jäger,Germany,4,2,4,5,5,3,3,World Cup,3
+Konrad,Germany,4,3,2,5,5,4,3,World Cup,14
+Studnicka ,Germany,4,2,2,6,5,4,3,World Cup,15
+Urban,Germany,4,1,5,4,5,4,3,World Cup,13
+von Liebe,Germany,3,3,5,3,5,6,1,World Cup,18
+Zeitler,Germany,4,3,3,6,5,4,1,World Cup,17
+Förderer,Germany,4,2,3,6,4,2,4,World Cup,2
 Repasi,Hungary,4,4,2,6,6,3,2,Not TableTopia,
-Bianchetto,Italy,4,2,3,6,6,2,4,World Cup,
-Di Lorenzo,Italy,4,1,5,4,6,1,6,World Cup,
-Ferraz,Italy,4,2,4,6,6,2,3,World Cup,
-Gasparini,Italy,5,1,4,4,6,1,6,World Cup,
-Pupa,Italy,3,2,4,6,6,1,5,World Cup,
-La Macchia,Italy,4,2,5,4,5,5,1,World Cup,
-Santelli,Italy,4,4,2,5,5,3,3,World Cup,
-Vettori,Italy,4,3,4,4,5,3,3,World Cup,
-Giacomelli,Italy,4,5,2,3,3,4,3,World Cup,
-Piemonte,Italy,4,3,1,5,3,4,4,World Cup,
-Tajiri,Japan,5,5,1,4,6,5,1,World Cup,
-Choshu,Japan,5,2,3,6,5,2,3,World Cup,
-Ichiyanagi,Japan,6,4,2,5,5,2,2,World Cup,
-Ito,Japan,6,3,2,4,5,3,3,World Cup,
-Kobayashi,Japan,6,2,2,6,5,1,4,World Cup,
-Nakamura,Japan,5,3,2,5,5,4,2,World Cup,
-Tanahashi,Japan,4,3,4,4,5,5,1,World Cup,
-Yamaguchi,Japan,5,5,2,4,5,3,2,World Cup,
-Yoshino,Japan,6,3,1,5,5,4,2,World Cup,
-Inoki,Japan,5,2,2,6,4,2,4,World Cup,
+Bianchetto,Italy,4,2,3,6,6,2,4,World Cup,3
+Di Lorenzo,Italy,4,1,5,4,6,1,6,World Cup,8
+Ferraz,Italy,4,2,4,6,6,2,3,World Cup,2
+Gasparini,Italy,5,1,4,4,6,1,6,World Cup,5
+Pupa,Italy,3,2,4,6,6,1,5,World Cup,15
+La Macchia,Italy,4,2,5,4,5,5,1,World Cup,10
+Santelli,Italy,4,4,2,5,5,3,3,World Cup,13
+Vettori,Italy,4,3,4,4,5,3,3,World Cup,18
+Giacomelli,Italy,4,5,2,3,3,4,3,World Cup,11
+Piemonte,Italy,4,3,1,5,3,4,4,World Cup,16
+Tajiri,Japan,5,5,1,4,6,5,1,World Cup,11
+Choshu,Japan,5,2,3,6,5,2,3,World Cup,17
+Ichiyanagi,Japan,6,4,2,5,5,2,2,World Cup,16
+Ito,Japan,6,3,2,4,5,3,3,World Cup,8
+Kobayashi,Japan,6,2,2,6,5,1,4,World Cup,3
+Nakamura,Japan,5,3,2,5,5,4,2,World Cup,18
+Tanahashi,Japan,4,3,4,4,5,5,1,World Cup,15
+Yamaguchi,Japan,5,5,2,4,5,3,2,World Cup,14
+Yoshino,Japan,6,3,1,5,5,4,2,World Cup,7
+Inoki,Japan,5,2,2,6,4,2,4,World Cup,6
 Moriuchi,Japan,6,3,2,6,5,3,1,TableTopia,
 Cruz,Mexico,4,2,6,5,2,2,2,Not TableTopia,
 Barnouw,Netherlands,5,1,4,5,6,1,5,World Cup,5
@@ -260,18 +260,18 @@ Vijent,Netherlands,4,4,4,3,5,5,1,World Cup,18
 Zonderland,Netherlands,5,4,2,4,5,5,1,World Cup,9
 de Nooijer,Netherlands,5,3,3,4,4,5,1,World Cup,17
 van Vleuten,Netherlands,5,5,2,5,3,3,1,World Cup,10
-Ndanusa,Nigeria,6,3,2,6,6,1,3,World Cup,
-Obafemi,Nigeria,5,4,2,6,6,1,3,World Cup,
+Ndanusa,Nigeria,6,3,2,6,6,1,3,World Cup,6
+Obafemi,Nigeria,5,4,2,6,6,1,3,World Cup,15
 Okosa,Nigeria,4,3,1,4,6,5,4,Not TableTopia,
-Akinremi,Nigeria,5,1,4,6,5,1,4,World Cup,
+Akinremi,Nigeria,5,1,4,6,5,1,4,World Cup,3
 Sesay,Nigeria,6,2,2,4,3,5,2,TableTopia,
-Ezinwa,Nigeria,5,3,3,6,5,1,3,World Cup,
-Fofana,Nigeria,5,5,4,3,5,3,1,World Cup,
-Ikpeba,Nigeria,6,5,2,4,5,3,1,World Cup,
-Tombiri,Nigeria,5,3,3,5,5,1,4,World Cup,
-Ugwu,Nigeria,4,2,5,5,5,1,4,World Cup,
-Akpan,Nigeria,5,1,4,5,4,1,5,World Cup,
-Odoi,Nigeria,5,5,2,4,3,3,2,World Cup,
+Ezinwa,Nigeria,5,3,3,6,5,1,3,World Cup,14
+Fofana,Nigeria,5,5,4,3,5,3,1,World Cup,17
+Ikpeba,Nigeria,6,5,2,4,5,3,1,World Cup,7
+Tombiri,Nigeria,5,3,3,5,5,1,4,World Cup,2
+Ugwu,Nigeria,4,2,5,5,5,1,4,World Cup,16
+Akpan,Nigeria,5,1,4,5,4,1,5,World Cup,5
+Odoi,Nigeria,5,5,2,4,3,3,2,World Cup,10
 Lopez,Paraguay,5,3,3,4,4,4,2,TableTopia,
 Wardach,Poland,4,3,3,5,4,4,2,Not TableTopia,
 Frédérico,Portugal,5,2,4,4,6,1,5,World Cup,6
@@ -284,16 +284,16 @@ Porfírio,Portugal,5,3,3,6,5,1,3,World Cup,2
 Ricardo Lopes,Portugal,4,3,5,5,5,1,3,World Cup,18
 Vítor,Portugal,4,2,5,4,4,1,5,World Cup,4
 Augusto,Portugal,5,3,5,3,3,1,4,World Cup,8
-Forest,Scotland,4,1,5,5,6,1,5,World Cup,
-Hoeflich,Scotland,3,3,5,4,6,5,1,World Cup,
-Caddis,Scotland,5,2,3,5,5,2,4,World Cup,
-Findlay,Scotland,4,3,3,5,5,3,3,World Cup,
-MacLeod,Scotland,5,1,4,5,5,1,5,World Cup,
-Roxburgh,Scotland,5,1,4,5,5,2,4,World Cup,
-Weir,Scotland,4,2,3,5,5,4,3,World Cup,
-Hamilton,Scotland,5,2,3,4,4,5,2,World Cup,
-Mackinnon,Scotland,5,3,2,5,4,3,3,World Cup,
-Mair,Scotland,5,2,2,6,4,2,4,World Cup,
+Forest,Scotland,4,1,5,5,6,1,5,World Cup,5
+Hoeflich,Scotland,3,3,5,4,6,5,1,World Cup,18
+Caddis,Scotland,5,2,3,5,5,2,4,World Cup,13
+Findlay,Scotland,4,3,3,5,5,3,3,World Cup,7
+MacLeod,Scotland,5,1,4,5,5,1,5,World Cup,8
+Roxburgh,Scotland,5,1,4,5,5,2,4,World Cup,15
+Weir,Scotland,4,2,3,5,5,4,3,World Cup,16
+Hamilton,Scotland,5,2,3,4,4,5,2,World Cup,10
+Mackinnon,Scotland,5,3,2,5,4,3,3,World Cup,14
+Mair,Scotland,5,2,2,6,4,2,4,World Cup,2
 Bratoz,Slovenia,5,3,2,6,5,4,1,TableTopia,
 Eizaguirre,Spain,4,1,5,5,6,1,5,World Cup,4
 Franco-Henao,Spain,5,3,3,4,6,5,1,World Cup,9
@@ -340,9 +340,9 @@ Blériot,France,5,1,3,5,5,1,5,World Cup,6
 Rok,France,5,2,2,6,5,2,3,World Cup,3
 Despotovic,France,5,2,3,4,4,2,4,World Cup,13
 Vernet,France,4,3,2,6,4,4,1,Not TableTopia,
-Feldinger,Germany,4,1,4,5,5,1,5,World Cup,
-Gollnhuber,Germany,3,1,5,5,5,1,5,World Cup,
-Hochleitner,Germany,4,1,5,4,5,1,5,World Cup,
+Feldinger,Germany,4,1,4,5,5,1,5,World Cup,4
+Gollnhuber,Germany,3,1,5,5,5,1,5,World Cup,6
+Hochleitner,Germany,4,1,5,4,5,1,5,World Cup,5
 Drossos,Greece,4,2,3,6,6,1,4,World Cup,14
 Goulios,Greece,5,5,1,4,6,2,3,World Cup,7
 Gouvedaris,Greece,4,1,5,4,6,1,5,World Cup,4
@@ -367,25 +367,25 @@ Yeats,Ireland,5,1,4,4,5,1,5,World Cup,4
 Finn,Ireland,5,1,3,6,4,1,4,World Cup,3
 Hilliard,Ireland,5,3,3,5,4,3,1,World Cup,11
 Kinsella,Ireland,4,1,4,6,3,1,4,World Cup,8
-Crispi,Italy,4,5,1,5,5,3,2,World Cup,
-D'Annunzio,Italy,4,4,1,5,5,4,2,World Cup,
-Stagliano,Italy,5,2,2,6,3,3,2,World Cup,
-Hie Toh,Ivory Coast,5,2,2,6,6,2,3,World Cup,
-Junior,Ivory Coast,5,4,2,4,6,4,1,World Cup,
-Kouadio,Ivory Coast,5,3,2,6,6,3,1,World Cup,
-Bahtobe,Ivory Coast,5,5,1,6,5,2,1,World Cup,
-Komenan,Ivory Coast,5,4,3,4,5,3,1,World Cup,
-Koné,Ivory Coast,5,1,4,5,5,1,4,World Cup,
-N'Dri,Ivory Coast,5,2,3,6,5,2,2,World Cup,
-Pokou,Ivory Coast,5,2,3,4,5,5,1,World Cup,
-Tiacoh,Ivory Coast,5,1,5,4,5,1,4,World Cup,
-Cisse,Ivory Coast,6,1,5,3,4,1,4,World Cup,
-Clément,Ivory Coast,5,2,3,5,4,2,3,World Cup,
-Konan,Ivory Coast,5,5,3,3,4,3,1,World Cup,
+Crispi,Italy,4,5,1,5,5,3,2,World Cup,7
+D'Annunzio,Italy,4,4,1,5,5,4,2,World Cup,17
+Stagliano,Italy,5,2,2,6,3,3,2,World Cup,14
+Hie Toh,Ivory Coast,5,2,2,6,6,2,3,World Cup,3
+Junior,Ivory Coast,5,4,2,4,6,4,1,World Cup,18
+Kouadio,Ivory Coast,5,3,2,6,6,3,1,World Cup,16
+Bahtobe,Ivory Coast,5,5,1,6,5,2,1,World Cup,11
+Komenan,Ivory Coast,5,4,3,4,5,3,1,World Cup,17
+Koné,Ivory Coast,5,1,4,5,5,1,4,World Cup,4
+N'Dri,Ivory Coast,5,2,3,6,5,2,2,World Cup,13
+Pokou,Ivory Coast,5,2,3,4,5,5,1,World Cup,10
+Tiacoh,Ivory Coast,5,1,5,4,5,1,4,World Cup,5
+Cisse,Ivory Coast,6,1,5,3,4,1,4,World Cup,6
+Clément,Ivory Coast,5,2,3,5,4,2,3,World Cup,2
+Konan,Ivory Coast,5,5,3,3,4,3,1,World Cup,8
 Abraham,Ivory Coast,5,1,4,6,4,1,3,TableTopia,
-Michiki,Japan,6,1,4,3,6,1,5,World Cup,
-Shirai,Japan,5,2,2,5,5,1,5,World Cup,
-Endo,Japan,5,1,3,6,3,1,4,World Cup,
+Michiki,Japan,6,1,4,3,6,1,5,World Cup,4
+Shirai,Japan,5,2,2,5,5,1,5,World Cup,5
+Endo,Japan,5,1,3,6,3,1,4,World Cup,13
 El Gadi,Libya,4,1,4,5,4,1,5,Not TableTopia,
 Castañeda,Mexico,5,1,4,4,6,2,4,World Cup,3
 Fuentes,Mexico,3,3,3,5,6,3,3,World Cup,15
@@ -403,9 +403,9 @@ Ezzine,Morocco,4,1,5,6,5,1,3,TableTopia,
 Gardien,Netherlands,5,3,2,5,6,1,4,World Cup,2
 Hasnoe,Netherlands,4,2,3,6,5,2,3,World Cup,15
 Fromberg,Netherlands,5,2,3,5,4,1,4,World Cup,3
-Anieke,Nigeria,6,3,1,5,6,4,1,World Cup,
-Azuka,Nigeria,6,4,2,4,6,2,2,World Cup,
-Effiong,Nigeria,6,1,5,3,3,4,1,World Cup,
+Anieke,Nigeria,6,3,1,5,6,4,1,World Cup,18
+Azuka,Nigeria,6,4,2,4,6,2,2,World Cup,11
+Effiong,Nigeria,6,1,5,3,3,4,1,World Cup,9
 Mitchell,Northern Ireland,4,3,3,5,4,4,1,TableTopia,
 Andersen,Norway,5,1,5,4,5,2,3,TableTopia,
 Fabio Bento,Portugal,4,5,3,3,6,4,1,World Cup,11
@@ -415,9 +415,9 @@ Rodrigues,Portugal,5,3,2,5,5,4,1,Not TableTopia,
 Noon,Scotland,5,2,4,4,6,1,4,TableTopia,
 Muirhead,Scotland,5,2,4,4,5,2,3,TableTopia,
 Kerr,Scotland,5,2,3,4,4,3,3,TableTopia,
-Fyffe,Scotland,5,3,1,5,5,4,2,World Cup,
-Gallacher,Scotland,4,2,2,6,5,4,2,World Cup,
-Leckie,Scotland,5,3,1,5,5,3,3,World Cup,
+Fyffe,Scotland,5,3,1,5,5,4,2,World Cup,9
+Gallacher,Scotland,4,2,2,6,5,4,2,World Cup,17
+Leckie,Scotland,5,3,1,5,5,3,3,World Cup,3
 Zietsch,Slovakia,6,1,2,6,5,3,2,Not TableTopia,
 Peña,Spain,4,3,3,5,5,2,3,World Cup,13
 Sagarzazu,Spain,4,5,1,5,4,3,2,World Cup,17
@@ -436,8 +436,8 @@ Kapias,Greece,4,4,1,4,5,4,2,World Cup,18
 Nikolaidis,Greece,5,2,1,5,5,3,3,World Cup,2
 Heaney,Ireland,4,2,2,6,6,4,1,World Cup,16
 O'Toole,Ireland,4,1,4,6,5,1,3,World Cup,13
-Achy Assi,Ivory Coast,5,2,3,6,6,1,2,World Cup,
-Yoyaga,Ivory Coast,5,3,1,6,6,2,2,World Cup,
+Achy Assi,Ivory Coast,5,2,3,6,6,1,2,World Cup,14
+Yoyaga,Ivory Coast,5,3,1,6,6,2,2,World Cup,15
 Lemus,Mexico,4,4,2,4,5,4,1,World Cup,17
 Macías,Mexico,4,2,2,6,5,2,3,World Cup,13
 Lahiafi,Morocco,5,1,5,3,5,1,4,Not TableTopia,

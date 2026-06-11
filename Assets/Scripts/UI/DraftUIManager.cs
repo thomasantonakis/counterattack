@@ -11,6 +11,7 @@ using System.Linq;
 public class DraftUIManager : MonoBehaviour
 {
     private const string ProtectedRoomFixtureSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
+    private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
 
     public Button startGameButton;  // Reference to the Start Game button
     private DraftManager draftManager;  // Reference to the DraftManager
@@ -109,7 +110,8 @@ public class DraftUIManager : MonoBehaviour
     // Method to load the previous scene
     public void OnBackButtonPressed()
     {
-        // Assuming you want to load a previous scene, change "PreviousSceneName" to the actual scene name
+        PlayerPrefs.SetString(CreateNewGameReturnSourcePlayerPrefsKey, SceneManager.GetActiveScene().name);
+        PlayerPrefs.Save();
         SceneManager.LoadScene("CreateNewHSGameScene");
     }
     public void OnBackToMainButtonPressed()

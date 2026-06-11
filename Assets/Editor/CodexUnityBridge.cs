@@ -149,6 +149,10 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     CreateNewGameSceneEditorTools.SetupKitPreviewUi();
                     return BridgeResponse.Ok(request, "Create New Game kit preview UI configured.");
+                case "ensure_create_new_game_hotseat_back_button":
+                    EnsureEditorMode(command);
+                    CreateNewGameSceneEditorTools.EnsureBackToHotSeatButton();
+                    return BridgeResponse.Ok(request, "Create New Game Hot Seat back button ensured.");
                 case "rebuild_substitution_panel_prefab":
                     EnsureEditorMode(command);
                     SubstitutionPanelPrefabEditorTools.RebuildSubstitutionPanelPrefab();

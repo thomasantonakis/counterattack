@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 2963
+  controlID: 3610
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 112}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 2964
+  controlID: 3611
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 2965
+  controlID: 3612
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -252,6 +252,8 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
+      - m_Data: -578938
+      - m_Data: -490926
       - m_Data: -118960
       - m_Data: -118758
       - m_Data: -117584
@@ -953,7 +955,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 2826
+  controlID: 3577
   draggingID: 0
 --- !u!114 &10
 MonoBehaviour:
@@ -1056,8 +1058,6 @@ MonoBehaviour:
     - m_Data: 38882
     - m_Data: 38884
     - m_Data: 38886
-    - m_Data: 38888
-    - m_Data: 38890
     - m_Data: 38892
     - m_Data: 38894
     m_RenameOverlay:
@@ -1087,9 +1087,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 806}
-    m_SelectedIDs:
-    - m_Data: 72778
+    scrollPos: {x: 0, y: 148.09265}
+    m_SelectedIDs: []
     m_LastClickedID:
       m_Data: 0
     m_ExpandedIDs:
@@ -1097,8 +1096,6 @@ MonoBehaviour:
     - m_Data: 38882
     - m_Data: 38884
     - m_Data: 38886
-    - m_Data: 38888
-    - m_Data: 38890
     - m_Data: 38892
     - m_Data: 38894
     m_RenameOverlay:
@@ -1128,10 +1125,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs:
-    - m_Data: 72778
+    m_SelectedInstanceIDs: []
     m_LastClickedEntityId:
-      m_Data: 72778
+      m_Data: 0
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: []
     m_RenameOverlay:
@@ -1183,8 +1179,8 @@ MonoBehaviour:
     y: 0
     width: 1194
     height: 241
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 102, y: 126}
+  m_MaxSize: {x: 4002, y: 4026}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -1299,7 +1295,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectEntityId:
-    m_Data: 72778
+    m_Data: 0
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0

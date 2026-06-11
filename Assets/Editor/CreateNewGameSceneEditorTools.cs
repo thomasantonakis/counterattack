@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using TMPro;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,9 +22,24 @@ namespace CounterAttack.Editor
         private const float SimilarityHeight = 24f;
         private const float ValidationY = -532f;
         private const float ValidationHeight = 26f;
+        private const float BackButtonVerticalGap = 16f;
+        private const string BackToModeButtonName = "Back to Game Mode Menu";
+        private const string LegacyBackToHotSeatButtonName = "Back to Hot Seat Menu";
+        private const string DefaultBackToModeButtonLabel = "Back to Hot Seat Menu";
 
         [MenuItem("CounterAttack/Create New Game/Setup Kit Preview UI")]
         public static void SetupKitPreviewUi()
+        {
+            SetupCreateNewGameSceneUi(configureKitPreview: true, configureBackButton: false);
+        }
+
+        [MenuItem("CounterAttack/Create New Game/Ensure Back To Hot Seat Button")]
+        public static void EnsureBackToHotSeatButton()
+        {
+            SetupCreateNewGameSceneUi(configureKitPreview: false, configureBackButton: true);
+        }
+
+        public static void SetupCreateNewGameSceneUi(bool configureKitPreview, bool configureBackButton)
         {
             Scene targetScene = SceneManager.GetSceneByPath(ScenePath);
             bool openedAdditively = !targetScene.isLoaded;
@@ -41,43 +57,15 @@ namespace CounterAttack.Editor
                     throw new UnityException($"Could not find {nameof(CreateNewGameManager)} in {ScenePath}.");
                 }
 
-                RectTransform homeDropdown = manager.homeKitDropdown.GetComponent<RectTransform>();
-                RectTransform awayDropdown = manager.awayKitDropdown.GetComponent<RectTransform>();
-                RectTransform commonParent = homeDropdown.parent as RectTransform;
-                TMP_FontAsset fontAsset = manager.homeKitDropdown.captionText != null
-                    ? manager.homeKitDropdown.captionText.font
-                    : TMP_Settings.defaultFontAsset;
+                if (configureKitPreview)
+                {
+                    SetupKitPreviewUi(manager);
+                }
 
-                LayoutKitRow(homeDropdown, awayDropdown, commonParent);
-                TMP_Dropdown homeGKDropdown = EnsureDropdown(commonParent, "Home GK Kit Dropdown", manager.homeKitDropdown);
-                TMP_Dropdown awayGKDropdown = EnsureDropdown(commonParent, "Away GK Kit Dropdown", manager.awayKitDropdown);
-                RectTransform homeGKDropdownTransform = homeGKDropdown.GetComponent<RectTransform>();
-                RectTransform awayGKDropdownTransform = awayGKDropdown.GetComponent<RectTransform>();
-                LayoutGoalkeeperKitRow(homeDropdown, awayDropdown, homeGKDropdownTransform, awayGKDropdownTransform);
-                ResizeDropdownTemplate(manager.homeKitDropdown);
-                ResizeDropdownTemplate(manager.awayKitDropdown);
-                ResizeDropdownTemplate(homeGKDropdown);
-                ResizeDropdownTemplate(awayGKDropdown);
-
-                PreviewWidgetRefs homePreview = EnsurePreviewWidget(commonParent, "Home Kit Preview", GetPreviewPosition(homeDropdown, commonParent), fontAsset);
-                PreviewWidgetRefs awayPreview = EnsurePreviewWidget(commonParent, "Away Kit Preview", GetPreviewPosition(awayDropdown, commonParent), fontAsset);
-                PreviewWidgetRefs homeGKPreview = EnsurePreviewWidget(commonParent, "Home GK Kit Preview", GetPreviewPosition(homeGKDropdownTransform, commonParent), fontAsset);
-                PreviewWidgetRefs awayGKPreview = EnsurePreviewWidget(commonParent, "Away GK Kit Preview", GetPreviewPosition(awayGKDropdownTransform, commonParent), fontAsset);
-                TMP_Text similarityText = EnsureSimilarityLabel(commonParent, fontAsset, commonParent.sizeDelta.x);
-                TMP_Text validationText = EnsureValidationLabel(commonParent, fontAsset, commonParent.sizeDelta.x);
-
-                manager.homeGKKitDropdown = homeGKDropdown;
-                manager.awayGKKitDropdown = awayGKDropdown;
-                manager.homeKitPreviewImage = homePreview.Image;
-                manager.homeKitPreviewNumberText = homePreview.NumberText;
-                manager.awayKitPreviewImage = awayPreview.Image;
-                manager.awayKitPreviewNumberText = awayPreview.NumberText;
-                manager.homeGKKitPreviewImage = homeGKPreview.Image;
-                manager.homeGKKitPreviewNumberText = homeGKPreview.NumberText;
-                manager.awayGKKitPreviewImage = awayGKPreview.Image;
-                manager.awayGKKitPreviewNumberText = awayGKPreview.NumberText;
-                manager.kitSimilarityText = similarityText;
-                manager.kitValidationText = validationText;
+                if (configureBackButton)
+                {
+                    EnsureBackToHotSeatButton(manager);
+                }
 
                 EditorUtility.SetDirty(manager);
                 EditorSceneManager.MarkSceneDirty(targetScene);
@@ -90,6 +78,140 @@ namespace CounterAttack.Editor
                     EditorSceneManager.CloseScene(targetScene, true);
                 }
             }
+        }
+
+        private static void SetupKitPreviewUi(CreateNewGameManager manager)
+        {
+            RectTransform homeDropdown = manager.homeKitDropdown.GetComponent<RectTransform>();
+            RectTransform awayDropdown = manager.awayKitDropdown.GetComponent<RectTransform>();
+            RectTransform commonParent = homeDropdown.parent as RectTransform;
+            TMP_FontAsset fontAsset = manager.homeKitDropdown.captionText != null
+                ? manager.homeKitDropdown.captionText.font
+                : TMP_Settings.defaultFontAsset;
+
+            LayoutKitRow(homeDropdown, awayDropdown, commonParent);
+            TMP_Dropdown homeGKDropdown = EnsureDropdown(commonParent, "Home GK Kit Dropdown", manager.homeKitDropdown);
+            TMP_Dropdown awayGKDropdown = EnsureDropdown(commonParent, "Away GK Kit Dropdown", manager.awayKitDropdown);
+            RectTransform homeGKDropdownTransform = homeGKDropdown.GetComponent<RectTransform>();
+            RectTransform awayGKDropdownTransform = awayGKDropdown.GetComponent<RectTransform>();
+            LayoutGoalkeeperKitRow(homeDropdown, awayDropdown, homeGKDropdownTransform, awayGKDropdownTransform);
+            ResizeDropdownTemplate(manager.homeKitDropdown);
+            ResizeDropdownTemplate(manager.awayKitDropdown);
+            ResizeDropdownTemplate(homeGKDropdown);
+            ResizeDropdownTemplate(awayGKDropdown);
+
+            PreviewWidgetRefs homePreview = EnsurePreviewWidget(commonParent, "Home Kit Preview", GetPreviewPosition(homeDropdown, commonParent), fontAsset);
+            PreviewWidgetRefs awayPreview = EnsurePreviewWidget(commonParent, "Away Kit Preview", GetPreviewPosition(awayDropdown, commonParent), fontAsset);
+            PreviewWidgetRefs homeGKPreview = EnsurePreviewWidget(commonParent, "Home GK Kit Preview", GetPreviewPosition(homeGKDropdownTransform, commonParent), fontAsset);
+            PreviewWidgetRefs awayGKPreview = EnsurePreviewWidget(commonParent, "Away GK Kit Preview", GetPreviewPosition(awayGKDropdownTransform, commonParent), fontAsset);
+            TMP_Text similarityText = EnsureSimilarityLabel(commonParent, fontAsset, commonParent.sizeDelta.x);
+            TMP_Text validationText = EnsureValidationLabel(commonParent, fontAsset, commonParent.sizeDelta.x);
+
+            manager.homeGKKitDropdown = homeGKDropdown;
+            manager.awayGKKitDropdown = awayGKDropdown;
+            manager.homeKitPreviewImage = homePreview.Image;
+            manager.homeKitPreviewNumberText = homePreview.NumberText;
+            manager.awayKitPreviewImage = awayPreview.Image;
+            manager.awayKitPreviewNumberText = awayPreview.NumberText;
+            manager.homeGKKitPreviewImage = homeGKPreview.Image;
+            manager.homeGKKitPreviewNumberText = homeGKPreview.NumberText;
+            manager.awayGKKitPreviewImage = awayGKPreview.Image;
+            manager.awayGKKitPreviewNumberText = awayGKPreview.NumberText;
+            manager.kitSimilarityText = similarityText;
+            manager.kitValidationText = validationText;
+        }
+
+        private static void EnsureBackToHotSeatButton(CreateNewGameManager manager)
+        {
+            if (manager.createGameButton == null)
+            {
+                throw new UnityException("CreateNewGameManager.createGameButton is not assigned.");
+            }
+
+            RectTransform createButtonTransform = manager.createGameButton.GetComponent<RectTransform>();
+            RectTransform parent = createButtonTransform.parent as RectTransform;
+            if (parent == null)
+            {
+                throw new UnityException("Create and Start button parent is not a RectTransform.");
+            }
+
+            Button backButton = EnsureButton(parent, BackToModeButtonName, LegacyBackToHotSeatButtonName, manager.createGameButton);
+            RectTransform backButtonTransform = backButton.GetComponent<RectTransform>();
+            backButtonTransform.anchorMin = createButtonTransform.anchorMin;
+            backButtonTransform.anchorMax = createButtonTransform.anchorMax;
+            backButtonTransform.pivot = createButtonTransform.pivot;
+            backButtonTransform.sizeDelta = createButtonTransform.sizeDelta;
+            backButtonTransform.anchoredPosition = new Vector2(
+                createButtonTransform.anchoredPosition.x,
+                createButtonTransform.anchoredPosition.y + createButtonTransform.sizeDelta.y + BackButtonVerticalGap);
+
+            SetButtonLabel(backButton, DefaultBackToModeButtonLabel);
+            ConfigureBackButtonClick(backButton, manager);
+            manager.backToGameModeMenuButton = backButton;
+
+            Navigation backNavigation = backButton.navigation;
+            backNavigation.mode = Navigation.Mode.Explicit;
+            backNavigation.selectOnDown = manager.createGameButton;
+            backButton.navigation = backNavigation;
+
+            Navigation createNavigation = manager.createGameButton.navigation;
+            createNavigation.selectOnUp = backButton;
+            manager.createGameButton.navigation = createNavigation;
+
+            EditorUtility.SetDirty(backButton);
+            EditorUtility.SetDirty(backButtonTransform);
+            EditorUtility.SetDirty(manager.createGameButton);
+            EditorUtility.SetDirty(createButtonTransform);
+        }
+
+        private static Button EnsureButton(RectTransform parent, string buttonName, string legacyButtonName, Button sourceButton)
+        {
+            Transform existing = parent.Find(buttonName);
+            if (existing != null && existing.TryGetComponent(out Button existingButton))
+            {
+                return existingButton;
+            }
+
+            Transform legacyExisting = parent.Find(legacyButtonName);
+            if (legacyExisting != null && legacyExisting.TryGetComponent(out Button legacyButton))
+            {
+                legacyButton.name = buttonName;
+                EditorUtility.SetDirty(legacyButton);
+                return legacyButton;
+            }
+
+            Button button = Object.Instantiate(sourceButton, parent, false);
+            Undo.RegisterCreatedObjectUndo(button.gameObject, $"Create {buttonName}");
+            button.name = buttonName;
+            button.gameObject.SetActive(true);
+            return button;
+        }
+
+        private static void SetButtonLabel(Button button, string label)
+        {
+            TextMeshProUGUI text = button.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (text == null)
+            {
+                return;
+            }
+
+            text.text = label;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 16f;
+            text.fontSizeMax = 24f;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            EditorUtility.SetDirty(text);
+        }
+
+        private static void ConfigureBackButtonClick(Button button, CreateNewGameManager manager)
+        {
+            for (int i = button.onClick.GetPersistentEventCount() - 1; i >= 0; i--)
+            {
+                UnityEventTools.RemovePersistentListener(button.onClick, i);
+            }
+
+            UnityEventTools.AddPersistentListener(button.onClick, manager.BackToCreateLoadRoomMenu);
+            EditorUtility.SetDirty(button);
         }
 
         private static void LayoutKitRow(RectTransform homeDropdown, RectTransform awayDropdown, RectTransform panel)
