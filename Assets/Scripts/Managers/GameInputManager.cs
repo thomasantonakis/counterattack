@@ -862,7 +862,8 @@ public class GameInputManager : MonoBehaviour
 
     private static bool IsGameplayInputBlocked()
     {
-        return MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked;
+        return (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+            || PenaltyShootoutOrderPanelController.IsAnyPanelActive;
     }
 
     private static bool IsEmergencyGoalkeeperNominationInputActive()

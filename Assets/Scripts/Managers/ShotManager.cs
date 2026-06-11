@@ -173,6 +173,11 @@ public class ShotManager : MonoBehaviour
         return shotType == PenaltyShotType;
     }
 
+    private bool IsPenaltyShootoutShot()
+    {
+        return IsPenaltyShot() && PenaltyShootoutManager.ActiveShootout != null;
+    }
+
     private HexCell GetFreeKickShotOriginHex()
     {
         return freeKickShotOriginHex != null ? freeKickShotOriginHex : ball?.GetCurrentHex();
@@ -983,8 +988,57 @@ public class ShotManager : MonoBehaviour
         isActivated = true;
         ResetExpectedGoalContext();
         MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: PenaltyShotType);
+        if (PenaltyShootoutManager.ActiveShootout != null)
+        {
+            if (!TrySelectRandomPenaltyShootoutTarget())
+            {
+                Debug.LogError("Penalty shootout kick could not find a random target.");
+                ResetShotProcess();
+                return;
+            }
+
+            Debug.Log($"Penalty Shootout Kick initiated. Random target selected at {targetHex.coordinates}. Waiting for shooter roll.");
+            StartCoroutine(StartFreeKickShooterRollPhase());
+            return;
+        }
+
         Debug.Log("Penalty Kick initiated. Proceeding to target selection.");
         HandleTargetSelection();
+    }
+
+    private bool TrySelectRandomPenaltyShootoutTarget()
+    {
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null || originHex.ShootingPaths == null || originHex.ShootingPaths.Count == 0)
+        {
+            return false;
+        }
+
+        int goalSide = GetAttackingGoalSide();
+        List<HexCell> goalTargets = originHex.ShootingPaths.Keys
+            .Where(hex => hex != null && hex.isInGoal == goalSide)
+            .ToList();
+        List<HexCell> saveableGoalTargets = goalTargets
+            .Where(hex => originHex.ShootingPaths.TryGetValue(hex, out List<HexCell> path) && BuildGKSaveInteraction(path) != null)
+            .ToList();
+        List<HexCell> candidates = saveableGoalTargets.Count > 0
+            ? saveableGoalTargets
+            : goalTargets.Count > 0
+            ? goalTargets
+            : originHex.ShootingPaths.Keys.Where(hex => hex != null).ToList();
+        if (candidates.Count == 0)
+        {
+            return false;
+        }
+
+        targetHex = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        trajectoryPath = originHex.ShootingPaths[targetHex];
+        ClearShotTargetSelectionHighlights();
+        ClearTargetSelectionPreviewPath();
+        hexGrid.ClearHighlightedHexes();
+        isWaitingForTargetSelection = false;
+        shotTargetSelectionTargets.Clear();
+        return trajectoryPath != null && trajectoryPath.Count > 0;
     }
 
     private void RefreshShotCommitPreviewPath()
@@ -2211,6 +2265,17 @@ public class ShotManager : MonoBehaviour
         RefreshGKInteractionOnly();
 
         ShotInteraction gkInteraction = interceptors.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
+        if (gkInteraction == null && IsPenaltyShootoutShot())
+        {
+            gkInteraction = BuildPenaltyShootoutGKSaveInteraction();
+            if (gkInteraction != null)
+            {
+                interceptors.Add(gkInteraction);
+                saveHex = gkInteraction.interactionHex;
+                UpdateExpectedGoalGkInteraction(gkInteraction);
+            }
+        }
+
         if (gkInteraction == null)
         {
             yield return StartCoroutine(ResolveShotGoal());
@@ -2222,6 +2287,35 @@ public class ShotManager : MonoBehaviour
         saveHex = gkInteraction.interactionHex;
         Debug.Log($"Penalty Kick has reached GK {gkInteraction.defender.name}. Press [R] to roll for the save.");
         isWaitingForGKDiceRoll = true;
+    }
+
+    private ShotInteraction BuildPenaltyShootoutGKSaveInteraction()
+    {
+        PlayerToken defendingGK = PenaltyShootoutManager.ActiveShootout != null
+            ? PenaltyShootoutManager.ActiveShootout.currentDefendingGoalkeeper
+            : null;
+        if (defendingGK == null)
+        {
+            defendingGK = hexGrid.GetDefendingGK();
+        }
+
+        HexCell gkHex = defendingGK?.GetCurrentHex();
+        if (defendingGK == null || gkHex == null)
+        {
+            Debug.LogError("Penalty shootout could not force a GK save interaction because the defending GK is missing.");
+            return null;
+        }
+
+        Debug.Log($"Penalty shootout forcing GK save interaction for {defendingGK.name} at {gkHex.coordinates}.");
+        return new ShotInteraction
+        {
+            defender = defendingGK,
+            interactionHex = gkHex,
+            type = ShotInteractionType.GKSave,
+            pathIndex = 0,
+            requiredNaturalRoll = 0,
+            gkPenalty = -2
+        };
     }
 
     private void RefreshGKInteractionOnly()
@@ -2732,6 +2826,14 @@ public class ShotManager : MonoBehaviour
     {
         Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo} = {totalShotPower}");
         Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+        if (IsPenaltyShot() && PenaltyShootoutManager.ActiveShootout != null)
+        {
+            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, GetShotMovementRoll(), allowGKBoxMove: false));
+            PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(true);
+            ResetShotProcess();
+            yield break;
+        }
+
         RecordSnapshotBallStartedIfNeeded();
         LogExpectedGoalForCurrentShot("goal");
         LogGoalScoredForCurrentShot(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
@@ -2760,6 +2862,15 @@ public class ShotManager : MonoBehaviour
 
     private IEnumerator ResolveShotOffTarget()
     {
+        if (IsPenaltyShootoutShot())
+        {
+            Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the penalty shootout kick is OFF target.");
+            yield return StartCoroutine(ResolvePenaltyShootoutOffTargetAnimation());
+            PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(false);
+            ResetShotProcess();
+            yield break;
+        }
+
         Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the Shot is OFF target! GoalKick awarded.");
         LogExpectedGoalForCurrentShot("off target");
         MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -2834,6 +2945,13 @@ public class ShotManager : MonoBehaviour
 
         if (totalSavingPower == totalShotPower)
         {
+            if (IsPenaltyShootoutShot())
+            {
+                yield return StartCoroutine(ResolvePenaltyShootoutTiedSave(gkToken));
+                ResetShotProcess();
+                yield break;
+            }
+
             yield return null;
             Debug.Log($"{gkToken.name} ties the attacker's roll!! Loose Ball situation initiated.");
             LogExpectedGoalForCurrentShot("blocked");
@@ -2859,6 +2977,13 @@ public class ShotManager : MonoBehaviour
         }
         else if (totalSavingPower > totalShotPower)
         {
+            if (IsPenaltyShootoutShot())
+            {
+                yield return StartCoroutine(ResolvePenaltyShootoutSavedMiss(gkToken));
+                ResetShotProcess();
+                yield break;
+            }
+
             LogExpectedGoalForCurrentShot("on target");
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
@@ -2885,6 +3010,14 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log($"{shooter.name} Shot roll: {shooterRoll} + Shooting: {shooter.shooting}{shootingPenaltyInfo} = {totalShotPower}");
                 Debug.Log($"Get IN!! {shooter.name}, buries it to the top corner! Goal!!!");
+                if (IsPenaltyShot() && PenaltyShootoutManager.ActiveShootout != null)
+                {
+                    yield return StartCoroutine(MovePenaltyGoalBallAndGoalkeeper(gkToken, gkRoll));
+                    PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(true);
+                    ResetShotProcess();
+                    yield break;
+                }
+
                 RecordSnapshotBallStartedIfNeeded();
                 LogExpectedGoalForCurrentShot("goal");
                 LogGoalScoredForCurrentShot(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
@@ -2904,6 +3037,172 @@ public class ShotManager : MonoBehaviour
             }
         }
         yield return null;
+    }
+
+    private IEnumerator ResolvePenaltyShootoutTiedSave(PlayerToken gkToken)
+    {
+        yield return StartCoroutine(MoveBallAndGoalkeeperToSaveHex(gkToken));
+
+        int directionIndex = 0;
+        if (looseBallManager != null)
+        {
+            looseBallManager.isActivated = true;
+            looseBallManager.causingDeflection = gkToken;
+            looseBallManager.directionRoll = 240885;
+            looseBallManager.isWaitingForDirectionRoll = true;
+            Debug.Log($"Penalty shootout save tie. Loose ball starts from {saveHex?.coordinates}. Press [R] for direction.");
+            while (looseBallManager.isWaitingForDirectionRoll)
+            {
+                yield return null;
+            }
+
+            directionIndex = looseBallManager.directionRoll;
+            looseBallManager.isActivated = false;
+        }
+        else
+        {
+            directionIndex = UnityEngine.Random.Range(0, 6);
+        }
+
+        HexCell oneHexTarget = CalculateDirectionalShotSpillTarget(saveHex, directionIndex, 1);
+        bool behindIntoGoal = oneHexTarget != null && oneHexTarget.isInGoal == GetAttackingGoalSide();
+        Debug.Log($"Penalty shootout save tie direction {FormatShotSpillDirection(directionIndex)} from {saveHex?.coordinates}; forced distance {(behindIntoGoal ? 1 : 2)}.");
+
+        if (behindIntoGoal)
+        {
+            yield return StartCoroutine(MoveShootoutSpillBall(oneHexTarget, 1));
+            PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(true);
+            yield break;
+        }
+
+        HexCell spillTarget = CalculateDirectionalShotSpillTarget(saveHex, directionIndex, 2);
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            gkToken,
+            MatchManager.ActionType.SaveMade,
+            saveType: "loose",
+            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+        yield return StartCoroutine(MoveShootoutSpillBall(spillTarget, 2));
+        PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(false);
+    }
+
+    private IEnumerator ResolvePenaltyShootoutSavedMiss(PlayerToken gkToken)
+    {
+        yield return StartCoroutine(MoveBallAndGoalkeeperToSaveHex(gkToken));
+
+        int directionIndex = UnityEngine.Random.Range(0, 6);
+        bool spillDirection = IsGoalkeeperSpillDirection(gkToken, directionIndex);
+        Debug.Log($"Penalty shootout save. Random direction {FormatShotSpillDirection(directionIndex)} from {saveHex?.coordinates}; {(spillDirection ? "spilling two hexes" : "breaking behind for a dead ball")}.");
+
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            gkToken,
+            MatchManager.ActionType.SaveMade,
+            saveType: spillDirection ? "loose" : "corner",
+            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+
+        if (spillDirection)
+        {
+            HexCell spillTarget = CalculateDirectionalShotSpillTarget(saveHex, directionIndex, 2);
+            yield return StartCoroutine(MoveShootoutSpillBall(spillTarget, 2));
+        }
+        else
+        {
+            HexCell deadBallTarget = ResolveShootoutCornerBreakTarget(directionIndex);
+            yield return StartCoroutine(MoveShootoutDeadBallBehind(deadBallTarget));
+        }
+
+        PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(false);
+    }
+
+    private HexCell CalculateDirectionalShotSpillTarget(HexCell startHex, int directionIndex, int distance)
+    {
+        if (startHex == null || directionIndex < 0 || directionIndex > 5 || distance < 0)
+        {
+            return startHex;
+        }
+
+        HexCell currentHex = startHex;
+        Vector3Int currentPosition = startHex.coordinates;
+        for (int i = 0; i < distance; i++)
+        {
+            Vector2Int[] directionVectors = currentHex.GetDirectionVectors();
+            Vector2Int direction2D = directionVectors[directionIndex];
+            currentPosition = new Vector3Int(currentPosition.x + direction2D.x, 0, currentPosition.z + direction2D.y);
+            HexCell nextHex = hexGrid.GetHexCellAt(currentPosition);
+            if (nextHex == null)
+            {
+                return currentHex;
+            }
+
+            currentHex = nextHex;
+        }
+
+        return currentHex;
+    }
+
+    private IEnumerator MoveShootoutSpillBall(HexCell target, int distance)
+    {
+        if (target == null)
+        {
+            yield break;
+        }
+
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(target, allowGKBoxMove: false));
+    }
+
+    private IEnumerator MoveShootoutDeadBallBehind(HexCell target)
+    {
+        if (target == null)
+        {
+            yield break;
+        }
+
+        if (longBallManager != null)
+        {
+            yield return StartCoroutine(longBallManager.HandleLongBallMovement(target, true));
+            yield break;
+        }
+
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(target, 2, allowGKBoxMove: false));
+    }
+
+    private bool IsGoalkeeperSpillDirection(PlayerToken gkToken, int directionIndex)
+    {
+        int penaltyBoxSide = gkToken != null && gkToken.currentHex != null
+            ? gkToken.currentHex.isInPenaltyBox
+            : saveHex != null ? saveHex.isInPenaltyBox : 0;
+
+        if (penaltyBoxSide == 1)
+        {
+            return directionIndex == 1 || directionIndex == 2;
+        }
+
+        if (penaltyBoxSide == -1)
+        {
+            return directionIndex == 4 || directionIndex == 5;
+        }
+
+        return false;
+    }
+
+    private HexCell ResolveShootoutCornerBreakTarget(int directionIndex)
+    {
+        int goalSide = GetAttackingGoalSide();
+        int z = directionIndex == 2 || directionIndex == 3 || directionIndex == 4 ? 6 : -6;
+        return hexGrid.GetHexCellAt(new Vector3Int(22 * goalSide, 0, z));
+    }
+
+    private string FormatShotSpillDirection(int directionIndex)
+    {
+        return directionIndex switch
+        {
+            0 => "S",
+            1 => "SW",
+            2 => "NW",
+            3 => "N",
+            4 => "NE",
+            5 => "SE",
+            _ => "?"
+        };
     }
 
     public IEnumerator ResolveHandlingTest(int? rigRoll = null)
@@ -3122,6 +3421,71 @@ public class ShotManager : MonoBehaviour
                 Debug.Log("Value is something else");
                 break;
         }
+    }
+
+    private IEnumerator ResolvePenaltyShootoutOffTargetAnimation()
+    {
+        if (UnityEngine.Random.Range(0, 2) == 0)
+        {
+            yield return StartCoroutine(PenaltyShootoutFailedLobNoRestart());
+            yield break;
+        }
+
+        yield return StartCoroutine(PenaltyShootoutNextToBarNoRestart());
+    }
+
+    private IEnumerator PenaltyShootoutFailedLobNoRestart()
+    {
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null || targetHex == null)
+        {
+            yield break;
+        }
+
+        int goalSide = GetAttackingGoalSide();
+        int targetX = 22 * goalSide;
+        float xDelta = targetHex.coordinates.x - originHex.coordinates.x;
+        if (Mathf.Approximately(xDelta, 0f))
+        {
+            yield return StartCoroutine(PenaltyShootoutNextToBarNoRestart());
+            yield break;
+        }
+
+        float slope = (float)(targetHex.coordinates.z - originHex.coordinates.z) / xDelta;
+        int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
+        int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
+        HexCell finalHex = GetOffTargetHex(targetX, intersectionZ);
+        if (finalHex == null)
+        {
+            yield break;
+        }
+
+        if (longBallManager != null)
+        {
+            yield return StartCoroutine(longBallManager.HandleLongBallMovement(finalHex, true));
+            yield break;
+        }
+
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(finalHex, allowGKBoxMove: false));
+    }
+
+    private IEnumerator PenaltyShootoutNextToBarNoRestart()
+    {
+        HexCell originHex = GetShotOriginHex();
+        if (originHex == null)
+        {
+            yield break;
+        }
+
+        int goalSide = GetAttackingGoalSide();
+        int targetZ = originHex.coordinates.z >= 0 ? 4 : -5;
+        HexCell finalHex = GetOffTargetHex(19 * goalSide, targetZ);
+        if (finalHex == null)
+        {
+            yield break;
+        }
+
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(finalHex, 4, allowGKBoxMove: false));
     }
 
     private IEnumerator FailedLob()

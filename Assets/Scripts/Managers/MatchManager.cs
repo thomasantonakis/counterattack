@@ -69,6 +69,11 @@ public class MatchManager : MonoBehaviour
         PenaltyAtt,
         PenaltyDef2,
         PenaltyExecution,
+        PenaltyShootoutOrderSelection,
+        PenaltyShootoutSetup,
+        PenaltyShootoutKickExecution,
+        PenaltyShootoutTransition,
+        PenaltyShootoutComplete,
         QuickThrow,
         ActivateFinalThirdsAfterSave,
         GoalKick,
@@ -3145,6 +3150,28 @@ public class MatchManager : MonoBehaviour
         return penaltyKickManager;
     }
 
+    public PenaltyShootoutManager EnsurePenaltyShootoutManager()
+    {
+        PenaltyShootoutManager manager = FindAnyObjectByType<PenaltyShootoutManager>();
+        if (manager == null)
+        {
+            manager = gameObject.AddComponent<PenaltyShootoutManager>();
+        }
+
+        manager.Configure(this);
+        return manager;
+    }
+
+    public void MarkPenaltyShootoutInProgress()
+    {
+        isMatchComplete = false;
+    }
+
+    public void MarkPenaltyShootoutComplete()
+    {
+        isMatchComplete = true;
+    }
+
     public void MarkNextGoalAsPenalty(bool suppressAssist = true)
     {
         nextGoalIsPenalty = true;
@@ -4172,6 +4199,13 @@ public class MatchManager : MonoBehaviour
 
     private void CompleteMatchAfterFinalHalf()
     {
+        PenaltyShootoutManager existingShootoutManager = FindAnyObjectByType<PenaltyShootoutManager>();
+        if (existingShootoutManager != null && existingShootoutManager.IsOrderSelectionOrShootoutStarted)
+        {
+            Debug.Log("Ignoring duplicate final whistle because penalty shootout flow is already active.");
+            return;
+        }
+
         currentState = GameState.MatchEnded;
         isMatchComplete = true;
         isPauseMenuOpen = false;
@@ -4184,10 +4218,10 @@ public class MatchManager : MonoBehaviour
                 ("scoreTied", IsScoreTied()),
                 ("tiebreaker", gameData?.gameSettings?.tiebreaker ?? string.Empty)));
 
-        if (IsExtraTimeHalf(currentHalf) && IsScoreTied() && TieBreakerIncludesPenalties())
+        if (IsScoreTied() && TieBreakerIncludesPenalties())
         {
-            Debug.Log("Extra-time ended tied. Penalty shootout pending.");
-            EndGamePanelManager.ShowPenaltyShootoutPendingPanel();
+            Debug.Log("Final whistle with tied score. Opening penalty shootout order selection.");
+            EnsurePenaltyShootoutManager().ShowOrderSelection();
             return;
         }
 

@@ -27,6 +27,7 @@ public class GameDebugMonitor : MonoBehaviour
     public ThrowInManager throwInManager;
     public FreeKickManager freeKickManager;
     public PenaltyKickManager penaltyKickManager;
+    public PenaltyShootoutManager penaltyShootoutManager;
     public ShotManager shotManager;
     public FinalThirdManager finalThirdManager;
     public GoalFlowManager goalFlowManager;
@@ -120,6 +121,7 @@ public class GameDebugMonitor : MonoBehaviour
         throwInManager = FindAnyObjectByType<ThrowInManager>();
         freeKickManager = FindAnyObjectByType<FreeKickManager>();
         penaltyKickManager = FindAnyObjectByType<PenaltyKickManager>();
+        penaltyShootoutManager = FindAnyObjectByType<PenaltyShootoutManager>();
         shotManager = FindAnyObjectByType<ShotManager>();
         finalThirdManager = FindAnyObjectByType<FinalThirdManager>();
         goalFlowManager = FindAnyObjectByType<GoalFlowManager>();
@@ -226,6 +228,22 @@ public class GameDebugMonitor : MonoBehaviour
             return CreateInstructionSnapshot(
                 nameof(GoalFlowManager),
                 goalFlowInstruction,
+                activeInstructionSide,
+                shouldFlashInstruction);
+        }
+
+        PenaltyShootoutManager activeShootoutManager = PenaltyShootoutManager.ActiveShootout != null
+            ? PenaltyShootoutManager.ActiveShootout
+            : penaltyShootoutManager != null ? penaltyShootoutManager : FindAnyObjectByType<PenaltyShootoutManager>();
+        string shootoutInstruction = activeShootoutManager != null ? activeShootoutManager.GetInstructions() : string.Empty;
+        if (!string.IsNullOrWhiteSpace(shootoutInstruction))
+        {
+            penaltyShootoutManager = activeShootoutManager;
+            activeInstructionSide = ResolveInstructionSide(activeShootoutManager.IsInstructionExpectingHomeTeam());
+            shouldFlashInstruction = activeShootoutManager.ShouldFlashInstructionColors();
+            return CreateInstructionSnapshot(
+                nameof(PenaltyShootoutManager),
+                shootoutInstruction,
                 activeInstructionSide,
                 shouldFlashInstruction);
         }

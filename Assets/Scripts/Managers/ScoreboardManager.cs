@@ -94,13 +94,33 @@ public class ScoreboardManager : MonoBehaviour
             EnsureLayout();
         }
 
-        int homeGoals = matchManager?.gameData?.stats?.homeTeamStats.totalGoals ?? 0;
-        int awayGoals = matchManager?.gameData?.stats?.awayTeamStats.totalGoals ?? 0;
-
         if (separatorText != null)
         {
             separatorText.text = "-";
         }
+
+        if (PenaltyShootoutPresentation.TryGetDisplayState(matchManager, out PenaltyShootoutDisplayState shootoutState))
+        {
+            if (homeScoreText != null)
+            {
+                homeScoreText.text = $"({shootoutState.homeBaseGoals}) {shootoutState.homePenaltyGoals}";
+            }
+
+            if (awayScoreText != null)
+            {
+                awayScoreText.text = $"{shootoutState.awayPenaltyGoals} ({shootoutState.awayBaseGoals})";
+            }
+
+            if (timeText != null)
+            {
+                timeText.text = shootoutState.clockText;
+            }
+
+            return;
+        }
+
+        int homeGoals = matchManager?.gameData?.stats?.homeTeamStats.totalGoals ?? 0;
+        int awayGoals = matchManager?.gameData?.stats?.awayTeamStats.totalGoals ?? 0;
 
         if (homeScoreText != null)
         {

@@ -346,6 +346,31 @@ public class MatchStatsUI : MonoBehaviour
         UpdateExternalScoreboardVisibility();
     }
 
+    public void MoveOffScreenForEndGame()
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        if (offScreenPos == Vector2.zero)
+        {
+            onScreenPos = panel.anchoredPosition;
+            offScreenPos = new Vector2(collapsedX, onScreenPos.y);
+        }
+
+        isExpanded = false;
+        StopAllCoroutines();
+        panel.anchoredPosition = offScreenPos;
+        UpdateToggleGlyph();
+
+        EnsureExternalScoreboardRoot();
+        if (externalScoreboardRoot != null)
+        {
+            externalScoreboardRoot.SetActive(false);
+        }
+    }
+
     private IEnumerator SlidePanel(Vector2 targetPos)
     {
         while (Vector2.Distance(panel.anchoredPosition, targetPos) > 0.1f)
@@ -372,7 +397,8 @@ public class MatchStatsUI : MonoBehaviour
         string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
         string awayTeamName = MatchManager.Instance.gameData.gameSettings.awayTeamName;
         int lineupRowCount = GetMaxLineupRowCount();
-        ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, 5, false, ScoreboardMonospaceStepPx);
+        int scoreboardMinCenterChars = PenaltyShootoutPresentation.TryGetDisplayState(MatchManager.Instance, out _) ? 11 : 5;
+        ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, scoreboardMinCenterChars, false, ScoreboardMonospaceStepPx);
         ColumnLayout statsLayout = GetColumnLayout(StatsSideColumnRatio, StatsCenterColumnRatio, 10);
         ColumnLayout lineupLayout = GetColumnLayout(LineupSideColumnRatio, LineupCenterColumnRatio, 3);
         currentLineupLayout = lineupLayout;
@@ -408,7 +434,8 @@ public class MatchStatsUI : MonoBehaviour
 
         string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
         string awayTeamName = MatchManager.Instance.gameData.gameSettings.awayTeamName;
-        ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, 5, false, ScoreboardMonospaceStepPx, textWidthOverride);
+        int scoreboardMinCenterChars = PenaltyShootoutPresentation.TryGetDisplayState(MatchManager.Instance, out _) ? 11 : 5;
+        ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, scoreboardMinCenterChars, false, ScoreboardMonospaceStepPx, textWidthOverride);
         ColumnLayout statsLayout = GetColumnLayout(StatsSideColumnRatio, StatsCenterColumnRatio, 10, false, MonospaceStepPx, textWidthOverride);
 
         StringBuilder builder = new();
@@ -1305,7 +1332,9 @@ public class MatchStatsUI : MonoBehaviour
 
     private void AppendScoreboardClockRows(StringBuilder builder, ColumnLayout layout, ref int currentLineIndex)
     {
-        string clockDisplay = MatchManager.Instance != null ? MatchManager.Instance.GetClockDisplayText() : "00:00";
+        string clockDisplay = PenaltyShootoutPresentation.TryGetDisplayState(MatchManager.Instance, out PenaltyShootoutDisplayState shootoutState)
+            ? shootoutState.clockText
+            : MatchManager.Instance != null ? MatchManager.Instance.GetClockDisplayText() : "00:00";
         string[] clockLines = clockDisplay.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         if (clockLines.Length == 0)
         {
@@ -1335,13 +1364,17 @@ public class MatchStatsUI : MonoBehaviour
 
     private string BuildScoreboardHeaderRow(string homeTeamName, string awayTeamName, int homeGoals, int awayGoals, ColumnLayout layout)
     {
+        string centerValue = PenaltyShootoutPresentation.TryGetDisplayState(MatchManager.Instance, out PenaltyShootoutDisplayState shootoutState)
+            ? $"{shootoutState.homePenaltyGoals} ({shootoutState.homeBaseGoals}-{shootoutState.awayBaseGoals}) {shootoutState.awayPenaltyGoals}"
+            : $"{homeGoals} - {awayGoals}";
+
         string homeText = AlignRich(
             $"<size=108%><b><color={currentHomeColor}>{TrimToWidth(SanitizeName(homeTeamName), layout.leftChars)}</color></b></size>",
             layout.leftChars,
             scoreboardLeftColumnAlignment);
 
         string centerText = AlignRich(
-            $"<size=138%><b><color={AccentColor}>{homeGoals} - {awayGoals}</color></b></size>",
+            $"<size=138%><b><color={AccentColor}>{TrimToWidth(centerValue, layout.centerChars)}</color></b></size>",
             layout.centerChars,
             scoreboardCenterColumnAlignment);
 

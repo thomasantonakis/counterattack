@@ -301,7 +301,7 @@ public class Ball : MonoBehaviour
             return transform.position;
         }
 
-        float yOffset = (cell.isAttackOccupied || cell.isDefenseOccupied)
+        float yOffset = (cell.GetOccupyingToken() != null || cell.isAttackOccupied || cell.isDefenseOccupied)
             ? playerHeightOffset
             : groundHeightOffset;
 
