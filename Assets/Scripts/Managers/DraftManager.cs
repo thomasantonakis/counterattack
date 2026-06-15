@@ -15,6 +15,7 @@ public class DraftManager : MonoBehaviour
     private const string FreeDraftSceneName = "FreeDraft";
     private const string MatchTypeInternational = "International";
     private const string DraftInternational = "International";
+    private const string DraftArcade = "Arcade";
     private const string WorldCupPlayerType = "World Cup";
     private static readonly string[] FreeDraftFilterOrder =
     {
@@ -128,7 +129,7 @@ public class DraftManager : MonoBehaviour
         BindFreeDraftTable();
         PerformCoinFlip();
 
-        if (currentSettings != null && currentSettings.gkDraft == "Deal")
+        if (!IsArcadeGoalkeeperDraftMode() && currentSettings != null && currentSettings.gkDraft == "Deal")
         {
             AssignGoalkeepersToSlots();
             BeginFreeDraftOutfielderPhase();
@@ -704,9 +705,10 @@ public class DraftManager : MonoBehaviour
     {
         foreach (Player player in playersToShow)
         {
-            GameObject playerCard = Instantiate(playerCardPrefab, draftPanel.transform);  // Assuming playerCardPrefab is assigned in the inspector
+            GameObject playerCard = Instantiate(playerCardPrefab, draftPanel.transform);
             PlayerCard cardScript = playerCard.GetComponent<PlayerCard>();
             cardScript.UpdatePlayerCard(player);
+            DraftPlayerCardStyler.ApplyOutfield(playerCard);
         }
     }
 
@@ -767,6 +769,13 @@ public class DraftManager : MonoBehaviour
     // Validate the target panel based on the current team's turn
     public bool IsValidTeamPanel(string rosterName)
     {
+        if (IsCurrentFreeDraftPhaseArcade())
+        {
+            bool isArcadePanel = rosterName == "HomeRoster" || rosterName == "AwayRoster";
+            Debug.Log($"Arcade drop in {rosterName}, isValidTeamPanel: {isArcadePanel}.");
+            return isArcadePanel;
+        }
+
         // Allow only the current team's roster as a valid drop target
         bool panelWhereACardWasDropped = (currentTeamTurn == "Home" && rosterName == "HomeRoster") ||
                (currentTeamTurn == "Away" && rosterName == "AwayRoster");
@@ -800,6 +809,7 @@ public class DraftManager : MonoBehaviour
             GameObject newCard = Instantiate(playerCardPrefab, draftPanel.transform);
             PlayerCard playerCard = newCard.GetComponent<PlayerCard>();
             playerCard.UpdatePlayerCard(nextPlayer);
+            DraftPlayerCardStyler.ApplyOutfield(newCard);
             // Debug.Log($"Dealt card for player: {nextPlayer.Name}");
         }
 
@@ -862,6 +872,33 @@ public class DraftManager : MonoBehaviour
         return isFreeDraftScene;
     }
 
+    public bool IsArcadeDraftMode()
+    {
+        return IsArcadeOutfielderDraftMode() || IsArcadeGoalkeeperDraftMode();
+    }
+
+    public bool IsCurrentFreeDraftPhaseArcade()
+    {
+        return freeDraftPhase switch
+        {
+            FreeDraftPhase.Goalkeepers => IsArcadeGoalkeeperDraftMode(),
+            FreeDraftPhase.Outfielders => IsArcadeOutfielderDraftMode(),
+            _ => IsArcadeDraftMode()
+        };
+    }
+
+    private bool IsArcadeOutfielderDraftMode()
+    {
+        return currentSettings != null
+            && string.Equals(currentSettings.draft, DraftArcade, System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsArcadeGoalkeeperDraftMode()
+    {
+        return currentSettings != null
+            && string.Equals(currentSettings.gkDraft, DraftArcade, System.StringComparison.OrdinalIgnoreCase);
+    }
+
     public string GetFreeDraftPhaseName()
     {
         switch (freeDraftPhase)
@@ -913,10 +950,10 @@ public class DraftManager : MonoBehaviour
             return false;
         }
 
-        string rosterPanelName = currentTeamTurn == "Home" ? "HomeRoster" : "AwayRoster";
+        string rosterPanelName = currentTeamTurn == "Away" ? "AwayRoster" : "HomeRoster";
         PlayerSlotDropHandler nextSlot = row.IsGoalkeeper
-            ? FindNextAvailableGoalkeeperSlot(rosterPanelName)
-            : FindNextAvailableOutfieldSlot(rosterPanelName, 0);
+            ? (IsArcadeGoalkeeperDraftMode() ? FindNextAvailableGoalkeeperSlotInAnyRoster() : FindNextAvailableGoalkeeperSlot(rosterPanelName))
+            : (IsArcadeOutfielderDraftMode() ? FindNextAvailableOutfieldSlotInAnyRoster() : FindNextAvailableOutfieldSlot(rosterPanelName, 0));
 
         return nextSlot != null && AssignFreeDraftCandidateToSlot(row, nextSlot);
     }
@@ -972,7 +1009,10 @@ public class DraftManager : MonoBehaviour
             }
 
             destinationSlot.UpdateGoalkeeperSlot(goalkeeper);
-            selectedGks.Remove(goalkeeper);
+            if (!IsArcadeGoalkeeperDraftMode())
+            {
+                selectedGks.Remove(goalkeeper);
+            }
         }
         else
         {
@@ -984,7 +1024,10 @@ public class DraftManager : MonoBehaviour
             }
 
             destinationSlot.UpdatePlayerSlot(player);
-            draftPool.Remove(player);
+            if (!IsArcadeOutfielderDraftMode())
+            {
+                draftPool.Remove(player);
+            }
         }
 
         CompleteFreeDraftPick();
@@ -995,6 +1038,27 @@ public class DraftManager : MonoBehaviour
     {
         UpdateTeamAverages(homeTeamPanel.transform, homeAveragePanel.transform);
         UpdateTeamAverages(awayTeamPanel.transform, awayAveragePanel.transform);
+    }
+
+    public bool ReturnRosterSlotToPool(PlayerSlotDropHandler slot)
+    {
+        if (slot == null || !slot.IsSlotPopulated())
+        {
+            return false;
+        }
+
+        bool slotCanReturn = slot.IsGoalkeeperRosterSlot()
+            ? IsArcadeGoalkeeperDraftMode()
+            : IsArcadeOutfielderDraftMode();
+        if (!slotCanReturn)
+        {
+            return false;
+        }
+
+        slot.ClearSlot();
+        RefreshRosterAverages();
+        RefreshDraftUI();
+        return true;
     }
 
     private void CreateFreeDraftPools()
@@ -1044,9 +1108,26 @@ public class DraftManager : MonoBehaviour
         }
 
         freeDraftPreviewRow.gameObject.SetActive(false);
+        BindFreeDraftPoolDropHandler(tableRoot);
         BindFreeDraftHeaderControls(headerRow);
         BindFreeDraftFilterControls(filterRow);
         ClearFreeDraftRows();
+    }
+
+    private void BindFreeDraftPoolDropHandler(Transform tableRoot)
+    {
+        if (tableRoot == null)
+        {
+            return;
+        }
+
+        FreeDraftPoolDropHandler poolDropHandler = tableRoot.GetComponent<FreeDraftPoolDropHandler>();
+        if (poolDropHandler == null)
+        {
+            poolDropHandler = tableRoot.gameObject.AddComponent<FreeDraftPoolDropHandler>();
+        }
+
+        poolDropHandler.Configure(this);
     }
 
     private void BindFreeDraftHeaderControls(Transform headerRow)
@@ -1152,7 +1233,7 @@ public class DraftManager : MonoBehaviour
         ClearFreeDraftRows();
         if (freeDraftTitleText != null)
         {
-            freeDraftTitleText.text = "Free Draft Complete";
+            freeDraftTitleText.text = IsArcadeDraftMode() ? "Arcade Draft Complete" : "Free Draft Complete";
         }
 
         RefreshDraftUI();
@@ -1166,7 +1247,10 @@ public class DraftManager : MonoBehaviour
     private void CompleteFreeDraftPick()
     {
         RefreshRosterAverages();
-        currentTeamTurn = currentTeamTurn == "Home" ? "Away" : "Home";
+        if (!IsCurrentFreeDraftPhaseArcade())
+        {
+            currentTeamTurn = currentTeamTurn == "Home" ? "Away" : "Home";
+        }
 
         if (freeDraftPhase == FreeDraftPhase.Goalkeepers && AreAllGoalkeeperSlotsFilled())
         {
@@ -1449,9 +1533,10 @@ public class DraftManager : MonoBehaviour
 
         if (freeDraftTitleText != null)
         {
+            string draftLabel = IsCurrentFreeDraftPhaseArcade() ? "Arcade Draft" : "Free Draft";
             freeDraftTitleText.text = freeDraftPhase == FreeDraftPhase.Goalkeepers
-                ? "Free Draft Goalkeepers"
-                : "Free Draft Outfielders";
+                ? $"{draftLabel} Goalkeepers"
+                : $"{draftLabel} Outfielders";
         }
 
         UpdateFreeDraftColumnHeaders();
@@ -1648,6 +1733,12 @@ public class DraftManager : MonoBehaviour
         return null;
     }
 
+    private PlayerSlotDropHandler FindNextAvailableGoalkeeperSlotInAnyRoster()
+    {
+        return FindNextAvailableGoalkeeperSlot("HomeRoster")
+            ?? FindNextAvailableGoalkeeperSlot("AwayRoster");
+    }
+
     private PlayerSlotDropHandler FindNextAvailableOutfieldSlot(string rosterPanelName, int startIndex)
     {
         GameObject rosterPanel = GameObject.Find(rosterPanelName);
@@ -1669,6 +1760,12 @@ public class DraftManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private PlayerSlotDropHandler FindNextAvailableOutfieldSlotInAnyRoster()
+    {
+        return FindNextAvailableOutfieldSlot("HomeRoster", 0)
+            ?? FindNextAvailableOutfieldSlot("AwayRoster", 0);
     }
 
     private bool AreAllGoalkeeperSlotsFilled()

@@ -127,6 +127,14 @@ public class MatchStatsUI : MonoBehaviour
     public float animationSpeed = 5f;
     public PlayerCard playerCardPrefab;
     public GoalkeeperCard goalkeeperCardPrefab;
+    [Header("Hover Card Instances")]
+    [SerializeField] private RectTransform hoverCardsRoot;
+    [SerializeField] private RectTransform homeHoverCardAnchor;
+    [SerializeField] private RectTransform awayHoverCardAnchor;
+    [SerializeField] private PlayerCard homeHoverCard;
+    [SerializeField] private PlayerCard awayHoverCard;
+    [SerializeField] private GoalkeeperCard homeGoalkeeperHoverCard;
+    [SerializeField] private GoalkeeperCard awayGoalkeeperHoverCard;
     [Header("Stats Panel Layout")]
     [SerializeField] private float statsFontSizeMin = 9f;
     [SerializeField] private float statsFontSizeMax = 13f;
@@ -192,13 +200,6 @@ public class MatchStatsUI : MonoBehaviour
     private readonly List<TemplateRow> templateRows = new();
     private string currentHomeColor = HomeColor;
     private string currentAwayColor = AwayColor;
-    private RectTransform hoverCardsRoot;
-    private RectTransform homeHoverCardAnchor;
-    private RectTransform awayHoverCardAnchor;
-    private PlayerCard homeHoverCard;
-    private PlayerCard awayHoverCard;
-    private GoalkeeperCard homeGoalkeeperHoverCard;
-    private GoalkeeperCard awayGoalkeeperHoverCard;
     private readonly Dictionary<int, LineupHoverEntry> lineupHoverEntries = new();
     private readonly List<LineupHoverRowBounds> lineupHoverRows = new();
     private ColumnLayout currentLineupLayout;
@@ -572,11 +573,21 @@ public class MatchStatsUI : MonoBehaviour
 
         if (hoverCardsRoot == null)
         {
+            hoverCardsRoot = FindDirectChildRect(panel, "HoverCardsRoot");
+        }
+
+        if (hoverCardsRoot == null)
+        {
             hoverCardsRoot = CreateChildRect("HoverCardsRoot", panel);
             hoverCardsRoot.anchorMin = new Vector2(SidePaddingRatio, cardsBottomPadding);
             hoverCardsRoot.anchorMax = new Vector2(1f - SidePaddingRatio, cardsTopAnchor);
             hoverCardsRoot.offsetMin = Vector2.zero;
             hoverCardsRoot.offsetMax = Vector2.zero;
+        }
+
+        if (homeHoverCardAnchor == null)
+        {
+            homeHoverCardAnchor = FindDirectChildRect(hoverCardsRoot, "HomeHoverCardAnchor");
         }
 
         if (homeHoverCardAnchor == null)
@@ -591,6 +602,11 @@ public class MatchStatsUI : MonoBehaviour
 
         if (awayHoverCardAnchor == null)
         {
+            awayHoverCardAnchor = FindDirectChildRect(hoverCardsRoot, "AwayHoverCardAnchor");
+        }
+
+        if (awayHoverCardAnchor == null)
+        {
             awayHoverCardAnchor = CreateChildRect("AwayHoverCardAnchor", hoverCardsRoot);
             awayHoverCardAnchor.anchorMin = new Vector2(0.5f + (CardColumnGap * 0.5f), 0f);
             awayHoverCardAnchor.anchorMax = new Vector2(1f, 1f);
@@ -599,29 +615,63 @@ public class MatchStatsUI : MonoBehaviour
             awayHoverCardAnchor.gameObject.AddComponent<RectMask2D>();
         }
 
+        BindExistingHoverCards();
+
         if (homeHoverCard == null && playerCardPrefab != null)
         {
             homeHoverCard = Instantiate(playerCardPrefab, homeHoverCardAnchor);
+            homeHoverCard.name = "HomeOutfieldHoverCard";
             PrepareHoverCard(homeHoverCard, false);
         }
 
         if (awayHoverCard == null && playerCardPrefab != null)
         {
             awayHoverCard = Instantiate(playerCardPrefab, awayHoverCardAnchor);
+            awayHoverCard.name = "AwayOutfieldHoverCard";
             PrepareHoverCard(awayHoverCard, false);
         }
 
         if (homeGoalkeeperHoverCard == null && goalkeeperCardPrefab != null)
         {
             homeGoalkeeperHoverCard = Instantiate(goalkeeperCardPrefab, homeHoverCardAnchor);
+            homeGoalkeeperHoverCard.name = "HomeGoalkeeperHoverCard";
             PrepareHoverCard(homeGoalkeeperHoverCard, true);
         }
 
         if (awayGoalkeeperHoverCard == null && goalkeeperCardPrefab != null)
         {
             awayGoalkeeperHoverCard = Instantiate(goalkeeperCardPrefab, awayHoverCardAnchor);
+            awayGoalkeeperHoverCard.name = "AwayGoalkeeperHoverCard";
             PrepareHoverCard(awayGoalkeeperHoverCard, true);
         }
+    }
+
+    private void BindExistingHoverCards()
+    {
+        if (homeHoverCard == null)
+        {
+            homeHoverCard = FindDirectChildComponent<PlayerCard>(homeHoverCardAnchor, "HomeOutfieldHoverCard");
+        }
+
+        if (awayHoverCard == null)
+        {
+            awayHoverCard = FindDirectChildComponent<PlayerCard>(awayHoverCardAnchor, "AwayOutfieldHoverCard");
+        }
+
+        if (homeGoalkeeperHoverCard == null)
+        {
+            homeGoalkeeperHoverCard = FindDirectChildComponent<GoalkeeperCard>(homeHoverCardAnchor, "HomeGoalkeeperHoverCard");
+        }
+
+        if (awayGoalkeeperHoverCard == null)
+        {
+            awayGoalkeeperHoverCard = FindDirectChildComponent<GoalkeeperCard>(awayHoverCardAnchor, "AwayGoalkeeperHoverCard");
+        }
+
+        PrepareHoverCard(homeHoverCard, false);
+        PrepareHoverCard(awayHoverCard, false);
+        PrepareHoverCard(homeGoalkeeperHoverCard, true);
+        PrepareHoverCard(awayGoalkeeperHoverCard, true);
     }
 
     private void EnsureExternalScoreboardRoot()
@@ -654,6 +704,18 @@ public class MatchStatsUI : MonoBehaviour
         GameObject child = new(name, typeof(RectTransform));
         child.transform.SetParent(parent, false);
         return child.GetComponent<RectTransform>();
+    }
+
+    private static RectTransform FindDirectChildRect(RectTransform parent, string childName)
+    {
+        Transform child = FindNamedChild(parent, childName);
+        return child as RectTransform;
+    }
+
+    private static T FindDirectChildComponent<T>(RectTransform parent, string childName) where T : Component
+    {
+        Transform child = FindNamedChild(parent, childName);
+        return child != null ? child.GetComponent<T>() : null;
     }
 
     private void PrepareHoverCard(Component card, bool isGoalkeeper)
@@ -1777,7 +1839,15 @@ public class MatchStatsUI : MonoBehaviour
             {
                 int jerseyNumber = int.TryParse(entry.Key, out int parsedJersey) ? parsedJersey : int.MaxValue;
                 liveTokens.TryGetValue(jerseyNumber, out PlayerToken liveToken);
-                MatchManager.PlayerStats playerStats = MatchManager.Instance.gameData.stats.GetPlayerStats(entry.Value.name);
+                MatchManager.PlayerStats playerStats = liveToken != null
+                    ? MatchManager.Instance.gameData.stats.GetPlayerStats(liveToken)
+                    : MatchManager.Instance.gameData.stats.GetPlayerStats(entry.Value.name);
+                int subOns = liveToken != null
+                    ? MatchManager.Instance.GetPlayerSubOnCount(liveToken)
+                    : MatchManager.Instance.GetPlayerSubOnCount(entry.Value.name);
+                int subOffs = liveToken != null
+                    ? MatchManager.Instance.GetPlayerSubOffCount(liveToken)
+                    : MatchManager.Instance.GetPlayerSubOffCount(entry.Value.name);
 
                 return new LineupPlayerRow
                 {
@@ -1792,9 +1862,9 @@ public class MatchStatsUI : MonoBehaviour
                     yellowCards = playerStats.yellowCards,
                     redCards = playerStats.redCards,
                     injuries = playerStats.injuries,
-                    subOns = MatchManager.Instance.GetPlayerSubOnCount(entry.Value.name),
-                    subOffs = MatchManager.Instance.GetPlayerSubOffCount(entry.Value.name),
-                    isSubbedOff = liveToken != null ? liveToken.wasSubbedOff : MatchManager.Instance.GetPlayerSubOffCount(entry.Value.name) > 0,
+                    subOns = subOns,
+                    subOffs = subOffs,
+                    isSubbedOff = liveToken != null ? liveToken.wasSubbedOff : subOffs > 0,
                 };
             })
             .OrderBy(row => row.jerseyNumber)

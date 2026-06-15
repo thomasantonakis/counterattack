@@ -54,9 +54,17 @@ public class DraftUIManager : MonoBehaviour
         {
             if (draftManager.IsDraftComplete())
             {
-                draftTurnText.text = "FREE DRAFT COMPLETE";
+                draftTurnText.text = draftManager.IsArcadeDraftMode() ? "ARCADE DRAFT COMPLETE" : "FREE DRAFT COMPLETE";
                 draftBatchText.text = draftManager.GetFreeDraftPhaseName();
                 draftMetaText.text = "All roster slots are filled. Start Game is now available.";
+                return;
+            }
+
+            if (draftManager.IsCurrentFreeDraftPhaseArcade())
+            {
+                draftTurnText.text = "ARCADE DRAFT";
+                draftBatchText.text = $"{draftManager.GetFreeDraftPhaseName()} • {draftManager.GetFreeDraftProgressText()}";
+                draftMetaText.text = "Drag any row into either roster. Pool rows remain available.";
                 return;
             }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;  // For TextMeshPro
+using UnityEngine.UI;
 
 public class PlayerCard : MonoBehaviour
 {
@@ -13,8 +14,7 @@ public class PlayerCard : MonoBehaviour
     public TextMeshProUGUI resilienceValueText;
     public TextMeshProUGUI shootingValueText;
     public TextMeshProUGUI tacklingValueText;
-    // Optionally add Image for country flags if you plan to use them
-    // public Image flagImage;
+    public Image flagImage;
     public Player assignedPlayer;
 
     // Method to update the card with player data
@@ -42,8 +42,7 @@ public class PlayerCard : MonoBehaviour
         resilienceValueText.color = GetAttributeColor(player.Resilience);
         shootingValueText.color = GetAttributeColor(player.Shooting);
         tacklingValueText.color = GetAttributeColor(player.Tackling);
-        // Set flag based on country (if using flag sprites)
-        // flagImage.sprite = Resources.Load<Sprite>($"Flags/{player.Country}");
+        UpdateFlag(player.Country);
     }
 
     public void UpdateFromToken(PlayerToken token, string secondaryText = "")
@@ -72,6 +71,44 @@ public class PlayerCard : MonoBehaviour
         resilienceValueText.color = GetAttributeColor(token.resilience);
         shootingValueText.color = GetAttributeColor(token.shooting);
         tacklingValueText.color = GetAttributeColor(token.tackling);
+        UpdateFlag(secondaryText);
+    }
+
+    private void UpdateFlag(string country)
+    {
+        Image image = ResolveFlagImage();
+        if (image == null)
+        {
+            return;
+        }
+
+        Sprite sprite = FlagSpriteProvider.GetFlagSprite(country);
+        image.sprite = sprite;
+        image.preserveAspect = true;
+        image.color = Color.white;
+        image.raycastTarget = false;
+        image.gameObject.SetActive(sprite != null);
+    }
+
+    private Image ResolveFlagImage()
+    {
+        if (flagImage != null)
+        {
+            return flagImage;
+        }
+
+        Transform flagTransform = transform.Find("WhiteBackground/Flag");
+        if (flagTransform == null)
+        {
+            flagTransform = transform.Find("Flag");
+        }
+
+        if (flagTransform != null)
+        {
+            flagImage = flagTransform.GetComponent<Image>();
+        }
+
+        return flagImage;
     }
 
     private Color GetAttributeColor(int value)
