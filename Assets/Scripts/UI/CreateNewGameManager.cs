@@ -1837,10 +1837,15 @@ public class CreateNewGameManager : MonoBehaviour
         settings.includeTabletopiaGK = includeTabletopiaGKToggle.isOn;
         settings.includeNonTabletopiaGK = includeNonTabletopiaGKToggle.isOn;
         settings.includeInternationalsGK = includeInternationalsGKToggle.isOn;
-        settings.homeKit = GetSelectedKitPreset(homeKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(homeKitDropdown);
-        settings.awayKit = GetSelectedKitPreset(awayKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(awayKitDropdown);
-        settings.homeGKKit = GetSelectedKitPreset(homeGKKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(homeGKKitDropdown);
-        settings.awayGKKit = GetSelectedKitPreset(awayGKKitDropdown)?.DisplayName ?? GetSelectedKitPresetId(awayGKKitDropdown);
+        TokenKitPreset selectedHomeKit = GetSelectedKitPreset(homeKitDropdown);
+        TokenKitPreset selectedAwayKit = GetSelectedKitPreset(awayKitDropdown);
+        TokenKitPreset selectedHomeGKKit = GetSelectedKitPreset(homeGKKitDropdown);
+        TokenKitPreset selectedAwayGKKit = GetSelectedKitPreset(awayGKKitDropdown);
+        settings.homeKit = selectedHomeKit?.DisplayName ?? GetSelectedKitPresetId(homeKitDropdown);
+        settings.awayKit = selectedAwayKit?.DisplayName ?? GetSelectedKitPresetId(awayKitDropdown);
+        settings.homeGKKit = selectedHomeGKKit?.DisplayName ?? GetSelectedKitPresetId(homeGKKitDropdown);
+        settings.awayGKKit = selectedAwayGKKit?.DisplayName ?? GetSelectedKitPresetId(awayGKKitDropdown);
+        Debug.Log($"[CreateNewGameManager] Selected kits: Home '{settings.homeKit}' (id '{selectedHomeKit?.Id ?? string.Empty}'), Away '{settings.awayKit}' (id '{selectedAwayKit?.Id ?? string.Empty}'), Home GK '{settings.homeGKKit}' (id '{selectedHomeGKKit?.Id ?? string.Empty}'), Away GK '{settings.awayGKKit}' (id '{selectedAwayGKKit?.Id ?? string.Empty}').");
 
         string path = ResolveGameSettingsSavePath(settings, out bool updatedExistingSave);
         string json = updatedExistingSave

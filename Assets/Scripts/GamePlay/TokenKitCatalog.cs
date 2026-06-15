@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -72,7 +71,7 @@ public static class TokenKitCatalog
     private const float WhiteishChromaThreshold = 0.16f;
     private const float SameColorTolerance = 0.015f;
 
-    private const string SourceJsonRelativePath = "Tools/kit-picker-v1-11-supported.json";
+    private const string KitPresetsResourcePath = "Kits/kit-picker-v1-11-supported";
 
     private static readonly List<TokenKitPreset> LegacyFallbackPresets = new List<TokenKitPreset>
     {
@@ -161,15 +160,12 @@ public static class TokenKitCatalog
     };
 
     private static IReadOnlyList<TokenKitPreset> activePresets;
-    private static string loadedSourcePath;
-    private static DateTime loadedSourceWriteUtc;
     private static readonly Dictionary<string, TokenKitInstructionPalette> InstructionPaletteCache = new Dictionary<string, TokenKitInstructionPalette>();
 
     public static void ReloadFromSource()
     {
         activePresets = null;
-        loadedSourcePath = null;
-        loadedSourceWriteUtc = DateTime.MinValue;
+        InstructionPaletteCache.Clear();
         EnsureLoaded();
     }
 
@@ -466,46 +462,45 @@ public static class TokenKitCatalog
 
     private static void EnsureLoaded()
     {
-        string sourcePath = ResolveSourceJsonPath();
-        DateTime writeUtc = File.Exists(sourcePath)
-            ? File.GetLastWriteTimeUtc(sourcePath)
-            : DateTime.MinValue;
-
-        if (activePresets != null
-            && string.Equals(loadedSourcePath, sourcePath, StringComparison.Ordinal)
-            && loadedSourceWriteUtc == writeUtc)
+        if (activePresets != null)
         {
             return;
         }
 
-        activePresets = BuildActivePresets(sourcePath);
-        loadedSourcePath = sourcePath;
-        loadedSourceWriteUtc = writeUtc;
+        activePresets = BuildActivePresets();
     }
 
-    private static IReadOnlyList<TokenKitPreset> BuildActivePresets(string sourcePath)
+    private static IReadOnlyList<TokenKitPreset> BuildActivePresets()
     {
-        List<TokenKitPreset> presets = LoadPresetsFromJson(sourcePath);
+        List<TokenKitPreset> presets = LoadPresetsFromJsonResource(KitPresetsResourcePath);
         if (presets.Count == 0)
         {
+            Debug.LogError($"[TokenKitCatalog] No kit presets were parsed from Resources path '{KitPresetsResourcePath}'. Falling back to {LegacyFallbackPresets.Count} legacy kit presets.");
             presets = new List<TokenKitPreset>(LegacyFallbackPresets);
         }
 
         EnsureAlias(presets, "028", "R&W", "Red and White Stripes");
 
+        Debug.Log($"[TokenKitCatalog] Active kit catalog contains {presets.Count} kit preset(s).");
         return presets;
     }
 
-    private static List<TokenKitPreset> LoadPresetsFromJson(string sourcePath)
+    private static List<TokenKitPreset> LoadPresetsFromJsonResource(string resourcePath)
     {
-        if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+        Debug.Log($"[TokenKitCatalog] Loading kits JSON from Resources path '{resourcePath}' (asset: Assets/Resources/{resourcePath}.json).");
+
+        TextAsset sourceAsset = Resources.Load<TextAsset>(resourcePath);
+        if (sourceAsset == null)
         {
+            Debug.LogError($"[TokenKitCatalog] Kits JSON TextAsset was not found at Resources path '{resourcePath}'. Expected file: Assets/Resources/{resourcePath}.json");
             return new List<TokenKitPreset>();
         }
 
+        Debug.Log($"[TokenKitCatalog] Found kits JSON TextAsset '{sourceAsset.name}' at Resources path '{resourcePath}' ({sourceAsset.text?.Length ?? 0} characters).");
+
         try
         {
-            JObject root = JObject.Parse(File.ReadAllText(sourcePath));
+            JObject root = JObject.Parse(sourceAsset.text);
             List<TokenKitPreset> presets = new List<TokenKitPreset>();
             foreach (JProperty property in root.Properties())
             {
@@ -525,11 +520,12 @@ public static class TokenKitCatalog
                 presets.Add(new TokenKitPreset(property.Name, displayName, style, aliases.ToArray()));
             }
 
+            Debug.Log($"[TokenKitCatalog] Parsed {presets.Count} kit preset(s) from Resources path '{resourcePath}'.");
             return presets;
         }
         catch (Exception ex)
         {
-            Debug.LogWarning($"Failed to load kit presets from {sourcePath}: {ex.Message}");
+            Debug.LogError($"[TokenKitCatalog] Failed to parse kits JSON from Resources path '{resourcePath}': {ex.Message}");
             return new List<TokenKitPreset>();
         }
     }
@@ -814,17 +810,6 @@ public static class TokenKitCatalog
             "001 - Red",
             TokenStyleDefinition.Plain(HexToColor("#A71924"), HexToColor("#A71924"), HexToColor("#F4F6FA"), HexToColor("#F4F6FA")),
             "Red");
-    }
-
-    private static string ResolveSourceJsonPath()
-    {
-        string baseDir = Directory.GetCurrentDirectory();
-        if (string.IsNullOrWhiteSpace(baseDir))
-        {
-            return SourceJsonRelativePath;
-        }
-
-        return Path.Combine(baseDir, SourceJsonRelativePath);
     }
 
     private static float GetColorSimilarity(Color a, Color b)
