@@ -1521,6 +1521,7 @@ public class MatchManager : MonoBehaviour
         string kit = token.isHomeTeam ? gameData.gameSettings.homeKit : gameData.gameSettings.awayKit;
         string gkKit = token.isHomeTeam ? gameData.gameSettings.homeGKKit : gameData.gameSettings.awayGKKit;
         string resolvedKit = token.IsGoalKeeper && !string.IsNullOrWhiteSpace(gkKit) ? gkKit : kit;
+        Debug.Log($"[MatchManager] Applying kit '{resolvedKit}' to {(token.isHomeTeam ? "home" : "away")} token '{token.name}'.");
         TokenStyleDefinition style = TokenKitCatalog.ResolveStyle(resolvedKit);
         if (style == null)
         {

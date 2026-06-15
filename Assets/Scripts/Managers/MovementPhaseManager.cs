@@ -10,6 +10,13 @@ using System.Text;
 public class MovementPhaseManager : MonoBehaviour
 {
     private const string NutmegDecisionChoiceId = "movement_nutmeg_decision";
+    private enum GoalkeeperChallengeMode
+    {
+        None,
+        WallDive,
+        OutsideBoxDive,
+        OutsideBoxFootTackle
+    }
 
     [Header("Dependencies")]
     public GroundBallManager groundBallManager;
@@ -89,6 +96,8 @@ public class MovementPhaseManager : MonoBehaviour
     private bool isGkWallDiveInProgress = false;
     private bool isGkWallDiveSequenceActive = false;
     private bool movementInterruptedByGKWallDive = false;
+    private GoalkeeperChallengeMode goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
+    private bool suppressNextRepositionGKBoxMove = false;
     private bool suppressNextDribblerZoiStealAfterBallPickup = false;
     private int gkWallDiveSavingPenalty = 0;
     private HexCell gkWallDiveHex = null;
@@ -108,6 +117,7 @@ public class MovementPhaseManager : MonoBehaviour
     private bool throwInBlocksTackleWithoutMoving;
     private bool pendingFoulIsPenalty;
     private bool pendingDangerousTackleFoul;
+    private bool pendingHarshFoulCardPolicy;
     private bool pendingAutomaticTakeFoulAfterInjury;
     private int lastMovementHighlightRange;
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
@@ -146,6 +156,47 @@ public class MovementPhaseManager : MonoBehaviour
     private bool IsResolvingFoulSequence()
     {
         return isWaitingForYellowCardRoll || isWaitingForInjuryRoll || isWaitingForFoulDecision;
+    }
+
+    private bool IsGoalkeeperDiveChallengeInProgress()
+    {
+        return goalkeeperChallengeMode == GoalkeeperChallengeMode.WallDive
+            || goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxDive
+            || isGkWallDiveInProgress;
+    }
+
+    private bool IsOutsideBoxGoalkeeperDiveInProgress()
+    {
+        return goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxDive;
+    }
+
+    private bool IsOutsideBoxGoalkeeperFootTackleInProgress()
+    {
+        return goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxFootTackle;
+    }
+
+    private bool IsOutsideBoxGoalkeeperChallengeInProgress()
+    {
+        return IsOutsideBoxGoalkeeperDiveInProgress() || IsOutsideBoxGoalkeeperFootTackleInProgress();
+    }
+
+    private bool IsOutsideBoxGoalkeeperChallengeCandidate(PlayerToken goalkeeper, PlayerToken dribbler)
+    {
+        HexCell dribblerHex = dribbler != null ? dribbler.GetCurrentHex() : null;
+        return goalkeeper != null
+            && goalkeeper.IsGoalKeeper
+            && !goalkeeper.isAttacker
+            && dribbler != null
+            && dribbler.IsDribbler
+            && dribblerHex != null
+            && (goalKeeperManager == null || !goalKeeperManager.IsGoalkeeperOwnPenaltyHex(goalkeeper, dribblerHex));
+    }
+
+    private bool IsCurrentOutsideBoxGoalkeeperChallengeCandidate()
+    {
+        PlayerToken defender = selectedDefender != null ? selectedDefender : selectedToken;
+        PlayerToken dribbler = ball != null ? ball.GetCurrentHex()?.GetOccupyingToken() : null;
+        return IsOutsideBoxGoalkeeperChallengeCandidate(defender, dribbler);
     }
 
     public void ApplyThrowInRestrictions(PlayerToken taker, HexCell protectedHex, int protectedRadius, bool blockTackleWithoutMoving = false)
@@ -535,6 +586,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"{gkWallDiveGoalkeeper?.name ?? "GK"} dives at {gkWallDiveHex?.coordinates.ToString() ?? "<unknown>"}. Starting dice rolls.");
                 isWaitingForGKWallDiveDecision = false;
                 isGkWallDiveInProgress = true;
+                goalkeeperChallengeMode = GoalkeeperChallengeMode.WallDive;
                 selectedDefender = gkWallDiveGoalkeeper;
                 StartTackleDiceRollSequence();
                 ConsumeMovementKey(keyData);
@@ -652,9 +704,28 @@ public class MovementPhaseManager : MonoBehaviour
                 AdvanceMovementPhase();
                 return;
             }
+            else if (keyData.key == KeyCode.D && IsCurrentOutsideBoxGoalkeeperChallengeCandidate())
+            {
+                PlayerToken dribbler = ball.GetCurrentHex()?.GetOccupyingToken();
+                Debug.Log($"{selectedDefender.name} dives with hands at {dribbler?.name ?? "the dribbler"} outside the box. Starting saving duel.");
+                goalkeeperChallengeMode = GoalkeeperChallengeMode.OutsideBoxDive;
+                isWaitingForTackleDecision = false;
+                isGkWallDiveInProgress = true;
+                gkWallDiveGoalkeeper = selectedDefender;
+                gkWallDiveHex = dribbler?.GetCurrentHex();
+                gkWallDiveSavingPenalty = 0;
+                StartTackleDiceRollSequence();
+                ConsumeMovementKey(keyData);
+                return;
+            }
             else if (keyData.key == KeyCode.T)  // Tackle chosen
             {
                 Debug.Log("Tackle chosen. Starting tackle dice rolls...");
+                if (IsCurrentOutsideBoxGoalkeeperChallengeCandidate())
+                {
+                    goalkeeperChallengeMode = GoalkeeperChallengeMode.OutsideBoxFootTackle;
+                    Debug.Log($"{selectedDefender.name} chooses to tackle with feet outside the box. Effective Tackling is 0.");
+                }
                 isWaitingForTackleDecision = false;
                 StartTackleDiceRollSequence();  // Start the dice roll sequence for tackling
                 return;
@@ -662,6 +733,46 @@ public class MovementPhaseManager : MonoBehaviour
         }
         if (isWaitingForTackleDecisionWithoutMoving)
         {
+            if (keyData.key == KeyCode.N && IsCurrentOutsideBoxGoalkeeperChallengeCandidate())
+            {
+                Debug.Log($"{selectedToken.name} stands there without tackling.");
+                selectedDefender = selectedToken;
+                if (!movedTokens.Contains(selectedToken))
+                {
+                    movedTokens.Add(selectedToken);
+                }
+                isAwaitingHexDestination = false;
+                isWaitingForTackleDecisionWithoutMoving = false;
+                isWaitingForTackleDecision = false;
+                hexGrid.ClearHighlightedHexes();
+                AdvanceMovementPhase();
+                ConsumeMovementKey(keyData);
+                return;
+            }
+
+            if (keyData.key == KeyCode.D && IsCurrentOutsideBoxGoalkeeperChallengeCandidate())
+            {
+                PlayerToken dribbler = ball.GetCurrentHex()?.GetOccupyingToken();
+                Debug.Log($"{selectedToken.name} dives with hands at {dribbler?.name ?? "the dribbler"} outside the box from there. Starting saving duel.");
+                selectedDefender = selectedToken;
+                if (!movedTokens.Contains(selectedToken))
+                {
+                    movedTokens.Add(selectedToken);
+                }
+                isAwaitingHexDestination = false;
+                isWaitingForTackleDecisionWithoutMoving = false;
+                isWaitingForTackleDecision = false;
+                hexGrid.ClearHighlightedHexes();
+                goalkeeperChallengeMode = GoalkeeperChallengeMode.OutsideBoxDive;
+                isGkWallDiveInProgress = true;
+                gkWallDiveGoalkeeper = selectedDefender;
+                gkWallDiveHex = dribbler?.GetCurrentHex();
+                gkWallDiveSavingPenalty = 0;
+                StartTackleDiceRollSequence();
+                ConsumeMovementKey(keyData);
+                return;
+            }
+
             if (keyData.key == KeyCode.T)
             {
                 if (IsThrowInTackleWithoutMovingBlocked(selectedToken))
@@ -682,6 +793,11 @@ public class MovementPhaseManager : MonoBehaviour
                 isWaitingForTackleDecisionWithoutMoving = false; // Reset tackle decision flag
                 isWaitingForTackleDecision = false;  // Reset tackle decision flag
                 hexGrid.ClearHighlightedHexes();
+                if (IsCurrentOutsideBoxGoalkeeperChallengeCandidate())
+                {
+                    goalkeeperChallengeMode = GoalkeeperChallengeMode.OutsideBoxFootTackle;
+                    Debug.Log($"{selectedDefender.name} chooses to tackle with feet outside the box. Effective Tackling is 0.");
+                }
                 StartTackleDiceRollSequence();  // Start the dice roll sequence for tackling
                 return;
             }
@@ -1025,6 +1141,11 @@ public class MovementPhaseManager : MonoBehaviour
                         Debug.Log($"{selectedToken.name} is touching the throw-in taker and must move away before challenging.");
                         isWaitingForTackleDecisionWithoutMoving = false;
                     }
+                    else if (IsOutsideBoxGoalkeeperChallengeCandidate(selectedToken, ballHolder))
+                    {
+                        Debug.Log($"{selectedToken.name} is adjacent to {ballHolder.name} outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.");
+                        isWaitingForTackleDecisionWithoutMoving = true;
+                    }
                     else
                     {
                         // Defender is adjacent, enable tackle decision
@@ -1364,7 +1485,8 @@ public class MovementPhaseManager : MonoBehaviour
         if (attackerToken == null
             || defenderToken == null
             || isNutmegInProgress
-            || isGkWallDiveInProgress)
+            || isGkWallDiveInProgress
+            || IsOutsideBoxGoalkeeperChallengeInProgress())
         {
             return false;
         }
@@ -1407,6 +1529,11 @@ public class MovementPhaseManager : MonoBehaviour
 
     private string BuildTackleFoulRiskInstruction()
     {
+        if (IsOutsideBoxGoalkeeperChallengeInProgress())
+        {
+            return " (1 is a foul; harsh leniency)";
+        }
+
         if (!IsCurrentSelectedTackleFromBehind())
         {
             return "";
@@ -1415,8 +1542,21 @@ public class MovementPhaseManager : MonoBehaviour
         return " (1-2 are a foul)";
     }
 
+    private string BuildGKDiveFoulRiskInstruction()
+    {
+        return IsCurrentBallHexInOpponentPenaltyBox()
+            ? "1 is a penalty"
+            : "1 is a foul";
+    }
+
     private string BuildTackleDecisionInstruction(string selectedTokenName, bool withoutMoving)
     {
+        if (IsCurrentOutsideBoxGoalkeeperChallengeCandidate())
+        {
+            string locationText = withoutMoving ? " from there" : "";
+            return $"Press [D] to dive with {selectedTokenName}, [T] to tackle with feet (Tackling 0){locationText}, or [N] to stand there without tackling, ";
+        }
+
         bool isFromBehind = IsCurrentSelectedTackleFromBehind();
         string tackleText = isFromBehind
             && MatchManager.Instance != null
@@ -1573,9 +1713,17 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 if (MatchManager.Instance.attackHasPossession)
                 {
-                    Debug.LogWarning("Defender lands next to the dribbler Prompt for Tackle or not.");
-                    Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
                     selectedDefender = selectedToken;  // Store the selected defender
+                    if (IsOutsideBoxGoalkeeperChallengeCandidate(selectedDefender, ball.GetCurrentHex()?.GetOccupyingToken()))
+                    {
+                        Debug.LogWarning("Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.");
+                        Debug.Log("Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Defender lands next to the dribbler Prompt for Tackle or not.");
+                        Debug.Log("Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle");
+                    }
                     isWaitingForTackleDecision = true;  // Activate tackle decision listener
                 }
                 // Defender lands next to the ball, Intercept.
@@ -2165,6 +2313,11 @@ public class MovementPhaseManager : MonoBehaviour
         gkWallDiveSavingPenalty = 0;
         gkWallDiveHex = null;
         gkWallDiveGoalkeeper = null;
+        if (goalkeeperChallengeMode == GoalkeeperChallengeMode.WallDive
+            || goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxDive)
+        {
+            goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
+        }
     }
 
     public void AdvanceMovementPhase()
@@ -2525,7 +2678,8 @@ public class MovementPhaseManager : MonoBehaviour
             details: new Dictionary<string, string>
             {
                 ["isNutmeg"] = isNutmegInProgress.ToString(),
-                ["isGkWallDive"] = isGkWallDiveInProgress.ToString()
+                ["isGkWallDive"] = (goalkeeperChallengeMode == GoalkeeperChallengeMode.WallDive).ToString(),
+                ["goalkeeperChallengeMode"] = goalkeeperChallengeMode.ToString()
             });
         int diceRoll = tackleRoll.isJackpot ? 50 : tackleRoll.roll;
         
@@ -2545,6 +2699,41 @@ public class MovementPhaseManager : MonoBehaviour
             else Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
             StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
         }
+    }
+
+    private int GetDefenderGroundDuelSkill(PlayerToken defender)
+    {
+        if (defender == null)
+        {
+            return 0;
+        }
+
+        if (IsGoalkeeperDiveChallengeInProgress())
+        {
+            return defender.saving;
+        }
+
+        if (IsOutsideBoxGoalkeeperFootTackleInProgress())
+        {
+            return 0;
+        }
+
+        return defender.tackling;
+    }
+
+    private string GetDefenderGroundDuelSkillLabel(PlayerToken defender)
+    {
+        if (IsGoalkeeperDiveChallengeInProgress())
+        {
+            return $"Saving: {defender?.saving.ToString() ?? "?"}";
+        }
+
+        if (IsOutsideBoxGoalkeeperFootTackleInProgress())
+        {
+            return "Tackling: 0";
+        }
+
+        return $"tackling: {defender?.tackling.ToString() ?? "?"}";
     }
 
     private IEnumerator CompareTackleRolls()
@@ -2568,30 +2757,36 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
         // GK Wall Dive uses saving against dribbling; normal tackle/nutmeg uses tackling.
-        int defenderTackling = selectedDefender.tackling;
-        int defenderSkill = isGkWallDiveInProgress ? selectedDefender.saving : selectedDefender.tackling;
+        int defenderTackling = GetDefenderGroundDuelSkill(selectedDefender);
+        int defenderSkill = defenderTackling;
         int attackerDribbling = attackerToken.dribbling;
-        int defenderModifier = (isNutmegInProgress ? 1 : 0) + (isGkWallDiveInProgress ? gkWallDiveSavingPenalty : 0);
+        int defenderModifier = (isNutmegInProgress ? 1 : 0) + (IsGoalkeeperDiveChallengeInProgress() ? gkWallDiveSavingPenalty : 0);
         int defenderTotalScore = defenderDiceRoll == 50 ? defenderDiceRoll : defenderSkill + defenderDiceRoll + defenderModifier;
         int attackerTotalScore = attackerDiceRoll == 50 ? attackerDiceRoll : attackerToken.dribbling + attackerDiceRoll;
 
-        Debug.Log(isGkWallDiveInProgress
-            ? $"Defender Name: {selectedDefender.name} with Saving: {selectedDefender.saving}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}"
-            : $"Defender Name: {selectedDefender.name} with tackling: {defenderTackling}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}");
+        Debug.Log($"Defender Name: {selectedDefender.name} with {GetDefenderGroundDuelSkillLabel(selectedDefender)}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}");
         bool isDangerousNormalTackle = IsCurrentNormalTackleDangerous(attackerToken, selectedDefender);
         int foulThreshold = isDangerousNormalTackle ? 2 : FOUL_THRESHOLD;
         pendingDangerousTackleFoul = false;
+        pendingHarshFoulCardPolicy = false;
         if (defenderDiceRoll <= foulThreshold)
         {
             pendingDangerousTackleFoul = isDangerousNormalTackle;
+            pendingHarshFoulCardPolicy = IsOutsideBoxGoalkeeperChallengeInProgress();
             Debug.Log(isDangerousNormalTackle
                 ? "Defender committed a foul from a dangerous tackling position."
-                : "Defender committed a foul.");
-            if (isGkWallDiveInProgress)
+                : pendingHarshFoulCardPolicy
+                    ? "Goalkeeper committed a foul outside the penalty box. Harsh leniency applies."
+                    : "Defender committed a foul.");
+            if (IsGoalkeeperDiveChallengeInProgress())
             {
                 movementInterruptedByGKWallDive = true;
                 MarkTokenCurrentHexOccupied(attackerToken);
                 ResetGKWallDiveState();
+            }
+            else
+            {
+                goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
             }
             needsReposition = true;
             isDribblerRunning = false;
@@ -2601,12 +2796,17 @@ public class MovementPhaseManager : MonoBehaviour
             else yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
         }
-        if (isGkWallDiveInProgress)
+        if (IsGoalkeeperDiveChallengeInProgress())
         {
             yield return StartCoroutine(ResolveGKWallDiveDuel(attackerToken, defenderTotalScore, attackerTotalScore));
             yield break;
         }
-        else if (defenderTotalScore > attackerTotalScore)
+        bool wasOutsideBoxGoalkeeperFootTackle = IsOutsideBoxGoalkeeperFootTackleInProgress();
+        if (wasOutsideBoxGoalkeeperFootTackle)
+        {
+            goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
+        }
+        if (defenderTotalScore > attackerTotalScore)
         {
             if (defenderTotalScore == 50) Debug.Log($"Tackle failed! {selectedDefender.name} Rolled a JACKPOT!! Attacker {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore} is left helpless and loses possession of the ball.");
             else Debug.Log($"Tackle succeeded! {selectedDefender.name} Roll({defenderDiceRoll})+Tackling({defenderTackling})" + (isNutmegInProgress ? "+Nutmeg bonus(1)" : "")+ $"={defenderTotalScore} beats {attackerToken.name}'s Roll({attackerDiceRoll})+Dribbling({attackerDribbling}) = {attackerTotalScore}, and wins possession of the ball.");
@@ -2653,6 +2853,10 @@ public class MovementPhaseManager : MonoBehaviour
                 MatchManager.ActionType.GroundDuelWon,
                 connectedToken: selectedDefender,
                 tackleType: isNutmegInProgress ? "nutmeg" : "keep");
+            if (wasOutsideBoxGoalkeeperFootTackle)
+            {
+                suppressNextRepositionGKBoxMove = true;
+            }
             yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
         }
         else if (defenderTotalScore == attackerTotalScore)
@@ -2686,6 +2890,12 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (defenderTotalScore > attackerTotalScore)
         {
+            if (IsOutsideBoxGoalkeeperDiveInProgress())
+            {
+                yield return StartCoroutine(ResolveOutsideBoxGoalkeeperHandball(attackerToken, goalkeeper, diveHex));
+                yield break;
+            }
+
             Debug.Log($"{goalkeeper.name} wins the GK Wall Dive at {diveHex.coordinates} with saving penalty {appliedPenalty}. Save and Hold.");
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 goalkeeper,
@@ -2707,6 +2917,12 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (defenderTotalScore == attackerTotalScore)
         {
+            if (IsOutsideBoxGoalkeeperDiveInProgress())
+            {
+                yield return StartCoroutine(ResolveOutsideBoxGoalkeeperHandball(attackerToken, goalkeeper, diveHex));
+                yield break;
+            }
+
             Debug.Log($"{goalkeeper.name} ties the dribbler on the GK Wall Dive. Loose Ball from the defending GK without moving tokens.");
             MarkTokenCurrentHexOccupied(attackerToken);
             isDribblerRunning = false;
@@ -2717,6 +2933,20 @@ public class MovementPhaseManager : MonoBehaviour
             yield break;
         }
 
+        if (IsOutsideBoxGoalkeeperDiveInProgress())
+        {
+            Debug.Log($"{attackerToken.name} beats {goalkeeper.name}'s outside-box GK dive and can reposition.");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                attackerToken,
+                MatchManager.ActionType.GroundDuelWon,
+                connectedToken: goalkeeper,
+                tackleType: "outside box gk dive keep");
+            suppressNextRepositionGKBoxMove = true;
+            ResetGKWallDiveState();
+            yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
+            yield break;
+        }
+
         Debug.Log($"{attackerToken.name} beats {goalkeeper.name}'s GK Wall Dive and continues dribbling.");
         MatchManager.Instance.gameData.gameLog.LogEvent(
             attackerToken,
@@ -2724,6 +2954,40 @@ public class MovementPhaseManager : MonoBehaviour
             connectedToken: goalkeeper,
             tackleType: "gk wall dive keep");
         ResetGKWallDiveState();
+    }
+
+    private IEnumerator ResolveOutsideBoxGoalkeeperHandball(PlayerToken attackerToken, PlayerToken goalkeeper, HexCell foulHex)
+    {
+        if (attackerToken == null || goalkeeper == null)
+        {
+            Debug.LogError("Cannot resolve outside-box GK handball because attacker or goalkeeper is missing.");
+            ResetGKWallDiveState();
+            yield break;
+        }
+
+        foulHex ??= attackerToken.GetCurrentHex();
+        Debug.Log($"{goalkeeper.name} touches the ball with hands outside the penalty box at {foulHex?.coordinates.ToString() ?? "<unknown>"}. Forced free kick and straight red card.");
+        selectedDefender = goalkeeper;
+        MarkTokenCurrentHexOccupied(attackerToken);
+        isDribblerRunning = false;
+        remainingDribblerPace = 0;
+        movementInterruptedByGKWallDive = true;
+        if (foulHex != null)
+        {
+            ball.PlaceAtCell(foulHex);
+        }
+
+        ResetGKWallDiveState();
+        pendingFoulIsPenalty = false;
+        pendingDangerousTackleFoul = false;
+        pendingHarshFoulCardPolicy = false;
+        pendingAutomaticTakeFoulAfterInjury = false;
+        isWaitingForYellowCardRoll = false;
+        isWaitingForInjuryRoll = false;
+        isWaitingForFoulDecision = false;
+        SendOffSelectedDefender(attackerToken);
+        TakeFreeKick();
+        yield return null;
     }
 
     private IEnumerator PrepareAttackerReposition(PlayerToken attackerToken)
@@ -2785,6 +3049,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             yield return null;
         }
+        suppressNextRepositionGKBoxMove = false;
     }
 
     private void RefreshRepositionHighlights()
@@ -2868,13 +3133,17 @@ public class MovementPhaseManager : MonoBehaviour
         // clickedHex.HighlightHex("isAttackOccupied");
         Debug.Log("Repositioning complete.");
         isWaitingForReposition = false;
-        if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler)
+        if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler && !suppressNextRepositionGKBoxMove)
         {
             Debug.Log("⚽ Ball entered penalty box during a reposition! Offering GK a free move.");
             if (goalKeeperManager.ShouldGKMove(hex))
             {
                 await helperFunctions.StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
             }
+        }
+        else if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler && suppressNextRepositionGKBoxMove)
+        {
+            Debug.Log("GK box-entry free move suppressed because the dribbler repositioned after beating an outside-box GK challenge.");
         }
         // this shows that it was the dribber winning the tackle
         if (isSuccessfulTackleRepositionPending)
@@ -2888,7 +3157,7 @@ public class MovementPhaseManager : MonoBehaviour
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken, bool needsReposition = true)
     {
         Debug.Log("Handling foul resolution process...");
-        pendingFoulIsPenalty = IsDribblerinOpponentPenaltyBox(attackerToken);
+        pendingFoulIsPenalty = IsCurrentBallHexInOpponentPenaltyBox();
         isDribblerRunning = false;
         isAwaitingHexDestination = false;
         isAwaitingTokenSelection = false;
@@ -3126,16 +3395,19 @@ public class MovementPhaseManager : MonoBehaviour
             details: new Dictionary<string, string>
             {
                 ["refereeLeniency"] = MatchManager.Instance.refereeLeniency.ToString(),
-                ["pendingDangerousTackleFoul"] = pendingDangerousTackleFoul.ToString()
+                ["pendingDangerousTackleFoul"] = pendingDangerousTackleFoul.ToString(),
+                ["pendingHarshFoulCardPolicy"] = pendingHarshFoulCardPolicy.ToString()
             });
         int roll = leniencyRoll.roll;
+        bool usesHarshCardPolicy = pendingDangerousTackleFoul || pendingHarshFoulCardPolicy;
         Debug.Log(leniencyRoll.overrideUsed && leniencyRoll.isJackpot ? "Yellow card roll: 6 (jackpot override)" : $"Yellow card roll: {roll}");
         if (roll >= MatchManager.Instance.refereeLeniency)
         {
-            if (pendingDangerousTackleFoul)
+            if (usesHarshCardPolicy)
             {
-                Debug.Log($"Dangerous tackle leniency failed: defender {selectedDefender.name} receives a straight red card.");
+                Debug.Log($"Harsh leniency failed: defender {selectedDefender.name} receives a straight red card.");
                 pendingDangerousTackleFoul = false;
+                pendingHarshFoulCardPolicy = false;
                 SendOffSelectedDefender(fouledAttacker);
                 pendingAutomaticTakeFoulAfterInjury = true;
                 isWaitingForYellowCardRoll = false;
@@ -3175,10 +3447,11 @@ public class MovementPhaseManager : MonoBehaviour
         }
         else
         {
-            if (pendingDangerousTackleFoul)
+            if (usesHarshCardPolicy)
             {
-                Debug.Log("Dangerous tackle leniency passed: defender still receives a yellow card.");
+                Debug.Log("Harsh leniency passed: defender still receives a yellow card.");
                 pendingDangerousTackleFoul = false;
+                pendingHarshFoulCardPolicy = false;
                 Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
                 bool wasBooked = selectedDefender.isBooked;
                 selectedDefender.ReceiveYellowCard();
@@ -3224,6 +3497,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
         }
         pendingDangerousTackleFoul = false;
+        pendingHarshFoulCardPolicy = false;
         isWaitingForYellowCardRoll = false;
     }
 
@@ -3324,8 +3598,16 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.gameData.gameLog.LogExpectedGroundDuel(
                 attackerToken,
                 defenderToken,
-                ExpectedStatsCalculator.CalculateGroundDuelExpectation(attackerToken, defenderToken, defenderBonusMalus),
-                isGkWallDiveInProgress ? "gk wall dive" : isNutmegInProgress ? "nutmeg duel" : "tackle duel");
+                ExpectedStatsCalculator.CalculateGroundDuelExpectationWithDefenderSkill(
+                    attackerToken,
+                    defenderToken,
+                    GetDefenderGroundDuelSkill(defenderToken),
+                    defenderBonusMalus),
+                goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxDive
+                    ? "outside box gk dive"
+                    : goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxFootTackle
+                        ? "outside box gk foot tackle"
+                        : isGkWallDiveInProgress ? "gk wall dive" : isNutmegInProgress ? "nutmeg duel" : "tackle duel");
         }
         // Set flag to wait for dice rolls
         isWaitingForTackleRoll = true;
@@ -3391,6 +3673,8 @@ public class MovementPhaseManager : MonoBehaviour
         isGkWallDiveInProgress = false;
         isGkWallDiveSequenceActive = false;
         movementInterruptedByGKWallDive = false;
+        goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
+        suppressNextRepositionGKBoxMove = false;
         suppressNextDribblerZoiStealAfterBallPickup = false;
         gkWallDiveSavingPenalty = 0;
         gkWallDiveHex = null;
@@ -3400,6 +3684,7 @@ public class MovementPhaseManager : MonoBehaviour
         tackleDefenderRolled = false;
         needsReposition = false;
         pendingDangerousTackleFoul = false;
+        pendingHarshFoulCardPolicy = false;
         pendingAutomaticTakeFoulAfterInjury = false;
         isSuccessfulTackleRepositionPending = false;
         isResolvingPostSuccessfulTackleSteals = false;
@@ -3651,9 +3936,9 @@ public class MovementPhaseManager : MonoBehaviour
             if (isWaitingForYellowCardRoll)
             {
                 string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
-                if (pendingDangerousTackleFoul)
+                if (pendingDangerousTackleFoul || pendingHarshFoulCardPolicy)
                 {
-                    sb.Append($"Press [R] to roll the leniency check for {defenderName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}. Fail: straight red card. Pass: yellow card, possibly a second yellow, ");
+                    sb.Append($"Press [R] to roll the leniency check for {defenderName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}. Fail: straight red card. Pass: yellow card, ");
                 }
                 else
                 {
@@ -3718,7 +4003,7 @@ public class MovementPhaseManager : MonoBehaviour
             else if (isWaitingForTackleRoll && !tackleDefenderRolled)
             {
                 string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
-                string tacklingText = selectedDefender != null ? selectedDefender.tackling.ToString() : "?";
+                string tacklingText = selectedDefender != null ? GetDefenderGroundDuelSkill(selectedDefender).ToString() : "?";
                 string foulRiskText = BuildTackleFoulRiskInstruction();
                 sb.Append($"Press [R] to roll with {defenderName} for the tackle. Tackling: {tacklingText}{foulRiskText}, ");
             }
@@ -3772,7 +4057,7 @@ public class MovementPhaseManager : MonoBehaviour
             return "Press [D] to dive with the GK, or [N] not to dive, ";
         }
 
-        return $"Press [D] to dive with {goalkeeper.playerName}, or [N] not to dive. {FormatGKDiveSaving(goalkeeper)}. 1 is a penalty, ";
+        return $"Press [D] to dive with {goalkeeper.playerName}, or [N] not to dive. {FormatGKDiveSaving(goalkeeper)}. {BuildGKDiveFoulRiskInstruction()}, ";
     }
 
     private string BuildGKDiveGoalkeeperRollInstruction()
@@ -3783,7 +4068,7 @@ public class MovementPhaseManager : MonoBehaviour
             return "Press [R] to roll for the GK dive, ";
         }
 
-        return $"Press [R] to roll with {goalkeeper.playerName} for the GK dive. {FormatGKDiveSaving(goalkeeper)}. 1 is a penalty, ";
+        return $"Press [R] to roll with {goalkeeper.playerName} for the GK dive. {FormatGKDiveSaving(goalkeeper)}. {BuildGKDiveFoulRiskInstruction()}, ";
     }
 
     private string BuildGKDiveDribblerRollInstruction()
@@ -4307,7 +4592,26 @@ public class MovementPhaseManager : MonoBehaviour
             return false;
         }
 
-        bool DribberIsInOpponentPenaltyBox = false;
+        return IsBallHexInOpponentPenaltyBox(currentBallHex);
+    }
+
+    private bool IsCurrentBallHexInOpponentPenaltyBox()
+    {
+        if (ball == null)
+        {
+            return false;
+        }
+
+        return IsBallHexInOpponentPenaltyBox(ball.GetCurrentHex());
+    }
+
+    private bool IsBallHexInOpponentPenaltyBox(HexCell currentBallHex)
+    {
+        if (currentBallHex == null || MatchManager.Instance == null)
+        {
+            return false;
+        }
+
         MatchManager.TeamAttackingDirection attackingDirection;
         if (MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home)
         {
@@ -4317,24 +4621,25 @@ public class MovementPhaseManager : MonoBehaviour
         {
             attackingDirection = MatchManager.Instance.awayTeamDirection;
         }
-        // If dribbler is in opponent's Penalty Box!
+        // If the ball/foul hex is in the attacker's opponent penalty box.
         if (
             (
                 attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight // Attackers shoot to the Right
                 && currentBallHex.isInPenaltyBox == 1 // In Right PenaltyBox
-                && token.GetCurrentHex().coordinates.x > 0 // Dribbler is in the right half of pitch
+                && currentBallHex.coordinates.x > 0 // Ball is in the right half of pitch
             )
             ||
             (
                 attackingDirection == MatchManager.TeamAttackingDirection.RightToLeft // Attackers shoot to the Left
                 && currentBallHex.isInPenaltyBox == -1 // In Left PenaltyBox
-                && token.GetCurrentHex().coordinates.x < 0 // Dribbler is in the left half of pitch
+                && currentBallHex.coordinates.x < 0 // Ball is in the left half of pitch
             )
         )
         {
-          DribberIsInOpponentPenaltyBox = true;
+            return true;
         }
-        return DribberIsInOpponentPenaltyBox;
+
+        return false;
     }
 
 }

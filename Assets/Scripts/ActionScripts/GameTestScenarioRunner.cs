@@ -808,6 +808,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         {
             new ScenarioDefinition(nameof(Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip), Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip),
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
+            new ScenarioDefinition(nameof(Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand), Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand),
+            new ScenarioDefinition(nameof(Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall), Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall),
+            new ScenarioDefinition(nameof(Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove), Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove),
+            new ScenarioDefinition(nameof(Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick), Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick),
+            new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
+            new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
+            new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice),
         });
     }
 
@@ -960,6 +967,13 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
             new ScenarioDefinition(nameof(Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip), Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip),
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
+            new ScenarioDefinition(nameof(Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand), Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand),
+            new ScenarioDefinition(nameof(Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall), Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall),
+            new ScenarioDefinition(nameof(Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove), Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove),
+            new ScenarioDefinition(nameof(Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick), Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick),
+            new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
+            new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
+            new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
             new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
             new ScenarioDefinition(nameof(Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache), Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache),
@@ -1102,6 +1116,345 @@ public class GameTestScenarioRunner : MonoBehaviour
             SceneManager.LoadScene("DummyLoader");
         }
         Log("🎉 ALL TESTS PASSED SUCCESSFULLY!");
+    }
+
+    private readonly struct OutsideBoxGoalkeeperChallengeSetup
+    {
+        public OutsideBoxGoalkeeperChallengeSetup(
+            PlayerToken dribbler,
+            PlayerToken goalkeeper,
+            HexCell dribblerHex,
+            HexCell goalkeeperStartHex,
+            HexCell goalkeeperChallengeHex,
+            HexCell boxRepositionHex)
+        {
+            Dribbler = dribbler;
+            Goalkeeper = goalkeeper;
+            DribblerHex = dribblerHex;
+            GoalkeeperStartHex = goalkeeperStartHex;
+            GoalkeeperChallengeHex = goalkeeperChallengeHex;
+            BoxRepositionHex = boxRepositionHex;
+        }
+
+        public PlayerToken Dribbler { get; }
+        public PlayerToken Goalkeeper { get; }
+        public HexCell DribblerHex { get; }
+        public HexCell GoalkeeperStartHex { get; }
+        public HexCell GoalkeeperChallengeHex { get; }
+        public HexCell BoxRepositionHex { get; }
+    }
+
+    private OutsideBoxGoalkeeperChallengeSetup PrepareOutsideBoxGoalkeeperChallengeBoard()
+    {
+        MatchManager.Instance.difficulty_level = 2;
+        if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
+        {
+            MatchManager.Instance.gameData.gameSettings.playerAssistance = 2;
+        }
+
+        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        MatchManager.Instance.attackHasPossession = true;
+
+        PlayerToken dribbler = RequirePlayerToken("Yaneva");
+        PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
+        HexCell dribblerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(11, 0, 0)), "Outside-box GK test dribbler hex (11,0) should exist.");
+        HexCell goalkeeperStartHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(13, 0, 0)), "Outside-box GK test GK start hex (13,0) should exist.");
+        HexCell goalkeeperChallengeHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(12, 0, 0)), "Outside-box GK test GK challenge hex (12,0) should exist.");
+
+        MoveTokensOutOfFinalThirdForRestartTest(1, dribbler, goalkeeper);
+        ClearHexForGkWallScenario(dribblerHex);
+        ClearHexForGkWallScenario(goalkeeperStartHex);
+        ClearHexForGkWallScenario(goalkeeperChallengeHex);
+
+        PlaceTokenForScenario(dribbler, dribblerHex, asAttacker: true);
+        PlaceTokenForScenario(goalkeeper, goalkeeperStartHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(dribblerHex);
+        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = dribbler;
+        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
+        MatchManager.Instance.UpdatePossessionAfterPass(dribblerHex);
+
+        movementPhaseManager.ResetMovementPhase();
+        movementPhaseManager.isActivated = true;
+        movementPhaseManager.isAvailable = false;
+        movementPhaseManager.isMovementPhaseDef = true;
+        movementPhaseManager.isAwaitingTokenSelection = true;
+        movementPhaseManager.CommitToAction();
+
+        finalThirdManager.isActivated = false;
+        freeKickManager.isActivated = false;
+        looseBallManager.isActivated = false;
+        goalKeeperManager.isActivated = false;
+        shotManager.isActivated = false;
+
+        AssertTrue(goalkeeper.IsGoalKeeper, "Outside-box GK tests should use Kuzmic as the defending goalkeeper.");
+        AssertTrue(dribbler.IsDribbler, "Outside-box GK tests should put Yaneva on the ball as dribbler.");
+        AssertTrue(!goalKeeperManager.IsGoalkeeperOwnPenaltyHex(goalkeeper, dribblerHex), "Dribbler should be outside the defending goalkeeper's own penalty box.");
+
+        return new OutsideBoxGoalkeeperChallengeSetup(
+            dribbler,
+            goalkeeper,
+            dribblerHex,
+            goalkeeperStartHex,
+            goalkeeperChallengeHex,
+            goalkeeperStartHex);
+    }
+
+    private IEnumerator MoveGoalkeeperNextToOutsideBoxDribbler(OutsideBoxGoalkeeperChallengeSetup setup)
+    {
+        Log("Clicking GK start - Select Kuzmic for outside-box GK challenge");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(setup.GoalkeeperStartHex), 0.1f));
+        Log("Clicking GK challenge hex - Move Kuzmic next to Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(setup.GoalkeeperChallengeHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForTackleDecision,
+            2f,
+            "Outside-box GK challenge should wait for a tackle/dive/stand decision after the GK moves adjacent."));
+
+        AssertTrue(movementPhaseManager.selectedDefender == setup.Goalkeeper, "Outside-box GK challenge should select Kuzmic as the defender.", setup.Goalkeeper, movementPhaseManager.selectedDefender);
+        AssertTrue(setup.Goalkeeper.GetCurrentHex() == setup.GoalkeeperChallengeHex, "Kuzmic should move onto the challenge hex.", setup.GoalkeeperChallengeHex, setup.Goalkeeper.GetCurrentHex());
+    }
+
+    private IEnumerator StartOutsideBoxGoalkeeperDive(OutsideBoxGoalkeeperChallengeSetup setup)
+    {
+        yield return StartCoroutine(MoveGoalkeeperNextToOutsideBoxDribbler(setup));
+        Log("Pressing D - Kuzmic dives outside the box");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.D, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForTackleRoll,
+            2f,
+            "Outside-box GK dive should start tackle roll resolution."));
+    }
+
+    private IEnumerator StartOutsideBoxGoalkeeperFootTackle(OutsideBoxGoalkeeperChallengeSetup setup)
+    {
+        yield return StartCoroutine(MoveGoalkeeperNextToOutsideBoxDribbler(setup));
+        Log("Pressing T - Kuzmic chooses foot tackle outside the box");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForTackleRoll,
+            2f,
+            "Outside-box GK foot tackle should start tackle rolls."));
+        string rollInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(rollInstructions.Contains("Tackling: 0"), "Outside-box GK foot tackle roll prompt should use Tackling 0.", "Tackling: 0", rollInstructions);
+    }
+
+    private static RollInputOverride JackpotRollOverride()
+    {
+        return new RollInputOverride
+        {
+            hasOverride = true,
+            roll = 6,
+            isJackpot = true
+        };
+    }
+
+    private IEnumerator Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting outside-box GK challenge prompt test.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        yield return StartCoroutine(MoveGoalkeeperNextToOutsideBoxDribbler(setup));
+
+        string instructions = movementPhaseManager.GetInstructions();
+        AssertTrue(instructions.Contains("[D]"), "Outside-box GK prompt should offer [D]ive.", "[D]", instructions);
+        AssertTrue(instructions.Contains("[T]"), "Outside-box GK prompt should offer [T]ackle.", "[T]", instructions);
+        AssertTrue(instructions.Contains("[N]"), "Outside-box GK prompt should offer [N] stand/no tackle.", "[N]", instructions);
+        AssertTrue(instructions.Contains("Tackling 0"), "Outside-box GK prompt should explain foot tackle uses Tackling 0.", "Tackling 0", instructions);
+
+        LogFooterofTest("Outside Box GK Prompt Dive Tackle Stand");
+    }
+
+    private IEnumerator Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting outside-box GK foot tackle zero-skill tie test.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperFootTackle(setup));
+
+        int attackerRoll = Mathf.Max(1, 6 - setup.Dribbler.dribbling);
+        int defenderRoll = setup.Dribbler.dribbling + attackerRoll;
+        AssertTrue(defenderRoll <= 6, "Outside-box GK foot tackle tie setup requires a non-jackpot defender roll.", "<= 6", defenderRoll);
+
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, defenderRoll);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, attackerRoll);
+        yield return StartCoroutine(WaitForCondition(
+            () => looseBallManager.isActivated,
+            2f,
+            "Outside-box GK foot tackle tie should create a normal loose ball, not handball."));
+
+        AssertTrue(!setup.Goalkeeper.isSentOff, "Foot tackle tie should not send off the goalkeeper.");
+        AssertTrue(!freeKickManager.isActivated, "Foot tackle tie should not start Free Kick preparation.");
+
+        LogFooterofTest("Outside Box GK Foot Tackle Uses Zero Tie Loose Ball");
+    }
+
+    private IEnumerator Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting outside-box GK dive attacker-win reposition test.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperDive(setup));
+        string diveRollInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(diveRollInstructions.Contains("1 is a foul"), "Outside-box GK dive roll prompt should say a roll of 1 is a foul, not a penalty.", "1 is a foul", diveRollInstructions);
+        AssertTrue(!diveRollInstructions.Contains("1 is a penalty"), "Outside-box GK dive roll prompt should not call an outside-box foul a penalty.", "no penalty text", diveRollInstructions);
+
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, JackpotRollOverride());
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForReposition,
+            2f,
+            "Attacker winning an outside-box GK dive should offer reposition."));
+
+        AssertTrue(!goalKeeperManager.isActivated, "GK box move should not be active before the attacker repositions.");
+        Log("Clicking GK old box hex - Reposition Yaneva into penalty box after beating GK dive");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(setup.BoxRepositionHex), 0.1f));
+        yield return new WaitForSeconds(0.5f);
+
+        AssertTrue(setup.Dribbler.GetCurrentHex() == setup.BoxRepositionHex, "Yaneva should reposition into the penalty box.", setup.BoxRepositionHex, setup.Dribbler.GetCurrentHex());
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == setup.BoxRepositionHex, "Ball should follow Yaneva's reposition into the penalty box.", setup.BoxRepositionHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(!goalKeeperManager.isActivated, "Reposition into the box after beating an outside-box GK dive should not offer GK free move.");
+
+        LogFooterofTest("Outside Box GK Dive Attacker Win Box Reposition No GK Move");
+    }
+
+    private IEnumerator Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick()
+    {
+        yield return StartCoroutine(Scenario_041_OutsideBoxGK_Dive_ForcedRedFreeKick(defenderWins: true));
+    }
+
+    private IEnumerator Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick()
+    {
+        yield return StartCoroutine(Scenario_041_OutsideBoxGK_Dive_ForcedRedFreeKick(defenderWins: false));
+    }
+
+    private IEnumerator Scenario_041_OutsideBoxGK_Dive_ForcedRedFreeKick(bool defenderWins)
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log(defenderWins
+            ? "Starting outside-box GK dive defender-win forced red/free kick test."
+            : "Starting outside-box GK dive tie forced red/free kick test.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperDive(setup));
+
+        if (defenderWins)
+        {
+            movementPhaseManager.PerformTackleDiceRoll(isDefender: true, JackpotRollOverride());
+            yield return new WaitForSeconds(0.2f);
+            movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        }
+        else
+        {
+            movementPhaseManager.PerformTackleDiceRoll(isDefender: true, JackpotRollOverride());
+            yield return new WaitForSeconds(0.2f);
+            movementPhaseManager.PerformTackleDiceRoll(isDefender: false, JackpotRollOverride());
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated || freeKickManager.isWaitingForKickerSelection,
+            3f,
+            "Outside-box GK handball should force Free Kick flow after any pending Final Thirds."));
+
+        AssertTrue(setup.Goalkeeper.isSentOff, "Outside-box GK handball should show a straight red card.");
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == setup.DribblerHex, "Outside-box GK handball free kick should be from the dribbler hex.", setup.DribblerHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(!movementPhaseManager.isWaitingForInjuryRoll, "Outside-box GK handball should not ask for an injury test.");
+        AssertTrue(!movementPhaseManager.isWaitingForFoulDecision, "Outside-box GK handball should not offer A/F advantage choice.");
+        AssertTrue(!looseBallManager.isActivated, "Outside-box GK handball should not continue into loose ball resolution.");
+        AssertTrue(!shotManager.isWaitingForSaveandHoldScenario, "Outside-box GK handball should not enter Save-and-Hold.");
+
+        LogFooterofTest(defenderWins
+            ? "Outside Box GK Dive Defender Win Forced Red Free Kick"
+            : "Outside Box GK Dive Tie Forced Red Free Kick");
+    }
+
+    private IEnumerator Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting outside-box GK foot tackle defender-win normal recovery test.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperFootTackle(setup));
+
+        int attackerRoll = 1;
+        int defenderRoll = setup.Dribbler.dribbling + attackerRoll + 1;
+        AssertTrue(
+            defenderRoll > 1 && defenderRoll <= 6,
+            "Outside-box GK foot tackle defender-win setup requires a non-foul, non-jackpot defender roll.",
+            "2-6",
+            defenderRoll);
+
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, defenderRoll);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, attackerRoll);
+        yield return StartCoroutine(WaitForCondition(
+            () => !movementPhaseManager.isWaitingForTackleRoll
+                && groundBallManager.ball.GetCurrentHex() == setup.Goalkeeper.GetCurrentHex(),
+            2f,
+            "Outside-box GK foot tackle defender win should resolve through the normal tackle branch."));
+
+        AssertTrue(!setup.Goalkeeper.isSentOff, "Foot tackle defender win should not send off the goalkeeper.");
+        AssertTrue(!freeKickManager.isActivated && !freeKickManager.isWaitingForKickerSelection, "Foot tackle defender win should not start Free Kick preparation.");
+        AssertTrue(!movementPhaseManager.isWaitingForInjuryRoll, "Foot tackle defender win should not ask for an injury test.");
+        AssertTrue(!movementPhaseManager.isWaitingForFoulDecision, "Foot tackle defender win should not offer A/F as a foul.");
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == setup.Goalkeeper.GetCurrentHex(), "Foot tackle defender win should move the ball to the goalkeeper's hex.", setup.Goalkeeper.GetCurrentHex(), groundBallManager.ball.GetCurrentHex());
+        if (movementPhaseManager.isWaitingForReposition)
+        {
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => !movementPhaseManager.isWaitingForReposition,
+                2f,
+                "Foot tackle defender win cleanup should close the successful tackle reposition prompt."));
+        }
+
+        LogFooterofTest("Outside Box GK Foot Tackle Defender Win Normal Recovery");
+    }
+
+    private IEnumerator Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting outside-box GK foul harsh-leniency test.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        MatchManager.Instance.refereeLeniency = 4;
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperFootTackle(setup));
+
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 1);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForYellowCardRoll,
+            2f,
+            "Outside-box GK challenge foul should wait for the harsh leniency test."));
+
+        string leniencyInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(leniencyInstructions.Contains("Fail: straight red card"), "Outside-box GK foul leniency prompt should warn that failure is a straight red.", "Fail: straight red card", leniencyInstructions);
+        AssertTrue(leniencyInstructions.Contains("Pass: yellow card"), "Outside-box GK foul leniency prompt should warn that passing still gives a yellow.", "Pass: yellow card", leniencyInstructions);
+        AssertTrue(!leniencyInstructions.Contains("second yellow"), "Outside-box GK foul leniency prompt should not mention second yellows.", "no second yellow text", leniencyInstructions);
+
+        movementPhaseManager.PerformLeniencyTest(1);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForInjuryRoll,
+            2f,
+            "Outside-box GK foul should continue to injury after leniency."));
+        AssertTrue(setup.Goalkeeper.isBooked && !setup.Goalkeeper.isSentOff, "Passing harsh leniency should book the goalkeeper without sending them off.");
+
+        movementPhaseManager.PerformInjuryTest(1);
+        yield return StartCoroutine(WaitForCondition(
+            () => movementPhaseManager.isWaitingForFoulDecision,
+            2f,
+            "Outside-box GK foul should offer A/F when the attacker can still play and the goalkeeper was not sent off."));
+
+        string foulInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(foulInstructions.Contains("[A]") && foulInstructions.Contains("[F]"), "Outside-box GK foul should offer advantage/free kick choice when not forced.", "[A]/[F]", foulInstructions);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => finalThirdManager.isActivated || freeKickManager.isWaitingForKickerSelection,
+            3f,
+            "Taking the outside-box GK foul should proceed toward Free Kick preparation."));
+
+        LogFooterofTest("Outside Box GK Foul Harsh Leniency Injury Advantage Choice");
     }
 
     private IEnumerator Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip()

@@ -309,8 +309,26 @@ public static class ExpectedStatsCalculator
             return new GroundDuelExpectation(0f, 0f, 0f, 0f);
         }
 
+        return CalculateGroundDuelExpectationWithDefenderSkill(
+            attacker,
+            defender,
+            defender.tackling,
+            defenderBonusMalus);
+    }
+
+    public static GroundDuelExpectation CalculateGroundDuelExpectationWithDefenderSkill(
+        PlayerToken attacker,
+        PlayerToken defender,
+        int defenderEffectiveSkill,
+        int defenderBonusMalus = 0)
+    {
+        if (attacker == null || defender == null)
+        {
+            return new GroundDuelExpectation(0f, 0f, 0f, 0f);
+        }
+
         int attackerDribbling = attacker.dribbling;
-        int defenderTackling = defender.tackling + defenderBonusMalus;
+        int defenderTackling = defenderEffectiveSkill + defenderBonusMalus;
 
         float attackerWins = 0f;
         float defenderWins = 0f;
