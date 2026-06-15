@@ -19,6 +19,7 @@ public class CreateNewGameManager : MonoBehaviour
     private const string TieBreakerNone = "None";
     private const string MatchTypeInternational = "International";
     private const string DraftInternational = "International";
+    private const string DraftArcade = "Arcade";
     private const string DraftSceneName = "Draft";
     private const string FreeDraftSceneName = "FreeDraft";
     private const string CreateLoadRoomSceneName = "CreateLoadRoom";
@@ -86,6 +87,8 @@ public class CreateNewGameManager : MonoBehaviour
     private TMP_Dropdown activeClosedKitDropdown;
     private bool isRefreshingInternationalTeamUi;
     private bool suppressKitSelectionChanged;
+    private bool suppressRegularMatchSelectionSnapshot;
+    private RegularMatchSelectionSnapshot regularMatchSelectionSnapshot;
     private bool isEditingExistingDraftSettings;
     private string existingDraftSettingsFilePath = string.Empty;
 
@@ -129,7 +132,6 @@ public class CreateNewGameManager : MonoBehaviour
         ConfigureBackToGameModeMenuButton();
         SetCreateGameButtonEnabled(!IsSinglePlayerCreateMode());
         // Subscribe to field changes, which dynamically adjusts other fields' options
-        matchTypeDropdown.onValueChanged.AddListener(delegate { AdjustSquadSizeOptionsBasedOnMatchType(); });
         matchTypeDropdown.onValueChanged.AddListener(delegate { OnMatchTypeChanged(); });
         weatherDropdown.onValueChanged.AddListener(delegate { AdjustBallColorBasedOnWeather(); });
         homeTeamInputField.onSelect.AddListener(delegate { ClearActiveClosedKitDropdown(); });
@@ -256,8 +258,8 @@ public class CreateNewGameManager : MonoBehaviour
 
     private void SetRegularDraftDropdownOptions()
     {
-        SetDropdownOptionsPreservingSelection(draftDropdown, new List<string> { "Regular", "Free Regular", "Free" }, "Regular");
-        SetDropdownOptionsPreservingSelection(gkDraftDropdown, new List<string> { "Deal", "Free" }, "Deal");
+        SetDropdownOptionsPreservingSelection(draftDropdown, new List<string> { "Regular", "Free Regular", DraftArcade }, "Regular");
+        SetDropdownOptionsPreservingSelection(gkDraftDropdown, new List<string> { "Deal", "Free", DraftArcade }, "Deal");
         if (draftDropdown != null)
         {
             draftDropdown.interactable = true;
@@ -1451,7 +1453,15 @@ public class CreateNewGameManager : MonoBehaviour
             SelectDropdownOption(awayInternationalTeamDropdown, settings.awayTeamName);
         }
 
-        OnMatchTypeChanged();
+        suppressRegularMatchSelectionSnapshot = true;
+        try
+        {
+            OnMatchTypeChanged();
+        }
+        finally
+        {
+            suppressRegularMatchSelectionSnapshot = false;
+        }
         SelectDropdownOption(squadSizeDropdown, settings.squadSize, IsInternationalMatchSelected() ? "18" : "16");
 
         if (IsInternationalMatchSelected())
@@ -1462,7 +1472,7 @@ public class CreateNewGameManager : MonoBehaviour
         else
         {
             ApplyExistingRosterSourceToggles(settings);
-            SelectDropdownOption(draftDropdown, settings.draft, "Regular");
+            SelectDropdownOption(draftDropdown, NormalizeDraftSelection(settings.draft), "Regular");
             SelectDropdownOption(gkDraftDropdown, settings.gkDraft, "Deal");
         }
 
@@ -1540,6 +1550,13 @@ public class CreateNewGameManager : MonoBehaviour
         dropdown.RefreshShownValue();
     }
 
+    private static string NormalizeDraftSelection(string draftSelection)
+    {
+        return string.Equals(draftSelection, "Free", StringComparison.OrdinalIgnoreCase)
+            ? DraftArcade
+            : draftSelection;
+    }
+
     private static int FindDropdownOptionIndex(TMP_Dropdown dropdown, string selectedValue)
     {
         if (dropdown == null || string.IsNullOrWhiteSpace(selectedValue))
@@ -1594,6 +1611,62 @@ public class CreateNewGameManager : MonoBehaviour
         return toggle != null && toggle.isOn;
     }
 
+    private void CaptureRegularMatchSelectionSnapshot()
+    {
+        if (suppressRegularMatchSelectionSnapshot
+            || homeTeamInputField == null
+            || !homeTeamInputField.gameObject.activeSelf)
+        {
+            return;
+        }
+
+        regularMatchSelectionSnapshot = new RegularMatchSelectionSnapshot
+        {
+            homeTeamName = homeTeamInputField.text,
+            awayTeamName = awayTeamInputField != null ? awayTeamInputField.text : string.Empty,
+            squadSize = GetSelectedDropdownText(squadSizeDropdown),
+            draft = GetSelectedDropdownText(draftDropdown),
+            gkDraft = GetSelectedDropdownText(gkDraftDropdown),
+            homeKit = GetSelectedKitPresetId(homeKitDropdown),
+            awayKit = GetSelectedKitPresetId(awayKitDropdown),
+            homeGKKit = GetSelectedKitPresetId(homeGKKitDropdown),
+            awayGKKit = GetSelectedKitPresetId(awayGKKitDropdown),
+            includeTabletopia = IsToggleOn(includeTabletopiaToggle),
+            includeNonTabletopia = IsToggleOn(includeNonTabletopiaToggle),
+            includeInternationals = IsToggleOn(includeInternationalsToggle),
+            includeTabletopiaGK = IsToggleOn(includeTabletopiaGKToggle),
+            includeNonTabletopiaGK = IsToggleOn(includeNonTabletopiaGKToggle),
+            includeInternationalsGK = IsToggleOn(includeInternationalsGKToggle),
+            hasValue = true
+        };
+    }
+
+    private void RestoreRegularMatchSelectionSnapshot()
+    {
+        if (regularMatchSelectionSnapshot == null || !regularMatchSelectionSnapshot.hasValue)
+        {
+            return;
+        }
+
+        SetInputFieldTextWithoutNotify(homeTeamInputField, regularMatchSelectionSnapshot.homeTeamName);
+        SetInputFieldTextWithoutNotify(awayTeamInputField, regularMatchSelectionSnapshot.awayTeamName);
+        SelectDropdownOption(squadSizeDropdown, regularMatchSelectionSnapshot.squadSize, "16");
+        SelectDropdownOption(draftDropdown, regularMatchSelectionSnapshot.draft, "Regular");
+        SelectDropdownOption(gkDraftDropdown, regularMatchSelectionSnapshot.gkDraft, "Deal");
+
+        SetToggleWithoutNotify(includeTabletopiaToggle, regularMatchSelectionSnapshot.includeTabletopia);
+        SetToggleWithoutNotify(includeNonTabletopiaToggle, regularMatchSelectionSnapshot.includeNonTabletopia);
+        SetToggleWithoutNotify(includeInternationalsToggle, regularMatchSelectionSnapshot.includeInternationals);
+        SetToggleWithoutNotify(includeTabletopiaGKToggle, regularMatchSelectionSnapshot.includeTabletopiaGK);
+        SetToggleWithoutNotify(includeNonTabletopiaGKToggle, regularMatchSelectionSnapshot.includeNonTabletopiaGK);
+        SetToggleWithoutNotify(includeInternationalsGKToggle, regularMatchSelectionSnapshot.includeInternationalsGK);
+
+        PopulateKitDropdown(homeKitDropdown, regularMatchSelectionSnapshot.homeKit);
+        PopulateKitDropdown(awayKitDropdown, regularMatchSelectionSnapshot.awayKit);
+        PopulateKitDropdown(homeGKKitDropdown, regularMatchSelectionSnapshot.homeGKKit);
+        PopulateKitDropdown(awayGKKitDropdown, regularMatchSelectionSnapshot.awayGKKit);
+    }
+
     // Adjust the squad size dropdown based on match type selection
     void AdjustSquadSizeOptionsBasedOnMatchType()
     {
@@ -1636,9 +1709,15 @@ public class CreateNewGameManager : MonoBehaviour
     // Update checkboxes and squad size options when match type changes
     void OnMatchTypeChanged()
     {
+        bool isInternationalMatch = matchTypeDropdown.value == 1;
+        if (isInternationalMatch)
+        {
+            CaptureRegularMatchSelectionSnapshot();
+        }
+
         AdjustSquadSizeOptionsBasedOnMatchType();  // Update squad size dropdown
 
-        if (matchTypeDropdown.value == 1)  // International
+        if (isInternationalMatch)  // International
         {
             isRefreshingInternationalTeamUi = true;
             try
@@ -1690,6 +1769,9 @@ public class CreateNewGameManager : MonoBehaviour
             UpdateKitPreviews();
             UpdateKitValidationForCurrentSelection();
             SetRegularDraftDropdownOptions();
+            RestoreRegularMatchSelectionSnapshot();
+            UpdateKitPreviews();
+            UpdateKitValidationForCurrentSelection();
 
             // Regular or other match types - make all checkboxes interactive again
             includeTabletopiaToggle.interactable = true;
@@ -2072,6 +2154,26 @@ public class CreateNewGameManager : MonoBehaviour
             }
         }
 
+    }
+
+    private sealed class RegularMatchSelectionSnapshot
+    {
+        public bool hasValue;
+        public string homeTeamName;
+        public string awayTeamName;
+        public string squadSize;
+        public string draft;
+        public string gkDraft;
+        public string homeKit;
+        public string awayKit;
+        public string homeGKKit;
+        public string awayGKKit;
+        public bool includeTabletopia;
+        public bool includeNonTabletopia;
+        public bool includeInternationals;
+        public bool includeTabletopiaGK;
+        public bool includeNonTabletopiaGK;
+        public bool includeInternationalsGK;
     }
 }
 

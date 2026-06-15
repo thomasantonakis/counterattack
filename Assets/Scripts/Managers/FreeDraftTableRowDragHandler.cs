@@ -56,13 +56,32 @@ public class FreeDraftTableRowDragHandler : MonoBehaviour, IBeginDragHandler, ID
         Destroy(gameObject);
     }
 
+    public void RestoreAfterReusableDrop()
+    {
+        DestroyDragProxy();
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.blocksRaycasts = true;
+        }
+
+        if (originalParent != null)
+        {
+            RestoreOriginalTransformState();
+        }
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (Time.time - lastClickTime < DoubleClickThreshold)
         {
             if (draftManager != null && draftManager.AssignFreeDraftCandidateToNextSlot(this))
             {
-                MarkConsumed();
+                if (!draftManager.IsCurrentFreeDraftPhaseArcade())
+                {
+                    MarkConsumed();
+                }
             }
         }
 
