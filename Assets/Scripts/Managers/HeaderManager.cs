@@ -70,6 +70,7 @@ public class HeaderManager : MonoBehaviour
     private readonly List<HexCell> headerAtGoalTargetHexes = new();
     private readonly Dictionary<HexCell, float> headerAtGoalTargetOriginalHeights = new();
     private HexCell hoveredHeaderTargetHex;
+    private bool headerStartedWithOffsideAssessment;
     [Header("Tuning")]
     public bool allowUnchallengedDefenseControl = true;
     private const int HEADER_SELECTION_RANGE = 2;
@@ -326,6 +327,9 @@ public class HeaderManager : MonoBehaviour
     {
         while (finalThirdManager.isActivated) yield return null;
         isActivated = true;
+        headerStartedWithOffsideAssessment = MatchManager.Instance != null
+            && MatchManager.Instance.offsideManager != null
+            && MatchManager.Instance.offsideManager.HasStoredAssessment;
         MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
         hasEligibleAttackers = false;
         hasEligibleDefenders = false;
@@ -495,6 +499,11 @@ public class HeaderManager : MonoBehaviour
             {
                 if (attackFreeHeader)
                 {
+                    if (TryCallOffsideForHeaderToken(token, "high_pass_free_header_nomination"))
+                    {
+                        return;
+                    }
+
                     attackerWillJump.Clear();
                     attackerWillJump.Add(token);
                     challengeWinner = token;
@@ -504,6 +513,11 @@ public class HeaderManager : MonoBehaviour
                 }
                 else if (attackControlBall)
                 {
+                    if (TryCallOffsideForHeaderToken(token, "high_pass_control_nomination"))
+                    {
+                        return;
+                    }
+
                     challengeWinner = token;
                     iswaitingForChallengeWinnerSelection = false;
                     hexGrid.ClearHighlightedHexes();
@@ -554,6 +568,11 @@ public class HeaderManager : MonoBehaviour
             if (attackerWillJump.Count == 1)
             {
                 challengeWinner = attackerWillJump[0];
+                if (TryCallOffsideForHeaderToken(challengeWinner, "high_pass_control_nomination"))
+                {
+                    return;
+                }
+
                 Debug.Log($"Since {attackerWillJump[0].name} was the only one declared, they are autoselected to control the ball");
                 HandleControlFlow();
             }
@@ -569,6 +588,11 @@ public class HeaderManager : MonoBehaviour
             if (attEligibleToHead.Count == 1)
             {
                 challengeWinner = attEligibleToHead[0];
+                if (TryCallOffsideForHeaderToken(challengeWinner, "high_pass_control_nomination"))
+                {
+                    return;
+                }
+
                 Debug.Log($"Since {attEligibleToHead[0].name} was the only one eligible, they are autoselected to control the ball");
                 HandleControlFlow();
             }
@@ -777,11 +801,24 @@ public class HeaderManager : MonoBehaviour
 
     public void AddAttackerToHeaderSelection(PlayerToken token)
     {
+        if (TryCallOffsideForHeaderToken(token, "high_pass_header_nomination"))
+        {
+            return;
+        }
+
         if (!attackerWillJump.Contains(token))
         {
             attackerWillJump.Add(token);
             Debug.Log($"Attacker {token.name} selected to jump for the header.");
         }
+    }
+
+    private bool TryCallOffsideForHeaderToken(PlayerToken token, string source)
+    {
+        return token != null
+            && token.isAttacker
+            && MatchManager.Instance != null
+            && MatchManager.Instance.TryHandleOffsideCollection(token, source, token.GetCurrentHex() ?? ball.GetCurrentHex());
     }
 
     public async Task ConfirmAttackerHeaderSelection()
@@ -1458,8 +1495,15 @@ public class HeaderManager : MonoBehaviour
                     Debug.LogError("Attack free header could not find a nominated header winner.");
                     yield break;
                 }
+                if (TryCallOffsideForHeaderToken(challengeWinner, "high_pass_free_header_nomination"))
+                {
+                    yield break;
+                }
+
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
                 MatchManager.Instance.SetLastToken(challengeWinner);
+                MatchManager.Instance.ClearOffsideForLegalCollection(challengeWinner, "high_pass_free_header_won");
+                ReassessOffsideAfterHeaderWinner("high_pass_free_header_won");
                 Debug.Log("Attackers win the header. Highlighting target hexes.");
                 HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                 MatchManager.Instance.currentState = MatchManager.GameState.HeaderChallengeResolved;
@@ -1484,7 +1528,9 @@ public class HeaderManager : MonoBehaviour
                 , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
             );
             MatchManager.Instance.SetLastToken(challengeWinner);
+            MatchManager.Instance.ClearOffsideForLegalCollection(challengeWinner, "high_pass_defender_free_header_won");
             MatchManager.Instance.ChangePossession();
+            ReassessOffsideAfterHeaderWinner("high_pass_defender_free_header_won");
             if (challengeWinner.IsGoalKeeper)
             {
                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(challengeWinner.GetCurrentHex()));
@@ -1545,10 +1591,17 @@ public class HeaderManager : MonoBehaviour
             if (bestAttackerScore > bestDefenderScore)
             {
                 challengeWinner = bestAttacker;
+                if (TryCallOffsideForHeaderToken(bestAttacker, "high_pass_header_challenge_won"))
+                {
+                    yield break;
+                }
+
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestDefender);
                 LogExpectedHeaderRecoveriesForDefenders();
                 MatchManager.Instance.SetLastToken(bestAttacker);
+                MatchManager.Instance.ClearOffsideForLegalCollection(bestAttacker, "high_pass_header_challenge_won");
+                ReassessOffsideAfterHeaderWinner("high_pass_header_challenge_won");
                 if (headerAtGoalDeclared)
                 {
                     LogExpectedHeaderGoal(bestAttacker, requireNaturalRollAboveOne: true, includeGoalkeeperSave: !defenderWillJump.Contains(hexGrid.GetDefendingGK()));
@@ -1602,10 +1655,12 @@ public class HeaderManager : MonoBehaviour
                 LogExpectedHeaderRecoveriesForDefenders();
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.BallRecovery, recoveryType: "header", connectedToken: bestAttacker);
                 MatchManager.Instance.SetLastToken(bestDefender);
+                MatchManager.Instance.ClearOffsideForLegalCollection(bestDefender, "high_pass_header_defender_won");
                 if (bestDefender.IsGoalKeeper) // TODO: in penalty area (their own)
                 {
-                    yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(bestDefender.GetCurrentHex())); // Move the ball to the GK's Hex
                     MatchManager.Instance.ChangePossession();
+                    ReassessOffsideAfterHeaderWinner("high_pass_header_defender_won");
+                    yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(bestDefender.GetCurrentHex())); // Move the ball to the GK's Hex
                     Debug.Log($"{bestDefender.name} (DefenseGK) wins the Aerial Challenge. Switching possession. SaveandHoldScenario");
                     shotManager.isActivated = true;
                     shotManager.isWaitingForSaveandHoldScenario = true;
@@ -1615,6 +1670,7 @@ public class HeaderManager : MonoBehaviour
                 {
                     Debug.Log($"{bestDefender.name} (Defense) wins the header. Switching possession. Click on a Highlighted Hex to play a Headed Pass.");
                     MatchManager.Instance.ChangePossession();
+                    ReassessOffsideAfterHeaderWinner("high_pass_header_defender_won");
                     HighlightHexesForHeader(ball.GetCurrentHex(), 6);
                     StartCoroutine(WaitForHeaderTargetSelection());
                 }
@@ -1706,6 +1762,12 @@ public class HeaderManager : MonoBehaviour
 
     private void HandleControlFlow()
     {
+        if (TryCallOffsideForHeaderToken(challengeWinner, "high_pass_ball_control"))
+        {
+            return;
+        }
+
+        ReassessOffsideAfterHeaderWinner("high_pass_ball_control");
         isWaitingForControlRoll = true;
         Debug.Log(GetControlRollInstruction());
     }
@@ -1753,6 +1815,7 @@ public class HeaderManager : MonoBehaviour
                 , MatchManager.ActionType.AerialPassCompleted
             );
             MatchManager.Instance.SetLastToken(challengeWinner);
+            MatchManager.Instance.ClearOffsideForLegalCollection(challengeWinner, "high_pass_ball_control_success");
             CleanUpHeader();
             MatchManager.Instance.ResolveActionBeforeFinalThird(
                 MatchManager.MatchActionKind.BallControl,
@@ -1849,6 +1912,16 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
+    private void ReassessOffsideAfterHeaderWinner(string context)
+    {
+        if (!headerStartedWithOffsideAssessment || MatchManager.Instance == null)
+        {
+            return;
+        }
+
+        MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore(context, forceReassessment: true);
+    }
+
     private IEnumerator MoveHeaderBallToTarget(HexCell targetHex)
     {
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex));
@@ -1868,11 +1941,18 @@ public class HeaderManager : MonoBehaviour
         MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
         if (clickedHex.isAttackOccupied)
         {
+            PlayerToken receiver = clickedHex.GetOccupyingToken();
+            if (TryCallOffsideForHeaderToken(receiver, "header_pass_collection"))
+            {
+                return;
+            }
+
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 , MatchManager.ActionType.PassCompleted
             );
-            MatchManager.Instance.SetLastToken(clickedHex.GetOccupyingToken());
+            MatchManager.Instance.SetLastToken(receiver);
+            MatchManager.Instance.ClearOffsideForLegalCollection(receiver, "header_pass_completed");
             ball.AdjustBallHeightBasedOnOccupancy();
             CleanUpHeader();
             MatchManager.Instance.ResolveActionBeforeFinalThird(
@@ -2079,7 +2159,7 @@ public class HeaderManager : MonoBehaviour
             });
     }
 
-    private void CleanUpHeader()
+    public void CleanUpHeader()
     {
         attEligibleToHead.Clear();
         defEligibleToHead.Clear();
@@ -2088,6 +2168,7 @@ public class HeaderManager : MonoBehaviour
         isWaitingForControlOrHeaderDecision = false;
         isWaitingForControlOrHeaderDecisionDef = false;
         challengeWinner = null;
+        headerStartedWithOffsideAssessment = false;
         tokenRolling = null;
         tokenScores = new Dictionary<PlayerToken, (int, int)>();
         interceptingDefenders.Clear();

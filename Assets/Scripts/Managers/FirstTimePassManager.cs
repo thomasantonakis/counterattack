@@ -259,7 +259,10 @@ public class FirstTimePassManager : MonoBehaviour
                 currentTargetHex = clickedHex;
                 ResetTargetPreviewState();
                 HighlightMediumModeTargets(clickedHex);
-                latestValidationInstruction = "Click the orange target again to confirm, or choose another valid target.";
+                string offsideWarning = GetFtpOffsideWarning(clickedHex);
+                latestValidationInstruction = string.IsNullOrWhiteSpace(offsideWarning)
+                    ? "Click the orange target again to confirm, or choose another valid target."
+                    : $"{offsideWarning} Click the orange target again to confirm, or choose another valid target.";
                 Debug.Log("First-Time Pass target selected. Click again to confirm or elsewhere to try another target.");
             }
             else
@@ -288,6 +291,40 @@ public class FirstTimePassManager : MonoBehaviour
     private GroundPassValidationResult ValidateFTPTargetPath(HexCell targetHex)
     {
         return GroundPassCommon.ValidateStandardPassPath(hexGrid, ball, targetHex, FtpMaxDistance);
+    }
+
+    private string GetFtpOffsideWarning(HexCell targetHex)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        return matchManager != null && matchManager.offsideManager != null
+            ? matchManager.offsideManager.GetFtpOffsideWarning(targetHex)
+            : string.Empty;
+    }
+
+    private bool IsDifficultyOneOffsideTokenOnTarget()
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager == null || matchManager.difficulty_level != 1 || currentTargetHex == null)
+        {
+            return false;
+        }
+
+        PlayerToken targetToken = currentTargetHex.GetOccupyingToken();
+        return targetToken != null
+            && matchManager.offsideManager != null
+            && matchManager.offsideManager.IsTokenOffside(targetToken);
+    }
+
+    private bool IsDifficultyOneOffsideMoveOntoTarget(PlayerToken movingToken, HexCell destinationHex)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        return matchManager != null
+            && matchManager.difficulty_level == 1
+            && movingToken != null
+            && destinationHex != null
+            && destinationHex == currentTargetHex
+            && matchManager.offsideManager != null
+            && matchManager.offsideManager.IsTokenOffside(movingToken);
     }
 
     private void UpdateMediumModeHoverPreview(HexCell hoveredHex)
@@ -319,6 +356,13 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         HighlightMediumModeTargets(hoveredHex);
+        string offsideWarning = GetFtpOffsideWarning(hoveredHex);
+        if (!string.IsNullOrWhiteSpace(offsideWarning))
+        {
+            latestValidationInstruction = $"{offsideWarning} Click to select this target.";
+            return;
+        }
+
         latestValidationInstruction = hoveredHex == currentTargetHex
             ? "Click the orange target again to confirm, or choose another valid target."
             : currentTargetHex != null
@@ -382,7 +426,10 @@ public class FirstTimePassManager : MonoBehaviour
         bool previewIsDangerous = previewAttempts > 0;
         HighlightHoverPreviewPath(validation.PathHexes, hoveredHex, previewIsDangerous);
         HighlightCommittedTarget();
-        latestValidationInstruction = GetEasyModePreviewInstruction(previewIsDangerous, previewAttempts, hasConditionalGoalkeeperInteraction);
+        string offsideWarning = GetFtpOffsideWarning(hoveredHex);
+        latestValidationInstruction = string.IsNullOrWhiteSpace(offsideWarning)
+            ? GetEasyModePreviewInstruction(previewIsDangerous, previewAttempts, hasConditionalGoalkeeperInteraction)
+            : $"{offsideWarning} {GetEasyModePreviewInstruction(previewIsDangerous, previewAttempts, hasConditionalGoalkeeperInteraction)}";
     }
 
     private void RenderEasyModeSelectedTargetPreview(GroundPassValidationResult? knownValidation = null)
@@ -407,7 +454,10 @@ public class FirstTimePassManager : MonoBehaviour
         currentTargetPreviewIsDangerous = currentTargetPreviewAttempts > 0;
         currentTargetPreviewHasConditionalGoalkeeperInteraction = GroundPassCommon.HasConditionalGoalkeeperInteractionAfterBoxMove(previewInteractions);
         HighlightHoverPreviewPath(validation.PathHexes, currentTargetHex, currentTargetPreviewIsDangerous);
-        latestValidationInstruction = GetEasyModeCommittedTargetInstruction();
+        string offsideWarning = GetFtpOffsideWarning(currentTargetHex);
+        latestValidationInstruction = string.IsNullOrWhiteSpace(offsideWarning)
+            ? GetEasyModeCommittedTargetInstruction()
+            : $"{offsideWarning} {GetEasyModeCommittedTargetInstruction()}";
     }
 
     private void ConfirmTargetSelection()
@@ -419,6 +469,7 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         Debug.Log("First-Time Pass target confirmed. Waiting for FTP movement phases.");
+        MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("first_time_pass_target_confirmed");
 
         if (MatchManager.Instance.difficulty_level != 3)
         {
@@ -728,7 +779,16 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void SkipAttackerMovementPhase()
     {
+        if (IsDifficultyOneOffsideTokenOnTarget())
+        {
+            PlayerToken targetToken = currentTargetHex.GetOccupyingToken();
+            latestValidationInstruction = $"{targetToken.name} is in an offside position and must be moved away from the First-Time Pass target.";
+            Debug.LogWarning(latestValidationInstruction);
+            return;
+        }
+
         Debug.Log("Attacker FTP movement skipped.");
+        latestValidationInstruction = string.Empty;
         hexGrid.ClearHighlightedHexes();
         hoveredMovementHex = null;
         selectedToken = null;
@@ -835,7 +895,15 @@ public class FirstTimePassManager : MonoBehaviour
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
     {
+        if (IsDifficultyOneOffsideMoveOntoTarget(selectedToken, hex))
+        {
+            latestValidationInstruction = $"{selectedToken.name} is in an offside position and cannot move onto the First-Time Pass target.";
+            Debug.LogWarning(latestValidationInstruction);
+            yield break;
+        }
+
         hexGrid.ClearHighlightedHexes();
+        latestValidationInstruction = string.Empty;
         hoveredMovementHex = null;
         isWaitingForAttackerMove = false;
         isWaitingForAttackerSelection = false;
@@ -879,20 +947,27 @@ public class FirstTimePassManager : MonoBehaviour
             yield break;
         }
 
-        if (hex.isAttackOccupied)
+        yield return StartCoroutine(HandleGroundBallMovement(hex, allowGKBoxMove: false));
+        PlayerToken receiver = hex.GetOccupyingToken();
+        if (receiver != null && receiver.isAttacker)
         {
+            if (MatchManager.Instance.TryHandleOffsideCollection(receiver, "first_time_pass", hex))
+            {
+                yield break;
+            }
+
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
                 MatchManager.ActionType.PassCompleted
             );
-            MatchManager.Instance.SetLastToken(hex.GetOccupyingToken());
+            MatchManager.Instance.SetLastToken(receiver);
+            MatchManager.Instance.ClearOffsideForLegalCollection(receiver, "first_time_pass_completed");
         }
         else
         {
             MatchManager.Instance.SetHangingPass("ground", MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
         }
 
-        yield return StartCoroutine(HandleGroundBallMovement(hex, allowGKBoxMove: false));
         MatchManager.Instance.UpdatePossessionAfterPass(hex);
         MatchManager.Instance.ResolveActionBeforeFinalThird(
             MatchManager.MatchActionKind.FirstTimePass,
@@ -993,6 +1068,7 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         Debug.Log($"{interaction.DefenderToken.name} recovers the FTP directly at {interaction.InteractionHex.coordinates}.");
+        MatchManager.Instance.ClearOffsideForLegalCollection(interaction.DefenderToken, "first_time_pass_goalkeeper_direct_pickup");
         yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
             interaction.DefenderToken,
             interaction.InteractionHex,
@@ -1037,6 +1113,7 @@ public class FirstTimePassManager : MonoBehaviour
         if (isJackpot || diceRoll == 6 || savingTotal >= 10)
         {
             Debug.Log($"{goalkeeper.name} catches the First-Time Pass from the GK Wall.");
+            MatchManager.Instance.ClearOffsideForLegalCollection(goalkeeper, "first_time_pass_goalkeeper_wall_save");
             yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
                 goalkeeper,
                 interaction.InteractionHex,
@@ -1126,6 +1203,7 @@ public class FirstTimePassManager : MonoBehaviour
                 connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
             );
             MatchManager.Instance.SetLastToken(defenderToken);
+            MatchManager.Instance.ClearOffsideForLegalCollection(defenderToken, "first_time_pass_interception");
             HexCell interceptionHex = currentDefenderHex;
             ResetFTPInterceptionDiceRolls();
             CleanUpFTP();
@@ -1289,6 +1367,11 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isWaitingForAttackerSelection)
         {
+            if (!string.IsNullOrWhiteSpace(latestValidationInstruction))
+            {
+                sb.Append($"{latestValidationInstruction} ");
+            }
+
             int difficulty = MatchManager.Instance.difficulty_level;
             if (selectedToken == null)
             {

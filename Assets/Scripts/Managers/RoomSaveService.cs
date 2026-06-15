@@ -459,6 +459,7 @@ public class RoomRuntimeSnapshot
     public RoomHexCoordinates ball;
     public List<RoomTokenSnapshot> tokens = new();
     public RoomTouchReferences touchReferences = new();
+    public RoomOffsideSnapshot offside = new();
     public RoomSubstitutionSnapshot substitutions = new();
     public MatchManager.Stats stats;
     public List<MatchManager.GoalEvent> homeScorers = new();
@@ -527,6 +528,16 @@ public class RoomTouchReferences
     public string hangingPassType;
     public RoomTokenReference hangingPassExcludedCollector;
     public bool clearPreviousOnNextBallCollection;
+}
+
+[Serializable]
+public class RoomOffsideSnapshot
+{
+    public bool hasStoredAssessment;
+    public bool assessedTeamIsHome;
+    public int offsideLineX;
+    public string assessedContext;
+    public List<RoomTokenReference> offsideTokens = new();
 }
 
 [Serializable]

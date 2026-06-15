@@ -469,6 +469,12 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (looseBallManager.isActivated) return;
         if (shotManager.isActivated || shotManager.isWaitingForSnapshotDecisionFromLoose) return;
+        if (isAvailable && !isActivated && keyData.key == KeyCode.M)
+        {
+            MatchManager.Instance.TriggerMovement();
+            ConsumeMovementKey(keyData);
+            return;
+        }
         if (highPassManager != null && highPassManager.isActivated) return;
         if (freeKickManager != null && freeKickManager.isActivated) return;
         if (penaltyKickManager != null && penaltyKickManager.isActivated) return;
@@ -499,12 +505,6 @@ public class MovementPhaseManager : MonoBehaviour
                 }
             }
 
-            return;
-        }
-        if (isAvailable && !isActivated && keyData.key == KeyCode.M)
-        {
-            MatchManager.Instance.TriggerMovement();
-            ConsumeMovementKey(keyData);
             return;
         }
         if (!isActivated) return;
@@ -594,6 +594,7 @@ public class MovementPhaseManager : MonoBehaviour
                     isWaitingForSnapshotDecision = false;
                     MarkDribblerMovedAfterSnapshotDecision();
                     Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
+                    MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed");
                     shotManager.StartShotProcess(selectedToken, "snapshot");
                     return;
                 }
@@ -629,6 +630,7 @@ public class MovementPhaseManager : MonoBehaviour
 
                 isWaitingForSnapshotDecision = false;
                 Debug.Log($"Non Dribbler {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
+                MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed");
                 shotManager.StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
                 return;
             }
@@ -671,7 +673,11 @@ public class MovementPhaseManager : MonoBehaviour
 
                 // Defender chooses to tackle
                 Debug.Log($"{selectedToken.name} initiates a tackle without moving. Starting Dice Rolls...");
-                movedTokens.Add(selectedToken); // Mark defender as having moved
+                selectedDefender = selectedToken;
+                if (!movedTokens.Contains(selectedToken))
+                {
+                    movedTokens.Add(selectedToken); // Mark defender as having moved
+                }
                 isAwaitingHexDestination = false; // Reset hex destination flag
                 isWaitingForTackleDecisionWithoutMoving = false; // Reset tackle decision flag
                 isWaitingForTackleDecision = false;  // Reset tackle decision flag
@@ -751,8 +757,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
                 isWaitingForReposition = false;
                 hexGrid.ClearHighlightedHexes();
-                // selectedToken = winner;
-                DribblerMoved1HexOrReposition();
+                AdvanceMovementPhase();
                 return;
             }
             else
@@ -1005,6 +1010,8 @@ public class MovementPhaseManager : MonoBehaviour
         )
         {
             Debug.Log($"A Valid Defender was selected: {selectedToken.name}");
+            isWaitingForTackleDecisionWithoutMoving = false;
+            selectedDefender = null;
             HighlightValidMovementHexes(selectedToken, token.pace);
             PlayerToken ballHolder = ball.GetCurrentHex()?.GetOccupyingToken();
             if (ballHolder != null && ballHolder.isAttacker)
@@ -1373,6 +1380,55 @@ public class MovementPhaseManager : MonoBehaviour
             && attackerHex.IsDangerousTacklingPosition(attackingDirection, defenderHex);
     }
 
+    private bool HasVisibleDangerousTackleDestination(PlayerToken defenderToken)
+    {
+        if (defenderToken == null || MatchManager.Instance == null || MatchManager.Instance.difficulty_level != 1)
+        {
+            return false;
+        }
+
+        foreach (HexCell hex in hexGrid.highlightedHexes)
+        {
+            if (IsDangerousTackleDestinationForCurrentDribbler(defenderToken, hex))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsCurrentSelectedTackleFromBehind()
+    {
+        PlayerToken attackerToken = ball?.GetCurrentHex()?.GetOccupyingToken();
+        PlayerToken defenderToken = selectedDefender != null ? selectedDefender : selectedToken;
+        return IsCurrentNormalTackleDangerous(attackerToken, defenderToken);
+    }
+
+    private string BuildTackleFoulRiskInstruction()
+    {
+        if (!IsCurrentSelectedTackleFromBehind())
+        {
+            return "";
+        }
+
+        return " (1-2 are a foul)";
+    }
+
+    private string BuildTackleDecisionInstruction(string selectedTokenName, bool withoutMoving)
+    {
+        bool isFromBehind = IsCurrentSelectedTackleFromBehind();
+        string tackleText = isFromBehind
+            && MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level <= 2
+            ? $"Press [T] to tackle FROM BEHIND with {selectedTokenName}{(withoutMoving ? " from there" : "")}"
+            : $"Press [T] to tackle with {selectedTokenName}{(withoutMoving ? " from there" : "")}";
+
+        return withoutMoving
+            ? $"{tackleText}!, "
+            : $"{tackleText}, or [N] to stand there without tackling, ";
+    }
+
     private static bool TryGetAttackingDirectionForToken(
         PlayerToken token,
         out MatchManager.TeamAttackingDirection attackingDirection)
@@ -1490,6 +1546,7 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);  // Update possession
             MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
+            MatchManager.Instance.ClearOffsideForLegalCollection(selectedToken, "movement_defensive_pickup");
             MatchManager.Instance.ClearHangingPass();
             PlayerToken recoveringToken = selectedToken;
             bool consumesExtraAction = committedMovementConsumesExtraAction;
@@ -1560,6 +1617,12 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 if (tokenPickedUpBall)
                 {
+                    if (MatchManager.Instance.TryHandleOffsideCollection(selectedToken, "movement_pickup", targetHex))
+                    {
+                        tokenPickedUpBall = false;
+                        return;
+                    }
+
                     PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
                     // Debug.Log($"{!string.IsNullOrEmpty(MatchManager.Instance.hangingPassType)}");
                     // Debug.Log($"{MatchManager.Instance.hangingPassType}");
@@ -1577,6 +1640,7 @@ public class MovementPhaseManager : MonoBehaviour
                         }
                     }
                     MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
+                    MatchManager.Instance.ClearOffsideForLegalCollection(selectedToken, "movement_pickup");
                 }
                 Debug.LogWarning("The selected Token is the dribbler");
                 Debug.Log("Hello, this is a dribbler dribbling, Reducing their pace.");
@@ -1699,6 +1763,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isDribblerinOppPenBox)
         {
             Debug.Log($"{selectedToken.name} is in the opponent penalty Box. Press [S] to take a snapshot!");
+            MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_available");
             isWaitingForSnapshotDecision = true;
         }
         else if (isWaitingForSnapshotDecision)
@@ -2306,7 +2371,19 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
         {
-            PlayerToken ballCarrier = ball.GetCurrentHex()?.GetOccupyingToken();
+            PlayerToken ballCarrier = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+            if (ballCarrier == null || ballCarrier == selectedDefender)
+            {
+                ballCarrier = selectedToken != selectedDefender ? selectedToken : null;
+            }
+            if (ballCarrier == null)
+            {
+                ballCarrier = ball.GetCurrentHex()?.GetOccupyingToken();
+            }
+            if (ballCarrier == selectedDefender)
+            {
+                ballCarrier = null;
+            }
             GameplayDiceRollResult interceptionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
                 "movement_ball_interception",
                 rollOverride,
@@ -2314,6 +2391,7 @@ public class MovementPhaseManager : MonoBehaviour
                 relatedToken: ballCarrier,
                 sourceHex: selectedDefender.GetCurrentHex(),
                 targetHex: ball.GetCurrentHex(),
+                jackpotEnabled: false,
                 details: new Dictionary<string, string>
                 {
                     ["defenderTackling"] = selectedDefender.tackling.ToString(),
@@ -3573,7 +3651,14 @@ public class MovementPhaseManager : MonoBehaviour
             if (isWaitingForYellowCardRoll)
             {
                 string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
-                sb.Append($"Press [R] to roll the leniency check for {defenderName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
+                if (pendingDangerousTackleFoul)
+                {
+                    sb.Append($"Press [R] to roll the leniency check for {defenderName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}. Fail: straight red card. Pass: yellow card, possibly a second yellow, ");
+                }
+                else
+                {
+                    sb.Append($"Press [R] to roll the leniency check for {defenderName}. Referee's leniency: {MatchManager.Instance.refereeLeniency}, ");
+                }
             }
             if (isWaitingForInjuryRoll) sb.Append($"Press [R] to roll the injury check for {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} whose Resilience is {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.resilience}, ");
             if (isWaitingForFoulDecision)
@@ -3590,10 +3675,21 @@ public class MovementPhaseManager : MonoBehaviour
         {
             string movingTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
             sb.Append($"Click on a Free Hex to move {movingTokenName} there!, ");
+            if (HasVisibleDangerousTackleDestination(selectedToken))
+            {
+                sb.Append("Tackles from Purple Hexes are considered tackles from behind, ");
+            }
         }
         if (isAwaitingHexDestination && isBallPickable && CanSelectedTokenCollectCurrentBall())
         {
             string movingTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
+            if (MatchManager.Instance != null
+                && MatchManager.Instance.offsideManager != null
+                && MatchManager.Instance.offsideManager.ShouldWarnForToken(selectedToken))
+            {
+                sb.Append($"{movingTokenName} is in an offside position. Picking up the ball will call offside, ");
+            }
+
             sb.Append($"Press [V] to pick up the ball with {movingTokenName}, ");
         }
         if (isAwaitingHexDestination && selectedToken != null && ballHex != null && !CanSelectedTokenCollectCurrentBall())
@@ -3623,7 +3719,8 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
                 string tacklingText = selectedDefender != null ? selectedDefender.tackling.ToString() : "?";
-                sb.Append($"Press [R] to roll with {defenderName} for the tackle. Tackling: {tacklingText}, ");
+                string foulRiskText = BuildTackleFoulRiskInstruction();
+                sb.Append($"Press [R] to roll with {defenderName} for the tackle. Tackling: {tacklingText}{foulRiskText}, ");
             }
                 if (isWaitingForTackleRoll && tackleDefenderRolled && isGkWallDiveInProgress) sb.Append(BuildGKDiveDribblerRollInstruction());
                 else if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
@@ -3657,8 +3754,8 @@ public class MovementPhaseManager : MonoBehaviour
             }
             string selectedTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
             if (isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedTokenName}'s remaining pace ({remainingDribblerPace}), ");
-            if (isWaitingForTackleDecision) sb.Append($"Press [T] to tackle with {selectedTokenName}, or [N] to stand there without tackling, ");
-            if (isWaitingForTackleDecisionWithoutMoving) sb.Append($"Press [T] to tackle with {selectedTokenName} from there!, ");
+            if (isWaitingForTackleDecision) sb.Append(BuildTackleDecisionInstruction(selectedTokenName, false));
+            if (isWaitingForTackleDecisionWithoutMoving) sb.Append(BuildTackleDecisionInstruction(selectedTokenName, true));
             if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
             if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
         // }

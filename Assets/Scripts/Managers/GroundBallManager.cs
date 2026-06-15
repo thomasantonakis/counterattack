@@ -404,6 +404,7 @@ public class GroundBallManager : MonoBehaviour
             return; // Reject invalid paths
         }
         latestValidationInstruction = string.Empty;
+        string offsideWarning = GetOffsideTargetWarning(clickedHex);
 
         // Handle each difficulty's behavior
         if (difficulty == 3) // Hard Mode
@@ -440,7 +441,9 @@ public class GroundBallManager : MonoBehaviour
                 diceRollsPending = 0;
                 ResetGroundPassInterceptionDiceRolls();
                 HighlightMediumModeTargets(clickedHex);
-                latestValidationInstruction = "Click the orange target again to confirm, or choose another valid target.";
+                latestValidationInstruction = string.IsNullOrWhiteSpace(offsideWarning)
+                    ? "Click the orange target again to confirm, or choose another valid target."
+                    : $"{offsideWarning} Click the orange target again to confirm, or choose another valid target.";
                 Debug.Log("Standard pass target selected. Click again to confirm or elsewhere to try another target.");
             }
             // Medium Mode: Wait for a second click for confirmation
@@ -530,6 +533,13 @@ public class GroundBallManager : MonoBehaviour
         }
 
         HighlightMediumModeTargets(hoveredHex);
+        string offsideWarning = GetOffsideTargetWarning(hoveredHex);
+        if (!string.IsNullOrWhiteSpace(offsideWarning))
+        {
+            latestValidationInstruction = $"{offsideWarning} Click to select this target.";
+            return;
+        }
+
         latestValidationInstruction = hoveredHex == currentTargetHex
             ? "Click the orange target again to confirm, or choose another valid target."
             : currentTargetHex != null
@@ -674,6 +684,12 @@ public class GroundBallManager : MonoBehaviour
     {
         hexGrid.ClearHighlightedHexes();
         PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
+        if (IsDifficultyOneOffsideTarget(targetToken))
+        {
+            Debug.LogWarning($"{targetToken.name} is in an offside position and cannot be selected as a pass target on difficulty 1.");
+            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetOffside);
+        }
+
         if (targetToken != null
             && MatchManager.Instance != null
             && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
@@ -698,6 +714,30 @@ public class GroundBallManager : MonoBehaviour
     private string GetValidationFailureInstruction(PassValidationFailureReason failureReason)
     {
         return GroundPassCommon.GetValidationFailureInstruction(failureReason);
+    }
+
+    private bool IsDifficultyOneOffsideTarget(PlayerToken targetToken)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        return targetToken != null
+            && matchManager != null
+            && matchManager.difficulty_level == 1
+            && !isQuickThrow
+            && !isKickoffPass
+            && matchManager.currentState != MatchManager.GameState.KickoffBlown
+            && matchManager.currentState != MatchManager.GameState.QuickThrow
+            && matchManager.currentState != MatchManager.GameState.GoalKick
+            && matchManager.currentState != MatchManager.GameState.WaitingForThrowInTaker
+            && matchManager.offsideManager != null
+            && matchManager.offsideManager.IsTokenOffside(targetToken);
+    }
+
+    private string GetOffsideTargetWarning(HexCell targetHex)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        return matchManager != null && matchManager.offsideManager != null
+            ? matchManager.offsideManager.GetOffsideWarningForTarget(targetHex)
+            : string.Empty;
     }
 
     private string GetEasyModePreviewInstruction(bool isDangerous, int interceptionAttempts, bool hasConditionalGoalkeeperInteraction)
@@ -818,6 +858,14 @@ public class GroundBallManager : MonoBehaviour
     private async Task MoveTheBall(HexCell trgDestHex)
     {
         await helperFunctions.StartCoroutineAndWait(HandleGroundBallMovement(trgDestHex, allowGKBoxMove: false)); // Execute pass
+        PlayerToken receiver = trgDestHex != null ? trgDestHex.GetOccupyingToken() : null;
+        if (receiver != null
+            && receiver.isAttacker
+            && MatchManager.Instance.TryHandleOffsideCollection(receiver, "ground_pass", trgDestHex))
+        {
+            return;
+        }
+
         MatchManager.Instance.UpdatePossessionAfterPass(trgDestHex);
         MatchManager.Instance.ResolveActionBeforeFinalThird(
             MatchManager.MatchActionKind.StandardPass,
@@ -866,6 +914,7 @@ public class GroundBallManager : MonoBehaviour
         if (receiver != null)
         {
             MatchManager.Instance.SetLastToken(receiver);
+            MatchManager.Instance.ClearOffsideForLegalCollection(receiver, "ground_pass_completed");
         }
         else
         {
@@ -1001,6 +1050,7 @@ public class GroundBallManager : MonoBehaviour
             , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
         );
         MatchManager.Instance.SetLastToken(defenderToken);
+        MatchManager.Instance.ClearOffsideForLegalCollection(defenderToken, "ground_pass_interception");
         StartCoroutine(HandleBallInterception(currentDefenderHex));
     }
 
@@ -1219,6 +1269,7 @@ public class GroundBallManager : MonoBehaviour
         }
 
         Debug.Log($"{interaction.DefenderToken.name} recovers the pass directly at {interaction.InteractionHex.coordinates}.");
+        MatchManager.Instance.ClearOffsideForLegalCollection(interaction.DefenderToken, "ground_pass_goalkeeper_direct_pickup");
         yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
             interaction.DefenderToken,
             interaction.InteractionHex,
@@ -1262,6 +1313,7 @@ public class GroundBallManager : MonoBehaviour
         if (isJackpot || diceRoll == 6 || savingTotal >= 10)
         {
             Debug.Log($"{goalkeeper.name} catches the ground pass from the GK Wall.");
+            MatchManager.Instance.ClearOffsideForLegalCollection(goalkeeper, "ground_pass_goalkeeper_wall_save");
             yield return StartCoroutine(goalKeeperManager.ResolveGoalkeeperSaveAndHold(
                 goalkeeper,
                 interaction.InteractionHex,

@@ -193,13 +193,69 @@ public class MatchManager : MonoBehaviour
 
         public Stats() { }
 
-        public PlayerStats GetPlayerStats(string playerName)
+        public PlayerStats GetPlayerStats(PlayerToken token)
         {
-            var entry = playerStats.Find(p => p.playerName == playerName);
+            if (token == null)
+            {
+                return GetPlayerStats(string.Empty);
+            }
+
+            string playerKey = MatchManager.GetStableTokenKey(token);
+            var entry = playerStats.Find(p => p.playerKey == playerKey);
             if (entry == null)
             {
-                entry = new PlayerStatsEntry { playerName = playerName, stats = new PlayerStats() };
+                entry = new PlayerStatsEntry
+                {
+                    playerKey = playerKey,
+                    playerName = token.playerName,
+                    displayName = token.playerName,
+                    teamSide = token.isHomeTeam ? "Home" : "Away",
+                    jerseyNumber = token.jerseyNumber,
+                    stats = new PlayerStats()
+                };
                 playerStats.Add(entry);
+            }
+            else
+            {
+                entry.playerName = token.playerName;
+                entry.displayName = token.playerName;
+                entry.teamSide = token.isHomeTeam ? "Home" : "Away";
+                entry.jerseyNumber = token.jerseyNumber;
+                entry.stats ??= new PlayerStats();
+            }
+
+            return entry.stats;
+        }
+
+        public PlayerStats GetPlayerStats(string playerName)
+        {
+            var entry = playerStats.Find(p => string.IsNullOrWhiteSpace(p.playerKey) && p.playerName == playerName);
+            if (entry == null && !string.IsNullOrWhiteSpace(playerName))
+            {
+                List<PlayerStatsEntry> keyedMatches = playerStats
+                    .Where(p => !string.IsNullOrWhiteSpace(p.playerKey) && p.playerName == playerName)
+                    .ToList();
+                if (keyedMatches.Count == 1)
+                {
+                    keyedMatches[0].stats ??= new PlayerStats();
+                    return keyedMatches[0].stats;
+                }
+            }
+
+            if (entry == null)
+            {
+                entry = new PlayerStatsEntry
+                {
+                    playerName = playerName,
+                    displayName = playerName,
+                    stats = new PlayerStats()
+                };
+                playerStats.Add(entry);
+            }
+            else
+            {
+                entry.displayName = string.IsNullOrWhiteSpace(entry.displayName) ? entry.playerName : entry.displayName;
+                entry.stats ??= new PlayerStats();
             }
             return entry.stats;
         }
@@ -216,7 +272,8 @@ public class MatchManager : MonoBehaviour
 
             foreach (var player in playerStats)
             {
-                bool playerIsHome = MatchManager.Instance.IsPlayerInTeam(player.playerName, true);
+                bool playerIsHome = string.Equals(player.teamSide, "Home", StringComparison.OrdinalIgnoreCase)
+                    || (string.IsNullOrWhiteSpace(player.teamSide) && MatchManager.Instance.IsPlayerInTeam(player.playerName, true));
                 if (playerIsHome == isHomeTeam) teamStats.AddPlayerStats(player.stats);
             }
         }
@@ -225,7 +282,11 @@ public class MatchManager : MonoBehaviour
     [Serializable]
     public class PlayerStatsEntry
     {
+        public string playerKey;
         public string playerName;
+        public string displayName;
+        public string teamSide;
+        public int jerseyNumber;
         public PlayerStats stats;
     }
 
@@ -529,8 +590,8 @@ public class MatchManager : MonoBehaviour
                 Debug.Log($"🔍 Connected Token Found: {connectedToken.name}");
             }
 
-            PlayerStats playerStats = stats.GetPlayerStats(token.playerName);
-            PlayerStats connectedPlayerStats = connectedToken != null ? stats.GetPlayerStats(connectedToken.playerName) : null;
+            PlayerStats playerStats = stats.GetPlayerStats(token);
+            PlayerStats connectedPlayerStats = connectedToken != null ? stats.GetPlayerStats(connectedToken) : null;
             TeamStats teamStats = stats.GetTeamStats(token.isHomeTeam);
             TeamStats connectedTeamStats = connectedToken != null ? stats.GetTeamStats(connectedToken.isHomeTeam) : null;
 
@@ -584,7 +645,9 @@ public class MatchManager : MonoBehaviour
                     switch (recoveryType)
                     {
                         case "steal":
-                            logEntry += $"steals the ball from {connectedToken.name}";
+                            logEntry += connectedToken != null
+                                ? $"steals the ball from {connectedToken.name}"
+                                : "steals the ball";
                             break;
                         case "standard":
                             logEntry += $"Intercepts a Standard Pass from {connectedToken.name}";
@@ -601,10 +664,16 @@ public class MatchManager : MonoBehaviour
                     }
                     playerStats.interceptionsMade += value;
                     playerStats.possessionWon += value;
-                    connectedPlayerStats.possessionLost += value;
+                    if (connectedPlayerStats != null)
+                    {
+                        connectedPlayerStats.possessionLost += value;
+                    }
                     teamStats.totalInterceptionsMade += value;
                     teamStats.totalPossessionWon += value;
-                    connectedTeamStats.totalPossessionLost += value;
+                    if (connectedTeamStats != null)
+                    {
+                        connectedTeamStats.totalPossessionLost += value;
+                    }
                     break;
 
                 case ActionType.BallRecovery:
@@ -722,13 +791,11 @@ public class MatchManager : MonoBehaviour
                     bool suppressAssist = MatchManager.Instance.ConsumeSuppressAssistForNextGoal() || isPenaltyGoal;
                     PlayerToken assistToken = suppressAssist ? null : MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose;
                     MatchManager.Instance.AddGoal(
-                        token.playerName
-                        , token.isHomeTeam
-                        , MatchManager.Instance.GetCurrentGoalMinute()
-                        , isPenaltyGoal
-                        , assistToken?.playerName
-                        , MatchManager.Instance.GetCurrentGoalMinuteLabel()
-                    );
+                        token,
+                        MatchManager.Instance.GetCurrentGoalMinute(),
+                        isPenaltyGoal,
+                        assistToken,
+                        MatchManager.Instance.GetCurrentGoalMinuteLabel());
                     if (
                         assistToken != null &&
                         assistToken != token &&
@@ -852,7 +919,7 @@ public class MatchManager : MonoBehaviour
                 case ActionType.Substituted:
                     logEntry += $"⬇️ Subbed off for ⬆️ {connectedToken.name}";
                     teamStats.totalSubstiutions += value;
-                    MatchManager.Instance.RecordSubstitutionEvent(token.playerName, connectedToken != null ? connectedToken.playerName : null, value);
+                    MatchManager.Instance.RecordSubstitutionEvent(token, connectedToken, value);
                     break;
 
                 default:
@@ -885,7 +952,7 @@ public class MatchManager : MonoBehaviour
                 return;
             }
 
-            PlayerStats playerStats = stats.GetPlayerStats(token.playerName);
+            PlayerStats playerStats = stats.GetPlayerStats(token);
             TeamStats teamStats = stats.GetTeamStats(token.isHomeTeam);
             playerStats.xRecoveries += expectedValue;
             teamStats.totalXRecoveries += expectedValue;
@@ -913,7 +980,7 @@ public class MatchManager : MonoBehaviour
                 return;
             }
 
-            PlayerStats playerStats = stats.GetPlayerStats(token.playerName);
+            PlayerStats playerStats = stats.GetPlayerStats(token);
             TeamStats teamStats = stats.GetTeamStats(token.isHomeTeam);
             playerStats.xGoals += expectedValue;
             teamStats.totalXGoals += expectedValue;
@@ -934,9 +1001,9 @@ public class MatchManager : MonoBehaviour
                 return;
             }
 
-            PlayerStats attackerStats = stats.GetPlayerStats(attacker.playerName);
+            PlayerStats attackerStats = stats.GetPlayerStats(attacker);
             TeamStats attackerTeamStats = stats.GetTeamStats(attacker.isHomeTeam);
-            PlayerStats defenderStats = stats.GetPlayerStats(defender.playerName);
+            PlayerStats defenderStats = stats.GetPlayerStats(defender);
             TeamStats defenderTeamStats = stats.GetTeamStats(defender.isHomeTeam);
 
             attackerStats.xDribbles += expectation.xDribbles;
@@ -961,10 +1028,12 @@ public class MatchManager : MonoBehaviour
     [Serializable]
     public class GoalEvent
     {
+        public string scorerKey;
         public string scorer;
         public int minute;
         public string minuteLabel;
         public bool isPenalty;
+        public string assistKey;
         public string assist;  // Optional
 
         public override string ToString()
@@ -1028,8 +1097,8 @@ public class MatchManager : MonoBehaviour
         LeftToRight,
         RightToLeft
     }
-    public TeamAttackingDirection homeTeamDirection;
-    public TeamAttackingDirection awayTeamDirection;
+    public TeamAttackingDirection homeTeamDirection = TeamAttackingDirection.LeftToRight;
+    public TeamAttackingDirection awayTeamDirection = TeamAttackingDirection.RightToLeft;
 
     public GameState currentState; // Tracks the current state of the match
     public TeamInAttack teamInAttack; // Tracks which team is in Attack
@@ -1041,11 +1110,13 @@ public class MatchManager : MonoBehaviour
     public GroundBallManager groundBallManager;
     public HighPassManager highPassManager;
     public LongBallManager longBallManager;
+    public LooseBallManager looseBallManager;
     public FirstTimePassManager firstTimePassManager;
     public MovementPhaseManager movementPhaseManager;
     public ShotManager shotManager;
     public PenaltyKickManager penaltyKickManager;
     public FreeKickManager freeKickManager;
+    public OffsideManager offsideManager;
     public PlayerTokenManager playerTokenManager;
     public FinalThirdManager finalThirdManager;
     public GoalFlowManager goalFlowManager;
@@ -1395,6 +1466,81 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public bool CanChangeTiebreaker()
+    {
+        int regulationHalfLimit = GetConfiguredNumberOfHalfs();
+        return currentHalf < regulationHalfLimit
+            || (currentHalf == regulationHalfLimit && !isHalfExpired);
+    }
+
+    public void ApplyLiveGameSettingsChanges()
+    {
+        if (gameData?.gameSettings == null)
+        {
+            return;
+        }
+
+        ClampLoadedMatchSettings();
+        difficulty_level = gameData.gameSettings.playerAssistance;
+        ApplyCurrentKitStylesToTokens();
+        OnGameSettingsLoaded?.Invoke();
+        MarkLiveLogDirty();
+    }
+
+    private void ApplyCurrentKitStylesToTokens()
+    {
+        if (playerTokenManager == null || gameData?.gameSettings == null)
+        {
+            return;
+        }
+
+        ApplyCurrentKitStylesToTokenList(playerTokenManager.allTokens);
+        ApplyCurrentKitStylesToTokenList(playerTokenManager.benchTokens);
+    }
+
+    private void ApplyCurrentKitStylesToTokenList(IEnumerable<PlayerToken> tokens)
+    {
+        if (tokens == null)
+        {
+            return;
+        }
+
+        foreach (PlayerToken token in tokens)
+        {
+            ApplyCurrentKitStyleToToken(token);
+        }
+    }
+
+    private void ApplyCurrentKitStyleToToken(PlayerToken token)
+    {
+        if (token == null || gameData?.gameSettings == null)
+        {
+            return;
+        }
+
+        string kit = token.isHomeTeam ? gameData.gameSettings.homeKit : gameData.gameSettings.awayKit;
+        string gkKit = token.isHomeTeam ? gameData.gameSettings.homeGKKit : gameData.gameSettings.awayGKKit;
+        string resolvedKit = token.IsGoalKeeper && !string.IsNullOrWhiteSpace(gkKit) ? gkKit : kit;
+        TokenStyleDefinition style = TokenKitCatalog.ResolveStyle(resolvedKit);
+        if (style == null)
+        {
+            return;
+        }
+
+        PlayerTokenVisuals visuals = token.GetComponent<PlayerTokenVisuals>();
+        if (visuals == null)
+        {
+            visuals = token.gameObject.AddComponent<PlayerTokenVisuals>();
+        }
+
+        visuals.ApplyStyle(style);
+        TextMeshPro numberText = token.GetComponentInChildren<TextMeshPro>(true);
+        if (numberText != null)
+        {
+            visuals.ApplyNumberStyle(numberText, style);
+        }
+    }
+
     private TokenStyleDefinition ResolveTeamGoalkeeperStyle(PlayerToken token)
     {
         GameSettings settings = gameData?.gameSettings;
@@ -1427,14 +1573,42 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    public void RecordSubstitutionEvent(PlayerToken playerOff, PlayerToken playerOn, int value = 1)
+    {
+        if (value <= 0)
+        {
+            return;
+        }
+
+        if (playerOff != null)
+        {
+            IncrementPlayerEventCount(playerSubOffCounts, GetStableTokenKey(playerOff), value);
+        }
+
+        if (playerOn != null)
+        {
+            IncrementPlayerEventCount(playerSubOnCounts, GetStableTokenKey(playerOn), value);
+        }
+    }
+
     public int GetPlayerSubOnCount(string playerName)
     {
         return GetPlayerEventCount(playerSubOnCounts, playerName);
     }
 
+    public int GetPlayerSubOnCount(PlayerToken token)
+    {
+        return token != null ? GetPlayerEventCount(playerSubOnCounts, GetStableTokenKey(token)) : 0;
+    }
+
     public int GetPlayerSubOffCount(string playerName)
     {
         return GetPlayerEventCount(playerSubOffCounts, playerName);
+    }
+
+    public int GetPlayerSubOffCount(PlayerToken token)
+    {
+        return token != null ? GetPlayerEventCount(playerSubOffCounts, GetStableTokenKey(token)) : 0;
     }
 
     public void SetSubstitutionsAvailable(bool available, string reason = "")
@@ -1584,7 +1758,7 @@ public class MatchManager : MonoBehaviour
             gameData.stats.awayTeamStats.totalSubstiutions++;
         }
 
-        RecordSubstitutionEvent(playerOff.playerName, playerOn.playerName);
+        RecordSubstitutionEvent(playerOff, playerOn);
         RecordGameplayOutcome(
             "substitution.committed",
             "substitution",
@@ -1606,6 +1780,11 @@ public class MatchManager : MonoBehaviour
 
     private static void IncrementPlayerEventCount(Dictionary<string, int> counts, string playerName, int value)
     {
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            return;
+        }
+
         if (counts.TryGetValue(playerName, out int currentValue))
         {
             counts[playerName] = currentValue + value;
@@ -2874,7 +3053,7 @@ public class MatchManager : MonoBehaviour
         };
     }
 
-    private static Dictionary<string, string> CreateDetails(params (string Key, object Value)[] values)
+    public static Dictionary<string, string> CreateDetails(params (string Key, object Value)[] values)
     {
         Dictionary<string, string> details = new Dictionary<string, string>();
         if (values == null)
@@ -3118,6 +3297,7 @@ public class MatchManager : MonoBehaviour
         {
             Instance = this;
             EnsurePenaltyKickManager();
+            EnsureOffsideManager();
             // DontDestroyOnLoad(gameObject); // Keep MatchManager persistent
         }
         else
@@ -3160,6 +3340,22 @@ public class MatchManager : MonoBehaviour
 
         manager.Configure(this);
         return manager;
+    }
+
+    public OffsideManager EnsureOffsideManager()
+    {
+        if (offsideManager == null)
+        {
+            offsideManager = FindAnyObjectByType<OffsideManager>();
+        }
+
+        if (offsideManager == null)
+        {
+            offsideManager = gameObject.AddComponent<OffsideManager>();
+        }
+
+        offsideManager.Configure(this);
+        return offsideManager;
     }
 
     public void MarkPenaltyShootoutInProgress()
@@ -3262,6 +3458,27 @@ public class MatchManager : MonoBehaviour
         {
             StartCoroutine(RestoreRuntimeSnapshotWhenReady(gameData.runtimeSnapshot));
         }
+        else if (!Application.isEditor)
+        {
+            yield return new WaitUntil(() => playerTokenManager != null && playerTokenManager.allTokens.Count >= 22);
+            ConfigureStandaloneRoomAsAwayGoalRestart();
+        }
+    }
+
+    private void ConfigureStandaloneRoomAsAwayGoalRestart()
+    {
+        ClearGoalKickRestartTaker();
+        teamInAttack = TeamInAttack.Home;
+        firstHalfKickoffTeam = teamInAttack;
+        attackHasPossession = true;
+        currentState = GameState.PostGoalKickOffSetup;
+        homeTeamDirection = TeamAttackingDirection.LeftToRight;
+        awayTeamDirection = TeamAttackingDirection.RightToLeft;
+        ClearLastTokenChain();
+        SetSubstitutionsAvailable(true, "Standalone Room loaded after away goal");
+        PlaceBallOnKickoffHex();
+        kickoffManager?.StartPostGoalKickoffSetupPhase();
+        Debug.Log("Standalone Room loaded as post-goal restart after Away scored. Home will select the kick-off taker.");
     }
 
     private void InitializeSubstitutionCountsFromStats()
@@ -3908,6 +4125,7 @@ public class MatchManager : MonoBehaviour
     {
         return token != null
             && setPieceTakerExcludedFromNextTouch != token
+            && (offsideManager == null || ShouldSkipOffsideAssessmentForRestart() || !offsideManager.ShouldBlockCollection(token))
             && (string.IsNullOrEmpty(hangingPassType) || hangingPassExcludedCollector != token);
     }
 
@@ -3934,6 +4152,7 @@ public class MatchManager : MonoBehaviour
         // Loose-ball contact is not a purposeful pass, so the new holder starts a fresh chain.
         ClearLastTokenChain();
         SetLastToken(inputToken);
+        ClearOffsideForLegalCollection(inputToken, "loose_ball_collection");
         clearPreviousOnNextBallCollection = false;
     }
 
@@ -3946,6 +4165,55 @@ public class MatchManager : MonoBehaviour
         }
 
         SetLastToken(inputToken);
+        ClearOffsideForLegalCollection(inputToken, "ball_collection");
+    }
+
+    public bool TryHandleOffsideCollection(PlayerToken token, string source, HexCell offenceHex = null)
+    {
+        return offsideManager != null
+            && offsideManager.TryHandleOffsideCollection(token, source, offenceHex);
+    }
+
+    public void ClearOffsideForLegalCollection(PlayerToken token, string reason)
+    {
+        offsideManager?.ClearIfLegalCollector(token, reason);
+    }
+
+    public void CleanupLiveActionForOffside()
+    {
+        groundBallManager?.CleanUpPass();
+        firstTimePassManager?.CleanUpFTP();
+        highPassManager?.CleanUpHighPass();
+        FindAnyObjectByType<HeaderManager>()?.CleanUpHeader();
+        longBallManager?.CleanUpLongBall();
+        movementPhaseManager?.ResetMovementPhase();
+        if (looseBallManager != null && looseBallManager.isActivated)
+        {
+            looseBallManager.EndLooseBallPhase(completeDeferredShotResolution: false);
+        }
+    }
+
+    private void AssessOffsideBeforeOptions(string context)
+    {
+        if (ShouldSkipOffsideAssessmentForRestart())
+        {
+            offsideManager?.ClearStoredOffside($"restart_exempt_{context}");
+            return;
+        }
+
+        EnsureOffsideManager()?.EvaluateAndStore(context);
+    }
+
+    private bool ShouldSkipOffsideAssessmentForRestart()
+    {
+        return currentState == GameState.KickOffSetup
+            || currentState == GameState.PostGoalKickOffSetup
+            || currentState == GameState.KickOffTakerSelection
+            || currentState == GameState.KickoffBlown
+            || currentState == GameState.WaitingForThrowInTaker
+            || currentState == GameState.QuickThrow
+            || currentState == GameState.GoalKick
+            || (freeKickManager != null && freeKickManager.isCornerKick);
     }
 
     public void ResolveActionBeforeFinalThird(
@@ -4548,6 +4816,7 @@ public class MatchManager : MonoBehaviour
                 currentState = GameState.EndOfMovementPhase;
                 UpdatePossessionAfterPass(ball.GetCurrentHex());
                 OfferStandardGroundBallPass();
+                AssessOffsideBeforeOptions("end_movement_phase");
                 RefreshAvailableActions();
                 RecordGameplayOutcome(
                     "action.phase",
@@ -4570,6 +4839,7 @@ public class MatchManager : MonoBehaviour
 
                 currentState = GameState.SuccessfulTackle;
                 OfferStandardGroundBallPass();
+                AssessOffsideBeforeOptions("successful_tackle");
                 RefreshAvailableActions();
                 RecordGameplayOutcome(
                     "action.phase",
@@ -4584,6 +4854,10 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.EndOfStandardPass;
         OfferStandardGroundBallPass();
+        if (attackHasPossession)
+        {
+            AssessOffsideBeforeOptions("end_standard_pass");
+        }
         RefreshAvailableActions();
         RecordGameplayOutcome(
             "action.phase",
@@ -4596,6 +4870,10 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.EndOfFirstTimePass;
         OfferStandardGroundBallPass();
+        if (attackHasPossession)
+        {
+            AssessOffsideBeforeOptions("end_first_time_pass");
+        }
         RefreshAvailableActions();
         RecordGameplayOutcome(
             "action.phase",
@@ -4608,6 +4886,10 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.EndOfLongBall;
         OfferStandardGroundBallPass();
+        if (attackHasPossession)
+        {
+            AssessOffsideBeforeOptions("end_long_ball");
+        }
         RefreshAvailableActions();
         RecordGameplayOutcome(
             "action.phase",
@@ -4621,6 +4903,7 @@ public class MatchManager : MonoBehaviour
         currentState = GameState.AnyOtherScenario;
         if (offerShortGroundBall) OfferShortGroundBallPass();
         else OfferStandardGroundBallPass();
+        AssessOffsideBeforeOptions("any_other_scenario");
         RefreshAvailableActions();
         RecordGameplayOutcome(
             "action.phase",
@@ -4682,6 +4965,7 @@ public class MatchManager : MonoBehaviour
     {
         currentState = GameState.BallControl;
         OfferStandardGroundBallPass();
+        AssessOffsideBeforeOptions("ball_control");
         RefreshAvailableActions();
         RecordGameplayOutcome(
             "action.phase",
@@ -5044,6 +5328,7 @@ public class MatchManager : MonoBehaviour
                 hangingPassExcludedCollector = CreateTokenReference(hangingPassExcludedCollector),
                 clearPreviousOnNextBallCollection = clearPreviousOnNextBallCollection
             },
+            offside = offsideManager != null ? offsideManager.CreateSnapshot() : new RoomOffsideSnapshot(),
             substitutions = new RoomSubstitutionSnapshot
             {
                 homeSubstitutionsUsed = homeSubstitutionsUsed,
@@ -5180,6 +5465,7 @@ public class MatchManager : MonoBehaviour
             RestoreTokenSnapshots(snapshot.tokens);
             RestoreBallSnapshot(snapshot.ball);
             RestoreTouchReferences(snapshot.touchReferences);
+            RestoreOffsideSnapshot(snapshot.offside);
             RestoreSubstitutionSnapshot(snapshot.substitutions);
             RebuildManagersAfterRuntimeRestore();
         }
@@ -5406,6 +5692,11 @@ public class MatchManager : MonoBehaviour
         clearPreviousOnNextBallCollection = references != null && references.clearPreviousOnNextBallCollection;
     }
 
+    private void RestoreOffsideSnapshot(RoomOffsideSnapshot snapshot)
+    {
+        EnsureOffsideManager()?.RestoreSnapshot(snapshot, ResolveTokenReference);
+    }
+
     private void RestoreSubstitutionSnapshot(RoomSubstitutionSnapshot substitutions)
     {
         if (substitutions == null)
@@ -5563,13 +5854,15 @@ public class MatchManager : MonoBehaviour
     
     public void EnableFreeKickOptions()
     {
+        AssessOffsideBeforeOptions("free_kick_options");
         OfferStandardGroundBallPass();
         movementPhaseManager.isAvailable = false;
         groundBallManager.isAvailable = true;
         firstTimePassManager.isAvailable = false;
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
-        if (shotManager.IsFreeKickShotAvailableFromBall()) shotManager.isAvailable = true;
+        if (freeKickManager != null && freeKickManager.IsIndirectFreeKick) shotManager.isAvailable = false;
+        else if (shotManager.IsFreeKickShotAvailableFromBall()) shotManager.isAvailable = true;
         else shotManager.isAvailable = false;
         RefreshAerialTargetPrecomputations();
     }
@@ -5878,9 +6171,11 @@ public class MatchManager : MonoBehaviour
 
     public bool IsPlayerInTeam(string playerName, bool isHomeTeam)
     {
-        return isHomeTeam 
-            ? gameData.rosters.home.ContainsKey(playerName) 
-            : gameData.rosters.away.ContainsKey(playerName);
+        Dictionary<string, RosterPlayer> roster = isHomeTeam
+            ? gameData?.rosters?.home
+            : gameData?.rosters?.away;
+        return roster != null
+            && roster.Values.Any(player => string.Equals(player?.name, playerName, StringComparison.OrdinalIgnoreCase));
     }
     
     public void SetLastToken(PlayerToken inputToken)
@@ -5931,9 +6226,36 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    public void AddGoal(string scorer, bool isHomeTeam, int minute, bool isPenalty, string assist = null, string minuteLabel = null)
+    public void AddGoal(PlayerToken scorerToken, int minute, bool isPenalty, PlayerToken assistToken = null, string minuteLabel = null)
     {
-        GoalEvent goal = new GoalEvent { scorer = scorer, minute = minute, minuteLabel = minuteLabel, isPenalty = isPenalty, assist = assist };
+        if (scorerToken == null)
+        {
+            return;
+        }
+
+        AddGoal(
+            scorerToken.playerName,
+            scorerToken.isHomeTeam,
+            minute,
+            isPenalty,
+            assistToken?.playerName,
+            minuteLabel,
+            GetStableTokenKey(scorerToken),
+            GetStableTokenKey(assistToken));
+    }
+
+    public void AddGoal(string scorer, bool isHomeTeam, int minute, bool isPenalty, string assist = null, string minuteLabel = null, string scorerKey = null, string assistKey = null)
+    {
+        GoalEvent goal = new GoalEvent
+        {
+            scorerKey = scorerKey,
+            scorer = scorer,
+            minute = minute,
+            minuteLabel = minuteLabel,
+            isPenalty = isPenalty,
+            assistKey = assistKey,
+            assist = assist
+        };
         
         if (isHomeTeam)
             homeScorers.Add(goal);

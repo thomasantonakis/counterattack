@@ -64,7 +64,14 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         {
             if (draftManager != null && draftManager.AssignFreeDraftCandidateToSlot(freeDraftRow, this))
             {
-                freeDraftRow.MarkConsumed();
+                if (!draftManager.IsCurrentFreeDraftPhaseArcade())
+                {
+                    freeDraftRow.MarkConsumed();
+                }
+                else
+                {
+                    freeDraftRow.RestoreAfterReusableDrop();
+                }
             }
 
             return;
@@ -308,6 +315,40 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         Debug.Log($"Slot renamed to: {gameObject.name}");
     }
 
+    public void ClearSlot()
+    {
+        Transform contentWrapper = transform.Find("ContentWrapper");
+        if (contentWrapper == null)
+        {
+            Debug.LogError("ContentWrapper not found in PlayerSlot prefab");
+            return;
+        }
+
+        ClearSlotText(contentWrapper, "PlayerNameInSlot");
+        ClearSlotText(contentWrapper, "PaceInSlot");
+        ClearSlotText(contentWrapper, "DribblingInSlot");
+        ClearSlotText(contentWrapper, "HeadingInSlot");
+        ClearSlotText(contentWrapper, "HighPassInSlot");
+        ClearSlotText(contentWrapper, "ResilienceInSlot");
+        ClearSlotText(contentWrapper, "ShootingInSlot");
+        ClearSlotText(contentWrapper, "TacklingInSlot");
+
+        gameObject.name = GetSlotBaseName();
+        Debug.Log($"Slot cleared and renamed to: {gameObject.name}");
+    }
+
+    private void ClearSlotText(Transform contentWrapper, string childName)
+    {
+        TMP_Text text = contentWrapper.Find(childName)?.GetComponent<TMP_Text>();
+        if (text == null)
+        {
+            return;
+        }
+
+        text.text = string.Empty;
+        text.color = Color.black;
+    }
+
     public void UpdatePlayerSlot(Player player)
     {
         Transform contentWrapper = transform.Find("ContentWrapper");
@@ -425,4 +466,34 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         }
     }
 
+}
+
+public class FreeDraftPoolDropHandler : MonoBehaviour, IDropHandler
+{
+    private DraftManager draftManager;
+
+    public void Configure(DraftManager manager)
+    {
+        draftManager = manager;
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (draftManager == null || eventData == null || eventData.pointerDrag == null)
+        {
+            return;
+        }
+
+        PlayerSlotDragHandler slotDragHandler = eventData.pointerDrag.GetComponent<PlayerSlotDragHandler>();
+        PlayerSlotDropHandler slotDropHandler = eventData.pointerDrag.GetComponent<PlayerSlotDropHandler>();
+        if (slotDragHandler == null || slotDropHandler == null)
+        {
+            return;
+        }
+
+        if (draftManager.ReturnRosterSlotToPool(slotDropHandler))
+        {
+            slotDragHandler.MarkReturnedToPool();
+        }
+    }
 }

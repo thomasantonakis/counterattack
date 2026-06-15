@@ -11,6 +11,7 @@ public enum PassValidationFailureReason
     BlockedByDefender,
     TargetOccupiedByDefender,
     TargetExcludedFromNextTouch,
+    TargetOffside,
 }
 
 public readonly struct GroundPassValidationResult
@@ -183,6 +184,7 @@ public static class GroundPassCommon
             PassValidationFailureReason.BlockedByDefender => "Pass invalid: blocked by defender.",
             PassValidationFailureReason.TargetOccupiedByDefender => "Pass invalid: target occupied by defender.",
             PassValidationFailureReason.TargetExcludedFromNextTouch => "Pass invalid: the set-piece taker cannot be the next player to touch the ball.",
+            PassValidationFailureReason.TargetOffside => "Pass invalid: the target player is in an offside position.",
             PassValidationFailureReason.NullTarget => "Pass invalid: no valid target selected.",
             _ => string.Empty,
         };

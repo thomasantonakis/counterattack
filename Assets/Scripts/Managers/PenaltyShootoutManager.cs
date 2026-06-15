@@ -651,7 +651,7 @@ public class PenaltyShootoutManager : MonoBehaviour
 
     private static string FormatShootoutScoreLine(string teamName, List<bool> results, int nameWidth, int cellCount)
     {
-        int scoreStartPx = Mathf.Max(96, Mathf.CeilToInt((nameWidth * 9.5f) + 12f));
+        int scoreStartPx = Mathf.Max(180, Mathf.CeilToInt((nameWidth * 14.5f) + 24f));
         return $"{teamName}<pos={scoreStartPx}px>- {FormatShootoutCells(results, cellCount)}";
     }
 

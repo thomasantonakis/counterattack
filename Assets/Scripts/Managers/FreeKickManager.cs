@@ -22,6 +22,8 @@ public class FreeKickManager : MonoBehaviour
     public bool isWaitingForFinalKickerSelection = false;
     public bool isWaitingForExecution = false;
     public bool isCornerKick = false;
+    [SerializeField] private bool isIndirectFreeKick = false;
+    [SerializeField] private PlayerToken mandatoryDefenderToMove = null;
     [SerializeField]
     private List<PlayerToken> shouldDefMoveTokens = new List<PlayerToken>();
     [SerializeField]
@@ -37,6 +39,7 @@ public class FreeKickManager : MonoBehaviour
     public HexCell spotkick;
     private HexCell hoveredSetupMoveHex;
     private bool isMovingSetupToken;
+    public bool IsIndirectFreeKick => isActivated && isIndirectFreeKick;
 
     private void OnEnable()
     {
@@ -327,7 +330,8 @@ public class FreeKickManager : MonoBehaviour
 
     private bool IsFreeKickShotAvailable()
     {
-        return MatchManager.Instance != null
+        return !isIndirectFreeKick
+            && MatchManager.Instance != null
             && MatchManager.Instance.shotManager != null
             && MatchManager.Instance.shotManager.IsFreeKickShotAvailableFromBall();
     }
@@ -377,6 +381,8 @@ public class FreeKickManager : MonoBehaviour
         isActivated = false;
         isWaitingForExecution = false;
         isCornerKick = false;
+        isIndirectFreeKick = false;
+        mandatoryDefenderToMove = null;
         CancelShotPreview();
     }
 
@@ -400,15 +406,17 @@ public class FreeKickManager : MonoBehaviour
         MatchManager.Instance.longBallManager?.CleanUpLongBall();
     }
 
-    public void StartFreeKickPreparation(HexCell cornerKickSpot = null)
+    public void StartFreeKickPreparation(HexCell cornerKickSpot = null, bool indirectFreeKick = false)
     {
         isActivated = true;
+        isIndirectFreeKick = indirectFreeKick;
+        mandatoryDefenderToMove = null;
         matchManager.PauseMatchClockForSetPiecePrep();
-        if (cornerKickSpot == null) Debug.Log("Starting Free Kick Preparation...");
+        isCornerKick = cornerKickSpot != null;
+        spotkick = cornerKickSpot;
+        if (cornerKickSpot == null) Debug.Log(indirectFreeKick ? "Starting indirect Free Kick Preparation..." : "Starting Free Kick Preparation...");
         else
         {
-            isCornerKick = true;
-            spotkick = cornerKickSpot;
             Debug.Log("Starting Corner Kick Preparation...");
         }
         matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
@@ -424,6 +432,14 @@ public class FreeKickManager : MonoBehaviour
             details: new Dictionary<string, string> { ["isCornerKick"] = isCornerKick.ToString() });
     }
 
+    public void StartOffsideIndirectFreeKick(PlayerToken offsideToken)
+    {
+        Debug.Log($"Starting indirect free kick for offside offence by {offsideToken?.name ?? "unknown token"}.");
+        StartFreeKickPreparation(indirectFreeKick: true);
+        mandatoryDefenderToMove = offsideToken;
+        CalculateDefendersThatNeedToMove();
+    }
+
     private void CalculatePotentialKickers()
     {
         potentialKickers.Clear();
@@ -435,6 +451,10 @@ public class FreeKickManager : MonoBehaviour
     {
         shouldDefMoveTokens.Clear();
         shouldDefMoveTokens.AddRange(GetDefendersTooCloseToBall());
+        if (mandatoryDefenderToMove != null && !shouldDefMoveTokens.Contains(mandatoryDefenderToMove))
+        {
+            shouldDefMoveTokens.Add(mandatoryDefenderToMove);
+        }
     }
 
     private List<PlayerToken> GetPotentialKickersAroundBall()
@@ -486,6 +506,19 @@ public class FreeKickManager : MonoBehaviour
             {
                 defenders.Add(token);
             }
+        }
+
+        return defenders;
+    }
+
+    private List<PlayerToken> GetRequiredDefendersToMove()
+    {
+        List<PlayerToken> defenders = GetDefendersTooCloseToBall();
+        if (mandatoryDefenderToMove != null
+            && shouldDefMoveTokens.Contains(mandatoryDefenderToMove)
+            && !defenders.Contains(mandatoryDefenderToMove))
+        {
+            defenders.Add(mandatoryDefenderToMove);
         }
 
         return defenders;
@@ -1019,7 +1052,7 @@ public class FreeKickManager : MonoBehaviour
             return false;
         }
 
-        defendersTooClose = GetDefendersTooCloseToBall();
+        defendersTooClose = GetRequiredDefendersToMove();
         if (defendersTooClose.Count == 0)
         {
             return false;
@@ -1177,7 +1210,9 @@ public class FreeKickManager : MonoBehaviour
                 {
                     MatchManager.Instance.EnableFreeKickOptions();
                     Debug.Log("Free Kick Preparation completed. Ready for execution.");
-                    Debug.Log("Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!");
+                    Debug.Log(isIndirectFreeKick
+                        ? "Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass). Shot is not available from an indirect offside free kick."
+                        : "Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!");
                 }
                 break;
         }
@@ -1199,6 +1234,8 @@ public class FreeKickManager : MonoBehaviour
     {
         ResetMoves();
         isCornerKick = false;
+        isIndirectFreeKick = false;
+        mandatoryDefenderToMove = null;
         // selectedKicker = null; 
         spotkick = null;       
         potentialKickers.Clear();
@@ -1370,7 +1407,7 @@ public class FreeKickManager : MonoBehaviour
     private void AppendSetPieceObligations(StringBuilder sb, MatchManager.GameState state)
     {
         List<PlayerToken> currentKickers = GetPotentialKickersAroundBall();
-        List<PlayerToken> defendersTooClose = GetDefendersTooCloseToBall();
+        List<PlayerToken> defendersTooClose = GetRequiredDefendersToMove();
 
         if (IsRegularAttackingMoveState(state))
         {

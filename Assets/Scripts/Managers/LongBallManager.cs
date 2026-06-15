@@ -350,6 +350,7 @@ public class LongBallManager : MonoBehaviour
     private void ConfirmLongBallTargetSelection(HexCell clickedHex)
     {
         currentTargetHex = clickedHex;
+        MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("long_ball_target_confirmed");
         ResetAvailableTargetPrecompute();
         hexGrid.ClearHighlightedHexes();
         HighlightCommittedTarget();
@@ -479,7 +480,7 @@ public class LongBallManager : MonoBehaviour
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
-        int totalAccuracy = diceRoll + highPassAttribute;
+        int totalAccuracy = accuracyRoll.isJackpot ? 50 : diceRoll + highPassAttribute;
         if (totalAccuracy >= accuracyThreshold)
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
@@ -633,6 +634,14 @@ public class LongBallManager : MonoBehaviour
         ball.PlaceAtCell(targetHex);
         finalHex = targetHex;
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
+        PlayerToken directLandingToken = targetHex.GetOccupyingToken();
+        if (directLandingToken != null
+            && directLandingToken.isAttacker
+            && MatchManager.Instance.TryHandleOffsideCollection(directLandingToken, "long_ball_landing", targetHex))
+        {
+            yield break;
+        }
+
         // After movement completes, check if the ball is out of bounds
         if (isFromHandling) yield break;
         if (targetHex.isOutOfBounds)
@@ -704,8 +713,16 @@ public class LongBallManager : MonoBehaviour
 
         if (targetHex.isAttackOccupied)
         {
+            PlayerToken receiver = targetHex.GetOccupyingToken();
+            if (receiver != null
+                && MatchManager.Instance.TryHandleOffsideCollection(receiver, "long_ball_pickup", targetHex))
+            {
+                yield break;
+            }
+
             MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-            MatchManager.Instance.SetLastToken(targetHex.GetOccupyingToken());
+            MatchManager.Instance.SetLastToken(receiver);
+            MatchManager.Instance.ClearOffsideForLegalCollection(receiver, "long_ball_completed");
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
             MatchManager.Instance.ResolveActionBeforeFinalThird(
                 MatchManager.MatchActionKind.LongBall,
@@ -744,6 +761,7 @@ public class LongBallManager : MonoBehaviour
             connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
         );
         MatchManager.Instance.SetLastToken(recoveringToken);
+        MatchManager.Instance.ClearOffsideForLegalCollection(recoveringToken, "long_ball_recovery");
         MatchManager.Instance.ChangePossession();
         MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
         MatchManager.Instance.ResolveActionBeforeFinalThird(
@@ -947,6 +965,7 @@ public class LongBallManager : MonoBehaviour
                     , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 );
                 MatchManager.Instance.SetLastToken(defenderToken);
+                MatchManager.Instance.ClearOffsideForLegalCollection(defenderToken, "long_ball_interception");
                 // Move the ball to the defender's hex and change possession
                 yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.ChangePossession();
@@ -1133,7 +1152,7 @@ public class LongBallManager : MonoBehaviour
         if (isActivated) sb.Append("Long: ");
         if (isAwaitingTargetSelection) sb.Append($"Click on a Hex 6 or more Hexes away from the closest Attacker, ");
         if (isAwaitingTargetSelection && currentTargetHex != null) sb.Append($"or click the orange Hex again to confirm, ");
-        if (isWaitingForAccuracyRoll && lastToken != null) {sb.Append($"Press [R] to roll the accuracy check with {lastToken.name}, a roll of {(isDangerous ? 10 : 9) - lastToken.highPass}+ is needed, ");}
+        if (isWaitingForAccuracyRoll && lastToken != null) {sb.Append($"Press [R] to roll the accuracy check with {lastToken.name}, {GetLongBallAccuracyRollText(lastToken)} is needed, ");}
         if (isWaitingForDirectionRoll) {sb.Append($"Press [R] to roll for Inacuracy Direction, ");}
         if (isWaitingForDistanceRoll) {sb.Append($"Press [R] to roll for Inacuracy Distance, ");}
         if (isWaitingForDefLBMove)
@@ -1204,6 +1223,28 @@ public class LongBallManager : MonoBehaviour
         }
 
         return "natural 6";
+    }
+
+    private string GetLongBallAccuracyRollText(PlayerToken passer)
+    {
+        if (passer == null)
+        {
+            return "a valid roll";
+        }
+
+        int accuracyThreshold = isDangerous ? 10 : 9;
+        int neededRoll = accuracyThreshold - passer.highPass;
+        if (neededRoll <= 1)
+        {
+            return "a roll of 1+";
+        }
+
+        if (neededRoll <= 6)
+        {
+            return $"a roll of {neededRoll}+";
+        }
+
+        return "a Jackpot";
     }
 
     private static bool IsFreeKickExecutionActive()

@@ -63,6 +63,7 @@ public class HighPassManager : MonoBehaviour
     private int availableTargetPrecomputeVersion = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
     private PlayerToken pendingSetPieceTakerForCommit = null;
+    private string latestOffsideInstruction = string.Empty;
 
     private void OnEnable()
     {
@@ -537,6 +538,7 @@ public class HighPassManager : MonoBehaviour
         isAvailableTargetsReady = false;
         availableHighPassTargetHexes.Clear();
         hoveredHighPassTargetHex = null;
+        latestOffsideInstruction = string.Empty;
         pendingDifficultyOneTargetHighlightRefresh = false;
     }
 
@@ -704,6 +706,7 @@ public class HighPassManager : MonoBehaviour
             }
             return;  // Reject invalid targets
         }
+        string offsideWarning = GetHighPassOffsideWarning(clickedHex);
         // Difficulty-based handling
         if (difficulty == 3) // Hard Mode: Immediate action
         {
@@ -724,6 +727,9 @@ public class HighPassManager : MonoBehaviour
                 currentTargetHex = clickedHex;
                 selectedToken = null;
                 lockedAttacker = null;
+                latestOffsideInstruction = string.IsNullOrWhiteSpace(offsideWarning)
+                    ? string.Empty
+                    : $"{offsideWarning} Click the orange hex again to confirm target.";
                 hexGrid.ClearHighlightedHexes();
 
                 if (!isCornerKick)
@@ -921,9 +927,34 @@ public class HighPassManager : MonoBehaviour
 
     private void ConfirmHighPassTargetSelection(HexCell clickedHex, bool commitNow)
     {
+        if (!isCornerKick && !isGoalkeeperKick)
+        {
+            MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("high_pass_target_confirmed");
+        }
+
+        if (IsDifficultyOneOffsideTarget(clickedHex))
+        {
+            latestOffsideInstruction = $"{clickedHex.GetOccupyingToken().name} is in an offside position and cannot be selected as a High Pass target on difficulty 1.";
+            Debug.LogWarning(latestOffsideInstruction);
+            isWaitingForConfirmation = true;
+            currentTargetHex = null;
+            return;
+        }
+        if (MatchManager.Instance.difficulty_level == 1
+            && !clickedHex.isAttackOccupied
+            && GetAttackersWithinRangeOfHex(clickedHex, ATTACKER_MOVE_RANGE).Count == 0)
+        {
+            latestOffsideInstruction = "High Pass invalid: no onside attacker can reach the target on difficulty 1.";
+            Debug.LogWarning(latestOffsideInstruction);
+            isWaitingForConfirmation = true;
+            currentTargetHex = null;
+            return;
+        }
+
         currentTargetHex = clickedHex;
         intendedTargetHex = clickedHex;
         isWaitingForConfirmation = false;
+        latestOffsideInstruction = string.Empty;
         selectedToken = null;
         ResetAvailableTargetPrecompute();
         hexGrid.ClearHighlightedHexes();
@@ -958,6 +989,50 @@ public class HighPassManager : MonoBehaviour
     private bool ValidateHighPassTarget(HexCell targetHex, bool isGK = false)
     {
         return TryValidateHighPassTarget(targetHex, isGK, updateEligibleAttackers: true, logWarnings: true);
+    }
+
+    private bool IsDifficultyOneOffsideTarget(HexCell targetHex)
+    {
+        return IsDifficultyOneOffsideToken(targetHex != null ? targetHex.GetOccupyingToken() : null);
+    }
+
+    private bool IsDifficultyOneOffsideToken(PlayerToken token)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        return token != null
+            && matchManager != null
+            && matchManager.difficulty_level == 1
+            && !isCornerKick
+            && !isGoalkeeperKick
+            && matchManager.offsideManager != null
+            && matchManager.offsideManager.IsTokenOffside(token);
+    }
+
+    private string GetHighPassOffsideWarning(HexCell targetHex)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager == null || matchManager.difficulty_level != 2 || matchManager.offsideManager == null)
+        {
+            return string.Empty;
+        }
+
+        PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
+        if (matchManager.offsideManager.IsTokenOffside(targetToken))
+        {
+            return $"{targetToken.name} is in an offside position. Do not send the High Pass to or near them unless you want to risk offside.";
+        }
+
+        PlayerToken nearbyOffsideToken = matchManager.offsideManager.OffsideTokens
+            .FirstOrDefault(token => token != null
+                && token.GetCurrentHex() != null
+                && targetHex != null
+                && HexGridUtils.GetHexStepDistance(token.GetCurrentHex().coordinates, targetHex.coordinates) <= 2);
+        if (nearbyOffsideToken != null)
+        {
+            return $"{nearbyOffsideToken.name} is in an offside position and can challenge a High Pass landing there.";
+        }
+
+        return string.Empty;
     }
 
     private bool IsHighPassTargetAvailableForPreview(HexCell targetHex)
@@ -1059,6 +1134,18 @@ public class HighPassManager : MonoBehaviour
         if (targetHex.isAttackOccupied)
         {
             PlayerToken targetToken = targetHex.GetOccupyingToken();
+            if (IsDifficultyOneOffsideToken(targetToken))
+            {
+                if (logWarnings)
+                {
+                    latestOffsideInstruction = $"{targetToken.name} is in an offside position and cannot be selected as a High Pass target on difficulty 1.";
+                    Debug.LogWarning(latestOffsideInstruction);
+                }
+
+                ClearValidatedHighPassAttackers(updateEligibleAttackers);
+                return false;
+            }
+
             if (targetToken != null
                 && MatchManager.Instance != null
                 && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
@@ -1981,6 +2068,11 @@ public class HighPassManager : MonoBehaviour
             }
         }
         if (isActivated) sb.Append("HP: ");
+        if (!string.IsNullOrWhiteSpace(latestOffsideInstruction))
+        {
+            sb.Append($"{latestOffsideInstruction} ");
+        }
+
         if (isWaitingForConfirmation)
         {
             if (isGoalkeeperKick)

@@ -493,6 +493,7 @@ public class ShotManager : MonoBehaviour
                 isWaitingForSnapshotDecisionFromLoose = false;
                 isWaitingForShotCommitConfirmation = false;
                 Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
+                MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed_loose_ball");
                 StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
                 keyData.Consume(nameof(ShotManager));
                 return;
@@ -987,8 +988,13 @@ public class ShotManager : MonoBehaviour
         shotType = PenaltyShotType;
         isActivated = true;
         ResetExpectedGoalContext();
-        MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: PenaltyShotType);
-        if (PenaltyShootoutManager.ActiveShootout != null)
+        bool isPenaltyShootout = PenaltyShootoutManager.ActiveShootout != null;
+        if (!isPenaltyShootout)
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(shooter, MatchManager.ActionType.ShotAttempt, shotType: PenaltyShotType);
+        }
+
+        if (isPenaltyShootout)
         {
             if (!TrySelectRandomPenaltyShootoutTarget())
             {
@@ -2935,10 +2941,13 @@ public class ShotManager : MonoBehaviour
         // int totalSavingPower = 6;
         if (isJackpot) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
         else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {gkPenalty} = {totalSavingPower}");
-        MatchManager.Instance.gameData.gameLog.LogEvent(
-            gkToken
-            , MatchManager.ActionType.SaveAttempt
-        );
+        if (!IsPenaltyShootoutShot())
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                gkToken
+                , MatchManager.ActionType.SaveAttempt
+            );
+        }
 
         hexGrid.ClearHighlightedHexes();
         alreadyInterceptedDefs.Add(gkToken);
@@ -3076,11 +3085,6 @@ public class ShotManager : MonoBehaviour
         }
 
         HexCell spillTarget = CalculateDirectionalShotSpillTarget(saveHex, directionIndex, 2);
-        MatchManager.Instance.gameData.gameLog.LogEvent(
-            gkToken,
-            MatchManager.ActionType.SaveMade,
-            saveType: "loose",
-            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
         yield return StartCoroutine(MoveShootoutSpillBall(spillTarget, 2));
         PenaltyShootoutManager.ActiveShootout.OnPenaltyShotResolved(false);
     }
@@ -3092,12 +3096,6 @@ public class ShotManager : MonoBehaviour
         int directionIndex = UnityEngine.Random.Range(0, 6);
         bool spillDirection = IsGoalkeeperSpillDirection(gkToken, directionIndex);
         Debug.Log($"Penalty shootout save. Random direction {FormatShotSpillDirection(directionIndex)} from {saveHex?.coordinates}; {(spillDirection ? "spilling two hexes" : "breaking behind for a dead ball")}.");
-
-        MatchManager.Instance.gameData.gameLog.LogEvent(
-            gkToken,
-            MatchManager.ActionType.SaveMade,
-            saveType: spillDirection ? "loose" : "corner",
-            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
 
         if (spillDirection)
         {

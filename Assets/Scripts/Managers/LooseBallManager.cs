@@ -216,6 +216,17 @@ public class LooseBallManager : MonoBehaviour
             || (sourceType == LooseBallSourceType.GroundDeflection && !allowGKBoxMove);
     }
 
+    private static string ResolveOffsideLooseBallSource(LooseBallSourceType sourceType)
+    {
+        return sourceType switch
+        {
+            LooseBallSourceType.GroundDeflection => "shot_deflection",
+            LooseBallSourceType.GoalkeeperHandlingSpill => "goalkeeper_spill",
+            LooseBallSourceType.InaccuratePass => "inaccurate_pass_loose_ball",
+            _ => "loose_ball_collection",
+        };
+    }
+
     private bool IsTokenUnavailableForLooseBall(PlayerToken token)
     {
         return token == null
@@ -228,6 +239,7 @@ public class LooseBallManager : MonoBehaviour
 
     private void AssignLooseBallReceiver(PlayerToken token, LooseBallSourceType sourceType)
     {
+        MatchManager.Instance.ClearOffsideForLegalCollection(token, "loose_ball_collection");
         if (ShouldClearPreviousChainOnCollection(sourceType))
         {
             MatchManager.Instance.SetLastTokenFromLooseBall(token);
@@ -906,6 +918,13 @@ public class LooseBallManager : MonoBehaviour
             PlayerToken tokenOnHex = hex.GetOccupyingToken();
             if (tokenOnHex != null)
             {
+                if (tokenOnHex.isAttacker
+                    && MatchManager.Instance.TryHandleOffsideCollection(tokenOnHex, ResolveOffsideLooseBallSource(sourceType), hex))
+                {
+                    EndLooseBallPhase(completeDeferredShotResolution: false);
+                    yield break;
+                }
+
                 if (IsTokenUnavailableForLooseBall(tokenOnHex))
                 {
                     if (ShouldExtendPastJumpedToken(sourceType) && i == path.Count - 1)
@@ -1068,6 +1087,12 @@ public class LooseBallManager : MonoBehaviour
             // Token with Ball is an Attacker
             if (closestToken.isAttacker)
             {
+                if (MatchManager.Instance.TryHandleOffsideCollection(closestToken, ResolveOffsideLooseBallSource(sourceType), closestToken.GetCurrentHex()))
+                {
+                    EndLooseBallPhase(completeDeferredShotResolution: false);
+                    yield break;
+                }
+
                 if (IsHeaderLooseBall(sourceType) && MatchManager.Instance.hangingPassType == "aerial")
                 {
                     MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -1107,6 +1132,7 @@ public class LooseBallManager : MonoBehaviour
                         if (isSnapshotAvailable)
                         {
                             Debug.Log($"{closestToken.name} found themselves with the ball in during MP the opposition penalty Box. Press [S] to take a snapshot!");
+                            MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_available_loose_ball");
                             shotManager.isAvailable = true;
                             shotManager.isWaitingForSnapshotDecisionFromLoose = true;
                             // Shot Manager takes responsibility from here on

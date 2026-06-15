@@ -11,6 +11,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     private GameObject placeholder;
     private Vector3 mouseOffset;  // To store the offset between the mouse and the slot's position
     private DraftManager draftManager;
+    private bool returnedToPool;
 
     // Add this for valid roster panel name
     public string validRosterName;  // To check against HomeRoster or AwayRoster
@@ -39,6 +40,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
         // Assigned players may be rearranged only inside their own roster panel.
         validRosterName = originalParent.name;
+        returnedToPool = false;
         Debug.Log($"OnBeginDrag: Slot '{gameObject.name}' starting drag from '{validRosterName}'");
 
         // Create a placeholder in the original parent (either HomeRoster or AwayRoster)
@@ -92,6 +94,18 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
             canvasGroup.blocksRaycasts = true;
         }
 
+        if (returnedToPool)
+        {
+            Debug.Log($"OnEndDrag: Slot '{gameObject.name}' returned to pool and cleared.");
+            transform.SetParent(originalParent, false);
+            transform.SetSiblingIndex(originalSiblingIndex);
+            transform.position = originalPosition;
+            Destroy(placeholder);
+            returnedToPool = false;
+            RefreshDraftAverages();
+            return;
+        }
+
         // Reparent the slot to the original parent before checking if it's in the valid roster
         transform.SetParent(placeholder.transform.parent, false);
 
@@ -115,6 +129,21 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         // Destroy the placeholder
         Destroy(placeholder);
         // Trigger slot data updates after dropping to reflect the latest state
+        RefreshDraftAverages();
+    }
+
+    public void MarkReturnedToPool()
+    {
+        returnedToPool = true;
+    }
+
+    private void RefreshDraftAverages()
+    {
+        if (draftManager == null)
+        {
+            return;
+        }
+
         draftManager.UpdateTeamAverages(draftManager.homeTeamPanel.transform, draftManager.homeAveragePanel.transform);
         draftManager.UpdateTeamAverages(draftManager.awayTeamPanel.transform, draftManager.awayAveragePanel.transform);
     }
