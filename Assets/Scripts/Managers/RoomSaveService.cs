@@ -227,6 +227,11 @@ public static class RoomSaveService
             }
 
             JObject runtime = root["runtimeSnapshot"] as JObject;
+            if (runtime == null || runtime.Type == JTokenType.Null)
+            {
+                return null;
+            }
+
             JObject stats = runtime?["stats"] as JObject ?? root["stats"] as JObject;
             JObject homeTeamStats = stats?["homeTeamStats"] as JObject;
             JObject awayTeamStats = stats?["awayTeamStats"] as JObject;
@@ -239,7 +244,6 @@ public static class RoomSaveService
             DateTime lastSavedSortUtc = ParseUtcOrFallback(lastSavedUtc, lastWriteUtc);
             DateTime lastLogWrittenSortUtc = ParseUtcOrFallback(lastLogWrittenUtc, DateTime.MinValue);
             DateTime lastActivitySortUtc = MaxUtc(lastSavedSortUtc, lastLogWrittenSortUtc, lastWriteUtc);
-            bool hasRuntimeSnapshot = runtime != null && runtime.Type != JTokenType.Null;
             bool isMatchComplete = clock?.Value<bool?>("isMatchComplete") ?? false;
 
             int homeGoals = homeTeamStats?.Value<int?>("totalGoals") ?? 0;
@@ -252,7 +256,7 @@ public static class RoomSaveService
                 FilePath = filePath,
                 FileName = Path.GetFileName(filePath),
                 Teams = $"{ReadString(settings, "homeTeamName", "Home")} - {ReadString(settings, "awayTeamName", "Away")}",
-                Clock = hasRuntimeSnapshot ? FormatClock(clock, halfDuration) : "-",
+                Clock = FormatClock(clock, halfDuration),
                 Score = $"{homeGoals}-{awayGoals}",
                 HalfLength = halfDuration > 0 ? halfDuration.ToString() : "-",
                 Halves = numberOfHalfs > 0 ? numberOfHalfs.ToString() : "-",
@@ -262,8 +266,8 @@ public static class RoomSaveService
                 LastSavedUtc = string.IsNullOrWhiteSpace(lastSavedUtc) ? lastWriteUtc.ToString("o") : lastSavedUtc,
                 LastLogWrittenUtc = lastLogWrittenUtc,
                 LastActivityUtc = lastActivitySortUtc == DateTime.MinValue ? lastWriteUtc.ToString("o") : lastActivitySortUtc.ToString("o"),
-                Status = FormatSummaryStatus(hasRuntimeSnapshot, isMatchComplete),
-                HasRuntimeSnapshot = hasRuntimeSnapshot,
+                Status = FormatSummaryStatus(true, isMatchComplete),
+                HasRuntimeSnapshot = true,
                 LastSavedSortUtc = lastSavedSortUtc,
                 LastActivitySortUtc = lastActivitySortUtc,
                 LastWriteUtc = lastWriteUtc
