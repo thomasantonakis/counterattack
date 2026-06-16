@@ -46,6 +46,11 @@ public class KickoffManager : MonoBehaviour
         MatchManager.GameState currentState = MatchManager.Instance.currentState;
         if (currentState == MatchManager.GameState.KickOffSetup)
         {
+            if (isMovingSetupToken)
+            {
+                return;
+            }
+
             HandleInitialSetupClick(token, hex);
             return;
         }
@@ -72,11 +77,23 @@ public class KickoffManager : MonoBehaviour
 
     private void HandleInitialSetupClick(PlayerToken token, HexCell hex)
     {
-        if (token != null && token != selectedToken)
+        if (token != null)
         {
+            if (TrySwapSelectedWithTeammate(token, isPostGoalSetup: false))
+            {
+                return;
+            }
+
+            if (token == selectedToken)
+            {
+                return;
+            }
+
             SelectToken(token);
+            return;
         }
-        else if (hex != null)
+
+        if (hex != null)
         {
             StartCoroutine(TryMoveInitialSetupToken(hex));
         }
@@ -84,8 +101,18 @@ public class KickoffManager : MonoBehaviour
 
     private void HandlePostGoalSetupClick(PlayerToken token, HexCell hex)
     {
-        if (token != null && token != selectedToken)
+        if (token != null)
         {
+            if (TrySwapSelectedWithTeammate(token, isPostGoalSetup: true))
+            {
+                return;
+            }
+
+            if (token == selectedToken)
+            {
+                return;
+            }
+
             SelectToken(token);
             return;
         }
@@ -183,22 +210,219 @@ public class KickoffManager : MonoBehaviour
         }
         else
         {
-            HexCell currentHex = selectedToken.GetCurrentHex();
-            bool isSameHalf = (currentHex.coordinates.x * targetHex.coordinates.x) >= 0;
+            if (!IsValidInitialSetupDestination(selectedToken, targetHex))
+            {
+                yield break;
+            }
 
-            if (!isSameHalf)
-            {
-                Debug.LogWarning($"{selectedToken.name} cannot move outside their half!");
-                yield break;
-            }
-            if (!selectedToken.isAttacker && targetHex.isInCircle == 5)
-            {
-                Debug.LogWarning($"Defenders should not be placed on the KickOff Circle!");
-                yield break;
-            }
             yield return StartCoroutine(freeKickManager.MoveTokenToHex(selectedToken, targetHex));
             Debug.Log($"{selectedToken.name} moved to {targetHex.coordinates}");
             selectedToken = null; // Deselect after moving
+        }
+    }
+
+    private bool TrySwapSelectedWithTeammate(PlayerToken teammate, bool isPostGoalSetup)
+    {
+        if (selectedToken == null || teammate == null || teammate == selectedToken)
+        {
+            return false;
+        }
+
+        if (!IsTeammate(selectedToken, teammate))
+        {
+            return false;
+        }
+
+        HexCell selectedHex = selectedToken.GetCurrentHex();
+        HexCell teammateHex = teammate.GetCurrentHex();
+        if (selectedHex == null || teammateHex == null)
+        {
+            Debug.LogWarning("Both players must be on the pitch to swap kick-off setup positions.");
+            return true;
+        }
+
+        bool isValidSwap = isPostGoalSetup
+            ? IsValidPostGoalSetupDestination(selectedToken, teammateHex, teammate)
+                && IsValidPostGoalSetupDestination(teammate, selectedHex, selectedToken)
+            : IsValidInitialSetupDestination(selectedToken, teammateHex, teammate)
+                && IsValidInitialSetupDestination(teammate, selectedHex, selectedToken);
+
+        if (!isValidSwap)
+        {
+            return true;
+        }
+
+        StartCoroutine(AnimateAndSwapSelectedTokenWithTeammate(teammate, selectedHex, teammateHex));
+        return true;
+    }
+
+    private bool IsTeammate(PlayerToken first, PlayerToken second)
+    {
+        return first != null
+            && second != null
+            && first != second
+            && first.isHomeTeam == second.isHomeTeam;
+    }
+
+    private bool IsValidInitialSetupDestination(PlayerToken token, HexCell targetHex, PlayerToken allowedOccupant = null)
+    {
+        if (token == null || targetHex == null)
+        {
+            Debug.LogWarning("Please select a token and a valid destination hex.");
+            return false;
+        }
+
+        if (targetHex.isOutOfBounds || targetHex.isInGoal != 0)
+        {
+            Debug.LogWarning($"{targetHex.coordinates} is not a valid kick-off setup destination.");
+            return false;
+        }
+
+        PlayerToken occupyingToken = targetHex.GetOccupyingToken();
+        if (occupyingToken != null && occupyingToken != token && occupyingToken != allowedOccupant)
+        {
+            Debug.LogWarning($"{targetHex.coordinates} is occupied. Select an empty hex or a teammate to swap with.");
+            return false;
+        }
+
+        if (!IsTeamOwnHalfOrMidline(token, targetHex))
+        {
+            Debug.LogWarning($"{token.name} cannot move outside their half!");
+            return false;
+        }
+
+        if (!token.isAttacker && targetHex.isInCircle == 5)
+        {
+            Debug.LogWarning("Defenders should not be placed on the KickOff Circle!");
+            return false;
+        }
+
+        return true;
+    }
+
+    private IEnumerator AnimateAndSwapSelectedTokenWithTeammate(PlayerToken teammate, HexCell selectedHex, HexCell teammateHex)
+    {
+        PlayerToken firstToken = selectedToken;
+        PlayerToken secondToken = teammate;
+        selectedToken = null;
+        isMovingSetupToken = true;
+
+        Coroutine firstMove = StartCoroutine(AnimateTokenToHex(firstToken, teammateHex));
+        yield return StartCoroutine(AnimateTokenToHex(secondToken, selectedHex));
+        yield return firstMove;
+
+        CommitSetupSwap(firstToken, secondToken, selectedHex, teammateHex);
+        isMovingSetupToken = false;
+    }
+
+    private IEnumerator AnimateTokenToHex(PlayerToken token, HexCell targetHex)
+    {
+        if (token == null || targetHex == null)
+        {
+            yield break;
+        }
+
+        Vector3 startPosition = token.transform.position;
+        Vector3 targetPosition = targetHex.GetHexCenter();
+        targetPosition.y = Mathf.Max(targetPosition.y, startPosition.y);
+
+        const float travelDuration = 1.0f;
+        const float jumpHeight = 1.0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < travelDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / travelDuration);
+            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+            flatPosition.y += jumpHeight * Mathf.Sin(Mathf.PI * progress);
+            token.transform.position = flatPosition;
+            yield return null;
+        }
+
+        token.transform.position = targetPosition;
+    }
+
+    private void CommitSetupSwap(PlayerToken firstToken, PlayerToken secondToken, HexCell selectedHex, HexCell teammateHex)
+    {
+        if (firstToken == null || secondToken == null || selectedHex == null || teammateHex == null)
+        {
+            return;
+        }
+
+        bool firstWasAttacker = firstToken.isAttacker;
+        bool secondWasAttacker = secondToken.isAttacker;
+
+        ClearHexOccupancy(selectedHex);
+        ClearHexOccupancy(teammateHex);
+        ApplyOccupancyFlag(selectedHex, secondWasAttacker);
+        ApplyOccupancyFlag(teammateHex, firstWasAttacker);
+        selectedHex.occupyingToken = secondToken;
+        teammateHex.occupyingToken = firstToken;
+
+        firstToken.ApplySetupSwapHex(teammateHex, "kickoff_setup_swap");
+        secondToken.ApplySetupSwapHex(selectedHex, "kickoff_setup_swap");
+        SnapTokenToHex(firstToken, teammateHex);
+        SnapTokenToHex(secondToken, selectedHex);
+        RefreshHexHighlight(selectedHex);
+        RefreshHexHighlight(teammateHex);
+        ball?.AdjustBallHeightBasedOnOccupancy();
+
+        Debug.Log($"Swapped kick-off setup positions: {firstToken.name} <-> {secondToken.name}.");
+    }
+
+    private void ClearHexOccupancy(HexCell hex)
+    {
+        if (hex == null)
+        {
+            return;
+        }
+
+        hex.occupyingToken = null;
+        hex.isAttackOccupied = false;
+        hex.isDefenseOccupied = false;
+    }
+
+    private void ApplyOccupancyFlag(HexCell hex, bool isAttacker)
+    {
+        if (hex == null)
+        {
+            return;
+        }
+
+        hex.isAttackOccupied = isAttacker;
+        hex.isDefenseOccupied = !isAttacker;
+    }
+
+    private void SnapTokenToHex(PlayerToken token, HexCell hex)
+    {
+        if (token == null || hex == null)
+        {
+            return;
+        }
+
+        Vector3 hexCenter = hex.GetHexCenter();
+        token.transform.position = new Vector3(hexCenter.x, token.transform.position.y, hexCenter.z);
+    }
+
+    private void RefreshHexHighlight(HexCell hex)
+    {
+        if (hex == null)
+        {
+            return;
+        }
+
+        if (hex.isAttackOccupied)
+        {
+            hex.HighlightHex("isAttackOccupied");
+        }
+        else if (hex.isDefenseOccupied)
+        {
+            hex.HighlightHex("isDefenseOccupied");
+        }
+        else
+        {
+            hex.ResetHighlight();
         }
     }
 
@@ -229,7 +453,7 @@ public class KickoffManager : MonoBehaviour
         selectedToken = null;
     }
 
-    private bool IsValidPostGoalSetupDestination(PlayerToken token, HexCell targetHex)
+    private bool IsValidPostGoalSetupDestination(PlayerToken token, HexCell targetHex, PlayerToken allowedOccupant = null)
     {
         if (token == null || targetHex == null)
         {
@@ -256,10 +480,15 @@ public class KickoffManager : MonoBehaviour
         }
 
         PlayerToken occupyingToken = targetHex.GetOccupyingToken();
-        bool occupiedByAnotherToken = occupyingToken != null && occupyingToken != token;
-        if (occupiedByAnotherToken || (targetHex.isAttackOccupied || targetHex.isDefenseOccupied) && occupyingToken != token)
+        bool occupiedByAnotherToken = occupyingToken != null
+            && occupyingToken != token
+            && occupyingToken != allowedOccupant;
+        bool hasUnknownOccupancy = (targetHex.isAttackOccupied || targetHex.isDefenseOccupied)
+            && occupyingToken != token
+            && occupyingToken != allowedOccupant;
+        if (occupiedByAnotherToken || hasUnknownOccupancy)
         {
-            Debug.LogWarning($"{targetHex.coordinates} is occupied. Select an empty hex.");
+            Debug.LogWarning($"{targetHex.coordinates} is occupied. Select an empty hex or a teammate to swap with.");
             return false;
         }
 
@@ -428,10 +657,12 @@ public class KickoffManager : MonoBehaviour
         return flowPhase switch
         {
             KickoffFlowPhase.PostGoalSetup => selectedToken != null
-                ? $"Post-goal setup: click an empty hex in {selectedToken.name}'s own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press [Enter] twice when both teams are ready ({setupConfirmCount}/2)."
+                ? $"Post-goal setup: click an empty hex in {selectedToken.name}'s own half, or click a teammate to swap positions. The center spot stays empty until taker selection. Defenders cannot stand in the center circle. Press [Enter] twice when both teams are ready ({setupConfirmCount}/2)."
                 : $"Post-goal setup: click any token to reposition it in its own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press [Enter] twice when both teams are ready ({setupConfirmCount}/2).",
             KickoffFlowPhase.TakerSelection => "Kick-off taker selection: click an attacking token to move it to (0,0) and start the committed kick-off ground pass.",
-            KickoffFlowPhase.InitialSetup => $"Pre-kickoff setup: click tokens to reposition them. Press [Space] twice to start ({setupConfirmCount}/2).",
+            KickoffFlowPhase.InitialSetup => selectedToken != null
+                ? $"Pre-kickoff setup: click an empty hex in {selectedToken.name}'s own half, or click a teammate to swap positions. Defenders cannot stand in the center circle. Press [Space] twice to start ({setupConfirmCount}/2)."
+                : $"Pre-kickoff setup: click tokens to reposition them. Press [Space] twice to start ({setupConfirmCount}/2).",
             _ => string.Empty,
         };
     }

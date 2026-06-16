@@ -868,7 +868,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_007_GroundBall_0006_Swith_between_options_before_Committing), Scenario_007_GroundBall_0006_Swith_between_options_before_Committing),
                 new ScenarioDefinition(nameof(Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment), Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment),
                 new ScenarioDefinition(nameof(Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click), Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click),
-                new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
+                new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Target_Defender_Auto_Recovery), Scenario_007c_FirstTimePass_Target_Defender_Auto_Recovery),
                 new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
                 new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
                 new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
@@ -961,7 +961,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_007_GroundBall_0006_Swith_between_options_before_Committing), Scenario_007_GroundBall_0006_Swith_between_options_before_Committing),
             new ScenarioDefinition(nameof(Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment), Scenario_007a_FirstTimePass_Difficulty1_Hover_Preview_And_Commitment),
             new ScenarioDefinition(nameof(Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click), Scenario_007b_FirstTimePass_Difficulty3_Commits_On_F_And_First_Click),
-            new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5), Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5),
+            new ScenarioDefinition(nameof(Scenario_007c_FirstTimePass_Target_Defender_Auto_Recovery), Scenario_007c_FirstTimePass_Target_Defender_Auto_Recovery),
             new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
             new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
             new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
@@ -7179,9 +7179,9 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("FTP Difficulty 3 Commits On F And First Click");
     }
 
-    private IEnumerator Scenario_007c_FirstTimePass_Defender_Path_Block_Intercepts_On_5()
+    private IEnumerator Scenario_007c_FirstTimePass_Target_Defender_Auto_Recovery()
     {
-        Log("▶️ Starting test scenario: 'FTP Defender Path Block Intercepts On 5+'");
+        Log("▶️ Starting test scenario: 'FTP Target Defender Auto Recovery'");
         yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(2));
 
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.2f));
@@ -7189,7 +7189,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         AvailabilityCheckResult ftpInitialization = AssertCorrectWaitinginFTPInitialization();
         AssertTrue(
             ftpInitialization.passed,
-            "FTP subsystem waiting status at Initialization before the blocker interception test",
+            "FTP subsystem waiting status at Initialization before the target defender recovery test",
             true,
             ftpInitialization.ToString()
         );
@@ -7198,25 +7198,25 @@ public class GameTestScenarioRunner : MonoBehaviour
         PlayerToken defenderToken = RequirePlayerToken("Delgado");
         HexCell ftpTargetHex = RequireHex(
             hexgrid.GetHexCellAt(new Vector3Int(0, 0, -9)),
-            "FTP blocker interception test should find target hex (0, -9).");
-        HexCell attackerSourceHex = RequireHex(attackerToken.GetCurrentHex(), "Cafferata should be on the pitch for the FTP blocker interception test.");
+            "FTP target defender recovery test should find target hex (0, -9).");
+        HexCell attackerSourceHex = RequireHex(attackerToken.GetCurrentHex(), "Cafferata should be on the pitch for the FTP target defender recovery test.");
         HexCell attackerDestinationHex = RequireHex(
             hexgrid.GetHexCellAt(new Vector3Int(0, 0, 1)),
-            "FTP blocker interception test should find Cafferata's destination hex (0, 1).");
-        HexCell defenderSourceHex = RequireHex(defenderToken.GetCurrentHex(), "Delgado should be on the pitch for the FTP blocker interception test.");
+            "FTP target defender recovery test should find Cafferata's destination hex (0, 1).");
+        HexCell defenderSourceHex = RequireHex(defenderToken.GetCurrentHex(), "Delgado should be on the pitch for the FTP target defender recovery test.");
         HexCell defenderDestinationHex = RequireHex(
             hexgrid.GetHexCellAt(new Vector3Int(0, 0, -9)),
-            "FTP blocker interception test should find Delgado's destination hex (0, -9).");
+            "FTP target defender recovery test should find Delgado's destination hex (0, -9).");
 
         AssertTrue(
             attackerSourceHex.coordinates == new Vector3Int(0, 0, 0),
-            "Cafferata should start from (0, 0) in the FTP blocker interception test.",
+            "Cafferata should start from (0, 0) in the FTP target defender recovery test.",
             new Vector3Int(0, 0, 0),
             attackerSourceHex.coordinates
         );
         AssertTrue(
             defenderSourceHex.coordinates == new Vector3Int(1, 0, -10),
-            "Delgado should start from (1, -10) in the FTP blocker interception test.",
+            "Delgado should start from (1, -10) in the FTP target defender recovery test.",
             new Vector3Int(1, 0, -10),
             defenderSourceHex.coordinates
         );
@@ -7228,13 +7228,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         AvailabilityCheckResult ftpAttackerPhase = AssertCorrectWaitinginFTPAttackerMovementPhase();
         AssertTrue(
             ftpAttackerPhase.passed,
-            "FTP should enter attacker movement after confirming the target for the blocker interception test",
+            "FTP should enter attacker movement after confirming the target for the target defender recovery test",
             true,
             ftpAttackerPhase.ToString()
         );
 
         PlayerToken ftpPasser = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        AssertTrue(ftpPasser != null, "FTP blocker interception test should have a tracked passer.");
+        AssertTrue(ftpPasser != null, "FTP target defender recovery test should have a tracked passer.");
         MatchManager.PlayerStats defenderStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(defenderToken.playerName);
         MatchManager.PlayerStats passerStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(ftpPasser.playerName);
         int interceptionsAttemptedBefore = defenderStatsBefore.interceptionsAttempted;
@@ -7246,13 +7246,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackerSourceHex), 0.2f));
         Log($"Clicking {attackerSourceHex.coordinates} to select {attackerToken.playerName}");
         yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackerDestinationHex), 0.2f));
-        Log($"Clicking {attackerDestinationHex.coordinates} to move {attackerToken.playerName} before the blocker interception");
+        Log($"Clicking {attackerDestinationHex.coordinates} to move {attackerToken.playerName} before the target defender recovery");
         yield return StartCoroutine(WaitForFtpDefenderMovementPhase());
 
         AvailabilityCheckResult ftpDefenderPhase = AssertCorrectWaitinginFTPDefenderMovementPhase();
         AssertTrue(
             ftpDefenderPhase.passed,
-            "FTP should enter defender movement before the blocker interception test",
+            "FTP should enter defender movement before the target defender recovery test",
             true,
             ftpDefenderPhase.ToString()
         );
@@ -7267,72 +7267,69 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(defenderDestinationHex), 0.2f));
-        Log($"Clicking {defenderDestinationHex.coordinates} to move {defenderToken.playerName} onto the FTP path");
-        yield return new WaitForSeconds(1f);
+        Log($"Clicking {defenderDestinationHex.coordinates} to move {defenderToken.playerName} onto the FTP target");
+        yield return new WaitForSeconds(3f);
 
         AssertTrue(
-            firstTimePassManager.isWaitingForDiceRoll,
-            "FTP should enter the interception roll phase after a defender moves onto the path",
-            true,
+            !firstTimePassManager.isWaitingForDiceRoll,
+            "FTP should not offer an interception roll to a defender standing on the final target",
+            false,
             firstTimePassManager.isWaitingForDiceRoll
         );
-        AssertTrue(
-            GetFirstTimePassInterceptionCandidateCount() == 1,
-            "FTP blocker interception test should produce exactly one defender entry in the interception list",
-            1,
-            GetFirstTimePassInterceptionCandidateCount()
-        );
-        AssertTrue(
-            firstTimePassManager.GetInstructions().Contains("5+"),
-            "A low-tackling defender blocking the FTP path should get a 5+ interception instruction",
-            true,
-            firstTimePassManager.GetInstructions()
-        );
-
-        PerformRiggedFirstTimePassInterceptionRoll(5);
-        yield return new WaitForSeconds(3f);
 
         AvailabilityCheckResult anyOtherAvailability = AssertCorrectAvailabilityAnyOtherScenario();
         AssertTrue(
             anyOtherAvailability.passed,
-            "FTP blocker interception should hand play to AnyOtherScenario",
+            "FTP target defender recovery should hand play to AnyOtherScenario",
             true,
             anyOtherAvailability.ToString()
+        );
+        AssertTrue(
+            firstTimePassManager.ball.GetCurrentHex() == defenderDestinationHex,
+            "The FTP ball should move to the confirmed target occupied by the defender",
+            defenderDestinationHex,
+            firstTimePassManager.ball.GetCurrentHex()
+        );
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == defenderToken,
+            "The target defender should be the last token after automatic FTP target recovery",
+            defenderToken,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
         );
 
         MatchManager.PlayerStats defenderStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(defenderToken.playerName);
         MatchManager.PlayerStats passerStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(ftpPasser.playerName);
         AssertTrue(
             defenderStatsAfter.interceptionsAttempted == interceptionsAttemptedBefore + 1,
-            "The blocking defender should log exactly one interception attempt",
+            "The target defender should log exactly one automatic interception attempt",
             interceptionsAttemptedBefore + 1,
             defenderStatsAfter.interceptionsAttempted
         );
         AssertTrue(
             defenderStatsAfter.interceptionsMade == interceptionsMadeBefore + 1,
-            "The blocking defender should log exactly one successful interception",
+            "The target defender should log exactly one automatic successful interception",
             interceptionsMadeBefore + 1,
             defenderStatsAfter.interceptionsMade
         );
         AssertTrue(
             defenderStatsAfter.possessionWon == possessionWonBefore + 1,
-            "The blocking defender should log one possession won from the FTP interception",
+            "The target defender should log one possession won from the FTP target recovery",
             possessionWonBefore + 1,
             defenderStatsAfter.possessionWon
         );
         AssertTrue(
             passerStatsAfter.possessionLost == passerPossessionLostBefore + 1,
-            "The FTP passer should log one possession lost from the successful blocker interception",
+            "The FTP passer should log one possession lost from the automatic target recovery",
             passerPossessionLostBefore + 1,
             passerStatsAfter.possessionLost
         );
         AssertApproximately(
             defenderStatsAfter.xRecoveries,
-            xRecoveryBefore + CalculateExpectedRecoveryFromTackling(defenderToken.tackling, 5),
+            xRecoveryBefore + 1f,
             0.0001f,
-            "The blocking defender should log xRecovery using the FTP 5+ interception rule");
+            "The target defender should log xRecovery of exactly 1 for automatic FTP target recovery");
 
-        LogFooterofTest("FTP Defender Path Block Intercepts On 5+");
+        LogFooterofTest("FTP Target Defender Auto Recovery");
     }
 
     private IEnumerator Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6()
