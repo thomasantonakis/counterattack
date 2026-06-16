@@ -124,6 +124,18 @@ public class PlayerToken : MonoBehaviour
         MatchManager.Instance?.RecordTokenMove(this, previousHex, newHex, "set_current_hex");
     }
 
+    public void ApplySetupSwapHex(HexCell newHex, string movementType)
+    {
+        HexCell previousHex = currentHex;
+        currentHex = newHex;
+        if (currentHex != null)
+        {
+            UpdateTeamStatusBasedOnHex();
+        }
+        UpdateDribblerStatus();
+        MatchManager.Instance?.RecordTokenMove(this, previousHex, newHex, movementType);
+    }
+
     public void MarkAsStarter()
     {
         isPlaying = true;

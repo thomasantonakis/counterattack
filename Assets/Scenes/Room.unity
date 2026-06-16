@@ -3560,10 +3560,13 @@ MonoBehaviour:
     m_Options:
     - m_Text: Novice
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Intermediate
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Experienced
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -24823,7 +24826,7 @@ MonoBehaviour:
   defGK: {fileID: 0}
   isWaitingForDefGKChallengeDecision: 0
   isCornerKick: 0
-  minPassDistance: 6
+  minPassDistance: 3
 --- !u!4 &1859472973
 Transform:
   m_ObjectHideFlags: 0

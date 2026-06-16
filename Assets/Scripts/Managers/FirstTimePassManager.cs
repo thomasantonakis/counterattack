@@ -508,6 +508,7 @@ public class FirstTimePassManager : MonoBehaviour
         {
             Debug.LogWarning("Invalid token or not an attacker clicked. Please click on an attacker or press [X] to skip.");
             hexGrid.ClearHighlightedHexes();
+            RestoreConfirmedFtpMovementHighlights();
             selectedToken = null;
             hoveredMovementHex = null;
             isWaitingForAttackerMove = false;
@@ -524,6 +525,7 @@ public class FirstTimePassManager : MonoBehaviour
             {
                 movementPhaseManager.HighlightValidMovementHexes(selectedToken, 1);
             }
+            RestoreConfirmedFtpMovementHighlights();
             isWaitingForAttackerMove = true;
         }
         else
@@ -552,6 +554,7 @@ public class FirstTimePassManager : MonoBehaviour
         {
             Debug.LogWarning("Invalid token or not a defender clicked. Please click on a defender or press [X] to skip.");
             hexGrid.ClearHighlightedHexes();
+            RestoreConfirmedFtpMovementHighlights();
             selectedToken = null;
             hoveredMovementHex = null;
             isWaitingForDefenderMove = false;
@@ -568,6 +571,7 @@ public class FirstTimePassManager : MonoBehaviour
             {
                 HighlightFtpDefenderMovementHexes();
             }
+            RestoreConfirmedFtpMovementHighlights();
             isWaitingForDefenderMove = true;
         }
         else
@@ -599,6 +603,7 @@ public class FirstTimePassManager : MonoBehaviour
     private void UpdateMediumModeMovementHover(HexCell hoveredHex)
     {
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
 
         if (hoveredHex == null || !IsValidFtpMovementDestination(hoveredHex))
         {
@@ -615,6 +620,7 @@ public class FirstTimePassManager : MonoBehaviour
     private void HighlightFtpDefenderMovementHexes()
     {
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
 
         foreach (HexCell hex in GetValidFtpMovementDestinations(selectedToken))
         {
@@ -687,6 +693,100 @@ public class FirstTimePassManager : MonoBehaviour
         }
     }
 
+    private void RestoreConfirmedFtpMovementHighlights(bool includeMediumPath = false, bool mediumPathIsDangerous = false)
+    {
+        if (currentTargetHex == null || MatchManager.Instance == null)
+        {
+            return;
+        }
+
+        int difficulty = MatchManager.Instance.difficulty_level;
+        if (difficulty == 1)
+        {
+            HighlightCurrentFtpPath(CalculateCurrentFtpPathDanger());
+            return;
+        }
+
+        if (difficulty >= 2)
+        {
+            if (includeMediumPath)
+            {
+                HighlightCurrentFtpPath(mediumPathIsDangerous);
+            }
+            else
+            {
+                HighlightCommittedTarget();
+            }
+        }
+    }
+
+    private void HighlightCurrentFtpPath(bool isDangerous)
+    {
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        if (ballHex == null || currentTargetHex == null)
+        {
+            HighlightCommittedTarget();
+            return;
+        }
+
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        HighlightHoverPreviewPath(pathHexes, currentTargetHex, isDangerous);
+    }
+
+    private bool CalculateCurrentFtpPathDanger()
+    {
+        if (currentTargetHex == null)
+        {
+            return false;
+        }
+
+        return GroundPassCommon.CountDangerousInteractions(BuildPostMovementPathInteractions()) > 0;
+    }
+
+    private void HighlightFtpBallMovementPath(HexCell targetHex, bool hadInterceptionAttempt)
+    {
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        if (ballHex == null || targetHex == null)
+        {
+            return;
+        }
+
+        hexGrid.ClearHighlightedHexes();
+        bool showIntendedPath = MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level >= 2
+            && currentTargetHex != null;
+        HexCell highlightedPathTarget = showIntendedPath ? currentTargetHex : targetHex;
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, highlightedPathTarget, ball.ballRadius);
+        foreach (HexCell hex in pathHexes)
+        {
+            if (hex == null)
+            {
+                continue;
+            }
+
+            if (hex == highlightedPathTarget)
+            {
+                hex.HighlightHex(hex == currentTargetHex ? "passTargetCommitted" : "passTarget");
+            }
+            else
+            {
+                hex.HighlightHex(hadInterceptionAttempt ? "dangerousPass" : "ballPath");
+            }
+
+            if (!hexGrid.highlightedHexes.Contains(hex))
+            {
+                hexGrid.highlightedHexes.Add(hex);
+            }
+        }
+
+        if (MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level >= 2
+            && currentTargetHex != null)
+        {
+            HighlightCommittedTarget();
+        }
+    }
+
     private void HighlightHoverPreviewPath(List<HexCell> pathHexes, HexCell hoveredHex, bool isDangerous)
     {
         if (pathHexes == null)
@@ -754,6 +854,7 @@ public class FirstTimePassManager : MonoBehaviour
     private void StartAttackerMovementPhase()
     {
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
         hoveredMovementHex = null;
         isWaitingForAttackerSelection = true;
         isWaitingForAttackerMove = false;
@@ -767,6 +868,7 @@ public class FirstTimePassManager : MonoBehaviour
     public void StartDefenderMovementPhase()
     {
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
         hoveredMovementHex = null;
         isWaitingForAttackerSelection = false;
         isWaitingForAttackerMove = false;
@@ -790,6 +892,7 @@ public class FirstTimePassManager : MonoBehaviour
         Debug.Log("Attacker FTP movement skipped.");
         latestValidationInstruction = string.Empty;
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
         hoveredMovementHex = null;
         selectedToken = null;
         isWaitingForAttackerSelection = false;
@@ -801,6 +904,7 @@ public class FirstTimePassManager : MonoBehaviour
     {
         Debug.Log("Defender FTP movement skipped.");
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
         hoveredMovementHex = null;
         selectedToken = null;
         isWaitingForDefenderSelection = false;
@@ -817,6 +921,7 @@ public class FirstTimePassManager : MonoBehaviour
         if (pathInteractions.Count > 0)
         {
             Debug.Log($"Ball path interactions after FTP movement phases: {pathInteractions.Count}.");
+            RestoreConfirmedFtpMovementHighlights(includeMediumPath: true, mediumPathIsDangerous: true);
             StartFTPInterceptionDiceRollSequence();
         }
         else
@@ -845,7 +950,9 @@ public class FirstTimePassManager : MonoBehaviour
             ball,
             currentTargetHex,
             blockingDefenderHexes: blockingDefenderHexes
-        );
+        )
+        .Where(candidate => candidate != null && !IsCurrentTargetDefender(candidate.DefenderToken, candidate.DefenderHex))
+        .ToList();
 
         if (candidates.Count > 0)
         {
@@ -890,7 +997,19 @@ public class FirstTimePassManager : MonoBehaviour
             pathHexes.Where(hex => hex != null && hex.isDefenseOccupied)
         );
 
-        return BuildOrderedPathInteractions(currentTargetHex, minPathIndex, includeGoalkeeperBoxMove, blockingDefenderHexes);
+        return BuildOrderedPathInteractions(currentTargetHex, minPathIndex, includeGoalkeeperBoxMove, blockingDefenderHexes)
+            .Where(interaction => interaction != null && !IsCurrentTargetDefender(interaction.DefenderToken, interaction.DefenderHex))
+            .ToList();
+    }
+
+    private bool IsCurrentTargetDefender(PlayerToken token, HexCell defenderHex)
+    {
+        if (currentTargetHex == null || token == null || defenderHex == null || defenderHex != currentTargetHex)
+        {
+            return false;
+        }
+
+        return currentTargetHex.GetOccupyingToken() == token && !token.isAttacker;
     }
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
@@ -903,6 +1022,7 @@ public class FirstTimePassManager : MonoBehaviour
         }
 
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
         latestValidationInstruction = string.Empty;
         hoveredMovementHex = null;
         isWaitingForAttackerMove = false;
@@ -923,6 +1043,7 @@ public class FirstTimePassManager : MonoBehaviour
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
         hexGrid.ClearHighlightedHexes();
+        RestoreConfirmedFtpMovementHighlights();
         hoveredMovementHex = null;
         isWaitingForDefenderMove = false;
         isWaitingForDefenderSelection = false;
@@ -947,6 +1068,7 @@ public class FirstTimePassManager : MonoBehaviour
             yield break;
         }
 
+        HighlightFtpBallMovementPath(hex, attemptedOutfieldInterceptors.Count > 0 || currentFtpGkWallAttempted);
         yield return StartCoroutine(HandleGroundBallMovement(hex, allowGKBoxMove: false));
         PlayerToken receiver = hex.GetOccupyingToken();
         if (receiver != null && receiver.isAttacker)
@@ -963,6 +1085,11 @@ public class FirstTimePassManager : MonoBehaviour
             MatchManager.Instance.SetLastToken(receiver);
             MatchManager.Instance.ClearOffsideForLegalCollection(receiver, "first_time_pass_completed");
         }
+        else if (receiver != null && !receiver.isAttacker)
+        {
+            ResolveFtpTargetDefenderRecovery(receiver, hex);
+            yield break;
+        }
         else
         {
             MatchManager.Instance.SetHangingPass("ground", MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
@@ -976,6 +1103,37 @@ public class FirstTimePassManager : MonoBehaviour
                 finalThirdManager.TriggerFinalThirdPhase();
                 MatchManager.Instance.BroadcastEndofFirstTimePass();
             });
+        CleanUpFTP();
+    }
+
+    private void ResolveFtpTargetDefenderRecovery(PlayerToken defenderToken, HexCell defenderHex)
+    {
+        if (defenderToken == null || defenderHex == null)
+        {
+            return;
+        }
+
+        PlayerToken passer = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        Debug.Log($"{defenderToken.name} recovers the First-Time Pass on the intended target at {defenderHex.coordinates} without an interception roll.");
+        MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+            defenderToken,
+            1f,
+            passer,
+            "ftp_target");
+        MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            defenderToken,
+            MatchManager.ActionType.InterceptionSuccess,
+            recoveryType: "ftp",
+            connectedToken: passer);
+        MatchManager.Instance.SetLastToken(defenderToken);
+        MatchManager.Instance.ClearOffsideForLegalCollection(defenderToken, "first_time_pass_target_defender_recovery");
+        MatchManager.Instance.ChangePossession();
+        MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
+        MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
+        MatchManager.Instance.ResolveActionBeforeFinalThird(
+            MatchManager.MatchActionKind.FirstTimePass,
+            () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(defenderToken, defenderHex));
         CleanUpFTP();
     }
 
@@ -1206,7 +1364,6 @@ public class FirstTimePassManager : MonoBehaviour
             MatchManager.Instance.ClearOffsideForLegalCollection(defenderToken, "first_time_pass_interception");
             HexCell interceptionHex = currentDefenderHex;
             ResetFTPInterceptionDiceRolls();
-            CleanUpFTP();
             StartCoroutine(HandleBallInterception(interceptionHex));
             return;
         }
@@ -1238,6 +1395,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
+        HighlightFtpBallMovementPath(defenderHex, hadInterceptionAttempt: true);
         yield return StartCoroutine(HandleGroundBallMovement(defenderHex, allowGKBoxMove: false));
         PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
         MatchManager.Instance.ChangePossession();
@@ -1246,6 +1404,7 @@ public class FirstTimePassManager : MonoBehaviour
         MatchManager.Instance.ResolveActionBeforeFinalThird(
             MatchManager.MatchActionKind.FirstTimePass,
             () => MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(recoveringToken, defenderHex));
+        CleanUpFTP();
     }
 
     private void ResetFTPInterceptionDiceRolls()
