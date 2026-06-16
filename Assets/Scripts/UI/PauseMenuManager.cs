@@ -9,6 +9,8 @@ using System.Linq;
 
 public class PauseMenuManager : MonoBehaviour
 {
+    private static readonly List<string> PlayerAssistanceLabels = new() { "Novice", "Intermediate", "Experienced" };
+
     private static readonly Color DangerColor = new(0.85f, 0.24f, 0.18f, 1f);
     private static readonly Color MutedTextColor = new(0.7f, 0.74f, 0.82f, 1f);
 
@@ -710,7 +712,7 @@ public class PauseMenuManager : MonoBehaviour
         {
             RefreshEditKitPresetLists(settings);
             PopulateEditDropdown(editTiebreakerDropdown, GetTiebreakerOptions(settings), settings.tiebreaker);
-            PopulateEditDropdown(editPlayerAssistanceDropdown, new List<string> { "1", "2", "3" }, settings.playerAssistance.ToString());
+            PopulateEditDropdown(editPlayerAssistanceDropdown, PlayerAssistanceLabels, GetPlayerAssistanceLabel(settings.playerAssistance));
             PopulateEditDropdown(editWeatherDropdown, new List<string> { "Clear", "Rain", "Snow" }, settings.weatherConditions);
             string normalizedBallColor = GetValidBallColorForWeather(settings.weatherConditions, settings.ballColor);
             PopulateEditDropdown(editBallColorDropdown, GetBallColorOptions(settings.weatherConditions), normalizedBallColor);
@@ -821,6 +823,25 @@ public class PauseMenuManager : MonoBehaviour
         return options[selectedIndex >= 0 ? selectedIndex : 0];
     }
 
+    private static string GetPlayerAssistanceLabel(int playerAssistance)
+    {
+        int index = Mathf.Clamp(playerAssistance, 1, 3) - 1;
+        return PlayerAssistanceLabels[index];
+    }
+
+    private static int GetPlayerAssistanceValue(string label, int fallbackValue)
+    {
+        int labelIndex = PlayerAssistanceLabels.FindIndex(option => string.Equals(option, label, StringComparison.OrdinalIgnoreCase));
+        if (labelIndex >= 0)
+        {
+            return labelIndex + 1;
+        }
+
+        return int.TryParse(label, out int numericValue)
+            ? Mathf.Clamp(numericValue, 1, 3)
+            : Mathf.Clamp(fallbackValue, 1, 3);
+    }
+
     private static void PopulateEditDropdown(TMP_Dropdown dropdown, List<string> options, string selectedValue)
     {
         if (dropdown == null)
@@ -925,10 +946,7 @@ public class PauseMenuManager : MonoBehaviour
             settings.tiebreaker = GetDropdownText(editTiebreakerDropdown);
         }
 
-        if (int.TryParse(GetDropdownText(editPlayerAssistanceDropdown), out int playerAssistance))
-        {
-            settings.playerAssistance = Mathf.Clamp(playerAssistance, 1, 3);
-        }
+        settings.playerAssistance = GetPlayerAssistanceValue(GetDropdownText(editPlayerAssistanceDropdown), settings.playerAssistance);
 
         string appliedWeather = GetDropdownText(editWeatherDropdown);
         settings.weatherConditions = appliedWeather;

@@ -26,6 +26,7 @@ public class CreateNewGameManager : MonoBehaviour
     private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
     private const float KitDropdownScrollSensitivity = 55f;
+    private static readonly string[] PlayerAssistanceLabels = { "Novice", "Intermediate", "Experienced" };
 
     public TMP_Dropdown gameModeDropdown;
     public Slider halfDurationSlider;
@@ -33,6 +34,7 @@ public class CreateNewGameManager : MonoBehaviour
     public TMP_Dropdown numberOfHalvesDropdown;
     public TMP_Dropdown tiebreakerDropdown;
     public Slider playerAssistanceSlider;
+    public TMP_Dropdown playerAssistanceDropdown;
     public TMP_Text playerAssistanceText;  // Text to show slider value
     public TMP_Dropdown matchTypeDropdown;
     public TMP_Dropdown squadSizeDropdown;  // The dropdown for squad size
@@ -106,11 +108,7 @@ public class CreateNewGameManager : MonoBehaviour
         halfDurationSlider.maxValue = 60;  // Maximum half duration
         halfDurationSlider.wholeNumbers = true;  // Restrict the slider to integer values
         halfDurationSlider.value = 45;  // Default to 45 minutes
-        // Player Assistance Set minimum and maximum values of the slider
-        playerAssistanceSlider.minValue = 1;  // Easy Mode
-        playerAssistanceSlider.maxValue = 3;  // Hard Mode
-        playerAssistanceSlider.wholeNumbers = true;
-        playerAssistanceSlider.value = 2;  // Default to Medium
+        ConfigurePlayerAssistanceDropdown();
         includeTabletopiaToggle.isOn = true;
         includeNonTabletopiaToggle.isOn = false;
         includeInternationalsToggle.isOn = false;
@@ -122,10 +120,9 @@ public class CreateNewGameManager : MonoBehaviour
         halfDurationSlider.onValueChanged.AddListener(UpdateHalfDurationSliderText);
         halfDurationSlider.onValueChanged.AddListener(delegate { RefreshTiebreakerOptions(); });
         numberOfHalvesDropdown.onValueChanged.AddListener(delegate { RefreshTiebreakerOptions(); });
-        playerAssistanceSlider.onValueChanged.AddListener(UpdatePlayerAssistanceSliderText);
         // Set the initial text based on the current slider value
         UpdateHalfDurationSliderText(halfDurationSlider.value);
-        UpdatePlayerAssistanceSliderText(playerAssistanceSlider.value);
+        SetPlayerAssistanceDropdownValue(2);
         
         // Example: Set default options for squad size at the start of the game
         SetDropDownOptions();
@@ -181,6 +178,67 @@ public class CreateNewGameManager : MonoBehaviour
     public void UpdatePlayerAssistanceSliderText(float value)
     {
         playerAssistanceText.text = value.ToString(); // Show the slider's current value
+    }
+
+    private void ConfigurePlayerAssistanceDropdown()
+    {
+        if (playerAssistanceDropdown == null)
+        {
+            if (playerAssistanceSlider != null)
+            {
+                playerAssistanceSlider.minValue = 1;
+                playerAssistanceSlider.maxValue = 3;
+                playerAssistanceSlider.wholeNumbers = true;
+                playerAssistanceSlider.value = 2;
+                playerAssistanceSlider.onValueChanged.AddListener(UpdatePlayerAssistanceSliderText);
+                UpdatePlayerAssistanceSliderText(playerAssistanceSlider.value);
+            }
+
+            return;
+        }
+
+        playerAssistanceDropdown.ClearOptions();
+        playerAssistanceDropdown.AddOptions(PlayerAssistanceLabels.ToList());
+        playerAssistanceDropdown.SetValueWithoutNotify(1);
+        playerAssistanceDropdown.RefreshShownValue();
+
+        if (playerAssistanceSlider != null)
+        {
+            playerAssistanceSlider.gameObject.SetActive(false);
+        }
+
+        if (playerAssistanceText != null)
+        {
+            playerAssistanceText.gameObject.SetActive(false);
+        }
+    }
+
+    private int GetSelectedPlayerAssistanceValue()
+    {
+        if (playerAssistanceDropdown != null)
+        {
+            return Mathf.Clamp(playerAssistanceDropdown.value + 1, 1, 3);
+        }
+
+        return playerAssistanceSlider != null
+            ? Mathf.Clamp(Mathf.RoundToInt(playerAssistanceSlider.value), 1, 3)
+            : 2;
+    }
+
+    private void SetPlayerAssistanceDropdownValue(int playerAssistance)
+    {
+        int clampedValue = Mathf.Clamp(playerAssistance, 1, 3);
+        if (playerAssistanceDropdown != null)
+        {
+            playerAssistanceDropdown.SetValueWithoutNotify(clampedValue - 1);
+            playerAssistanceDropdown.RefreshShownValue();
+        }
+
+        if (playerAssistanceSlider != null)
+        {
+            playerAssistanceSlider.SetValueWithoutNotify(clampedValue);
+            UpdatePlayerAssistanceSliderText(clampedValue);
+        }
     }
 
     private void ValidateCheckboxes(Toggle changedToggle)
@@ -1433,11 +1491,7 @@ public class CreateNewGameManager : MonoBehaviour
             UpdateHalfDurationSliderText(halfDurationSlider.value);
         }
 
-        if (playerAssistanceSlider != null)
-        {
-            playerAssistanceSlider.SetValueWithoutNotify(Mathf.Clamp(settings.playerAssistance, playerAssistanceSlider.minValue, playerAssistanceSlider.maxValue));
-            UpdatePlayerAssistanceSliderText(playerAssistanceSlider.value);
-        }
+        SetPlayerAssistanceDropdownValue(settings.playerAssistance);
 
         SelectDropdownOption(numberOfHalvesDropdown, settings.numberOfHalfs.ToString(), "2");
         RefreshTiebreakerOptions();
@@ -1826,7 +1880,7 @@ public class CreateNewGameManager : MonoBehaviour
             Debug.Log($"Random referee chosen: {selectedReferee}");
         }
         settings.referee = selectedReferee;
-        settings.playerAssistance = (int)playerAssistanceSlider.value;
+        settings.playerAssistance = GetSelectedPlayerAssistanceValue();
         settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = GetHomeTeamNameForSettings();
