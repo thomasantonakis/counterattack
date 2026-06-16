@@ -73,6 +73,7 @@ public class GroundBallManager : MonoBehaviour
     {
         HexCell currentTargetBeforeClick = currentTargetHex;
         int difficulty = MatchManager.Instance != null ? MatchManager.Instance.difficulty_level : 0;
+        string selectedAction = ResolveGroundPassActionName();
         GroundPassValidationResult validation = ValidateGroundPassPath(targetHex, imposedDistance);
         bool willCommit = validation.IsValid && WillTargetClickCommitPass(targetHex, difficulty);
         GameplayActionPreview preview = BuildGroundPassTargetPreview(targetHex, validation, willCommit);
@@ -86,7 +87,7 @@ public class GroundBallManager : MonoBehaviour
 
         Dictionary<string, string> details = new Dictionary<string, string>
         {
-            ["selectedAction"] = isQuickThrow ? "quick_throw" : "standard_pass",
+            ["selectedAction"] = selectedAction,
             ["phase"] = "target_selection",
             ["difficulty"] = difficulty.ToString(),
             ["isValid"] = FormatBool(validation.IsValid),
@@ -110,10 +111,20 @@ public class GroundBallManager : MonoBehaviour
 
         GameInputManager.ConsumeCurrentClick(
             nameof(GroundBallManager),
-            isQuickThrow ? "quick_throw_target_selection" : "standard_pass_target_selection",
+            $"{selectedAction}_target_selection",
             validation.IsValid ? willCommit ? "target_confirmed" : "target_selected" : "invalid_target",
             details,
             preview);
+    }
+
+    private string ResolveGroundPassActionName()
+    {
+        if (isQuickThrow)
+        {
+            return "quick_throw";
+        }
+
+        return isKickoffPass ? "kickoff_pass" : "standard_pass";
     }
 
     private HexCell PredictCurrentTargetHexAfterClick(HexCell targetHex, GroundPassValidationResult validation)
@@ -181,7 +192,7 @@ public class GroundBallManager : MonoBehaviour
 
         return new GameplayActionPreview
         {
-            action = isQuickThrow ? "quick_throw" : "standard_pass",
+            action = ResolveGroundPassActionName(),
             phase = "target_selection",
             isValid = validation.IsValid,
             failureReason = validation.FailureReason.ToString(),
@@ -895,7 +906,9 @@ public class GroundBallManager : MonoBehaviour
             return;
         }
 
-        MatchManager.Instance.gameData.gameLog.LogEvent(passer, MatchManager.ActionType.PassAttempt);
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            passer,
+            isKickoffPass ? MatchManager.ActionType.KickOffPassAttempt : MatchManager.ActionType.PassAttempt);
     }
     
     public void LogGroundPassSucess()

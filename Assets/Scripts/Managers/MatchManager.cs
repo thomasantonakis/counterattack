@@ -611,6 +611,12 @@ public class MatchManager : MonoBehaviour
                     teamStats.totalPassesAttempted += value;
                     break;
 
+                case ActionType.KickOffPassAttempt:
+                    logEntry += "attempts a kick-off pass";
+                    playerStats.passesAttempted += value;
+                    teamStats.totalPassesAttempted += value;
+                    break;
+
                 case ActionType.PassCompleted:
                     logEntry += "completes a ground pass";
                     playerStats.passesCompleted += value;
@@ -1051,6 +1057,7 @@ public class MatchManager : MonoBehaviour
     {
         Move,
         PassAttempt,
+        KickOffPassAttempt,
         PassCompleted,
         AerialPassAttempt,
         AerialPassTargeted,
@@ -4595,9 +4602,13 @@ public class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass(PlayerToken pendingSetPieceTaker = null)
     {
+        bool isInitialKickoffPass = currentState == GameState.KickoffBlown && pendingSetPieceTaker == null;
+        PlayerToken kickoffTaker = isInitialKickoffPass
+            ? ball?.GetCurrentHex()?.GetOccupyingToken() ?? LastTokenToTouchTheBallOnPurpose
+            : null;
         RecordActionSelection(
-            pendingSetPieceTaker != null ? "set_piece_standard_pass" : "standard_pass",
-            pendingSetPieceTaker ?? LastTokenToTouchTheBallOnPurpose,
+            isInitialKickoffPass ? "kickoff_pass" : pendingSetPieceTaker != null ? "set_piece_standard_pass" : "standard_pass",
+            kickoffTaker ?? pendingSetPieceTaker ?? LastTokenToTouchTheBallOnPurpose,
             ball?.GetCurrentHex());
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         ClearPendingActionPreviews();
@@ -4613,7 +4624,14 @@ public class MatchManager : MonoBehaviour
         {
             groundBallManager.SetPendingSetPieceTakerForCommit(setPieceTaker);
         }
-        groundBallManager.ActivateGroundBall();
+        if (isInitialKickoffPass)
+        {
+            groundBallManager.ActivateKickoffGroundBall(kickoffTaker);
+        }
+        else
+        {
+            groundBallManager.ActivateGroundBall();
+        }
     }
 
     public void TriggerQuickThrowPass()
