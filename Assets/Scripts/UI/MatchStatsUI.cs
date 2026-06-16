@@ -235,9 +235,15 @@ public class MatchStatsUI : MonoBehaviour
     private const float PreviewRowSpacing = 8f;
     private const float PreviewRowValueRightPadding = 6f;
     private const float PreviewValueBadgeSize = 56f;
+    private const float PreviewFlagWidth = 28f;
+    private const float PreviewFlagHeight = 20f;
+    private const float PreviewFlagX = -114f;
     private const int BaselineLineupRowCount = 16;
     private const float LineSpacingAdjustmentPerLineupRow = 0.75f;
     private const string StatsTemplateResourcePath = "UI/MatchStatsTemplate";
+    private readonly Dictionary<string, string> previewNationalityByOutfieldName = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> previewNationalityByGoalkeeperName = new(StringComparer.OrdinalIgnoreCase);
+    private bool previewNationalityLookupLoaded;
 
     private static List<StatsTemplateRowDefinition> BuildDefaultStatsTemplateRows()
     {
@@ -800,15 +806,16 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        string teamLabel = isHomeTeam
+        string fallbackLabel = isHomeTeam
             ? MatchManager.Instance.gameData.gameSettings.homeTeamName
             : MatchManager.Instance.gameData.gameSettings.awayTeamName;
+        string nationalityLabel = ResolvePreviewNationality(token, fallbackLabel);
 
         if (token.IsGoalKeeper && goalkeeperCard != null)
         {
             SetHoverCardActive(outfieldCard, false);
-            goalkeeperCard.UpdateFromToken(token, teamLabel);
-            ApplyPreviewCardTheme(goalkeeperCard.gameObject, true);
+            goalkeeperCard.UpdateFromToken(token, nationalityLabel);
+            ApplyPreviewCardTheme(goalkeeperCard.gameObject, true, nationalityLabel);
             SetHoverCardActive(goalkeeperCard, true);
             return;
         }
@@ -816,8 +823,8 @@ public class MatchStatsUI : MonoBehaviour
         if (outfieldCard != null)
         {
             SetHoverCardActive(goalkeeperCard, false);
-            outfieldCard.UpdateFromToken(token, teamLabel);
-            ApplyPreviewCardTheme(outfieldCard.gameObject, false);
+            outfieldCard.UpdateFromToken(token, nationalityLabel);
+            ApplyPreviewCardTheme(outfieldCard.gameObject, false, nationalityLabel);
             SetHoverCardActive(outfieldCard, true);
             return;
         }
@@ -885,7 +892,7 @@ public class MatchStatsUI : MonoBehaviour
         cardRect.localScale = Vector3.one * CalculateCardScale(anchor, cardRect);
     }
 
-    private void ApplyPreviewCardTheme(GameObject cardObject, bool isGoalkeeper)
+    private void ApplyPreviewCardTheme(GameObject cardObject, bool isGoalkeeper, string countryLabel = "")
     {
         if (cardObject == null)
         {
@@ -909,7 +916,7 @@ public class MatchStatsUI : MonoBehaviour
         RectTransform flag = FindDescendantComponent<RectTransform>(cardObject.transform, "Flag");
         if (flag != null)
         {
-            flag.gameObject.SetActive(false);
+            ConfigurePreviewFlag(flag, countryLabel);
         }
 
         TMP_Text playerName = FindDescendantComponent<TMP_Text>(cardObject.transform, "PlayerName");
@@ -995,6 +1002,99 @@ public class MatchStatsUI : MonoBehaviour
         }
 
         ConfigurePreviewAttributeRows(cardObject.transform, isGoalkeeper);
+    }
+
+    private void ConfigurePreviewFlag(RectTransform flag, string country)
+    {
+        Image flagImage = flag.GetComponent<Image>();
+        Sprite flagSprite = flagImage != null ? FlagSpriteProvider.GetFlagSprite(country) : null;
+        flag.gameObject.SetActive(flagSprite != null);
+        if (flagSprite == null)
+        {
+            return;
+        }
+
+        flag.anchorMin = new Vector2(0.5f, 0.5f);
+        flag.anchorMax = new Vector2(0.5f, 0.5f);
+        flag.pivot = new Vector2(0.5f, 0.5f);
+        flag.anchoredPosition = new Vector2(PreviewFlagX, PreviewCountryY);
+        flag.sizeDelta = new Vector2(PreviewFlagWidth, PreviewFlagHeight);
+        flag.localScale = Vector3.one;
+        flag.localRotation = Quaternion.identity;
+
+        flagImage.sprite = flagSprite;
+        flagImage.color = Color.white;
+        flagImage.preserveAspect = true;
+        flagImage.raycastTarget = false;
+    }
+
+    private string ResolvePreviewNationality(PlayerToken token, string fallbackLabel)
+    {
+        if (token == null)
+        {
+            return fallbackLabel;
+        }
+
+        EnsurePreviewNationalityLookupLoaded();
+        Dictionary<string, string> lookup = token.IsGoalKeeper
+            ? previewNationalityByGoalkeeperName
+            : previewNationalityByOutfieldName;
+
+        return lookup.TryGetValue(token.playerName ?? string.Empty, out string nationality)
+            && !string.IsNullOrWhiteSpace(nationality)
+                ? nationality
+                : fallbackLabel;
+    }
+
+    private void EnsurePreviewNationalityLookupLoaded()
+    {
+        if (previewNationalityLookupLoaded)
+        {
+            return;
+        }
+
+        previewNationalityLookupLoaded = true;
+        LoadPreviewNationalityLookup("outfield_players", previewNationalityByOutfieldName);
+        LoadPreviewNationalityLookup("goalkeepers", previewNationalityByGoalkeeperName);
+    }
+
+    private void LoadPreviewNationalityLookup(string resourcePath, Dictionary<string, string> destination)
+    {
+        TextAsset csvFile = Resources.Load<TextAsset>(resourcePath);
+        if (csvFile == null || destination == null)
+        {
+            return;
+        }
+
+        string[] lines = csvFile.text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        if (lines.Length <= 1)
+        {
+            return;
+        }
+
+        string[] headers = lines[0].Split(',').Select(header => header.Trim()).ToArray();
+        int nameIndex = Array.FindIndex(headers, header => string.Equals(header, "Name", StringComparison.OrdinalIgnoreCase));
+        int nationalityIndex = Array.FindIndex(headers, header => string.Equals(header, "Nationality", StringComparison.OrdinalIgnoreCase));
+        if (nameIndex < 0 || nationalityIndex < 0)
+        {
+            return;
+        }
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string[] fields = lines[i].Split(',');
+            if (fields.Length <= Mathf.Max(nameIndex, nationalityIndex))
+            {
+                continue;
+            }
+
+            string playerName = fields[nameIndex].Trim();
+            string nationality = fields[nationalityIndex].Trim();
+            if (!string.IsNullOrWhiteSpace(playerName) && !string.IsNullOrWhiteSpace(nationality))
+            {
+                destination[playerName] = nationality;
+            }
+        }
     }
 
     private void ConfigurePreviewAttributeRows(Transform cardRoot, bool isGoalkeeper)
