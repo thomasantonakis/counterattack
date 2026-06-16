@@ -815,6 +815,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
             new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition(nameof(Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox), Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox),
+            new ScenarioDefinition(nameof(Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero), Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero),
+            new ScenarioDefinition(nameof(Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction), Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction),
+            new ScenarioDefinition(nameof(Scenario_041m_OutsideBoxGKShot_Dive_SaveContact_ForcedRedFreeKick), Scenario_041m_OutsideBoxGKShot_Dive_SaveContact_ForcedRedFreeKick),
+            new ScenarioDefinition(nameof(Scenario_041n_OutsideBoxGKShot_Dive_FailedSave_ContinuesToNextBlocker), Scenario_041n_OutsideBoxGKShot_Dive_FailedSave_ContinuesToNextBlocker),
+            new ScenarioDefinition(nameof(Scenario_041o_OutsideBoxGKShot_FreeKickGKPhase_PromptsChoice), Scenario_041o_OutsideBoxGKShot_FreeKickGKPhase_PromptsChoice),
         });
     }
 
@@ -974,6 +980,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
             new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition(nameof(Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox), Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox),
+            new ScenarioDefinition(nameof(Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero), Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero),
+            new ScenarioDefinition(nameof(Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction), Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction),
+            new ScenarioDefinition(nameof(Scenario_041m_OutsideBoxGKShot_Dive_SaveContact_ForcedRedFreeKick), Scenario_041m_OutsideBoxGKShot_Dive_SaveContact_ForcedRedFreeKick),
+            new ScenarioDefinition(nameof(Scenario_041n_OutsideBoxGKShot_Dive_FailedSave_ContinuesToNextBlocker), Scenario_041n_OutsideBoxGKShot_Dive_FailedSave_ContinuesToNextBlocker),
+            new ScenarioDefinition(nameof(Scenario_041o_OutsideBoxGKShot_FreeKickGKPhase_PromptsChoice), Scenario_041o_OutsideBoxGKShot_FreeKickGKPhase_PromptsChoice),
             new ScenarioDefinition(nameof(Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status), Scenario_008_Stupid_Click_and_KeyPress_do_not_change_status),
             new ScenarioDefinition(nameof(Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit), Scenario_008b_Movement_Phase_Reset_When_Switching_Action_Before_Commit),
             new ScenarioDefinition(nameof(Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache), Scenario_008d_HexGrid_GoalDistance_And_DangerousTackle_Cache),
@@ -1144,6 +1156,35 @@ public class GameTestScenarioRunner : MonoBehaviour
         public HexCell BoxRepositionHex { get; }
     }
 
+    private readonly struct OutsideBoxGoalkeeperShotSetup
+    {
+        public OutsideBoxGoalkeeperShotSetup(
+            PlayerToken shooter,
+            PlayerToken goalkeeper,
+            PlayerToken blocker,
+            HexCell shooterHex,
+            HexCell goalkeeperHex,
+            HexCell targetHex,
+            List<HexCell> path)
+        {
+            Shooter = shooter;
+            Goalkeeper = goalkeeper;
+            Blocker = blocker;
+            ShooterHex = shooterHex;
+            GoalkeeperHex = goalkeeperHex;
+            TargetHex = targetHex;
+            Path = path;
+        }
+
+        public PlayerToken Shooter { get; }
+        public PlayerToken Goalkeeper { get; }
+        public PlayerToken Blocker { get; }
+        public HexCell ShooterHex { get; }
+        public HexCell GoalkeeperHex { get; }
+        public HexCell TargetHex { get; }
+        public List<HexCell> Path { get; }
+    }
+
     private OutsideBoxGoalkeeperChallengeSetup PrepareOutsideBoxGoalkeeperChallengeBoard()
     {
         MatchManager.Instance.difficulty_level = 2;
@@ -1199,6 +1240,150 @@ public class GameTestScenarioRunner : MonoBehaviour
             goalkeeperStartHex,
             goalkeeperChallengeHex,
             goalkeeperStartHex);
+    }
+
+    private OutsideBoxGoalkeeperShotSetup PrepareOutsideBoxGoalkeeperShotBoard(
+        Vector3Int shooterCoordinates,
+        Vector3Int goalkeeperCoordinates,
+        Vector3Int targetCoordinates,
+        IReadOnlyList<Vector3Int> pathCoordinates,
+        string shotType = "fullPower",
+        string blockerName = null,
+        Vector3Int? blockerCoordinates = null)
+    {
+        ConfigureRightBoxGkWallAuditState();
+        MatchManager.Instance.attackHasPossession = true;
+        MatchManager.Instance.currentState = MatchManager.GameState.EndOfMovementPhase;
+
+        PlayerToken shooter = RequirePlayerToken("Yaneva");
+        PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
+        PlayerToken blocker = !string.IsNullOrWhiteSpace(blockerName)
+            ? RequirePlayerToken(blockerName)
+            : null;
+
+        HexCell shooterHex = RequireHex(hexgrid.GetHexCellAt(shooterCoordinates), $"Outside-box GK shot shooter hex {shooterCoordinates} should exist.");
+        HexCell goalkeeperHex = RequireHex(hexgrid.GetHexCellAt(goalkeeperCoordinates), $"Outside-box GK shot goalkeeper hex {goalkeeperCoordinates} should exist.");
+        HexCell targetHex = RequireHex(hexgrid.GetHexCellAt(targetCoordinates), $"Outside-box GK shot target hex {targetCoordinates} should exist.");
+        List<HexCell> path = pathCoordinates
+            .Select(coordinates => RequireHex(hexgrid.GetHexCellAt(coordinates), $"Outside-box GK shot path hex {coordinates} should exist."))
+            .ToList();
+        HexCell blockerHex = blocker != null && blockerCoordinates.HasValue
+            ? RequireHex(hexgrid.GetHexCellAt(blockerCoordinates.Value), $"Outside-box GK shot blocker hex {blockerCoordinates.Value} should exist.")
+            : null;
+
+        List<HexCell> reservedHexes = new() { shooterHex, goalkeeperHex, targetHex };
+        reservedHexes.AddRange(path);
+        if (blockerHex != null)
+        {
+            reservedHexes.Add(blockerHex);
+        }
+
+        MoveTokensAwayFromOutsideBoxShotHexes(reservedHexes, shooter, goalkeeper, blocker);
+        PlaceTokenForScenario(shooter, shooterHex, asAttacker: true);
+        PlaceTokenForScenario(goalkeeper, goalkeeperHex, asAttacker: false);
+        if (blocker != null && blockerHex != null)
+        {
+            PlaceTokenForScenario(blocker, blockerHex, asAttacker: false);
+        }
+
+        groundBallManager.ball.PlaceAtCell(shooterHex);
+        MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = shooter;
+        MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
+        MatchManager.Instance.UpdatePossessionAfterPass(shooterHex);
+
+        movementPhaseManager.ResetMovementPhase();
+        movementPhaseManager.isActivated = false;
+        finalThirdManager.isActivated = false;
+        freeKickManager.isActivated = false;
+        looseBallManager.isActivated = false;
+        goalKeeperManager.isActivated = false;
+
+        ResetShotManagerForOutsideBoxShotTest();
+        shotManager.shooter = shooter;
+        shotManager.shotType = shotType;
+        shotManager.isActivated = true;
+        shotManager.targetHex = targetHex;
+        shotManager.saveHex = null;
+        shotManager.totalShotPower = 0;
+        shotManager.shooterRoll = 0;
+        shotManager.alreadyInterceptedDefs = new List<PlayerToken>();
+        SetPrivateInstanceField(shotManager, "trajectoryPath", path);
+
+        AssertTrue(goalkeeper.IsGoalKeeper, "Outside-box GK shot tests should use Kuzmic as the defending goalkeeper.");
+        AssertTrue(!goalKeeperManager.IsGoalkeeperOwnPenaltyHex(goalkeeper, goalkeeperHex), "Outside-box GK shot test goalkeeper should start outside their own penalty box.", "outside own box", HexCoordinates(goalkeeperHex));
+
+        return new OutsideBoxGoalkeeperShotSetup(
+            shooter,
+            goalkeeper,
+            blocker,
+            shooterHex,
+            goalkeeperHex,
+            targetHex,
+            path);
+    }
+
+    private void ResetShotManagerForOutsideBoxShotTest()
+    {
+        MethodInfo resetMethod = GetPrivateInstanceMethod(typeof(ShotManager), "ResetShotProcess");
+        AssertTrue(resetMethod != null, "ShotManager reset method should exist for outside-box GK shot tests.");
+        resetMethod?.Invoke(shotManager, Array.Empty<object>());
+    }
+
+    private void MoveTokensAwayFromOutsideBoxShotHexes(IEnumerable<HexCell> importantHexes, params PlayerToken[] exceptions)
+    {
+        HashSet<PlayerToken> exceptionTokens = new(exceptions.Where(token => token != null));
+        HashSet<HexCell> reservedHexes = new(importantHexes.Where(hex => hex != null));
+        foreach (HexCell hex in importantHexes.Where(hex => hex != null))
+        {
+            foreach (HexCell neighbor in hex.GetNeighbors(hexgrid))
+            {
+                if (neighbor != null)
+                {
+                    reservedHexes.Add(neighbor);
+                }
+            }
+        }
+
+        foreach (PlayerToken token in FindObjectsByType<PlayerToken>())
+        {
+            if (token == null || exceptionTokens.Contains(token))
+            {
+                continue;
+            }
+
+            HexCell currentHex = token.GetCurrentHex();
+            if (currentHex == null || !reservedHexes.Contains(currentHex))
+            {
+                continue;
+            }
+
+            bool wasAttacker = token.isAttacker;
+            HexCell fallbackHex = GetAllInBoundsHexesOrdered(currentHex)
+                .FirstOrDefault(candidate => candidate != null
+                    && !reservedHexes.Contains(candidate)
+                    && candidate.isInGoal == 0
+                    && !candidate.isAttackOccupied
+                    && !candidate.isDefenseOccupied
+                    && candidate.GetOccupyingToken() == null);
+            AssertTrue(fallbackHex != null, $"Outside-box GK shot setup should find a fallback hex for {token.name}.");
+            if (fallbackHex != null)
+            {
+                PlaceTokenForScenario(token, fallbackHex, wasAttacker);
+            }
+        }
+    }
+
+    private IEnumerator StartOutsideBoxGoalkeeperShotInterception(OutsideBoxGoalkeeperShotSetup setup)
+    {
+        SetPrivateInstanceField(shotManager, "trajectoryPath", setup.Path);
+        IEnumerator coroutine = InvokePrivateShotCoroutine("StartInterceptionPhase", Array.Empty<object>());
+        AssertTrue(coroutine != null, "Shot interception phase should be available for outside-box GK shot tests.");
+        if (coroutine != null)
+        {
+            StartCoroutine(coroutine);
+        }
+
+        yield return null;
     }
 
     private IEnumerator MoveGoalkeeperNextToOutsideBoxDribbler(OutsideBoxGoalkeeperChallengeSetup setup)
@@ -1455,6 +1640,264 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Taking the outside-box GK foul should proceed toward Free Kick preparation."));
 
         LogFooterofTest("Outside Box GK Foul Harsh Leniency Injury Advantage Choice");
+    }
+
+    private IEnumerator Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox()
+    {
+        yield return new WaitForSeconds(1f);
+        Log("Starting outside-box GK shot mixed-PSH selection test.");
+
+        OutsideBoxGoalkeeperShotSetup setup = PrepareOutsideBoxGoalkeeperShotBoard(
+            new Vector3Int(8, 0, 8),
+            new Vector3Int(12, 0, 8),
+            new Vector3Int(19, 0, 0),
+            new[]
+            {
+                new Vector3Int(12, 0, 8),
+                new Vector3Int(12, 0, 7),
+            });
+        HexCell expectedOwnBoxSaveHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(12, 0, 7)), "Mixed PSH own-box save hex should exist.");
+
+        object interaction = InvokePrivateShotMethod(
+            "BuildGKSaveInteraction",
+            new object[] { setup.Path },
+            typeof(List<HexCell>));
+
+        AssertTrue(interaction != null, "Mixed inside/outside PSH should create a GK save interaction without prompting.");
+        AssertTrue(GetShotInteractionHex(interaction) == expectedOwnBoxSaveHex, "Mixed PSH should prefer the own-box SaveHex even when the GK's current outside hex is closer.", expectedOwnBoxSaveHex, GetShotInteractionHex(interaction));
+        AssertTrue(!shotManager.isWaitingForOutsideBoxGKShotDecision, "Mixed PSH should not prompt for outside-box GK shot choice.");
+
+        LogFooterofTest("Outside Box GK Shot Mixed PSH Prefers Own Box");
+    }
+
+    private IEnumerator Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero()
+    {
+        yield return new WaitForSeconds(1f);
+        Log("Starting outside-box GK shot block-choice zero-tackling test.");
+
+        OutsideBoxGoalkeeperShotSetup setup = PrepareOutsideBoxGoalkeeperShotBoard(
+            new Vector3Int(8, 0, 10),
+            new Vector3Int(12, 0, 10),
+            new Vector3Int(19, 0, 0),
+            new[] { new Vector3Int(12, 0, 10) });
+
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperShotInterception(setup));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForOutsideBoxGKShotDecision,
+            2f,
+            "All-outside PSH should prompt for [D]ive/[B]lock before shot rolls."));
+
+        string promptInstructions = shotManager.GetInstructions();
+        AssertTrue(promptInstructions.Contains("[D]") && promptInstructions.Contains("[B]"), "All-outside PSH prompt should offer [D]ive and [B]lock.", "[D]/[B]", promptInstructions);
+        AssertTrue(promptInstructions.Contains("Tackling: 0"), "All-outside PSH prompt should explain [B]lock uses Tackling 0.", "Tackling: 0", promptInstructions);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.B, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForBlockDiceRoll,
+            2f,
+            "Choosing [B]lock with the GK on the shot path should create a shot block roll."));
+
+        object blockInteraction = GetCurrentShotInteractionObject();
+        AssertTrue(GetShotInteractionDefender(blockInteraction) == setup.Goalkeeper, "The outside-box [B]lock interaction should belong to the defending GK.", setup.Goalkeeper, GetShotInteractionDefender(blockInteraction));
+        AssertTrue(GetShotInteractionNullableInt(blockInteraction, "effectiveTackling") == 0, "Outside-box GK [B]lock should use effective Tackling 0.", 0, GetShotInteractionNullableInt(blockInteraction, "effectiveTackling"));
+        AssertTrue(GetShotInteractionInt(blockInteraction, "requiredNaturalRoll", 0) > 6, "Outside-box GK [B]lock should require Jackpot-only success.", "> 6", GetShotInteractionInt(blockInteraction, "requiredNaturalRoll", 0));
+
+        string blockInstructions = shotManager.GetInstructions();
+        AssertTrue(blockInstructions.Contains("Tackling: 0"), "Outside-box GK block roll prompt should show Tackling: 0.", "Tackling: 0", blockInstructions);
+        AssertTrue(blockInstructions.Contains("Jackpot"), "Outside-box GK block roll prompt should say Jackpot is needed.", "Jackpot", blockInstructions);
+        AssertTrue(!setup.Goalkeeper.isSentOff, "Choosing [B]lock should not send off the goalkeeper.");
+
+        yield return StartCoroutine(PerformRiggedShotBlockRoll("Kuzmic", 6));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForShotRoll,
+            2f,
+            "A non-jackpot 6 with effective Tackling 0 should fail and continue to the shooter roll."));
+
+        LogFooterofTest("Outside Box GK Shot Block Uses Tackling Zero");
+    }
+
+    private IEnumerator Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction()
+    {
+        yield return new WaitForSeconds(1f);
+        Log("Starting outside-box GK shot block-choice no-eligibility snapshot test.");
+
+        OutsideBoxGoalkeeperShotSetup setup = PrepareOutsideBoxGoalkeeperShotBoard(
+            new Vector3Int(8, 0, 12),
+            new Vector3Int(12, 0, 9),
+            new Vector3Int(19, 0, 0),
+            new[] { new Vector3Int(12, 0, 12) },
+            shotType: "snapshot");
+
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperShotInterception(setup));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForOutsideBoxGKShotDecision,
+            2f,
+            "Snapshot with all-outside PSH should prompt for [D]ive/[B]lock."));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.B, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForShotRoll,
+            2f,
+            "Choosing [B]lock when GK position/ZOI does not touch the shot path should add no GK block and continue to the shot roll."));
+
+        AssertTrue(!shotManager.isWaitingForBlockDiceRoll, "Ineligible outside-box GK [B]lock should not wait for a block roll.");
+        AssertTrue(!shotManager.isWaitingForGKDiceRoll, "Ineligible outside-box GK [B]lock should not create a GK save roll.");
+        AssertTrue(!setup.Goalkeeper.isSentOff, "Ineligible outside-box GK [B]lock should not send off the goalkeeper.");
+
+        LogFooterofTest("Outside Box GK Shot Block No Eligibility No Interaction");
+    }
+
+    private IEnumerator Scenario_041m_OutsideBoxGKShot_Dive_SaveContact_ForcedRedFreeKick()
+    {
+        yield return new WaitForSeconds(1f);
+        Log("Starting outside-box GK shot [D]ive handball forced red/free kick test.");
+
+        OutsideBoxGoalkeeperShotSetup setup = PrepareOutsideBoxGoalkeeperShotBoard(
+            new Vector3Int(8, 0, 12),
+            new Vector3Int(12, 0, 9),
+            new Vector3Int(19, 0, 0),
+            new[] { new Vector3Int(12, 0, 12) });
+        HexCell expectedFoulHex = setup.Path[0];
+
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperShotInterception(setup));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForOutsideBoxGKShotDecision,
+            2f,
+            "All-outside PSH should prompt before the illegal hand-save test."));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.D, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForShotRoll,
+            2f,
+            "Choosing [D]ive should create a GK save interaction and wait for the shooter roll."));
+
+        yield return StartCoroutine(shotManager.StartShotRoll(2));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForGKDiceRoll,
+            2f,
+            "After the shooter roll, outside-box [D]ive should wait for the GK saving roll."));
+
+        object gkInteraction = GetCurrentShotInteractionObject();
+        int gkPenalty = GetShotInteractionNullableInt(gkInteraction, "gkPenalty") ?? 0;
+        int savePower = setup.Goalkeeper.saving + gkPenalty + 6;
+        AssertTrue(savePower >= shotManager.totalShotPower, "Rigged outside-box GK save roll should contact the ball and force handball.", $">= {shotManager.totalShotPower}", savePower);
+
+        IEnumerator saveCoroutine = InvokePrivateShotCoroutine(
+            "ResolveGKSavingAttempt",
+            new object[] { gkInteraction, (int?)6 },
+            null,
+            typeof(int?));
+        AssertTrue(saveCoroutine != null, "GK save coroutine should be invokable for outside-box handball test.");
+        if (saveCoroutine != null)
+        {
+            yield return StartCoroutine(saveCoroutine);
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => setup.Goalkeeper.isSentOff && (finalThirdManager.isActivated || freeKickManager.isWaitingForKickerSelection),
+            3f,
+            "Successful outside-box [D]ive contact should send off the GK and force Free Kick preparation."));
+
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == expectedFoulHex, "Outside-box GK handball free kick should be forced at the SaveHex.", expectedFoulHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(setup.Goalkeeper.GetCurrentHex() == setup.GoalkeeperHex, "Illegal hand-save contact should not move the GK token to the SaveHex.", setup.GoalkeeperHex, setup.Goalkeeper.GetCurrentHex());
+        AssertTrue(!shotManager.isWaitingforHandlingTest, "Outside-box GK handball should skip handling.");
+        AssertTrue(!looseBallManager.isActivated, "Outside-box GK handball should skip loose-ball flow.");
+
+        LogFooterofTest("Outside Box GK Shot Dive Save Contact Forced Red Free Kick");
+    }
+
+    private IEnumerator Scenario_041n_OutsideBoxGKShot_Dive_FailedSave_ContinuesToNextBlocker()
+    {
+        yield return new WaitForSeconds(1f);
+        Log("Starting outside-box GK shot [D]ive failed-save continuation test.");
+
+        OutsideBoxGoalkeeperShotSetup setup = PrepareOutsideBoxGoalkeeperShotBoard(
+            new Vector3Int(8, 0, 10),
+            new Vector3Int(12, 0, 10),
+            new Vector3Int(19, 0, 0),
+            new[]
+            {
+                new Vector3Int(12, 0, 10),
+                new Vector3Int(14, 0, 10),
+            },
+            blockerName: "Poulsen",
+            blockerCoordinates: new Vector3Int(14, 0, 10));
+
+        yield return StartCoroutine(StartOutsideBoxGoalkeeperShotInterception(setup));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForOutsideBoxGKShotDecision,
+            2f,
+            "All-outside PSH should prompt before failed [D]ive continuation test."));
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.D, 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForShotRoll,
+            2f,
+            "Choosing [D]ive should wait for the shooter roll before GK save."));
+
+        yield return StartCoroutine(shotManager.StartShotRoll(6));
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForGKDiceRoll,
+            2f,
+            "Failed-save continuation test should reach the GK save roll."));
+
+        object gkInteraction = GetCurrentShotInteractionObject();
+        shotManager.totalShotPower = 50;
+        IEnumerator saveCoroutine = InvokePrivateShotCoroutine(
+            "ResolveGKSavingAttempt",
+            new object[] { gkInteraction, (int?)1 },
+            null,
+            typeof(int?));
+        AssertTrue(saveCoroutine != null, "GK save coroutine should be invokable for failed outside-box save test.");
+        if (saveCoroutine != null)
+        {
+            StartCoroutine(saveCoroutine);
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForBlockDiceRoll,
+            3f,
+            "Failed outside-box [D]ive save should continue to the next normal shot blocker."));
+
+        AssertTrue(GetCurrentShotInteractionDefenderName().Contains("Poulsen"), "Failed outside-box [D]ive should continue with Poulsen's block.", "Poulsen", GetCurrentShotInteractionDefenderName());
+        AssertTrue(!setup.Goalkeeper.isSentOff, "Failed outside-box [D]ive save should not send off the goalkeeper.");
+        AssertTrue(!freeKickManager.isWaitingForKickerSelection, "Failed outside-box [D]ive save should not force a free kick.");
+
+        LogFooterofTest("Outside Box GK Shot Dive Failed Save Continues To Next Blocker");
+    }
+
+    private IEnumerator Scenario_041o_OutsideBoxGKShot_FreeKickGKPhase_PromptsChoice()
+    {
+        yield return new WaitForSeconds(1f);
+        Log("Starting outside-box GK shot Free Kick GK-phase prompt test.");
+
+        OutsideBoxGoalkeeperShotSetup setup = PrepareOutsideBoxGoalkeeperShotBoard(
+            new Vector3Int(8, 0, 10),
+            new Vector3Int(12, 0, 10),
+            new Vector3Int(19, 0, 0),
+            new[] { new Vector3Int(12, 0, 10) },
+            shotType: "freeKick");
+        shotManager.shooterRoll = 4;
+        shotManager.totalShotPower = 8;
+
+        IEnumerator coroutine = InvokePrivateShotCoroutine("StartFreeKickGKPhase", Array.Empty<object>());
+        AssertTrue(coroutine != null, "Free Kick GK phase should be invokable for outside-box prompt test.");
+        if (coroutine != null)
+        {
+            StartCoroutine(coroutine);
+        }
+
+        yield return StartCoroutine(WaitForCondition(
+            () => shotManager.isWaitingForOutsideBoxGKShotDecision,
+            2f,
+            "Free Kick shot with all-outside PSH should prompt for [D]ive/[B]lock at the GK phase."));
+
+        string instructions = shotManager.GetInstructions();
+        AssertTrue(instructions.Contains("[D]") && instructions.Contains("[B]"), "Free Kick outside-box GK prompt should offer [D]ive and [B]lock.", "[D]/[B]", instructions);
+        AssertTrue(!shotManager.isWaitingForGKDiceRoll, "Free Kick outside-box GK prompt should pause before GK saving roll.");
+        AssertTrue(setup.Goalkeeper.GetCurrentHex() == setup.GoalkeeperHex, "Free Kick outside-box prompt should occur before any GK box move.");
+
+        LogFooterofTest("Outside Box GK Shot Free Kick GK Phase Prompts Choice");
     }
 
     private IEnumerator Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip()
@@ -3750,12 +4193,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         values[playerName] = current + amount;
     }
 
-    private void RecordShootingShotBlockAttempt(PlayerToken blocker, int requiredNaturalRoll, int rigRoll)
+    private void RecordShootingShotBlockAttempt(PlayerToken blocker, int requiredNaturalRoll, int rigRoll, int? effectiveTackling = null)
     {
         string blockerName = GetTokenTestName(blocker);
         IncrementExpectedCount(expectedShootingShotBlockAttempts, blockerName);
 
-        if (IsShootingBlockRollSuccessful(blocker, requiredNaturalRoll, rigRoll))
+        if (IsShootingBlockRollSuccessful(blocker, requiredNaturalRoll, rigRoll, effectiveTackling))
         {
             IncrementExpectedCount(expectedShootingShotBlocksMade, blockerName);
             expectedShootingShotBlocked = true;
@@ -3797,9 +4240,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
     }
 
-    private static bool IsShootingBlockRollSuccessful(PlayerToken blocker, int requiredNaturalRoll, int roll)
+    private static bool IsShootingBlockRollSuccessful(PlayerToken blocker, int requiredNaturalRoll, int roll, int? effectiveTackling = null)
     {
-        return blocker != null && (roll >= requiredNaturalRoll || roll + blocker.tackling >= 10);
+        int tackling = effectiveTackling ?? blocker?.tackling ?? 0;
+        return blocker != null && (roll >= requiredNaturalRoll || roll + tackling >= 10);
     }
 
     private static bool IsLooseRecoveryRollSuccessful(PlayerToken interceptor, int roll)
@@ -3859,7 +4303,8 @@ public class GameTestScenarioRunner : MonoBehaviour
 
             blockExpectations.Add(new ExpectedStatsCalculator.ShotBlockerExpectation(
                 defender,
-                GetShotInteractionInt(interaction, "requiredNaturalRoll", 6)));
+                GetShotInteractionInt(interaction, "requiredNaturalRoll", 6),
+                GetShotInteractionNullableInt(interaction, "effectiveTackling")));
         }
 
         return blockExpectations;
@@ -5208,7 +5653,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         object currentInteraction = GetCurrentShotInteractionObject();
         PlayerToken blocker = GetShotInteractionDefender(currentInteraction);
         int requiredNaturalRoll = GetShotInteractionInt(currentInteraction, "requiredNaturalRoll", 6);
-        RecordShootingShotBlockAttempt(blocker, requiredNaturalRoll, rigRoll);
+        int? effectiveTackling = GetShotInteractionNullableInt(currentInteraction, "effectiveTackling");
+        RecordShootingShotBlockAttempt(blocker, requiredNaturalRoll, rigRoll, effectiveTackling);
 
         Log($"Rigging {expectedDefenderName} shot block roll to {rigRoll}");
         IEnumerator coroutine = InvokePrivateShotCoroutine("StartShotBlockRoll", new object[] { (int?)rigRoll }, typeof(int?));
@@ -5530,6 +5976,38 @@ public class GameTestScenarioRunner : MonoBehaviour
         return method?.Invoke(shotManager, parameters) as IEnumerator;
     }
 
+    private object InvokePrivateShotMethod(string methodName, object[] parameters, params Type[] parameterTypes)
+    {
+        MethodInfo method = typeof(ShotManager)
+            .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+            .FirstOrDefault(candidate =>
+            {
+                if (candidate.Name != methodName)
+                {
+                    return false;
+                }
+
+                ParameterInfo[] methodParameters = candidate.GetParameters();
+                if (methodParameters.Length != parameterTypes.Length)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < parameterTypes.Length; i++)
+                {
+                    if (parameterTypes[i] != null && methodParameters[i].ParameterType != parameterTypes[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+        AssertTrue(method != null, $"ShotManager private method '{methodName}' should exist for the Shooting branch tests.");
+        return method?.Invoke(shotManager, parameters);
+    }
+
     private object GetCurrentShotInteractionObject()
     {
         FieldInfo field = typeof(ShotManager).GetField("currentShotInteraction", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -5552,6 +6030,17 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         FieldInfo defenderField = interaction.GetType().GetField("defender", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         return defenderField?.GetValue(interaction) as PlayerToken;
+    }
+
+    private HexCell GetShotInteractionHex(object interaction)
+    {
+        if (interaction == null)
+        {
+            return null;
+        }
+
+        FieldInfo field = interaction.GetType().GetField("interactionHex", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        return field?.GetValue(interaction) as HexCell;
     }
 
     private int GetShotInteractionInt(object interaction, string fieldName, int fallback)

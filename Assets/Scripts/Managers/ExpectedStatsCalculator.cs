@@ -7,11 +7,13 @@ public static class ExpectedStatsCalculator
     {
         public readonly PlayerToken token;
         public readonly int requiredNaturalRoll;
+        public readonly int? effectiveTackling;
 
-        public ShotBlockerExpectation(PlayerToken token, int requiredNaturalRoll)
+        public ShotBlockerExpectation(PlayerToken token, int requiredNaturalRoll, int? effectiveTackling = null)
         {
             this.token = token;
             this.requiredNaturalRoll = requiredNaturalRoll;
+            this.effectiveTackling = effectiveTackling;
         }
     }
 
@@ -217,7 +219,10 @@ public static class ExpectedStatsCalculator
         {
             foreach (ShotBlockerExpectation blockAttempt in blockAttempts)
             {
-                noBlockProbability *= 1f - CalculateShotBlockProbability(blockAttempt.token, blockAttempt.requiredNaturalRoll);
+                noBlockProbability *= 1f - CalculateShotBlockProbability(
+                    blockAttempt.token,
+                    blockAttempt.requiredNaturalRoll,
+                    blockAttempt.effectiveTackling);
             }
         }
 
@@ -244,20 +249,21 @@ public static class ExpectedStatsCalculator
         return noBlockProbability * goalAfterNoBlockProbability;
     }
 
-    public static float CalculateShotBlockProbability(PlayerToken blocker, int requiredNaturalRoll)
+    public static float CalculateShotBlockProbability(PlayerToken blocker, int requiredNaturalRoll, int? effectiveTackling = null)
     {
         if (blocker == null)
         {
             return 0f;
         }
 
+        int tackling = effectiveTackling ?? blocker.tackling;
         float probability = 0f;
         foreach (DiceOutcome outcome in DuelDiceOutcomes)
         {
             int naturalRoll = GetNaturalRoll(outcome);
             bool succeeds = outcome.effectiveRoll == 50
                 || naturalRoll >= requiredNaturalRoll
-                || naturalRoll + blocker.tackling >= 10;
+                || naturalRoll + tackling >= 10;
 
             if (succeeds)
             {

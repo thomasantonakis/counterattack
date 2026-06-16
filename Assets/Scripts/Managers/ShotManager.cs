@@ -37,6 +37,7 @@ public class ShotManager : MonoBehaviour
     public bool isWaitingForGKDiceRoll = false;
     public bool isWaitingforHandlingTest = false;
     public bool isWaitingForSaveandHoldScenario = false;
+    public bool isWaitingForOutsideBoxGKShotDecision = false;
     public bool gkWasOfferedMoveForBox = false;
     public bool isWaitingForSnapshotDecisionFromLoose = false;
     public bool isWaitingForShotCommitConfirmation = false;
@@ -86,6 +87,9 @@ public class ShotManager : MonoBehaviour
     private bool pendingSnapshotEndedMovementPhase;
     private bool pendingSnapshotEndedMovementConsumesExtraAction;
     private HexCell hoveredSnapshotBlockerMovementHex;
+    private ShotInteraction pendingOutsideBoxGKSaveInteraction;
+    private bool outsideBoxGKShotDecisionResolved;
+    private bool pendingOutsideBoxGKDecisionAfterShotRoll;
 
     private enum ShotInteractionType
     {
@@ -101,8 +105,18 @@ public class ShotManager : MonoBehaviour
         public int pathIndex;
         public int requiredNaturalRoll;
         public int? gkPenalty;
+        public int? effectiveTackling;
+        public int? blockTypeNaturalRoll;
+        public bool isOutsideBoxGoalkeeperHandSave;
+        public bool isGoalkeeperOutfieldBlock;
 
         public bool IsGK => type == ShotInteractionType.GKSave;
+    }
+
+    private sealed class GKSaveHexSelection
+    {
+        public HexCell selectedHex;
+        public bool allCandidatesOutsideOwnPenaltyBox;
     }
 
     private void ResetExpectedGoalContext()
@@ -126,7 +140,11 @@ public class ShotManager : MonoBehaviour
             type = interaction.type,
             pathIndex = interaction.pathIndex,
             requiredNaturalRoll = interaction.requiredNaturalRoll,
-            gkPenalty = interaction.gkPenalty
+            gkPenalty = interaction.gkPenalty,
+            effectiveTackling = interaction.effectiveTackling,
+            blockTypeNaturalRoll = interaction.blockTypeNaturalRoll,
+            isOutsideBoxGoalkeeperHandSave = interaction.isOutsideBoxGoalkeeperHandSave,
+            isGoalkeeperOutfieldBlock = interaction.isGoalkeeperOutfieldBlock
         };
     }
 
@@ -241,7 +259,8 @@ public class ShotManager : MonoBehaviour
             .Where(interaction => interaction?.defender != null)
             .Select(interaction => new ExpectedStatsCalculator.ShotBlockerExpectation(
                 interaction.defender,
-                interaction.requiredNaturalRoll))
+                interaction.requiredNaturalRoll,
+                interaction.effectiveTackling))
             .ToList();
 
         PlayerToken savingGk = expectedGoalGkSaveInteraction?.defender;
@@ -566,6 +585,22 @@ public class ShotManager : MonoBehaviour
             IdentifyShotType();
             return;
         }
+        if (isActivated && isWaitingForOutsideBoxGKShotDecision)
+        {
+            if (keyData.key == KeyCode.D)
+            {
+                keyData.Consume(nameof(ShotManager), IsInstructionExpectingHomeTeam());
+                SelectOutsideBoxGKHandSave();
+                return;
+            }
+
+            if (keyData.key == KeyCode.B)
+            {
+                keyData.Consume(nameof(ShotManager), IsInstructionExpectingHomeTeam());
+                SelectOutsideBoxGKOutfieldBlock();
+                return;
+            }
+        }
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
         if (isActivated && isWaitingForBlockDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
@@ -650,6 +685,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForShotRoll = false;
         isWaitingForGKDiceRoll = false;
         isWaitingforHandlingTest = false;
+        isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
         isWaitingForTargetSelection = false;
@@ -670,6 +706,8 @@ public class ShotManager : MonoBehaviour
         trajectoryPath = null;
         interceptors.Clear();
         currentShotInteraction = null;
+        ClearPendingOutsideBoxGKShotDecision();
+        outsideBoxGKShotDecisionResolved = false;
         alreadyInterceptedDefs?.Clear();
         headerAttackerTotalScore = 0;
         headerAttacker = null;
@@ -1344,6 +1382,7 @@ public class ShotManager : MonoBehaviour
                     type = ShotInteractionType.OutfieldBlock,
                     pathIndex = i,
                     requiredNaturalRoll = 5,
+                    blockTypeNaturalRoll = 5,
                     gkPenalty = null
                 };
             }
@@ -1366,6 +1405,7 @@ public class ShotManager : MonoBehaviour
                     type = ShotInteractionType.OutfieldBlock,
                     pathIndex = i,
                     requiredNaturalRoll = 6,
+                    blockTypeNaturalRoll = 6,
                     gkPenalty = null
                 };
             }
@@ -1376,7 +1416,7 @@ public class ShotManager : MonoBehaviour
 
     private string BuildPreviewBlockerInstruction(ShotInteraction interaction)
     {
-        string blockType = interaction.requiredNaturalRoll == 5 ? "on-path" : "ZOI";
+        string blockType = GetShotBlockTypeLabel(interaction);
         int neededRoll = GetOutfieldBlockRequiredRoll(interaction);
         return $"{GetTokenInstructionName(interaction.defender)} ({blockType}, {BuildNeededRollInstruction(neededRoll, "")})";
     }
@@ -1844,6 +1884,8 @@ public class ShotManager : MonoBehaviour
             }
         }
         trajectoryPath = originHex.ShootingPaths[targetHex];
+        ClearPendingOutsideBoxGKShotDecision();
+        outsideBoxGKShotDecisionResolved = false;
         if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level != 2)
         {
             HighlightTrajectoryPath();
@@ -1873,6 +1915,7 @@ public class ShotManager : MonoBehaviour
     {
         Debug.Log("Starting interception phase.");
         alreadyInterceptedDefs ??= new List<PlayerToken>();
+        ClearPendingOutsideBoxGKShotDecision();
         interceptors = GatherInterceptors(trajectoryPath);
         CaptureExpectedGoalInteractions(interceptors);
         Debug.Log($"Shot interactions found: {interceptors.Count}");
@@ -1892,6 +1935,8 @@ public class ShotManager : MonoBehaviour
         currentShotInteraction = null;
         currentDefenderBlockingHex = null;
         saveHex = null;
+        ClearPendingOutsideBoxGKShotDecision();
+        outsideBoxGKShotDecisionResolved = false;
         CaptureExpectedGoalInteractions(interceptors);
         isWaitingForShotRoll = true;
         yield return null;
@@ -2013,6 +2058,27 @@ public class ShotManager : MonoBehaviour
         return null;
     }
 
+    private ShotInteraction BuildGoalkeeperOutfieldBlockInteraction(PlayerToken goalkeeper, List<HexCell> path)
+    {
+        if (goalkeeper == null)
+        {
+            return null;
+        }
+
+        ShotInteraction interaction = BuildOutfieldBlockInteraction(goalkeeper, path);
+        if (interaction == null)
+        {
+            return null;
+        }
+
+        interaction.isGoalkeeperOutfieldBlock = true;
+        interaction.effectiveTackling = 0;
+        interaction.blockTypeNaturalRoll = interaction.requiredNaturalRoll;
+        interaction.requiredNaturalRoll = 7;
+        Debug.Log($"{goalkeeper.name} can only block this shot as an outfielder with effective Tackling 0 at {interaction.interactionHex.coordinates}.");
+        return interaction;
+    }
+
     private ShotInteraction BuildGKSaveInteraction(List<HexCell> path)
     {
         PlayerToken defendingGK = hexGrid.GetDefendingGK();
@@ -2022,17 +2088,41 @@ public class ShotManager : MonoBehaviour
             return null;
         }
 
-        HexCell candidateSaveHex = GetClosestGKSaveHexOnPath(path, gkHex);
-        if (candidateSaveHex == null)
+        GKSaveHexSelection selection = ResolveGKSaveHexSelection(path, defendingGK, includeOutsideOwnPenaltyBox: ShouldUseOutsideBoxGKShotDecision());
+        if (selection?.selectedHex == null)
         {
             return null;
         }
 
-        int saveDistance = HexGridUtils.GetHexStepDistance(gkHex, candidateSaveHex);
-        int gkPenalty = CalculateGKSavePenalty(defendingGK, saveDistance);
-        int pathIndex = path.IndexOf(candidateSaveHex);
+        ShotInteraction interaction = CreateGKSaveInteraction(defendingGK, selection.selectedHex, path, outsideBoxHandSave: false);
+        if (selection.allCandidatesOutsideOwnPenaltyBox && ShouldUseOutsideBoxGKShotDecision())
+        {
+            if (!outsideBoxGKShotDecisionResolved)
+            {
+                interaction.isOutsideBoxGoalkeeperHandSave = true;
+                pendingOutsideBoxGKSaveInteraction = interaction;
+                saveHex = interaction.interactionHex;
+                Debug.Log($"Goalkeeper {defendingGK.name} has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.");
+            }
 
-        Debug.Log($"Goalkeeper {defendingGK.name} can attempt a save at {candidateSaveHex.coordinates} with penalty {gkPenalty}");
+            return null;
+        }
+
+        Debug.Log($"Goalkeeper {defendingGK.name} can attempt a save at {interaction.interactionHex.coordinates} with penalty {interaction.gkPenalty ?? 0}");
+        return interaction;
+    }
+
+    private bool ShouldUseOutsideBoxGKShotDecision()
+    {
+        return !isHeaderAtGoal && !IsPenaltyShot();
+    }
+
+    private ShotInteraction CreateGKSaveInteraction(PlayerToken defendingGK, HexCell candidateSaveHex, List<HexCell> path, bool outsideBoxHandSave)
+    {
+        HexCell gkHex = defendingGK?.GetCurrentHex();
+        int saveDistance = HexGridUtils.GetHexStepDistance(gkHex, candidateSaveHex);
+        int pathIndex = path != null ? path.IndexOf(candidateSaveHex) : -1;
+
         return new ShotInteraction
         {
             defender = defendingGK,
@@ -2040,7 +2130,8 @@ public class ShotManager : MonoBehaviour
             type = ShotInteractionType.GKSave,
             pathIndex = pathIndex >= 0 ? pathIndex : int.MaxValue,
             requiredNaturalRoll = 0,
-            gkPenalty = gkPenalty
+            gkPenalty = CalculateGKSavePenalty(defendingGK, saveDistance),
+            isOutsideBoxGoalkeeperHandSave = outsideBoxHandSave
         };
     }
 
@@ -2077,7 +2168,7 @@ public class ShotManager : MonoBehaviour
         PlayerToken defendingGK = hexGrid.GetDefendingGK();
         if (goalKeeperManager != null && defendingGK != null)
         {
-            return goalKeeperManager.FindClosestGoalkeeperWallHexOnPath(path, defendingGK, includeGoalkeeperHex: true);
+            return ResolveGKSaveHexSelection(path, defendingGK, includeOutsideOwnPenaltyBox: false)?.selectedHex;
         }
 
         List<HexCell> saveableHexes = hexGrid.GetSavableHexes();
@@ -2091,6 +2182,48 @@ public class ShotManager : MonoBehaviour
             .FirstOrDefault();
     }
 
+    private GKSaveHexSelection ResolveGKSaveHexSelection(List<HexCell> path, PlayerToken defendingGK, bool includeOutsideOwnPenaltyBox)
+    {
+        HexCell gkHex = defendingGK?.GetCurrentHex();
+        if (path == null || defendingGK == null || gkHex == null || goalKeeperManager == null)
+        {
+            return null;
+        }
+
+        HashSet<HexCell> wallHexes = goalKeeperManager
+            .GetGoalkeeperWallHexes(defendingGK, includeGoalkeeperHex: true, requireOwnPenaltyBox: !includeOutsideOwnPenaltyBox)
+            .ToHashSet();
+        List<(HexCell hex, int index)> potentialSaveHexes = path
+            .Select((hex, index) => (hex, index))
+            .Where(entry => entry.hex != null && wallHexes.Contains(entry.hex))
+            .ToList();
+
+        if (potentialSaveHexes.Count == 0)
+        {
+            return null;
+        }
+
+        List<(HexCell hex, int index)> ownBoxSaveHexes = potentialSaveHexes
+            .Where(entry => goalKeeperManager.IsGoalkeeperOwnPenaltyHex(defendingGK, entry.hex))
+            .ToList();
+        List<(HexCell hex, int index)> selectableSaveHexes = ownBoxSaveHexes.Count > 0
+            ? ownBoxSaveHexes
+            : potentialSaveHexes;
+
+        HexCell selectedHex = selectableSaveHexes
+            .OrderBy(entry => HexGridUtils.GetHexStepDistance(gkHex, entry.hex))
+            .ThenBy(entry => entry.hex == gkHex ? 0 : 1)
+            .ThenBy(entry => entry.index)
+            .Select(entry => entry.hex)
+            .FirstOrDefault();
+
+        return new GKSaveHexSelection
+        {
+            selectedHex = selectedHex,
+            allCandidatesOutsideOwnPenaltyBox = ownBoxSaveHexes.Count == 0
+        };
+    }
+
     private List<ShotInteraction> SortShotInteractions(List<ShotInteraction> interactions)
     {
         HexCell originHex = GetShotOriginHex();
@@ -2100,7 +2233,7 @@ public class ShotManager : MonoBehaviour
                 ? HexGridUtils.GetHexStepDistance(originHex, interaction.interactionHex)
                 : interaction.pathIndex)
             .ThenBy(interaction => interaction.IsGK ? 1 : 0)
-            .ThenBy(interaction => interaction.IsGK ? int.MaxValue : interaction.defender.tackling)
+            .ThenBy(interaction => interaction.IsGK ? int.MaxValue : GetEffectiveShotBlockTackling(interaction))
             .ThenBy(interaction => GetTokenSortName(interaction.defender), StringComparer.Ordinal)
             .ThenBy(interaction => interaction.pathIndex)
             .ToList();
@@ -2121,9 +2254,104 @@ public class ShotManager : MonoBehaviour
         return token != null && alreadyInterceptedDefs != null && alreadyInterceptedDefs.Contains(token);
     }
 
-    private IEnumerator OfferBlockRoll()
+    private void ClearPendingOutsideBoxGKShotDecision()
     {
-        if (ShouldOfferGKBoxMoveBeforeNextInteraction())
+        pendingOutsideBoxGKSaveInteraction = null;
+        pendingOutsideBoxGKDecisionAfterShotRoll = false;
+        isWaitingForOutsideBoxGKShotDecision = false;
+    }
+
+    private bool TryEnterOutsideBoxGKShotDecision(bool afterShotRoll)
+    {
+        if (pendingOutsideBoxGKSaveInteraction == null || outsideBoxGKShotDecisionResolved)
+        {
+            return false;
+        }
+
+        isWaitingForOutsideBoxGKShotDecision = true;
+        pendingOutsideBoxGKDecisionAfterShotRoll = afterShotRoll;
+        currentShotInteraction = null;
+        currentDefenderBlockingHex = null;
+        saveHex = pendingOutsideBoxGKSaveInteraction.interactionHex;
+        Debug.Log(
+            $"{pendingOutsideBoxGKSaveInteraction.defender.name} can only handle this shot outside their own penalty box at {saveHex?.coordinates.ToString() ?? "<unknown>"}. " +
+            "Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.");
+        return true;
+    }
+
+    private void SelectOutsideBoxGKHandSave()
+    {
+        ShotInteraction handSaveInteraction = pendingOutsideBoxGKSaveInteraction;
+        bool afterShotRoll = pendingOutsideBoxGKDecisionAfterShotRoll;
+        ClearPendingOutsideBoxGKShotDecision();
+        outsideBoxGKShotDecisionResolved = true;
+
+        if (handSaveInteraction == null)
+        {
+            StartCoroutine(OfferBlockRoll(allowGKBoxMove: false));
+            return;
+        }
+
+        handSaveInteraction.isOutsideBoxGoalkeeperHandSave = true;
+        interceptors.RemoveAll(interaction => interaction != null && interaction.defender == handSaveInteraction.defender);
+        interceptors.Add(handSaveInteraction);
+        interceptors = SortShotInteractions(interceptors);
+        saveHex = handSaveInteraction.interactionHex;
+        UpdateExpectedGoalGkInteraction(handSaveInteraction);
+        Debug.Log($"{handSaveInteraction.defender.name} chooses to dive with hands outside the box at {saveHex.coordinates}.");
+        ContinueAfterOutsideBoxGKShotDecision(afterShotRoll);
+    }
+
+    private void SelectOutsideBoxGKOutfieldBlock()
+    {
+        PlayerToken goalkeeper = pendingOutsideBoxGKSaveInteraction?.defender;
+        bool afterShotRoll = pendingOutsideBoxGKDecisionAfterShotRoll;
+        ClearPendingOutsideBoxGKShotDecision();
+        outsideBoxGKShotDecisionResolved = true;
+        UpdateExpectedGoalGkInteraction(null);
+
+        ShotInteraction blockInteraction = BuildGoalkeeperOutfieldBlockInteraction(goalkeeper, trajectoryPath);
+        if (blockInteraction != null)
+        {
+            interceptors.RemoveAll(interaction => interaction != null && interaction.defender == goalkeeper);
+            interceptors.Add(blockInteraction);
+            interceptors = SortShotInteractions(interceptors);
+            expectedGoalOutfieldBlockInteractions.Add(CloneShotInteraction(blockInteraction));
+            Debug.Log($"{goalkeeper.name} chooses to act as an outfielder for this shot.");
+        }
+        else
+        {
+            Debug.Log($"{goalkeeper?.name ?? "The goalkeeper"} chooses to act as an outfielder, but is not on the shot path or in ZOI and cannot block.");
+        }
+
+        ContinueAfterOutsideBoxGKShotDecision(afterShotRoll);
+    }
+
+    private void ContinueAfterOutsideBoxGKShotDecision(bool afterShotRoll)
+    {
+        if (afterShotRoll)
+        {
+            if (interceptors.Count == 0)
+            {
+                StartCoroutine(ResolveShotGoal());
+                return;
+            }
+
+            StartCoroutine(OfferBlockRoll(allowGKBoxMove: false));
+            return;
+        }
+
+        StartCoroutine(OfferBlockRoll(allowGKBoxMove: false));
+    }
+
+    private IEnumerator OfferBlockRoll(bool allowGKBoxMove = true)
+    {
+        if (TryEnterOutsideBoxGKShotDecision(afterShotRoll: shooterRoll > 0))
+        {
+            yield break;
+        }
+
+        if (allowGKBoxMove && ShouldOfferGKBoxMoveBeforeNextInteraction())
         {
             if (IsFreeKickShot())
             {
@@ -2133,6 +2361,11 @@ public class ShotManager : MonoBehaviour
             {
                 yield return StartCoroutine(OfferGKBoxMoveAndRefreshGKInteraction());
             }
+        }
+
+        if (TryEnterOutsideBoxGKShotDecision(afterShotRoll: shooterRoll > 0))
+        {
+            yield break;
         }
 
         if (interceptors.Count == 0)
@@ -2149,16 +2382,25 @@ public class ShotManager : MonoBehaviour
 
         if (currentShotInteraction.IsGK)
         {
-            Debug.Log("The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.");
             saveHex = currentShotInteraction.interactionHex;
-            isWaitingForShotRoll = true;
+            if (shooterRoll > 0)
+            {
+                Debug.Log($"Goalkeeper {currentShotInteraction.defender.name} now attempts a save. Press [R] to roll");
+                isWaitingForGKDiceRoll = true;
+            }
+            else
+            {
+                Debug.Log("The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.");
+                isWaitingForShotRoll = true;
+            }
         }
         else
         {
-            int tacklingRollNeeded = 10 - currentShotInteraction.defender.tackling;
+            int tackling = GetEffectiveShotBlockTackling(currentShotInteraction);
+            int tacklingRollNeeded = 10 - tackling;
             int finalRollNeeded = Math.Min(tacklingRollNeeded, currentShotInteraction.requiredNaturalRoll);
-            string blockType = currentShotInteraction.requiredNaturalRoll == 5 ? "on-path" : "ZOI";
-            Debug.Log($"{currentShotInteraction.defender.name} attempts an {blockType} shot block at {currentShotInteraction.interactionHex.coordinates}, needs a {finalRollNeeded}+ to deflect. [R]oll!");
+            string blockType = GetShotBlockTypeLabel(currentShotInteraction);
+            Debug.Log($"{currentShotInteraction.defender.name} attempts an {blockType} shot block at {currentShotInteraction.interactionHex.coordinates}. {BuildNeededRollInstruction(finalRollNeeded, " to deflect")}. [R]oll!");
             isWaitingForBlockDiceRoll = true;
         }
     }
@@ -2240,13 +2482,21 @@ public class ShotManager : MonoBehaviour
         currentDefenderBlockingHex = null;
         interceptors.Clear();
 
+        RefreshGKInteractionOnly();
+
+        if (TryEnterOutsideBoxGKShotDecision(afterShotRoll: true))
+        {
+            yield break;
+        }
+
         if (ShouldOfferGKBoxMoveBeforeNextInteraction())
         {
             yield return StartCoroutine(OfferGKBoxMoveAndRefreshGKInteraction());
         }
-        else
+
+        if (TryEnterOutsideBoxGKShotDecision(afterShotRoll: true))
         {
-            RefreshGKInteractionOnly();
+            yield break;
         }
 
         ShotInteraction gkInteraction = interceptors.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
@@ -2327,6 +2577,7 @@ public class ShotManager : MonoBehaviour
     private void RefreshGKInteractionOnly()
     {
         interceptors.RemoveAll(interaction => interaction != null && interaction.IsGK);
+        pendingOutsideBoxGKSaveInteraction = null;
 
         ShotInteraction updatedGKInteraction = BuildGKSaveInteraction(trajectoryPath);
         if (updatedGKInteraction != null)
@@ -2369,7 +2620,7 @@ public class ShotManager : MonoBehaviour
             {
                 // Retrieve defender attributes
                 PlayerToken defenderToken = currentDefenderEntry.defender;
-                int tackling = defenderToken.tackling;
+                int tackling = GetEffectiveShotBlockTackling(currentDefenderEntry);
                 string defenderName = defenderToken.name;
 
                 if (currentDefenderEntry.IsGK)
@@ -2432,7 +2683,22 @@ public class ShotManager : MonoBehaviour
                     currentShotInteraction = null;
                     currentDefenderBlockingHex = null;
 
-                    if (IsFreeKickShot() && interceptors.Count == 0)
+                    if (currentDefenderEntry.isGoalkeeperOutfieldBlock)
+                    {
+                        if (interceptors.Count > 0 || totalShotPower == 0)
+                        {
+                            StartCoroutine(OfferBlockRoll(allowGKBoxMove: false));
+                        }
+                        else if (shooterRoll == 1)
+                        {
+                            yield return StartCoroutine(ResolveShotOffTarget());
+                        }
+                        else
+                        {
+                            yield return StartCoroutine(ResolveShotGoal());
+                        }
+                    }
+                    else if (IsFreeKickShot() && interceptors.Count == 0)
                     {
                         if (shooterRoll == 1)
                         {
@@ -2729,8 +2995,24 @@ public class ShotManager : MonoBehaviour
             return 6;
         }
 
-        int tacklingRollNeeded = 10 - interaction.defender.tackling;
+        int tacklingRollNeeded = 10 - GetEffectiveShotBlockTackling(interaction);
         return Mathf.Max(1, Math.Min(tacklingRollNeeded, interaction.requiredNaturalRoll));
+    }
+
+    private int GetEffectiveShotBlockTackling(ShotInteraction interaction)
+    {
+        if (interaction == null)
+        {
+            return 0;
+        }
+
+        return interaction.effectiveTackling ?? interaction.defender?.tackling ?? 0;
+    }
+
+    private string GetShotBlockTypeLabel(ShotInteraction interaction)
+    {
+        int naturalRoll = interaction?.blockTypeNaturalRoll ?? interaction?.requiredNaturalRoll ?? 6;
+        return naturalRoll == 5 ? "on-path" : "ZOI";
     }
 
     private int GetGKSavingRequiredRoll(PlayerToken gkToken, int savingPenalty, int attackPower)
@@ -2778,7 +3060,8 @@ public class ShotManager : MonoBehaviour
         }
 
         int neededRoll = GetOutfieldBlockRequiredRoll(interaction);
-        return $"Click R to Roll for a block with {GetTokenInstructionName(interaction.defender)} (Tackling: {interaction.defender.tackling}). {BuildNeededRollInstruction(neededRoll, "")}";
+        int tackling = GetEffectiveShotBlockTackling(interaction);
+        return $"Click R to Roll for a block with {GetTokenInstructionName(interaction.defender)} (Tackling: {tackling}). {BuildNeededRollInstruction(neededRoll, "")}";
     }
 
     private string BuildShotRollInstruction()
@@ -2952,6 +3235,12 @@ public class ShotManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         alreadyInterceptedDefs.Add(gkToken);
 
+        if (gkEntry.isOutsideBoxGoalkeeperHandSave && totalSavingPower >= totalShotPower && !IsPenaltyShootoutShot())
+        {
+            yield return StartCoroutine(ResolveOutsideBoxGKShotHandball(gkToken, saveHex));
+            yield break;
+        }
+
         if (totalSavingPower == totalShotPower)
         {
             if (IsPenaltyShootoutShot())
@@ -3013,7 +3302,7 @@ public class ShotManager : MonoBehaviour
             if (interceptors.Count > 0)
             {
                 // There are more defenders to block, Run through them
-                StartCoroutine(OfferBlockRoll());
+                StartCoroutine(OfferBlockRoll(allowGKBoxMove: !gkEntry.isOutsideBoxGoalkeeperHandSave));
             }
             else
             {
@@ -3046,6 +3335,69 @@ public class ShotManager : MonoBehaviour
             }
         }
         yield return null;
+    }
+
+    private IEnumerator ResolveOutsideBoxGKShotHandball(PlayerToken goalkeeper, HexCell foulHex)
+    {
+        if (goalkeeper == null || foulHex == null)
+        {
+            Debug.LogError("Cannot resolve outside-box GK shot handball because the goalkeeper or foul hex is missing.");
+            yield break;
+        }
+
+        Debug.Log($"{goalkeeper.name} deliberately handles the shot outside their own penalty box at {foulHex.coordinates}. Forced free kick and straight red card.");
+        LogExpectedGoalForCurrentShot("illegal handball");
+        if (MatchManager.Instance?.gameData?.gameLog != null && !goalkeeper.isSentOff)
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                goalkeeper,
+                MatchManager.ActionType.RedCardShown,
+                connectedToken: shooter);
+        }
+
+        if (!goalkeeper.isSentOff)
+        {
+            goalkeeper.MarkSentOff();
+        }
+
+        MatchManager.Instance?.HandleSentOff(goalkeeper);
+        ball?.PlaceAtCell(foulHex);
+        ResetShotProcess();
+        yield return StartCoroutine(StartForcedFreeKickAfterShotHandball());
+    }
+
+    private IEnumerator StartForcedFreeKickAfterShotHandball()
+    {
+        MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
+
+        if (movementPhaseManager != null && movementPhaseManager.isActivated)
+        {
+            movementPhaseManager.EndMovementPhaseForStopPlay(triggerF3: true);
+        }
+
+        while (MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll)
+        {
+            yield return null;
+        }
+
+        if (MatchManager.Instance != null
+            && (MatchManager.Instance.currentState == MatchManager.GameState.HalfTime
+                || MatchManager.Instance.currentState == MatchManager.GameState.MatchEnded))
+        {
+            yield break;
+        }
+
+        if (finalThirdManager != null && finalThirdManager.isActivated)
+        {
+            Debug.Log("Waiting for Final Third movement to finish before starting the outside-box GK handball Free Kick.");
+            while (finalThirdManager.isActivated)
+            {
+                yield return null;
+            }
+        }
+
+        FreeKickManager restartManager = MatchManager.Instance?.freeKickManager ?? FindAnyObjectByType<FreeKickManager>();
+        restartManager?.StartFreeKickPreparation();
     }
 
     private IEnumerator ResolvePenaltyShootoutTiedSave(PlayerToken gkToken)
@@ -3346,6 +3698,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForGKDiceRoll = false;
         isWaitingforHandlingTest = false;
         isWaitingForSaveandHoldScenario = false;
+        isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
         isWaitingForTargetSelection = false;
@@ -3373,6 +3726,8 @@ public class ShotManager : MonoBehaviour
         currentDefenderBlockingHex = null;
         gkWasOfferedMoveForBox = false;
         shotType = null;
+        ClearPendingOutsideBoxGKShotDecision();
+        outsideBoxGKShotDecisionResolved = false;
         if (!deferShotActionResolutionUntilExternalRestart)
         {
             committedShotActionKind = MatchManager.MatchActionKind.None;
@@ -3610,6 +3965,7 @@ public class ShotManager : MonoBehaviour
         if (isWaitingForBlockDiceRoll) sb.Append("isWaitingForBlockDiceRoll, ");
         if (isWaitingForShotRoll) sb.Append("isWaitingForShotRoll, ");
         if (isWaitingForGKDiceRoll) sb.Append("isWaitingForGKDiceRoll, ");
+        if (isWaitingForOutsideBoxGKShotDecision) sb.Append("isWaitingForOutsideBoxGKShotDecision, ");
         if (isWaitingforHandlingTest) sb.Append("isWaitingforHandlingTest, ");
         if (isWaitingForSaveandHoldScenario) sb.Append("isWaitingForSaveandHoldScenario, ");
         if (gkWasOfferedMoveForBox) sb.Append("gkWasOfferedMoveForBox, ");
@@ -3625,6 +3981,16 @@ public class ShotManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    private string BuildOutsideBoxGKShotDecisionInstruction()
+    {
+        PlayerToken goalkeeper = pendingOutsideBoxGKSaveInteraction?.defender ?? hexGrid.GetDefendingGK();
+        int savingPenalty = pendingOutsideBoxGKSaveInteraction?.gkPenalty ?? 0;
+        string hexInfo = pendingOutsideBoxGKSaveInteraction?.interactionHex != null
+            ? $" at {HexGridUtils.FormatHexCoordinates(pendingOutsideBoxGKSaveInteraction.interactionHex)}"
+            : "";
+        return $"Press [D] to dive with hands{hexInfo} using {GetTokenInstructionName(goalkeeper)} ({BuildSavingAttributeInstruction(goalkeeper, savingPenalty)}), or [B] to block as an outfielder (Tackling: 0)";
     }
 
     public string GetInstructions()
@@ -3653,6 +4019,7 @@ public class ShotManager : MonoBehaviour
         }
         if (isWaitingForBlockDiceRoll) sb.Append($"{BuildBlockRollInstruction()}, ");
         if (isWaitingForShotRoll) sb.Append($"{BuildShotRollInstruction()}, ");
+        if (isWaitingForOutsideBoxGKShotDecision) sb.Append($"{BuildOutsideBoxGKShotDecisionInstruction()}, ");
         if (isHeaderAtGoal && isWaitingForGKDiceRoll)
         {
             sb.Append($"{BuildHeaderGKSaveRollInstruction()}, ");
@@ -3689,6 +4056,7 @@ public class ShotManager : MonoBehaviour
         if (isWaitingforBlockerSelection
             || isWaitingforBlockerMovement
             || isWaitingForBlockDiceRoll
+            || isWaitingForOutsideBoxGKShotDecision
             || isWaitingForGKDiceRoll
             || isWaitingforHandlingTest)
         {

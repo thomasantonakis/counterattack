@@ -255,7 +255,7 @@ public class GoalKeeperManager : MonoBehaviour
         return hex.isInPenaltyBox == ownPenaltyBox;
     }
 
-    public List<HexCell> GetGoalkeeperWallHexes(PlayerToken goalkeeper, bool includeGoalkeeperHex)
+    public List<HexCell> GetGoalkeeperWallHexes(PlayerToken goalkeeper, bool includeGoalkeeperHex, bool requireOwnPenaltyBox = true)
     {
         List<HexCell> wallHexes = new();
         HexCell gkHex = goalkeeper != null ? goalkeeper.GetCurrentHex() : null;
@@ -272,7 +272,7 @@ public class GoalKeeperManager : MonoBehaviour
             }
 
             HexCell candidate = hexGrid.GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + offset));
-            if (candidate != null && IsGoalkeeperOwnPenaltyHex(goalkeeper, candidate))
+            if (candidate != null && (!requireOwnPenaltyBox || IsGoalkeeperOwnPenaltyHex(goalkeeper, candidate)))
             {
                 wallHexes.Add(candidate);
             }
