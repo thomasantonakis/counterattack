@@ -257,7 +257,9 @@ public static class TokenKitCatalog
 
         float bodyScore = GetColorSimilarity(styleA.bodyColor, styleB.bodyColor);
         float faceMeanScore = GetColorSimilarity(GetAverageFaceColor(styleA), GetAverageFaceColor(styleB));
-        float topFaceScore = GetTopFaceSimilarity(styleA, styleB, faceMeanScore);
+        float topFaceScore = Mathf.Min(
+            GetTopFaceSimilarity(styleA, styleB, faceMeanScore),
+            GetTopFaceSimilarity(styleB, styleA, faceMeanScore));
 
         float weightedScore = (bodyScore * BodySimilarityWeight) + (topFaceScore * TopFaceSimilarityWeight);
         bool isClash = bodyScore > KitComponentClashThreshold

@@ -89,6 +89,10 @@ public class CreateNewGameManager : MonoBehaviour
     private TMP_Dropdown activeClosedKitDropdown;
     private bool isRefreshingInternationalTeamUi;
     private bool suppressKitSelectionChanged;
+    private string lastValidHomeKitId = DefaultHomeKitId;
+    private string lastValidAwayKitId = DefaultAwayKitId;
+    private string lastValidHomeGKKitId = DefaultHomeGKKitId;
+    private string lastValidAwayGKKitId = DefaultAwayGKKitId;
     private bool suppressRegularMatchSelectionSnapshot;
     private RegularMatchSelectionSnapshot regularMatchSelectionSnapshot;
     private bool isEditingExistingDraftSettings;
@@ -583,6 +587,8 @@ public class CreateNewGameManager : MonoBehaviour
         ConfigureKitDropdownNavigation(awayKitDropdown);
         ConfigureKitDropdownNavigation(homeGKKitDropdown);
         ConfigureKitDropdownNavigation(awayGKKitDropdown);
+        RepairGoalkeeperKitSelections(null);
+        RememberCurrentValidKitSelections();
         UpdateKitPreviews();
         UpdateKitValidationForCurrentSelection();
     }
@@ -741,36 +747,302 @@ public class CreateNewGameManager : MonoBehaviour
     private void OnHomeKitChanged(int _)
     {
         activeClosedKitDropdown = homeKitDropdown;
-        HandleKitSelectionChanged();
+        HandleKitSelectionChanged(homeKitDropdown);
     }
 
     private void OnAwayKitChanged(int _)
     {
         activeClosedKitDropdown = awayKitDropdown;
-        HandleKitSelectionChanged();
+        HandleKitSelectionChanged(awayKitDropdown);
     }
 
     private void OnHomeGKKitChanged(int _)
     {
         activeClosedKitDropdown = homeGKKitDropdown;
-        HandleKitSelectionChanged();
+        HandleKitSelectionChanged(homeGKKitDropdown);
     }
 
     private void OnAwayGKKitChanged(int _)
     {
         activeClosedKitDropdown = awayGKKitDropdown;
-        HandleKitSelectionChanged();
+        HandleKitSelectionChanged(awayGKKitDropdown);
     }
 
-    private void HandleKitSelectionChanged()
+    private void HandleKitSelectionChanged(TMP_Dropdown changedDropdown)
     {
         if (suppressKitSelectionChanged)
         {
             return;
         }
 
+        if (!TryAcceptKitSelectionChange(changedDropdown))
+        {
+            return;
+        }
+
         UpdateKitPreviews();
         UpdateKitValidationForCurrentSelection();
+    }
+
+    private bool TryAcceptKitSelectionChange(TMP_Dropdown changedDropdown)
+    {
+        TokenKitPreset homePreset = GetSelectedKitPreset(homeKitDropdown);
+        TokenKitPreset awayPreset = GetSelectedKitPreset(awayKitDropdown);
+        TokenKitPreset homeGkPreset = GetSelectedKitPreset(homeGKKitDropdown);
+        TokenKitPreset awayGkPreset = GetSelectedKitPreset(awayGKKitDropdown);
+
+        if (changedDropdown == homeKitDropdown || changedDropdown == awayKitDropdown)
+        {
+            if (IsInternationalMatchSelected())
+            {
+                ApplyInternationalOutfieldKitPairForManualChange(changedDropdown);
+                return FinishAcceptedKitSelection();
+            }
+
+            TokenKitSimilarityBreakdown outfieldSimilarity = TokenKitCatalog.GetSimilarityBreakdown(homePreset?.Id, awayPreset?.Id);
+            if (outfieldSimilarity.IsClash)
+            {
+                RejectKitSelectionChange(
+                    changedDropdown,
+                    changedDropdown == homeKitDropdown ? lastValidHomeKitId : lastValidAwayKitId,
+                    BuildKitClashMessage(homePreset?.DisplayName ?? "Home kit", awayPreset?.DisplayName ?? "Away kit", outfieldSimilarity));
+                return false;
+            }
+
+            RepairGoalkeeperKitSelections(changedDropdown);
+            return FinishAcceptedKitSelection();
+        }
+
+        if (changedDropdown == homeGKKitDropdown)
+        {
+            string directClashMessage = BuildFirstGkKitClashMessage(homeGkPreset, null, homePreset, awayPreset);
+            if (!string.IsNullOrWhiteSpace(directClashMessage))
+            {
+                RejectKitSelectionChange(changedDropdown, lastValidHomeGKKitId, directClashMessage);
+                return false;
+            }
+
+            RepairGoalkeeperKitSelections(changedDropdown);
+            return FinishAcceptedKitSelection();
+        }
+
+        if (changedDropdown == awayGKKitDropdown)
+        {
+            string directClashMessage = BuildFirstGkKitClashMessage(null, awayGkPreset, homePreset, awayPreset);
+            if (!string.IsNullOrWhiteSpace(directClashMessage))
+            {
+                RejectKitSelectionChange(changedDropdown, lastValidAwayGKKitId, directClashMessage);
+                return false;
+            }
+
+            RepairGoalkeeperKitSelections(changedDropdown);
+            return FinishAcceptedKitSelection();
+        }
+
+        RepairGoalkeeperKitSelections(null);
+        return FinishAcceptedKitSelection();
+    }
+
+    private bool FinishAcceptedKitSelection()
+    {
+        TokenKitSimilarityBreakdown outfieldSimilarity = TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown), GetSelectedKitPresetId(awayKitDropdown));
+        string validationMessage = GetKitValidationMessage(outfieldSimilarity);
+        if (!string.IsNullOrWhiteSpace(validationMessage))
+        {
+            RejectKitSelectionChangeAndRestoreLastValidSet(validationMessage);
+            return false;
+        }
+
+        RememberCurrentValidKitSelections();
+        return true;
+    }
+
+    private void RejectKitSelectionChange(TMP_Dropdown dropdown, string fallbackPresetId, string message)
+    {
+        suppressKitSelectionChanged = true;
+        try
+        {
+            SetKitDropdownSelectionWithoutNotify(dropdown, fallbackPresetId);
+        }
+        finally
+        {
+            suppressKitSelectionChanged = false;
+        }
+
+        UpdateKitPreviews();
+        UpdateKitSimilarityScore();
+        UpdateKitValidation(message);
+        SetCreateGameButtonEnabled(true);
+    }
+
+    private void RejectKitSelectionChangeAndRestoreLastValidSet(string message)
+    {
+        suppressKitSelectionChanged = true;
+        try
+        {
+            SetKitDropdownSelectionWithoutNotify(homeKitDropdown, lastValidHomeKitId);
+            SetKitDropdownSelectionWithoutNotify(awayKitDropdown, lastValidAwayKitId);
+            SetKitDropdownSelectionWithoutNotify(homeGKKitDropdown, lastValidHomeGKKitId);
+            SetKitDropdownSelectionWithoutNotify(awayGKKitDropdown, lastValidAwayGKKitId);
+        }
+        finally
+        {
+            suppressKitSelectionChanged = false;
+        }
+
+        UpdateKitPreviews();
+        UpdateKitSimilarityScore();
+        UpdateKitValidation(message);
+        SetCreateGameButtonEnabled(true);
+    }
+
+    private void RepairGoalkeeperKitSelections(TMP_Dropdown changedDropdown)
+    {
+        TokenKitPreset homePreset = GetSelectedKitPreset(homeKitDropdown);
+        TokenKitPreset awayPreset = GetSelectedKitPreset(awayKitDropdown);
+        TokenKitPreset homeGkPreset = GetSelectedKitPreset(homeGKKitDropdown);
+        TokenKitPreset awayGkPreset = GetSelectedKitPreset(awayGKKitDropdown);
+
+        suppressKitSelectionChanged = true;
+        try
+        {
+            bool homeGkWasChanged = changedDropdown == homeGKKitDropdown;
+            bool awayGkWasChanged = changedDropdown == awayGKKitDropdown;
+
+            if (!homeGkWasChanged
+                && !IsGoalkeeperKitCompatible(homeGkPreset, homePreset, awayPreset, awayGkPreset))
+            {
+                TokenKitPreset replacement = FindCompatibleGoalkeeperKit(homePreset, awayPreset, awayGkPreset);
+                if (replacement != null)
+                {
+                    SetKitDropdownSelectionWithoutNotify(homeGKKitDropdown, replacement.Id);
+                    homeGkPreset = replacement;
+                }
+            }
+
+            if (!awayGkWasChanged
+                && !IsGoalkeeperKitCompatible(awayGkPreset, homePreset, awayPreset, homeGkPreset))
+            {
+                TokenKitPreset replacement = FindCompatibleGoalkeeperKit(homePreset, awayPreset, homeGkPreset);
+                if (replacement != null)
+                {
+                    SetKitDropdownSelectionWithoutNotify(awayGKKitDropdown, replacement.Id);
+                    awayGkPreset = replacement;
+                }
+            }
+
+            if (homeGkWasChanged
+                && !IsGoalkeeperKitCompatible(awayGkPreset, homePreset, awayPreset, homeGkPreset))
+            {
+                TokenKitPreset replacement = FindCompatibleGoalkeeperKit(homePreset, awayPreset, homeGkPreset);
+                if (replacement != null)
+                {
+                    SetKitDropdownSelectionWithoutNotify(awayGKKitDropdown, replacement.Id);
+                }
+            }
+            else if (awayGkWasChanged
+                && !IsGoalkeeperKitCompatible(homeGkPreset, homePreset, awayPreset, awayGkPreset))
+            {
+                TokenKitPreset replacement = FindCompatibleGoalkeeperKit(homePreset, awayPreset, awayGkPreset);
+                if (replacement != null)
+                {
+                    SetKitDropdownSelectionWithoutNotify(homeGKKitDropdown, replacement.Id);
+                    homeGkPreset = replacement;
+                }
+            }
+
+            if (!homeGkWasChanged
+                && !awayGkWasChanged
+                && (!IsGoalkeeperKitCompatible(homeGkPreset, homePreset, awayPreset, awayGkPreset)
+                    || !IsGoalkeeperKitCompatible(awayGkPreset, homePreset, awayPreset, homeGkPreset)))
+            {
+                TokenKitPreset homeReplacement = FindCompatibleGoalkeeperKit(homePreset, awayPreset, null);
+                TokenKitPreset awayReplacement = FindCompatibleGoalkeeperKit(homePreset, awayPreset, homeReplacement);
+                if (homeReplacement != null && awayReplacement != null)
+                {
+                    SetKitDropdownSelectionWithoutNotify(homeGKKitDropdown, homeReplacement.Id);
+                    SetKitDropdownSelectionWithoutNotify(awayGKKitDropdown, awayReplacement.Id);
+                }
+            }
+        }
+        finally
+        {
+            suppressKitSelectionChanged = false;
+        }
+    }
+
+    private TokenKitPreset FindCompatibleGoalkeeperKit(
+        TokenKitPreset homePreset,
+        TokenKitPreset awayPreset,
+        TokenKitPreset otherGkPreset)
+    {
+        foreach (TokenKitPreset candidate in availableGKKitPresets ?? Array.Empty<TokenKitPreset>())
+        {
+            if (IsGoalkeeperKitCompatible(candidate, homePreset, awayPreset, otherGkPreset))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private bool IsGoalkeeperKitCompatible(
+        TokenKitPreset candidate,
+        TokenKitPreset homePreset,
+        TokenKitPreset awayPreset,
+        TokenKitPreset otherGkPreset)
+    {
+        if (candidate == null)
+        {
+            return false;
+        }
+
+        if (otherGkPreset != null
+            && string.Equals(candidate.Id, otherGkPreset.Id, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return !KitsClash(candidate, homePreset)
+            && !KitsClash(candidate, awayPreset)
+            && !KitsClash(candidate, otherGkPreset);
+    }
+
+    private static bool KitsClash(TokenKitPreset first, TokenKitPreset second)
+    {
+        if (first == null || second == null)
+        {
+            return false;
+        }
+
+        return TokenKitCatalog.GetSimilarityBreakdown(first.Id, second.Id).IsClash;
+    }
+
+    private void SetKitDropdownSelectionWithoutNotify(TMP_Dropdown dropdown, string presetId)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        int presetIndex = FindPresetIndex(presetId, GetPresetListForDropdown(dropdown));
+        dropdown.SetValueWithoutNotify(presetIndex >= 0 ? presetIndex : 0);
+        dropdown.RefreshShownValue();
+    }
+
+    private void RememberCurrentValidKitSelections()
+    {
+        TokenKitSimilarityBreakdown outfieldSimilarity = TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown), GetSelectedKitPresetId(awayKitDropdown));
+        if (!string.IsNullOrWhiteSpace(GetKitValidationMessage(outfieldSimilarity)))
+        {
+            return;
+        }
+
+        lastValidHomeKitId = GetSelectedKitPresetId(homeKitDropdown);
+        lastValidAwayKitId = GetSelectedKitPresetId(awayKitDropdown);
+        lastValidHomeGKKitId = GetSelectedKitPresetId(homeGKKitDropdown);
+        lastValidAwayGKKitId = GetSelectedKitPresetId(awayGKKitDropdown);
     }
 
     private void OnHomeInternationalTeamChanged(int _)
@@ -853,17 +1125,56 @@ public class CreateNewGameManager : MonoBehaviour
         suppressKitSelectionChanged = true;
         try
         {
-            PopulateKitDropdown(homeKitDropdown, homeOptions.HomeKit?.Id ?? string.Empty);
-            PopulateKitDropdown(awayKitDropdown, awayOptions.HomeKit?.Id ?? string.Empty);
+            ApplyInternationalOutfieldKitPair(homeOptions, awayOptions);
+            RepairGoalkeeperKitSelections(null);
+            RememberCurrentValidKitSelections();
+        }
+        finally
+        {
+            suppressKitSelectionChanged = false;
+        }
+    }
 
-            TokenKitPreset selectedHomeKit = GetSelectedKitPreset(homeKitDropdown);
-            TokenKitPreset selectedAwayKit = GetSelectedKitPreset(awayKitDropdown);
-            if (selectedHomeKit != null && selectedAwayKit != null)
+    private void ApplyInternationalOutfieldKitPair(InternationalTeamKitOptions homeOptions, InternationalTeamKitOptions awayOptions)
+    {
+        if (TryApplyInternationalOutfieldKitPair(homeOptions.HomeKit, awayOptions.HomeKit)
+            || TryApplyInternationalOutfieldKitPair(homeOptions.HomeKit, awayOptions.AwayKit)
+            || TryApplyInternationalOutfieldKitPair(homeOptions.AwayKit, awayOptions.HomeKit)
+            || TryApplyInternationalOutfieldKitPair(homeOptions.AwayKit, awayOptions.AwayKit))
+        {
+            return;
+        }
+
+        PopulateKitDropdown(homeKitDropdown, GetPreferredInternationalKitId(homeOptions));
+        PopulateKitDropdown(awayKitDropdown, GetPreferredInternationalKitId(awayOptions));
+        Debug.LogError(
+            $"No compatible international kit pairing found for {GetSelectedInternationalTeamName(homeInternationalTeamDropdown)} vs {GetSelectedInternationalTeamName(awayInternationalTeamDropdown)}.");
+    }
+
+    private void ApplyInternationalOutfieldKitPairForManualChange(TMP_Dropdown changedDropdown)
+    {
+        RefreshInternationalTeamKitOptions();
+        InternationalTeamKitOptions homeOptions = GetInternationalTeamKitOptions(GetSelectedInternationalTeamName(homeInternationalTeamDropdown));
+        InternationalTeamKitOptions awayOptions = GetInternationalTeamKitOptions(GetSelectedInternationalTeamName(awayInternationalTeamDropdown));
+        TokenKitPreset selectedPreset = GetSelectedKitPreset(changedDropdown);
+
+        suppressKitSelectionChanged = true;
+        try
+        {
+            if (changedDropdown == homeKitDropdown)
             {
-                TokenKitSimilarityBreakdown similarity = TokenKitCatalog.GetSimilarityBreakdown(selectedHomeKit.Id, selectedAwayKit.Id);
-                if (similarity.IsClash && awayOptions.AwayKit != null)
+                if (TryApplyInternationalOutfieldKitPair(selectedPreset, awayOptions.HomeKit)
+                    || TryApplyInternationalOutfieldKitPair(selectedPreset, awayOptions.AwayKit))
                 {
-                    PopulateKitDropdown(awayKitDropdown, awayOptions.AwayKit.Id);
+                    return;
+                }
+            }
+            else if (changedDropdown == awayKitDropdown)
+            {
+                if (TryApplyInternationalOutfieldKitPair(homeOptions.HomeKit, selectedPreset)
+                    || TryApplyInternationalOutfieldKitPair(homeOptions.AwayKit, selectedPreset))
+                {
+                    return;
                 }
             }
         }
@@ -871,6 +1182,31 @@ public class CreateNewGameManager : MonoBehaviour
         {
             suppressKitSelectionChanged = false;
         }
+    }
+
+    private bool TryApplyInternationalOutfieldKitPair(TokenKitPreset homePreset, TokenKitPreset awayPreset)
+    {
+        if (homePreset == null || awayPreset == null)
+        {
+            return false;
+        }
+
+        TokenKitSimilarityBreakdown similarity = TokenKitCatalog.GetSimilarityBreakdown(homePreset.Id, awayPreset.Id);
+        if (similarity.IsClash)
+        {
+            return false;
+        }
+
+        PopulateKitDropdown(homeKitDropdown, homePreset.Id);
+        PopulateKitDropdown(awayKitDropdown, awayPreset.Id);
+        return true;
+    }
+
+    private static string GetPreferredInternationalKitId(InternationalTeamKitOptions options)
+    {
+        return options.HomeKit?.Id
+            ?? options.AwayKit?.Id
+            ?? string.Empty;
     }
 
     private void UpdateKitPreviews()
@@ -1577,6 +1913,8 @@ public class CreateNewGameManager : MonoBehaviour
             PopulateKitDropdown(awayKitDropdown, string.IsNullOrWhiteSpace(settings.awayKit) ? DefaultAwayKitId : settings.awayKit);
             PopulateKitDropdown(homeGKKitDropdown, string.IsNullOrWhiteSpace(settings.homeGKKit) ? DefaultHomeGKKitId : settings.homeGKKit);
             PopulateKitDropdown(awayGKKitDropdown, string.IsNullOrWhiteSpace(settings.awayGKKit) ? DefaultAwayGKKitId : settings.awayGKKit);
+            RepairGoalkeeperKitSelections(null);
+            RememberCurrentValidKitSelections();
         }
         finally
         {
@@ -1719,6 +2057,8 @@ public class CreateNewGameManager : MonoBehaviour
         PopulateKitDropdown(awayKitDropdown, regularMatchSelectionSnapshot.awayKit);
         PopulateKitDropdown(homeGKKitDropdown, regularMatchSelectionSnapshot.homeGKKit);
         PopulateKitDropdown(awayGKKitDropdown, regularMatchSelectionSnapshot.awayGKKit);
+        RepairGoalkeeperKitSelections(null);
+        RememberCurrentValidKitSelections();
     }
 
     // Adjust the squad size dropdown based on match type selection

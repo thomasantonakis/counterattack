@@ -252,7 +252,7 @@ def format_scores(a: Style, b: Style) -> str:
 def similarity(a: Style, b: Style) -> tuple[float, float, float]:
     body = color_similarity(a.body_color, b.body_color)
     face_mean = color_similarity(average_face_color(a, FACE_AVERAGE_SAMPLE_TEXTURE_SIZE), average_face_color(b, FACE_AVERAGE_SAMPLE_TEXTURE_SIZE))
-    top = top_face_similarity(a, b, face_mean)
+    top = min(top_face_similarity(a, b, face_mean), top_face_similarity(b, a, face_mean))
     total = (body * BODY_WEIGHT) + (top * TOP_WEIGHT)
     return body, top, total
 
