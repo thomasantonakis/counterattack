@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public struct RollInputOverride
 {
@@ -252,6 +253,7 @@ public class GameInputManager : MonoBehaviour
     private RectTransform hoverNameRect;
     private TextMeshProUGUI hoverNameLabel;
     private static ClickInputData currentClick;
+    private bool suppressMouseClickUntilReleased;
 
     void Update()
     {
@@ -265,6 +267,15 @@ public class GameInputManager : MonoBehaviour
         {
             ClearHover();
             isDragging = false;
+            suppressMouseClickUntilReleased = true;
+            return;
+        }
+
+        if (ShouldSuppressMouseInput())
+        {
+            ClearHover();
+            isDragging = false;
+            HandleKeyPresses();
             return;
         }
 
@@ -272,6 +283,33 @@ public class GameInputManager : MonoBehaviour
         UpdateHoverNameLabel();
         DetectMouseDrag();     // Drag overrides click
         HandleKeyPresses();
+    }
+
+    private bool ShouldSuppressMouseInput()
+    {
+        if (suppressMouseClickUntilReleased)
+        {
+            if (Input.GetMouseButton(0) || Input.GetMouseButtonUp(0))
+            {
+                return true;
+            }
+
+            suppressMouseClickUntilReleased = false;
+        }
+
+        if (IsPointerOverUi())
+        {
+            suppressMouseClickUntilReleased = Input.GetMouseButton(0) || Input.GetMouseButtonDown(0);
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsPointerOverUi()
+    {
+        EventSystem eventSystem = EventSystem.current;
+        return eventSystem != null && eventSystem.IsPointerOverGameObject();
     }
 
     private void HandleMouseHover()
