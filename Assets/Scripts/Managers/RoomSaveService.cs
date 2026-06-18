@@ -557,6 +557,8 @@ public class RoomSubstitutionSnapshot
     public bool emergencyGoalkeeperNominationRequired;
     public bool emergencyGoalkeeperNominationTeamIsHome;
     public string emergencyGoalkeeperNominationReason;
+    public RoomTokenReference forcedGoalkeeperToLeave;
+    public string forcedGoalkeeperToLeaveName;
 }
 
 [Serializable]

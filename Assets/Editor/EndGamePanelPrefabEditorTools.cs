@@ -12,6 +12,7 @@ public static class EndGamePanelPrefabEditorTools
 {
     private const string PrefabPath = "Assets/Resources/UI/EndGamePanel.prefab";
     private const string SceneInstanceName = "EndGamePanel";
+    private const string RoomScenePath = "Assets/Scenes/Room.unity";
     private const float PanelWidth = 860f;
     private const float PanelHeight = 720f;
     private const float RecapHorizontalPadding = 34f;
@@ -205,6 +206,11 @@ public static class EndGamePanelPrefabEditorTools
             return;
         }
 
+        if (SceneManager.GetActiveScene().path != RoomScenePath)
+        {
+            return;
+        }
+
         Canvas canvas = ResolveMainCanvas();
         if (canvas == null)
         {
@@ -216,6 +222,7 @@ public static class EndGamePanelPrefabEditorTools
         if (existing != null)
         {
             existing.gameObject.SetActive(false);
+            UnpackIfPrefabInstance(existing.gameObject);
             return;
         }
 
@@ -233,6 +240,7 @@ public static class EndGamePanelPrefabEditorTools
 
         instance.name = SceneInstanceName;
         instance.SetActive(false);
+        UnpackIfPrefabInstance(instance);
         RectTransform rect = instance.GetComponent<RectTransform>();
         if (rect != null)
         {
@@ -244,6 +252,16 @@ public static class EndGamePanelPrefabEditorTools
 
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         Debug.Log($"[EndGamePanelPrefab] Added inactive scene instance under {canvas.name}.");
+    }
+
+    private static void UnpackIfPrefabInstance(GameObject instance)
+    {
+        if (PrefabUtility.GetPrefabInstanceStatus(instance) == PrefabInstanceStatus.NotAPrefab)
+        {
+            return;
+        }
+
+        PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
     }
 
     private static Button CreateButton(Transform parent)

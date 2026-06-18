@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class PenaltyShootoutManager : MonoBehaviour
 {
-    private const string OrderPanelResourcePath = "UI/PenaltyShootoutOrderPanel";
     private static readonly Vector3Int PenaltySpotCoordinates = new(-14, 0, 0);
     private static readonly Vector3Int DefendingGoalkeeperCoordinates = new(-18, 0, 0);
     private static readonly Vector3Int HomeGoalkeeperRestCoordinates = new(-18, 0, -9);
@@ -962,12 +961,8 @@ public class PenaltyShootoutManager : MonoBehaviour
         Canvas canvas = ResolveMainGameCanvas();
         if (canvas == null)
         {
-            GameObject canvasObject = new("PenaltyShootoutCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            canvas = canvasObject.GetComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            Debug.LogError("[Shootout] Missing scene Canvas; cannot show designer-owned PenaltyShootoutOrderPanel.");
+            return;
         }
 
         orderPanel = canvas.GetComponentsInChildren<PenaltyShootoutOrderPanelController>(true)
@@ -978,15 +973,7 @@ public class PenaltyShootoutManager : MonoBehaviour
             return;
         }
 
-        PenaltyShootoutOrderPanelController prefab = Resources.Load<PenaltyShootoutOrderPanelController>(OrderPanelResourcePath);
-        orderPanel = prefab != null
-            ? Instantiate(prefab, canvas.transform)
-            : new GameObject("PenaltyShootoutOrderPanel", typeof(RectTransform), typeof(Image), typeof(PenaltyShootoutOrderPanelView), typeof(PenaltyShootoutOrderPanelController)).GetComponent<PenaltyShootoutOrderPanelController>();
-
-        if (prefab == null)
-        {
-            orderPanel.transform.SetParent(canvas.transform, false);
-        }
+        Debug.LogError("[Shootout] Missing designer-owned PenaltyShootoutOrderPanel under the scene Canvas.");
     }
 
     private void HideOrderPanel()

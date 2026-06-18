@@ -105,7 +105,19 @@ public class PauseMenuManager : MonoBehaviour
 
             if (substitutionMenuManager != null && substitutionMenuManager.IsOpen)
             {
+                if (substitutionMenuManager.IsGoalkeeperExitBlocked)
+                {
+                    Debug.LogWarning(MatchManager.Instance?.GetGoalkeeperActionBlockReason() ?? "Confirm the goalkeeper substitution before closing substitutions.");
+                    return;
+                }
+
                 substitutionMenuManager.CloseToPauseMenu();
+                return;
+            }
+
+            if (MatchManager.Instance != null && MatchManager.Instance.IsEmergencyGoalkeeperNominationRequired)
+            {
+                Debug.LogWarning(MatchManager.Instance.GetGoalkeeperActionBlockReason());
                 return;
             }
 
@@ -260,7 +272,39 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        if (MatchManager.Instance != null && MatchManager.Instance.HasPlayingTokensRequiringSubstitution())
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager != null && matchManager.HasGoalkeeperActionPending)
+        {
+            Debug.LogWarning(matchManager.GetGoalkeeperActionBlockReason());
+            if (matchManager.IsEmergencyGoalkeeperNominationRequired)
+            {
+                ClearPauseSaveStatus();
+                ClearLogFileStatus();
+                if (editSettingsPanel != null)
+                {
+                    editSettingsPanel.SetActive(false);
+                }
+
+                if (substitutionMenuManager != null && substitutionMenuManager.IsOpen)
+                {
+                    substitutionMenuManager.CloseToPauseMenu();
+                }
+
+                pausePanel.SetActive(false);
+                matchManager.OpenEmergencyGoalkeeperNominationPause();
+                isPaused = false;
+                return;
+            }
+
+            PauseGame();
+            if (matchManager.ShouldOpenSubstitutionPanelForPendingGoalkeeperAction())
+            {
+                substitutionMenuManager?.OpenSubstitutionMenu();
+            }
+            return;
+        }
+
+        if (matchManager != null && matchManager.HasPlayingTokensRequiringSubstitution())
         {
             Debug.LogWarning("Cannot resume while a double-injured player remains on the pitch.");
             PauseGame();

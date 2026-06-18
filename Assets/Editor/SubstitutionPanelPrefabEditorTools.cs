@@ -1,7 +1,11 @@
 #if UNITY_EDITOR
+using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace CounterAttack.Editor
@@ -11,6 +15,10 @@ namespace CounterAttack.Editor
         private const string ResourcesFolder = "Assets/Resources";
         private const string UiResourcesFolder = "Assets/Resources/UI";
         private const string PrefabPath = UiResourcesFolder + "/SubstitutionPanel.prefab";
+        private const string RoomScenePath = "Assets/Scenes/Room.unity";
+        private const string SceneInstanceName = "SubstitutionPanel";
+        private const int PlayingRowsPerTeam = 11;
+        private const int BenchRowsPerTeam = 7;
 
         private static readonly Color PanelColor = new(0.05f, 0.06f, 0.07f, 0.94f);
         private static readonly Color ColumnColor = new(0.12f, 0.13f, 0.15f, 0.96f);
@@ -19,6 +27,17 @@ namespace CounterAttack.Editor
         private static readonly Color MutedTextColor = new(0.66f, 0.68f, 0.7f, 1f);
         private static readonly Color OutDropdownColor = new(0.36f, 0.08f, 0.08f, 1f);
         private static readonly Color InDropdownColor = new(0.08f, 0.28f, 0.13f, 1f);
+
+        [InitializeOnLoadMethod]
+        private static void EnsurePrefabExistsOnEditorLoad()
+        {
+            if (!File.Exists(PrefabPath) || PrefabNeedsRebuild())
+            {
+                RebuildSubstitutionPanelPrefab();
+            }
+
+            EnsureSceneInstanceInEditMode();
+        }
 
         [MenuItem("CounterAttack/Room/Rebuild Substitution Panel Prefab")]
         public static void RebuildSubstitutionPanelPrefab()
@@ -74,6 +93,64 @@ namespace CounterAttack.Editor
             }
         }
 
+        [MenuItem("Tools/Counter Attack/Ensure Substitution Panel In Scene")]
+        public static void EnsureSceneInstanceInEditMode()
+        {
+            if (Application.isPlaying || SceneManager.GetActiveScene().path != RoomScenePath)
+            {
+                return;
+            }
+
+            Canvas canvas = ResolveMainCanvas();
+            if (canvas == null)
+            {
+                return;
+            }
+
+            SubstitutionMenuView existing = canvas.GetComponentsInChildren<SubstitutionMenuView>(true)
+                .FirstOrDefault(view => view != null && view.name == SceneInstanceName);
+            if (existing != null && !existing.HasRequiredReferences())
+            {
+                Object.DestroyImmediate(existing.gameObject);
+                existing = null;
+            }
+
+            if (existing != null)
+            {
+                existing.transform.SetParent(canvas.transform, false);
+                existing.gameObject.SetActive(false);
+                UnpackIfPrefabInstance(existing.gameObject);
+                return;
+            }
+
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+            if (prefab == null)
+            {
+                return;
+            }
+
+            GameObject instance = PrefabUtility.InstantiatePrefab(prefab, canvas.transform) as GameObject;
+            if (instance == null)
+            {
+                return;
+            }
+
+            instance.name = SceneInstanceName;
+            instance.SetActive(false);
+            UnpackIfPrefabInstance(instance);
+            RectTransform rect = instance.GetComponent<RectTransform>();
+            if (rect != null)
+            {
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+            }
+
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            Debug.Log($"Substitution panel scene instance added under {canvas.name}.");
+        }
+
         private static void BuildTeamColumn(Transform parent, SubstitutionMenuView view, bool isHomeTeam)
         {
             GameObject column = CreateRect(isHomeTeam ? "HomeSubstitutionsColumn" : "AwaySubstitutionsColumn", parent, typeof(Image));
@@ -107,8 +184,8 @@ namespace CounterAttack.Editor
 
             Transform playingContent = CreateRosterListShell(rosterArea.transform, "Playing");
             Transform benchContent = CreateRosterListShell(rosterArea.transform, "Bench");
-            AddSampleRosterRows(playingContent, 1, 11);
-            AddSampleRosterRows(benchContent, 12, 13);
+            TextMeshProUGUI[] playingRows = AddSampleRosterRows(playingContent, 1, PlayingRowsPerTeam);
+            TextMeshProUGUI[] benchRows = AddSampleRosterRows(benchContent, 12, 12 + BenchRowsPerTeam - 1);
 
             TextMeshProUGUI remaining = CreateText("SubsRemaining", column.transform, "3 subs remaining", 15f, MutedTextColor, TextAlignmentOptions.Center);
             remaining.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
@@ -133,6 +210,8 @@ namespace CounterAttack.Editor
                 view.homeTeamTitleText = title;
                 view.homePlayingListContent = playingContent;
                 view.homeBenchListContent = benchContent;
+                view.homePlayingRows = playingRows;
+                view.homeBenchRows = benchRows;
                 view.homeSubsRemainingText = remaining;
                 view.homeSubstitutionRowsContainer = rowsContainer.transform;
                 view.homeRows = rows;
@@ -142,6 +221,8 @@ namespace CounterAttack.Editor
                 view.awayTeamTitleText = title;
                 view.awayPlayingListContent = playingContent;
                 view.awayBenchListContent = benchContent;
+                view.awayPlayingRows = playingRows;
+                view.awayBenchRows = benchRows;
                 view.awaySubsRemainingText = remaining;
                 view.awaySubstitutionRowsContainer = rowsContainer.transform;
                 view.awayRows = rows;
@@ -318,13 +399,17 @@ namespace CounterAttack.Editor
             return content.transform;
         }
 
-        private static void AddSampleRosterRows(Transform parent, int firstJersey, int lastJersey)
+        private static TextMeshProUGUI[] AddSampleRosterRows(Transform parent, int firstJersey, int lastJersey)
         {
+            TextMeshProUGUI[] rows = new TextMeshProUGUI[lastJersey - firstJersey + 1];
             for (int jersey = firstJersey; jersey <= lastJersey; jersey++)
             {
                 TextMeshProUGUI row = CreateText($"Player_{jersey}", parent, $"{jersey}. Player Name", 13f, TextColor, TextAlignmentOptions.Left);
                 row.gameObject.AddComponent<LayoutElement>().preferredHeight = 17f;
+                rows[jersey - firstJersey] = row;
             }
+
+            return rows;
         }
 
         private static SubstitutionDropdownRowView CreateDropdownRow(Transform parent, bool isHomeTeam, int index)
@@ -540,6 +625,43 @@ namespace CounterAttack.Editor
                 }
                 currentPath = nextPath;
             }
+        }
+
+        private static bool PrefabNeedsRebuild()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+            if (prefab == null)
+            {
+                return true;
+            }
+
+            SubstitutionMenuView view = prefab.GetComponent<SubstitutionMenuView>();
+            return view == null || !view.HasRequiredReferences();
+        }
+
+        private static Canvas ResolveMainCanvas()
+        {
+            Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
+            Canvas namedCanvas = canvases.FirstOrDefault(candidate => candidate != null && candidate.name == "Canvas");
+            if (namedCanvas != null)
+            {
+                return namedCanvas;
+            }
+
+            return canvases.FirstOrDefault(candidate =>
+                candidate != null
+                && candidate.isRootCanvas
+                && candidate.name != "HoveredTokenNameCanvas");
+        }
+
+        private static void UnpackIfPrefabInstance(GameObject instance)
+        {
+            if (PrefabUtility.GetPrefabInstanceStatus(instance) == PrefabInstanceStatus.NotAPrefab)
+            {
+                return;
+            }
+
+            PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
         }
     }
 }

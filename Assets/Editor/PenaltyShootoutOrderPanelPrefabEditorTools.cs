@@ -12,6 +12,8 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
 {
     private const string PrefabPath = "Assets/Resources/UI/PenaltyShootoutOrderPanel.prefab";
     private const string SceneInstanceName = "PenaltyShootoutOrderPanel";
+    private const string RoomScenePath = "Assets/Scenes/Room.unity";
+    private const int ShootoutRowsPerTeam = 11;
 
     [InitializeOnLoadMethod]
     private static void EnsurePrefabExistsOnEditorLoad()
@@ -66,8 +68,8 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
         view.homeHeaderText = homeHeader;
         view.awayHeaderText = awayHeader;
         view.rowTemplate = CreateRowTemplate(root.transform);
-        CreatePreviewRow(view.homeRowsContainer, "1. #10 Home Taker", "Shooting: 5");
-        CreatePreviewRow(view.awayRowsContainer, "1. #9 Away Taker", "Shooting: 4");
+        view.homeRows = CreatePreviewRows(view.homeRowsContainer, "Home");
+        view.awayRows = CreatePreviewRows(view.awayRowsContainer, "Away");
         view.startButton = CreateButton(root.transform, "Start Penalty Shootout");
 
         PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
@@ -85,6 +87,11 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
             return;
         }
 
+        if (SceneManager.GetActiveScene().path != RoomScenePath)
+        {
+            return;
+        }
+
         Canvas canvas = ResolveMainCanvas();
         if (canvas == null)
         {
@@ -96,7 +103,7 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
         if (existing != null)
         {
             PenaltyShootoutOrderPanelView existingView = existing.GetComponent<PenaltyShootoutOrderPanelView>();
-            if (existingView == null || existingView.rowTemplate == null || existingView.rowTemplate.nameText == null || existingView.rowTemplate.shootingText == null)
+            if (existingView == null || !existingView.HasRequiredReferences())
             {
                 Object.DestroyImmediate(existing.gameObject);
                 existing = null;
@@ -107,6 +114,7 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
         {
             existing.transform.SetParent(canvas.transform, false);
             existing.gameObject.SetActive(false);
+            UnpackIfPrefabInstance(existing.gameObject);
             return;
         }
 
@@ -124,6 +132,7 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
 
         instance.name = SceneInstanceName;
         instance.SetActive(false);
+        UnpackIfPrefabInstance(instance);
         RectTransform rect = instance.GetComponent<RectTransform>();
         if (rect != null)
         {
@@ -214,6 +223,19 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
         return row;
     }
 
+    private static PenaltyShootoutOrderRowView[] CreatePreviewRows(Transform parent, string teamLabel)
+    {
+        PenaltyShootoutOrderRowView[] rows = new PenaltyShootoutOrderRowView[ShootoutRowsPerTeam];
+        for (int i = 0; i < rows.Length; i++)
+        {
+            int order = i + 1;
+            rows[i] = CreatePreviewRow(parent, $"{order}. #{order:00} {teamLabel} Taker", $"Shooting: {(i % 6) + 1}");
+            rows[i].name = $"{teamLabel}PenaltyOrderRow_{order:00}";
+        }
+
+        return rows;
+    }
+
 
     private static TMP_Text CreateText(string name, Transform parent, string text, float fontSize, TextAlignmentOptions alignment, Color color)
     {
@@ -253,6 +275,11 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
             return true;
         }
 
+        if (!view.HasRequiredReferences())
+        {
+            return true;
+        }
+
         Image rootImage = prefab.GetComponent<Image>();
         CanvasGroup rootCanvasGroup = prefab.GetComponent<CanvasGroup>();
         if (rootImage == null || !rootImage.raycastTarget || rootCanvasGroup == null || !rootCanvasGroup.blocksRaycasts)
@@ -261,6 +288,16 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
         }
 
         return prefab.GetComponentsInChildren<TMP_Text>(true).Any(text => text != null && text.font == null);
+    }
+
+    private static void UnpackIfPrefabInstance(GameObject instance)
+    {
+        if (PrefabUtility.GetPrefabInstanceStatus(instance) == PrefabInstanceStatus.NotAPrefab)
+        {
+            return;
+        }
+
+        PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
     }
 
     private static Canvas ResolveMainCanvas()
