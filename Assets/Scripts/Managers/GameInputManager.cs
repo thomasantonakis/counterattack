@@ -200,6 +200,8 @@ public class GameInputManager : MonoBehaviour
     private static readonly Color HoverNameDefaultColor = Color.white;
     private static readonly Color HoverNameBookedColor = new(1f, 0.92f, 0.35f, 1f);
     private static readonly Color HoverNameInjuredColor = new(1f, 0.6f, 0.2f, 1f);
+    private const string HoverNameCanvasName = "HoveredTokenNameCanvas";
+    private static readonly List<RaycastResult> UiRaycastResults = new();
 
     [Header("Dependencies")]
     public CameraController cameraController;  
@@ -309,7 +311,45 @@ public class GameInputManager : MonoBehaviour
     private static bool IsPointerOverUi()
     {
         EventSystem eventSystem = EventSystem.current;
-        return eventSystem != null && eventSystem.IsPointerOverGameObject();
+        if (eventSystem == null)
+        {
+            return false;
+        }
+
+        UiRaycastResults.Clear();
+        PointerEventData pointerEventData = new(eventSystem)
+        {
+            position = Input.mousePosition
+        };
+        eventSystem.RaycastAll(pointerEventData, UiRaycastResults);
+
+        foreach (RaycastResult result in UiRaycastResults)
+        {
+            if (result.gameObject == null || IsHoverNameRaycast(result.gameObject))
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsHoverNameRaycast(GameObject gameObject)
+    {
+        Transform current = gameObject.transform;
+        while (current != null)
+        {
+            if (current.name == HoverNameCanvasName)
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
     }
 
     private void HandleMouseHover()
@@ -678,7 +718,7 @@ public class GameInputManager : MonoBehaviour
             return;
         }
 
-        GameObject canvasObject = new("HoveredTokenNameCanvas");
+        GameObject canvasObject = new(HoverNameCanvasName);
         hoverNameCanvas = canvasObject.AddComponent<Canvas>();
         hoverNameCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         hoverNameCanvas.sortingOrder = 500;
@@ -687,7 +727,6 @@ public class GameInputManager : MonoBehaviour
         canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
         canvasScaler.scaleFactor = 1f;
         canvasScaler.referencePixelsPerUnit = 100f;
-        canvasObject.AddComponent<GraphicRaycaster>();
 
         GameObject labelObject = new("HoveredTokenNameLabel");
         labelObject.transform.SetParent(canvasObject.transform, false);

@@ -1171,6 +1171,8 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private bool emergencyGoalkeeperNominationRequired = false;
     [SerializeField] private bool emergencyGoalkeeperNominationTeamIsHome = true;
     [SerializeField] private string emergencyGoalkeeperNominationReason = string.Empty;
+    [SerializeField] private string forcedGoalkeeperToLeaveName = string.Empty;
+    private PlayerToken forcedGoalkeeperToLeaveToken;
     [SerializeField] private int homeSubstitutionsUsed = 0;
     [SerializeField] private int awaySubstitutionsUsed = 0;
     [SerializeField] private bool extraTimeSubstitutionCreditGranted = false;
@@ -1190,6 +1192,7 @@ public class MatchManager : MonoBehaviour
     public bool IsAnyGoalkeeperReplacementRequired => goalkeeperReplacementRequired;
     public bool IsEmergencyGoalkeeperNominationRequired => emergencyGoalkeeperNominationRequired;
     public string EmergencyGoalkeeperNominationReason => emergencyGoalkeeperNominationReason;
+    public bool HasGoalkeeperActionPending => HasGoalkeeperActionBlockingResume();
     public event Action OnSubstitutionStateChanged;
     private int nextGameplayEventSequence = 1;
     private int gameplayEventLoggingSuppressionDepth = 0;
@@ -1215,10 +1218,204 @@ public class MatchManager : MonoBehaviour
             || playerTokenManager.GetPlayingTokens(false).Any(token => token.requiresSubstitution);
     }
 
+    public bool HasGoalkeeperActionBlockingResume()
+    {
+        return goalkeeperReplacementRequired
+            || emergencyGoalkeeperNominationRequired
+            || IsForcedGoalkeeperSubstitutionRequired(true)
+            || IsForcedGoalkeeperSubstitutionRequired(false)
+            || HasActiveGoalkeeperContinuityGap(true)
+            || HasActiveGoalkeeperContinuityGap(false);
+    }
+
+    public string GetGoalkeeperActionBlockReason()
+    {
+        if (goalkeeperReplacementRequired)
+        {
+            string teamName = GetTeamDisplayName(goalkeeperReplacementTeamIsHome);
+            string goalkeeperName = GetForcedGoalkeeperToLeaveName(goalkeeperReplacementTeamIsHome);
+            return $"{teamName} must confirm a bench goalkeeper substitution before play can continue after {goalkeeperName} left the pitch.";
+        }
+
+        if (emergencyGoalkeeperNominationRequired)
+        {
+            return string.IsNullOrWhiteSpace(emergencyGoalkeeperNominationReason)
+                ? "A team must nominate an emergency goalkeeper before play can continue."
+                : emergencyGoalkeeperNominationReason;
+        }
+
+        if (IsForcedGoalkeeperSubstitutionRequired(true))
+        {
+            return $"{GetTeamDisplayName(true)} must confirm a goalkeeper substitution before play can continue.";
+        }
+
+        if (IsForcedGoalkeeperSubstitutionRequired(false))
+        {
+            return $"{GetTeamDisplayName(false)} must confirm a goalkeeper substitution before play can continue.";
+        }
+
+        if (HasActiveGoalkeeperContinuityGap(true))
+        {
+            return $"{GetTeamDisplayName(true)} has no active goalkeeper.";
+        }
+
+        if (HasActiveGoalkeeperContinuityGap(false))
+        {
+            return $"{GetTeamDisplayName(false)} has no active goalkeeper.";
+        }
+
+        return string.Empty;
+    }
+
+    public bool ShouldOpenSubstitutionPanelForPendingGoalkeeperAction()
+    {
+        return goalkeeperReplacementRequired
+            || IsForcedGoalkeeperSubstitutionRequired(true)
+            || IsForcedGoalkeeperSubstitutionRequired(false);
+    }
+
+    public bool IsForcedGoalkeeperSubstitutionRequired(bool isHomeTeam)
+    {
+        return GetForcedGoalkeeperSubstitutionOutgoing(isHomeTeam) != null
+            && GetAvailableBenchGoalkeeper(isHomeTeam) != null
+            && GetSubstitutionsRemaining(isHomeTeam) > 0;
+    }
+
+    public PlayerToken GetForcedGoalkeeperSubstitutionOutgoing(bool isHomeTeam)
+    {
+        PlayerToken forcedToken = GetForcedGoalkeeperToLeaveToken(isHomeTeam);
+        if (forcedToken != null
+            && forcedToken.isPlaying
+            && forcedToken.requiresSubstitution
+            && !forcedToken.isSentOff
+            && forcedToken.GetCurrentHex() != null)
+        {
+            return forcedToken;
+        }
+
+        return GetPlayingTokensForTeam(isHomeTeam)
+            .Where(token => token != null
+                && token.IsGoalKeeper
+                && token.requiresSubstitution
+                && !token.isSentOff
+                && token.GetCurrentHex() != null)
+            .OrderBy(token => token.jerseyNumber)
+            .FirstOrDefault();
+    }
+
+    public PlayerToken GetForcedGoalkeeperToLeaveToken(bool isHomeTeam)
+    {
+        if (forcedGoalkeeperToLeaveToken != null
+            && forcedGoalkeeperToLeaveToken.isHomeTeam == isHomeTeam)
+        {
+            if (!HasForcedGoalkeeperContextForTeam(isHomeTeam))
+            {
+                forcedGoalkeeperToLeaveToken = null;
+                forcedGoalkeeperToLeaveName = string.Empty;
+                return null;
+            }
+
+            return forcedGoalkeeperToLeaveToken;
+        }
+
+        if (!HasForcedGoalkeeperContextForTeam(isHomeTeam))
+        {
+            return null;
+        }
+
+        PlayerToken candidate = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+            .Where(token => token != null
+                && token.isHomeTeam == isHomeTeam
+                && token.IsGoalKeeper
+                && (token.isSentOff || token.requiresSubstitution))
+            .OrderByDescending(token => token.isSentOff)
+            .ThenBy(token => token.jerseyNumber)
+            .FirstOrDefault();
+
+        if (candidate != null)
+        {
+            forcedGoalkeeperToLeaveToken = candidate;
+            forcedGoalkeeperToLeaveName = candidate.playerName;
+        }
+
+        return candidate;
+    }
+
+    private bool HasForcedGoalkeeperContextForTeam(bool isHomeTeam)
+    {
+        return IsGoalkeeperReplacementRequired(isHomeTeam)
+            || IsEmergencyGoalkeeperNominationRequiredForTeam(isHomeTeam)
+            || GetPlayingTokensForTeam(isHomeTeam).Any(token => token != null
+                && token.IsGoalKeeper
+                && token.requiresSubstitution);
+    }
+
+    public string GetForcedGoalkeeperToLeaveName(bool isHomeTeam)
+    {
+        PlayerToken token = GetForcedGoalkeeperToLeaveToken(isHomeTeam);
+        if (token != null)
+        {
+            return string.IsNullOrWhiteSpace(token.playerName) ? token.name : token.playerName;
+        }
+
+        return string.IsNullOrWhiteSpace(forcedGoalkeeperToLeaveName)
+            ? "the goalkeeper"
+            : forcedGoalkeeperToLeaveName;
+    }
+
+    public PlayerToken GetAvailableBenchGoalkeeper(bool isHomeTeam)
+    {
+        if (playerTokenManager == null)
+        {
+            return null;
+        }
+
+        return playerTokenManager.GetAvailableBenchTokens(isHomeTeam)
+            .Where(token => token != null && token.IsGoalKeeper && !token.isSentOff && !token.wasSubbedOff)
+            .OrderBy(token => token.jerseyNumber)
+            .FirstOrDefault();
+    }
+
+    private List<PlayerToken> GetPlayingTokensForTeam(bool isHomeTeam)
+    {
+        if (playerTokenManager == null)
+        {
+            return FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+                .Where(token => token != null && token.isHomeTeam == isHomeTeam && token.isPlaying)
+                .ToList();
+        }
+
+        return playerTokenManager.GetPlayingTokens(isHomeTeam);
+    }
+
+    private bool HasActiveGoalkeeperContinuityGap(bool isHomeTeam)
+    {
+        return GetPlayingTokensForTeam(isHomeTeam).Any(token => token != null && !token.isSentOff)
+            && !HasActiveGoalkeeper(isHomeTeam)
+            && !IsGoalkeeperReplacementRequired(isHomeTeam)
+            && !IsEmergencyGoalkeeperNominationRequiredForTeam(isHomeTeam);
+    }
+
+    private string GetTeamDisplayName(bool isHomeTeam)
+    {
+        string teamName = isHomeTeam
+            ? gameData?.gameSettings?.homeTeamName
+            : gameData?.gameSettings?.awayTeamName;
+        return string.IsNullOrWhiteSpace(teamName)
+            ? (isHomeTeam ? "Home" : "Away")
+            : teamName;
+    }
+
     public void HandleDoubleInjuredToken(PlayerToken token)
     {
         if (token == null || !token.isPlaying)
         {
+            return;
+        }
+
+        if (token.IsGoalKeeper)
+        {
+            HandleDoubleInjuredGoalkeeper(token);
             return;
         }
 
@@ -1243,6 +1440,47 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    private void HandleDoubleInjuredGoalkeeper(PlayerToken token)
+    {
+        bool isHomeTeam = token.isHomeTeam;
+        forcedGoalkeeperToLeaveToken = token;
+        forcedGoalkeeperToLeaveName = string.IsNullOrWhiteSpace(token.playerName) ? token.name : token.playerName;
+        PauseMatchClockForSetPiecePrep();
+
+        bool hasSubstitutionsRemaining = GetSubstitutionsRemaining(isHomeTeam) > 0;
+        bool hasBenchGoalkeeper = HasAvailableBenchGoalkeeper(isHomeTeam);
+        if (hasSubstitutionsRemaining && hasBenchGoalkeeper)
+        {
+            SetSubstitutionsAvailable(true, "Goalkeeper double injury requires substitution");
+            PauseMenuManager pauseMenuManager = FindAnyObjectByType<PauseMenuManager>();
+            if (pauseMenuManager != null)
+            {
+                pauseMenuManager.OpenSubstitutionsForForcedSubstitution();
+            }
+            else
+            {
+                SetPauseMenuOpen(true);
+                Debug.LogWarning("PauseMenuManager not found. Double-injured goalkeeper requires substitution before play can continue.");
+            }
+
+            Debug.LogWarning($"{forcedGoalkeeperToLeaveName} cannot continue. Confirm a bench goalkeeper substitution before play can continue.");
+            OnSubstitutionStateChanged?.Invoke();
+            return;
+        }
+
+        string missingReason = !hasSubstitutionsRemaining
+            ? "no substitutions remain"
+            : "no bench goalkeeper is available";
+        emergencyGoalkeeperNominationRequired = true;
+        emergencyGoalkeeperNominationTeamIsHome = isHomeTeam;
+        goalkeeperReplacementRequired = false;
+        emergencyGoalkeeperNominationReason = $"{forcedGoalkeeperToLeaveName} cannot continue and {missingReason}. Click a playing outfield player to dress and act as emergency goalkeeper.";
+        SetSubstitutionsAvailable(false, emergencyGoalkeeperNominationReason);
+        OpenEmergencyGoalkeeperNominationPause();
+        Debug.LogWarning(emergencyGoalkeeperNominationReason);
+        OnSubstitutionStateChanged?.Invoke();
+    }
+
     public void HandleSentOff(PlayerToken token)
     {
         if (token == null)
@@ -1260,14 +1498,19 @@ public class MatchManager : MonoBehaviour
 
         if (wasGoalkeeper)
         {
-            HandleGoalkeeperSentOff(isHomeTeam, token.playerName);
+            HandleGoalkeeperSentOff(token, isHomeTeam);
         }
 
         OnSubstitutionStateChanged?.Invoke();
     }
 
-    private void HandleGoalkeeperSentOff(bool isHomeTeam, string goalkeeperName)
+    private void HandleGoalkeeperSentOff(PlayerToken goalkeeper, bool isHomeTeam)
     {
+        string goalkeeperName = goalkeeper != null && !string.IsNullOrWhiteSpace(goalkeeper.playerName)
+            ? goalkeeper.playerName
+            : "Goalkeeper";
+        forcedGoalkeeperToLeaveToken = goalkeeper;
+        forcedGoalkeeperToLeaveName = goalkeeperName;
         PauseMatchClockForSetPiecePrep();
         bool hasSubstitutionsRemaining = GetSubstitutionsRemaining(isHomeTeam) > 0;
         bool hasBenchGoalkeeper = HasAvailableBenchGoalkeeper(isHomeTeam);
@@ -1299,7 +1542,7 @@ public class MatchManager : MonoBehaviour
         string missingReason = !hasSubstitutionsRemaining
             ? "no substitutions remain"
             : "no bench goalkeeper is available";
-        emergencyGoalkeeperNominationReason = $"Goalkeeper sent off and {missingReason}. Nominate a playing outfield player as emergency goalkeeper.";
+        emergencyGoalkeeperNominationReason = $"{goalkeeperName} was sent off and {missingReason}. Click a playing outfield player to dress and act as emergency goalkeeper.";
         SetSubstitutionsAvailable(false, emergencyGoalkeeperNominationReason);
         OpenEmergencyGoalkeeperNominationPause();
         Debug.LogWarning(emergencyGoalkeeperNominationReason);
@@ -1317,13 +1560,7 @@ public class MatchManager : MonoBehaviour
 
     public bool HasAvailableBenchGoalkeeper(bool isHomeTeam)
     {
-        if (playerTokenManager == null)
-        {
-            return false;
-        }
-
-        return playerTokenManager.GetAvailableBenchTokens(isHomeTeam)
-            .Any(token => token != null && token.IsGoalKeeper && !token.isSentOff && !token.wasSubbedOff);
+        return GetAvailableBenchGoalkeeper(isHomeTeam) != null;
     }
 
     public bool HasActiveGoalkeeper(bool isHomeTeam)
@@ -1387,9 +1624,26 @@ public class MatchManager : MonoBehaviour
         }
 
         ConvertOutfieldToGK(token);
+        RemoveForcedGoalkeeperAfterEmergencyNomination(token.isHomeTeam);
         CompleteGoalkeeperReplacement(token.isHomeTeam);
         Debug.Log($"{token.playerName} (Jersey {token.jerseyNumber}) has been nominated as emergency goalkeeper.");
         return true;
+    }
+
+    private void RemoveForcedGoalkeeperAfterEmergencyNomination(bool isHomeTeam)
+    {
+        PlayerToken goalkeeperToLeave = GetForcedGoalkeeperToLeaveToken(isHomeTeam);
+        if (goalkeeperToLeave == null
+            || !goalkeeperToLeave.isPlaying
+            || goalkeeperToLeave.isSentOff
+            || goalkeeperToLeave.GetCurrentHex() == null)
+        {
+            return;
+        }
+
+        goalkeeperToLeave.ClearSubstitutionRequirement();
+        playerTokenManager?.RemoveActiveToken(goalkeeperToLeave);
+        Debug.Log($"{goalkeeperToLeave.playerName} has left the pitch after emergency goalkeeper nomination.");
     }
 
     public void CompleteGoalkeeperReplacement(bool isHomeTeam)
@@ -1409,6 +1663,11 @@ public class MatchManager : MonoBehaviour
         goalkeeperReplacementRequired = false;
         emergencyGoalkeeperNominationRequired = false;
         emergencyGoalkeeperNominationReason = string.Empty;
+        if (forcedGoalkeeperToLeaveToken == null || forcedGoalkeeperToLeaveToken.isHomeTeam == isHomeTeam)
+        {
+            forcedGoalkeeperToLeaveToken = null;
+            forcedGoalkeeperToLeaveName = string.Empty;
+        }
         SetSubstitutionsAvailable(false, "Goalkeeper replacement completed");
         if (wasEmergencyNomination)
         {
@@ -1727,7 +1986,7 @@ public class MatchManager : MonoBehaviour
         }
         else if (playerOff.IsGoalKeeper)
         {
-            if (!playerOn.IsGoalKeeper || playerOn.jerseyNumber != 12)
+            if (!playerOn.IsGoalKeeper)
             {
                 error = "The goalkeeper can only be replaced by the bench goalkeeper.";
                 return false;
@@ -1782,6 +2041,11 @@ public class MatchManager : MonoBehaviour
                 ("remaining", GetSubstitutionsRemaining(playerOff.isHomeTeam)),
                 ("reason", substitutionsAvailabilityReason),
                 ("goalkeeperReplacement", IsGoalkeeperReplacementRequired(playerOff.isHomeTeam))));
+        if (forcedGoalkeeperToLeaveToken == playerOff)
+        {
+            forcedGoalkeeperToLeaveToken = null;
+            forcedGoalkeeperToLeaveName = string.Empty;
+        }
         OnSubstitutionStateChanged?.Invoke();
         return true;
     }
@@ -5359,7 +5623,9 @@ public class MatchManager : MonoBehaviour
                 goalkeeperReplacementTeamIsHome = goalkeeperReplacementTeamIsHome,
                 emergencyGoalkeeperNominationRequired = emergencyGoalkeeperNominationRequired,
                 emergencyGoalkeeperNominationTeamIsHome = emergencyGoalkeeperNominationTeamIsHome,
-                emergencyGoalkeeperNominationReason = emergencyGoalkeeperNominationReason
+                emergencyGoalkeeperNominationReason = emergencyGoalkeeperNominationReason,
+                forcedGoalkeeperToLeave = CreateTokenReference(forcedGoalkeeperToLeaveToken),
+                forcedGoalkeeperToLeaveName = forcedGoalkeeperToLeaveName
             },
             stats = gameData?.stats,
             homeScorers = homeScorers != null ? new List<GoalEvent>(homeScorers) : new List<GoalEvent>(),
@@ -5735,6 +6001,8 @@ public class MatchManager : MonoBehaviour
         emergencyGoalkeeperNominationRequired = substitutions.emergencyGoalkeeperNominationRequired;
         emergencyGoalkeeperNominationTeamIsHome = substitutions.emergencyGoalkeeperNominationTeamIsHome;
         emergencyGoalkeeperNominationReason = substitutions.emergencyGoalkeeperNominationReason ?? string.Empty;
+        forcedGoalkeeperToLeaveToken = ResolveTokenReference(substitutions.forcedGoalkeeperToLeave);
+        forcedGoalkeeperToLeaveName = substitutions.forcedGoalkeeperToLeaveName ?? string.Empty;
         OnSubstitutionStateChanged?.Invoke();
     }
 
@@ -6367,30 +6635,26 @@ public class MatchManager : MonoBehaviour
 
     public string GetInstructions()
     {
+        if (IsForcedGoalkeeperSubstitutionRequired(true) || IsForcedGoalkeeperSubstitutionRequired(false))
+        {
+            bool isHomeTeam = IsForcedGoalkeeperSubstitutionRequired(true);
+            string teamName = GetTeamDisplayName(isHomeTeam);
+            string goalkeeperName = GetForcedGoalkeeperToLeaveName(isHomeTeam);
+            return $"{teamName}: {goalkeeperName} cannot continue. Confirm the preselected bench goalkeeper substitution before play can continue.";
+        }
+
         if (goalkeeperReplacementRequired)
         {
-            string teamName = goalkeeperReplacementTeamIsHome
-                ? gameData?.gameSettings?.homeTeamName
-                : gameData?.gameSettings?.awayTeamName;
-            if (string.IsNullOrWhiteSpace(teamName))
-            {
-                teamName = goalkeeperReplacementTeamIsHome ? "Home" : "Away";
-            }
-
-            return $"{teamName}: goalkeeper sent off. Open substitutions and take off a playing outfielder to bring on the bench goalkeeper.";
+            string teamName = GetTeamDisplayName(goalkeeperReplacementTeamIsHome);
+            string goalkeeperName = GetForcedGoalkeeperToLeaveName(goalkeeperReplacementTeamIsHome);
+            return $"{teamName}: {goalkeeperName} sent off. Confirm a playing outfielder off and the preselected bench goalkeeper on before play can continue.";
         }
 
         if (emergencyGoalkeeperNominationRequired)
         {
-            string teamName = emergencyGoalkeeperNominationTeamIsHome
-                ? gameData?.gameSettings?.homeTeamName
-                : gameData?.gameSettings?.awayTeamName;
-            if (string.IsNullOrWhiteSpace(teamName))
-            {
-                teamName = emergencyGoalkeeperNominationTeamIsHome ? "Home" : "Away";
-            }
-
-            return $"{teamName}: goalkeeper sent off. No bench goalkeeper substitution is available; nominate a playing outfielder as emergency goalkeeper.";
+            string teamName = GetTeamDisplayName(emergencyGoalkeeperNominationTeamIsHome);
+            string goalkeeperName = GetForcedGoalkeeperToLeaveName(emergencyGoalkeeperNominationTeamIsHome);
+            return $"{teamName}: {goalkeeperName} cannot continue and no bench goalkeeper substitution is available. Click a playing outfielder to dress and act as emergency goalkeeper.";
         }
 
         if (!isWaitingForExtraActionsRoll)
