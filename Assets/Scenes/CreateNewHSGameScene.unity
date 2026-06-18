@@ -1480,7 +1480,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue:
   m_GlobalPointSize: 14
-  m_CharacterLimit: 0
+  m_CharacterLimit: 20
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -15353,7 +15353,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue:
   m_GlobalPointSize: 14
-  m_CharacterLimit: 0
+  m_CharacterLimit: 20
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []

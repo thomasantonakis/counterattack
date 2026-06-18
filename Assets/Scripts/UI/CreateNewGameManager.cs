@@ -26,6 +26,7 @@ public class CreateNewGameManager : MonoBehaviour
     private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
     private const float KitDropdownScrollSensitivity = 55f;
+    private const int TeamNameCharacterLimit = 20;
     private static readonly string[] PlayerAssistanceLabels = { "Novice", "Intermediate", "Experienced" };
 
     public TMP_Dropdown gameModeDropdown;
@@ -97,6 +98,7 @@ public class CreateNewGameManager : MonoBehaviour
     private RegularMatchSelectionSnapshot regularMatchSelectionSnapshot;
     private bool isEditingExistingDraftSettings;
     private string existingDraftSettingsFilePath = string.Empty;
+    private bool requestedCreateGameButtonEnabled = true;
 
     private void Update()
     {
@@ -131,6 +133,7 @@ public class CreateNewGameManager : MonoBehaviour
         // Example: Set default options for squad size at the start of the game
         SetDropDownOptions();
         ConfigureBackToGameModeMenuButton();
+        ConfigureTeamNameInputs();
         SetCreateGameButtonEnabled(!IsSinglePlayerCreateMode());
         // Subscribe to field changes, which dynamically adjusts other fields' options
         matchTypeDropdown.onValueChanged.AddListener(delegate { OnMatchTypeChanged(); });
@@ -150,6 +153,31 @@ public class CreateNewGameManager : MonoBehaviour
         InitializeKitSelectionUi();
         OnMatchTypeChanged();
         TryRestoreExistingSettingsFromDraftReturn();
+    }
+
+    private void ConfigureTeamNameInputs()
+    {
+        ConfigureTeamNameInput(homeTeamInputField);
+        ConfigureTeamNameInput(awayTeamInputField);
+        RefreshCreateGameButtonState();
+    }
+
+    private void ConfigureTeamNameInput(TMP_InputField inputField)
+    {
+        if (inputField == null)
+        {
+            return;
+        }
+
+        inputField.characterLimit = TeamNameCharacterLimit;
+        inputField.SetTextWithoutNotify(LimitTeamNameLength(inputField.text));
+        inputField.onValueChanged.RemoveListener(OnTeamNameInputChanged);
+        inputField.onValueChanged.AddListener(OnTeamNameInputChanged);
+    }
+
+    private void OnTeamNameInputChanged(string _)
+    {
+        RefreshCreateGameButtonState();
     }
 
     private void HandleCreateGameKeyboardNavigation()
@@ -1519,16 +1547,18 @@ public class CreateNewGameManager : MonoBehaviour
 
     private string GetHomeTeamNameForSettings()
     {
-        return IsInternationalMatchSelected()
+        string teamName = IsInternationalMatchSelected()
             ? GetSelectedInternationalTeamName(homeInternationalTeamDropdown)
-            : homeTeamInputField.text;
+            : homeTeamInputField != null ? homeTeamInputField.text : string.Empty;
+        return NormalizeTeamNameForSettings(teamName);
     }
 
     private string GetAwayTeamNameForSettings()
     {
-        return IsInternationalMatchSelected()
+        string teamName = IsInternationalMatchSelected()
             ? GetSelectedInternationalTeamName(awayInternationalTeamDropdown)
-            : awayTeamInputField.text;
+            : awayTeamInputField != null ? awayTeamInputField.text : string.Empty;
+        return NormalizeTeamNameForSettings(teamName);
     }
 
     private void SyncInternationalTeamInputFields()
@@ -1547,6 +1577,8 @@ public class CreateNewGameManager : MonoBehaviour
         {
             awayTeamInputField.SetTextWithoutNotify(GetSelectedInternationalTeamName(awayInternationalTeamDropdown));
         }
+
+        RefreshCreateGameButtonState();
     }
 
     private void SetInternationalTeamSelectionVisible(bool visible)
@@ -1646,12 +1678,61 @@ public class CreateNewGameManager : MonoBehaviour
 
     private void SetCreateGameButtonEnabled(bool enabled)
     {
+        requestedCreateGameButtonEnabled = enabled;
+        RefreshCreateGameButtonState();
+    }
+
+    private void RefreshCreateGameButtonState()
+    {
         if (createGameButton == null)
         {
             return;
         }
 
-        createGameButton.interactable = enabled && !IsSinglePlayerCreateMode();
+        createGameButton.interactable = requestedCreateGameButtonEnabled
+            && !IsSinglePlayerCreateMode()
+            && AreTeamNamesValid();
+    }
+
+    private bool AreTeamNamesValid()
+    {
+        return TryGetValidatedTeamNames(out _, out _, out _);
+    }
+
+    private bool TryGetValidatedTeamNames(out string homeTeamName, out string awayTeamName, out string validationMessage)
+    {
+        homeTeamName = GetHomeTeamNameForSettings();
+        awayTeamName = GetAwayTeamNameForSettings();
+        validationMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(homeTeamName) || string.IsNullOrWhiteSpace(awayTeamName))
+        {
+            validationMessage = "Both team names are required.";
+            return false;
+        }
+
+        if (string.Equals(homeTeamName, awayTeamName, StringComparison.OrdinalIgnoreCase))
+        {
+            validationMessage = "Team names must be different.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private static string NormalizeTeamNameForSettings(string teamName)
+    {
+        return LimitTeamNameLength((teamName ?? string.Empty).Trim());
+    }
+
+    private static string LimitTeamNameLength(string teamName)
+    {
+        if (string.IsNullOrEmpty(teamName) || teamName.Length <= TeamNameCharacterLimit)
+        {
+            return teamName ?? string.Empty;
+        }
+
+        return teamName.Substring(0, TeamNameCharacterLimit);
     }
 
     public void BackToCreateLoadRoomMenu()
@@ -1836,6 +1917,7 @@ public class CreateNewGameManager : MonoBehaviour
 
         SetInputFieldTextWithoutNotify(homeTeamInputField, settings.homeTeamName);
         SetInputFieldTextWithoutNotify(awayTeamInputField, settings.awayTeamName);
+        RefreshCreateGameButtonState();
 
         if (IsInternationalSettings(settings))
         {
@@ -1985,7 +2067,8 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        inputField.SetTextWithoutNotify(value ?? string.Empty);
+        inputField.characterLimit = TeamNameCharacterLimit;
+        inputField.SetTextWithoutNotify(LimitTeamNameLength(value ?? string.Empty));
     }
 
     private static void SetToggleWithoutNotify(Toggle toggle, bool isOn)
@@ -2042,6 +2125,7 @@ public class CreateNewGameManager : MonoBehaviour
 
         SetInputFieldTextWithoutNotify(homeTeamInputField, regularMatchSelectionSnapshot.homeTeamName);
         SetInputFieldTextWithoutNotify(awayTeamInputField, regularMatchSelectionSnapshot.awayTeamName);
+        RefreshCreateGameButtonState();
         SelectDropdownOption(squadSizeDropdown, regularMatchSelectionSnapshot.squadSize, "16");
         SelectDropdownOption(draftDropdown, regularMatchSelectionSnapshot.draft, "Regular");
         SelectDropdownOption(gkDraftDropdown, regularMatchSelectionSnapshot.gkDraft, "Deal");
@@ -2188,6 +2272,13 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
+        if (!TryGetValidatedTeamNames(out string homeTeamName, out string awayTeamName, out string teamValidationMessage))
+        {
+            RefreshCreateGameButtonState();
+            Debug.LogWarning($"Create game blocked because team names are invalid: {teamValidationMessage}");
+            return;
+        }
+
         TokenKitSimilarityBreakdown currentSimilarity = TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown), GetSelectedKitPresetId(awayKitDropdown));
         string kitValidationMessage = GetKitValidationMessage(currentSimilarity);
         if (!string.IsNullOrWhiteSpace(kitValidationMessage))
@@ -2223,8 +2314,8 @@ public class CreateNewGameManager : MonoBehaviour
         settings.playerAssistance = GetSelectedPlayerAssistanceValue();
         settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
-        settings.homeTeamName = GetHomeTeamNameForSettings();
-        settings.awayTeamName = GetAwayTeamNameForSettings();
+        settings.homeTeamName = homeTeamName;
+        settings.awayTeamName = awayTeamName;
         settings.includeTabletopia = includeTabletopiaToggle.isOn;
         settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
