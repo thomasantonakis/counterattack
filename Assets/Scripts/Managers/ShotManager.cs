@@ -578,7 +578,7 @@ public class ShotManager : MonoBehaviour
                     new Dictionary<string, string> { ["selection"] = "preview" });
                 isWaitingForShotCommitConfirmation = true;
                 ShowShotCommitPreviewTargets();
-                Debug.Log("Shot selected. Press [S] again to commit.");
+                Debug.Log($"{GetPendingShotOfferLabel()} selected. Press [S] again to commit.");
                 return;
             }
 
@@ -666,14 +666,20 @@ public class ShotManager : MonoBehaviour
 
     private void IdentifyShotType()
     {
-        if (MatchManager.Instance.currentState == MatchManager.GameState.EndOfMovementPhase)
-        {
-            StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "fullPower");
-        }
-        else 
-        {
-            StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
-        }
+        StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, GetPendingShotProcessType());
+    }
+
+    private string GetPendingShotProcessType()
+    {
+        return MatchManager.Instance != null
+            && MatchManager.Instance.currentState == MatchManager.GameState.EndOfMovementPhase
+                ? "fullPower"
+                : "snapshot";
+    }
+
+    private string GetPendingShotOfferLabel()
+    {
+        return GetPendingShotProcessType() == "fullPower" ? "Shot" : "Snapshot";
     }
 
     public void EnterSaveAndHoldDecision()
@@ -3066,14 +3072,7 @@ public class ShotManager : MonoBehaviour
 
     private string BuildShotRollInstruction()
     {
-        string shotLabel = shotType == "snapshot"
-            ? "Snapshot"
-            : IsPenaltyShot()
-                ? "Penalty Kick"
-            : IsFreeKickShot()
-                ? "Free Kick Shot"
-                : "Shot";
-        return $"Click R to Roll for the {shotLabel} with {BuildShooterInstructionInfo(false)}";
+        return $"Click R to Roll for the {GetActiveShotInstructionLabel()} with {BuildShooterInstructionInfo(false)}";
     }
 
     private string BuildSavingAttributeInstruction(PlayerToken gkToken, int savingPenalty)
@@ -3993,6 +3992,18 @@ public class ShotManager : MonoBehaviour
         return $"Press [D] to dive with hands{hexInfo} using {GetTokenInstructionName(goalkeeper)} ({BuildSavingAttributeInstruction(goalkeeper, savingPenalty)}), or [B] to block as an outfielder (Tackling: 0)";
     }
 
+    private string GetActiveShotInstructionLabel()
+    {
+        return shotType switch
+        {
+            "snapshot" => "Snapshot",
+            "header" => "Header",
+            FreeKickShotType => "Free Kick Shot",
+            PenaltyShotType => "Penalty Kick",
+            _ => "Shot",
+        };
+    }
+
     public string GetInstructions()
     {
         StringBuilder sb = new();
@@ -4006,15 +4017,16 @@ public class ShotManager : MonoBehaviour
             return "";
         }
         bool snapshotSuppressed = IsSnapshotSuppressedByFinalExtraMovement();
-        if (!snapshotSuppressed && isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Snapshot directly from there, or [X] no continue without shoooting, ");
-        if (!snapshotSuppressed && isAvailable && isWaitingForShotCommitConfirmation) sb.Append("Press [S] again to commit the Shot, ");
-        else if (!snapshotSuppressed && isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to Shoot, ");
-        if (isActivated) sb.Append("Shot: ");
+        string pendingShotOfferLabel = GetPendingShotOfferLabel();
+        if (!snapshotSuppressed && isAvailable && isWaitingForSnapshotDecisionFromLoose) sb.Append("Press [S] to take a Snapshot directly from there, or [X] to continue without shooting, ");
+        if (!snapshotSuppressed && isAvailable && isWaitingForShotCommitConfirmation) sb.Append($"Press [S] again to commit the {pendingShotOfferLabel}, ");
+        else if (!snapshotSuppressed && isAvailable && !isWaitingForSnapshotDecisionFromLoose) sb.Append($"Press [S] to take a {pendingShotOfferLabel}, ");
+        if (isActivated) sb.Append($"{GetActiveShotInstructionLabel()}: ");
         if (isWaitingforBlockerSelection) sb.Append($"Click on a defender to move 2 Hexes in an attempt to block the Snapshot, ");
         if (isWaitingforBlockerMovement) sb.Append($"Click on a Highlighted Hex to move the blocker there, ");
         if (isWaitingForTargetSelection)
         {
-            sb.Append("Click on a Hex in the Goal to target the Shot there, ");
+            sb.Append($"Click on a Hex in the Goal to target the {GetActiveShotInstructionLabel()} there, ");
             sb.Append(BuildShotTargetSelectionPreviewInstruction());
         }
         if (isWaitingForBlockDiceRoll) sb.Append($"{BuildBlockRollInstruction()}, ");

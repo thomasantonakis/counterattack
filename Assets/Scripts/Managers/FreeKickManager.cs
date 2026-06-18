@@ -1510,7 +1510,7 @@ public class FreeKickManager : MonoBehaviour
             && activeMatchManager.shotManager != null
             && activeMatchManager.shotManager.isWaitingForShotCommitConfirmation)
         {
-            sb.Append($"Shot selected; press [S] again to commit, or press {FormatFreeKickExecutionOptions(KeyCode.S)} to change option, ");
+            sb.Append($"Free Kick Shot selected; press [S] again to commit, or press {FormatFreeKickExecutionOptions(KeyCode.S)} to change option, ");
             return true;
         }
 

@@ -4541,9 +4541,21 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Shot and Movement Phase should be available at the end of the Shooting prep."));
         AssertTrue(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == RequirePlayerToken("Yaneva"), "Yaneva should be the shooter after the shared Shooting prep.");
         AssertTrue(RequirePlayerToken("Yaneva").GetCurrentHex() == hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0)), "Yaneva should shoot from (8,0).");
+        string shotOfferInstructions = shotManager.GetInstructions();
+        AssertTrue(
+            shotOfferInstructions.Contains("Press [S] to take a Shot"),
+            "Full-power shot offer instruction should label [S] as a Shot.",
+            "Press [S] to take a Shot",
+            shotOfferInstructions);
 
         yield return StartCoroutine(PressShootingSheetKey("Call Shot", KeyCode.S));
         AssertTrue(shotManager.isWaitingForShotCommitConfirmation, "Difficulty 2 Shooting prep should require S confirmation for the shot.");
+        string shotCommitInstructions = shotManager.GetInstructions();
+        AssertTrue(
+            shotCommitInstructions.Contains("commit the Shot"),
+            "Full-power shot confirmation instruction should label the pending action as a Shot.",
+            "commit the Shot",
+            shotCommitInstructions);
         yield return StartCoroutine(PressShootingSheetKey("Confirm Shot", KeyCode.S));
         AssertTrue(shotManager.isActivated, "ShotManager should activate after confirming the shot.");
         AssertTrue(shotManager.shotType == "fullPower", "The shared Shooting prep should create a full-power shot.", "fullPower", shotManager.shotType);
@@ -19864,6 +19876,9 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         if (!shotManager.isAvailable) failures.Add("ShotManager should be available for a Snapshot choice");
         if (shotManager.isActivated) failures.Add("ShotManager should NOT be activated");
+        string shotInstructions = shotManager.GetInstructions();
+        if (!shotInstructions.Contains("Press [S] to take a Snapshot")) failures.Add($"ShotManager instruction should offer a Snapshot, but was '{shotInstructions}'");
+        if (shotInstructions.Contains("take a Shot") || shotInstructions.Contains("to Shoot")) failures.Add($"ShotManager instruction should not label the Snapshot choice as a Shot, but was '{shotInstructions}'");
 
         if (firstTimePassManager.isAvailable) failures.Add("FirstTimePass should NOT be available");
         if (groundBallManager.isAvailable) failures.Add("GroundBall should NOT be available");
