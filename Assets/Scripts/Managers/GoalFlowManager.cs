@@ -899,7 +899,24 @@ public class GoalFlowManager : MonoBehaviour
     // Retrieves all tokens belonging to a specific team
     private List<PlayerToken> GetAttackTokens(bool teamID)
     {
-        return playerTokenManager.allTokens.Where(token => token.isHomeTeam == teamID).ToList();
+        IEnumerable<PlayerToken> teamTokens = playerTokenManager != null
+            ? playerTokenManager.GetPlayingTokens(teamID)
+            : Enumerable.Empty<PlayerToken>();
+
+        return teamTokens
+            .Where(token => token != null && !token.isSentOff && token.GetCurrentHex() != null)
+            .OrderBy(token => IsCurrentGoalkeeper(token) ? 0 : 1)
+            .ThenBy(token => token.jerseyNumber)
+            .ToList();
+    }
+
+    private bool IsCurrentGoalkeeper(PlayerToken token)
+    {
+        return token != null
+            && token.IsGoalKeeper
+            && token.isPlaying
+            && !token.isSentOff
+            && token.GetCurrentHex() != null;
     }
 
     // private IEnumerator JumpPlayer(PlayerToken token, float height = 2f, float totalDuration = 0.6f)
