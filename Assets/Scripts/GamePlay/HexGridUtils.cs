@@ -72,6 +72,10 @@ public static class HexGridUtils
             Debug.LogError("StartHex, TargetHex, or HexGrid is null!");
             return new List<HexCell>();
         }
+        if (!CanUseAsMovementDestination(targetHex))
+        {
+            return new List<HexCell>();
+        }
 
         Queue<HexCell> frontier = new Queue<HexCell>();
         HashSet<HexCell> visited = new HashSet<HexCell>();
@@ -92,7 +96,7 @@ public static class HexGridUtils
 
             foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                if (neighbor == null || visited.Contains(neighbor) || neighbor.isAttackOccupied || neighbor.isDefenseOccupied)
+                if (neighbor == null || visited.Contains(neighbor) || !CanUseForMovementPath(neighbor, targetHex))
                 {
                     continue;
                 }
@@ -116,6 +120,33 @@ public static class HexGridUtils
         }
         totalPath.Reverse();  // Reverse the path to get it from start to target
         return totalPath;
+    }
+
+    private static bool CanUseAsMovementDestination(HexCell hex)
+    {
+        return hex != null
+            && (hex.isInGoal != 0 || !hex.isOutOfBounds)
+            && !hex.isAttackOccupied
+            && !hex.isDefenseOccupied;
+    }
+
+    private static bool CanUseForMovementPath(HexCell hex, HexCell targetHex)
+    {
+        if (hex == null || hex.isAttackOccupied || hex.isDefenseOccupied)
+        {
+            return false;
+        }
+
+        return !hex.isOutOfBounds
+            || (hex == targetHex && hex.isInGoal != 0);
+    }
+
+    private static bool CanUseForReachability(HexCell hex)
+    {
+        return hex != null
+            && !hex.isOutOfBounds
+            && !hex.isAttackOccupied
+            && !hex.isDefenseOccupied;
     }
 
     public static (List<HexCell> reachableHexes, Dictionary<HexCell, (int distance, bool enteredZOI)>) GetReachableHexes(HexGrid hexGrid, HexCell startHex, int range)
@@ -145,7 +176,7 @@ public static class HexGridUtils
 
             foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                if (neighbor == null || neighbor.isAttackOccupied || neighbor.isDefenseOccupied || distance.ContainsKey(neighbor))
+                if (neighbor == null || !CanUseForReachability(neighbor) || distance.ContainsKey(neighbor))
                 {
                     continue;
                 }
