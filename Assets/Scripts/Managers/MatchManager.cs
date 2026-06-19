@@ -1173,6 +1173,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private string emergencyGoalkeeperNominationReason = string.Empty;
     [SerializeField] private string forcedGoalkeeperToLeaveName = string.Empty;
     private PlayerToken forcedGoalkeeperToLeaveToken;
+    private HexCell forcedGoalkeeperReplacementHex;
     [SerializeField] private int homeSubstitutionsUsed = 0;
     [SerializeField] private int awaySubstitutionsUsed = 0;
     [SerializeField] private bool extraTimeSubstitutionCreditGranted = false;
@@ -1483,6 +1484,11 @@ public class MatchManager : MonoBehaviour
 
     public void HandleSentOff(PlayerToken token)
     {
+        HandleSentOff(token, token != null && token.IsGoalKeeper ? token.GetCurrentHex() : null);
+    }
+
+    public void HandleSentOff(PlayerToken token, HexCell sentOffGoalkeeperHex)
+    {
         if (token == null)
         {
             return;
@@ -1490,27 +1496,45 @@ public class MatchManager : MonoBehaviour
 
         bool wasGoalkeeper = token.IsGoalKeeper;
         bool isHomeTeam = token.isHomeTeam;
+        Vector3 sentOffHoldingPosition = GetSentOffHoldingPosition(isHomeTeam, token);
         if (!token.isSentOff || token.isPlaying)
         {
-            token.MarkSentOff();
+            token.MarkSentOff(sentOffHoldingPosition);
+        }
+        else
+        {
+            token.transform.position = sentOffHoldingPosition;
         }
         Debug.Log($"{token.playerName} (Jersey {token.jerseyNumber}) has been sent off.");
 
         if (wasGoalkeeper)
         {
-            HandleGoalkeeperSentOff(token, isHomeTeam);
+            HandleGoalkeeperSentOff(token, isHomeTeam, sentOffGoalkeeperHex);
         }
 
         OnSubstitutionStateChanged?.Invoke();
     }
 
-    private void HandleGoalkeeperSentOff(PlayerToken goalkeeper, bool isHomeTeam)
+    private Vector3 GetSentOffHoldingPosition(bool isHomeTeam, PlayerToken tokenBeingSentOff = null)
+    {
+        int sentOffIndex = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+            .Count(token => token != null
+                && token != tokenBeingSentOff
+                && token.isHomeTeam == isHomeTeam
+                && token.isSentOff);
+        return playerTokenManager != null
+            ? playerTokenManager.GetSentOffTokenPositionForRestore(isHomeTeam, sentOffIndex)
+            : new Vector3(isHomeTeam ? -4f - sentOffIndex : 4f + sentOffIndex, 0.2f, -16f);
+    }
+
+    private void HandleGoalkeeperSentOff(PlayerToken goalkeeper, bool isHomeTeam, HexCell sentOffHex)
     {
         string goalkeeperName = goalkeeper != null && !string.IsNullOrWhiteSpace(goalkeeper.playerName)
             ? goalkeeper.playerName
             : "Goalkeeper";
         forcedGoalkeeperToLeaveToken = goalkeeper;
         forcedGoalkeeperToLeaveName = goalkeeperName;
+        forcedGoalkeeperReplacementHex = sentOffHex;
         PauseMatchClockForSetPiecePrep();
         bool hasSubstitutionsRemaining = GetSubstitutionsRemaining(isHomeTeam) > 0;
         bool hasBenchGoalkeeper = HasAvailableBenchGoalkeeper(isHomeTeam);
@@ -1551,6 +1575,16 @@ public class MatchManager : MonoBehaviour
     public bool IsGoalkeeperReplacementRequired(bool isHomeTeam)
     {
         return goalkeeperReplacementRequired && goalkeeperReplacementTeamIsHome == isHomeTeam;
+    }
+
+    public HexCell GetGoalkeeperReplacementDestinationHex(bool isHomeTeam)
+    {
+        if (!IsGoalkeeperReplacementRequired(isHomeTeam))
+        {
+            return null;
+        }
+
+        return forcedGoalkeeperReplacementHex;
     }
 
     public bool IsEmergencyGoalkeeperNominationRequiredForTeam(bool isHomeTeam)
@@ -1667,6 +1701,7 @@ public class MatchManager : MonoBehaviour
         {
             forcedGoalkeeperToLeaveToken = null;
             forcedGoalkeeperToLeaveName = string.Empty;
+            forcedGoalkeeperReplacementHex = null;
         }
         SetSubstitutionsAvailable(false, "Goalkeeper replacement completed");
         if (wasEmergencyNomination)
@@ -1936,12 +1971,6 @@ public class MatchManager : MonoBehaviour
         if (playerOff.isHomeTeam != playerOn.isHomeTeam)
         {
             error = "Both players must belong to the same team.";
-            return false;
-        }
-
-        if (goalkeeperReplacementRequired && !IsGoalkeeperReplacementRequired(playerOff.isHomeTeam))
-        {
-            error = "Only the team whose goalkeeper was sent off can substitute right now.";
             return false;
         }
 
@@ -5625,7 +5654,8 @@ public class MatchManager : MonoBehaviour
                 emergencyGoalkeeperNominationTeamIsHome = emergencyGoalkeeperNominationTeamIsHome,
                 emergencyGoalkeeperNominationReason = emergencyGoalkeeperNominationReason,
                 forcedGoalkeeperToLeave = CreateTokenReference(forcedGoalkeeperToLeaveToken),
-                forcedGoalkeeperToLeaveName = forcedGoalkeeperToLeaveName
+                forcedGoalkeeperToLeaveName = forcedGoalkeeperToLeaveName,
+                forcedGoalkeeperReplacementHex = RoomHexCoordinates.FromHex(forcedGoalkeeperReplacementHex)
             },
             stats = gameData?.stats,
             homeScorers = homeScorers != null ? new List<GoalEvent>(homeScorers) : new List<GoalEvent>(),
@@ -5852,6 +5882,8 @@ public class MatchManager : MonoBehaviour
 
         int homeBenchIndex = 0;
         int awayBenchIndex = 0;
+        int homeSentOffIndex = 0;
+        int awaySentOffIndex = 0;
         foreach (RoomTokenSnapshot tokenSnapshot in tokenSnapshots)
         {
             if (tokenSnapshot == null || !tokensByKey.TryGetValue(tokenSnapshot.tokenKey, out PlayerToken token))
@@ -5870,11 +5902,22 @@ public class MatchManager : MonoBehaviour
 
             bool assignHomeBench = tokenSnapshot.teamSide == "Home" || token.isHomeTeam;
             int benchIndex = assignHomeBench ? homeBenchIndex : awayBenchIndex;
-            Vector3 inactivePosition = playerTokenManager.GetBenchTokenPositionForRestore(assignHomeBench, benchIndex);
-            if (!tokenSnapshot.isPlaying && !tokenSnapshot.isSentOff)
+            Vector3 inactivePosition;
+            if (tokenSnapshot.isSentOff)
             {
-                if (assignHomeBench) homeBenchIndex++;
-                else awayBenchIndex++;
+                int sentOffIndex = assignHomeBench ? homeSentOffIndex : awaySentOffIndex;
+                inactivePosition = playerTokenManager.GetSentOffTokenPositionForRestore(assignHomeBench, sentOffIndex);
+                if (assignHomeBench) homeSentOffIndex++;
+                else awaySentOffIndex++;
+            }
+            else
+            {
+                inactivePosition = playerTokenManager.GetBenchTokenPositionForRestore(assignHomeBench, benchIndex);
+                if (!tokenSnapshot.isPlaying)
+                {
+                    if (assignHomeBench) homeBenchIndex++;
+                    else awayBenchIndex++;
+                }
             }
 
             token.RestoreRuntimeState(tokenSnapshot, restoredHex, inactivePosition);
@@ -6003,6 +6046,7 @@ public class MatchManager : MonoBehaviour
         emergencyGoalkeeperNominationReason = substitutions.emergencyGoalkeeperNominationReason ?? string.Empty;
         forcedGoalkeeperToLeaveToken = ResolveTokenReference(substitutions.forcedGoalkeeperToLeave);
         forcedGoalkeeperToLeaveName = substitutions.forcedGoalkeeperToLeaveName ?? string.Empty;
+        forcedGoalkeeperReplacementHex = ResolveHex(substitutions.forcedGoalkeeperReplacementHex);
         OnSubstitutionStateChanged?.Invoke();
     }
 

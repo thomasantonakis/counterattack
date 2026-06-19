@@ -1254,6 +1254,7 @@ public class MovementPhaseManager : MonoBehaviour
         // Get valid movement hexes and their distance/ZOI data
         var (reachableHexes, distanceData) = GetReachableMovementData(token, movementRange);
         ballHex = ball.GetCurrentHex();
+        AddFirstStepGoalWalkTargets(token, reachableHexes, distanceData);
         if (ballHex != null && !token.IsDribbler && MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(token))
         {
             reachableHexes.Remove(ballHex);
@@ -1272,10 +1273,7 @@ public class MovementPhaseManager : MonoBehaviour
             if (!hex.isAttackOccupied && !hex.isDefenseOccupied)
             {
                 bool isGoalHex = hex.isInGoal != 0;
-                bool canWalkIntoGoal = !isMovementPhaseDef
-                    && isDribblerRunning
-                    && token.GetCurrentHex() == ballHex
-                    && IsOpponentGoalForToken(token, hex);
+                bool canWalkIntoGoal = CanDribblerWalkIntoOpponentGoal(token, hex);
                 if (isGoalHex && !canWalkIntoGoal)
                 {
                     continue;
@@ -1302,14 +1300,16 @@ public class MovementPhaseManager : MonoBehaviour
                     hex.HighlightHex(highlightReason);
                 }
                 if (
-                    !isMovementPhaseDef
-                    && isDribblerRunning
-                    && token.GetCurrentHex() == ballHex // token is on the ball
-                    && IsOpponentGoalForToken(token, hex)
+                    CanDribblerWalkIntoOpponentGoal(token, hex)
                 )
                 {
                     hex.HighlightHex(isHoveredMovementDestination ? "MovementDestinationHover" : "MovementGoal");
-                    hex.transform.position += Vector3.up * 0.03f;
+                    if (hex.transform.position.y < 0.03f)
+                    {
+                        Vector3 position = hex.transform.position;
+                        position.y = 0.03f;
+                        hex.transform.position = position;
+                    }
                 }
             }
         }
@@ -1346,6 +1346,53 @@ public class MovementPhaseManager : MonoBehaviour
         }
 
         return (reachableHexes, distanceData);
+    }
+
+    private void AddFirstStepGoalWalkTargets(
+        PlayerToken token,
+        List<HexCell> reachableHexes,
+        Dictionary<HexCell, (int distance, bool enteredZOI)> distanceData)
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        HexCell currentHex = token.GetCurrentHex();
+        if (currentHex == null
+            || ballHex == null
+            || currentHex != ballHex
+            || isMovementPhaseDef
+            || !token.IsDribbler)
+        {
+            return;
+        }
+
+        int opponentGoalSide = GetOpponentGoalSideForTeam(token);
+        if (!IsGoalMouthEntryHex(currentHex, opponentGoalSide)
+            || currentHex.ShootingPaths == null
+            || currentHex.ShootingPaths.Count == 0)
+        {
+            return;
+        }
+
+        foreach (HexCell goalTarget in currentHex.ShootingPaths.Keys)
+        {
+            if (goalTarget == null
+                || goalTarget.isInGoal != opponentGoalSide
+                || goalTarget.isAttackOccupied
+                || goalTarget.isDefenseOccupied
+                || HexGridUtils.GetHexStepDistance(currentHex, goalTarget) > 1)
+            {
+                continue;
+            }
+
+            if (!reachableHexes.Contains(goalTarget))
+            {
+                reachableHexes.Add(goalTarget);
+            }
+            distanceData[goalTarget] = (1, false);
+        }
     }
 
     private void RefreshMovementDestinationHighlights()
@@ -2067,6 +2114,38 @@ public class MovementPhaseManager : MonoBehaviour
             && goalHex != null
             && goalHex.isInGoal != 0
             && goalHex.isInGoal == GetOpponentGoalSideForTeam(token);
+    }
+
+    private bool CanWalkIntoOpponentGoalFromCurrentHex(PlayerToken token, HexCell goalHex)
+    {
+        if (!IsOpponentGoalForToken(token, goalHex))
+        {
+            return false;
+        }
+
+        HexCell currentHex = token.GetCurrentHex();
+        return IsGoalMouthEntryHex(currentHex, goalHex.isInGoal);
+    }
+
+    private bool CanDribblerWalkIntoOpponentGoal(PlayerToken token, HexCell goalHex)
+    {
+        return token != null
+            && token.IsDribbler
+            && !isMovementPhaseDef
+            && token.GetCurrentHex() == ballHex
+            && CanWalkIntoOpponentGoalFromCurrentHex(token, goalHex);
+    }
+
+    private bool IsGoalMouthEntryHex(HexCell hex, int goalSide)
+    {
+        if (hex == null || goalSide == 0)
+        {
+            return false;
+        }
+
+        int goalLineX = goalSide > 0 ? 18 : -18;
+        return hex.coordinates.x == goalLineX
+            && Mathf.Abs(hex.coordinates.z) <= 3;
     }
 
     private int GetOpponentGoalSideForTeam(PlayerToken token)
@@ -3018,7 +3097,7 @@ public class MovementPhaseManager : MonoBehaviour
             .Where(hex => hex != loserHex
                 && !hex.isDefenseOccupied
                 && !hex.isAttackOccupied
-                && (hex.isInGoal == 0 || IsOpponentGoalForToken(repositionWinner, hex)))
+                && (hex.isInGoal == 0 || CanWalkIntoOpponentGoalFromCurrentHex(repositionWinner, hex)))
             .ToList();
         return repositionHexes;
     }
@@ -3103,9 +3182,9 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.LogWarning($"Hex {hex.name} is not a valid repositioning option. Repositioning failed.");
             return;  // Exit if the hex is not a valid repositioning option
         }
-        if (hex.isInGoal != 0 && !IsOpponentGoalForToken(repositionWinner, hex))
+        if (hex.isInGoal != 0 && !CanWalkIntoOpponentGoalFromCurrentHex(repositionWinner, hex))
         {
-            Debug.LogWarning($"{repositionWinner.name} cannot reposition into their own goal at {hex.coordinates}.");
+            Debug.LogWarning($"{repositionWinner.name} cannot reposition into goal hex {hex.coordinates} from {repositionWinner.GetCurrentHex()?.coordinates.ToString() ?? "no current hex"}.");
             return;
         }
 
@@ -3415,6 +3494,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
             Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
             bool wasBooked = selectedDefender.isBooked;
+            HexCell preCardHex = selectedDefender.IsGoalKeeper ? selectedDefender.GetCurrentHex() : null;
             selectedDefender.ReceiveYellowCard();
             if (!wasBooked && selectedDefender.isBooked)
             {
@@ -3437,7 +3517,7 @@ public class MovementPhaseManager : MonoBehaviour
                 if (selectedDefender.IsGoalKeeper)
                 {
                     Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
-                    MatchManager.Instance.HandleSentOff(selectedDefender);
+                    MatchManager.Instance.HandleSentOff(selectedDefender, preCardHex);
                 }
 
                 isWaitingForYellowCardRoll = false;
@@ -3454,6 +3534,7 @@ public class MovementPhaseManager : MonoBehaviour
                 pendingHarshFoulCardPolicy = false;
                 Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
                 bool wasBooked = selectedDefender.isBooked;
+                HexCell preCardHex = selectedDefender.IsGoalKeeper ? selectedDefender.GetCurrentHex() : null;
                 selectedDefender.ReceiveYellowCard();
                 if (!wasBooked && selectedDefender.isBooked)
                 {
@@ -3475,7 +3556,7 @@ public class MovementPhaseManager : MonoBehaviour
                     if (selectedDefender.IsGoalKeeper)
                     {
                         Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
-                        MatchManager.Instance.HandleSentOff(selectedDefender);
+                        MatchManager.Instance.HandleSentOff(selectedDefender, preCardHex);
                     }
 
                     isWaitingForYellowCardRoll = false;
@@ -3510,12 +3591,14 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (!selectedDefender.isSentOff)
         {
+            HexCell preSentOffHex = selectedDefender.IsGoalKeeper ? selectedDefender.GetCurrentHex() : null;
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 selectedDefender,
                 MatchManager.ActionType.RedCardShown,
                 connectedToken: fouledAttacker
             );
-            selectedDefender.MarkSentOff();
+            MatchManager.Instance.HandleSentOff(selectedDefender, preSentOffHex);
+            return;
         }
 
         if (selectedDefender.IsGoalKeeper)

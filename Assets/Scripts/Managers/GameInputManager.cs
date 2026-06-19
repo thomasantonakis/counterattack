@@ -201,7 +201,18 @@ public class GameInputManager : MonoBehaviour
     private static readonly Color HoverNameBookedColor = new(1f, 0.92f, 0.35f, 1f);
     private static readonly Color HoverNameInjuredColor = new(1f, 0.6f, 0.2f, 1f);
     private const string HoverNameCanvasName = "HoveredTokenNameCanvas";
+    private static readonly HashSet<string> ModalUiRootNames = new()
+    {
+        "PausePanel",
+        "SaveAsOverlay",
+        "OverwriteConfirm",
+        "EditSettingsPanel",
+        "EndGamePanel",
+        "SubstitutionPanel",
+        "PenaltyShootoutOrderPanel"
+    };
     private static readonly List<RaycastResult> UiRaycastResults = new();
+    private static readonly RaycastHit[] GameplayRaycastHits = new RaycastHit[128];
 
     [Header("Dependencies")]
     public CameraController cameraController;  
@@ -265,6 +276,14 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
+        if (IsModalUiActive())
+        {
+            ClearHover();
+            isDragging = false;
+            suppressMouseClickUntilReleased = true;
+            return;
+        }
+
         if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
         {
             ClearHover();
@@ -299,6 +318,12 @@ public class GameInputManager : MonoBehaviour
             suppressMouseClickUntilReleased = false;
         }
 
+        if (IsModalUiActive())
+        {
+            suppressMouseClickUntilReleased = Input.GetMouseButton(0) || Input.GetMouseButtonDown(0);
+            return true;
+        }
+
         if (IsPointerOverUi())
         {
             suppressMouseClickUntilReleased = Input.GetMouseButton(0) || Input.GetMouseButtonDown(0);
@@ -330,7 +355,77 @@ public class GameInputManager : MonoBehaviour
                 continue;
             }
 
+            if (DoesUiRaycastConsumeGameplayInput(result.gameObject))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool DoesUiRaycastConsumeGameplayInput(GameObject gameObject)
+    {
+        GameplayInputConsumer consumer = GameplayInputConsumer.FindConsumer(gameObject);
+        if (consumer != null)
+        {
+            return consumer.ConsumesPointerOverSelf;
+        }
+
+        Selectable selectable = gameObject.GetComponentInParent<Selectable>();
+        if (selectable != null && selectable.isActiveAndEnabled)
+        {
             return true;
+        }
+
+        ScrollRect scrollRect = gameObject.GetComponentInParent<ScrollRect>();
+        if (scrollRect != null && scrollRect.isActiveAndEnabled)
+        {
+            return true;
+        }
+
+        return IsUnderActiveModalUiRoot(gameObject);
+    }
+
+    private static bool IsModalUiActive()
+    {
+        return GameplayInputConsumer.IsAnyModalConsumerActive || IsAnyNamedModalUiRootActive();
+    }
+
+    private static bool IsAnyNamedModalUiRootActive()
+    {
+        for (int i = 0; i < UiRaycastResults.Count; i++)
+        {
+            GameObject resultObject = UiRaycastResults[i].gameObject;
+            if (resultObject != null && IsUnderActiveModalUiRoot(resultObject))
+            {
+                return true;
+            }
+        }
+
+        foreach (string rootName in ModalUiRootNames)
+        {
+            GameObject root = GameObject.Find(rootName);
+            if (root != null && root.activeInHierarchy)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsUnderActiveModalUiRoot(GameObject gameObject)
+    {
+        Transform current = gameObject != null ? gameObject.transform : null;
+        while (current != null)
+        {
+            if (ModalUiRootNames.Contains(current.name) && current.gameObject.activeInHierarchy)
+            {
+                return true;
+            }
+
+            current = current.parent;
         }
 
         return false;
@@ -355,7 +450,7 @@ public class GameInputManager : MonoBehaviour
     private void HandleMouseHover()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (!Physics.Raycast(ray, out RaycastHit hover))
+        if (!TryRaycastGameplay(ray, out RaycastHit hover))
         {
             ClearHover();
             return;
@@ -418,7 +513,7 @@ public class GameInputManager : MonoBehaviour
     {
         if (logIsOn) Debug.Log("HandleMouseClick called!");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (!Physics.Raycast(ray, out RaycastHit click))
+        if (!TryRaycastGameplay(ray, out RaycastHit click))
         {
             return;
         }
@@ -610,6 +705,67 @@ public class GameInputManager : MonoBehaviour
         else if (ball.IsBallSelected() && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick)
         {
             highPassManager.HandleHighPassProcess(hex, true);
+        }
+    }
+
+    private static bool TryRaycastGameplay(Ray ray, out RaycastHit gameplayHit)
+    {
+        int hitCount = Physics.RaycastNonAlloc(ray, GameplayRaycastHits, Mathf.Infinity);
+        if (hitCount <= 0)
+        {
+            gameplayHit = default;
+            return false;
+        }
+
+        Array.Sort(GameplayRaycastHits, 0, hitCount, RaycastHitDistanceComparer.Instance);
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit hit = GameplayRaycastHits[i];
+            if (hit.collider == null)
+            {
+                continue;
+            }
+
+            if (IsPitchVisualRaycast(hit.collider.gameObject))
+            {
+                continue;
+            }
+
+            gameplayHit = hit;
+            return true;
+        }
+
+        gameplayHit = default;
+        return false;
+    }
+
+    private static bool IsPitchVisualRaycast(GameObject hitObject)
+    {
+        Transform current = hitObject != null ? hitObject.transform : null;
+        while (current != null)
+        {
+            if (current.name == "PitchMarkings"
+                || current.name == "PitchDots"
+                || current.name == "GoalNets"
+                || current.name == "PitchActionLabels"
+                || current.gameObject.layer == LayerMask.NameToLayer("Ignore Raycast"))
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
+    }
+
+    private sealed class RaycastHitDistanceComparer : IComparer<RaycastHit>
+    {
+        public static readonly RaycastHitDistanceComparer Instance = new();
+
+        public int Compare(RaycastHit x, RaycastHit y)
+        {
+            return x.distance.CompareTo(y.distance);
         }
     }
     
@@ -940,6 +1096,7 @@ public class GameInputManager : MonoBehaviour
     private static bool IsGameplayInputBlocked()
     {
         return (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+            || IsModalUiActive()
             || PenaltyShootoutOrderPanelController.IsAnyPanelActive;
     }
 

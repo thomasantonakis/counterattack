@@ -221,23 +221,11 @@ public class PitchLines : MonoBehaviour
             backgroundObject.transform.localPosition = Vector3.zero;
             backgroundObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             backgroundObject.transform.localScale = Vector3.one;
-            backgroundObject.layer = layer;
+            int defaultLayer = LayerMask.NameToLayer("Default");
+            backgroundObject.layer = defaultLayer >= 0 ? defaultLayer : 0;
 
             MeshRenderer backgroundRenderer = backgroundObject.GetComponent<MeshRenderer>();
             backgroundRenderer.sharedMaterial = actionLabelBackgroundMaterial;
-
-            Collider backgroundCollider = backgroundObject.GetComponent<Collider>();
-            if (backgroundCollider != null)
-            {
-                if (Application.isPlaying)
-                {
-                    Destroy(backgroundCollider);
-                }
-                else
-                {
-                    DestroyImmediate(backgroundCollider);
-                }
-            }
 
             GameObject textObject = new GameObject("Text");
             textObject.transform.SetParent(labelRoot.transform, false);

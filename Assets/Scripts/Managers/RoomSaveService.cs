@@ -559,6 +559,7 @@ public class RoomSubstitutionSnapshot
     public string emergencyGoalkeeperNominationReason;
     public RoomTokenReference forcedGoalkeeperToLeave;
     public string forcedGoalkeeperToLeaveName;
+    public RoomHexCoordinates forcedGoalkeeperReplacementHex;
 }
 
 [Serializable]

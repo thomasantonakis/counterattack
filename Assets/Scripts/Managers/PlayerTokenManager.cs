@@ -389,9 +389,20 @@ public class PlayerTokenManager : MonoBehaviour
         return new Vector3(x, 0.2f, -14f);
     }
 
+    private Vector3 GetSentOffTokenPosition(bool isHomeTeam, int sentOffIndex)
+    {
+        float x = isHomeTeam ? -4f - sentOffIndex : 4f + sentOffIndex;
+        return new Vector3(x, 0.2f, -16f);
+    }
+
     public Vector3 GetBenchTokenPositionForRestore(bool isHomeTeam, int benchIndex)
     {
         return GetBenchTokenPosition(isHomeTeam, benchIndex);
+    }
+
+    public Vector3 GetSentOffTokenPositionForRestore(bool isHomeTeam, int sentOffIndex)
+    {
+        return GetSentOffTokenPosition(isHomeTeam, sentOffIndex);
     }
 
     private PlayerToken CreateTokenObject(

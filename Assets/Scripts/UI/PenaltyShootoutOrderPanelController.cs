@@ -117,6 +117,7 @@ public class PenaltyShootoutOrderPanelController : MonoBehaviour
         CanvasGroup canvasGroup = gameObject.GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
         canvasGroup.blocksRaycasts = true;
         canvasGroup.interactable = true;
+        GameplayInputConsumer.Ensure(gameObject, blocksGameplayWhileActive: true);
 
         Image panelImage = gameObject.GetComponent<Image>();
         if (panelImage != null)

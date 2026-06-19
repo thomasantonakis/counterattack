@@ -164,6 +164,7 @@ public class EndGamePanelManager : MonoBehaviour
         UpdateScoreRecapFields();
         UpdateStatsFields(showStats: string.IsNullOrWhiteSpace(recapOverride));
         HideLiveMatchUi();
+        GameplayInputConsumer.Ensure(root, blocksGameplayWhileActive: true);
         root.SetActive(true);
         Canvas.ForceUpdateCanvases();
 

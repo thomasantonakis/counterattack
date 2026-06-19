@@ -3356,10 +3356,13 @@ public class ShotManager : MonoBehaviour
 
         if (!goalkeeper.isSentOff)
         {
-            goalkeeper.MarkSentOff();
+            HexCell preSentOffHex = goalkeeper.GetCurrentHex();
+            MatchManager.Instance?.HandleSentOff(goalkeeper, preSentOffHex);
         }
-
-        MatchManager.Instance?.HandleSentOff(goalkeeper);
+        else
+        {
+            MatchManager.Instance?.HandleSentOff(goalkeeper);
+        }
         ball?.PlaceAtCell(foulHex);
         ResetShotProcess();
         yield return StartCoroutine(StartForcedFreeKickAfterShotHandball());

@@ -179,10 +179,13 @@ public class SubstitutionMenuManager : MonoBehaviour
     private void OnConfirmButtonClicked()
     {
         List<SelectionRow> validRows = GetValidRows();
+        List<SelectionRow> proposedRows = GetProposedRows();
         LogSubstitutionUiClick(
             "confirm_button",
             "confirm_substitutions",
             ("validSelectionCount", validRows.Count),
+            ("proposedSelectionCount", proposedRows.Count),
+            ("allProposedSubstitutionsValid", AreAllProposedSubstitutionsValid()),
             ("requiredSubstitutionsSelected", AreRequiredSubstitutionsSelected()),
             ("selectedSubstitutions", BuildSelectedSubstitutionsSummary()));
         ConfirmSubstitutions();
@@ -257,6 +260,7 @@ public class SubstitutionMenuManager : MonoBehaviour
             substitutionPanel.transform.SetParent(parent, false);
         }
 
+        GameplayInputConsumer.Ensure(substitutionPanel, blocksGameplayWhileActive: true);
         WirePanelButtons();
         substitutionPanel.SetActive(false);
     }
@@ -571,7 +575,7 @@ public class SubstitutionMenuManager : MonoBehaviour
             ("row", GetTeamRowNumber(row)),
             ("selectedToken", FormatTokenForLog(row.selectedOutgoing)));
         RebuildDropdownOptions();
-        if (row.selectedOutgoing != null)
+        if (row.selectedOutgoing != null && !ShouldKeepIncomingDropdownClosed(row))
         {
             row.incomingDropdown.Show();
         }
@@ -724,6 +728,18 @@ public class SubstitutionMenuManager : MonoBehaviour
             || (row.selectedOutgoing != null && row.selectedOutgoing.IsGoalKeeper);
     }
 
+    private bool ShouldKeepIncomingDropdownClosed(SelectionRow row)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        return matchManager != null
+            && row != null
+            && row.selectedOutgoing != null
+            && row.selectedIncoming != null
+            && matchManager.IsGoalkeeperReplacementRequired(row.isHomeTeam)
+            && !row.selectedOutgoing.IsGoalKeeper
+            && row.selectedIncoming.IsGoalKeeper;
+    }
+
     private bool IsGoalkeeperSubstitutionBlockingExit()
     {
         MatchManager matchManager = MatchManager.Instance;
@@ -749,7 +765,7 @@ public class SubstitutionMenuManager : MonoBehaviour
             return;
         }
 
-        confirmButton.interactable = GetValidRows().Count > 0 && AreRequiredSubstitutionsSelected();
+        confirmButton.interactable = AreAllProposedSubstitutionsValid() && AreRequiredSubstitutionsSelected();
         ColorBlock colors = confirmButton.colors;
         colors.normalColor = confirmButton.interactable ? ButtonColor : DisabledButtonColor;
         confirmButton.colors = colors;
@@ -822,6 +838,28 @@ public class SubstitutionMenuManager : MonoBehaviour
             .ToList();
     }
 
+    private List<SelectionRow> GetProposedRows()
+    {
+        return selectionRows
+            .Where(row => row.selectedOutgoing != null || row.selectedIncoming != null)
+            .ToList();
+    }
+
+    private bool AreAllProposedSubstitutionsValid()
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        if (matchManager == null || !matchManager.AreSubstitutionsAvailable)
+        {
+            return false;
+        }
+
+        List<SelectionRow> proposedRows = GetProposedRows();
+        return proposedRows.Count > 0
+            && proposedRows.All(row => row.selectedOutgoing != null
+                && row.selectedIncoming != null
+                && matchManager.CanRegisterSubstitution(row.selectedOutgoing, row.selectedIncoming, out _));
+    }
+
     private void LogSubstitutionUiClick(
         string control,
         string action,
@@ -884,19 +922,26 @@ public class SubstitutionMenuManager : MonoBehaviour
             return;
         }
 
-        List<SelectionRow> validRows = GetValidRows();
-        if (validRows.Count == 0 || !AreRequiredSubstitutionsSelected())
+        List<SelectionRow> proposedRows = GetProposedRows();
+        if (proposedRows.Count == 0 || !AreAllProposedSubstitutionsValid() || !AreRequiredSubstitutionsSelected())
         {
             RefreshConfirmButton();
             return;
         }
 
         PlayerTokenManager tokenManager = matchManager.playerTokenManager;
-        foreach (SelectionRow row in validRows)
+        List<bool> completedGoalkeeperReplacementTeams = new();
+        foreach (SelectionRow row in proposedRows)
         {
             PlayerToken outgoing = row.selectedOutgoing;
             PlayerToken incoming = row.selectedIncoming;
-            HexCell destinationHex = outgoing.GetCurrentHex();
+            bool completedGoalkeeperReplacement = matchManager.IsGoalkeeperReplacementRequired(outgoing.isHomeTeam)
+                && !outgoing.IsGoalKeeper
+                && incoming.IsGoalKeeper;
+            HexCell outgoingHex = outgoing.GetCurrentHex();
+            HexCell destinationHex = completedGoalkeeperReplacement
+                ? matchManager.GetGoalkeeperReplacementDestinationHex(outgoing.isHomeTeam) ?? outgoingHex
+                : outgoingHex;
             Vector3 incomingBenchPosition = incoming.transform.position;
             if (!matchManager.RegisterSubstitution(outgoing, incoming, out string error))
             {
@@ -904,9 +949,11 @@ public class SubstitutionMenuManager : MonoBehaviour
                 continue;
             }
 
-            Vector3 destinationPosition = outgoing.transform.position;
+            Vector3 destinationPosition = destinationHex != null
+                ? GetTokenPositionForHex(destinationHex, outgoing.transform.position.y)
+                : outgoing.transform.position;
             bool wasAttacker = outgoing.isAttacker;
-            bool ballWasOnOutgoingHex = matchManager.ball != null && matchManager.ball.GetCurrentHex() == destinationHex;
+            bool ballWasOnDestinationHex = matchManager.ball != null && matchManager.ball.GetCurrentHex() == destinationHex;
 
             tokenManager.MoveActiveTokenToBenchSlot(outgoing, incomingBenchPosition);
             tokenManager.MoveBenchTokenToActive(incoming);
@@ -920,15 +967,11 @@ public class SubstitutionMenuManager : MonoBehaviour
                 incoming.SetCurrentHex(destinationHex);
                 destinationHex.ResetHighlight();
                 destinationHex.HighlightHex(wasAttacker ? "isAttackOccupied" : "isDefenseOccupied");
-                if (ballWasOnOutgoingHex)
+                if (ballWasOnDestinationHex)
                 {
                     matchManager.ball.PlaceAtCell(destinationHex);
                 }
             }
-
-            bool completedGoalkeeperReplacement = matchManager.IsGoalkeeperReplacementRequired(outgoing.isHomeTeam)
-                && !outgoing.IsGoalKeeper
-                && incoming.IsGoalKeeper;
 
             // Check if outfield player is being brought on as GK
             if (outgoing.IsGoalKeeper && !incoming.IsGoalKeeper)
@@ -939,13 +982,24 @@ public class SubstitutionMenuManager : MonoBehaviour
 
             if (completedGoalkeeperReplacement)
             {
-                matchManager.CompleteGoalkeeperReplacement(outgoing.isHomeTeam);
+                completedGoalkeeperReplacementTeams.Add(outgoing.isHomeTeam);
             }
 
             Debug.Log($"Substitution confirmed: {outgoing.name} off, {incoming.name} on.");
         }
 
+        foreach (bool isHomeTeam in completedGoalkeeperReplacementTeams.Distinct())
+        {
+            matchManager.CompleteGoalkeeperReplacement(isHomeTeam);
+        }
+
         CloseToPauseMenu();
+    }
+
+    private static Vector3 GetTokenPositionForHex(HexCell hex, float y)
+    {
+        Vector3 center = hex.GetHexCenter();
+        return new Vector3(center.x, y, center.z);
     }
 
     private Button CreateButton(Transform parent, string name, string label, float width = 210f, float height = 44f)

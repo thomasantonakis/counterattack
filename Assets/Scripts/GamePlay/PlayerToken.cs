@@ -179,7 +179,7 @@ public class PlayerToken : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void MarkSentOff()
+    public void MarkSentOff(Vector3? sentOffPosition = null)
     {
         HexCell sentOffHex = currentHex;
         ClearSentOffHex(sentOffHex);
@@ -189,6 +189,10 @@ public class PlayerToken : MonoBehaviour
         isPlaying = false;
         isSentOff = true;
         requiresSubstitution = false;
+        if (sentOffPosition.HasValue)
+        {
+            transform.position = sentOffPosition.Value;
+        }
         gameObject.SetActive(false);
         Debug.Log($"{playerName} (Jersey {jerseyNumber}) has been sent off. Token deactivated.");
     }

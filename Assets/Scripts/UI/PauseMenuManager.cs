@@ -90,6 +90,7 @@ public class PauseMenuManager : MonoBehaviour
         BindEditSettingsUiReferences();
         EnsureEditSettingsUi();
         ConfigureEditSettingsUi();
+        EnsureGameplayInputConsumers();
     }
 
     void Update()
@@ -518,6 +519,14 @@ public class PauseMenuManager : MonoBehaviour
         editAwayKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditAwayKitDropdown");
         editHomeGKKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditHomeGKKitDropdown");
         editAwayGKKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditAwayGKKitDropdown");
+    }
+
+    private void EnsureGameplayInputConsumers()
+    {
+        GameplayInputConsumer.Ensure(pausePanel, blocksGameplayWhileActive: true);
+        GameplayInputConsumer.Ensure(saveAsOverlay, blocksGameplayWhileActive: true);
+        GameplayInputConsumer.Ensure(overwriteConfirmPanel, blocksGameplayWhileActive: true);
+        GameplayInputConsumer.Ensure(editSettingsPanel, blocksGameplayWhileActive: true);
     }
 
     private void ConfigureSaveUi()
