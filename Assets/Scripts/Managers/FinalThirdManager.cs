@@ -574,9 +574,12 @@ public class FinalThirdManager : MonoBehaviour
         bool completedSecondPhase = thisIsTheSecond;
         string movedTokenKeys = FormatTokenKeys(movedTokens);
         string forfeitedTokenKeys = FormatTokenKeys(forfeitedTokens);
+        bool stopPlayRestartPending = MatchManager.Instance != null
+            && MatchManager.Instance.IsStopPlayRestartPending;
         bool shouldRefreshAvailableActions = !preserveGoalKickContext
             && !IsSaveAndHoldKContext()
-            && !IsOobGoalKickContext();
+            && !IsOobGoalKickContext()
+            && !stopPlayRestartPending;
 
         MatchManager.Instance?.RecordFinalThirdPhaseEnded(
             context,

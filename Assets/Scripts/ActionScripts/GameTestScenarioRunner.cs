@@ -4747,6 +4747,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             $"Free Kick Shot branch '{branch.Name}' should offer Final Thirds before corner setup."));
         AssertTrue(!freeKickManager.isWaitingForKickerSelection, $"Free Kick Shot branch '{branch.Name}' should not wait for corner kicker selection while Final Thirds are active.");
         yield return StartCoroutine(ForfeitShootingFinalThirdsBeforeOutcomeCheck(branch.Name));
+        AssertNoLiveActionAvailabilityDuringSetPieceRestart($"Free Kick Shot branch '{branch.Name}' after corner Final Thirds");
 
         yield return StartCoroutine(WaitForCondition(
             () => freeKickManager.isActivated && freeKickManager.isWaitingForKickerSelection,
@@ -4754,6 +4755,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             $"Free Kick Shot branch '{branch.Name}' should resolve to corner setup after Final Thirds."));
 
         AssertShootingManagerState($"Free Kick Shot branch '{branch.Name}' corner outcome", expectFreeKickActive: true);
+        AssertNoLiveActionAvailabilityDuringSetPieceRestart($"Free Kick Shot branch '{branch.Name}' corner setup");
         AssertShootingLastTouch("Kuzmic", $"Free Kick Shot branch '{branch.Name}' corner outcome");
         HexCell ballHex = freeKickManager.ball.GetCurrentHex();
         AssertTrue(ballHex != null, $"Free Kick Shot branch '{branch.Name}' corner should place the ball on a corner spot.");
@@ -5316,6 +5318,16 @@ public class GameTestScenarioRunner : MonoBehaviour
             expectFreeKickActive,
             expectGoalFlowActive);
         AssertTrue(result.passed, $"{context}: unexpected Shooting manager state.", true, result.ToString());
+    }
+
+    private void AssertNoLiveActionAvailabilityDuringSetPieceRestart(string context)
+    {
+        AssertTrue(!movementPhaseManager.isAvailable, $"{context}: Movement Phase should not be available during set-piece restart setup.", false, movementPhaseManager.isAvailable);
+        AssertTrue(!groundBallManager.isAvailable, $"{context}: Standard Pass should not be available during set-piece restart setup.", false, groundBallManager.isAvailable);
+        AssertTrue(!firstTimePassManager.isAvailable, $"{context}: First Time Pass should not be available during set-piece restart setup.", false, firstTimePassManager.isAvailable);
+        AssertTrue(!highPassManager.isAvailable, $"{context}: High Pass should not be available during set-piece restart setup.", false, highPassManager.isAvailable);
+        AssertTrue(!longBallManager.isAvailable, $"{context}: Long Ball should not be available during set-piece restart setup.", false, longBallManager.isAvailable);
+        AssertTrue(!shotManager.isAvailable, $"{context}: Shot should not be available during set-piece restart setup.", false, shotManager.isAvailable);
     }
 
     private void AssertShootingLastTouch(string expectedPlayerName, string context)
@@ -5899,6 +5911,7 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         string context = $"Shooting branch '{branch.Name}' {(north ? "north" : "south")} corner outcome";
         AssertShootingManagerState(context, expectFreeKickActive: true);
+        AssertNoLiveActionAvailabilityDuringSetPieceRestart(context);
         AssertTrue(
             freeKickManager.isWaitingForKickerSelection,
             $"{context}: FreeKickManager should wait for the corner kicker selection.",
@@ -18641,6 +18654,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 $"OOB branch '{branch.Name}' should offer Final Thirds before corner setup."));
             AssertTrue(!freeKickManager.isWaitingForKickerSelection, $"OOB branch '{branch.Name}' should not wait for corner kicker selection while Final Thirds are active.");
             yield return StartCoroutine(ForfeitActiveFinalThirds());
+            AssertNoLiveActionAvailabilityDuringSetPieceRestart($"OOB branch '{branch.Name}' after corner Final Thirds");
         }
         yield return StartCoroutine(WaitForCondition(
             () => IsOobBranchOutcomeReached(branch),
@@ -18693,6 +18707,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             case OobRestartExpectation.CornerKick:
                 AssertTrue(freeKickManager.isActivated && freeKickManager.isCornerKick, $"OOB branch '{branch.Name}' should activate Corner Kick mode.", true, freeKickManager.GetDebugStatus());
                 AssertTrue(freeKickManager.isWaitingForKickerSelection, $"OOB branch '{branch.Name}' should wait for corner kicker selection.", true, freeKickManager.GetDebugStatus());
+                AssertNoLiveActionAvailabilityDuringSetPieceRestart($"OOB branch '{branch.Name}' corner setup");
                 AssertOobBranchCornerLogged(branch);
                 break;
             case OobRestartExpectation.GoalKick:
@@ -19493,10 +19508,12 @@ public class GameTestScenarioRunner : MonoBehaviour
                     $"Header at Goal branch '{branch.Name}' should offer Final Thirds before corner setup."));
                 AssertTrue(!freeKickManager.isWaitingForKickerSelection, $"Header at Goal branch '{branch.Name}' should not wait for corner kicker selection while Final Thirds are active.");
                 yield return StartCoroutine(ForfeitActiveFinalThirds());
+                AssertNoLiveActionAvailabilityDuringSetPieceRestart($"Header at Goal branch '{branch.Name}' after corner Final Thirds");
                 yield return StartCoroutine(WaitForCondition(
                     () => freeKickManager.isActivated && freeKickManager.isCornerKick && freeKickManager.isWaitingForKickerSelection,
                     6f,
                     $"Header at Goal branch '{branch.Name}' should resolve to corner setup after Final Thirds."));
+                AssertNoLiveActionAvailabilityDuringSetPieceRestart($"Header at Goal branch '{branch.Name}' corner setup");
                 AssertHeaderAtGoalExpectedBallHex(branch);
                 AssertHeaderAtGoalCornerLogged(branch);
                 break;

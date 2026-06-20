@@ -520,15 +520,15 @@ public class MovementPhaseManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return;
         if (looseBallManager.isActivated) return;
         if (shotManager.isActivated || shotManager.isWaitingForSnapshotDecisionFromLoose) return;
+        if (highPassManager != null && highPassManager.isActivated) return;
+        if (freeKickManager != null && freeKickManager.isActivated) return;
+        if (penaltyKickManager != null && penaltyKickManager.isActivated) return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
             MatchManager.Instance.TriggerMovement();
             ConsumeMovementKey(keyData);
             return;
         }
-        if (highPassManager != null && highPassManager.isActivated) return;
-        if (freeKickManager != null && freeKickManager.isActivated) return;
-        if (penaltyKickManager != null && penaltyKickManager.isActivated) return;
         if (IsResolvingFoulSequence())
         {
             bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);

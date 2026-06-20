@@ -94,6 +94,12 @@ public class MatchManager : MonoBehaviour
         Shot,
         Snapshot,
     }
+
+    private enum PendingStopPlayRestartKind
+    {
+        None,
+        CornerKick,
+    }
     
     [Serializable]
     public class GameData
@@ -1136,6 +1142,7 @@ public class MatchManager : MonoBehaviour
     public PlayerToken LastTokenToTouchTheBallOnPurpose;
     public PlayerToken PreviousTokenToTouchTheBallOnPurpose;
     private PlayerToken pendingGoalKickRestartTaker;
+    [SerializeField] private PendingStopPlayRestartKind pendingStopPlayRestart = PendingStopPlayRestartKind.None;
     public string hangingPassType;
     public PlayerToken hangingPassExcludedCollector;
     public PlayerToken setPieceTakerExcludedFromNextTouch;
@@ -1190,6 +1197,7 @@ public class MatchManager : MonoBehaviour
     public bool IsGameplayInputBlocked => isPauseMenuOpen;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
+    public bool IsStopPlayRestartPending => pendingStopPlayRestart != PendingStopPlayRestartKind.None;
     public bool IsAnyGoalkeeperReplacementRequired => goalkeeperReplacementRequired;
     public bool IsEmergencyGoalkeeperNominationRequired => emergencyGoalkeeperNominationRequired;
     public string EmergencyGoalkeeperNominationReason => emergencyGoalkeeperNominationReason;
@@ -5061,6 +5069,39 @@ public class MatchManager : MonoBehaviour
         highPassManager?.CleanUpHighPass();
         longBallManager?.CleanUpLongBall();
         RefreshAvailableActions();
+    }
+
+    public void BeginCornerKickRestart()
+    {
+        pendingStopPlayRestart = PendingStopPlayRestartKind.CornerKick;
+        ClearLiveActionAvailabilityForStopPlay();
+    }
+
+    public void CompletePendingStopPlayRestart()
+    {
+        pendingStopPlayRestart = PendingStopPlayRestartKind.None;
+    }
+
+    public void ClearLiveActionAvailabilityForStopPlay()
+    {
+        ClearPendingActionPreviews();
+        movementPhaseManager?.ResetMovementPhase();
+        groundBallManager?.CleanUpPass();
+        firstTimePassManager?.CleanUpFTP();
+        highPassManager?.CleanUpHighPass();
+        longBallManager?.CleanUpLongBall();
+
+        if (movementPhaseManager != null) movementPhaseManager.isAvailable = false;
+        if (groundBallManager != null) groundBallManager.isAvailable = false;
+        if (firstTimePassManager != null) firstTimePassManager.isAvailable = false;
+        if (highPassManager != null) highPassManager.isAvailable = false;
+        if (longBallManager != null) longBallManager.isAvailable = false;
+        if (shotManager != null) shotManager.isAvailable = false;
+
+        isFTPAvailable = false;
+        ResetPendingGroundBallOffer();
+        ApplyPendingGroundBallDistance();
+        RefreshAerialTargetPrecomputations();
     }
 
     public void CommitToAction(

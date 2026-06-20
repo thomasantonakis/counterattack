@@ -408,6 +408,7 @@ public class FreeKickManager : MonoBehaviour
 
     public void StartFreeKickPreparation(HexCell cornerKickSpot = null, bool indirectFreeKick = false)
     {
+        matchManager.ClearLiveActionAvailabilityForStopPlay();
         isActivated = true;
         isIndirectFreeKick = indirectFreeKick;
         mandatoryDefenderToMove = null;
@@ -420,6 +421,7 @@ public class FreeKickManager : MonoBehaviour
             Debug.Log("Starting Corner Kick Preparation...");
         }
         matchManager.currentState = MatchManager.GameState.FreeKickKickerSelect;
+        matchManager.CompletePendingStopPlayRestart();
         isWaitingForKickerSelection = true;
         remainingDefenderMoves = 6;
         attackerMovesUsed = 0;

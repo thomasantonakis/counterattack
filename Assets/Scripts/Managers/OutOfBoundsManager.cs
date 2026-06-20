@@ -299,6 +299,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private IEnumerator PrepareCornerRestart(HexCell spot)
     {
+        MatchManager.Instance?.BeginCornerKickRestart();
         MatchManager.Instance?.SetSubstitutionsAvailable(true, "Corner Kick awarded");
         yield return StartCoroutine(ResolveOutOfBoundsPush(spot));
         yield return StartCoroutine(ball.MoveToCell(spot));
