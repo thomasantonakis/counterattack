@@ -2316,6 +2316,9 @@ public class CreateNewGameManager : MonoBehaviour
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamName;
         settings.awayTeamName = awayTeamName;
+        settings.homeDraftPersona = "Greedy";
+        settings.awayDraftPersona = "Greedy";
+        settings.defaultDraftPersona = "Greedy";
         settings.includeTabletopia = includeTabletopiaToggle.isOn;
         settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
@@ -2695,4 +2698,7 @@ public class GameSettings
     public string awayKit;
     public string homeGKKit;
     public string awayGKKit;
+    public string homeDraftPersona;
+    public string awayDraftPersona;
+    public string defaultDraftPersona;
 }

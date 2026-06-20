@@ -12,7 +12,9 @@ using UnityEngine.UI;
 public class DraftManager : MonoBehaviour
 {
     private const string ProtectedRoomFixtureSaveFileName = "gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json";
+    private const string DraftSceneName = "Draft";
     private const string FreeDraftSceneName = "FreeDraft";
+    private const string DraftRegular = "Regular";
     private const string MatchTypeInternational = "International";
     private const string DraftInternational = "International";
     private const string DraftArcade = "Arcade";
@@ -710,6 +712,188 @@ public class DraftManager : MonoBehaviour
             cardScript.UpdatePlayerCard(player);
             DraftPlayerCardStyler.ApplyOutfield(playerCard);
         }
+    }
+
+    public bool CanCompleteRegularDraftWithGreedyProfile()
+    {
+        return string.IsNullOrEmpty(GetRegularGreedyDraftBlockReason());
+    }
+
+    public void CompleteRegularDraftWithGreedyProfile()
+    {
+        string blockReason = GetRegularGreedyDraftBlockReason();
+        if (!string.IsNullOrEmpty(blockReason))
+        {
+            Debug.LogWarning($"Greedy regular draft automation skipped: {blockReason}");
+            return;
+        }
+
+        int remainingOutfieldSlots =
+            CountEmptyOutfieldSlots(homeTeamPanel.transform) +
+            CountEmptyOutfieldSlots(awayTeamPanel.transform);
+        int picksMade = 0;
+
+        while (remainingOutfieldSlots > 0 && !IsDraftComplete())
+        {
+            if (!TryCompleteGreedyRegularDraftPick())
+            {
+                break;
+            }
+
+            picksMade++;
+            remainingOutfieldSlots--;
+        }
+
+        DraftUIManager uiManager = GetDraftUIManager();
+        if (uiManager != null)
+        {
+            uiManager.CheckIfDraftIsComplete();
+        }
+
+        Debug.Log($"Greedy regular draft automation completed {picksMade} picks.");
+    }
+
+    private string GetRegularGreedyDraftBlockReason()
+    {
+        if (SceneManager.GetActiveScene().name != DraftSceneName)
+        {
+            return "active scene is not Draft.unity.";
+        }
+
+        if (isFreeDraftScene)
+        {
+            return "FreeDraft flow is active.";
+        }
+
+        if (currentSettings == null)
+        {
+            return "game settings are not loaded.";
+        }
+
+        if (!string.Equals(currentSettings.draft, DraftRegular, System.StringComparison.OrdinalIgnoreCase))
+        {
+            return $"outfielder draft mode is '{currentSettings.draft}'.";
+        }
+
+        if (IsInternationalDraftMode())
+        {
+            return "International draft mode is active.";
+        }
+
+        if (IsArcadeDraftMode())
+        {
+            return "Arcade draft mode is active.";
+        }
+
+        if (homeTeamPanel == null || awayTeamPanel == null || draftPanel == null)
+        {
+            return "draft panels are not assigned.";
+        }
+
+        if (IsDraftComplete())
+        {
+            return "draft is already complete.";
+        }
+
+        if (CountEmptyOutfieldSlots(homeTeamPanel.transform) + CountEmptyOutfieldSlots(awayTeamPanel.transform) == 0)
+        {
+            return "all outfield roster slots are already full.";
+        }
+
+        return string.Empty;
+    }
+
+    private bool TryCompleteGreedyRegularDraftPick()
+    {
+        List<PlayerCard> visibleCards = GetVisibleRegularDraftCards();
+        if (visibleCards.Count == 0)
+        {
+            Debug.LogWarning("Greedy regular draft automation stopped: no visible draft cards were available.");
+            return false;
+        }
+
+        AIManager aiManager = FindAnyObjectByType<AIManager>();
+        if (aiManager == null)
+        {
+            Debug.LogWarning("Greedy regular draft automation stopped: AIManager was not found.");
+            return false;
+        }
+
+        DraftDecisions.DraftAction decision = aiManager.GetDraftDecision(
+            currentSettings,
+            visibleCards.Select(card => card.assignedPlayer),
+            currentTeamTurn);
+        if (!decision.IsValid)
+        {
+            Debug.LogWarning("Greedy regular draft automation stopped: no valid decision could be made.");
+            return false;
+        }
+
+        PlayerCard selectedCard = FindVisibleRegularDraftCard(visibleCards, decision.SelectedPlayer);
+        if (selectedCard == null)
+        {
+            Debug.LogWarning($"Greedy regular draft automation stopped: selected card for {decision.SelectedPlayer.Name} was not visible.");
+            return false;
+        }
+
+        PlayerSlotDropHandler targetSlot = FindNextAvailableOutfieldSlot(decision.RosterPanelName, 0);
+        if (targetSlot == null)
+        {
+            Debug.LogWarning($"Greedy regular draft automation stopped: no outfield slot was available in {decision.RosterPanelName}.");
+            return false;
+        }
+
+        Debug.Log(aiManager.DescribeDraftDecision(
+            currentSettings,
+            visibleCards.Select(card => card.assignedPlayer),
+            decision.SelectedPlayer,
+            currentTeamTurn));
+        targetSlot.UpdateSlot(selectedCard);
+        CardAssignedToSlot(selectedCard);
+        if (selectedCard != null)
+        {
+            selectedCard.gameObject.SetActive(false);
+            Destroy(selectedCard.gameObject);
+        }
+
+        return true;
+    }
+
+    private List<PlayerCard> GetVisibleRegularDraftCards()
+    {
+        List<PlayerCard> visibleCards = new List<PlayerCard>();
+        if (draftPanel == null)
+        {
+            return visibleCards;
+        }
+
+        foreach (Transform child in draftPanel.transform)
+        {
+            if (!child.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            PlayerCard card = child.GetComponent<PlayerCard>();
+            if (card != null && card.assignedPlayer != null)
+            {
+                visibleCards.Add(card);
+            }
+        }
+
+        return visibleCards;
+    }
+
+    private PlayerCard FindVisibleRegularDraftCard(List<PlayerCard> visibleCards, Player selectedPlayer)
+    {
+        PlayerCard selectedCard = visibleCards.FirstOrDefault(card => card.assignedPlayer == selectedPlayer);
+        if (selectedCard != null)
+        {
+            return selectedCard;
+        }
+
+        return visibleCards.FirstOrDefault(card =>
+            string.Equals(card.assignedPlayer.Name, selectedPlayer.Name, System.StringComparison.Ordinal));
     }
 
     // Method to be called each time a card is assigned to a slot

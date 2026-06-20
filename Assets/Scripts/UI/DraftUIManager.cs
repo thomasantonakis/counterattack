@@ -14,6 +14,7 @@ public class DraftUIManager : MonoBehaviour
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
 
     public Button startGameButton;  // Reference to the Start Game button
+    public Button randomDraftButton;
     private DraftManager draftManager;  // Reference to the DraftManager
     public GameObject homeTeamPanel;
     public GameObject awayTeamPanel;
@@ -29,6 +30,7 @@ public class DraftUIManager : MonoBehaviour
 
         // The match can only start after every outfield slot has been filled by the draft.
         startGameButton.interactable = false;
+        RefreshRandomDraftButtonState();
         CheckIfDraftIsComplete();
     }
 
@@ -49,6 +51,8 @@ public class DraftUIManager : MonoBehaviour
         {
             return;
         }
+
+        RefreshRandomDraftButtonState();
 
         if (draftManager.IsFreeDraftMode())
         {
@@ -126,6 +130,23 @@ public class DraftUIManager : MonoBehaviour
     {
         // Assuming you want to load a previous scene, change "PreviousSceneName" to the actual scene name
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void OnRandomDraftButtonPressed()
+    {
+        if (draftManager == null)
+        {
+            draftManager = FindAnyObjectByType<DraftManager>();
+        }
+
+        if (draftManager == null)
+        {
+            Debug.LogError("DraftManager not found for Random draft button.");
+            return;
+        }
+
+        draftManager.CompleteRegularDraftWithGreedyProfile();
+        CheckIfDraftIsComplete();
     }
 
     // Method to load the game room scene
@@ -317,5 +338,22 @@ public class DraftUIManager : MonoBehaviour
         }
 
         RefreshDraftStateUI();
+    }
+
+    private void RefreshRandomDraftButtonState()
+    {
+        if (randomDraftButton == null)
+        {
+            return;
+        }
+
+        if (draftManager == null)
+        {
+            draftManager = FindAnyObjectByType<DraftManager>();
+        }
+
+        bool isAvailable = draftManager != null && draftManager.CanCompleteRegularDraftWithGreedyProfile();
+        randomDraftButton.gameObject.SetActive(isAvailable);
+        randomDraftButton.interactable = isAvailable;
     }
 }

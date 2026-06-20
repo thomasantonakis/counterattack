@@ -138,6 +138,9 @@ public class MatchManager : MonoBehaviour
         public string awayKit;
         public string homeGKKit;
         public string awayGKKit;
+        public string homeDraftPersona;
+        public string awayDraftPersona;
+        public string defaultDraftPersona;
         public int playerAssistance;
         public string matchType;
         public string ballColor;

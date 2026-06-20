@@ -8171,6 +8171,9 @@ MonoBehaviour:
           jerseyNumber: 0
           playerName: 
         forcedGoalkeeperToLeaveName: 
+        forcedGoalkeeperReplacementHex:
+          x: 0
+          z: 0
       stats:
         playerStats: []
         homeTeamStats:
@@ -8250,6 +8253,7 @@ MonoBehaviour:
     events: []
   LastTokenToTouchTheBallOnPurpose: {fileID: 0}
   PreviousTokenToTouchTheBallOnPurpose: {fileID: 0}
+  pendingStopPlayRestart: 0
   hangingPassType: 
   hangingPassExcludedCollector: {fileID: 0}
   setPieceTakerExcludedFromNextTouch: {fileID: 0}
