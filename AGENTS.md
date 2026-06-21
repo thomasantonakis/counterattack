@@ -2,6 +2,7 @@
 
 - Never start Unity from Codex. Do not launch Unity, run Unity batchmode, press Play, or press Cmd+P unless it is only to stop an already-running Play Mode session.
 - Never create UI or other visual structures only at runtime. Whenever creating or changing visuals, author them as scene or prefab objects available in edit mode so the designer can inspect and edit them before Play Mode.
+- Treat `Canvas/MatchStatsUI/Stats` as designer-owned layout. Scripts must not create, move, resize, anchor, add layout components to, enable/disable, or otherwise restyle objects under it; they may only update text values and colors that represent team identity or player status.
 - Before pressing Cmd+P, check that Unity is currently in Play Mode. Treat paused Play Mode as Play Mode. If Unity is neither playing nor paused in Play Mode, do not press Cmd+P because it would start Play Mode.
 - If Unity is in Play Mode, including when paused or stopped at a failed assertion, activate Unity, press Cmd+P once to stop, and wait until Play Mode has stopped. Do not kill the Unity process.
 - After code changes, save assets, press Cmd+R in the already-open Unity editor to reload, then inspect `/Users/t.antonakis/Library/Logs/Unity/Editor.log` for compile errors.

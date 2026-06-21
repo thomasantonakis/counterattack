@@ -121,6 +121,16 @@ public class MatchStatsUI : MonoBehaviour
     public TMP_Text statsText;  // Drag the TextMeshPro UI element here
     public TMP_Text homeScorersText;
     public TMP_Text awayScorersText;
+    [Header("Designer-owned stats fields")]
+    [SerializeField] private RectTransform statsGridRoot;
+    [SerializeField] private TMP_Text[] homeStatsTexts = new TMP_Text[StatsRowCount];
+    [SerializeField] private TMP_Text[] statTitleTexts = new TMP_Text[StatsRowCount];
+    [SerializeField] private TMP_Text[] awayStatsTexts = new TMP_Text[StatsRowCount];
+    [Header("Designer-owned lineup fields")]
+    [SerializeField] private RectTransform lineupsRoot;
+    [SerializeField] private TMP_Text homeLineupText;
+    [SerializeField] private TMP_Text lineupNumberText;
+    [SerializeField] private TMP_Text awayLineupText;
     public RectTransform panel;     // Assign the MatchStatsUI panel here
     public Button toggleButton;     // Assign a small edge button (like "◀"/"▶")
     public float collapsedX = 370f; // Distance off-screen to slide
@@ -136,11 +146,6 @@ public class MatchStatsUI : MonoBehaviour
     [SerializeField] private GoalkeeperCard homeGoalkeeperHoverCard;
     [SerializeField] private GoalkeeperCard awayGoalkeeperHoverCard;
     [Header("Stats Panel Layout")]
-    [SerializeField] private float statsFontSizeMin = 9f;
-    [SerializeField] private float statsFontSizeMax = 13f;
-    [SerializeField] private float statsLineSpacing = 3f;
-    [SerializeField] private float statsParagraphSpacing = 0f;
-    [SerializeField, Range(0.05f, 0.7f)] private float tablesBottomAnchor = 0.29f;
     [SerializeField, Range(0f, 0.2f)] private float cardsBottomPadding = 0.01f;
     [SerializeField, Range(0.05f, 0.5f)] private float cardsTopAnchor = 0.25f;
     [SerializeField, Range(0.4f, 1f)] private float previewCardWidthFill = 0.98f;
@@ -175,7 +180,7 @@ public class MatchStatsUI : MonoBehaviour
     private const string NeutralPlayerColor = "#FFFFFF";
     private const string CardYellowColor = "#F4D35E";
     private const string CardRedColor = "#FF6B6B";
-    private const string EmptyLabel = "none";
+    private const int StatsRowCount = 21;
     private const string PlayerCardResourcePath = "UI/PlayerCardPrefab";
     private const string GoalkeeperCardResourcePath = "UI/GoalKeeperCardPrefab";
     private static readonly Color PreviewOutfieldFrameColor = new(0.22f, 0.30f, 0.40f, 1f);
@@ -403,14 +408,28 @@ public class MatchStatsUI : MonoBehaviour
 
         string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
         string awayTeamName = MatchManager.Instance.gameData.gameSettings.awayTeamName;
-        int lineupRowCount = GetMaxLineupRowCount();
         int scoreboardMinCenterChars = PenaltyShootoutPresentation.TryGetDisplayState(MatchManager.Instance, out _) ? 11 : 5;
         ColumnLayout scoreboardLayout = GetColumnLayout(ScoreboardSideColumnRatio, ScoreboardCenterColumnRatio, scoreboardMinCenterChars, false, ScoreboardMonospaceStepPx);
         ColumnLayout statsLayout = GetColumnLayout(StatsSideColumnRatio, StatsCenterColumnRatio, 10);
         ColumnLayout lineupLayout = GetColumnLayout(LineupSideColumnRatio, LineupCenterColumnRatio, 3);
         currentLineupLayout = lineupLayout;
         lineupHoverEntries.Clear();
-        ApplyDynamicStatsSpacing(lineupRowCount);
+
+        if (HasDesignerStatsFields())
+        {
+            ApplyDesignerStatsTeamColors();
+            UpdateDesignerStatsFields(homeTeamName, awayTeamName, homeTeam, awayTeam);
+            UpdateDesignerLineupFields(homeTeamName, awayTeamName);
+            if (statsText != null)
+            {
+                statsText.text = string.Empty;
+            }
+
+            lineupHoverRows.Clear();
+            UpdateScorersDisplay();
+            RefreshHoverCards();
+            return;
+        }
 
         StringBuilder builder = new();
         int currentLineIndex = 0;
@@ -425,6 +444,126 @@ public class MatchStatsUI : MonoBehaviour
         RebuildLineupHoverRows();
         UpdateScorersDisplay();
         RefreshHoverCards();
+    }
+
+    private bool HasDesignerStatsFields()
+    {
+        AutoBindDesignerStatsFields();
+        return HasCompleteTextArray(homeStatsTexts)
+            && HasCompleteTextArray(statTitleTexts)
+            && HasCompleteTextArray(awayStatsTexts);
+    }
+
+    private static bool HasCompleteTextArray(TMP_Text[] texts)
+    {
+        return texts != null && texts.Length >= StatsRowCount && texts.Take(StatsRowCount).All(text => text != null);
+    }
+
+    private void UpdateDesignerStatsFields(
+        string homeTeamName,
+        string awayTeamName,
+        MatchManager.TeamStats homeTeam,
+        MatchManager.TeamStats awayTeam)
+    {
+        for (int i = 0; i < StatsRowCount; i++)
+        {
+            string homeValue = string.Empty;
+            string centerValue = string.Empty;
+            string awayValue = string.Empty;
+
+            if (i < templateRows.Count)
+            {
+                TemplateRow row = templateRows[i];
+                centerValue = row.kind == TemplateRowKind.Header
+                    ? $"{homeTeamName} {homeTeam.totalGoals}-{awayTeam.totalGoals} {awayTeamName}"
+                    : row.centerLabel;
+
+                if (row.kind == TemplateRowKind.Metric)
+                {
+                    (homeValue, awayValue, _) = ResolveMetricRow(row.centerLabel, homeTeam, awayTeam);
+                }
+            }
+
+            SetFieldText(homeStatsTexts, i, homeValue);
+            SetFieldText(statTitleTexts, i, centerValue);
+            SetFieldText(awayStatsTexts, i, awayValue);
+        }
+    }
+
+    private void UpdateDesignerLineupFields(string homeTeamName, string awayTeamName)
+    {
+        AutoBindDesignerLineupFields();
+        if (homeLineupText == null || lineupNumberText == null || awayLineupText == null)
+        {
+            return;
+        }
+
+        if (!showLineups || MatchManager.Instance == null || MatchManager.Instance.gameData?.rosters == null)
+        {
+            homeLineupText.text = string.Empty;
+            lineupNumberText.text = string.Empty;
+            awayLineupText.text = string.Empty;
+            return;
+        }
+
+        List<LineupPlayerRow> homeLineup = BuildLineupRows(true);
+        List<LineupPlayerRow> awayLineup = BuildLineupRows(false);
+        int rowCount = Math.Max(homeLineup.Count, awayLineup.Count);
+        if (rowCount == 0)
+        {
+            homeLineupText.text = string.Empty;
+            lineupNumberText.text = string.Empty;
+            awayLineupText.text = string.Empty;
+            return;
+        }
+
+        List<string> homeRows = new() { $"<color={currentHomeColor}>{homeTeamName}</color>" };
+        List<string> numberRows = new() { $"<color={AccentColor}>{lineupHeaderLabel}</color>" };
+        List<string> awayRows = new() { $"<color={currentAwayColor}>{awayTeamName}</color>" };
+
+        for (int index = 0; index < rowCount; index++)
+        {
+            if (ShouldInsertBenchSeparator(homeLineup, awayLineup, index))
+            {
+                homeRows.Add(string.Empty);
+                numberRows.Add("<color=#5E6B7F>--</color>");
+                awayRows.Add(string.Empty);
+            }
+
+            LineupPlayerRow homePlayer = index < homeLineup.Count ? homeLineup[index] : null;
+            LineupPlayerRow awayPlayer = index < awayLineup.Count ? awayLineup[index] : null;
+            homeRows.Add(BuildDesignerLineupSideText(homePlayer));
+            numberRows.Add($"<color={MutedColor}>{BuildLineupCenterLabel(homePlayer, awayPlayer)}</color>");
+            awayRows.Add(BuildDesignerLineupSideText(awayPlayer));
+        }
+
+        homeLineupText.text = string.Join("\n", homeRows);
+        lineupNumberText.text = string.Join("\n", numberRows);
+        awayLineupText.text = string.Join("\n", awayRows);
+    }
+
+    private static string BuildDesignerLineupSideText(LineupPlayerRow player)
+    {
+        if (player == null)
+        {
+            return "-";
+        }
+
+        string displayName = player.isGoalkeeper ? $"{player.displayName} (GK)" : player.displayName;
+        string formattedName = player.isSentOff || player.isSubbedOff
+            ? $"<s>{displayName}</s>"
+            : displayName;
+        return $"<color={GetLineupPlayerColor(player)}>{formattedName}</color>";
+    }
+
+    private static void SetFieldText(TMP_Text[] fields, int index, string value)
+    {
+        if (fields == null || index < 0 || index >= fields.Length || fields[index] == null)
+        {
+            return;
+        }
+
+        fields[index].text = value ?? string.Empty;
     }
 
     public string BuildScoreAndStatsRecapText(float textWidthOverride = 0f)
@@ -481,33 +620,69 @@ public class MatchStatsUI : MonoBehaviour
 
     public void UpdateScorersDisplay()
     {
-        if (MatchManager.Instance == null)
+        if (MatchManager.Instance == null || MatchManager.Instance.gameData == null)
         {
             return;
         }
 
+        string homeTeamName = MatchManager.Instance.gameData.gameSettings.homeTeamName;
+        string awayTeamName = MatchManager.Instance.gameData.gameSettings.awayTeamName;
+        int homeScore = MatchManager.Instance.gameData.stats.homeTeamStats.totalGoals;
+        int awayScore = MatchManager.Instance.gameData.stats.awayTeamStats.totalGoals;
+
         if (homeScorersText != null)
         {
-            homeScorersText.text = string.Empty;
-            homeScorersText.gameObject.SetActive(false);
+            homeScorersText.text = BuildScorerPanelText($"{homeTeamName} {homeScore}", MatchManager.Instance.homeScorers);
         }
 
         if (awayScorersText != null)
         {
-            awayScorersText.text = string.Empty;
-            awayScorersText.gameObject.SetActive(false);
+            awayScorersText.text = BuildScorerPanelText($"{awayScore} {awayTeamName}", MatchManager.Instance.awayScorers);
         }
     }
 
-    private string FormatScorerList(List<MatchManager.GoalEvent> scorers)
+    private static string BuildScorerPanelText(string header, List<MatchManager.GoalEvent> scorers)
     {
-        return scorers == null || scorers.Count == 0
-            ? EmptyLabel
-            : string.Join(" | ", scorers.Select(g => g.ToString()));
+        string scorerRows = FormatScorerRows(scorers);
+        return string.IsNullOrWhiteSpace(scorerRows)
+            ? header
+            : $"{header}\n{scorerRows}";
+    }
+
+    private static string FormatScorerRows(List<MatchManager.GoalEvent> scorers)
+    {
+        if (scorers == null || scorers.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(
+            "\n",
+            scorers
+                .Where(goal => goal != null && !string.IsNullOrWhiteSpace(goal.scorer))
+                .GroupBy(goal => goal.scorer)
+                .Select(group => new
+                {
+                    Scorer = group.Key,
+                    Goals = group.OrderBy(goal => goal.minute).ToList(),
+                    FirstMinute = group.Min(goal => goal.minute),
+                })
+                .OrderBy(summary => summary.FirstMinute)
+                .ThenBy(summary => summary.Scorer)
+                .Select(summary => $"{summary.Scorer} {string.Join(", ", summary.Goals.Select(FormatScorerMinute))}"));
+    }
+
+    private static string FormatScorerMinute(MatchManager.GoalEvent goal)
+    {
+        string minute = FormatScoreMinute(goal);
+        return goal != null && goal.isPenalty ? $"{minute} (p)" : minute;
     }
 
     private void ApplyRuntimeVisualStyle()
     {
+        AutoBindDesignerStatsFields();
+        AutoBindDesignerLineupFields();
+
         Image panelImage = panel != null ? panel.GetComponent<Image>() : null;
         if (panelImage != null)
         {
@@ -520,16 +695,9 @@ public class MatchStatsUI : MonoBehaviour
             toggleImage.color = ToggleBackgroundColor;
         }
 
-        if (statsText != null)
-        {
-            ConfigureText(statsText, statsFontSizeMin, Mathf.Max(statsFontSizeMin, statsFontSizeMax), TextAlignmentOptions.TopLeft, false);
-            statsText.richText = true;
-            statsText.overflowMode = TextOverflowModes.Masking;
-            statsText.lineSpacing = statsLineSpacing;
-            statsText.paragraphSpacing = statsParagraphSpacing;
-        }
         ConfigureText(homeScorersText, 10f, 13f, TextAlignmentOptions.TopLeft, true);
         ConfigureText(awayScorersText, 10f, 13f, TextAlignmentOptions.TopLeft, true);
+        ApplyDesignerStatsTeamColors();
 
         TextMeshProUGUI toggleLabel = toggleButton != null ? toggleButton.GetComponentInChildren<TextMeshProUGUI>() : null;
         if (toggleLabel != null)
@@ -538,6 +706,96 @@ public class MatchStatsUI : MonoBehaviour
             toggleLabel.color = new Color(0.09f, 0.12f, 0.17f, 1f);
             toggleLabel.fontStyle = FontStyles.Bold;
         }
+    }
+
+    private void AutoBindDesignerStatsFields()
+    {
+        if (statsGridRoot == null)
+        {
+            statsGridRoot = FindStatsChildRect("StatsGrid");
+        }
+
+        BindStatsTextArray(statsGridRoot, "HomeStats", "HomeStat_", ref homeStatsTexts);
+        BindStatsTextArray(statsGridRoot, "StatTitles", "StatTitle_", ref statTitleTexts);
+        BindStatsTextArray(statsGridRoot, "AwayStats", "AwayStat_", ref awayStatsTexts);
+    }
+
+    private void AutoBindDesignerLineupFields()
+    {
+        if (lineupsRoot == null)
+        {
+            lineupsRoot = FindStatsChildRect("Lineups");
+        }
+
+        homeLineupText ??= FindNestedText(lineupsRoot, "HomeLineupText");
+        lineupNumberText ??= FindNestedText(lineupsRoot, "LineupNumberText");
+        awayLineupText ??= FindNestedText(lineupsRoot, "AwayLineupText");
+    }
+
+    private RectTransform FindStatsChildRect(string childName)
+    {
+        RectTransform statsRoot = statsText != null
+            ? statsText.transform as RectTransform
+            : FindDirectChildRect(panel, "Stats");
+        return FindDirectChildRect(statsRoot, childName);
+    }
+
+    private static void BindStatsTextArray(RectTransform root, string columnName, string itemPrefix, ref TMP_Text[] target)
+    {
+        if (target == null || target.Length != StatsRowCount)
+        {
+            target = new TMP_Text[StatsRowCount];
+        }
+
+        RectTransform column = FindDirectChildRect(root, columnName);
+        for (int i = 0; i < StatsRowCount; i++)
+        {
+            if (target[i] != null)
+            {
+                continue;
+            }
+
+            target[i] = FindNestedText(column, $"{itemPrefix}{i + 1:00}");
+        }
+    }
+
+    private static TMP_Text FindNestedText(RectTransform parent, string childName)
+    {
+        Transform child = FindNamedChild(parent, childName);
+        return child != null ? child.GetComponent<TMP_Text>() : null;
+    }
+
+    private void ApplyDesignerStatsTeamColors()
+    {
+        ApplyTextArrayColor(homeStatsTexts, currentHomeColor);
+        ApplyTextArrayColor(awayStatsTexts, currentAwayColor);
+    }
+
+    private static void ApplyTextArrayColor(TMP_Text[] fields, string htmlColor)
+    {
+        if (fields == null || !ColorUtility.TryParseHtmlString(htmlColor, out Color color))
+        {
+            return;
+        }
+
+        foreach (TMP_Text field in fields)
+        {
+            if (field != null)
+            {
+                field.color = color;
+            }
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (Application.isPlaying)
+        {
+            return;
+        }
+
+        AutoBindDesignerStatsFields();
+        AutoBindDesignerLineupFields();
     }
 
     private void ConfigurePanelLayout()
@@ -552,15 +810,6 @@ public class MatchStatsUI : MonoBehaviour
             panel.sizeDelta = new Vector2(panelWidth, 0f);
         }
 
-        if (statsText != null)
-        {
-            RectTransform statsRect = statsText.rectTransform;
-            statsRect.anchorMin = new Vector2(SidePaddingRatio, tablesBottomAnchor);
-            statsRect.anchorMax = new Vector2(1f - SidePaddingRatio, 1f - TablesTopPadding);
-            statsRect.pivot = new Vector2(0.5f, 1f);
-            statsRect.offsetMin = Vector2.zero;
-            statsRect.offsetMax = Vector2.zero;
-        }
     }
 
     private void EnsureHoverCards()
@@ -1866,19 +2115,6 @@ public class MatchStatsUI : MonoBehaviour
                 entry = rows[index].entry,
             });
         }
-    }
-
-    private void ApplyDynamicStatsSpacing(int lineupRowCount)
-    {
-        if (statsText == null)
-        {
-            return;
-        }
-
-        int rowDelta = BaselineLineupRowCount - lineupRowCount;
-        float adjustedLineSpacing = statsLineSpacing + (rowDelta * LineSpacingAdjustmentPerLineupRow);
-        statsText.lineSpacing = adjustedLineSpacing;
-        statsText.paragraphSpacing = statsParagraphSpacing;
     }
 
     private void AppendLineupsTable(StringBuilder builder, ColumnLayout layout, string homeTeamName, string awayTeamName, ref int currentLineIndex)
