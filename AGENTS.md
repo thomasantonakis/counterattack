@@ -53,3 +53,10 @@ For Unity-specific behavior, remember that CodeGraph indexes source code but may
 ## Save Log Inspection
 
 - When discussing saved gameplay events, always inspect the current test save at `/Users/t.antonakis/Library/Application Support/DefaultCompany/CA from Chatgpt/SavedGames/__RoomPlaytests/__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json` first. The user overwrites this file during manual testing and references its event sequence numbers in prompts.
+
+## Hex Terminology
+
+- In this project, `inGoal` hexes and `CanShootTo` hexes refer to the same goal-line target set.
+- `HexCell.isInGoal != 0` is the persistent flag on the hex.
+- `canShootToHexes` is the runtime list built from the same coordinates in `HexGrid.CalculateShootingPaths(...)`.
+- Use the terms interchangeably when discussing goal-line shooting targets.
