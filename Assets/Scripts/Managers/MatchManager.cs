@@ -825,6 +825,10 @@ public class MatchManager : MonoBehaviour
                     }
                     break;
 
+                case ActionType.OwnGoalScored:
+                    logEntry += "scores an own goal";
+                    break;
+
                 case ActionType.AssistProvided:
                     logEntry += "provides the assist for a goal! 🅰️";
                     playerStats.assists += value;
@@ -1005,6 +1009,67 @@ public class MatchManager : MonoBehaviour
             Debug.Log($"[Expected Stats] {token.name} records xG {expectedValue:0.###} on {contextText}");
         }
 
+        public void LogOwnGoal(PlayerToken ownGoalToken, bool scoringTeamIsHome, int value = 1)
+        {
+            if (ownGoalToken == null)
+            {
+                Debug.LogError("❌ LogOwnGoal ERROR: ownGoalToken is NULL!");
+                return;
+            }
+
+            if (stats == null)
+            {
+                Debug.LogError("❌ LogOwnGoal ERROR: stats is NULL!");
+                return;
+            }
+
+            MatchManager matchManager = MatchManager.Instance;
+            if (matchManager == null || matchManager.gameData?.gameSettings == null)
+            {
+                Debug.LogError("❌ LogOwnGoal ERROR: MatchManager or game settings are missing!");
+                return;
+            }
+
+            TeamStats scoringTeamStats = stats.GetTeamStats(scoringTeamIsHome);
+            scoringTeamStats.totalGoals += value;
+
+            bool isPenaltyGoal = matchManager.ConsumeNextGoalIsPenalty();
+            matchManager.ConsumeSuppressAssistForNextGoal();
+            string ownGoalScorerName = string.IsNullOrWhiteSpace(ownGoalToken.playerName)
+                ? ownGoalToken.name
+                : ownGoalToken.playerName;
+            string scorerLabel = $"{ownGoalScorerName} (OG)";
+            matchManager.AddGoal(
+                scorerLabel,
+                scoringTeamIsHome,
+                matchManager.GetCurrentGoalMinute(),
+                isPenaltyGoal,
+                null,
+                matchManager.GetCurrentGoalMinuteLabel(),
+                MatchManager.GetStableTokenKey(ownGoalToken));
+
+            string concedingTeamName = ownGoalToken.isHomeTeam
+                ? matchManager.gameData.gameSettings.homeTeamName
+                : matchManager.gameData.gameSettings.awayTeamName;
+            string scoringTeamName = scoringTeamIsHome
+                ? matchManager.gameData.gameSettings.homeTeamName
+                : matchManager.gameData.gameSettings.awayTeamName;
+            string logEntry = $"{ownGoalToken.name} ({concedingTeamName}) scores an own goal for {scoringTeamName}";
+
+            gameLog.Add(logEntry);
+            matchManager.RecordStructuredGameLogAction(
+                ownGoalToken,
+                ActionType.OwnGoalScored,
+                value,
+                null,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty);
+            matchManager.MarkLiveLogDirty();
+            Debug.Log("[Game Log] " + logEntry);
+        }
+
         public void LogExpectedGroundDuel(
             PlayerToken attacker,
             PlayerToken defender,
@@ -1080,6 +1145,7 @@ public class MatchManager : MonoBehaviour
         ShotBlockMade,
         ShotOffTarget,
         GoalScored,
+        OwnGoalScored,
         BallRecovery,
         AssistProvided,
         GroundDuelAttempt,
@@ -3582,6 +3648,7 @@ public class MatchManager : MonoBehaviour
             ActionType.ShotBlockMade => "block_made",
             ActionType.ShotOffTarget => "off_target",
             ActionType.GoalScored => "goal",
+            ActionType.OwnGoalScored => "own_goal",
             ActionType.BallRecovery => "recovered",
             ActionType.GroundDuelWon => "won",
             ActionType.AerialChallengeWon => "won",

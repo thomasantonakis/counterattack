@@ -250,6 +250,16 @@ public class GoalFlowManager : MonoBehaviour
 
     public void StartGoalFlow(PlayerToken shooterToken, HexCell scoredGoalHex)
     {
+        StartGoalFlow(shooterToken, scoredGoalHex, null, false);
+    }
+
+    public void StartGoalFlow(PlayerToken shooterToken, HexCell scoredGoalHex, bool scoringTeamIsHome, bool isOwnGoal = false)
+    {
+        StartGoalFlow(shooterToken, scoredGoalHex, (bool?)scoringTeamIsHome, isOwnGoal);
+    }
+
+    private void StartGoalFlow(PlayerToken shooterToken, HexCell scoredGoalHex, bool? scoringTeamIsHomeOverride, bool isOwnGoal)
+    {
         // TODO: This should clean up everything from all Managers.
         activeGoalHex = scoredGoalHex;
         activeGoalSide = ResolveScoredGoalSide(shooterToken, scoredGoalHex);
@@ -262,19 +272,20 @@ public class GoalFlowManager : MonoBehaviour
         postGoalResetFinalized = false;
         suppressPostGoalResetAfterCelebration = false;
         postGoalResetSuppressedCallback = null;
-        CaptureGoalInstructionContext(shooterToken);
+        bool scoringTeamIsHome = scoringTeamIsHomeOverride ?? (shooterToken != null && shooterToken.isHomeTeam);
+        CaptureGoalInstructionContext(shooterToken, scoringTeamIsHome, isOwnGoal);
         instructionPhase = GoalInstructionPhase.Celebration;
         hexGrid.RemoveHighlightsFromAllHexes();
         string shooterName = shooterToken != null ? shooterToken.name : "Unknown scorer";
         Debug.Log($"GOAL! {shooterName} scores! Starting celebration on goal side {activeGoalSide}.");
         MatchManager.Instance?.SetSubstitutionsAvailable(true, "Goal scored");
-        StartCoroutine(DefenseCelebrationFlow(shooterToken, activeGoalSide));
-        StartCoroutine(AttackCelebrationFlow(shooterToken, activeGoalSide));
+        StartCoroutine(DefenseCelebrationFlow(scoringTeamIsHome, activeGoalSide));
+        StartCoroutine(AttackCelebrationFlow(shooterToken, scoringTeamIsHome, activeGoalSide));
         
         
     }
 
-    private IEnumerator AttackCelebrationFlow(PlayerToken shooterToken, int scoredGoalSide)
+    private IEnumerator AttackCelebrationFlow(PlayerToken shooterToken, bool scoringTeamIsHome, int scoredGoalSide)
     {
         // 4️⃣ GK joins if after 85’ and team scored match-winner (basic logic here)
         // if (MatchManager.Instance.minutesPassed >= 85)
@@ -291,7 +302,7 @@ public class GoalFlowManager : MonoBehaviour
         List<HexCell> celebrationHexes = GetCelebrationHexes(scoredGoalSide, activeGoalHex, shooterToken);
         List<HexCell> attackerResetHexes = scoredGoalSide > 0 ? resetFormationLeft : resetFormationRight;
         // 2️⃣ Get all attacking teammates
-        List<PlayerToken> attackers = GetAttackTokens(shooterToken.isHomeTeam);
+        List<PlayerToken> attackers = GetAttackTokens(scoringTeamIsHome);
         // 3️⃣ Move all attackers to their celebration positions
         yield return StartCoroutine(MovePlayersToHexes(attackers, celebrationHexes, true, false));
         // 4️⃣ Wait a bit to celebrate
@@ -311,13 +322,13 @@ public class GoalFlowManager : MonoBehaviour
         yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false, true));
         attackersAreBack = true;
         yield return new WaitUntil(() => defendersAreBack);
-        FinalizePostGoalReset(shooterToken);
+        FinalizePostGoalReset(scoringTeamIsHome);
     }
 
-    private IEnumerator DefenseCelebrationFlow(PlayerToken shooterToken, int scoredGoalSide)
+    private IEnumerator DefenseCelebrationFlow(bool scoringTeamIsHome, int scoredGoalSide)
     {
         // 1️⃣ Get all defender Tokens
-        List<PlayerToken> defenders = GetAttackTokens(!shooterToken.isHomeTeam);
+        List<PlayerToken> defenders = GetAttackTokens(!scoringTeamIsHome);
         // 2️⃣ Get the hexes where they should reset
         List<HexCell> defenderResetHexes = scoredGoalSide > 0 ? resetFormationRight : resetFormationLeft;
         // 3️⃣ Wait and cry!
@@ -354,7 +365,7 @@ public class GoalFlowManager : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private void FinalizePostGoalReset(PlayerToken scorerToken)
+    private void FinalizePostGoalReset(bool scoringTeamIsHome)
     {
         if (postGoalResetFinalized)
         {
@@ -363,7 +374,7 @@ public class GoalFlowManager : MonoBehaviour
 
         postGoalResetFinalized = true;
         MatchManager matchManager = MatchManager.Instance;
-        bool kickoffTeamIsHome = scorerToken != null ? !scorerToken.isHomeTeam : !goalScoringTeamIsHome;
+        bool kickoffTeamIsHome = !scoringTeamIsHome;
 
         if (matchManager != null)
         {
@@ -628,23 +639,24 @@ public class GoalFlowManager : MonoBehaviour
         return instructionPhase == GoalInstructionPhase.Celebration;
     }
 
-    private void CaptureGoalInstructionContext(PlayerToken shooterToken)
+    private void CaptureGoalInstructionContext(PlayerToken shooterToken, bool scoringTeamIsHomeOverride, bool isOwnGoal)
     {
         if (shooterToken == null)
         {
-            goalScoringTeamIsHome = true;
-            goalScoringTeamName = "Unknown Team";
+            goalScoringTeamIsHome = scoringTeamIsHomeOverride;
+            goalScoringTeamName = GetTeamName(scoringTeamIsHomeOverride);
             goalScorerName = "Unknown Scorer";
             goalAssisterName = string.Empty;
             scorerGoalCount = 1;
             return;
         }
 
-        goalScoringTeamIsHome = shooterToken.isHomeTeam;
-        goalScoringTeamName = GetTeamName(shooterToken.isHomeTeam);
-        goalScorerName = string.IsNullOrWhiteSpace(shooterToken.playerName) ? shooterToken.name : shooterToken.playerName;
-        goalAssisterName = ResolveAssisterName(shooterToken);
-        scorerGoalCount = CountGoalsByScorer(goalScorerName, shooterToken.isHomeTeam);
+        goalScoringTeamIsHome = scoringTeamIsHomeOverride;
+        goalScoringTeamName = GetTeamName(scoringTeamIsHomeOverride);
+        string scorerName = string.IsNullOrWhiteSpace(shooterToken.playerName) ? shooterToken.name : shooterToken.playerName;
+        goalScorerName = isOwnGoal ? $"{scorerName} (OG)" : scorerName;
+        goalAssisterName = isOwnGoal ? string.Empty : ResolveAssisterName(shooterToken);
+        scorerGoalCount = CountGoalsByScorer(goalScorerName, scoringTeamIsHomeOverride);
     }
 
     private string BuildGoalResetInstruction()

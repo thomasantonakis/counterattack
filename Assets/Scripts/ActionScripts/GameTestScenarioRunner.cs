@@ -1018,6 +1018,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP), Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP),
             new ScenarioDefinition(nameof(Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal), Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal),
             new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
+            new ScenarioDefinition(nameof(Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset), Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset),
             new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
             new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
             new ScenarioDefinition(nameof(Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold), Scenario_030a_LongBall_Difficulty1_InvalidTarget_And_AccurateThreshold),
@@ -13779,6 +13780,73 @@ public class GameTestScenarioRunner : MonoBehaviour
         
 
         LogFooterofTest("MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL!");
+    }
+
+    private IEnumerator Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("▶️ Starting test scenario: Loose Ball own goal credits opponent and resets for conceding kickoff!");
+
+        PlayerToken ownGoalToken = RequirePlayerToken("Cafferata");
+        HexCell homeOwnGoalHex = RequireHex(
+            hexgrid.GetHexCellAt(new Vector3Int(-19, 0, 0)),
+            "Home own-goal test should find left goal hex (-19,0).");
+
+        int homeGoalsBefore = MatchManager.Instance.gameData.stats.homeTeamStats.totalGoals;
+        int awayGoalsBefore = MatchManager.Instance.gameData.stats.awayTeamStats.totalGoals;
+        int ownGoalTokenGoalsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(ownGoalToken.playerName).goals;
+
+        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        MatchManager.Instance.teamInAttack = MatchManager.TeamInAttack.Home;
+        MatchManager.Instance.attackHasPossession = true;
+        MatchManager.Instance.ClearLastTokenChain();
+        MatchManager.Instance.SetLastToken(ownGoalToken);
+        groundBallManager.ball.PlaceAtCell(homeOwnGoalHex);
+
+        MethodInfo looseGoalMethod = typeof(LooseBallManager).GetMethod("TryHandleLooseBallGoal", BindingFlags.Instance | BindingFlags.NonPublic);
+        AssertTrue(looseGoalMethod != null, "LooseBallManager should expose TryHandleLooseBallGoal for own-goal regression coverage.");
+        bool handled = looseGoalMethod != null
+            && (bool)looseGoalMethod.Invoke(looseBallManager, new object[] { homeOwnGoalHex, ownGoalToken });
+
+        AssertTrue(handled, "Loose-ball own-goal branch should handle a ball entering Home's own goal.", true, handled);
+        AssertTrue(goalFlowManager.isActivated, "Own goal should start the goal flow.");
+
+        while (goalFlowManager.isActivated)
+        {
+            yield return null;
+        }
+
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.homeTeamStats.totalGoals == homeGoalsBefore,
+            "Home should not be credited when Home puts a loose ball into Home's own goal.",
+            homeGoalsBefore,
+            MatchManager.Instance.gameData.stats.homeTeamStats.totalGoals);
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.awayTeamStats.totalGoals == awayGoalsBefore + 1,
+            "Away should be credited when Home puts a loose ball into Home's own goal.",
+            awayGoalsBefore + 1,
+            MatchManager.Instance.gameData.stats.awayTeamStats.totalGoals);
+        AssertTrue(
+            MatchManager.Instance.gameData.stats.GetPlayerStats(ownGoalToken.playerName).goals == ownGoalTokenGoalsBefore,
+            "The own-goal token should not receive a normal player goal.",
+            ownGoalTokenGoalsBefore,
+            MatchManager.Instance.gameData.stats.GetPlayerStats(ownGoalToken.playerName).goals);
+        AssertTrue(
+            MatchManager.Instance.awayScorers.Any(goal => goal != null && goal.scorer.Contains("(OG)")),
+            "Away scorer list should record the own goal as an OG entry.");
+        AssertTrue(
+            MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home,
+            "The conceding Home team should be assigned the post-goal kickoff.",
+            MatchManager.TeamInAttack.Home,
+            MatchManager.Instance.teamInAttack);
+        AssertTrue(
+            MatchManager.Instance.currentState == MatchManager.GameState.PostGoalKickOffSetup,
+            "Own-goal reset should finish in post-goal kickoff setup.",
+            MatchManager.GameState.PostGoalKickOffSetup,
+            MatchManager.Instance.currentState);
+
+        LogFooterofTest("Loose Ball own goal credits opponent and resets for conceding kickoff!");
     }
 
     private IEnumerator Scenario_025a_Movement_Phase_Dribling_into_goal()

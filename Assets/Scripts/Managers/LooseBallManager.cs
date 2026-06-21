@@ -91,11 +91,11 @@ public class LooseBallManager : MonoBehaviour
             return false;
         }
 
-        PlayerToken scoringToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-        if (scoringToken == null)
-        {
-            scoringToken = deflectingToken;
-        }
+        bool scoringTeamIsHome = ResolveScoringTeamFromGoalHex(goalHex);
+        PlayerToken lastPurposefulTouch = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken scoringToken = ResolveLooseBallScoringToken(scoringTeamIsHome, lastPurposefulTouch, deflectingToken);
+        PlayerToken ownGoalToken = ResolveOwnGoalToken(scoringTeamIsHome, deflectingToken, lastPurposefulTouch);
+        bool isOwnGoal = ownGoalToken != null && ownGoalToken.isHomeTeam != scoringTeamIsHome;
 
         if (scoringToken == null)
         {
@@ -110,7 +110,11 @@ public class LooseBallManager : MonoBehaviour
             return false;
         }
 
-        if (deflectingToken != null && deflectingToken != scoringToken)
+        if (isOwnGoal)
+        {
+            Debug.Log($"Loose ball entered the goal at {goalHex.coordinates} for {(scoringTeamIsHome ? "Home" : "Away")} after an own goal by {ownGoalToken.name}.");
+        }
+        else if (deflectingToken != null && deflectingToken != scoringToken)
         {
             Debug.Log($"Loose ball entered the goal at {goalHex.coordinates} after a deflection by {deflectingToken.name}. Awarding the goal to {scoringToken.name}.");
         }
@@ -125,7 +129,15 @@ public class LooseBallManager : MonoBehaviour
             nextLooseBallGoalIsPenalty = false;
         }
 
-        MatchManager.Instance.gameData.gameLog.LogEvent(scoringToken, MatchManager.ActionType.GoalScored);
+        if (isOwnGoal)
+        {
+            MatchManager.Instance.gameData.gameLog.LogOwnGoal(ownGoalToken, scoringTeamIsHome);
+        }
+        else
+        {
+            MatchManager.Instance.gameData.gameLog.LogEvent(scoringToken, MatchManager.ActionType.GoalScored);
+        }
+
         MatchManager.Instance.ClearHangingPass();
         MatchManager.Instance.SetLastToken(scoringToken);
         if (movementPhaseManager != null && movementPhaseManager.isActivated)
@@ -134,8 +146,50 @@ public class LooseBallManager : MonoBehaviour
             movementPhaseManager.EndMovementPhase(false);
         }
 
-        resolvedGoalFlowManager.StartGoalFlow(scoringToken, goalHex);
+        resolvedGoalFlowManager.StartGoalFlow(isOwnGoal ? ownGoalToken : scoringToken, goalHex, scoringTeamIsHome, isOwnGoal);
         return true;
+    }
+
+    private bool ResolveScoringTeamFromGoalHex(HexCell goalHex)
+    {
+        int homeAttackingGoalSide = MatchManager.Instance.homeTeamDirection == MatchManager.TeamAttackingDirection.LeftToRight ? 1 : -1;
+        return goalHex.isInGoal == homeAttackingGoalSide;
+    }
+
+    private PlayerToken ResolveLooseBallScoringToken(bool scoringTeamIsHome, PlayerToken lastPurposefulTouch, PlayerToken deflectingToken)
+    {
+        if (lastPurposefulTouch != null && lastPurposefulTouch.isHomeTeam == scoringTeamIsHome)
+        {
+            return lastPurposefulTouch;
+        }
+
+        if (deflectingToken != null && deflectingToken.isHomeTeam == scoringTeamIsHome)
+        {
+            return deflectingToken;
+        }
+
+        return FindAnyTokenForTeam(scoringTeamIsHome);
+    }
+
+    private PlayerToken ResolveOwnGoalToken(bool scoringTeamIsHome, PlayerToken deflectingToken, PlayerToken lastPurposefulTouch)
+    {
+        if (deflectingToken != null && deflectingToken.isHomeTeam != scoringTeamIsHome)
+        {
+            return deflectingToken;
+        }
+
+        if (lastPurposefulTouch != null && lastPurposefulTouch.isHomeTeam != scoringTeamIsHome)
+        {
+            return lastPurposefulTouch;
+        }
+
+        return null;
+    }
+
+    private PlayerToken FindAnyTokenForTeam(bool isHomeTeam)
+    {
+        return MatchManager.Instance?.playerTokenManager?.allTokens
+            ?.FirstOrDefault(token => token != null && token.isHomeTeam == isHomeTeam);
     }
 
     private static HexCell FindFirstGoalHexInPath(List<HexCell> path)
