@@ -670,9 +670,9 @@ public class HexGrid : MonoBehaviour
             {
                 hex.ResetHighlight();  // Assuming this method resets the color of the hex
             }
-            if (hex.isInGoal != 0 && hex.transform.position.y == 0.03f)
+            if (hex.isInGoal != 0 && Mathf.Abs(hex.transform.position.y - 0.07f) < 0.0001f)
             {
-                hex.transform.position -= Vector3.up * 0.03f;
+                hex.transform.position -= Vector3.up * 0.07f;
             }
         }
         highlightedHexes.Clear();  // Clear the list after resetting

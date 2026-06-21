@@ -1304,10 +1304,10 @@ public class MovementPhaseManager : MonoBehaviour
                 )
                 {
                     hex.HighlightHex(isHoveredMovementDestination ? "MovementDestinationHover" : "MovementGoal");
-                    if (hex.transform.position.y < 0.03f)
+                    if (hex.transform.position.y < 0.07f)
                     {
                         Vector3 position = hex.transform.position;
-                        position.y = 0.03f;
+                        position.y = 0.07f;
                         hex.transform.position = position;
                     }
                 }

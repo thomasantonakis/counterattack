@@ -11,6 +11,7 @@ public class ShotManager : MonoBehaviour
 {
     private const string FreeKickShotType = "freeKick";
     private const string PenaltyShotType = "penalty";
+    private const float ShotTargetElevation = 0.07f;
 
     [Header("Dependencies")]
     public MovementPhaseManager movementPhaseManager;
@@ -423,7 +424,7 @@ public class ShotManager : MonoBehaviour
             RefreshSnapshotBlockerMovementHighlights();
         }
 
-        if (isActivated && isWaitingForTargetSelection && MatchManager.Instance != null && MatchManager.Instance.difficulty_level < 3)
+        if (isActivated && isWaitingForTargetSelection && MatchManager.Instance != null && MatchManager.Instance.difficulty_level <= 3)
         {
             HexCell nextHoveredTarget = shotTargetSelectionTargets.Contains(hex) ? hex : null;
             if (hoveredTargetSelectionPreviewTarget == nextHoveredTarget)
@@ -918,7 +919,7 @@ public class ShotManager : MonoBehaviour
             }
             if (canShootToHex.transform.position.y == 0)
             {
-                canShootToHex.transform.position += Vector3.up * 0.03f;
+                canShootToHex.transform.position += Vector3.up * ShotTargetElevation;
             }
         }
     }
@@ -1122,7 +1123,7 @@ public class ShotManager : MonoBehaviour
             shotCommitPreviewPath.Add(pathHex);
         }
 
-        hoveredShotCommitPreviewTarget.HighlightHex("CanShootFrom", 1);
+        hoveredShotCommitPreviewTarget.HighlightHex("ShotTargetHover");
     }
 
     private void ClearShotCommitPreviewPath()
@@ -1156,7 +1157,7 @@ public class ShotManager : MonoBehaviour
             hexGrid.highlightedHexes.Remove(targetHex);
             if (targetHex.transform.position.y > 0.001f)
             {
-                targetHex.transform.position -= Vector3.up * 0.03f;
+                targetHex.transform.position -= Vector3.up * ShotTargetElevation;
             }
         }
 
@@ -1465,7 +1466,7 @@ public class ShotManager : MonoBehaviour
             hexGrid.highlightedHexes.Remove(targetHex);
             if (targetHex.transform.position.y > 0.001f)
             {
-                targetHex.transform.position -= Vector3.up * 0.03f;
+                targetHex.transform.position -= Vector3.up * ShotTargetElevation;
             }
         }
 
@@ -1859,7 +1860,7 @@ public class ShotManager : MonoBehaviour
             }
             if (canShootToHex.transform.position.y == 0)
             {
-                canShootToHex.transform.position += Vector3.up * 0.03f; // Raise it above the plane
+                canShootToHex.transform.position += Vector3.up * ShotTargetElevation; // Raise it above the plane
             }
         }
 
@@ -1886,13 +1887,13 @@ public class ShotManager : MonoBehaviour
             canShootToHex.ResetHighlight();
             if (canShootToHex.transform.position.y >= 0)
             {
-              canShootToHex.transform.position -= Vector3.up * 0.03f; // Sink it below the plane
+              canShootToHex.transform.position -= Vector3.up * ShotTargetElevation; // Sink it below the plane
             }
         }
         trajectoryPath = originHex.ShootingPaths[targetHex];
         ClearPendingOutsideBoxGKShotDecision();
         outsideBoxGKShotDecisionResolved = false;
-        if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level != 2)
+        if (MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 1)
         {
             HighlightTrajectoryPath();
         }
