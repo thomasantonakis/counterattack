@@ -784,7 +784,7 @@ public class FreeKickManager : MonoBehaviour
             matchManager.currentState.ToString().StartsWith("FreeKickAtt") // During AttX state
             && token.isAttacker // Clicked token is an attacker
             && potentialKickers.Contains(token) // Clicked token is in the list potential kickers.
-            && potentialKickers.Count == 1 // There is only one attacker as a potential kicker
+            && !CanMovePotentialKickerDuringSetup(token)
         )
         {
             Debug.LogWarning($"There must be at least one attacker on the ball or around it. Please select another attacker.");
@@ -805,6 +805,23 @@ public class FreeKickManager : MonoBehaviour
         selectedToken = token;
         ClearSetupMoveHover();
         Debug.Log($"Token {token.name} selected for current phase {MatchManager.Instance.currentState}. Awaiting destination hex.");
+    }
+
+    private bool CanMovePotentialKickerDuringSetup(PlayerToken token)
+    {
+        if (token == null || !potentialKickers.Contains(token))
+        {
+            return true;
+        }
+
+        MatchManager.GameState state = matchManager.currentState;
+        bool isAttackingGoalkeeperAdjustment = state == MatchManager.GameState.FreeKickAttGK;
+        if (isAttackingGoalkeeperAdjustment && token.IsGoalKeeper)
+        {
+            return potentialKickers.Any(candidate => candidate != null && candidate != token);
+        }
+
+        return potentialKickers.Count > 1;
     }
 
     private IEnumerator HandleSetupHexSelection(HexCell hex)

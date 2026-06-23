@@ -834,6 +834,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears), Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears),
             new ScenarioDefinition(nameof(Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit), Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit),
             new ScenarioDefinition(nameof(Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender), Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender),
+            new ScenarioDefinition(nameof(Scenario_042g_FreeKick_GKTaker_CanMoveWhenAnotherKickerAvailable), Scenario_042g_FreeKick_GKTaker_CanMoveWhenAnotherKickerAvailable),
+            new ScenarioDefinition(nameof(Scenario_042h_CornerKick_GKTaker_CanMoveWhenAnotherKickerAvailable), Scenario_042h_CornerKick_GKTaker_CanMoveWhenAnotherKickerAvailable),
         });
     }
 
@@ -2191,6 +2193,83 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Offside Free Kick Uses Judged Position And Forces Spot Defender");
     }
 
+    private IEnumerator Scenario_042g_FreeKick_GKTaker_CanMoveWhenAnotherKickerAvailable()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        HexCell restartSpot = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0)), "FreeKick GK-taker test should find restart spot.");
+        HexCell alternateKickerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(8, 0, 1)), "FreeKick GK-taker test should find alternate kicker hex.");
+        HexCell goalkeeperStartHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, -8)), "FreeKick GK-taker test should find goalkeeper start hex.");
+        HexCell goalkeeperMoveHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(2, 0, -8)), "FreeKick GK-taker test should find goalkeeper setup move hex.");
+
+        PlayerToken attackingGoalkeeper = RequireAttackingGoalkeeperForRestartTest();
+        PlayerToken alternateKicker = RequireAttackingOutfielderForRestartTest(attackingGoalkeeper);
+
+        ClearHexForGkWallScenario(restartSpot);
+        ClearHexForGkWallScenario(alternateKickerHex);
+        ClearHexForGkWallScenario(goalkeeperStartHex);
+        ClearHexForGkWallScenario(goalkeeperMoveHex);
+
+        PlaceTokenForScenario(attackingGoalkeeper, goalkeeperStartHex, asAttacker: true);
+        PlaceTokenForScenario(alternateKicker, alternateKickerHex, asAttacker: true);
+        freeKickManager.ball.PlaceAtCell(restartSpot);
+        freeKickManager.StartFreeKickPreparation(restartSpot: restartSpot);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttGK && attackingGoalkeeper.GetCurrentHex() != goalkeeperStartHex,
+            3f,
+            "FreeKick GK taker should move beside the ball and reach attacking GK setup."));
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(goalkeeperMoveHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => attackingGoalkeeper.GetCurrentHex() == goalkeeperMoveHex,
+            3f,
+            "FreeKick GK taker should be allowed to move in AttGK when another kicker is available."));
+
+        AssertTrue(alternateKicker.GetCurrentHex() == alternateKickerHex, "Alternate FreeKick kicker should remain on/touching the restart spot.", alternateKickerHex, alternateKicker.GetCurrentHex());
+        LogFooterofTest("FreeKick GK Taker Can Move When Another Kicker Available");
+    }
+
+    private IEnumerator Scenario_042h_CornerKick_GKTaker_CanMoveWhenAnotherKickerAvailable()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        HexCell cornerSpot = GetRestartTestCornerSpot();
+        HexCell goalkeeperStartHex = GetEmptyRestartTestHex(cornerSpot, cornerSpot);
+        HexCell goalkeeperMoveHex = GetEmptyRestartTestHex(goalkeeperStartHex, cornerSpot, goalkeeperStartHex);
+
+        PlayerToken attackingGoalkeeper = RequireAttackingGoalkeeperForRestartTest();
+        PlayerToken alternateKicker = RequireAttackingOutfielderForRestartTest(attackingGoalkeeper);
+
+        ClearHexForGkWallScenario(cornerSpot);
+        ClearHexForGkWallScenario(goalkeeperStartHex);
+        ClearHexForGkWallScenario(goalkeeperMoveHex);
+
+        PlaceTokenForScenario(alternateKicker, cornerSpot, asAttacker: true);
+        PlaceTokenForScenario(attackingGoalkeeper, goalkeeperStartHex, asAttacker: true);
+        freeKickManager.StartFreeKickPreparation(cornerSpot);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttGK && IsInCornerSpotZoi(cornerSpot, attackingGoalkeeper.GetCurrentHex()),
+            3f,
+            "CornerKick GK taker should move to corner ZOI and reach attacking GK setup."));
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(goalkeeperMoveHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => attackingGoalkeeper.GetCurrentHex() == goalkeeperMoveHex,
+            3f,
+            "CornerKick GK taker should be allowed to move in AttGK when another kicker occupies the corner spot."));
+
+        AssertTrue(alternateKicker.GetCurrentHex() == cornerSpot, "Alternate CornerKick kicker should remain on the corner spot.", cornerSpot, alternateKicker.GetCurrentHex());
+        LogFooterofTest("CornerKick GK Taker Can Move When Another Kicker Available");
+    }
+
     private IEnumerator AssertClockAdvancesForState(MatchManager.GameState state, string message)
     {
         ArmMatchClockForRestartTest(state);
@@ -2274,6 +2353,30 @@ public class GameTestScenarioRunner : MonoBehaviour
         return cornerSpot != null
             && checkedHex != null
             && cornerSpot.GetNeighbors(hexgrid).Contains(checkedHex);
+    }
+
+    private PlayerToken RequireAttackingGoalkeeperForRestartTest()
+    {
+        PlayerToken goalkeeper = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+            .FirstOrDefault(token => token != null
+                && token.isPlaying
+                && token.IsGoalKeeper
+                && token.isAttacker);
+        AssertTrue(goalkeeper != null, "Restart test should find the current attacking goalkeeper.");
+        return goalkeeper;
+    }
+
+    private PlayerToken RequireAttackingOutfielderForRestartTest(params PlayerToken[] excludedTokens)
+    {
+        HashSet<PlayerToken> excluded = new(excludedTokens.Where(token => token != null));
+        PlayerToken outfielder = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+            .FirstOrDefault(token => token != null
+                && token.isPlaying
+                && !token.IsGoalKeeper
+                && token.isAttacker
+                && !excluded.Contains(token));
+        AssertTrue(outfielder != null, "Restart test should find a current attacking outfielder.");
+        return outfielder;
     }
 
     private void MoveTokensOutOfFinalThirdForRestartTest(int finalThirdSide, params PlayerToken[] exceptions)
