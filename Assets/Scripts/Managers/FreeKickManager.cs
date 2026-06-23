@@ -37,6 +37,7 @@ public class FreeKickManager : MonoBehaviour
     public PlayerToken selectedToken;
     public HexCell targetHex;
     public HexCell spotkick;
+    private HexCell restartSpot;
     private HexCell hoveredSetupMoveHex;
     private bool isMovingSetupToken;
     public bool IsIndirectFreeKick => isActivated && isIndirectFreeKick;
@@ -383,6 +384,7 @@ public class FreeKickManager : MonoBehaviour
         isCornerKick = false;
         isIndirectFreeKick = false;
         mandatoryDefenderToMove = null;
+        restartSpot = null;
         CancelShotPreview();
     }
 
@@ -406,7 +408,7 @@ public class FreeKickManager : MonoBehaviour
         MatchManager.Instance.longBallManager?.CleanUpLongBall();
     }
 
-    public void StartFreeKickPreparation(HexCell cornerKickSpot = null, bool indirectFreeKick = false)
+    public void StartFreeKickPreparation(HexCell cornerKickSpot = null, bool indirectFreeKick = false, HexCell restartSpot = null)
     {
         matchManager.ClearLiveActionAvailabilityForStopPlay();
         isActivated = true;
@@ -415,6 +417,8 @@ public class FreeKickManager : MonoBehaviour
         matchManager.PauseMatchClockForSetPiecePrep();
         isCornerKick = cornerKickSpot != null;
         spotkick = cornerKickSpot;
+        this.restartSpot = isCornerKick ? cornerKickSpot : restartSpot ?? ball?.GetCurrentHex();
+        PlaceBallOnRestartSpotIfNeeded();
         if (cornerKickSpot == null) Debug.Log(indirectFreeKick ? "Starting indirect Free Kick Preparation..." : "Starting Free Kick Preparation...");
         else
         {
@@ -434,12 +438,22 @@ public class FreeKickManager : MonoBehaviour
             details: new Dictionary<string, string> { ["isCornerKick"] = isCornerKick.ToString() });
     }
 
-    public void StartOffsideIndirectFreeKick(PlayerToken offsideToken)
+    public void StartOffsideIndirectFreeKick(PlayerToken offsideToken, HexCell restartSpot = null)
     {
         Debug.Log($"Starting indirect free kick for offside offence by {offsideToken?.name ?? "unknown token"}.");
-        StartFreeKickPreparation(indirectFreeKick: true);
+        StartFreeKickPreparation(indirectFreeKick: true, restartSpot: restartSpot);
         mandatoryDefenderToMove = offsideToken;
         CalculateDefendersThatNeedToMove();
+    }
+
+    private void PlaceBallOnRestartSpotIfNeeded()
+    {
+        if (ball == null || restartSpot == null || ball.GetCurrentHex() == restartSpot)
+        {
+            return;
+        }
+
+        ball.PlaceAtCell(restartSpot);
     }
 
     private void CalculatePotentialKickers()
@@ -508,6 +522,14 @@ public class FreeKickManager : MonoBehaviour
             {
                 defenders.Add(token);
             }
+        }
+
+        PlayerToken restartSpotOccupant = ballHex.GetOccupyingToken();
+        if (restartSpotOccupant != null
+            && !restartSpotOccupant.isAttacker
+            && !defenders.Contains(restartSpotOccupant))
+        {
+            defenders.Add(restartSpotOccupant);
         }
 
         return defenders;
@@ -1239,7 +1261,8 @@ public class FreeKickManager : MonoBehaviour
         isIndirectFreeKick = false;
         mandatoryDefenderToMove = null;
         // selectedKicker = null; 
-        spotkick = null;       
+        spotkick = null;
+        restartSpot = null;
         potentialKickers.Clear();
         remainingDefenderMoves = 0;
     }
@@ -1262,7 +1285,7 @@ public class FreeKickManager : MonoBehaviour
 
     private HexCell CurrentSetPieceHex()
     {
-        return isCornerKick && spotkick != null ? spotkick : ball?.GetCurrentHex();
+        return isCornerKick && spotkick != null ? spotkick : restartSpot ?? ball?.GetCurrentHex();
     }
 
     private PlayerToken CurrentSetPieceActor()

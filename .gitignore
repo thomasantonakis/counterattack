@@ -7,7 +7,9 @@ UnityGenerated/
 Library/
 Build/
 Logs/
+Logs/shadercompiler-UnityShaderCompiler-*.log
 MemoryCaptures/
+UserSettings/Layouts/default-*.dwlt
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #

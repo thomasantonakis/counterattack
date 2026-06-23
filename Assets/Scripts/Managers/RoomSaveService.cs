@@ -542,6 +542,7 @@ public class RoomOffsideSnapshot
     public int offsideLineX;
     public string assessedContext;
     public List<RoomTokenReference> offsideTokens = new();
+    public List<OffsideManager.OffsideTokenPositionSnapshot> offsideTokenPositions = new();
 }
 
 [Serializable]

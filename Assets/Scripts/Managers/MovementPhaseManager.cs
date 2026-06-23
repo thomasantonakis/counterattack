@@ -119,6 +119,7 @@ public class MovementPhaseManager : MonoBehaviour
     private bool pendingDangerousTackleFoul;
     private bool pendingHarshFoulCardPolicy;
     private bool pendingAutomaticTakeFoulAfterInjury;
+    private HexCell pendingFreeKickRestartSpot;
     private int lastMovementHighlightRange;
     private const int FOUL_THRESHOLD = 1;  // Below this one is a foul
     private const int INTERCEPTION_THRESHOLD = 10;  // Below this one is a foul
@@ -3061,6 +3062,7 @@ public class MovementPhaseManager : MonoBehaviour
         pendingDangerousTackleFoul = false;
         pendingHarshFoulCardPolicy = false;
         pendingAutomaticTakeFoulAfterInjury = false;
+        pendingFreeKickRestartSpot = foulHex;
         isWaitingForYellowCardRoll = false;
         isWaitingForInjuryRoll = false;
         isWaitingForFoulDecision = false;
@@ -3289,6 +3291,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         isWaitingForFoulDecision = false;
         pendingFoulIsPenalty = false;
+        pendingFreeKickRestartSpot = null;
         isDribblerRunning = true;
 
         PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
@@ -3347,6 +3350,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator TakeFreeKickAfterFinalThirds()
     {
+        HexCell restartSpot = pendingFreeKickRestartSpot;
+        pendingFreeKickRestartSpot = null;
         MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
         EndMovementPhaseForStopPlay(triggerF3: true);
 
@@ -3371,7 +3376,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
         }
 
-        freeKickManager.StartFreeKickPreparation();
+        freeKickManager.StartFreeKickPreparation(restartSpot: restartSpot);
     }
 
     private IEnumerator TakePenaltyKickAfterFinalThirds()

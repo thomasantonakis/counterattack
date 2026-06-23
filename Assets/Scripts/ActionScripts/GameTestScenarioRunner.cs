@@ -833,6 +833,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi), Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi),
             new ScenarioDefinition(nameof(Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears), Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears),
             new ScenarioDefinition(nameof(Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit), Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit),
+            new ScenarioDefinition(nameof(Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender), Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender),
         });
     }
 
@@ -2135,6 +2136,59 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(instructions.Contains("must leave the penalty box"), "GoalKick F3 instructions should explain the defensive clearance obligation.", true, instructions);
 
         LogFooterofTest("GoalKick F3 Defensive Clearance Instruction And No Attack Autoforfeit");
+    }
+
+    private IEnumerator Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        MatchManager.Instance.currentState = MatchManager.GameState.EndOfMovementPhase;
+        MatchManager.Instance.attackHasPossession = false;
+
+        OffsideManager offsideManager = MatchManager.Instance.EnsureOffsideManager();
+        HexCell ballHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(4, 0, 0)), "Offside restart test should find the pass-origin ball hex.");
+        HexCell judgedOffsideHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(12, 0, 0)), "Offside restart test should find the judged offside hex.");
+        HexCell interferenceHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(14, 0, 0)), "Offside restart test should find the later interference hex.");
+        HexCell defenderOneHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, -2)), "Offside restart test should find first defender hex.");
+        HexCell defenderTwoHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(9, 0, 2)), "Offside restart test should find second defender hex.");
+        HexCell spotDefenderStart = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(6, 0, 6)), "Offside restart test should find spot defender start hex.");
+
+        PlayerToken offsideToken = RequirePlayerToken("Yaneva");
+        PlayerToken spotDefender = RequirePlayerToken("Kalla");
+        PlayerToken defenderOne = RequirePlayerToken("Poulsen");
+        PlayerToken defenderTwo = RequirePlayerToken("Delgado");
+
+        ClearHexForGkWallScenario(ballHex);
+        ClearHexForGkWallScenario(judgedOffsideHex);
+        ClearHexForGkWallScenario(interferenceHex);
+        ClearHexForGkWallScenario(defenderOneHex);
+        ClearHexForGkWallScenario(defenderTwoHex);
+        ClearHexForGkWallScenario(spotDefenderStart);
+
+        PlaceTokenForScenario(offsideToken, judgedOffsideHex, asAttacker: true);
+        PlaceTokenForScenario(spotDefender, spotDefenderStart, asAttacker: true);
+        PlaceTokenForScenario(defenderOne, defenderOneHex, asAttacker: false);
+        PlaceTokenForScenario(defenderTwo, defenderTwoHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(ballHex);
+
+        offsideManager.EvaluateAndStore("restart_test", forceReassessment: true);
+        AssertTrue(offsideManager.IsTokenOffside(offsideToken), "Offside restart test token should be stored as offside before interference.");
+
+        PlaceTokenForScenario(offsideToken, interferenceHex, asAttacker: true);
+        PlaceTokenForScenario(spotDefender, judgedOffsideHex, asAttacker: true);
+
+        bool handled = offsideManager.TryHandleOffsideCollection(offsideToken, "restart_test_interference", interferenceHex);
+        AssertTrue(handled, "Offside manager should handle the offside collection.");
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == judgedOffsideHex, "Offside indirect free kick should restart at the judged offside position, not the interference hex.", judgedOffsideHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(freeKickManager.isWaitingForKickerSelection, "Offside indirect free kick should wait for kicker selection.");
+
+        List<PlayerToken> requiredDefenders = GetPrivateInstanceField<List<PlayerToken>>(freeKickManager, "shouldDefMoveTokens");
+        AssertTrue(requiredDefenders != null && requiredDefenders.Contains(spotDefender), "A token from the defending team on the offside restart spot should be forced to move.");
+
+        LogFooterofTest("Offside Free Kick Uses Judged Position And Forces Spot Defender");
     }
 
     private IEnumerator AssertClockAdvancesForState(MatchManager.GameState state, string message)

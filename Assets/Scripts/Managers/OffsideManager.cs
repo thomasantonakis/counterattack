@@ -5,12 +5,20 @@ using UnityEngine;
 
 public class OffsideManager : MonoBehaviour
 {
+    [Serializable]
+    public class OffsideTokenPositionSnapshot
+    {
+        public RoomTokenReference token;
+        public RoomHexCoordinates hex;
+    }
+
     [SerializeField] private MatchManager matchManager;
     [SerializeField] private Ball ball;
     [SerializeField] private HexGrid hexGrid;
     [SerializeField] private PlayerTokenManager playerTokenManager;
 
     private readonly List<PlayerToken> offsideTokens = new();
+    private readonly Dictionary<PlayerToken, HexCell> assessedOffsideHexes = new();
     private bool hasStoredAssessment;
     private bool assessedTeamIsHome;
     private int offsideLineX;
@@ -40,6 +48,7 @@ public class OffsideManager : MonoBehaviour
         }
 
         offsideTokens.Clear();
+        assessedOffsideHexes.Clear();
         assessedContext = context ?? string.Empty;
         hasStoredAssessment = false;
         offsideLineX = 0;
@@ -91,6 +100,7 @@ public class OffsideManager : MonoBehaviour
             if (isOffside)
             {
                 offsideTokens.Add(token);
+                assessedOffsideHexes[token] = tokenHex;
             }
         }
 
@@ -198,7 +208,7 @@ public class OffsideManager : MonoBehaviour
         isResolvingOffside = true;
         try
         {
-            HexCell resolvedHex = offenceHex ?? token.GetCurrentHex() ?? ball?.GetCurrentHex();
+            HexCell resolvedHex = GetAssessedOffsideHex(token) ?? offenceHex ?? token.GetCurrentHex() ?? ball?.GetCurrentHex();
             if (resolvedHex != null && ball != null)
             {
                 ball.PlaceAtCell(resolvedHex);
@@ -224,7 +234,7 @@ public class OffsideManager : MonoBehaviour
                 matchManager.ClearPendingLooseBallCollectionReset();
                 matchManager.CleanupLiveActionForOffside();
                 matchManager.ChangePossession();
-                matchManager.freeKickManager?.StartOffsideIndirectFreeKick(token);
+                matchManager.freeKickManager?.StartOffsideIndirectFreeKick(token, resolvedHex);
             }
         }
         finally
@@ -247,6 +257,12 @@ public class OffsideManager : MonoBehaviour
         assessedContext = string.Empty;
         offsideLineX = 0;
         offsideTokens.Clear();
+        assessedOffsideHexes.Clear();
+    }
+
+    private HexCell GetAssessedOffsideHex(PlayerToken token)
+    {
+        return token != null && assessedOffsideHexes.TryGetValue(token, out HexCell hex) ? hex : null;
     }
 
     public void ClearIfLegalCollector(PlayerToken token, string reason)
@@ -275,13 +291,28 @@ public class OffsideManager : MonoBehaviour
                     teamSide = token.isHomeTeam ? "Home" : "Away",
                     jerseyNumber = token.jerseyNumber
                 })
+                .ToList(),
+            offsideTokenPositions = assessedOffsideHexes
+                .Where(pair => pair.Key != null && pair.Value != null)
+                .Select(pair => new OffsideTokenPositionSnapshot
+                {
+                    token = new RoomTokenReference
+                    {
+                        tokenKey = MatchManager.GetStableTokenKey(pair.Key),
+                        teamSide = pair.Key.isHomeTeam ? "Home" : "Away",
+                        jerseyNumber = pair.Key.jerseyNumber
+                    },
+                    hex = RoomHexCoordinates.FromHex(pair.Value)
+                })
                 .ToList()
         };
     }
 
     public void RestoreSnapshot(RoomOffsideSnapshot snapshot, Func<RoomTokenReference, PlayerToken> resolveToken)
     {
+        ResolveDependencies();
         offsideTokens.Clear();
+        assessedOffsideHexes.Clear();
         if (snapshot == null || !snapshot.hasStoredAssessment)
         {
             hasStoredAssessment = false;
@@ -304,6 +335,21 @@ public class OffsideManager : MonoBehaviour
             if (token != null && !offsideTokens.Contains(token))
             {
                 offsideTokens.Add(token);
+            }
+        }
+
+        if (snapshot.offsideTokenPositions == null)
+        {
+            return;
+        }
+
+        foreach (OffsideTokenPositionSnapshot position in snapshot.offsideTokenPositions)
+        {
+            PlayerToken token = resolveToken(position.token);
+            HexCell hex = position.hex != null && hexGrid != null ? hexGrid.GetHexCellAt(position.hex.ToVector3Int()) : null;
+            if (token != null && hex != null)
+            {
+                assessedOffsideHexes[token] = hex;
             }
         }
     }

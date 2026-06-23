@@ -3366,10 +3366,10 @@ public class ShotManager : MonoBehaviour
         }
         ball?.PlaceAtCell(foulHex);
         ResetShotProcess();
-        yield return StartCoroutine(StartForcedFreeKickAfterShotHandball());
+        yield return StartCoroutine(StartForcedFreeKickAfterShotHandball(foulHex));
     }
 
-    private IEnumerator StartForcedFreeKickAfterShotHandball()
+    private IEnumerator StartForcedFreeKickAfterShotHandball(HexCell restartSpot)
     {
         MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
 
@@ -3400,7 +3400,7 @@ public class ShotManager : MonoBehaviour
         }
 
         FreeKickManager restartManager = MatchManager.Instance?.freeKickManager ?? FindAnyObjectByType<FreeKickManager>();
-        restartManager?.StartFreeKickPreparation();
+        restartManager?.StartFreeKickPreparation(restartSpot: restartSpot);
     }
 
     private IEnumerator ResolvePenaltyShootoutTiedSave(PlayerToken gkToken)
