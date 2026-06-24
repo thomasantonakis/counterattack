@@ -63,6 +63,8 @@ public class HighPassManager : MonoBehaviour
     private int availableTargetPrecomputeVersion = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
     private PlayerToken pendingSetPieceTakerForCommit = null;
+    private PlayerToken activeHighPassKickerForTargetExclusion = null;
+    private HexCell highPassKickHexForInterceptionSuppression = null;
     private string latestOffsideInstruction = string.Empty;
 
     private void OnEnable()
@@ -473,6 +475,7 @@ public class HighPassManager : MonoBehaviour
 
     public void ActivateHighPass()
     {
+        CaptureHighPassKickContextForInterceptionSuppression();
         isActivated = true;
         isAvailable = false;  // Make it non available to avoid restarting this action again.
         isWaitingForConfirmation = true;
@@ -492,6 +495,7 @@ public class HighPassManager : MonoBehaviour
 
     public void ActivateGoalkeeperKick(bool commitImmediately = false)
     {
+        CaptureHighPassKickContextForInterceptionSuppression();
         ball.SelectBall();
         isActivated = true;
         isAvailable = false;
@@ -912,7 +916,7 @@ public class HighPassManager : MonoBehaviour
             if (targetToken != null
                 && MatchManager.Instance != null
                 && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
-                    || targetToken == pendingSetPieceTakerForCommit))
+                    || IsSetPieceTakerExcludedFromHighPassTarget(targetToken)))
             {
                 return "TargetExcludedFromNextTouch";
             }
@@ -1149,7 +1153,7 @@ public class HighPassManager : MonoBehaviour
             if (targetToken != null
                 && MatchManager.Instance != null
                 && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
-                    || targetToken == pendingSetPieceTakerForCommit))
+                    || IsSetPieceTakerExcludedFromHighPassTarget(targetToken)))
             {
                 if (logWarnings) Debug.LogWarning($"{targetToken.name} cannot be the next player to touch the ball after taking the set piece.");
                 ClearValidatedHighPassAttackers(updateEligibleAttackers);
@@ -1197,7 +1201,7 @@ public class HighPassManager : MonoBehaviour
         eligibleAttackers.AddRange(attackers);
     }
     
-    private List<PlayerToken> GetAttackersWithinRangeOfHex(HexCell targetHex, int range)
+    private List<PlayerToken> GetAttackersWithinRangeOfHex(HexCell targetHex, int range, bool excludeSetPieceTaker = true)
     {
         List<PlayerToken> eligibleAttackers = new List<PlayerToken>();
         List<HexCell> reachableHexes;
@@ -1211,6 +1215,11 @@ public class HighPassManager : MonoBehaviour
 
             if (attackerToken != null)
             {
+                if (excludeSetPieceTaker && IsSetPieceTakerExcludedFromHighPassTarget(attackerToken))
+                {
+                    continue;
+                }
+
                 if (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(attackerToken))
                 {
                     continue;
@@ -1228,6 +1237,38 @@ public class HighPassManager : MonoBehaviour
         }
 
         return eligibleAttackers;
+    }
+
+    private bool IsSetPieceTakerExcludedFromHighPassTarget(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return false;
+        }
+
+        return token == activeHighPassKickerForTargetExclusion
+            || (MatchManager.Instance != null && token == MatchManager.Instance.setPieceTakerExcludedFromNextTouch);
+    }
+
+    private void CaptureHighPassKickContextForInterceptionSuppression()
+    {
+        highPassKickHexForInterceptionSuppression = ball != null ? ball.GetCurrentHex() : null;
+    }
+
+    private bool ShouldSuppressHeaderInterceptionForDefensiveHpMove(PlayerToken defender, HexCell defenderHex)
+    {
+        if (defender == null || defenderHex == null)
+        {
+            return false;
+        }
+
+        HexCell kickHex = highPassKickHexForInterceptionSuppression ?? ball?.GetCurrentHex();
+        if (kickHex == null)
+        {
+            return false;
+        }
+
+        return defenderHex.GetNeighbors(hexGrid).Contains(kickHex);
     }
 
     public void PerformAccuracyRoll(int? rigroll = null)
@@ -1867,10 +1908,18 @@ public class HighPassManager : MonoBehaviour
     {
         hexGrid.ClearHighlightedHexes();
         if (selectedToken == hexGrid.GetDefendingGK()) didGKMoveInDefPhase = true;
+        PlayerToken movedDefender = selectedToken;
         isWaitingForDefenderMove = false;  // Stop waiting for attacker move
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex: hex, token: selectedToken, isCalledDuringMovement: false, shouldCountForDistance: true));  // Pass the selected token
+        HexCell movedDefenderHex = movedDefender != null ? movedDefender.GetCurrentHex() : hex;
+        if (ShouldSuppressHeaderInterceptionForDefensiveHpMove(movedDefender, movedDefenderHex))
+        {
+            headerManager.SuppressHeaderInterceptionForToken(
+                movedDefender,
+                "defensive HP3 move ended adjacent to the original High Pass ball spot");
+        }
         movementPhaseManager.isActivated = false;
         movementPhaseManager.isBallPickable = false;
         selectedToken = null;
@@ -1929,6 +1978,8 @@ public class HighPassManager : MonoBehaviour
         isCornerKick = false;
         isGoalkeeperKick = false;
         pendingSetPieceTakerForCommit = null;
+        activeHighPassKickerForTargetExclusion = null;
+        highPassKickHexForInterceptionSuppression = null;
         directionIndex = 240885; // Something implausible
         eligibleAttackers.Clear();
         if (!preserveTargetPrecompute)
@@ -1952,6 +2003,12 @@ public class HighPassManager : MonoBehaviour
     public void SetPendingSetPieceTakerForCommit(PlayerToken taker)
     {
         pendingSetPieceTakerForCommit = taker;
+        SetHighPassKickerForTargetExclusion(taker);
+    }
+
+    public void SetHighPassKickerForTargetExclusion(PlayerToken kicker)
+    {
+        activeHighPassKickerForTargetExclusion = kicker;
     }
 
     public string GetDebugStatus()

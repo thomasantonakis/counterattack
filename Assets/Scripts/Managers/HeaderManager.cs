@@ -69,8 +69,10 @@ public class HeaderManager : MonoBehaviour
     private readonly Dictionary<HexCell, bool> headerTargetThreatByHex = new();
     private readonly List<HexCell> headerAtGoalTargetHexes = new();
     private readonly Dictionary<HexCell, float> headerAtGoalTargetOriginalHeights = new();
+    private readonly HashSet<PlayerToken> headerInterceptionSuppressedTokens = new();
     private HexCell hoveredHeaderTargetHex;
     private bool headerStartedWithOffsideAssessment;
+    private bool automaticDefensiveHeaderRecoveryLogged = false;
     [Header("Tuning")]
     public bool allowUnchallengedDefenseControl = true;
     private const int HEADER_SELECTION_RANGE = 2;
@@ -470,9 +472,11 @@ public class HeaderManager : MonoBehaviour
         Debug.Log("Ball Control option selected from Defense");
         isWaitingForControlOrHeaderDecisionDef = false;
         defenseBallControl = true;
+        MatchManager.Instance.ChangePossession();
         if (defEligibleToHead.Count == 1)
         {
             challengeWinner = defEligibleToHead[0];
+            LogAutomaticDefensiveHeaderRecovery(challengeWinner, "freeheader");
             HandleControlFlow();
         }
         else
@@ -542,12 +546,13 @@ public class HeaderManager : MonoBehaviour
                 if (defenseWonFreeHeader)
                 {
                     defenderWillJump.Add(token);
+                    LogAutomaticDefensiveHeaderRecovery(token, "freeheader");
                     ConfirmDefenderHeaderSelection();
                 }
                 else if (defenseBallControl)
                 {
-                    MatchManager.Instance.ChangePossession();
                     challengeWinner = token;
+                    LogAutomaticDefensiveHeaderRecovery(challengeWinner, "freeheader");
                     HandleControlFlow();
                 }
                 else Debug.LogError("This should not happen");
@@ -936,6 +941,27 @@ public class HeaderManager : MonoBehaviour
                 hexGrid.highlightedHexes.Add(candidateHex);
             }
         }
+    }
+
+    private void LogAutomaticDefensiveHeaderRecovery(PlayerToken defender, string recoveryType)
+    {
+        if (automaticDefensiveHeaderRecoveryLogged || defender == null || MatchManager.Instance == null)
+        {
+            return;
+        }
+
+        PlayerToken connectedToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+            defender,
+            1f,
+            connectedToken: connectedToken,
+            recoveryType: recoveryType);
+        MatchManager.Instance.gameData.gameLog.LogEvent(
+            defender,
+            MatchManager.ActionType.BallRecovery,
+            recoveryType: recoveryType,
+            connectedToken: connectedToken);
+        automaticDefensiveHeaderRecoveryLogged = true;
     }
 
     private string FormatTokenCandidateList(IEnumerable<PlayerToken> candidates)
@@ -1521,12 +1547,7 @@ public class HeaderManager : MonoBehaviour
         {
             Debug.Log("Only defenders are jumping. Defense wins the header automatically. Switching possession.");
             challengeWinner = defenderWillJump[0];
-            MatchManager.Instance.gameData.gameLog.LogEvent(
-                challengeWinner
-                , MatchManager.ActionType.BallRecovery
-                , recoveryType: "freeheader"
-                , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
-            );
+            LogAutomaticDefensiveHeaderRecovery(challengeWinner, "freeheader");
             MatchManager.Instance.SetLastToken(challengeWinner);
             MatchManager.Instance.ClearOffsideForLegalCollection(challengeWinner, "high_pass_defender_free_header_won");
             MatchManager.Instance.ChangePossession();
@@ -1540,10 +1561,6 @@ public class HeaderManager : MonoBehaviour
                 CleanUpHeader();
                 yield break;
             }
-            MatchManager.Instance.gameData.gameLog.LogEvent(
-                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
-                , MatchManager.ActionType.PassAttempt
-            );
             HighlightHexesForHeader(ball.GetCurrentHex(), 6);
             StartCoroutine(WaitForHeaderTargetSelection());
         }
@@ -1762,12 +1779,15 @@ public class HeaderManager : MonoBehaviour
 
     private void HandleControlFlow()
     {
-        if (TryCallOffsideForHeaderToken(challengeWinner, "high_pass_ball_control"))
+        if (!defenseBallControl && TryCallOffsideForHeaderToken(challengeWinner, "high_pass_ball_control"))
         {
             return;
         }
 
-        ReassessOffsideAfterHeaderWinner("high_pass_ball_control");
+        if (!defenseBallControl)
+        {
+            ReassessOffsideAfterHeaderWinner("high_pass_ball_control");
+        }
         isWaitingForControlRoll = true;
         Debug.Log(GetControlRollInstruction());
     }
@@ -1887,10 +1907,22 @@ public class HeaderManager : MonoBehaviour
     {
         PlayerToken token = defenderHex?.GetOccupyingToken();
         return token != null
+            && !headerInterceptionSuppressedTokens.Contains(token)
             && !attackerWillJump.Contains(token)
             && !defenderWillJump.Contains(token)
             && !movementPhaseManager.stunnedTokens.Contains(token)
             && !movementPhaseManager.stunnedforNext.Contains(token);
+    }
+
+    public void SuppressHeaderInterceptionForToken(PlayerToken token, string reason)
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        headerInterceptionSuppressedTokens.Add(token);
+        Debug.Log($"Suppressing header interception for {token.name}: {reason}");
     }
 
     private bool CanHeaderTargetBeIntercepted(HexCell targetHex, List<HexCell> defenderHexes)
@@ -2172,6 +2204,8 @@ public class HeaderManager : MonoBehaviour
         tokenRolling = null;
         tokenScores = new Dictionary<PlayerToken, (int, int)>();
         interceptingDefenders.Clear();
+        headerInterceptionSuppressedTokens.Clear();
+        automaticDefensiveHeaderRecoveryLogged = false;
         isActivated = false;
         interceptingDefender = null;
         interceptionDiceRoll = 0;
@@ -2191,6 +2225,8 @@ public class HeaderManager : MonoBehaviour
         defEligibleToHead.Clear();
         attackerWillJump.Clear();
         defenderWillJump.Clear();
+        headerInterceptionSuppressedTokens.Clear();
+        automaticDefensiveHeaderRecoveryLogged = false;
         hasEligibleAttackers = false;
         hasEligibleDefenders = false;
         

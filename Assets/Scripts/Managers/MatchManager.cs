@@ -5086,6 +5086,19 @@ public class MatchManager : MonoBehaviour
         highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
         longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
+        PlayerToken setPieceTaker = freeKickManager != null && freeKickManager.isActivated
+            ? freeKickManager.selectedKicker
+            : null;
+        setPieceTaker ??= setPieceTakerExcludedFromNextTouch;
+        if (setPieceTaker != null)
+        {
+            highPassManager.SetPendingSetPieceTakerForCommit(setPieceTaker);
+        }
+        else
+        {
+            PlayerToken highPassKicker = ball?.GetCurrentHex()?.GetOccupyingToken() ?? LastTokenToTouchTheBallOnPurpose;
+            highPassManager.SetHighPassKickerForTargetExclusion(highPassKicker);
+        }
         highPassManager.isCornerKick = isCornerKick;
         highPassManager.ActivateHighPass();
     }

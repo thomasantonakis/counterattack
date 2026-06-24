@@ -9,7 +9,7 @@ Build/
 Logs/
 Logs/shadercompiler-UnityShaderCompiler-*.log
 MemoryCaptures/
-UserSettings/Layouts/default-*.dwlt
+UserSettings/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
