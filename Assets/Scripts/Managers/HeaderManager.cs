@@ -375,6 +375,11 @@ public class HeaderManager : MonoBehaviour
 
         if (!hasEligibleAttackers && !hasEligibleDefenders)
         {
+            if (TryResolveUnchallengedInaccurateHighPassOnExcludedPasser(landingHex))
+            {
+                yield break;
+            }
+
             Debug.Log("No players eligible to head the ball. Ball drops to the ground.");
             movementPhaseManager.ResetMovementPhase();
             CleanUpHeader();
@@ -418,6 +423,31 @@ public class HeaderManager : MonoBehaviour
             // Both attackers and defenders are eligible
             _ = StartAttackHeaderSelection(); // No need to await this
         }
+    }
+
+    private bool TryResolveUnchallengedInaccurateHighPassOnExcludedPasser(HexCell landingHex)
+    {
+        MatchManager matchManager = MatchManager.Instance;
+        PlayerToken landingToken = landingHex != null ? landingHex.GetOccupyingToken() : null;
+        if (matchManager == null
+            || landingToken == null
+            || !landingToken.isAttacker
+            || (landingToken != matchManager.setPieceTakerExcludedFromNextTouch
+                && landingToken != matchManager.hangingPassExcludedCollector))
+        {
+            return false;
+        }
+
+        Debug.Log($"{landingToken.name}'s inaccurate High Pass landed back on them unchallenged. Resolving as Any Other Scenario.");
+        movementPhaseManager.ResetMovementPhase();
+        matchManager.ClearSetPieceTakerNextTouchExclusion();
+        matchManager.ClearHangingPass();
+        ball.PlaceAtCell(landingHex);
+        matchManager.UpdatePossessionAfterPass(landingHex);
+        matchManager.ApplyBallCollectionOwnership(landingToken);
+        CleanUpHeader();
+        matchManager.BroadcastAnyOtherScenario();
+        return true;
     }
 
     private void HandleHeaderAtGoalClick(HexCell hexcell)
