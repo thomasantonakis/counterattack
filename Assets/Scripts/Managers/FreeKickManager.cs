@@ -711,6 +711,7 @@ public class FreeKickManager : MonoBehaviour
         {
             yield return null;
         }
+        KeepCornerKickBallOnSpot();
         Debug.Log($"Setup phase {phaseState} completed with {movesUsed} moves.");
         AdvanceToNextPhase(phaseState);
     }
@@ -874,13 +875,18 @@ public class FreeKickManager : MonoBehaviour
         )
         {
             // Move like in MovementPhase
-            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));
+            yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(
+                hex,
+                selectedToken,
+                false,
+                shouldCarryBall: false));
         }
         else
         {
             // Jump to selected Hex!
             yield return StartCoroutine(MoveTokenToHex(selectedToken, hex));
         }
+        KeepCornerKickBallOnSpot();
         isMovingSetupToken = false;
         if (IsDefensiveSetupState(MatchManager.Instance.currentState))
         {
@@ -1122,6 +1128,7 @@ public class FreeKickManager : MonoBehaviour
         isWaitingforMovement3 = false;
         isWaitingForSetupPhase = false;
         ResetMoves();
+        KeepCornerKickBallOnSpot();
         CalculatePotentialKickers();
         matchManager.ResumeMatchClockForLivePlay();
 
@@ -1382,6 +1389,23 @@ public class FreeKickManager : MonoBehaviour
         }
         ball.AdjustBallHeightBasedOnOccupancy();
         yield return null;
+    }
+
+    private void KeepCornerKickBallOnSpot()
+    {
+        if (!isCornerKick || ball == null || spotkick == null)
+        {
+            return;
+        }
+
+        if (ball.GetCurrentHex() != spotkick)
+        {
+            Debug.Log($"Corner Kick setup moved the ball away from {spotkick.coordinates}. Returning it to the corner spot.");
+            ball.PlaceAtCell(spotkick);
+            return;
+        }
+
+        ball.AdjustBallHeightBasedOnOccupancy();
     }
 
     public string GetDebugStatus()
