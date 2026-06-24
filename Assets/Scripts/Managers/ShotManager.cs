@@ -3690,6 +3690,9 @@ public class ShotManager : MonoBehaviour
 
     private void ResetShotProcess()
     {
+        bool preserveSaveAndHoldDecision = isWaitingForSaveandHoldScenario
+            && MatchManager.Instance != null
+            && MatchManager.Instance.currentState == MatchManager.GameState.ActivateFinalThirdsAfterSave;
         RecordShotActionResolvedIfNeeded();
         RecordSnapshotEndedMovementPhaseIfNeeded();
         MatchManager.Instance?.ClearPendingShotGoalTimeLabel();
@@ -3699,7 +3702,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForShotRoll = false;
         isWaitingForGKDiceRoll = false;
         isWaitingforHandlingTest = false;
-        isWaitingForSaveandHoldScenario = false;
+        isWaitingForSaveandHoldScenario = preserveSaveAndHoldDecision;
         isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
