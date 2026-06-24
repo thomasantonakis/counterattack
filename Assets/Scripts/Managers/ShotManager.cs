@@ -3288,7 +3288,6 @@ public class ShotManager : MonoBehaviour
                 , MatchManager.ActionType.ShotOnTarget
             );
             yield return StartCoroutine(MoveBallAndGoalkeeperToSaveHex(gkToken));
-            EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: false);
             // yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
