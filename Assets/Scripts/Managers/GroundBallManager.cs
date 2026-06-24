@@ -1445,7 +1445,7 @@ public class GroundBallManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
         if (freeKickManager.isWaitingForExecution) return "";
-        if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
+        if (isAvailable) sb.Append($"Press [P] to Play a {GetAvailablePassLabel()}, ");
         MatchManager matchManager = MatchManager.Instance;
         if (isActivated)
         {
@@ -1523,6 +1523,11 @@ public class GroundBallManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    private string GetAvailablePassLabel()
+    {
+        return imposedDistance <= 6 ? "Short Standard Pass" : "Standard Pass";
     }
 
     public bool? IsInstructionExpectingHomeTeam()

@@ -328,7 +328,7 @@ public class ThrowInManager : MonoBehaviour
             actor: selectedThrower,
             sourceHex: throwInHex,
             details: new Dictionary<string, string> { ["headerTargetCount"] = headerTargetCount.ToString() });
-        Debug.Log("Throw-in ready. Press [P] to throw to feet or [C] to throw to head.");
+        Debug.Log("Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.");
     }
 
     private void HandleThrowToFeet()
@@ -346,7 +346,7 @@ public class ThrowInManager : MonoBehaviour
         groundBallManager.imposedDistance = maxThrowDistance;
         groundBallManager.ActivateGroundBall();
         StartCoroutine(RestoreGroundBallDefaultDistanceWhenDone());
-        Debug.Log("Throw-in option selected: [P] to feet. Select target hex (up to 6).");
+        Debug.Log("Throw-in option selected: [P] short to feet. Select target hex (up to 6).");
         ResetThrowInState();
     }
 
@@ -581,10 +581,10 @@ public class ThrowInManager : MonoBehaviour
         {
             int headerTargetCount = GetAvailableHeaderThrowTargets().Count;
             sb.Append(headerTargetCount > 0
-                ? "Press [P] for throw to feet or [C] for throw to head, "
-                : "Press [P] for throw to feet, ");
+                ? "Press [P] for short throw to feet or [C] for throw to head, "
+                : "Press [P] for short throw to feet, ");
         }
-        if (isWaitingForGroundTarget) sb.Append("Select throw-to-feet target (up to 6 hexes), ");
+        if (isWaitingForGroundTarget) sb.Append("Select short throw-to-feet target (up to 6 hexes), ");
         if (isWaitingForHeaderTarget)
         {
             sb.Append(MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3
