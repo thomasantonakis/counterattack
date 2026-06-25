@@ -10092,6 +10092,21 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             movementPhaseManager.isWaitingForTackleRoll
         );
+        string mcnultyTackleInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(
+            mcnultyTackleInstructions.Contains("Press [R] to roll with McNulty for the tackle"),
+            "Tackle without moving should only instruct the committed defender's tackle roll",
+            "Press [R] to roll with McNulty for the tackle",
+            mcnultyTackleInstructions
+        );
+        AssertTrue(
+            !mcnultyTackleInstructions.Contains("Click on a Defender")
+            && !mcnultyTackleInstructions.Contains("Click on a Free Hex")
+            && !mcnultyTackleInstructions.Contains("Click on a Token"),
+            "Tackle without moving should not keep defender-selection or movement instructions after commitment",
+            "No selection or movement prompt",
+            mcnultyTackleInstructions
+        );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
@@ -10271,6 +10286,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
         );
+        string immediateNutmegInstruction = movementPhaseManager.GetInstructions();
+        AssertTrue(
+            immediateNutmegInstruction.Contains("Click on a Nutmeggable Defender")
+                && immediateNutmegInstruction.Contains("press [N]")
+                && immediateNutmegInstruction.Contains("click on a Free Hex"),
+            "MovementPhase instructions should explain immediate nutmeg by defender click or [N], while preserving normal movement",
+            "Click on a Nutmeggable Defender / press [N] / click on a Free Hex",
+            immediateNutmegInstruction
+        );
         AssertTrue(
             movementPhaseManager.isAwaitingTokenSelection,
             "MovementPhase Should be waiting for Another token selection after selecting Yaneva",
@@ -10338,6 +10362,18 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (3, 2) Reposition Yaneva after Nutmeg on Paterson");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 2), 0.5f));
         yield return new WaitForSeconds(1.2f); // for the token to move
+        AssertTrue(
+            !movementPhaseManager.isNutmegInProgress,
+            "MovementPhase should clear nutmeg state after charging the successful nutmeg reposition",
+            false,
+            movementPhaseManager.isNutmegInProgress
+        );
+        AssertTrue(
+            movementPhaseManager.remainingDribblerPace == 4,
+            "MovementPhase should consume exactly 2 pace for the first successful nutmeg and reposition",
+            4,
+            movementPhaseManager.remainingDribblerPace
+        );
         AssertTrue(
             movementPhaseManager.isWaitingForNutmegDecision,
             "MovementPhase Should be waiting for Nutmeg Decision after Reposition Yaneva from paterson",
@@ -11809,6 +11845,21 @@ public class GameTestScenarioRunner : MonoBehaviour
             nazef,
             movementPhaseManager.selectedDefender
         );
+        string postRepositionInterceptionInstruction = movementPhaseManager.GetInstructions();
+        AssertTrue(
+            postRepositionInterceptionInstruction.Contains("Press [R] to roll for interception with Nazef"),
+            "Post-reposition steal should only wait for Nazef's interception roll",
+            "Press [R] to roll for interception with Nazef",
+            postRepositionInterceptionInstruction
+        );
+        AssertTrue(
+            !postRepositionInterceptionInstruction.Contains("Click on a Free Hex")
+            && !postRepositionInterceptionInstruction.Contains("Press [X] to forfeit")
+            && !postRepositionInterceptionInstruction.Contains("Click on a Reposition Hex"),
+            "Post-reposition steal instruction should not include MP continuation prompts",
+            "No continuation prompt",
+            postRepositionInterceptionInstruction
+        );
 
         Log($"Rigging Nazef's steal roll to {(stealSucceeds ? "6 (success)" : "1 (failure)")}");
         yield return StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(stealSucceeds ? 6 : 1));
@@ -13188,6 +13239,24 @@ public class GameTestScenarioRunner : MonoBehaviour
             "MP Moved Tokens should have 3",
             true,
             movementPhaseManager.movedTokens.Count
+        );
+        AssertTrue(
+            movementPhaseManager.MovedTokenEntries.Count == 3,
+            "MP panel moved-token entries should only contain first movement registrations",
+            3,
+            movementPhaseManager.MovedTokenEntries.Count
+        );
+        AssertTrue(
+            movementPhaseManager.MovedTokenEntries.Count(entry => entry.section == MovementPhaseMovedTokenSection.DefMP) == 1,
+            "MP panel DefMP row should only contain the defender who actually moved",
+            1,
+            movementPhaseManager.MovedTokenEntries.Count(entry => entry.section == MovementPhaseMovedTokenSection.DefMP)
+        );
+        AssertTrue(
+            !movementPhaseManager.MovedTokenEntries.Any(entry =>
+                entry.section == MovementPhaseMovedTokenSection.DefMP
+                && entry.token == PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "MP panel DefMP row should not contain the ex-dribbler after tackle loose-ball resolution"
         );
         AssertTrue(
             movementPhaseManager.attackersMoved == 4,

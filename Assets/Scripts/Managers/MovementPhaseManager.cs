@@ -7,6 +7,26 @@ using System.Threading.Tasks;
 using System;
 using System.Text;
 
+public enum MovementPhaseMovedTokenSection
+{
+    AttMP,
+    DefMP,
+    Att2f2
+}
+
+[Serializable]
+public struct MovementPhaseMovedTokenEntry
+{
+    public PlayerToken token;
+    public MovementPhaseMovedTokenSection section;
+
+    public MovementPhaseMovedTokenEntry(PlayerToken token, MovementPhaseMovedTokenSection section)
+    {
+        this.token = token;
+        this.section = section;
+    }
+}
+
 public class MovementPhaseManager : MonoBehaviour
 {
     private const string NutmegDecisionChoiceId = "movement_nutmeg_decision";
@@ -74,6 +94,7 @@ public class MovementPhaseManager : MonoBehaviour
     public PlayerToken repositionLoser; // The token that lost the tackle duel
     public int remainingDribblerPace; // Temporary variable for dribbler's pace
     public List<PlayerToken> movedTokens = new List<PlayerToken>();  // To track moved tokens
+    public List<MovementPhaseMovedTokenEntry> movedTokenEntries = new List<MovementPhaseMovedTokenEntry>();
     public List<PlayerToken> eligibleDefenders = new List<PlayerToken>();  // To track defenders eligible for interception
     public List<PlayerToken> nutmeggableDefenders = new List<PlayerToken>(); // Temporary list of defenders tha can be nutmegged
     public List<PlayerToken> defendersTriedToIntercept = new List<PlayerToken>(); // Temporary list of defenders
@@ -103,6 +124,7 @@ public class MovementPhaseManager : MonoBehaviour
     private HexCell gkWallDiveHex = null;
     private PlayerToken gkWallDiveGoalkeeper = null;
     private readonly HashSet<HexCell> gkWallDiveOfferedHexes = new();
+    public IReadOnlyList<MovementPhaseMovedTokenEntry> MovedTokenEntries => movedTokenEntries;
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
     private readonly Dictionary<HexCell, bool> movementThreatByHex = new();
     private readonly HashSet<HexCell> heldReachOverlayHexes = new();
@@ -291,6 +313,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (shotManager.isActivated) return;
         if (highPassManager != null && highPassManager.isActivated) return;
         if (IsResolvingFoulSequence()) return;
+        if (isWaitingForInterceptionDiceRoll) return;
         if (lookingForNutmegVictim)
         {
             // Nutmeg was selected with the Keyboard, and more than one nutmeggable Defender exists
@@ -738,10 +761,7 @@ public class MovementPhaseManager : MonoBehaviour
             {
                 Debug.Log($"{selectedToken.name} stands there without tackling.");
                 selectedDefender = selectedToken;
-                if (!movedTokens.Contains(selectedToken))
-                {
-                    movedTokens.Add(selectedToken);
-                }
+                RegisterMovedToken(selectedToken);
                 isAwaitingHexDestination = false;
                 isWaitingForTackleDecisionWithoutMoving = false;
                 isWaitingForTackleDecision = false;
@@ -756,10 +776,7 @@ public class MovementPhaseManager : MonoBehaviour
                 PlayerToken dribbler = ball.GetCurrentHex()?.GetOccupyingToken();
                 Debug.Log($"{selectedToken.name} dives with hands at {dribbler?.name ?? "the dribbler"} outside the box from there. Starting saving duel.");
                 selectedDefender = selectedToken;
-                if (!movedTokens.Contains(selectedToken))
-                {
-                    movedTokens.Add(selectedToken);
-                }
+                RegisterMovedToken(selectedToken);
                 isAwaitingHexDestination = false;
                 isWaitingForTackleDecisionWithoutMoving = false;
                 isWaitingForTackleDecision = false;
@@ -786,10 +803,7 @@ public class MovementPhaseManager : MonoBehaviour
                 // Defender chooses to tackle
                 Debug.Log($"{selectedToken.name} initiates a tackle without moving. Starting Dice Rolls...");
                 selectedDefender = selectedToken;
-                if (!movedTokens.Contains(selectedToken))
-                {
-                    movedTokens.Add(selectedToken); // Mark defender as having moved
-                }
+                RegisterMovedToken(selectedToken); // Mark defender as having moved
                 isAwaitingHexDestination = false; // Reset hex destination flag
                 isWaitingForTackleDecisionWithoutMoving = false; // Reset tackle decision flag
                 isWaitingForTackleDecision = false;  // Reset tackle decision flag
@@ -1016,15 +1030,45 @@ public class MovementPhaseManager : MonoBehaviour
             && MatchManager.Instance.IsFinalExtraMovementPhaseSnapshotSuppressed();
     }
 
+    private void RegisterMovedToken(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return;
+        }
+
+        if (movedTokens.Contains(token))
+        {
+            return;
+        }
+
+        movedTokens.Add(token);
+
+        MovementPhaseMovedTokenSection section = GetCurrentMovedTokenSection();
+        movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
+    }
+
+    private MovementPhaseMovedTokenSection GetCurrentMovedTokenSection()
+    {
+        if (isMovementPhaseDef)
+        {
+            return MovementPhaseMovedTokenSection.DefMP;
+        }
+
+        if (isMovementPhase2f2)
+        {
+            return MovementPhaseMovedTokenSection.Att2f2;
+        }
+
+        return MovementPhaseMovedTokenSection.AttMP;
+    }
+
     private void MarkDribblerMovedAfterSnapshotDecision()
     {
         isDribblerRunning = false;
         isAwaitingHexDestination = false;
         remainingDribblerPace = 0;
-        if (selectedToken != null && !movedTokens.Contains(selectedToken))
-        {
-            movedTokens.Add(selectedToken);
-        }
+        RegisterMovedToken(selectedToken);
 
         hexGrid.ClearHighlightedHexes();
     }
@@ -1729,7 +1773,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.LogWarning("Defender picks up the loose ball");
             Debug.Log("Defender has picked up the loose ball!");
-            movedTokens.Add(selectedToken);
+            RegisterMovedToken(selectedToken);
             ball.SetCurrentHex(targetHex);  // Move the ball to the defender's hex
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);  // Update possession
@@ -1750,7 +1794,7 @@ public class MovementPhaseManager : MonoBehaviour
         else if (!isMovingTokenAttacker && isMovementPhaseDef)
         {
             Debug.LogWarning("Defender does not land on Ball Hex");
-            movedTokens.Add(selectedToken);
+            RegisterMovedToken(selectedToken);
             // If the ball is not picked up directly, check for nearby interception or tackle possibility
             // Add the condition to check if we're in the MovementPhaseDef state
             // Ensure the defender is adjacent to the attacker with the ball
@@ -1805,7 +1849,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log("Non Dribbler Moved.");
                 if (MatchManager.Instance.currentState != MatchManager.GameState.LooseBallPickedUp) // TODO: What is this?
                 {
-                    movedTokens.Add(selectedToken);
+                    RegisterMovedToken(selectedToken);
                 }
                 AdvanceMovementPhase(); // Basic check to advance the movement phase
             }
@@ -1863,10 +1907,12 @@ public class MovementPhaseManager : MonoBehaviour
                 // TODO: Add log for two paces
                 remainingDribblerPace -=2;
                 remainingDribblerPace = Mathf.Max(remainingDribblerPace, 0);
+                isNutmegInProgress = false;
+                nutmegVictim = null;
                 if (remainingDribblerPace == 0)
                 {
                     isDribblerRunning = false;
-                    movedTokens.Add(repositionWinner);
+                    RegisterMovedToken(repositionWinner);
                     isAwaitingHexDestination = false;
                 }
             }
@@ -1982,10 +2028,7 @@ public class MovementPhaseManager : MonoBehaviour
             isDribblerRunning = false;
             isAwaitingHexDestination = false;
             hexGrid.ClearHighlightedHexes();
-            if (!movedTokens.Contains(selectedToken))
-            {
-                movedTokens.Add(selectedToken);
-            }
+            RegisterMovedToken(selectedToken);
             if (isWaitingForSnapshotDecision)
             {
                 while (isWaitingForSnapshotDecision)
@@ -2406,7 +2449,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (isDribblerRunning)
         {
             hexGrid.ClearHighlightedHexes();
-            movedTokens.Add(selectedToken);
+            RegisterMovedToken(selectedToken);
             selectedToken = null;
             isDribblerRunning = false;
             isAwaitingHexDestination = false;
@@ -2487,7 +2530,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"{selectedToken.name} does not want to run with the ball any more.");
                 isDribblerRunning = false;
                 hexGrid.ClearHighlightedHexes();
-                movedTokens.Add(selectedToken);
+                RegisterMovedToken(selectedToken);
                 nutmeggableDefenders.Clear();
                 AdvanceMovementPhase(); // End dribbler's movement
             }
@@ -2523,7 +2566,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"{selectedToken.name} does not want to run with the ball any more.");
                 isDribblerRunning = false;
                 hexGrid.ClearHighlightedHexes();
-                movedTokens.Add(selectedToken);
+                RegisterMovedToken(selectedToken);
                 AdvanceMovementPhase(); // End dribbler's movement
             }
             else
@@ -2577,6 +2620,12 @@ public class MovementPhaseManager : MonoBehaviour
             return;
         }
         Debug.Log($"Selected defender for interception: {selectedDefender.name}. Press R to roll...");
+        isAwaitingTokenSelection = false;
+        isAwaitingHexDestination = false;
+        isWaitingForSnapshotDecision = false;
+        isWaitingForNutmegDecision = false;
+        isWaitingForNutmegDecisionWithoutMoving = false;
+        lookingForNutmegVictim = false;
         // Set the flag to wait for interception dice roll
         isWaitingForInterceptionDiceRoll = true;
     }
@@ -2947,7 +2996,7 @@ public class MovementPhaseManager : MonoBehaviour
             isNutmegInProgress = false;
             nutmegVictim = null;
             remainingDribblerPace = 0;
-            if (!movedTokens.Contains(attackerToken)) movedTokens.Add(attackerToken);
+            RegisterMovedToken(attackerToken);
             // TODO: in case of a Loose Ball, is the attacker stunned? I think not!, but cannot further move
             StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, LooseBallSourceType.GroundDeflection));
             // No further handling from here, LooseBallManager needs to handle everything from here on.
@@ -3699,7 +3748,10 @@ public class MovementPhaseManager : MonoBehaviour
         }
         // Set flag to wait for dice rolls
         isWaitingForTackleRoll = true;
+        isAwaitingTokenSelection = false;
         isAwaitingHexDestination = false;
+        isWaitingForTackleDecision = false;
+        isWaitingForTackleDecisionWithoutMoving = false;
         Debug.Log("Press R to roll the dice for tackle. Defender rolls first.");
     }
 
@@ -3715,6 +3767,7 @@ public class MovementPhaseManager : MonoBehaviour
     public void ResetMovementPhase()
     {
         movedTokens.Clear();  // Reset the list of moved tokens
+        movedTokenEntries.Clear();
         eligibleDefenders.Clear();
         nutmeggableDefenders.Clear();
         defendersTriedToIntercept.Clear();
@@ -4043,11 +4096,30 @@ public class MovementPhaseManager : MonoBehaviour
             if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
             return sb.ToString();
         }
+        if (isWaitingForInterceptionDiceRoll)
+        {
+            sb.Append(BuildInterceptionRollInstruction());
+            if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
+            return sb.ToString();
+        }
+        if (isWaitingForTackleRoll)
+        {
+            sb.Append(BuildTackleRollInstruction());
+            if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
+            return sb.ToString();
+        }
         if (isAwaitingTokenSelection) sb.Append(GetTokenSelectionInstructions());
         if (isAwaitingHexDestination)
         {
             string movingTokenName = selectedToken != null ? selectedToken.playerName : "the selected token";
-            sb.Append($"Click on a Free Hex to move {movingTokenName} there!, ");
+            if (isWaitingForNutmegDecisionWithoutMoving)
+            {
+                sb.Append($"Click on a Nutmeggable Defender to nutmeg immediately, press [N] to choose a nutmeg, or click on a Free Hex to move {movingTokenName} there, ");
+            }
+            else
+            {
+                sb.Append($"Click on a Free Hex to move {movingTokenName} there!, ");
+            }
             if (HasVisibleDangerousTackleDestination(selectedToken))
             {
                 sb.Append("Tackles from Purple Hexes are considered tackles from behind, ");
@@ -4070,13 +4142,6 @@ public class MovementPhaseManager : MonoBehaviour
             sb.Append($"{selectedToken?.playerName ?? "Selected token"} cannot collect this hanging pass, ");
         }
         if (isWaitingForNutmegDecision && !isWaitingForGKWallDiveDecision) sb.Append("Press [N] to nutmeg, or [X] to allow interceptions, ");
-        if (isWaitingForInterceptionDiceRoll)
-        {
-            string defenderName = eligibleDefenders != null && eligibleDefenders.Count > 0 && eligibleDefenders[0] != null
-                ? eligibleDefenders[0].playerName
-                : "the defender";
-            sb.Append($"Press [R] to roll for interception with {defenderName}, ");
-        }
         if (lookingForNutmegVictim) sb.Append("Click on one of the Nutmeggable Defenders to choose which one to nutmeg, ");
         // if (isWaitingForSnapshotDecisionFromLoose)
         // {
@@ -4084,35 +4149,7 @@ public class MovementPhaseManager : MonoBehaviour
         // }
         // else
         // {
-            if (!isNutmegInProgress)
-            {
-            if (isWaitingForGKWallDiveDecision) sb.Append(BuildGKDiveDecisionInstruction());
-            if (isWaitingForTackleRoll && !tackleDefenderRolled && isGkWallDiveInProgress) sb.Append(BuildGKDiveGoalkeeperRollInstruction());
-            else if (isWaitingForTackleRoll && !tackleDefenderRolled)
-            {
-                string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
-                string tacklingText = selectedDefender != null ? GetDefenderGroundDuelSkill(selectedDefender).ToString() : "?";
-                string foulRiskText = BuildTackleFoulRiskInstruction();
-                sb.Append($"Press [R] to roll with {defenderName} for the tackle. Tackling: {tacklingText}{foulRiskText}, ");
-            }
-                if (isWaitingForTackleRoll && tackleDefenderRolled && isGkWallDiveInProgress) sb.Append(BuildGKDiveDribblerRollInstruction());
-                else if (isWaitingForTackleRoll && tackleDefenderRolled) sb.Append($"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ");
-            }
-            else
-            {
-                if (isWaitingForTackleRoll && !tackleDefenderRolled && nutmegVictim != null)
-                {
-                    sb.Append($"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling + 1}; needs {FOUL_THRESHOLD + 1}+ to avoid a foul, ");
-                }
-                if (isWaitingForTackleRoll && tackleDefenderRolled)
-                {
-                    PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
-                    if (attackerToken != null)
-                    {
-                        sb.Append($"Press [R] to roll with {attackerToken.playerName} for the nutmeg. Dribbling: {attackerToken.dribbling}; {BuildNutmegAttackerRollNeed(attackerToken)}, ");
-                    }
-                }
-            }
+            if (!isNutmegInProgress && isWaitingForGKWallDiveDecision) sb.Append(BuildGKDiveDecisionInstruction());
             if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll)
             {
                 sb.Append(IsSnapshotSuppressedByFinalExtraMovement()
@@ -4135,6 +4172,58 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    private string BuildInterceptionRollInstruction()
+    {
+        string defenderName = selectedDefender != null
+            ? selectedDefender.playerName
+            : eligibleDefenders != null && eligibleDefenders.Count > 0 && eligibleDefenders[0] != null
+                ? eligibleDefenders[0].playerName
+                : "the defender";
+        return $"Press [R] to roll for interception with {defenderName}, ";
+    }
+
+    private string BuildTackleRollInstruction()
+    {
+        if (!isNutmegInProgress)
+        {
+            if (!tackleDefenderRolled && isGkWallDiveInProgress)
+            {
+                return BuildGKDiveGoalkeeperRollInstruction();
+            }
+
+            if (!tackleDefenderRolled)
+            {
+                string defenderName = selectedDefender != null ? selectedDefender.playerName : "the defender";
+                string tacklingText = selectedDefender != null ? GetDefenderGroundDuelSkill(selectedDefender).ToString() : "?";
+                string foulRiskText = BuildTackleFoulRiskInstruction();
+                return $"Press [R] to roll with {defenderName} for the tackle. Tackling: {tacklingText}{foulRiskText}, ";
+            }
+
+            if (isGkWallDiveInProgress)
+            {
+                return BuildGKDiveDribblerRollInstruction();
+            }
+
+            return $"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ";
+        }
+
+        if (!tackleDefenderRolled && nutmegVictim != null)
+        {
+            return $"Press [R] to roll with {nutmegVictim.playerName} for the nutmeg. Tackling: {nutmegVictim.tackling}+1 = {nutmegVictim.tackling + 1}; needs {FOUL_THRESHOLD + 1}+ to avoid a foul, ";
+        }
+
+        if (tackleDefenderRolled)
+        {
+            PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+            if (attackerToken != null)
+            {
+                return $"Press [R] to roll with {attackerToken.playerName} for the nutmeg. Dribbling: {attackerToken.dribbling}; {BuildNutmegAttackerRollNeed(attackerToken)}, ";
+            }
+        }
+
+        return "Press [R] to roll for the tackle, ";
     }
 
     private string BuildGKDiveDecisionInstruction()

@@ -1613,17 +1613,14 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        if (previewImage != null)
-        {
-            previewImage.texture = TokenFacePreviewUtility.GetOrCreateFaceTexture(preset.Style);
-            previewImage.color = Color.white;
-        }
-
-        if (previewNumberText != null)
-        {
-            previewNumberText.text = sampleNumber;
-            TokenFacePreviewUtility.ApplyNumberStyle(previewNumberText, preset.Style, PreviewPlainNumberFontSize, PreviewVerticalNumberFontSize);
-        }
+        int sampleJersey = int.TryParse(sampleNumber, out int parsedSampleNumber) ? parsedSampleNumber : 0;
+        TokenFaceUiRenderer.Render(
+            previewImage,
+            previewNumberText,
+            preset.Style,
+            sampleJersey,
+            PreviewPlainNumberFontSize,
+            PreviewVerticalNumberFontSize);
     }
 
     private TokenKitPreset FindKitPresetByDisplayName(string displayName)

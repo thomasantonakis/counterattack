@@ -165,6 +165,14 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     PauseMenuEditorTools.EnsureEditSettingsPanel();
                     return BridgeResponse.Ok(request, "Pause menu Edit Settings panel ensured.");
+                case "ensure_movement_phase_moved_tokens_panel":
+                    EnsureEditorMode(command);
+                    MovementPhaseMovedTokensPanelEditorTools.EnsureSceneInstanceInEditMode();
+                    return BridgeResponse.Ok(request, "Movement Phase moved-token panel ensured in Room scene.");
+                case "ensure_movement_phase_token_status_panel":
+                    EnsureEditorMode(command);
+                    MovementPhaseTokenStatusPanelEditorTools.EnsureSceneInstanceInEditMode();
+                    return BridgeResponse.Ok(request, "Movement Phase token-status panel ensured in Room scene.");
                 case "reload_kit_presets":
                     EnsureEditorMode(command);
                     TokenKitCatalog.ReloadFromSource();

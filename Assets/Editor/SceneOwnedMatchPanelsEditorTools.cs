@@ -14,6 +14,8 @@ public static class SceneOwnedMatchPanelsEditorTools
         EndGamePanelPrefabEditorTools.EnsureSceneInstanceInEditMode();
         PenaltyShootoutOrderPanelPrefabEditorTools.EnsureSceneInstanceInEditMode();
         SubstitutionPanelPrefabEditorTools.EnsureSceneInstanceInEditMode();
+        MovementPhaseMovedTokensPanelEditorTools.EnsureSceneInstanceInEditMode();
+        MovementPhaseTokenStatusPanelEditorTools.EnsureSceneInstanceInEditMode();
 
         Scene activeScene = SceneManager.GetActiveScene();
         if (activeScene.path == RoomScenePath)
