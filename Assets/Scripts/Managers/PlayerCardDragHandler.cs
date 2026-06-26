@@ -13,6 +13,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     private GameObject placeholder;
     private DraftManager draftManager;
     private float lastClickTime = 0f;
+    private bool originalIgnoreLayout;
     private const float doubleClickThreshold = 0.25f;  // Max time between clicks for a double click
 
     private void Awake()
@@ -28,6 +29,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         // Save original parent and position
         originalParent = transform.parent;
         originalPosition = transform.position;
+        originalIgnoreLayout = layoutElement != null && layoutElement.ignoreLayout;
         // Calculate the offset between the mouse position and the slot's position
         RectTransformUtility.ScreenPointToWorldPointInRectangle(
             GetComponent<RectTransform>(),
@@ -84,20 +86,6 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
         if (nextAvailableSlot != null)
         {
-            // Create a placeholder in the Draft Panel (where the card is currently located)
-            Transform draftPanelParent = card.transform.parent;
-            GameObject placeholder = new GameObject("Placeholder");
-            LayoutElement layoutElementPlaceholder = placeholder.AddComponent<LayoutElement>();
-
-            // Assuming the layoutElement of the card is already set
-            LayoutElement cardLayoutElement = card.GetComponent<LayoutElement>();
-            layoutElementPlaceholder.preferredWidth = cardLayoutElement.preferredWidth;
-            layoutElementPlaceholder.preferredHeight = cardLayoutElement.preferredHeight;
-
-            // Set the placeholder in the Draft Panel at the same index as the card
-            placeholder.transform.SetParent(draftPanelParent, false);
-            placeholder.transform.SetSiblingIndex(card.transform.GetSiblingIndex());
-
             // Assign the card to the found slot in the valid roster
             nextAvailableSlot.UpdateSlot(card);
             draftManager.CardAssignedToSlot(card);
@@ -145,6 +133,9 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         Destroy(placeholder);
 
         // Restore layout handling after drag ends
-        layoutElement.ignoreLayout = false;
+        if (layoutElement != null)
+        {
+            layoutElement.ignoreLayout = originalIgnoreLayout;
+        }
     }
 }

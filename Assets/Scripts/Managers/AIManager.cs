@@ -8,7 +8,8 @@ public class AIManager : MonoBehaviour
 
     public enum Persona
     {
-        Greedy
+        Greedy,
+        Sophisticated
     }
 
     private void Awake()
@@ -29,10 +30,26 @@ public class AIManager : MonoBehaviour
         return DraftDecisions.ChooseOutfielder(profile, visiblePlayers, currentTeamTurn);
     }
 
+    public DraftDecisions.DraftAction GetDraftDecision(GameSettings settings, DraftDecisions.DraftContext context)
+    {
+        Persona persona = ResolveDraftPersona(settings, context?.Team);
+        DraftDecisions.DraftProfile profile = ResolveDraftProfile(persona);
+        return DraftDecisions.ChooseOutfielder(profile, context);
+    }
+
     public string DescribeDraftDecision(GameSettings settings, IEnumerable<Player> visiblePlayers, Player selectedPlayer, string currentTeamTurn)
     {
         Persona persona = ResolveDraftPersona(settings, currentTeamTurn);
-        return $"AI manager selected persona '{persona}' for {currentTeamTurn} draft turn. {DraftDecisions.DescribeGreedyOutfielderDecision(visiblePlayers, selectedPlayer)}";
+        DraftDecisions.DraftProfile profile = ResolveDraftProfile(persona);
+        DraftDecisions.DraftContext context = new DraftDecisions.DraftContext(visiblePlayers, null, currentTeamTurn, 0, 0, 0, 0);
+        return $"AI manager selected persona '{persona}' for {currentTeamTurn} draft turn. {DraftDecisions.DescribeOutfielderDecision(profile, context, selectedPlayer)}";
+    }
+
+    public string DescribeDraftDecision(GameSettings settings, DraftDecisions.DraftContext context, Player selectedPlayer)
+    {
+        Persona persona = ResolveDraftPersona(settings, context?.Team);
+        DraftDecisions.DraftProfile profile = ResolveDraftProfile(persona);
+        return $"AI manager selected persona '{persona}' for {context?.Team} draft turn. {DraftDecisions.DescribeOutfielderDecision(profile, context, selectedPlayer)}";
     }
 
     public Persona ResolveDraftPersona(GameSettings settings, string currentTeamTurn)
@@ -59,6 +76,7 @@ public class AIManager : MonoBehaviour
         return persona switch
         {
             Persona.Greedy => DraftDecisions.DraftProfile.Greedy,
+            Persona.Sophisticated => DraftDecisions.DraftProfile.Sophisticated,
             _ => DraftDecisions.DraftProfile.Greedy
         };
     }

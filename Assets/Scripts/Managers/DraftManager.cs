@@ -19,6 +19,9 @@ public class DraftManager : MonoBehaviour
     private const string DraftInternational = "International";
     private const string DraftArcade = "Arcade";
     private const string WorldCupPlayerType = "World Cup";
+    private const float RegularDraftCardAspectRatio = 0.625f;
+    private const float RegularDraftCardSpacing = 10f;
+    private const float RegularDraftPanelVerticalPadding = 20f;
     private static readonly string[] FreeDraftFilterOrder =
     {
         "name",
@@ -64,6 +67,9 @@ public class DraftManager : MonoBehaviour
     private string currentBatchStarter;
     private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
     private bool isFreeDraftScene;
+    private bool isResolvingSinglePlayerAwayDraftTurn;
+    private bool postDraftGoalkeeperReviewComplete;
+    private Coroutine singlePlayerAwayDraftCoroutine;
     private FreeDraftPhase freeDraftPhase = FreeDraftPhase.Setup;
     private Transform freeDraftContent;
     private Transform freeDraftPreviewRow;
@@ -117,6 +123,7 @@ public class DraftManager : MonoBehaviour
         AssignGoalkeepersToSlots();  // Assign GKs before dealing player cards
         PerformCoinFlip();
         DealNewDraftCards();  // Start the first draft round
+        TryAutoPickSinglePlayerAwayTurns();
     }
 
     private void StartFreeDraftFlow()
@@ -714,17 +721,22 @@ public class DraftManager : MonoBehaviour
         }
     }
 
-    public bool CanCompleteRegularDraftWithGreedyProfile()
+    public bool CanCompleteRegularDraftWithConfiguredProfile()
     {
-        return string.IsNullOrEmpty(GetRegularGreedyDraftBlockReason());
+        return string.IsNullOrEmpty(GetRegularDraftAutomationBlockReason());
     }
 
-    public void CompleteRegularDraftWithGreedyProfile()
+    public bool CanCompleteRegularDraftWithGreedyProfile()
     {
-        string blockReason = GetRegularGreedyDraftBlockReason();
+        return CanCompleteRegularDraftWithConfiguredProfile();
+    }
+
+    public void CompleteRegularDraftWithConfiguredProfile()
+    {
+        string blockReason = GetRegularDraftAutomationBlockReason();
         if (!string.IsNullOrEmpty(blockReason))
         {
-            Debug.LogWarning($"Greedy regular draft automation skipped: {blockReason}");
+            Debug.LogWarning($"Regular draft automation skipped: {blockReason}");
             return;
         }
 
@@ -735,7 +747,7 @@ public class DraftManager : MonoBehaviour
 
         while (remainingOutfieldSlots > 0 && !IsDraftComplete())
         {
-            if (!TryCompleteGreedyRegularDraftPick())
+            if (!TryCompleteRegularDraftPick())
             {
                 break;
             }
@@ -744,16 +756,23 @@ public class DraftManager : MonoBehaviour
             remainingOutfieldSlots--;
         }
 
+        PerformSophisticatedPostDraftGoalkeeperReview();
+
         DraftUIManager uiManager = GetDraftUIManager();
         if (uiManager != null)
         {
             uiManager.CheckIfDraftIsComplete();
         }
 
-        Debug.Log($"Greedy regular draft automation completed {picksMade} picks.");
+        Debug.Log($"Regular draft automation completed {picksMade} picks.");
     }
 
-    private string GetRegularGreedyDraftBlockReason()
+    public void CompleteRegularDraftWithGreedyProfile()
+    {
+        CompleteRegularDraftWithConfiguredProfile();
+    }
+
+    private string GetRegularDraftAutomationBlockReason()
     {
         if (SceneManager.GetActiveScene().name != DraftSceneName)
         {
@@ -795,6 +814,11 @@ public class DraftManager : MonoBehaviour
             return "draft is already complete.";
         }
 
+        if (IsSinglePlayerRegularDraftMode())
+        {
+            return "Single Player regular draft only automates the Away opponent turns.";
+        }
+
         if (CountEmptyOutfieldSlots(homeTeamPanel.transform) + CountEmptyOutfieldSlots(awayTeamPanel.transform) == 0)
         {
             return "all outfield roster slots are already full.";
@@ -803,52 +827,112 @@ public class DraftManager : MonoBehaviour
         return string.Empty;
     }
 
-    private bool TryCompleteGreedyRegularDraftPick()
+    private bool IsSinglePlayerRegularDraftMode()
+    {
+        return currentSettings != null
+            && string.Equals(currentSettings.gameMode, ApplicationManager.SinglePlayerGameMode, System.StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentSettings.draft, DraftRegular, System.StringComparison.OrdinalIgnoreCase)
+            && !IsInternationalDraftMode()
+            && !IsArcadeDraftMode()
+            && !isFreeDraftScene;
+    }
+
+    private bool IsSinglePlayerAwayDraftTurn()
+    {
+        return IsSinglePlayerRegularDraftMode()
+            && string.Equals(currentTeamTurn, "Away", System.StringComparison.OrdinalIgnoreCase)
+            && !IsDraftComplete();
+    }
+
+    private void TryAutoPickSinglePlayerAwayTurns()
+    {
+        if (isResolvingSinglePlayerAwayDraftTurn)
+        {
+            return;
+        }
+
+        if (!IsSinglePlayerAwayDraftTurn())
+        {
+            return;
+        }
+
+        if (singlePlayerAwayDraftCoroutine == null)
+        {
+            singlePlayerAwayDraftCoroutine = StartCoroutine(ResolveSinglePlayerAwayDraftTurns());
+        }
+    }
+
+    private IEnumerator ResolveSinglePlayerAwayDraftTurns()
+    {
+        isResolvingSinglePlayerAwayDraftTurn = true;
+
+        while (IsSinglePlayerAwayDraftTurn())
+        {
+            if (GetVisibleRegularDraftCards().Count > 1)
+            {
+                yield return new WaitForSeconds(2f);
+            }
+
+            if (!IsSinglePlayerAwayDraftTurn() || !TryCompleteRegularDraftPick())
+            {
+                break;
+            }
+        }
+
+        isResolvingSinglePlayerAwayDraftTurn = false;
+        singlePlayerAwayDraftCoroutine = null;
+    }
+
+    private bool TryCompleteRegularDraftPick()
     {
         List<PlayerCard> visibleCards = GetVisibleRegularDraftCards();
         if (visibleCards.Count == 0)
         {
-            Debug.LogWarning("Greedy regular draft automation stopped: no visible draft cards were available.");
+            Debug.LogWarning("Regular draft automation stopped: no visible draft cards were available.");
             return false;
         }
 
         AIManager aiManager = FindAnyObjectByType<AIManager>();
         if (aiManager == null)
         {
-            Debug.LogWarning("Greedy regular draft automation stopped: AIManager was not found.");
+            Debug.LogWarning("Regular draft automation stopped: AIManager was not found.");
             return false;
         }
 
-        DraftDecisions.DraftAction decision = aiManager.GetDraftDecision(
-            currentSettings,
-            visibleCards.Select(card => card.assignedPlayer),
-            currentTeamTurn);
+        string actingTeam = currentTeamTurn;
+        DraftDecisions.DraftContext draftContext = CreateRegularDraftContext(visibleCards, actingTeam);
+        AIManager.Persona activePersona = aiManager.ResolveDraftPersona(currentSettings, actingTeam);
+        DraftDecisions.DraftAction decision = aiManager.GetDraftDecision(currentSettings, draftContext);
         if (!decision.IsValid)
         {
-            Debug.LogWarning("Greedy regular draft automation stopped: no valid decision could be made.");
+            Debug.LogWarning("Regular draft automation stopped: no valid decision could be made.");
             return false;
         }
 
         PlayerCard selectedCard = FindVisibleRegularDraftCard(visibleCards, decision.SelectedPlayer);
         if (selectedCard == null)
         {
-            Debug.LogWarning($"Greedy regular draft automation stopped: selected card for {decision.SelectedPlayer.Name} was not visible.");
+            Debug.LogWarning($"Regular draft automation stopped: selected card for {decision.SelectedPlayer.Name} was not visible.");
             return false;
         }
 
         PlayerSlotDropHandler targetSlot = FindNextAvailableOutfieldSlot(decision.RosterPanelName, 0);
         if (targetSlot == null)
         {
-            Debug.LogWarning($"Greedy regular draft automation stopped: no outfield slot was available in {decision.RosterPanelName}.");
+            Debug.LogWarning($"Regular draft automation stopped: no outfield slot was available in {decision.RosterPanelName}.");
             return false;
         }
 
-        Debug.Log(aiManager.DescribeDraftDecision(
-            currentSettings,
-            visibleCards.Select(card => card.assignedPlayer),
-            decision.SelectedPlayer,
-            currentTeamTurn));
+        Debug.Log(aiManager.DescribeDraftDecision(currentSettings, draftContext, decision.SelectedPlayer));
         targetSlot.UpdateSlot(selectedCard);
+
+        if (activePersona == AIManager.Persona.Sophisticated)
+        {
+            ArrangeSophisticatedRoster(actingTeam);
+            Debug.Log($"Sophisticated projected starters after selecting {decision.SelectedPlayer.Name}: {DraftDecisions.DescribeSophisticatedStarterAssignments(GetOutfieldRosterPlayers(actingTeam))}");
+            Debug.Log(DraftDecisions.DescribeSophisticatedFormationDecision(GetOutfieldRosterPlayers(actingTeam)));
+        }
+
         CardAssignedToSlot(selectedCard);
         if (selectedCard != null)
         {
@@ -857,6 +941,284 @@ public class DraftManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private DraftDecisions.DraftContext CreateRegularDraftContext(List<PlayerCard> visibleCards, string actingTeam)
+    {
+        return new DraftDecisions.DraftContext(
+            visibleCards.Select(card => card.assignedPlayer),
+            GetOutfieldRosterPlayers(actingTeam),
+            actingTeam,
+            currentBatchNumber,
+            totalBatchCount,
+            GetRemainingSelectionsInCurrentBatch(),
+            draftPool != null ? draftPool.Count : 0);
+    }
+
+    private void ArrangeSophisticatedRoster(string team)
+    {
+        GameObject rosterPanel = GetRosterPanel(team);
+        if (rosterPanel == null)
+        {
+            Debug.LogWarning($"Sophisticated roster arrangement skipped: roster panel for {team} was not found.");
+            return;
+        }
+
+        List<RosterPlayerSlot> rosterSlots = GetOutfieldRosterPlayerSlots(rosterPanel);
+        List<Player> rosterPlayers = rosterSlots.Select(slot => slot.Player).ToList();
+        List<DraftDecisions.StarterAssignment> starterAssignments = DraftDecisions.BuildSophisticatedStarterAssignments(rosterPlayers);
+        HashSet<Player> starterPlayers = new HashSet<Player>(starterAssignments.Select(assignment => assignment.Player));
+        Queue<Player> benchPlayers = new Queue<Player>(rosterSlots
+            .Where(slot => !starterPlayers.Contains(slot.Player))
+            .OrderBy(slot => slot.JerseyNumber)
+            .Select(slot => slot.Player));
+
+        foreach (Transform child in rosterPanel.transform)
+        {
+            PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
+            if (slot == null || slot.IsGoalkeeperRosterSlot())
+            {
+                continue;
+            }
+
+            int jerseyNumber = slot.GetJerseyNumber();
+            DraftDecisions.StarterAssignment starterAssignment = starterAssignments
+                .FirstOrDefault(assignment => assignment.JerseyNumber == jerseyNumber);
+            if (starterAssignment != null)
+            {
+                slot.UpdatePlayerSlot(starterAssignment.Player);
+                continue;
+            }
+
+            if (jerseyNumber > 11 && benchPlayers.Count > 0)
+            {
+                slot.UpdatePlayerSlot(benchPlayers.Dequeue());
+                continue;
+            }
+
+            if (slot.IsSlotPopulated())
+            {
+                slot.ClearSlot();
+            }
+        }
+    }
+
+    private void PerformSophisticatedPostDraftGoalkeeperReview()
+    {
+        if (postDraftGoalkeeperReviewComplete || !IsDraftComplete())
+        {
+            return;
+        }
+
+        ReviewSophisticatedGoalkeeperStarter("Home");
+        ReviewSophisticatedGoalkeeperStarter("Away");
+        postDraftGoalkeeperReviewComplete = true;
+        RefreshRosterAverages();
+    }
+
+    private void ReviewSophisticatedGoalkeeperStarter(string team)
+    {
+        if (!IsSophisticatedDraftTeam(team))
+        {
+            Debug.Log($"Sophisticated GK review skipped for {team}: draft persona is not Sophisticated.");
+            return;
+        }
+
+        string opponentTeam = string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase) ? "Home" : "Away";
+        List<Player> ownStarters = GetStartingOutfieldPlayers(team);
+        List<Player> opponentStarters = GetStartingOutfieldPlayers(opponentTeam);
+        if (ownStarters.Count < 4 || opponentStarters.Count < 4)
+        {
+            Debug.Log($"Sophisticated GK review skipped for {team}: not enough starters to compare headers (own={ownStarters.Count}, opponent={opponentStarters.Count}).");
+            return;
+        }
+
+        PlayerSlotDropHandler starterSlot = FindGoalkeeperSlot(team, 1);
+        PlayerSlotDropHandler benchSlot = FindGoalkeeperSlot(team, 12);
+        Goalkeeper starterGoalkeeper = FindGoalkeeperInSlot(starterSlot);
+        Goalkeeper benchGoalkeeper = FindGoalkeeperInSlot(benchSlot);
+        if (starterGoalkeeper == null || benchGoalkeeper == null)
+        {
+            Debug.Log($"Sophisticated GK review skipped for {team}: starter or bench goalkeeper was missing.");
+            return;
+        }
+
+        float ownTopFourHeading = GetTopHeadingAverage(ownStarters, 4);
+        float opponentTopFourHeading = GetTopHeadingAverage(opponentStarters, 4);
+        float headingGap = opponentTopFourHeading - ownTopFourHeading;
+        int savingDrop = starterGoalkeeper.Saving - benchGoalkeeper.Saving;
+        int handlingGain = benchGoalkeeper.Handling - starterGoalkeeper.Handling;
+        bool aerialMismatch = headingGap >= 2f;
+        bool benchHandlingHelps = handlingGain > 0;
+        bool savingDropAcceptable = savingDrop < 2;
+        bool shouldSwap = aerialMismatch && benchHandlingHelps && savingDropAcceptable;
+
+        Debug.Log(
+            $"Sophisticated GK review for {team}: ownTop4StarterHeading={ownTopFourHeading:0.0} " +
+            $"opponentTop4StarterHeading={opponentTopFourHeading:0.0} headingGap={headingGap:0.0}; " +
+            $"starterGK={starterGoalkeeper.Name}[Sv{starterGoalkeeper.Saving} Han{starterGoalkeeper.Handling}] " +
+            $"benchGK={benchGoalkeeper.Name}[Sv{benchGoalkeeper.Saving} Han{benchGoalkeeper.Handling}] " +
+            $"savingDrop={savingDrop} handlingGain={handlingGain}; " +
+            $"decision={(shouldSwap ? "swap bench GK into slot 1" : "keep current starter GK")} " +
+            $"because aerialMismatch={aerialMismatch}, benchHandlingHelps={benchHandlingHelps}, savingDropAcceptable={savingDropAcceptable}.");
+
+        if (!shouldSwap)
+        {
+            return;
+        }
+
+        starterSlot.UpdateGoalkeeperSlot(benchGoalkeeper);
+        benchSlot.UpdateGoalkeeperSlot(starterGoalkeeper);
+    }
+
+    private bool IsSophisticatedDraftTeam(string team)
+    {
+        AIManager aiManager = FindAnyObjectByType<AIManager>();
+        if (aiManager != null)
+        {
+            return aiManager.ResolveDraftPersona(currentSettings, team) == AIManager.Persona.Sophisticated;
+        }
+
+        string personaName = string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? currentSettings?.awayDraftPersona
+            : currentSettings?.homeDraftPersona;
+        if (string.IsNullOrWhiteSpace(personaName))
+        {
+            personaName = currentSettings?.defaultDraftPersona;
+        }
+
+        return string.Equals(personaName, "Sophisticated", System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private List<Player> GetStartingOutfieldPlayers(string team)
+    {
+        GameObject rosterPanel = GetRosterPanel(team);
+        return GetOutfieldRosterPlayerSlots(rosterPanel)
+            .Where(slot => slot.JerseyNumber >= 2 && slot.JerseyNumber <= 11)
+            .OrderBy(slot => slot.JerseyNumber)
+            .Select(slot => slot.Player)
+            .ToList();
+    }
+
+    private static float GetTopHeadingAverage(IEnumerable<Player> players, int count)
+    {
+        List<Player> topHeaders = (players ?? Enumerable.Empty<Player>())
+            .Where(player => player != null)
+            .OrderByDescending(player => player.Heading)
+            .ThenBy(player => player.Name)
+            .Take(count)
+            .ToList();
+
+        return topHeaders.Count == 0 ? 0f : (float)topHeaders.Average(player => player.Heading);
+    }
+
+    private PlayerSlotDropHandler FindGoalkeeperSlot(string team, int jerseyNumber)
+    {
+        GameObject rosterPanel = GetRosterPanel(team);
+        if (rosterPanel == null)
+        {
+            return null;
+        }
+
+        foreach (Transform child in rosterPanel.transform)
+        {
+            PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
+            if (slot != null && slot.IsGoalkeeperRosterSlot() && slot.GetJerseyNumber() == jerseyNumber)
+            {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
+    private Goalkeeper FindGoalkeeperInSlot(PlayerSlotDropHandler slot)
+    {
+        string goalkeeperName = GetPlayerNameFromSlot(slot);
+        if (string.IsNullOrWhiteSpace(goalkeeperName) || allGks == null)
+        {
+            return null;
+        }
+
+        return allGks.FirstOrDefault(goalkeeper => string.Equals(goalkeeper.Name, goalkeeperName, System.StringComparison.Ordinal));
+    }
+
+    private List<Player> GetOutfieldRosterPlayers(string team)
+    {
+        GameObject rosterPanel = GetRosterPanel(team);
+        if (rosterPanel == null)
+        {
+            return new List<Player>();
+        }
+
+        return GetOutfieldRosterPlayerSlots(rosterPanel)
+            .Select(slot => slot.Player)
+            .ToList();
+    }
+
+    private List<RosterPlayerSlot> GetOutfieldRosterPlayerSlots(GameObject rosterPanel)
+    {
+        List<RosterPlayerSlot> rosterPlayers = new List<RosterPlayerSlot>();
+        if (rosterPanel == null)
+        {
+            return rosterPlayers;
+        }
+
+        foreach (Transform child in rosterPanel.transform)
+        {
+            PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
+            if (slot == null || slot.IsGoalkeeperRosterSlot() || !slot.IsSlotPopulated())
+            {
+                continue;
+            }
+
+            Player player = FindOutfieldPlayerInSlot(slot);
+            if (player != null)
+            {
+                rosterPlayers.Add(new RosterPlayerSlot(slot, player, slot.GetJerseyNumber()));
+            }
+        }
+
+        return rosterPlayers;
+    }
+
+    private Player FindOutfieldPlayerInSlot(PlayerSlotDropHandler slot)
+    {
+        string playerName = GetPlayerNameFromSlot(slot);
+        if (string.IsNullOrWhiteSpace(playerName) || allPlayers == null)
+        {
+            return null;
+        }
+
+        return allPlayers.FirstOrDefault(player => string.Equals(player.Name, playerName, System.StringComparison.Ordinal));
+    }
+
+    private string GetPlayerNameFromSlot(PlayerSlotDropHandler slot)
+    {
+        Transform contentWrapper = slot != null ? slot.transform.Find("ContentWrapper") : null;
+        TMP_Text playerNameText = contentWrapper != null ? contentWrapper.Find("PlayerNameInSlot")?.GetComponent<TMP_Text>() : null;
+        return playerNameText != null ? playerNameText.text.Trim() : string.Empty;
+    }
+
+    private GameObject GetRosterPanel(string team)
+    {
+        return string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? awayTeamPanel
+            : homeTeamPanel;
+    }
+
+    private sealed class RosterPlayerSlot
+    {
+        public RosterPlayerSlot(PlayerSlotDropHandler slot, Player player, int jerseyNumber)
+        {
+            Slot = slot;
+            Player = player;
+            JerseyNumber = jerseyNumber;
+        }
+
+        public PlayerSlotDropHandler Slot { get; }
+        public Player Player { get; }
+        public int JerseyNumber { get; }
     }
 
     private List<PlayerCard> GetVisibleRegularDraftCards()
@@ -929,6 +1291,7 @@ public class DraftManager : MonoBehaviour
         }
         else if (cardsAssignedThisRound >= 4)
         {
+            PerformSophisticatedPostDraftGoalkeeperReview();
             // Check if the draft is complete
             DraftUIManager draftUIManager = FindAnyObjectByType<DraftUIManager>();
             draftUIManager.CheckIfDraftIsComplete();  // Enable the Start Game button if the draft is complete
@@ -943,6 +1306,8 @@ public class DraftManager : MonoBehaviour
         {
             liveDraftUi.RefreshDraftStateUI();
         }
+
+        TryAutoPickSinglePlayerAwayTurns();
     }
 
     public string GetCurrentTeamTurn()
@@ -985,6 +1350,7 @@ public class DraftManager : MonoBehaviour
         int cardsToDeal = Mathf.Min(4, draftPool.Count);
         currentBatchNumber++;
         currentBatchSize = cardsToDeal;
+        List<GameObject> dealtCards = new List<GameObject>();
 
         // Deal new cards
         for (int i = 0; i < cardsToDeal; i++)
@@ -994,8 +1360,11 @@ public class DraftManager : MonoBehaviour
             PlayerCard playerCard = newCard.GetComponent<PlayerCard>();
             playerCard.UpdatePlayerCard(nextPlayer);
             DraftPlayerCardStyler.ApplyOutfield(newCard);
+            dealtCards.Add(newCard);
             // Debug.Log($"Dealt card for player: {nextPlayer.Name}");
         }
+
+        LockRegularDraftCardPositions(dealtCards);
 
         // Remove the dealt cards immediately so draftPool now represents undealt cards only.
         draftPool.RemoveRange(0, cardsToDeal);
@@ -1007,6 +1376,64 @@ public class DraftManager : MonoBehaviour
         {
             draftUIManager.RefreshDraftStateUI();
         }
+    }
+
+    private void LockRegularDraftCardPositions(List<GameObject> dealtCards)
+    {
+        if (dealtCards == null || dealtCards.Count == 0)
+        {
+            return;
+        }
+
+        RectTransform draftPanelRect = draftPanel != null ? draftPanel.GetComponent<RectTransform>() : null;
+        if (draftPanelRect == null)
+        {
+            return;
+        }
+
+        Vector2 cardSize = GetRegularDraftCardSize(draftPanelRect.rect.size);
+        Vector2[] cardPositions = GetRegularDraftCardPositions(cardSize);
+        for (int i = 0; i < dealtCards.Count; i++)
+        {
+            GameObject dealtCard = dealtCards[i];
+            if (dealtCard == null || !dealtCard.TryGetComponent(out LayoutElement layoutElement))
+            {
+                continue;
+            }
+
+            layoutElement.ignoreLayout = true;
+            RectTransform cardRect = dealtCard.GetComponent<RectTransform>();
+            if (cardRect == null)
+            {
+                continue;
+            }
+
+            cardRect.anchorMin = new Vector2(0.5f, 0.5f);
+            cardRect.anchorMax = new Vector2(0.5f, 0.5f);
+            cardRect.pivot = new Vector2(0.5f, 0.5f);
+            cardRect.sizeDelta = cardSize;
+            cardRect.anchoredPosition = cardPositions[Mathf.Clamp(i, 0, cardPositions.Length - 1)];
+        }
+    }
+
+    private Vector2 GetRegularDraftCardSize(Vector2 panelSize)
+    {
+        float fittedHeight = Mathf.Max(1f, (panelSize.y - RegularDraftCardSpacing - RegularDraftPanelVerticalPadding) * 0.5f);
+        float fittedWidth = fittedHeight * RegularDraftCardAspectRatio;
+        return new Vector2(fittedWidth, fittedHeight);
+    }
+
+    private Vector2[] GetRegularDraftCardPositions(Vector2 cardSize)
+    {
+        float xOffset = (cardSize.x + RegularDraftCardSpacing) * 0.5f;
+        float yOffset = (cardSize.y + RegularDraftCardSpacing) * 0.5f;
+        return new[]
+        {
+            new Vector2(-xOffset, yOffset),
+            new Vector2(xOffset, yOffset),
+            new Vector2(-xOffset, -yOffset),
+            new Vector2(xOffset, -yOffset)
+        };
     }
 
     public int GetCurrentBatchNumber()
@@ -1414,6 +1841,7 @@ public class DraftManager : MonoBehaviour
     private void CompleteFreeDraft()
     {
         freeDraftPhase = FreeDraftPhase.Complete;
+        PerformSophisticatedPostDraftGoalkeeperReview();
         ClearFreeDraftRows();
         if (freeDraftTitleText != null)
         {

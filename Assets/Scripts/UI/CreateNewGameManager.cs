@@ -23,6 +23,8 @@ public class CreateNewGameManager : MonoBehaviour
     private const string DraftSceneName = "Draft";
     private const string FreeDraftSceneName = "FreeDraft";
     private const string CreateLoadRoomSceneName = "CreateLoadRoom";
+    private const string DraftProfileGreedy = "Greedy";
+    private const string DraftProfileSophisticated = "Sophisticated";
     private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
     private const float KitDropdownScrollSensitivity = 55f;
@@ -134,7 +136,7 @@ public class CreateNewGameManager : MonoBehaviour
         SetDropDownOptions();
         ConfigureBackToGameModeMenuButton();
         ConfigureTeamNameInputs();
-        SetCreateGameButtonEnabled(!IsSinglePlayerCreateMode());
+        SetCreateGameButtonEnabled(true);
         // Subscribe to field changes, which dynamically adjusts other fields' options
         matchTypeDropdown.onValueChanged.AddListener(delegate { OnMatchTypeChanged(); });
         weatherDropdown.onValueChanged.AddListener(delegate { AdjustBallColorBasedOnWeather(); });
@@ -308,19 +310,24 @@ public class CreateNewGameManager : MonoBehaviour
     // Set the default squad size options when the scene loads
     void SetDropDownOptions()
     {
-        List<string> gameModeOptions = new List<string> { "Single Player", "Hot Seat", "Multi Player" };  // Define options
+        bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
+        List<string> gameModeOptions = isSinglePlayerCreateMode
+            ? new List<string> { DraftProfileGreedy, DraftProfileSophisticated }
+            : new List<string> { "Single Player", "Hot Seat", "Multi Player" };  // Define options
         gameModeDropdown.ClearOptions();  // Clear any existing options
         gameModeDropdown.AddOptions(gameModeOptions);  // Add the default options
-        string requestedGameMode = GetRequestedCreateLoadGameMode();
+        string requestedGameMode = isSinglePlayerCreateMode ? DraftProfileSophisticated : GetRequestedCreateLoadGameMode();
         int gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, requestedGameMode, StringComparison.OrdinalIgnoreCase));
         if (gameModeIndex < 0)
         {
-            gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, ApplicationManager.HotSeatGameMode, StringComparison.OrdinalIgnoreCase));
+            string fallback = isSinglePlayerCreateMode ? DraftProfileSophisticated : ApplicationManager.HotSeatGameMode;
+            gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, fallback, StringComparison.OrdinalIgnoreCase));
         }
 
         gameModeDropdown.SetValueWithoutNotify(Mathf.Max(0, gameModeIndex));
-        gameModeDropdown.interactable = false;
+        gameModeDropdown.interactable = isSinglePlayerCreateMode;
         gameModeDropdown.RefreshShownValue();
+        RefreshGameModeLabelForCreateMode();
         List<string> numberOfHalvesOptions = new List<string> { "2", "1" };  // Define options
         numberOfHalvesDropdown.ClearOptions();  // Clear any existing options
         numberOfHalvesDropdown.AddOptions(numberOfHalvesOptions);  // Add the default options
@@ -1687,7 +1694,6 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         createGameButton.interactable = requestedCreateGameButtonEnabled
-            && !IsSinglePlayerCreateMode()
             && AreTeamNamesValid();
     }
 
@@ -1757,6 +1763,11 @@ public class CreateNewGameManager : MonoBehaviour
 
     private string GetSelectedCreateMenuGameMode()
     {
+        if (IsSinglePlayerCreateMode())
+        {
+            return ApplicationManager.SinglePlayerGameMode;
+        }
+
         if (gameModeDropdown != null
             && gameModeDropdown.options.Count > 0
             && gameModeDropdown.value >= 0
@@ -1770,7 +1781,41 @@ public class CreateNewGameManager : MonoBehaviour
 
     private bool IsSinglePlayerCreateMode()
     {
-        return string.Equals(GetSelectedCreateMenuGameMode(), ApplicationManager.SinglePlayerGameMode, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(GetRequestedCreateLoadGameMode(), ApplicationManager.SinglePlayerGameMode, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string GetSelectedGameModeForSettings()
+    {
+        return IsSinglePlayerCreateMode()
+            ? ApplicationManager.SinglePlayerGameMode
+            : GetSelectedCreateMenuGameMode();
+    }
+
+    private string GetSelectedOpponentDraftProfile()
+    {
+        if (!IsSinglePlayerCreateMode()
+            || gameModeDropdown == null
+            || gameModeDropdown.options.Count == 0
+            || gameModeDropdown.value < 0
+            || gameModeDropdown.value >= gameModeDropdown.options.Count)
+        {
+            return DraftProfileSophisticated;
+        }
+
+        string selectedProfile = gameModeDropdown.options[gameModeDropdown.value].text;
+        return string.Equals(selectedProfile, DraftProfileGreedy, StringComparison.OrdinalIgnoreCase)
+            ? DraftProfileGreedy
+            : DraftProfileSophisticated;
+    }
+
+    private void RefreshGameModeLabelForCreateMode()
+    {
+        GameObject labelObject = GameObject.Find("Game Mode Label");
+        TMP_Text label = labelObject != null ? labelObject.GetComponent<TMP_Text>() : null;
+        if (label != null)
+        {
+            label.text = IsSinglePlayerCreateMode() ? "Opponent Type" : "Game Mode";
+        }
     }
 
     private void ConfigureBackToGameModeMenuButton()
@@ -1895,9 +1940,16 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        SelectDropdownOption(gameModeDropdown, settings.gameMode, GetRequestedCreateLoadGameMode());
+        string restoredGameModeSelection = IsSinglePlayerCreateMode()
+            ? settings.awayDraftPersona
+            : settings.gameMode;
+        string restoredGameModeFallback = IsSinglePlayerCreateMode()
+            ? DraftProfileSophisticated
+            : GetRequestedCreateLoadGameMode();
+        SelectDropdownOption(gameModeDropdown, restoredGameModeSelection, restoredGameModeFallback);
         ConfigureBackToGameModeMenuButton();
-        SetCreateGameButtonEnabled(!IsSinglePlayerCreateMode());
+        RefreshGameModeLabelForCreateMode();
+        SetCreateGameButtonEnabled(true);
 
         if (halfDurationSlider != null)
         {
@@ -2262,13 +2314,6 @@ public class CreateNewGameManager : MonoBehaviour
 
     public void SaveGameSettingsToJson()
     {
-        if (IsSinglePlayerCreateMode())
-        {
-            SetCreateGameButtonEnabled(false);
-            Debug.LogWarning("Create and Start is disabled for Single Player create-game mode.");
-            return;
-        }
-
         if (!TryGetValidatedTeamNames(out string homeTeamName, out string awayTeamName, out string teamValidationMessage))
         {
             RefreshCreateGameButtonState();
@@ -2287,7 +2332,7 @@ public class CreateNewGameManager : MonoBehaviour
 
         // Create a GameSettings object and populate it from the UI input fields
         GameSettings settings = new GameSettings();
-        settings.gameMode = gameModeDropdown.options[gameModeDropdown.value].text;
+        settings.gameMode = GetSelectedGameModeForSettings();
         settings.halfDuration = (int)halfDurationSlider.value;
         settings.numberOfHalfs = int.Parse(numberOfHalvesDropdown.options[numberOfHalvesDropdown.value].text);
         RefreshTiebreakerOptions();
@@ -2313,9 +2358,10 @@ public class CreateNewGameManager : MonoBehaviour
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamName;
         settings.awayTeamName = awayTeamName;
-        settings.homeDraftPersona = "Greedy";
-        settings.awayDraftPersona = "Greedy";
-        settings.defaultDraftPersona = "Greedy";
+        string selectedOpponentProfile = GetSelectedOpponentDraftProfile();
+        settings.homeDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
+        settings.awayDraftPersona = IsSinglePlayerCreateMode() ? selectedOpponentProfile : DraftProfileSophisticated;
+        settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? selectedOpponentProfile : DraftProfileSophisticated;
         settings.includeTabletopia = includeTabletopiaToggle.isOn;
         settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
