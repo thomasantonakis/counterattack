@@ -756,7 +756,7 @@ public class DraftManager : MonoBehaviour
             remainingOutfieldSlots--;
         }
 
-        PerformSophisticatedPostDraftGoalkeeperReview();
+        PerformRegularDraftPostDraftAssortment();
 
         DraftUIManager uiManager = GetDraftUIManager();
         if (uiManager != null)
@@ -1016,9 +1016,34 @@ public class DraftManager : MonoBehaviour
         RefreshRosterAverages();
     }
 
+    private void PerformRegularDraftPostDraftAssortment()
+    {
+        if (postDraftGoalkeeperReviewComplete || !IsDraftComplete() || isFreeDraftScene)
+        {
+            return;
+        }
+
+        ArrangeSophisticatedRoster("Home");
+        ArrangeSophisticatedRoster("Away");
+        Debug.Log($"Post-draft starter arrangement for Home: {DraftDecisions.DescribeSophisticatedStarterAssignments(GetOutfieldRosterPlayers("Home"))}");
+        Debug.Log(DraftDecisions.DescribeSophisticatedFormationDecision(GetOutfieldRosterPlayers("Home")));
+        Debug.Log($"Post-draft starter arrangement for Away: {DraftDecisions.DescribeSophisticatedStarterAssignments(GetOutfieldRosterPlayers("Away"))}");
+        Debug.Log(DraftDecisions.DescribeSophisticatedFormationDecision(GetOutfieldRosterPlayers("Away")));
+
+        ReviewSophisticatedGoalkeeperStarter("Home", false);
+        ReviewSophisticatedGoalkeeperStarter("Away", false);
+        postDraftGoalkeeperReviewComplete = true;
+        RefreshRosterAverages();
+    }
+
     private void ReviewSophisticatedGoalkeeperStarter(string team)
     {
-        if (!IsSophisticatedDraftTeam(team))
+        ReviewSophisticatedGoalkeeperStarter(team, true);
+    }
+
+    private void ReviewSophisticatedGoalkeeperStarter(string team, bool requireSophisticatedPersona)
+    {
+        if (requireSophisticatedPersona && !IsSophisticatedDraftTeam(team))
         {
             Debug.Log($"Sophisticated GK review skipped for {team}: draft persona is not Sophisticated.");
             return;
@@ -1291,7 +1316,7 @@ public class DraftManager : MonoBehaviour
         }
         else if (cardsAssignedThisRound >= 4)
         {
-            PerformSophisticatedPostDraftGoalkeeperReview();
+            PerformRegularDraftPostDraftAssortment();
             // Check if the draft is complete
             DraftUIManager draftUIManager = FindAnyObjectByType<DraftUIManager>();
             draftUIManager.CheckIfDraftIsComplete();  // Enable the Start Game button if the draft is complete
