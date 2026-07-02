@@ -6,6 +6,7 @@ public static class DraftDecisions
 {
     private const string HomeRosterPanelName = "HomeRoster";
     private const string AwayRosterPanelName = "AwayRoster";
+    private const float SophisticatedOverallQualityWeight = 0.1f;
 
     public enum DraftProfile
     {
@@ -78,6 +79,7 @@ public static class DraftDecisions
             float roleScore,
             float starterImpact,
             float gapOrBenchValue,
+            float overallQualityAdjustment,
             float urgencyAdjustment,
             float finalScore,
             bool projectedStarter,
@@ -88,6 +90,7 @@ public static class DraftDecisions
             RoleScore = roleScore;
             StarterImpact = starterImpact;
             GapOrBenchValue = gapOrBenchValue;
+            OverallQualityAdjustment = overallQualityAdjustment;
             UrgencyAdjustment = urgencyAdjustment;
             FinalScore = finalScore;
             ProjectedStarter = projectedStarter;
@@ -99,6 +102,7 @@ public static class DraftDecisions
         public float RoleScore { get; }
         public float StarterImpact { get; }
         public float GapOrBenchValue { get; }
+        public float OverallQualityAdjustment { get; }
         public float UrgencyAdjustment { get; }
         public float FinalScore { get; }
         public bool ProjectedStarter { get; }
@@ -366,6 +370,7 @@ public static class DraftDecisions
             builder.Append($" scoreFactors={FormatRoleScoreFactors(score.Player, score.ProjectedRoleName)}");
             builder.Append($" starterImpact={FormatScore(score.StarterImpact)}");
             builder.Append($" gapOrBench={FormatScore(score.GapOrBenchValue)}");
+            builder.Append($" overallQuality={FormatScore(score.OverallQualityAdjustment)}");
             builder.Append($" urgency={FormatScore(score.UrgencyAdjustment)}");
             builder.Append($" final={FormatScore(score.FinalScore)}");
             builder.Append($" reason={score.Reason}");
@@ -419,8 +424,9 @@ public static class DraftDecisions
             float projectedStarterTotal = projectedAssignments.Sum(assignment => assignment.RoleScore);
             float starterImpact = projectedStarterTotal - currentStarterTotal;
             float gapOrBenchValue = GetGapOrBenchValue(context, projectedStarter, roleScore);
+            float overallQualityAdjustment = GetOverallQualityAdjustment(candidate);
             float urgencyAdjustment = GetUrgencyAdjustment(context, currentRoster.Count, projectedStarter, starterImpact);
-            float finalScore = starterImpact + gapOrBenchValue + urgencyAdjustment;
+            float finalScore = starterImpact + gapOrBenchValue + overallQualityAdjustment + urgencyAdjustment;
             string reason = GetSophisticatedReason(projectedStarter, starterImpact, roleName, currentRoster.Count);
 
             scores.Add(new SophisticatedCandidateScore(
@@ -429,6 +435,7 @@ public static class DraftDecisions
                 roleScore,
                 starterImpact,
                 gapOrBenchValue,
+                overallQualityAdjustment,
                 urgencyAdjustment,
                 finalScore,
                 projectedStarter,
@@ -586,6 +593,11 @@ public static class DraftDecisions
         }
 
         return urgency;
+    }
+
+    private static float GetOverallQualityAdjustment(Player player)
+    {
+        return GetOverallOutfielderScore(player) * SophisticatedOverallQualityWeight;
     }
 
     private static string GetSophisticatedReason(bool projectedStarter, float starterImpact, string roleName, int currentRosterCount)
