@@ -833,6 +833,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi), Scenario_042c_CornerKick_OccupiedAttackerSpot_TakerMovesToZoi),
             new ScenarioDefinition(nameof(Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears), Scenario_042d_CornerKick_OccupiedDefenderSpot_DefenderClears),
             new ScenarioDefinition(nameof(Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit), Scenario_042e_GoalKickF3_DefensiveClearanceInstruction_And_NoAttackAutoforfeit),
+            new ScenarioDefinition(nameof(Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender), Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender),
+            new ScenarioDefinition(nameof(Scenario_042g_FreeKick_GKTaker_CanMoveWhenAnotherKickerAvailable), Scenario_042g_FreeKick_GKTaker_CanMoveWhenAnotherKickerAvailable),
+            new ScenarioDefinition(nameof(Scenario_042h_CornerKick_GKTaker_CanMoveWhenAnotherKickerAvailable), Scenario_042h_CornerKick_GKTaker_CanMoveWhenAnotherKickerAvailable),
         });
     }
 
@@ -1018,6 +1021,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP), Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP),
             new ScenarioDefinition(nameof(Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal), Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal),
             new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
+            new ScenarioDefinition(nameof(Scenario_024b2_Movement_Phase_Nutmeg_Tie_Loose_ball_back_to_dribbler_continues), Scenario_024b2_Movement_Phase_Nutmeg_Tie_Loose_ball_back_to_dribbler_continues),
             new ScenarioDefinition(nameof(Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset), Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset),
             new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
             new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
@@ -2137,6 +2141,136 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("GoalKick F3 Defensive Clearance Instruction And No Attack Autoforfeit");
     }
 
+    private IEnumerator Scenario_042f_OffsideFreeKick_UsesJudgedPosition_And_ForcesSpotDefender()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        MatchManager.Instance.currentState = MatchManager.GameState.EndOfMovementPhase;
+        MatchManager.Instance.attackHasPossession = false;
+
+        OffsideManager offsideManager = MatchManager.Instance.EnsureOffsideManager();
+        HexCell ballHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(4, 0, 0)), "Offside restart test should find the pass-origin ball hex.");
+        HexCell judgedOffsideHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(12, 0, 0)), "Offside restart test should find the judged offside hex.");
+        HexCell interferenceHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(14, 0, 0)), "Offside restart test should find the later interference hex.");
+        HexCell defenderOneHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, -2)), "Offside restart test should find first defender hex.");
+        HexCell defenderTwoHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(9, 0, 2)), "Offside restart test should find second defender hex.");
+        HexCell spotDefenderStart = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(6, 0, 6)), "Offside restart test should find spot defender start hex.");
+
+        PlayerToken offsideToken = RequirePlayerToken("Yaneva");
+        PlayerToken spotDefender = RequirePlayerToken("Kalla");
+        PlayerToken defenderOne = RequirePlayerToken("Poulsen");
+        PlayerToken defenderTwo = RequirePlayerToken("Delgado");
+
+        ClearHexForGkWallScenario(ballHex);
+        ClearHexForGkWallScenario(judgedOffsideHex);
+        ClearHexForGkWallScenario(interferenceHex);
+        ClearHexForGkWallScenario(defenderOneHex);
+        ClearHexForGkWallScenario(defenderTwoHex);
+        ClearHexForGkWallScenario(spotDefenderStart);
+
+        PlaceTokenForScenario(offsideToken, judgedOffsideHex, asAttacker: true);
+        PlaceTokenForScenario(spotDefender, spotDefenderStart, asAttacker: true);
+        PlaceTokenForScenario(defenderOne, defenderOneHex, asAttacker: false);
+        PlaceTokenForScenario(defenderTwo, defenderTwoHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(ballHex);
+
+        offsideManager.EvaluateAndStore("restart_test", forceReassessment: true);
+        AssertTrue(offsideManager.IsTokenOffside(offsideToken), "Offside restart test token should be stored as offside before interference.");
+
+        PlaceTokenForScenario(offsideToken, interferenceHex, asAttacker: true);
+        PlaceTokenForScenario(spotDefender, judgedOffsideHex, asAttacker: true);
+
+        bool handled = offsideManager.TryHandleOffsideCollection(offsideToken, "restart_test_interference", interferenceHex);
+        AssertTrue(handled, "Offside manager should handle the offside collection.");
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == judgedOffsideHex, "Offside indirect free kick should restart at the judged offside position, not the interference hex.", judgedOffsideHex, groundBallManager.ball.GetCurrentHex());
+        AssertTrue(freeKickManager.isWaitingForKickerSelection, "Offside indirect free kick should wait for kicker selection.");
+
+        List<PlayerToken> requiredDefenders = GetPrivateInstanceField<List<PlayerToken>>(freeKickManager, "shouldDefMoveTokens");
+        AssertTrue(requiredDefenders != null && requiredDefenders.Contains(spotDefender), "A token from the defending team on the offside restart spot should be forced to move.");
+
+        LogFooterofTest("Offside Free Kick Uses Judged Position And Forces Spot Defender");
+    }
+
+    private IEnumerator Scenario_042g_FreeKick_GKTaker_CanMoveWhenAnotherKickerAvailable()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        HexCell restartSpot = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(8, 0, 0)), "FreeKick GK-taker test should find restart spot.");
+        HexCell alternateKickerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(8, 0, 1)), "FreeKick GK-taker test should find alternate kicker hex.");
+        HexCell goalkeeperStartHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(0, 0, -8)), "FreeKick GK-taker test should find goalkeeper start hex.");
+        HexCell goalkeeperMoveHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(2, 0, -8)), "FreeKick GK-taker test should find goalkeeper setup move hex.");
+
+        PlayerToken attackingGoalkeeper = RequireAttackingGoalkeeperForRestartTest();
+        PlayerToken alternateKicker = RequireAttackingOutfielderForRestartTest(attackingGoalkeeper);
+
+        ClearHexForGkWallScenario(restartSpot);
+        ClearHexForGkWallScenario(alternateKickerHex);
+        ClearHexForGkWallScenario(goalkeeperStartHex);
+        ClearHexForGkWallScenario(goalkeeperMoveHex);
+
+        PlaceTokenForScenario(attackingGoalkeeper, goalkeeperStartHex, asAttacker: true);
+        PlaceTokenForScenario(alternateKicker, alternateKickerHex, asAttacker: true);
+        freeKickManager.ball.PlaceAtCell(restartSpot);
+        freeKickManager.StartFreeKickPreparation(restartSpot: restartSpot);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttGK && attackingGoalkeeper.GetCurrentHex() != goalkeeperStartHex,
+            3f,
+            "FreeKick GK taker should move beside the ball and reach attacking GK setup."));
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(goalkeeperMoveHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => attackingGoalkeeper.GetCurrentHex() == goalkeeperMoveHex,
+            3f,
+            "FreeKick GK taker should be allowed to move in AttGK when another kicker is available."));
+
+        AssertTrue(alternateKicker.GetCurrentHex() == alternateKickerHex, "Alternate FreeKick kicker should remain on/touching the restart spot.", alternateKickerHex, alternateKicker.GetCurrentHex());
+        LogFooterofTest("FreeKick GK Taker Can Move When Another Kicker Available");
+    }
+
+    private IEnumerator Scenario_042h_CornerKick_GKTaker_CanMoveWhenAnotherKickerAvailable()
+    {
+        yield return new WaitForSeconds(1f);
+
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        HexCell cornerSpot = GetRestartTestCornerSpot();
+        HexCell goalkeeperStartHex = GetEmptyRestartTestHex(cornerSpot, cornerSpot);
+        HexCell goalkeeperMoveHex = GetEmptyRestartTestHex(goalkeeperStartHex, cornerSpot, goalkeeperStartHex);
+
+        PlayerToken attackingGoalkeeper = RequireAttackingGoalkeeperForRestartTest();
+        PlayerToken alternateKicker = RequireAttackingOutfielderForRestartTest(attackingGoalkeeper);
+
+        ClearHexForGkWallScenario(cornerSpot);
+        ClearHexForGkWallScenario(goalkeeperStartHex);
+        ClearHexForGkWallScenario(goalkeeperMoveHex);
+
+        PlaceTokenForScenario(alternateKicker, cornerSpot, asAttacker: true);
+        PlaceTokenForScenario(attackingGoalkeeper, goalkeeperStartHex, asAttacker: true);
+        freeKickManager.StartFreeKickPreparation(cornerSpot);
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => MatchManager.Instance.currentState == MatchManager.GameState.FreeKickAttGK && IsInCornerSpotZoi(cornerSpot, attackingGoalkeeper.GetCurrentHex()),
+            3f,
+            "CornerKick GK taker should move to corner ZOI and reach attacking GK setup."));
+
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(attackingGoalkeeper.GetCurrentHex()), 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(goalkeeperMoveHex), 0.1f));
+        yield return StartCoroutine(WaitForCondition(
+            () => attackingGoalkeeper.GetCurrentHex() == goalkeeperMoveHex,
+            3f,
+            "CornerKick GK taker should be allowed to move in AttGK when another kicker occupies the corner spot."));
+
+        AssertTrue(alternateKicker.GetCurrentHex() == cornerSpot, "Alternate CornerKick kicker should remain on the corner spot.", cornerSpot, alternateKicker.GetCurrentHex());
+        LogFooterofTest("CornerKick GK Taker Can Move When Another Kicker Available");
+    }
+
     private IEnumerator AssertClockAdvancesForState(MatchManager.GameState state, string message)
     {
         ArmMatchClockForRestartTest(state);
@@ -2220,6 +2354,30 @@ public class GameTestScenarioRunner : MonoBehaviour
         return cornerSpot != null
             && checkedHex != null
             && cornerSpot.GetNeighbors(hexgrid).Contains(checkedHex);
+    }
+
+    private PlayerToken RequireAttackingGoalkeeperForRestartTest()
+    {
+        PlayerToken goalkeeper = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+            .FirstOrDefault(token => token != null
+                && token.isPlaying
+                && token.IsGoalKeeper
+                && token.isAttacker);
+        AssertTrue(goalkeeper != null, "Restart test should find the current attacking goalkeeper.");
+        return goalkeeper;
+    }
+
+    private PlayerToken RequireAttackingOutfielderForRestartTest(params PlayerToken[] excludedTokens)
+    {
+        HashSet<PlayerToken> excluded = new(excludedTokens.Where(token => token != null));
+        PlayerToken outfielder = FindObjectsByType<PlayerToken>(FindObjectsInactive.Include)
+            .FirstOrDefault(token => token != null
+                && token.isPlaying
+                && !token.IsGoalKeeper
+                && token.isAttacker
+                && !excluded.Contains(token));
+        AssertTrue(outfielder != null, "Restart test should find a current attacking outfielder.");
+        return outfielder;
     }
 
     private void MoveTokensOutOfFinalThirdForRestartTest(int finalThirdSide, params PlayerToken[] exceptions)
@@ -9935,6 +10093,21 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             movementPhaseManager.isWaitingForTackleRoll
         );
+        string mcnultyTackleInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(
+            mcnultyTackleInstructions.Contains("Press [R] to roll with McNulty for the tackle"),
+            "Tackle without moving should only instruct the committed defender's tackle roll",
+            "Press [R] to roll with McNulty for the tackle",
+            mcnultyTackleInstructions
+        );
+        AssertTrue(
+            !mcnultyTackleInstructions.Contains("Click on a Defender")
+            && !mcnultyTackleInstructions.Contains("Click on a Free Hex")
+            && !mcnultyTackleInstructions.Contains("Click on a Token"),
+            "Tackle without moving should not keep defender-selection or movement instructions after commitment",
+            "No selection or movement prompt",
+            mcnultyTackleInstructions
+        );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
@@ -10114,6 +10287,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
         );
+        string immediateNutmegInstruction = movementPhaseManager.GetInstructions();
+        AssertTrue(
+            immediateNutmegInstruction.Contains("Click on a Nutmeggable Defender")
+                && immediateNutmegInstruction.Contains("press [N]")
+                && immediateNutmegInstruction.Contains("click on a Free Hex"),
+            "MovementPhase instructions should explain immediate nutmeg by defender click or [N], while preserving normal movement",
+            "Click on a Nutmeggable Defender / press [N] / click on a Free Hex",
+            immediateNutmegInstruction
+        );
         AssertTrue(
             movementPhaseManager.isAwaitingTokenSelection,
             "MovementPhase Should be waiting for Another token selection after selecting Yaneva",
@@ -10181,6 +10363,18 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (3, 2) Reposition Yaneva after Nutmeg on Paterson");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(3, 2), 0.5f));
         yield return new WaitForSeconds(1.2f); // for the token to move
+        AssertTrue(
+            !movementPhaseManager.isNutmegInProgress,
+            "MovementPhase should clear nutmeg state after charging the successful nutmeg reposition",
+            false,
+            movementPhaseManager.isNutmegInProgress
+        );
+        AssertTrue(
+            movementPhaseManager.remainingDribblerPace == 4,
+            "MovementPhase should consume exactly 2 pace for the first successful nutmeg and reposition",
+            4,
+            movementPhaseManager.remainingDribblerPace
+        );
         AssertTrue(
             movementPhaseManager.isWaitingForNutmegDecision,
             "MovementPhase Should be waiting for Nutmeg Decision after Reposition Yaneva from paterson",
@@ -11652,6 +11846,21 @@ public class GameTestScenarioRunner : MonoBehaviour
             nazef,
             movementPhaseManager.selectedDefender
         );
+        string postRepositionInterceptionInstruction = movementPhaseManager.GetInstructions();
+        AssertTrue(
+            postRepositionInterceptionInstruction.Contains("Press [R] to roll for interception with Nazef"),
+            "Post-reposition steal should only wait for Nazef's interception roll",
+            "Press [R] to roll for interception with Nazef",
+            postRepositionInterceptionInstruction
+        );
+        AssertTrue(
+            !postRepositionInterceptionInstruction.Contains("Click on a Free Hex")
+            && !postRepositionInterceptionInstruction.Contains("Press [X] to forfeit")
+            && !postRepositionInterceptionInstruction.Contains("Click on a Reposition Hex"),
+            "Post-reposition steal instruction should not include MP continuation prompts",
+            "No continuation prompt",
+            postRepositionInterceptionInstruction
+        );
 
         Log($"Rigging Nazef's steal roll to {(stealSucceeds ? "6 (success)" : "1 (failure)")}");
         yield return StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(stealSucceeds ? 6 : 1));
@@ -13033,6 +13242,24 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.movedTokens.Count
         );
         AssertTrue(
+            movementPhaseManager.MovedTokenEntries.Count == 3,
+            "MP panel moved-token entries should only contain first movement registrations",
+            3,
+            movementPhaseManager.MovedTokenEntries.Count
+        );
+        AssertTrue(
+            movementPhaseManager.MovedTokenEntries.Count(entry => entry.section == MovementPhaseMovedTokenSection.DefMP) == 1,
+            "MP panel DefMP row should only contain the defender who actually moved",
+            1,
+            movementPhaseManager.MovedTokenEntries.Count(entry => entry.section == MovementPhaseMovedTokenSection.DefMP)
+        );
+        AssertTrue(
+            !movementPhaseManager.MovedTokenEntries.Any(entry =>
+                entry.section == MovementPhaseMovedTokenSection.DefMP
+                && entry.token == PlayerToken.GetPlayerTokenByName("Yaneva")),
+            "MP panel DefMP row should not contain the ex-dribbler after tackle loose-ball resolution"
+        );
+        AssertTrue(
             movementPhaseManager.attackersMoved == 4,
             "MP Defenders Moved should have 4 as the Att MP is forfeited",
             4,
@@ -13780,6 +14007,128 @@ public class GameTestScenarioRunner : MonoBehaviour
         
 
         LogFooterofTest("MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL!");
+    }
+
+    private IEnumerator Scenario_024b2_Movement_Phase_Nutmeg_Tie_Loose_ball_back_to_dribbler_continues()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting test scenario: MovementPhase Nutmeg tie loose ball back to dribbler continues as pace exhausted.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        yield return new WaitForSeconds(3f);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+
+        Log("Move Yaneva into nutmeg position.");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 0), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 0), 0.5f));
+        yield return new WaitForSeconds(1.2f);
+
+        AssertTrue(
+            movementPhaseManager.isWaitingForNutmegDecision,
+            "MP should offer a nutmeg decision before the tie-back regression setup.",
+            true,
+            movementPhaseManager.isWaitingForNutmegDecision);
+
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        Log("Pressing N - Nutmeg Soares with Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.N, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+
+        PlayerToken nutmegDefender = movementPhaseManager.nutmegVictim;
+        AssertTrue(nutmegDefender != null, "Nutmeg victim should be set before the tie rolls.");
+
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return new WaitForSeconds(1.2f);
+
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager should activate after a nutmeg tie.",
+            true,
+            looseBallManager.isActivated);
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager should wait for direction after the nutmeg tie.",
+            true,
+            looseBallManager.isWaitingForDirectionRoll);
+
+        HexCell defenderHex = nutmegDefender.GetCurrentHex();
+        HexCell dribblerHex = yaneva.GetCurrentHex();
+        int returnDirectionIndex = Enumerable.Range(0, 6)
+            .FirstOrDefault(index => looseBallManager.CalculateDirectionalTarget(defenderHex, index, 1) == dribblerHex);
+        AssertTrue(
+            looseBallManager.CalculateDirectionalTarget(defenderHex, returnDirectionIndex, 1) == dribblerHex,
+            "The nutmeg defender should have a one-hex loose-ball direction back to Yaneva.");
+
+        looseBallManager.PerformDirectionRoll(returnDirectionIndex + 1);
+        yield return new WaitForSeconds(0.1f);
+        looseBallManager.PerformDistanceRoll(1);
+        yield return new WaitForSeconds(1.5f);
+
+        AssertTrue(
+            !looseBallManager.isActivated,
+            "Loose Ball Manager should finish after the ball returns to the dribbler.",
+            false,
+            looseBallManager.isActivated);
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == yaneva,
+            "The returned loose ball should keep Yaneva as the current ball owner.",
+            yaneva,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(yaneva),
+            "Yaneva should remain registered as moved after the nutmeg tie loose ball.",
+            true,
+            movementPhaseManager.movedTokens.Contains(yaneva));
+        AssertTrue(
+            movementPhaseManager.isWaitingForSnapshotDecision,
+            "A same-dribbler tie-back in the box should use MovementPhase snapshot handling, matching exhausted pace.",
+            true,
+            movementPhaseManager.isWaitingForSnapshotDecision);
+        AssertTrue(
+            !shotManager.isWaitingForSnapshotDecisionFromLoose,
+            "The same-dribbler tie-back should not use the generic loose-ball snapshot interruption.",
+            false,
+            shotManager.isWaitingForSnapshotDecisionFromLoose);
+
+        Log("Pressing X - same dribbler declines the exhausted-pace snapshot.");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.8f);
+
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 1,
+            "Declining the exhausted-pace snapshot should advance the attacking movement count.",
+            1,
+            movementPhaseManager.attackersMoved);
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "Movement phase should continue waiting for the next attacking token.",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection);
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseAttack,
+            "Movement phase should still be in the attacking movement section after one attacker moved.",
+            true,
+            movementPhaseManager.isMovementPhaseAttack);
+
+        LogFooterofTest("MovementPhase Nutmeg tie loose ball back to dribbler continues as pace exhausted.");
     }
 
     private IEnumerator Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset()

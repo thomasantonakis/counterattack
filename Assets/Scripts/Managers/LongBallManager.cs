@@ -32,6 +32,7 @@ public class LongBallManager : MonoBehaviour
     private bool isWaitingForInterceptionRoll = false; // Flag to check for Interception Roll After Accuracy Result
     public bool isWaitingForDefLBMove = false;
     public bool isAvailableTargetsReady = false;
+    public bool useSlowerTargetPrecompute = false;
     [Header("Important things")]
     public HexCell currentTargetHex;
     private int directionIndex;
@@ -46,6 +47,8 @@ public class LongBallManager : MonoBehaviour
     private HexCell hoveredLongBallTargetHex;
     private Coroutine availableTargetPrecomputeRoutine;
     private int availableTargetPrecomputeVersion = 0;
+    private float availableTargetPrecomputeStartedAt = 0f;
+    private int availableTargetPrecomputeStartedFrame = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
 
     private void OnEnable()
@@ -190,7 +193,12 @@ public class LongBallManager : MonoBehaviour
         }
 
         int version = ++availableTargetPrecomputeVersion;
-        availableTargetPrecomputeRoutine = StartCoroutine(PrecomputeAvailableLongBallTargets(version));
+        availableTargetPrecomputeStartedAt = Time.realtimeSinceStartup;
+        availableTargetPrecomputeStartedFrame = Time.frameCount;
+        Debug.Log($"Long Ball target precompute started. version={version}, frame={availableTargetPrecomputeStartedFrame}, ballHex={FormatHex(ball.GetCurrentHex())}, candidateCount={hexGrid.cells?.Length ?? 0}");
+        availableTargetPrecomputeRoutine = StartCoroutine(useSlowerTargetPrecompute
+            ? PrecomputeAvailableLongBallTargets_slower_attempt(version)
+            : PrecomputeAvailableLongBallTargets(version));
     }
 
     public void ResetAvailableTargetPrecompute()
@@ -198,6 +206,7 @@ public class LongBallManager : MonoBehaviour
         availableTargetPrecomputeVersion++;
         if (availableTargetPrecomputeRoutine != null)
         {
+            LogAvailableTargetPrecomputeEnded("cancelled", availableTargetPrecomputeVersion - 1, availableLongBallTargetHexes.Count, 0);
             StopCoroutine(availableTargetPrecomputeRoutine);
             availableTargetPrecomputeRoutine = null;
         }
@@ -208,7 +217,7 @@ public class LongBallManager : MonoBehaviour
         pendingDifficultyOneTargetHighlightRefresh = false;
     }
 
-    private IEnumerator PrecomputeAvailableLongBallTargets(int version)
+    private IEnumerator PrecomputeAvailableLongBallTargets_slower_attempt(int version)
     {
         isAvailableTargetsReady = false;
         availableLongBallTargetHexes.Clear();
@@ -219,6 +228,7 @@ public class LongBallManager : MonoBehaviour
         {
             if (version != availableTargetPrecomputeVersion)
             {
+                LogAvailableTargetPrecomputeEnded("superseded_slower_attempt", version, availableLongBallTargetHexes.Count, processed);
                 availableTargetPrecomputeRoutine = null;
                 yield break;
             }
@@ -241,6 +251,7 @@ public class LongBallManager : MonoBehaviour
         if (version == availableTargetPrecomputeVersion)
         {
             isAvailableTargetsReady = true;
+            LogAvailableTargetPrecomputeEnded("completed_slower_attempt", version, availableLongBallTargetHexes.Count, processed);
             if (pendingDifficultyOneTargetHighlightRefresh || ShouldShowDifficultyOneTargetHighlights())
             {
                 pendingDifficultyOneTargetHighlightRefresh = false;
@@ -250,6 +261,139 @@ public class LongBallManager : MonoBehaviour
         }
 
         availableTargetPrecomputeRoutine = null;
+    }
+
+    private IEnumerator PrecomputeAvailableLongBallTargets(int version)
+    {
+        isAvailableTargetsReady = false;
+        availableLongBallTargetHexes.Clear();
+        hoveredLongBallTargetHex = null;
+
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        if (ballHex == null || hexGrid == null)
+        {
+            LogAvailableTargetPrecomputeEnded("completed_fast_no_ball", version, 0, 0);
+            availableTargetPrecomputeRoutine = null;
+            yield break;
+        }
+
+        HashSet<HexCell> candidates = BuildInboundsLongBallCandidates();
+        List<HexCell> defenderHexes = hexGrid.GetDefenderHexes();
+        List<HexCell> attackerHexes = hexGrid.GetAttackerHexes();
+        candidates.ExceptWith(defenderHexes);
+        candidates.ExceptWith(hexGrid.GetDefenderNeighbors(defenderHexes));
+        candidates.ExceptWith(attackerHexes);
+        candidates.ExceptWith(hexGrid.GetAttackerHexesinRange(attackerHexes, 5));
+
+        HashSet<HexCell> adjacentDefenderBlockers = BuildAdjacentDefenderBlockers(ballHex);
+        List<HexCell> orderedCandidates = candidates.ToList();
+
+        int processed = 0;
+        foreach (HexCell hex in orderedCandidates)
+        {
+            if (version != availableTargetPrecomputeVersion)
+            {
+                LogAvailableTargetPrecomputeEnded("superseded_fast", version, availableLongBallTargetHexes.Count, processed);
+                availableTargetPrecomputeRoutine = null;
+                yield break;
+            }
+
+            if (hex != null && !IsLongBallPathBlockedByAdjacentDefender(ballHex, hex, adjacentDefenderBlockers))
+            {
+                availableLongBallTargetHexes.Add(hex);
+            }
+
+            processed++;
+            if (processed % TARGET_PRECOMPUTE_BATCH_SIZE == 0)
+            {
+                yield return null;
+            }
+        }
+
+        if (version == availableTargetPrecomputeVersion)
+        {
+            isAvailableTargetsReady = true;
+            LogAvailableTargetPrecomputeEnded("completed_fast", version, availableLongBallTargetHexes.Count, processed);
+            if (pendingDifficultyOneTargetHighlightRefresh || ShouldShowDifficultyOneTargetHighlights())
+            {
+                pendingDifficultyOneTargetHighlightRefresh = false;
+                RefreshDifficultyOneLongBallTargetHighlights();
+                Debug.Log($"Successfully highlighted {availableLongBallTargetHexes.Count} precomputed valid hexes for Long Pass.");
+            }
+        }
+
+        availableTargetPrecomputeRoutine = null;
+    }
+
+    private HashSet<HexCell> BuildInboundsLongBallCandidates()
+    {
+        HashSet<HexCell> candidates = new();
+        if (hexGrid == null || hexGrid.cells == null)
+        {
+            return candidates;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex != null && !hex.isOutOfBounds)
+            {
+                candidates.Add(hex);
+            }
+        }
+
+        return candidates;
+    }
+
+    private HashSet<HexCell> BuildAdjacentDefenderBlockers(HexCell ballHex)
+    {
+        HashSet<HexCell> adjacentDefenderBlockers = new();
+        if (ballHex == null || hexGrid == null)
+        {
+            return adjacentDefenderBlockers;
+        }
+
+        foreach (HexCell neighbor in ballHex.GetNeighbors(hexGrid))
+        {
+            if (neighbor != null && neighbor.isDefenseOccupied)
+            {
+                adjacentDefenderBlockers.Add(neighbor);
+            }
+        }
+
+        return adjacentDefenderBlockers;
+    }
+
+    private bool IsLongBallPathBlockedByAdjacentDefender(HexCell ballHex, HexCell targetHex, HashSet<HexCell> adjacentDefenderBlockers)
+    {
+        if (adjacentDefenderBlockers == null || adjacentDefenderBlockers.Count == 0)
+        {
+            return false;
+        }
+
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        foreach (HexCell pathHex in pathHexes)
+        {
+            if (pathHex != null && adjacentDefenderBlockers.Contains(pathHex))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void LogAvailableTargetPrecomputeEnded(string outcome, int version, int validTargets, int processedCandidates)
+    {
+        float elapsedMs = Mathf.Max(0f, (Time.realtimeSinceStartup - availableTargetPrecomputeStartedAt) * 1000f);
+        int elapsedFrames = Mathf.Max(0, Time.frameCount - availableTargetPrecomputeStartedFrame);
+        Debug.Log($"Long Ball target precompute {outcome}. version={version}, elapsedMs={elapsedMs:F1}, elapsedFrames={elapsedFrames}, processed={processedCandidates}, validTargets={validTargets}");
+    }
+
+    private static string FormatHex(HexCell hex)
+    {
+        return hex == null
+            ? string.Empty
+            : $"{hex.coordinates.x},{hex.coordinates.z}";
     }
 
     private bool EnsureAvailableTargetPrecomputeReady()
@@ -1138,6 +1282,204 @@ public class LongBallManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    public bool IsWaitingForDecisionTargetOptions()
+    {
+        return isActivated
+            && isAwaitingTargetSelection
+            && MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level < 3
+            && !isAvailableTargetsReady;
+    }
+
+    public bool IsWaitingForAvailableDecisionTargetOptions()
+    {
+        if (!isAvailable
+            || isActivated
+            || MatchManager.Instance == null
+            || MatchManager.Instance.difficulty_level != 1
+            || isAvailableTargetsReady)
+        {
+            return false;
+        }
+
+        if (!CanPrecomputeAvailableTargets())
+        {
+            return false;
+        }
+
+        BeginAvailableTargetPrecompute();
+        return true;
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (isAvailable && !isActivated)
+        {
+            context.AddKeyActionCandidate(
+                nameof(LongBallManager),
+                RoomActionType.LongBall,
+                RoomDecisionStep.ChooseActionType,
+                "L",
+                "Press [L] to play a Long Ball");
+        }
+
+        if (!isActivated)
+        {
+            return;
+        }
+
+        PopulateLongBallDecisionKeys(context);
+
+        if (isAwaitingTargetSelection)
+        {
+            if (IsWaitingForDecisionTargetOptions())
+            {
+                BeginAvailableTargetPrecompute();
+                context.AddAction(new RoomActionCandidate
+                {
+                    manager = nameof(LongBallManager),
+                    actionType = RoomActionType.LongBall,
+                    step = RoomDecisionStep.ChooseTarget,
+                    label = "Waiting for Long Ball target map",
+                    isExecutableNow = false
+                });
+                context.AddActionSummary("Waiting for Long Ball target map");
+                return;
+            }
+
+            if (currentTargetHex != null)
+            {
+                context.AddActionSummary("Click the selected orange Long Ball target to confirm");
+                AddTargetHexOrToken(context, currentTargetHex, RoomDecisionStep.Confirm);
+            }
+
+            context.AddActionSummary("Click a valid Long Ball target");
+            AddLongBallTargetOptions(context);
+            return;
+        }
+
+        if (isWaitingForDefLBMove)
+        {
+            context.AddKeyActionCandidate(
+                nameof(LongBallManager),
+                RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice,
+                "X",
+                "Press [X] to decline the GK rush",
+                isForfeit: true);
+            if (CanGoalkeeperClaimLongBallLandingHex())
+            {
+                context.AddKeyActionCandidate(
+                    nameof(LongBallManager),
+                    RoomActionType.LongBall,
+                    RoomDecisionStep.InterruptionChoice,
+                    "V",
+                    "Press [V] to claim the Long Ball");
+            }
+
+            context.AddActionSummary("Click a highlighted GK rush hex");
+            foreach (HexCell hex in defenderLongBallMoveHexes)
+            {
+                if (hex != null)
+                {
+                    context.AddHexActionCandidate(
+                        nameof(LongBallManager),
+                        RoomActionType.SetupMove,
+                        RoomDecisionStep.ChooseTarget,
+                        hex,
+                        $"Move goalkeeper to hex {hex.coordinates}");
+                }
+            }
+        }
+    }
+
+    private void PopulateLongBallDecisionKeys(RoomDecisionContext context)
+    {
+        if (isWaitingForAccuracyRoll || isWaitingForDirectionRoll || isWaitingForDistanceRoll || isWaitingForInterceptionRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(LongBallManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll for the Long Ball");
+        }
+    }
+
+    private void AddLongBallTargetOptions(RoomDecisionContext context)
+    {
+        if (availableLongBallTargetHexes.Count > 0)
+        {
+            foreach (HexCell hex in availableLongBallTargetHexes)
+            {
+                AddTargetHexOrToken(context, hex, RoomDecisionStep.ChooseTarget);
+            }
+
+            return;
+        }
+
+        if (hexGrid == null || hexGrid.cells == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex == null || hex.isOutOfBounds)
+            {
+                continue;
+            }
+
+            var (isValid, _) = ValidateLongBallTargetForPreview(hex);
+            if (isValid)
+            {
+                AddTargetHexOrToken(context, hex, RoomDecisionStep.ChooseTarget);
+            }
+        }
+    }
+
+    private static void AddTargetHexOrToken(RoomDecisionContext context, HexCell hex, RoomDecisionStep step)
+    {
+        if (context == null || hex == null)
+        {
+            return;
+        }
+
+        PlayerToken targetToken = hex.GetOccupyingToken();
+        if (targetToken != null)
+        {
+            context.AddTargetTokenActionCandidate(
+                nameof(LongBallManager),
+                RoomActionType.LongBall,
+                step,
+                targetToken,
+                $"Long Ball to {FormatDecisionTokenName(targetToken)}");
+            return;
+        }
+
+        context.AddHexActionCandidate(
+            nameof(LongBallManager),
+            RoomActionType.LongBall,
+            step,
+            hex,
+            $"Long Ball to hex {hex.coordinates}");
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
     }
 
     public string GetInstructions()

@@ -496,7 +496,7 @@ public class HexGrid : MonoBehaviour
         return midpoints;
     }
     
-    public HexCell GetHexCellAt(Vector3Int coords)
+    public HexCell GetHexCellAt(Vector3Int coords, bool logErrorIfOutOfBounds = true)
     {
         int x = coords.x + width / 2;  // Offset to positive index
         int z = coords.z + height / 2; // Offset to positive index
@@ -505,11 +505,17 @@ public class HexGrid : MonoBehaviour
         {
             if (cells[x, z] == null)
             {
-                Debug.LogError($"HexCell is null at [{x}, {z}]");
+                if (logErrorIfOutOfBounds)
+                {
+                    Debug.LogError($"HexCell is null at [{x}, {z}]");
+                }
             }
             return cells[x, z];
         }
-        Debug.LogError($"Requested HexCell is out of bounds at [{coords.x}, {coords.z}]");
+        if (logErrorIfOutOfBounds)
+        {
+            Debug.LogError($"Requested HexCell is out of bounds at [{coords.x}, {coords.z}]");
+        }
         return null;  // Return null if out of bounds
     }
 
@@ -529,7 +535,7 @@ public class HexGrid : MonoBehaviour
         int estimatedZ = Mathf.RoundToInt((worldPos.z - zOffset) / hexHeight);
 
         // Get closest matching hex cell from HexGrid
-        HexCell closestHex = GetHexCellAt(new Vector3Int(estimatedX, 0, estimatedZ));
+        HexCell closestHex = GetHexCellAt(new Vector3Int(estimatedX, 0, estimatedZ), false);
         if (closestHex != null)
         {
             return closestHex.coordinates;
@@ -555,7 +561,7 @@ public class HexGrid : MonoBehaviour
                 // Create a Vector3Int from offset coordinates
                 Vector3Int offsetCoordsVec3 = new Vector3Int(offsetCoords.x, 0, offsetCoords.y);
                 // Get the hex at the current coordinates using GetHexCellAt(Vector3Int)
-                HexCell hex = hexGrid.GetHexCellAt(offsetCoordsVec3);
+                HexCell hex = hexGrid.GetHexCellAt(offsetCoordsVec3, false);
                 if (hex != null)
                 {
                     hexesInRange.Add(hex);
@@ -1218,7 +1224,7 @@ public class HexGrid : MonoBehaviour
 
             for (int i = -3; i <= 3; i++)  // Add GK hex plus 3 hexes forward and backward in the same column
             {
-                HexCell saveableHex = GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + i));
+                HexCell saveableHex = GetHexCellAt(new Vector3Int(gkHex.coordinates.x, 0, gkHex.coordinates.z + i), false);
                 if (saveableHex != null && saveableHex.isInPenaltyBox == ownPenaltyBox)
                 {
                     saveableHexes.Add(saveableHex);

@@ -8,7 +8,14 @@ public class AIManager : MonoBehaviour
 
     public enum Persona
     {
-        Greedy
+        Greedy,
+        Sophisticated
+    }
+
+    public enum RoomPersona
+    {
+        AskHuman,
+        Random
     }
 
     private void Awake()
@@ -29,10 +36,26 @@ public class AIManager : MonoBehaviour
         return DraftDecisions.ChooseOutfielder(profile, visiblePlayers, currentTeamTurn);
     }
 
+    public DraftDecisions.DraftAction GetDraftDecision(GameSettings settings, DraftDecisions.DraftContext context)
+    {
+        Persona persona = ResolveDraftPersona(settings, context?.Team);
+        DraftDecisions.DraftProfile profile = ResolveDraftProfile(persona);
+        return DraftDecisions.ChooseOutfielder(profile, context);
+    }
+
     public string DescribeDraftDecision(GameSettings settings, IEnumerable<Player> visiblePlayers, Player selectedPlayer, string currentTeamTurn)
     {
         Persona persona = ResolveDraftPersona(settings, currentTeamTurn);
-        return $"AI manager selected persona '{persona}' for {currentTeamTurn} draft turn. {DraftDecisions.DescribeGreedyOutfielderDecision(visiblePlayers, selectedPlayer)}";
+        DraftDecisions.DraftProfile profile = ResolveDraftProfile(persona);
+        DraftDecisions.DraftContext context = new DraftDecisions.DraftContext(visiblePlayers, null, currentTeamTurn, 0, 0, 0, 0);
+        return $"AI manager selected persona '{persona}' for {currentTeamTurn} draft turn. {DraftDecisions.DescribeOutfielderDecision(profile, context, selectedPlayer)}";
+    }
+
+    public string DescribeDraftDecision(GameSettings settings, DraftDecisions.DraftContext context, Player selectedPlayer)
+    {
+        Persona persona = ResolveDraftPersona(settings, context?.Team);
+        DraftDecisions.DraftProfile profile = ResolveDraftProfile(persona);
+        return $"AI manager selected persona '{persona}' for {context?.Team} draft turn. {DraftDecisions.DescribeOutfielderDecision(profile, context, selectedPlayer)}";
     }
 
     public Persona ResolveDraftPersona(GameSettings settings, string currentTeamTurn)
@@ -54,11 +77,33 @@ public class AIManager : MonoBehaviour
         return Persona.Greedy;
     }
 
+    public static RoomPersona ResolveRoomPersona(MatchManager.GameSettings settings, string expectedTeam)
+    {
+        string personaName = string.Equals(expectedTeam, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? settings?.awayRoomPersona
+            : string.Equals(expectedTeam, "Home", System.StringComparison.OrdinalIgnoreCase)
+                ? settings?.homeRoomPersona
+                : settings?.defaultRoomPersona;
+
+        if (string.IsNullOrWhiteSpace(personaName))
+        {
+            personaName = settings?.defaultRoomPersona;
+        }
+
+        if (System.Enum.TryParse(personaName, true, out RoomPersona persona))
+        {
+            return persona;
+        }
+
+        return RoomPersona.AskHuman;
+    }
+
     private static DraftDecisions.DraftProfile ResolveDraftProfile(Persona persona)
     {
         return persona switch
         {
             Persona.Greedy => DraftDecisions.DraftProfile.Greedy,
+            Persona.Sophisticated => DraftDecisions.DraftProfile.Sophisticated,
             _ => DraftDecisions.DraftProfile.Greedy
         };
     }

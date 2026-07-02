@@ -567,6 +567,31 @@ public class PenaltyShootoutManager : MonoBehaviour
         return goalFlashInstructionActive || winnerFlashInstructionActive;
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (winnerFlashInstructionActive)
+        {
+            context.AddActionSummary("No Penalty Shootout decision needed; displaying the shootout winner");
+            return;
+        }
+
+        if (goalFlashInstructionActive)
+        {
+            context.AddActionSummary("No Penalty Shootout decision needed; displaying the penalty goal");
+            return;
+        }
+
+        if (transitionInstructionActive && transitionInstructionShooter != null)
+        {
+            context.AddActionSummary($"No Penalty Shootout decision needed; preparing {GetTokenDisplayName(transitionInstructionShooter)}'s penalty");
+        }
+    }
+
     private string BuildKickStakesInstruction(bool shooterIsHome, string shooterName, string shootingTeamName)
     {
         List<string> parts = new();

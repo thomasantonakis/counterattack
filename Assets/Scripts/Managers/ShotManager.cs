@@ -15,6 +15,7 @@ public class ShotManager : MonoBehaviour
 
     [Header("Dependencies")]
     public MovementPhaseManager movementPhaseManager;
+    public HeaderManager headerManager;
     public GameInputManager gameInputManager;
     public GroundBallManager groundBallManager;
     public LooseBallManager looseBallManager;
@@ -1675,13 +1676,13 @@ public class ShotManager : MonoBehaviour
         {
             Debug.Log($"PlayerToken {token.name} clicked, for Snapshot");
 
-            // Attacker Phase: Ensure the token is an attacker
-            if (!token.isAttacker)
+            if (IsValidSnapshotBlockerToken(token))
             {
                 SelectSnapshotBlocker(token);
             }
-            else {
-                Debug.LogWarning("Attacker clicked, while waiting for a defender to select.");
+            else
+            {
+                Debug.LogWarning($"{token.name} cannot be selected as the Snapshot blocker.");
             }
 
             return;
@@ -1742,8 +1743,7 @@ public class ShotManager : MonoBehaviour
             && MatchManager.Instance != null
             && MatchManager.Instance.difficulty_level < 3
             && isWaitingforBlockerMovement
-            && token != null
-            && !token.isAttacker
+            && IsValidSnapshotBlockerToken(token)
             && token != tokenMoveforDeflection;
     }
 
@@ -1794,6 +1794,70 @@ public class ShotManager : MonoBehaviour
     private void StartDefenderMovementPhase()
     {
         isWaitingforBlockerSelection = true;
+    }
+
+    private IEnumerable<PlayerToken> GetSelectableSnapshotBlockers()
+    {
+        if (hexGrid == null)
+        {
+            yield break;
+        }
+
+        foreach (PlayerToken defender in hexGrid.GetDefenders())
+        {
+            if (IsValidSnapshotBlockerToken(defender))
+            {
+                yield return defender;
+            }
+        }
+    }
+
+    private bool IsValidSnapshotBlockerToken(PlayerToken token)
+    {
+        HeaderManager resolvedHeaderManager = EnsureHeaderManager();
+        return token != null
+            && !token.isAttacker
+            && !token.isSentOff
+            && token.GetCurrentHex() != null
+            && (movementPhaseManager == null || (!movementPhaseManager.stunnedTokens.Contains(token) && !movementPhaseManager.stunnedforNext.Contains(token)))
+            && (resolvedHeaderManager == null || (!resolvedHeaderManager.attackerWillJump.Contains(token) && !resolvedHeaderManager.defenderWillJump.Contains(token)))
+            && GetValidSnapshotBlockerDestinations(token).Count > 0;
+    }
+
+    private HeaderManager EnsureHeaderManager()
+    {
+        if (headerManager == null)
+        {
+            headerManager = FindAnyObjectByType<HeaderManager>();
+        }
+
+        return headerManager;
+    }
+
+    private List<HexCell> GetValidSnapshotBlockerDestinations(PlayerToken token)
+    {
+        List<HexCell> validDestinations = new();
+        if (token == null || hexGrid == null)
+        {
+            return validDestinations;
+        }
+
+        HexCell defenderHex = token.GetCurrentHex();
+        if (defenderHex == null)
+        {
+            return validDestinations;
+        }
+
+        var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexGrid, defenderHex, 2);
+        foreach (HexCell hex in reachableHexes)
+        {
+            if (hex != null && !hex.isAttackOccupied && !hex.isDefenseOccupied && !hex.isOutOfBounds)
+            {
+                validDestinations.Add(hex);
+            }
+        }
+
+        return validDestinations;
     }
 
     private bool IsValidSnapshotBlockerDestination(HexCell hex)
@@ -3288,7 +3352,6 @@ public class ShotManager : MonoBehaviour
                 , MatchManager.ActionType.ShotOnTarget
             );
             yield return StartCoroutine(MoveBallAndGoalkeeperToSaveHex(gkToken));
-            EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: false);
             // yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
@@ -3366,10 +3429,10 @@ public class ShotManager : MonoBehaviour
         }
         ball?.PlaceAtCell(foulHex);
         ResetShotProcess();
-        yield return StartCoroutine(StartForcedFreeKickAfterShotHandball());
+        yield return StartCoroutine(StartForcedFreeKickAfterShotHandball(foulHex));
     }
 
-    private IEnumerator StartForcedFreeKickAfterShotHandball()
+    private IEnumerator StartForcedFreeKickAfterShotHandball(HexCell restartSpot)
     {
         MatchManager.Instance?.PauseMatchClockForSetPiecePrep();
 
@@ -3400,7 +3463,7 @@ public class ShotManager : MonoBehaviour
         }
 
         FreeKickManager restartManager = MatchManager.Instance?.freeKickManager ?? FindAnyObjectByType<FreeKickManager>();
-        restartManager?.StartFreeKickPreparation();
+        restartManager?.StartFreeKickPreparation(restartSpot: restartSpot);
     }
 
     private IEnumerator ResolvePenaltyShootoutTiedSave(PlayerToken gkToken)
@@ -3691,6 +3754,9 @@ public class ShotManager : MonoBehaviour
 
     private void ResetShotProcess()
     {
+        bool preserveSaveAndHoldDecision = isWaitingForSaveandHoldScenario
+            && MatchManager.Instance != null
+            && MatchManager.Instance.currentState == MatchManager.GameState.ActivateFinalThirdsAfterSave;
         RecordShotActionResolvedIfNeeded();
         RecordSnapshotEndedMovementPhaseIfNeeded();
         MatchManager.Instance?.ClearPendingShotGoalTimeLabel();
@@ -3700,7 +3766,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForShotRoll = false;
         isWaitingForGKDiceRoll = false;
         isWaitingforHandlingTest = false;
-        isWaitingForSaveandHoldScenario = false;
+        isWaitingForSaveandHoldScenario = preserveSaveAndHoldDecision;
         isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
@@ -4049,6 +4115,246 @@ public class ShotManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        bool snapshotSuppressed = IsSnapshotSuppressedByFinalExtraMovement();
+        string pendingShotOfferLabel = GetPendingShotOfferLabel();
+
+        if (!snapshotSuppressed && isAvailable && isWaitingForSnapshotDecisionFromLoose)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.Shot,
+                RoomDecisionStep.ChooseActionType,
+                "S",
+                "Press [S] to take a Snapshot");
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.ContinueWithoutShot,
+                RoomDecisionStep.ChooseActionType,
+                "X",
+                "Press [X] to continue without shooting");
+            return;
+        }
+
+        if (!snapshotSuppressed && isAvailable && isWaitingForShotCommitConfirmation)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.Shot,
+                RoomDecisionStep.Confirm,
+                "S",
+                $"Press [S] again to commit the {pendingShotOfferLabel}");
+            return;
+        }
+
+        if (!snapshotSuppressed && isAvailable)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.Shot,
+                RoomDecisionStep.ChooseActionType,
+                "S",
+                $"Press [S] to take a {pendingShotOfferLabel}");
+        }
+
+        if (!isActivated)
+        {
+            return;
+        }
+
+        if (isWaitingforBlockerSelection)
+        {
+            context.AddActionSummary("Click a moveable defender to block the Snapshot");
+            foreach (PlayerToken defender in GetSelectableSnapshotBlockers())
+            {
+                context.AddTokenActionCandidate(
+                    nameof(ShotManager),
+                    RoomActionType.Block,
+                    RoomDecisionStep.ChooseActor,
+                    defender,
+                    $"Select {FormatDecisionTokenName(defender)} to block the Snapshot");
+            }
+            return;
+        }
+
+        if (isWaitingforBlockerMovement)
+        {
+            context.AddActionSummary(tokenMoveforDeflection != null
+                ? $"Click a valid 2-hex move for {GetTokenInstructionName(tokenMoveforDeflection)}"
+                : "Click a valid Snapshot blocker movement hex");
+            foreach (HexCell hex in tokenMoveforDeflection != null
+                ? GetValidSnapshotBlockerDestinations(tokenMoveforDeflection)
+                : Enumerable.Empty<HexCell>())
+            {
+                if (hex != null)
+                {
+                    context.AddHexActionCandidate(
+                        nameof(ShotManager),
+                        RoomActionType.Block,
+                        RoomDecisionStep.ChooseTarget,
+                        hex,
+                        $"Move blocker to hex {hex.coordinates}");
+                }
+            }
+
+            foreach (PlayerToken defender in GetSelectableSnapshotBlockers())
+            {
+                if (defender != tokenMoveforDeflection)
+                {
+                    context.AddTokenActionCandidate(
+                        nameof(ShotManager),
+                        RoomActionType.Block,
+                        RoomDecisionStep.ChooseActor,
+                        defender,
+                        $"Select {FormatDecisionTokenName(defender)} to block the Snapshot");
+                }
+            }
+            return;
+        }
+
+        if (isWaitingForTargetSelection)
+        {
+            context.AddActionSummary($"Click an in-goal hex to target the {GetActiveShotInstructionLabel()}");
+            AddShotTargetSelectionTargets(context);
+            return;
+        }
+
+        if (isWaitingForBlockDiceRoll || isWaitingForShotRoll || isWaitingForGKDiceRoll || isWaitingforHandlingTest)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                $"Press [R] to roll for the {GetActiveShotInstructionLabel()}");
+        }
+
+        if (isWaitingForOutsideBoxGKShotDecision)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.GoalkeeperSave,
+                RoomDecisionStep.InterruptionChoice,
+                "D",
+                "Press [D] to dive with hands outside the box",
+                executionCommand: "outside_box_goalkeeper_shot_hands");
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.Block,
+                RoomDecisionStep.InterruptionChoice,
+                "B",
+                "Press [B] to block as an outfielder",
+                executionCommand: "outside_box_goalkeeper_shot_block");
+        }
+
+        if (isWaitingForSaveandHoldScenario)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.QuickThrow,
+                RoomDecisionStep.ChooseActionType,
+                "Q",
+                "Press [Q] for a Quick Throw");
+            context.AddKeyActionCandidate(
+                nameof(ShotManager),
+                RoomActionType.FinalThird,
+                RoomDecisionStep.ChooseActionType,
+                "K",
+                "Press [K] to activate Final Thirds");
+        }
+    }
+
+    private void AddShotTargetSelectionTargets(RoomDecisionContext context)
+    {
+        int addedTargetCount = 0;
+        if (shotTargetSelectionTargets.Count == 0)
+        {
+            HexCell originHex = GetShotOriginHex();
+            if (originHex?.ShootingPaths != null)
+            {
+                foreach (HexCell hex in originHex.ShootingPaths.Keys)
+                {
+                    if (hex != null && hex.isInGoal != 0)
+                    {
+                        context.AddHexActionCandidate(
+                            nameof(ShotManager),
+                            RoomActionType.Shot,
+                            RoomDecisionStep.ChooseTarget,
+                            hex,
+                            $"Shoot at goal hex {hex.coordinates}");
+                        addedTargetCount++;
+                    }
+                }
+
+                if (addedTargetCount == 0)
+                {
+                    foreach (HexCell hex in originHex.ShootingPaths.Keys)
+                    {
+                        if (hex != null)
+                        {
+                            context.AddHexActionCandidate(
+                                nameof(ShotManager),
+                                RoomActionType.Shot,
+                                RoomDecisionStep.ChooseTarget,
+                                hex,
+                                $"Shoot at hex {hex.coordinates}");
+                        }
+                    }
+                }
+            }
+
+            return;
+        }
+
+        foreach (HexCell hex in shotTargetSelectionTargets)
+        {
+            if (hex != null && hex.isInGoal != 0)
+            {
+                context.AddHexActionCandidate(
+                    nameof(ShotManager),
+                    RoomActionType.Shot,
+                    RoomDecisionStep.ChooseTarget,
+                    hex,
+                    $"Shoot at goal hex {hex.coordinates}");
+                addedTargetCount++;
+            }
+        }
+
+        if (addedTargetCount > 0)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in shotTargetSelectionTargets)
+        {
+            if (hex != null)
+            {
+                context.AddHexActionCandidate(
+                    nameof(ShotManager),
+                    RoomActionType.Shot,
+                    RoomDecisionStep.ChooseTarget,
+                    hex,
+                    $"Shoot at hex {hex.coordinates}");
+            }
+        }
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
     }
 
     public bool? IsInstructionExpectingHomeTeam()

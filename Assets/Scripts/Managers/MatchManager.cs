@@ -134,6 +134,8 @@ public class MatchManager : MonoBehaviour
         public string gameMode;
         public string homeTeamName;
         public string awayTeamName;
+        public string homeTeamControl;
+        public string awayTeamControl;
         public string homeKit;
         public string awayKit;
         public string homeGKKit;
@@ -141,6 +143,9 @@ public class MatchManager : MonoBehaviour
         public string homeDraftPersona;
         public string awayDraftPersona;
         public string defaultDraftPersona;
+        public string homeRoomPersona;
+        public string awayRoomPersona;
+        public string defaultRoomPersona;
         public int playerAssistance;
         public string matchType;
         public string ballColor;
@@ -2304,6 +2309,9 @@ public class MatchManager : MonoBehaviour
         }
 
         gameplayEvent.instruction = hasInstruction ? snapshot : null;
+        gameplayEvent.roomDecision = hasInstruction && GameDebugMonitor.Instance != null
+            ? GameDebugMonitor.Instance.GetRoomDecisionSnapshotForLog(snapshot)
+            : null;
         gameplayEvent.result = CreateResult(
             "instruction_cta",
             hasInstruction ? "shown" : "cleared",
@@ -2313,6 +2321,7 @@ public class MatchManager : MonoBehaviour
                 ("expectedTeam", snapshot?.expectedTeam),
                 ("expectedInput", snapshot?.expectedInput),
                 ("expectedKeys", snapshot?.expectedKeys != null ? string.Join(",", snapshot.expectedKeys) : null),
+                ("roomDecisionCandidateCount", gameplayEvent.roomDecision?.candidateCount),
                 ("semanticCta", semanticCta),
                 ("instructionText", snapshot?.instructionText)));
         gameplayEvent.postStateHash = ComputeGameplayStateHash();
@@ -5086,6 +5095,19 @@ public class MatchManager : MonoBehaviour
         highPassManager.CleanUpHighPass(preserveTargetPrecompute: preserveAerialPrecompute);
         longBallManager.CleanUpLongBall(preserveTargetPrecompute: preserveAerialPrecompute);
         RefreshAvailableActions();
+        PlayerToken setPieceTaker = freeKickManager != null && freeKickManager.isActivated
+            ? freeKickManager.selectedKicker
+            : null;
+        setPieceTaker ??= setPieceTakerExcludedFromNextTouch;
+        if (setPieceTaker != null)
+        {
+            highPassManager.SetPendingSetPieceTakerForCommit(setPieceTaker);
+        }
+        else
+        {
+            PlayerToken highPassKicker = ball?.GetCurrentHex()?.GetOccupyingToken() ?? LastTokenToTouchTheBallOnPurpose;
+            highPassManager.SetHighPassKickerForTargetExclusion(highPassKicker);
+        }
         highPassManager.isCornerKick = isCornerKick;
         highPassManager.ActivateHighPass();
     }
@@ -6222,6 +6244,8 @@ public class MatchManager : MonoBehaviour
 
         if (highPassManager.isAvailable && difficulty_level == 1)
         {
+            PlayerToken highPassKicker = ball?.GetCurrentHex()?.GetOccupyingToken() ?? LastTokenToTouchTheBallOnPurpose;
+            highPassManager.SetHighPassKickerForTargetExclusion(highPassKicker);
             highPassManager.BeginAvailableTargetPrecompute();
         }
         else
@@ -6826,6 +6850,172 @@ public class MatchManager : MonoBehaviour
         }
 
         return $"Half {currentHalf} regulation time is up. {attackingTeamName}: press [R] to roll a normal D6 for stoppage actions. Referee leniency: {refereeLeniency}.";
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (IsForcedGoalkeeperSubstitutionRequired(true) || IsForcedGoalkeeperSubstitutionRequired(false))
+        {
+            context.AddActionSummary("Confirm the goalkeeper substitution");
+            return;
+        }
+
+        if (goalkeeperReplacementRequired)
+        {
+            context.AddActionSummary("Confirm the goalkeeper replacement");
+            return;
+        }
+
+        if (emergencyGoalkeeperNominationRequired)
+        {
+            context.AddActionSummary("Click a playing outfielder");
+            return;
+        }
+
+        if (isWaitingForExtraActionsRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll stoppage actions");
+            return;
+        }
+
+        if (currentState == GameState.KickOffSetup)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.Confirm,
+                RoomDecisionStep.Confirm,
+                "Space",
+                "Press [Space] to start the match");
+        }
+
+        if (currentState == GameState.GoalKick
+            && pendingGoalKickRestartTaker != null)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.GoalkeeperKick,
+                RoomDecisionStep.ChooseActionType,
+                "K",
+                "Press [K] to take a Goalkeeper Kick");
+        }
+
+        PopulateAvailableActionDecisionContext(context);
+    }
+
+    private void PopulateAvailableActionDecisionContext(RoomDecisionContext context)
+    {
+        if (movementPhaseManager != null && movementPhaseManager.isAvailable)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.StartMovement,
+                RoomDecisionStep.ChooseActionType,
+                "M",
+                "Press [M] to start a Movement Phase");
+        }
+
+        if (groundBallManager != null && groundBallManager.isAvailable)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.GroundPass,
+                RoomDecisionStep.ChooseActionType,
+                "P",
+                $"Press [P] to play a {GetPendingGroundBallDecisionLabel()}");
+        }
+
+        if (highPassManager != null && highPassManager.isAvailable)
+        {
+            if (currentState == GameState.GoalKick)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(MatchManager),
+                    RoomActionType.GoalkeeperKick,
+                    RoomDecisionStep.ChooseActionType,
+                    "K",
+                    "Press [K] to take a Goalkeeper Kick");
+            }
+            else
+            {
+                context.AddKeyActionCandidate(
+                    nameof(MatchManager),
+                    RoomActionType.HighPass,
+                    RoomDecisionStep.ChooseActionType,
+                    "C",
+                    "Press [C] to play a High Pass");
+            }
+        }
+
+        if (longBallManager != null && longBallManager.isAvailable)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.LongBall,
+                RoomDecisionStep.ChooseActionType,
+                "L",
+                "Press [L] to play a Long Ball");
+        }
+
+        if (firstTimePassManager != null && firstTimePassManager.isAvailable)
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.FirstTimePass,
+                RoomDecisionStep.ChooseActionType,
+                "F",
+                "Press [F] to play a First-Time Pass");
+        }
+
+        if (shotManager != null && shotManager.isAvailable && !IsFinalExtraMovementPhaseSnapshotSuppressed())
+        {
+            context.AddKeyActionCandidate(
+                nameof(MatchManager),
+                RoomActionType.Shot,
+                RoomDecisionStep.ChooseActionType,
+                "S",
+                BuildShotDecisionSummary());
+            if (shotManager.isWaitingForSnapshotDecisionFromLoose)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(MatchManager),
+                    RoomActionType.ContinueWithoutShot,
+                    RoomDecisionStep.ChooseActionType,
+                    "X",
+                    "Press [X] to continue without shooting");
+            }
+        }
+    }
+
+    private string GetPendingGroundBallDecisionLabel()
+    {
+        return pendingGroundBallDistance <= ShortGroundBallDistance
+            ? "Short Standard Pass"
+            : "Standard Pass";
+    }
+
+    private string BuildShotDecisionSummary()
+    {
+        if (shotManager != null && shotManager.isWaitingForSnapshotDecisionFromLoose)
+        {
+            return "Press [S] to take a Snapshot";
+        }
+
+        if (shotManager != null && shotManager.isWaitingForShotCommitConfirmation)
+        {
+            return "Press [S] to commit the shot";
+        }
+
+        return "Press [S] to take a Shot";
     }
 
     public bool? IsInstructionExpectingHomeTeam()

@@ -1425,6 +1425,182 @@ public class GroundBallManager : MonoBehaviour
         }
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (isAvailable && !isActivated)
+        {
+            context.AddKeyActionCandidate(
+                nameof(GroundBallManager),
+                RoomActionType.GroundPass,
+                RoomDecisionStep.ChooseActionType,
+                "P",
+                $"Press [P] to play a {GetAvailablePassLabel()}");
+        }
+
+        if (isActivated && isWaitingForDiceRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(GroundBallManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll for the ground-pass interaction");
+            return;
+        }
+
+        if (!isActivated || !isAwaitingTargetSelection)
+        {
+            return;
+        }
+
+        if (currentTargetHex != null)
+        {
+            context.AddActionSummary("Click the selected orange target to confirm");
+            context.AddHexActionCandidate(
+                nameof(GroundBallManager),
+                RoomActionType.GroundPass,
+                RoomDecisionStep.Confirm,
+                currentTargetHex,
+                $"Confirm ground pass to hex {currentTargetHex.coordinates}");
+            PlayerToken selectedReceiver = currentTargetHex.GetOccupyingToken();
+            if (selectedReceiver != null && selectedReceiver.isAttacker)
+            {
+                context.AddTargetTokenActionCandidate(
+                    nameof(GroundBallManager),
+                    RoomActionType.GroundPass,
+                    RoomDecisionStep.Confirm,
+                    selectedReceiver,
+                    $"Confirm ground pass to {FormatDecisionTokenName(selectedReceiver)}");
+            }
+        }
+
+        context.AddActionSummary("Click a valid ground-pass target");
+        PopulateValidGroundPassTargets(context);
+    }
+
+    private void PopulateValidGroundPassTargets(RoomDecisionContext context)
+    {
+        if (context == null || hexGrid == null || hexGrid.cells == null || ball == null || ball.GetCurrentHex() == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in GetGroundPassDecisionCandidateHexes())
+        {
+            if (!IsPlausibleGroundPassDecisionTarget(hex))
+            {
+                continue;
+            }
+
+            GroundPassValidationResult validation = ValidateGroundPassPathForDecision(hex, imposedDistance);
+            if (!validation.IsValid)
+            {
+                continue;
+            }
+
+            PlayerToken targetToken = hex.GetOccupyingToken();
+            if (targetToken != null && targetToken.isAttacker)
+            {
+                context.AddTargetTokenActionCandidate(
+                    nameof(GroundBallManager),
+                    RoomActionType.GroundPass,
+                    RoomDecisionStep.ChooseTarget,
+                    targetToken,
+                    $"Ground pass to {FormatDecisionTokenName(targetToken)}");
+                continue;
+            }
+
+            context.AddHexActionCandidate(
+                nameof(GroundBallManager),
+                RoomActionType.GroundPass,
+                RoomDecisionStep.ChooseTarget,
+                hex,
+                $"Ground pass to hex {hex.coordinates}");
+        }
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+    }
+
+    private List<HexCell> GetGroundPassDecisionCandidateHexes()
+    {
+        HexCell ballHex = ball.GetCurrentHex();
+        HashSet<HexCell> candidates = new HashSet<HexCell>(
+            HexGrid.GetHexesInRange(hexGrid, ballHex, imposedDistance)
+                .Where(hex => hex != null));
+
+        if (!isKickoffPass || hexGrid.cells == null)
+        {
+            return candidates.ToList();
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex != null && IsEasyOwnHalfKickoffPassTarget(hex))
+            {
+                candidates.Add(hex);
+            }
+        }
+
+        return candidates.ToList();
+    }
+
+    private bool IsPlausibleGroundPassDecisionTarget(HexCell hex)
+    {
+        if (hex == null || hex.isOutOfBounds || hex == ball.GetCurrentHex())
+        {
+            return false;
+        }
+
+        if (isQuickThrow)
+        {
+            return !hex.isDefenseOccupied;
+        }
+
+        PlayerToken targetToken = hex.GetOccupyingToken();
+        return targetToken == null || targetToken.isAttacker;
+    }
+
+    private GroundPassValidationResult ValidateGroundPassPathForDecision(HexCell targetHex, int distance)
+    {
+        PlayerToken targetToken = targetHex != null ? targetHex.GetOccupyingToken() : null;
+        if (IsDifficultyOneOffsideTarget(targetToken))
+        {
+            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetOffside);
+        }
+
+        if (targetToken != null
+            && MatchManager.Instance != null
+            && (!MatchManager.Instance.CanTokenCollectHangingPass(targetToken)
+                || targetToken == pendingSetPieceTakerForCommit))
+        {
+            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetExcludedFromNextTouch);
+        }
+
+        bool useEasyOwnHalfKickoffRules = IsEasyOwnHalfKickoffPassTarget(targetHex);
+        return GroundPassCommon.ValidateStandardPassPath(
+            hexGrid,
+            ball,
+            targetHex,
+            distance,
+            isQuickThrow,
+            ignoreMaxDistance: useEasyOwnHalfKickoffRules,
+            suppressInterceptions: useEasyOwnHalfKickoffRules,
+            logFailures: false);
+    }
+
     private static void AddInstructionDetail(Dictionary<string, string> details, string key, object value)
     {
         if (details == null || string.IsNullOrWhiteSpace(key) || value == null)
@@ -1445,7 +1621,7 @@ public class GroundBallManager : MonoBehaviour
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
         if (freeKickManager.isWaitingForExecution) return "";
-        if (isAvailable) sb.Append("Press [P] to Play a Standard Pass, ");
+        if (isAvailable) sb.Append($"Press [P] to Play a {GetAvailablePassLabel()}, ");
         MatchManager matchManager = MatchManager.Instance;
         if (isActivated)
         {
@@ -1523,6 +1699,11 @@ public class GroundBallManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Trim trailing comma
         return sb.ToString();
+    }
+
+    private string GetAvailablePassLabel()
+    {
+        return imposedDistance <= 6 ? "Short Standard Pass" : "Standard Pass";
     }
 
     public bool? IsInstructionExpectingHomeTeam()

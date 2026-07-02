@@ -145,7 +145,7 @@ public class DraftUIManager : MonoBehaviour
             return;
         }
 
-        draftManager.CompleteRegularDraftWithGreedyProfile();
+        draftManager.CompleteRegularDraftWithConfiguredProfile();
         CheckIfDraftIsComplete();
     }
 
@@ -352,7 +352,7 @@ public class DraftUIManager : MonoBehaviour
             draftManager = FindAnyObjectByType<DraftManager>();
         }
 
-        bool isAvailable = draftManager != null && draftManager.CanCompleteRegularDraftWithGreedyProfile();
+        bool isAvailable = draftManager != null && draftManager.CanCompleteRegularDraftWithConfiguredProfile();
         randomDraftButton.gameObject.SetActive(isAvailable);
         randomDraftButton.interactable = isAvailable;
     }

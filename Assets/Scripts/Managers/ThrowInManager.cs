@@ -328,7 +328,7 @@ public class ThrowInManager : MonoBehaviour
             actor: selectedThrower,
             sourceHex: throwInHex,
             details: new Dictionary<string, string> { ["headerTargetCount"] = headerTargetCount.ToString() });
-        Debug.Log("Throw-in ready. Press [P] to throw to feet or [C] to throw to head.");
+        Debug.Log("Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.");
     }
 
     private void HandleThrowToFeet()
@@ -346,7 +346,7 @@ public class ThrowInManager : MonoBehaviour
         groundBallManager.imposedDistance = maxThrowDistance;
         groundBallManager.ActivateGroundBall();
         StartCoroutine(RestoreGroundBallDefaultDistanceWhenDone());
-        Debug.Log("Throw-in option selected: [P] to feet. Select target hex (up to 6).");
+        Debug.Log("Throw-in option selected: [P] short to feet. Select target hex (up to 6).");
         ResetThrowInState();
     }
 
@@ -581,10 +581,10 @@ public class ThrowInManager : MonoBehaviour
         {
             int headerTargetCount = GetAvailableHeaderThrowTargets().Count;
             sb.Append(headerTargetCount > 0
-                ? "Press [P] for throw to feet or [C] for throw to head, "
-                : "Press [P] for throw to feet, ");
+                ? "Press [P] for short throw to feet or [C] for throw to head, "
+                : "Press [P] for short throw to feet, ");
         }
-        if (isWaitingForGroundTarget) sb.Append("Select throw-to-feet target (up to 6 hexes), ");
+        if (isWaitingForGroundTarget) sb.Append("Select short throw-to-feet target (up to 6 hexes), ");
         if (isWaitingForHeaderTarget)
         {
             sb.Append(MatchManager.Instance != null && MatchManager.Instance.difficulty_level == 3
@@ -594,6 +594,138 @@ public class ThrowInManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
         return sb.ToString();
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        if (isRunningMandatoryMovement || isRunningOptionalMovement)
+        {
+            context.AddActionSummary("No Throw-In decision while Movement Phase is running");
+            return;
+        }
+
+        if (isWaitingForTakerSelection)
+        {
+            context.AddActionSummary("Click a player from the awarded team to take the Throw-In");
+            foreach (PlayerToken token in GetEligibleThrowersForDecision())
+            {
+                if (token == null)
+                {
+                    continue;
+                }
+
+                string tokenName = !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+                context.AddTokenActionCandidate(
+                    nameof(ThrowInManager),
+                    RoomActionType.ThrowIn,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {tokenName} for the Throw-In");
+            }
+        }
+
+        if (isWaitingForOptionalMovementDecision)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ThrowInManager),
+                RoomActionType.StartMovement,
+                RoomDecisionStep.ChooseActionType,
+                "M",
+                "Press [M] for optional movement before the Throw-In");
+            context.AddKeyActionCandidate(
+                nameof(ThrowInManager),
+                RoomActionType.ThrowIn,
+                RoomDecisionStep.ChooseActionType,
+                "T",
+                "Press [T] to throw now");
+        }
+
+        if (isWaitingForThrowTypeSelection)
+        {
+            context.AddKeyActionCandidate(
+                nameof(ThrowInManager),
+                RoomActionType.GroundPass,
+                RoomDecisionStep.ChooseActionType,
+                "P",
+                "Press [P] for short throw to feet");
+            if (GetAvailableHeaderThrowTargets().Count > 0)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(ThrowInManager),
+                    RoomActionType.HighPass,
+                    RoomDecisionStep.ChooseActionType,
+                    "C",
+                    "Press [C] for throw to head");
+            }
+        }
+
+        if (isWaitingForHeaderTarget)
+        {
+            context.AddActionSummary(currentHeaderThrowTarget != null
+                ? "Click the selected throw-to-head target again to confirm"
+                : "Click an eligible attacker within 6 for throw-to-head");
+
+            foreach (HexCell hex in GetAvailableHeaderThrowTargets())
+            {
+                if (hex == null)
+                {
+                    continue;
+                }
+
+                AddThrowTargetCandidate(
+                    context,
+                    hex,
+                    currentHeaderThrowTarget == hex
+                        ? RoomDecisionStep.Confirm
+                        : RoomDecisionStep.ChooseTarget);
+            }
+        }
+    }
+
+    private static void AddThrowTargetCandidate(RoomDecisionContext context, HexCell hex, RoomDecisionStep step)
+    {
+        if (context == null || hex == null)
+        {
+            return;
+        }
+
+        PlayerToken targetToken = hex.GetOccupyingToken();
+        if (targetToken != null)
+        {
+            string tokenName = !string.IsNullOrWhiteSpace(targetToken.playerName)
+                ? targetToken.playerName
+                : targetToken.name;
+            context.AddTargetTokenActionCandidate(
+                nameof(ThrowInManager),
+                RoomActionType.ThrowIn,
+                step,
+                targetToken,
+                $"Throw to {tokenName}");
+            return;
+        }
+
+        context.AddHexActionCandidate(
+            nameof(ThrowInManager),
+            RoomActionType.ThrowIn,
+            step,
+            hex,
+            $"Throw to hex {hex.coordinates}");
+    }
+
+    private IEnumerable<PlayerToken> GetEligibleThrowersForDecision()
+    {
+        IEnumerable<PlayerToken> tokens = MatchManager.Instance?.playerTokenManager?.allTokens;
+        if (tokens == null)
+        {
+            tokens = FindObjectsByType<PlayerToken>();
+        }
+
+        return tokens.Where(token => token != null && IsTokenEligibleThrower(token));
     }
 
     public bool? IsInstructionExpectingHomeTeam()

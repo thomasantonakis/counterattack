@@ -474,6 +474,46 @@ public class GoalKeeperManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        PlayerToken defenderGK = GetActiveDefendingGK();
+        string goalkeeperName = defenderGK != null
+            ? (!string.IsNullOrWhiteSpace(defenderGK.playerName) ? defenderGK.playerName : defenderGK.name)
+            : "the defending GK";
+
+        context.AddKeyActionCandidate(
+            nameof(GoalKeeperManager),
+            RoomActionType.Decline,
+            RoomDecisionStep.InterruptionChoice,
+            "X",
+            $"Press [X] to keep {goalkeeperName} in place",
+            isForfeit: true);
+        context.AddActionSummary($"Click a highlighted hex to move {goalkeeperName}");
+
+        if (hexGrid == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.highlightedHexes)
+        {
+            if (hex != null)
+            {
+                context.AddHexActionCandidate(
+                    nameof(GoalKeeperManager),
+                    RoomActionType.GoalkeeperSave,
+                    RoomDecisionStep.ChooseTarget,
+                    hex,
+                    $"Move {goalkeeperName} to hex {hex.coordinates}");
+            }
+        }
+    }
+
     public bool? IsInstructionExpectingHomeTeam()
     {
         if (!isActivated || MatchManager.Instance == null)

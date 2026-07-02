@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -665,6 +666,271 @@ public class KickoffManager : MonoBehaviour
                 : $"Pre-kickoff setup: click tokens to reposition them. Press [Space] twice to start ({setupConfirmCount}/2).",
             _ => string.Empty,
         };
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        if (isMovingSetupToken)
+        {
+            context.AddActionSummary("No Kick-off setup decision while a token is moving");
+            return;
+        }
+
+        if (isMovingKickoffTaker)
+        {
+            context.AddActionSummary("No Kick-off taker decision while the taker is moving");
+            return;
+        }
+
+        switch (flowPhase)
+        {
+            case KickoffFlowPhase.InitialSetup:
+                context.AddKeyActionCandidate(
+                    nameof(KickoffManager),
+                    RoomActionType.Kickoff,
+                    RoomDecisionStep.Confirm,
+                    "Space",
+                    $"Press [Space] to confirm pre-kickoff setup ({setupConfirmCount}/2)");
+                PopulateSetupDecisionContext(context, isPostGoalSetup: false);
+                break;
+            case KickoffFlowPhase.PostGoalSetup:
+                context.AddKeyActionCandidate(
+                    nameof(KickoffManager),
+                    RoomActionType.Kickoff,
+                    RoomDecisionStep.Confirm,
+                    "Enter",
+                    $"Press [Enter] to confirm post-goal kick-off setup ({setupConfirmCount}/2)");
+                PopulateSetupDecisionContext(context, isPostGoalSetup: true);
+                break;
+            case KickoffFlowPhase.TakerSelection:
+                context.AddActionSummary("Click an attacking token to take the kick-off");
+                AddKickoffTakerCandidates(context);
+                break;
+        }
+    }
+
+    public bool IsWaitingForMovementToComplete()
+    {
+        return isActivated && (isMovingSetupToken || isMovingKickoffTaker);
+    }
+
+    private void PopulateSetupDecisionContext(RoomDecisionContext context, bool isPostGoalSetup)
+    {
+        if (selectedToken == null)
+        {
+            context.AddActionSummary("Click any playing token to reposition it for kick-off setup");
+            AddPlayingTokens(context);
+            return;
+        }
+
+        string tokenName = FormatTokenName(selectedToken);
+        context.AddActionSummary($"Click a legal setup hex to move {tokenName}");
+        context.AddActionSummary($"Click a teammate to swap setup positions with {tokenName}");
+        AddValidSetupHexes(context, selectedToken, isPostGoalSetup);
+        AddValidSetupSwapTeammates(context, selectedToken, isPostGoalSetup);
+    }
+
+    private void AddPlayingTokens(RoomDecisionContext context)
+    {
+        if (playerTokenManager == null)
+        {
+            return;
+        }
+
+        foreach (PlayerToken token in playerTokenManager.allTokens)
+        {
+            if (token != null && token.isPlaying)
+            {
+                context.AddTokenActionCandidate(
+                    nameof(KickoffManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {FormatTokenName(token)} to reposition for kick-off setup");
+            }
+        }
+    }
+
+    private void AddKickoffTakerCandidates(RoomDecisionContext context)
+    {
+        if (playerTokenManager == null)
+        {
+            return;
+        }
+
+        foreach (PlayerToken token in playerTokenManager.allTokens)
+        {
+            if (token != null && token.isPlaying && token.isAttacker)
+            {
+                context.AddTokenActionCandidate(
+                    nameof(KickoffManager),
+                    RoomActionType.Kickoff,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {FormatTokenName(token)} to take the kick-off");
+            }
+        }
+    }
+
+    private void AddValidSetupHexes(RoomDecisionContext context, PlayerToken token, bool isPostGoalSetup)
+    {
+        foreach (HexCell hex in GetAllGridHexes())
+        {
+            if (hex == token.GetCurrentHex())
+            {
+                continue;
+            }
+
+            bool isValid = isPostGoalSetup
+                ? IsValidPostGoalSetupDecisionDestination(token, hex)
+                : IsValidInitialSetupDecisionDestination(token, hex);
+            if (isValid)
+            {
+                context.AddHexActionCandidate(
+                    nameof(KickoffManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseTarget,
+                    hex,
+                    $"Move {FormatTokenName(token)} to kick-off setup hex {hex.coordinates}");
+            }
+        }
+    }
+
+    private void AddValidSetupSwapTeammates(RoomDecisionContext context, PlayerToken token, bool isPostGoalSetup)
+    {
+        if (playerTokenManager == null || token == null)
+        {
+            return;
+        }
+
+        HexCell selectedHex = token.GetCurrentHex();
+        if (selectedHex == null)
+        {
+            return;
+        }
+
+        foreach (PlayerToken teammate in playerTokenManager.allTokens)
+        {
+            if (!IsTeammate(token, teammate))
+            {
+                continue;
+            }
+
+            HexCell teammateHex = teammate.GetCurrentHex();
+            if (teammateHex == null)
+            {
+                continue;
+            }
+
+            bool isValidSwap = isPostGoalSetup
+                ? IsValidPostGoalSetupDecisionDestination(token, teammateHex, teammate)
+                    && IsValidPostGoalSetupDecisionDestination(teammate, selectedHex, token)
+                : IsValidInitialSetupDecisionDestination(token, teammateHex, teammate)
+                    && IsValidInitialSetupDecisionDestination(teammate, selectedHex, token);
+            if (isValidSwap)
+            {
+                context.AddTokenActionCandidate(
+                    nameof(KickoffManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseActor,
+                    teammate,
+                    $"Swap kick-off setup positions with {FormatTokenName(teammate)}");
+            }
+        }
+    }
+
+    private bool IsValidInitialSetupDecisionDestination(PlayerToken token, HexCell targetHex, PlayerToken allowedOccupant = null)
+    {
+        if (token == null || targetHex == null)
+        {
+            return false;
+        }
+
+        if (targetHex.isOutOfBounds || targetHex.isInGoal != 0)
+        {
+            return false;
+        }
+
+        PlayerToken occupyingToken = targetHex.GetOccupyingToken();
+        if (occupyingToken != null && occupyingToken != token && occupyingToken != allowedOccupant)
+        {
+            return false;
+        }
+
+        if (!IsTeamOwnHalfOrMidline(token, targetHex))
+        {
+            return false;
+        }
+
+        return token.isAttacker || targetHex.isInCircle != 5;
+    }
+
+    private bool IsValidPostGoalSetupDecisionDestination(PlayerToken token, HexCell targetHex, PlayerToken allowedOccupant = null)
+    {
+        if (token == null || targetHex == null)
+        {
+            return false;
+        }
+
+        if (targetHex.isOutOfBounds || targetHex.isInGoal != 0)
+        {
+            return false;
+        }
+
+        if (targetHex.coordinates.x == 0 && targetHex.coordinates.z == 0)
+        {
+            return false;
+        }
+
+        if (!token.isAttacker && targetHex.isInCircle == 5)
+        {
+            return false;
+        }
+
+        PlayerToken occupyingToken = targetHex.GetOccupyingToken();
+        bool occupiedByAnotherToken = occupyingToken != null
+            && occupyingToken != token
+            && occupyingToken != allowedOccupant;
+        bool hasUnknownOccupancy = (targetHex.isAttackOccupied || targetHex.isDefenseOccupied)
+            && occupyingToken != token
+            && occupyingToken != allowedOccupant;
+        if (occupiedByAnotherToken || hasUnknownOccupancy)
+        {
+            return false;
+        }
+
+        return IsTeamOwnHalfOrMidline(token, targetHex);
+    }
+
+    private IEnumerable<HexCell> GetAllGridHexes()
+    {
+        if (hexGrid == null || hexGrid.cells == null)
+        {
+            yield break;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex != null)
+            {
+                yield return hex;
+            }
+        }
+    }
+
+    private static string FormatTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
     }
 
     public bool? IsInstructionExpectingHomeTeam()

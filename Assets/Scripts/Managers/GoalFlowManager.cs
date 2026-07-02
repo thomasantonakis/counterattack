@@ -206,6 +206,7 @@ public class GoalFlowManager : MonoBehaviour
     {
         EnsureResetFormationsReady();
         plannedPostGoalResetHexes.Clear();
+        DetachNonPlayingTokensFromHexes();
 
         MatchManager matchManager = MatchManager.Instance;
         if (matchManager == null)
@@ -272,6 +273,7 @@ public class GoalFlowManager : MonoBehaviour
         postGoalResetFinalized = false;
         suppressPostGoalResetAfterCelebration = false;
         postGoalResetSuppressedCallback = null;
+        DetachNonPlayingTokensFromHexes();
         bool scoringTeamIsHome = scoringTeamIsHomeOverride ?? (shooterToken != null && shooterToken.isHomeTeam);
         CaptureGoalInstructionContext(shooterToken, scoringTeamIsHome, isOwnGoal);
         instructionPhase = GoalInstructionPhase.Celebration;
@@ -408,15 +410,11 @@ public class GoalFlowManager : MonoBehaviour
         }
 
         ClearAllHexOccupancy();
+        DetachNonPlayingTokensFromHexes();
 
         HashSet<HexCell> claimedHexes = new HashSet<HexCell>();
-        foreach (PlayerToken token in playerTokenManager.allTokens)
+        foreach (PlayerToken token in GetPostGoalPlayingTokens())
         {
-            if (token == null)
-            {
-                continue;
-            }
-
             HexCell targetHex = ResolvePostGoalTargetHex(token, claimedHexes);
             if (targetHex == null)
             {
@@ -435,6 +433,65 @@ public class GoalFlowManager : MonoBehaviour
         }
 
         ValidatePostGoalReconciliation();
+    }
+
+    private IEnumerable<PlayerToken> GetPostGoalPlayingTokens()
+    {
+        return playerTokenManager.allTokens
+            .Where(IsEligibleForPostGoalHex);
+    }
+
+    private static bool IsEligibleForPostGoalHex(PlayerToken token)
+    {
+        return token != null
+            && token.isPlaying
+            && !token.isSentOff;
+    }
+
+    private void DetachNonPlayingTokensFromHexes()
+    {
+        if (playerTokenManager != null)
+        {
+            foreach (PlayerToken token in playerTokenManager.allTokens)
+            {
+                if (IsEligibleForPostGoalHex(token))
+                {
+                    continue;
+                }
+
+                token?.SetCurrentHex(null);
+            }
+        }
+
+        if (hexGrid?.cells == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex == null)
+            {
+                continue;
+            }
+
+            PlayerToken occupyingToken = hex.GetOccupyingToken();
+            if (occupyingToken != null && !IsEligibleForPostGoalHex(occupyingToken))
+            {
+                hex.occupyingToken = null;
+                hex.isAttackOccupied = false;
+                hex.isDefenseOccupied = false;
+                hex.ResetHighlight();
+                continue;
+            }
+
+            if (occupyingToken == null && (hex.isAttackOccupied || hex.isDefenseOccupied))
+            {
+                hex.isAttackOccupied = false;
+                hex.isDefenseOccupied = false;
+                hex.ResetHighlight();
+            }
+        }
     }
 
     private void ClearAllHexOccupancy()
@@ -535,13 +592,8 @@ public class GoalFlowManager : MonoBehaviour
     private void ValidatePostGoalReconciliation()
     {
         int issueCount = 0;
-        foreach (PlayerToken token in playerTokenManager.allTokens)
+        foreach (PlayerToken token in GetPostGoalPlayingTokens())
         {
-            if (token == null)
-            {
-                continue;
-            }
-
             HexCell tokenHex = token.GetCurrentHex();
             if (tokenHex == null)
             {
@@ -637,6 +689,16 @@ public class GoalFlowManager : MonoBehaviour
     public bool ShouldFlashInstructionColors()
     {
         return instructionPhase == GoalInstructionPhase.Celebration;
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || instructionPhase == GoalInstructionPhase.None)
+        {
+            return;
+        }
+
+        context.AddActionSummary("No Goal Flow decision needed; waiting for the goal transition");
     }
 
     private void CaptureGoalInstructionContext(PlayerToken shooterToken, bool scoringTeamIsHomeOverride, bool isOwnGoal)
