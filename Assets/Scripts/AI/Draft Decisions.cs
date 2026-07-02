@@ -678,11 +678,11 @@ public static class DraftDecisions
             case StarterRole.CentralMidfielder:
                 return (player.HighPass * 2.0f) + (player.Pace * 1.7f) + (player.Tackling * 1.7f) + (player.Dribbling * 1.5f) + (player.Heading * 1.2f) + (player.Resilience * 1.2f) + (player.Shooting * 0.5f) - GetFragilityPenalty(player, role);
             case StarterRole.Winger:
-                return (player.Pace * 3.1f) + (player.Dribbling * 2.7f) + (player.HighPass * 2.0f) + (player.Shooting * 0.9f) + (player.Resilience * 0.5f) + GetBreakawayPaceBonus(player, role) + GetAttackingRunnerBonus(player, role) - GetFragilityPenalty(player, role);
+                return (player.Pace * 3.1f) + (player.Dribbling * 2.7f) + (player.HighPass * 2.0f) + (player.Shooting * 0.9f) + (player.Resilience * 0.5f) + GetAttackingRoleCompletenessBonus(player, role) + GetBreakawayPaceBonus(player, role) + GetAttackingRunnerBonus(player, role) - GetFragilityPenalty(player, role);
             case StarterRole.AttackingMidfielder:
-                return (player.Dribbling * 3.3f) + (player.Shooting * 2.0f) + (player.Pace * 1.7f) + (player.HighPass * 1.5f) + (player.Heading * 0.7f) + (player.Resilience * 0.6f) + GetBreakawayPaceBonus(player, role) + GetAttackingRunnerBonus(player, role) - GetFragilityPenalty(player, role);
+                return (player.Dribbling * 3.3f) + (player.Shooting * 2.0f) + (player.Pace * 1.7f) + (player.HighPass * 1.5f) + (player.Heading * 0.7f) + (player.Resilience * 0.6f) + GetAttackingRoleCompletenessBonus(player, role) + GetBreakawayPaceBonus(player, role) + GetAttackingRunnerBonus(player, role) - GetFragilityPenalty(player, role);
             case StarterRole.Striker:
-                return (player.Shooting * 3.4f) + (player.Heading * 2.5f) + (player.Pace * 1.1f) + (player.Resilience * 1.0f) + (player.Dribbling * 0.7f) + GetBreakawayPaceBonus(player, role) + GetAttackingRunnerBonus(player, role) + GetPoacherBonus(player) - GetFragilityPenalty(player, role);
+                return (player.Shooting * 3.4f) + (player.Heading * 2.5f) + (player.Pace * 1.1f) + (player.Resilience * 1.0f) + (player.Dribbling * 0.7f) + GetAttackingRoleCompletenessBonus(player, role) + GetBreakawayPaceBonus(player, role) + GetAttackingRunnerBonus(player, role) + GetPoacherBonus(player) - GetFragilityPenalty(player, role);
             default:
                 return GetOverallOutfielderScore(player);
         }
@@ -764,6 +764,19 @@ public static class DraftDecisions
                 return 4f;
             case StarterRole.AttackingMidfielder:
                 return 1.5f;
+            default:
+                return 0f;
+        }
+    }
+
+    private static float GetAttackingRoleCompletenessBonus(Player player, StarterRole role)
+    {
+        switch (role)
+        {
+            case StarterRole.Winger:
+            case StarterRole.AttackingMidfielder:
+            case StarterRole.Striker:
+                return (player.Heading * 0.85f) + (player.Tackling * 1.15f) + (player.Resilience * 0.2f);
             default:
                 return 0f;
         }
@@ -862,6 +875,7 @@ public static class DraftDecisions
         List<string> factors = new List<string>();
         float paceBonus = GetBreakawayPaceBonus(player, role);
         float attackingRunnerBonus = GetAttackingRunnerBonus(player, role);
+        float attackingCompletenessBonus = GetAttackingRoleCompletenessBonus(player, role);
         float defensiveMismatchPenalty = GetDefensiveMismatchPenalty(player, role);
         float fullbackPaceMismatchPenalty = role == StarterRole.Fullback ? GetFullbackPaceMismatchPenalty(player) : 0f;
         float centralDefenderAnchorBonus = role == StarterRole.Centerback ? GetCentralDefenderAnchorBonus(player) : 0f;
@@ -881,6 +895,11 @@ public static class DraftDecisions
         if (attackingRunnerBonus > 0f)
         {
             factors.Add($"attackingRunner+{FormatScore(attackingRunnerBonus)}");
+        }
+
+        if (attackingCompletenessBonus > 0f)
+        {
+            factors.Add($"attackingCompleteness+{FormatScore(attackingCompletenessBonus)}");
         }
 
         if (centralDefenderAnchorBonus > 0f)
