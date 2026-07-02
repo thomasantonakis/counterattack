@@ -67,9 +67,9 @@ public class DraftManager : MonoBehaviour
     private string currentBatchStarter;
     private bool isHomeFirstInNextRound = true;  // Track which team starts first in each round
     private bool isFreeDraftScene;
-    private bool isResolvingSinglePlayerAwayDraftTurn;
+    private bool isResolvingSinglePlayerCpuDraftTurn;
     private bool postDraftGoalkeeperReviewComplete;
-    private Coroutine singlePlayerAwayDraftCoroutine;
+    private Coroutine singlePlayerCpuDraftCoroutine;
     private FreeDraftPhase freeDraftPhase = FreeDraftPhase.Setup;
     private Transform freeDraftContent;
     private Transform freeDraftPreviewRow;
@@ -837,50 +837,59 @@ public class DraftManager : MonoBehaviour
             && !isFreeDraftScene;
     }
 
-    private bool IsSinglePlayerAwayDraftTurn()
+    private bool IsSinglePlayerCpuDraftTurn()
     {
         return IsSinglePlayerRegularDraftMode()
-            && string.Equals(currentTeamTurn, "Away", System.StringComparison.OrdinalIgnoreCase)
+            && IsCurrentDraftTeamCpuControlled()
             && !IsDraftComplete();
     }
 
     private void TryAutoPickSinglePlayerAwayTurns()
     {
-        if (isResolvingSinglePlayerAwayDraftTurn)
+        if (isResolvingSinglePlayerCpuDraftTurn)
         {
             return;
         }
 
-        if (!IsSinglePlayerAwayDraftTurn())
+        if (!IsSinglePlayerCpuDraftTurn())
         {
             return;
         }
 
-        if (singlePlayerAwayDraftCoroutine == null)
+        if (singlePlayerCpuDraftCoroutine == null)
         {
-            singlePlayerAwayDraftCoroutine = StartCoroutine(ResolveSinglePlayerAwayDraftTurns());
+            singlePlayerCpuDraftCoroutine = StartCoroutine(ResolveSinglePlayerAwayDraftTurns());
         }
+    }
+
+    private bool IsCurrentDraftTeamCpuControlled()
+    {
+        string roomPersona = string.Equals(currentTeamTurn, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? currentSettings?.awayRoomPersona
+            : currentSettings?.homeRoomPersona;
+
+        return string.Equals(roomPersona, "Random", System.StringComparison.OrdinalIgnoreCase);
     }
 
     private IEnumerator ResolveSinglePlayerAwayDraftTurns()
     {
-        isResolvingSinglePlayerAwayDraftTurn = true;
+        isResolvingSinglePlayerCpuDraftTurn = true;
 
-        while (IsSinglePlayerAwayDraftTurn())
+        while (IsSinglePlayerCpuDraftTurn())
         {
             if (GetVisibleRegularDraftCards().Count > 1)
             {
                 yield return new WaitForSeconds(2f);
             }
 
-            if (!IsSinglePlayerAwayDraftTurn() || !TryCompleteRegularDraftPick())
+            if (!IsSinglePlayerCpuDraftTurn() || !TryCompleteRegularDraftPick())
             {
                 break;
             }
         }
 
-        isResolvingSinglePlayerAwayDraftTurn = false;
-        singlePlayerAwayDraftCoroutine = null;
+        isResolvingSinglePlayerCpuDraftTurn = false;
+        singlePlayerCpuDraftCoroutine = null;
     }
 
     private bool TryCompleteRegularDraftPick()

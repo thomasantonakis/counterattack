@@ -153,6 +153,10 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     CreateNewGameSceneEditorTools.EnsureBackToHotSeatButton();
                     return BridgeResponse.Ok(request, "Create New Game Hot Seat back button ensured.");
+                case "ensure_create_new_game_team_control_ui":
+                    EnsureEditorMode(command);
+                    CreateNewGameSceneEditorTools.EnsureSinglePlayerTeamControlUi();
+                    return BridgeResponse.Ok(request, "Create New Game single-player team control UI ensured.");
                 case "rebuild_substitution_panel_prefab":
                     EnsureEditorMode(command);
                     SubstitutionPanelPrefabEditorTools.RebuildSubstitutionPanelPrefab();
@@ -173,6 +177,14 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     MovementPhaseTokenStatusPanelEditorTools.EnsureSceneInstanceInEditMode();
                     return BridgeResponse.Ok(request, "Movement Phase token-status panel ensured in Room scene.");
+                case "ensure_match_stats_lineup_rows":
+                    EnsureEditorMode(command);
+                    CounterAttack.EditorTools.MatchStatsHoverCardsEditorTools.EnsureRoomMatchStatsLineupRows();
+                    return BridgeResponse.Ok(request, "Match stats lineup rows ensured in Room scene.");
+                case "fill_match_stats_lineup_dummy_text":
+                    EnsureEditorMode(command);
+                    CounterAttack.EditorTools.MatchStatsHoverCardsEditorTools.FillRoomMatchStatsLineupDummyText();
+                    return BridgeResponse.Ok(request, "Match stats lineup rows filled with dummy text.");
                 case "reload_kit_presets":
                     EnsureEditorMode(command);
                     TokenKitCatalog.ReloadFromSource();

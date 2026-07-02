@@ -547,6 +547,7 @@ public class MovementPhaseManager : MonoBehaviour
         if (highPassManager != null && highPassManager.isActivated) return;
         if (freeKickManager != null && freeKickManager.isActivated) return;
         if (penaltyKickManager != null && penaltyKickManager.isActivated) return;
+        if (IsThrowInOwningNonMovementDecision()) return;
         if (isAvailable && !isActivated && keyData.key == KeyCode.M)
         {
             MatchManager.Instance.TriggerMovement();
@@ -2038,6 +2039,21 @@ public class MovementPhaseManager : MonoBehaviour
             }
             AdvanceMovementPhase();
         }
+    }
+
+    public void ContinueAfterNutmegTieLooseBallReturnsToDribbler(PlayerToken dribbler)
+    {
+        if (dribbler == null)
+        {
+            Debug.LogError("Cannot continue nutmeg tie loose-ball recovery because the dribbler is null.");
+            return;
+        }
+
+        selectedToken = dribbler;
+        remainingDribblerPace = 0;
+        isDribblerRunning = false;
+        isAwaitingHexDestination = false;
+        StartCoroutine(ContinueDribblerMovement());
     }
 
     private void HandleSuccessfulTackleRepositionOutcome()
@@ -4172,6 +4188,401 @@ public class MovementPhaseManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (!isActivated && isAvailable && !IsThrowInOwningNonMovementDecision())
+        {
+            context.AddKeyActionCandidate(
+                nameof(MovementPhaseManager),
+                RoomActionType.StartMovement,
+                RoomDecisionStep.ChooseActionType,
+                "M",
+                "Press [M] to start a Movement Phase");
+            return;
+        }
+
+        if (!isActivated)
+        {
+            return;
+        }
+
+        PopulateMovementPhaseKeys(context);
+
+        if (isAwaitingTokenSelection)
+        {
+            context.AddActionSummary(BuildMovementTokenSelectionSummary());
+            foreach (PlayerToken token in GetSelectableMovementTokens())
+            {
+                context.AddTokenActionCandidate(
+                    nameof(MovementPhaseManager),
+                    RoomActionType.StartMovement,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {FormatDecisionTokenName(token)} to move");
+            }
+        }
+
+        if (lookingForNutmegVictim)
+        {
+            context.AddActionSummary(BuildNamedTokenSummary("Click a nutmeggable defender", nutmeggableDefenders));
+            foreach (PlayerToken defender in nutmeggableDefenders)
+            {
+                context.AddTargetTokenActionCandidate(
+                    nameof(MovementPhaseManager),
+                    RoomActionType.Nutmeg,
+                    RoomDecisionStep.ChooseTarget,
+                    defender,
+                    $"Nutmeg {FormatDecisionTokenName(defender)}");
+            }
+        }
+
+        if (isAwaitingHexDestination && hexGrid != null)
+        {
+            context.AddActionSummary("Click a highlighted hex");
+            foreach (HexCell hex in hexGrid.highlightedHexes)
+            {
+                if (hex != null)
+                {
+                    context.AddHexActionCandidate(
+                        nameof(MovementPhaseManager),
+                        RoomActionType.StartMovement,
+                        RoomDecisionStep.ChooseTarget,
+                        hex,
+                        $"Move to hex {hex.coordinates}");
+                }
+            }
+        }
+
+        if (isWaitingForReposition)
+        {
+            context.AddActionSummary("Click a highlighted reposition hex");
+            foreach (HexCell hex in repositionHexes)
+            {
+                if (hex != null)
+                {
+                    context.AddHexActionCandidate(
+                        nameof(MovementPhaseManager),
+                        RoomActionType.SetupMove,
+                        RoomDecisionStep.ChooseTarget,
+                        hex,
+                        $"Reposition to hex {hex.coordinates}");
+                }
+            }
+        }
+    }
+
+    private void PopulateMovementPhaseKeys(RoomDecisionContext context)
+    {
+        if (IsResolvingFoulSequence())
+        {
+            if (isWaitingForYellowCardRoll || isWaitingForInjuryRoll)
+            {
+                AddMovementKeyCandidate(context, "R", RoomActionType.Roll, RoomDecisionStep.Roll, "Press [R] to roll for the foul sequence");
+            }
+
+            if (isWaitingForFoulDecision)
+            {
+                AddMovementKeyCandidate(context, "A", RoomActionType.FoulAdvantage, RoomDecisionStep.InterruptionChoice, "Press [A] to play advantage");
+                AddMovementKeyCandidate(context, "F", RoomActionType.Foul, RoomDecisionStep.InterruptionChoice, "Press [F] to accept the foul");
+            }
+
+            return;
+        }
+
+        if (isWaitingForInterceptionDiceRoll || isWaitingForTackleRoll)
+        {
+            AddMovementKeyCandidate(context, "R", RoomActionType.Roll, RoomDecisionStep.Roll, "Press [R] to roll for the Movement Phase interaction");
+        }
+
+        if (isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving)
+        {
+            AddMovementKeyCandidate(context, "N", RoomActionType.Nutmeg, RoomDecisionStep.InterruptionChoice, "Press [N] to attempt a nutmeg");
+        }
+
+        if (isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving || isWaitingForReposition)
+        {
+            AddMovementKeyCandidate(context, "X", RoomActionType.Decline, RoomDecisionStep.InterruptionChoice, "Press [X] to decline", isForfeit: true);
+        }
+
+        if (isWaitingForGKWallDiveDecision)
+        {
+            AddMovementKeyCandidate(
+                context,
+                "D",
+                RoomActionType.GoalkeeperSave,
+                RoomDecisionStep.InterruptionChoice,
+                "Press [D] to dive at feet with the goalkeeper",
+                executionCommand: "goalkeeper_wall_dive");
+            AddMovementKeyCandidate(
+                context,
+                "N",
+                RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice,
+                "Press [N] to keep the goalkeeper in place",
+                executionCommand: "goalkeeper_wall_no_dive");
+        }
+
+        if (isWaitingForSnapshotDecision && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll)
+        {
+            if (!IsSnapshotSuppressedByFinalExtraMovement())
+            {
+                AddMovementKeyCandidate(context, "S", RoomActionType.Shot, RoomDecisionStep.InterruptionChoice, "Press [S] to take the Snapshot");
+            }
+
+            AddMovementKeyCandidate(context, "X", RoomActionType.ContinueWithoutShot, RoomDecisionStep.InterruptionChoice, "Press [X] to continue without shooting", isForfeit: true);
+        }
+
+        if (isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForReposition && !isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll)
+        {
+            AddMovementKeyCandidate(context, "X", RoomActionType.Decline, RoomDecisionStep.InterruptionChoice, "Press [X] to stop movement", isForfeit: true);
+        }
+
+        if (isWaitingForTackleDecision || isWaitingForTackleDecisionWithoutMoving)
+        {
+            bool outsideBoxGoalkeeperChallenge = IsCurrentOutsideBoxGoalkeeperChallengeCandidate();
+            if (outsideBoxGoalkeeperChallenge)
+            {
+                AddMovementKeyCandidate(
+                    context,
+                    "D",
+                    RoomActionType.GoalkeeperSave,
+                    RoomDecisionStep.InterruptionChoice,
+                    "Press [D] to dive with hands at the dribbler outside the box",
+                    executionCommand: "outside_box_goalkeeper_hands_dive");
+                AddMovementKeyCandidate(
+                    context,
+                    "T",
+                    RoomActionType.Tackle,
+                    RoomDecisionStep.InterruptionChoice,
+                    "Press [T] to tackle with feet outside the box",
+                    executionCommand: "outside_box_goalkeeper_foot_tackle");
+                AddMovementKeyCandidate(
+                    context,
+                    "N",
+                    RoomActionType.Decline,
+                    RoomDecisionStep.InterruptionChoice,
+                    "Press [N] to stand there without challenging",
+                    executionCommand: "outside_box_goalkeeper_no_challenge");
+            }
+            else
+            {
+                AddMovementKeyCandidate(
+                    context,
+                    "T",
+                    RoomActionType.Tackle,
+                    RoomDecisionStep.InterruptionChoice,
+                    "Press [T] to tackle",
+                    executionCommand: "tackle");
+                AddMovementKeyCandidate(
+                    context,
+                    "N",
+                    RoomActionType.Decline,
+                    RoomDecisionStep.InterruptionChoice,
+                    "Press [N] to stand there without tackling",
+                    executionCommand: "no_tackle");
+            }
+        }
+
+        if (isAwaitingHexDestination && isBallPickable && CanSelectedTokenCollectCurrentBall())
+        {
+            AddMovementKeyCandidate(context, "V", RoomActionType.StartMovement, RoomDecisionStep.InterruptionChoice, "Press [V] to collect the ball");
+        }
+
+        if (isAwaitingTokenSelection)
+        {
+            AddMovementKeyCandidate(context, "X", RoomActionType.Decline, RoomDecisionStep.InterruptionChoice, "Press [X] to end Movement Phase selection", isForfeit: true);
+        }
+    }
+
+    private static void AddMovementKeyCandidate(
+        RoomDecisionContext context,
+        string key,
+        RoomActionType actionType,
+        RoomDecisionStep step,
+        string label,
+        bool isForfeit = false,
+        string executionCommand = "")
+    {
+        context.AddKeyActionCandidate(
+            nameof(MovementPhaseManager),
+            actionType,
+            step,
+            key,
+            label,
+            executionCommand: executionCommand,
+            isForfeit: isForfeit);
+    }
+
+    private static bool IsThrowInOwningNonMovementDecision()
+    {
+        ThrowInManager throwInManager = FindAnyObjectByType<ThrowInManager>();
+        return throwInManager != null
+            && throwInManager.isActivated
+            && !throwInManager.isRunningMandatoryMovement
+            && !throwInManager.isRunningOptionalMovement;
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+    }
+
+    private IEnumerable<PlayerToken> GetSelectableMovementTokens()
+    {
+        IEnumerable<PlayerToken> tokens = MatchManager.Instance?.playerTokenManager?.allTokens;
+        if (tokens == null)
+        {
+            tokens = FindObjectsByType<PlayerToken>();
+        }
+
+        foreach (PlayerToken token in tokens)
+        {
+            if (IsSelectableMovementToken(token))
+            {
+                yield return token;
+            }
+        }
+    }
+
+    private bool IsSelectableMovementToken(PlayerToken token)
+    {
+        if (token == null || token.isSentOff || token.GetCurrentHex() == null)
+        {
+            return false;
+        }
+
+        if (movedTokens.Contains(token) || stunnedTokens.Contains(token))
+        {
+            return false;
+        }
+
+        if ((headerManager != null && headerManager.attackerWillJump.Contains(token))
+            || (headerManager != null && headerManager.defenderWillJump.Contains(token)))
+        {
+            return false;
+        }
+
+        if (IsThrowInRestrictedTaker(token))
+        {
+            return false;
+        }
+
+        if (isMovementPhaseAttack)
+        {
+            return token.isAttacker;
+        }
+
+        if (isMovementPhaseDef)
+        {
+            if (token.isAttacker)
+            {
+                return false;
+            }
+
+            List<PlayerToken> defendersInsideThrowInZone = GetThrowInDefendersInsideProtectedZone();
+            return defendersInsideThrowInZone.Count == 0 || defendersInsideThrowInZone.Contains(token);
+        }
+
+        if (isMovementPhase2f2)
+        {
+            return token.isAttacker;
+        }
+
+        return false;
+    }
+
+    private string BuildMovementTokenSelectionSummary()
+    {
+        string tokenType = isMovementPhaseDef ? "defender" : "attacker";
+        List<string> excludedNames = GetMovementTokenSelectionExclusionNames();
+        if (excludedNames.Count == 0)
+        {
+            return $"Click a {tokenType}";
+        }
+
+        return $"Click a {tokenType}, excluding {string.Join(", ", excludedNames)}";
+    }
+
+    private List<string> GetMovementTokenSelectionExclusionNames()
+    {
+        IEnumerable<PlayerToken> tokens = MatchManager.Instance?.playerTokenManager?.allTokens;
+        if (tokens == null)
+        {
+            tokens = FindObjectsByType<PlayerToken>();
+        }
+
+        bool wantDefenders = isMovementPhaseDef;
+        List<string> excluded = new List<string>();
+        foreach (PlayerToken token in tokens)
+        {
+            if (token == null || token.GetCurrentHex() == null || token.isSentOff)
+            {
+                continue;
+            }
+
+            if (wantDefenders == token.isAttacker)
+            {
+                continue;
+            }
+
+            if (IsMovementTokenUnavailableForSummary(token))
+            {
+                excluded.Add(FormatTokenName(token));
+            }
+        }
+
+        return excluded.Distinct().ToList();
+    }
+
+    private bool IsMovementTokenUnavailableForSummary(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return false;
+        }
+
+        return movedTokens.Contains(token)
+            || stunnedTokens.Contains(token)
+            || stunnedforNext.Contains(token)
+            || (headerManager != null && headerManager.attackerWillJump.Contains(token))
+            || (headerManager != null && headerManager.defenderWillJump.Contains(token))
+            || IsThrowInRestrictedTaker(token);
+    }
+
+    private static string BuildNamedTokenSummary(string prefix, IEnumerable<PlayerToken> tokens)
+    {
+        List<string> names = tokens?
+            .Where(token => token != null)
+            .Select(FormatTokenName)
+            .Distinct()
+            .ToList() ?? new List<string>();
+
+        return names.Count == 0
+            ? prefix
+            : $"{prefix}: {string.Join(", ", names)}";
+    }
+
+    private static string FormatTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return string.Empty;
+        }
+
+        string tokenName = !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+        return token.jerseyNumber > 0 ? $"{token.jerseyNumber}. {tokenName}" : tokenName;
     }
 
     private string BuildInterceptionRollInstruction()

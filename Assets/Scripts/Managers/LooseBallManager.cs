@@ -1183,7 +1183,12 @@ public class LooseBallManager : MonoBehaviour
                     else
                     {
                         bool isSnapshotAvailable = movementPhaseManager.IsDribblerinOpponentPenaltyBox(closestToken);
-                        if (isSnapshotAvailable)
+                        if (ShouldContinueMovementAfterLooseBallReturnsToDribbler(closestToken, lastPurposefulTouchBeforeLooseBall))
+                        {
+                            Debug.Log($"{closestToken.name} recovered their own nutmeg tie loose ball. Continuing as if their dribbler pace was exhausted.");
+                            movementPhaseManager.ContinueAfterNutmegTieLooseBallReturnsToDribbler(closestToken);
+                        }
+                        else if (isSnapshotAvailable)
                         {
                             Debug.Log($"{closestToken.name} found themselves with the ball in during MP the opposition penalty Box. Press [S] to take a snapshot!");
                             MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_available_loose_ball");
@@ -1277,6 +1282,16 @@ public class LooseBallManager : MonoBehaviour
         EndLooseBallPhase(completeDeferredShotResolution: !looseBallRestingHex.isOutOfBounds);
     }
 
+    private bool ShouldContinueMovementAfterLooseBallReturnsToDribbler(PlayerToken receiver, PlayerToken lastPurposefulTouchBeforeLooseBall)
+    {
+        return receiver != null
+            && receiver == lastPurposefulTouchBeforeLooseBall
+            && movementPhaseManager != null
+            && movementPhaseManager.isActivated
+            && (movementPhaseManager.isMovementPhaseAttack || movementPhaseManager.isMovementPhase2f2)
+            && movementPhaseManager.movedTokens.Contains(receiver);
+    }
+
     public void EndLooseBallPhase(bool completeDeferredShotResolution = true)
     {
         if (completeDeferredShotResolution)
@@ -1329,6 +1344,44 @@ public class LooseBallManager : MonoBehaviour
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        if (isWaitingForDirectionRoll)
+        {
+            context.AddKeyAction("R", $"Press [R] to roll the Loose Ball direction from {FormatTokenName(causingDeflection)}");
+        }
+
+        if (isWaitingForDistanceRoll)
+        {
+            context.AddKeyAction("R", $"Press [R] to roll the Loose Ball distance from {FormatTokenName(causingDeflection)}");
+        }
+
+        if (isWaitingForInterceptionRoll)
+        {
+            context.AddKeyAction("R", $"Press [R] to roll the Loose Ball interception from {FormatTokenName(potentialInterceptor)}");
+        }
+    }
+
+    private static string FormatTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the active player";
+        }
+
+        if (!string.IsNullOrWhiteSpace(token.playerName))
+        {
+            return token.playerName;
+        }
+
+        return token.name;
     }
 
     public bool? IsInstructionExpectingHomeTeam()

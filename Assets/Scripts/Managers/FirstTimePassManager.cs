@@ -1464,9 +1464,236 @@ public class FirstTimePassManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (isAvailable && !isActivated)
+        {
+            context.AddKeyActionCandidate(
+                nameof(FirstTimePassManager),
+                RoomActionType.FirstTimePass,
+                RoomDecisionStep.ChooseActionType,
+                "F",
+                "Press [F] to play a First-Time Pass");
+        }
+
+        if (isActivated && isWaitingForDiceRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(FirstTimePassManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll for the first-time-pass interaction");
+            return;
+        }
+
+        if (isActivated && (isWaitingForAttackerSelection || isWaitingForDefenderSelection))
+        {
+            context.AddKeyActionCandidate(
+                nameof(FirstTimePassManager),
+                RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice,
+                "X",
+                "Press [X] to skip the 1-hex move",
+                isForfeit: true);
+            PopulateFtpMovementDecisionContext(context);
+            return;
+        }
+
+        if (!isActivated || !isAwaitingTargetSelection)
+        {
+            return;
+        }
+
+        if (currentTargetHex != null)
+        {
+            context.AddActionSummary("Click the selected orange target to confirm");
+            context.AddHexActionCandidate(
+                nameof(FirstTimePassManager),
+                RoomActionType.FirstTimePass,
+                RoomDecisionStep.Confirm,
+                currentTargetHex,
+                $"Confirm first-time pass to hex {currentTargetHex.coordinates}");
+            PlayerToken selectedReceiver = currentTargetHex.GetOccupyingToken();
+            if (selectedReceiver != null && selectedReceiver.isAttacker)
+            {
+                context.AddTargetTokenActionCandidate(
+                    nameof(FirstTimePassManager),
+                    RoomActionType.FirstTimePass,
+                    RoomDecisionStep.Confirm,
+                    selectedReceiver,
+                    $"Confirm first-time pass to {FormatTokenName(selectedReceiver)}");
+            }
+        }
+
+        context.AddActionSummary("Click a valid first-time-pass target");
+        PopulateValidFirstTimePassTargets(context);
+    }
+
+    private void PopulateValidFirstTimePassTargets(RoomDecisionContext context)
+    {
+        if (context == null || hexGrid == null || hexGrid.cells == null || ball == null || ball.GetCurrentHex() == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in HexGrid.GetHexesInRange(hexGrid, ball.GetCurrentHex(), FtpMaxDistance))
+        {
+            if (!IsPlausibleFirstTimePassDecisionTarget(hex))
+            {
+                continue;
+            }
+
+            GroundPassValidationResult validation = ValidateFirstTimePassTargetForDecision(hex);
+            if (!validation.IsValid)
+            {
+                continue;
+            }
+
+            PlayerToken targetToken = hex.GetOccupyingToken();
+            if (targetToken != null && targetToken.isAttacker)
+            {
+                context.AddTargetTokenActionCandidate(
+                    nameof(FirstTimePassManager),
+                    RoomActionType.FirstTimePass,
+                    RoomDecisionStep.ChooseTarget,
+                    targetToken,
+                    $"First-time pass to {FormatTokenName(targetToken)}");
+                continue;
+            }
+
+            context.AddHexActionCandidate(
+                nameof(FirstTimePassManager),
+                RoomActionType.FirstTimePass,
+                RoomDecisionStep.ChooseTarget,
+                hex,
+                $"First-time pass to hex {hex.coordinates}");
+        }
+    }
+
+    private void PopulateFtpMovementDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (isWaitingForAttackerSelection)
+        {
+            PopulateFtpSideMovementDecisionContext(
+                context,
+                isAttackerSide: true,
+                selectionSummary: "Click an attacker with a legal 1-hex FTP move");
+            return;
+        }
+
+        if (isWaitingForDefenderSelection)
+        {
+            PopulateFtpSideMovementDecisionContext(
+                context,
+                isAttackerSide: false,
+                selectionSummary: "Click a defender with a legal 1-hex FTP move");
+        }
+    }
+
+    private void PopulateFtpSideMovementDecisionContext(
+        RoomDecisionContext context,
+        bool isAttackerSide,
+        string selectionSummary)
+    {
+        int difficulty = MatchManager.Instance != null ? MatchManager.Instance.difficulty_level : 0;
+        if (selectedToken == null)
+        {
+            context.AddActionSummary(selectionSummary);
+            AddFtpMovementTokenCandidates(context, isAttackerSide, excludedToken: null);
+            return;
+        }
+
+        string tokenName = FormatTokenName(selectedToken);
+        context.AddActionSummary($"Click a legal 1-hex destination for {tokenName}");
+        foreach (HexCell destination in GetValidFtpMovementDestinations(selectedToken))
+        {
+            context.AddHexActionCandidate(
+                nameof(FirstTimePassManager),
+                RoomActionType.SetupMove,
+                RoomDecisionStep.ChooseTarget,
+                destination,
+                $"Move {tokenName} to hex {destination.coordinates}");
+        }
+
+        if (difficulty != 3)
+        {
+            context.AddActionSummary($"Click another {(isAttackerSide ? "attacker" : "defender")} to switch the FTP move");
+            AddFtpMovementTokenCandidates(context, isAttackerSide, selectedToken);
+        }
+    }
+
+    private void AddFtpMovementTokenCandidates(RoomDecisionContext context, bool isAttackerSide, PlayerToken excludedToken)
+    {
+        IEnumerable<HexCell> tokenHexes = isAttackerSide
+            ? hexGrid != null ? hexGrid.GetAttackerHexes() : Enumerable.Empty<HexCell>()
+            : hexGrid != null ? hexGrid.GetDefenderHexes() : Enumerable.Empty<HexCell>();
+
+        foreach (HexCell tokenHex in tokenHexes)
+        {
+            PlayerToken token = tokenHex != null ? tokenHex.GetOccupyingToken() : null;
+            if (token == null || token == excludedToken || token.isAttacker != isAttackerSide)
+            {
+                continue;
+            }
+
+            if (GetValidFtpMovementDestinations(token).Count > 0)
+            {
+                context.AddTokenActionCandidate(
+                    nameof(FirstTimePassManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {FormatTokenName(token)} for the 1-hex FTP move");
+            }
+        }
+    }
+
+    private static string FormatTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+    }
+
+    private bool IsPlausibleFirstTimePassDecisionTarget(HexCell hex)
+    {
+        if (hex == null || hex.isOutOfBounds || hex == ball.GetCurrentHex())
+        {
+            return false;
+        }
+
+        PlayerToken targetToken = hex.GetOccupyingToken();
+        return targetToken == null || targetToken.isAttacker;
+    }
+
+    private GroundPassValidationResult ValidateFirstTimePassTargetForDecision(HexCell targetHex)
+    {
+        return GroundPassCommon.ValidateStandardPassPath(
+            hexGrid,
+            ball,
+            targetHex,
+            FtpMaxDistance,
+            logFailures: false);
+    }
+
     public string GetInstructions()
     {
         StringBuilder sb = new();
+        MatchManager matchManager = MatchManager.Instance;
         if (goalKeeperManager.isActivated || finalThirdManager.isActivated)
         {
             return string.Empty;
@@ -1484,7 +1711,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isAwaitingTargetSelection)
         {
-            int difficulty = MatchManager.Instance.difficulty_level;
+            int difficulty = matchManager != null ? matchManager.difficulty_level : 0;
             if (difficulty == 1)
             {
                 if (!string.IsNullOrWhiteSpace(latestValidationInstruction))
@@ -1531,7 +1758,7 @@ public class FirstTimePassManager : MonoBehaviour
                 sb.Append($"{latestValidationInstruction} ");
             }
 
-            int difficulty = MatchManager.Instance.difficulty_level;
+            int difficulty = matchManager != null ? matchManager.difficulty_level : 0;
             if (selectedToken == null)
             {
                 sb.Append(difficulty == 3
@@ -1552,7 +1779,7 @@ public class FirstTimePassManager : MonoBehaviour
 
         if (isWaitingForDefenderSelection)
         {
-            int difficulty = MatchManager.Instance.difficulty_level;
+            int difficulty = matchManager != null ? matchManager.difficulty_level : 0;
             if (selectedToken == null)
             {
                 sb.Append(difficulty == 3

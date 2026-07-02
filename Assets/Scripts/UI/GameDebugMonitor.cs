@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 public class GameDebugMonitor : MonoBehaviour
 {
+    private static readonly bool LogFullRoomDecisionCandidates = false;
+
     private enum InstructionSide
     {
         Neutral,
@@ -38,6 +40,8 @@ public class GameDebugMonitor : MonoBehaviour
     [Header("UI Elements")]
     public TextMeshProUGUI debugText;
     public TextMeshProUGUI instructionText;
+    public TextMeshProUGUI decisionMakingText;
+    public RoomDecisionManager roomDecisionManager;
 
     [Header("Toggles")]
     public bool isVisible = true;
@@ -46,6 +50,8 @@ public class GameDebugMonitor : MonoBehaviour
     private static readonly Color NeutralInstructionColor = Color.white;
     private static readonly Color NeutralInstructionPanelColor = new Color(0f, 0f, 0f, 0.392f);
     private Image instructionPanelImage;
+    private Image decisionMakingPanelImage;
+    private GameObject decisionMakingPanelObject;
     private TokenKitInstructionPalette homeInstructionPalette;
     private TokenKitInstructionPalette awayInstructionPalette;
     private string cachedHomeKit = string.Empty;
@@ -205,12 +211,134 @@ public class GameDebugMonitor : MonoBehaviour
             ApplyInstructionPalette(activeInstructionSide, shouldFlashInstruction);
         }
 
+        bool isSinglePlayerMatch = IsSinglePlayerMatch();
+        RefreshDecisionMakingPanelVisibility(isSinglePlayerMatch);
+        if (isSinglePlayerMatch && roomDecisionManager != null)
+        {
+            bool noDecisionNeeded = IsDecisionSuppressedByMovement(snapshot, out string noDecisionReason);
+            roomDecisionManager.UpdateDecision(
+                snapshot,
+                BuildRoomDecisionContext(snapshot),
+                MatchManager.Instance?.gameData?.gameSettings,
+                noDecisionNeeded,
+                noDecisionReason);
+        }
+        else
+        {
+            roomDecisionManager?.ClearDecisionState();
+        }
+
         MatchManager.Instance?.RecordInstructionSnapshotIfChanged(snapshot);
     }
 
     public GameplayInstructionSnapshot GetCurrentInstructionSnapshotForLog()
     {
         return BuildCurrentInstructionSnapshot(out _, out _);
+    }
+
+    public GameplayRoomDecisionSnapshot GetRoomDecisionSnapshotForLog(GameplayInstructionSnapshot snapshot)
+    {
+        if (!IsSinglePlayerMatch())
+        {
+            return null;
+        }
+
+        if (snapshot == null || !snapshot.isAwaitingInput)
+        {
+            return null;
+        }
+
+        RoomDecisionContext context = BuildRoomDecisionContext(snapshot);
+        if (context == null || context.actions.Count == 0)
+        {
+            return null;
+        }
+
+        GameplayRoomDecisionSnapshot decisionSnapshot = new GameplayRoomDecisionSnapshot
+        {
+            manager = context.manager,
+            expectedTeam = context.expectedTeam,
+            expectedInput = context.expectedInput,
+            persona = AIManager.ResolveRoomPersona(
+                MatchManager.Instance?.gameData?.gameSettings,
+                context.expectedTeam).ToString(),
+            candidateCount = context.actions.Count
+        };
+
+        Dictionary<string, int> candidateTypeCounts = new();
+        foreach (RoomActionCandidate action in context.actions)
+        {
+            if (action == null)
+            {
+                continue;
+            }
+
+            string typeKey = $"{action.actionType}:{action.step}";
+            candidateTypeCounts.TryGetValue(typeKey, out int typeCount);
+            candidateTypeCounts[typeKey] = typeCount + 1;
+
+            if (!string.IsNullOrWhiteSpace(action.key)
+                && !decisionSnapshot.availableKeys.Contains(action.key))
+            {
+                decisionSnapshot.availableKeys.Add(action.key);
+            }
+
+            if (!string.IsNullOrWhiteSpace(action.key))
+            {
+                decisionSnapshot.keyCandidateCount++;
+            }
+
+            if (action.actor != null || action.targetToken != null)
+            {
+                decisionSnapshot.tokenCandidateCount++;
+            }
+
+            if (action.targetHex != null)
+            {
+                decisionSnapshot.hexCandidateCount++;
+            }
+
+            if (LogFullRoomDecisionCandidates)
+            {
+                GameplayRoomDecisionCandidate candidate = BuildRoomDecisionCandidate(action);
+                if (candidate != null)
+                {
+                    decisionSnapshot.candidates.Add(candidate);
+                }
+            }
+        }
+
+        foreach (KeyValuePair<string, int> entry in candidateTypeCounts)
+        {
+            decisionSnapshot.candidateTypes.Add($"{entry.Key}:{entry.Value}");
+        }
+
+        return decisionSnapshot.candidateCount > 0 ? decisionSnapshot : null;
+    }
+
+    private static GameplayRoomDecisionCandidate BuildRoomDecisionCandidate(RoomActionCandidate action)
+    {
+        if (action == null)
+        {
+            return null;
+        }
+
+        return new GameplayRoomDecisionCandidate
+        {
+            id = action.id,
+            manager = action.manager,
+            actionType = action.actionType.ToString(),
+            step = action.step.ToString(),
+            label = action.label,
+            key = action.key,
+            actorTokenKey = MatchManager.GetStableTokenKey(action.actor),
+            targetTokenKey = MatchManager.GetStableTokenKey(action.targetToken),
+            targetHex = RoomHexCoordinates.FromHex(action.targetHex),
+            isExecutableNow = action.isExecutableNow,
+            isForfeit = action.isForfeit,
+            executionCommand = action.executionCommand,
+            reason = action.reason
+        };
     }
 
     private GameplayInstructionSnapshot BuildCurrentInstructionSnapshot(
@@ -332,6 +460,254 @@ public class GameDebugMonitor : MonoBehaviour
         }
 
         return snapshot;
+    }
+
+    private RoomDecisionContext BuildRoomDecisionContext(GameplayInstructionSnapshot snapshot)
+    {
+        if (snapshot == null)
+        {
+            return null;
+        }
+
+        RoomDecisionContext context = new RoomDecisionContext
+        {
+            manager = snapshot.manager,
+            expectedTeam = snapshot.expectedTeam,
+            expectedInput = snapshot.expectedInput
+        };
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(GoalFlowManager))
+            && goalFlowManager != null)
+        {
+            goalFlowManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(PenaltyShootoutManager)))
+        {
+            PenaltyShootoutManager activeShootoutManager = PenaltyShootoutManager.ActiveShootout != null
+                ? PenaltyShootoutManager.ActiveShootout
+                : penaltyShootoutManager;
+            if (activeShootoutManager != null)
+            {
+                activeShootoutManager.PopulateRoomDecisionContext(context);
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(MatchManager))
+            && matchManager != null)
+        {
+            matchManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(MovementPhaseManager))
+            && movementPhaseManager != null)
+        {
+            movementPhaseManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(FinalThirdManager))
+            && finalThirdManager != null)
+        {
+            finalThirdManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (ShouldPopulateManagerContext(snapshot, nameof(GroundBallManager))
+            && groundBallManager != null)
+        {
+            groundBallManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(FirstTimePassManager))
+            && firstTimePassManager != null)
+        {
+            firstTimePassManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (ShouldPopulateManagerContext(snapshot, nameof(HighPassManager))
+            && highPassManager != null)
+        {
+            highPassManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (ShouldPopulateManagerContext(snapshot, nameof(LongBallManager))
+            && longBallManager != null)
+        {
+            longBallManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (ShouldPopulateManagerContext(snapshot, nameof(ShotManager))
+            && shotManager != null)
+        {
+            shotManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(KickoffManager))
+            && kickoffManager != null)
+        {
+            kickoffManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(GoalKeeperManager))
+            && goalKeeperManager != null)
+        {
+            goalKeeperManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(LooseBallManager))
+            && looseBallManager != null)
+        {
+            looseBallManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(ThrowInManager))
+            && throwInManager != null)
+        {
+            throwInManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(FreeKickManager))
+            && freeKickManager != null)
+        {
+            freeKickManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(PenaltyKickManager))
+            && penaltyKickManager != null)
+        {
+            penaltyKickManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (!string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(HeaderManager))
+            && headerManager != null)
+        {
+            headerManager.PopulateRoomDecisionContext(context);
+        }
+
+        if (snapshot.expectedKeys != null)
+        {
+            foreach (string key in snapshot.expectedKeys)
+            {
+                context.AddKey(key);
+            }
+        }
+
+        return context;
+    }
+
+    private bool ShouldPopulateManagerContext(GameplayInstructionSnapshot snapshot, string managerName)
+    {
+        if (snapshot != null
+            && !string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(managerName))
+        {
+            return true;
+        }
+
+        if (freeKickManager == null || !freeKickManager.isWaitingForExecution)
+        {
+            return false;
+        }
+
+        if (managerName == nameof(GroundBallManager))
+        {
+            return groundBallManager != null && groundBallManager.isActivated;
+        }
+
+        if (managerName == nameof(HighPassManager))
+        {
+            return highPassManager != null && highPassManager.isActivated;
+        }
+
+        if (managerName == nameof(LongBallManager))
+        {
+            return longBallManager != null && longBallManager.isActivated;
+        }
+
+        if (managerName == nameof(ShotManager))
+        {
+            return shotManager != null
+                && (shotManager.isActivated || shotManager.isWaitingForShotCommitConfirmation);
+        }
+
+        return false;
+    }
+
+    private bool IsDecisionSuppressedByMovement(GameplayInstructionSnapshot snapshot, out string reason)
+    {
+        if (snapshot != null
+            && !string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(GoalFlowManager)))
+        {
+            reason = "goal flow transition";
+            return true;
+        }
+
+        if (snapshot != null
+            && !string.IsNullOrWhiteSpace(snapshot.manager)
+            && snapshot.manager.Contains(nameof(PenaltyShootoutManager)))
+        {
+            reason = "penalty shootout transition";
+            return true;
+        }
+
+        if (kickoffManager != null && kickoffManager.IsWaitingForMovementToComplete())
+        {
+            reason = "kick-off setup token is moving";
+            return true;
+        }
+
+        Ball activeBall = MatchManager.Instance != null && MatchManager.Instance.ball != null
+            ? MatchManager.Instance.ball
+            : movementPhaseManager != null ? movementPhaseManager.ball : null;
+
+        if (activeBall != null && activeBall.isMoving)
+        {
+            reason = "ball is moving";
+            return true;
+        }
+
+        if (movementPhaseManager != null && movementPhaseManager.isPlayerMoving)
+        {
+            reason = "movement phase token is moving";
+            return true;
+        }
+
+        List<string> pendingAerialTargetMaps = new List<string>();
+        if (highPassManager != null
+            && (highPassManager.IsWaitingForAvailableDecisionTargetOptions()
+                || highPassManager.IsWaitingForDecisionTargetOptions()))
+        {
+            pendingAerialTargetMaps.Add("High Pass");
+        }
+
+        if (longBallManager != null
+            && (longBallManager.IsWaitingForAvailableDecisionTargetOptions()
+                || longBallManager.IsWaitingForDecisionTargetOptions()))
+        {
+            pendingAerialTargetMaps.Add("Long Ball");
+        }
+
+        if (pendingAerialTargetMaps.Count > 0)
+        {
+            reason = $"aerial target options are still calculating: {string.Join(", ", pendingAerialTargetMaps)}";
+            return true;
+        }
+
+        reason = string.Empty;
+        return false;
     }
 
     private static void AddInstructionIfNotEmpty(
@@ -508,13 +884,50 @@ public class GameDebugMonitor : MonoBehaviour
         };
 
         bool useSwappedColors = shouldFlash && Mathf.FloorToInt(Time.unscaledTime * 6f) % 2 == 1;
-        instructionText.color = useSwappedColors ? palette.Primary : palette.Secondary;
+        Color textColor = useSwappedColors ? palette.Primary : palette.Secondary;
+        Color panelColor = useSwappedColors ? palette.Secondary : palette.Primary;
+        panelColor.a = side == InstructionSide.Neutral ? NeutralInstructionPanelColor.a : 0.82f;
+
+        if (instructionText != null)
+        {
+            instructionText.color = textColor;
+        }
 
         if (instructionPanelImage != null)
         {
-            Color panelColor = useSwappedColors ? palette.Secondary : palette.Primary;
-            panelColor.a = side == InstructionSide.Neutral ? NeutralInstructionPanelColor.a : 0.82f;
             instructionPanelImage.color = panelColor;
+        }
+
+        if (IsSinglePlayerMatch() && decisionMakingText != null)
+        {
+            decisionMakingText.color = textColor;
+        }
+
+        if (IsSinglePlayerMatch() && decisionMakingPanelImage != null)
+        {
+            decisionMakingPanelImage.color = panelColor;
+        }
+    }
+
+    private bool IsSinglePlayerMatch()
+    {
+        return MatchManager.Instance?.gameData?.gameSettings != null
+            && string.Equals(
+                MatchManager.Instance.gameData.gameSettings.gameMode,
+                ApplicationManager.SinglePlayerGameMode,
+                System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void RefreshDecisionMakingPanelVisibility(bool isSinglePlayerMatch)
+    {
+        if (decisionMakingPanelObject == null && decisionMakingPanelImage != null)
+        {
+            decisionMakingPanelObject = decisionMakingPanelImage.gameObject;
+        }
+
+        if (decisionMakingPanelObject != null && decisionMakingPanelObject.activeSelf != isSinglePlayerMatch)
+        {
+            decisionMakingPanelObject.SetActive(isSinglePlayerMatch);
         }
     }
 
@@ -544,15 +957,37 @@ public class GameDebugMonitor : MonoBehaviour
 
     private void CacheInstructionPanelImage()
     {
-        if (instructionText == null)
+        if (roomDecisionManager == null)
         {
-            return;
+            roomDecisionManager = FindAnyObjectByType<RoomDecisionManager>();
         }
 
-        instructionPanelImage = instructionText.GetComponentInParent<Image>();
-        if (instructionPanelImage == null)
+        if (decisionMakingText == null && roomDecisionManager != null)
         {
-            Debug.LogWarning("Instruction text has no parent Image for kit-colored instruction panel background.");
+            decisionMakingText = roomDecisionManager.decisionText;
+        }
+
+        if (instructionText != null)
+        {
+            instructionPanelImage = instructionText.GetComponentInParent<Image>();
+            if (instructionPanelImage == null)
+            {
+                Debug.LogWarning("Instruction text has no parent Image for kit-colored instruction panel background.");
+            }
+        }
+
+        if (decisionMakingText != null)
+        {
+            decisionMakingPanelImage = decisionMakingText.GetComponentInParent<Image>();
+            if (decisionMakingPanelImage == null)
+            {
+                Debug.LogWarning("Decision making text has no parent Image for kit-colored decision panel background.");
+            }
+            else
+            {
+                decisionMakingPanelObject = decisionMakingPanelImage.gameObject;
+                RefreshDecisionMakingPanelVisibility(IsSinglePlayerMatch());
+            }
         }
     }
 }

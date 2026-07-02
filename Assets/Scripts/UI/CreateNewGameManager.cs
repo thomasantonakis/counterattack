@@ -25,6 +25,10 @@ public class CreateNewGameManager : MonoBehaviour
     private const string CreateLoadRoomSceneName = "CreateLoadRoom";
     private const string DraftProfileGreedy = "Greedy";
     private const string DraftProfileSophisticated = "Sophisticated";
+    private const string RoomPersonaAskHuman = "AskHuman";
+    private const string RoomPersonaRandom = "Random";
+    private const string TeamControlHumanLabel = "P1 (Human)";
+    private const string TeamControlCpuRandomLabel = "CPU-Random";
     private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
     private const float KitDropdownScrollSensitivity = 55f;
@@ -51,6 +55,8 @@ public class CreateNewGameManager : MonoBehaviour
     public TMP_Dropdown awayKitDropdown;
     public TMP_Dropdown homeGKKitDropdown;
     public TMP_Dropdown awayGKKitDropdown;
+    public TMP_Dropdown homeTeamControlDropdown;
+    public TMP_Dropdown awayTeamControlDropdown;
     public RawImage homeKitPreviewImage;
     public TMP_Text homeKitPreviewNumberText;
     public RawImage awayKitPreviewImage;
@@ -134,6 +140,7 @@ public class CreateNewGameManager : MonoBehaviour
         
         // Example: Set default options for squad size at the start of the game
         SetDropDownOptions();
+        ConfigureTeamControlDropdowns();
         ConfigureBackToGameModeMenuButton();
         ConfigureTeamNameInputs();
         SetCreateGameButtonEnabled(true);
@@ -155,6 +162,66 @@ public class CreateNewGameManager : MonoBehaviour
         InitializeKitSelectionUi();
         OnMatchTypeChanged();
         TryRestoreExistingSettingsFromDraftReturn();
+    }
+
+    private void ConfigureTeamControlDropdowns()
+    {
+        bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
+        ConfigureTeamControlDropdown(homeTeamControlDropdown, defaultToHuman: true, isSinglePlayerCreateMode);
+        ConfigureTeamControlDropdown(awayTeamControlDropdown, defaultToHuman: false, isSinglePlayerCreateMode);
+        RefreshTeamControlValidity(homeTeamControlDropdown);
+    }
+
+    private void ConfigureTeamControlDropdown(TMP_Dropdown dropdown, bool defaultToHuman, bool isSinglePlayerCreateMode)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        dropdown.gameObject.SetActive(isSinglePlayerCreateMode);
+        dropdown.ClearOptions();
+        dropdown.AddOptions(new List<string> { TeamControlHumanLabel, TeamControlCpuRandomLabel });
+        dropdown.SetValueWithoutNotify(defaultToHuman ? 0 : 1);
+        dropdown.RefreshShownValue();
+        dropdown.onValueChanged.RemoveListener(OnTeamControlDropdownChanged);
+        dropdown.onValueChanged.AddListener(OnTeamControlDropdownChanged);
+    }
+
+    private void OnTeamControlDropdownChanged(int _)
+    {
+        TMP_Dropdown changedDropdown = null;
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (EventSystem.current.currentSelectedGameObject == homeTeamControlDropdown?.gameObject)
+            {
+                changedDropdown = homeTeamControlDropdown;
+            }
+            else if (EventSystem.current.currentSelectedGameObject == awayTeamControlDropdown?.gameObject)
+            {
+                changedDropdown = awayTeamControlDropdown;
+            }
+        }
+
+        RefreshTeamControlValidity(changedDropdown);
+    }
+
+    private void RefreshTeamControlValidity(TMP_Dropdown changedDropdown)
+    {
+        if (!IsSinglePlayerCreateMode() || homeTeamControlDropdown == null || awayTeamControlDropdown == null)
+        {
+            return;
+        }
+
+        if (!IsHumanControlled(homeTeamControlDropdown) || !IsHumanControlled(awayTeamControlDropdown))
+        {
+            return;
+        }
+
+        TMP_Dropdown dropdownToSwitch = changedDropdown == homeTeamControlDropdown
+            ? awayTeamControlDropdown
+            : homeTeamControlDropdown;
+        SetTeamControlWithoutNotify(dropdownToSwitch, TeamControlCpuRandomLabel);
     }
 
     private void ConfigureTeamNameInputs()
@@ -312,20 +379,20 @@ public class CreateNewGameManager : MonoBehaviour
     {
         bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
         List<string> gameModeOptions = isSinglePlayerCreateMode
-            ? new List<string> { DraftProfileGreedy, DraftProfileSophisticated }
+            ? new List<string> { ApplicationManager.SinglePlayerGameMode }
             : new List<string> { "Single Player", "Hot Seat", "Multi Player" };  // Define options
         gameModeDropdown.ClearOptions();  // Clear any existing options
         gameModeDropdown.AddOptions(gameModeOptions);  // Add the default options
-        string requestedGameMode = isSinglePlayerCreateMode ? DraftProfileSophisticated : GetRequestedCreateLoadGameMode();
+        string requestedGameMode = isSinglePlayerCreateMode ? ApplicationManager.SinglePlayerGameMode : GetRequestedCreateLoadGameMode();
         int gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, requestedGameMode, StringComparison.OrdinalIgnoreCase));
         if (gameModeIndex < 0)
         {
-            string fallback = isSinglePlayerCreateMode ? DraftProfileSophisticated : ApplicationManager.HotSeatGameMode;
+            string fallback = isSinglePlayerCreateMode ? ApplicationManager.SinglePlayerGameMode : ApplicationManager.HotSeatGameMode;
             gameModeIndex = gameModeOptions.FindIndex(option => string.Equals(option, fallback, StringComparison.OrdinalIgnoreCase));
         }
 
         gameModeDropdown.SetValueWithoutNotify(Mathf.Max(0, gameModeIndex));
-        gameModeDropdown.interactable = isSinglePlayerCreateMode;
+        gameModeDropdown.interactable = !isSinglePlayerCreateMode;
         gameModeDropdown.RefreshShownValue();
         RefreshGameModeLabelForCreateMode();
         List<string> numberOfHalvesOptions = new List<string> { "2", "1" };  // Define options
@@ -1793,19 +1860,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private string GetSelectedOpponentDraftProfile()
     {
-        if (!IsSinglePlayerCreateMode()
-            || gameModeDropdown == null
-            || gameModeDropdown.options.Count == 0
-            || gameModeDropdown.value < 0
-            || gameModeDropdown.value >= gameModeDropdown.options.Count)
-        {
-            return DraftProfileSophisticated;
-        }
-
-        string selectedProfile = gameModeDropdown.options[gameModeDropdown.value].text;
-        return string.Equals(selectedProfile, DraftProfileGreedy, StringComparison.OrdinalIgnoreCase)
-            ? DraftProfileGreedy
-            : DraftProfileSophisticated;
+        return DraftProfileSophisticated;
     }
 
     private void RefreshGameModeLabelForCreateMode()
@@ -1814,7 +1869,7 @@ public class CreateNewGameManager : MonoBehaviour
         TMP_Text label = labelObject != null ? labelObject.GetComponent<TMP_Text>() : null;
         if (label != null)
         {
-            label.text = IsSinglePlayerCreateMode() ? "Opponent Type" : "Game Mode";
+            label.text = "Game Mode";
         }
     }
 
@@ -1941,12 +1996,13 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         string restoredGameModeSelection = IsSinglePlayerCreateMode()
-            ? settings.awayDraftPersona
+            ? ApplicationManager.SinglePlayerGameMode
             : settings.gameMode;
         string restoredGameModeFallback = IsSinglePlayerCreateMode()
-            ? DraftProfileSophisticated
+            ? ApplicationManager.SinglePlayerGameMode
             : GetRequestedCreateLoadGameMode();
         SelectDropdownOption(gameModeDropdown, restoredGameModeSelection, restoredGameModeFallback);
+        ApplyExistingTeamControlSettings(settings);
         ConfigureBackToGameModeMenuButton();
         RefreshGameModeLabelForCreateMode();
         SetCreateGameButtonEnabled(true);
@@ -2006,6 +2062,26 @@ public class CreateNewGameManager : MonoBehaviour
         SelectDropdownOption(ballColorDropdown, restoredBallColor, "White");
 
         ApplySavedKitSelections(settings);
+    }
+
+    private void ApplyExistingTeamControlSettings(GameSettings settings)
+    {
+        if (!IsSinglePlayerCreateMode() || settings == null)
+        {
+            return;
+        }
+
+        bool homeCpuControlled = IsExplicitCpuControl(settings.homeTeamControl)
+            || IsCpuControlled(settings.homeRoomPersona);
+        bool awayCpuControlled = IsExplicitCpuControl(settings.awayTeamControl)
+            || IsCpuControlled(settings.awayRoomPersona)
+            || (string.IsNullOrWhiteSpace(settings.awayTeamControl)
+                && string.IsNullOrWhiteSpace(settings.awayRoomPersona)
+                && !string.IsNullOrWhiteSpace(settings.awayDraftPersona));
+
+        SetTeamControlWithoutNotify(homeTeamControlDropdown, homeCpuControlled ? TeamControlCpuRandomLabel : TeamControlHumanLabel);
+        SetTeamControlWithoutNotify(awayTeamControlDropdown, awayCpuControlled ? TeamControlCpuRandomLabel : TeamControlHumanLabel);
+        RefreshTeamControlValidity(null);
     }
 
     private static bool IsInternationalSettings(GameSettings settings)
@@ -2358,10 +2434,18 @@ public class CreateNewGameManager : MonoBehaviour
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamName;
         settings.awayTeamName = awayTeamName;
-        string selectedOpponentProfile = GetSelectedOpponentDraftProfile();
-        settings.homeDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
-        settings.awayDraftPersona = IsSinglePlayerCreateMode() ? selectedOpponentProfile : DraftProfileSophisticated;
-        settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? selectedOpponentProfile : DraftProfileSophisticated;
+        RefreshTeamControlValidity(null);
+        bool homeCpuControlled = IsSinglePlayerCreateMode() && IsCpuControlled(homeTeamControlDropdown);
+        bool awayCpuControlled = IsSinglePlayerCreateMode() && IsCpuControlled(awayTeamControlDropdown);
+        settings.homeTeamControl = IsSinglePlayerCreateMode() ? GetTeamControlText(homeTeamControlDropdown) : TeamControlHumanLabel;
+        settings.awayTeamControl = IsSinglePlayerCreateMode() ? GetTeamControlText(awayTeamControlDropdown) : TeamControlHumanLabel;
+        bool usesRegularDraft = string.Equals(settings.draft, "Regular", StringComparison.OrdinalIgnoreCase);
+        settings.homeDraftPersona = ShouldApplyCpuDraftPersona(homeCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
+        settings.awayDraftPersona = ShouldApplyCpuDraftPersona(awayCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
+        settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
+        settings.homeRoomPersona = homeCpuControlled ? RoomPersonaRandom : RoomPersonaAskHuman;
+        settings.awayRoomPersona = awayCpuControlled ? RoomPersonaRandom : RoomPersonaAskHuman;
+        settings.defaultRoomPersona = homeCpuControlled && awayCpuControlled ? RoomPersonaRandom : RoomPersonaAskHuman;
         settings.includeTabletopia = includeTabletopiaToggle.isOn;
         settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
@@ -2407,6 +2491,58 @@ public class CreateNewGameManager : MonoBehaviour
             Debug.Log("Non-regular draft selected. Loading the Free Draft Scene...");
             SceneManager.LoadScene("FreeDraft");
         }
+    }
+
+    private static bool ShouldApplyCpuDraftPersona(bool isCpuControlled, bool usesRegularDraft)
+    {
+        return isCpuControlled && usesRegularDraft;
+    }
+
+    private static bool IsCpuControlled(string roomPersona)
+    {
+        return string.Equals(roomPersona, RoomPersonaRandom, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsExplicitCpuControl(string teamControl)
+    {
+        return string.Equals(teamControl, TeamControlCpuRandomLabel, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsHumanControlled(TMP_Dropdown dropdown)
+    {
+        return string.Equals(GetTeamControlText(dropdown), TeamControlHumanLabel, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsCpuControlled(TMP_Dropdown dropdown)
+    {
+        return string.Equals(GetTeamControlText(dropdown), TeamControlCpuRandomLabel, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetTeamControlText(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.options.Count == 0 || dropdown.value < 0 || dropdown.value >= dropdown.options.Count)
+        {
+            return TeamControlHumanLabel;
+        }
+
+        return dropdown.options[dropdown.value].text;
+    }
+
+    private static void SetTeamControlWithoutNotify(TMP_Dropdown dropdown, string value)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        int index = dropdown.options.FindIndex(option => string.Equals(option.text, value, StringComparison.OrdinalIgnoreCase));
+        if (index < 0)
+        {
+            index = string.Equals(value, TeamControlCpuRandomLabel, StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+        }
+
+        dropdown.SetValueWithoutNotify(Mathf.Clamp(index, 0, Mathf.Max(0, dropdown.options.Count - 1)));
+        dropdown.RefreshShownValue();
     }
 
     private string ResolveGameSettingsSavePath(GameSettings settings, out bool updatedExistingSave)
@@ -2737,6 +2873,8 @@ public class GameSettings
     public bool includeInternationalsGK;
     public string homeTeamName;
     public string awayTeamName;
+    public string homeTeamControl;
+    public string awayTeamControl;
     public string homeKit;
     public string awayKit;
     public string homeGKKit;
@@ -2744,4 +2882,7 @@ public class GameSettings
     public string homeDraftPersona;
     public string awayDraftPersona;
     public string defaultDraftPersona;
+    public string homeRoomPersona;
+    public string awayRoomPersona;
+    public string defaultRoomPersona;
 }

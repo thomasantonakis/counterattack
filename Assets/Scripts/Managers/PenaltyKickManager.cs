@@ -559,6 +559,128 @@ public class PenaltyKickManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        if (isMovingToken || isMovingRequiredSpotToken)
+        {
+            context.AddActionSummary("No Penalty setup decision while a token is moving");
+            return;
+        }
+
+        if (isWaitingForKickerSelection)
+        {
+            context.AddActionSummary("Click an attacking outfield player to take the penalty");
+            foreach (PlayerToken token in GetEligiblePenaltyKickersForDecision())
+            {
+                context.AddTokenActionCandidate(
+                    nameof(PenaltyKickManager),
+                    RoomActionType.PenaltyKick,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {FormatDecisionTokenName(token)} to take the penalty");
+            }
+            return;
+        }
+
+        if (!isWaitingForSetupPhase)
+        {
+            return;
+        }
+
+        List<PlayerToken> invalidTokens = GetInvalidTokensForCurrentSetupTeam();
+        bool canConfirmSetup = invalidTokens.Count == 0;
+        if (canConfirmSetup)
+        {
+            context.AddKeyActionCandidate(
+                nameof(PenaltyKickManager),
+                RoomActionType.PenaltyKick,
+                RoomDecisionStep.Confirm,
+                "Enter",
+                "Press [Enter] to confirm penalty setup");
+        }
+
+        if (selectedToken != null)
+        {
+            string tokenName = !string.IsNullOrWhiteSpace(selectedToken.playerName)
+                ? selectedToken.playerName
+                : selectedToken.name;
+            context.AddActionSummary($"Click a legal unoccupied hex to move {tokenName}");
+            foreach (HexCell hex in GetLegalPenaltySetupDestinationsForDecision())
+            {
+                context.AddHexActionCandidate(
+                    nameof(PenaltyKickManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseTarget,
+                    hex,
+                    $"Move {tokenName} to penalty setup hex {hex.coordinates}");
+            }
+        }
+
+        context.AddActionSummary(invalidTokens.Count > 0
+            ? $"Click an eligible outfield player to move; required: {FormatTokenNames(invalidTokens)}"
+            : "Click an eligible outfield player to move");
+        foreach (PlayerToken token in GetEligibleSetupTokensForDecision())
+        {
+            context.AddAction(new RoomActionCandidate
+            {
+                manager = nameof(PenaltyKickManager),
+                actionType = RoomActionType.SetupMove,
+                step = RoomDecisionStep.ChooseActor,
+                actor = token,
+                label = $"Select {FormatDecisionTokenName(token)} for penalty setup movement",
+                isExecutableNow = true,
+                reason = invalidTokens.Contains(token) ? "invalid_penalty_setup" : "optional_penalty_setup"
+            });
+        }
+    }
+
+    private IEnumerable<PlayerToken> GetEligiblePenaltyKickersForDecision()
+    {
+        return GetAttackers()
+            .Where(token => token != null && !token.IsGoalKeeper);
+    }
+
+    private IEnumerable<PlayerToken> GetEligibleSetupTokensForDecision()
+    {
+        bool expectsAttack = matchManager.currentState == MatchManager.GameState.PenaltyAtt;
+        IEnumerable<PlayerToken> tokens = expectsAttack ? GetAttackers() : hexGrid.GetDefenders();
+        foreach (PlayerToken token in tokens)
+        {
+            if (token == null || token.IsGoalKeeper)
+            {
+                continue;
+            }
+
+            if (token == selectedKicker && token.GetCurrentHex() == penaltySpot)
+            {
+                continue;
+            }
+
+            yield return token;
+        }
+    }
+
+    private IEnumerable<HexCell> GetLegalPenaltySetupDestinationsForDecision()
+    {
+        if (hexGrid == null || hexGrid.cells == null)
+        {
+            yield break;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (IsLegalSetupDestination(hex))
+            {
+                yield return hex;
+            }
+        }
+    }
+
     public bool? IsInstructionExpectingHomeTeam()
     {
         if (!isActivated || matchManager == null)
@@ -577,9 +699,19 @@ public class PenaltyKickManager : MonoBehaviour
     {
         List<string> names = tokens
             .Where(token => token != null)
-            .Select(token => !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name)
+            .Select(FormatDecisionTokenName)
             .ToList();
         return names.Count > 0 ? string.Join(", ", names) : "none";
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "Unknown";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
     }
 
     private static string FormatHex(HexCell hex)

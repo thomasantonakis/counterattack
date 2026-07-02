@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEditor.Events;
@@ -23,6 +24,10 @@ namespace CounterAttack.Editor
         private const float ValidationY = -532f;
         private const float ValidationHeight = 26f;
         private const float BackButtonVerticalGap = 16f;
+        private const float TeamControlLabelY = 276f;
+        private const float TeamControlDropdownY = 246f;
+        private const float TeamControlHomeX = -123f;
+        private const float TeamControlAwayX = 126f;
         private const string BackToModeButtonName = "Back to Game Mode Menu";
         private const string LegacyBackToHotSeatButtonName = "Back to Hot Seat Menu";
         private const string DefaultBackToModeButtonLabel = "Back to Hot Seat Menu";
@@ -39,7 +44,18 @@ namespace CounterAttack.Editor
             SetupCreateNewGameSceneUi(configureKitPreview: false, configureBackButton: true);
         }
 
+        [MenuItem("CounterAttack/Create New Game/Ensure Single Player Team Control UI")]
+        public static void EnsureSinglePlayerTeamControlUi()
+        {
+            SetupCreateNewGameSceneUi(configureKitPreview: false, configureBackButton: false, configureTeamControl: true);
+        }
+
         public static void SetupCreateNewGameSceneUi(bool configureKitPreview, bool configureBackButton)
+        {
+            SetupCreateNewGameSceneUi(configureKitPreview, configureBackButton, configureTeamControl: false);
+        }
+
+        public static void SetupCreateNewGameSceneUi(bool configureKitPreview, bool configureBackButton, bool configureTeamControl)
         {
             Scene targetScene = SceneManager.GetSceneByPath(ScenePath);
             bool openedAdditively = !targetScene.isLoaded;
@@ -65,6 +81,11 @@ namespace CounterAttack.Editor
                 if (configureBackButton)
                 {
                     EnsureBackToHotSeatButton(manager);
+                }
+
+                if (configureTeamControl)
+                {
+                    EnsureTeamControlUi(manager);
                 }
 
                 EditorUtility.SetDirty(manager);
@@ -162,6 +183,106 @@ namespace CounterAttack.Editor
             EditorUtility.SetDirty(backButtonTransform);
             EditorUtility.SetDirty(manager.createGameButton);
             EditorUtility.SetDirty(createButtonTransform);
+        }
+
+        private static void EnsureTeamControlUi(CreateNewGameManager manager)
+        {
+            if (manager.gameModeDropdown == null)
+            {
+                throw new UnityException("CreateNewGameManager.gameModeDropdown is not assigned.");
+            }
+
+            RectTransform rightPanel = FindRectTransformInScene(manager.gameObject.scene, "Right Side Panel");
+            if (rightPanel == null)
+            {
+                throw new UnityException("Could not find Right Side Panel in CreateNewHSGameScene.");
+            }
+
+            TMP_FontAsset fontAsset = manager.gameModeDropdown.captionText != null
+                ? manager.gameModeDropdown.captionText.font
+                : TMP_Settings.defaultFontAsset;
+
+            EnsureTeamControlLabel(rightPanel, "Home Team Control Label", "Home team Control:", TeamControlHomeX, TeamControlLabelY, fontAsset);
+            EnsureTeamControlLabel(rightPanel, "Away Team Control Label", "Away team Control:", TeamControlAwayX, TeamControlLabelY, fontAsset);
+
+            TMP_Dropdown homeDropdown = EnsureTeamControlDropdown(
+                rightPanel,
+                "Home Team Control",
+                manager.gameModeDropdown,
+                TeamControlHomeX,
+                TeamControlDropdownY,
+                defaultIndex: 0);
+            TMP_Dropdown awayDropdown = EnsureTeamControlDropdown(
+                rightPanel,
+                "Away Team Control",
+                manager.gameModeDropdown,
+                TeamControlAwayX,
+                TeamControlDropdownY,
+                defaultIndex: 1);
+
+            manager.homeTeamControlDropdown = homeDropdown;
+            manager.awayTeamControlDropdown = awayDropdown;
+            EditorUtility.SetDirty(manager);
+        }
+
+        private static TMP_Text EnsureTeamControlLabel(
+            RectTransform parent,
+            string labelName,
+            string labelText,
+            float x,
+            float y,
+            TMP_FontAsset fontAsset)
+        {
+            RectTransform labelTransform = EnsureRectTransform(parent, labelName);
+            labelTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            labelTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            labelTransform.pivot = new Vector2(0.5f, 0.5f);
+            labelTransform.anchoredPosition = new Vector2(x, y);
+            labelTransform.sizeDelta = new Vector2(224.6014f, 26f);
+
+            TextMeshProUGUI text = labelTransform.GetComponent<TextMeshProUGUI>();
+            if (text == null)
+            {
+                text = labelTransform.gameObject.AddComponent<TextMeshProUGUI>();
+            }
+
+            text.font = fontAsset;
+            text.fontSize = 20f;
+            text.alignment = TextAlignmentOptions.Center;
+            text.color = Color.white;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            text.raycastTarget = false;
+            text.text = labelText;
+            EditorUtility.SetDirty(labelTransform);
+            EditorUtility.SetDirty(text);
+            return text;
+        }
+
+        private static TMP_Dropdown EnsureTeamControlDropdown(
+            RectTransform parent,
+            string dropdownName,
+            TMP_Dropdown sourceDropdown,
+            float x,
+            float y,
+            int defaultIndex)
+        {
+            TMP_Dropdown dropdown = EnsureDropdown(parent, dropdownName, sourceDropdown);
+            RectTransform dropdownTransform = dropdown.GetComponent<RectTransform>();
+            dropdownTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            dropdownTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            dropdownTransform.pivot = new Vector2(0.5f, 0.5f);
+            dropdownTransform.anchoredPosition = new Vector2(x, y);
+            dropdownTransform.sizeDelta = new Vector2(224.6014f, 30f);
+
+            dropdown.ClearOptions();
+            dropdown.AddOptions(new List<string> { "P1 (Human)", "CPU-Random" });
+            dropdown.SetValueWithoutNotify(Mathf.Clamp(defaultIndex, 0, 1));
+            dropdown.RefreshShownValue();
+            ResizeDropdownTemplate(dropdown);
+
+            EditorUtility.SetDirty(dropdown);
+            EditorUtility.SetDirty(dropdownTransform);
+            return dropdown;
         }
 
         private static Button EnsureButton(RectTransform parent, string buttonName, string legacyButtonName, Button sourceButton)
@@ -440,6 +561,23 @@ namespace CounterAttack.Editor
                 if (match != null)
                 {
                     return match;
+                }
+            }
+
+            return null;
+        }
+
+        private static RectTransform FindRectTransformInScene(Scene scene, string objectName)
+        {
+            foreach (GameObject root in scene.GetRootGameObjects())
+            {
+                RectTransform[] transforms = root.GetComponentsInChildren<RectTransform>(true);
+                foreach (RectTransform transform in transforms)
+                {
+                    if (transform != null && transform.name == objectName)
+                    {
+                        return transform;
+                    }
                 }
             }
 

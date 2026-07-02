@@ -127,13 +127,18 @@ public static class GroundPassCommon
         int maxDistance,
         bool isQuickThrow = false,
         bool ignoreMaxDistance = false,
-        bool suppressInterceptions = false
+        bool suppressInterceptions = false,
+        bool logFailures = true
     )
     {
         HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
         if (ballHex == null || targetHex == null)
         {
-            Debug.LogError("Ball or target hex is null!");
+            if (logFailures)
+            {
+                Debug.LogError("Ball or target hex is null!");
+            }
+
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.NullTarget);
         }
 
@@ -141,7 +146,11 @@ public static class GroundPassCommon
         int distanceBetweenHexes = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         if (!ignoreMaxDistance && distanceBetweenHexes > maxDistance)
         {
-            Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {maxDistance}. Current steps: {distanceBetweenHexes}");
+            if (logFailures)
+            {
+                Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {maxDistance}. Current steps: {distanceBetweenHexes}");
+            }
+
             return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.OutOfRange);
         }
 
@@ -149,7 +158,11 @@ public static class GroundPassCommon
         {
             if (targetHex.isDefenseOccupied)
             {
-                Debug.Log($"Quick throw target blocked by defender at hex: {targetHex.coordinates}");
+                if (logFailures)
+                {
+                    Debug.Log($"Quick throw target blocked by defender at hex: {targetHex.coordinates}");
+                }
+
                 return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.TargetOccupiedByDefender);
             }
         }
@@ -159,7 +172,11 @@ public static class GroundPassCommon
             {
                 if (hex != null && hex.isDefenseOccupied)
                 {
-                    Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
+                    if (logFailures)
+                    {
+                        Debug.Log($"Path blocked by defender at hex: {hex.coordinates}");
+                    }
+
                     return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.BlockedByDefender);
                 }
             }

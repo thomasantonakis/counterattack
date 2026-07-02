@@ -1021,6 +1021,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP), Scenario_023_Movement_Phase_DriblingBox_TackleLoose_ball_on_attacker_NO_Snapshot_end_MP),
             new ScenarioDefinition(nameof(Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal), Scenario_024_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_Snapshot_goal),
             new ScenarioDefinition(nameof(Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL), Scenario_024b_Movement_Phase_DriblingBox_Nutmeg_Loose_ball_on_attacker_No_Snapshot_end_MP_SHOT_GOAL),
+            new ScenarioDefinition(nameof(Scenario_024b2_Movement_Phase_Nutmeg_Tie_Loose_ball_back_to_dribbler_continues), Scenario_024b2_Movement_Phase_Nutmeg_Tie_Loose_ball_back_to_dribbler_continues),
             new ScenarioDefinition(nameof(Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset), Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset),
             new ScenarioDefinition(nameof(Scenario_025a_Movement_Phase_Dribling_into_goal), Scenario_025a_Movement_Phase_Dribling_into_goal),
             new ScenarioDefinition(nameof(Scenario_025b_Movement_Phase_Reposition_into_goal), Scenario_025b_Movement_Phase_Reposition_into_goal),
@@ -14006,6 +14007,128 @@ public class GameTestScenarioRunner : MonoBehaviour
         
 
         LogFooterofTest("MovementPhase DribbleBox Nutmeg, LB, ball on attacker, NO snapshot, end MP, SHOT GOAL!");
+    }
+
+    private IEnumerator Scenario_024b2_Movement_Phase_Nutmeg_Tie_Loose_ball_back_to_dribbler_continues()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Log("Starting test scenario: MovementPhase Nutmeg tie loose ball back to dribbler continues as pace exhausted.");
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        yield return new WaitForSeconds(3f);
+
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.M, 0.1f));
+        yield return new WaitForSeconds(0.2f);
+
+        Log("Move Yaneva into nutmeg position.");
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(11, 0), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(12, 1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(16, -1), 0.5f));
+        yield return new WaitForSeconds(0.8f);
+        yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(13, 0), 0.5f));
+        yield return new WaitForSeconds(1.2f);
+
+        AssertTrue(
+            movementPhaseManager.isWaitingForNutmegDecision,
+            "MP should offer a nutmeg decision before the tie-back regression setup.",
+            true,
+            movementPhaseManager.isWaitingForNutmegDecision);
+
+        PlayerToken yaneva = RequirePlayerToken("Yaneva");
+        Log("Pressing N - Nutmeg Soares with Yaneva");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.N, 0.1f));
+        yield return new WaitForSeconds(0.5f);
+
+        PlayerToken nutmegDefender = movementPhaseManager.nutmegVictim;
+        AssertTrue(nutmegDefender != null, "Nutmeg victim should be set before the tie rolls.");
+
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        yield return new WaitForSeconds(0.2f);
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return new WaitForSeconds(1.2f);
+
+        AssertTrue(
+            looseBallManager.isActivated,
+            "Loose Ball Manager should activate after a nutmeg tie.",
+            true,
+            looseBallManager.isActivated);
+        AssertTrue(
+            looseBallManager.isWaitingForDirectionRoll,
+            "Loose Ball Manager should wait for direction after the nutmeg tie.",
+            true,
+            looseBallManager.isWaitingForDirectionRoll);
+
+        HexCell defenderHex = nutmegDefender.GetCurrentHex();
+        HexCell dribblerHex = yaneva.GetCurrentHex();
+        int returnDirectionIndex = Enumerable.Range(0, 6)
+            .FirstOrDefault(index => looseBallManager.CalculateDirectionalTarget(defenderHex, index, 1) == dribblerHex);
+        AssertTrue(
+            looseBallManager.CalculateDirectionalTarget(defenderHex, returnDirectionIndex, 1) == dribblerHex,
+            "The nutmeg defender should have a one-hex loose-ball direction back to Yaneva.");
+
+        looseBallManager.PerformDirectionRoll(returnDirectionIndex + 1);
+        yield return new WaitForSeconds(0.1f);
+        looseBallManager.PerformDistanceRoll(1);
+        yield return new WaitForSeconds(1.5f);
+
+        AssertTrue(
+            !looseBallManager.isActivated,
+            "Loose Ball Manager should finish after the ball returns to the dribbler.",
+            false,
+            looseBallManager.isActivated);
+        AssertTrue(
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == yaneva,
+            "The returned loose ball should keep Yaneva as the current ball owner.",
+            yaneva,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+        AssertTrue(
+            movementPhaseManager.movedTokens.Contains(yaneva),
+            "Yaneva should remain registered as moved after the nutmeg tie loose ball.",
+            true,
+            movementPhaseManager.movedTokens.Contains(yaneva));
+        AssertTrue(
+            movementPhaseManager.isWaitingForSnapshotDecision,
+            "A same-dribbler tie-back in the box should use MovementPhase snapshot handling, matching exhausted pace.",
+            true,
+            movementPhaseManager.isWaitingForSnapshotDecision);
+        AssertTrue(
+            !shotManager.isWaitingForSnapshotDecisionFromLoose,
+            "The same-dribbler tie-back should not use the generic loose-ball snapshot interruption.",
+            false,
+            shotManager.isWaitingForSnapshotDecisionFromLoose);
+
+        Log("Pressing X - same dribbler declines the exhausted-pace snapshot.");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.1f));
+        yield return new WaitForSeconds(0.8f);
+
+        AssertTrue(
+            movementPhaseManager.attackersMoved == 1,
+            "Declining the exhausted-pace snapshot should advance the attacking movement count.",
+            1,
+            movementPhaseManager.attackersMoved);
+        AssertTrue(
+            movementPhaseManager.isAwaitingTokenSelection,
+            "Movement phase should continue waiting for the next attacking token.",
+            true,
+            movementPhaseManager.isAwaitingTokenSelection);
+        AssertTrue(
+            movementPhaseManager.isMovementPhaseAttack,
+            "Movement phase should still be in the attacking movement section after one attacker moved.",
+            true,
+            movementPhaseManager.isMovementPhaseAttack);
+
+        LogFooterofTest("MovementPhase Nutmeg tie loose ball back to dribbler continues as pace exhausted.");
     }
 
     private IEnumerator Scenario_024c_LooseBall_OwnGoal_Credits_Opponent_And_Reset()

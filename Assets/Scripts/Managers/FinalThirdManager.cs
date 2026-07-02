@@ -107,6 +107,16 @@ public class FinalThirdManager : MonoBehaviour
                 keyData.Consume(nameof(FinalThirdManager), IsInstructionExpectingHomeTeam());
                 GKKick();
             }
+            else if (isWaitingForWhatToDo && isWaitingForSetPieceGoalKickChoice && keyData.key == KeyCode.P)
+            {
+                keyData.Consume(nameof(FinalThirdManager), IsInstructionExpectingHomeTeam());
+                StandardGoalKickPass();
+            }
+            else if (isWaitingForWhatToDo && isWaitingForSetPieceGoalKickChoice && keyData.key == KeyCode.K)
+            {
+                keyData.Consume(nameof(FinalThirdManager), IsInstructionExpectingHomeTeam());
+                GKKick();
+            }
         }
     }
 
@@ -1292,6 +1302,77 @@ public class FinalThirdManager : MonoBehaviour
         
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space
         return sb.ToString();
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        if (isWaitingForSetPieceGoalKickChoice)
+        {
+            context.AddKeyAction("P", "Press [P] to take a Goal Kick Standard Pass");
+            context.AddKeyAction("K", "Press [K] to take a Goalkeeper Kick");
+            return;
+        }
+
+        if (isWaitingForWhatToDo)
+        {
+            context.AddKeyAction("D", "Press [D] to drop the ball and commit to Movement Phase");
+            context.AddKeyAction("K", "Press [K] to take a Goalkeeper Kick");
+            return;
+        }
+
+        if (!isMovingToken && CanForfeitCurrentF3Move(logWarnings: false))
+        {
+            context.AddKeyActionCandidate(
+                nameof(FinalThirdManager),
+                RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice,
+                "Enter",
+                $"Press [Enter] to forfeit {GetTeamNameByCurrentTeamMoving()}'s current F3 move",
+                isForfeit: true);
+        }
+
+        if (isMovingToken)
+        {
+            context.AddActionSummary("No Final Third input while the selected token is moving");
+            return;
+        }
+
+        if (isWaitingForTokenSelection)
+        {
+            context.AddActionSummary($"Click a token from {GetTeamNameByCurrentTeamMoving()} to select for Final Third movement");
+            if (currentMovableTokens == null)
+            {
+                return;
+            }
+
+            foreach (PlayerToken token in currentMovableTokens)
+            {
+                context.AddToken(token);
+            }
+        }
+
+        if (isWaitingForTargetHex && selectedToken != null)
+        {
+            string tokenName = !string.IsNullOrWhiteSpace(selectedToken.playerName)
+                ? selectedToken.playerName
+                : selectedToken.name;
+            context.AddActionSummary($"Click a highlighted hex to move {tokenName}");
+
+            if (hexGrid == null)
+            {
+                return;
+            }
+
+            foreach (HexCell hex in hexGrid.highlightedHexes)
+            {
+                context.AddHex(hex);
+            }
+        }
     }
 
     private void AppendOobGoalKickInstructionDetails(StringBuilder sb)

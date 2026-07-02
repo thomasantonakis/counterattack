@@ -12,6 +12,12 @@ public class AIManager : MonoBehaviour
         Sophisticated
     }
 
+    public enum RoomPersona
+    {
+        AskHuman,
+        Random
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -69,6 +75,27 @@ public class AIManager : MonoBehaviour
         }
 
         return Persona.Greedy;
+    }
+
+    public static RoomPersona ResolveRoomPersona(MatchManager.GameSettings settings, string expectedTeam)
+    {
+        string personaName = string.Equals(expectedTeam, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? settings?.awayRoomPersona
+            : string.Equals(expectedTeam, "Home", System.StringComparison.OrdinalIgnoreCase)
+                ? settings?.homeRoomPersona
+                : settings?.defaultRoomPersona;
+
+        if (string.IsNullOrWhiteSpace(personaName))
+        {
+            personaName = settings?.defaultRoomPersona;
+        }
+
+        if (System.Enum.TryParse(personaName, true, out RoomPersona persona))
+        {
+            return persona;
+        }
+
+        return RoomPersona.AskHuman;
     }
 
     private static DraftDecisions.DraftProfile ResolveDraftProfile(Persona persona)

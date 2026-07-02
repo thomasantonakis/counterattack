@@ -2288,6 +2288,278 @@ public class HeaderManager : MonoBehaviour
         return sb.ToString();
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || !isActivated)
+        {
+            return;
+        }
+
+        if (isWaitingForAttackerSelection)
+        {
+            if (attEligibleToHead.Count <= 2)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(HeaderManager),
+                    RoomActionType.Header,
+                    RoomDecisionStep.Setup,
+                    "A",
+                    "Press [A] to select all available attackers");
+            }
+
+            if (IsAttackerHeaderNominationReady())
+            {
+                context.AddKeyActionCandidate(
+                    nameof(HeaderManager),
+                    RoomActionType.Header,
+                    RoomDecisionStep.Confirm,
+                    "Enter",
+                    "Press [Enter] to confirm attacking challengers");
+                context.AddActionSummary("Click a nominated attacker to remove them");
+            }
+
+            context.AddActionSummary("Click an eligible attacker to nominate for the header");
+            AddHeaderActorCandidates(context, GetUnnominatedHeaderCandidates(attEligibleToHead, attackerWillJump), "Nominate");
+            return;
+        }
+
+        if (isWaitingForDefenderSelection)
+        {
+            if (GetEligibleOutfieldHeaderDefenders().Count() <= MAX_OUTFIELD_HEADER_DEFENDERS)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(HeaderManager),
+                    RoomActionType.Header,
+                    RoomDecisionStep.Setup,
+                    "A",
+                    "Press [A] to select all available defenders");
+            }
+
+            if (IsDefenderHeaderNominationReady())
+            {
+                context.AddKeyActionCandidate(
+                    nameof(HeaderManager),
+                    RoomActionType.Header,
+                    RoomDecisionStep.Confirm,
+                    "Enter",
+                    defenderWillJump.Count == 0
+                        ? "Press [Enter] to decline the defensive challenge"
+                        : "Press [Enter] to confirm defensive challengers");
+            }
+
+            if (defenderWillJump.Count > 0)
+            {
+                context.AddActionSummary("Click a nominated defender to remove them");
+            }
+
+            context.AddActionSummary("Click an eligible defender to nominate for the header");
+            AddHeaderActorCandidates(context, GetUnnominatedHeaderCandidates(defEligibleToHead, defenderWillJump), "Nominate");
+            return;
+        }
+
+        if (isWaitingForControlOrHeaderDecision || isWaitingForControlOrHeaderDecisionDef)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Header,
+                RoomDecisionStep.InterruptionChoice,
+                "H",
+                "Press [H] to take a free Header");
+            context.AddKeyActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.SelectToken,
+                RoomDecisionStep.InterruptionChoice,
+                "B",
+                "Press [B] to attempt ball control");
+            return;
+        }
+
+        if (iswaitingForChallengeWinnerSelection)
+        {
+            context.AddActionSummary("Click a valid header/control winner");
+            AddHeaderActorCandidates(context, GetChallengeWinnerCandidates(), "Select");
+            return;
+        }
+
+        if (isWaitingForHeaderAtGoal)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Header,
+                RoomDecisionStep.ChooseActionType,
+                "H",
+                "Press [H] to make a headed pass");
+            context.AddActionSummary("Click a highlighted in-goal hex");
+            AddHeaderAtGoalTargets(context);
+            return;
+        }
+
+        if (isWaitingForHeaderTargetSelection)
+        {
+            context.AddActionSummary("Click a highlighted headed-pass target");
+            AddHeaderPassTargets(context);
+            return;
+        }
+
+        if (isWaitingForHeaderRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll the header");
+            return;
+        }
+
+        if (isWaitingForControlRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll ball control");
+            return;
+        }
+
+        if (isWaitingForInterceptionRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll header interception");
+        }
+    }
+
+    private static void AddHeaderActorCandidates(RoomDecisionContext context, IEnumerable<PlayerToken> tokens, string verb)
+    {
+        if (context == null || tokens == null)
+        {
+            return;
+        }
+
+        foreach (PlayerToken token in tokens)
+        {
+            if (token == null)
+            {
+                continue;
+            }
+
+            context.AddTokenActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Header,
+                RoomDecisionStep.ChooseActor,
+                token,
+                $"{verb} {FormatDecisionTokenName(token)} for the header");
+        }
+    }
+
+    private bool IsAttackerHeaderNominationReady()
+    {
+        int desiredNominations = Mathf.Min(2, attEligibleToHead.Count(token => token != null));
+        return desiredNominations > 0 && attackerWillJump.Count(token => token != null) >= desiredNominations;
+    }
+
+    private bool IsDefenderHeaderNominationReady()
+    {
+        int desiredNominations = Mathf.Min(2, defEligibleToHead.Count(token => token != null));
+        return desiredNominations == 0 || defenderWillJump.Count(token => token != null) >= desiredNominations;
+    }
+
+    private static IEnumerable<PlayerToken> GetUnnominatedHeaderCandidates(
+        IEnumerable<PlayerToken> eligibleTokens,
+        IEnumerable<PlayerToken> nominatedTokens)
+    {
+        if (eligibleTokens == null)
+        {
+            return Enumerable.Empty<PlayerToken>();
+        }
+
+        HashSet<PlayerToken> nominated = nominatedTokens != null
+            ? new HashSet<PlayerToken>(nominatedTokens.Where(token => token != null))
+            : new HashSet<PlayerToken>();
+
+        return eligibleTokens.Where(token => token != null && !nominated.Contains(token));
+    }
+
+    private void AddHeaderAtGoalTargets(RoomDecisionContext context)
+    {
+        foreach (HexCell hex in GetHeaderAtGoalDecisionTargets())
+        {
+            context.AddHexActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Shot,
+                RoomDecisionStep.ChooseTarget,
+                hex,
+                $"Head at goal to hex {hex.coordinates}");
+        }
+    }
+
+    private IEnumerable<HexCell> GetHeaderAtGoalDecisionTargets()
+    {
+        if (headerAtGoalTargetHexes.Count > 0)
+        {
+            return headerAtGoalTargetHexes.Where(hex => hex != null);
+        }
+
+        HexCell headerHex = ball != null ? ball.GetCurrentHex() : null;
+        if (headerHex?.HeadingPaths == null)
+        {
+            return Enumerable.Empty<HexCell>();
+        }
+
+        return headerHex.HeadingPaths.Keys
+            .Where(hex => hex != null && hex.isInGoal != 0);
+    }
+
+    private void AddHeaderPassTargets(RoomDecisionContext context)
+    {
+        if (context == null || hexGrid == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.highlightedHexes)
+        {
+            if (hex == null || !headerTargetThreatByHex.ContainsKey(hex))
+            {
+                continue;
+            }
+
+            PlayerToken targetToken = hex.GetOccupyingToken();
+            if (targetToken != null && targetToken.isAttacker)
+            {
+                context.AddTargetTokenActionCandidate(
+                    nameof(HeaderManager),
+                    RoomActionType.Header,
+                    RoomDecisionStep.ChooseTarget,
+                    targetToken,
+                    $"Headed pass to {FormatDecisionTokenName(targetToken)}");
+                continue;
+            }
+
+            context.AddHexActionCandidate(
+                nameof(HeaderManager),
+                RoomActionType.Header,
+                RoomDecisionStep.ChooseTarget,
+                hex,
+                $"Headed pass to hex {hex.coordinates}");
+        }
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
+    }
+
 
     public string GetInstructions()
     {

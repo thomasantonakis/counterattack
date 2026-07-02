@@ -1021,8 +1021,64 @@ public class GameInputManager : MonoBehaviour
         }
 
         PlayerToken token = hex.GetOccupyingToken();
+        DispatchSyntheticClick(token, hex, "🧪 Simulated");
+    }
 
-        Debug.Log($"🧪 Simulated click -> hex: {hex.name} @ {coords}, token: {(token != null ? token.name : "None")}");
+    public bool TryExecuteSyntheticTokenClick(PlayerToken token, string source, out string error)
+    {
+        error = string.Empty;
+        if (token == null)
+        {
+            error = "Token candidate is null.";
+            return false;
+        }
+
+        if (!token.isPlaying)
+        {
+            error = $"Token {token.name} is not playing.";
+            return false;
+        }
+
+        HexCell hex = token.GetCurrentHex();
+        if (hex == null)
+        {
+            error = $"Token {token.name} has no current hex.";
+            return false;
+        }
+
+        if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
+        {
+            error = "Gameplay input is blocked.";
+            return false;
+        }
+
+        DispatchSyntheticClick(token, hex, source);
+        return true;
+    }
+
+    public bool TryExecuteSyntheticHexClick(HexCell hex, string source, out string error)
+    {
+        error = string.Empty;
+        if (hex == null)
+        {
+            error = "Hex candidate is null.";
+            return false;
+        }
+
+        if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
+        {
+            error = "Gameplay input is blocked.";
+            return false;
+        }
+
+        DispatchSyntheticClick(hex.GetOccupyingToken(), hex, source);
+        return true;
+    }
+
+    private void DispatchSyntheticClick(PlayerToken token, HexCell hex, string source)
+    {
+        Vector3Int coords = hex != null ? hex.coordinates : default;
+        Debug.Log($"{source} click -> hex: {(hex != null ? hex.name : "None")} @ {coords}, token: {(token != null ? token.name : "None")}");
         if (TryHandleEmergencyGoalkeeperNomination(token))
         {
             return;
@@ -1051,7 +1107,31 @@ public class GameInputManager : MonoBehaviour
         }
 
         var keyData = new KeyPressData(key,shift,ctrl,alt);
-        Debug.Log($"🧪 Simulated key press -> {FormatKeyChord(keyData)}");
+        DispatchSyntheticKeyPress(keyData, "🧪 Simulated");
+    }
+
+    public bool TryExecuteSyntheticKeyPress(string keyName, string source, out string error)
+    {
+        error = string.Empty;
+        if (!TryParseSyntheticKeyCode(keyName, out KeyCode keyCode))
+        {
+            error = $"Unknown key candidate: {keyName}";
+            return false;
+        }
+
+        if (IsGameplayInputBlocked())
+        {
+            error = "Gameplay input is blocked.";
+            return false;
+        }
+
+        DispatchSyntheticKeyPress(new KeyPressData(keyCode, shift: false, ctrl: false, alt: false), source);
+        return true;
+    }
+
+    private void DispatchSyntheticKeyPress(KeyPressData keyData, string source)
+    {
+        Debug.Log($"{source} key press -> {FormatKeyChord(keyData)}");
         GameplayEvent inputEvent = MatchManager.Instance?.BeginInputKey(keyData);
         try
         {
@@ -1062,6 +1142,52 @@ public class GameInputManager : MonoBehaviour
             keyData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(keyData.consumedBy));
             MatchManager.Instance?.CompleteInputKey(inputEvent, keyData);
         }
+    }
+
+    private static bool TryParseSyntheticKeyCode(string keyName, out KeyCode keyCode)
+    {
+        keyCode = KeyCode.None;
+        if (string.IsNullOrWhiteSpace(keyName))
+        {
+            return false;
+        }
+
+        string normalized = keyName.Trim();
+        if (normalized.StartsWith("KeyCode.", StringComparison.OrdinalIgnoreCase))
+        {
+            normalized = normalized.Substring("KeyCode.".Length);
+        }
+
+        switch (normalized.ToLowerInvariant())
+        {
+            case "enter":
+            case "return":
+                keyCode = KeyCode.Return;
+                return true;
+            case "space":
+            case "spacebar":
+                keyCode = KeyCode.Space;
+                return true;
+            case "esc":
+                keyCode = KeyCode.Escape;
+                return true;
+        }
+
+        if (normalized.Length == 1)
+        {
+            char character = normalized[0];
+            if (char.IsLetter(character))
+            {
+                return Enum.TryParse(char.ToUpperInvariant(character).ToString(), out keyCode);
+            }
+
+            if (char.IsDigit(character))
+            {
+                return Enum.TryParse($"Alpha{character}", out keyCode);
+            }
+        }
+
+        return Enum.TryParse(normalized, ignoreCase: true, out keyCode);
     }
 
     public IEnumerator DelayedClick(Vector2Int pos, float delay)

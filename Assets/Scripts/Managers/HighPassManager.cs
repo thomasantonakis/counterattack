@@ -51,7 +51,9 @@ public class HighPassManager : MonoBehaviour
     public bool isCornerKick = false;
     [Header("Tuning")]
     [Min(0)]
-    public int minPassDistance = 6;
+    public int minPassDistance = 3;
+    public bool useSlowerTargetPrecompute = false;
+    private const int REGULAR_HIGH_PASS_MIN_DISTANCE = 3;
     private const int MAX_PASS_DISTANCE = 15;
     private const int ATTACKER_MOVE_RANGE = 3;
     private const int DEFENDER_MOVE_RANGE = 3;
@@ -61,6 +63,8 @@ public class HighPassManager : MonoBehaviour
     private HexCell hoveredHighPassTargetHex;
     private Coroutine availableTargetPrecomputeRoutine;
     private int availableTargetPrecomputeVersion = 0;
+    private float availableTargetPrecomputeStartedAt = 0f;
+    private int availableTargetPrecomputeStartedFrame = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
     private PlayerToken pendingSetPieceTakerForCommit = null;
     private PlayerToken activeHighPassKickerForTargetExclusion = null;
@@ -316,7 +320,7 @@ public class HighPassManager : MonoBehaviour
                 isValid,
                 willConfirm);
             details["targetTokenKey"] = preview.targetTokenKey ?? string.Empty;
-            details["imposedMinDistance"] = minPassDistance.ToString();
+            details["imposedMinDistance"] = (isGoalkeeperKick ? minPassDistance : REGULAR_HIGH_PASS_MIN_DISTANCE).ToString();
             details["imposedMaxDistance"] = MAX_PASS_DISTANCE.ToString();
             details["targetHexStepDistance"] = preview.targetHexStepDistance.ToString();
             outcome = isValid
@@ -527,7 +531,12 @@ public class HighPassManager : MonoBehaviour
         }
 
         int version = ++availableTargetPrecomputeVersion;
-        availableTargetPrecomputeRoutine = StartCoroutine(PrecomputeAvailableHighPassTargets(version));
+        availableTargetPrecomputeStartedAt = Time.realtimeSinceStartup;
+        availableTargetPrecomputeStartedFrame = Time.frameCount;
+        Debug.Log($"HP target precompute started. version={version}, frame={availableTargetPrecomputeStartedFrame}, ballHex={FormatHex(ball.GetCurrentHex())}, candidateCount={hexGrid.cells?.Length ?? 0}");
+        availableTargetPrecomputeRoutine = StartCoroutine(useSlowerTargetPrecompute
+            ? PrecomputeAvailableHighPassTargets_slower_attempt(version)
+            : PrecomputeAvailableHighPassTargets(version));
     }
 
     public void ResetAvailableTargetPrecompute()
@@ -535,6 +544,7 @@ public class HighPassManager : MonoBehaviour
         availableTargetPrecomputeVersion++;
         if (availableTargetPrecomputeRoutine != null)
         {
+            LogAvailableTargetPrecomputeEnded("cancelled", availableTargetPrecomputeVersion - 1, availableHighPassTargetHexes.Count, 0);
             StopCoroutine(availableTargetPrecomputeRoutine);
             availableTargetPrecomputeRoutine = null;
         }
@@ -546,7 +556,7 @@ public class HighPassManager : MonoBehaviour
         pendingDifficultyOneTargetHighlightRefresh = false;
     }
 
-    private IEnumerator PrecomputeAvailableHighPassTargets(int version)
+    private IEnumerator PrecomputeAvailableHighPassTargets_slower_attempt(int version)
     {
         isAvailableTargetsReady = false;
         availableHighPassTargetHexes.Clear();
@@ -557,6 +567,7 @@ public class HighPassManager : MonoBehaviour
         {
             if (version != availableTargetPrecomputeVersion)
             {
+                LogAvailableTargetPrecomputeEnded("superseded_slower_attempt", version, availableHighPassTargetHexes.Count, processed);
                 availableTargetPrecomputeRoutine = null;
                 yield break;
             }
@@ -576,6 +587,7 @@ public class HighPassManager : MonoBehaviour
         if (version == availableTargetPrecomputeVersion)
         {
             isAvailableTargetsReady = true;
+            LogAvailableTargetPrecomputeEnded("completed_slower_attempt", version, availableHighPassTargetHexes.Count, processed);
             if (pendingDifficultyOneTargetHighlightRefresh || ShouldShowDifficultyOneTargetHighlights())
             {
                 pendingDifficultyOneTargetHighlightRefresh = false;
@@ -585,6 +597,195 @@ public class HighPassManager : MonoBehaviour
         }
 
         availableTargetPrecomputeRoutine = null;
+    }
+
+    private IEnumerator PrecomputeAvailableHighPassTargets(int version)
+    {
+        isAvailableTargetsReady = false;
+        availableHighPassTargetHexes.Clear();
+        hoveredHighPassTargetHex = null;
+
+        HexCell ballHex = ball != null ? ball.GetCurrentHex() : null;
+        if (ballHex == null)
+        {
+            LogAvailableTargetPrecomputeEnded("completed_fast_no_ball", version, 0, 0);
+            availableTargetPrecomputeRoutine = null;
+            yield break;
+        }
+
+        Dictionary<HexCell, List<PlayerToken>> reachableAttackersByHex = BuildReachableHighPassAttackersByHex();
+        HashSet<HexCell> adjacentDefenderBlockers = BuildAdjacentDefenderBlockers(ballHex);
+        List<HexCell> candidates = reachableAttackersByHex.Keys.ToList();
+
+        int processed = 0;
+        foreach (HexCell hex in candidates)
+        {
+            if (version != availableTargetPrecomputeVersion)
+            {
+                LogAvailableTargetPrecomputeEnded("superseded_fast", version, availableHighPassTargetHexes.Count, processed);
+                availableTargetPrecomputeRoutine = null;
+                yield break;
+            }
+
+            if (IsHighPassTargetAvailableForPrecompute(hex, ballHex, reachableAttackersByHex, adjacentDefenderBlockers))
+            {
+                availableHighPassTargetHexes.Add(hex);
+            }
+
+            processed++;
+            if (processed % TARGET_PRECOMPUTE_BATCH_SIZE == 0)
+            {
+                yield return null;
+            }
+        }
+
+        if (version == availableTargetPrecomputeVersion)
+        {
+            isAvailableTargetsReady = true;
+            LogAvailableTargetPrecomputeEnded("completed_fast", version, availableHighPassTargetHexes.Count, processed);
+            if (pendingDifficultyOneTargetHighlightRefresh || ShouldShowDifficultyOneTargetHighlights())
+            {
+                pendingDifficultyOneTargetHighlightRefresh = false;
+                RefreshDifficultyOneHighPassTargetHighlights();
+                Debug.Log($"Successfully highlighted {availableHighPassTargetHexes.Count} precomputed valid hexes for High Pass.");
+            }
+        }
+
+        availableTargetPrecomputeRoutine = null;
+    }
+
+    private Dictionary<HexCell, List<PlayerToken>> BuildReachableHighPassAttackersByHex()
+    {
+        Dictionary<HexCell, List<PlayerToken>> reachableAttackersByHex = new();
+        if (hexGrid == null)
+        {
+            return reachableAttackersByHex;
+        }
+
+        foreach (HexCell attackerHex in hexGrid.GetAttackerHexes())
+        {
+            PlayerToken attackerToken = attackerHex != null ? attackerHex.GetOccupyingToken() : null;
+            if (attackerToken == null
+                || IsSetPieceTakerExcludedFromHighPassTarget(attackerToken)
+                || (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(attackerToken)))
+            {
+                continue;
+            }
+
+            AddReachableHighPassHex(reachableAttackersByHex, attackerHex, attackerToken);
+            List<HexCell> reachableHexes = HexGridUtils.GetReachableHexes(hexGrid, attackerHex, ATTACKER_MOVE_RANGE).Item1;
+            foreach (HexCell reachableHex in reachableHexes)
+            {
+                AddReachableHighPassHex(reachableAttackersByHex, reachableHex, attackerToken);
+            }
+        }
+
+        return reachableAttackersByHex;
+    }
+
+    private static void AddReachableHighPassHex(Dictionary<HexCell, List<PlayerToken>> reachableAttackersByHex, HexCell hex, PlayerToken attackerToken)
+    {
+        if (hex == null || hex.isOutOfBounds || attackerToken == null)
+        {
+            return;
+        }
+
+        if (!reachableAttackersByHex.TryGetValue(hex, out List<PlayerToken> attackers))
+        {
+            attackers = new List<PlayerToken>();
+            reachableAttackersByHex[hex] = attackers;
+        }
+
+        if (!attackers.Contains(attackerToken))
+        {
+            attackers.Add(attackerToken);
+        }
+    }
+
+    private HashSet<HexCell> BuildAdjacentDefenderBlockers(HexCell ballHex)
+    {
+        HashSet<HexCell> adjacentDefenderBlockers = new();
+        if (ballHex == null || hexGrid == null)
+        {
+            return adjacentDefenderBlockers;
+        }
+
+        foreach (HexCell neighbor in ballHex.GetNeighbors(hexGrid))
+        {
+            if (neighbor != null && neighbor.isDefenseOccupied)
+            {
+                adjacentDefenderBlockers.Add(neighbor);
+            }
+        }
+
+        return adjacentDefenderBlockers;
+    }
+
+    private bool IsHighPassTargetAvailableForPrecompute(
+        HexCell targetHex,
+        HexCell ballHex,
+        Dictionary<HexCell, List<PlayerToken>> reachableAttackersByHex,
+        HashSet<HexCell> adjacentDefenderBlockers)
+    {
+        if (ballHex == null || targetHex == null || targetHex.isOutOfBounds || targetHex.isDefenseOccupied)
+        {
+            return false;
+        }
+
+        int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
+        if (distance > MAX_PASS_DISTANCE || distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
+        {
+            return false;
+        }
+
+        if (IsHighPassPathBlockedByAdjacentDefender(ballHex, targetHex, adjacentDefenderBlockers))
+        {
+            return false;
+        }
+
+        if (!reachableAttackersByHex.TryGetValue(targetHex, out List<PlayerToken> attackersWithinRange)
+            || attackersWithinRange.Count == 0)
+        {
+            return false;
+        }
+
+        if (!targetHex.isAttackOccupied)
+        {
+            return true;
+        }
+
+        PlayerToken targetToken = targetHex.GetOccupyingToken();
+        return targetToken != null
+            && attackersWithinRange.Contains(targetToken)
+            && !IsDifficultyOneOffsideToken(targetToken)
+            && (MatchManager.Instance == null || MatchManager.Instance.CanTokenCollectHangingPass(targetToken))
+            && !IsSetPieceTakerExcludedFromHighPassTarget(targetToken);
+    }
+
+    private bool IsHighPassPathBlockedByAdjacentDefender(HexCell ballHex, HexCell targetHex, HashSet<HexCell> adjacentDefenderBlockers)
+    {
+        if (adjacentDefenderBlockers == null || adjacentDefenderBlockers.Count == 0)
+        {
+            return false;
+        }
+
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        foreach (HexCell pathHex in pathHexes)
+        {
+            if (pathHex != null && adjacentDefenderBlockers.Contains(pathHex))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void LogAvailableTargetPrecomputeEnded(string outcome, int version, int validTargets, int processedCandidates)
+    {
+        float elapsedMs = Mathf.Max(0f, (Time.realtimeSinceStartup - availableTargetPrecomputeStartedAt) * 1000f);
+        int elapsedFrames = Mathf.Max(0, Time.frameCount - availableTargetPrecomputeStartedFrame);
+        Debug.Log($"HP target precompute {outcome}. version={version}, elapsedMs={elapsedMs:F1}, elapsedFrames={elapsedFrames}, processed={processedCandidates}, validTargets={validTargets}");
     }
 
     private void PrecomputeAvailableHighPassTargetsNow(bool refreshHighlights)
@@ -646,8 +847,7 @@ public class HighPassManager : MonoBehaviour
     {
         return MatchManager.Instance != null
             && MatchManager.Instance.difficulty_level < 3
-            && !isCornerKick
-            && (isAvailable || ShouldShowDifficultyOneTargetHighlights())
+            && (isAvailable || (isActivated && isWaitingForConfirmation))
             && ball != null
             && hexGrid != null;
     }
@@ -860,7 +1060,7 @@ public class HighPassManager : MonoBehaviour
         int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         if (isGK)
         {
-            if (distance < minPassDistance)
+            if (distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
             {
                 return "TooClose";
             }
@@ -1114,9 +1314,9 @@ public class HighPassManager : MonoBehaviour
                 ClearValidatedHighPassAttackers(updateEligibleAttackers);
                 return false;
             }
-            if (distance < minPassDistance)
+            if (distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
             {
-                if (logWarnings) Debug.LogWarning($"High Pass is too close. Minimum steps allowed: {minPassDistance}. Current steps: {distance}");
+                if (logWarnings) Debug.LogWarning($"High Pass is too close. Minimum steps allowed: {REGULAR_HIGH_PASS_MIN_DISTANCE}. Current steps: {distance}");
                 ClearValidatedHighPassAttackers(updateEligibleAttackers);
                 return false;
             }
@@ -1703,10 +1903,14 @@ public class HighPassManager : MonoBehaviour
 
     private void HighlightAllValidHighPassTargets()
     {
-        if (!isAvailableTargetsReady)
+        if (MatchManager.Instance != null && MatchManager.Instance.difficulty_level < 3)
         {
-            PrecomputeAvailableHighPassTargetsNow(refreshHighlights: true);
-            return;
+            if (!EnsureAvailableTargetPrecomputeReady())
+            {
+                hexGrid.ClearHighlightedHexes();
+                Debug.Log("High Pass target map is still calculating. Target highlights will draw when ready.");
+                return;
+            }
         }
 
         RefreshDifficultyOneHighPassTargetHighlights();
@@ -2074,8 +2278,354 @@ public class HighPassManager : MonoBehaviour
         AddInstructionDetail(snapshot.details, "highPassFinalTargetHex", FormatHex(finalTargetHex));
         AddInstructionDetail(snapshot.details, "highPassSelectedTokenKey", MatchManager.GetStableTokenKey(selectedToken));
         AddInstructionDetail(snapshot.details, "highPassLockedAttackerTokenKey", MatchManager.GetStableTokenKey(lockedAttacker));
-        AddInstructionDetail(snapshot.details, "highPassMinDistance", minPassDistance);
+        AddInstructionDetail(snapshot.details, "highPassMinDistance", isGoalkeeperKick ? minPassDistance : REGULAR_HIGH_PASS_MIN_DISTANCE);
         AddInstructionDetail(snapshot.details, "highPassMaxDistance", MAX_PASS_DISTANCE);
+    }
+
+    public bool IsWaitingForDecisionTargetOptions()
+    {
+        return isActivated
+            && isWaitingForConfirmation
+            && MatchManager.Instance != null
+            && MatchManager.Instance.difficulty_level < 3
+            && !isAvailableTargetsReady;
+    }
+
+    public bool IsWaitingForAvailableDecisionTargetOptions()
+    {
+        if (!isAvailable
+            || isActivated
+            || MatchManager.Instance == null
+            || MatchManager.Instance.difficulty_level != 1
+            || isAvailableTargetsReady)
+        {
+            return false;
+        }
+
+        if (!CanPrecomputeAvailableTargets())
+        {
+            return false;
+        }
+
+        BeginAvailableTargetPrecompute();
+        return true;
+    }
+
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        if (isAvailable && !isActivated)
+        {
+            string key = MatchManager.Instance != null && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick
+                ? "K"
+                : "C";
+            string label = key == "K"
+                ? "Press [K] to take a Goalkeeper Kick"
+                : "Press [C] to play a High Pass";
+            context.AddKeyActionCandidate(
+                nameof(HighPassManager),
+                key == "K" ? RoomActionType.GoalkeeperKick : RoomActionType.HighPass,
+                RoomDecisionStep.ChooseActionType,
+                key,
+                label);
+        }
+
+        if (!isActivated)
+        {
+            return;
+        }
+
+        PopulateHighPassDecisionKeys(context);
+
+        if (isWaitingForConfirmation)
+        {
+            if (IsWaitingForDecisionTargetOptions())
+            {
+                BeginAvailableTargetPrecompute();
+                context.AddAction(new RoomActionCandidate
+                {
+                    manager = nameof(HighPassManager),
+                    actionType = isGoalkeeperKick ? RoomActionType.GoalkeeperKick : RoomActionType.HighPass,
+                    step = RoomDecisionStep.ChooseTarget,
+                    label = "Waiting for High Pass target map",
+                    isExecutableNow = false
+                });
+                context.AddActionSummary("Waiting for High Pass target map");
+                return;
+            }
+
+            if (currentTargetHex != null)
+            {
+                context.AddActionSummary("Click the selected orange High Pass target to confirm");
+                AddTargetHexOrToken(context, currentTargetHex, RoomDecisionStep.Confirm);
+            }
+
+            context.AddActionSummary(isGoalkeeperKick
+                ? "Click a valid Goalkeeper Kick target"
+                : "Click a valid High Pass target");
+            AddHighPassTargetOptions(context);
+            return;
+        }
+
+        if (isWaitingForAttackerSelection)
+        {
+            if (lockedAttacker != null)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(HighPassManager),
+                    RoomActionType.Decline,
+                    RoomDecisionStep.InterruptionChoice,
+                    "X",
+                    "Press [X] to forfeit Attacker HP movement",
+                    isForfeit: true);
+            }
+
+            if (isWaitingForAttackerMove)
+            {
+                context.AddActionSummary("Click a valid attacker movement hex");
+                AddHighlightedHexes(context);
+                return;
+            }
+
+            context.AddActionSummary(lockedAttacker == null
+                ? "Click an eligible attacker to move to the High Pass target"
+                : "Click an attacker to move for the High Pass");
+            AddHighPassAttackerOptions(context);
+            return;
+        }
+
+        if (isWaitingForDefenderSelection)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HighPassManager),
+                RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice,
+                "X",
+                "Press [X] to forfeit Defender HP movement",
+                isForfeit: true);
+            if (isWaitingForDefenderMove)
+            {
+                context.AddActionSummary("Click a valid defender movement hex");
+                AddHighlightedHexes(context);
+                return;
+            }
+
+            context.AddActionSummary("Click a defender to move for the High Pass");
+            AddTokensFromHexes(context, hexGrid != null ? hexGrid.GetDefenderHexes() : null);
+            return;
+        }
+
+        if (isWaitingForDefGKChallengeDecision)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HighPassManager),
+                RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice,
+                "X",
+                "Press [X] to decline the GK rush");
+            if (canDefGKRushWithoutMoving)
+            {
+                context.AddKeyActionCandidate(
+                    nameof(HighPassManager),
+                    RoomActionType.GoalkeeperSave,
+                    RoomDecisionStep.InterruptionChoice,
+                    "G",
+                    "Press [G] to rush without moving");
+            }
+
+            context.AddActionSummary("Click a highlighted GK rush hex");
+            foreach (HexCell hex in gkReachableHexes)
+            {
+                if (hex != null)
+                {
+                    context.AddHexActionCandidate(
+                        nameof(HighPassManager),
+                        RoomActionType.GoalkeeperSave,
+                        RoomDecisionStep.ChooseTarget,
+                        hex,
+                        $"Rush GK to hex {hex.coordinates}");
+                }
+            }
+        }
+    }
+
+    private void PopulateHighPassDecisionKeys(RoomDecisionContext context)
+    {
+        if (isWaitingForAccuracyRoll || isWaitingForDirectionRoll || isWaitingForDistanceRoll)
+        {
+            context.AddKeyActionCandidate(
+                nameof(HighPassManager),
+                RoomActionType.Roll,
+                RoomDecisionStep.Roll,
+                "R",
+                "Press [R] to roll for the High Pass");
+        }
+    }
+
+    private void AddHighPassTargetOptions(RoomDecisionContext context)
+    {
+        if (isCornerKick)
+        {
+            AddCornerKickHighPassTargetOptions(context);
+            return;
+        }
+
+        if (availableHighPassTargetHexes.Count > 0)
+        {
+            foreach (HexCell hex in availableHighPassTargetHexes)
+            {
+                AddTargetHexOrToken(context, hex);
+            }
+
+            return;
+        }
+
+        if (hexGrid == null || hexGrid.cells == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex != null && !hex.isOutOfBounds && IsHighPassTargetAvailableForPreview(hex))
+            {
+                AddTargetHexOrToken(context, hex);
+            }
+        }
+    }
+
+    private void AddCornerKickHighPassTargetOptions(RoomDecisionContext context)
+    {
+        if (context == null || hexGrid == null || hexGrid.cells == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.cells)
+        {
+            if (hex == null || !hex.isAttackOccupied || !IsHighPassTargetAvailableForPreview(hex))
+            {
+                continue;
+            }
+
+            AddTargetHexOrToken(context, hex);
+        }
+    }
+
+    private void AddHighPassAttackerOptions(RoomDecisionContext context)
+    {
+        if (lockedAttacker == null)
+        {
+            foreach (PlayerToken token in eligibleAttackers)
+            {
+                if (token != null)
+                {
+                    context.AddTokenActionCandidate(
+                        nameof(HighPassManager),
+                        RoomActionType.SetupMove,
+                        RoomDecisionStep.ChooseActor,
+                        token,
+                        $"Select {FormatDecisionTokenName(token)} to move for the High Pass");
+                }
+            }
+
+            return;
+        }
+
+        AddTokensFromHexes(context, hexGrid != null ? hexGrid.GetAttackerHexes() : null, lockedAttacker);
+    }
+
+    private void AddHighlightedHexes(RoomDecisionContext context)
+    {
+        if (hexGrid == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexGrid.highlightedHexes)
+        {
+            if (hex != null)
+            {
+                context.AddHexActionCandidate(
+                    nameof(HighPassManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseTarget,
+                    hex,
+                    $"Move to hex {hex.coordinates}");
+            }
+        }
+    }
+
+    private static void AddTokensFromHexes(RoomDecisionContext context, IEnumerable<HexCell> hexes, PlayerToken excludedToken = null)
+    {
+        if (context == null || hexes == null)
+        {
+            return;
+        }
+
+        foreach (HexCell hex in hexes)
+        {
+            PlayerToken token = hex != null ? hex.GetOccupyingToken() : null;
+            if (token != null && token != excludedToken)
+            {
+                context.AddTokenActionCandidate(
+                    nameof(HighPassManager),
+                    RoomActionType.SetupMove,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {FormatDecisionTokenName(token)} to move for the High Pass");
+            }
+        }
+    }
+
+    private void AddTargetHexOrToken(RoomDecisionContext context, HexCell hex)
+    {
+        AddTargetHexOrToken(context, hex, RoomDecisionStep.ChooseTarget);
+    }
+
+    private void AddTargetHexOrToken(RoomDecisionContext context, HexCell hex, RoomDecisionStep step)
+    {
+        if (context == null || hex == null)
+        {
+            return;
+        }
+
+        RoomActionType actionType = isGoalkeeperKick
+            ? RoomActionType.GoalkeeperKick
+            : RoomActionType.HighPass;
+
+        PlayerToken targetToken = hex.GetOccupyingToken();
+        if (targetToken != null)
+        {
+            context.AddTargetTokenActionCandidate(
+                nameof(HighPassManager),
+                actionType,
+                step,
+                targetToken,
+                $"High Pass to {FormatDecisionTokenName(targetToken)}");
+            return;
+        }
+
+        context.AddHexActionCandidate(
+            nameof(HighPassManager),
+            actionType,
+            step,
+            hex,
+            $"High Pass to hex {hex.coordinates}");
+    }
+
+    private static string FormatDecisionTokenName(PlayerToken token)
+    {
+        if (token == null)
+        {
+            return "the selected player";
+        }
+
+        return !string.IsNullOrWhiteSpace(token.playerName) ? token.playerName : token.name;
     }
 
     private static void AddInstructionDetail(Dictionary<string, string> details, string key, object value)
@@ -2138,7 +2688,7 @@ public class HighPassManager : MonoBehaviour
             }
             else
             {
-                sb.Append($"Click on an inbounds Hex {minPassDistance}-{MAX_PASS_DISTANCE} Hexes from {passerName}, on or within 3 reachable Hexes of an attacker, ");
+                sb.Append($"Click on an inbounds Hex {REGULAR_HIGH_PASS_MIN_DISTANCE}-{MAX_PASS_DISTANCE} Hexes from {passerName}, on or within 3 reachable Hexes of an attacker, ");
             }
             if (matchManager != null && matchManager.difficulty_level == 3) sb.Append("this High Pass is already committed, ");
         }

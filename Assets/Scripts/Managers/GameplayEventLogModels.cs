@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class GameplayEvent
 {
-    public const int CurrentSchemaVersion = 6;
+    public const int CurrentSchemaVersion = 7;
 
     public int schemaVersion = CurrentSchemaVersion;
     public int sequenceNumber;
@@ -25,6 +25,7 @@ public class GameplayEvent
     public GameplayChoiceEvent choice;
     public GameplayActionPreview actionPreview;
     public GameplayAvailableActions availableActions;
+    public GameplayRoomDecisionSnapshot roomDecision;
     public GameplayMovementPath movementPath;
     public GameplayInstructionSnapshot instruction;
     public GameplayEventResult result;
@@ -140,6 +141,40 @@ public class GameplayAvailableAction
     public bool autoCommitOnSelection;
     public string selectionMode;
     public int imposedMaxDistance;
+}
+
+[Serializable]
+public class GameplayRoomDecisionSnapshot
+{
+    public string manager;
+    public string expectedTeam;
+    public string expectedInput;
+    public string persona;
+    public int candidateCount;
+    public int keyCandidateCount;
+    public int tokenCandidateCount;
+    public int hexCandidateCount;
+    public List<string> candidateTypes = new();
+    public List<string> availableKeys = new();
+    public List<GameplayRoomDecisionCandidate> candidates = new();
+}
+
+[Serializable]
+public class GameplayRoomDecisionCandidate
+{
+    public string id;
+    public string manager;
+    public string actionType;
+    public string step;
+    public string label;
+    public string key;
+    public string actorTokenKey;
+    public string targetTokenKey;
+    public RoomHexCoordinates targetHex;
+    public bool isExecutableNow;
+    public bool isForfeit;
+    public string executionCommand;
+    public string reason;
 }
 
 [Serializable]

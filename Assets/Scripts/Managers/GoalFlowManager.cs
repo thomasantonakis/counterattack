@@ -691,6 +691,16 @@ public class GoalFlowManager : MonoBehaviour
         return instructionPhase == GoalInstructionPhase.Celebration;
     }
 
+    public void PopulateRoomDecisionContext(RoomDecisionContext context)
+    {
+        if (context == null || instructionPhase == GoalInstructionPhase.None)
+        {
+            return;
+        }
+
+        context.AddActionSummary("No Goal Flow decision needed; waiting for the goal transition");
+    }
+
     private void CaptureGoalInstructionContext(PlayerToken shooterToken, bool scoringTeamIsHomeOverride, bool isOwnGoal)
     {
         if (shooterToken == null)
