@@ -45,8 +45,8 @@ public class HexCell : MonoBehaviour
     public int DistanceToRightGoal = int.MaxValue;
     [SerializeField] private List<HexCell> dangerousTacklingPositionsAttackingLeft = new List<HexCell>();
     [SerializeField] private List<HexCell> dangerousTacklingPositionsAttackingRight = new List<HexCell>();
-    public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
-    public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
+    [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
+    [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
     private string currentHighlightReason;
     private bool hasInitializedOccupancyHighlightInstance;

@@ -53,7 +53,7 @@ public class HeaderManager : MonoBehaviour
     public List<PlayerToken> defEligibleToHead = new List<PlayerToken>();
     public List<PlayerToken> attackerWillJump = new List<PlayerToken>();
     public List<PlayerToken> defenderWillJump = new List<PlayerToken>();
-    public Dictionary<PlayerToken, (int roll, int totalScore)> tokenScores = new Dictionary<PlayerToken, (int, int)>();
+    [System.NonSerialized] public Dictionary<PlayerToken, (int roll, int totalScore)> tokenScores = new Dictionary<PlayerToken, (int, int)>();
     public PlayerToken tokenRolling;
     public HexCell tokenRollingHex => tokenRolling?.GetCurrentHex();
     public HexCell[] ballNeighbors => ball.GetCurrentHex().GetNeighbors(hexGrid);

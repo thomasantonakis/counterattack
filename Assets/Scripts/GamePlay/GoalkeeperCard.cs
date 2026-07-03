@@ -17,7 +17,7 @@ public class GoalkeeperCard : MonoBehaviour
     // Optionally add Image for country flags if you plan to use them
     // public Image flagImage;
 
-    public Goalkeeper assignedgoalkeeper;
+    [System.NonSerialized] public Goalkeeper assignedgoalkeeper;
 
     // Method to update the card with player data
     public void UpdatePlayerCard(Goalkeeper goalkeeper)

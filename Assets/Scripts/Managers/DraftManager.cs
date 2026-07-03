@@ -38,12 +38,12 @@ public class DraftManager : MonoBehaviour
 
     [Header("Dependencies")]
     public GameSettings currentSettings; // Class-level variable
-    public List<Player> allPlayers;  // Change the list to Player objects, not dictionaries
-    public List<Player> selectedDeck;   // To hold shuffled players
-    public List<Player> draftPool;   // To hold shuffled players
+    public List<Player> allPlayers { get; set; }  // Change the list to Player objects, not dictionaries
+    public List<Player> selectedDeck { get; set; }   // To hold shuffled players
+    public List<Player> draftPool { get; set; }   // To hold shuffled players
     public GameObject playerCardPrefab;
-    public List<Goalkeeper> allGks;  // Change the list to Player objects, not dictionaries
-    public List<Goalkeeper> selectedGks;  // Change the list to Player objects, not dictionaries
+    public List<Goalkeeper> allGks { get; set; }  // Change the list to Player objects, not dictionaries
+    public List<Goalkeeper> selectedGks { get; set; }  // Change the list to Player objects, not dictionaries
     public GameObject draftPanel;
     public GameObject homeTeamPanel;  // The panel where slots will be instantiated
     public GameObject awayTeamPanel;
@@ -868,7 +868,13 @@ public class DraftManager : MonoBehaviour
             ? currentSettings?.awayRoomPersona
             : currentSettings?.homeRoomPersona;
 
-        return string.Equals(roomPersona, "Random", System.StringComparison.OrdinalIgnoreCase);
+        return string.Equals(roomPersona, "Random", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "1 step", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "1step", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "one step", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "OneStep", System.StringComparison.OrdinalIgnoreCase)
+            || (!string.IsNullOrWhiteSpace(roomPersona)
+                && roomPersona.StartsWith("1 step ", System.StringComparison.OrdinalIgnoreCase));
     }
 
     private IEnumerator ResolveSinglePlayerAwayDraftTurns()

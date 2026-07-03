@@ -22,7 +22,7 @@ public class HexGrid : MonoBehaviour
     public Vector3 gridCenter = new Vector3(0, 0, 0);  // Center of your grid
     float hexRadius = 0.5f;
     [SerializeField] private HexCell hexCellPrefab; // Reference to the hex cell prefab
-    public HexCell[,] cells;  // 2D array to hold the cells
+    [System.NonSerialized] public HexCell[,] cells;  // 2D array to hold the cells
     [Header("Pitch Palette")]
     [SerializeField] private Color clearLightColor = new Color(0.2f, 0.8f, 0.2f);
     [SerializeField] private Color clearDarkColor = new Color(0f / 255f, 129f / 255f, 56f / 255f, 1f);

@@ -101,14 +101,14 @@ public class MatchManager : MonoBehaviour
         CornerKick,
     }
     
-    [Serializable]
     public class GameData
     {
         public int saveSchemaVersion;
         public string createdUtc;
         public string lastSavedUtc;
         public GameSettings gameSettings;
-        public Rosters rosters;
+        [field: System.NonSerialized]
+        public Rosters rosters { get; set; }
         public Stats stats;
         public GameLog gameLog;
         public RoomRuntimeSnapshot runtimeSnapshot;
@@ -166,7 +166,6 @@ public class MatchManager : MonoBehaviour
         // Add other game settings properties as needed
     }
 
-    [Serializable]
     public class Rosters
     {
         // public List<RosterPlayer> home = new List<RosterPlayer>();
@@ -1210,7 +1209,7 @@ public class MatchManager : MonoBehaviour
     public KickoffManager kickoffManager;
     public HelperFunctions helperFunctions;
     public MatchStatsUI matchStatsUI;
-    public GameData gameData;
+    [System.NonSerialized] public GameData gameData;
     // public PlayerToken LastTokenToTouchTheBallOnPurpose { get; private set; }
     // public PlayerToken PreviousTokenToTouchTheBallOnPurpose { get; private set; }
     public PlayerToken LastTokenToTouchTheBallOnPurpose;
