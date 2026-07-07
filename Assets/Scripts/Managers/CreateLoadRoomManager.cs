@@ -7,13 +7,14 @@ using System.Collections.Generic;
 
 public class CreateLoadRoomManager : MonoBehaviour
 {
-    private static readonly Color RowColor = new(0.9f, 0.92f, 0.96f, 1f);
-    private static readonly Color RowTextColor = new(0.08f, 0.09f, 0.12f, 1f);
+    private static readonly Color RowColor = new(1f, 1f, 1f, 0f);
+    private static readonly Color RowTextColor = new(0.9137255f, 0.9647059f, 0.9568627f, 1f);
     private const string CreateNewGameSceneName = "CreateNewHSGameScene";
     private const string RoomSceneName = "Room";
     private const string MainMenuSceneName = "MainMenu";
 
     [Header("Create / Load")]
+    [SerializeField] private TextMeshProUGUI headerText;
     [SerializeField] private TextMeshProUGUI createNewButtonText;
     [SerializeField] private TextMeshProUGUI loadButtonText;
 
@@ -29,14 +30,14 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     private static readonly SaveColumnDefinition[] DefaultColumns =
     {
-        new("Teams", "Teams", 230f),
-        new("Score", "Score", 62f),
-        new("Clock", "Clock", 80f),
-        new("CreatedAt", "Created at", 172f),
-        new("LastActivityAt", "Last activity", 172f),
-        new("MatchDuration", "Match Duration", 120f),
-        new("Tie", "Tie", 52f),
-        new("Status", "Status", 126f)
+        new("Teams", "Teams", 640f),
+        new("Score", "Score", 192f),
+        new("Clock", "Time", 192f),
+        new("CreatedAt", "Created at", 256f),
+        new("LastActivityAt", "Last activity", 256f),
+        new("MatchDuration", "Duration", 192f),
+        new("Tie", "Tie", 192f),
+        //new("Status", "Status", 126f)
     };
 
     private string selectedGameMode = ApplicationManager.HotSeatGameMode;
@@ -100,6 +101,11 @@ public class CreateLoadRoomManager : MonoBehaviour
     private void ApplyModeLabels()
     {
         string modeLabel = GetModeDisplayName();
+        if (headerText != null)
+        {
+            headerText.text = $"{modeLabel}";
+        
+        }
         if (createNewButtonText != null)
         {
             createNewButtonText.text = $"Create New {modeLabel} Game";
@@ -112,7 +118,7 @@ public class CreateLoadRoomManager : MonoBehaviour
 
         if (loadBrowserTitleText != null)
         {
-            loadBrowserTitleText.text = $"Load {modeLabel} Game";
+            loadBrowserTitleText.text = $"Load {modeLabel} Match";
         }
     }
 
@@ -219,13 +225,13 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         GameObject row = CreateRect($"SaveRow_{summary.FileName}", rowsContent, typeof(Image), typeof(Button));
         row.GetComponent<Image>().color = RowColor;
-        row.AddComponent<LayoutElement>().preferredHeight = 40f;
+        row.AddComponent<LayoutElement>().preferredHeight = 80f;
         Button rowButton = row.GetComponent<Button>();
         rowButton.onClick.AddListener(() => SelectSave(summary));
 
         HorizontalLayoutGroup layout = row.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 6f;
-        layout.padding = new RectOffset(8, 8, 4, 4);
+        layout.spacing = 0f;
+        layout.padding = new RectOffset(24, 0, 0, 0);
         layout.childControlWidth = true;
         layout.childControlHeight = true;
         layout.childForceExpandWidth = false;
@@ -489,14 +495,14 @@ public class CreateLoadRoomManager : MonoBehaviour
             "LastActivityUtc" => FormatUtc(summary.LastActivityUtc),
             "LastSavedAt" => FormatUtc(summary.LastSavedUtc),
             "LastSavedUtc" => FormatUtc(summary.LastSavedUtc),
-            "Status" => summary.Status,
+            //"Status" => summary.Status,
             _ => string.Empty
         };
     }
 
     private static TextMeshProUGUI AddColumn(Transform parent, string text, float width, Color color, TextAlignmentOptions alignment, string name = "Column")
     {
-        TextMeshProUGUI label = CreateText(name, parent, text, 12f, color, alignment);
+        TextMeshProUGUI label = CreateText(name, parent, text, 24f, color, alignment);
         label.textWrappingMode = TextWrappingModes.NoWrap;
         label.overflowMode = TextOverflowModes.Ellipsis;
         label.gameObject.AddComponent<LayoutElement>().preferredWidth = width;
