@@ -1492,11 +1492,11 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         ColorBlock colors = selectable.colors;
-        colors.normalColor = new Color(1f, 1f, 1f, 0f);
+        /* colors.normalColor = new Color(1f, 1f, 1f, 0f);
         colors.highlightedColor = new Color(1f, 1f, 1f, 0f);
         colors.selectedColor = new Color(1f, 1f, 1f, 0f);
         colors.pressedColor = new Color(1f, 1f, 1f, 0.18f);
-        colors.fadeDuration = 0f;
+        colors.fadeDuration = 0f; */
         selectable.colors = colors;
 
         KitDropdownHoverPainter painter = item.GetComponent<KitDropdownHoverPainter>();
@@ -2685,7 +2685,7 @@ public class CreateNewGameManager : MonoBehaviour
         private Graphic targetGraphic;
         private TMP_Text label;
         private Color baseGraphicColor = new Color(1f, 1f, 1f, 0f);
-        private Color baseLabelColor = Color.black;
+        private Color baseLabelColor = Color.azure;
 
         public void Configure(TMP_Dropdown sourceDropdown, CreateNewGameManager sourceOwner)
         {
@@ -2780,7 +2780,7 @@ public class CreateNewGameManager : MonoBehaviour
         {
             ResolveReferences();
             baseGraphicColor = targetGraphic != null ? targetGraphic.color : new Color(1f, 1f, 1f, 0f);
-            baseLabelColor = label != null ? label.color : Color.black;
+            baseLabelColor = label != null ? label.color : new Color(1f, 1f, 1f, 0f);
         }
     }
 

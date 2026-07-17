@@ -48,6 +48,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 52444911950220835, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 128721311688472444, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -195,6 +199,10 @@ PrefabInstance:
     - target: {fileID: 2061487801352390050, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -36
+      objectReference: {fileID: 0}
+    - target: {fileID: 2268963672196883128, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2524647432903921585, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
       propertyPath: m_SizeDelta.x
@@ -442,7 +450,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5360625621021190969, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
       propertyPath: m_text
-      value: Create new match
+      value: Create New Match
       objectReference: {fileID: 0}
     - target: {fileID: 5439115044861439385, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
       propertyPath: m_Name
@@ -574,7 +582,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6170613973093517218, guid: 83fab2018d2e44cda8713fdb458a6a60, type: 3}
       propertyPath: m_text
-      value: 'Load match
+      value: 'Load Match
 
 '
       objectReference: {fileID: 0}

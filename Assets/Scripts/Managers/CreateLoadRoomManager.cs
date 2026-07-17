@@ -9,7 +9,7 @@ public class CreateLoadRoomManager : MonoBehaviour
 {
     private static readonly Color RowColor = new(1f, 1f, 1f, 0f);
     private static readonly Color RowTextColor = new(0.9137255f, 0.9647059f, 0.9568627f, 1f);
-    private const string CreateNewGameSceneName = "CreateNewHSGameScene";
+    private const string CreateNewGameSceneName = "CreateNewGameScene";
     private const string RoomSceneName = "Room";
     private const string MainMenuSceneName = "MainMenu";
 
