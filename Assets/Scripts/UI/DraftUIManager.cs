@@ -124,7 +124,7 @@ public class DraftUIManager : MonoBehaviour
     {
         PlayerPrefs.SetString(CreateNewGameReturnSourcePlayerPrefsKey, SceneManager.GetActiveScene().name);
         PlayerPrefs.Save();
-        SceneManager.LoadScene("CreateNewHSGameScene");
+        SceneManager.LoadScene("CreateNewGameScene");
     }
     public void OnBackToMainButtonPressed()
     {
