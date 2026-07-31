@@ -65,3 +65,7 @@ MonoBehaviour:
     m_Color: {r: 0.85490197, g: 0.9411765, b: 0.92941177, a: 1}
   - m_Name: tertiary-50
     m_Color: {r: 0.9137255, g: 0.9647059, b: 0.95686275, a: 1}
+  - m_Name: GoalkeeperCard
+    m_Color: {r: 0.38039216, g: 0.32156864, b: 0.46666667, a: 1}
+  - m_Name: error-400
+    m_Color: {r: 0.88235295, g: 0.38431373, b: 0.33333334, a: 1}

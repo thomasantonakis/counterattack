@@ -187,8 +187,8 @@ public class MatchStatsUI : MonoBehaviour
     private const int StatsRowCount = 21;
     private const string PlayerCardResourcePath = "UI/PlayerCardPrefab";
     private const string GoalkeeperCardResourcePath = "UI/GoalKeeperCardPrefab";
-    private static readonly Color PreviewOutfieldFrameColor = new(0.22f, 0.30f, 0.40f, 1f);
-    private static readonly Color PreviewGoalkeeperFrameColor = new(0.45f, 0.40f, 0.51f, 1f);
+    private static readonly Color PreviewOutfieldFrameColor = new(0.09f, 0.2275f, 0.31f, 1f);
+    private static readonly Color PreviewGoalkeeperFrameColor = new(0.3804f, 0.3216f, 0.4667f, 1f);
     private static readonly Color PreviewNameColor = new(0.20f, 0.27f, 0.37f, 1f);
     private static readonly Color PreviewSecondaryColor = new(0.18f, 0.63f, 0.24f, 1f);
     private static readonly Color PreviewLabelColor = new(0.11f, 0.12f, 0.16f, 1f);
@@ -1300,7 +1300,7 @@ public class MatchStatsUI : MonoBehaviour
         TMP_Text playerName = FindDescendantComponent<TMP_Text>(cardObject.transform, "PlayerName");
         if (playerName != null)
         {
-            playerName.color = PreviewNameColor;
+            /* playerName.color = PreviewNameColor;
             playerName.fontStyle = FontStyles.Bold | FontStyles.Italic;
             playerName.enableAutoSizing = true;
             playerName.fontSizeMin = 26f;
@@ -1313,13 +1313,13 @@ public class MatchStatsUI : MonoBehaviour
             {
                 playerName.rectTransform.anchoredPosition = new Vector2(0f, PreviewNameY);
                 playerName.rectTransform.sizeDelta = new Vector2(PreviewNameWidth, PreviewNameHeight);
-            }
+            } */
         }
 
         TMP_Text country = FindDescendantComponent<TMP_Text>(cardObject.transform, "Country");
         if (country != null)
         {
-            country.color = PreviewSecondaryColor;
+            /* country.color = PreviewSecondaryColor;
             country.fontStyle = FontStyles.Bold;
             country.enableAutoSizing = true;
             country.fontSizeMin = 17f;
@@ -1332,7 +1332,7 @@ public class MatchStatsUI : MonoBehaviour
             {
                 country.rectTransform.anchoredPosition = new Vector2(18f, PreviewCountryY);
                 country.rectTransform.sizeDelta = new Vector2(PreviewCountryWidth, PreviewCountryHeight);
-            }
+            } */
         }
 
         foreach (TMP_Text text in cardObject.GetComponentsInChildren<TMP_Text>(true))
@@ -1344,28 +1344,28 @@ public class MatchStatsUI : MonoBehaviour
 
             if (text.name.EndsWith("Label", StringComparison.Ordinal))
             {
-                text.color = PreviewLabelColor;
+                /* text.color = PreviewLabelColor;
                 text.enableAutoSizing = true;
                 text.fontSizeMin = 20f;
-                text.fontSizeMax = 28f;
+                text.fontSizeMax = 28f; */
                 text.alignment = TextAlignmentOptions.Left;
                 text.textWrappingMode = TextWrappingModes.NoWrap;
                 text.overflowMode = TextOverflowModes.Ellipsis;
             }
             else if (text.name.EndsWith("Value", StringComparison.Ordinal))
             {
-                text.color = Color.white;
+                /* text.color = Color.white;
                 text.fontStyle = FontStyles.Bold;
                 text.alignment = TextAlignmentOptions.Center;
                 text.enableAutoSizing = false;
                 text.fontSize = 34f;
                 text.textWrappingMode = TextWrappingModes.NoWrap;
-                text.overflowMode = TextOverflowModes.Overflow;
+                text.overflowMode = TextOverflowModes.Overflow; */
                 UpdateValueBadge(text);
             }
             else if (text.text != null && text.text.IndexOf("counter attack", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                text.color = isGoalkeeper ? new Color(0.92f, 0.89f, 0.96f, 1f) : new Color(0.64f, 0.86f, 1f, 1f);
+               /*  text.color = isGoalkeeper ? new Color(0.92f, 0.89f, 0.96f, 1f) : new Color(0.64f, 0.86f, 1f, 1f);
                 text.enableAutoSizing = true;
                 text.fontSizeMin = 22f;
                 text.fontSizeMax = 30f;
@@ -1375,7 +1375,7 @@ public class MatchStatsUI : MonoBehaviour
                 {
                     text.rectTransform.anchoredPosition = new Vector2(0f, PreviewLogoY);
                     text.rectTransform.sizeDelta = new Vector2(PreviewLogoWidth, PreviewLogoHeight);
-                }
+                } */
             }
         }
 

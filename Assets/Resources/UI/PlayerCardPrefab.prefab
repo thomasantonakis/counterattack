@@ -2696,6 +2696,9 @@ MonoBehaviour:
   shootingValueText: {fileID: 731219831662055236}
   tacklingValueText: {fileID: 731219832117048381}
   flagImage: {fileID: 731219831508691220}
+  GreenColor: {r: 0.101960786, g: 0.7058824, b: 0.654902, a: 1}
+  OrangeColor: {r: 0.96862745, g: 0.5647059, b: 0.34117648, a: 1}
+  RedColor: {r: 0.88235295, g: 0.38431373, b: 0.33333334, a: 0}
 --- !u!114 &1589081921442161730
 MonoBehaviour:
   m_ObjectHideFlags: 0

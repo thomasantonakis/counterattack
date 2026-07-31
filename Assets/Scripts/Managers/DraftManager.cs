@@ -20,8 +20,8 @@ public class DraftManager : MonoBehaviour
     private const string DraftArcade = "Arcade";
     private const string WorldCupPlayerType = "World Cup";
     private const float RegularDraftCardAspectRatio = 0.625f;
-    private const float RegularDraftCardSpacing = 10f;
-    private const float RegularDraftPanelVerticalPadding = 20f;
+    private const float RegularDraftCardSpacing = 64.0f;
+    private const float RegularDraftPanelVerticalPadding = 96f;
     private static readonly string[] FreeDraftFilterOrder =
     {
         "name",
@@ -2592,13 +2592,13 @@ public class DraftManager : MonoBehaviour
             // Set the jersey number in the slot (assuming the text is inside the ContentWrapper)
             contentWrapper.Find("Jersey#").GetComponent<TMP_Text>().text = i.ToString();
             // Dynamically adjust labels for Goalkeeper slots (1 and 12)
-            if (i == 1 || i == 12)
+            /* if (i == 1 || i == 12)
             {
                 // Change labels for goalkeeper stats
                 contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>().text = "AerialInSlot";
                 contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>().text = "SavingInSlot";
                 contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>().text = "HandlingInSlot";
-            }
+            } */
 
             // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
         }
@@ -2618,6 +2618,7 @@ public class DraftManager : MonoBehaviour
         {
             contentWrapperXI.Find("Jersey#").GetComponent<TMP_Text>().text = "XI";
             contentWrapperXI.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text = "Starting XI";
+            contentWrapperXI.Find("TopBorder").GetComponent<Image>().color = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
         }
         else
         {
@@ -2751,25 +2752,25 @@ public class DraftManager : MonoBehaviour
             }
             // Update text with 1 decimal point and apply color coding
             contentWrapperXI.Find("PaceInSlot").GetComponent<TMP_Text>().text = avgPaceXI.ToString("F1");
-            contentWrapperXI.Find("PaceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgPaceXI);
+            contentWrapperXI.Find("PaceBadge").GetComponent<Image>().color = GetAttributeColor(avgPaceXI);
 
             contentWrapperXI.Find("DribblingInSlot").GetComponent<TMP_Text>().text = avgDribblingXI.ToString("F1");
-            contentWrapperXI.Find("DribblingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgDribblingXI);
+            contentWrapperXI.Find("DribblingBadge").GetComponent<Image>().color = GetAttributeColor(avgDribblingXI);
 
             contentWrapperXI.Find("HeadingInSlot").GetComponent<TMP_Text>().text = avgHeadingXI.ToString("F1");
-            contentWrapperXI.Find("HeadingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHeadingXI);
+            contentWrapperXI.Find("HeadingBadge").GetComponent<Image>().color = GetAttributeColor(avgHeadingXI);
 
             contentWrapperXI.Find("HighPassInSlot").GetComponent<TMP_Text>().text = avgHighPassXI.ToString("F1");
-            contentWrapperXI.Find("HighPassInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHighPassXI);
+            contentWrapperXI.Find("HighPassBadge").GetComponent<Image>().color = GetAttributeColor(avgHighPassXI);
 
             contentWrapperXI.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = avgResilienceXI.ToString("F1");
-            contentWrapperXI.Find("ResilienceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgResilienceXI);
+            contentWrapperXI.Find("ResilienceBadge").GetComponent<Image>().color = GetAttributeColor(avgResilienceXI);
 
             contentWrapperXI.Find("ShootingInSlot").GetComponent<TMP_Text>().text = avgShootingXI.ToString("F1");
-            contentWrapperXI.Find("ShootingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgShootingXI);
+            contentWrapperXI.Find("ShootingBadge").GetComponent<Image>().color = GetAttributeColor(avgShootingXI);
 
             contentWrapperXI.Find("TacklingInSlot").GetComponent<TMP_Text>().text = avgTacklingXI.ToString("F1");
-            contentWrapperXI.Find("TacklingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgTacklingXI);
+            contentWrapperXI.Find("TacklingBadge").GetComponent<Image>().color = GetAttributeColor(avgTacklingXI);
         }
         else
         {
@@ -2787,45 +2788,48 @@ public class DraftManager : MonoBehaviour
             }
             // Update text with 1 decimal point and apply color coding
             contentWrapperAvg.Find("PaceInSlot").GetComponent<TMP_Text>().text = avgPaceTeam.ToString("F1");
-            contentWrapperAvg.Find("PaceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgPaceTeam);
+            contentWrapperAvg.Find("PaceBadge").GetComponent<Image>().color = GetAttributeColor(avgPaceTeam);
 
             contentWrapperAvg.Find("DribblingInSlot").GetComponent<TMP_Text>().text = avgDribblingTeam.ToString("F1");
-            contentWrapperAvg.Find("DribblingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgDribblingTeam);
+            contentWrapperAvg.Find("DribblingBadge").GetComponent<Image>().color = GetAttributeColor(avgDribblingTeam);
 
             contentWrapperAvg.Find("HeadingInSlot").GetComponent<TMP_Text>().text = avgHeadingTeam.ToString("F1");
-            contentWrapperAvg.Find("HeadingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHeadingTeam);
+            contentWrapperAvg.Find("HeadingBadge").GetComponent<Image>().color = GetAttributeColor(avgHeadingTeam);
 
             contentWrapperAvg.Find("HighPassInSlot").GetComponent<TMP_Text>().text = avgHighPassTeam.ToString("F1");
-            contentWrapperAvg.Find("HighPassInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHighPassTeam);
+            contentWrapperAvg.Find("HighPassBadge").GetComponent<Image>().color = GetAttributeColor(avgHighPassTeam);
 
             contentWrapperAvg.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = avgResilienceTeam.ToString("F1");
-            contentWrapperAvg.Find("ResilienceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgResilienceTeam);
+            contentWrapperAvg.Find("ResilienceBadge").GetComponent<Image>().color = GetAttributeColor(avgResilienceTeam);
 
             contentWrapperAvg.Find("ShootingInSlot").GetComponent<TMP_Text>().text = avgShootingTeam.ToString("F1");
-            contentWrapperAvg.Find("ShootingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgShootingTeam);
+            contentWrapperAvg.Find("ShootingBadge").GetComponent<Image>().color = GetAttributeColor(avgShootingTeam);
 
             contentWrapperAvg.Find("TacklingInSlot").GetComponent<TMP_Text>().text = avgTacklingTeam.ToString("F1");
-            contentWrapperAvg.Find("TacklingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgTacklingTeam);
+            contentWrapperAvg.Find("TacklingBadge").GetComponent<Image>().color = GetAttributeColor(avgTacklingTeam);
         }
         else
         {
             Debug.LogError($"{rosterPanel.name}-TeamAverage not found");
         }
     }
-
     private Color GetAttributeColor(float value)
     {
         if (value >= 5f)
         {
-            return new Color(0f, 0.5f, 0f);  // Dark Green
+            return new Color(0.1019608f, 0.7058824f, 0.654902f, 1f);  // Green
         }
         else if (value >= 3f)
         {
-            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+            return new Color(0.9686275f, 0.5647059f, 0.3411765f, 1f);  // Orange
+        }
+        else if (value > 0f)
+        {
+            return new Color(0.8823529f, 0.3843137f, 0.3333333f, 1f);  // Yellow
         }
         else
         {
-            return new Color(0.5f, 0f, 0f);  // Dark Red
+            return new Color(0f, 0f, 0f, 0f);  // Transparent
         }
     }
 
