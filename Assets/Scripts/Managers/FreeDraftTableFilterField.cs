@@ -7,11 +7,10 @@ using UnityEngine.UI;
 public class FreeDraftTableFilterField : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private static int lastHandledTabFrame = -1;
-    private static readonly Color NormalColor = new Color(0.92f, 0.94f, 0.95f, 1f);
-    private static readonly Color HoverColor = new Color(1f, 1f, 1f, 1f);
-    private static readonly Color FocusedColor = new Color(0.86f, 0.93f, 1f, 1f);
-    private static readonly Color TextColor = new Color(0.07f, 0.08f, 0.09f, 1f);
-    private static readonly Color SelectionColor = new Color(0.18f, 0.48f, 0.86f, 0.35f);
+    private static readonly Color NormalColor = new Color(0.5176471f, 0.6039216f, 0.6627451f, 1f);
+    private static readonly Color HoverColor = new Color(0.3019608f, 0.4235294f, 0.5019608f, 1f);
+    private static readonly Color TextColor = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
+    private static readonly Color SelectionColor = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
 
     private DraftManager draftManager;
     private TMP_InputField inputField;
@@ -56,7 +55,7 @@ public class FreeDraftTableFilterField : MonoBehaviour, IPointerEnterHandler, IP
         {
             showingPlaceholder = true;
             inputField.SetTextWithoutNotify(placeholderText);
-            SetTextColor(new Color(0.34f, 0.38f, 0.4f, 1f));
+            SetTextColor(TextColor);
         }
         else
         {
@@ -314,7 +313,7 @@ public class FreeDraftTableFilterField : MonoBehaviour, IPointerEnterHandler, IP
 
         if (focused)
         {
-            backgroundImage.color = FocusedColor;
+            backgroundImage.color = HoverColor;
         }
         else if (hovered)
         {

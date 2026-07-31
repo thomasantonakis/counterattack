@@ -75,11 +75,14 @@ public class DraftManager : MonoBehaviour
     private Transform freeDraftPreviewRow;
     private TMP_Text freeDraftTitleText;
     private DraftUIManager draftUIManager;
-    private readonly Dictionary<string, string> freeDraftFilters = new Dictionary<string, string>();
-    private readonly Dictionary<string, FreeDraftTableFilterField> freeDraftFilterFields = new Dictionary<string, FreeDraftTableFilterField>();
+    private readonly Dictionary<string, string> freeDraftFilters = new();
+    private readonly Dictionary<string, FreeDraftTableFilterField> freeDraftFilterFields = new();
     private string freeDraftSortKey;
     private bool freeDraftSortAscending;
     private bool freeDraftHasUserSort;
+    private Color GreenColor = new(0.1019608f, 0.7058824f, 0.654902f, 1f);
+    private Color OrangeColor = new(0.9686275f, 0.5647059f, 0.3411765f, 1f); 
+    private Color RedColor = new(0.8823529f, 0.3843137f, 0.3333333f, 1f);
     public TMP_Text refereeText; // Reference to the TMP_Text for the referee
     public TMP_Text homeTeamName; // Reference to the TMP_Text for the Home Team
     public TMP_Text awayTeamName; // Reference to the TMP_Text for the Away Team
@@ -287,7 +290,7 @@ public class DraftManager : MonoBehaviour
 
             for (int i = 1; i < lines.Length; i++)
             {
-                Dictionary<string, string> playerData = new Dictionary<string, string>
+                Dictionary<string, string> playerData = new()
                 {
                     { "Name", GetCsvField(lines[i], headers, "Name") },
                     { "Nationality", GetCsvField(lines[i], headers, "Nationality") },
@@ -302,7 +305,7 @@ public class DraftManager : MonoBehaviour
                     { "sqno", GetCsvField(lines[i], headers, "sqno") }
                 };
 
-                Player player = new Player(playerData);
+                Player player = new(playerData);
                 allPlayers.Add(player);  // Add the player to the list
             }
             Debug.Log($"Total players in allPlayers: {allPlayers.Count}");
@@ -331,7 +334,7 @@ public class DraftManager : MonoBehaviour
 
             for (int i = 1; i < lines.Length; i++)
             {
-                Dictionary<string, string> gkData = new Dictionary<string, string>
+                Dictionary<string, string> gkData = new()
                 {
                     { "Name", GetCsvField(lines[i], headers, "Name") },
                     { "Nationality", GetCsvField(lines[i], headers, "Nationality") },
@@ -346,7 +349,7 @@ public class DraftManager : MonoBehaviour
                     { "sqno", GetCsvField(lines[i], headers, "sqno") }
                 };
 
-                Goalkeeper goalkeeper = new Goalkeeper(gkData);
+                Goalkeeper goalkeeper = new(gkData);
                 allGks.Add(goalkeeper);  // Add the player to the list
             }
         }
@@ -575,8 +578,8 @@ public class DraftManager : MonoBehaviour
 
     private void AssignInternationalOutfieldersToSlots(List<Player> outfielders, string rosterPrefix, GameObject teamPanel)
     {
-        HashSet<int> assignedJerseyNumbers = new HashSet<int>();
-        HashSet<Player> assignedPlayers = new HashSet<Player>();
+        HashSet<int> assignedJerseyNumbers = new();
+        HashSet<Player> assignedPlayers = new();
         List<int> freeOutfieldJerseyNumbers = GetFreeOutfieldJerseyNumbers(teamPanel);
 
         foreach (Player player in outfielders.Where(player => IsValidOutfieldJerseyNumber(player.SquadNumber)))
@@ -613,7 +616,7 @@ public class DraftManager : MonoBehaviour
 
     private List<int> GetFreeOutfieldJerseyNumbers(GameObject teamPanel)
     {
-        List<int> jerseyNumbers = new List<int>();
+        List<int> jerseyNumbers = new();
         foreach (Transform child in teamPanel.transform)
         {
             PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
@@ -976,8 +979,8 @@ public class DraftManager : MonoBehaviour
         List<RosterPlayerSlot> rosterSlots = GetOutfieldRosterPlayerSlots(rosterPanel);
         List<Player> rosterPlayers = rosterSlots.Select(slot => slot.Player).ToList();
         List<DraftDecisions.StarterAssignment> starterAssignments = DraftDecisions.BuildSophisticatedStarterAssignments(rosterPlayers);
-        HashSet<Player> starterPlayers = new HashSet<Player>(starterAssignments.Select(assignment => assignment.Player));
-        Queue<Player> benchPlayers = new Queue<Player>(rosterSlots
+        HashSet<Player> starterPlayers = new(starterAssignments.Select(assignment => assignment.Player));
+        Queue<Player> benchPlayers = new(rosterSlots
             .Where(slot => !starterPlayers.Contains(slot.Player))
             .OrderBy(slot => slot.JerseyNumber)
             .Select(slot => slot.Player));
@@ -1192,7 +1195,7 @@ public class DraftManager : MonoBehaviour
 
     private List<RosterPlayerSlot> GetOutfieldRosterPlayerSlots(GameObject rosterPanel)
     {
-        List<RosterPlayerSlot> rosterPlayers = new List<RosterPlayerSlot>();
+        List<RosterPlayerSlot> rosterPlayers = new();
         if (rosterPanel == null)
         {
             return rosterPlayers;
@@ -1257,7 +1260,7 @@ public class DraftManager : MonoBehaviour
 
     private List<PlayerCard> GetVisibleRegularDraftCards()
     {
-        List<PlayerCard> visibleCards = new List<PlayerCard>();
+        List<PlayerCard> visibleCards = new();
         if (draftPanel == null)
         {
             return visibleCards;
@@ -1384,7 +1387,7 @@ public class DraftManager : MonoBehaviour
         int cardsToDeal = Mathf.Min(4, draftPool.Count);
         currentBatchNumber++;
         currentBatchSize = cardsToDeal;
-        List<GameObject> dealtCards = new List<GameObject>();
+        List<GameObject> dealtCards = new();
 
         // Deal new cards
         for (int i = 0; i < cardsToDeal; i++)
@@ -1851,7 +1854,7 @@ public class DraftManager : MonoBehaviour
         }
 
         string defaultValue = numeric ? ">=1" : string.Empty;
-        string placeholder = numeric ? ">=1" : "filter";
+        string placeholder = numeric ? ">=1" : "Filter";
         filterField.Configure(this, columnKey, numeric, defaultValue, placeholder);
         freeDraftFilterFields[columnKey] = filterField;
     }
@@ -2192,8 +2195,10 @@ public class DraftManager : MonoBehaviour
         RectTransform previewRect = freeDraftPreviewRow as RectTransform;
         float rowHeight = previewRect != null && Mathf.Abs(previewRect.sizeDelta.y) > 0f
             ? Mathf.Abs(previewRect.sizeDelta.y)
-            : 30f;
-        Vector2 previewPosition = previewRect != null ? previewRect.anchoredPosition : new Vector2(0f, -15f);
+            : 64f;
+        Vector2 previewPosition = previewRect != null ? previewRect.anchoredPosition : new Vector2(0f, 0f);
+
+        float rowSpacing = 8f;
 
         for (int index = 0; index < candidates.Count; index++)
         {
@@ -2205,18 +2210,25 @@ public class DraftManager : MonoBehaviour
             RectTransform rowRect = rowObject.GetComponent<RectTransform>();
             if (rowRect != null)
             {
-                rowRect.anchoredPosition = new Vector2(previewPosition.x, previewPosition.y - rowHeight * index);
+                rowRect.anchoredPosition = new Vector2(previewPosition.x, previewPosition.y - (rowHeight + rowSpacing) * index);
             }
 
             SetFreeDraftRowCell(rowObject.transform, "NameCell", candidate.Name);
             SetFreeDraftRowCell(rowObject.transform, "NatCell", AbbreviateNationality(candidate.Nationality));
             SetFreeDraftRowCell(rowObject.transform, "PaceCell", candidate.Pace.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "PaceCell", candidate.Pace);
             SetFreeDraftRowCell(rowObject.transform, "DrCell", candidate.Dribbling.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "DrCell", candidate.Dribbling);
             SetFreeDraftRowCell(rowObject.transform, "H/ACell", candidate.HeadingOrAerial.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "H/ACell", candidate.HeadingOrAerial);
             SetFreeDraftRowCell(rowObject.transform, "HPCell", candidate.HighPass.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "HPCell", candidate.HighPass);
             SetFreeDraftRowCell(rowObject.transform, "ResCell", candidate.Resilience.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "ResCell", candidate.Resilience);
             SetFreeDraftRowCell(rowObject.transform, "Sh/SvCell", candidate.ShootingOrSaving.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "Sh/SvCell", candidate.ShootingOrSaving);
             SetFreeDraftRowCell(rowObject.transform, "Tac/HanCell", candidate.TacklingOrHandling.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "Tac/HanCell", candidate.TacklingOrHandling);
             SetFreeDraftRowCell(rowObject.transform, "TypeCell", candidate.Type);
 
             FreeDraftTableRowDragHandler dragHandler = rowObject.GetComponent<FreeDraftTableRowDragHandler>();
@@ -2230,7 +2242,8 @@ public class DraftManager : MonoBehaviour
         RectTransform contentRect = freeDraftContent as RectTransform;
         if (contentRect != null)
         {
-            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, Mathf.Max(rowHeight, rowHeight * candidates.Count));
+            float totalHeight = candidates.Count > 0 ? (rowHeight * candidates.Count) + (rowSpacing * (candidates.Count - 1)) : rowHeight;
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, Mathf.Max(rowHeight, totalHeight));
         }
     }
 
@@ -2264,13 +2277,13 @@ public class DraftManager : MonoBehaviour
         bool showingGoalkeepers = freeDraftPhase == FreeDraftPhase.Goalkeepers;
         SetHeaderText(headerRow, "NameHeader", FormatHeaderLabel("name", "Name"));
         SetHeaderText(headerRow, "NatHeader", FormatHeaderLabel("nationality", "Nat"));
-        SetHeaderText(headerRow, "PaceHeader", FormatHeaderLabel("pace", "Pace"));
-        SetHeaderText(headerRow, "DrHeader", FormatHeaderLabel("dribbling", "Dr"));
-        SetHeaderText(headerRow, "H/AHeader", FormatHeaderLabel("headingAerial", showingGoalkeepers ? "Aerial" : "Heading"));
+        SetHeaderText(headerRow, "PaceHeader", FormatHeaderLabel("pace", "Pac"));
+        SetHeaderText(headerRow, "DrHeader", FormatHeaderLabel("dribbling", "Drb"));
+        SetHeaderText(headerRow, "H/AHeader", FormatHeaderLabel("headingAerial", showingGoalkeepers ? "Aer" : "Hea"));
         SetHeaderText(headerRow, "HPHeader", FormatHeaderLabel("highPass", "HP"));
         SetHeaderText(headerRow, "ResHeader", FormatHeaderLabel("resilience", "Res"));
-        SetHeaderText(headerRow, "Sh/SvHeader", FormatHeaderLabel("shootingSaving", showingGoalkeepers ? "Saving" : "Shooting"));
-        SetHeaderText(headerRow, "Tac/HanHeader", FormatHeaderLabel("tacklingHandling", showingGoalkeepers ? "Handling" : "Tackling"));
+        SetHeaderText(headerRow, "Sh/SvHeader", FormatHeaderLabel("shootingSaving", showingGoalkeepers ? "Sav" : "Sht"));
+        SetHeaderText(headerRow, "Tac/HanHeader", FormatHeaderLabel("tacklingHandling", showingGoalkeepers ? "Han" : "Tck"));
         SetHeaderText(headerRow, "TypeHeader", FormatHeaderLabel("type", "Type"));
     }
 
@@ -2301,6 +2314,16 @@ public class DraftManager : MonoBehaviour
         if (cellText != null)
         {
             cellText.text = value;
+        }
+    }
+
+    private void SetFreeDraftRowBadge(Transform row, string cellName, int value)
+    {
+        Transform cell = FindDirectChildByName(row, cellName);
+        Image cellBadge = cell != null ? cell.GetComponentInChildren<Image>() : null;
+        if (cellBadge != null)
+        {
+            cellBadge.color = GetAttributeColor(value);
         }
     }
 
@@ -2591,15 +2614,11 @@ public class DraftManager : MonoBehaviour
 
             // Set the jersey number in the slot (assuming the text is inside the ContentWrapper)
             contentWrapper.Find("Jersey#").GetComponent<TMP_Text>().text = i.ToString();
-            // Dynamically adjust labels for Goalkeeper slots (1 and 12)
-            /* if (i == 1 || i == 12)
-            {
-                // Change labels for goalkeeper stats
-                contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>().text = "AerialInSlot";
-                contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>().text = "SavingInSlot";
-                contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>().text = "HandlingInSlot";
-            } */
 
+            if (i==12)
+            {
+                contentWrapper.Find("TopBorder").GetComponent<Image>().color = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
+            }
             // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
         }
         
@@ -2817,15 +2836,15 @@ public class DraftManager : MonoBehaviour
     {
         if (value >= 5f)
         {
-            return new Color(0.1019608f, 0.7058824f, 0.654902f, 1f);  // Green
+            return GreenColor;
         }
         else if (value >= 3f)
         {
-            return new Color(0.9686275f, 0.5647059f, 0.3411765f, 1f);  // Orange
+            return OrangeColor;
         }
         else if (value > 0f)
         {
-            return new Color(0.8823529f, 0.3843137f, 0.3333333f, 1f);  // Yellow
+            return RedColor;
         }
         else
         {
