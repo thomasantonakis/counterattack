@@ -86,8 +86,8 @@ public class CreateNewGameManager : MonoBehaviour
     private const string DefaultAwayGKKitId = "gk3";
     private const string PreviewSampleNumber = "10";
     private const string GKPreviewSampleNumber = "1";
-    private const float PreviewPlainNumberFontSize = 34f;
-    private const float PreviewVerticalNumberFontSize = 30f;
+    private const float PreviewPlainNumberFontSize = 48f;
+    private const float PreviewVerticalNumberFontSize = 48f;
 
     private IReadOnlyList<TokenKitPreset> availableKitPresets;
     private IReadOnlyList<TokenKitPreset> availableGKKitPresets;
