@@ -173,8 +173,6 @@ public class MatchStatsUI : MonoBehaviour
     private Vector2 onScreenPos;
     private Vector2 offScreenPos;
 
-    private static readonly Color PanelBackgroundColor = new(0.05f, 0.08f, 0.14f, 0.9f);
-    private static readonly Color ToggleBackgroundColor = new(0.86f, 0.71f, 0.34f, 0.95f);
     private const string HomeColor = "#8FD3FF";
     private const string AwayColor = "#FFBC7A";
     private const string AccentColor = "#F4E7B2";
@@ -185,13 +183,10 @@ public class MatchStatsUI : MonoBehaviour
     private const string CardYellowColor = "#F4D35E";
     private const string CardRedColor = "#FF6B6B";
     private const int StatsRowCount = 21;
-    private const string PlayerCardResourcePath = "UI/PlayerCardPrefab";
-    private const string GoalkeeperCardResourcePath = "UI/GoalKeeperCardPrefab";
+    private const string PlayerCardResourcePath = "UI/Cards/PlayerCard";
+    private const string GoalkeeperCardResourcePath = "UI/Cards/GKPlayerCard";
     private static readonly Color PreviewOutfieldFrameColor = new(0.09f, 0.2275f, 0.31f, 1f);
     private static readonly Color PreviewGoalkeeperFrameColor = new(0.3804f, 0.3216f, 0.4667f, 1f);
-    private static readonly Color PreviewNameColor = new(0.20f, 0.27f, 0.37f, 1f);
-    private static readonly Color PreviewSecondaryColor = new(0.18f, 0.63f, 0.24f, 1f);
-    private static readonly Color PreviewLabelColor = new(0.11f, 0.12f, 0.16f, 1f);
     private static readonly Color PreviewHighValueColor = new(0.46f, 0.82f, 0.77f, 1f);
     private static readonly Color PreviewMidValueColor = new(0.90f, 0.67f, 0.16f, 1f);
     private static readonly Color PreviewLowValueColor = new(0.88f, 0.37f, 0.34f, 1f);
@@ -288,7 +283,6 @@ public class MatchStatsUI : MonoBehaviour
     {
         LoadStatsTemplate();
         ApplyRuntimeVisualStyle();
-        ConfigurePanelLayout();
         EnsureExternalScoreboardRoot();
         EnsureHoverCards();
 
@@ -720,12 +714,12 @@ public class MatchStatsUI : MonoBehaviour
 
         if (homeScorersText != null)
         {
-            homeScorersText.text = BuildScorerPanelText($"{homeTeamName} {homeScore}", MatchManager.Instance.homeScorers);
+            homeScorersText.text = BuildScorerPanelText($"{homeTeamName}", MatchManager.Instance.homeScorers);
         }
 
         if (awayScorersText != null)
         {
-            awayScorersText.text = BuildScorerPanelText($"{awayScore} {awayTeamName}", MatchManager.Instance.awayScorers);
+            awayScorersText.text = BuildScorerPanelText($"{awayTeamName}", MatchManager.Instance.awayScorers);
         }
     }
 
@@ -770,33 +764,7 @@ public class MatchStatsUI : MonoBehaviour
     {
         AutoBindDesignerStatsFields();
         AutoBindDesignerLineupFields();
-
-        Image panelImage = panel != null ? panel.GetComponent<Image>() : null;
-        if (panelImage != null)
-        {
-            panelImage.color = PanelBackgroundColor;
-        }
-
-        Image toggleImage = toggleButton != null ? toggleButton.GetComponent<Image>() : null;
-        if (toggleImage != null)
-        {
-            toggleImage.color = ToggleBackgroundColor;
-        }
-
-        ConfigureText(homeScorersText, 10f, 13f, TextAlignmentOptions.TopLeft, true);
-        ConfigureText(awayScorersText, 10f, 13f, TextAlignmentOptions.TopLeft, true);
-        ConfigureLineupTextArray(homeLineupTexts, TextAlignmentOptions.MidlineRight);
-        ConfigureLineupTextArray(lineupNumberTexts, TextAlignmentOptions.Midline);
-        ConfigureLineupTextArray(awayLineupTexts, TextAlignmentOptions.MidlineLeft);
         ApplyDesignerStatsTeamColors();
-
-        TextMeshProUGUI toggleLabel = toggleButton != null ? toggleButton.GetComponentInChildren<TextMeshProUGUI>() : null;
-        if (toggleLabel != null)
-        {
-            ConfigureText(toggleLabel, 18f, 22f, TextAlignmentOptions.Center, false);
-            toggleLabel.color = new Color(0.09f, 0.12f, 0.17f, 1f);
-            toggleLabel.fontStyle = FontStyles.Bold;
-        }
     }
 
     private void AutoBindDesignerStatsFields()
@@ -908,7 +876,7 @@ public class MatchStatsUI : MonoBehaviour
 
         foreach (TMP_Text field in fields)
         {
-            ConfigureText(field, 8f, 12f, alignment, false);
+            ConfigureText(field, alignment);
             if (field != null)
             {
                 field.raycastTarget = false;
@@ -927,20 +895,6 @@ public class MatchStatsUI : MonoBehaviour
         AutoBindDesignerLineupFields();
     }
 
-    private void ConfigurePanelLayout()
-    {
-        if (panel != null)
-        {
-            float panelWidth = panel.sizeDelta.x > 0f ? panel.sizeDelta.x : 370f;
-            panel.anchorMin = new Vector2(1f, 0f);
-            panel.anchorMax = new Vector2(1f, 1f);
-            panel.pivot = new Vector2(1f, 0.5f);
-            panel.anchoredPosition = new Vector2(0f, 0f);
-            panel.sizeDelta = new Vector2(panelWidth, 0f);
-        }
-
-    }
-
     private void EnsureHoverCards()
     {
         if (panel == null)
@@ -952,10 +906,11 @@ public class MatchStatsUI : MonoBehaviour
         EnsureGoalkeeperCardPrefab();
         if (playerCardPrefab == null && goalkeeperCardPrefab == null)
         {
+            Debug.LogWarning("Warning: No player card or goalkeeper card prefab assigned. Hover cards will not be displayed.");
             return;
         }
 
-        if (hoverCardsRoot == null)
+        /* if (hoverCardsRoot == null)
         {
             hoverCardsRoot = FindDirectChildRect(panel, "HoverCardsRoot");
         }
@@ -997,7 +952,7 @@ public class MatchStatsUI : MonoBehaviour
             awayHoverCardAnchor.offsetMin = Vector2.zero;
             awayHoverCardAnchor.offsetMax = Vector2.zero;
             awayHoverCardAnchor.gameObject.AddComponent<RectMask2D>();
-        }
+        } */
 
         BindExistingHoverCards();
 
@@ -1077,10 +1032,6 @@ public class MatchStatsUI : MonoBehaviour
     private void UpdateExternalScoreboardVisibility()
     {
         EnsureExternalScoreboardRoot();
-        if (externalScoreboardRoot != null)
-        {
-            externalScoreboardRoot.SetActive(!isExpanded);
-        }
     }
 
     private static RectTransform CreateChildRect(string name, RectTransform parent)
@@ -1116,11 +1067,6 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        cardRect.anchorMin = new Vector2(0.5f, 0f);
-        cardRect.anchorMax = new Vector2(0.5f, 0f);
-        cardRect.pivot = new Vector2(0.5f, 0f);
-        cardRect.anchoredPosition = new Vector2(0f, PreviewCardBottomInset);
-        cardRect.localScale = Vector3.one * CalculateCardScale(anchor, cardRect);
         ApplyPreviewCardTheme(card.gameObject, isGoalkeeper);
         card.gameObject.SetActive(false);
     }
@@ -1174,8 +1120,6 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        UpdateHoverCardScale(outfieldCard, anchor);
-        UpdateHoverCardScale(goalkeeperCard, anchor);
 
         if (token == null || MatchManager.Instance?.gameData?.gameSettings == null)
         {
@@ -1266,8 +1210,6 @@ public class MatchStatsUI : MonoBehaviour
         {
             return;
         }
-
-        cardRect.localScale = Vector3.one * CalculateCardScale(anchor, cardRect);
     }
 
     private void ApplyPreviewCardTheme(GameObject cardObject, bool isGoalkeeper, string countryLabel = "")
@@ -1283,13 +1225,6 @@ public class MatchStatsUI : MonoBehaviour
             frameImage.color = isGoalkeeper ? PreviewGoalkeeperFrameColor : PreviewOutfieldFrameColor;
         }
 
-        RectTransform whiteBackground = FindDescendantComponent<RectTransform>(cardObject.transform, "WhiteBackground");
-        if (whiteBackground != null)
-        {
-            whiteBackground.localScale = Vector3.one;
-            whiteBackground.sizeDelta = new Vector2(PreviewFaceWidth, PreviewFaceHeight);
-            whiteBackground.anchoredPosition = new Vector2(0f, PreviewFaceYOffset);
-        }
 
         RectTransform flag = FindDescendantComponent<RectTransform>(cardObject.transform, "Flag");
         if (flag != null)
@@ -1347,10 +1282,10 @@ public class MatchStatsUI : MonoBehaviour
                 /* text.color = PreviewLabelColor;
                 text.enableAutoSizing = true;
                 text.fontSizeMin = 20f;
-                text.fontSizeMax = 28f; */
+                text.fontSizeMax = 28f;
                 text.alignment = TextAlignmentOptions.Left;
                 text.textWrappingMode = TextWrappingModes.NoWrap;
-                text.overflowMode = TextOverflowModes.Ellipsis;
+                text.overflowMode = TextOverflowModes.Ellipsis;*/
             }
             else if (text.name.EndsWith("Value", StringComparison.Ordinal))
             {
@@ -1392,13 +1327,6 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        flag.anchorMin = new Vector2(0.5f, 0.5f);
-        flag.anchorMax = new Vector2(0.5f, 0.5f);
-        flag.pivot = new Vector2(0.5f, 0.5f);
-        flag.anchoredPosition = new Vector2(PreviewFlagX, PreviewCountryY);
-        flag.sizeDelta = new Vector2(PreviewFlagWidth, PreviewFlagHeight);
-        flag.localScale = Vector3.one;
-        flag.localRotation = Quaternion.identity;
 
         flagImage.sprite = flagSprite;
         flagImage.color = Color.white;
@@ -1483,23 +1411,11 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        attributes.anchoredPosition = new Vector2(0f, PreviewAttributesY);
-        attributes.sizeDelta = new Vector2(PreviewAttributesWidth, PreviewAttributesHeight);
-
-        if (attributes.TryGetComponent(out VerticalLayoutGroup verticalLayout))
-        {
-            verticalLayout.enabled = false;
-        }
 
         string[] rowOrder = isGoalkeeper
             ? new[] { "Aerial", "Dribbling", "Pace", "Resilience", "Saving", "Handling", "High Pass" }
             : new[] { "Pace", "Dribbling", "Heading", "High Pass", "Resilience", "Shooting", "Tackling" };
-
-        float rowWidth = PreviewAttributesWidth - 20f;
-        float rowTopInset = 2f;
-        float rowStep = rowOrder.Length > 1
-            ? (PreviewAttributesHeight - PreviewRowHeight - rowTopInset) / (rowOrder.Length - 1)
-            : 0f;
+        
 
         for (int index = 0; index < rowOrder.Length; index++)
         {
@@ -1511,69 +1427,12 @@ public class MatchStatsUI : MonoBehaviour
 
             row.SetSiblingIndex(index);
 
-            RectTransform rowRect = row as RectTransform;
-            if (rowRect != null)
-            {
-                rowRect.anchorMin = new Vector2(0.5f, 1f);
-                rowRect.anchorMax = new Vector2(0.5f, 1f);
-                rowRect.pivot = new Vector2(0.5f, 1f);
-                rowRect.anchoredPosition = new Vector2(0f, -(rowTopInset + (index * rowStep)));
-                rowRect.sizeDelta = new Vector2(rowWidth, PreviewRowHeight);
-            }
-
-            if (row.TryGetComponent(out HorizontalLayoutGroup rowLayout))
-            {
-                rowLayout.enabled = false;
-            }
-
-            if (row.TryGetComponent(out LayoutElement rowLayoutElement))
-            {
-                rowLayoutElement.preferredHeight = PreviewRowHeight;
-                rowLayoutElement.preferredWidth = rowWidth;
-                rowLayoutElement.flexibleHeight = 0f;
-                rowLayoutElement.flexibleWidth = 0f;
-            }
 
             TMP_Text label = row.GetComponentsInChildren<TMP_Text>(true)
                 .FirstOrDefault(component => component != null && component.name.EndsWith("Label", StringComparison.Ordinal));
             TMP_Text value = row.GetComponentsInChildren<TMP_Text>(true)
                 .FirstOrDefault(component => component != null && component.name.EndsWith("Value", StringComparison.Ordinal));
 
-            if (label != null)
-            {
-                label.text = isGoalkeeper && row.name == "Aerial" ? "Aerial Ability" : row.name;
-                if (label.TryGetComponent(out LayoutElement labelLayoutElement))
-                {
-                    labelLayoutElement.preferredWidth = PreviewRowLabelWidth;
-                    labelLayoutElement.flexibleWidth = 0f;
-                    labelLayoutElement.minWidth = PreviewRowLabelWidth;
-                }
-
-                RectTransform labelRect = label.rectTransform;
-                labelRect.anchorMin = new Vector2(0f, 0.5f);
-                labelRect.anchorMax = new Vector2(0f, 0.5f);
-                labelRect.pivot = new Vector2(0f, 0.5f);
-                labelRect.anchoredPosition = new Vector2(0f, 0f);
-                labelRect.sizeDelta = new Vector2(PreviewRowLabelWidth, PreviewRowHeight);
-            }
-
-            if (value != null)
-            {
-                if (value.TryGetComponent(out LayoutElement valueLayoutElement))
-                {
-                    valueLayoutElement.preferredWidth = PreviewRowValueWidth;
-                    valueLayoutElement.flexibleWidth = 0f;
-                    valueLayoutElement.minWidth = PreviewRowValueWidth;
-                }
-
-                RectTransform valueRect = value.rectTransform;
-                valueRect.anchorMin = new Vector2(1f, 0.5f);
-                valueRect.anchorMax = new Vector2(1f, 0.5f);
-                valueRect.pivot = new Vector2(1f, 0.5f);
-                valueRect.anchoredPosition = new Vector2(-PreviewRowValueRightPadding, 0f);
-                valueRect.sizeDelta = new Vector2(PreviewRowValueWidth, PreviewRowHeight);
-                UpdateValueBadge(value);
-            }
         }
     }
 
@@ -1611,15 +1470,6 @@ public class MatchStatsUI : MonoBehaviour
             badge.transform.SetSiblingIndex(valueText.transform.GetSiblingIndex());
         }
 
-        RectTransform valueRect = valueText.rectTransform;
-        RectTransform badgeRect = badge.rectTransform;
-        badgeRect.anchorMin = valueRect.anchorMin;
-        badgeRect.anchorMax = valueRect.anchorMax;
-        badgeRect.pivot = valueRect.pivot;
-        badgeRect.anchoredPosition = valueRect.anchoredPosition;
-        badgeRect.localRotation = Quaternion.identity;
-        badgeRect.localScale = Vector3.one;
-        badgeRect.sizeDelta = new Vector2(PreviewValueBadgeSize, PreviewValueBadgeSize);
 
         badge.sprite = previewValueBadgeSprite;
         badge.preserveAspect = true;
@@ -1645,7 +1495,7 @@ public class MatchStatsUI : MonoBehaviour
 
     private static Sprite CreatePreviewBadgeSprite()
     {
-        const int textureSize = 128;
+        const int textureSize = 32;
         const float edgeSoftness = 2f;
         Texture2D texture = new(textureSize, textureSize, TextureFormat.RGBA32, false)
         {
@@ -1657,7 +1507,7 @@ public class MatchStatsUI : MonoBehaviour
 
         Color32[] pixels = new Color32[textureSize * textureSize];
         Vector2 center = new((textureSize - 1) * 0.5f, (textureSize - 1) * 0.5f);
-        float radius = ((textureSize * 0.5f) - 2f) * 0.7f;
+        float radius = ((textureSize * 0.5f) - 2f) * 0.72f;
 
         for (int y = 0; y < textureSize; y++)
         {
@@ -1672,11 +1522,7 @@ public class MatchStatsUI : MonoBehaviour
         texture.SetPixels32(pixels);
         texture.Apply(false, true);
 
-        return Sprite.Create(
-            texture,
-            new Rect(0f, 0f, textureSize, textureSize),
-            new Vector2(0.5f, 0.5f),
-            textureSize);
+        return Sprite.Create(texture, new Rect(0f, 0f, textureSize, textureSize), new Vector2(0.5f, 0.5f), textureSize);
     }
 
     private static T FindDescendantComponent<T>(Transform root, string name) where T : Component
@@ -1720,30 +1566,23 @@ public class MatchStatsUI : MonoBehaviour
         return null;
     }
 
-    private static void ConfigureText(TMP_Text target, float minSize, float maxSize, TextAlignmentOptions alignment, bool wrap)
+    private static void ConfigureText(TMP_Text target, TextAlignmentOptions alignment)
     {
         if (target == null)
         {
             return;
         }
 
-        target.richText = true;
-        target.textWrappingMode = wrap ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
-        target.overflowMode = TextOverflowModes.Overflow;
-        target.enableAutoSizing = true;
-        target.fontSizeMin = minSize;
-        target.fontSizeMax = maxSize;
         target.alignment = alignment;
-        target.lineSpacing = -9f;
-        target.paragraphSpacing = 0f;
     }
 
     private void UpdateToggleGlyph()
     {
-        TextMeshProUGUI toggleLabel = toggleButton != null ? toggleButton.GetComponentInChildren<TextMeshProUGUI>() : null;
-        if (toggleLabel != null)
+        Image image = toggleButton != null ? toggleButton.GetComponent<Image>() : null;
+        if (image != null)
         {
-            toggleLabel.text = isExpanded ? ">" : "<";
+            float targetZRotation = isExpanded ? 0f : 180f;
+            image.rectTransform.localRotation = Quaternion.Euler(0f, 0f, targetZRotation);
         }
     }
 
