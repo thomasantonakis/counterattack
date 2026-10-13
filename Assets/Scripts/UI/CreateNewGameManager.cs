@@ -86,8 +86,8 @@ public class CreateNewGameManager : MonoBehaviour
     private const string DefaultAwayGKKitId = "gk3";
     private const string PreviewSampleNumber = "10";
     private const string GKPreviewSampleNumber = "1";
-    private const float PreviewPlainNumberFontSize = 34f;
-    private const float PreviewVerticalNumberFontSize = 30f;
+    private const float PreviewPlainNumberFontSize = 48f;
+    private const float PreviewVerticalNumberFontSize = 48f;
 
     private IReadOnlyList<TokenKitPreset> availableKitPresets;
     private IReadOnlyList<TokenKitPreset> availableGKKitPresets;
@@ -1492,11 +1492,11 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         ColorBlock colors = selectable.colors;
-        colors.normalColor = new Color(1f, 1f, 1f, 0f);
+        /* colors.normalColor = new Color(1f, 1f, 1f, 0f);
         colors.highlightedColor = new Color(1f, 1f, 1f, 0f);
         colors.selectedColor = new Color(1f, 1f, 1f, 0f);
         colors.pressedColor = new Color(1f, 1f, 1f, 0.18f);
-        colors.fadeDuration = 0f;
+        colors.fadeDuration = 0f; */
         selectable.colors = colors;
 
         KitDropdownHoverPainter painter = item.GetComponent<KitDropdownHoverPainter>();
@@ -2685,7 +2685,7 @@ public class CreateNewGameManager : MonoBehaviour
         private Graphic targetGraphic;
         private TMP_Text label;
         private Color baseGraphicColor = new Color(1f, 1f, 1f, 0f);
-        private Color baseLabelColor = Color.black;
+        private Color baseLabelColor = Color.azure;
 
         public void Configure(TMP_Dropdown sourceDropdown, CreateNewGameManager sourceOwner)
         {
@@ -2780,7 +2780,7 @@ public class CreateNewGameManager : MonoBehaviour
         {
             ResolveReferences();
             baseGraphicColor = targetGraphic != null ? targetGraphic.color : new Color(1f, 1f, 1f, 0f);
-            baseLabelColor = label != null ? label.color : Color.black;
+            baseLabelColor = label != null ? label.color : new Color(1f, 1f, 1f, 0f);
         }
     }
 

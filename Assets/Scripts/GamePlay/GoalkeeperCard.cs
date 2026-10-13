@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;  // For TextMeshPro
+using UnityEngine.UI;
 
 public class GoalkeeperCard : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GoalkeeperCard : MonoBehaviour
     public TextMeshProUGUI savingValueText;
     public TextMeshProUGUI handlingValueText;
     public TextMeshProUGUI highPassValueText;
+    public Image flagImage;
     // public TextMeshProUGUI specialAbilityText;
     
     // Optionally add Image for country flags if you plan to use them
@@ -32,20 +34,7 @@ public class GoalkeeperCard : MonoBehaviour
         savingValueText.text = goalkeeper.Saving.ToString();
         handlingValueText.text = goalkeeper.Handling.ToString();
         highPassValueText.text = goalkeeper.HighPass.ToString();
-        // Set default black color for the player name and country
-        playerNameText.color = Color.black;
-        countryText.color = Color.black;
-
-        // Dynamically color the attribute texts based on their values
-        aerialValueText.color = GetAttributeColor(goalkeeper.Aerial);
-        dribblingValueText.color = GetAttributeColor(goalkeeper.Dribbling);
-        paceValueText.color = GetAttributeColor(goalkeeper.Pace);
-        resilienceValueText.color = GetAttributeColor(goalkeeper.Resilience);
-        savingValueText.color = GetAttributeColor(goalkeeper.Saving);
-        handlingValueText.color = GetAttributeColor(goalkeeper.Handling);
-        highPassValueText.color = GetAttributeColor(goalkeeper.HighPass);
-        // Set flag based on country (if using flag sprites)
-        // flagImage.sprite = Resources.Load<Sprite>($"Flags/{player.Country}");
+        UpdateFlag(goalkeeper.Country);
     }
 
     public void UpdateFromToken(PlayerToken token, string secondaryText = "")
@@ -64,31 +53,43 @@ public class GoalkeeperCard : MonoBehaviour
         savingValueText.text = token.saving.ToString();
         handlingValueText.text = token.handling.ToString();
         highPassValueText.text = token.highPass.ToString();
-
-        playerNameText.color = Color.black;
-        countryText.color = Color.black;
-        aerialValueText.color = GetAttributeColor(token.aerial);
-        dribblingValueText.color = GetAttributeColor(token.dribbling);
-        paceValueText.color = GetAttributeColor(token.pace);
-        resilienceValueText.color = GetAttributeColor(token.resilience);
-        savingValueText.color = GetAttributeColor(token.saving);
-        handlingValueText.color = GetAttributeColor(token.handling);
-        highPassValueText.color = GetAttributeColor(token.highPass);
+        UpdateFlag(secondaryText);
     }
 
-    private Color GetAttributeColor(int value)
+    private void UpdateFlag(string country)
     {
-        if (value >= 5)
+        Image image = ResolveFlagImage();
+        if (image == null)
         {
-            return new Color(0f, 0.5f, 0f);  // Dark Green
+            return;
         }
-        else if (value >= 3)
+
+        Sprite sprite = FlagSpriteProvider.GetFlagSprite(country);
+        image.sprite = sprite;
+        image.preserveAspect = true;
+        image.color = Color.white;
+        image.raycastTarget = false;
+        image.gameObject.SetActive(sprite != null);
+    }
+
+    private Image ResolveFlagImage()
+    {
+        if (flagImage != null)
         {
-            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+            return flagImage;
         }
-        else
+
+        Transform flagTransform = transform.Find("WhiteBackground/Flag");
+        if (flagTransform == null)
         {
-            return new Color(0.5f, 0f, 0f);  // Dark Red
+            flagTransform = transform.Find("Flag");
         }
+
+        if (flagTransform != null)
+        {
+            flagImage = flagTransform.GetComponent<Image>();
+        }
+
+        return flagImage;
     }
 }

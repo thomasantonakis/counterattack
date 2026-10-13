@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -60,6 +61,8 @@ public class MovementPhaseTokenStatusPanel : MonoBehaviour
         SetSectionVisible(jumpedSection, hasJumped);
         SetSectionVisible(stunnedNextSection, hasStunnedNext);
 
+        SetCanvasGroupSize(hasStunned, hasJumped, hasStunnedNext);
+
         if (!shouldShow)
         {
             ClearAllSlots();
@@ -69,6 +72,15 @@ public class MovementPhaseTokenStatusPanel : MonoBehaviour
         FillSlots(stunnedSlots, stunnedTokens);
         FillSlots(jumpedSlots, jumpedTokens);
         FillSlots(stunnedNextSlots, stunnedNextTokens);
+    }
+
+    private void SetCanvasGroupSize(bool hasStunned, bool hasJumped, bool hasStunnedNext)
+    {
+        if (canvasGroup == null)
+        {
+            return;
+        }
+        gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, (hasStunned ? stunnedSection.rect.height : 0f) + (hasJumped ? jumpedSection.rect.height : 0f) + (hasStunnedNext ? stunnedNextSection.rect.height : 0f));
     }
 
     private IReadOnlyList<PlayerToken> BuildJumpedTokens()

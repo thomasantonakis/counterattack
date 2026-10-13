@@ -6,17 +6,12 @@ using UnityEngine.UI;
 
 public static class DraftPlayerCardStyler
 {
-    private static readonly Color FrameColor = new(0.22f, 0.30f, 0.40f, 1f);
-    private static readonly Color NameColor = new(0.20f, 0.27f, 0.37f, 1f);
-    private static readonly Color SecondaryColor = new(0.18f, 0.63f, 0.24f, 1f);
-    private static readonly Color LabelColor = new(0.11f, 0.12f, 0.16f, 1f);
-    private static readonly Color HighValueColor = new(0.46f, 0.82f, 0.77f, 1f);
-    private static readonly Color MidValueColor = new(0.90f, 0.67f, 0.16f, 1f);
-    private static readonly Color LowValueColor = new(0.88f, 0.37f, 0.34f, 1f);
+    private static readonly Color FrameColor = new(0.09019608f, 0.227451f, 0.3098039f, 1f);
+    private static Color HighValueColor = new(0.1019608f, 0.7058824f, 0.654902f, 1f);
+    private static Color MidValueColor = new(0.9686275f, 0.5647059f, 0.3411765f, 1f);
+    private static Color LowValueColor = new(0.8823529f, 0.3843137f, 0.3333333f, 1f);
 
-    private const float ValueBadgeSize = 40f;
-    private const float FlagWidth = 32f;
-    private const float FlagHeight = 22f;
+    private const float ValueBadgeSize = 72f;
     private static Sprite valueBadgeSprite;
 
     public static void ApplyOutfield(GameObject cardObject)
@@ -39,30 +34,8 @@ public static class DraftPlayerCardStyler
         }
 
         TMP_Text playerName = FindDescendantComponent<TMP_Text>(cardObject.transform, "PlayerName");
-        if (playerName != null)
-        {
-            playerName.color = NameColor;
-            playerName.fontStyle = FontStyles.Bold;
-            playerName.enableAutoSizing = true;
-            playerName.fontSizeMin = 16f;
-            playerName.fontSizeMax = 29f;
-            playerName.alignment = TextAlignmentOptions.Left;
-            playerName.textWrappingMode = TextWrappingModes.NoWrap;
-            playerName.overflowMode = TextOverflowModes.Ellipsis;
-        }
 
         TMP_Text country = FindDescendantComponent<TMP_Text>(cardObject.transform, "Country");
-        if (country != null)
-        {
-            country.color = SecondaryColor;
-            country.fontStyle = FontStyles.Bold;
-            country.enableAutoSizing = true;
-            country.fontSizeMin = 10f;
-            country.fontSizeMax = 18f;
-            country.alignment = TextAlignmentOptions.Center;
-            country.textWrappingMode = TextWrappingModes.NoWrap;
-            country.overflowMode = TextOverflowModes.Ellipsis;
-        }
 
         foreach (TMP_Text text in cardObject.GetComponentsInChildren<TMP_Text>(true))
         {
@@ -70,37 +43,11 @@ public static class DraftPlayerCardStyler
             {
                 continue;
             }
-
-            if (text.name.EndsWith("Label", StringComparison.Ordinal))
+            
+            if (text.name.EndsWith("Value", StringComparison.Ordinal))
             {
-                text.color = LabelColor;
-                text.enableAutoSizing = true;
-                text.fontSizeMin = 11f;
-                text.fontSizeMax = 18f;
-                text.alignment = TextAlignmentOptions.Left;
-                text.textWrappingMode = TextWrappingModes.NoWrap;
-                text.overflowMode = TextOverflowModes.Ellipsis;
-            }
-            else if (text.name.EndsWith("Value", StringComparison.Ordinal))
-            {
-                text.color = Color.white;
-                text.fontStyle = FontStyles.Bold;
-                text.alignment = TextAlignmentOptions.Center;
-                text.enableAutoSizing = false;
-                text.fontSize = 20f;
-                text.textWrappingMode = TextWrappingModes.NoWrap;
-                text.overflowMode = TextOverflowModes.Overflow;
                 UpdateValueBadge(text);
-            }
-            else if (text.text != null && text.text.IndexOf("counter attack", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                text.color = new Color(0.64f, 0.86f, 1f, 1f);
-                text.enableAutoSizing = true;
-                text.fontSizeMin = 12f;
-                text.fontSizeMax = 18f;
-                text.characterSpacing = 1.2f;
-                text.alignment = TextAlignmentOptions.Center;
-            }
+            }       
         }
     }
 
@@ -113,18 +60,6 @@ public static class DraftPlayerCardStyler
         {
             return;
         }
-
-        flag.anchorMin = new Vector2(0.5f, 0.5f);
-        flag.anchorMax = new Vector2(0.5f, 0.5f);
-        flag.pivot = new Vector2(0.5f, 0.5f);
-        flag.anchoredPosition = new Vector2(-82f, 112f);
-        flag.localRotation = Quaternion.identity;
-        flag.localScale = Vector3.one;
-        flag.sizeDelta = new Vector2(FlagWidth, FlagHeight);
-
-        flagImage.color = Color.white;
-        flagImage.preserveAspect = true;
-        flagImage.raycastTarget = false;
     }
 
     private static void UpdateValueBadge(TMP_Text valueText)
@@ -198,8 +133,14 @@ public static class DraftPlayerCardStyler
         {
             return HighValueColor;
         }
-
-        return value >= 3 ? MidValueColor : LowValueColor;
+        else if (value >= 3)
+        {
+            return MidValueColor;
+        }
+        else
+        {
+            return LowValueColor;
+        }
     }
 
     private static Sprite CreateBadgeSprite()

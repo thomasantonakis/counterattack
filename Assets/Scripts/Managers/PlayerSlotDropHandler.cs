@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
 {
@@ -231,7 +232,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             }
             else
             {
-                draggedSlotFields[i].color = Color.black;  // Set player name to black
+                draggedSlotFields[i].color = Color.white;  // Set player name to black
             }
         }
 
@@ -249,7 +250,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             }
             else
             {
-                currentSlotFields[i].color = Color.black;  // Set player name to black
+                currentSlotFields[i].color = Color.white;  // Set player name to white
             }
         }
 
@@ -278,10 +279,15 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             return;
         }
 
+        int jerseyNumber = GetJerseyNumber();
+        if (jerseyNumber == 12)
+        {
+            contentWrapper.Find("TopBorder").GetComponent<Image>().color = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
+        }
+        
         // Update the text fields inside the ContentWrapper
         TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
         playerNameText.text = gk.Name;
-        playerNameText.color = Color.black;  // Set default color to black for player name
 
         TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
         TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
@@ -301,14 +307,23 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         savingText.text = gk.Saving.ToString();
         handlingText.text = gk.Handling.ToString();
 
+        // Update the image fields inside the ContentWrapper
+        Image paceBadge = contentWrapper.Find("PaceBadge").GetComponent<Image>();
+        Image dribblingBadge = contentWrapper.Find("DribblingBadge").GetComponent<Image>();
+        Image aerialBadge = contentWrapper.Find("HeadingBadge").GetComponent<Image>();  // Reuse "Heading" for "Aerial"
+        Image highPassBadge = contentWrapper.Find("HighPassBadge").GetComponent<Image>();
+        Image resilienceBadge = contentWrapper.Find("ResilienceBadge").GetComponent<Image>();
+        Image savingBadge = contentWrapper.Find("ShootingBadge").GetComponent<Image>();  // Reuse "Shooting" for "Saving"
+        Image handlingBadge = contentWrapper.Find("TacklingBadge").GetComponent<Image>();  // Reuse "Tackling" for "Handling"
+
         // Apply dynamic colors based on the attribute values
-        paceText.color = GetAttributeColor(gk.Pace);
-        dribblingText.color = GetAttributeColor(gk.Dribbling);
-        aerialText.color = GetAttributeColor(gk.Aerial);
-        highPassText.color = GetAttributeColor(gk.HighPass);
-        resilienceText.color = GetAttributeColor(gk.Resilience);
-        savingText.color = GetAttributeColor(gk.Saving);
-        handlingText.color = GetAttributeColor(gk.Handling);
+        paceBadge.color = GetAttributeColor(gk.Pace);
+        dribblingBadge.color = GetAttributeColor(gk.Dribbling);
+        aerialBadge.color = GetAttributeColor(gk.Aerial);
+        highPassBadge.color = GetAttributeColor(gk.HighPass);
+        resilienceBadge.color = GetAttributeColor(gk.Resilience);
+        savingBadge.color = GetAttributeColor(gk.Saving);
+        handlingBadge.color = GetAttributeColor(gk.Handling);
 
         // Rename the slot by appending the goalkeeper's name
         gameObject.name = $"{GetSlotBaseName()}-{gk.Name}";  // Append GK name to the slot name
@@ -346,7 +361,6 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         }
 
         text.text = string.Empty;
-        text.color = Color.black;
     }
 
     public void UpdatePlayerSlot(Player player)
@@ -359,10 +373,10 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             return;
         }
 
+        // Update the text fields inside the ContentWrapper
         TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
         playerNameText.text = player.Name;
-        playerNameText.color = Color.black;
-
+        
         TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
         TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
         TMP_Text headingText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();
@@ -371,6 +385,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         TMP_Text shootingText = contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>();
         TMP_Text tacklingText = contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>();
 
+        // Set text
         paceText.text = player.Pace.ToString();
         dribblingText.text = player.Dribbling.ToString();
         headingText.text = player.Heading.ToString();
@@ -379,13 +394,23 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         shootingText.text = player.Shooting.ToString();
         tacklingText.text = player.Tackling.ToString();
 
-        paceText.color = GetAttributeColor(player.Pace);
-        dribblingText.color = GetAttributeColor(player.Dribbling);
-        headingText.color = GetAttributeColor(player.Heading);
-        highPassText.color = GetAttributeColor(player.HighPass);
-        resilienceText.color = GetAttributeColor(player.Resilience);
-        shootingText.color = GetAttributeColor(player.Shooting);
-        tacklingText.color = GetAttributeColor(player.Tackling);
+        // Update the image fields inside the ContentWrapper
+        Image paceBadge = contentWrapper.Find("PaceBadge").GetComponent<Image>();
+        Image dribblingBadge = contentWrapper.Find("DribblingBadge").GetComponent<Image>();
+        Image headingBadge = contentWrapper.Find("HeadingBadge").GetComponent<Image>();
+        Image highPassBadge = contentWrapper.Find("HighPassBadge").GetComponent<Image>();
+        Image resilienceBadge = contentWrapper.Find("ResilienceBadge").GetComponent<Image>();
+        Image shootingBadge = contentWrapper.Find("ShootingBadge").GetComponent<Image>();
+        Image tacklingBadge = contentWrapper.Find("TacklingBadge").GetComponent<Image>();
+
+        // Apply dynamic colors based on the attribute values
+        paceBadge.color = GetAttributeColor(player.Pace);
+        dribblingBadge.color = GetAttributeColor(player.Dribbling);
+        headingBadge.color = GetAttributeColor(player.Heading);
+        highPassBadge.color = GetAttributeColor(player.HighPass);
+        resilienceBadge.color = GetAttributeColor(player.Resilience);
+        shootingBadge.color = GetAttributeColor(player.Shooting);
+        tacklingBadge.color = GetAttributeColor(player.Tackling);
 
         gameObject.name = $"{GetSlotBaseName()}-{player.Name}";
         Debug.Log($"Slot renamed to: {gameObject.name}");
@@ -404,9 +429,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         // Update the text fields inside the ContentWrapper
         TMP_Text playerNameText = contentWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>();
         playerNameText.text = card.playerNameText.text;
-        playerNameText.color = Color.black;  // Set default color to black for player name
 
-        // Update the text fields inside the ContentWrapper
         TMP_Text paceText = contentWrapper.Find("PaceInSlot").GetComponent<TMP_Text>();
         TMP_Text dribblingText = contentWrapper.Find("DribblingInSlot").GetComponent<TMP_Text>();
         TMP_Text headingText = contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>();
@@ -425,14 +448,23 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         shootingText.text = card.shootingValueText.text;
         tacklingText.text = card.tacklingValueText.text;
 
+        // Update the image fields inside the ContentWrapper
+        Image paceBadge = contentWrapper.Find("PaceBadge").GetComponent<Image>();
+        Image dribblingBadge = contentWrapper.Find("DribblingBadge").GetComponent<Image>();
+        Image headingBadge = contentWrapper.Find("HeadingBadge").GetComponent<Image>();
+        Image highPassBadge = contentWrapper.Find("HighPassBadge").GetComponent<Image>();
+        Image resilienceBadge = contentWrapper.Find("ResilienceBadge").GetComponent<Image>();
+        Image shootingBadge = contentWrapper.Find("ShootingBadge").GetComponent<Image>();
+        Image tacklingBadge = contentWrapper.Find("TacklingBadge").GetComponent<Image>();
+
         // Apply dynamic colors based on the attribute values
-        paceText.color = GetAttributeColor(int.Parse(card.paceValueText.text));
-        dribblingText.color = GetAttributeColor(int.Parse(card.dribblingValueText.text));
-        headingText.color = GetAttributeColor(int.Parse(card.headingValueText.text));
-        highPassText.color = GetAttributeColor(int.Parse(card.highPassValueText.text));
-        resilienceText.color = GetAttributeColor(int.Parse(card.resilienceValueText.text));
-        shootingText.color = GetAttributeColor(int.Parse(card.shootingValueText.text));
-        tacklingText.color = GetAttributeColor(int.Parse(card.tacklingValueText.text));
+        paceBadge.color = GetAttributeTextColor(card.paceValueText.text);
+        dribblingBadge.color = GetAttributeTextColor(card.dribblingValueText.text);
+        headingBadge.color = GetAttributeTextColor(card.headingValueText.text);
+        highPassBadge.color = GetAttributeTextColor(card.highPassValueText.text);
+        resilienceBadge.color = GetAttributeTextColor(card.resilienceValueText.text);
+        shootingBadge.color = GetAttributeTextColor(card.shootingValueText.text);
+        tacklingBadge.color = GetAttributeTextColor(card.tacklingValueText.text);
 
         // Rename the slot by appending the player's name
         gameObject.name = $"{GetSlotBaseName()}-{card.playerNameText.text}";  // Append player name to the slot name
@@ -450,19 +482,27 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         return gameObject.name;
     }
 
+    private Color GetAttributeTextColor(string valueText)
+    {
+        if (int.TryParse(valueText, out int value))
+        {
+            return GetAttributeColor(value);
+        }
+        return Color.white;  // Default color if parsing fails
+    }
     private Color GetAttributeColor(int value)
     {
         if (value >= 5)
         {
-            return new Color(0f, 0.5f, 0f);  // Dark Green
+            return new Color(0.1019608f, 0.7058824f, 0.654902f, 1f);  // Green
         }
-        else if (value >= 3)
+        else if (value >= 3f)
         {
-            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+            return new Color(0.9686275f, 0.5647059f, 0.3411765f, 1f);  // Orange
         }
         else
         {
-            return new Color(0.5f, 0f, 0f);  // Dark Red
+            return new Color(0.8823529f, 0.3843137f, 0.3333333f, 1f);  // Red
         }
     }
 

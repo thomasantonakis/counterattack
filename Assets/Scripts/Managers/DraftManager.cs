@@ -20,8 +20,8 @@ public class DraftManager : MonoBehaviour
     private const string DraftArcade = "Arcade";
     private const string WorldCupPlayerType = "World Cup";
     private const float RegularDraftCardAspectRatio = 0.625f;
-    private const float RegularDraftCardSpacing = 10f;
-    private const float RegularDraftPanelVerticalPadding = 20f;
+    private const float RegularDraftCardSpacing = 64.0f;
+    private const float RegularDraftPanelVerticalPadding = 96f;
     private static readonly string[] FreeDraftFilterOrder =
     {
         "name",
@@ -75,11 +75,14 @@ public class DraftManager : MonoBehaviour
     private Transform freeDraftPreviewRow;
     private TMP_Text freeDraftTitleText;
     private DraftUIManager draftUIManager;
-    private readonly Dictionary<string, string> freeDraftFilters = new Dictionary<string, string>();
-    private readonly Dictionary<string, FreeDraftTableFilterField> freeDraftFilterFields = new Dictionary<string, FreeDraftTableFilterField>();
+    private readonly Dictionary<string, string> freeDraftFilters = new();
+    private readonly Dictionary<string, FreeDraftTableFilterField> freeDraftFilterFields = new();
     private string freeDraftSortKey;
     private bool freeDraftSortAscending;
     private bool freeDraftHasUserSort;
+    private Color GreenColor = new(0.1019608f, 0.7058824f, 0.654902f, 1f);
+    private Color OrangeColor = new(0.9686275f, 0.5647059f, 0.3411765f, 1f); 
+    private Color RedColor = new(0.8823529f, 0.3843137f, 0.3333333f, 1f);
     public TMP_Text refereeText; // Reference to the TMP_Text for the referee
     public TMP_Text homeTeamName; // Reference to the TMP_Text for the Home Team
     public TMP_Text awayTeamName; // Reference to the TMP_Text for the Away Team
@@ -287,7 +290,7 @@ public class DraftManager : MonoBehaviour
 
             for (int i = 1; i < lines.Length; i++)
             {
-                Dictionary<string, string> playerData = new Dictionary<string, string>
+                Dictionary<string, string> playerData = new()
                 {
                     { "Name", GetCsvField(lines[i], headers, "Name") },
                     { "Nationality", GetCsvField(lines[i], headers, "Nationality") },
@@ -302,7 +305,7 @@ public class DraftManager : MonoBehaviour
                     { "sqno", GetCsvField(lines[i], headers, "sqno") }
                 };
 
-                Player player = new Player(playerData);
+                Player player = new(playerData);
                 allPlayers.Add(player);  // Add the player to the list
             }
             Debug.Log($"Total players in allPlayers: {allPlayers.Count}");
@@ -331,7 +334,7 @@ public class DraftManager : MonoBehaviour
 
             for (int i = 1; i < lines.Length; i++)
             {
-                Dictionary<string, string> gkData = new Dictionary<string, string>
+                Dictionary<string, string> gkData = new()
                 {
                     { "Name", GetCsvField(lines[i], headers, "Name") },
                     { "Nationality", GetCsvField(lines[i], headers, "Nationality") },
@@ -346,7 +349,7 @@ public class DraftManager : MonoBehaviour
                     { "sqno", GetCsvField(lines[i], headers, "sqno") }
                 };
 
-                Goalkeeper goalkeeper = new Goalkeeper(gkData);
+                Goalkeeper goalkeeper = new(gkData);
                 allGks.Add(goalkeeper);  // Add the player to the list
             }
         }
@@ -575,8 +578,8 @@ public class DraftManager : MonoBehaviour
 
     private void AssignInternationalOutfieldersToSlots(List<Player> outfielders, string rosterPrefix, GameObject teamPanel)
     {
-        HashSet<int> assignedJerseyNumbers = new HashSet<int>();
-        HashSet<Player> assignedPlayers = new HashSet<Player>();
+        HashSet<int> assignedJerseyNumbers = new();
+        HashSet<Player> assignedPlayers = new();
         List<int> freeOutfieldJerseyNumbers = GetFreeOutfieldJerseyNumbers(teamPanel);
 
         foreach (Player player in outfielders.Where(player => IsValidOutfieldJerseyNumber(player.SquadNumber)))
@@ -613,7 +616,7 @@ public class DraftManager : MonoBehaviour
 
     private List<int> GetFreeOutfieldJerseyNumbers(GameObject teamPanel)
     {
-        List<int> jerseyNumbers = new List<int>();
+        List<int> jerseyNumbers = new();
         foreach (Transform child in teamPanel.transform)
         {
             PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
@@ -982,8 +985,8 @@ public class DraftManager : MonoBehaviour
         List<RosterPlayerSlot> rosterSlots = GetOutfieldRosterPlayerSlots(rosterPanel);
         List<Player> rosterPlayers = rosterSlots.Select(slot => slot.Player).ToList();
         List<DraftDecisions.StarterAssignment> starterAssignments = DraftDecisions.BuildSophisticatedStarterAssignments(rosterPlayers);
-        HashSet<Player> starterPlayers = new HashSet<Player>(starterAssignments.Select(assignment => assignment.Player));
-        Queue<Player> benchPlayers = new Queue<Player>(rosterSlots
+        HashSet<Player> starterPlayers = new(starterAssignments.Select(assignment => assignment.Player));
+        Queue<Player> benchPlayers = new(rosterSlots
             .Where(slot => !starterPlayers.Contains(slot.Player))
             .OrderBy(slot => slot.JerseyNumber)
             .Select(slot => slot.Player));
@@ -1198,7 +1201,7 @@ public class DraftManager : MonoBehaviour
 
     private List<RosterPlayerSlot> GetOutfieldRosterPlayerSlots(GameObject rosterPanel)
     {
-        List<RosterPlayerSlot> rosterPlayers = new List<RosterPlayerSlot>();
+        List<RosterPlayerSlot> rosterPlayers = new();
         if (rosterPanel == null)
         {
             return rosterPlayers;
@@ -1263,7 +1266,7 @@ public class DraftManager : MonoBehaviour
 
     private List<PlayerCard> GetVisibleRegularDraftCards()
     {
-        List<PlayerCard> visibleCards = new List<PlayerCard>();
+        List<PlayerCard> visibleCards = new();
         if (draftPanel == null)
         {
             return visibleCards;
@@ -1390,7 +1393,7 @@ public class DraftManager : MonoBehaviour
         int cardsToDeal = Mathf.Min(4, draftPool.Count);
         currentBatchNumber++;
         currentBatchSize = cardsToDeal;
-        List<GameObject> dealtCards = new List<GameObject>();
+        List<GameObject> dealtCards = new();
 
         // Deal new cards
         for (int i = 0; i < cardsToDeal; i++)
@@ -1857,7 +1860,7 @@ public class DraftManager : MonoBehaviour
         }
 
         string defaultValue = numeric ? ">=1" : string.Empty;
-        string placeholder = numeric ? ">=1" : "filter";
+        string placeholder = numeric ? ">=1" : "Filter";
         filterField.Configure(this, columnKey, numeric, defaultValue, placeholder);
         freeDraftFilterFields[columnKey] = filterField;
     }
@@ -2198,8 +2201,10 @@ public class DraftManager : MonoBehaviour
         RectTransform previewRect = freeDraftPreviewRow as RectTransform;
         float rowHeight = previewRect != null && Mathf.Abs(previewRect.sizeDelta.y) > 0f
             ? Mathf.Abs(previewRect.sizeDelta.y)
-            : 30f;
-        Vector2 previewPosition = previewRect != null ? previewRect.anchoredPosition : new Vector2(0f, -15f);
+            : 64f;
+        Vector2 previewPosition = previewRect != null ? previewRect.anchoredPosition : new Vector2(0f, 0f);
+
+        float rowSpacing = 8f;
 
         for (int index = 0; index < candidates.Count; index++)
         {
@@ -2211,18 +2216,25 @@ public class DraftManager : MonoBehaviour
             RectTransform rowRect = rowObject.GetComponent<RectTransform>();
             if (rowRect != null)
             {
-                rowRect.anchoredPosition = new Vector2(previewPosition.x, previewPosition.y - rowHeight * index);
+                rowRect.anchoredPosition = new Vector2(previewPosition.x, previewPosition.y - (rowHeight + rowSpacing) * index);
             }
 
             SetFreeDraftRowCell(rowObject.transform, "NameCell", candidate.Name);
             SetFreeDraftRowCell(rowObject.transform, "NatCell", AbbreviateNationality(candidate.Nationality));
             SetFreeDraftRowCell(rowObject.transform, "PaceCell", candidate.Pace.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "PaceCell", candidate.Pace);
             SetFreeDraftRowCell(rowObject.transform, "DrCell", candidate.Dribbling.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "DrCell", candidate.Dribbling);
             SetFreeDraftRowCell(rowObject.transform, "H/ACell", candidate.HeadingOrAerial.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "H/ACell", candidate.HeadingOrAerial);
             SetFreeDraftRowCell(rowObject.transform, "HPCell", candidate.HighPass.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "HPCell", candidate.HighPass);
             SetFreeDraftRowCell(rowObject.transform, "ResCell", candidate.Resilience.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "ResCell", candidate.Resilience);
             SetFreeDraftRowCell(rowObject.transform, "Sh/SvCell", candidate.ShootingOrSaving.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "Sh/SvCell", candidate.ShootingOrSaving);
             SetFreeDraftRowCell(rowObject.transform, "Tac/HanCell", candidate.TacklingOrHandling.ToString());
+            SetFreeDraftRowBadge(rowObject.transform, "Tac/HanCell", candidate.TacklingOrHandling);
             SetFreeDraftRowCell(rowObject.transform, "TypeCell", candidate.Type);
 
             FreeDraftTableRowDragHandler dragHandler = rowObject.GetComponent<FreeDraftTableRowDragHandler>();
@@ -2236,7 +2248,8 @@ public class DraftManager : MonoBehaviour
         RectTransform contentRect = freeDraftContent as RectTransform;
         if (contentRect != null)
         {
-            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, Mathf.Max(rowHeight, rowHeight * candidates.Count));
+            float totalHeight = candidates.Count > 0 ? (rowHeight * candidates.Count) + (rowSpacing * (candidates.Count - 1)) : rowHeight;
+            contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, Mathf.Max(rowHeight, totalHeight));
         }
     }
 
@@ -2270,13 +2283,13 @@ public class DraftManager : MonoBehaviour
         bool showingGoalkeepers = freeDraftPhase == FreeDraftPhase.Goalkeepers;
         SetHeaderText(headerRow, "NameHeader", FormatHeaderLabel("name", "Name"));
         SetHeaderText(headerRow, "NatHeader", FormatHeaderLabel("nationality", "Nat"));
-        SetHeaderText(headerRow, "PaceHeader", FormatHeaderLabel("pace", "Pace"));
-        SetHeaderText(headerRow, "DrHeader", FormatHeaderLabel("dribbling", "Dr"));
-        SetHeaderText(headerRow, "H/AHeader", FormatHeaderLabel("headingAerial", showingGoalkeepers ? "Aerial" : "Heading"));
+        SetHeaderText(headerRow, "PaceHeader", FormatHeaderLabel("pace", "Pac"));
+        SetHeaderText(headerRow, "DrHeader", FormatHeaderLabel("dribbling", "Drb"));
+        SetHeaderText(headerRow, "H/AHeader", FormatHeaderLabel("headingAerial", showingGoalkeepers ? "Aer" : "Hea"));
         SetHeaderText(headerRow, "HPHeader", FormatHeaderLabel("highPass", "HP"));
         SetHeaderText(headerRow, "ResHeader", FormatHeaderLabel("resilience", "Res"));
-        SetHeaderText(headerRow, "Sh/SvHeader", FormatHeaderLabel("shootingSaving", showingGoalkeepers ? "Saving" : "Shooting"));
-        SetHeaderText(headerRow, "Tac/HanHeader", FormatHeaderLabel("tacklingHandling", showingGoalkeepers ? "Handling" : "Tackling"));
+        SetHeaderText(headerRow, "Sh/SvHeader", FormatHeaderLabel("shootingSaving", showingGoalkeepers ? "Sav" : "Sht"));
+        SetHeaderText(headerRow, "Tac/HanHeader", FormatHeaderLabel("tacklingHandling", showingGoalkeepers ? "Han" : "Tck"));
         SetHeaderText(headerRow, "TypeHeader", FormatHeaderLabel("type", "Type"));
     }
 
@@ -2307,6 +2320,16 @@ public class DraftManager : MonoBehaviour
         if (cellText != null)
         {
             cellText.text = value;
+        }
+    }
+
+    private void SetFreeDraftRowBadge(Transform row, string cellName, int value)
+    {
+        Transform cell = FindDirectChildByName(row, cellName);
+        Image cellBadge = cell != null ? cell.GetComponentInChildren<Image>() : null;
+        if (cellBadge != null)
+        {
+            cellBadge.color = GetAttributeColor(value);
         }
     }
 
@@ -2597,15 +2620,11 @@ public class DraftManager : MonoBehaviour
 
             // Set the jersey number in the slot (assuming the text is inside the ContentWrapper)
             contentWrapper.Find("Jersey#").GetComponent<TMP_Text>().text = i.ToString();
-            // Dynamically adjust labels for Goalkeeper slots (1 and 12)
-            if (i == 1 || i == 12)
-            {
-                // Change labels for goalkeeper stats
-                contentWrapper.Find("HeadingInSlot").GetComponent<TMP_Text>().text = "AerialInSlot";
-                contentWrapper.Find("ShootingInSlot").GetComponent<TMP_Text>().text = "SavingInSlot";
-                contentWrapper.Find("TacklingInSlot").GetComponent<TMP_Text>().text = "HandlingInSlot";
-            }
 
+            if (i==12)
+            {
+                contentWrapper.Find("TopBorder").GetComponent<Image>().color = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
+            }
             // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
         }
         
@@ -2624,6 +2643,7 @@ public class DraftManager : MonoBehaviour
         {
             contentWrapperXI.Find("Jersey#").GetComponent<TMP_Text>().text = "XI";
             contentWrapperXI.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text = "Starting XI";
+            contentWrapperXI.Find("TopBorder").GetComponent<Image>().color = new Color(0.9137255f, 0.9647059f, 0.9568627f, 1f);
         }
         else
         {
@@ -2757,25 +2777,25 @@ public class DraftManager : MonoBehaviour
             }
             // Update text with 1 decimal point and apply color coding
             contentWrapperXI.Find("PaceInSlot").GetComponent<TMP_Text>().text = avgPaceXI.ToString("F1");
-            contentWrapperXI.Find("PaceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgPaceXI);
+            contentWrapperXI.Find("PaceBadge").GetComponent<Image>().color = GetAttributeColor(avgPaceXI);
 
             contentWrapperXI.Find("DribblingInSlot").GetComponent<TMP_Text>().text = avgDribblingXI.ToString("F1");
-            contentWrapperXI.Find("DribblingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgDribblingXI);
+            contentWrapperXI.Find("DribblingBadge").GetComponent<Image>().color = GetAttributeColor(avgDribblingXI);
 
             contentWrapperXI.Find("HeadingInSlot").GetComponent<TMP_Text>().text = avgHeadingXI.ToString("F1");
-            contentWrapperXI.Find("HeadingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHeadingXI);
+            contentWrapperXI.Find("HeadingBadge").GetComponent<Image>().color = GetAttributeColor(avgHeadingXI);
 
             contentWrapperXI.Find("HighPassInSlot").GetComponent<TMP_Text>().text = avgHighPassXI.ToString("F1");
-            contentWrapperXI.Find("HighPassInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHighPassXI);
+            contentWrapperXI.Find("HighPassBadge").GetComponent<Image>().color = GetAttributeColor(avgHighPassXI);
 
             contentWrapperXI.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = avgResilienceXI.ToString("F1");
-            contentWrapperXI.Find("ResilienceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgResilienceXI);
+            contentWrapperXI.Find("ResilienceBadge").GetComponent<Image>().color = GetAttributeColor(avgResilienceXI);
 
             contentWrapperXI.Find("ShootingInSlot").GetComponent<TMP_Text>().text = avgShootingXI.ToString("F1");
-            contentWrapperXI.Find("ShootingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgShootingXI);
+            contentWrapperXI.Find("ShootingBadge").GetComponent<Image>().color = GetAttributeColor(avgShootingXI);
 
             contentWrapperXI.Find("TacklingInSlot").GetComponent<TMP_Text>().text = avgTacklingXI.ToString("F1");
-            contentWrapperXI.Find("TacklingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgTacklingXI);
+            contentWrapperXI.Find("TacklingBadge").GetComponent<Image>().color = GetAttributeColor(avgTacklingXI);
         }
         else
         {
@@ -2793,45 +2813,48 @@ public class DraftManager : MonoBehaviour
             }
             // Update text with 1 decimal point and apply color coding
             contentWrapperAvg.Find("PaceInSlot").GetComponent<TMP_Text>().text = avgPaceTeam.ToString("F1");
-            contentWrapperAvg.Find("PaceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgPaceTeam);
+            contentWrapperAvg.Find("PaceBadge").GetComponent<Image>().color = GetAttributeColor(avgPaceTeam);
 
             contentWrapperAvg.Find("DribblingInSlot").GetComponent<TMP_Text>().text = avgDribblingTeam.ToString("F1");
-            contentWrapperAvg.Find("DribblingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgDribblingTeam);
+            contentWrapperAvg.Find("DribblingBadge").GetComponent<Image>().color = GetAttributeColor(avgDribblingTeam);
 
             contentWrapperAvg.Find("HeadingInSlot").GetComponent<TMP_Text>().text = avgHeadingTeam.ToString("F1");
-            contentWrapperAvg.Find("HeadingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHeadingTeam);
+            contentWrapperAvg.Find("HeadingBadge").GetComponent<Image>().color = GetAttributeColor(avgHeadingTeam);
 
             contentWrapperAvg.Find("HighPassInSlot").GetComponent<TMP_Text>().text = avgHighPassTeam.ToString("F1");
-            contentWrapperAvg.Find("HighPassInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgHighPassTeam);
+            contentWrapperAvg.Find("HighPassBadge").GetComponent<Image>().color = GetAttributeColor(avgHighPassTeam);
 
             contentWrapperAvg.Find("ResilienceInSlot").GetComponent<TMP_Text>().text = avgResilienceTeam.ToString("F1");
-            contentWrapperAvg.Find("ResilienceInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgResilienceTeam);
+            contentWrapperAvg.Find("ResilienceBadge").GetComponent<Image>().color = GetAttributeColor(avgResilienceTeam);
 
             contentWrapperAvg.Find("ShootingInSlot").GetComponent<TMP_Text>().text = avgShootingTeam.ToString("F1");
-            contentWrapperAvg.Find("ShootingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgShootingTeam);
+            contentWrapperAvg.Find("ShootingBadge").GetComponent<Image>().color = GetAttributeColor(avgShootingTeam);
 
             contentWrapperAvg.Find("TacklingInSlot").GetComponent<TMP_Text>().text = avgTacklingTeam.ToString("F1");
-            contentWrapperAvg.Find("TacklingInSlot").GetComponent<TMP_Text>().color = GetAttributeColor(avgTacklingTeam);
+            contentWrapperAvg.Find("TacklingBadge").GetComponent<Image>().color = GetAttributeColor(avgTacklingTeam);
         }
         else
         {
             Debug.LogError($"{rosterPanel.name}-TeamAverage not found");
         }
     }
-
     private Color GetAttributeColor(float value)
     {
         if (value >= 5f)
         {
-            return new Color(0f, 0.5f, 0f);  // Dark Green
+            return GreenColor;
         }
         else if (value >= 3f)
         {
-            return new Color(0.8f, 0.4f, 0f);  // Dark Orange
+            return OrangeColor;
+        }
+        else if (value > 0f)
+        {
+            return RedColor;
         }
         else
         {
-            return new Color(0.5f, 0f, 0f);  // Dark Red
+            return new Color(0f, 0f, 0f, 0f);  // Transparent
         }
     }
 

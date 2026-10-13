@@ -4183,7 +4183,7 @@ public class MovementPhaseManager : MonoBehaviour
             if (isWaitingForTackleDecision) sb.Append(BuildTackleDecisionInstruction(selectedTokenName, false));
             if (isWaitingForTackleDecisionWithoutMoving) sb.Append(BuildTackleDecisionInstruction(selectedTokenName, true));
             if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
-            if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put), ");
+            if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put, ");
         // }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space

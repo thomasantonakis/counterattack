@@ -6,11 +6,9 @@ public class ScoreboardManager : MonoBehaviour
     public MatchManager matchManager;  // Drag and drop the MatchManager object here
     public TMP_Text homeTeamText;  // Drag and drop the TextMeshPro element here
     public TMP_Text awayTeamText;  // Drag and drop the TextMeshPro element here
-
-    private TMP_Text separatorText;
-    private TMP_Text homeScoreText;
-    private TMP_Text awayScoreText;
-    private TMP_Text timeText;
+    public TMP_Text timeText;  // Drag and drop the TextMeshPro element here
+    public TMP_Text homeScoreText;  // Drag and drop the TextMeshPro element here
+    public TMP_Text awayScoreText;  // Drag and drop the TextMeshPro element here
 
     private void OnEnable()
     {
@@ -94,11 +92,6 @@ public class ScoreboardManager : MonoBehaviour
             EnsureLayout();
         }
 
-        if (separatorText != null)
-        {
-            separatorText.text = "-";
-        }
-
         if (PenaltyShootoutPresentation.TryGetDisplayState(matchManager, out PenaltyShootoutDisplayState shootoutState))
         {
             if (homeScoreText != null)
@@ -143,89 +136,8 @@ public class ScoreboardManager : MonoBehaviour
         RectTransform root = transform as RectTransform;
         if (root == null || homeTeamText == null || awayTeamText == null)
         {
+            Debug.LogError("ScoreboardManager: homeTeamText or awayTeamText reference are missing.");
             return;
         }
-
-        ConfigureNameText(homeTeamText, new Vector2(0f, 1f), new Vector2(0.46f, 1f), new Vector2(0f, 1f), new Vector2(0f, -6f), TextAlignmentOptions.TopRight);
-        ConfigureNameText(awayTeamText, new Vector2(0.54f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(0f, -6f), TextAlignmentOptions.TopLeft);
-
-        separatorText = EnsureText(separatorText, "ScoreboardSeparator", root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -6f), new Vector2(30f, 34f));
-        homeScoreText = EnsureText(homeScoreText, "HomeScoreText", root, new Vector2(0f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -42f), new Vector2(185f, 34f));
-        awayScoreText = EnsureText(awayScoreText, "AwayScoreText", root, new Vector2(0.5f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -42f), new Vector2(185f, 34f));
-        timeText = EnsureText(timeText, "TimeText", root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -76f), new Vector2(130f, 48f));
-
-        ConfigureSecondaryText(separatorText, 24f, TextAlignmentOptions.Center);
-        ConfigureSecondaryText(homeScoreText, 28f, TextAlignmentOptions.Center);
-        ConfigureSecondaryText(awayScoreText, 28f, TextAlignmentOptions.Center);
-        ConfigureSecondaryText(timeText, 22f, TextAlignmentOptions.Center);
-    }
-
-    private void ConfigureNameText(TMP_Text text, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition, TextAlignmentOptions alignment)
-    {
-        if (text == null)
-        {
-            return;
-        }
-
-        RectTransform rect = text.rectTransform;
-        rect.anchorMin = anchorMin;
-        rect.anchorMax = anchorMax;
-        rect.pivot = pivot;
-        rect.anchoredPosition = anchoredPosition;
-        rect.sizeDelta = new Vector2(0f, 34f);
-
-        text.alignment = alignment;
-        text.enableAutoSizing = true;
-        text.fontSizeMin = 18f;
-        text.fontSizeMax = 26f;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
-        text.overflowMode = TextOverflowModes.Ellipsis;
-        text.characterSpacing = 0f;
-    }
-
-    private static TMP_Text EnsureText(TMP_Text existing, string objectName, RectTransform parent, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition, Vector2 sizeDelta)
-    {
-        TMP_Text text = existing;
-        if (text == null)
-        {
-            Transform child = parent.Find(objectName);
-            if (child != null)
-            {
-                text = child.GetComponent<TMP_Text>();
-            }
-        }
-
-        if (text == null)
-        {
-            GameObject gameObject = new(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            gameObject.transform.SetParent(parent, false);
-            text = gameObject.GetComponent<TextMeshProUGUI>();
-        }
-
-        RectTransform rect = text.rectTransform;
-        rect.anchorMin = anchorMin;
-        rect.anchorMax = anchorMax;
-        rect.pivot = pivot;
-        rect.anchoredPosition = anchoredPosition;
-        rect.sizeDelta = sizeDelta;
-        text.raycastTarget = false;
-        text.color = Color.white;
-        return text;
-    }
-
-    private static void ConfigureSecondaryText(TMP_Text text, float fontSizeMax, TextAlignmentOptions alignment)
-    {
-        if (text == null)
-        {
-            return;
-        }
-
-        text.alignment = alignment;
-        text.enableAutoSizing = true;
-        text.fontSizeMin = fontSizeMax - 6f;
-        text.fontSizeMax = fontSizeMax;
-        text.textWrappingMode = TextWrappingModes.NoWrap;
-        text.overflowMode = TextOverflowModes.Overflow;
-        text.characterSpacing = 0f;
     }
 }
