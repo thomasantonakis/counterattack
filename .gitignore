@@ -34,6 +34,8 @@ ExportedObj/
 .Spotlight-V100
 .Trashes
 Icon?
+# The macOS Icon? pattern also matches the UI Icons directory.
+!Assets/Resources/Textures/Icons/
 ehthumbs.db
 Thumbs.db
 
