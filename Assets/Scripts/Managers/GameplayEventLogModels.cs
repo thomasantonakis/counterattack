@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-[Serializable]
 public class GameplayEvent
 {
     public const int CurrentSchemaVersion = 7;
@@ -21,21 +20,23 @@ public class GameplayEvent
     public RoomHexCoordinates sourceHex;
     public RoomHexCoordinates targetHex;
     public GameplayInputEvent input;
-    public GameplayDiceEvent dice;
+    [field: System.NonSerialized]
+    public GameplayDiceEvent dice { get; set; }
     public GameplayChoiceEvent choice;
     public GameplayActionPreview actionPreview;
     public GameplayAvailableActions availableActions;
     public GameplayRoomDecisionSnapshot roomDecision;
     public GameplayMovementPath movementPath;
-    public GameplayInstructionSnapshot instruction;
-    public GameplayEventResult result;
+    [field: System.NonSerialized]
+    public GameplayInstructionSnapshot instruction { get; set; }
+    [field: System.NonSerialized]
+    public GameplayEventResult result { get; set; }
     public string preStateHash;
     public string postStateHash;
     public GameplaySnapshotSummary snapshot;
     public string label;
 }
 
-[Serializable]
 public class GameplayInstructionSnapshot
 {
     public bool isAwaitingInput;
@@ -51,7 +52,6 @@ public class GameplayInstructionSnapshot
     public Dictionary<string, string> details = new();
 }
 
-[Serializable]
 public class GameplayInputEvent
 {
     public string inputType;
@@ -66,7 +66,6 @@ public class GameplayInputEvent
     public string button;
 }
 
-[Serializable]
 public class GameplayChoiceEvent
 {
     public string choiceId;
@@ -78,7 +77,6 @@ public class GameplayChoiceEvent
     public List<GameplayChoiceOption> options = new();
 }
 
-[Serializable]
 public class GameplayChoiceOption
 {
     public string key;
@@ -86,7 +84,6 @@ public class GameplayChoiceOption
     public string label;
 }
 
-[Serializable]
 public class GameplayDiceEvent
 {
     public string context;
@@ -100,7 +97,6 @@ public class GameplayDiceEvent
     public Dictionary<string, string> modifiers = new();
 }
 
-[Serializable]
 public class GameplayActionPreview
 {
     public string action;
@@ -122,7 +118,6 @@ public class GameplayActionPreview
     public List<GameplayPathInteractionPreview> pathInteractions = new();
 }
 
-[Serializable]
 public class GameplayAvailableActions
 {
     public string reason;
@@ -132,7 +127,6 @@ public class GameplayAvailableActions
     public List<GameplayAvailableAction> actions = new();
 }
 
-[Serializable]
 public class GameplayAvailableAction
 {
     public string action;
@@ -143,7 +137,6 @@ public class GameplayAvailableAction
     public int imposedMaxDistance;
 }
 
-[Serializable]
 public class GameplayRoomDecisionSnapshot
 {
     public string manager;
@@ -159,7 +152,6 @@ public class GameplayRoomDecisionSnapshot
     public List<GameplayRoomDecisionCandidate> candidates = new();
 }
 
-[Serializable]
 public class GameplayRoomDecisionCandidate
 {
     public string id;
@@ -177,7 +169,6 @@ public class GameplayRoomDecisionCandidate
     public string reason;
 }
 
-[Serializable]
 public class GameplayPathInteractionPreview
 {
     public string type;
@@ -194,7 +185,6 @@ public class GameplayPathInteractionPreview
     public int distanceFromBall;
 }
 
-[Serializable]
 public class GameplayMovementPath
 {
     public bool isDribble;
@@ -204,7 +194,6 @@ public class GameplayMovementPath
     public List<RoomHexCoordinates> hexes = new();
 }
 
-[Serializable]
 public class GameplayEventResult
 {
     public string action;
@@ -212,7 +201,6 @@ public class GameplayEventResult
     public Dictionary<string, string> details = new();
 }
 
-[Serializable]
 public class GameplayDiceRollResult
 {
     public string context;
@@ -224,7 +212,6 @@ public class GameplayDiceRollResult
     public bool randomJackpot;
 }
 
-[Serializable]
 public class GameplaySnapshotSummary
 {
     public int sequenceNumber;
@@ -239,7 +226,6 @@ public class GameplaySnapshotSummary
     public int matchClockSeconds;
 }
 
-[Serializable]
 public class GameplayTokenStateSummary
 {
     public string tokenKey;
@@ -247,7 +233,6 @@ public class GameplayTokenStateSummary
     public string status;
 }
 
-[Serializable]
 public class GameplayScoreSnapshot
 {
     public int home;

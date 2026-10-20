@@ -15,7 +15,7 @@ public class PlayerCard : MonoBehaviour
     public TextMeshProUGUI shootingValueText;
     public TextMeshProUGUI tacklingValueText;
     public Image flagImage;
-    public Player assignedPlayer;
+    [System.NonSerialized] public Player assignedPlayer;
 
     // Method to update the card with player data
     public void UpdatePlayerCard(Player player)
