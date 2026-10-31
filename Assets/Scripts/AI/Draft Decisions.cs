@@ -401,7 +401,7 @@ public static class DraftDecisions
         return builder.ToString();
     }
 
-    private static List<SophisticatedCandidateScore> GetSophisticatedCandidateScores(DraftContext context)
+    public static List<SophisticatedCandidateScore> GetSophisticatedCandidateScores(DraftContext context)
     {
         List<SophisticatedCandidateScore> scores = new List<SophisticatedCandidateScore>();
         if (context == null)

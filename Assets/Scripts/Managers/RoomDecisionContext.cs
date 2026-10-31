@@ -60,6 +60,11 @@ public sealed class RoomActionCandidate
     public bool isForfeit;
     public string executionCommand;
     public string reason;
+    public string setupTeam;
+    public string setupBoardStateKey;
+    public int setupFormationPenaltyBefore = -1;
+    public int setupFormationPenaltyAfter = -1;
+    public string setupTerminalReason;
 }
 
 public sealed class RoomDecisionContext
@@ -100,7 +105,13 @@ public sealed class RoomDecisionContext
             AddKey(action.key);
         }
 
-        AddToken(action.actor);
+        // An actor retained on a target-hex candidate is scoring metadata, not a
+        // token the input layer should click again.  Only expose it as a valid
+        // token when the candidate itself is a token-selection action.
+        if (action.targetHex == null && action.step != RoomDecisionStep.ChooseTarget)
+        {
+            AddToken(action.actor);
+        }
         AddToken(action.targetToken);
         AddHex(action.targetHex);
         AddActionSummary(action.label);
@@ -178,13 +189,15 @@ public sealed class RoomDecisionContext
         HexCell hex,
         string label,
         bool isExecutableNow = true,
-        string executionCommand = "")
+        string executionCommand = "",
+        PlayerToken actor = null)
     {
         AddAction(new RoomActionCandidate
         {
             manager = managerName,
             actionType = actionType,
             step = step,
+            actor = actor,
             targetHex = hex,
             label = label,
             isExecutableNow = isExecutableNow,

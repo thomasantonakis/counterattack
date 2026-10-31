@@ -15,7 +15,15 @@ public class AIManager : MonoBehaviour
     public enum RoomPersona
     {
         AskHuman,
-        Random
+        CodexTactician
+    }
+
+    public enum CodexTacticianDifficulty
+    {
+        Easy,
+        Medium,
+        Hard,
+        UltraHard
     }
 
     private void Awake()
@@ -60,6 +68,23 @@ public class AIManager : MonoBehaviour
 
     public Persona ResolveDraftPersona(GameSettings settings, string currentTeamTurn)
     {
+        // A Codex Tactician-controlled match team must also control its own
+        // single-player draft.  Draft difficulty does not change the legality
+        // or squad-building objective, so all Codex levels use the complete
+        // sophisticated roster/formation evaluator rather than falling back to
+        // a separate (and potentially human) draft setting.
+        string roomPersonaName = string.Equals(currentTeamTurn, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? settings?.awayRoomPersona
+            : settings?.homeRoomPersona;
+        if (string.IsNullOrWhiteSpace(roomPersonaName))
+        {
+            roomPersonaName = settings?.defaultRoomPersona;
+        }
+        if (IsCodexTacticianPersonaName(roomPersonaName))
+        {
+            return Persona.Sophisticated;
+        }
+
         string personaName = string.Equals(currentTeamTurn, "Away", System.StringComparison.OrdinalIgnoreCase)
             ? settings?.awayDraftPersona
             : settings?.homeDraftPersona;
@@ -90,12 +115,100 @@ public class AIManager : MonoBehaviour
             personaName = settings?.defaultRoomPersona;
         }
 
-        if (System.Enum.TryParse(personaName, true, out RoomPersona persona))
+        if (TryParseRoomPersona(personaName, out RoomPersona persona))
         {
             return persona;
         }
 
         return RoomPersona.AskHuman;
+    }
+
+    public static CodexTacticianDifficulty ResolveCodexTacticianDifficulty(
+        MatchManager.GameSettings settings,
+        string expectedTeam)
+    {
+        string personaName = ResolveRoomPersonaName(settings, expectedTeam);
+        if (personaName.IndexOf("ultra", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return CodexTacticianDifficulty.UltraHard;
+        }
+
+        if (personaName.IndexOf("easy", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return CodexTacticianDifficulty.Easy;
+        }
+
+        if (personaName.IndexOf("hard", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return CodexTacticianDifficulty.Hard;
+        }
+
+        return CodexTacticianDifficulty.Medium;
+    }
+
+    public static string FormatRoomPersona(RoomPersona persona)
+    {
+        return persona switch
+        {
+            RoomPersona.CodexTactician => CodexTacticianProvider.DisplayName,
+            _ => persona.ToString()
+        };
+    }
+
+    private static bool TryParseRoomPersona(string personaName, out RoomPersona persona)
+    {
+        persona = RoomPersona.AskHuman;
+        if (string.IsNullOrWhiteSpace(personaName))
+        {
+            return false;
+        }
+
+        string normalizedPersonaName = personaName.Trim();
+        if (IsCodexTacticianPersonaName(normalizedPersonaName))
+        {
+            persona = RoomPersona.CodexTactician;
+            return true;
+        }
+
+        // Older saves may still name one of the retired CPU modes. Keep those
+        // teams CPU-controlled by routing them through Codex Tactician.
+        if (normalizedPersonaName.StartsWith("CPU-Random", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(normalizedPersonaName, "Random", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(normalizedPersonaName, "1 step", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(normalizedPersonaName, "1step", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(normalizedPersonaName, "one step", System.StringComparison.OrdinalIgnoreCase)
+            || normalizedPersonaName.StartsWith("1 step ", System.StringComparison.OrdinalIgnoreCase)
+            || normalizedPersonaName.StartsWith("CPU-1 step", System.StringComparison.OrdinalIgnoreCase))
+        {
+            persona = RoomPersona.CodexTactician;
+            return true;
+        }
+
+        return System.Enum.TryParse(normalizedPersonaName, true, out persona);
+    }
+
+    public static bool IsCodexTacticianPersonaName(string personaName)
+    {
+        if (string.IsNullOrWhiteSpace(personaName))
+        {
+            return false;
+        }
+
+        string normalized = personaName.Trim();
+        return normalized.StartsWith("Codex Tactician", System.StringComparison.OrdinalIgnoreCase)
+            || normalized.StartsWith("CPU-Codex Tactician", System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string ResolveRoomPersonaName(MatchManager.GameSettings settings, string expectedTeam)
+    {
+        string personaName = string.Equals(expectedTeam, "Away", System.StringComparison.OrdinalIgnoreCase)
+            ? settings?.awayRoomPersona
+            : string.Equals(expectedTeam, "Home", System.StringComparison.OrdinalIgnoreCase)
+                ? settings?.homeRoomPersona
+                : settings?.defaultRoomPersona;
+        return string.IsNullOrWhiteSpace(personaName)
+            ? settings?.defaultRoomPersona ?? string.Empty
+            : personaName;
     }
 
     private static DraftDecisions.DraftProfile ResolveDraftProfile(Persona persona)

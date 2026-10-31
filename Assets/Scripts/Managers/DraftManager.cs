@@ -871,7 +871,8 @@ public class DraftManager : MonoBehaviour
             ? currentSettings?.awayRoomPersona
             : currentSettings?.homeRoomPersona;
 
-        return string.Equals(roomPersona, "Random", System.StringComparison.OrdinalIgnoreCase)
+        return AIManager.IsCodexTacticianPersonaName(roomPersona)
+            || string.Equals(roomPersona, "Random", System.StringComparison.OrdinalIgnoreCase)
             || string.Equals(roomPersona, "1 step", System.StringComparison.OrdinalIgnoreCase)
             || string.Equals(roomPersona, "1step", System.StringComparison.OrdinalIgnoreCase)
             || string.Equals(roomPersona, "one step", System.StringComparison.OrdinalIgnoreCase)
@@ -984,6 +985,9 @@ public class DraftManager : MonoBehaviour
 
         List<RosterPlayerSlot> rosterSlots = GetOutfieldRosterPlayerSlots(rosterPanel);
         List<Player> rosterPlayers = rosterSlots.Select(slot => slot.Player).ToList();
+        // Partial projections must not clear/move unrelated roster rows after
+        // the first pick. Arrange a complete outfield XI, then refine it.
+        if (rosterPlayers.Count < 10) return;
         List<DraftDecisions.StarterAssignment> starterAssignments = DraftDecisions.BuildSophisticatedStarterAssignments(rosterPlayers);
         HashSet<Player> starterPlayers = new(starterAssignments.Select(assignment => assignment.Player));
         Queue<Player> benchPlayers = new(rosterSlots
