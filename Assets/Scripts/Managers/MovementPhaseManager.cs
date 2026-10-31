@@ -2327,7 +2327,7 @@ public class MovementPhaseManager : MonoBehaviour
 
         // ⚠️ Don't do anything with the ball if the token didn't start with it
         // Let it stay wherever it already was
-        if (tokenStartedWithBall && !shouldCarryBall)
+        if (tokenStartedWithBall && !shouldCarryBall && !ball.IsCellMoveInProgress)
         {
             // ✅ Only leave the ball if this player had it and chose not to carry it
             ball.SetCurrentHex(originalHex);
@@ -2375,7 +2375,9 @@ public class MovementPhaseManager : MonoBehaviour
                 ball.SetCurrentHex(step);  // Update ball's hex to the current step
                 ball.AdjustBallHeightBasedOnOccupancy();  // Adjust ball's height
             }
-            ball.AdjustBallHeightBasedOnOccupancy();
+            // A concurrent shot still has its source hex until the ball move completes.
+            // Repositioning it from that hex here would visibly restart the shot during a GK dive.
+            if (!ball.IsCellMoveInProgress) ball.AdjustBallHeightBasedOnOccupancy();
             // 🛑 CHECK IF THE BALL ENTERED THE PENALTY BOX
             if (shouldMoveBall && previousHex.isInPenaltyBox == 0 && step.isInPenaltyBox != 0 && token.IsDribbler)
             {
@@ -2432,7 +2434,7 @@ public class MovementPhaseManager : MonoBehaviour
         // Maybe adjust here the remainingdribblerpace?
         hexGrid.ClearHighlightedHexes();
         finalHex.ResetHighlight();
-        ball.AdjustBallHeightBasedOnOccupancy();
+        if (!ball.IsCellMoveInProgress) ball.AdjustBallHeightBasedOnOccupancy();
         isPlayerMoving = false;  // Player finished moving
     }
 

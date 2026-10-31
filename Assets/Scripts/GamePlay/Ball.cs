@@ -8,6 +8,8 @@ public class Ball : MonoBehaviour
     private HexCell currentCell;
     [SerializeField] private MeshRenderer ballRenderer;
     private HexCell targetCell;
+    // Includes pauses and the arrival frame: MoveToCell owns position until it clears its target.
+    public bool IsCellMoveInProgress => targetCell != null;
     public bool isMoving = false;
     private bool isBallSelected = false;  // Track if the ball is selected
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
