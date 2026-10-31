@@ -3,12 +3,17 @@ using UnityEngine;
 
 public class ScoreboardManager : MonoBehaviour
 {
+    private const float TimerPanelHorizontalPadding = 16f;
+    private const float TimerPanelVerticalPadding = 12f;
+
     public MatchManager matchManager;  // Drag and drop the MatchManager object here
     public TMP_Text homeTeamText;  // Drag and drop the TextMeshPro element here
     public TMP_Text awayTeamText;  // Drag and drop the TextMeshPro element here
     public TMP_Text timeText;  // Drag and drop the TextMeshPro element here
     public TMP_Text homeScoreText;  // Drag and drop the TextMeshPro element here
     public TMP_Text awayScoreText;  // Drag and drop the TextMeshPro element here
+
+    private RectTransform timerPanelRect;
 
     private void OnEnable()
     {
@@ -69,10 +74,9 @@ public class ScoreboardManager : MonoBehaviour
         {
             MatchManager.GameSettings settings = matchManager.gameData.gameSettings;
 
-            string homeTeamName = settings.homeTeamName;
-            string awayTeamName = settings.awayTeamName;
-            homeTeamText.text = homeTeamName;
-            awayTeamText.text = awayTeamName;
+            TeamNameAbbreviator.EnsureAbbreviations(settings);
+            homeTeamText.text = settings.homeTeamAbbreviation;
+            awayTeamText.text = settings.awayTeamAbbreviation;
         }
         else
         {
@@ -107,6 +111,7 @@ public class ScoreboardManager : MonoBehaviour
             if (timeText != null)
             {
                 timeText.text = shootoutState.clockText;
+                FitTimerPanelToClockText();
             }
 
             return;
@@ -128,7 +133,41 @@ public class ScoreboardManager : MonoBehaviour
         if (timeText != null)
         {
             timeText.text = matchManager != null ? matchManager.GetClockDisplayText() : "00:00";
+            FitTimerPanelToClockText();
         }
+    }
+
+    private void FitTimerPanelToClockText()
+    {
+        if (timeText == null)
+        {
+            return;
+        }
+
+        RectTransform textRect = timeText.rectTransform;
+        if (timerPanelRect == null)
+        {
+            timerPanelRect = textRect.parent as RectTransform;
+        }
+
+        if (timerPanelRect == null)
+        {
+            return;
+        }
+
+        timeText.ForceMeshUpdate();
+        Vector2 preferredTextSize = timeText.GetPreferredValues(timeText.text);
+        preferredTextSize.x = Mathf.Ceil(preferredTextSize.x);
+        preferredTextSize.y = Mathf.Ceil(preferredTextSize.y);
+
+        textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, preferredTextSize.x);
+        textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, preferredTextSize.y);
+        timerPanelRect.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Horizontal,
+            preferredTextSize.x + TimerPanelHorizontalPadding);
+        timerPanelRect.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            preferredTextSize.y + TimerPanelVerticalPadding);
     }
 
     private void EnsureLayout()

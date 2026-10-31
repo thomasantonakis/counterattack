@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class GameDebugMonitor : MonoBehaviour
 {
+    public bool IsAIThinking => roomDecisionManager != null && roomDecisionManager.IsThinking;
     private static readonly bool LogFullRoomDecisionCandidates = false;
 
     private enum InstructionSide
@@ -56,6 +57,10 @@ public class GameDebugMonitor : MonoBehaviour
     private TokenKitInstructionPalette awayInstructionPalette;
     private string cachedHomeKit = string.Empty;
     private string cachedAwayKit = string.Empty;
+    [SerializeField, Min(0.05f)] private float humanShadowPollIntervalSeconds = 0.1f;
+    private float nextHumanShadowPollTime;
+    private int lastHumanShadowPollFingerprint;
+    private bool hasHumanShadowPollFingerprint;
 
     private void Awake()
     {
@@ -202,6 +207,11 @@ public class GameDebugMonitor : MonoBehaviour
 
     private void UpdateInstructionText()
     {
+        if (MatchManager.Instance?.IsGameplayInputBlocked == true)
+        {
+            roomDecisionManager?.SuspendThinking();
+            return;
+        }
         GameplayInstructionSnapshot snapshot = BuildCurrentInstructionSnapshot(
             out InstructionSide activeInstructionSide,
             out bool shouldFlashInstruction);
@@ -215,20 +225,75 @@ public class GameDebugMonitor : MonoBehaviour
         RefreshDecisionMakingPanelVisibility(isSinglePlayerMatch);
         if (isSinglePlayerMatch && roomDecisionManager != null)
         {
-            bool noDecisionNeeded = IsDecisionSuppressedByMovement(snapshot, out string noDecisionReason);
-            roomDecisionManager.UpdateDecision(
-                snapshot,
-                BuildRoomDecisionContext(snapshot),
-                MatchManager.Instance?.gameData?.gameSettings,
-                noDecisionNeeded,
-                noDecisionReason);
+            MatchManager.GameSettings settings = MatchManager.Instance?.gameData?.gameSettings;
+            AIManager.RoomPersona persona = RoomDecisionManager.ResolveDecisionPersona(settings, snapshot);
+            bool isHumanShadow = persona == AIManager.RoomPersona.AskHuman;
+            if (isHumanShadow && !roomDecisionManager.ShouldAnalyzeHumanTurn(settings))
+            {
+                roomDecisionManager.ClearDecisionState();
+                MatchManager.Instance?.RecordInstructionSnapshotIfChanged(snapshot);
+                return;
+            }
+            int pollFingerprint = BuildHumanShadowPollFingerprint(snapshot);
+            bool decisionStageChanged = !hasHumanShadowPollFingerprint
+                || pollFingerprint != lastHumanShadowPollFingerprint;
+            bool shouldRefreshDecision = !isHumanShadow
+                || decisionStageChanged
+                || Time.unscaledTime >= nextHumanShadowPollTime;
+            if (shouldRefreshDecision)
+            {
+                RoomDecisionContext decisionContext = BuildRoomDecisionContext(snapshot);
+                bool noDecisionNeeded = IsDecisionSuppressedByMovement(
+                    snapshot,
+                    decisionContext,
+                    out string noDecisionReason);
+                roomDecisionManager.UpdateDecision(
+                    snapshot,
+                    decisionContext,
+                    settings,
+                    noDecisionNeeded,
+                    noDecisionReason);
+                lastHumanShadowPollFingerprint = pollFingerprint;
+                hasHumanShadowPollFingerprint = true;
+                nextHumanShadowPollTime = Time.unscaledTime + humanShadowPollIntervalSeconds;
+            }
         }
         else
         {
             roomDecisionManager?.ClearDecisionState();
+            hasHumanShadowPollFingerprint = false;
         }
 
         MatchManager.Instance?.RecordInstructionSnapshotIfChanged(snapshot);
+    }
+
+    private static int BuildHumanShadowPollFingerprint(GameplayInstructionSnapshot snapshot)
+    {
+        if (snapshot == null)
+        {
+            return 0;
+        }
+
+        unchecked
+        {
+            int hash = 17;
+            hash = (hash * 31) + System.StringComparer.Ordinal.GetHashCode(snapshot.manager ?? string.Empty);
+            hash = (hash * 31) + System.StringComparer.Ordinal.GetHashCode(snapshot.expectedTeam ?? string.Empty);
+            hash = (hash * 31) + System.StringComparer.Ordinal.GetHashCode(snapshot.expectedInput ?? string.Empty);
+            hash = (hash * 31) + System.StringComparer.Ordinal.GetHashCode(snapshot.instructionText ?? string.Empty);
+            hash = (hash * 31) + System.StringComparer.Ordinal.GetHashCode(snapshot.actorTokenKey ?? string.Empty);
+            hash = (hash * 31) + (snapshot.isAwaitingInput ? 1 : 0);
+            hash = (hash * 31) + (snapshot.expectedKeys?.Count ?? 0);
+            hash = (hash * 31) + (snapshot.relatedTokenKeys?.Count ?? 0);
+            hash = (hash * 31) + (snapshot.details?.Count ?? 0);
+            if (snapshot.currentTargetHex != null)
+            {
+                hash = (hash * 31) + snapshot.currentTargetHex.x;
+                hash = (hash * 31) + snapshot.currentTargetHex.z;
+            }
+
+            return hash;
+        }
     }
 
     public GameplayInstructionSnapshot GetCurrentInstructionSnapshotForLog()
@@ -259,9 +324,9 @@ public class GameDebugMonitor : MonoBehaviour
             manager = context.manager,
             expectedTeam = context.expectedTeam,
             expectedInput = context.expectedInput,
-            persona = AIManager.ResolveRoomPersona(
+            persona = AIManager.FormatRoomPersona(AIManager.ResolveRoomPersona(
                 MatchManager.Instance?.gameData?.gameSettings,
-                context.expectedTeam).ToString(),
+                context.expectedTeam)),
             candidateCount = context.actions.Count
         };
 
@@ -312,6 +377,8 @@ public class GameDebugMonitor : MonoBehaviour
         {
             decisionSnapshot.candidateTypes.Add($"{entry.Key}:{entry.Value}");
         }
+
+        roomDecisionManager?.EnrichRoomDecisionSnapshotForLog(decisionSnapshot);
 
         return decisionSnapshot.candidateCount > 0 ? decisionSnapshot : null;
     }
@@ -645,7 +712,10 @@ public class GameDebugMonitor : MonoBehaviour
         return false;
     }
 
-    private bool IsDecisionSuppressedByMovement(GameplayInstructionSnapshot snapshot, out string reason)
+    private bool IsDecisionSuppressedByMovement(
+        GameplayInstructionSnapshot snapshot,
+        RoomDecisionContext context,
+        out string reason)
     {
         if (snapshot != null
             && !string.IsNullOrWhiteSpace(snapshot.manager)
@@ -673,13 +743,27 @@ public class GameDebugMonitor : MonoBehaviour
             ? MatchManager.Instance.ball
             : movementPhaseManager != null ? movementPhaseManager.ball : null;
 
-        if (activeBall != null && activeBall.isMoving)
+        // A movement coroutine can intentionally pause for an interrupting manager
+        // (for example, the defending-GK box move).  Once that manager owns the
+        // visible instruction and exposes an executable action, its input is what
+        // allows the movement coroutine to finish, so movement must not suppress it.
+        bool hasReadyNonMovementInstruction = HasReadyNonMovementInstruction(snapshot, context);
+        bool hasReadyMovementInterruption = snapshot?.manager == nameof(MovementPhaseManager)
+            && movementPhaseManager != null && !movementPhaseManager.IsResolvingReposition
+            && (movementPhaseManager.isWaitingForReposition || movementPhaseManager.isWaitingForFoulDecision
+                || movementPhaseManager.isWaitingForYellowCardRoll || movementPhaseManager.isWaitingForInjuryRoll)
+            && context?.actions.Exists(action => action != null && action.isExecutableNow) == true;
+        hasReadyNonMovementInstruction |= hasReadyMovementInterruption;
+
+        if (activeBall != null && activeBall.isMoving && !hasReadyNonMovementInstruction)
         {
             reason = "ball is moving";
             return true;
         }
 
-        if (movementPhaseManager != null && movementPhaseManager.isPlayerMoving)
+        if (movementPhaseManager != null
+            && movementPhaseManager.isPlayerMoving
+            && !hasReadyNonMovementInstruction)
         {
             reason = "movement phase token is moving";
             return true;
@@ -707,6 +791,34 @@ public class GameDebugMonitor : MonoBehaviour
         }
 
         reason = string.Empty;
+        return false;
+    }
+
+    private static bool HasReadyNonMovementInstruction(
+        GameplayInstructionSnapshot snapshot,
+        RoomDecisionContext context)
+    {
+        if (snapshot == null
+            || context == null
+            || string.IsNullOrWhiteSpace(snapshot.manager)
+            || snapshot.manager.Contains(nameof(MovementPhaseManager))
+            || snapshot.manager.Contains(nameof(KickoffManager))
+            || snapshot.manager.Contains(nameof(ShotManager)))
+        {
+            return false;
+        }
+
+        foreach (RoomActionCandidate action in context.actions)
+        {
+            if (action != null
+                && action.isExecutableNow
+                && !string.IsNullOrWhiteSpace(action.manager)
+                && snapshot.manager.Contains(action.manager))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 

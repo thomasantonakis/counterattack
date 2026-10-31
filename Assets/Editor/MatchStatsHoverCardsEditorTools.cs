@@ -75,8 +75,8 @@ namespace CounterAttack.EditorTools
                 return;
             }
 
-            float cardsBottomPadding = serializedUi.FindProperty("cardsBottomPadding").floatValue;
-            float cardsTopAnchor = serializedUi.FindProperty("cardsTopAnchor").floatValue;
+            float cardsBottomPadding = matchStatsUi.HoverCardsBottomPadding;
+            float cardsTopAnchor = matchStatsUi.HoverCardsTopAnchor;
             RectTransform root = EnsureRectTransform(panel, "HoverCardsRoot");
             root.anchorMin = new Vector2(SidePaddingRatio, cardsBottomPadding);
             root.anchorMax = new Vector2(1f - SidePaddingRatio, cardsTopAnchor);

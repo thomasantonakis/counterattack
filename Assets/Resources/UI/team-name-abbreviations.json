@@ -1,0 +1,1159 @@
+[
+  {
+    "teamName": "1919 Strikers FC",
+    "abbreviation": "19S",
+    "international": false
+  },
+  {
+    "teamName": "AS Black Rock",
+    "abbreviation": "ABR",
+    "international": false
+  },
+  {
+    "teamName": "Athletic Club Borromeo",
+    "abbreviation": "ACB",
+    "international": false
+  },
+  {
+    "teamName": "Milan",
+    "abbreviation": "ACM",
+    "international": false
+  },
+  {
+    "teamName": "Adirondak FC",
+    "abbreviation": "ADI",
+    "international": false
+  },
+  {
+    "teamName": "ADO Den Haag",
+    "abbreviation": "ADH",
+    "international": false,
+    "previousAbbreviations": [
+      "ADO"
+    ]
+  },
+  {
+    "teamName": "Ashburton Groove FC",
+    "abbreviation": "ASG",
+    "international": false,
+    "previousAbbreviations": [
+      "AGR"
+    ]
+  },
+  {
+    "teamName": "Ajax",
+    "abbreviation": "AJA",
+    "international": false
+  },
+  {
+    "teamName": "Antwerp Hazers",
+    "abbreviation": "ANH",
+    "international": false
+  },
+  {
+    "teamName": "AREPA",
+    "abbreviation": "ARE",
+    "international": false
+  },
+  {
+    "teamName": "AS Relitto in Fiamme",
+    "abbreviation": "RIF",
+    "international": false,
+    "previousAbbreviations": [
+      "ARF"
+    ]
+  },
+  {
+    "teamName": "Argentina",
+    "abbreviation": "ARG",
+    "international": true
+  },
+  {
+    "teamName": "Aris FC",
+    "abbreviation": "ARI",
+    "international": false
+  },
+  {
+    "teamName": "Arsenal",
+    "abbreviation": "ARS",
+    "international": false
+  },
+  {
+    "teamName": "Aussie Rules FC",
+    "abbreviation": "AUR",
+    "international": false,
+    "previousAbbreviations": [
+      "ARU"
+    ]
+  },
+  {
+    "teamName": "AS Roma",
+    "abbreviation": "ASR",
+    "international": false
+  },
+  {
+    "teamName": "Ath Bilbao",
+    "abbreviation": "ATB",
+    "international": false
+  },
+  {
+    "teamName": "Athens Hounds",
+    "abbreviation": "ATH",
+    "international": false
+  },
+  {
+    "teamName": "Atletico",
+    "abbreviation": "ATL",
+    "international": false
+  },
+  {
+    "teamName": "Atleti",
+    "abbreviation": "ATM",
+    "international": false
+  },
+  {
+    "teamName": "Atletico Salsiccia",
+    "abbreviation": "ATS",
+    "international": false
+  },
+  {
+    "teamName": "Aurora FC",
+    "abbreviation": "AUR",
+    "international": false
+  },
+  {
+    "teamName": "AnWhosThis United",
+    "abbreviation": "ANW",
+    "international": false,
+    "previousAbbreviations": [
+      "AWU"
+    ]
+  },
+  {
+    "teamName": "Ajax Treesdown",
+    "abbreviation": "AXT",
+    "international": false
+  },
+  {
+    "teamName": "Bayer Leverkusen",
+    "abbreviation": "B04",
+    "international": false
+  },
+  {
+    "teamName": "Belgium",
+    "abbreviation": "BEL",
+    "international": true
+  },
+  {
+    "teamName": "Betis",
+    "abbreviation": "BET",
+    "international": false
+  },
+  {
+    "teamName": "Barugh Green Athletic FC",
+    "abbreviation": "BGA",
+    "international": false
+  },
+  {
+    "teamName": "Bianconeri",
+    "abbreviation": "BIA",
+    "international": false
+  },
+  {
+    "teamName": "Bielsismo",
+    "abbreviation": "BIE",
+    "international": false
+  },
+  {
+    "teamName": "Blaugrana",
+    "abbreviation": "BLA",
+    "international": false
+  },
+  {
+    "teamName": "Blueridge FC",
+    "abbreviation": "BLU",
+    "international": false,
+    "previousAbbreviations": [
+      "BLR"
+    ]
+  },
+  {
+    "teamName": "Bolton Nomads",
+    "abbreviation": "BNO",
+    "international": false
+  },
+  {
+    "teamName": "Boavista",
+    "abbreviation": "BOA",
+    "international": false
+  },
+  {
+    "teamName": "Boca",
+    "abbreviation": "BOC",
+    "international": false
+  },
+  {
+    "teamName": "BOA Juniors",
+    "abbreviation": "BOJ",
+    "international": false
+  },
+  {
+    "teamName": "Borussia Molm",
+    "abbreviation": "BOM",
+    "international": false
+  },
+  {
+    "teamName": "Brazil",
+    "abbreviation": "BRA",
+    "international": true
+  },
+  {
+    "teamName": "Brondby",
+    "abbreviation": "BRO",
+    "international": false
+  },
+  {
+    "teamName": "Bree Wanderers",
+    "abbreviation": "BRW",
+    "international": false
+  },
+  {
+    "teamName": "FC Caley",
+    "abbreviation": "CAL",
+    "international": false
+  },
+  {
+    "teamName": "Cardena CF",
+    "abbreviation": "CAR",
+    "international": false
+  },
+  {
+    "teamName": "Club Unatlético BocaNeots",
+    "abbreviation": "CBN",
+    "international": false
+  },
+  {
+    "teamName": "Celtic",
+    "abbreviation": "CEL",
+    "international": false
+  },
+  {
+    "teamName": "Ivory Coast",
+    "abbreviation": "CIV",
+    "international": true
+  },
+  {
+    "teamName": "Cleveland Force",
+    "abbreviation": "CLE",
+    "international": false
+  },
+  {
+    "teamName": "Clan Pata Brava",
+    "abbreviation": "CPB",
+    "international": false
+  },
+  {
+    "teamName": "Cornish Pilgrim",
+    "abbreviation": "CPI",
+    "international": false
+  },
+  {
+    "teamName": "Club Sandwich",
+    "abbreviation": "CSW",
+    "international": false
+  },
+  {
+    "teamName": "Cooper's Troopers XI",
+    "abbreviation": "COT",
+    "international": false,
+    "previousAbbreviations": [
+      "CTX"
+    ]
+  },
+  {
+    "teamName": "Desportivo da Buja",
+    "abbreviation": "DDB",
+    "international": false,
+    "previousAbbreviations": [
+      "DBU"
+    ]
+  },
+  {
+    "teamName": "DC United",
+    "abbreviation": "DCX",
+    "international": false,
+    "previousAbbreviations": [
+      "DCU"
+    ]
+  },
+  {
+    "teamName": "Dreamway Druids",
+    "abbreviation": "DDR",
+    "international": false
+  },
+  {
+    "teamName": "Delaware SC",
+    "abbreviation": "DEL",
+    "international": false
+  },
+  {
+    "teamName": "Dynamo Giffen IF",
+    "abbreviation": "DGI",
+    "international": false
+  },
+  {
+    "teamName": "Debreceni Locomotive",
+    "abbreviation": "DLO",
+    "international": false
+  },
+  {
+    "teamName": "Dortmund",
+    "abbreviation": "DOR",
+    "international": false
+  },
+  {
+    "teamName": "Dukla Prague",
+    "abbreviation": "DUK",
+    "international": false
+  },
+  {
+    "teamName": "Dynamo Devon",
+    "abbreviation": "DYD",
+    "international": false
+  },
+  {
+    "teamName": "FC Elite",
+    "abbreviation": "ELI",
+    "international": false
+  },
+  {
+    "teamName": "East London Union",
+    "abbreviation": "ELU",
+    "international": false
+  },
+  {
+    "teamName": "England",
+    "abbreviation": "ENG",
+    "international": true
+  },
+  {
+    "teamName": "E.Rex Sean's FC",
+    "abbreviation": "ERS",
+    "international": false,
+    "previousAbbreviations": [
+      "ERX"
+    ]
+  },
+  {
+    "teamName": "El Submarino Amarillo",
+    "abbreviation": "ESA",
+    "international": false
+  },
+  {
+    "teamName": "Spain",
+    "abbreviation": "ESP",
+    "international": true
+  },
+  {
+    "teamName": "ES Val Baugeois",
+    "abbreviation": "EVB",
+    "international": false
+  },
+  {
+    "teamName": "Everton",
+    "abbreviation": "EVE",
+    "international": false
+  },
+  {
+    "teamName": "FC Porto",
+    "abbreviation": "POR",
+    "international": false,
+    "previousAbbreviations": [
+      "FCP"
+    ]
+  },
+  {
+    "teamName": "FC Costa Verde",
+    "abbreviation": "COV",
+    "international": false,
+    "previousAbbreviations": [
+      "FCV"
+    ]
+  },
+  {
+    "teamName": "Football Fortunes",
+    "abbreviation": "FFT",
+    "international": false
+  },
+  {
+    "teamName": "Fighting Geeks",
+    "abbreviation": "FGK",
+    "international": false
+  },
+  {
+    "teamName": "Fiorentina",
+    "abbreviation": "FIO",
+    "international": false
+  },
+  {
+    "teamName": "FC Mensch ist der United",
+    "abbreviation": "MID",
+    "international": false,
+    "previousAbbreviations": [
+      "FMU"
+    ]
+  },
+  {
+    "teamName": "France",
+    "abbreviation": "FRA",
+    "international": true
+  },
+  {
+    "teamName": "Free State FC",
+    "abbreviation": "FRS",
+    "international": false,
+    "previousAbbreviations": [
+      "FST"
+    ]
+  },
+  {
+    "teamName": "FC Fuerte",
+    "abbreviation": "FUE",
+    "international": false
+  },
+  {
+    "teamName": "FCD Vignareal",
+    "abbreviation": "FCD",
+    "international": false,
+    "previousAbbreviations": [
+      "FVI"
+    ]
+  },
+  {
+    "teamName": "Gallifrey United",
+    "abbreviation": "GAL",
+    "international": false
+  },
+  {
+    "teamName": "Gute Anouk FC",
+    "abbreviation": "GUA",
+    "international": false,
+    "previousAbbreviations": [
+      "GAN"
+    ]
+  },
+  {
+    "teamName": "Germany",
+    "abbreviation": "GER",
+    "international": true
+  },
+  {
+    "teamName": "GHills FC",
+    "abbreviation": "GHI",
+    "international": false
+  },
+  {
+    "teamName": "Greece",
+    "abbreviation": "GRE",
+    "international": true
+  },
+  {
+    "teamName": "Gremio",
+    "abbreviation": "GRM",
+    "international": false
+  },
+  {
+    "teamName": "Groningen",
+    "abbreviation": "GRO",
+    "international": false
+  },
+  {
+    "teamName": "FC Grün-Weiß Galoppa",
+    "abbreviation": "GWG",
+    "international": false
+  },
+  {
+    "teamName": "Haverhill Echo",
+    "abbreviation": "HEC",
+    "international": false
+  },
+  {
+    "teamName": "FC Hendra",
+    "abbreviation": "HEN",
+    "international": false
+  },
+  {
+    "teamName": "Happy Happy Soy Boys",
+    "abbreviation": "HSB",
+    "international": false
+  },
+  {
+    "teamName": "Hustlers",
+    "abbreviation": "HUS",
+    "international": false
+  },
+  {
+    "teamName": "Inter Miami",
+    "abbreviation": "IMI",
+    "international": false
+  },
+  {
+    "teamName": "Inter",
+    "abbreviation": "INT",
+    "international": false
+  },
+  {
+    "teamName": "Ireland",
+    "abbreviation": "IRL",
+    "international": true
+  },
+  {
+    "teamName": "Iowa Smallholders FC",
+    "abbreviation": "IOS",
+    "international": false,
+    "previousAbbreviations": [
+      "ISM"
+    ]
+  },
+  {
+    "teamName": "Italy",
+    "abbreviation": "ITA",
+    "international": true
+  },
+  {
+    "teamName": "Juventus Calais",
+    "abbreviation": "JCA",
+    "international": false
+  },
+  {
+    "teamName": "Jedi Knights FC",
+    "abbreviation": "JEK",
+    "international": false,
+    "previousAbbreviations": [
+      "JED"
+    ]
+  },
+  {
+    "teamName": "Já Foste",
+    "abbreviation": "JFO",
+    "international": false
+  },
+  {
+    "teamName": "Japan",
+    "abbreviation": "JPN",
+    "international": true
+  },
+  {
+    "teamName": "Juventus",
+    "abbreviation": "JUV",
+    "international": false
+  },
+  {
+    "teamName": "King's Castle",
+    "abbreviation": "KCA",
+    "international": false
+  },
+  {
+    "teamName": "Kettlethorpe Dynamos",
+    "abbreviation": "KDY",
+    "international": false
+  },
+  {
+    "teamName": "The Kicks FC",
+    "abbreviation": "KIC",
+    "international": false
+  },
+  {
+    "teamName": "FC Koln",
+    "abbreviation": "KOL",
+    "international": false,
+    "previousAbbreviations": [
+      "KOE"
+    ]
+  },
+  {
+    "teamName": "Kielse Ratten",
+    "abbreviation": "KRA",
+    "international": false
+  },
+  {
+    "teamName": "KV Mechelen",
+    "abbreviation": "KVM",
+    "international": false
+  },
+  {
+    "teamName": "L.A. FC",
+    "abbreviation": "LAX",
+    "international": false,
+    "previousAbbreviations": [
+      "LAC"
+    ]
+  },
+  {
+    "teamName": "Los Angeles FC",
+    "abbreviation": "LOA",
+    "international": false,
+    "previousAbbreviations": [
+      "LAF"
+    ]
+  },
+  {
+    "teamName": "Loose Ballers FC",
+    "abbreviation": "LOB",
+    "international": false,
+    "previousAbbreviations": [
+      "LBA"
+    ]
+  },
+  {
+    "teamName": "Louisville Bourbon Barrels",
+    "abbreviation": "LBB",
+    "international": false
+  },
+  {
+    "teamName": "Lecce",
+    "abbreviation": "LEC",
+    "international": false
+  },
+  {
+    "teamName": "AFC Leicester",
+    "abbreviation": "LEI",
+    "international": false
+  },
+  {
+    "teamName": "Levante UD",
+    "abbreviation": "LEV",
+    "international": false
+  },
+  {
+    "teamName": "Lancaster Fighting Amish",
+    "abbreviation": "LFA",
+    "international": false
+  },
+  {
+    "teamName": "Las Gaviotas",
+    "abbreviation": "LGA",
+    "international": false
+  },
+  {
+    "teamName": "FC Lokomotiv",
+    "abbreviation": "LOK",
+    "international": false
+  },
+  {
+    "teamName": "Loughborough FC",
+    "abbreviation": "LOU",
+    "international": false
+  },
+  {
+    "teamName": "La Signora FC",
+    "abbreviation": "LAS",
+    "international": false,
+    "previousAbbreviations": [
+      "LSG"
+    ]
+  },
+  {
+    "teamName": "Midwest Bruins FC",
+    "abbreviation": "MIB",
+    "international": false,
+    "previousAbbreviations": [
+      "MBR"
+    ]
+  },
+  {
+    "teamName": "Mexico",
+    "abbreviation": "MEX",
+    "international": true
+  },
+  {
+    "teamName": "MFK Faust",
+    "abbreviation": "MFK",
+    "international": false
+  },
+  {
+    "teamName": "Miaouli FC",
+    "abbreviation": "MIA",
+    "international": false
+  },
+  {
+    "teamName": "Milfwall USC",
+    "abbreviation": "MIL",
+    "international": false
+  },
+  {
+    "teamName": "Mullins Red Army",
+    "abbreviation": "MRA",
+    "international": false
+  },
+  {
+    "teamName": "Miltown FC",
+    "abbreviation": "MIL",
+    "international": false,
+    "previousAbbreviations": [
+      "MTW"
+    ]
+  },
+  {
+    "teamName": "Napoli",
+    "abbreviation": "NAP",
+    "international": false
+  },
+  {
+    "teamName": "Navy Canaries FC",
+    "abbreviation": "NAC",
+    "international": false,
+    "previousAbbreviations": [
+      "NCA"
+    ]
+  },
+  {
+    "teamName": "Netherlands",
+    "abbreviation": "NED",
+    "international": true
+  },
+  {
+    "teamName": "Newcastle City",
+    "abbreviation": "NEW",
+    "international": false
+  },
+  {
+    "teamName": "Nigeria",
+    "abbreviation": "NGA",
+    "international": true
+  },
+  {
+    "teamName": "FC Nimois",
+    "abbreviation": "NIM",
+    "international": false
+  },
+  {
+    "teamName": "Northern Lights",
+    "abbreviation": "NLI",
+    "international": false
+  },
+  {
+    "teamName": "Norfolk n Chance",
+    "abbreviation": "NNC",
+    "international": false
+  },
+  {
+    "teamName": "Norfolk FC",
+    "abbreviation": "NOR",
+    "international": false
+  },
+  {
+    "teamName": "Norwich",
+    "abbreviation": "NWC",
+    "international": false
+  },
+  {
+    "teamName": "Olympiacos",
+    "abbreviation": "OLY",
+    "international": false
+  },
+  {
+    "teamName": "SC Ontario",
+    "abbreviation": "SCO",
+    "international": false,
+    "previousAbbreviations": [
+      "ONT"
+    ]
+  },
+  {
+    "teamName": "Osasuna",
+    "abbreviation": "OSA",
+    "international": false
+  },
+  {
+    "teamName": "Oxford Owls",
+    "abbreviation": "OXO",
+    "international": false
+  },
+  {
+    "teamName": "Palermo",
+    "abbreviation": "PAL",
+    "international": false
+  },
+  {
+    "teamName": "PAOK FC",
+    "abbreviation": "PAO",
+    "international": false
+  },
+  {
+    "teamName": "Partick Thistle",
+    "abbreviation": "PAR",
+    "international": false
+  },
+  {
+    "teamName": "Park Beach FC",
+    "abbreviation": "PAB",
+    "international": false,
+    "previousAbbreviations": [
+      "PBE"
+    ]
+  },
+  {
+    "teamName": "Palermo FC",
+    "abbreviation": "PAL",
+    "international": false,
+    "previousAbbreviations": [
+      "PFC"
+    ]
+  },
+  {
+    "teamName": "FC Paços de Ferreira",
+    "abbreviation": "PDF",
+    "international": false,
+    "previousAbbreviations": [
+      "PFE"
+    ]
+  },
+  {
+    "teamName": "Pingu Family FC",
+    "abbreviation": "PIF",
+    "international": false,
+    "previousAbbreviations": [
+      "PFM"
+    ]
+  },
+  {
+    "teamName": "Pontefract Rovers FC",
+    "abbreviation": "POR",
+    "international": false,
+    "previousAbbreviations": [
+      "PFR"
+    ]
+  },
+  {
+    "teamName": "Pakenham Road FC",
+    "abbreviation": "PAR",
+    "international": false,
+    "previousAbbreviations": [
+      "PKR"
+    ]
+  },
+  {
+    "teamName": "Palmeiras",
+    "abbreviation": "PLM",
+    "international": false
+  },
+  {
+    "teamName": "Paltslaughter FC",
+    "abbreviation": "PAL",
+    "international": false,
+    "previousAbbreviations": [
+      "PLS"
+    ]
+  },
+  {
+    "teamName": "FC Pöhler",
+    "abbreviation": "POH",
+    "international": false
+  },
+  {
+    "teamName": "Poland",
+    "abbreviation": "POL",
+    "international": true
+  },
+  {
+    "teamName": "Portugal",
+    "abbreviation": "POR",
+    "international": true
+  },
+  {
+    "teamName": "SK Prostejov",
+    "abbreviation": "PRO",
+    "international": false
+  },
+  {
+    "teamName": "Priory Thistle",
+    "abbreviation": "PTH",
+    "international": false
+  },
+  {
+    "teamName": "Portimonense",
+    "abbreviation": "PTM",
+    "international": false
+  },
+  {
+    "teamName": "Rangers",
+    "abbreviation": "RAN",
+    "international": false
+  },
+  {
+    "teamName": "FC Raota",
+    "abbreviation": "RAO",
+    "international": false
+  },
+  {
+    "teamName": "RBC",
+    "abbreviation": "RBC",
+    "international": false
+  },
+  {
+    "teamName": "Leipzig",
+    "abbreviation": "RBL",
+    "international": false
+  },
+  {
+    "teamName": "River",
+    "abbreviation": "RIV",
+    "international": false
+  },
+  {
+    "teamName": "Red Knight Rovers",
+    "abbreviation": "RKR",
+    "international": false
+  },
+  {
+    "teamName": "Real Madrid",
+    "abbreviation": "RMA",
+    "international": false
+  },
+  {
+    "teamName": "Roma",
+    "abbreviation": "ROM",
+    "international": false
+  },
+  {
+    "teamName": "Red Serpents",
+    "abbreviation": "RSE",
+    "international": false
+  },
+  {
+    "teamName": "Sassuolo",
+    "abbreviation": "SAS",
+    "international": false
+  },
+  {
+    "teamName": "Squadra Azzurra",
+    "abbreviation": "SAZ",
+    "international": false
+  },
+  {
+    "teamName": "Scotland",
+    "abbreviation": "SCO",
+    "international": true
+  },
+  {
+    "teamName": "Sealand Mariner FC",
+    "abbreviation": "SEM",
+    "international": false,
+    "previousAbbreviations": [
+      "SEA"
+    ]
+  },
+  {
+    "teamName": "Seville",
+    "abbreviation": "SEV",
+    "international": false
+  },
+  {
+    "teamName": "SiamoFattiCosi FC",
+    "abbreviation": "SIA",
+    "international": false,
+    "previousAbbreviations": [
+      "SFC"
+    ]
+  },
+  {
+    "teamName": "Eintracht Frankfurt",
+    "abbreviation": "SGE",
+    "international": false
+  },
+  {
+    "teamName": "AFC Sheffield",
+    "abbreviation": "SHF",
+    "international": false
+  },
+  {
+    "teamName": "FK Sloboden",
+    "abbreviation": "SLO",
+    "international": false
+  },
+  {
+    "teamName": "Sporting",
+    "abbreviation": "SPO",
+    "international": false
+  },
+  {
+    "teamName": "Stately Spurs",
+    "abbreviation": "SSP",
+    "international": false
+  },
+  {
+    "teamName": "Spreadsheet Spartans",
+    "abbreviation": "SSS",
+    "international": false
+  },
+  {
+    "teamName": "Sterkel's Finest",
+    "abbreviation": "STF",
+    "international": false
+  },
+  {
+    "teamName": "Werder Bremen",
+    "abbreviation": "SVW",
+    "international": false
+  },
+  {
+    "teamName": "Swanley Wanderers",
+    "abbreviation": "SWA",
+    "international": false
+  },
+  {
+    "teamName": "TDS",
+    "abbreviation": "TDS",
+    "international": false
+  },
+  {
+    "teamName": "Torino",
+    "abbreviation": "TOR",
+    "international": false
+  },
+  {
+    "teamName": "Tripletown",
+    "abbreviation": "TRI",
+    "international": false
+  },
+  {
+    "teamName": "Tasmania Rixdorf",
+    "abbreviation": "TRX",
+    "international": false
+  },
+  {
+    "teamName": "The Soccer Matrix",
+    "abbreviation": "TSM",
+    "international": false
+  },
+  {
+    "teamName": "Twin Ports FC",
+    "abbreviation": "TWP",
+    "international": false
+  },
+  {
+    "teamName": "UP. Langreo",
+    "abbreviation": "UPL",
+    "international": false
+  },
+  {
+    "teamName": "USA",
+    "abbreviation": "USA",
+    "international": true
+  },
+  {
+    "teamName": "Uzice United",
+    "abbreviation": "UZI",
+    "international": false,
+    "previousAbbreviations": [
+      "UZU"
+    ]
+  },
+  {
+    "teamName": "Valencia",
+    "abbreviation": "VAL",
+    "international": false
+  },
+  {
+    "teamName": "Vanguarda FC",
+    "abbreviation": "VAN",
+    "international": false
+  },
+  {
+    "teamName": "Vealios FC",
+    "abbreviation": "VEA",
+    "international": false
+  },
+  {
+    "teamName": "Vekiesport",
+    "abbreviation": "VEK",
+    "international": false
+  },
+  {
+    "teamName": "Villarreal",
+    "abbreviation": "VIL",
+    "international": false
+  },
+  {
+    "teamName": "Vitesse",
+    "abbreviation": "VIT",
+    "international": false
+  },
+  {
+    "teamName": "Valladolid",
+    "abbreviation": "VLL",
+    "international": false
+  },
+  {
+    "teamName": "Vrilissia FC",
+    "abbreviation": "VRI",
+    "international": false
+  },
+  {
+    "teamName": "Webstars XI",
+    "abbreviation": "WEB",
+    "international": false
+  },
+  {
+    "teamName": "Winfield Wanderers",
+    "abbreviation": "WFW",
+    "international": false
+  },
+  {
+    "teamName": "Willen Hatters",
+    "abbreviation": "WHA",
+    "international": false
+  },
+  {
+    "teamName": "Warhammer Wanderers",
+    "abbreviation": "WHW",
+    "international": false
+  },
+  {
+    "teamName": "Wolves",
+    "abbreviation": "WOL",
+    "international": false
+  },
+  {
+    "teamName": "Woodlands Rangers",
+    "abbreviation": "WRA",
+    "international": false
+  },
+  {
+    "teamName": "Warsaw Snapshooters",
+    "abbreviation": "WSN",
+    "international": false
+  },
+  {
+    "teamName": "Wasatch Woodpeckers FC",
+    "abbreviation": "WAW",
+    "international": false,
+    "previousAbbreviations": [
+      "WWP"
+    ]
+  },
+  {
+    "teamName": "XI Men in Flight",
+    "abbreviation": "MIF",
+    "international": false,
+    "previousAbbreviations": [
+      "XMF"
+    ]
+  },
+  {
+    "teamName": "YMCA United",
+    "abbreviation": "YMC",
+    "international": false
+  },
+  {
+    "teamName": "Zenit Belgica",
+    "abbreviation": "ZBE",
+    "international": false
+  },
+  {
+    "teamName": "Zwolle",
+    "abbreviation": "ZWO",
+    "international": false
+  }
+]

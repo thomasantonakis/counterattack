@@ -122,6 +122,9 @@ public class MatchStatsUI : MonoBehaviour
     public TMP_Text statsText;  // Drag the TextMeshPro UI element here
     public TMP_Text homeScorersText;
     public TMP_Text awayScorersText;
+    public TMP_Text homeTeamNameText;
+    public TMP_Text awayTeamNameText;
+    public TMP_Text scoreText;
     [Header("Designer-owned stats fields")]
     [SerializeField] private RectTransform statsGridRoot;
     [SerializeField] private TMP_Text[] homeStatsTexts = new TMP_Text[StatsRowCount];
@@ -129,6 +132,7 @@ public class MatchStatsUI : MonoBehaviour
     [SerializeField] private TMP_Text[] awayStatsTexts = new TMP_Text[StatsRowCount];
     [Header("Designer-owned lineup fields")]
     [SerializeField] private RectTransform lineupsRoot;
+    [SerializeField] private MatchStatsLineupLayout lineupLayout;
     [SerializeField] private TMP_Text homeLineupText;
     [SerializeField] private TMP_Text lineupNumberText;
     [SerializeField] private TMP_Text awayLineupText;
@@ -152,6 +156,8 @@ public class MatchStatsUI : MonoBehaviour
     [Header("Stats Panel Layout")]
     [SerializeField, Range(0f, 0.2f)] private float cardsBottomPadding = 0.01f;
     [SerializeField, Range(0.05f, 0.5f)] private float cardsTopAnchor = 0.25f;
+    public float HoverCardsBottomPadding => cardsBottomPadding;
+    public float HoverCardsTopAnchor => cardsTopAnchor;
     [SerializeField, Range(0.4f, 1f)] private float previewCardWidthFill = 0.98f;
     [SerializeField, Range(0.4f, 1f)] private float previewCardHeightFill = 0.92f;
     [SerializeField] private GameObject externalScoreboardRoot;
@@ -317,12 +323,12 @@ public class MatchStatsUI : MonoBehaviour
 
     private void OnEnable()
     {
-        GameInputManager.OnHover += HandleHoverTokenChanged;
+        GameInputManager.OnTokenPreviewHover += HandleHoverTokenChanged;
     }
 
     private void OnDisable()
     {
-        GameInputManager.OnHover -= HandleHoverTokenChanged;
+        GameInputManager.OnTokenPreviewHover -= HandleHoverTokenChanged;
     }
 
     private void Update()
@@ -572,6 +578,7 @@ public class MatchStatsUI : MonoBehaviour
         List<LineupPlayerRow> homeLineup = BuildLineupRows(true);
         List<LineupPlayerRow> awayLineup = BuildLineupRows(false);
         int rowCount = Mathf.Min(MaxLineupRows, Math.Max(homeLineup.Count, awayLineup.Count));
+        lineupLayout?.ApplyRosterSize(rowCount);
         EnsureDesignerLineupHoverEntryCapacity();
 
         for (int index = 0; index < MaxLineupRows; index++)
@@ -596,6 +603,7 @@ public class MatchStatsUI : MonoBehaviour
 
     private void ClearDesignerLineupRows()
     {
+        lineupLayout?.ApplyRosterSize(0);
         EnsureDesignerLineupHoverEntryCapacity();
         for (int index = 0; index < MaxLineupRows; index++)
         {
@@ -712,14 +720,22 @@ public class MatchStatsUI : MonoBehaviour
         int homeScore = MatchManager.Instance.gameData.stats.homeTeamStats.totalGoals;
         int awayScore = MatchManager.Instance.gameData.stats.awayTeamStats.totalGoals;
 
+        if (homeTeamNameText != null) homeTeamNameText.text = homeTeamName;
+        if (awayTeamNameText != null) awayTeamNameText.text = awayTeamName;
+        if (scoreText != null) scoreText.text = $"{homeScore}-{awayScore}";
+
         if (homeScorersText != null)
         {
-            homeScorersText.text = BuildScorerPanelText($"{homeTeamName}", MatchManager.Instance.homeScorers);
+            homeScorersText.text = homeTeamNameText != null
+                ? FormatScorerRows(MatchManager.Instance.homeScorers)
+                : BuildScorerPanelText($"{homeTeamName} {homeScore}", MatchManager.Instance.homeScorers);
         }
 
         if (awayScorersText != null)
         {
-            awayScorersText.text = BuildScorerPanelText($"{awayTeamName}", MatchManager.Instance.awayScorers);
+            awayScorersText.text = awayTeamNameText != null
+                ? FormatScorerRows(MatchManager.Instance.awayScorers)
+                : BuildScorerPanelText($"{awayScore} {awayTeamName}", MatchManager.Instance.awayScorers);
         }
     }
 
@@ -783,7 +799,11 @@ public class MatchStatsUI : MonoBehaviour
     {
         if (lineupsRoot == null)
         {
-            lineupsRoot = FindStatsChildRect("Lineups");
+            lineupsRoot = FindDirectChildRect(panel, "Lineups");
+        }
+        if (lineupLayout == null && lineupsRoot != null)
+        {
+            lineupLayout = lineupsRoot.GetComponent<MatchStatsLineupLayout>();
         }
 
         homeLineupText ??= FindNestedText(lineupsRoot, "HomeLineupText");
@@ -812,6 +832,17 @@ public class MatchStatsUI : MonoBehaviour
         RectTransform column = FindDirectChildRect(root, columnName);
         for (int i = 0; i < StatsRowCount; i++)
         {
+            // Bind all three cells by their shared row, repairing duplicate or
+            // shuffled inspector references without touching designer layout.
+            string cellName = columnName == "HomeStats" ? "HomeStat"
+                : columnName == "AwayStats" ? "AwayStat" : "StatTitle";
+            TMP_Text rowCell = root != null
+                ? root.Find($"StatRow ({i + 1})/{cellName}")?.GetComponent<TMP_Text>() : null;
+            if (rowCell != null)
+            {
+                target[i] = rowCell;
+                continue;
+            }
             if (target[i] != null)
             {
                 continue;
@@ -2303,6 +2334,7 @@ public class MatchStatsUI : MonoBehaviour
     {
         if (HasDesignerLineupRows())
         {
+            UpdateDesignerLineupHover();
             return;
         }
 
@@ -2369,6 +2401,59 @@ public class MatchStatsUI : MonoBehaviour
         }
 
         return;
+    }
+
+    private void UpdateDesignerLineupHover()
+    {
+        if (!showLineups || lineupsRoot == null || !lineupsRoot.gameObject.activeInHierarchy)
+        {
+            ClearLineupHoverOverrides();
+            return;
+        }
+
+        // Designer-owned name fields need no extra components or raycast targets.
+        // Read their authored rectangles and reuse the same card selection as pitch hover.
+        Canvas canvas = lineupsRoot.GetComponentInParent<Canvas>();
+        Camera eventCamera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay
+            ? canvas.worldCamera
+            : null;
+        Vector2 pointerPosition = Input.mousePosition;
+        if (panel != null && !RectTransformUtility.RectangleContainsScreenPoint(panel, pointerPosition, eventCamera))
+        {
+            ClearLineupHoverOverrides();
+            return;
+        }
+
+        for (int index = 0; index < designerLineupHoverEntries.Length; index++)
+        {
+            LineupHoverEntry entry = designerLineupHoverEntries[index];
+            if (entry == null)
+            {
+                continue;
+            }
+
+            if (entry.homeToken != null && IsPointerOverLineupName(homeLineupTexts[index], pointerPosition, eventCamera))
+            {
+                SetLineupHoverOverrides(entry.homeToken, null);
+                return;
+            }
+
+            if (entry.awayToken != null && IsPointerOverLineupName(awayLineupTexts[index], pointerPosition, eventCamera))
+            {
+                SetLineupHoverOverrides(null, entry.awayToken);
+                return;
+            }
+        }
+
+        ClearLineupHoverOverrides();
+    }
+
+    private static bool IsPointerOverLineupName(TMP_Text field, Vector2 pointerPosition, Camera eventCamera)
+    {
+        return field != null
+            && field.isActiveAndEnabled
+            && !string.IsNullOrWhiteSpace(field.text)
+            && RectTransformUtility.RectangleContainsScreenPoint(field.rectTransform, pointerPosition, eventCamera);
     }
 
     public void SetLineupHoverFromDesignerRow(bool isHomeTeam, int rowIndex)

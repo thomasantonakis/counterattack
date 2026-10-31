@@ -57,9 +57,9 @@ MonoBehaviour:
     centerLabel: xTackles / Made
   showLineups: 1
   lineupHeaderLabel: XI
-  scoreboardLeftColumnAlignment: 2
+  scoreboardLeftColumnAlignment: 1
   scoreboardCenterColumnAlignment: 1
-  scoreboardRightColumnAlignment: 0
+  scoreboardRightColumnAlignment: 1
   lineupLeftColumnAlignment: 2
   lineupCenterColumnAlignment: 1
   lineupRightColumnAlignment: 0
