@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "fixture": "Thomas3_DefensiveSwarm",
+      "decisionNumber": 309,
+      "sequenceNumber": 1432,
+      "movementReplay": {
+        "phaseStartSequence": 1408,
+        "section": "Defending",
+        "remainingMoves": 5,
+        "movedTokenKeys": [
+          "Home:8",
+          "Home:11",
+          "Home:9"
+        ],
+        "lastPurposefulTouchTokenKey": "Home:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas3_DefensiveSwarm",
+      "decisionNumber": 311,
+      "sequenceNumber": 1438,
+      "movementReplay": {
+        "phaseStartSequence": 1408,
+        "section": "Defending",
+        "remainingMoves": 4,
+        "movedTokenKeys": [
+          "Home:8",
+          "Home:11",
+          "Home:9",
+          "Away:11"
+        ],
+        "lastPurposefulTouchTokenKey": "Home:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas3_DefensiveSwarm",
+      "decisionNumber": 313,
+      "sequenceNumber": 1444,
+      "movementReplay": {
+        "phaseStartSequence": 1408,
+        "section": "Defending",
+        "remainingMoves": 3,
+        "movedTokenKeys": [
+          "Home:8",
+          "Home:11",
+          "Home:9",
+          "Away:11",
+          "Away:9"
+        ],
+        "lastPurposefulTouchTokenKey": "Home:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas3_DefensiveSwarm",
+      "decisionNumber": 315,
+      "sequenceNumber": 1450,
+      "movementReplay": {
+        "phaseStartSequence": 1408,
+        "section": "Defending",
+        "remainingMoves": 2,
+        "movedTokenKeys": [
+          "Home:8",
+          "Home:11",
+          "Home:9",
+          "Away:11",
+          "Away:9",
+          "Away:8"
+        ],
+        "lastPurposefulTouchTokenKey": "Home:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas3_DefensiveSwarm",
+      "decisionNumber": 317,
+      "sequenceNumber": 1456,
+      "movementReplay": {
+        "phaseStartSequence": 1408,
+        "section": "Defending",
+        "remainingMoves": 1,
+        "movedTokenKeys": [
+          "Home:8",
+          "Home:11",
+          "Home:9",
+          "Away:11",
+          "Away:9",
+          "Away:8",
+          "Away:2"
+        ],
+        "lastPurposefulTouchTokenKey": "Home:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas4_AttackingMovement",
+      "decisionNumber": 116,
+      "sequenceNumber": 513,
+      "movementReplay": {
+        "phaseStartSequence": 478,
+        "section": "Attacking",
+        "remainingMoves": 3,
+        "movedTokenKeys": [
+          "Away:5"
+        ],
+        "lastPurposefulTouchTokenKey": "Away:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas4_AttackingMovement",
+      "decisionNumber": 138,
+      "sequenceNumber": 598,
+      "movementReplay": {
+        "phaseStartSequence": 579,
+        "section": "Attacking",
+        "remainingMoves": 2,
+        "movedTokenKeys": [
+          "Away:7",
+          "Away:3"
+        ],
+        "lastPurposefulTouchTokenKey": "Away:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    },
+    {
+      "fixture": "Thomas4_AttackingMovement",
+      "decisionNumber": 148,
+      "sequenceNumber": 636,
+      "movementReplay": {
+        "phaseStartSequence": 613,
+        "section": "Attacking",
+        "remainingMoves": 2,
+        "movedTokenKeys": [
+          "Away:3",
+          "Away:7"
+        ],
+        "lastPurposefulTouchTokenKey": "Away:5",
+        "note": "Moved-token ownership reconstructed from movement events since the last action boundary/activation; not a full manager runtime save."
+      }
+    }
+  ]
+}
