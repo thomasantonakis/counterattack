@@ -26,9 +26,13 @@ public class CreateNewGameManager : MonoBehaviour
     private const string DraftProfileGreedy = "Greedy";
     private const string DraftProfileSophisticated = "Sophisticated";
     private const string RoomPersonaAskHuman = "AskHuman";
-    private const string RoomPersonaRandom = "Random";
-    private const string TeamControlHumanLabel = "P1 (Human)";
-    private const string TeamControlCpuRandomLabel = "CPU-Random";
+    private const string RoomPersonaCodexTacticianEasy = "Codex Tactician Easy";
+    private const string RoomPersonaCodexTacticianMedium = "Codex Tactician Medium";
+    private const string RoomPersonaCodexTacticianHard = "Codex Tactician Hard";
+    private const string RoomPersonaCodexTacticianUltraHard = "Codex Tactician Ultra Hard";
+    private const string TeamControlHumanLabel = "Human";
+    private const string TeamControlCpuLabel = "CPU";
+    private const string AIDifficultyUltraHardLabel = "Ultra Hard";
     private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
     private const float KitDropdownScrollSensitivity = 55f;
@@ -57,6 +61,7 @@ public class CreateNewGameManager : MonoBehaviour
     public TMP_Dropdown awayGKKitDropdown;
     public TMP_Dropdown homeTeamControlDropdown;
     public TMP_Dropdown awayTeamControlDropdown;
+    private TMP_Dropdown aiDifficultyDropdown;
     public RawImage homeKitPreviewImage;
     public TMP_Text homeKitPreviewNumberText;
     public RawImage awayKitPreviewImage;
@@ -112,6 +117,48 @@ public class CreateNewGameManager : MonoBehaviour
     {
         HandleCreateGameKeyboardNavigation();
         HandleClosedKitDropdownArrowKeys();
+        MaintainKitDropdownPopupHeight();
+    }
+
+    private void MaintainKitDropdownPopupHeight()
+    {
+        MaintainKitDropdownPopupHeight(homeKitDropdown);
+        MaintainKitDropdownPopupHeight(awayKitDropdown);
+        MaintainKitDropdownPopupHeight(homeGKKitDropdown);
+        MaintainKitDropdownPopupHeight(awayGKKitDropdown);
+    }
+
+    private void MaintainKitDropdownPopupHeight(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.options.Count == 0 || !IsAlwaysVisibleKitDropdown(dropdown))
+        {
+            return;
+        }
+
+        Transform popup = dropdown.transform.Find("Dropdown List");
+        RectTransform item = dropdown.template != null
+            ? dropdown.template.Find("Viewport/Content/Item") as RectTransform
+            : null;
+        RectTransform popupRect = popup as RectTransform;
+        if (popupRect == null || item == null || item.rect.height <= 0f || !popup.gameObject.activeSelf)
+        {
+            return;
+        }
+
+        float desiredHeight = item.rect.height * dropdown.options.Count;
+        popupRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, desiredHeight);
+        RectTransform viewport = popup.Find("Viewport") as RectTransform;
+        if (viewport != null)
+        {
+            viewport.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, desiredHeight);
+        }
+    }
+
+    private bool IsAlwaysVisibleKitDropdown(TMP_Dropdown dropdown)
+    {
+        return (IsInternationalMatchSelected() && (dropdown == homeKitDropdown || dropdown == awayKitDropdown))
+            || dropdown == homeGKKitDropdown
+            || dropdown == awayGKKitDropdown;
     }
 
     void Start()
@@ -167,6 +214,7 @@ public class CreateNewGameManager : MonoBehaviour
     private void ConfigureTeamControlDropdowns()
     {
         bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
+        ConfigureAIDifficultyDropdown(isSinglePlayerCreateMode);
         ConfigureTeamControlDropdown(homeTeamControlDropdown, defaultToHuman: true, isSinglePlayerCreateMode);
         ConfigureTeamControlDropdown(awayTeamControlDropdown, defaultToHuman: false, isSinglePlayerCreateMode);
         RefreshTeamControlValidity(homeTeamControlDropdown);
@@ -179,49 +227,69 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        dropdown.gameObject.SetActive(isSinglePlayerCreateMode);
+        SetDropdownRowVisible(dropdown, isSinglePlayerCreateMode);
         dropdown.ClearOptions();
-        dropdown.AddOptions(new List<string> { TeamControlHumanLabel, TeamControlCpuRandomLabel });
+        dropdown.AddOptions(new List<string>
+        {
+            TeamControlHumanLabel,
+            TeamControlCpuLabel
+        });
         dropdown.SetValueWithoutNotify(defaultToHuman ? 0 : 1);
         dropdown.RefreshShownValue();
-        dropdown.onValueChanged.RemoveListener(OnTeamControlDropdownChanged);
-        dropdown.onValueChanged.AddListener(OnTeamControlDropdownChanged);
+        FitDropdownTemplateToOptions(dropdown);
+        dropdown.onValueChanged.RemoveAllListeners();
+        dropdown.onValueChanged.AddListener(_ => OnTeamControlDropdownChanged(dropdown));
     }
 
-    private void OnTeamControlDropdownChanged(int _)
+    private void ConfigureAIDifficultyDropdown(bool isSinglePlayerCreateMode)
     {
-        TMP_Dropdown changedDropdown = null;
-        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+        aiDifficultyDropdown = FindObjectsByType<TMP_Dropdown>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            .FirstOrDefault(candidate => string.Equals(candidate.gameObject.name, "AIDifficultyDropDown", StringComparison.OrdinalIgnoreCase));
+        if (aiDifficultyDropdown == null)
         {
-            if (EventSystem.current.currentSelectedGameObject == homeTeamControlDropdown?.gameObject)
-            {
-                changedDropdown = homeTeamControlDropdown;
-            }
-            else if (EventSystem.current.currentSelectedGameObject == awayTeamControlDropdown?.gameObject)
-            {
-                changedDropdown = awayTeamControlDropdown;
-            }
+            return;
         }
 
+        SetDropdownRowVisible(aiDifficultyDropdown, isSinglePlayerCreateMode);
+        aiDifficultyDropdown.ClearOptions();
+        aiDifficultyDropdown.AddOptions(new List<string> { AIDifficultyUltraHardLabel });
+        aiDifficultyDropdown.SetValueWithoutNotify(0);
+        aiDifficultyDropdown.RefreshShownValue();
+    }
+
+    private static void SetDropdownRowVisible(TMP_Dropdown dropdown, bool visible)
+    {
+        if (dropdown == null)
+        {
+            return;
+        }
+
+        Transform row = dropdown.transform.parent;
+        (row != null ? row.gameObject : dropdown.gameObject).SetActive(visible);
+    }
+
+    private void OnTeamControlDropdownChanged(TMP_Dropdown changedDropdown)
+    {
         RefreshTeamControlValidity(changedDropdown);
     }
 
     private void RefreshTeamControlValidity(TMP_Dropdown changedDropdown)
     {
-        if (!IsSinglePlayerCreateMode() || homeTeamControlDropdown == null || awayTeamControlDropdown == null)
+        if (!IsSinglePlayerCreateMode()
+            || homeTeamControlDropdown == null
+            || awayTeamControlDropdown == null
+            || !IsHumanControlled(homeTeamControlDropdown)
+            || !IsHumanControlled(awayTeamControlDropdown))
         {
+            RefreshCreateGameButtonState();
             return;
         }
 
-        if (!IsHumanControlled(homeTeamControlDropdown) || !IsHumanControlled(awayTeamControlDropdown))
-        {
-            return;
-        }
-
-        TMP_Dropdown dropdownToSwitch = changedDropdown == homeTeamControlDropdown
+        TMP_Dropdown otherDropdown = changedDropdown == homeTeamControlDropdown
             ? awayTeamControlDropdown
             : homeTeamControlDropdown;
-        SetTeamControlWithoutNotify(dropdownToSwitch, TeamControlCpuRandomLabel);
+        SetTeamControlWithoutNotify(otherDropdown, TeamControlCpuLabel);
+        RefreshCreateGameButtonState();
     }
 
     private void ConfigureTeamNameInputs()
@@ -380,7 +448,9 @@ public class CreateNewGameManager : MonoBehaviour
         bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
         List<string> gameModeOptions = isSinglePlayerCreateMode
             ? new List<string> { ApplicationManager.SinglePlayerGameMode }
-            : new List<string> { "Single Player", "Hot Seat", "Multi Player" };  // Define options
+            : string.Equals(GetRequestedCreateLoadGameMode(), ApplicationManager.HotSeatGameMode, StringComparison.OrdinalIgnoreCase)
+                ? new List<string> { ApplicationManager.HotSeatGameMode }
+                : new List<string> { ApplicationManager.SinglePlayerGameMode, ApplicationManager.HotSeatGameMode, "Multi Player" };
         gameModeDropdown.ClearOptions();  // Clear any existing options
         gameModeDropdown.AddOptions(gameModeOptions);  // Add the default options
         string requestedGameMode = isSinglePlayerCreateMode ? ApplicationManager.SinglePlayerGameMode : GetRequestedCreateLoadGameMode();
@@ -392,7 +462,8 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         gameModeDropdown.SetValueWithoutNotify(Mathf.Max(0, gameModeIndex));
-        gameModeDropdown.interactable = !isSinglePlayerCreateMode;
+        bool isFixedMode = isSinglePlayerCreateMode || gameModeOptions.Count == 1;
+        gameModeDropdown.interactable = !isFixedMode;
         gameModeDropdown.RefreshShownValue();
         RefreshGameModeLabelForCreateMode();
         List<string> numberOfHalvesOptions = new List<string> { "2", "1" };  // Define options
@@ -418,6 +489,7 @@ public class CreateNewGameManager : MonoBehaviour
         refereeDropdown.ClearOptions();  // Clear any existing options
         refereeDropdown.AddOptions(refereeOptions);  // Add the default options
         RefreshTiebreakerOptions();
+        FitDropdownTemplateToOptions(refereeDropdown);
     }
 
     private void SetRegularDraftDropdownOptions()
@@ -499,6 +571,31 @@ public class CreateNewGameManager : MonoBehaviour
         tiebreakerDropdown.AddOptions(tiebreakerOptions);
         tiebreakerDropdown.value = Mathf.Max(0, selectedIndex);
         tiebreakerDropdown.RefreshShownValue();
+        FitDropdownTemplateToOptions(tiebreakerDropdown);
+    }
+
+    private static void FitDropdownTemplateToOptions(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.template == null || dropdown.options.Count == 0)
+        {
+            return;
+        }
+
+        RectTransform item = dropdown.template.Find("Viewport/Content/Item") as RectTransform;
+        if (item == null)
+        {
+            return;
+        }
+
+        float itemHeight = item.rect.height > 0f ? item.rect.height : item.sizeDelta.y;
+        if (itemHeight <= 0f)
+        {
+            return;
+        }
+
+        dropdown.template.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            Mathf.Ceil(itemHeight * dropdown.options.Count));
     }
 
     private void InitializeKitSelectionUi()
@@ -524,6 +621,9 @@ public class CreateNewGameManager : MonoBehaviour
             awayInternationalTeamDropdown.onValueChanged.RemoveListener(OnAwayInternationalTeamChanged);
             awayInternationalTeamDropdown.onValueChanged.AddListener(OnAwayInternationalTeamChanged);
         }
+
+        ConfigureKitDropdownNavigation(homeInternationalTeamDropdown);
+        ConfigureKitDropdownNavigation(awayInternationalTeamDropdown);
     }
 
     private void EnsureInternationalTeamDropdowns()
@@ -541,7 +641,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private TMP_Dropdown CreateInternationalTeamDropdown(string objectName, TMP_InputField sourceInput)
     {
-        TMP_Dropdown sourceDropdown = matchTypeDropdown != null ? matchTypeDropdown : homeKitDropdown;
+        TMP_Dropdown sourceDropdown = homeKitDropdown != null ? homeKitDropdown : matchTypeDropdown;
         if (sourceDropdown == null || sourceInput == null)
         {
             return null;
@@ -553,12 +653,48 @@ public class CreateNewGameManager : MonoBehaviour
         RectTransform sourceTransform = sourceInput.transform as RectTransform;
         if (dropdownTransform != null && sourceTransform != null)
         {
+            RectTransform styleTransform = homeKitDropdown != null ? homeKitDropdown.transform as RectTransform : sourceTransform;
             dropdownTransform.anchorMin = sourceTransform.anchorMin;
             dropdownTransform.anchorMax = sourceTransform.anchorMax;
             dropdownTransform.pivot = sourceTransform.pivot;
             dropdownTransform.anchoredPosition = sourceTransform.anchoredPosition;
-            dropdownTransform.sizeDelta = sourceTransform.sizeDelta;
+            dropdownTransform.sizeDelta = new Vector2(
+                styleTransform != null && styleTransform.rect.width > 0f ? styleTransform.rect.width : sourceTransform.rect.width,
+                sourceTransform.rect.height);
             dropdownTransform.localScale = sourceTransform.localScale;
+        }
+
+        if (dropdown.captionText != null)
+        {
+            RectTransform captionTransform = dropdown.captionText.rectTransform;
+            RectTransform sourceCaptionTransform = sourceDropdown.captionText != null
+                ? sourceDropdown.captionText.rectTransform
+                : null;
+            if (sourceCaptionTransform != null)
+            {
+                captionTransform.anchorMin = sourceCaptionTransform.anchorMin;
+                captionTransform.anchorMax = sourceCaptionTransform.anchorMax;
+                captionTransform.pivot = sourceCaptionTransform.pivot;
+                captionTransform.anchoredPosition = sourceCaptionTransform.anchoredPosition;
+                captionTransform.sizeDelta = sourceCaptionTransform.sizeDelta;
+                captionTransform.localScale = sourceCaptionTransform.localScale;
+            }
+            else
+            {
+                captionTransform.anchorMin = Vector2.zero;
+                captionTransform.anchorMax = Vector2.one;
+                captionTransform.anchoredPosition = Vector2.zero;
+                captionTransform.sizeDelta = Vector2.zero;
+                captionTransform.localScale = Vector3.one;
+            }
+
+            // Keep the international selector's text inset identical to the
+            // jersey selector it is modelled after.
+            if (sourceDropdown.captionText != null)
+            {
+                dropdown.captionText.margin = sourceDropdown.captionText.margin;
+                dropdown.captionText.alignment = sourceDropdown.captionText.alignment;
+            }
         }
 
         dropdown.onValueChanged.RemoveAllListeners();
@@ -715,6 +851,32 @@ public class CreateNewGameManager : MonoBehaviour
         int defaultIndex = FindPresetIndex(defaultPresetId, presets);
         dropdown.SetValueWithoutNotify(defaultIndex >= 0 ? defaultIndex : 0);
         dropdown.RefreshShownValue();
+
+        if (IsAlwaysVisibleKitDropdown(dropdown))
+        {
+            ConfigureInternationalOutfieldKitListHeight(dropdown);
+        }
+    }
+
+    private static void ConfigureInternationalOutfieldKitListHeight(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.template == null || dropdown.options.Count == 0)
+        {
+            return;
+        }
+
+        RectTransform item = dropdown.template.Find("Viewport/Content/Item") as RectTransform;
+        if (item == null || item.rect.height <= 0f)
+        {
+            return;
+        }
+
+        RectTransform template = dropdown.template as RectTransform;
+        float currentHeight = template.rect.height;
+        float itemHeight = item.rect.height;
+        float contentHeight = itemHeight * dropdown.options.Count;
+        float templatePadding = Mathf.Max(0f, currentHeight - itemHeight * 8f);
+        template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight + templatePadding);
     }
 
     private void RefreshInternationalTeamKitOptions()
@@ -828,12 +990,12 @@ public class CreateNewGameManager : MonoBehaviour
             return availableGKKitPresets ?? Array.Empty<TokenKitPreset>();
         }
 
-        if (dropdown == homeKitDropdown)
+        if (IsInternationalMatchSelected() && dropdown == homeKitDropdown)
         {
             return homeAvailableKitPresets ?? availableKitPresets ?? Array.Empty<TokenKitPreset>();
         }
 
-        if (dropdown == awayKitDropdown)
+        if (IsInternationalMatchSelected() && dropdown == awayKitDropdown)
         {
             return awayAvailableKitPresets ?? availableKitPresets ?? Array.Empty<TokenKitPreset>();
         }
@@ -1671,13 +1833,34 @@ public class CreateNewGameManager : MonoBehaviour
 
         if (homeInternationalTeamDropdown != null)
         {
+            MatchInternationalCaptionToKitDropdown(homeInternationalTeamDropdown);
             homeInternationalTeamDropdown.gameObject.SetActive(visible);
         }
 
         if (awayInternationalTeamDropdown != null)
         {
+            MatchInternationalCaptionToKitDropdown(awayInternationalTeamDropdown);
             awayInternationalTeamDropdown.gameObject.SetActive(visible);
         }
+    }
+
+    private void MatchInternationalCaptionToKitDropdown(TMP_Dropdown dropdown)
+    {
+        if (dropdown == null || dropdown.captionText == null || homeKitDropdown == null || homeKitDropdown.captionText == null)
+        {
+            return;
+        }
+
+        RectTransform target = dropdown.captionText.rectTransform;
+        RectTransform source = homeKitDropdown.captionText.rectTransform;
+        target.anchorMin = source.anchorMin;
+        target.anchorMax = source.anchorMax;
+        target.pivot = source.pivot;
+        target.anchoredPosition = source.anchoredPosition;
+        target.sizeDelta = source.sizeDelta;
+        target.localScale = source.localScale;
+        dropdown.captionText.margin = homeKitDropdown.captionText.margin;
+        dropdown.captionText.alignment = homeKitDropdown.captionText.alignment;
     }
 
     private void UpdateKitPreview(RawImage previewImage, TMP_Text previewNumberText, TokenKitPreset preset, string sampleNumber = PreviewSampleNumber)
@@ -2079,8 +2262,8 @@ public class CreateNewGameManager : MonoBehaviour
                 && string.IsNullOrWhiteSpace(settings.awayRoomPersona)
                 && !string.IsNullOrWhiteSpace(settings.awayDraftPersona));
 
-        SetTeamControlWithoutNotify(homeTeamControlDropdown, homeCpuControlled ? TeamControlCpuRandomLabel : TeamControlHumanLabel);
-        SetTeamControlWithoutNotify(awayTeamControlDropdown, awayCpuControlled ? TeamControlCpuRandomLabel : TeamControlHumanLabel);
+        SetTeamControlWithoutNotify(homeTeamControlDropdown, ResolveTeamControlLabel(settings.homeRoomPersona, homeCpuControlled));
+        SetTeamControlWithoutNotify(awayTeamControlDropdown, ResolveTeamControlLabel(settings.awayRoomPersona, awayCpuControlled));
         RefreshTeamControlValidity(null);
     }
 
@@ -2430,6 +2613,9 @@ public class CreateNewGameManager : MonoBehaviour
         }
         settings.referee = selectedReferee;
         settings.playerAssistance = GetSelectedPlayerAssistanceValue();
+        settings.aiDifficulty = aiDifficultyDropdown != null && aiDifficultyDropdown.options.Count > 0
+            ? aiDifficultyDropdown.options[aiDifficultyDropdown.value].text
+            : AIDifficultyUltraHardLabel;
         settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamName;
@@ -2443,9 +2629,11 @@ public class CreateNewGameManager : MonoBehaviour
         settings.homeDraftPersona = ShouldApplyCpuDraftPersona(homeCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
         settings.awayDraftPersona = ShouldApplyCpuDraftPersona(awayCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
         settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
-        settings.homeRoomPersona = homeCpuControlled ? RoomPersonaRandom : RoomPersonaAskHuman;
-        settings.awayRoomPersona = awayCpuControlled ? RoomPersonaRandom : RoomPersonaAskHuman;
-        settings.defaultRoomPersona = homeCpuControlled && awayCpuControlled ? RoomPersonaRandom : RoomPersonaAskHuman;
+        settings.homeRoomPersona = ResolveRoomPersonaFromTeamControl(homeTeamControlDropdown);
+        settings.awayRoomPersona = ResolveRoomPersonaFromTeamControl(awayTeamControlDropdown);
+        settings.defaultRoomPersona = homeCpuControlled && awayCpuControlled
+            ? RoomPersonaCodexTacticianUltraHard
+            : RoomPersonaAskHuman;
         settings.includeTabletopia = includeTabletopiaToggle.isOn;
         settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
         settings.includeInternationals = includeInternationalsToggle.isOn;
@@ -2500,12 +2688,32 @@ public class CreateNewGameManager : MonoBehaviour
 
     private static bool IsCpuControlled(string roomPersona)
     {
-        return string.Equals(roomPersona, RoomPersonaRandom, StringComparison.OrdinalIgnoreCase);
+        return IsCodexTacticianRoomPersona(roomPersona)
+            || IsLegacyCpuRoomPersona(roomPersona);
+    }
+
+    private static bool IsLegacyCpuRoomPersona(string roomPersona)
+    {
+        if (string.IsNullOrWhiteSpace(roomPersona))
+        {
+            return false;
+        }
+
+        return string.Equals(roomPersona, "Random", StringComparison.OrdinalIgnoreCase)
+            || roomPersona.StartsWith("CPU-Random", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "1 step", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "1step", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "one step", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(roomPersona, "OneStep", StringComparison.OrdinalIgnoreCase)
+            || roomPersona.StartsWith("1 step ", StringComparison.OrdinalIgnoreCase)
+            || roomPersona.StartsWith("CPU-1 step", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsExplicitCpuControl(string teamControl)
     {
-        return string.Equals(teamControl, TeamControlCpuRandomLabel, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(teamControl, TeamControlCpuLabel, StringComparison.OrdinalIgnoreCase)
+            || (!string.IsNullOrWhiteSpace(teamControl)
+                && teamControl.StartsWith("CPU-Codex Tactician", StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool IsHumanControlled(TMP_Dropdown dropdown)
@@ -2515,7 +2723,35 @@ public class CreateNewGameManager : MonoBehaviour
 
     private static bool IsCpuControlled(TMP_Dropdown dropdown)
     {
-        return string.Equals(GetTeamControlText(dropdown), TeamControlCpuRandomLabel, StringComparison.OrdinalIgnoreCase);
+        return IsExplicitCpuControl(GetTeamControlText(dropdown));
+    }
+
+    private static string ResolveRoomPersonaFromTeamControl(TMP_Dropdown dropdown)
+    {
+        string teamControl = GetTeamControlText(dropdown);
+        if (IsExplicitCpuControl(teamControl))
+        {
+            return RoomPersonaCodexTacticianUltraHard;
+        }
+
+        return RoomPersonaAskHuman;
+    }
+
+    private static string ResolveTeamControlLabel(string roomPersona, bool isCpuControlled)
+    {
+        if (!isCpuControlled)
+        {
+            return TeamControlHumanLabel;
+        }
+
+        return TeamControlCpuLabel;
+    }
+
+    private static bool IsCodexTacticianRoomPersona(string roomPersona)
+    {
+        return !string.IsNullOrWhiteSpace(roomPersona)
+            && (roomPersona.StartsWith("Codex Tactician", StringComparison.OrdinalIgnoreCase)
+                || roomPersona.StartsWith("CPU-Codex Tactician", StringComparison.OrdinalIgnoreCase));
     }
 
     private static string GetTeamControlText(TMP_Dropdown dropdown)
@@ -2535,11 +2771,10 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        int index = dropdown.options.FindIndex(option => string.Equals(option.text, value, StringComparison.OrdinalIgnoreCase));
-        if (index < 0)
-        {
-            index = string.Equals(value, TeamControlCpuRandomLabel, StringComparison.OrdinalIgnoreCase) ? 1 : 0;
-        }
+        int index = string.Equals(value, TeamControlCpuLabel, StringComparison.OrdinalIgnoreCase)
+            || IsExplicitCpuControl(value)
+            ? 1
+            : 0;
 
         dropdown.SetValueWithoutNotify(Mathf.Clamp(index, 0, Mathf.Max(0, dropdown.options.Count - 1)));
         dropdown.RefreshShownValue();
@@ -2581,6 +2816,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private string BuildNewGameDataJson(GameSettings settings)
     {
+        TeamNameAbbreviator.EnsureAbbreviations(settings);
         string nowUtc = DateTime.UtcNow.ToString("o");
         var gameData = new
         {
@@ -2598,6 +2834,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private string BuildUpdatedExistingGameDataJson(string path, GameSettings settings)
     {
+        TeamNameAbbreviator.EnsureAbbreviations(settings);
         try
         {
             DateTime nowUtc = DateTime.UtcNow;
@@ -2857,6 +3094,7 @@ public class GameSettings
     public int numberOfHalfs;
     public string tiebreaker;
     public int playerAssistance;
+    public string aiDifficulty;
     public string matchType;
     public string squadSize;
     public string draft;
@@ -2872,7 +3110,9 @@ public class GameSettings
     public bool includeNonTabletopiaGK;
     public bool includeInternationalsGK;
     public string homeTeamName;
+    public string homeTeamAbbreviation;
     public string awayTeamName;
+    public string awayTeamAbbreviation;
     public string homeTeamControl;
     public string awayTeamControl;
     public string homeKit;

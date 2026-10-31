@@ -7,7 +7,6 @@ using System.Collections.Generic;
 
 public class CreateLoadRoomManager : MonoBehaviour
 {
-    private static readonly Color RowColor = new(1f, 1f, 1f, 0f);
     private static readonly Color RowTextColor = new(0.9137255f, 0.9647059f, 0.9568627f, 1f);
     private const string CreateNewGameSceneName = "CreateNewGameScene";
     private const string RoomSceneName = "Room";
@@ -27,16 +26,18 @@ public class CreateLoadRoomManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI emptyStateText;
     [SerializeField] private Button loadBrowserCancelButton;
     [SerializeField] private ScrollRect loadBrowserScrollRect;
+    [SerializeField] private TextMeshProUGUI loadBrowserStatusText;
 
     private static readonly SaveColumnDefinition[] DefaultColumns =
     {
-        new("Teams", "Teams", 640f),
+        new("Teams", "Teams", 520f),
         new("Score", "Score", 192f),
         new("Clock", "Time", 192f),
         new("CreatedAt", "Created at", 256f),
         new("LastActivityAt", "Last activity", 256f),
         new("MatchDuration", "Duration", 192f),
-        new("Tie", "Tie", 192f),
+        new("Tie", "Tie", 128f),
+        new("Delete", "Delete", 160f),
         //new("Status", "Status", 126f)
     };
 
@@ -67,6 +68,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         }
 
         loadBrowserOverlay.SetActive(true);
+        if (loadBrowserStatusText != null) loadBrowserStatusText.text = string.Empty;
         RebuildSaveRows();
         Debug.Log($"Opening {selectedGameMode} save browser");
     }
@@ -172,6 +174,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         emptyStateText ??= FindChildComponent<TextMeshProUGUI>(loadBrowserOverlay.transform, "EmptyState");
         loadBrowserCancelButton ??= FindChildComponent<Button>(loadBrowserOverlay.transform, "CancelButton");
         loadBrowserScrollRect ??= FindChildComponent<ScrollRect>(loadBrowserOverlay.transform, "SaveScroll");
+        loadBrowserStatusText ??= FindChildComponent<TextMeshProUGUI>(loadBrowserOverlay.transform, "LoadStatus");
     }
 
     private void ConfigureLoadBrowser()
@@ -223,32 +226,44 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     private void CreateSaveRow(RoomSaveSummary summary, IReadOnlyList<SaveColumnLayout> columnLayouts)
     {
-        GameObject row = CreateRect($"SaveRow_{summary.FileName}", rowsContent, typeof(Image), typeof(Button));
-        row.GetComponent<Image>().color = RowColor;
-        row.AddComponent<LayoutElement>().preferredHeight = 80f;
+        GameObject row = Instantiate(previewRow, rowsContent, false);
+        row.name = $"SaveRow_{summary.FileName}";
         Button rowButton = row.GetComponent<Button>();
+        rowButton.onClick.RemoveAllListeners();
         rowButton.onClick.AddListener(() => SelectSave(summary));
-
-        HorizontalLayoutGroup layout = row.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 0f;
-        layout.padding = new RectOffset(24, 0, 0, 0);
-        layout.childControlWidth = true;
-        layout.childControlHeight = true;
-        layout.childForceExpandWidth = false;
 
         foreach (SaveColumnLayout columnLayout in columnLayouts)
         {
-            TextAlignmentOptions alignment = columnLayout.Definition.Key == "Teams"
-                ? TextAlignmentOptions.MidlineLeft
-                : TextAlignmentOptions.Center;
-            AddColumn(
-                row.transform,
-                GetColumnValue(summary, columnLayout.Definition.Key),
-                columnLayout.Width,
-                RowTextColor,
-                alignment,
-                $"{columnLayout.Definition.Key}Column");
+            Transform column = FindColumnChild(row.transform, columnLayout.Definition.Key);
+            if (column == null)
+            {
+                Debug.LogError($"Save row template is missing {columnLayout.Definition.Key}Column.");
+                Destroy(row);
+                return;
+            }
+            SetColumnWidth(column, columnLayout.Width);
+            if (columnLayout.Definition.Key == "Delete")
+            {
+                var delete = column.GetComponent<UnityEngine.UI.Button>();
+                delete.onClick.RemoveAllListeners();
+                delete.onClick.AddListener(() => DeleteSave(summary));
+            }
+            else if (column.TryGetComponent(out TextMeshProUGUI label))
+                label.text = GetColumnValue(summary, columnLayout.Definition.Key);
         }
+        row.SetActive(true);
+    }
+
+    private void DeleteSave(RoomSaveSummary summary)
+    {
+        bool deleted = RoomSaveService.DeleteManualSave(summary.FilePath, selectedGameMode, out string message);
+        RebuildSaveRows();
+        if (loadBrowserStatusText != null)
+        {
+            loadBrowserStatusText.text = message;
+            loadBrowserStatusText.color = deleted ? RowTextColor : new Color(1f, .55f, .5f);
+        }
+        if (!deleted) Debug.LogWarning(message);
     }
 
     private void SelectSave(RoomSaveSummary summary)
@@ -260,10 +275,17 @@ public class CreateLoadRoomManager : MonoBehaviour
 
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(selectedGameMode);
-        ApplicationManager.Instance.SetActiveSaveFilePath(summary.FilePath);
-        PlayerPrefs.SetString("currentGameSettings", summary.FilePath);
+        if (!RoomSaveService.CreateLoadedRunCopy(summary.FilePath, out string runPath, out string message))
+        {
+            Debug.LogError(message);
+            return;
+        }
+        ApplicationManager.Instance.SetActiveSaveFilePath(runPath);
+        PlayerPrefs.SetString("currentGameSettings", runPath);
+        Debug.Log(message);
         PlayerPrefs.Save();
         CloseLoadBrowser();
+        ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
         SceneManager.LoadScene(RoomSceneName);
     }
 
@@ -607,6 +629,7 @@ public class CreateLoadRoomManager : MonoBehaviour
                 continue;
             }
 
+            child.gameObject.SetActive(false);
             Destroy(child.gameObject);
         }
     }

@@ -13,6 +13,7 @@ public class ApplicationManager : MonoBehaviour
     public string LastSavedFileName { get; set; }
     public bool HasExplicitSaveContext { get; private set; }
     public string SelectedRoomGameMode { get; private set; } = HotSeatGameMode;
+    public bool UseRegularFormationOnNextRoomLoad { get; private set; }
 
     void Awake()
     {
@@ -82,6 +83,18 @@ public class ApplicationManager : MonoBehaviour
     {
         LastSavedFileName = string.Empty;
         HasExplicitSaveContext = false;
+    }
+
+    public void PrepareRoomLaunchWithRegularFormation()
+    {
+        UseRegularFormationOnNextRoomLoad = true;
+    }
+
+    public bool ConsumeRegularFormationRoomLaunch()
+    {
+        bool useRegularFormation = UseRegularFormationOnNextRoomLoad;
+        UseRegularFormationOnNextRoomLoad = false;
+        return useRegularFormation;
     }
 
     public void SetSelectedRoomGameMode(string gameMode)

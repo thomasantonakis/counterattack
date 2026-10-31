@@ -169,6 +169,10 @@ namespace CounterAttack.Editor
                     EnsureEditorMode(command);
                     PauseMenuEditorTools.EnsureEditSettingsPanel();
                     return BridgeResponse.Ok(request, "Pause menu Edit Settings panel ensured.");
+                case "ensure_human_shadow_note_panel":
+                    EnsureEditorMode(command);
+                    HumanShadowNotePanelEditorTools.EnsureHumanShadowNotePanel();
+                    return BridgeResponse.Ok(request, "Human Shadow note panel ensured in Room scene.");
                 case "ensure_movement_phase_moved_tokens_panel":
                     EnsureEditorMode(command);
                     MovementPhaseMovedTokensPanelEditorTools.EnsureSceneInstanceInEditMode();

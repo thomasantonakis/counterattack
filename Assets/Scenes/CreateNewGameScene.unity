@@ -334,6 +334,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Tie Breaker
       objectReference: {fileID: 0}
+    - target: {fileID: 909646563125209107, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 2531681454132629815, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_Name
       value: TieBreakerButton
@@ -464,6 +468,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4140868484558388360, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6675083696921446553, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Vertical
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8581363490043965477, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
@@ -2191,6 +2199,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Referee
       objectReference: {fileID: 0}
+    - target: {fileID: 909646563125209107, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 320
+      objectReference: {fileID: 0}
     - target: {fileID: 2531681454132629815, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_Name
       value: RefereeButton
@@ -2321,6 +2333,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4140868484558388360, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6675083696921446553, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Vertical
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8581363490043965477, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
@@ -2839,6 +2855,58 @@ PrefabInstance:
       propertyPath: m_text
       value: Home Team Control
       objectReference: {fileID: 0}
+    - target: {fileID: 909646563125209107, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Text
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Text
+      value: CPU
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2531681454132629815, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_Name
       value: HomeTeamControlButton
@@ -2970,6 +3038,14 @@ PrefabInstance:
     - target: {fileID: 4140868484558388360, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6675083696921446553, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Vertical
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7513841071107296278, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_text
+      value: Human
       objectReference: {fileID: 0}
     - target: {fileID: 8581363490043965477, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_Name
@@ -5140,6 +5216,54 @@ PrefabInstance:
       propertyPath: m_text
       value: Away Team Control
       objectReference: {fileID: 0}
+    - target: {fileID: 909646563125209107, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Text
+      value: Human
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Text
+      value: CPU
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[0].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Options.m_Options.Array.data[1].m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2531681454132629815, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_Name
       value: AwayTeamControlButton
@@ -5271,6 +5395,14 @@ PrefabInstance:
     - target: {fileID: 4140868484558388360, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6675083696921446553, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_Vertical
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7513841071107296278, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      propertyPath: m_text
+      value: CPU
       objectReference: {fileID: 0}
     - target: {fileID: 8581363490043965477, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
       propertyPath: m_Name
