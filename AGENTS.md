@@ -1,11 +1,14 @@
 ## Unity Workflow Rules
 
-- Never start Unity from Codex. Do not launch Unity, run Unity batchmode, press Play, or press Cmd+P unless it is only to stop an already-running Play Mode session.
+- Use the Unity CLI/Pipeline for all Unity Editor control. Before Unity editor operations, check the live CLI connection for this project; if it reports ready, use CLI commands for status, recompile/reload, console/log checks, saving assets/scenes, changing scenes, hierarchy inspection, hierarchy edits, and any user-requested Play/Pause/Stop actions.
+- If a Unity CLI call fails inside the sandbox with an analytics/network allowlist error (for example, `api2.amplitude.com`), retry that same CLI call with approved escalated execution before concluding that the Editor or Pipeline is unavailable. Check `unity pipeline list` and `unity status --project-path /Users/t.antonakis/Documents/Projects/Personal/counterattack`; a live Editor process alone does not prove the Pipeline server is ready. If the Editor is alive but the Pipeline connection is absent, ask the user to restart the Pipeline server and then recheck status. Do not upgrade or reinstall the Pipeline package just to force a reconnect.
+- Use Unity CLI exclusively for Unity Editor control instead of AppleScript, System Events, GUI scripting, simulated keystrokes, menu clicks, or hotkeys. If Unity CLI/Pipeline is unavailable, blocked by Safe Mode, starting up, or otherwise unsuitable, use safe direct file edits when appropriate or tell the user which manual Editor action is required.
+- Target this project explicitly with `/Users/t.antonakis/Documents/Projects/Personal/counterattack` on Unity CLI calls, and pass the required caller/skill metadata on every `unity command` invocation.
+- Never start Unity from Codex. Do not launch Unity, run Unity batchmode, or invoke `editor_play`.
 - Never create UI or other visual structures only at runtime. Whenever creating or changing visuals, author them as scene or prefab objects available in edit mode so the designer can inspect and edit them before Play Mode.
 - Treat `Canvas/MatchStatsUI/Stats` as designer-owned layout. Scripts must not create, move, resize, anchor, add layout components to, enable/disable, or otherwise restyle objects under it; they may only update text values and colors that represent team identity or player status.
-- Before pressing Cmd+P, check that Unity is currently in Play Mode. Treat paused Play Mode as Play Mode. If Unity is neither playing nor paused in Play Mode, do not press Cmd+P because it would start Play Mode.
-- If Unity is in Play Mode, including when paused or stopped at a failed assertion, activate Unity, press Cmd+P once to stop, and wait until Play Mode has stopped. Do not kill the Unity process.
-- After code changes, save assets, press Cmd+R in the already-open Unity editor to reload, then inspect `/Users/t.antonakis/Library/Logs/Unity/Editor.log` for compile errors.
+- Before stopping Play Mode, query `editor_status` through the Unity CLI. Treat paused Play Mode as Play Mode. If Unity is playing or paused, invoke `editor_stop` and wait until `editor_status` confirms Play Mode has stopped. If the Pipeline connection is unavailable, ask the user to stop Play Mode manually. Do not kill the Unity process.
+- After code changes, save through `save_all` when needed, run `unity recompile --project-path /Users/t.antonakis/Documents/Projects/Personal/counterattack`, then inspect the command result and `/Users/t.antonakis/Library/Logs/Unity/Editor.log` for compile errors. If the Pipeline connection is unavailable, ask the user to refresh/recompile manually.
 - Keep fixing compile errors until the open Unity editor reports clean scripts. Only then tell the user what was fixed.
 - Do not use `dotnet build Assembly-CSharp.csproj` as the Unity validation path for this project. It consumes time/tokens and does not stop or reload the open Unity editor.
 - Use static shell checks such as `rg`, `sed`, and `git diff --check` freely. For Unity compilation, rely on the open editor reload and Editor.log.
@@ -13,7 +16,7 @@
 
 ## Test Iteration Workflow
 
-- When the user is in testing mode and asks Codex to check logs or `Assets/TestResults.txt`, inspect the failure, identify where the fix belongs, apply the fix, and then only stop the already-open Unity editor with Cmd+P and reload it with Cmd+R.
+- When the user is in testing mode and asks Codex to check logs or `Assets/TestResults.txt`, inspect the failure, identify where the fix belongs, apply the fix, and then use Unity CLI `editor_stop` only if Play Mode is active, followed by `unity recompile`. If the Pipeline connection is unavailable, ask the user to perform the required Editor action manually; never use GUI scripting.
 - Before reloading after a test failure fix, deactivate/comment out every test scenario that already succeeded earlier in the current testing pass. Leave enabled only the failed scenario and the scenarios that follow it, so the user can press Play and restart testing from the failure point.
 - The user, not Codex, presses Play to restart scenarios. Codex must not press Play or otherwise start tests.
 - After incremental fixes have made the remaining tests pass, re-enable/release the full test suite only when the user asks, so the final snapshot can be checked for regressions.
@@ -53,7 +56,8 @@ For Unity-specific behavior, remember that CodeGraph indexes source code but may
 
 ## Save Log Inspection
 
-- When discussing saved gameplay events, always inspect the current test save at `/Users/t.antonakis/Library/Application Support/DefaultCompany/CA from Chatgpt/SavedGames/__RoomPlaytests/__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json` first. The user overwrites this file during manual testing and references its event sequence numbers in prompts.
+- Identify the active run through `ApplicationManager.Instance.GetLastSavedFilePath()` using Unity CLI before attributing live events or notes to a match. Loading a save creates a unique `__Run_...` file and run-specific companions; the selected seed is not the live write target. Inspect `playSessionId`, `playSessionStartedUtc`, `sourceSavePath`, and `inheritedEventSequence` to distinguish replay actions from inherited history. Never combine different play-throughs just because their team names or seed are the same.
+- For Room direct-play testing only, the disposable working save is `/Users/t.antonakis/Library/Application Support/DefaultCompany/CA from Chatgpt/SavedGames/__RoomPlaytests/__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json`. Do not assume it is the current loaded match.
 
 ## Hex Terminology
 
