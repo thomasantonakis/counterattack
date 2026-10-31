@@ -418,7 +418,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (!looseRecoveryMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
         stage = Stage.Transition;
         looseRecoveryPlayer.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
-        string face = roll.jackpotEnabled && roll.isJackpot ? "JACKPOT ★ (6)" : $"Roll {roll.roll}";
+        string face = roll.jackpotEnabled && roll.isJackpot ? "JACKPOT ★" : $"Roll {roll.roll}";
         looseRecoveryPlayer.total.text = face + (recovered ? "\nBALL RECOVERED" : "\nRECOVERY FAILED");
         return WaitForDismissal();
     }
@@ -439,16 +439,17 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         Dismiss();
     }
 
-    public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false, bool continueWithScatter = false)
+    public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result,
+        bool continueWithFoulChecks = false, bool continueWithScatter = false, MonoBehaviour scatterOwner = null)
     {
         if (!singleMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
         stage = Stage.Transition;
         singlePlayer.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
-        singlePlayer.total.text = roll.isJackpot && roll.jackpotEnabled ? "JACKPOT ★ (6)" : $"Roll {roll.roll}";
+        singlePlayer.total.text = roll.isJackpot && roll.jackpotEnabled ? "JACKPOT ★" : $"Roll {roll.roll}";
         outcome.text = result;
         // A running dribbler's recovery foul continues directly into the existing checks.
         // Keep the resolved recovery die visible; only the final injury result starts dismissal.
-        if (continueWithScatter && PrepareScatterContinuation(manager, manager)) return EmptyPresentation();
+        if (continueWithScatter && PrepareScatterContinuation(manager, scatterOwner != null ? scatterOwner : manager)) return EmptyPresentation();
         return continueWithFoulChecks ? EmptyPresentation() : WaitForDismissal();
     }
 

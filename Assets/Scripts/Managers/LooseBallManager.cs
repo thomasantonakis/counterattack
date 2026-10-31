@@ -864,6 +864,9 @@ public class LooseBallManager : MonoBehaviour
         bool gkBoxMoveOfferedForThisLooseBall = false;
         if (ShouldOfferPreRollGKBoxMove(startingToken, sourceType, allowGKBoxMove))
         {
+            // An explicitly pending scatter handoff must not block the intervening GK
+            // movement clicks/keys. Direction/distance open afresh after that decision.
+            DuelResolutionPanelController.Instance?.CancelSingle(this);
             Debug.Log($"Loose ball source {startingToken.name} is on the opponent box line. Offering the defending GK free move before loose-ball direction and distance rolls.");
             yield return StartCoroutine(MoveLooseBallUntilGKBoxMove(defenderHex));
             gkBoxMoveOfferedForThisLooseBall = true;

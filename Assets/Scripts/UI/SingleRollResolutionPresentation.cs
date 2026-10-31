@@ -24,6 +24,18 @@ public static class SingleRollResolutionPresentation
             AccuracyGuidance(token.highPass, threshold, jackpotAlwaysSucceeds));
     }
 
+    public static void BallControl(MonoBehaviour owner, Func<bool> waiting, PlayerToken token,
+        int modifier, int target, float probability)
+    {
+        if (token == null) return;
+        DuelResolutionPanelController.Instance?.BeginSingle(owner, waiting, "Ball Control", token,
+            BallControlAttribute(token.dribbling, modifier, target), $"Control {probability:P1}", true,
+            AccuracyGuidance(token.dribbling + modifier, target, true));
+    }
+
+    public static string BallControlAttribute(int dribbling, int modifier, int target)
+        => $"Dribbling {dribbling}{(modifier == 0 ? "" : $" · Control modifier {modifier:+0;-0}")} · Target {target}";
+
     // Explain the same thresholds supplied by the owning manager; no outcomes are resolved here.
     private static string SuccessRange(int minimum)
         => minimum > 6 ? "No successful numeric rolls"
@@ -58,10 +70,11 @@ public static class SingleRollResolutionPresentation
         return panel != null ? panel.ResolveLooseBallRoll(owner, roll, result, direction) : Empty();
     }
 
-    public static IEnumerator Resolve(MonoBehaviour owner, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false, bool continueWithScatter = false)
+    public static IEnumerator Resolve(MonoBehaviour owner, GameplayDiceRollResult roll, string result,
+        bool continueWithFoulChecks = false, bool continueWithScatter = false, MonoBehaviour scatterOwner = null)
     {
         var panel = DuelResolutionPanelController.Instance;
-        return panel != null ? panel.ResolveSingle(owner, roll, result, continueWithFoulChecks, continueWithScatter) : Empty();
+        return panel != null ? panel.ResolveSingle(owner, roll, result, continueWithFoulChecks, continueWithScatter, scatterOwner) : Empty();
     }
 
     private static IEnumerator Empty() { yield break; }

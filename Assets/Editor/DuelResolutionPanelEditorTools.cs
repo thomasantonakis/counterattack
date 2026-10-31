@@ -403,6 +403,53 @@ namespace CounterAttack.Editor
             FinishPreview(controller);
         }
 
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Ball Control")]
+        public static void PreviewBallControl()
+        {
+            PreviewSingleRoll();
+            var controller = FindPanelForPreview();
+            if (controller.scatterContinuationContent != null) controller.scatterContinuationContent.SetActive(false);
+            if (controller.looseRecoveryContent != null) controller.looseRecoveryContent.SetActive(false);
+            controller.singlePlayer.role.gameObject.SetActive(false);
+            controller.title.text = "Ball Control";
+            controller.singlePlayer.playerName.text = "#8  Controlling player";
+            SetBallControlPreviewRule(controller, 5, 0);
+            controller.singlePlayer.total.text = "Awaiting roll";
+            controller.singlePlayer.die.Clear();
+            controller.outcome.text = "";
+            controller.footer.text = "Press [R] to roll";
+            FinishPreview(controller);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Ball Control With Penalty")]
+        public static void PreviewBallControlPenalty()
+        {
+            PreviewBallControl();
+            var controller = FindPanelForPreview();
+            SetBallControlPreviewRule(controller, 3, -1);
+            FinishPreview(controller);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Failed Ball Control Loose Ball")]
+        public static void PreviewFailedBallControl()
+        {
+            PreviewBallControl();
+            var controller = FindPanelForPreview();
+            SetBallControlPreviewRule(controller, 5, -1);
+            controller.singlePlayer.total.text = "Roll 2";
+            controller.singlePlayer.die.Resolve(2, false);
+            controller.outcome.text = "CONTROL FAILED · Total 6 — LOOSE BALL";
+            PreviewScatterAttachment(controller, "Loose Ball");
+        }
+
+        private static void SetBallControlPreviewRule(DuelResolutionPanelController controller, int dribbling, int modifier)
+        {
+            const int target = 9;
+            controller.singlePlayer.attribute.text = SingleRollResolutionPresentation.BallControlAttribute(dribbling, modifier, target);
+            controller.singlePlayer.modifier.text = $"Control {ExpectedStatsCalculator.CalculateAttributeCheckSuccessProbability(dribbling, modifier, target):P1}";
+            controller.singlePlayer.guidance.text = SingleRollResolutionPresentation.AccuracyGuidance(dribbling + modifier, target, true);
+        }
+
         [MenuItem("CounterAttack/Room/Preview Duel Panel/Recovery Foul Checks")]
         public static void PreviewRecoveryFoulChecks()
         {

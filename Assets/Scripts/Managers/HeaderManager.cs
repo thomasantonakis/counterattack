@@ -77,6 +77,8 @@ public class HeaderManager : MonoBehaviour
     public bool allowUnchallengedDefenseControl = true;
     public const int HEADER_SELECTION_RANGE = 2;
     public const int MAX_OUTFIELD_HEADER_DEFENDERS = 2;
+    private const int CONTROL_TARGET = 9;
+    private int controlPresentationVersion;
 
 
     private void OnEnable()
@@ -88,6 +90,7 @@ public class HeaderManager : MonoBehaviour
 
     private void OnDisable()
     {
+        CancelControlPresentation();
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
@@ -1832,6 +1835,10 @@ public class HeaderManager : MonoBehaviour
             ReassessOffsideAfterHeaderWinner("high_pass_ball_control");
         }
         isWaitingForControlRoll = true;
+        int modifier = GetControlPenalty(challengeWinner);
+        SingleRollResolutionPresentation.BallControl(this, () => isActivated && isWaitingForControlRoll,
+            challengeWinner, modifier, CONTROL_TARGET,
+            ExpectedStatsCalculator.CalculateAttributeCheckSuccessProbability(challengeWinner.dribbling, modifier, CONTROL_TARGET));
         Debug.Log(GetControlRollInstruction());
     }
 
@@ -1850,35 +1857,46 @@ public class HeaderManager : MonoBehaviour
 
     public async Task PerformControlRoll(RollInputOverride? rollOverride)
     {
+        int version = controlPresentationVersion;
+        PlayerToken controllingToken = challengeWinner;
         isWaitingForControlRoll = false;
-        int controlPenalty = GetControlPenalty(challengeWinner);
+        int controlPenalty = GetControlPenalty(controllingToken);
         GameplayDiceRollResult controlRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "header_control",
             rollOverride,
-            actor: challengeWinner,
-            sourceHex: challengeWinner != null ? challengeWinner.GetCurrentHex() : null,
+            actor: controllingToken,
+            sourceHex: controllingToken != null ? controllingToken.GetCurrentHex() : null,
             targetHex: ball.GetCurrentHex(),
             details: new Dictionary<string, string>
             {
-                ["dribbling"] = challengeWinner != null ? challengeWinner.dribbling.ToString() : string.Empty,
+                ["dribbling"] = controllingToken != null ? controllingToken.dribbling.ToString() : string.Empty,
                 ["controlPenalty"] = controlPenalty.ToString()
             });
         bool isJackpot = controlRoll.isJackpot;
         int roll = controlRoll.roll;
-        int totalScore = isJackpot ? 50 : roll + challengeWinner.dribbling + controlPenalty;
+        int totalScore = isJackpot ? 50 : roll + controllingToken.dribbling + controlPenalty;
         string controlPenaltyInfo = controlPenalty < 0 ? $", penalty ({controlPenalty})" : "";
-        if (isJackpot) Debug.Log($"{challengeWinner.name} rolled A JACKPOT for ball control!!");
-        else Debug.Log($"Attacker {challengeWinner.name} rolled {roll} + Dribbling {challengeWinner.dribbling}{controlPenaltyInfo} = {totalScore}");
-        if (totalScore >= 9)
+        if (isJackpot) Debug.Log($"{controllingToken.name} rolled A JACKPOT for ball control!!");
+        else Debug.Log($"Attacker {controllingToken.name} rolled {roll} + Dribbling {controllingToken.dribbling}{controlPenaltyInfo} = {totalScore}");
+        bool controlled = totalScore >= CONTROL_TARGET;
+        var panel = DuelResolutionPanelController.Instance;
+        string controlResult = isJackpot ? "BALL CONTROLLED · JACKPOT"
+            : controlled ? $"BALL CONTROLLED · Total {totalScore}" : $"CONTROL FAILED · Total {totalScore} — LOOSE BALL";
+        await helperFunctions.StartCoroutineAndWait(SingleRollResolutionPresentation.Resolve(this, controlRoll,
+            controlResult,
+            continueWithScatter: !controlled, scatterOwner: looseBallManager));
+        if (version != controlPresentationVersion || !isActiveAndEnabled) return;
+        if (controlled)
         {
-            Debug.Log($"You beauty! {challengeWinner.name} brings the ball down on their feet! Continue as if it were a SuccessfulTackle");
-            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(challengeWinner.GetCurrentHex()));
+            Debug.Log($"You beauty! {controllingToken.name} brings the ball down on their feet! Continue as if it were a SuccessfulTackle");
+            await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(controllingToken.GetCurrentHex()));
+            if (version != controlPresentationVersion || !isActiveAndEnabled) return;
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 , MatchManager.ActionType.AerialPassCompleted
             );
-            MatchManager.Instance.SetLastToken(challengeWinner);
-            MatchManager.Instance.ClearOffsideForLegalCollection(challengeWinner, "high_pass_ball_control_success");
+            MatchManager.Instance.SetLastToken(controllingToken);
+            MatchManager.Instance.ClearOffsideForLegalCollection(controllingToken, "high_pass_ball_control_success");
             CleanUpHeader();
             MatchManager.Instance.ResolveActionBeforeFinalThird(
                 MatchManager.MatchActionKind.BallControl,
@@ -1886,16 +1904,24 @@ public class HeaderManager : MonoBehaviour
         }
         else
         {
-            PlayerToken failedControlToken = challengeWinner;
+            PlayerToken failedControlToken = controllingToken;
             Debug.Log($"{failedControlToken.name} failed to control the ball! Loose ball from {failedControlToken.name}");
-            CleanUpHeader();
+            bool scatterReserved = panel != null && panel.PrepareScatterContinuation(this, looseBallManager);
+            CleanUpHeader(preserveControlScatter: scatterReserved);
+            bool continuedImmediately = false;
             MatchManager.Instance.ResolveActionBeforeFinalThird(
                 MatchManager.MatchActionKind.BallControl,
                 () =>
                 {
+                    continuedImmediately = true;
                     MatchManager.Instance.SetHangingPass("control");
-                    StartCoroutine(looseBallManager.ResolveLooseBall(failedControlToken, LooseBallSourceType.GroundDeflection));
+                    // This control branch is a deliberate collection attempt, never a shot spill.
+                    StartCoroutine(looseBallManager.ResolveLooseBall(failedControlToken, LooseBallSourceType.GroundDeflection,
+                        presentationContext: LooseBallPresentationContext.Standalone));
                 });
+            // A half-end/stoppage gate may queue or suppress the callback. Release the panel
+            // so that gate can take input; its later loose ball opens a fresh presentation.
+            if (!continuedImmediately && scatterReserved) panel.CancelSingle(this);
         }
     }
 
@@ -2219,8 +2245,7 @@ public class HeaderManager : MonoBehaviour
 
     private int GetNeededControlRoll(PlayerToken controllingToken)
     {
-        const int controlTarget = 9;
-        return controlTarget - controllingToken.dribbling - GetControlPenalty(controllingToken);
+        return CONTROL_TARGET - controllingToken.dribbling - GetControlPenalty(controllingToken);
     }
 
     private string GetControlRollInstruction()
@@ -2306,8 +2331,16 @@ public class HeaderManager : MonoBehaviour
             });
     }
 
-    public void CleanUpHeader()
+    private void CancelControlPresentation(bool preserveControlScatter = false)
     {
+        controlPresentationVersion++;
+        isWaitingForControlRoll = false;
+        if (!preserveControlScatter) DuelResolutionPanelController.Instance?.CancelSingle(this);
+    }
+
+    public void CleanUpHeader(bool preserveControlScatter = false)
+    {
+        CancelControlPresentation(preserveControlScatter);
         attEligibleToHead.Clear();
         defEligibleToHead.Clear();
         hasEligibleAttackers = false;
@@ -2336,6 +2369,7 @@ public class HeaderManager : MonoBehaviour
     
     public void ResetHeader()
     {
+        CancelControlPresentation();
         attEligibleToHead.Clear();
         defEligibleToHead.Clear();
         attackerWillJump.Clear();

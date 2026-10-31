@@ -157,3 +157,32 @@ overrides, foul thresholds, cards, movement and possession remain manager-owned.
 Runner coverage updates the former outside-box harsh-leniency scenario to expect
 normal leniency from an ordinary hex, and adds hands/feet, dangerous rear position,
 ordinary yellow and mirrored-direction cases. The suite remains user-run.
+
+## Aerial ball control
+
+HeaderManager's existing control wait now opens `SingleRollContent` as Ball Control
+for the selected attacker or defender, using the same scene-authored fields,
+team-colored die, dragging and Enter/Escape lifecycle. It shows Dribbling, the
+manager's control modifier, target 9, successful numeric rolls (or jackpot only),
+and the shared `CalculateAttributeCheckSuccessProbability` used by AI previews.
+The manager still resolves the `header_control` die and all overrides. Jackpots
+remain enabled and total 50; the normal modifier is -1 when the controller is
+neither on nor adjacent to the landing ball. Successful control uses the existing
+result countdown before ball movement and the original action/possession flow.
+Jackpot UI uses the word/symbol only; it does not reveal the internal numeric
+total or append a numeric face value to the shared single/recovery result.
+
+Failed control explicitly hands the panel to LooseBallManager with Standalone
+context. Its numeric direction/distance rolls expand beneath the preserved control
+die and result; direction remains visible while distance waits. The final scatter
+result starts the countdown. This control branch cannot consume a shot spill.
+
+Two intervening decisions take precedence: a half-end/stoppage-actions gate closes
+the reserved panel if its continuation is delayed or suppressed, and a pre-roll
+goalkeeper box-move offer releases a pending scatter presentation before requesting
+movement input. If loose-ball rolls follow, they use a fresh panel. Header reset,
+cleanup and disable cancel stale control presentation/continuations.
+
+Designer previews under `CounterAttack/Room/Preview Duel Panel`: Ball Control,
+Ball Control With Penalty, and Failed Ball Control Loose Ball. These reuse the
+existing hierarchy; no new visual objects are built at runtime.
