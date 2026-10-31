@@ -19,9 +19,9 @@ layout; `Preview Duel Panel/Single Roll` exposes it in edit mode.
 | Landing headed pass | `isWaitingForInterceptionRoll`, R or existing override | One defender at a time; the wait flag remains raised until dismissal, then the existing interception-check coroutine resumes | Standard recovery calculator; numeric six for jackpot. Existing headed-pass flow has no expected recovery logging call |
 | Long Ball landing | `isWaitingForInterceptionRoll`, R or existing override | Existing ordered batch retains its roll calls and override behavior; show each defender result before proceeding | Same recovery calculator as long-ball expected recovery log; numeric six for jackpot |
 | Dribbler steal | `isWaitingForInterceptionDiceRoll`, R or existing override | Common interception routine covers pre-nutmeg and post-tackle attempts; fouls expand directly into leniency/injury checks; other results dismiss before recovery or the next defender | Jackpot disabled. xRecovery intentionally matches existing logging, including its unadjusted recovery model when a running dribbler can draw a foul |
-| High Pass accuracy | `isWaitingForAccuracyRoll`, R or existing override | Dismissal precedes accurate movement or inaccuracy wait state | Existing manager preview calculator and threshold 8. Jackpot is displayed but gameplay uses numeric six |
-| Long Ball accuracy | `isWaitingForAccuracyRoll`, R or existing override | Dismissal precedes accurate movement or inaccuracy wait state | Threshold 9 or dangerous-target 10; jackpot totals 50. Natural six splits into ordinary six and jackpot with probability 1/12 each when the dice helper is available |
-| Standalone loose ball | Direction/distance wait flags, R or existing override | Each wait flag remains raised until result dismissal; the parent coroutine then advances | No attribute or success probability. Jackpot-enabled calls retain numeric six for direction/distance |
+| High Pass accuracy | `isWaitingForAccuracyRoll`, R or existing override | Accurate results dismiss before movement; inaccurate results remain above the expanded direction/distance continuation | Existing manager preview calculator and threshold 8. Jackpot is displayed but gameplay uses numeric six |
+| Long Ball accuracy | `isWaitingForAccuracyRoll`, R or existing override | Accurate results dismiss before movement; inaccurate results remain above the expanded direction/distance continuation | Threshold 9 or dangerous-target 10; jackpot totals 50. Natural six splits into ordinary six and jackpot with probability 1/12 each when the dice helper is available |
+| Standalone loose ball | Direction/distance wait flags, R or existing override | Direction resolves on the left and advances directly to the distance wait on the right; only the final distance result waits for dismissal | No attribute or success probability. Jackpots disabled; numeric direction/distance only |
 
 All random results still come from `ResolveGameplayDiceRoll`; presentation animation
 never consumes random state. Overrides keep their existing public entry points.
@@ -77,3 +77,33 @@ fonts, sizes, sprites and Outline thickness directly in the hierarchy/Inspector.
 Set overall panel dimensions on `DuelResolutionPanelController` (Preferred Width,
 Single Roll Width, Normal Height, Expanded Height), because runtime fitting uses
 those settings. Gameplay fills live text values, visibility and team colors.
+
+## Paired standalone loose-ball rolls
+
+`LooseBallContent` is a scene-authored, two-column layout. Direction is on the
+left and distance on the right. The panel remains open between the rolls, keeping
+the direction die and result intact while distance waits and resolves. Only after
+distance resolves does the shared countdown/Enter/Escape dismissal begin. The
+manager retains its existing dice calls, overrides and movement calculations.
+Ending the loose-ball phase also cancels an interrupted presentation. Shot-context
+loose balls continue to bypass this panel. Use `Preview Duel Panel/Loose Ball Rolls`
+to inspect the distance-wait layout in edit mode.
+
+## Scatter continuations and jackpot policy
+
+All six direction/distance dice calls (standalone loose ball, High Pass
+inaccuracy, Long Ball inaccuracy) explicitly disable jackpots. The dice animate
+numeric faces only and always show numeric results. A supplied jackpot override
+normalizes to six through the existing resolver; it has no special scatter effect.
+Accuracy checks and tackling dice retain their own existing jackpot rules.
+
+A failed HP/LB accuracy check explicitly reserves the presentation for its own
+direction/distance states. A tied outfield tackle explicitly hands its open
+presentation to LooseBallManager. Both expand the scene-authored
+`ScatterContinuation` below the original dice/result, preserving those fields
+while direction resolves on the left and distance waits/resolves on the right.
+Only the final distance result starts dismissal, then existing movement resumes.
+Shot-context loose balls keep their existing presentation and do not attach here.
+
+Edit-mode previews: `Accuracy Inaccuracy Rolls` and `Tied Duel Loose Ball Rolls`
+under `CounterAttack/Room/Preview Duel Panel`.

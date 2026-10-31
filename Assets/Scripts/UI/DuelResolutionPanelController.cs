@@ -36,6 +36,20 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public GameObject foulChecks;
     public GameObject singleRollContent;
     public GameObject playerColumns;
+    public GameObject looseBallContent;
+    public TMP_Text looseBallPlayer;
+    public DuelCheckPanelFields looseDirection = new();
+    public DuelCheckPanelFields looseDistance = new();
+    public GameObject scatterContinuationContent;
+    public TMP_Text scatterCaption;
+    public DuelCheckPanelFields continuationDirection = new();
+    public DuelCheckPanelFields continuationDistance = new();
+    private DuelCheckPanelFields activeDirection;
+    private DuelCheckPanelFields activeDistance;
+    private MonoBehaviour pendingScatterOwner;
+    private bool scatterAttached;
+    private bool looseBallMode;
+    private bool looseDirectionPending;
     public DuelPlayerPanelFields singlePlayer = new();
     private MonoBehaviour singleOwner;
     private Func<bool> singleWaiting;
@@ -112,6 +126,11 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     {
         if (!HasSceneBindings || attacker == null || defender == null) return false;
         singleMode = false;
+        looseBallMode = false;
+        pendingScatterOwner = null;
+        scatterAttached = false;
+        if (scatterContinuationContent != null) scatterContinuationContent.SetActive(false);
+        if (looseBallContent != null) looseBallContent.SetActive(false);
         singleOwner = null;
         singleWaiting = null;
         if (singleRollContent != null) singleRollContent.SetActive(false);
@@ -166,6 +185,11 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (!HasSceneBindings || singleRollContent == null || playerColumns == null || !PlayerBound(singlePlayer)) return false;
         if (IsOpen) return false;
         singleMode = true;
+        looseBallMode = false;
+        pendingScatterOwner = null;
+        scatterAttached = false;
+        if (scatterContinuationContent != null) scatterContinuationContent.SetActive(false);
+        if (looseBallContent != null) looseBallContent.SetActive(false);
         singleOwner = manager;
         singleWaiting = waiting;
         owner = null;
@@ -201,7 +225,118 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         return true;
     }
 
-    public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false)
+    // Explicit manager handoff: a failed accuracy check or tied duel owns this continuation.
+    public bool PrepareScatterContinuation(MonoBehaviour manager, MonoBehaviour nextOwner)
+    {
+        if (!IsOpen || stage != Stage.Transition || (owner != manager && singleOwner != manager)
+            || nextOwner == null || scatterContinuationContent == null
+            || !LooseRollBound(continuationDirection) || !LooseRollBound(continuationDistance)) return false;
+        pendingScatterOwner = nextOwner;
+        footer.text = "Preparing direction roll…";
+        return true;
+    }
+
+    public bool BeginLooseBall(MonoBehaviour manager, Func<bool> waiting, PlayerToken token, bool direction,
+        bool inaccuracy = false)
+    {
+        if (looseBallContent == null || looseBallPlayer == null || !LooseRollBound(looseDirection)
+            || !LooseRollBound(looseDistance)) return false;
+        if (direction)
+        {
+            bool attached = IsOpen && stage == Stage.Transition && pendingScatterOwner == manager;
+            if (attached)
+            {
+                singleMode = true;
+                singleOwner = manager;
+                singleWaiting = waiting;
+                owner = null;
+                stage = Stage.Single;
+                IsResultHeld = false;
+                looseBallContent.SetActive(false);
+                scatterCaption.text = inaccuracy ? "Inaccuracy" : "Loose Ball";
+                SetScatterExpandedLayout();
+                activeDirection = continuationDirection;
+                activeDistance = continuationDistance;
+            }
+            else
+            {
+                if (!BeginSingle(manager, waiting, "Loose Ball Direction", token, null, null, false)) return false;
+                singleRollContent.SetActive(false);
+                looseBallContent.SetActive(true);
+                looseBallPlayer.text = token != null ? $"#{token.jerseyNumber}  {token.playerName}" : "";
+                activeDirection = looseDirection;
+                activeDistance = looseDistance;
+            }
+            scatterAttached = attached;
+            pendingScatterOwner = null;
+            looseBallMode = true;
+            looseDirectionPending = true;
+            Color primary = token != null ? TeamColor(token) : new Color(.13f, .35f, .63f);
+            Color secondary = token != null ? TeamPalette(token).Secondary : Color.white;
+            looseBallPlayer.color = Color.Lerp(primary, Color.white, .4f);
+            activeDirection.die.SetTeamColors(primary, secondary);
+            activeDistance.die.SetTeamColors(primary, secondary);
+            activeDirection.die.Clear();
+            activeDistance.die.Clear();
+            activeDirection.result.text = "Awaiting roll";
+            activeDistance.result.text = "Pending";
+            activeDirection.die.Begin(false);
+            footer.text = "Press [R] — direction roll";
+            FitAndClamp();
+            return true;
+        }
+        if (!IsOpen || !looseBallMode || singleOwner != manager || looseDirectionPending
+            || stage != Stage.Transition) return false;
+        singleWaiting = waiting;
+        stage = Stage.Single;
+        if (!scatterAttached) title.text = "Loose Ball Distance";
+        activeDistance.result.text = "Awaiting roll";
+        activeDistance.die.Begin(false);
+        footer.text = "Press [R] — distance roll";
+        return true;
+    }
+
+    public void SetScatterExpandedLayout()
+    {
+        expanded = true;
+        foulChecks.SetActive(false);
+        scatterContinuationContent.SetActive(true);
+        FitAndClamp();
+    }
+
+    private static bool LooseRollBound(DuelCheckPanelFields fields)
+        => fields?.column != null && fields.rule != null && fields.result != null && fields.die != null;
+
+    public IEnumerator ResolveLooseBallRoll(MonoBehaviour manager, GameplayDiceRollResult roll,
+        string result, bool direction)
+    {
+        if (!looseBallMode || singleOwner != manager || stage != Stage.Single
+            || direction != looseDirectionPending) return EmptyPresentation();
+        stage = Stage.Transition;
+        var view = direction ? activeDirection : activeDistance;
+        // Scatter has no jackpot outcome. Legacy/scripted jackpot inputs normalize to numeric six.
+        view.die.Resolve(roll.roll, false);
+        string face = $"Roll {roll.roll}";
+        view.result.text = $"{face}\n{result}";
+        if (direction)
+        {
+            looseDirectionPending = false;
+            footer.text = "Preparing distance roll…";
+            // The manager clears its direction wait and enters the distance wait next.
+            // The panel stays open with the direction die and text intact throughout.
+            return EmptyPresentation();
+        }
+        return WaitForDismissal();
+    }
+
+    public void CancelSingle(MonoBehaviour manager)
+    {
+        if (!IsOpen || (singleOwner != manager && pendingScatterOwner != manager)) return;
+        stage = Stage.Complete;
+        Dismiss();
+    }
+
+    public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false, bool continueWithScatter = false)
     {
         if (!singleMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
         stage = Stage.Transition;
@@ -210,6 +345,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         outcome.text = result;
         // A running dribbler's recovery foul continues directly into the existing checks.
         // Keep the resolved recovery die visible; only the final injury result starts dismissal.
+        if (continueWithScatter && PrepareScatterContinuation(manager, manager)) return EmptyPresentation();
         return continueWithFoulChecks ? EmptyPresentation() : WaitForDismissal();
     }
 
@@ -382,6 +518,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         owner = null;
         singleOwner = null;
         singleWaiting = null;
+        pendingScatterOwner = null;
         visuals.SetActive(false);
         return true;
     }
@@ -507,6 +644,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public void SetExpandedLayout(bool showChecks)
     {
         expanded = showChecks;
+        if (scatterContinuationContent != null) scatterContinuationContent.SetActive(false);
         if (foulChecks != null) foulChecks.SetActive(showChecks);
         FitAndClamp();
     }
@@ -521,7 +659,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public void FitAndClamp()
     {
         if (panel == null || panel.parent is not RectTransform bounds) return;
-        bool singleLayout = singleRollContent != null && singleRollContent.activeSelf;
+        bool singleLayout = (singleRollContent != null && singleRollContent.activeSelf)
+            || (looseBallContent != null && looseBallContent.activeSelf);
         float width = Mathf.Max(1f, singleLayout && !expanded ? singleRollWidth : preferredWidth);
         float maximumHeight = Mathf.Max(1f, normalHeight, expandedHeight);
         float height = expanded ? maximumHeight : Mathf.Max(1f, normalHeight);

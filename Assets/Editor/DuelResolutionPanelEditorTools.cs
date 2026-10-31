@@ -23,6 +23,8 @@ namespace CounterAttack.Editor
             panel.visuals.SetActive(true);
             if (panel.playerColumns != null) panel.playerColumns.SetActive(true);
             if (panel.singleRollContent != null) panel.singleRollContent.SetActive(false);
+            if (panel.looseBallContent != null) panel.looseBallContent.SetActive(false);
+            if (panel.scatterContinuationContent != null) panel.scatterContinuationContent.SetActive(false);
             panel.SetExpandedLayout(false);
             FinishPreview(panel);
         }
@@ -34,6 +36,8 @@ namespace CounterAttack.Editor
             panel.visuals.SetActive(true);
             if (panel.playerColumns != null) panel.playerColumns.SetActive(true);
             if (panel.singleRollContent != null) panel.singleRollContent.SetActive(false);
+            if (panel.looseBallContent != null) panel.looseBallContent.SetActive(false);
+            if (panel.scatterContinuationContent != null) panel.scatterContinuationContent.SetActive(false);
             panel.SetExpandedLayout(true);
             FinishPreview(panel);
         }
@@ -172,6 +176,8 @@ namespace CounterAttack.Editor
         {
             if (panel == null) return;
             EnsureSingleRollContent(panel);
+            EnsureLooseBallContent(panel);
+            EnsureScatterContinuation(panel);
             foreach (var die in panel.GetComponentsInChildren<DuelDieView>(true)) EnsureDieBorder(die);
             if (panel.leftPlayer.role != null)
             {
@@ -213,12 +219,120 @@ namespace CounterAttack.Editor
             content.gameObject.SetActive(false);
         }
 
+        private static void EnsureLooseBallContent(DuelResolutionPanelController controller)
+        {
+            if (controller.looseBallContent != null) return;
+            font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Resources/Fonts/Poppins/Poppins-Medium SDF.asset")
+                ?? TMP_Settings.defaultFontAsset;
+            faces = new Sprite[7];
+            Array.Copy(controller.leftPlayer.die.numericFaces, faces, 6);
+            faces[6] = controller.leftPlayer.die.jackpotFace;
+            RectTransform content = Top("LooseBallContent", controller.panel, 110, 490);
+            controller.looseBallContent = content.gameObject;
+            controller.looseBallPlayer = Label("RollingPlayer", content, 0, 88, "#4  Rolling player", 40);
+            RectTransform columns = Top("RollColumns", content, 150, 340);
+            controller.looseDirection = LooseBallColumn("Direction", columns, false);
+            controller.looseDistance = LooseBallColumn("Distance", columns, true);
+            content.gameObject.SetActive(false);
+        }
+
+        private static void EnsureScatterContinuation(DuelResolutionPanelController controller)
+        {
+            if (controller.scatterContinuationContent != null) return;
+            font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Resources/Fonts/Poppins/Poppins-Medium SDF.asset")
+                ?? TMP_Settings.defaultFontAsset;
+            faces = new Sprite[7];
+            Array.Copy(controller.leftPlayer.die.numericFaces, faces, 6);
+            faces[6] = controller.leftPlayer.die.jackpotFace;
+            RectTransform content = Top("ScatterContinuation", controller.panel, 744, 400);
+            controller.scatterContinuationContent = content.gameObject;
+            controller.scatterCaption = Label("Situation", content, 0, 48, "Loose Ball", 34);
+            RectTransform columns = Top("RollColumns", content, 60, 340);
+            controller.continuationDirection = LooseBallColumn("Direction", columns, false);
+            controller.continuationDistance = LooseBallColumn("Distance", columns, true);
+            content.gameObject.SetActive(false);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Accuracy Inaccuracy Rolls")]
+        public static void PreviewAccuracyScatter()
+        {
+            PreviewSingleRoll();
+            var controller = FindPanelForPreview();
+            controller.title.text = "High Pass Accuracy";
+            controller.singlePlayer.attribute.text = "High Pass 6 · Target 8";
+            controller.singlePlayer.modifier.text = "Accuracy 83.3%";
+            controller.singlePlayer.total.text = "Roll 1";
+            controller.singlePlayer.guidance.text = "Success: roll 2–6";
+            controller.singlePlayer.die.Resolve(1, false);
+            controller.outcome.text = "INACCURATE";
+            PreviewScatterAttachment(controller, "Inaccuracy");
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Tied Duel Loose Ball Rolls")]
+        public static void PreviewTiedDuelScatter()
+        {
+            PreviewCompact();
+            var controller = FindPanelForPreview();
+            controller.leftPlayer.die.Resolve(3, false);
+            controller.rightPlayer.die.Resolve(3, false);
+            controller.leftPlayer.total.text = "Roll 3 + 5 = 8";
+            controller.rightPlayer.total.text = "Roll 3 + 5 = 8";
+            controller.outcome.text = "TIE — LOOSE BALL";
+            PreviewScatterAttachment(controller, "Loose Ball");
+        }
+
+        private static void PreviewScatterAttachment(DuelResolutionPanelController controller, string caption)
+        {
+            EnsureScatterContinuation(controller);
+            controller.scatterCaption.text = caption;
+            controller.continuationDirection.die.Resolve(2, false);
+            controller.continuationDirection.result.text = "Roll 2\nSouthWest";
+            controller.continuationDistance.die.Clear();
+            controller.continuationDistance.result.text = "Awaiting roll";
+            controller.footer.text = "Press [R] — distance roll";
+            controller.SetScatterExpandedLayout();
+            FinishPreview(controller);
+        }
+
+        private static DuelCheckPanelFields LooseBallColumn(string heading, RectTransform parent, bool right)
+        {
+            RectTransform column = Column(heading + "Roll", parent, right, 340);
+            return new DuelCheckPanelFields
+            {
+                column = column,
+                rule = Label("Heading", column, 0, 50, heading, 34),
+                die = Die("Die", column, new Vector2(0, -75), true),
+                result = Label("Result", column, 220, 110, "Pending", 30)
+            };
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Loose Ball Rolls")]
+        public static void PreviewLooseBallRolls()
+        {
+            var controller = FindPanelForPreview();
+            EnsureLooseBallContent(controller);
+            controller.playerColumns.SetActive(false);
+            controller.singleRollContent.SetActive(false);
+            controller.looseBallContent.SetActive(true);
+            controller.title.text = "Loose Ball Distance";
+            controller.outcome.text = "";
+            controller.looseDirection.die.Resolve(2, false);
+            controller.looseDirection.result.text = "Roll 2\nSouthWest";
+            controller.looseDistance.die.Clear();
+            controller.looseDistance.result.text = "Awaiting roll";
+            controller.footer.text = "Press [R] — distance roll";
+            controller.SetExpandedLayout(false);
+            controller.visuals.SetActive(true);
+            FinishPreview(controller);
+        }
+
         [MenuItem("CounterAttack/Room/Preview Duel Panel/Single Roll")]
         public static void PreviewSingleRoll()
         {
             var controller = FindPanelForPreview();
             EnsureSingleRollContent(controller);
             controller.playerColumns.SetActive(false);
+            if (controller.looseBallContent != null) controller.looseBallContent.SetActive(false);
             controller.singleRollContent.SetActive(true);
             controller.title.text = "Ground Pass Interception";
             controller.singlePlayer.playerName.text = "#4  Rolling player";
@@ -275,6 +389,12 @@ namespace CounterAttack.Editor
             var checksRect = (RectTransform)controller.foulChecks.transform;
             controller.expandedHeight = Mathf.Max(controller.expandedHeight,
                 -checksRect.anchoredPosition.y + checksRect.rect.height + 24f + footer.rect.height + 24f);
+            if (controller.scatterContinuationContent != null)
+            {
+                var scatter = (RectTransform)controller.scatterContinuationContent.transform;
+                controller.expandedHeight = Mathf.Max(controller.expandedHeight,
+                    -scatter.anchoredPosition.y + scatter.rect.height + 24f + footer.rect.height + 24f);
+            }
             controller.SetExpandedLayout(false);
             if (needsMigration) controller.ResetPanelPosition();
             EditorUtility.SetDirty(panel);

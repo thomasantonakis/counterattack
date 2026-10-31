@@ -46,13 +46,22 @@ public static class SingleRollResolutionPresentation
     }
 
     public static void LooseBall(MonoBehaviour owner, Func<bool> waiting, PlayerToken token, bool direction)
-        => DuelResolutionPanelController.Instance?.BeginSingle(owner, waiting,
-            direction ? "Loose Ball Direction" : "Loose Ball Distance", token, null, null, true);
+        => DuelResolutionPanelController.Instance?.BeginLooseBall(owner, waiting, token, direction);
 
-    public static IEnumerator Resolve(MonoBehaviour owner, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false)
+    public static void Inaccuracy(MonoBehaviour owner, Func<bool> waiting, PlayerToken token, bool direction)
+        => DuelResolutionPanelController.Instance?.BeginLooseBall(owner, waiting, token, direction, true);
+
+    public static IEnumerator ResolveLooseBall(MonoBehaviour owner, GameplayDiceRollResult roll,
+        string result, bool direction)
     {
         var panel = DuelResolutionPanelController.Instance;
-        return panel != null ? panel.ResolveSingle(owner, roll, result, continueWithFoulChecks) : Empty();
+        return panel != null ? panel.ResolveLooseBallRoll(owner, roll, result, direction) : Empty();
+    }
+
+    public static IEnumerator Resolve(MonoBehaviour owner, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false, bool continueWithScatter = false)
+    {
+        var panel = DuelResolutionPanelController.Instance;
+        return panel != null ? panel.ResolveSingle(owner, roll, result, continueWithFoulChecks, continueWithScatter) : Empty();
     }
 
     private static IEnumerator Empty() { yield break; }

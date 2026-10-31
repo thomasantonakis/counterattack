@@ -1589,7 +1589,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         bool accuratePass = diceRoll + highPassAttribute >= ACCURACY_THRESHOLD;
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
-            accuratePass ? "ACCURATE" : "INACCURATE");
+            accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
         // Adjust threshold based on difficulty
         if (accuratePass)
         {
@@ -1606,6 +1606,7 @@ public class HighPassManager : MonoBehaviour
         {
             Debug.Log($"High Pass is NOT accurate, passer roll: {diceRoll}");
             isWaitingForDirectionRoll = true;
+            SingleRollResolutionPresentation.Inaccuracy(this, () => isWaitingForDirectionRoll, attackerToken, true);
             Debug.Log("Waiting for Direction roll... Please Press R key.");
         }
     }
@@ -1625,6 +1626,11 @@ public class HighPassManager : MonoBehaviour
 
     public void PerformDirectionRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentInaccuracyDirection(rollOverride));
+    }
+
+    private IEnumerator PresentInaccuracyDirection(RollInputOverride? rollOverride)
+    {
         // directionRoll = 0; // S  : PerformDirectionRoll(1)
         // directionRoll = 1; // SW : PerformDirectionRoll(2)
         // directionRoll = 2; // NW : PerformDirectionRoll(3)
@@ -1635,6 +1641,7 @@ public class HighPassManager : MonoBehaviour
         GameplayDiceRollResult directionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "high_pass_direction",
             rollOverride,
+            jackpotEnabled: false,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex(),
             targetHex: currentTargetHex);
@@ -1644,8 +1651,11 @@ public class HighPassManager : MonoBehaviour
         int diceRollLabel = diceRoll + 1;
         string rolledDirection = looseBallManager.TranslateRollToDirection(diceRoll);
         Debug.Log($"Rolled {diceRollLabel}: Moving in {rolledDirection} direction");
+        yield return SingleRollResolutionPresentation.ResolveLooseBall(this, directionRoll, rolledDirection, true);
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
+        SingleRollResolutionPresentation.Inaccuracy(this, () => isWaitingForDistanceRoll,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, false);
         Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
 
@@ -1664,10 +1674,16 @@ public class HighPassManager : MonoBehaviour
 
     public void PerformDistanceRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentInaccuracyDistance(rollOverride));
+    }
+
+    private IEnumerator PresentInaccuracyDistance(RollInputOverride? rollOverride)
+    {
         Debug.Log("Performing Direction roll to find Long Pass destination.");
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "high_pass_distance",
             rollOverride,
+            jackpotEnabled: false,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex(),
             targetHex: currentTargetHex,
@@ -1677,6 +1693,7 @@ public class HighPassManager : MonoBehaviour
             });
         int distanceRoll = diceResult.roll;
         // int distanceRoll = 5; // Melina Mode
+        yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, $"{distanceRoll} hexes", false);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance

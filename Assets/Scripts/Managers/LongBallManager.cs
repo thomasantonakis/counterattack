@@ -647,7 +647,7 @@ public class LongBallManager : MonoBehaviour
         int totalAccuracy = accuracyRoll.isJackpot ? 50 : diceRoll + highPassAttribute;
         bool accuratePass = totalAccuracy >= accuracyThreshold;
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
-            accuratePass ? "ACCURATE" : "INACCURATE");
+            accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
         if (accuratePass)
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
@@ -661,6 +661,7 @@ public class LongBallManager : MonoBehaviour
         {
             Debug.Log($"Long Ball is NOT accurate, passer roll: {diceRoll}");
             isWaitingForDirectionRoll = true;
+            SingleRollResolutionPresentation.Inaccuracy(this, () => isWaitingForDirectionRoll, attackerToken, true);
             Debug.Log("Waiting for Direction roll... Please Press R key.");
         }
     }
@@ -680,13 +681,21 @@ public class LongBallManager : MonoBehaviour
 
     private void PerformDirectionRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentInaccuracyDirection(rollOverride));
+    }
+
+    private IEnumerator PresentInaccuracyDirection(RollInputOverride? rollOverride)
+    {
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "long_ball_direction",
             rollOverride,
+            jackpotEnabled: false,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex(),
             targetHex: currentTargetHex);
         int directionRoll = diceResult.roll - 1;
+        yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult,
+            looseBallManager.TranslateRollToDirection(Mathf.Clamp(directionRoll, 0, 5)), true);
         ApplyDirectionRoll(Mathf.Clamp(directionRoll, 0, 5));
     }
 
@@ -697,6 +706,8 @@ public class LongBallManager : MonoBehaviour
         Debug.Log($"Rolled {directionIndex}: Moving in {rolledDirection} direction");
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
+        SingleRollResolutionPresentation.Inaccuracy(this, () => isWaitingForDistanceRoll,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, false);
         Debug.Log("Waiting for Distance roll... Please Press R key.");
     }
 
@@ -719,6 +730,7 @@ public class LongBallManager : MonoBehaviour
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "long_ball_distance",
             rollOverride,
+            jackpotEnabled: false,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex(),
             targetHex: currentTargetHex,
@@ -728,6 +740,7 @@ public class LongBallManager : MonoBehaviour
             });
         int distanceRoll = diceResult.roll;
         // int distanceRoll = 6; // Melina Mode
+        yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, $"{distanceRoll} hexes", false);
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final inaccurate target hex

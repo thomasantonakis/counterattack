@@ -742,12 +742,13 @@ public class LooseBallManager : MonoBehaviour
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "loose_ball_direction",
             rollOverride,
+            jackpotEnabled: false,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex());
         int roll = diceResult.roll;
         directionRoll = roll - 1;
         if (PresentationContext == LooseBallPresentationContext.Standalone)
-            yield return SingleRollResolutionPresentation.Resolve(this, diceResult, TranslateRollToDirection(directionRoll));
+            yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, TranslateRollToDirection(directionRoll), true);
         isWaitingForDirectionRoll = false;
     }
 
@@ -774,6 +775,7 @@ public class LooseBallManager : MonoBehaviour
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "loose_ball_distance",
             rollOverride,
+            jackpotEnabled: false,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex(),
             details: new Dictionary<string, string>
@@ -782,7 +784,7 @@ public class LooseBallManager : MonoBehaviour
             });
         distanceRoll = diceResult.roll;
         if (PresentationContext == LooseBallPresentationContext.Standalone)
-            yield return SingleRollResolutionPresentation.Resolve(this, diceResult, $"{distanceRoll} hexes");
+            yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, $"{distanceRoll} hexes", false);
         isWaitingForDistanceRoll = false;
     }
     
@@ -1327,6 +1329,7 @@ public class LooseBallManager : MonoBehaviour
 
     public void EndLooseBallPhase(bool completeDeferredShotResolution = true)
     {
+        DuelResolutionPanelController.Instance?.CancelSingle(this);
         if (completeDeferredShotResolution)
         {
             ShotManager resolvedShotManager = shotManager != null

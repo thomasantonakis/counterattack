@@ -3060,8 +3060,15 @@ public class MovementPhaseManager : MonoBehaviour
             int version = duelPresentationVersion;
             activeDuelPanel.ShowOutcome(defenderTotalScore > attackerTotalScore ? "TACKLER WINS"
                 : defenderTotalScore < attackerTotalScore ? "DRIBBLER WINS" : "TIE — LOOSE BALL");
-            yield return activeDuelPanel.WaitForDismissal();
-            if (version != duelPresentationVersion) yield break;
+            // A tied outfield duel expands into the loose-ball manager's rolls instead of closing.
+            bool continueWithScatter = defenderTotalScore == attackerTotalScore
+                && !IsGoalkeeperDiveChallengeInProgress()
+                && activeDuelPanel.PrepareScatterContinuation(this, looseBallManager);
+            if (!continueWithScatter)
+            {
+                yield return activeDuelPanel.WaitForDismissal();
+                if (version != duelPresentationVersion) yield break;
+            }
             activeDuelPanel = null;
         }
         if (IsGoalkeeperDiveChallengeInProgress())
