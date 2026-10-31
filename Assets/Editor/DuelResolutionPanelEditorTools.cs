@@ -178,6 +178,7 @@ namespace CounterAttack.Editor
             EnsureSingleRollContent(panel);
             EnsureLooseBallContent(panel);
             EnsureScatterContinuation(panel);
+            EnsureLooseRecoveryContent(panel);
             foreach (var die in panel.GetComponentsInChildren<DuelDieView>(true)) EnsureDieBorder(die);
             if (panel.leftPlayer.role != null)
             {
@@ -234,6 +235,64 @@ namespace CounterAttack.Editor
             controller.looseDirection = LooseBallColumn("Direction", columns, false);
             controller.looseDistance = LooseBallColumn("Distance", columns, true);
             content.gameObject.SetActive(false);
+        }
+
+        private static void EnsureLooseRecoveryContent(DuelResolutionPanelController controller)
+        {
+            if (controller.looseRecoveryContent != null) return;
+            font = controller.title.font;
+            faces = new Sprite[7];
+            Array.Copy(controller.leftPlayer.die.numericFaces, faces, 6);
+            faces[6] = controller.leftPlayer.die.jackpotFace;
+            RectTransform content = Top("LooseBallRecovery", controller.panel, controller.recoveryStandaloneTop, 400);
+            controller.looseRecoveryContent = content.gameObject;
+            Label("Situation", content, 0, 48, "Loose Ball Recovery", 34);
+            RectTransform body = Top("RecoveryPlayer", content, 60, 340);
+            RectTransform details = Column("Details", body, false, 340);
+            details.anchorMax = new Vector2(.65f, 1f);
+            RectTransform roll = Column("Roll", body, true, 340);
+            roll.anchorMin = new Vector2(.65f, 1f);
+            controller.looseRecoveryPlayer = new DuelPlayerPanelFields
+            {
+                playerName = Label("PlayerName", details, 0, 70, "#4  Recovering defender", 34),
+                teamName = Label("TeamName", details, 74, 40, "Team name", 26),
+                attribute = Label("Attribute", details, 120, 48, "Tackling 6", 30),
+                modifier = Label("Probability", details, 173, 45, "xRecovery 0.50", 28),
+                guidance = Label("SuccessRolls", details, 225, 65, "Success: roll 4–6", 27),
+                die = Die("Die", roll, new Vector2(0, -20), true),
+                total = Label("Result", roll, 160, 120, "Awaiting roll", 30)
+            };
+            content.gameObject.SetActive(false);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Loose Ball Recovery")]
+        public static void PreviewLooseBallRecovery()
+        {
+            PreviewLooseBallRolls();
+            var controller = FindPanelForPreview();
+            EnsureLooseRecoveryContent(controller);
+            controller.looseDistance.die.Resolve(3, false);
+            controller.looseDistance.result.text = "Roll 3\n3 hexes";
+            controller.looseRecoveryPlayer.die.Clear();
+            controller.looseRecoveryPlayer.total.text = "Awaiting roll";
+            controller.SetLooseRecoveryLayout(false);
+            controller.footer.text = "Press [R] — recovery roll";
+            FinishPreview(controller);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Tied Duel Loose Ball Recovery")]
+        public static void PreviewTiedDuelLooseRecovery()
+        {
+            PreviewTiedDuelScatter();
+            var controller = FindPanelForPreview();
+            EnsureLooseRecoveryContent(controller);
+            controller.continuationDistance.die.Resolve(3, false);
+            controller.continuationDistance.result.text = "Roll 3\n3 hexes";
+            controller.looseRecoveryPlayer.die.Clear();
+            controller.looseRecoveryPlayer.total.text = "Awaiting roll";
+            controller.SetLooseRecoveryLayout(true);
+            controller.footer.text = "Press [R] — recovery roll";
+            FinishPreview(controller);
         }
 
         private static void EnsureScatterContinuation(DuelResolutionPanelController controller)

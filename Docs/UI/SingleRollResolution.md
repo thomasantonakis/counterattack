@@ -107,3 +107,19 @@ Shot-context loose balls keep their existing presentation and do not attach here
 
 Edit-mode previews: `Accuracy Inaccuracy Rolls` and `Tied Duel Loose Ball Rolls`
 under `CounterAttack/Room/Preview Duel Panel`.
+
+## Standalone outfield loose-ball recovery
+
+Eligible outfield defenders selected by LooseBallManager now use an authored
+`LooseBallRecovery` section in the existing panel. Completed direction/distance
+values are retained when that panel reopens for a recovery attempt. The section
+shows player/jersey, team colors, Tackling, the exact xRecovery calculator used
+by the pre-existing expected-recovery log, successful numeric rolls, and the
+resolved die/result. Recovery dice retain their existing jackpot-enabled resolver
+behavior: jackpot is numeric six for this rule.
+
+Each attempt uses the existing five-second result/Enter/Escape flow before the
+manager advances to another defender or performs its original collection/movement.
+Shot-context recoveries and goalkeeper Saving/Tackling paths keep their current
+flow. The dice resolver and eligibility ordering remain unchanged. Preview
+`Loose Ball Recovery` and `Tied Duel Loose Ball Recovery` under the existing menu.

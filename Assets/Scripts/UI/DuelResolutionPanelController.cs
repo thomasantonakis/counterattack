@@ -48,6 +48,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private DuelCheckPanelFields activeDistance;
     private MonoBehaviour pendingScatterOwner;
     private bool scatterAttached;
+    public GameObject looseRecoveryContent;
+    public DuelPlayerPanelFields looseRecoveryPlayer = new();
+    public float recoveryStandaloneTop = 720f;
+    public float recoveryAttachedTop = 1168f;
+    public float recoveryContentHeight = 400f;
+    private MonoBehaviour scatterHistoryOwner;
+    private bool looseRecoveryMode;
     private bool looseBallMode;
     private bool looseDirectionPending;
     public DuelPlayerPanelFields singlePlayer = new();
@@ -127,6 +134,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (!HasSceneBindings || attacker == null || defender == null) return false;
         singleMode = false;
         looseBallMode = false;
+        scatterHistoryOwner = null;
+        looseRecoveryMode = false;
+        if (looseRecoveryContent != null) looseRecoveryContent.SetActive(false);
         pendingScatterOwner = null;
         scatterAttached = false;
         if (scatterContinuationContent != null) scatterContinuationContent.SetActive(false);
@@ -186,6 +196,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (IsOpen) return false;
         singleMode = true;
         looseBallMode = false;
+        scatterHistoryOwner = null;
+        looseRecoveryMode = false;
+        if (looseRecoveryContent != null) looseRecoveryContent.SetActive(false);
         pendingScatterOwner = null;
         scatterAttached = false;
         if (scatterContinuationContent != null) scatterContinuationContent.SetActive(false);
@@ -268,6 +281,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
                 activeDistance = looseDistance;
             }
             scatterAttached = attached;
+            scatterHistoryOwner = manager;
             pendingScatterOwner = null;
             looseBallMode = true;
             looseDirectionPending = true;
@@ -327,6 +341,65 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             return EmptyPresentation();
         }
         return WaitForDismissal();
+    }
+
+    public bool BeginLooseBallRecovery(MonoBehaviour manager, Func<bool> waiting, PlayerToken token)
+    {
+        if (token == null || token.IsGoalKeeper || IsOpen || looseRecoveryContent == null
+            || !PlayerBound(looseRecoveryPlayer)) return false;
+        if (scatterHistoryOwner != manager) return false;
+        singleMode = true;
+        singleOwner = manager;
+        singleWaiting = waiting;
+        owner = null;
+        stage = Stage.Single;
+        IsResultHeld = false;
+        looseBallMode = false;
+        looseRecoveryMode = true;
+        float expected = ExpectedStatsCalculator.CalculateRecoveryProbability(token);
+        ConfigurePlayer(looseRecoveryPlayer, token, "Tackling", token.tackling, 0, "xRecovery", expected);
+        looseRecoveryPlayer.attribute.text = $"Tackling {token.tackling}";
+        looseRecoveryPlayer.modifier.text = $"xRecovery {expected:0.00}";
+        looseRecoveryPlayer.total.text = "";
+        looseRecoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(token.tackling, 6, 0);
+        looseRecoveryPlayer.die.Begin(true);
+        SetLooseRecoveryLayout(scatterAttached);
+        footer.text = "Press [R] — recovery roll";
+        visuals.SetActive(true);
+        visuals.transform.SetAsLastSibling();
+        UnityEngine.EventSystems.EventSystem.current?.SetSelectedGameObject(null);
+        return true;
+    }
+
+    public void SetLooseRecoveryLayout(bool attached)
+    {
+        looseRecoveryMode = true;
+        expanded = true;
+        foulChecks.SetActive(false);
+        var recovery = (RectTransform)looseRecoveryContent.transform;
+        recovery.anchoredPosition = new Vector2(recovery.anchoredPosition.x,
+            -(attached ? recoveryAttachedTop : recoveryStandaloneTop));
+        looseRecoveryContent.SetActive(true);
+        FitAndClamp();
+    }
+
+    public IEnumerator ResolveLooseBallRecovery(MonoBehaviour manager, GameplayDiceRollResult roll, bool recovered)
+    {
+        if (!looseRecoveryMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
+        stage = Stage.Transition;
+        looseRecoveryPlayer.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
+        string face = roll.jackpotEnabled && roll.isJackpot ? "JACKPOT ★ (6)" : $"Roll {roll.roll}";
+        looseRecoveryPlayer.total.text = face + (recovered ? "\nBALL RECOVERED" : "\nRECOVERY FAILED");
+        return WaitForDismissal();
+    }
+
+    public void ForgetLooseBallPresentation(MonoBehaviour manager)
+    {
+        CancelSingle(manager);
+        if (scatterHistoryOwner != manager) return;
+        scatterHistoryOwner = null;
+        looseRecoveryMode = false;
+        if (looseRecoveryContent != null) looseRecoveryContent.SetActive(false);
     }
 
     public void CancelSingle(MonoBehaviour manager)
@@ -644,6 +717,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public void SetExpandedLayout(bool showChecks)
     {
         expanded = showChecks;
+        looseRecoveryMode = false;
+        if (looseRecoveryContent != null) looseRecoveryContent.SetActive(false);
         if (scatterContinuationContent != null) scatterContinuationContent.SetActive(false);
         if (foulChecks != null) foulChecks.SetActive(showChecks);
         FitAndClamp();
@@ -663,6 +738,10 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             || (looseBallContent != null && looseBallContent.activeSelf);
         float width = Mathf.Max(1f, singleLayout && !expanded ? singleRollWidth : preferredWidth);
         float maximumHeight = Mathf.Max(1f, normalHeight, expandedHeight);
+        if (looseRecoveryContent != null && looseRecoveryContent.activeSelf)
+            maximumHeight = Mathf.Max(maximumHeight,
+                -((RectTransform)looseRecoveryContent.transform).anchoredPosition.y + recoveryContentHeight
+                    + footer.rectTransform.rect.height + 48f);
         float height = expanded ? maximumHeight : Mathf.Max(1f, normalHeight);
         panel.sizeDelta = new Vector2(width, height);
         // Reserve the same scale for both states so expansion cannot move or resize existing content.

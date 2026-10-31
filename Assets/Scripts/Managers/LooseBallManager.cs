@@ -803,6 +803,14 @@ public class LooseBallManager : MonoBehaviour
 
     public void PerformInterceptionRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentInterceptionRoll(rollOverride));
+    }
+
+    private bool CurrentRecoverySucceeds()
+        => interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10;
+
+    private IEnumerator PresentInterceptionRoll(RollInputOverride? rollOverride)
+    {
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "loose_ball_interception",
             rollOverride,
@@ -814,6 +822,14 @@ public class LooseBallManager : MonoBehaviour
                 ["distanceRoll"] = distanceRoll.ToString()
             });
         interceptionRoll = diceResult.roll;
+        // The same handler also serves GK wall/Saving rolls and shot spill recoveries.
+        // Only standalone outfield recoveries adopt this presentation; their rule is unchanged.
+        if (PresentationContext == LooseBallPresentationContext.Standalone
+            && potentialInterceptor != null && !potentialInterceptor.IsGoalKeeper)
+        {
+            var panel = DuelResolutionPanelController.Instance;
+            if (panel != null) yield return panel.ResolveLooseBallRecovery(this, diceResult, CurrentRecoverySucceeds());
+        }
         isWaitingForInterceptionRoll = false;
     }
 
@@ -1071,13 +1087,17 @@ public class LooseBallManager : MonoBehaviour
                     MatchManager.Instance.gameData.gameLog.LogEvent(potentialInterceptor, MatchManager.ActionType.InterceptionAttempt);
 
                     isWaitingForInterceptionRoll = true;
+                    if (PresentationContext == LooseBallPresentationContext.Standalone
+                        && potentialInterceptor != null && !potentialInterceptor.IsGoalKeeper)
+                        DuelResolutionPanelController.Instance?.BeginLooseBallRecovery(this,
+                            () => isWaitingForInterceptionRoll, potentialInterceptor);
                     while (isWaitingForInterceptionRoll)
                     {
                         yield return null;
                     }
 
                     // int interceptionRoll = 1; // Simulate dice roll
-                    if (interceptionRoll == 6 || potentialInterceptor.tackling + interceptionRoll >= 10)
+                    if (CurrentRecoverySucceeds())
                     {
                         MatchManager.Instance.gameData.gameLog.LogEvent(
                             potentialInterceptor
@@ -1329,7 +1349,7 @@ public class LooseBallManager : MonoBehaviour
 
     public void EndLooseBallPhase(bool completeDeferredShotResolution = true)
     {
-        DuelResolutionPanelController.Instance?.CancelSingle(this);
+        DuelResolutionPanelController.Instance?.ForgetLooseBallPresentation(this);
         if (completeDeferredShotResolution)
         {
             ShotManager resolvedShotManager = shotManager != null
