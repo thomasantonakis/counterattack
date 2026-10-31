@@ -1231,6 +1231,9 @@ public class HighPassManager : MonoBehaviour
         {
             lockedAttacker = null;
             isWaitingForAccuracyRoll = true;
+            SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll,
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "High Pass Accuracy",
+                AccuracyProbabilityForDecisionPreview(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose?.highPass ?? 0), ACCURACY_THRESHOLD);
             Debug.Log("Waiting for accuracy roll... Please Press R key.");
             return;
         }
@@ -1547,6 +1550,11 @@ public class HighPassManager : MonoBehaviour
 
     public void PerformAccuracyRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentAccuracyRoll(rollOverride));
+    }
+
+    private IEnumerator PresentAccuracyRoll(RollInputOverride? rollOverride)
+    {
         // TODO: Refine order and logs
         lockedAttacker = null;
         // Placeholder for dice roll logic (will be expanded in later steps)
@@ -1555,7 +1563,7 @@ public class HighPassManager : MonoBehaviour
         if (attackerToken == null)
         {
             Debug.LogError("Error: No attacker token found on the ball's hex!");
-            return;
+            yield break;
         }
 
         GameplayDiceRollResult accuracyRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
@@ -1579,8 +1587,11 @@ public class HighPassManager : MonoBehaviour
 
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
+        bool accuratePass = diceRoll + highPassAttribute >= ACCURACY_THRESHOLD;
+        yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
+            accuratePass ? "ACCURATE" : "INACCURATE");
         // Adjust threshold based on difficulty
-        if (diceRoll + highPassAttribute >= ACCURACY_THRESHOLD)
+        if (accuratePass)
         {
             Debug.Log($"High Pass is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
@@ -2125,6 +2136,9 @@ public class HighPassManager : MonoBehaviour
         isWaitingForDefenderMove = false;
         isWaitingForDefenderSelection = false;
         isWaitingForAccuracyRoll = true;
+        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "High Pass Accuracy",
+            AccuracyProbabilityForDecisionPreview(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose?.highPass ?? 0), ACCURACY_THRESHOLD);
     }
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
@@ -2189,6 +2203,9 @@ public class HighPassManager : MonoBehaviour
         movementPhaseManager.isBallPickable = false;
         selectedToken = null;
         isWaitingForAccuracyRoll = true;
+        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "High Pass Accuracy",
+            AccuracyProbabilityForDecisionPreview(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose?.highPass ?? 0), ACCURACY_THRESHOLD);
         Debug.Log("Waiting for accuracy roll... Please Press R key.");
         // CompleteDefenderMovementPhase();
     }

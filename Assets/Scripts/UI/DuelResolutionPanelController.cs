@@ -34,18 +34,25 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public TMP_Text outcome;
     public TMP_Text footer;
     public GameObject foulChecks;
+    public GameObject singleRollContent;
+    public GameObject playerColumns;
+    public DuelPlayerPanelFields singlePlayer = new();
+    private MonoBehaviour singleOwner;
+    private Func<bool> singleWaiting;
+    private bool singleMode;
     public DuelPlayerPanelFields leftPlayer = new();
     public DuelPlayerPanelFields rightPlayer = new();
     public DuelCheckPanelFields leniency = new();
     public DuelCheckPanelFields injury = new();
     [Min(1f)] public float resultSeconds = 5f;
     [Min(1f)] public float preferredWidth = 1680f;
+    [Min(1f)] public float singleRollWidth = 1040f;
     [Min(1f)] public float normalHeight = 820f;
     [Min(1f)] public float expandedHeight = 1220f;
     [Tooltip("Initial top edge, measured down from the screen top as a fraction of its height.")]
     [Range(0f, 1f)] public float initialTopInsetFraction = .2f;
     public static DuelResolutionPanelController Instance { get; private set; }
-    private enum Stage { Closed, Defender, Dribbler, Transition, Leniency, Injury, Complete }
+    private enum Stage { Closed, Defender, Dribbler, Transition, Leniency, Injury, Complete, Single }
     private Stage stage;
     private MovementPhaseManager owner;
     private DuelPlayerPanelFields dribblerView;
@@ -60,6 +67,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private Vector2 lastDraggedPosition;
     private string matchKey;
     private Color attackerColor;
+    private Color attackerSecondaryColor;
     private bool foulIsPenalty;
     private float heldSecondsRemaining;
     public bool IsResultHeld { get; private set; }
@@ -76,7 +84,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public static bool IsVisible => Instance != null && Instance.IsOpen;
     public static bool IsHoldingContinuation => IsVisible && !Instance.IsAwaitingRoll;
     public static bool IsMatchClockHeld => IsVisible && Instance.IsResultHeld;
-    public bool IsAwaitingRoll => stage is Stage.Defender or Stage.Dribbler or Stage.Leniency or Stage.Injury;
+    public bool IsAwaitingRoll => stage is Stage.Defender or Stage.Dribbler or Stage.Leniency or Stage.Injury or Stage.Single;
 
     private void Awake()
     {
@@ -103,6 +111,11 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         ExpectedStatsCalculator.GroundDuelExpectation expectation, bool penaltyArea)
     {
         if (!HasSceneBindings || attacker == null || defender == null) return false;
+        singleMode = false;
+        singleOwner = null;
+        singleWaiting = null;
+        if (singleRollContent != null) singleRollContent.SetActive(false);
+        if (playerColumns != null) playerColumns.SetActive(true);
         owner = manager;
         var match = MatchManager.Instance;
         // A different match starts at the authored top inset; nothing is written to player prefs.
@@ -121,12 +134,14 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         expanded = false;
         foulChecks.SetActive(false);
         attackerColor = TeamColor(attacker);
+        attackerSecondaryColor = TeamPalette(attacker).Secondary;
         ConfigurePlayer(dribblerView, attacker, "Dribbling", dribbling, 0, "xDr", expectation.xDribbles);
         ConfigurePlayer(defenderView, defender, "Tackling", tackling, bonus, "xTk", expectation.xTackles);
         ArrangeFoulChecks(leftToRight);
         title.text = nutmeg ? "NUTMEG DUEL" : "TACKLE DUEL";
         outcome.text = "";
-        defenderView.guidance.text = threshold == 1 ? "Roll 1 = foul" : $"Roll 1–{threshold} = foul";
+        string foulResult = foulIsPenalty ? "penalty" : "foul";
+        defenderView.guidance.text = threshold == 1 ? $"Roll 1 = {foulResult}" : $"Roll 1–{threshold} = {foulResult}";
         dribblerView.guidance.text = "Waiting for tackler's result";
         leniency.die.Clear();
         injury.die.Clear();
@@ -143,11 +158,93 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         return true;
     }
 
-    private static Color TeamColor(PlayerToken token)
+    // Single rolls share the authored overlay and its exclusive input/countdown/drag lifecycle.
+    // Managers supply the rule and continuation; this view never rolls dice or resolves gameplay.
+    public bool BeginSingle(MonoBehaviour manager, Func<bool> waiting, string situation,
+        PlayerToken token, string attributeText, string probabilityText, bool jackpotAllowed, string successGuidance = null)
+    {
+        if (!HasSceneBindings || singleRollContent == null || playerColumns == null || !PlayerBound(singlePlayer)) return false;
+        if (IsOpen) return false;
+        singleMode = true;
+        singleOwner = manager;
+        singleWaiting = waiting;
+        owner = null;
+        stage = Stage.Single;
+        IsResultHeld = false;
+        expanded = false;
+        playerColumns.SetActive(false);
+        foulChecks.SetActive(false);
+        singleRollContent.SetActive(true);
+        title.text = situation;
+        outcome.text = "";
+        singlePlayer.playerName.text = token != null ? $"#{token.jerseyNumber}  {token.playerName}" : "";
+        singlePlayer.teamName.text = token == null ? "" : token.isHomeTeam
+            ? MatchManager.Instance.gameData.gameSettings.homeTeamName : MatchManager.Instance.gameData.gameSettings.awayTeamName;
+        singlePlayer.attribute.text = attributeText ?? "";
+        singlePlayer.modifier.text = probabilityText ?? "";
+        singlePlayer.total.text = "";
+        singlePlayer.guidance.text = successGuidance ?? "";
+        Color color = token != null ? TeamColor(token) : new Color(.13f, .35f, .63f);
+        singlePlayer.playerName.color = Color.Lerp(color, Color.white, .4f);
+        singlePlayer.die.SetTeamColors(color, token != null ? TeamPalette(token).Secondary : Color.white);
+        singlePlayer.die.Begin(jackpotAllowed);
+        footer.text = "Press [R] to roll";
+        visuals.SetActive(true);
+        visuals.transform.SetAsLastSibling();
+        UnityEngine.EventSystems.EventSystem.current?.SetSelectedGameObject(null);
+        var match = MatchManager.Instance;
+        string currentMatch = match != null ? match.GetEntityId().ToString() + ":" + match.gameData?.playSessionId : "";
+        if (matchKey != currentMatch) { matchKey = currentMatch; rememberedPosition = false; }
+        if (rememberedPosition) panel.anchoredPosition = lastDraggedPosition;
+        else ResetPanelPosition();
+        FitAndClamp();
+        return true;
+    }
+
+    public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result, bool continueWithFoulChecks = false)
+    {
+        if (!singleMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
+        stage = Stage.Transition;
+        singlePlayer.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
+        singlePlayer.total.text = roll.isJackpot && roll.jackpotEnabled ? "JACKPOT ★ (6)" : $"Roll {roll.roll}";
+        outcome.text = result;
+        // A running dribbler's recovery foul continues directly into the existing checks.
+        // Keep the resolved recovery die visible; only the final injury result starts dismissal.
+        return continueWithFoulChecks ? EmptyPresentation() : WaitForDismissal();
+    }
+
+    public bool ContinueRecoveryFoul(MovementPhaseManager manager, PlayerToken attacker,
+        PlayerToken defender, bool penalty)
+    {
+        if (!singleMode || singleOwner != manager || stage != Stage.Transition
+            || attacker == null || defender == null) return false;
+        // Hand input and the existing foul-result callbacks to the movement manager.
+        owner = manager;
+        singleWaiting = null;
+        attackerColor = TeamColor(attacker);
+        attackerSecondaryColor = TeamPalette(attacker).Secondary;
+        foulIsPenalty = penalty;
+        bool dribblerOnLeft = (attacker.isHomeTeam ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection) == MatchManager.TeamAttackingDirection.LeftToRight;
+        ArrangeFoulChecks(dribblerOnLeft);
+        leniency.die.Clear();
+        injury.die.Clear();
+        leniency.result.text = injury.result.text = "Pending";
+        singlePlayer.guidance.text = (penalty ? "Penalty awarded to: " : "Fouled: ")
+            + $"#{attacker.jerseyNumber}  {attacker.playerName}";
+        outcome.text = penalty ? "PENALTY!" : "FOUL";
+        return true;
+    }
+
+    private static IEnumerator EmptyPresentation() { yield break; }
+
+    private static Color TeamColor(PlayerToken token) => TeamPalette(token).Primary;
+
+    private static TokenKitInstructionPalette TeamPalette(PlayerToken token)
     {
         var settings = MatchManager.Instance.gameData.gameSettings;
         string kit = token.isHomeTeam ? settings.homeKit : settings.awayKit;
-        return TokenKitCatalog.ResolveStyle(kit).bodyColor;
+        return TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(kit));
     }
 
     private static void ConfigurePlayer(DuelPlayerPanelFields view, PlayerToken token,
@@ -162,7 +259,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         view.total.text = "Total  —";
         Color color = TeamColor(token);
         view.playerName.color = Color.Lerp(color, Color.white, .4f);
-        view.die.SetTeamColor(color);
+        view.die.SetTeamColors(color, TeamPalette(token).Secondary);
         view.die.Clear();
     }
 
@@ -182,12 +279,12 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         {
             stage = Stage.Dribbler;
             bool foul = roll.roll <= foulThreshold && !roll.isJackpot;
-            defenderView.guidance.text = foul ? foulIsPenalty ? "Penalty foul" : "Foul roll" : "Rolled";
+            defenderView.guidance.text = foul ? foulIsPenalty ? "Penalty roll" : "Foul roll" : "Rolled";
             int defenderTotal = roll.isJackpot ? 50 : tackling + defenderBonus + roll.roll;
             outcome.text = foul ? foulIsPenalty ? "PENALTY!" : "FOUL — tackler committed a foul"
                 : DuelRollGuidance.LiveOutcomes(ExpectedStatsCalculator.CalculateGroundDuelAfterDefenderRoll(dribbling, defenderTotal, false));
             dribblerView.guidance.text = DuelRollGuidance.ForDribbler(dribbling,
-                defenderTotal, roll.isJackpot, foul);
+                defenderTotal, roll.isJackpot, foul, foulIsPenalty);
             dribblerView.die.Begin(true);
             footer.text = "Press [R] — dribbler rolls";
         }
@@ -213,8 +310,10 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             harsh ? "straight red" : yellow, harsh ? yellow : "no card");
         leniency.result.text = "Awaiting roll";
         injury.rule.text = InjuryRule(resilience, alreadyInjured);
-        leniency.die.SetTeamColor(defenderView.die.background.color);
-        injury.die.SetTeamColor(attackerColor);
+        var defenderDie = singleMode ? singlePlayer.die : defenderView.die;
+        leniency.die.SetTeamColors(defenderDie.background.color,
+            defenderDie.border != null ? defenderDie.border.effectColor : Color.white);
+        injury.die.SetTeamColors(attackerColor, attackerSecondaryColor);
         leniency.die.Begin(false);
         stage = Stage.Leniency;
         footer.text = "Press [R] — leniency check";
@@ -281,13 +380,15 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         IsResultHeld = false;
         stage = Stage.Closed;
         owner = null;
+        singleOwner = null;
+        singleWaiting = null;
         visuals.SetActive(false);
         return true;
     }
 
     public void Cancel(MovementPhaseManager manager)
     {
-        if (owner != manager) return;
+        if (owner != manager && singleOwner != manager) return;
         ReserveEscape();
         IsResultHeld = false;
         stage = Stage.Closed;
@@ -342,6 +443,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             Stage.Injury => current.owner.isWaitingForInjuryRoll,
             _ => false
         });
+        if (current.singleMode && current.stage == Stage.Single) expected = current.singleOwner != null
+            && current.singleWaiting != null && current.singleWaiting();
         if (roll && expected) return false;
         key.Consume(nameof(DuelResolutionPanelController));
         return true;
@@ -350,6 +453,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private void Update()
     {
         if (!IsOpen) return;
+        if (singleMode && stage == Stage.Single && (singleOwner == null || !singleOwner.isActiveAndEnabled
+            || singleWaiting == null || !singleWaiting()))
+        {
+            stage = Stage.Complete;
+            Dismiss();
+            return;
+        }
         FitAndClamp();
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -411,12 +521,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public void FitAndClamp()
     {
         if (panel == null || panel.parent is not RectTransform bounds) return;
-        float width = Mathf.Max(1f, preferredWidth);
+        bool singleLayout = singleRollContent != null && singleRollContent.activeSelf;
+        float width = Mathf.Max(1f, singleLayout && !expanded ? singleRollWidth : preferredWidth);
         float maximumHeight = Mathf.Max(1f, normalHeight, expandedHeight);
         float height = expanded ? maximumHeight : Mathf.Max(1f, normalHeight);
         panel.sizeDelta = new Vector2(width, height);
         // Reserve the same scale for both states so expansion cannot move or resize existing content.
-        float scale = Mathf.Max(.001f, Mathf.Min(1f, bounds.rect.width * .5f / width,
+        float scale = Mathf.Max(.001f, Mathf.Min(1f, bounds.rect.width * .5f / Mathf.Max(1f, preferredWidth),
             bounds.rect.height * .96f / maximumHeight));
         panel.localScale = Vector3.one * scale;
         float horizontalLimit = Mathf.Max(0f, (bounds.rect.width - width * scale) * .5f);

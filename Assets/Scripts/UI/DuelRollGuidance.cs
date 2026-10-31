@@ -21,9 +21,9 @@ public static class DuelRollGuidance
         => $"Dribble: {Percent(chances.attackerWinProbability)} - Loose ball: {Percent(chances.tieProbability)}"
             + $" - Successful tackle: {Percent(chances.defenderWinProbability)}";
 
-    public static string ForDribbler(int dribbling, int defenderTotal, bool defenderJackpot, bool foul)
+    public static string ForDribbler(int dribbling, int defenderTotal, bool defenderJackpot, bool foul, bool penalty = false)
     {
-        if (foul) return "Foul committed — dribbler roll still required";
+        if (foul) return penalty ? "Penalty awarded — dribbler roll still required" : "Foul committed — dribbler roll still required";
         if (defenderJackpot) return "JACKPOT to tie";
         int tie = defenderTotal - dribbling;
         int win = tie + 1;

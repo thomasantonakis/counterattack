@@ -12,6 +12,8 @@ public enum LooseBallSourceType
     InaccuratePass,
 }
 
+public enum LooseBallPresentationContext { Standalone, ShotResolution }
+
 public class LooseBallManager : MonoBehaviour
 {
     [Header("Dependencies")]
@@ -29,6 +31,7 @@ public class LooseBallManager : MonoBehaviour
     public HelperFunctions helperFunctions;
     [Header("Flags")]
     public bool isActivated = false;
+    public LooseBallPresentationContext PresentationContext { get; private set; }
     public bool isWaitingForDirectionRoll = false;
     public bool isWaitingForDistanceRoll = false;
     public bool isWaitingForInterceptionRoll = false;
@@ -725,6 +728,11 @@ public class LooseBallManager : MonoBehaviour
 
     public void PerformDirectionRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentDirectionRoll(rollOverride));
+    }
+
+    private IEnumerator PresentDirectionRoll(RollInputOverride? rollOverride)
+    {
         // directionRoll = 0; // S  : PerformDirectionRoll(1)
         // directionRoll = 1; // SW : PerformDirectionRoll(2)
         // directionRoll = 2; // NW : PerformDirectionRoll(3)
@@ -738,6 +746,8 @@ public class LooseBallManager : MonoBehaviour
             sourceHex: ball.GetCurrentHex());
         int roll = diceResult.roll;
         directionRoll = roll - 1;
+        if (PresentationContext == LooseBallPresentationContext.Standalone)
+            yield return SingleRollResolutionPresentation.Resolve(this, diceResult, TranslateRollToDirection(directionRoll));
         isWaitingForDirectionRoll = false;
     }
 
@@ -756,6 +766,11 @@ public class LooseBallManager : MonoBehaviour
 
     public void PerformDistanceRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentDistanceRoll(rollOverride));
+    }
+
+    private IEnumerator PresentDistanceRoll(RollInputOverride? rollOverride)
+    {
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "loose_ball_distance",
             rollOverride,
@@ -766,6 +781,8 @@ public class LooseBallManager : MonoBehaviour
                 ["directionIndex"] = directionRoll.ToString()
             });
         distanceRoll = diceResult.roll;
+        if (PresentationContext == LooseBallPresentationContext.Standalone)
+            yield return SingleRollResolutionPresentation.Resolve(this, diceResult, $"{distanceRoll} hexes");
         isWaitingForDistanceRoll = false;
     }
     
@@ -808,8 +825,10 @@ public class LooseBallManager : MonoBehaviour
         return rollOverride.Value.isJackpot ? 6 : rollOverride.Value.roll;
     }
 
-    public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove = true)
+    public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove = true,
+        LooseBallPresentationContext presentationContext = LooseBallPresentationContext.Standalone)
     {
+        PresentationContext = presentationContext;
         isActivated = true;
         causingDeflection = startingToken; // TODO: I think this is redundant
         MatchManager.Instance.ClearPendingLooseBallCollectionReset();
@@ -856,6 +875,9 @@ public class LooseBallManager : MonoBehaviour
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
         isWaitingForDirectionRoll = true;
+        if (PresentationContext == LooseBallPresentationContext.Standalone)
+            SingleRollResolutionPresentation.LooseBall(this, () => isWaitingForDirectionRoll,
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, true);
         while (isWaitingForDirectionRoll)
         {
             yield return null;
@@ -926,6 +948,9 @@ public class LooseBallManager : MonoBehaviour
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         isWaitingForDistanceRoll = true;
+        if (PresentationContext == LooseBallPresentationContext.Standalone)
+            SingleRollResolutionPresentation.LooseBall(this, () => isWaitingForDistanceRoll,
+                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, false);
         while (isWaitingForDistanceRoll)
         {
             yield return null;

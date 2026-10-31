@@ -21,6 +21,8 @@ namespace CounterAttack.Editor
         {
             var panel = FindPanelForPreview();
             panel.visuals.SetActive(true);
+            if (panel.playerColumns != null) panel.playerColumns.SetActive(true);
+            if (panel.singleRollContent != null) panel.singleRollContent.SetActive(false);
             panel.SetExpandedLayout(false);
             FinishPreview(panel);
         }
@@ -30,6 +32,8 @@ namespace CounterAttack.Editor
         {
             var panel = FindPanelForPreview();
             panel.visuals.SetActive(true);
+            if (panel.playerColumns != null) panel.playerColumns.SetActive(true);
+            if (panel.singleRollContent != null) panel.singleRollContent.SetActive(false);
             panel.SetExpandedLayout(true);
             FinishPreview(panel);
         }
@@ -167,6 +171,8 @@ namespace CounterAttack.Editor
         private static void UpdatePanelDetails(DuelResolutionPanelController panel)
         {
             if (panel == null) return;
+            EnsureSingleRollContent(panel);
+            foreach (var die in panel.GetComponentsInChildren<DuelDieView>(true)) EnsureDieBorder(die);
             if (panel.leftPlayer.role != null)
             {
                 panel.leftPlayer.role.text = "";
@@ -185,6 +191,63 @@ namespace CounterAttack.Editor
             EditorUtility.SetDirty(panel);
         }
 
+        // Authored once in edit mode; runtime only changes text, color and visibility.
+        private static void EnsureSingleRollContent(DuelResolutionPanelController controller)
+        {
+            controller.playerColumns = controller.panel.Find("PlayerColumns").gameObject;
+            if (controller.singleRollContent != null) return;
+            font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Resources/Fonts/Poppins/Poppins-Medium SDF.asset")
+                ?? TMP_Settings.defaultFontAsset;
+            faces = new Sprite[7];
+            Array.Copy(controller.leftPlayer.die.numericFaces, faces, 6);
+            faces[6] = controller.leftPlayer.die.jackpotFace;
+            RectTransform content = Top("SingleRollContent", controller.panel, 110, 490);
+            controller.singleRollContent = content.gameObject;
+            controller.singlePlayer = Player("RollingPlayer", content, false);
+            RectTransform column = (RectTransform)controller.singlePlayer.playerName.transform.parent;
+            column.anchorMax = new Vector2(1, 1);
+            controller.singlePlayer.playerName.text = "#4  Rolling player";
+            controller.singlePlayer.attribute.text = "Tackling 6";
+            controller.singlePlayer.modifier.text = "xRecovery 0.50";
+            controller.singlePlayer.role.gameObject.SetActive(false);
+            content.gameObject.SetActive(false);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Single Roll")]
+        public static void PreviewSingleRoll()
+        {
+            var controller = FindPanelForPreview();
+            EnsureSingleRollContent(controller);
+            controller.playerColumns.SetActive(false);
+            controller.singleRollContent.SetActive(true);
+            controller.title.text = "Ground Pass Interception";
+            controller.singlePlayer.playerName.text = "#4  Rolling player";
+            controller.singlePlayer.attribute.text = "Tackling 6";
+            controller.singlePlayer.modifier.text = "xRecovery 0.50";
+            controller.singlePlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(6, 6, 0);
+            controller.SetExpandedLayout(false);
+            controller.visuals.SetActive(true);
+            FinishPreview(controller);
+        }
+
+        [MenuItem("CounterAttack/Room/Preview Duel Panel/Recovery Foul Checks")]
+        public static void PreviewRecoveryFoulChecks()
+        {
+            PreviewSingleRoll();
+            var controller = FindPanelForPreview();
+            controller.title.text = "Recovery Attempt";
+            controller.singlePlayer.total.text = "Roll 1";
+            controller.singlePlayer.guidance.text = "Fouled: #9  Dribbler";
+            controller.outcome.text = "FOUL";
+            controller.leniency.rule.text = DuelRollGuidance.ThresholdCheck("Referee leniency", 4, "yellow card", "no card");
+            controller.injury.rule.text = DuelRollGuidance.ThresholdCheck("Resilience", 4, "injury", "avoids injury");
+            controller.leniency.result.text = "Awaiting roll";
+            controller.injury.result.text = "Pending";
+            controller.footer.text = "Press [R] — leniency check";
+            controller.SetExpandedLayout(true);
+            FinishPreview(controller);
+        }
+
         private static void AuthorDownwardExpansion(DuelResolutionPanelController controller)
         {
             RectTransform panel = controller.panel;
@@ -192,17 +255,13 @@ namespace CounterAttack.Editor
             panel.anchorMin = panel.anchorMax = new Vector2(.5f, .5f);
             panel.pivot = new Vector2(.5f, 1f);
 
-            // Convert the old bottom-anchored footer once, preserving its compact-panel position.
+            // The controls follow the panel bottom in compact and expanded layouts.
             RectTransform footer = controller.footer.rectTransform;
-            if (footer.anchorMin.y == 0f && footer.anchorMax.y == 0f)
-            {
-                float top = footer.anchoredPosition.y + footer.rect.height * (1f - footer.pivot.y);
-                footer.anchorMin = new Vector2(footer.anchorMin.x, 1f);
-                footer.anchorMax = new Vector2(footer.anchorMax.x, 1f);
-                footer.pivot = new Vector2(footer.pivot.x, 1f);
-                footer.anchoredPosition = new Vector2(footer.anchoredPosition.x, top - controller.normalHeight);
-                EditorUtility.SetDirty(footer);
-            }
+            footer.anchorMin = Vector2.zero;
+            footer.anchorMax = new Vector2(1f, 0f);
+            footer.pivot = new Vector2(.5f, 0f);
+            footer.anchoredPosition = new Vector2(0f, 24f);
+            EditorUtility.SetDirty(footer);
 
             if (needsMigration)
             {
@@ -212,9 +271,30 @@ namespace CounterAttack.Editor
                     controller.normalHeight + checks.rect.height + 48f);
                 EditorUtility.SetDirty(checks);
             }
+            // Leave a gap after the final checks and reserve the footer's full height plus bottom inset.
+            var checksRect = (RectTransform)controller.foulChecks.transform;
+            controller.expandedHeight = Mathf.Max(controller.expandedHeight,
+                -checksRect.anchoredPosition.y + checksRect.rect.height + 24f + footer.rect.height + 24f);
             controller.SetExpandedLayout(false);
             if (needsMigration) controller.ResetPanelPosition();
             EditorUtility.SetDirty(panel);
+        }
+
+        private static void EnsureDieBorder(DuelDieView die)
+        {
+            // Authored in edit mode on the existing die image; never added at runtime.
+            if (die.background == null) return;
+            var border = die.background.GetComponent<UnityEngine.UI.Outline>();
+            if (border == null)
+            {
+                border = die.background.gameObject.AddComponent<UnityEngine.UI.Outline>();
+                border.effectColor = Color.white;
+            }
+            border.effectDistance = new Vector2(4f, 4f);
+            border.useGraphicAlpha = true;
+            die.border = border;
+            EditorUtility.SetDirty(border);
+            EditorUtility.SetDirty(die);
         }
 
         private static DuelDieView Die(string name, RectTransform parent, Vector2 position, bool centered)
@@ -226,6 +306,7 @@ namespace CounterAttack.Editor
             rect.sizeDelta = Vector2.one * (centered ? 112 : 92);
             var die = rect.gameObject.AddComponent<DuelDieView>();
             die.background = Image(rect, new Color(.13f, .35f, .63f), false);
+            EnsureDieBorder(die);
             RectTransform face = Rect("Face", rect);
             Stretch(face, 14);
             die.face = Image(face, Color.white, false);

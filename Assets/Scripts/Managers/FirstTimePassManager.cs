@@ -1237,6 +1237,9 @@ public class FirstTimePassManager : MonoBehaviour
             case GroundBallPathInteractionType.OutfieldInterception:
                 Debug.Log($"Selected FTP defender for interception: {currentPathInteraction.DefenderToken.name}. Press [R] to roll.");
                 isWaitingForDiceRoll = true;
+                SingleRollResolutionPresentation.Recovery(this, () => isWaitingForDiceRoll,
+                    currentPathInteraction.DefenderToken, "Ground Pass Interception", true,
+                    currentPathInteraction.InterceptionCandidate.IsBlockingPath ? 5 : 6);
                 break;
         }
     }
@@ -1342,16 +1345,21 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void PerformFTPInterceptionRolls(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentFTPInterception(rollOverride));
+    }
+
+    private IEnumerator PresentFTPInterception(RollInputOverride? rollOverride)
+    {
         if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
         {
             StartCoroutine(ResolveGoalkeeperWallSaveRoll(currentPathInteraction, rollOverride));
-            return;
+            yield break;
         }
 
         if (currentDefenderHex == null || currentPathInteraction == null)
         {
             Debug.LogError("Cannot roll FTP interception because no current defender hex is set.");
-            return;
+            yield break;
         }
 
         GroundInterceptionCandidate currentCandidate = currentPathInteraction.InterceptionCandidate;
@@ -1359,7 +1367,7 @@ public class FirstTimePassManager : MonoBehaviour
         if (currentCandidate == null || currentCandidate.DefenderToken == null)
         {
             Debug.LogError("No matching defender found for FTP interception rolls.");
-            return;
+            yield break;
         }
 
         PlayerToken defenderToken = currentCandidate.DefenderToken;
@@ -1393,6 +1401,8 @@ public class FirstTimePassManager : MonoBehaviour
             ? diceRoll >= 5 || diceRoll + tackling >= 10
             : diceRoll == 6 || diceRoll + tackling >= 10;
 
+        yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
+            successfulInterception ? "INTERCEPTED" : "INTERCEPTION FAILED");
         if (successfulInterception)
         {
             Debug.Log($"Pass intercepted by {defenderToken.name} at {currentDefenderHex.coordinates}!");
@@ -1407,7 +1417,7 @@ public class FirstTimePassManager : MonoBehaviour
             HexCell interceptionHex = currentDefenderHex;
             ResetFTPInterceptionDiceRolls();
             StartCoroutine(HandleBallInterception(interceptionHex));
-            return;
+            yield break;
         }
 
         Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
@@ -1417,7 +1427,7 @@ public class FirstTimePassManager : MonoBehaviour
         if (pathInteractions.Count > 0)
         {
             ProcessCurrentFtpPathInteraction();
-            return;
+            yield break;
         }
 
         Debug.Log("FTP successful! No more defenders to roll.");

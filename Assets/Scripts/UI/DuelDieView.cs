@@ -7,6 +7,7 @@ public sealed class DuelDieView : MonoBehaviour
 {
     public Image background;
     public Image face;
+    public Outline border;
     public TMP_Text fallbackText;
     [Tooltip("Replace these six sprites to redesign the numeric faces, in order 1–6.")]
     public Sprite[] numericFaces = new Sprite[6];
@@ -20,12 +21,14 @@ public sealed class DuelDieView : MonoBehaviour
     public bool ShowsJackpot { get; private set; }
     public int DisplayedRoll { get; private set; }
 
-    public void SetTeamColor(Color color)
+    public void SetTeamColor(Color color) => SetTeamColors(color, Color.white);
+
+    public void SetTeamColors(Color color, Color secondary)
     {
+        if (border != null) border.effectColor = secondary;
         if (background != null) background.color = color;
-        Color ink = color.grayscale > .55f ? new Color(.06f, .07f, .09f) : Color.white;
-        if (face != null) face.color = ink;
-        if (fallbackText != null) fallbackText.color = ink;
+        if (face != null) face.color = secondary;
+        if (fallbackText != null) fallbackText.color = secondary;
     }
 
     public void Clear()

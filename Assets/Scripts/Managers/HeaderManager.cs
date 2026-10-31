@@ -1750,7 +1750,7 @@ public class HeaderManager : MonoBehaviour
                 }
                 MatchManager.Instance.SetHangingPass("aerial");
                 // MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection, allowGKBoxMove: !headerAtGoalDeclared));
+                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection, allowGKBoxMove: !headerAtGoalDeclared, presentationContext: headerAtGoalDeclared ? LooseBallPresentationContext.ShotResolution : LooseBallPresentationContext.Standalone));
                 Debug.Log("Loose ball from header challenge.");
                 CleanUpHeader();
             }
@@ -2115,13 +2115,24 @@ public class HeaderManager : MonoBehaviour
 
     public void PerformInterceptionRoll(RollInputOverride? rollOverride)
     {
-        isWaitingForInterceptionRoll = false;
+        StartCoroutine(PresentHeaderInterception(rollOverride));
+    }
+
+    private bool HeaderInterceptionSucceeded()
+        => interceptionDiceRoll == 6 || interceptionDiceRoll + interceptingDefender.tackling >= 10;
+
+    private IEnumerator PresentHeaderInterception(RollInputOverride? rollOverride)
+    {
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "header_interception",
             rollOverride,
             actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: ball.GetCurrentHex());
         interceptionDiceRoll = diceResult.roll;
+        yield return SingleRollResolutionPresentation.Resolve(this, diceResult,
+            HeaderInterceptionSucceeded()
+                ? "INTERCEPTED" : "INTERCEPTION FAILED");
+        isWaitingForInterceptionRoll = false;
     }
 
     private int GetRollValueWithoutJackpot(RollInputOverride? rollOverride, int returnedRoll)
@@ -2243,6 +2254,8 @@ public class HeaderManager : MonoBehaviour
                 Debug.LogWarning($"No valid token found at defender's hex {defenderHex.coordinates}.");
                 continue;
             }
+            SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionRoll,
+                interceptingDefender, "Landing Ball Interception");
             while (isWaitingForInterceptionRoll) yield return null;
 
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
@@ -2251,7 +2264,7 @@ public class HeaderManager : MonoBehaviour
             Debug.Log($"Total interception score for defender {interceptingDefender.name}: {totalInterceptionScore}");
             MatchManager.Instance.gameData.gameLog.LogEvent(interceptingDefender, MatchManager.ActionType.InterceptionAttempt);
 
-            if (interceptionDiceRoll == 6 || totalInterceptionScore >= 10)
+            if (HeaderInterceptionSucceeded())
             {
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
                 MatchManager.Instance.gameData.gameLog.LogEvent(

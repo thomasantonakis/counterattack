@@ -992,15 +992,20 @@ public class GroundBallManager : MonoBehaviour
 
     public void PerformGroundInterceptionDiceRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentGroundInterception(rollOverride));
+    }
+
+    private IEnumerator PresentGroundInterception(RollInputOverride? rollOverride)
+    {
         if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
         {
             StartCoroutine(ResolveGoalkeeperWallSaveRoll(currentPathInteraction, rollOverride));
-            return;
+            yield break;
         }
 
         if (currentDefenderHex == null || currentPathInteraction == null)
         {
-            return;
+            yield break;
         }
 
         // Retrieve the defender token
@@ -1008,7 +1013,7 @@ public class GroundBallManager : MonoBehaviour
         if (defenderToken == null)
         {
             Debug.LogError($"No PlayerToken found on defender's hex at {currentDefenderHex.coordinates}. This should not happen.");
-            return;
+            yield break;
         }
 
         GameplayDiceRollResult interceptionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
@@ -1033,11 +1038,14 @@ public class GroundBallManager : MonoBehaviour
         MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
         // Debug.Log($"Dice roll by defender at {currentDefenderHex.coordinates}: {diceRoll}");
         isWaitingForDiceRoll = false;
+        bool successfulInterception = diceRoll == 6 || diceRoll + defenderToken.tackling >= 10;
+        yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
+            successfulInterception ? "INTERCEPTED" : "INTERCEPTION FAILED");
         // if (diceRoll == 6)
-        if (diceRoll == 6 || diceRoll + defenderToken.tackling >= 10)
+        if (successfulInterception)
         {
             ResolveGroundInterceptionSuccess(defenderToken);
-            return;
+            yield break;
         }
 
         Debug.Log($"{defenderToken.name} at {currentDefenderHex.coordinates} failed to intercept.");
@@ -1253,6 +1261,7 @@ public class GroundBallManager : MonoBehaviour
             case GroundBallPathInteractionType.OutfieldInterception:
                 Debug.Log($"Selected defender for interception: {currentPathInteraction.DefenderToken.name}. Press [R] to roll.");
                 isWaitingForDiceRoll = true;
+                SingleRollResolutionPresentation.Recovery(this, () => isWaitingForDiceRoll, currentPathInteraction.DefenderToken, "Ground Pass Interception");
                 break;
         }
     }

@@ -2740,6 +2740,8 @@ public class MovementPhaseManager : MonoBehaviour
         lookingForNutmegVictim = false;
         // Set the flag to wait for interception dice roll
         isWaitingForInterceptionDiceRoll = true;
+        SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionDiceRoll,
+            selectedDefender, "Recovery Attempt", false, 6, isDribblerRunning ? FOUL_THRESHOLD : 0, IsCurrentBallHexInOpponentPenaltyBox());
     }
 
     public IEnumerator PerformBallInterceptionDiceRoll(int? rigroll = null)
@@ -2805,8 +2807,13 @@ public class MovementPhaseManager : MonoBehaviour
                 "steal");
             MatchManager.Instance.gameData.gameLog.LogEvent(selectedDefender, MatchManager.ActionType.InterceptionAttempt);
 
+            bool foul = isDribblerRunning && diceRoll <= FOUL_THRESHOLD;
+            bool recovered = diceRoll == 6 || diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD;
+            yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
+                foul ? (IsCurrentBallHexInOpponentPenaltyBox() ? "PENALTY!" : "FOUL")
+                    : recovered ? "BALL RECOVERED" : "RECOVERY FAILED", continueWithFoulChecks: foul);
             // Check if there was a foul
-            if (isDribblerRunning && diceRoll <= FOUL_THRESHOLD)
+            if (foul)
             {
                 Debug.Log("Defender committed a foul.");
                 eligibleDefenders.Remove(selectedDefender);
@@ -2817,7 +2824,7 @@ public class MovementPhaseManager : MonoBehaviour
                 yield return StartCoroutine(HandleFoulProcess(selectedToken, selectedDefender));
             }
             // Check interception condition: either roll a 6 or roll + tackling >= 10
-            else if (diceRoll == 6 || (diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD))
+            else if (recovered)
             {
                 // Defender successfully intercepts the ball
                 Debug.Log($"Ball intercepted by {selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates}!");
@@ -2841,6 +2848,8 @@ public class MovementPhaseManager : MonoBehaviour
                 {
                     selectedDefender = eligibleDefenders[0];  // Move to the next defender
                     isWaitingForInterceptionDiceRoll = true;
+                    SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionDiceRoll,
+                        selectedDefender, "Recovery Attempt", false, 6, isDribblerRunning ? FOUL_THRESHOLD : 0, IsCurrentBallHexInOpponentPenaltyBox());
                     Debug.Log($"Selected defender for interception: {selectedDefender.name}. Press R to roll...");
                 }
                 else if (isResolvingPostSuccessfulTackleSteals)
@@ -3425,6 +3434,11 @@ public class MovementPhaseManager : MonoBehaviour
     {
         Debug.Log("Handling foul resolution process...");
         pendingFoulIsPenalty = IsCurrentBallHexInOpponentPenaltyBox();
+        // Recovery fouls reuse the open single-roll layout and the same leniency/injury flow
+        // as tackling fouls. No second panel, fresh roll, or intermediate dismissal is needed.
+        if (activeDuelPanel == null && duelResolutionPanel != null
+            && duelResolutionPanel.ContinueRecoveryFoul(this, attackerToken, defenderToken, pendingFoulIsPenalty))
+            activeDuelPanel = duelResolutionPanel;
         isDribblerRunning = false;
         isAwaitingHexDestination = false;
         isAwaitingTokenSelection = false;

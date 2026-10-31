@@ -505,6 +505,9 @@ public class LongBallManager : MonoBehaviour
             MatchManager.ActionType.AerialPassAttempt
         );
         isWaitingForAccuracyRoll = true;
+        PlayerToken accuracyToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll, accuracyToken,
+            "Long Ball Accuracy", AccuracyProbability(accuracyToken?.highPass ?? 0), isDangerous ? 10 : 9, true);
         Debug.Log("Long Ball confirmed. Waiting for accuracy roll. Please Press R key.");
     }
 
@@ -579,6 +582,18 @@ public class LongBallManager : MonoBehaviour
         else return (true, false);
     }
 
+    // DiceRoll splits natural six equally between numeric six and jackpot. Long Ball alone
+    // promotes the jackpot to 50; High Pass and recovery keep its numeric six.
+    public float AccuracyProbability(int highPass)
+    {
+        int threshold = isDangerous ? 10 : 9;
+        float probability = 0f;
+        for (int roll = 1; roll <= 6; roll++)
+            if (roll + highPass >= threshold) probability += roll == 6 ? 1f / 12f : 1f / 6f;
+        return probability + (MatchManager.Instance.helperFunctions != null ? 1f / 12f
+            : (6 + highPass >= threshold ? 1f / 12f : 0f));
+    }
+
     private void PerformAccuracyRoll(int? rigRoll = null)
     {
         RollInputOverride? rollOverride = rigRoll.HasValue
@@ -594,6 +609,11 @@ public class LongBallManager : MonoBehaviour
 
     private void PerformAccuracyRoll(RollInputOverride? rollOverride)
     {
+        StartCoroutine(PresentAccuracyRoll(rollOverride));
+    }
+
+    private IEnumerator PresentAccuracyRoll(RollInputOverride? rollOverride)
+    {
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Get the passer's highPass attribute
@@ -601,7 +621,7 @@ public class LongBallManager : MonoBehaviour
         if (attackerToken == null)
         {
             Debug.LogError("Error: No attacker token found on the ball's hex!");
-            return;
+            yield break;
         }
 
         int accuracyThreshold = isDangerous ? 10 : 9;
@@ -625,7 +645,10 @@ public class LongBallManager : MonoBehaviour
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
         int totalAccuracy = accuracyRoll.isJackpot ? 50 : diceRoll + highPassAttribute;
-        if (totalAccuracy >= accuracyThreshold)
+        bool accuratePass = totalAccuracy >= accuracyThreshold;
+        yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
+            accuratePass ? "ACCURATE" : "INACCURATE");
+        if (accuratePass)
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
             // Move the ball to the intended target
@@ -1038,6 +1061,8 @@ public class LongBallManager : MonoBehaviour
         {
             Debug.Log($"Found {interceptingDefenders.Count} defender(s) eligible for long-ball interception. Please Press R key.");
             isWaitingForInterceptionRoll = true;
+            SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionRoll,
+                interceptingDefenders[0].GetOccupyingToken(), "Landing Ball Interception");
             return true;
         }
 
@@ -1083,6 +1108,10 @@ public class LongBallManager : MonoBehaviour
                 continue;
             }
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
+            // Existing Long Ball flow resolves the ordered defender batch from one input.
+            // Keep the same override/random calls, presenting each result before advancing.
+            SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionRoll,
+                defenderToken, "Landing Ball Interception");
             GameplayDiceRollResult interceptionRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
                 "long_ball_interception",
                 rollOverride,
@@ -1107,7 +1136,10 @@ public class LongBallManager : MonoBehaviour
             MatchManager.Instance.gameData.gameLog.LogEvent(defenderToken, MatchManager.ActionType.InterceptionAttempt);
             attemptedLongBallInterceptors.Add(defenderToken);
 
-            if (diceRoll == 6 || totalInterceptionScore >= 10)
+            bool successfulInterception = diceRoll == 6 || totalInterceptionScore >= 10;
+            yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
+                successfulInterception ? "INTERCEPTED" : "INTERCEPTION FAILED");
+            if (successfulInterception)
             {
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
                 isWaitingForInterceptionRoll = false;
