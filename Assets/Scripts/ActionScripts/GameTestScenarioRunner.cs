@@ -816,7 +816,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick), Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
-            new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition("Scenario_041p_OutsideBoxGK_Hands_NormalLeniency", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: false, reverseDirection: false, leniencyRoll: 1)),
+            new ScenarioDefinition("Scenario_041q_OutsideBoxGK_Feet_FromBehind_HarshYellow", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: true, reverseDirection: false, leniencyRoll: 1)),
+            new ScenarioDefinition("Scenario_041r_OutsideBoxGK_Hands_FromBehind_HarshRed_Mirrored", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: true, reverseDirection: true, leniencyRoll: 6)),
+            new ScenarioDefinition("Scenario_041s_OutsideBoxGK_Feet_NormalYellow_Mirrored", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: false, reverseDirection: true, leniencyRoll: 6)),
             new ScenarioDefinition(nameof(Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox), Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox),
             new ScenarioDefinition(nameof(Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero), Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero),
             new ScenarioDefinition(nameof(Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction), Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction),
@@ -990,7 +994,11 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick), Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
-            new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition("Scenario_041p_OutsideBoxGK_Hands_NormalLeniency", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: false, reverseDirection: false, leniencyRoll: 1)),
+            new ScenarioDefinition("Scenario_041q_OutsideBoxGK_Feet_FromBehind_HarshYellow", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: true, reverseDirection: false, leniencyRoll: 1)),
+            new ScenarioDefinition("Scenario_041r_OutsideBoxGK_Hands_FromBehind_HarshRed_Mirrored", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: true, reverseDirection: true, leniencyRoll: 6)),
+            new ScenarioDefinition("Scenario_041s_OutsideBoxGK_Feet_NormalYellow_Mirrored", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: false, reverseDirection: true, leniencyRoll: 6)),
             new ScenarioDefinition(nameof(Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox), Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox),
             new ScenarioDefinition(nameof(Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero), Scenario_041k_OutsideBoxGKShot_Block_UsesTacklingZero),
             new ScenarioDefinition(nameof(Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction), Scenario_041l_OutsideBoxGKShot_Block_NoEligibility_NoInteraction),
@@ -1199,7 +1207,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         public List<HexCell> Path { get; }
     }
 
-    private OutsideBoxGoalkeeperChallengeSetup PrepareOutsideBoxGoalkeeperChallengeBoard()
+    private OutsideBoxGoalkeeperChallengeSetup PrepareOutsideBoxGoalkeeperChallengeBoard(
+        bool dangerousPosition = false, bool reverseDirection = false)
     {
         MatchManager.Instance.difficulty_level = 2;
         if (MatchManager.Instance.gameData != null && MatchManager.Instance.gameData.gameSettings != null)
@@ -1207,18 +1216,24 @@ public class GameTestScenarioRunner : MonoBehaviour
             MatchManager.Instance.gameData.gameSettings.playerAssistance = 2;
         }
 
-        MatchManager.Instance.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
-        MatchManager.Instance.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+        MatchManager.Instance.homeTeamDirection = reverseDirection
+            ? MatchManager.TeamAttackingDirection.RightToLeft : MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = reverseDirection
+            ? MatchManager.TeamAttackingDirection.LeftToRight : MatchManager.TeamAttackingDirection.RightToLeft;
         EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
         MatchManager.Instance.attackHasPossession = true;
 
         PlayerToken dribbler = RequirePlayerToken("Yaneva");
         PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
-        HexCell dribblerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(11, 0, 0)), "Outside-box GK test dribbler hex (11,0) should exist.");
-        HexCell goalkeeperStartHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(13, 0, 0)), "Outside-box GK test GK start hex (13,0) should exist.");
-        HexCell goalkeeperChallengeHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(12, 0, 0)), "Outside-box GK test GK challenge hex (12,0) should exist.");
+        int side = reverseDirection ? -1 : 1;
+        HexCell dribblerHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(11 * side, 0, 0)), "Outside-box GK test dribbler hex should exist.");
+        HexCell goalkeeperStartHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int((dangerousPosition ? 8 : 13) * side, 0, 0)), "Outside-box GK test GK start hex should exist.");
+        HexCell goalkeeperChallengeHex = dangerousPosition
+            ? RequireHex(dribblerHex.GetNeighbors(hexgrid).FirstOrDefault(hex => hex != null
+                && dribblerHex.IsDangerousTacklingPosition(MatchManager.Instance.homeTeamDirection, hex)), "A cached dangerous tackle hex should exist behind the dribbler.")
+            : RequireHex(hexgrid.GetHexCellAt(new Vector3Int(12 * side, 0, 0)), "Outside-box GK test GK challenge hex should exist.");
 
-        MoveTokensOutOfFinalThirdForRestartTest(1, dribbler, goalkeeper);
+        MoveTokensOutOfFinalThirdForRestartTest(side, dribbler, goalkeeper);
         ClearHexForGkWallScenario(dribblerHex);
         ClearHexForGkWallScenario(goalkeeperStartHex);
         ClearHexForGkWallScenario(goalkeeperChallengeHex);
@@ -1246,6 +1261,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(goalkeeper.IsGoalKeeper, "Outside-box GK tests should use Kuzmic as the defending goalkeeper.");
         AssertTrue(dribbler.IsDribbler, "Outside-box GK tests should put Yaneva on the ball as dribbler.");
         AssertTrue(!goalKeeperManager.IsGoalkeeperOwnPenaltyHex(goalkeeper, dribblerHex), "Dribbler should be outside the defending goalkeeper's own penalty box.");
+        AssertTrue(dribblerHex.IsDangerousTacklingPosition(MatchManager.Instance.homeTeamDirection, goalkeeperChallengeHex) == dangerousPosition,
+            "The selected tackle hex must match the scenario's position-based danger setting.");
 
         return new OutsideBoxGoalkeeperChallengeSetup(
             dribbler,
@@ -1620,53 +1637,79 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Outside Box GK Foot Tackle Defender Win Normal Recovery");
     }
 
-    private IEnumerator Scenario_041i_OutsideBoxGK_Foul_HarshLeniency_Injury_AdvantageChoice()
+    private IEnumerator Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice()
+    {
+        yield return StartCoroutine(Scenario_041_GoalkeeperFoulByPosition(
+            hands: false, dangerous: false, reverseDirection: false, leniencyRoll: 1));
+    }
+
+    // Regression: keeper identity and hands/feet must not select the leniency policy.
+    // Roll 2 must foul from either cached rear hex; the ordinary position fouls only on 1.
+    private IEnumerator Scenario_041_GoalkeeperFoulByPosition(bool hands, bool dangerous, bool reverseDirection, int leniencyRoll)
     {
         yield return new WaitForSeconds(1.5f);
-        Log("Starting outside-box GK foul harsh-leniency test.");
-        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
+        Log($"Starting goalkeeper position-based foul test: hands={hands}, dangerous={dangerous}, mirrored={reverseDirection}, leniency roll={leniencyRoll}.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard(dangerous, reverseDirection);
         MatchManager.Instance.refereeLeniency = 4;
-        yield return StartCoroutine(StartOutsideBoxGoalkeeperFootTackle(setup));
+        yield return StartCoroutine(hands ? StartOutsideBoxGoalkeeperDive(setup) : StartOutsideBoxGoalkeeperFootTackle(setup));
 
-        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 1);
+        string rollInstructions = movementPhaseManager.GetInstructions();
+        AssertTrue(rollInstructions.Contains(dangerous ? "harsh leniency" : "normal leniency"),
+            "Pre-roll guidance must select leniency using the tackle hex, not the goalkeeper challenge mode.");
+        var panel = movementPhaseManager.duelResolutionPanel;
+        if (panel != null && panel.IsOpen)
+        {
+            var defenderView = panel.DribblerOnLeft ? panel.rightPlayer : panel.leftPlayer;
+            AssertTrue(defenderView.guidance.text.Contains(dangerous ? "Roll 1–2" : "Roll 1 ="),
+                "The duel panel foul range must match the position-based gameplay threshold.");
+        }
+        movementPhaseManager.PerformTackleDiceRoll(isDefender: true, dangerous ? 2 : 1);
         AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
         yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
-            () => movementPhaseManager.isWaitingForYellowCardRoll,
-            2f,
-            "Outside-box GK challenge foul should wait for the harsh leniency test."));
+            () => movementPhaseManager.isWaitingForYellowCardRoll, 2f,
+            "A positional foul must enter leniency before any handball contact outcome."));
+        AssertTrue(!setup.Goalkeeper.isSentOff, "A foul roll must not trigger the separate automatic handball red.");
 
         string leniencyInstructions = movementPhaseManager.GetInstructions();
-        AssertTrue(leniencyInstructions.Contains("Fail: straight red card"), "Outside-box GK foul leniency prompt should warn that failure is a straight red.", "Fail: straight red card", leniencyInstructions);
-        AssertTrue(leniencyInstructions.Contains("Pass: yellow card"), "Outside-box GK foul leniency prompt should warn that passing still gives a yellow.", "Pass: yellow card", leniencyInstructions);
-        AssertTrue(!leniencyInstructions.Contains("second yellow"), "Outside-box GK foul leniency prompt should not mention second yellows.", "no second yellow text", leniencyInstructions);
+        AssertTrue(leniencyInstructions.Contains(dangerous ? "Fail: straight red card" : "Fail: yellow card"),
+            "Leniency failure must be red only from a dangerous hex.");
+        AssertTrue(leniencyInstructions.Contains(dangerous ? "Pass: yellow card" : "Pass: no card"),
+            "Leniency pass must be yellow only from a dangerous hex.");
+        if (panel != null && panel.IsOpen)
+            AssertTrue(panel.leniency.rule.text.Contains(dangerous ? "straight red" : "no card"),
+                "Expanded leniency copy must match the gameplay card policy.");
 
-        movementPhaseManager.PerformLeniencyTest(1);
+        movementPhaseManager.PerformLeniencyTest(leniencyRoll);
         yield return StartCoroutine(WaitForCondition(
-            () => movementPhaseManager.isWaitingForInjuryRoll,
-            2f,
-            "Outside-box GK foul should continue to injury after leniency."));
-        AssertTrue(setup.Goalkeeper.isBooked && !setup.Goalkeeper.isSentOff, "Passing harsh leniency should book the goalkeeper without sending them off.");
+            () => movementPhaseManager.isWaitingForInjuryRoll, 2f,
+            "Goalkeeper fouls must continue to injury after either leniency outcome."));
+        bool expectedRed = dangerous && leniencyRoll >= MatchManager.Instance.refereeLeniency;
+        bool expectedYellow = !expectedRed && (dangerous || leniencyRoll >= MatchManager.Instance.refereeLeniency);
+        AssertTrue(setup.Goalkeeper.isSentOff == expectedRed, "Goalkeeper dismissal must follow position and leniency, not identity.");
+        AssertTrue(setup.Goalkeeper.isBooked == expectedYellow, "Goalkeeper booking must follow position and leniency, not identity.");
 
         movementPhaseManager.PerformInjuryTest(1);
         yield return WaitForDuelResultPresentation();
-        yield return StartCoroutine(WaitForCondition(
-            () => movementPhaseManager.isWaitingForFoulDecision,
-            2f,
-            "Outside-box GK foul should offer A/F when the attacker can still play and the goalkeeper was not sent off."));
-
-        string foulInstructions = movementPhaseManager.GetInstructions();
-        AssertTrue(foulInstructions.Contains("[A]") && foulInstructions.Contains("[F]"), "Outside-box GK foul should offer advantage/free kick choice when not forced.", "[A]/[F]", foulInstructions);
-
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.1f));
-        yield return StartCoroutine(WaitForCondition(
-            () => finalThirdManager.isActivated || freeKickManager.isWaitingForKickerSelection,
-            3f,
-            "Taking the outside-box GK foul should proceed toward Free Kick preparation."));
-
-        LogFooterofTest("Outside Box GK Foul Harsh Leniency Injury Advantage Choice");
+        if (!expectedRed)
+        {
+            yield return StartCoroutine(WaitForCondition(
+                () => movementPhaseManager.isWaitingForFoulDecision, 2f,
+                "A continuing attacker and keeper should retain the advantage/free kick choice."));
+            string foulInstructions = movementPhaseManager.GetInstructions();
+            AssertTrue(foulInstructions.Contains("[A]") && foulInstructions.Contains("[F]"), "A non-forced foul should retain A/F choices.");
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.F, 0.1f));
+            yield return StartCoroutine(WaitForCondition(
+                () => finalThirdManager.isActivated || freeKickManager.isWaitingForKickerSelection, 3f,
+                "Taking the goalkeeper foul should continue toward Free Kick preparation."));
+        }
+        else
+        {
+            AssertTrue(!movementPhaseManager.isWaitingForFoulDecision, "A straight red must force the foul rather than offer advantage.");
+        }
+        LogFooterofTest("Goalkeeper Position-Based Foul Leniency");
     }
 
     private IEnumerator Scenario_041j_OutsideBoxGKShot_MixedPSH_PrefersOwnBox()

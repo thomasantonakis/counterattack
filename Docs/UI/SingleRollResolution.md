@@ -123,3 +123,37 @@ manager advances to another defender or performs its original collection/movemen
 Shot-context recoveries and goalkeeper Saving/Tackling paths keep their current
 flow. The dice resolver and eligibility ordering remain unchanged. Preview
 `Loose Ball Recovery` and `Tied Duel Loose Ball Recovery` under the existing menu.
+
+## Goalkeeper ground duels
+
+Movement goalkeeper challenges now use the same authored duel fields and controls.
+Ordinary tackles with the ball in the keeper's own penalty area label the existing
+effective skill as Saving (PlayerToken initializes the keeper's legacy tackling
+field from Saving). The resolution value and expected-stat logging are unchanged.
+Wall dives show Saving with the existing wall modifier, rather than a nutmeg bonus.
+Outside the box, the decision copy explicitly offers hands (Saving), feet
+(Tackling 0), or no challenge. The authored Role field identifies the selected option.
+
+Outside-box hands contact on a win **or tie** is handball: straight red and free
+kick. This is the existing manager rule, including jackpot ties. The panel shows
+that consequence before the rolls and in the final result, instead of claiming
+possession or a loose ball. A natural foul roll takes precedence and still expands
+the leniency/injury checks. Harsh leniency is determined only by the two cached
+hexes behind the dribbler in that team's attacking direction, for outfield players
+and goalkeepers alike. From those hexes, rolls 1–2 foul and leniency is yellow/red;
+elsewhere, only 1 fouls and leniency is no card/yellow (with existing second-yellow
+handling). Goalkeeper identity, hands/feet choice and being outside the box do not
+select harsh leniency. Manager resolution, expected-duel logging and panel guidance
+all use the same position check. The obsolete goalkeeper-specific override was removed.
+A legal dive win says Save and Hold;
+a legal dive tie retains its existing keeper-origin loose ball after dismissal.
+Only the outfield/feet tackle ties attach the existing scatter continuation.
+
+Dive labels use raw duel-win probabilities from the same logged expectation,
+without applying outfield tie-recovery weighting to the Saving label. Conditional
+outcomes group outside-box hands wins and ties as handball/straight red. All dice,
+overrides, foul thresholds, cards, movement and possession remain manager-owned.
+
+Runner coverage updates the former outside-box harsh-leniency scenario to expect
+normal leniency from an ordinary hex, and adds hands/feet, dangerous rear position,
+ordinary yellow and mirrored-direction cases. The suite remains user-run.

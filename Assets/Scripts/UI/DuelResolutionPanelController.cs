@@ -81,6 +81,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private int dribbling;
     private int tackling;
     private int defenderBonus;
+    private GroundDuelPresentationKind duelKind;
     private int foulThreshold;
     private float closeAt;
     private bool expanded;
@@ -129,7 +130,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
 
     public bool Begin(MovementPhaseManager manager, PlayerToken attacker, PlayerToken defender,
         bool nutmeg, int effectiveTackling, int bonus, int threshold,
-        ExpectedStatsCalculator.GroundDuelExpectation expectation, bool penaltyArea)
+        ExpectedStatsCalculator.GroundDuelExpectation expectation, bool penaltyArea,
+        string defenderAttribute = "Tackling", GroundDuelPresentationKind kind = GroundDuelPresentationKind.Tackle)
     {
         if (!HasSceneBindings || attacker == null || defender == null) return false;
         singleMode = false;
@@ -157,6 +159,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         dribbling = attacker.dribbling;
         tackling = effectiveTackling;
         defenderBonus = bonus;
+        duelKind = kind;
         foulThreshold = threshold;
         foulIsPenalty = penaltyArea;
         IsResultHeld = false;
@@ -165,12 +168,39 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         attackerColor = TeamColor(attacker);
         attackerSecondaryColor = TeamPalette(attacker).Secondary;
         ConfigurePlayer(dribblerView, attacker, "Dribbling", dribbling, 0, "xDr", expectation.xDribbles);
-        ConfigurePlayer(defenderView, defender, "Tackling", tackling, bonus, "xTk", expectation.xTackles);
+        bool dive = kind is GroundDuelPresentationKind.GoalkeeperDive or GroundDuelPresentationKind.OutsideBoxHands;
+        ConfigurePlayer(defenderView, defender, defenderAttribute, tackling, bonus,
+            dive ? "Duel win" : "xTk", dive ? expectation.defenderWinProbability : expectation.xTackles);
+        if (dive)
+        {
+            // A dive tie has its own gameplay branch; do not apply the outfield xDr/xTk tie weighting.
+            dribblerView.attribute.text = $"Dribbling {dribbling} (Duel win {expectation.attackerWinProbability:0.00})";
+            defenderView.modifier.text = bonus == 0 ? "" : $"Saving modifier  {bonus:+0;-0}";
+        }
+        if (defenderView.role != null)
+        {
+            defenderView.role.text = kind switch
+            {
+                GroundDuelPresentationKind.OutsideBoxHands => "Hands outside box — win/tie: straight red",
+                GroundDuelPresentationKind.OutsideBoxFeet => "Feet outside box — Tackling 0",
+                GroundDuelPresentationKind.GoalkeeperDive => "Dive — Saving vs Dribbling",
+                _ => defenderAttribute == "Saving" ? "Goalkeeper — own penalty area" : ""
+            };
+            defenderView.role.gameObject.SetActive(defenderView.role.text.Length > 0);
+        }
         ArrangeFoulChecks(leftToRight);
-        title.text = nutmeg ? "NUTMEG DUEL" : "TACKLE DUEL";
+        title.text = kind switch
+        {
+            GroundDuelPresentationKind.OutsideBoxHands => "GOALKEEPER CHALLENGE — HANDS",
+            GroundDuelPresentationKind.OutsideBoxFeet => "GOALKEEPER CHALLENGE — FEET",
+            GroundDuelPresentationKind.GoalkeeperDive => "GOALKEEPER DIVE",
+            _ => nutmeg ? "NUTMEG DUEL" : "TACKLE DUEL"
+        };
         outcome.text = "";
         string foulResult = foulIsPenalty ? "penalty" : "foul";
         defenderView.guidance.text = threshold == 1 ? $"Roll 1 = {foulResult}" : $"Roll 1–{threshold} = {foulResult}";
+        // Manager-supplied geometry drives the foul range and card policy, for any tackler.
+        defenderView.guidance.text += threshold > 1 ? " — from behind; harsh leniency" : " — normal leniency";
         dribblerView.guidance.text = "Waiting for tackler's result";
         leniency.die.Clear();
         injury.die.Clear();
@@ -462,7 +492,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         var settings = MatchManager.Instance.gameData.gameSettings;
         view.playerName.text = $"#{token.jerseyNumber}  {token.playerName}";
         view.teamName.text = token.isHomeTeam ? settings.homeTeamName : settings.awayTeamName;
-        if (view.role != null) view.role.text = "";
+        if (view.role != null) { view.role.text = ""; view.role.gameObject.SetActive(false); }
         view.attribute.text = $"{attribute} {skill} ({expectedLabel} {expectedValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)})";
         view.modifier.text = bonus != 0 ? $"Nutmeg Bonus  +{bonus}" : "";
         view.total.text = "Total  —";
@@ -491,9 +521,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             defenderView.guidance.text = foul ? foulIsPenalty ? "Penalty roll" : "Foul roll" : "Rolled";
             int defenderTotal = roll.isJackpot ? 50 : tackling + defenderBonus + roll.roll;
             outcome.text = foul ? foulIsPenalty ? "PENALTY!" : "FOUL — tackler committed a foul"
-                : DuelRollGuidance.LiveOutcomes(ExpectedStatsCalculator.CalculateGroundDuelAfterDefenderRoll(dribbling, defenderTotal, false));
+                : DuelRollGuidance.LiveOutcomes(ExpectedStatsCalculator.CalculateGroundDuelAfterDefenderRoll(dribbling, defenderTotal, false), duelKind);
             dribblerView.guidance.text = DuelRollGuidance.ForDribbler(dribbling,
-                defenderTotal, roll.isJackpot, foul, foulIsPenalty);
+                defenderTotal, roll.isJackpot, foul, foulIsPenalty, duelKind);
             dribblerView.die.Begin(true);
             footer.text = "Press [R] — dribbler rolls";
         }
