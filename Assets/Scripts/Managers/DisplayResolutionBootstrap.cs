@@ -48,7 +48,6 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
         }
 
         instance = this;
-        ConfigureBuildResolution();
         EnsureClearCamera();
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
@@ -81,20 +80,6 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ApplyDisplayGuards(force: true);
-    }
-
-    private static void ConfigureBuildResolution()
-    {
-#if !UNITY_EDITOR
-        Resolution nativeResolution = Screen.currentResolution;
-        int width = nativeResolution.width > 0 ? nativeResolution.width : Display.main.systemWidth;
-        int height = nativeResolution.height > 0 ? nativeResolution.height : Display.main.systemHeight;
-
-        if (width > 0 && height > 0)
-        {
-            Screen.SetResolution(width, height, FullScreenMode.FullScreenWindow);
-        }
-#endif
     }
 
     private void ApplyDisplayGuards(bool force)
