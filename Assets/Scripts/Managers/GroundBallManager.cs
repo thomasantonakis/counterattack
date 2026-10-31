@@ -718,7 +718,8 @@ public class GroundBallManager : MonoBehaviour
             distance,
             isQuickThrow,
             ignoreMaxDistance: useEasyOwnHalfKickoffRules,
-            suppressInterceptions: useEasyOwnHalfKickoffRules
+            suppressInterceptions: useEasyOwnHalfKickoffRules,
+            logFailures: false
         );
     }
 
@@ -1555,6 +1556,35 @@ public class GroundBallManager : MonoBehaviour
         }
 
         return candidates.ToList();
+    }
+
+    public IReadOnlyList<HexCell> GetLegalGroundPassTargetsForDecisionPreview()
+    {
+        List<HexCell> legalTargets = new();
+        if (hexGrid == null || ball == null || ball.GetCurrentHex() == null)
+        {
+            return legalTargets;
+        }
+
+        foreach (HexCell hex in GetGroundPassDecisionCandidateHexes())
+        {
+            if (IsPlausibleGroundPassDecisionTarget(hex)
+                && ValidateGroundPassPathForDecision(hex, imposedDistance).IsValid)
+            {
+                legalTargets.Add(hex);
+            }
+        }
+
+        return legalTargets;
+    }
+
+    /// <summary>Read-only legality check for a selected target at confirmation.
+    /// Uses the same phase-specific rules as the target list.</summary>
+    public bool IsGroundPassTargetLegalForDecision(HexCell targetHex)
+    {
+        return hexGrid != null && ball != null && ball.GetCurrentHex() != null
+            && IsPlausibleGroundPassDecisionTarget(targetHex)
+            && ValidateGroundPassPathForDecision(targetHex, imposedDistance).IsValid;
     }
 
     private bool IsPlausibleGroundPassDecisionTarget(HexCell hex)

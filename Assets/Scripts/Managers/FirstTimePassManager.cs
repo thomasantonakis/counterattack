@@ -7,6 +7,7 @@ using UnityEngine;
 public class FirstTimePassManager : MonoBehaviour
 {
     private const int FtpMaxDistance = 6;
+    public static int MaxPassDistanceForDecisionPreview => FtpMaxDistance;
 
     [Header("Dependencies")]
     public Ball ball;
@@ -56,6 +57,27 @@ public class FirstTimePassManager : MonoBehaviour
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void LateUpdate()
+    {
+        if (ShouldShowCommittedTargetOverlay())
+        {
+            // Movement/path refreshes legitimately clear the interaction set. Keep
+            // the committed destination visible without making it a legal move hex.
+            currentTargetHex.HighlightHex("passTargetCommitted");
+        }
+    }
+
+    private bool ShouldShowCommittedTargetOverlay()
+    {
+        return currentTargetHex != null
+            && isActivated
+            && (isWaitingForAttackerSelection
+                || isWaitingForAttackerMove
+                || isWaitingForDefenderSelection
+                || isWaitingForDefenderMove
+                || isWaitingForDiceRoll);
     }
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
@@ -600,6 +622,24 @@ public class FirstTimePassManager : MonoBehaviour
             .ToList();
     }
 
+    public IReadOnlyList<HexCell> GetValidFtpMovementDestinationsForDecision(PlayerToken token)
+    {
+        return GetValidFtpMovementDestinations(token);
+    }
+
+    public IReadOnlyList<HexCell> GetLegalFirstTimePassTargetsForDecisionPreview()
+    {
+        if (hexGrid == null || ball == null || ball.GetCurrentHex() == null)
+        {
+            return System.Array.Empty<HexCell>();
+        }
+
+        return HexGrid.GetHexesInRange(hexGrid, ball.GetCurrentHex(), FtpMaxDistance)
+            .Where(hex => IsPlausibleFirstTimePassDecisionTarget(hex)
+                && ValidateFirstTimePassTargetForDecision(hex).IsValid)
+            .ToList();
+    }
+
     private void UpdateMediumModeMovementHover(HexCell hoveredHex)
     {
         hexGrid.ClearHighlightedHexes();
@@ -704,6 +744,7 @@ public class FirstTimePassManager : MonoBehaviour
         if (difficulty == 1)
         {
             HighlightCurrentFtpPath(CalculateCurrentFtpPathDanger());
+            hexGrid.highlightedHexes.Remove(currentTargetHex);
             return;
         }
 
@@ -717,6 +758,7 @@ public class FirstTimePassManager : MonoBehaviour
             {
                 HighlightCommittedTarget();
             }
+            hexGrid.highlightedHexes.Remove(currentTargetHex);
         }
     }
 
@@ -1623,7 +1665,8 @@ public class FirstTimePassManager : MonoBehaviour
                 RoomActionType.SetupMove,
                 RoomDecisionStep.ChooseTarget,
                 destination,
-                $"Move {tokenName} to hex {destination.coordinates}");
+                $"Move {tokenName} to hex {destination.coordinates}",
+                actor: selectedToken);
         }
 
         if (difficulty != 3)

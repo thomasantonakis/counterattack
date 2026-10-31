@@ -205,66 +205,41 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
             return;
         }
 
-        // Get all the fields to be swapped (except Jersey Number)
-        TMP_Text[] currentSlotFields = currentSlotWrapper.GetComponentsInChildren<TMP_Text>();
-        TMP_Text[] draggedSlotFields = draggedSlotWrapper.GetComponentsInChildren<TMP_Text>();
-
-        // Temporary storage for the dragged slot's data
-        string[] draggedData = new string[draggedSlotFields.Length];
-
-        // Store dragged slot data (but skip Jersey Number)
-        for (int i = 1; i < draggedSlotFields.Length; i++)  // Starting from index 1 to skip Jersey Number
+        // Address fields by name: badges and inactive text change traversal order.
+        string[] fieldNames = { "PlayerNameInSlot", "PaceInSlot", "DribblingInSlot",
+            "HeadingInSlot", "HighPassInSlot", "ResilienceInSlot", "ShootingInSlot", "TacklingInSlot" };
+        foreach (string fieldName in fieldNames)
         {
-            draggedData[i] = draggedSlotFields[i].text;
+            TMP_Text current = currentSlotWrapper.Find(fieldName)?.GetComponent<TMP_Text>();
+            TMP_Text dragged = draggedSlotWrapper.Find(fieldName)?.GetComponent<TMP_Text>();
+            if (current == null || dragged == null) continue;
+            (current.text, dragged.text) = (dragged.text, current.text);
         }
-
-        // Swap: Move current slot data to dragged slot
-        for (int i = 1; i < currentSlotFields.Length; i++)  // Starting from index 1 to skip Jersey Number
-        {
-            draggedSlotFields[i].text = currentSlotFields[i].text;
-
-            if (i > 1) // Assuming index 1 is the player name, which doesn't need color coding
-            {
-                if (int.TryParse(currentSlotFields[i].text, out int attributeValue))
-                {
-                    draggedSlotFields[i].color = GetAttributeColor(attributeValue);  // Apply correct color coding for attributes
-                }
-            }
-            else
-            {
-                draggedSlotFields[i].color = Color.white;  // Set player name to black
-            }
-        }
-
-        // Move dragged slot data to the current slot
-        for (int i = 1; i < draggedData.Length; i++)  // Starting from index 1 to skip Jersey Number
-        {
-            currentSlotFields[i].text = draggedData[i];
-
-            if (i > 1) // Assuming index 1 is the player name, which doesn't need color coding
-            {
-                if (int.TryParse(draggedData[i], out int attributeValue))
-                {
-                    currentSlotFields[i].color = GetAttributeColor(attributeValue);  // Apply correct color coding for attributes
-                }
-            }
-            else
-            {
-                currentSlotFields[i].color = Color.white;  // Set player name to white
-            }
-        }
-
-        // Rename both slots in the hierarchy to reflect the swapped player names
-        // Ensure that the jersey number (e.g., "Home-1" or "Home-7") is preserved
-        string currentSlotBaseName = gameObject.name.Split('-')[0] + "-" + gameObject.name.Split('-')[1];  // e.g., "Home-1"
-        string draggedSlotBaseName = draggedSlot.name.Split('-')[0] + "-" + draggedSlot.name.Split('-')[1];  // e.g., "Home-7"
-        // Handle renaming for an empty slot (no player name)
-        gameObject.name = string.IsNullOrWhiteSpace(currentSlotFields[1].text) ? currentSlotBaseName : $"{currentSlotBaseName}-{currentSlotFields[1].text}";
-        draggedSlot.name = string.IsNullOrWhiteSpace(draggedSlotFields[1].text) ? draggedSlotBaseName : $"{draggedSlotBaseName}-{draggedSlotFields[1].text}";
+        RefreshSlotBadges(currentSlotWrapper);
+        RefreshSlotBadges(draggedSlotWrapper);
+        string currentName = currentSlotWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text;
+        string draggedName = draggedSlotWrapper.Find("PlayerNameInSlot").GetComponent<TMP_Text>().text;
+        string currentBase = GetSlotBaseName();
+        string draggedBase = draggedSlot.GetComponent<PlayerSlotDropHandler>().GetSlotBaseName();
+        gameObject.name = string.IsNullOrWhiteSpace(currentName) ? currentBase : $"{currentBase}-{currentName}";
+        draggedSlot.name = string.IsNullOrWhiteSpace(draggedName) ? draggedBase : $"{draggedBase}-{draggedName}";
         Debug.Log($"Slot renaming completed: {gameObject.name} and {draggedSlot.name}");
         if (draftManager != null)
         {
             draftManager.RefreshRosterAverages();
+        }
+    }
+
+    private void RefreshSlotBadges(Transform wrapper)
+    {
+        foreach (string attribute in new[] { "Pace", "Dribbling", "Heading", "HighPass", "Resilience", "Shooting", "Tackling" })
+        {
+            TMP_Text text = wrapper.Find(attribute + "InSlot")?.GetComponent<TMP_Text>();
+            Image badge = wrapper.Find(attribute + "Badge")?.GetComponent<Image>();
+            if (text != null) text.color = Color.white;
+            if (badge != null)
+                badge.color = text != null && int.TryParse(text.text, out int value)
+                    ? GetAttributeColor(value) : Color.clear;
         }
     }
 
@@ -326,6 +301,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         handlingBadge.color = GetAttributeColor(gk.Handling);
 
         // Rename the slot by appending the goalkeeper's name
+        RefreshSlotBadges(contentWrapper);
         gameObject.name = $"{GetSlotBaseName()}-{gk.Name}";  // Append GK name to the slot name
         Debug.Log($"Slot renamed to: {gameObject.name}");
     }
@@ -348,6 +324,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         ClearSlotText(contentWrapper, "ShootingInSlot");
         ClearSlotText(contentWrapper, "TacklingInSlot");
 
+        RefreshSlotBadges(contentWrapper);
         gameObject.name = GetSlotBaseName();
         Debug.Log($"Slot cleared and renamed to: {gameObject.name}");
     }
@@ -412,6 +389,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         shootingBadge.color = GetAttributeColor(player.Shooting);
         tacklingBadge.color = GetAttributeColor(player.Tackling);
 
+        RefreshSlotBadges(contentWrapper);
         gameObject.name = $"{GetSlotBaseName()}-{player.Name}";
         Debug.Log($"Slot renamed to: {gameObject.name}");
     }
@@ -467,6 +445,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
         tacklingBadge.color = GetAttributeTextColor(card.tacklingValueText.text);
 
         // Rename the slot by appending the player's name
+        RefreshSlotBadges(contentWrapper);
         gameObject.name = $"{GetSlotBaseName()}-{card.playerNameText.text}";  // Append player name to the slot name
         Debug.Log($"Slot renamed to: {gameObject.name}");
     }

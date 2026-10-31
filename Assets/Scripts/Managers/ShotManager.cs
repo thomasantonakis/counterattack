@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 
 public class ShotManager : MonoBehaviour
 {
+    public const int SnapshotDefenderMovementRange = 2;
     private const string FreeKickShotType = "freeKick";
     private const string PenaltyShotType = "penalty";
     private const float ShotTargetElevation = 0.07f;
@@ -33,6 +34,7 @@ public class ShotManager : MonoBehaviour
     public bool isActivated = false;  // Tracks if a shot is active
     public bool isWaitingforBlockerSelection = false;  // Tracks if we are waiting to select a blocker
     public bool isWaitingforBlockerMovement = false;  // Tracks if we are waiting for the selected blocker to move
+    public bool IsMovingSnapshotBlocker { get; private set; }
     public bool isWaitingForTargetSelection = false;  // Tracks if we are waiting for shot target selection
     public bool isWaitingForBlockDiceRoll = false;  // Tracks we are in the Blocking Phase
     public bool isWaitingForShotRoll = false;  // Tracks we are in the Blocking Phase
@@ -281,6 +283,439 @@ public class ShotManager : MonoBehaviour
         expectedGoalLogged = true;
     }
 
+    public bool TryCalculateExpectedGoalsPreview(
+        HexCell proposedTarget,
+        out float expectedGoals,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        string previewShotType = !string.IsNullOrWhiteSpace(shotType)
+            ? shotType
+            : GetPendingShotProcessType();
+        return TryCalculateExpectedGoalsPreview(
+            proposedTarget,
+            previewShotType,
+            out expectedGoals,
+            out shootingPenalty,
+            out blockerCount,
+            out goalkeeperPenalty);
+    }
+
+    public bool TryCalculateExpectedGoalsPreview(
+        HexCell proposedTarget,
+        string evaluatedShotType,
+        out float expectedGoals,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        expectedGoals = 0f;
+        shootingPenalty = 0;
+        blockerCount = 0;
+        goalkeeperPenalty = 0;
+
+        PlayerToken previewShooter = shooter != null
+            ? shooter
+            : MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose;
+        HexCell originHex = GetShotOriginHex() ?? GetShotCommitPreviewOriginHex();
+        return TryCalculateExpectedGoalsPreview(
+            previewShooter,
+            originHex,
+            proposedTarget,
+            evaluatedShotType,
+            out expectedGoals,
+            out shootingPenalty,
+            out blockerCount,
+            out goalkeeperPenalty);
+    }
+
+    public bool TryCalculateExpectedGoalsPreview(
+        PlayerToken previewShooter,
+        HexCell originHex,
+        HexCell proposedTarget,
+        string evaluatedShotType,
+        out float expectedGoals,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        expectedGoals = 0f;
+        shootingPenalty = 0;
+        blockerCount = 0;
+        goalkeeperPenalty = 0;
+
+        if (previewShooter == null
+            || proposedTarget == null
+            || originHex?.ShootingPaths == null
+            || !originHex.ShootingPaths.TryGetValue(proposedTarget, out List<HexCell> path))
+        {
+            return false;
+        }
+
+        List<ShotInteraction> interactions = BuildShotTargetPreviewInteractions(path);
+        List<ExpectedStatsCalculator.ShotBlockerExpectation> blockExpectations = interactions
+            .Where(interaction => interaction != null && !interaction.IsGK && interaction.defender != null)
+            .Select(interaction => new ExpectedStatsCalculator.ShotBlockerExpectation(
+                interaction.defender,
+                interaction.requiredNaturalRoll,
+                interaction.effectiveTackling))
+            .ToList();
+        ShotInteraction goalkeeperInteraction = interactions
+            .FirstOrDefault(interaction => interaction != null && interaction.IsGK);
+
+        shootingPenalty = CalculateShootingPenalty(originHex, evaluatedShotType);
+        blockerCount = blockExpectations.Count;
+        goalkeeperPenalty = goalkeeperInteraction?.gkPenalty ?? 0;
+        expectedGoals = ExpectedStatsCalculator.CalculateShotGoalProbability(
+            previewShooter,
+            shootingPenalty,
+            blockExpectations,
+            goalkeeperInteraction?.defender,
+            goalkeeperPenalty);
+        return true;
+    }
+
+    public bool TryCalculateBestExpectedGoalsPreview(
+        out float expectedGoals,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        string previewShotType = !string.IsNullOrWhiteSpace(shotType)
+            ? shotType
+            : GetPendingShotProcessType();
+        return TryCalculateBestExpectedGoalsPreview(
+            previewShotType,
+            out expectedGoals,
+            out shootingPenalty,
+            out blockerCount,
+            out goalkeeperPenalty);
+    }
+
+    public bool TryCalculateBestExpectedGoalsPreview(
+        string evaluatedShotType,
+        out float expectedGoals,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        expectedGoals = -1f;
+        shootingPenalty = 0;
+        blockerCount = 0;
+        goalkeeperPenalty = 0;
+
+        HexCell originHex = GetShotOriginHex() ?? GetShotCommitPreviewOriginHex();
+        PlayerToken previewShooter = shooter != null
+            ? shooter
+            : MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose;
+        return TryCalculateBestExpectedGoalsPreview(
+            previewShooter,
+            originHex,
+            evaluatedShotType,
+            out expectedGoals,
+            out shootingPenalty,
+            out blockerCount,
+            out goalkeeperPenalty);
+    }
+
+    public bool TryCalculateBestExpectedGoalsPreview(
+        PlayerToken previewShooter,
+        HexCell originHex,
+        string evaluatedShotType,
+        out float expectedGoals,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        expectedGoals = -1f;
+        shootingPenalty = 0;
+        blockerCount = 0;
+        goalkeeperPenalty = 0;
+
+        if (originHex?.ShootingPaths == null)
+        {
+            return false;
+        }
+
+        bool found = false;
+        foreach (HexCell goalTarget in originHex.ShootingPaths.Keys)
+        {
+            if (!IsAttackingGoalForPreview(previewShooter, goalTarget)) continue;
+            if (!TryCalculateExpectedGoalsPreview(
+                    previewShooter,
+                    originHex,
+                    goalTarget,
+                    evaluatedShotType,
+                    out float targetExpectedGoals,
+                    out int targetShootingPenalty,
+                    out int targetBlockerCount,
+                    out int targetGoalkeeperPenalty)
+                || (found && targetExpectedGoals <= expectedGoals))
+            {
+                continue;
+            }
+
+            found = true;
+            expectedGoals = targetExpectedGoals;
+            shootingPenalty = targetShootingPenalty;
+            blockerCount = targetBlockerCount;
+            goalkeeperPenalty = targetGoalkeeperPenalty;
+        }
+
+        return found;
+    }
+
+    public bool TryCalculateBestExpectedGoalsAfterSnapshotDefenderMove(
+        PlayerToken movingDefender,
+        HexCell proposedDefenderHex,
+        out float maximumExpectedGoals,
+        out HexCell bestShotTarget,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        PlayerToken previewShooter = shooter != null
+            ? shooter
+            : MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose;
+        HexCell originHex = GetShotOriginHex() ?? GetShotCommitPreviewOriginHex();
+        return TryCalculateBestExpectedGoalsAfterDefenderPositioning(
+            previewShooter,
+            originHex,
+            movingDefender,
+            proposedDefenderHex,
+            applySnapshotGoalkeeperMovePenalty: true,
+            out maximumExpectedGoals,
+            out bestShotTarget,
+            out shootingPenalty,
+            out blockerCount,
+            out goalkeeperPenalty);
+    }
+
+    public bool TryCalculateBestExpectedGoalsAfterGoalkeeperPositioning(
+        PlayerToken previewShooter,
+        HexCell originHex,
+        PlayerToken goalkeeper,
+        HexCell proposedGoalkeeperHex,
+        out float maximumExpectedGoals,
+        out HexCell bestShotTarget,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty)
+    {
+        return TryCalculateBestExpectedGoalsAfterDefenderPositioning(
+            previewShooter,
+            originHex,
+            goalkeeper,
+            proposedGoalkeeperHex,
+            applySnapshotGoalkeeperMovePenalty: false,
+            out maximumExpectedGoals,
+            out bestShotTarget,
+            out shootingPenalty,
+            out blockerCount,
+            out goalkeeperPenalty,
+            isFutureShotPreview: !(isActivated && targetHex != null && shooter == previewShooter),
+            evaluatedShotType: isActivated && shooter == previewShooter ? shotType
+                : MatchManager.Instance?.freeKickManager?.isActivated == true ? FreeKickShotType : "snapshot",
+            onlyTarget: isActivated && shooter == previewShooter ? targetHex : null,
+            knownShooterRoll: isActivated && shooter == previewShooter && shooterRoll > 0
+                ? shooterRollWasJackpot ? 50 : shooterRoll : null);
+    }
+
+    public bool TryCalculateFreeKickDefensePreview(PlayerToken previewShooter, PlayerToken defender, HexCell destination,
+        out float xg)
+    {
+        return TryCalculateBestExpectedGoalsAfterDefenderPositioning(previewShooter,
+            MatchManager.Instance?.ball?.GetCurrentHex(), defender, destination, false,
+            out xg, out _, out _, out _, out _, true, FreeKickShotType);
+    }
+
+    public bool GoalkeeperWallAppliesForPreview(PlayerToken goalkeeper, HexCell goalkeeperHex,
+        HexCell origin, HexCell target)
+    {
+        return origin?.ShootingPaths != null && target != null
+            && origin.ShootingPaths.TryGetValue(target, out List<HexCell> path)
+            && GetClosestHypotheticalGKSaveHexOnPath(path, goalkeeper, goalkeeperHex) != null;
+    }
+
+    /// <summary>A future sequence shot uses its actual shot type and fresh
+    /// interactions, without inheriting spent live blocker/save flags.</summary>
+    public bool TryCalculateBestFutureExpectedGoalsPreview(PlayerToken previewShooter, HexCell originHex,
+        string evaluatedShotType, PlayerToken goalkeeper, out float expectedGoals,
+        out int shootingPenalty, out int blockerCount, out int goalkeeperPenalty)
+    {
+        if (goalkeeper == null)
+            return TryCalculateBestExpectedGoalsPreview(previewShooter, originHex, evaluatedShotType,
+                out expectedGoals, out shootingPenalty, out blockerCount, out goalkeeperPenalty);
+        return TryCalculateBestExpectedGoalsAfterDefenderPositioning(previewShooter, originHex,
+            goalkeeper, goalkeeper.GetCurrentHex(), false, out expectedGoals, out _,
+            out shootingPenalty, out blockerCount, out goalkeeperPenalty,
+            isFutureShotPreview: true, evaluatedShotType: evaluatedShotType);
+    }
+
+    private bool TryCalculateBestExpectedGoalsAfterDefenderPositioning(
+        PlayerToken previewShooter,
+        HexCell originHex,
+        PlayerToken movingDefender,
+        HexCell proposedDefenderHex,
+        bool applySnapshotGoalkeeperMovePenalty,
+        out float maximumExpectedGoals,
+        out HexCell bestShotTarget,
+        out int shootingPenalty,
+        out int blockerCount,
+        out int goalkeeperPenalty,
+        bool isFutureShotPreview = false,
+        string evaluatedShotType = "snapshot",
+        HexCell onlyTarget = null,
+        int? knownShooterRoll = null)
+    {
+        maximumExpectedGoals = -1f;
+        bestShotTarget = null;
+        shootingPenalty = 0;
+        blockerCount = 0;
+        goalkeeperPenalty = 0;
+
+        if (previewShooter == null
+            || movingDefender == null
+            || proposedDefenderHex == null
+            || originHex?.ShootingPaths == null)
+        {
+            return false;
+        }
+
+        bool found = false;
+        foreach (KeyValuePair<HexCell, List<HexCell>> shotPath in originHex.ShootingPaths)
+        {
+            if (onlyTarget != null && shotPath.Key != onlyTarget) continue;
+            if (shotPath.Key == null || shotPath.Value == null || !IsAttackingGoalForPreview(previewShooter, shotPath.Key))
+            {
+                continue;
+            }
+
+            List<ShotInteraction> interactions = BuildShotTargetPreviewInteractions(
+                shotPath.Value,
+                movingDefender,
+                proposedDefenderHex,
+                applySnapshotGoalkeeperMovePenalty,
+                ignoreAlreadyInteracted: isFutureShotPreview);
+            List<ExpectedStatsCalculator.ShotBlockerExpectation> blockExpectations = interactions
+                .Where(interaction => interaction != null && !interaction.IsGK && interaction.defender != null)
+                .Select(interaction => new ExpectedStatsCalculator.ShotBlockerExpectation(
+                    interaction.defender,
+                    interaction.requiredNaturalRoll,
+                    interaction.effectiveTackling))
+                .ToList();
+            ShotInteraction goalkeeperInteraction = interactions
+                .FirstOrDefault(interaction => interaction != null && interaction.IsGK);
+            int candidateShootingPenalty = CalculateShootingPenalty(originHex, evaluatedShotType);
+            int candidateGoalkeeperPenalty = goalkeeperInteraction?.gkPenalty ?? 0;
+            float candidateExpectedGoals = ExpectedStatsCalculator.CalculateShotGoalProbability(
+                previewShooter,
+                candidateShootingPenalty,
+                blockExpectations,
+                goalkeeperInteraction?.defender,
+                candidateGoalkeeperPenalty,
+                knownShooterRoll);
+            if (found && candidateExpectedGoals <= maximumExpectedGoals)
+            {
+                continue;
+            }
+
+            found = true;
+            maximumExpectedGoals = candidateExpectedGoals;
+            bestShotTarget = shotPath.Key;
+            shootingPenalty = candidateShootingPenalty;
+            blockerCount = blockExpectations.Count;
+            goalkeeperPenalty = candidateGoalkeeperPenalty;
+        }
+
+        return found;
+    }
+
+    /// <summary>Evaluate a whole projected unit without changing transforms,
+    /// occupancy flags, live interaction lists, or goalkeeper save caches.</summary>
+    public bool TryCalculateBestFutureExpectedGoalsPreview(PlayerToken previewShooter, HexCell originHex,
+        string evaluatedShotType, IReadOnlyDictionary<PlayerToken, HexCell> positions,
+        out float expectedGoals, out int shootingPenalty, out int blockerCount, out int goalkeeperPenalty,
+        PlayerToken snapshotMovedToken = null)
+    {
+        expectedGoals = -1f;
+        shootingPenalty = blockerCount = goalkeeperPenalty = 0;
+        if (previewShooter == null || originHex?.ShootingPaths == null || positions == null) return false;
+        var defenders = positions.Keys.Where(t => t != null && t.isPlaying && !t.isSentOff
+            && t.isHomeTeam != previewShooter.isHomeTeam).ToList();
+        var keeper = defenders.FirstOrDefault(t => t.IsGoalKeeper);
+        var attackingOccupancy = positions.Where(p => p.Key != null && p.Key.isPlaying && !p.Key.isSentOff
+            && p.Key.isHomeTeam == previewShooter.isHomeTeam && p.Value != null).Select(p => p.Value).ToHashSet();
+        bool found = false;
+        foreach (var shotPath in originHex.ShootingPaths)
+        {
+            if (!IsAttackingGoalForPreview(previewShooter, shotPath.Key) || shotPath.Value == null) continue;
+            var blockers = new List<ExpectedStatsCalculator.ShotBlockerExpectation>();
+            foreach (var defender in defenders.Where(t => !t.IsGoalKeeper))
+            {
+                var block = BuildPreviewOutfieldBlockInteraction(defender, positions[defender], shotPath.Value, attackingOccupancy);
+                if (block != null) blockers.Add(new ExpectedStatsCalculator.ShotBlockerExpectation(defender,
+                    block.requiredNaturalRoll, block.effectiveTackling));
+            }
+            HexCell keeperHex = keeper != null ? positions[keeper] : null;
+            HexCell saveHex = GetClosestHypotheticalGKSaveHexOnPath(shotPath.Value, keeper, keeperHex);
+            int saveModifier = saveHex == null ? 0 : CalculateGKSavePenalty(keeper,
+                HexGridUtils.GetHexStepDistance(keeperHex, saveHex), evaluatedShotType == "snapshot" && snapshotMovedToken == keeper,
+                ignoreLivePenaltyMode: true);
+            int shotModifier = CalculateShootingPenalty(originHex, evaluatedShotType);
+            float xg = ExpectedStatsCalculator.CalculateShotGoalProbability(previewShooter, shotModifier, blockers,
+                saveHex != null ? keeper : null, saveModifier);
+            if (found && xg <= expectedGoals) continue;
+            found = true;
+            expectedGoals = xg;
+            shootingPenalty = shotModifier;
+            blockerCount = blockers.Count;
+            goalkeeperPenalty = saveModifier;
+        }
+        return found;
+    }
+
+    private static bool IsAttackingGoalForPreview(PlayerToken previewShooter, HexCell goal)
+    {
+        MatchManager match = MatchManager.Instance;
+        if (previewShooter == null || match == null || goal == null) return goal != null;
+        MatchManager.TeamAttackingDirection direction = previewShooter.isHomeTeam ? match.homeTeamDirection : match.awayTeamDirection;
+        return goal.isInGoal == (direction == MatchManager.TeamAttackingDirection.LeftToRight ? 1 : -1);
+    }
+
+    public bool TryCalculateFutureShotResolutionPreview(PlayerToken previewShooter, HexCell origin, string type,
+        IReadOnlyDictionary<PlayerToken, HexCell> positions, HexCell exactGoal,
+        out ExpectedStatsCalculator.ShotResolutionProbabilities result, bool useCurrentShotContext = false)
+    {
+        result = null;
+        if (previewShooter == null || origin?.ShootingPaths == null || positions == null) return false;
+        var foes = positions.Keys.Where(t => t != null && t.isPlaying && !t.isSentOff && t.isHomeTeam != previewShooter.isHomeTeam).ToList();
+        var keeper = foes.FirstOrDefault(t => t.IsGoalKeeper);
+        var ownHexes = positions.Where(p => p.Key.isHomeTeam == previewShooter.isHomeTeam && p.Value != null).Select(p => p.Value).ToHashSet();
+        foreach (var path in origin.ShootingPaths)
+        {
+            if (!IsAttackingGoalForPreview(previewShooter, path.Key) || exactGoal != null && path.Key != exactGoal || path.Value == null) continue;
+            var interactions = new List<ShotInteraction>();
+            foreach (var defender in foes.Where(t => !t.IsGoalKeeper))
+            {
+                var block = BuildPreviewOutfieldBlockInteraction(defender, positions[defender], path.Value, ownHexes);
+                if (block != null) interactions.Add(block);
+            }
+            HexCell save = keeper != null ? GetClosestHypotheticalGKSaveHexOnPath(path.Value, keeper, positions[keeper]) : null;
+            if (save != null) interactions.Add(new ShotInteraction { defender = keeper, interactionHex = save,
+                type = ShotInteractionType.GKSave, pathIndex = path.Value.IndexOf(save),
+                gkPenalty = CalculateGKSavePenalty(keeper, HexGridUtils.GetHexStepDistance(positions[keeper], save),
+                    useCurrentShotContext && type == "snapshot" && tokenMoveforDeflection == keeper, true) });
+            var preview = ExpectedStatsCalculator.CalculateShotResolutionProbabilities(previewShooter, CalculateShootingPenalty(origin, type),
+                SortShotInteractions(interactions).Select(i => new ExpectedStatsCalculator.ShotResolutionInteraction {
+                    token = i.defender, tokenHex = positions[i.defender], contactHex = i.interactionHex,
+                    goalkeeper = i.IsGK, requiredRoll = i.requiredNaturalRoll, tackling = i.effectiveTackling, saveModifier = i.gkPenalty ?? 0 }));
+            if (result == null || preview.goal > result.goal) result = preview;
+        }
+        return result != null;
+    }
+
     void Update()
     {}
 
@@ -401,7 +836,7 @@ public class ShotManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
-        if (!isActivated) return;
+        if (!isActivated || IsMovingSnapshotBlocker) return;
         _ = HandleClicksForSnapMovement(token, hex);
     }
 
@@ -1323,6 +1758,16 @@ public class ShotManager : MonoBehaviour
 
     private List<ShotInteraction> BuildShotTargetPreviewInteractions(List<HexCell> path)
     {
+        return BuildShotTargetPreviewInteractions(path, null, null);
+    }
+
+    private List<ShotInteraction> BuildShotTargetPreviewInteractions(
+        List<HexCell> path,
+        PlayerToken hypotheticallyMovedDefender,
+        HexCell hypotheticalDefenderHex,
+        bool applySnapshotGoalkeeperMovePenalty = true,
+        bool ignoreAlreadyInteracted = false)
+    {
         List<ShotInteraction> previewInteractions = new();
         if (path == null || path.Count == 0)
         {
@@ -1335,22 +1780,30 @@ public class ShotManager : MonoBehaviour
             if (defender == null
                 || defender == defendingGK
                 || defender.IsGoalKeeper
-                || HasAlreadyInteracted(defender))
+                || !ignoreAlreadyInteracted && HasAlreadyInteracted(defender))
             {
                 continue;
             }
 
-            ShotInteraction interaction = BuildPreviewOutfieldBlockInteraction(defender, path);
+            HexCell effectiveDefenderHex = defender == hypotheticallyMovedDefender
+                ? hypotheticalDefenderHex
+                : defender.GetCurrentHex();
+            ShotInteraction interaction = BuildPreviewOutfieldBlockInteraction(defender, effectiveDefenderHex, path);
             if (interaction != null)
             {
                 previewInteractions.Add(interaction);
             }
         }
 
-        if (defendingGK != null && !HasAlreadyInteracted(defendingGK))
+        if (defendingGK != null && (ignoreAlreadyInteracted || !HasAlreadyInteracted(defendingGK)))
         {
-            HexCell gkHex = defendingGK.GetCurrentHex();
-            HexCell candidateSaveHex = GetClosestGKSaveHexOnPath(path, gkHex);
+            bool goalkeeperPositionChanged = defendingGK == hypotheticallyMovedDefender;
+            HexCell gkHex = goalkeeperPositionChanged
+                ? hypotheticalDefenderHex
+                : defendingGK.GetCurrentHex();
+            HexCell candidateSaveHex = goalkeeperPositionChanged
+                ? GetClosestHypotheticalGKSaveHexOnPath(path, defendingGK, gkHex)
+                : GetClosestGKSaveHexOnPath(path, gkHex);
             if (candidateSaveHex != null)
             {
                 int saveDistance = HexGridUtils.GetHexStepDistance(gkHex, candidateSaveHex);
@@ -1362,7 +1815,10 @@ public class ShotManager : MonoBehaviour
                     type = ShotInteractionType.GKSave,
                     pathIndex = pathIndex >= 0 ? pathIndex : int.MaxValue,
                     requiredNaturalRoll = 0,
-                    gkPenalty = CalculateGKSavePenalty(defendingGK, saveDistance)
+                    gkPenalty = CalculateGKSavePenalty(
+                        defendingGK,
+                        saveDistance,
+                        goalkeeperPositionChanged && applySnapshotGoalkeeperMovePenalty)
                 });
             }
         }
@@ -1372,7 +1828,15 @@ public class ShotManager : MonoBehaviour
 
     private ShotInteraction BuildPreviewOutfieldBlockInteraction(PlayerToken defender, List<HexCell> path)
     {
-        HexCell defenderHex = defender.GetCurrentHex();
+        return BuildPreviewOutfieldBlockInteraction(defender, defender?.GetCurrentHex(), path);
+    }
+
+    private ShotInteraction BuildPreviewOutfieldBlockInteraction(
+        PlayerToken defender,
+        HexCell defenderHex,
+        List<HexCell> path,
+        ISet<HexCell> projectedAttackingOccupancy = null)
+    {
         if (defenderHex == null)
         {
             return null;
@@ -1381,7 +1845,7 @@ public class ShotManager : MonoBehaviour
         for (int i = 0; i < path.Count; i++)
         {
             HexCell pathHex = path[i];
-            if (pathHex != null && pathHex.GetOccupyingToken() == defender)
+            if (pathHex != null && pathHex == defenderHex)
             {
                 return new ShotInteraction
                 {
@@ -1399,7 +1863,8 @@ public class ShotManager : MonoBehaviour
         for (int i = 0; i < path.Count; i++)
         {
             HexCell pathHex = path[i];
-            if (pathHex == null || pathHex.isAttackOccupied)
+            if (pathHex == null || (projectedAttackingOccupancy != null
+                ? projectedAttackingOccupancy.Contains(pathHex) : pathHex.isAttackOccupied))
             {
                 continue;
             }
@@ -1420,6 +1885,29 @@ public class ShotManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private HexCell GetClosestHypotheticalGKSaveHexOnPath(
+        List<HexCell> path,
+        PlayerToken goalkeeper,
+        HexCell goalkeeperHex)
+    {
+        if (path == null || goalkeeper == null || goalkeeperHex == null || goalKeeperManager == null)
+        {
+            return null;
+        }
+
+        return path
+            .Select((hex, index) => new { hex, index })
+            .Where(entry => entry.hex != null
+                && entry.hex.coordinates.x == goalkeeperHex.coordinates.x
+                && HexGridUtils.GetHexStepDistance(goalkeeperHex, entry.hex) <= 3
+                && goalKeeperManager.IsGoalkeeperOwnPenaltyHex(goalkeeper, entry.hex))
+            .OrderBy(entry => HexGridUtils.GetHexStepDistance(goalkeeperHex, entry.hex))
+            .ThenBy(entry => entry.hex == goalkeeperHex ? 0 : 1)
+            .ThenBy(entry => entry.index)
+            .Select(entry => entry.hex)
+            .FirstOrDefault();
     }
 
     private string BuildPreviewBlockerInstruction(ShotInteraction interaction)
@@ -1569,6 +2057,7 @@ public class ShotManager : MonoBehaviour
         {
             // No save possible, goal!
             Debug.Log("No saveHex found, header at goal is a GOAL!");
+            MatchManager.Instance.gameData.gameLog.LogEvent(attacker, MatchManager.ActionType.ShotOnTarget);
             MatchManager.Instance.gameData.gameLog.LogEvent(attacker, MatchManager.ActionType.GoalScored);
             // Animate ball to target, then trigger goal flow
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex, allowGKBoxMove: false));
@@ -1661,6 +2150,7 @@ public class ShotManager : MonoBehaviour
         {
             Debug.Log($"{headerAttacker.name} wins the header at goal! GOAL!");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex, headerAttackerTotalScore/2, allowGKBoxMove: false));
+            MatchManager.Instance.gameData.gameLog.LogEvent(headerAttacker, MatchManager.ActionType.ShotOnTarget);
             MatchManager.Instance.gameData.gameLog.LogEvent(
                         headerAttacker
                         , MatchManager.ActionType.GoalScored
@@ -1703,9 +2193,24 @@ public class ShotManager : MonoBehaviour
                 if (tokenMoveforDeflection != null)
                 {
                     Debug.Log($"Moving {tokenMoveforDeflection.name} to hex {hex.coordinates}");
+                    GameInputManager.ConsumeCurrentClick(
+                        nameof(ShotManager),
+                        "snapshot_defender_movement",
+                        "target_selected");
+                    IsMovingSnapshotBlocker = true;
+                    isWaitingforBlockerMovement = false;
+                    hoveredSnapshotBlockerMovementHex = null;
+                    hexGrid.ClearHighlightedHexes();
+                    try
+                    {
+                        await helperFunctions.StartCoroutineAndWait(
+                            movementPhaseManager.MoveTokenToHex(hex, tokenMoveforDeflection, false));
+                    }
+                    finally
+                    {
+                        IsMovingSnapshotBlocker = false;
+                    }
 
-                    // Move the selected token to the valid hex (use the highPassManager's selectedToken)
-                    await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, tokenMoveforDeflection, false));  // Pass the selected token
                     CompleteDefenderMovement();
                 }
                 else
@@ -1757,8 +2262,9 @@ public class ShotManager : MonoBehaviour
 
         Debug.Log($"Selecting defender {token.name}. Highlighting reachable hexes.");
         tokenMoveforDeflection = token;
+        GameInputManager.ConsumeCurrentClick(nameof(ShotManager), "select_snapshot_blocker", "selected", consumedByHomeTeam: token.isHomeTeam);
         hoveredSnapshotBlockerMovementHex = null;
-        movementPhaseManager.HighlightValidMovementHexes(token, 2, false);
+        movementPhaseManager.HighlightValidMovementHexes(token, SnapshotDefenderMovementRange, false);
         isWaitingforBlockerSelection = false;
         isWaitingforBlockerMovement = true;
     }
@@ -1770,7 +2276,7 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        movementPhaseManager.HighlightValidMovementHexes(tokenMoveforDeflection, 2, false);
+        movementPhaseManager.HighlightValidMovementHexes(tokenMoveforDeflection, SnapshotDefenderMovementRange, false);
         if (hoveredSnapshotBlockerMovementHex != null && hexGrid.highlightedHexes.Contains(hoveredSnapshotBlockerMovementHex))
         {
             hoveredSnapshotBlockerMovementHex.HighlightHex("MovementDestinationHover");
@@ -1834,6 +2340,11 @@ public class ShotManager : MonoBehaviour
         return headerManager;
     }
 
+    public List<HexCell> GetValidSnapshotBlockerDestinationsForDecisionPreview(PlayerToken token)
+    {
+        return GetValidSnapshotBlockerDestinations(token);
+    }
+
     private List<HexCell> GetValidSnapshotBlockerDestinations(PlayerToken token)
     {
         List<HexCell> validDestinations = new();
@@ -1848,7 +2359,7 @@ public class ShotManager : MonoBehaviour
             return validDestinations;
         }
 
-        var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexGrid, defenderHex, 2);
+        var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexGrid, defenderHex, SnapshotDefenderMovementRange);
         foreach (HexCell hex in reachableHexes)
         {
             if (hex != null && !hex.isAttackOccupied && !hex.isDefenseOccupied && !hex.isOutOfBounds)
@@ -1878,7 +2389,7 @@ public class ShotManager : MonoBehaviour
             return false;
         }
 
-        var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexGrid, defenderHex, 2);
+        var (reachableHexes, _) = HexGridUtils.GetReachableHexes(hexGrid, defenderHex, SnapshotDefenderMovementRange);
         if (!reachableHexes.Contains(hex))
         {
             Debug.LogWarning($"{hex.name} is not within 2 hexes of selected snapshot blocker {tokenMoveforDeflection.name}.");
@@ -2208,18 +2719,27 @@ public class ShotManager : MonoBehaviour
 
     private int CalculateGKSavePenalty(PlayerToken defendingGK, int saveDistance)
     {
+        bool movedAsSnapshotDefender = shotType == "snapshot" && tokenMoveforDeflection == defendingGK;
+        return CalculateGKSavePenalty(defendingGK, saveDistance, movedAsSnapshotDefender);
+    }
+
+    private int CalculateGKSavePenalty(
+        PlayerToken defendingGK,
+        int saveDistance,
+        bool movedAsSnapshotDefender,
+        bool ignoreLivePenaltyMode = false)
+    {
         if (defendingGK == null)
         {
             return 0;
         }
 
-        if (IsPenaltyShot())
+        if (!ignoreLivePenaltyMode && IsPenaltyShot())
         {
             return -2;
         }
 
-        bool gkWasSnapshotDefenderMove = shotType == "snapshot" && tokenMoveforDeflection == defendingGK;
-        if (gkWasSnapshotDefenderMove)
+        if (movedAsSnapshotDefender)
         {
             if (saveDistance == 2) return -1;
             if (saveDistance == 3) return -2;
@@ -2946,19 +3466,24 @@ public class ShotManager : MonoBehaviour
 
     private int CalculateShootingPenalty(HexCell shooterHex)
     {
+        return CalculateShootingPenalty(shooterHex, shotType);
+    }
+
+    private int CalculateShootingPenalty(HexCell shooterHex, string evaluatedShotType)
+    {
         int penalty = 0;
-        if (IsPenaltyShot())
+        if (string.Equals(evaluatedShotType, PenaltyShotType, System.StringComparison.Ordinal))
         {
             return penalty;
         }
 
-        if (IsFreeKickShot())
+        if (string.Equals(evaluatedShotType, FreeKickShotType, System.StringComparison.Ordinal))
         {
             if (shooterHex != null && shooterHex.isInPenaltyBox == 0) penalty++;
             return penalty;
         }
 
-        if (shotType == "snapshot") penalty++;
+        if (evaluatedShotType == "snapshot") penalty++;
         if (shooterHex != null && shooterHex.isInPenaltyBox == 0) penalty++;
         if (shooterHex != null && shooterHex.isDifficultShotPosition) penalty++;
 
@@ -3210,6 +3735,7 @@ public class ShotManager : MonoBehaviour
             MatchManager.Instance.MarkNextGoalAsPenalty();
         }
 
+        MatchManager.Instance.gameData.gameLog.LogEvent(scorer, MatchManager.ActionType.ShotOnTarget);
         MatchManager.Instance.gameData.gameLog.LogEvent(scorer, MatchManager.ActionType.GoalScored);
     }
 
@@ -3770,6 +4296,7 @@ public class ShotManager : MonoBehaviour
         isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
+        IsMovingSnapshotBlocker = false;
         isWaitingForTargetSelection = false;
         ResetExpectedGoalContext();
         ClearShotTargetSelectionHighlights();
@@ -4167,6 +4694,12 @@ public class ShotManager : MonoBehaviour
 
         if (!isActivated)
         {
+            return;
+        }
+
+        if (IsMovingSnapshotBlocker)
+        {
+            context.AddActionSummary("Snapshot blocker is moving; wait for movement to complete");
             return;
         }
 

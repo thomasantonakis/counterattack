@@ -142,7 +142,6 @@ public static class GroundPassCommon
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.NullTarget);
         }
 
-        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
         int distanceBetweenHexes = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         if (!ignoreMaxDistance && distanceBetweenHexes > maxDistance)
         {
@@ -151,8 +150,10 @@ public static class GroundPassCommon
                 Debug.LogWarning($"Pass is out of range. Maximum steps allowed: {maxDistance}. Current steps: {distanceBetweenHexes}");
             }
 
-            return new GroundPassValidationResult(false, false, pathHexes, PassValidationFailureReason.OutOfRange);
+            return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.OutOfRange);
         }
+
+        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
 
         if (isQuickThrow)
         {

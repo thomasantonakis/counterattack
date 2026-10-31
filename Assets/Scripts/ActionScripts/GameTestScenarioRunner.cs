@@ -468,6 +468,8 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     // private bool shouldRunTests = false;
     private bool shouldRunTests = true;
+    [Tooltip("Runs only the Codex kickoff receiver/first-pass regression when the user starts Play Mode.")]
+    public bool runCodexKickoffOnly;
     private string logFilePath;
     private bool testFailed = false;
     private static int currentTestIndex = 0;
@@ -843,7 +845,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     {
         var scenarios = new List<ScenarioDefinition>();
         bool runManualStatsPreviewOnly = false;
-        bool runFtpAuditOnly = false;
+        bool runFtpAuditOnly = true; // Temporary FTP audit selection; earlier batch flag is preserved below.
         bool runLongBallAuditOnly = false;
         bool runHighPassAuditOnly = false;
         bool runHighPassHeaderAuditOnly = false;
@@ -858,7 +860,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         bool runReleasedOobAndHeaderAtGoalOnly = true;
         bool runFromCurrentFailureOnly = false;
 
-        if (runReleasedOobAndHeaderAtGoalOnly)
+        if (runCodexKickoffOnly)
+        {
+            scenarios.Add(new ScenarioDefinition(nameof(Scenario_042_CodexKickoff_FirstPassOnReceiver), Scenario_042_CodexKickoff_FirstPassOnReceiver));
+        }
+        else if (runReleasedOobAndHeaderAtGoalOnly)
         {
             AddRestartClockAndSetPieceScenarios(scenarios);
             AddOobLongBallBranchScenarios(scenarios);
@@ -881,6 +887,7 @@ public class GameTestScenarioRunner : MonoBehaviour
                 new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
                 new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
                 new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
+            new ScenarioDefinition(nameof(Scenario_007g_FTP_EndOptions_AutoMovement_Or_Snapshot), Scenario_007g_FTP_EndOptions_AutoMovement_Or_Snapshot),
             });
         }
         else if (runLongBallAuditOnly)
@@ -974,6 +981,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6), Scenario_007d_FirstTimePass_Defender_ZOI_Recalculation_Intercepts_On_6),
             new ScenarioDefinition(nameof(Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space), Scenario_007e_FirstTimePass_Passer_Cannot_Reclaim_FTP_To_Space),
             new ScenarioDefinition(nameof(Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked), Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked),
+            new ScenarioDefinition(nameof(Scenario_007g_FTP_EndOptions_AutoMovement_Or_Snapshot), Scenario_007g_FTP_EndOptions_AutoMovement_Or_Snapshot),
             new ScenarioDefinition(nameof(Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip), Scenario_041a_GKWall_PathOrdering_And_DirectGKSkip),
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
             new ScenarioDefinition(nameof(Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand), Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand),
@@ -1002,6 +1010,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition("Scenario_012_Movement_Phase_interception_Foul_take_foul(true, true)", () => Scenario_012_Movement_Phase_interception_Foul_take_foul(true, true)),
             new ScenarioDefinition(nameof(Scenario_013_Movement_Phase_interception_Foul_Play_on), Scenario_013_Movement_Phase_interception_Foul_Play_on),
             new ScenarioDefinition(nameof(Scenario_014_Movement_Phase_Check_reposition_interceptions), Scenario_014_Movement_Phase_Check_reposition_interceptions),
+            new ScenarioDefinition(nameof(Scenario_014b_DuelPanelSceneBindings), Scenario_014b_DuelPanelSceneBindings),
             new ScenarioDefinition(nameof(Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball), Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball),
             new ScenarioDefinition(nameof(Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle), Scenario_016_Movement_Phase_Check_InterceptionFoul_Tackle_Foul_NewTackle_SuccessfulTackle),
             new ScenarioDefinition(nameof(Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost), Scenario_017_Movement_Phase_Check_InterceptionFoul_NutmegLost),
@@ -1468,8 +1477,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(defenderRoll <= 6, "Outside-box GK foot tackle tie setup requires a non-jackpot defender roll.", "<= 6", defenderRoll);
 
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, defenderRoll);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, attackerRoll);
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => looseBallManager.isActivated,
             2f,
@@ -1492,8 +1503,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(!diveRollInstructions.Contains("1 is a penalty"), "Outside-box GK dive roll prompt should not call an outside-box foul a penalty.", "no penalty text", diveRollInstructions);
 
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, JackpotRollOverride());
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => movementPhaseManager.isWaitingForReposition,
             2f,
@@ -1533,14 +1546,18 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (defenderWins)
         {
             movementPhaseManager.PerformTackleDiceRoll(isDefender: true, JackpotRollOverride());
+            AssertDuelDefenderRollPresentation();
             yield return new WaitForSeconds(0.2f);
             movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+            yield return WaitForDuelResultPresentation();
         }
         else
         {
             movementPhaseManager.PerformTackleDiceRoll(isDefender: true, JackpotRollOverride());
+            AssertDuelDefenderRollPresentation();
             yield return new WaitForSeconds(0.2f);
             movementPhaseManager.PerformTackleDiceRoll(isDefender: false, JackpotRollOverride());
+            yield return WaitForDuelResultPresentation();
         }
 
         yield return StartCoroutine(WaitForCondition(
@@ -1576,8 +1593,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             defenderRoll);
 
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, defenderRoll);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, attackerRoll);
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => !movementPhaseManager.isWaitingForTackleRoll
                 && groundBallManager.ball.GetCurrentHex() == setup.Goalkeeper.GetCurrentHex(),
@@ -1610,8 +1629,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(StartOutsideBoxGoalkeeperFootTackle(setup));
 
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 1);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => movementPhaseManager.isWaitingForYellowCardRoll,
             2f,
@@ -1630,6 +1651,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(setup.Goalkeeper.isBooked && !setup.Goalkeeper.isSentOff, "Passing harsh leniency should book the goalkeeper without sending them off.");
 
         movementPhaseManager.PerformInjuryTest(1);
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => movementPhaseManager.isWaitingForFoulDecision,
             2f,
@@ -4523,10 +4545,17 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
         AssertApproximately(shooterTeamStats.totalXGoals, shooterStats.xGoals, 0.0001f, $"{context}: team xG should roll up {expectedShooterName}'s xG.");
 
+        string expectedReceiverName = branchSteps.LastOrDefault(step => step.Type == ShootingBranchStepType.ExpectAnyOtherScenario)?.PlayerName;
+        PlayerToken expectedReceiver = !string.IsNullOrWhiteSpace(expectedReceiverName) ? RequirePlayerToken(expectedReceiverName) : null;
+        bool isAutomaticDefensivePickup = expectedReceiver != null
+            && expectedReceiver.isHomeTeam != shooterToken.isHomeTeam
+            && !expectedShootingLooseRecoveriesMade.ContainsKey(expectedReceiverName);
+
         HashSet<string> involvedPlayers = new(StringComparer.OrdinalIgnoreCase);
         foreach (string playerName in expectedShootingShotBlockAttempts.Keys) involvedPlayers.Add(playerName);
         foreach (string playerName in expectedShootingLooseInterceptionAttempts.Keys) involvedPlayers.Add(playerName);
         foreach (string playerName in expectedShootingLooseXRecoveries.Keys) involvedPlayers.Add(playerName);
+        if (isAutomaticDefensivePickup) involvedPlayers.Add(expectedReceiverName);
 
         foreach (string playerName in involvedPlayers)
         {
@@ -4536,19 +4565,23 @@ public class GameTestScenarioRunner : MonoBehaviour
             int expectedPlayerLooseInterceptionAttempts = expectedShootingLooseInterceptionAttempts.TryGetValue(playerName, out int looseAttempts) ? looseAttempts : 0;
             int expectedPlayerLooseRecoveriesMade = expectedShootingLooseRecoveriesMade.TryGetValue(playerName, out int looseRecoveries) ? looseRecoveries : 0;
             float expectedPlayerXRecoveries = expectedShootingLooseXRecoveries.TryGetValue(playerName, out float xRecoveries) ? xRecoveries : 0f;
+            if (isAutomaticDefensivePickup && string.Equals(playerName, expectedReceiverName, StringComparison.OrdinalIgnoreCase))
+            {
+                expectedPlayerXRecoveries += 1f;
+                expectedPlayerLooseRecoveriesMade++;
+            }
 
             AssertTrue(playerStats.shotBlocksAttempted == expectedPlayerShotBlockAttempts, $"{context}: {playerName} shot-block attempts should be tracked separately from interceptions.", expectedPlayerShotBlockAttempts, playerStats.shotBlocksAttempted);
             AssertTrue(playerStats.shotBlocksMade == expectedPlayerShotBlocksMade, $"{context}: {playerName} made shot blocks should match successful block rolls.", expectedPlayerShotBlocksMade, playerStats.shotBlocksMade);
             AssertTrue(playerStats.interceptionsAttempted == expectedPlayerLooseInterceptionAttempts, $"{context}: {playerName} interception attempts should come only from loose-ball interception rolls.", expectedPlayerLooseInterceptionAttempts, playerStats.interceptionsAttempted);
             AssertTrue(playerStats.interceptionsMade == 0, $"{context}: {playerName} should not receive made interceptions from shot blocks or loose-ball recoveries.", 0, playerStats.interceptionsMade);
-            AssertApproximately(playerStats.xRecoveries, expectedPlayerXRecoveries, 0.0001f, $"{context}: {playerName} xRecoveries should come only from loose-ball interception rolls.");
+            AssertApproximately(playerStats.xRecoveries, expectedPlayerXRecoveries, 0.0001f, $"{context}: {playerName} xRecoveries should match attempted interceptions plus guaranteed defensive pickups.");
             if (expectedPlayerLooseRecoveriesMade > 0)
             {
                 AssertTrue(playerStats.possessionWon >= expectedPlayerLooseRecoveriesMade, $"{context}: {playerName} should record a recovery made after winning a loose-ball interception.", $">= {expectedPlayerLooseRecoveriesMade}", playerStats.possessionWon);
             }
         }
 
-        string expectedReceiverName = branchSteps.LastOrDefault(step => step.Type == ShootingBranchStepType.ExpectAnyOtherScenario)?.PlayerName;
         if (!string.IsNullOrWhiteSpace(expectedReceiverName))
         {
             PlayerToken receiver = RequirePlayerToken(expectedReceiverName);
@@ -5006,9 +5039,11 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log("Tackle Roll: rigging Paterson to 1.");
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 1);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         Log("Dribble Roll: rigging Yaneva to 6.");
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => movementPhaseManager.isWaitingForYellowCardRoll,
             2f,
@@ -5023,6 +5058,7 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log("Injury Test: rigging 2.");
         movementPhaseManager.PerformInjuryTest(2);
+        yield return WaitForDuelResultPresentation();
         yield return StartCoroutine(WaitForCondition(
             () => movementPhaseManager.isWaitingForFoulDecision,
             2f,
@@ -6405,6 +6441,89 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log($"\n==== {boundaryKind} Test #{testNumber}: {scenarioName}{suffix} ====");
     }
 
+    private IEnumerator Scenario_042_CodexKickoff_FirstPassOnReceiver()
+    {
+        yield return new WaitForSeconds(3f);
+        MatchManager match = MatchManager.Instance;
+        AssertEarlyDefendingKickoffFrontLineChoices(match);
+        match.difficulty_level = 3;
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Alpha2, 0.05f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        var setup = RoomAIDecisionSnapshotBuilder.Build(null, new RoomDecisionContext
+        {
+            manager = nameof(KickoffManager), expectedTeam = match.teamInAttack.ToString(), expectedInput = "hex"
+        }, new List<RoomActionCandidate>());
+        RoomAIKickoffPlan plan = CodexTacticianProvider.BuildKickoffPlan(setup);
+        AssertTrue(plan != null, "Codex kickoff should identify a taker, receiver and second action.");
+        PlayerToken taker = match.playerTokenManager.allTokens.First(token => token != null
+            && $"{(token.isHomeTeam ? "Home" : "Away")}:{token.jerseyNumber}" == plan.takerTokenKey);
+        PlayerToken receiver = match.playerTokenManager.allTokens.First(token => token != null
+            && $"{(token.isHomeTeam ? "Home" : "Away")}:{token.jerseyNumber}" == plan.receiverTokenKey);
+        HexCell landing = hexgrid.GetHexCellAt(new Vector3Int(plan.landingHex.x, 0, plan.landingHex.z));
+        SetTokenHexForThrowInTest(receiver, landing);
+        SetTokenHexForThrowInTest(taker, match.ball.GetCurrentHex());
+        match.SetLastToken(taker);
+        groundBallManager.ActivateKickoffGroundBall(taker);
+        var context = new RoomDecisionContext { manager = nameof(GroundBallManager),
+            expectedTeam = taker.isHomeTeam ? "Home" : "Away", expectedInput = "hex" };
+        groundBallManager.PopulateRoomDecisionContext(context);
+        var snapshot = RoomAIDecisionSnapshotBuilder.Build(null, context, context.actions);
+        var decision = CodexTacticianProvider.Instance.Decide(snapshot, context.actions, null,
+            new RoomAITacticalWeights(), AIManager.CodexTacticianDifficulty.UltraHard);
+        HexCell chosenLanding = decision.selectedCandidate?.targetHex
+            ?? decision.selectedCandidate?.targetToken?.GetCurrentHex();
+        RoomAIKickoffPlan evaluatedOpening = snapshot.kickoffPlan;
+        AssertTrue(chosenLanding != null && evaluatedOpening != null && evaluatedOpening.firstPassEvaluated,
+            "The first kickoff action must have a manager-validated, evaluated pass landing.");
+        PlayerToken chosenReceiver = match.playerTokenManager.allTokens.First(token => token != null
+            && MatchManager.GetStableTokenKey(token) == evaluatedOpening.receiverTokenKey);
+        AssertTrue(chosenReceiver.GetCurrentHex() == chosenLanding && evaluatedOpening.collectionCost == 0,
+            "A prepared kickoff must land on a receiver, without spending a movement to retrieve it.");
+        AssertTrue(evaluatedOpening.remainingPace == chosenReceiver.pace
+            && evaluatedOpening.remainingAttackingMoves == movementPhaseManager.AttackingMoveLimit,
+            "The kickoff receiver should retain full Pace after collection.");
+        AssertTrue(evaluatedOpening.continuationEvaluated && evaluatedOpening.secondActionTargetHex != null,
+            "The kickoff opening should identify a supported second action, not an attribute-only guess.");
+        // Reassessment may choose another already-positioned teammate; record
+        // that actual opening instead of forcing the earlier setup forecast.
+        Debug.Log($"Kickoff setup forecast={plan.receiverTokenKey}; evaluated first action={evaluatedOpening.receiverTokenKey}; next={evaluatedOpening.secondAction}");
+        yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(chosenLanding), 0.1f));
+        yield return StartCoroutine(WaitForCondition(() => match.ball.GetCurrentHex() == chosenLanding, 6f,
+            "Kickoff pass should reach the prepared receiver."));
+        AssertTrue(chosenReceiver.GetCurrentHex() == match.ball.GetCurrentHex(), "Kickoff should finish in possession, with no retrieval move.");
+        LogFooterofTest("CODEX KICKOFF FIRST PASS");
+    }
+
+    private void AssertEarlyDefendingKickoffFrontLineChoices(MatchManager match)
+    {
+        string defendingTeam = match.teamInAttack == MatchManager.TeamInAttack.Home ? "Away" : "Home";
+        var legal = kickoffManager.BuildAutomatedSetupCandidates(defendingTeam);
+        foreach (int jersey in new[] { 7, 11, 9, 10 })
+        {
+            var actor = match.playerTokenManager.allTokens.First(token => token != null && token.isPlaying
+                && token.isHomeTeam == (defendingTeam == "Home") && token.jerseyNumber == jersey);
+            int flank = System.Math.Sign(actor.GetCurrentHex().coordinates.z);
+            var choices = legal.Where(action => action.actor == actor || action.actionType == RoomActionType.Confirm).ToList();
+            bool hasLegalLine = choices.Any(action => action.actor == actor && action.targetHex != null
+                && action.targetHex.coordinates.x == 0
+                && (jersey is not (7 or 11) || flank == 0 || action.targetHex.coordinates.z * flank >= 0));
+            AssertTrue(hasLegalLine, $"Opening fixture must offer a legal halfway destination for defending No. {jersey}.");
+            var context = new RoomDecisionContext { manager = nameof(KickoffManager), expectedTeam = defendingTeam,
+                expectedInput = "hex" };
+            var snapshot = RoomAIDecisionSnapshotBuilder.Build(null, context, choices);
+            var decision = CodexTacticianProvider.Instance.Decide(snapshot, choices, null,
+                new RoomAITacticalWeights(), AIManager.CodexTacticianDifficulty.UltraHard);
+            AssertTrue(decision.selectedCandidate?.actor == actor && decision.selectedCandidate.targetHex != null
+                && decision.selectedCandidate.targetHex.coordinates.x == 0,
+                $"Early defending kickoff No. {jersey} should choose halfway over generic receiver-protection bonuses.");
+            if (jersey is 7 or 11)
+                AssertTrue(flank == 0 || decision.selectedCandidate.targetHex.coordinates.z * flank >= 0,
+                    $"Defending winger No. {jersey} must preserve the established flank.");
+        }
+        // Analysis only: no setup commands are executed and no move budget is
+        // consumed before the existing attacking kickoff/first-pass scenario.
+    }
+
     private IEnumerator Scenario_001_BasicKickoff()
     {
         yield return new WaitForSeconds(2f); // Allow scene to stabilize
@@ -7467,6 +7586,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             true,
             availabilityFTPInit.ToString()
         );
+        HexCell relayTarget = hexgrid.GetHexCellAt(new Vector3Int(-4, 0, -4), false);
+        AssertTrue(
+            relayTarget != null
+                && RoomAITacticalSafety.IsDirectFtpRelayWithinRange(
+                    RoomHexCoordinates.FromHex(groundBallManager.ball.GetCurrentHex()), RoomHexCoordinates.FromHex(relayTarget))
+                && firstTimePassManager.GetLegalFirstTimePassTargetsForDecisionPreview().Contains(relayTarget),
+            "The planned direct FTP target is within range and accepted by the FTP manager",
+            true,
+            relayTarget != null);
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-4, -4), 0.2f));
         Log("Clicking (-4, -4)");
         AvailabilityCheckResult availabilitysecondFTPInit = AssertCorrectWaitinginFTPInitialization();
@@ -8275,6 +8403,61 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("FTP Passer Cannot Reclaim FTP To Space");
+    }
+
+    private IEnumerator Scenario_007g_FTP_EndOptions_AutoMovement_Or_Snapshot()
+    {
+        Log("▶️ Starting test scenario: 'FTP End Options Auto Movement Or Snapshot'");
+        yield return StartCoroutine(PrepareFtpAvailabilityFromKickoff(2));
+        var match = MatchManager.Instance;
+        var receiver = RequirePlayerToken("André Noruega");
+        var forecastContext = new RoomDecisionContext { manager = nameof(FirstTimePassManager), expectedTeam = "Home" };
+        foreach (var target in firstTimePassManager.GetLegalFirstTimePassTargetsForDecisionPreview()
+            .Where(hex => hex.GetOccupyingToken() != null).Take(6))
+            forecastContext.AddHexActionCandidate(nameof(FirstTimePassManager), RoomActionType.FirstTimePass,
+                RoomDecisionStep.ChooseTarget, target, "Evaluate FTP reception");
+        if (forecastContext.actions.Count > 0)
+        {
+            var forecast = RoomAIDecisionSnapshotBuilder.Build(new GameplayInstructionSnapshot
+                { manager = nameof(FirstTimePassManager), expectedTeam = "Home", isAwaitingInput = true },
+                forecastContext, forecastContext.actions);
+            foreach (var facts in forecast.candidateExplanations.Where(facts => facts.isFirstTimePassShotSetup))
+                AssertTrue(facts.firstTimePassSetupShooterTokenKey == MatchManager.GetStableTokenKey(facts.candidate.targetHex.GetOccupyingToken()),
+                    "An occupied FTP reception cannot borrow a different player's movement and Snapshot.");
+        }
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        match.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+        firstTimePassManager.isActivated = false;
+        finalThirdManager.isActivated = false;
+        foreach (bool canShoot in new[] { false, true })
+        {
+            movementPhaseManager.ResetMovementPhase();
+            HexCell destination = RequireHex(GetAllInBoundsHexesOrdered(groundBallManager.ball.GetCurrentHex())
+                .FirstOrDefault(hex => hex != null && hex.CanShootFrom == canShoot
+                    && (canShoot ? hex.coordinates.x > 0 : hex.coordinates.x <= 0)
+                    && !hex.isAttackOccupied && !hex.isDefenseOccupied), "FTP continuation should find its receiver hex.");
+            PlaceTokenForScenario(receiver, destination, true);
+            groundBallManager.ball.PlaceAtCell(destination);
+            match.SetLastToken(receiver);
+            match.attackHasPossession = true;
+            match.BroadcastEndofFirstTimePass();
+            yield return null;
+            if (canShoot)
+            {
+                AssertTrue(shotManager.isAvailable, "A scoring receiver keeps the Snapshot choice.");
+                AssertTrue(movementPhaseManager.isAvailable && !movementPhaseManager.isCommitted,
+                    "Snapshot versus Movement remains a real player choice.");
+            }
+            else
+            {
+                AssertTrue(movementPhaseManager.isActivated && movementPhaseManager.isCommitted,
+                    "FTP with only M available automatically commits Movement without a key press.");
+                AssertTrue(match.currentState == MatchManager.GameState.MovementPhase,
+                    "The forced FTP continuation enters MovementPhase.");
+                AssertTrue(!shotManager.isAvailable, "A non-shooting receiver has no Snapshot option.");
+            }
+        }
+        LogFooterofTest("FTP End Options Auto Movement Or Snapshot");
     }
 
     private IEnumerator Scenario_007f_GroundAndFTP_DefendingGK_Path_Blocked()
@@ -9558,6 +9741,20 @@ public class GameTestScenarioRunner : MonoBehaviour
             0.0001f,
             "Away team xRecoveries should roll up Soares' movement steal expectation");
 
+        AssertTrue(
+            groundBallManager.imposedDistance == 6,
+            "A successful movement interception should offer only a 6-hex Standard Pass.",
+            6,
+            groundBallManager.imposedDistance);
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.1f));
+        Log("Pressing P after the interception to verify the short-pass range survives activation");
+        groundBallManager.CommitToThisAction();
+        AssertTrue(
+            groundBallManager.imposedDistance == 6,
+            "Committing the post-interception Standard Pass must preserve its 6-hex limit.",
+            6,
+            groundBallManager.imposedDistance);
+
         LogFooterofTest("MovementPhase With Successful Interception");
     }
 
@@ -9680,6 +9877,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         Log("Calling PerformInjuryTest(6)");
         movementPhaseManager.PerformInjuryTest(6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.8f);
         if (!alreadyInjured)
         {
@@ -10019,8 +10217,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.selectedDefender.name
         );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -10109,8 +10309,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             mcnultyTackleInstructions
         );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -10218,6 +10420,99 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("MovementPhase Check Reposition Interceptions");
+    }
+
+    private IEnumerator Scenario_014b_DuelPanelSceneBindings()
+    {
+        var panel = movementPhaseManager.duelResolutionPanel;
+        AssertTrue(panel != null && panel.HasSceneBindings,
+            "Room must contain the fully wired scene-authored duel panel.");
+        if (panel != null)
+        {
+            AssertTrue(panel.resultSeconds == 5f, "Prototype result countdown should be five seconds.");
+            AssertTrue(!panel.IsOpen, "Duel panel must begin closed in Play Mode.");
+            AssertTrue(!panel.leftPlayer.die.IsAnimating && !panel.rightPlayer.die.IsAnimating,
+                "Idle duel dice must not animate before a duel starts.");
+        }
+        yield return null;
+    }
+
+    private void AssertDuelDefenderRollPresentation()
+    {
+        var panel = movementPhaseManager.duelResolutionPanel;
+        if (panel == null || !panel.IsOpen) return; // GK duels are outside this prototype.
+        var attacker = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        bool left = (attacker.isHomeTeam ? MatchManager.Instance.homeTeamDirection : MatchManager.Instance.awayTeamDirection)
+            == MatchManager.TeamAttackingDirection.LeftToRight;
+        AssertTrue(panel.DribblerOnLeft == left, "Duel columns must follow current attacking direction.");
+        var dribbler = left ? panel.leftPlayer : panel.rightPlayer;
+        var tackler = left ? panel.rightPlayer : panel.leftPlayer;
+        AssertTrue(dribbler.attribute.text.Contains("xDr") && tackler.attribute.text.Contains("xTk"),
+            "Duel attributes must show the initial expected-stat values.");
+        AssertTrue(panel.leniency.column.anchorMin.x == (left ? .5f : 0f)
+                && panel.injury.column.anchorMin.x == (left ? 0f : .5f),
+            "Leniency must be under the tackler and injury under the dribbler.");
+        AssertTrue(!tackler.die.IsAnimating && dribbler.die.IsAnimating,
+            "Tackler result must freeze before the dribbler's die starts.");
+        AssertTrue(movementPhaseManager.GetInstructions().Contains(dribbler.guidance.text),
+            "Instruction box and panel must share the same required-roll guidance.");
+        bool paused = MatchManager.Instance.IsPauseMenuOpen;
+        gameInputManager.SimulateKeyDataPress(KeyCode.Escape);
+        AssertTrue(panel.IsOpen && !panel.IsComplete, "Escape must not skip remaining duel rolls.");
+        AssertTrue(MatchManager.Instance.IsPauseMenuOpen == paused, "Early Escape must not open Pause.");
+        gameInputManager.SimulateKeyDataPress(KeyCode.Return);
+        AssertTrue(!panel.IsResultHeld && !DuelResolutionPanelController.IsMatchClockHeld,
+            "Enter must not hold the result before all required rolls finish.");
+    }
+
+    private bool checkedDuelAutomaticDismissal;
+
+    // Exercise the real result gate before existing assertions inspect follow-up gameplay.
+    private IEnumerator WaitForDuelResultPresentation()
+    {
+        var panel = movementPhaseManager.duelResolutionPanel;
+        if (panel == null || !panel.IsOpen) yield break;
+        // Injury resolution's outer coroutine starts the countdown on its next frame.
+        yield return null;
+        yield return null;
+        if (!panel.IsComplete) yield break; // A foul still needs its two checks.
+        AssertTrue(!movementPhaseManager.isWaitingForReposition && !movementPhaseManager.isWaitingForFoulDecision,
+            "Duel result must hold repositioning and Play On/Take Foul until dismissal.");
+        gameInputManager.SimulateKeyDataPress(KeyCode.A);
+        gameInputManager.SimulateKeyDataPress(KeyCode.F);
+        AssertTrue(panel.IsOpen && panel.IsComplete, "A/F must not bypass the completed duel panel.");
+        if (!checkedDuelAutomaticDismissal)
+        {
+            checkedDuelAutomaticDismissal = true;
+            gameInputManager.SimulateKeyDataPress(KeyCode.Return);
+            AssertTrue(panel.IsResultHeld && DuelResolutionPanelController.IsMatchClockHeld,
+                "Enter should hold the completed result and match clock.");
+            string heldClock = MatchManager.Instance.GetClockDisplayText();
+            string heldFooter = panel.footer.text;
+            yield return new WaitForSecondsRealtime(1.2f);
+            AssertTrue(panel.IsOpen && panel.IsResultHeld && panel.footer.text == heldFooter,
+                "The held result must stay visible without advancing its countdown.");
+            AssertTrue(MatchManager.Instance.GetClockDisplayText() == heldClock,
+                "The match clock must not advance while the result is held.");
+            gameInputManager.SimulateKeyDataPress(KeyCode.Return);
+            AssertTrue(!panel.IsResultHeld && !DuelResolutionPanelController.IsMatchClockHeld,
+                "Enter again should release the hold and resume the countdown.");
+            float started = Time.unscaledTime;
+            yield return WaitForCondition(() => !panel.IsOpen, panel.resultSeconds + 1f,
+                "Duel result should close automatically after its countdown.");
+            AssertTrue(Time.unscaledTime - started >= panel.resultSeconds - .15f,
+                "The completed result should remain readable for five seconds.");
+        }
+        else
+        {
+            bool wasPaused = MatchManager.Instance.IsPauseMenuOpen;
+            gameInputManager.SimulateKeyDataPress(KeyCode.Escape);
+            AssertTrue(!panel.IsOpen, "Escape must close a completed duel result.");
+            AssertTrue(!DuelResolutionPanelController.IsMatchClockHeld, "Closing the panel must release its clock hold.");
+            AssertTrue(MatchManager.Instance.IsPauseMenuOpen == wasPaused,
+                "Closing a completed duel result must not toggle Pause.");
+        }
+        yield return null; // Resume the manager's existing continuation.
     }
 
     private IEnumerator Scenario_015_Movement_Phase_Check_NutmegWithoutMovement_tackle_Loose_Ball()
@@ -10344,8 +10639,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.isWaitingForTackleRoll
         );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -10398,8 +10695,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -10458,8 +10757,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -10586,6 +10887,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing R to roll for an injury on Yaneva, oh, she's injured!");
         movementPhaseManager.PerformInjuryTest(6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing A - to play on");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
@@ -10659,7 +10961,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             PlayerToken.GetPlayerTokenByName("Paterson").name,
             movementPhaseManager.selectedDefender.name
         );
+        int patersonFoulThreshold = CaptureScenarioTackleFoulThreshold();
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 1);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.defendersMoved == 0,
@@ -10668,6 +10972,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.defendersMoved
         );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.defendersMoved == 0,
@@ -10700,6 +11005,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return new WaitForSeconds(0.6f);
         Log("Pressing R to roll for an injury on Yaneva, NO injury!");
         movementPhaseManager.PerformInjuryTest(1);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.6f);
         AssertTrue(
             movementPhaseManager.defendersMoved == 0,
@@ -10841,9 +11147,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             PlayerToken.GetPlayerTokenByName("Cafferata").playerName,
             MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose.playerName
         );
+        int gilbertFoulThreshold = CaptureScenarioTackleFoulThreshold();
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 2);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         Log("Pressing X to Forfeit Reposition of Gilbert");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.X, 0.3f));
@@ -10876,8 +11185,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         var paterson = PlayerToken.GetPlayerTokenByName("Paterson");
         var dribblerTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(yaneva.isHomeTeam);
         var tacklerTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(gilbert.isHomeTeam);
-        (float patersonXD, float patersonXT) = CalculateExpectedGroundDuel(yaneva.dribbling, paterson.tackling);
-        (float gilbertXD, float gilbertXT) = CalculateExpectedGroundDuel(yaneva.dribbling, gilbert.tackling);
+        (float patersonXD, float patersonXT) = CalculateExpectedGroundDuel(yaneva.dribbling, paterson.tackling, defenderFoulThreshold: patersonFoulThreshold);
+        (float gilbertXD, float gilbertXT) = CalculateExpectedGroundDuel(yaneva.dribbling, gilbert.tackling, defenderFoulThreshold: gilbertFoulThreshold);
         AssertTrue(
             MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").groundDuelsInvolved == 2,
             "Yaneva should have 2 ground duels involved",
@@ -10903,9 +11212,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             MatchManager.Instance.gameData.stats.GetPlayerStats("Gilbert").tacklesMade
         );
         AssertTrue(
-            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade == 0,
-            "Yaneva should not record a dribble made when Gilbert wins the tackle duel",
-            0,
+            MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade == 1,
+            "Yaneva should retain one successful dribble for winning the earlier Paterson foul",
+            1,
             MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").dribblesMade
         );
         AssertTrue(
@@ -10947,11 +11256,16 @@ public class GameTestScenarioRunner : MonoBehaviour
             tacklerTeamStats.totalTacklesMade
         );
         AssertTrue(
-            dribblerTeamStats.totalDribblesMade == 0,
-            "The dribbler's team should not record dribbles made when Yaneva loses the resolved tackle duel",
-            0,
+            dribblerTeamStats.totalDribblesMade == 1,
+            "The dribbler's team should receive one successful dribble from the Paterson foul",
+            1,
             dribblerTeamStats.totalDribblesMade
         );
+
+        AssertTrue(MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva").groundDuelsWon == 1,
+            "The Paterson foul should credit exactly one ground duel won to Yaneva.");
+        AssertTrue(dribblerTeamStats.totalGroundDuelsWon == 1,
+            "The dribbler team should receive exactly one ground duel win from the foul.");
 
         LogFooterofTest("MovementPhase Check InterceptionFoul Tackle Foul NewTackle SuccessfulTackle");
     }
@@ -11003,6 +11317,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing R to roll for an injury on Yaneva, oh, she's injured!");
         movementPhaseManager.PerformInjuryTest(6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing A - to play on");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
@@ -11078,8 +11393,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.isWaitingForTackleRoll
         );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 2);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             movementPhaseManager.stunnedforNext.Contains(PlayerToken.GetPlayerTokenByName("Yaneva")),
@@ -11532,8 +11849,10 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log("Roll defender fail, attacker win on nutmeg");
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 2);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.5f);
 
         AssertTrue(
@@ -11716,8 +12035,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.3f));
         yield return new WaitForSeconds(0.3f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 3);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.5f);
         AssertTrue(looseBallManager.isActivated, "LooseBall should be active after the tied tackle", true, looseBallManager.isActivated);
 
@@ -11826,8 +12147,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.3f));
         yield return new WaitForSeconds(0.3f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 2);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.6f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -11962,6 +12285,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing R to roll for an injury on Yaneva, oh, she's injured!");
         movementPhaseManager.PerformInjuryTest(6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing A - to play on");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
@@ -12014,8 +12338,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.5f));
         yield return new WaitForSeconds(0.6f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -12152,6 +12478,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing R to roll for an injury on Yaneva, oh, she's injured!");
         movementPhaseManager.PerformInjuryTest(6);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.6f); // for the ball to move
         Log("Pressing A - to play on");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.A, 0.1f));
@@ -12204,8 +12531,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.5f));
         yield return new WaitForSeconds(0.6f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -12431,8 +12760,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.5f));
         yield return new WaitForSeconds(0.6f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -12593,8 +12924,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.5f));
         yield return new WaitForSeconds(0.6f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 4);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -12664,8 +12997,15 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Clicking (10, 0) - Select Yaneva");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(10, 0), 0.5f));
         Log("Pressing V - Pick Up the ball with Yaneva");
+        MatchManager.PlayerStats attackingPickupStats = MatchManager.Instance.gameData.stats.GetPlayerStats("Yaneva");
+        float attackingPickupXBefore = attackingPickupStats.xRecoveries;
+        int attackingPickupMadeBefore = attackingPickupStats.possessionWon;
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.V, 0.1f));
         yield return new WaitForSeconds(2f);
+        AssertApproximately(attackingPickupStats.xRecoveries, attackingPickupXBefore, 0.0001f,
+            "Collecting your own team's loose ball should not add xRecovery.");
+        AssertTrue(attackingPickupStats.possessionWon == attackingPickupMadeBefore,
+            "Collecting your own team's loose ball should not add a recovery made.", attackingPickupMadeBefore, attackingPickupStats.possessionWon);
         AssertTrue(
             movementPhaseManager.isDribblerRunning,
             "MP should realize that the ball is picked up",
@@ -12723,8 +13063,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.3f));
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -12895,8 +13237,26 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
         yield return new WaitForSeconds(0.5f);
         Log("Pressing V - McNulty to Pick Up Ball");
+        PlayerToken defensiveCollector = RequirePlayerToken("McNulty");
+        MatchManager.PlayerStats pickupStats = MatchManager.Instance.gameData.stats.GetPlayerStats(defensiveCollector);
+        MatchManager.TeamStats pickupTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(defensiveCollector.isHomeTeam);
+        float pickupXBefore = pickupStats.xRecoveries;
+        int pickupMadeBefore = pickupStats.possessionWon;
+        float pickupTeamXBefore = pickupTeamStats.totalXRecoveries;
+        int pickupTeamMadeBefore = pickupTeamStats.totalPossessionWon;
+        int pickupInterceptionsBefore = pickupStats.interceptionsAttempted;
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.V, 0.3f));
         yield return new WaitForSeconds(2.5f);
+        AssertApproximately(pickupStats.xRecoveries, pickupXBefore + 1f, 0.0001f,
+            "A defensive loose-ball pickup should add exactly 1 xRecovery to the collector.");
+        AssertTrue(pickupStats.possessionWon == pickupMadeBefore + 1,
+            "A defensive loose-ball pickup should add exactly one recovery made.", pickupMadeBefore + 1, pickupStats.possessionWon);
+        AssertApproximately(pickupTeamStats.totalXRecoveries, pickupTeamXBefore + 1f, 0.0001f,
+            "The collecting team should receive exactly 1 xRecovery.");
+        AssertTrue(pickupTeamStats.totalPossessionWon == pickupTeamMadeBefore + 1,
+            "The collecting team should receive exactly one recovery made.", pickupTeamMadeBefore + 1, pickupTeamStats.totalPossessionWon);
+        AssertTrue(pickupStats.interceptionsAttempted == pickupInterceptionsBefore,
+            "An automatic pickup should not invent an interception attempt.", pickupInterceptionsBefore, pickupStats.interceptionsAttempted);
         availabilityCheck = AssertCorrectAvailabilityAnyOtherScenario();
         AssertTrue(
             availabilityCheck.passed,
@@ -12980,8 +13340,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -13184,8 +13546,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.T, 0.1f));
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 6);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             looseBallManager.isActivated,
@@ -13472,8 +13836,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.N, 0.1f));
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             !movementPhaseManager.isNutmegInProgress,
@@ -13802,8 +14168,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.N, 0.1f));
         yield return new WaitForSeconds(0.5f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
         AssertTrue(
             !movementPhaseManager.isNutmegInProgress,
@@ -14054,8 +14422,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(nutmegDefender != null, "Nutmeg victim should be set before the tie rolls.");
 
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 5);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(1.2f);
 
         AssertTrue(
@@ -15255,8 +15625,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             movementPhaseManager.isWaitingForTackleRoll
         );
         movementPhaseManager.PerformTackleDiceRoll(isDefender: true, 4);
+        AssertDuelDefenderRollPresentation();
         yield return new WaitForSeconds(0.2f);
         movementPhaseManager.PerformTackleDiceRoll(isDefender: false, 4);
+        yield return WaitForDuelResultPresentation();
         yield return new WaitForSeconds(0.2f);
         AssertTrue(
             movementPhaseManager.isWaitingForReposition,
@@ -18570,6 +18942,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         MatchManager.PlayerStats kuzmicStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(kuzmic.playerName);
         MatchManager.PlayerStats passerStatsBefore = MatchManager.Instance.gameData.stats.GetPlayerStats(passer.playerName);
         int possessionWonBefore = kuzmicStatsBefore.possessionWon;
+        float xRecoveryBefore = kuzmicStatsBefore.xRecoveries;
+        MatchManager.TeamStats recoveryTeamStats = MatchManager.Instance.gameData.stats.GetTeamStats(kuzmic.isHomeTeam);
+        float teamXRecoveryBefore = recoveryTeamStats.totalXRecoveries;
+        int teamRecoveriesBefore = recoveryTeamStats.totalPossessionWon;
         int passerPossessionLostBefore = passerStatsBefore.possessionLost;
 
         Log("Rigging inaccurate Long Ball roll to 1");
@@ -18616,6 +18992,12 @@ public class GameTestScenarioRunner : MonoBehaviour
         MatchManager.PlayerStats kuzmicStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(kuzmic.playerName);
         MatchManager.PlayerStats passerStatsAfter = MatchManager.Instance.gameData.stats.GetPlayerStats(passer.playerName);
         AssertTrue(kuzmicStatsAfter.possessionWon == possessionWonBefore + 1, "Kuzmic should log one possession won from the long-ball recovery.", possessionWonBefore + 1, kuzmicStatsAfter.possessionWon);
+        AssertApproximately(kuzmicStatsAfter.xRecoveries, xRecoveryBefore + 1f, 0.0001f,
+            "Kuzmic's automatic long-ball collection should credit exactly 1 xRecovery.");
+        AssertApproximately(recoveryTeamStats.totalXRecoveries, teamXRecoveryBefore + 1f, 0.0001f,
+            "Kuzmic's team should receive exactly 1 xRecovery for the automatic collection.");
+        AssertTrue(recoveryTeamStats.totalPossessionWon == teamRecoveriesBefore + 1,
+            "Kuzmic's team should receive exactly one recovery made.", teamRecoveriesBefore + 1, recoveryTeamStats.totalPossessionWon);
         AssertTrue(passerStatsAfter.possessionLost == passerPossessionLostBefore + 1, "Ulisses should log one possession lost from Kuzmic's long-ball recovery.", passerPossessionLostBefore + 1, passerStatsAfter.possessionLost);
 
         LogFooterofTest("Long Ball Box GK Free Move Then Kuzmic Recovery");
@@ -20064,10 +20446,21 @@ public class GameTestScenarioRunner : MonoBehaviour
         return successfulRolls / 6f;
     }
 
+    private int CaptureScenarioTackleFoulThreshold()
+    {
+        var match = MatchManager.Instance;
+        var attacker = movementPhaseManager.ball.GetCurrentHex()?.GetOccupyingToken();
+        var defender = movementPhaseManager.selectedDefender;
+        if (attacker == null || defender == null) return 1;
+        var direction = attacker.isHomeTeam ? match.homeTeamDirection : match.awayTeamDirection;
+        return attacker.GetCurrentHex().IsDangerousTacklingPosition(direction, defender.GetCurrentHex()) ? 2 : 1;
+    }
+
     private static (float xDribbles, float xTackles) CalculateExpectedGroundDuel(
         int attackerDribbling,
         int defenderTackling,
-        int defenderBonusMalus = 0)
+        int defenderBonusMalus = 0,
+        int defenderFoulThreshold = 1)
     {
         (int effectiveRoll, float probability)[] outcomes =
         {
@@ -20083,6 +20476,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         float attackerWins = 0f;
         float defenderWins = 0f;
         float ties = 0f;
+        float fouls = 0f;
 
         foreach ((int defenderRoll, float defenderProbability) in outcomes)
         {
@@ -20090,8 +20484,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             {
                 float branchProbability = defenderProbability * attackerProbability;
 
-                if (defenderRoll <= 1)
+                if (defenderRoll <= defenderFoulThreshold)
                 {
+                    fouls += branchProbability;
                     continue;
                 }
 
@@ -20117,7 +20512,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             }
         }
 
-        return (attackerWins + (ties / 6f), defenderWins + ((ties * 5f) / 6f));
+        return (attackerWins + (ties / 6f) + fouls, defenderWins + ((ties * 5f) / 6f));
     }
 
     private AvailabilityCheckResult AssertCorrectAvailabilityAfterGBToPlayer()

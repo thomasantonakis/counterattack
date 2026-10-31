@@ -548,24 +548,26 @@ public class HexGrid : MonoBehaviour
     public static List<HexCell> GetHexesInRange(HexGrid hexGrid, HexCell startHex, int range)
     {
         List<HexCell> hexesInRange = new List<HexCell>();
-        Vector3Int startCubeCoords = HexGridUtils.OffsetToCube(startHex.coordinates.x, startHex.coordinates.z);  // Convert offset to cube
-
-        for (int dx = -range; dx <= range; dx++)
+        if (hexGrid?.cells == null || startHex == null || range < 0) return hexesInRange;
+        Vector3Int start = HexGridUtils.OffsetToCube(startHex.coordinates.x, startHex.coordinates.z);
+        int columns = hexGrid.cells.GetLength(0);
+        int rows = hexGrid.cells.GetLength(1);
+        int minX = -hexGrid.width / 2;
+        int maxX = minX + columns - 1;
+        int minZ = -hexGrid.height / 2;
+        int maxZ = minZ + rows - 1;
+        // Clip the cube-coordinate range before looking up any cells. Even a
+        // long pass near a corner never asks for coordinates outside the grid.
+        for (int dx = Mathf.Max(-range, minX - start.x); dx <= Mathf.Min(range, maxX - start.x); dx++)
         {
-            for (int dy = Mathf.Max(-range, -dx - range); dy <= Mathf.Min(range, -dx + range); dy++)
+            int column = start.x + dx;
+            int rowOrigin = start.z - dx + (column - (column & 1)) / 2;
+            int firstY = Mathf.Max(Mathf.Max(-range, -dx - range), rowOrigin - maxZ);
+            int lastY = Mathf.Min(Mathf.Min(range, -dx + range), rowOrigin - minZ);
+            for (int dy = firstY; dy <= lastY; dy++)
             {
-                int dz = -dx - dy;
-                Vector3Int currentCubeCoords = new Vector3Int(startCubeCoords.x + dx, startCubeCoords.y + dy, startCubeCoords.z + dz);
-                // Convert cube coords back to offset (to pass in as input)
-                Vector2Int offsetCoords = HexGridUtils.CubeToOffset(currentCubeCoords);
-                // Create a Vector3Int from offset coordinates
-                Vector3Int offsetCoordsVec3 = new Vector3Int(offsetCoords.x, 0, offsetCoords.y);
-                // Get the hex at the current coordinates using GetHexCellAt(Vector3Int)
-                HexCell hex = hexGrid.GetHexCellAt(offsetCoordsVec3, false);
-                if (hex != null)
-                {
-                    hexesInRange.Add(hex);
-                }
+                HexCell hex = hexGrid.cells[column - minX, rowOrigin - dy - minZ];
+                if (hex != null) hexesInRange.Add(hex);
             }
         }
         return hexesInRange;
@@ -600,6 +602,21 @@ public class HexGrid : MonoBehaviour
             }
         }
         return defenderTokens;
+    }
+
+    public List<PlayerToken> GetAttackers()
+    {
+        List<PlayerToken> attackerTokens = new List<PlayerToken>();
+        foreach (HexCell cell in GetAttackerHexes())
+        {
+            PlayerToken token = cell.GetOccupyingToken();
+            if (token != null)
+            {
+                attackerTokens.Add(token);
+            }
+        }
+
+        return attackerTokens;
     }
     
     public List<HexCell> GetAttackerHexes()
@@ -736,10 +753,8 @@ public class HexGrid : MonoBehaviour
             if (distance <= range && !hex.isAttackOccupied && !hex.isDefenseOccupied)
             {
                 validHexes.Add(hex);
-                Debug.Log($"Valid hex found: {hex.name}");
             }
         }
-        Debug.Log($"Total valid hexes: {validHexes.Count}");
         return validHexes;
     }
 

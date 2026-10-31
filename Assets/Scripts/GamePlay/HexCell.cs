@@ -544,32 +544,20 @@ public class HexCell : MonoBehaviour
 
     public HexCell[] GetNeighbors(HexGrid grid)
     {
-        List<HexCell> validNeighbors = new List<HexCell>();
-        HexCell[] neighbors = new HexCell[6];
-        // Choose directions based on whether the row (z) is even or odd
-        Vector2Int[] offsetDirections = GetDirectionVectors();  // Get appropriate directions
-
-        for (int i = 0; i < offsetDirections.Length; i++)
+        List<HexCell> validNeighbors = new List<HexCell>(6);
+        if (grid?.cells == null) return System.Array.Empty<HexCell>();
+        Vector2Int[] directions = GetDirectionVectors();
+        int columns = grid.cells.GetLength(0);
+        int rows = grid.cells.GetLength(1);
+        for (int i = 0; i < directions.Length; i++)
         {
-            int newX = coordinates.x + offsetDirections[i].x;
-            int newZ = coordinates.z + offsetDirections[i].y;
-
-            HexCell neighborHex = grid.GetHexCellAt(new Vector3Int(newX, 0, newZ));  // Fetch neighbor in offset coords
-            if (
-                neighborHex != null 
-                && (
-                    !neighborHex.isOutOfBounds
-                    || neighborHex.isInGoal != 0 // A out of bounds neighbor which is inGoal, it's a valid neighbor.
-                )
-            )
-            {
-                // neighbors[i] = neighborHex;
-                validNeighbors.Add(neighborHex);  // ✅ Only add valid neighbors
-            }
+            int x = coordinates.x + directions[i].x + grid.GridWidth / 2;
+            int z = coordinates.z + directions[i].y + grid.GridHeight / 2;
+            if (x < 0 || x >= columns || z < 0 || z >= rows) continue;
+            HexCell neighbor = grid.cells[x, z];
+            if (neighbor != null && (!neighbor.isOutOfBounds || neighbor.isInGoal != 0))
+                validNeighbors.Add(neighbor);
         }
-        // Debug log the neighbors for this hex
-        // Debug.Log($"Neighbors of hex ({coordinates.x}, {coordinates.z}): {string.Join(", ", neighbors.Select(n => n?.coordinates.ToString() ?? "null"))}");
-        // return neighbors;
         return validNeighbors.ToArray();
     }
 

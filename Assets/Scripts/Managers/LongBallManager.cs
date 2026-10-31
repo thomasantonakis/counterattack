@@ -898,6 +898,10 @@ public class LongBallManager : MonoBehaviour
             yield break;
         }
 
+        MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+            recoveringToken, 1f,
+            connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            recoveryType: "long");
         MatchManager.Instance.gameData.gameLog.LogEvent(
             recoveringToken,
             MatchManager.ActionType.BallRecovery,
@@ -983,6 +987,11 @@ public class LongBallManager : MonoBehaviour
             && !finalHex.isAttackOccupied
             && !finalHex.isDefenseOccupied
             && defenderLongBallMoveHexes.Contains(finalHex);
+    }
+
+    public HexCell GetLongBallLandingHexForDecision()
+    {
+        return finalHex;
     }
 
     private async Task MoveGKForLB(HexCell hex)

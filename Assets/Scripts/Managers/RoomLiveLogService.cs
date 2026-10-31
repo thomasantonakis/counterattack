@@ -6,11 +6,119 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text;
 using UnityEngine;
 
 public static class RoomLiveLogService
 {
     private const string LogCapturesFolderName = "LogCaptures";
+    private const string LiveEventIndexSuffix = "__Live Events Index.json";
+    private const int LiveEventSegmentMinutes = 10;
+    private static readonly Dictionary<string, int> LastWrittenSequenceBySegment = new();
+    private static readonly HashSet<string> ActiveSegmentPaths = new(StringComparer.Ordinal);
+    private static string activeSourcePath = string.Empty;
+    private static int lastWrittenSequence;
+
+    public static void ResetSession()
+    {
+        LastWrittenSequenceBySegment.Clear();
+        ActiveSegmentPaths.Clear();
+        activeSourcePath = string.Empty;
+        lastWrittenSequence = 0;
+    }
+
+    /// <summary>
+    /// Appends only newly produced events to bounded ten-minute JSONL files.
+    /// This is the frequent live path; it deliberately avoids reparsing and
+    /// rewriting the growing resumable save after every action.
+    /// </summary>
+    public static bool AppendActiveLiveEvents(
+        MatchManager matchManager,
+        out string writtenPath,
+        out string message)
+    {
+        writtenPath = string.Empty;
+        if (!TryResolveWritableActiveSavePath(out string savePath, out message))
+        {
+            return false;
+        }
+
+        if (matchManager?.gameData?.events == null)
+        {
+            message = "No gameplay events are available yet.";
+            return true;
+        }
+
+        try
+        {
+            if (!string.Equals(activeSourcePath, savePath, StringComparison.Ordinal))
+            {
+                LastWrittenSequenceBySegment.Clear();
+                ActiveSegmentPaths.Clear();
+                activeSourcePath = savePath;
+                lastWrittenSequence = LoadLiveEventIndexState(savePath, ActiveSegmentPaths);
+                // Inherited events remain in the resumable save as history,
+                // but this run's live segments contain only its new actions.
+                lastWrittenSequence = Math.Max(lastWrittenSequence, matchManager.gameData.inheritedEventSequence);
+            }
+
+            List<GameplayEvent> pendingEvents = matchManager.gameData.events
+                .Where(gameplayEvent => gameplayEvent != null
+                    && gameplayEvent.sequenceNumber > lastWrittenSequence)
+                .OrderBy(gameplayEvent => gameplayEvent.sequenceNumber)
+                .ToList();
+            Dictionary<string, List<GameplayEvent>> eventsBySegment = pendingEvents
+                .GroupBy(gameplayEvent => BuildLiveEventSegmentPath(savePath, gameplayEvent))
+                .ToDictionary(group => group.Key, group => group.ToList());
+            List<string> updatedSegments = new();
+            int appendedCount = 0;
+
+            foreach (KeyValuePair<string, List<GameplayEvent>> segment in eventsBySegment)
+            {
+                int lastWrittenSequence = GetLastWrittenSequence(segment.Key);
+                List<GameplayEvent> pending = segment.Value
+                    .Where(gameplayEvent => gameplayEvent.sequenceNumber > lastWrittenSequence)
+                    .ToList();
+                if (pending.Count == 0)
+                {
+                    continue;
+                }
+
+                StringBuilder builder = new();
+                foreach (GameplayEvent gameplayEvent in pending)
+                {
+                    builder.AppendLine(JsonConvert.SerializeObject(gameplayEvent, Formatting.None));
+                }
+
+                File.AppendAllText(segment.Key, builder.ToString());
+                LastWrittenSequenceBySegment[segment.Key] = pending[^1].sequenceNumber;
+                ActiveSegmentPaths.Add(segment.Key);
+                appendedCount += pending.Count;
+                updatedSegments.Add(segment.Key);
+                writtenPath = segment.Key;
+            }
+
+            if (pendingEvents.Count > 0)
+            {
+                lastWrittenSequence = Math.Max(lastWrittenSequence, pendingEvents[^1].sequenceNumber);
+            }
+
+            WriteLiveEventIndex(
+                savePath,
+                matchManager.gameData.events.Count,
+                lastWrittenSequence,
+                ActiveSegmentPaths);
+            message = appendedCount > 0
+                ? $"Appended {appendedCount} live event(s) across {updatedSegments.Count} segment(s)."
+                : "Live event segments are already up to date.";
+            return true;
+        }
+        catch (Exception ex)
+        {
+            message = $"Failed to append live events: {ex.Message}";
+            return false;
+        }
+    }
 
     public static bool PatchActiveLiveLog(MatchManager matchManager, out string patchedPath, out string message)
     {
@@ -119,6 +227,104 @@ public static class RoomLiveLogService
         return true;
     }
 
+    private static string BuildLiveEventSegmentPath(string savePath, GameplayEvent gameplayEvent)
+    {
+        string directory = Path.GetDirectoryName(savePath) ?? string.Empty;
+        string baseName = Path.GetFileNameWithoutExtension(savePath);
+        int minute = Math.Max(0, gameplayEvent.matchClockSeconds / 60);
+        int segmentStart = (minute / LiveEventSegmentMinutes) * LiveEventSegmentMinutes;
+        int segmentEnd = segmentStart + LiveEventSegmentMinutes - 1;
+        return Path.Combine(
+            directory,
+            $"{baseName}__Live Events__H{Math.Max(1, gameplayEvent.currentHalf)}_{segmentStart:00}-{segmentEnd:00}.jsonl");
+    }
+
+    private static int GetLastWrittenSequence(string segmentPath)
+    {
+        if (LastWrittenSequenceBySegment.TryGetValue(segmentPath, out int sequence))
+        {
+            return sequence;
+        }
+
+        int lastSequence = 0;
+        if (File.Exists(segmentPath))
+        {
+            string lastLine = File.ReadLines(segmentPath)
+                .LastOrDefault(line => !string.IsNullOrWhiteSpace(line));
+            if (!string.IsNullOrWhiteSpace(lastLine))
+            {
+                try
+                {
+                    lastSequence = JObject.Parse(lastLine).Value<int>("sequenceNumber");
+                }
+                catch (JsonException)
+                {
+                    lastSequence = 0;
+                }
+            }
+        }
+
+        LastWrittenSequenceBySegment[segmentPath] = lastSequence;
+        return lastSequence;
+    }
+
+    private static int LoadLiveEventIndexState(string savePath, ISet<string> segmentPaths)
+    {
+        string directory = Path.GetDirectoryName(savePath) ?? string.Empty;
+        string baseName = Path.GetFileNameWithoutExtension(savePath);
+        string indexPath = Path.Combine(directory, $"{baseName}{LiveEventIndexSuffix}");
+        if (!File.Exists(indexPath))
+        {
+            return 0;
+        }
+
+        try
+        {
+            RoomLiveEventIndex index = JsonConvert.DeserializeObject<RoomLiveEventIndex>(
+                File.ReadAllText(indexPath));
+            foreach (string segmentFile in index?.segmentFiles ?? new List<string>())
+            {
+                if (!string.IsNullOrWhiteSpace(segmentFile))
+                {
+                    segmentPaths.Add(Path.Combine(directory, segmentFile));
+                }
+            }
+
+            return Math.Max(0, index?.lastSequenceNumber ?? 0);
+        }
+        catch (Exception exception)
+        {
+            UnityEngine.Debug.LogWarning(
+                $"Could not reopen live event index; rebuilding it from event segments: {exception.Message}");
+            return 0;
+        }
+    }
+
+    private static void WriteLiveEventIndex(
+        string savePath,
+        int eventCount,
+        int latestSequenceNumber,
+        IEnumerable<string> segmentPaths)
+    {
+        string directory = Path.GetDirectoryName(savePath) ?? string.Empty;
+        string baseName = Path.GetFileNameWithoutExtension(savePath);
+        string indexPath = Path.Combine(directory, $"{baseName}{LiveEventIndexSuffix}");
+        RoomLiveEventIndex index = new()
+        {
+            schemaVersion = GameplayEvent.CurrentSchemaVersion,
+            sourceGameplaySave = Path.GetFileName(savePath),
+            updatedUtc = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture),
+            eventCount = eventCount,
+            lastSequenceNumber = latestSequenceNumber,
+            segmentFiles = segmentPaths
+                .Select(Path.GetFileName)
+                .Distinct()
+                .OrderBy(fileName => fileName)
+                .ToList()
+        };
+        File.WriteAllText(indexPath, JsonConvert.SerializeObject(index, Formatting.Indented));
+    }
+
     private static void PatchLiveLogFields(JObject root, MatchManager.GameData gameData)
     {
         gameData.eventLogSchemaVersion = GameplayEvent.CurrentSchemaVersion;
@@ -225,4 +431,15 @@ public static class RoomLiveLogService
     {
         public List<string> entries = new();
     }
+}
+
+[Serializable]
+public sealed class RoomLiveEventIndex
+{
+    public int schemaVersion;
+    public string sourceGameplaySave;
+    public string updatedUtc;
+    public int eventCount;
+    public int lastSequenceNumber;
+    public List<string> segmentFiles = new();
 }

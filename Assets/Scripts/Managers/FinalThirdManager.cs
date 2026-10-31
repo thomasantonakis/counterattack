@@ -6,6 +6,8 @@ using System.Linq;
 
 public class FinalThirdManager : MonoBehaviour
 {
+    public const int StandardMovementRange = 6;
+
     private enum FinalThirdContext
     {
         None,
@@ -983,7 +985,20 @@ public class FinalThirdManager : MonoBehaviour
             return GetMinimumOobGoalKickDefenderExitRange(token);
         }
 
-        return 6;
+        return StandardMovementRange;
+    }
+
+    // Read-only planning uses the same range and contextual restrictions as
+    // selection, without selecting a token or changing highlighted hexes.
+    public IEnumerable<HexCell> GetMovementDestinationsForDecisionPreview(PlayerToken token)
+    {
+        if (!isActivated || token?.GetCurrentHex() == null || hexGrid == null
+            || currentMovableTokens?.Contains(token) != true)
+            return System.Array.Empty<HexCell>();
+
+        return HexGridUtils.GetReachableHexes(hexGrid, token.GetCurrentHex(), GetF3MovementRangeForToken(token))
+            .reachableHexes.Where(hex => hex != null && !hex.isAttackOccupied && !hex.isDefenseOccupied
+                && IsContextualMovementDestination(token, hex));
     }
 
     private int GetMinimumOobGoalKickDefenderExitRange(PlayerToken token)
@@ -1009,30 +1024,24 @@ public class FinalThirdManager : MonoBehaviour
 
     private void ApplyContextualMovementHighlights(PlayerToken token)
     {
+        FilterHighlightedHexes(hex => IsContextualMovementDestination(token, hex));
+        if (IsOobGoalKickCurrentSideDefenderToken(token) && hexGrid.highlightedHexes.Count == 0)
+            Debug.LogWarning($"{token.name} has no legal Goal Kick clearance destination from {token.GetCurrentHex()?.coordinates.ToString() ?? "unknown hex"}.");
+    }
+
+    private bool IsContextualMovementDestination(PlayerToken token, HexCell hex)
+    {
+        if (hex == null || hex.isOutOfBounds) return false;
         if (IsOobGoalKickCurrentSideDefenderToken(token))
-        {
-            FilterHighlightedHexes(IsOobGoalKickDefenderExitDestination);
-            if (hexGrid.highlightedHexes.Count == 0)
-            {
-                Debug.LogWarning($"{token.name} has no legal Goal Kick clearance destination from {token.GetCurrentHex()?.coordinates.ToString() ?? "unknown hex"}.");
-            }
-            return;
-        }
+            return IsOobGoalKickDefenderExitDestination(hex);
 
         if (IsFirstSaveAndHoldKFinalThird() && currentTeamMoving == "attack" && token == ball.GetCurrentHex()?.GetOccupyingToken())
-        {
-            FilterHighlightedHexes(hex => hex != null && !hex.isOutOfBounds && hex.isInPenaltyBox != 0);
-            return;
-        }
+            return hex.isInPenaltyBox != 0;
 
         if (IsSaveAndHoldCurrentSideDefenseTurn())
-        {
-            List<HexCell> gkZoi = ball.GetCurrentHex().GetNeighbors(hexGrid).ToList();
-            FilterHighlightedHexes(hex => hex != null && !hex.isOutOfBounds && !gkZoi.Contains(hex));
-            return;
-        }
+            return !ball.GetCurrentHex().GetNeighbors(hexGrid).Contains(hex);
 
-        FilterHighlightedHexes(hex => hex != null && !hex.isOutOfBounds);
+        return true;
     }
 
     private void FilterHighlightedHexes(System.Func<HexCell, bool> predicate)
@@ -1352,7 +1361,12 @@ public class FinalThirdManager : MonoBehaviour
 
             foreach (PlayerToken token in currentMovableTokens)
             {
-                context.AddToken(token);
+                context.AddTokenActionCandidate(
+                    nameof(FinalThirdManager),
+                    RoomActionType.FinalThird,
+                    RoomDecisionStep.ChooseActor,
+                    token,
+                    $"Select {token.playerName} for Final Third movement");
             }
         }
 
@@ -1370,7 +1384,16 @@ public class FinalThirdManager : MonoBehaviour
 
             foreach (HexCell hex in hexGrid.highlightedHexes)
             {
-                context.AddHex(hex);
+                context.AddAction(new RoomActionCandidate
+                {
+                    manager = nameof(FinalThirdManager),
+                    actionType = RoomActionType.FinalThird,
+                    step = RoomDecisionStep.ChooseTarget,
+                    actor = selectedToken,
+                    targetHex = hex,
+                    label = $"Move {tokenName} to {hex.coordinates}",
+                    isExecutableNow = true
+                });
             }
         }
     }

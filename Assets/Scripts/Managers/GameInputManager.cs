@@ -74,6 +74,7 @@ public class KeyPressData
         public bool isConsumed;
         public string consumedBy;
         public bool? consumedByHomeTeam;
+        internal bool? expectedByHomeTeam;
 
         public KeyPressData(KeyCode key, bool shift, bool ctrl, bool alt)
         {
@@ -96,7 +97,7 @@ public class KeyPressData
 
             if (!this.consumedByHomeTeam.HasValue)
             {
-                this.consumedByHomeTeam = consumedByHomeTeam;
+                this.consumedByHomeTeam = expectedByHomeTeam ?? consumedByHomeTeam;
             }
         }
 
@@ -122,6 +123,7 @@ public class ClickInputData
     public bool isConsumed;
     public string consumedBy;
     public bool? consumedByHomeTeam;
+        internal bool? expectedByHomeTeam;
     public string action;
     public string outcome;
     public Dictionary<string, string> details;
@@ -156,7 +158,7 @@ public class ClickInputData
 
         if (!this.consumedByHomeTeam.HasValue)
         {
-            this.consumedByHomeTeam = consumedByHomeTeam;
+            this.consumedByHomeTeam = expectedByHomeTeam ?? consumedByHomeTeam;
         }
 
         if (!string.IsNullOrWhiteSpace(actionName))
@@ -233,8 +235,18 @@ public class GameInputManager : MonoBehaviour
     public MatchManager matchManager;
     public static event Action<PlayerToken, HexCell> OnClick;
     public static event Action<PlayerToken, HexCell> OnHover;
+    public static event Action<PlayerToken, HexCell> OnTokenPreviewHover;
+    private bool lastHoverWasPreviewOnly;
     // public static event Action<KeyCode> OnKeyPress;
     public static event Action<KeyPressData> OnKeyPress;
+    /// <summary>
+    /// Raised only for real mouse/keyboard input after the gameplay manager has
+    /// had an opportunity to consume it. Synthetic AI/test input deliberately
+    /// does not raise these events, which lets Human Shadow mode observe the
+    /// player's choice without mistaking an automated action for a human one.
+    /// </summary>
+    public static event Action<ClickInputData> OnPhysicalClickCompleted;
+    public static event Action<KeyPressData> OnPhysicalKeyPressCompleted;
 
     [Header("Layers")]
     public LayerMask tokenLayerMask;  // Layer for player tokens
@@ -276,15 +288,26 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
-        if (IsModalUiActive())
+        if (DuelResolutionPanelController.IsVisible)
         {
             ClearHover();
+            isDragging = false;
+            suppressMouseClickUntilReleased = true;
+            HandleKeyPresses();
+            return;
+        }
+        if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
+        {
+            // Observing a token is independent of issuing a gameplay action.
+            // HandleMouseHover respects UI hit testing before raycasting the pitch.
+            HandleMouseHover();
+            UpdateHoverNameLabel();
             isDragging = false;
             suppressMouseClickUntilReleased = true;
             return;
         }
 
-        if (IsGameplayInputBlocked() && !IsEmergencyGoalkeeperNominationInputActive())
+        if (IsModalUiActive())
         {
             ClearHover();
             isDragging = false;
@@ -449,6 +472,13 @@ public class GameInputManager : MonoBehaviour
 
     private void HandleMouseHover()
     {
+        // Token cards remain observable while the CPU searches, but gameplay
+        // hover handlers must not mutate its target/preview/instruction state.
+        bool previewOnly = IsGameplayInputBlocked() || GameDebugMonitor.Instance?.IsAIThinking == true;
+        bool pointerOverUi = IsPointerOverUi();
+        bool pointerOverControl = UiRaycastResults.Exists(result => result.gameObject != null
+            && result.gameObject.GetComponentInParent<Selectable>()?.isActiveAndEnabled == true);
+        if (pointerOverUi && (!previewOnly || pointerOverControl)) { ClearHover(); return; }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (!TryRaycastGameplay(ray, out RaycastHit hover))
         {
@@ -465,13 +495,15 @@ public class GameInputManager : MonoBehaviour
         }
 
         // ✅ Only update hover state when it changes
-        if (newHoveredToken != hoveredToken || newHoveredHex != hoveredHex)
+        if (newHoveredToken != hoveredToken || newHoveredHex != hoveredHex || lastHoverWasPreviewOnly && !previewOnly)
         {
             hoveredToken = newHoveredToken;
             hoveredHex = newHoveredHex;
             // HandleHover(hoveredToken, hoveredHex);
-            OnHover?.Invoke(hoveredToken, hoveredHex);  // 📣 Broadcast hover updates
+            OnTokenPreviewHover?.Invoke(hoveredToken, hoveredHex);
+            if (!previewOnly) OnHover?.Invoke(hoveredToken, hoveredHex);
         }
+        lastHoverWasPreviewOnly = previewOnly;
     }
 
     private void DetectMouseDrag()
@@ -558,17 +590,20 @@ public class GameInputManager : MonoBehaviour
             }
 
             ClickInputData clickData = new ClickInputData(clickedToken, clickedHex, isOOBClick);
+            bool? inputTeam = ResolveInputTeamBeforeDispatch();
             GameplayEvent clickEvent = MatchManager.Instance?.BeginInputClick(clickData);
             currentClick = clickData;
             try
             {
+                clickData.expectedByHomeTeam = inputTeam;
                 OnClick?.Invoke(clickedToken, clickedHex);  // 📣 Broadcast the click event
             }
             finally
             {
                 currentClick = null;
-                clickData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(clickData.consumedBy));
+                clickData.SetConsumedTeamIfMissing(inputTeam ?? ResolveInputTeamForConsumer(clickData.consumedBy));
                 MatchManager.Instance?.CompleteInputClick(clickEvent, clickData);
+                OnPhysicalClickCompleted?.Invoke(clickData);
             }
         }
     }
@@ -642,15 +677,18 @@ public class GameInputManager : MonoBehaviour
                 Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)
             );
             if (logIsOn) Debug.Log($"📢 KeyPress: {data}");
+            bool? inputTeam = ResolveInputTeamBeforeDispatch();
             GameplayEvent inputEvent = MatchManager.Instance?.BeginInputKey(data);
             try
             {
-                OnKeyPress?.Invoke(data);
+                data.expectedByHomeTeam = inputTeam;
+                if (!DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
             }
             finally
             {
-                data.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(data.consumedBy));
+                data.SetConsumedTeamIfMissing(inputTeam ?? ResolveInputTeamForConsumer(data.consumedBy));
                 MatchManager.Instance?.CompleteInputKey(inputEvent, data);
+                OnPhysicalKeyPressCompleted?.Invoke(data);
             }
             break; // Stop after first match
         }
@@ -1052,8 +1090,9 @@ public class GameInputManager : MonoBehaviour
             return false;
         }
 
-        DispatchSyntheticClick(token, hex, source);
-        return true;
+        bool consumed = DispatchSyntheticClick(token, hex, source);
+        if (!consumed) error = "The active gameplay manager did not accept the token click.";
+        return consumed;
     }
 
     public bool TryExecuteSyntheticHexClick(HexCell hex, string source, out string error)
@@ -1071,17 +1110,21 @@ public class GameInputManager : MonoBehaviour
             return false;
         }
 
-        DispatchSyntheticClick(hex.GetOccupyingToken(), hex, source);
-        return true;
+        bool consumed = DispatchSyntheticClick(hex.GetOccupyingToken(), hex, source);
+        if (!consumed) error = "The active gameplay manager did not accept the hex click.";
+        return consumed;
     }
 
-    private void DispatchSyntheticClick(PlayerToken token, HexCell hex, string source)
+    private bool DispatchSyntheticClick(PlayerToken token, HexCell hex, string source)
     {
+        if (DuelResolutionPanelController.IsVisible) return false;
+        if (IsGameplayInputBlocked()) return false;
+        bool? inputTeam = ResolveInputTeamBeforeDispatch();
         Vector3Int coords = hex != null ? hex.coordinates : default;
         Debug.Log($"{source} click -> hex: {(hex != null ? hex.name : "None")} @ {coords}, token: {(token != null ? token.name : "None")}");
         if (TryHandleEmergencyGoalkeeperNomination(token))
         {
-            return;
+            return true;
         }
 
         ClickInputData clickData = new ClickInputData(token, hex, isOutOfBounds: false);
@@ -1089,14 +1132,24 @@ public class GameInputManager : MonoBehaviour
         currentClick = clickData;
         try
         {
+            clickData.expectedByHomeTeam = inputTeam;
             OnClick?.Invoke(token, hex);
         }
         finally
         {
             currentClick = null;
-            clickData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(clickData.consumedBy));
+            clickData.SetConsumedTeamIfMissing(inputTeam ?? ResolveInputTeamForConsumer(clickData.consumedBy));
             MatchManager.Instance?.CompleteInputClick(clickEvent, clickData);
         }
+        return WasSyntheticClickAccepted(clickData);
+    }
+
+    private static bool WasSyntheticClickAccepted(ClickInputData input)
+    {
+        // A manager can consume a click to explain why its target is invalid.
+        // That must not be recorded as successful automated execution.
+        return input != null && input.isConsumed && input.outcome is not
+            ("invalid_target" or "out_of_bounds" or "ignored" or "rejected" or "blocked");
     }
 
     public void SimulateKeyDataPress(KeyCode key, bool shift = false, bool ctrl = false, bool alt = false)
@@ -1125,23 +1178,34 @@ public class GameInputManager : MonoBehaviour
             return false;
         }
 
-        DispatchSyntheticKeyPress(new KeyPressData(keyCode, shift: false, ctrl: false, alt: false), source);
-        return true;
+        bool consumed = DispatchSyntheticKeyPress(new KeyPressData(keyCode, shift: false, ctrl: false, alt: false), source);
+        if (!consumed) error = "No gameplay manager consumed the key press.";
+        return consumed;
     }
 
-    private void DispatchSyntheticKeyPress(KeyPressData keyData, string source)
+    private bool DispatchSyntheticKeyPress(KeyPressData keyData, string source)
     {
+        if (IsGameplayInputBlocked()) return false;
+        bool? inputTeam = ResolveInputTeamBeforeDispatch();
         Debug.Log($"{source} key press -> {FormatKeyChord(keyData)}");
         GameplayEvent inputEvent = MatchManager.Instance?.BeginInputKey(keyData);
         try
         {
-            OnKeyPress?.Invoke(keyData);
+            keyData.expectedByHomeTeam = inputTeam;
+            if (!DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
         }
         finally
         {
-            keyData.SetConsumedTeamIfMissing(ResolveInputTeamForConsumer(keyData.consumedBy));
+            keyData.SetConsumedTeamIfMissing(inputTeam ?? ResolveInputTeamForConsumer(keyData.consumedBy));
             MatchManager.Instance?.CompleteInputKey(inputEvent, keyData);
         }
+        return keyData.isConsumed;
+    }
+
+    private static bool? ResolveInputTeamBeforeDispatch()
+    {
+        string team = GameDebugMonitor.Instance?.GetCurrentInstructionSnapshotForLog()?.expectedTeam;
+        return team == "Home" ? true : team == "Away" ? false : null;
     }
 
     private static bool TryParseSyntheticKeyCode(string keyName, out KeyCode keyCode)

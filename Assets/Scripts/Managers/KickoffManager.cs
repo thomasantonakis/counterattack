@@ -24,9 +24,19 @@ public class KickoffManager : MonoBehaviour
     [Header("Runtime Items")]
     private bool isActivated = false;
     private int setupConfirmCount = 0;
+    private bool homeSetupConfirmed = false;
+    private bool awaySetupConfirmed = false;
+    private string pendingAutomatedConfirmationTeam = string.Empty;
+    private string pendingAutomatedInputTeam = string.Empty;
     private KickoffFlowPhase flowPhase = KickoffFlowPhase.None;
     private bool isMovingSetupToken = false;
     private bool isMovingKickoffTaker = false;
+    private readonly Dictionary<string, HashSet<string>> automatedVisitedSetupStates = new();
+    private readonly Dictionary<string, string> automatedPreviousSetupState = new();
+    private readonly Dictionary<string, int> automatedSetupMoveCounts = new();
+    private readonly Dictionary<string, HashSet<PlayerToken>> automatedMovedActors = new();
+    private readonly Dictionary<string, RoomAIKickoffPlan> automatedOpeningPlans = new();
+    private const int AutomatedSetupMoveBudget = 24;
 
     private void OnEnable()
     {
@@ -49,6 +59,7 @@ public class KickoffManager : MonoBehaviour
         {
             if (isMovingSetupToken)
             {
+                RegisterNextSetupSelection(token);
                 return;
             }
 
@@ -60,6 +71,7 @@ public class KickoffManager : MonoBehaviour
         {
             if (isMovingSetupToken)
             {
+                RegisterNextSetupSelection(token);
                 return;
             }
 
@@ -76,10 +88,28 @@ public class KickoffManager : MonoBehaviour
         DeactivateSetup();
     }
 
+    private void RegisterNextSetupSelection(PlayerToken token)
+    {
+        if (token == null || !token.isPlaying)
+        {
+            return;
+        }
+
+        // Occupancy is committed only when the current animation completes. A token
+        // click during that window therefore means "select this player next", never
+        // "swap with the player that is still moving".
+        SelectToken(token);
+        Debug.Log($"Queued {token.name} as the next kick-off setup selection while another token is moving.");
+    }
+
     private void HandleInitialSetupClick(PlayerToken token, HexCell hex)
     {
         if (token != null)
         {
+            if (!CanCurrentControllerSelectSetupToken(token))
+            {
+                return;
+            }
             if (TrySwapSelectedWithTeammate(token, isPostGoalSetup: false))
             {
                 return;
@@ -104,6 +134,10 @@ public class KickoffManager : MonoBehaviour
     {
         if (token != null)
         {
+            if (!CanCurrentControllerSelectSetupToken(token))
+            {
+                return;
+            }
             if (TrySwapSelectedWithTeammate(token, isPostGoalSetup: true))
             {
                 return;
@@ -177,8 +211,9 @@ public class KickoffManager : MonoBehaviour
     {
         isActivated = true;
         flowPhase = KickoffFlowPhase.InitialSetup;
-        Debug.Log("Pre-Kickoff Formation: Click tokens to reposition them. Press Space twice to start!");
+        Debug.Log("Pre-Kickoff Formation: Click tokens to reposition them. Press Space twice to continue to kick-off taker selection.");
         setupConfirmCount = 0;
+        ResetSetupConfirmations();
     }
 
     public void StartPostGoalKickoffSetupPhase()
@@ -186,6 +221,7 @@ public class KickoffManager : MonoBehaviour
         isActivated = true;
         flowPhase = KickoffFlowPhase.PostGoalSetup;
         setupConfirmCount = 0;
+        ResetSetupConfirmations();
         selectedToken = null;
         Debug.Log("Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.");
     }
@@ -211,14 +247,17 @@ public class KickoffManager : MonoBehaviour
         }
         else
         {
-            if (!IsValidInitialSetupDestination(selectedToken, targetHex))
+            PlayerToken movingToken = selectedToken;
+            if (!IsValidInitialSetupDestination(movingToken, targetHex))
             {
                 yield break;
             }
 
-            yield return StartCoroutine(freeKickManager.MoveTokenToHex(selectedToken, targetHex));
-            Debug.Log($"{selectedToken.name} moved to {targetHex.coordinates}");
-            selectedToken = null; // Deselect after moving
+            selectedToken = null;
+            isMovingSetupToken = true;
+            yield return StartCoroutine(freeKickManager.MoveTokenToHex(movingToken, targetHex));
+            isMovingSetupToken = false;
+            Debug.Log($"{movingToken.name} moved to {targetHex.coordinates}");
         }
     }
 
@@ -435,23 +474,24 @@ public class KickoffManager : MonoBehaviour
             yield break;
         }
 
-        if (!IsValidPostGoalSetupDestination(selectedToken, targetHex))
+        PlayerToken movingToken = selectedToken;
+        if (!IsValidPostGoalSetupDestination(movingToken, targetHex))
         {
             yield break;
         }
 
-        HexCell currentHex = selectedToken.GetCurrentHex();
+        HexCell currentHex = movingToken.GetCurrentHex();
         if (currentHex == targetHex)
         {
             selectedToken = null;
             yield break;
         }
 
-        isMovingSetupToken = true;
-        yield return StartCoroutine(freeKickManager.MoveTokenToHex(selectedToken, targetHex));
-        isMovingSetupToken = false;
-        Debug.Log($"{selectedToken.name} moved to {targetHex.coordinates}");
         selectedToken = null;
+        isMovingSetupToken = true;
+        yield return StartCoroutine(freeKickManager.MoveTokenToHex(movingToken, targetHex));
+        isMovingSetupToken = false;
+        Debug.Log($"{movingToken.name} moved to {targetHex.coordinates}");
     }
 
     private bool IsValidPostGoalSetupDestination(PlayerToken token, HexCell targetHex, PlayerToken allowedOccupant = null)
@@ -526,8 +566,12 @@ public class KickoffManager : MonoBehaviour
 
     private void ConfirmInitialSetup()
     {
-        setupConfirmCount++;
-        Debug.Log($"Player confirmed setup ({setupConfirmCount}/2)");
+        string team = ResolveConfirmingSetupTeam();
+        if (!TryConfirmSetupTeam(team))
+        {
+            return;
+        }
+        Debug.Log($"{team} confirmed setup ({setupConfirmCount}/2)");
 
         if (setupConfirmCount >= 2)
         {
@@ -544,34 +588,44 @@ public class KickoffManager : MonoBehaviour
         }
 
         selectedToken = null;
-        setupConfirmCount++;
-        Debug.Log($"Post-goal kick-off setup confirmed ({setupConfirmCount}/2)");
+        string team = ResolveConfirmingSetupTeam();
+        if (!TryConfirmSetupTeam(team))
+        {
+            return;
+        }
+        Debug.Log($"{team} post-goal kick-off setup confirmed ({setupConfirmCount}/2)");
 
         if (setupConfirmCount >= 2)
         {
-            ShotManager shotManager = MatchManager.Instance != null
-                ? MatchManager.Instance.shotManager
-                : FindAnyObjectByType<ShotManager>();
-            if (shotManager != null && shotManager.HasDeferredShotActionResolution)
-            {
-                shotManager.CompleteDeferredShotActionResolution(BeginKickoffTakerSelection);
-                return;
-            }
-
-            if (MatchManager.Instance != null
-                && MatchManager.Instance.TryEnterExtraActionsRollBeforeRestart(BeginKickoffTakerSelection))
-            {
-                return;
-            }
-
-            BeginKickoffTakerSelection();
+            ConfirmCompletedPostGoalSetup();
         }
+    }
+
+    private void ConfirmCompletedPostGoalSetup()
+    {
+        ShotManager shotManager = MatchManager.Instance != null
+            ? MatchManager.Instance.shotManager
+            : FindAnyObjectByType<ShotManager>();
+        if (shotManager != null && shotManager.HasDeferredShotActionResolution)
+        {
+            shotManager.CompleteDeferredShotActionResolution(BeginKickoffTakerSelection);
+            return;
+        }
+
+        if (MatchManager.Instance != null
+            && MatchManager.Instance.TryEnterExtraActionsRollBeforeRestart(BeginKickoffTakerSelection))
+        {
+            return;
+        }
+
+        BeginKickoffTakerSelection();
     }
 
     private void BeginKickoffTakerSelection()
     {
         MatchManager.Instance?.ClearGoalKickRestartTaker();
         setupConfirmCount = 0;
+        ResetSetupConfirmations();
         selectedToken = null;
         flowPhase = KickoffFlowPhase.TakerSelection;
         MatchManager.Instance.currentState = MatchManager.GameState.KickOffTakerSelection;
@@ -585,8 +639,7 @@ public class KickoffManager : MonoBehaviour
 
         if (!hasAttackerOnKickoff)
         {
-            Debug.LogWarning("An attacker must be on the kick-off hex to start the game!");
-            setupConfirmCount = 1; // Reset to wait for one more press after correction
+            BeginKickoffTakerSelection();
             return;
         }
 
@@ -646,6 +699,7 @@ public class KickoffManager : MonoBehaviour
         flowPhase = KickoffFlowPhase.None;
         isMovingSetupToken = false;
         isMovingKickoffTaker = false;
+        ResetSetupConfirmations();
     }
 
     public string GetInstructions()
@@ -662,8 +716,8 @@ public class KickoffManager : MonoBehaviour
                 : $"Post-goal setup: click any token to reposition it in its own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press [Enter] twice when both teams are ready ({setupConfirmCount}/2).",
             KickoffFlowPhase.TakerSelection => "Kick-off taker selection: click an attacking token to move it to (0,0) and start the committed kick-off ground pass.",
             KickoffFlowPhase.InitialSetup => selectedToken != null
-                ? $"Pre-kickoff setup: click an empty hex in {selectedToken.name}'s own half, or click a teammate to swap positions. Defenders cannot stand in the center circle. Press [Space] twice to start ({setupConfirmCount}/2)."
-                : $"Pre-kickoff setup: click tokens to reposition them. Press [Space] twice to start ({setupConfirmCount}/2).",
+                ? $"Pre-kickoff setup: click an empty hex in {selectedToken.name}'s own half, or click a teammate to swap positions. Defenders cannot stand in the center circle. Press [Space] twice to continue ({setupConfirmCount}/2)."
+                : $"Pre-kickoff setup: click tokens to reposition them. Press [Space] twice to continue ({setupConfirmCount}/2).",
             _ => string.Empty,
         };
     }
@@ -717,6 +771,223 @@ public class KickoffManager : MonoBehaviour
     public bool IsWaitingForMovementToComplete()
     {
         return isActivated && (isMovingSetupToken || isMovingKickoffTaker);
+    }
+
+    public List<RoomActionCandidate> BuildAutomatedSetupCandidates(string team)
+    {
+        List<RoomActionCandidate> candidates = new();
+        team = NormalizeTeam(team);
+        if (!isActivated || string.IsNullOrWhiteSpace(team) || IsSetupConfirmedForTeam(team))
+        {
+            return candidates;
+        }
+
+        string boardStateKey = BuildSetupBoardStateKey(team);
+        GetVisitedStates(team).Add(boardStateKey);
+        bool home = team == "Home";
+        bool postGoal = flowPhase == KickoffFlowPhase.PostGoalSetup;
+        bool budgetReached = GetAutomatedMoveCount(team) >= AutomatedSetupMoveBudget;
+        if (!isMovingSetupToken && !budgetReached && playerTokenManager?.allTokens != null)
+        {
+            foreach (PlayerToken actor in playerTokenManager.allTokens)
+            {
+                if (actor == null || !actor.isPlaying || actor.isHomeTeam != home
+                    || automatedMovedActors.TryGetValue(team, out var movedActors) && movedActors.Contains(actor))
+                {
+                    continue;
+                }
+
+                foreach (HexCell destination in GetAllGridHexes())
+                {
+                    if (destination == actor.GetCurrentHex())
+                    {
+                        continue;
+                    }
+
+                    bool legal = postGoal
+                        ? IsValidPostGoalSetupDecisionDestination(actor, destination)
+                        : IsValidInitialSetupDecisionDestination(actor, destination);
+                    if (!legal)
+                    {
+                        continue;
+                    }
+
+                    candidates.Add(new RoomActionCandidate
+                    {
+                        manager = nameof(KickoffManager),
+                        actionType = RoomActionType.SetupMove,
+                        step = RoomDecisionStep.ChooseTarget,
+                        actor = actor,
+                        targetHex = destination,
+                        setupTeam = team,
+                        setupBoardStateKey = boardStateKey,
+                        isExecutableNow = true,
+                        label = $"Move {FormatTokenName(actor)} atomically to {destination.coordinates}"
+                    });
+                }
+            }
+        }
+
+        candidates.Add(new RoomActionCandidate
+        {
+            manager = nameof(KickoffManager),
+            actionType = RoomActionType.Confirm,
+            step = RoomDecisionStep.Confirm,
+            setupTeam = team,
+            setupBoardStateKey = boardStateKey,
+            key = postGoal ? "Enter" : "Space",
+            isExecutableNow = !isMovingSetupToken,
+            label = $"Confirm {team} kick-off setup"
+        });
+        if (budgetReached)
+        {
+            candidates[candidates.Count - 1].setupTerminalReason = "move budget reached";
+        }
+        return candidates;
+    }
+
+    public bool TryExecuteAutomatedSetupCandidate(RoomActionCandidate candidate, out string error)
+    {
+        error = string.Empty;
+        if (candidate == null || candidate.manager != nameof(KickoffManager))
+        {
+            error = "The committed command is not a kick-off setup command.";
+            return false;
+        }
+
+        string team = NormalizeTeam(candidate.setupTeam);
+        if (string.IsNullOrWhiteSpace(team) || IsSetupConfirmedForTeam(team))
+        {
+            error = $"{team} is not eligible for another kick-off setup command.";
+            return false;
+        }
+
+        string currentStateKey = BuildSetupBoardStateKey(team);
+        if (!string.Equals(candidate.setupBoardStateKey, currentStateKey, System.StringComparison.Ordinal))
+        {
+            error = $"stale board revision expected={candidate.setupBoardStateKey} actual={currentStateKey}";
+            return false;
+        }
+
+        if (candidate.actionType == RoomActionType.Confirm)
+        {
+            if (isMovingSetupToken || !TryConfirmSetupTeam(team))
+            {
+                error = "confirmation was unavailable or had already been applied";
+                return false;
+            }
+
+            Debug.Log($"[Kickoff AI] team={team} confirmed exactly once reason={candidate.setupTerminalReason} moves={GetAutomatedMoveCount(team)}");
+            if (setupConfirmCount >= 2)
+            {
+                if (flowPhase == KickoffFlowPhase.InitialSetup) ValidateAndStartGame();
+                else ConfirmCompletedPostGoalSetup();
+            }
+            return true;
+        }
+
+        PlayerToken actor = candidate.actor;
+        HexCell destination = candidate.targetHex;
+        if (isMovingSetupToken || actor == null || destination == null || actor.isHomeTeam != (team == "Home"))
+        {
+            error = "actor, destination, team ownership, or movement availability changed";
+            return false;
+        }
+        if (automatedMovedActors.TryGetValue(team, out var alreadyMoved) && alreadyMoved.Contains(actor))
+        {
+            error = "actor already arranged during this setup revision";
+            return false;
+        }
+
+        bool legalDestination = flowPhase == KickoffFlowPhase.PostGoalSetup
+            ? IsValidPostGoalSetupDecisionDestination(actor, destination)
+            : IsValidInitialSetupDecisionDestination(actor, destination);
+        if (!legalDestination)
+        {
+            error = "destination is no longer legal";
+            return false;
+        }
+
+        string projectedStateKey = BuildSetupBoardStateKey(team, actor, destination);
+        bool visited = GetVisitedStates(team).Contains(projectedStateKey);
+        bool immediateReversal = automatedPreviousSetupState.TryGetValue(team, out string previous)
+            && string.Equals(previous, projectedStateKey, System.StringComparison.Ordinal);
+        if ((visited || immediateReversal)
+            && candidate.setupFormationPenaltyAfter >= candidate.setupFormationPenaltyBefore)
+        {
+            error = visited ? "visited-state oscillation rejected" : "immediate reversal rejected";
+            Debug.Log($"[Kickoff AI] team={team} actor={FormatTokenName(actor)} destination={destination.coordinates} rejected={error}");
+            return false;
+        }
+
+        if (GetAutomatedMoveCount(team) >= AutomatedSetupMoveBudget)
+        {
+            error = "setup move budget reached";
+            return false;
+        }
+
+        automatedPreviousSetupState[team] = currentStateKey;
+        automatedSetupMoveCounts[team] = GetAutomatedMoveCount(team) + 1;
+        if (!automatedMovedActors.TryGetValue(team, out var actors))
+            automatedMovedActors[team] = actors = new HashSet<PlayerToken>();
+        actors.Add(actor);
+        Debug.Log($"[Kickoff AI] commit team={team} actor={FormatTokenName(actor)} destination={destination.coordinates} penalty={candidate.setupFormationPenaltyBefore}->{candidate.setupFormationPenaltyAfter} revision={currentStateKey}");
+        StartCoroutine(ExecuteAutomatedSetupMove(team, actor, destination, projectedStateKey));
+        return true;
+    }
+
+    private IEnumerator ExecuteAutomatedSetupMove(string team, PlayerToken actor, HexCell destination, string projectedStateKey)
+    {
+        isMovingSetupToken = true;
+        yield return StartCoroutine(freeKickManager.MoveTokenToHex(actor, destination));
+        isMovingSetupToken = false;
+        GetVisitedStates(team).Add(projectedStateKey);
+        Debug.Log($"[Kickoff AI] complete team={team} actor={FormatTokenName(actor)} destination={destination.coordinates} revision={BuildSetupBoardStateKey(team)}");
+    }
+
+    public string BuildSetupBoardStateKey(string team)
+    {
+        return BuildSetupBoardStateKey(team, null, null);
+    }
+
+    public RoomAIKickoffPlan GetAutomatedOpeningPlan(string team, System.Func<RoomAIKickoffPlan> build)
+    {
+        if (!automatedOpeningPlans.TryGetValue(team, out var plan))
+        {
+            plan = build();
+            if (plan != null) automatedOpeningPlans[team] = plan;
+        }
+        return plan;
+    }
+
+    private string BuildSetupBoardStateKey(string team, PlayerToken movedActor, HexCell destination)
+    {
+        team = NormalizeTeam(team);
+        IEnumerable<PlayerToken> tokens = playerTokenManager?.allTokens ?? Enumerable.Empty<PlayerToken>();
+        string coordinates = string.Join(";", tokens
+            .Where(token => token != null && token.isPlaying && (token.isHomeTeam ? "Home" : "Away") == team)
+            .OrderBy(token => token.jerseyNumber)
+            .Select(token =>
+            {
+                HexCell hex = token == movedActor ? destination : token.GetCurrentHex();
+                return $"{token.jerseyNumber}:{hex?.coordinates.x},{hex?.coordinates.z}";
+            }));
+        return $"{team}|{coordinates}|H={homeSetupConfirmed}|A={awaySetupConfirmed}";
+    }
+
+    private HashSet<string> GetVisitedStates(string team)
+    {
+        if (!automatedVisitedSetupStates.TryGetValue(team, out HashSet<string> states))
+        {
+            states = new HashSet<string>();
+            automatedVisitedSetupStates[team] = states;
+        }
+        return states;
+    }
+
+    private int GetAutomatedMoveCount(string team)
+    {
+        return automatedSetupMoveCounts.TryGetValue(team, out int count) ? count : 0;
     }
 
     private void PopulateSetupDecisionContext(RoomDecisionContext context, bool isPostGoalSetup)
@@ -946,5 +1217,127 @@ public class KickoffManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public bool IsSetupConfirmedForTeam(string team)
+    {
+        return string.Equals(team, "Home", System.StringComparison.OrdinalIgnoreCase)
+            ? homeSetupConfirmed
+            : string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase)
+                && awaySetupConfirmed;
+    }
+
+    public void SetPendingAutomatedConfirmationTeam(string team)
+    {
+        pendingAutomatedConfirmationTeam = string.Equals(team, "Home", System.StringComparison.OrdinalIgnoreCase)
+            ? "Home"
+            : string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase)
+                ? "Away"
+                : string.Empty;
+    }
+
+    public void SetPendingAutomatedInputTeam(string team)
+    {
+        pendingAutomatedInputTeam = NormalizeTeam(team);
+    }
+
+    private bool CanCurrentControllerSelectSetupToken(PlayerToken token)
+    {
+        string automatedTeam = pendingAutomatedInputTeam;
+        pendingAutomatedInputTeam = string.Empty;
+        string tokenTeam = token.isHomeTeam ? "Home" : "Away";
+        if (!string.IsNullOrWhiteSpace(automatedTeam))
+        {
+            return string.Equals(automatedTeam, tokenTeam, System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        MatchManager.GameSettings settings = MatchManager.Instance?.gameData?.gameSettings;
+        bool isHumanTeam = AIManager.ResolveRoomPersona(settings, tokenTeam) == AIManager.RoomPersona.AskHuman;
+        if (!isHumanTeam)
+        {
+            Debug.LogWarning($"{tokenTeam} kick-off preparation is controlled by AI.");
+        }
+        return isHumanTeam;
+    }
+
+    private string ResolveConfirmingSetupTeam()
+    {
+        if (!string.IsNullOrWhiteSpace(pendingAutomatedConfirmationTeam))
+        {
+            string team = pendingAutomatedConfirmationTeam;
+            pendingAutomatedConfirmationTeam = string.Empty;
+            return team;
+        }
+
+        MatchManager.GameSettings settings = MatchManager.Instance?.gameData?.gameSettings;
+        bool homeHuman = AIManager.ResolveRoomPersona(settings, "Home") == AIManager.RoomPersona.AskHuman;
+        bool awayHuman = AIManager.ResolveRoomPersona(settings, "Away") == AIManager.RoomPersona.AskHuman;
+        if (homeHuman && !homeSetupConfirmed)
+        {
+            return "Home";
+        }
+        if (awayHuman && !awaySetupConfirmed)
+        {
+            return "Away";
+        }
+
+        Debug.LogWarning("The remaining kick-off setup confirmation belongs to an AI-controlled team.");
+        return string.Empty;
+    }
+
+    private bool TryConfirmSetupTeam(string team)
+    {
+        if (string.Equals(team, "Home", System.StringComparison.OrdinalIgnoreCase))
+        {
+            if (homeSetupConfirmed)
+            {
+                Debug.LogWarning("Home has already confirmed kick-off setup.");
+                return false;
+            }
+            homeSetupConfirmed = true;
+        }
+        else if (string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase))
+        {
+            if (awaySetupConfirmed)
+            {
+                Debug.LogWarning("Away has already confirmed kick-off setup.");
+                return false;
+            }
+            awaySetupConfirmed = true;
+        }
+        else
+        {
+            return false;
+        }
+
+        setupConfirmCount = (homeSetupConfirmed ? 1 : 0) + (awaySetupConfirmed ? 1 : 0);
+        if (AIManager.ResolveRoomPersona(MatchManager.Instance?.gameData?.gameSettings, team) == AIManager.RoomPersona.AskHuman)
+        {
+            automatedMovedActors.Clear();
+            automatedOpeningPlans.Clear();
+        }
+        return true;
+    }
+
+    private void ResetSetupConfirmations()
+    {
+        homeSetupConfirmed = false;
+        awaySetupConfirmed = false;
+        pendingAutomatedConfirmationTeam = string.Empty;
+        pendingAutomatedInputTeam = string.Empty;
+        automatedVisitedSetupStates.Clear();
+        automatedPreviousSetupState.Clear();
+        automatedSetupMoveCounts.Clear();
+        automatedMovedActors.Clear();
+        automatedOpeningPlans.Clear();
+    }
+
+    private static string NormalizeTeam(string team)
+    {
+        return string.Equals(team, "Home", System.StringComparison.OrdinalIgnoreCase)
+            ? "Home"
+            : string.Equals(team, "Away", System.StringComparison.OrdinalIgnoreCase)
+                ? "Away"
+                : string.Empty;
     }
 }

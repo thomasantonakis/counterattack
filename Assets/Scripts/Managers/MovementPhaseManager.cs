@@ -29,6 +29,10 @@ public struct MovementPhaseMovedTokenEntry
 
 public class MovementPhaseManager : MonoBehaviour
 {
+    private PlayerToken lastDuelAttacker;
+    private float lastDuelDribbleProbability = 1f;
+    public const int DefaultAttackingMoveLimit = 4;
+    public int AttackingMoveLimit => maxAttackerMoves;
     private const string NutmegDecisionChoiceId = "movement_nutmeg_decision";
     private enum GoalkeeperChallengeMode
     {
@@ -50,6 +54,12 @@ public class MovementPhaseManager : MonoBehaviour
     public ShotManager shotManager;
     public HighPassManager highPassManager;
     public GameInputManager gameInputManager;
+    [Header("Scene-authored tackle/nutmeg presentation")]
+    public DuelResolutionPanelController duelResolutionPanel;
+    private DuelResolutionPanelController activeDuelPanel;
+    private bool deferredDuelDoubleInjury;
+    private PlayerToken pendingDuelDoubleInjuryToken;
+    private int duelPresentationVersion;
     public HelperFunctions helperFunctions;
     public HexGrid hexGrid;  // Reference to the HexGrid
     public Ball ball;
@@ -106,13 +116,26 @@ public class MovementPhaseManager : MonoBehaviour
     public int attackersMoved = 0;
     public int defendersMoved = 0;
     public int attackersMovedIn2f2 = 0;
-    private int maxAttackerMoves = 4;  // Max moves allowed for attackers
-    private int maxDefenderMoves = 5;  // Max moves allowed for defenders
+    private int maxAttackerMoves = DefaultAttackingMoveLimit;  // Max moves allowed for attackers
+    public const int DefaultDefendingMoveLimit = 5;
+    public int DefendingMoveLimit => maxDefenderMoves;
+    private int maxDefenderMoves = DefaultDefendingMoveLimit;  // Max moves allowed for defenders
     private int maxAttackerMovesIn2f2 = 2;
     private int movementRange2f2 = 2;  // Movement range limited to 2 hexes
+    public int TwoForTwoMoveLimit => maxAttackerMovesIn2f2;
+    public int TwoForTwoRange => movementRange2f2;
     private bool needsReposition = false;
+    public bool IsResolvingReposition { get; private set; }
     private bool isSuccessfulTackleRepositionPending = false;
     private bool isResolvingPostSuccessfulTackleSteals = false;
+
+    /// <summary>
+    /// Exposes the specific reposition window created by a successful defensive
+    /// tackle.  The room AI uses this to choose the winner's intended next action
+    /// first, then select the reposition hex which best supports that action.
+    /// </summary>
+    public bool IsSuccessfulTackleRepositionPendingForDecision =>
+        isSuccessfulTackleRepositionPending && isWaitingForReposition;
     private bool isResolvingPreNutmegSteals = false;
     private bool isGkWallDiveInProgress = false;
     private bool isGkWallDiveSequenceActive = false;
@@ -138,6 +161,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int throwInProtectedRadius;
     private bool throwInBlocksTackleWithoutMoving;
     private bool pendingFoulIsPenalty;
+    public bool PendingFoulIsPenalty => pendingFoulIsPenalty;
     private bool pendingDangerousTackleFoul;
     private bool pendingHarshFoulCardPolicy;
     private bool pendingAutomaticTakeFoulAfterInjury;
@@ -155,6 +179,11 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void OnDisable()
     {
+        duelPresentationVersion++;
+        activeDuelPanel?.Cancel(this);
+        activeDuelPanel = null;
+        deferredDuelDoubleInjury = false;
+        pendingDuelDoubleInjuryToken = null;
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
@@ -179,6 +208,15 @@ public class MovementPhaseManager : MonoBehaviour
     private bool IsResolvingFoulSequence()
     {
         return isWaitingForYellowCardRoll || isWaitingForInjuryRoll || isWaitingForFoulDecision;
+    }
+
+    public bool TryDeferDuelDoubleInjury(PlayerToken token)
+    {
+        if (activeDuelPanel == null || !activeDuelPanel.IsOpen
+            || token != MatchManager.Instance.LastTokenToTouchTheBallOnPurpose) return false;
+        deferredDuelDoubleInjury = true;
+        pendingDuelDoubleInjuryToken = token;
+        return true;
     }
 
     private bool IsGoalkeeperDiveChallengeInProgress()
@@ -306,6 +344,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
+        if (activeDuelPanel != null && activeDuelPanel.IsOpen) return;
         if (!isActivated) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
@@ -584,7 +623,9 @@ public class MovementPhaseManager : MonoBehaviour
             return;
         }
         if (!isActivated) return;
-        
+        if ((isWaitingForTackleDecision || isWaitingForTackleDecisionWithoutMoving)
+            && keyData.key is KeyCode.T or KeyCode.N) ConsumeMovementKey(keyData);
+
         bool hasInterceptionRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride interceptionRollOverride);
         if (isWaitingForInterceptionDiceRoll && (keyData.key == KeyCode.R || hasInterceptionRollOverride))
         {
@@ -677,20 +718,22 @@ public class MovementPhaseManager : MonoBehaviour
                 }
                 if (keyData.key == KeyCode.X)
                 {
+                    bool? choosingTeam = IsInstructionExpectingHomeTeam();
                     CommitToAction();
                     isWaitingForSnapshotDecision = false;
                     Debug.Log("Dribbler was running. Decided to forfeit remaining pace and not shoot.");
                     AdvanceMovementPhase();
-                    ConsumeMovementKey(keyData);
+                    ConsumeMovementKey(keyData, choosingTeam);
                     return;
                 }
             }
             if (keyData.key == KeyCode.X)
             {
+                bool? choosingTeam = IsInstructionExpectingHomeTeam();
                 CommitToAction();
                 Debug.Log("Dribbler is running. Forfeiting remaining pace.");
                 AdvanceMovementPhase();
-                ConsumeMovementKey(keyData);
+                ConsumeMovementKey(keyData, choosingTeam);
                 return;
             }
         }
@@ -713,9 +756,11 @@ public class MovementPhaseManager : MonoBehaviour
             }
             if (keyData.key == KeyCode.X)
             {
+                bool? choosingTeam = IsInstructionExpectingHomeTeam();
                 isWaitingForSnapshotDecision = false;
                 Debug.Log($"Attacker decides not to shoot..");
                 if (isMovementPhaseDef) AdvanceMovementPhase();
+                ConsumeMovementKey(keyData, choosingTeam);
                 return;
             }
         }
@@ -843,9 +888,10 @@ public class MovementPhaseManager : MonoBehaviour
             && keyData.key == KeyCode.X
         )
         {
+            bool? choosingTeam = IsInstructionExpectingHomeTeam();
             CommitToAction();
             ForfeitTeamMovementPhase();
-            ConsumeMovementKey(keyData);
+            ConsumeMovementKey(keyData, choosingTeam);
         }
         if (isBallPickable && keyData.key == KeyCode.V)
         {
@@ -879,6 +925,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else if (isSuccessfulTackleRepositionPending)
             {
+                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
                 Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position after the successful tackle.");
                 isWaitingForReposition = false;
                 hexGrid.ClearHighlightedHexes();
@@ -886,6 +933,7 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else if (isMovementPhaseDef)
             {
+                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
                 Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
                 isWaitingForReposition = false;
                 hexGrid.ClearHighlightedHexes();
@@ -894,6 +942,9 @@ public class MovementPhaseManager : MonoBehaviour
             }
             else
             {
+                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
+                isWaitingForReposition = false;
+                hexGrid.ClearHighlightedHexes();
                 AdvanceMovementPhase();
                 return;
             }
@@ -959,7 +1010,12 @@ public class MovementPhaseManager : MonoBehaviour
         {
             tokenPickedUpBall = true;
             suppressNextDribblerZoiStealAfterBallPickup = true;
-            remainingDribblerPace = selectedToken.pace;
+            // A loose-ball pickup during the attacking 2-for-2 remains part of
+            // that restricted two-hex move. Do not turn it into a fresh,
+            // full-Pace dribble merely because the token collected the ball.
+            remainingDribblerPace = isMovementPhase2f2
+                ? movementRange2f2
+                : selectedToken.pace;
             isAwaitingTokenSelection = false;
         }
         Debug.Log($"Passing {hex.name} to MoveTokenToHex");
@@ -1318,9 +1374,7 @@ public class MovementPhaseManager : MonoBehaviour
 
             if (!hex.isAttackOccupied && !hex.isDefenseOccupied)
             {
-                bool isGoalHex = hex.isInGoal != 0;
-                bool canWalkIntoGoal = CanDribblerWalkIntoOpponentGoal(token, hex);
-                if (isGoalHex && !canWalkIntoGoal)
+                if (!CanEnterMovementGoalHexForDecisionPreview(token, hex))
                 {
                     continue;
                 }
@@ -1362,6 +1416,13 @@ public class MovementPhaseManager : MonoBehaviour
         isBallPickable = reachableHexes.Contains(ballHex) && !token.IsDribbler && isCalledDuringMovement;
         // Slight change as it seems that clicking on the ballHex while moving for FTP causes an error
         // isBallPickable = reachableHexes.Contains(ballHex) && !selectedToken.IsDribbler;
+    }
+
+    // The geometric reachability map also includes goal-line targets. Only a
+    // dribbler who can legally walk into goal may use one as a movement target.
+    public bool CanEnterMovementGoalHexForDecisionPreview(PlayerToken token, HexCell hex)
+    {
+        return hex != null && (hex.isInGoal == 0 || CanDribblerWalkIntoOpponentGoal(token, hex));
     }
 
     private (List<HexCell> reachableHexes, Dictionary<HexCell, (int distance, bool enteredZOI)> distanceData) GetReachableMovementData(PlayerToken token, int movementRange)
@@ -1776,6 +1837,14 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log("Defender has picked up the loose ball!");
             RegisterMovedToken(selectedToken);
             ball.SetCurrentHex(targetHex);  // Move the ball to the defender's hex
+            // An uncontested defensive pickup is a guaranteed recovery. Record it
+            // before possession and the purposeful-touch chain change.
+            PlayerToken recoveredFrom = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+            MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                selectedToken, 1f, connectedToken: recoveredFrom, recoveryType: "loose");
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                selectedToken, MatchManager.ActionType.BallRecovery,
+                connectedToken: recoveredFrom, recoveryType: "loose");
             MatchManager.Instance.ChangePossession();  // Change possession to the defender's team
             MatchManager.Instance.UpdatePossessionAfterPass(targetHex);  // Update possession
             MatchManager.Instance.ApplyBallCollectionOwnership(selectedToken);
@@ -2126,7 +2195,7 @@ public class MovementPhaseManager : MonoBehaviour
         Debug.Log("Movement phase ended due to successful tackle.");
     }
 
-    private bool TryHandleMovementGoal(PlayerToken scoringToken, bool allowAssist)
+    private bool TryHandleMovementGoal(PlayerToken scoringToken, bool allowAssist, float expectedGoal = 1f)
     {
         HexCell ballGoalHex = ball.GetCurrentHex();
         if (ballGoalHex == null || ballGoalHex.isInGoal == 0)
@@ -2157,6 +2226,7 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.PreviousTokenToTouchTheBallOnPurpose = null;
         }
         MatchManager.Instance.gameData.gameLog.LogEvent(goalScorer, MatchManager.ActionType.ShotAttempt, shotType: "shot");
+        MatchManager.Instance.gameData.gameLog.LogExpectedGoal(goalScorer, Mathf.Clamp01(expectedGoal), "walk-in");
         MatchManager.Instance.gameData.gameLog.LogEvent(goalScorer, MatchManager.ActionType.ShotOnTarget);
         MatchManager.Instance.gameData.gameLog.LogEvent(goalScorer, MatchManager.ActionType.GoalScored);
         // @TODO: play-stopping outcomes (goal/set piece) currently call EndMovementPhase twice
@@ -2617,6 +2687,32 @@ public class MovementPhaseManager : MonoBehaviour
         return eligibleDefs;
     }
 
+    /// <summary>
+    /// Read-only counterpart of the live movement interception filter. The
+    /// supplied set represents defenders who already attempted a steal earlier
+    /// on the hypothetical dribble route.
+    /// </summary>
+    public IReadOnlyList<PlayerToken> GetMovementInterceptorsForPreview(
+        HexCell targetHex,
+        System.Collections.Generic.ISet<PlayerToken> defendersAlreadyTried)
+    {
+        if (targetHex == null)
+        {
+            return System.Array.Empty<PlayerToken>();
+        }
+
+        return GetAdjacentDefenders(targetHex)
+            .Where(token =>
+                token != null
+                && (defendersAlreadyTried == null || !defendersAlreadyTried.Contains(token))
+                && (headerManager == null || !headerManager.defenderWillJump.Contains(token))
+                && !stunnedTokens.Contains(token)
+                && !stunnedforNext.Contains(token)
+                && (headerManager == null || !headerManager.attackerWillJump.Contains(token))
+                && (!movedTokens.Contains(token) || isMovementPhase2f2))
+            .ToList();
+    }
+
     private List<PlayerToken> GetEligibleDefendersForInterception(HexCell targetHex)
     {
         return CollectEligibleDefendersForInterception(targetHex, true);
@@ -2833,6 +2929,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             defenderDiceRoll = diceRoll;
             tackleDefenderRolled = true;
+            activeDuelPanel?.ShowDuelRoll(true, tackleRoll);
             if (diceRoll == 50) Debug.Log($"Defender rolled A JACKPOT!!!");
             else Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
         }
@@ -2840,6 +2937,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             attackerDiceRoll = diceRoll;
             tackleAttackerRolled = true;
+            activeDuelPanel?.ShowDuelRoll(false, tackleRoll);
             if (diceRoll == 50) Debug.Log($"Attacker rolled A JACKPOT!!!");
             else Debug.Log($"Attacker rolled: {attackerDiceRoll}. Comparing results...");
             StartCoroutine(CompareTackleRolls());  // Compare the rolls after both rolls are complete
@@ -2916,6 +3014,13 @@ public class MovementPhaseManager : MonoBehaviour
         pendingHarshFoulCardPolicy = false;
         if (defenderDiceRoll <= foulThreshold)
         {
+            MatchManager.Instance.gameData.gameLog.LogEvent(
+                attackerToken,
+                MatchManager.ActionType.GroundDuelWon,
+                connectedToken: selectedDefender,
+                tackleType: "foul");
+            activeDuelPanel?.ShowOutcome(IsCurrentBallHexInOpponentPenaltyBox()
+                ? "PENALTY!" : "FOUL — tackler committed a foul");
             pendingDangerousTackleFoul = isDangerousNormalTackle;
             pendingHarshFoulCardPolicy = IsOutsideBoxGoalkeeperChallengeInProgress();
             Debug.Log(isDangerousNormalTackle
@@ -2940,6 +3045,15 @@ public class MovementPhaseManager : MonoBehaviour
             if (isNutmegInProgress) yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender, false));
             else yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
+        }
+        if (activeDuelPanel != null && activeDuelPanel.IsOpen)
+        {
+            int version = duelPresentationVersion;
+            activeDuelPanel.ShowOutcome(defenderTotalScore > attackerTotalScore ? "TACKLER WINS"
+                : defenderTotalScore < attackerTotalScore ? "DRIBBLER WINS" : "TIE — LOOSE BALL");
+            yield return activeDuelPanel.WaitForDismissal();
+            if (version != duelPresentationVersion) yield break;
+            activeDuelPanel = null;
         }
         if (IsGoalkeeperDiveChallengeInProgress())
         {
@@ -3234,6 +3348,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private async Task AsyncRepositionTokenToHex(HexCell hex)
     {
+        if (IsResolvingReposition) return;
         if (hex == null)
         {
             Debug.LogError("Hex is null. Repositioning failed.");
@@ -3273,8 +3388,14 @@ public class MovementPhaseManager : MonoBehaviour
         foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
         hexGrid.ClearHighlightedHexes();
         hoveredRepositionHex = null;
-        await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); // Move the token
+        IsResolvingReposition = true;
+        try { await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); }
+        finally { IsResolvingReposition = false; }
         ball.PlaceAtCell(hex); // Move the ball
+        if (!isSuccessfulTackleRepositionPending && hex.isInGoal != 0
+            && TryHandleMovementGoal(repositionWinner, allowAssist: true,
+                expectedGoal: repositionWinner == lastDuelAttacker ? lastDuelDribbleProbability : 1f))
+            return;
         // clickedHex.ResetHighlight();
         // clickedHex.HighlightHex("isAttackOccupied");
         Debug.Log("Repositioning complete.");
@@ -3311,6 +3432,9 @@ public class MovementPhaseManager : MonoBehaviour
         // Phase 1: Yellow card decision
         Debug.Log("Press 'R' to roll for a Booking.");
         isWaitingForYellowCardRoll = true;
+        activeDuelPanel?.BeginLeniency(MatchManager.Instance.refereeLeniency,
+            pendingDangerousTackleFoul || pendingHarshFoulCardPolicy, defenderToken.isBooked,
+            attackerToken.resilience, attackerToken.isInjured);
         // Introduce a brief delay to ensure previous keypresses are ignored
         yield return null;
         while (isWaitingForYellowCardRoll)
@@ -3320,12 +3444,28 @@ public class MovementPhaseManager : MonoBehaviour
         // Phase 2: Injury decision
         Debug.Log("Press 'R' to roll for attacker injury.");
         isWaitingForInjuryRoll = true;
+        activeDuelPanel?.BeginInjury(attackerToken.resilience, attackerToken.isInjured);
         yield return null;   // Delay to avoid immediate triggering
         while (isWaitingForInjuryRoll)
         {
             yield return null;  // Wait for the next frame
         }
         Debug.Log("Foul process completed.");
+        if (activeDuelPanel != null && activeDuelPanel.IsOpen)
+        {
+            int version = duelPresentationVersion;
+            yield return activeDuelPanel.WaitForDismissal();
+            if (version != duelPresentationVersion) yield break;
+            activeDuelPanel = null;
+        }
+        if (deferredDuelDoubleInjury)
+        {
+            deferredDuelDoubleInjury = false;
+            PlayerToken injuredToken = pendingDuelDoubleInjuryToken;
+            pendingDuelDoubleInjuryToken = null;
+            MatchManager.Instance.HandleDoubleInjuredToken(injuredToken);
+            while (MatchManager.Instance.IsGameplayInputBlocked) yield return null;
+        }
         bool forceTakeFoul = pendingAutomaticTakeFoulAfterInjury
             || ShouldForceFreeKickAfterFoul(attackerToken, defenderToken);
         pendingAutomaticTakeFoulAfterInjury = false;
@@ -3549,59 +3689,22 @@ public class MovementPhaseManager : MonoBehaviour
             });
         int roll = leniencyRoll.roll;
         bool usesHarshCardPolicy = pendingDangerousTackleFoul || pendingHarshFoulCardPolicy;
-        Debug.Log(leniencyRoll.overrideUsed && leniencyRoll.isJackpot ? "Yellow card roll: 6 (jackpot override)" : $"Yellow card roll: {roll}");
-        if (roll >= MatchManager.Instance.refereeLeniency)
+        bool presentationWasBooked = selectedDefender.isBooked;
+        try
         {
-            if (usesHarshCardPolicy)
+            Debug.Log(leniencyRoll.overrideUsed && leniencyRoll.isJackpot ? "Yellow card roll: 6 (jackpot override)" : $"Yellow card roll: {roll}");
+            if (roll >= MatchManager.Instance.refereeLeniency)
             {
-                Debug.Log($"Harsh leniency failed: defender {selectedDefender.name} receives a straight red card.");
-                pendingDangerousTackleFoul = false;
-                pendingHarshFoulCardPolicy = false;
-                SendOffSelectedDefender(fouledAttacker);
-                pendingAutomaticTakeFoulAfterInjury = true;
-                isWaitingForYellowCardRoll = false;
-                return;
-            }
-            Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
-            bool wasBooked = selectedDefender.isBooked;
-            HexCell preCardHex = selectedDefender.IsGoalKeeper ? selectedDefender.GetCurrentHex() : null;
-            selectedDefender.ReceiveYellowCard();
-            if (!wasBooked && selectedDefender.isBooked)
-            {
-                MatchManager.Instance.gameData.gameLog.LogEvent(
-                    selectedDefender,
-                    MatchManager.ActionType.YellowCardShown,
-                    connectedToken: fouledAttacker
-                );
-            }
-            if (selectedDefender.isSentOff)
-            {
-                Debug.Log($"{selectedDefender.name} cannot continue after a second yellow.");
-                MatchManager.Instance.gameData.gameLog.LogEvent(
-                    selectedDefender,
-                    MatchManager.ActionType.RedCardShown,
-                    connectedToken: fouledAttacker
-                );
-                
-                // Handle GK sent off
-                if (selectedDefender.IsGoalKeeper)
+                if (usesHarshCardPolicy)
                 {
-                    Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
-                    MatchManager.Instance.HandleSentOff(selectedDefender, preCardHex);
+                    Debug.Log($"Harsh leniency failed: defender {selectedDefender.name} receives a straight red card.");
+                    pendingDangerousTackleFoul = false;
+                    pendingHarshFoulCardPolicy = false;
+                    SendOffSelectedDefender(fouledAttacker);
+                    pendingAutomaticTakeFoulAfterInjury = true;
+                    isWaitingForYellowCardRoll = false;
+                    return;
                 }
-
-                isWaitingForYellowCardRoll = false;
-                pendingAutomaticTakeFoulAfterInjury = true;
-                return;
-            }
-        }
-        else
-        {
-            if (usesHarshCardPolicy)
-            {
-                Debug.Log("Harsh leniency passed: defender still receives a yellow card.");
-                pendingDangerousTackleFoul = false;
-                pendingHarshFoulCardPolicy = false;
                 Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
                 bool wasBooked = selectedDefender.isBooked;
                 HexCell preCardHex = selectedDefender.IsGoalKeeper ? selectedDefender.GetCurrentHex() : null;
@@ -3623,6 +3726,7 @@ public class MovementPhaseManager : MonoBehaviour
                         connectedToken: fouledAttacker
                     );
 
+                    // Handle GK sent off
                     if (selectedDefender.IsGoalKeeper)
                     {
                         Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
@@ -3633,23 +3737,71 @@ public class MovementPhaseManager : MonoBehaviour
                     pendingAutomaticTakeFoulAfterInjury = true;
                     return;
                 }
-                isWaitingForYellowCardRoll = false;
-                return;
             }
-            Debug.Log($"Defender {selectedDefender.name} escapes a yellow card.");
-            
-            // Check if defender is already booked and failed leniency test
-            if (selectedDefender.isBooked)
+            else
             {
-                Debug.Log($"AUTOMATIC TAKE FOUL: {selectedDefender.name} was already booked and failed leniency test!");
-                isWaitingForYellowCardRoll = false;
-                pendingAutomaticTakeFoulAfterInjury = true;
-                return;
+                if (usesHarshCardPolicy)
+                {
+                    Debug.Log("Harsh leniency passed: defender still receives a yellow card.");
+                    pendingDangerousTackleFoul = false;
+                    pendingHarshFoulCardPolicy = false;
+                    Debug.Log($"Defender {selectedDefender.name} receives a yellow card!");
+                    bool wasBooked = selectedDefender.isBooked;
+                    HexCell preCardHex = selectedDefender.IsGoalKeeper ? selectedDefender.GetCurrentHex() : null;
+                    selectedDefender.ReceiveYellowCard();
+                    if (!wasBooked && selectedDefender.isBooked)
+                    {
+                        MatchManager.Instance.gameData.gameLog.LogEvent(
+                            selectedDefender,
+                            MatchManager.ActionType.YellowCardShown,
+                            connectedToken: fouledAttacker
+                        );
+                    }
+                    if (selectedDefender.isSentOff)
+                    {
+                        Debug.Log($"{selectedDefender.name} cannot continue after a second yellow.");
+                        MatchManager.Instance.gameData.gameLog.LogEvent(
+                            selectedDefender,
+                            MatchManager.ActionType.RedCardShown,
+                            connectedToken: fouledAttacker
+                        );
+
+                        if (selectedDefender.IsGoalKeeper)
+                        {
+                            Debug.Log($"Goalkeeper {selectedDefender.name} has been sent off. Substitution will be required.");
+                            MatchManager.Instance.HandleSentOff(selectedDefender, preCardHex);
+                        }
+
+                        isWaitingForYellowCardRoll = false;
+                        pendingAutomaticTakeFoulAfterInjury = true;
+                        return;
+                    }
+                    isWaitingForYellowCardRoll = false;
+                    return;
+                }
+                Debug.Log($"Defender {selectedDefender.name} escapes a yellow card.");
+
+                // Check if defender is already booked and failed leniency test
+                if (selectedDefender.isBooked)
+                {
+                    Debug.Log($"AUTOMATIC TAKE FOUL: {selectedDefender.name} was already booked and failed leniency test!");
+                    isWaitingForYellowCardRoll = false;
+                    pendingAutomaticTakeFoulAfterInjury = true;
+                    return;
+                }
             }
+            pendingDangerousTackleFoul = false;
+            pendingHarshFoulCardPolicy = false;
+            isWaitingForYellowCardRoll = false;
         }
-        pendingDangerousTackleFoul = false;
-        pendingHarshFoulCardPolicy = false;
-        isWaitingForYellowCardRoll = false;
+        finally
+        {
+            string card = selectedDefender.isSentOff
+                ? usesHarshCardPolicy && roll >= MatchManager.Instance.refereeLeniency ? "STRAIGHT RED"
+                    : "SECOND YELLOW — RED CARD"
+                : !presentationWasBooked && selectedDefender.isBooked ? "YELLOW CARD" : "NO CARD";
+            activeDuelPanel?.ShowLeniency(leniencyRoll, card);
+        }
     }
 
     private void SendOffSelectedDefender(PlayerToken fouledAttacker)
@@ -3707,6 +3859,7 @@ public class MovementPhaseManager : MonoBehaviour
                 ["attackerResilience"] = attackerToken != null ? attackerToken.resilience.ToString() : string.Empty
             });
         int roll = injuryRoll.roll;
+        bool presentationInjured = roll >= attackerToken.resilience;
         Debug.Log(injuryRoll.overrideUsed && injuryRoll.isJackpot ? "Injury roll: 6 (jackpot override)" : $"Injury roll: {roll}");
         if (roll >= attackerToken.resilience)
         {
@@ -3732,10 +3885,15 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log($"Attacker {attackerToken.name} avoids injury.");
         }
         isWaitingForInjuryRoll = false;
+        activeDuelPanel?.ShowInjury(injuryRoll, !presentationInjured ? "NO INJURY"
+            : attackerToken.requiresSubstitution ? "SECOND INJURY — CANNOT CONTINUE" : "INJURED");
     }
 
     private void StartTackleDiceRollSequence()
     {
+        duelPresentationVersion++;
+        activeDuelPanel?.Cancel(this);
+        activeDuelPanel = null;
         // Reset the tackle dice roll flags
         tackleDefenderRolled = false;
         tackleAttackerRolled = false;
@@ -3744,6 +3902,19 @@ public class MovementPhaseManager : MonoBehaviour
         if (attackerToken != null && defenderToken != null)
         {
             int defenderBonusMalus = (isNutmegInProgress ? 1 : 0) + (isGkWallDiveInProgress ? gkWallDiveSavingPenalty : 0);
+            int threshold = IsCurrentNormalTackleDangerous(attackerToken, defenderToken) ? 2 : FOUL_THRESHOLD;
+            var expectation = ExpectedStatsCalculator.CalculateGroundDuelExpectationWithDefenderSkill(
+                attackerToken, defenderToken, GetDefenderGroundDuelSkill(defenderToken), defenderBonusMalus, threshold);
+            if (goalkeeperChallengeMode == GoalkeeperChallengeMode.None && !isGkWallDiveInProgress
+                && duelResolutionPanel != null)
+            {
+                if (duelResolutionPanel.Begin(this, attackerToken, defenderToken, isNutmegInProgress,
+                    GetDefenderGroundDuelSkill(defenderToken), isNutmegInProgress ? 1 : 0, threshold,
+                    expectation, IsCurrentBallHexInOpponentPenaltyBox()))
+                    activeDuelPanel = duelResolutionPanel;
+            }
+            lastDuelAttacker = attackerToken;
+            lastDuelDribbleProbability = expectation.dribbleContinuationProbability;
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 attackerToken,
                 MatchManager.ActionType.GroundDuelAttempt,
@@ -3751,11 +3922,7 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.gameData.gameLog.LogExpectedGroundDuel(
                 attackerToken,
                 defenderToken,
-                ExpectedStatsCalculator.CalculateGroundDuelExpectationWithDefenderSkill(
-                    attackerToken,
-                    defenderToken,
-                    GetDefenderGroundDuelSkill(defenderToken),
-                    defenderBonusMalus),
+                expectation,
                 goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxDive
                     ? "outside box gk dive"
                     : goalkeeperChallengeMode == GoalkeeperChallengeMode.OutsideBoxFootTackle
@@ -3782,6 +3949,13 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void ResetMovementPhase()
     {
+        duelPresentationVersion++;
+        activeDuelPanel?.Cancel(this);
+        activeDuelPanel = null;
+        deferredDuelDoubleInjury = false;
+        pendingDuelDoubleInjuryToken = null;
+        lastDuelAttacker = null;
+        lastDuelDribbleProbability = 1f;
         movedTokens.Clear();  // Reset the list of moved tokens
         movedTokenEntries.Clear();
         eligibleDefenders.Clear();
@@ -3857,6 +4031,13 @@ public class MovementPhaseManager : MonoBehaviour
         eligibleDefenders.Clear();
         isWaitingForInterceptionDiceRoll = false;
         isResolvingPreNutmegSteals = false;
+    }
+
+    public void ClearSetPieceTransientState()
+    {
+        stunnedTokens.Clear();
+        stunnedforNext.Clear();
+        headerManager?.ResetHeader();
     }
 
     public void EndMovementPhase(bool triggerF3 = true)
@@ -4081,6 +4262,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     public string GetInstructions()
     {
+        if (activeDuelPanel != null && activeDuelPanel.IsOpen && !activeDuelPanel.IsAwaitingRoll)
+            return activeDuelPanel.footer.text;
         StringBuilder sb = new();
         if (goalKeeperManager != null && goalKeeperManager.isActivated) return "";
         if (finalThirdManager != null && finalThirdManager.isActivated) return "";
@@ -4121,6 +4304,12 @@ public class MovementPhaseManager : MonoBehaviour
         if (isWaitingForTackleRoll)
         {
             sb.Append(BuildTackleRollInstruction());
+            if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
+            return sb.ToString();
+        }
+        if (isWaitingForGKWallDiveDecision && !isNutmegInProgress)
+        {
+            sb.Append(BuildGKDiveDecisionInstruction());
             if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2;
             return sb.ToString();
         }
@@ -4165,7 +4354,6 @@ public class MovementPhaseManager : MonoBehaviour
         // }
         // else
         // {
-            if (!isNutmegInProgress && isWaitingForGKWallDiveDecision) sb.Append(BuildGKDiveDecisionInstruction());
             if (isWaitingForSnapshotDecision && isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForInterceptionDiceRoll)
             {
                 sb.Append(IsSnapshotSuppressedByFinalExtraMovement()
@@ -4192,7 +4380,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void PopulateRoomDecisionContext(RoomDecisionContext context)
     {
-        if (context == null)
+        if (activeDuelPanel != null && activeDuelPanel.IsOpen && !activeDuelPanel.IsAwaitingRoll) return;
+        if (context == null || IsResolvingReposition)
         {
             return;
         }
@@ -4215,7 +4404,11 @@ public class MovementPhaseManager : MonoBehaviour
 
         PopulateMovementPhaseKeys(context);
 
-        if (isAwaitingTokenSelection)
+        // Once a token has been selected, the next automated decision is its
+        // destination (or the phase forfeit), not selecting a mover again.
+        // Gameplay keeps token selection open so a human can switch players,
+        // but exposing those choices to automation can re-click one token forever.
+        if (isAwaitingTokenSelection && selectedToken == null)
         {
             context.AddActionSummary(BuildMovementTokenSelectionSummary());
             foreach (PlayerToken token in GetSelectableMovementTokens())
@@ -4255,7 +4448,8 @@ public class MovementPhaseManager : MonoBehaviour
                         RoomActionType.StartMovement,
                         RoomDecisionStep.ChooseTarget,
                         hex,
-                        $"Move to hex {hex.coordinates}");
+                        $"Move to hex {hex.coordinates}",
+                        actor: selectedToken);
                 }
             }
         }
@@ -4272,7 +4466,8 @@ public class MovementPhaseManager : MonoBehaviour
                         RoomActionType.SetupMove,
                         RoomDecisionStep.ChooseTarget,
                         hex,
-                        $"Reposition to hex {hex.coordinates}");
+                        $"Reposition to hex {hex.coordinates}",
+                        actor: repositionWinner);
                 }
             }
         }
@@ -4449,11 +4644,63 @@ public class MovementPhaseManager : MonoBehaviour
 
         foreach (PlayerToken token in tokens)
         {
-            if (IsSelectableMovementToken(token))
+            if (IsSelectableMovementToken(token) && HasAnyLegalMovementOutcome(token))
             {
                 yield return token;
             }
         }
+    }
+
+    public IReadOnlyList<PlayerToken> GetSelectableMovementTokensForDecisionPreview()
+    {
+        return GetSelectableMovementTokens().ToList();
+    }
+
+    private bool HasAnyLegalMovementOutcome(PlayerToken token)
+    {
+        if (token == null || hexGrid == null || token.GetCurrentHex() == null)
+        {
+            return false;
+        }
+
+        int movementRange = isMovementPhase2f2
+            ? movementRange2f2
+            : token.IsDribbler
+                ? 1
+                : token.pace;
+        if (movementRange > 0)
+        {
+            (List<HexCell> reachableHexes, _) = GetReachableMovementData(token, movementRange);
+            foreach (HexCell hex in reachableHexes)
+            {
+                if (hex == null
+                    || hex.isAttackOccupied
+                    || hex.isDefenseOccupied
+                    || IsThrowInProtectedDefenderDestination(token, hex))
+                {
+                    continue;
+                }
+
+                if (hex.isInGoal == 0 || CanDribblerWalkIntoOpponentGoal(token, hex))
+                {
+                    return true;
+                }
+            }
+        }
+
+        if (!isMovementPhaseDef)
+        {
+            return false;
+        }
+
+        PlayerToken ballHolder = ball?.GetCurrentHex()?.GetOccupyingToken();
+        HexCell tokenHex = token.GetCurrentHex();
+        HexCell ballHolderHex = ballHolder?.GetCurrentHex();
+        return ballHolder != null
+            && ballHolder.isAttacker
+            && ballHolderHex != null
+            && ballHolderHex.GetNeighbors(hexGrid).Contains(tokenHex)
+            && !IsThrowInTackleWithoutMovingBlocked(token);
     }
 
     private bool IsSelectableMovementToken(PlayerToken token)
@@ -4617,7 +4864,12 @@ public class MovementPhaseManager : MonoBehaviour
                 return BuildGKDiveDribblerRollInstruction();
             }
 
-            return $"Press [R] to roll with {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} for the tackle. Dribbling: {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.dribbling}, ";
+            PlayerToken dribbler = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+            int threshold = IsCurrentNormalTackleDangerous(dribbler, selectedDefender) ? 2 : FOUL_THRESHOLD;
+            int defenderTotal = defenderDiceRoll == 50 ? 50 : GetDefenderGroundDuelSkill(selectedDefender) + defenderDiceRoll;
+            string need = DuelRollGuidance.ForDribbler(dribbler.dribbling, defenderTotal,
+                defenderDiceRoll == 50, defenderDiceRoll <= threshold);
+            return $"Press [R] to roll with {dribbler.playerName} for the tackle. Dribbling: {dribbler.dribbling}; {need}, ";
         }
 
         if (!tackleDefenderRolled && nutmegVictim != null)
@@ -4740,30 +4992,8 @@ public class MovementPhaseManager : MonoBehaviour
         int defenderTotal = defenderDiceRoll == 50
             ? 50
             : defenderDiceRoll + nutmegVictim.tackling + 1;
-        int rollToWin = defenderTotal - attackerToken.dribbling + 1;
-        int rollToTie = defenderTotal - attackerToken.dribbling;
-
-        if (defenderDiceRoll == 50)
-        {
-            return "needs JACKPOT to tie";
-        }
-
-        if (rollToWin <= 1)
-        {
-            return "needs 1+ to win";
-        }
-
-        if (rollToWin <= 6)
-        {
-            return $"needs {rollToWin}+ to win";
-        }
-
-        if (rollToTie >= 1 && rollToTie <= 6)
-        {
-            return $"needs JACKPOT to win; {rollToTie}+ ties";
-        }
-
-        return "needs JACKPOT to win";
+        return DuelRollGuidance.ForDribbler(attackerToken.dribbling, defenderTotal,
+            defenderDiceRoll == 50, defenderDiceRoll <= FOUL_THRESHOLD);
     }
 
     public bool? IsInstructionExpectingHomeTeam()

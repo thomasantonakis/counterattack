@@ -16,7 +16,9 @@ public class GoalKeeperManager : MonoBehaviour
     public bool isActivated = false;
     private PlayerToken activeDefendingGK;
     private int consumedBoxMovePenaltyBox;
+    public bool HasConsumedBoxMoveForDecisionPreview(int boxSide) => boxSide != 0 && consumedBoxMovePenaltyBox == boxSide;
     private HexCell hoveredGKMoveHex;
+    public bool IsResolvingMove { get; private set; }
 
     private void OnEnable()
     {
@@ -66,7 +68,7 @@ public class GoalKeeperManager : MonoBehaviour
     
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
-        if (isActivated)
+        if (isActivated && !IsResolvingMove)
         {
             if (!hexGrid.highlightedHexes.Contains(hex))
             {
@@ -105,7 +107,7 @@ public class GoalKeeperManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
-        if (isActivated && keyData.key == KeyCode.X)
+        if (isActivated && !IsResolvingMove && keyData.key == KeyCode.X)
         {
             hexGrid.ClearHighlightedHexes();
             hoveredGKMoveHex = null;
@@ -127,8 +129,12 @@ public class GoalKeeperManager : MonoBehaviour
 
         hexGrid.ClearHighlightedHexes();
         hoveredGKMoveHex = null;
-        await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defenderGK, false));
-        isActivated = false;
+        IsResolvingMove = true;
+        try
+        {
+            await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defenderGK, false));
+        }
+        finally { IsResolvingMove = false; isActivated = false; }
         Debug.Log($"🧤 {defenderGK.name} moved to {hex.name}");
     }
 
@@ -476,7 +482,7 @@ public class GoalKeeperManager : MonoBehaviour
 
     public void PopulateRoomDecisionContext(RoomDecisionContext context)
     {
-        if (context == null || !isActivated)
+        if (context == null || !isActivated || IsResolvingMove)
         {
             return;
         }
@@ -486,13 +492,17 @@ public class GoalKeeperManager : MonoBehaviour
             ? (!string.IsNullOrWhiteSpace(defenderGK.playerName) ? defenderGK.playerName : defenderGK.name)
             : "the defending GK";
 
-        context.AddKeyActionCandidate(
-            nameof(GoalKeeperManager),
-            RoomActionType.Decline,
-            RoomDecisionStep.InterruptionChoice,
-            "X",
-            $"Press [X] to keep {goalkeeperName} in place",
-            isForfeit: true);
+        context.AddAction(new RoomActionCandidate
+        {
+            manager = nameof(GoalKeeperManager),
+            actionType = RoomActionType.Decline,
+            step = RoomDecisionStep.InterruptionChoice,
+            key = "X",
+            actor = defenderGK,
+            label = $"Press [X] to keep {goalkeeperName} in place",
+            isExecutableNow = true,
+            isForfeit = true
+        });
         context.AddActionSummary($"Click a highlighted hex to move {goalkeeperName}");
 
         if (hexGrid == null)
@@ -504,12 +514,16 @@ public class GoalKeeperManager : MonoBehaviour
         {
             if (hex != null)
             {
-                context.AddHexActionCandidate(
-                    nameof(GoalKeeperManager),
-                    RoomActionType.GoalkeeperSave,
-                    RoomDecisionStep.ChooseTarget,
-                    hex,
-                    $"Move {goalkeeperName} to hex {hex.coordinates}");
+                context.AddAction(new RoomActionCandidate
+                {
+                    manager = nameof(GoalKeeperManager),
+                    actionType = RoomActionType.GoalkeeperSave,
+                    step = RoomDecisionStep.ChooseTarget,
+                    actor = defenderGK,
+                    targetHex = hex,
+                    label = $"Move {goalkeeperName} to hex {hex.coordinates}",
+                    isExecutableNow = true
+                });
             }
         }
     }

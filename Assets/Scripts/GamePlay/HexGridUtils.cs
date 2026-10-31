@@ -67,12 +67,21 @@ public static class HexGridUtils
 
     public static List<HexCell> FindPath(HexCell startHex, HexCell targetHex, HexGrid hexGrid)
     {
+        return FindPath(startHex, targetHex, hexGrid, null);
+    }
+
+    public static List<HexCell> FindPath(
+        HexCell startHex,
+        HexCell targetHex,
+        HexGrid hexGrid,
+        ISet<HexCell> temporarilyVacatedHexes)
+    {
         if (startHex == null || targetHex == null || hexGrid == null)
         {
             Debug.LogError("StartHex, TargetHex, or HexGrid is null!");
             return new List<HexCell>();
         }
-        if (!CanUseAsMovementDestination(targetHex))
+        if (!CanUseAsMovementDestination(targetHex, temporarilyVacatedHexes))
         {
             return new List<HexCell>();
         }
@@ -96,7 +105,9 @@ public static class HexGridUtils
 
             foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                if (neighbor == null || visited.Contains(neighbor) || !CanUseForMovementPath(neighbor, targetHex))
+                if (neighbor == null
+                    || visited.Contains(neighbor)
+                    || !CanUseForMovementPath(neighbor, targetHex, temporarilyVacatedHexes))
                 {
                     continue;
                 }
@@ -122,17 +133,22 @@ public static class HexGridUtils
         return totalPath;
     }
 
-    private static bool CanUseAsMovementDestination(HexCell hex)
+    private static bool CanUseAsMovementDestination(HexCell hex, ISet<HexCell> temporarilyVacatedHexes = null)
     {
         return hex != null
             && (hex.isInGoal != 0 || !hex.isOutOfBounds)
-            && !hex.isAttackOccupied
-            && !hex.isDefenseOccupied;
+            && (temporarilyVacatedHexes?.Contains(hex) == true
+                || (!hex.isAttackOccupied && !hex.isDefenseOccupied));
     }
 
-    private static bool CanUseForMovementPath(HexCell hex, HexCell targetHex)
+    private static bool CanUseForMovementPath(
+        HexCell hex,
+        HexCell targetHex,
+        ISet<HexCell> temporarilyVacatedHexes = null)
     {
-        if (hex == null || hex.isAttackOccupied || hex.isDefenseOccupied)
+        if (hex == null
+            || ((hex.isAttackOccupied || hex.isDefenseOccupied)
+                && temporarilyVacatedHexes?.Contains(hex) != true))
         {
             return false;
         }
@@ -141,15 +157,24 @@ public static class HexGridUtils
             || (hex == targetHex && hex.isInGoal != 0);
     }
 
-    private static bool CanUseForReachability(HexCell hex)
+    private static bool CanUseForReachability(HexCell hex, ISet<HexCell> temporarilyVacatedHexes = null)
     {
         return hex != null
             && !hex.isOutOfBounds
-            && !hex.isAttackOccupied
-            && !hex.isDefenseOccupied;
+            && (temporarilyVacatedHexes?.Contains(hex) == true
+                || (!hex.isAttackOccupied && !hex.isDefenseOccupied));
     }
 
     public static (List<HexCell> reachableHexes, Dictionary<HexCell, (int distance, bool enteredZOI)>) GetReachableHexes(HexGrid hexGrid, HexCell startHex, int range)
+    {
+        return GetReachableHexes(hexGrid, startHex, range, null);
+    }
+
+    public static (List<HexCell> reachableHexes, Dictionary<HexCell, (int distance, bool enteredZOI)>) GetReachableHexes(
+        HexGrid hexGrid,
+        HexCell startHex,
+        int range,
+        ISet<HexCell> temporarilyVacatedHexes)
     {
         if (startHex == null || hexGrid == null)
         {
@@ -174,9 +199,15 @@ public static class HexGridUtils
                 reachableHexes.Add(currentHex);
             }
 
+            // A boundary cell cannot contribute another reachable step. Most
+            // cells in a small search are on this boundary.
+            if (currentDistance >= range) continue;
+
             foreach (HexCell neighbor in currentHex.GetNeighbors(hexGrid))
             {
-                if (neighbor == null || !CanUseForReachability(neighbor) || distance.ContainsKey(neighbor))
+                if (neighbor == null
+                    || !CanUseForReachability(neighbor, temporarilyVacatedHexes)
+                    || distance.ContainsKey(neighbor))
                 {
                     continue;
                 }

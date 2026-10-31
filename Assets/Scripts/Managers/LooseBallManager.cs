@@ -506,6 +506,10 @@ public class LooseBallManager : MonoBehaviour
         {
             Debug.Log($"{defendingGk.name} moved directly onto the loose-ball path at {pickupHex.coordinates} and picks it up.");
             yield return StartCoroutine(MoveLooseBallToHex(pickupHex, sourceType, allowGKBoxMove: false));
+            MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                defendingGk, 1f,
+                connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                recoveryType: MatchManager.Instance.hangingPassType);
             ResolveDefensiveLooseBallRecovery(defendingGk, pickupHex);
             result.RecoveredByGoalkeeper = true;
             yield break;
@@ -1207,6 +1211,10 @@ public class LooseBallManager : MonoBehaviour
             {
                 // TODO: Should we check what is going on first?
                 Debug.Log($"Ball hit {closestToken.name}, who is a defender");
+                MatchManager.Instance.gameData.gameLog.LogExpectedRecovery(
+                    closestToken, 1f,
+                    connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+                    recoveryType: MatchManager.Instance.hangingPassType);
                 MatchManager.Instance.gameData.gameLog.LogEvent(
                     closestToken
                     , MatchManager.ActionType.BallRecovery
@@ -1355,17 +1363,20 @@ public class LooseBallManager : MonoBehaviour
 
         if (isWaitingForDirectionRoll)
         {
-            context.AddKeyAction("R", $"Press [R] to roll the Loose Ball direction from {FormatTokenName(causingDeflection)}");
+            context.AddKeyActionCandidate(nameof(LooseBallManager), RoomActionType.Roll, RoomDecisionStep.Roll,
+                "R", $"Press [R] to roll the Loose Ball direction from {FormatTokenName(causingDeflection)}");
         }
 
         if (isWaitingForDistanceRoll)
         {
-            context.AddKeyAction("R", $"Press [R] to roll the Loose Ball distance from {FormatTokenName(causingDeflection)}");
+            context.AddKeyActionCandidate(nameof(LooseBallManager), RoomActionType.Roll, RoomDecisionStep.Roll,
+                "R", $"Press [R] to roll the Loose Ball distance from {FormatTokenName(causingDeflection)}");
         }
 
         if (isWaitingForInterceptionRoll)
         {
-            context.AddKeyAction("R", $"Press [R] to roll the Loose Ball interception from {FormatTokenName(potentialInterceptor)}");
+            context.AddKeyActionCandidate(nameof(LooseBallManager), RoomActionType.Roll, RoomDecisionStep.Roll,
+                "R", $"Press [R] to roll the Loose Ball interception from {FormatTokenName(potentialInterceptor)}");
         }
     }
 

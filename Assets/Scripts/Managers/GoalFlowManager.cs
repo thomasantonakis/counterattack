@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class GoalFlowManager : MonoBehaviour
 {
+    // Keep presentation randomness independent of Unity's gameplay/dice stream.
+    private static readonly System.Random goalCopyRandom = new System.Random();
     private enum GoalInstructionPhase
     {
         None,
@@ -35,6 +37,7 @@ public class GoalFlowManager : MonoBehaviour
     public bool defendersAreBack = false;
     public bool attackersAreBack = false;
     private GoalInstructionPhase instructionPhase = GoalInstructionPhase.None;
+    private bool useFirstBraceWording;
     private bool goalScoringTeamIsHome;
     private string goalScoringTeamName = string.Empty;
     private string goalScorerName = string.Empty;
@@ -324,7 +327,7 @@ public class GoalFlowManager : MonoBehaviour
         yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false, true));
         attackersAreBack = true;
         yield return new WaitUntil(() => defendersAreBack);
-        FinalizePostGoalReset(scoringTeamIsHome);
+        yield return StartCoroutine(FinalizePostGoalReset(scoringTeamIsHome));
     }
 
     private IEnumerator DefenseCelebrationFlow(bool scoringTeamIsHome, int scoredGoalSide)
@@ -367,11 +370,11 @@ public class GoalFlowManager : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private void FinalizePostGoalReset(bool scoringTeamIsHome)
+    private IEnumerator FinalizePostGoalReset(bool scoringTeamIsHome)
     {
         if (postGoalResetFinalized)
         {
-            return;
+            yield break;
         }
 
         postGoalResetFinalized = true;
@@ -389,7 +392,7 @@ public class GoalFlowManager : MonoBehaviour
         }
 
         ReconcilePostGoalTokenHexes(kickoffTeamIsHome);
-        PlaceBallOnKickoffHex();
+        yield return StartCoroutine(ReturnBallToKickoff(kickoffTeamIsHome));
 
         if (matchManager != null)
         {
@@ -629,24 +632,56 @@ public class GoalFlowManager : MonoBehaviour
         }
     }
 
-    private void PlaceBallOnKickoffHex()
+    private IEnumerator ReturnBallToKickoff(bool kickoffTeamIsHome)
     {
+        MatchManager matchManager = MatchManager.Instance;
+        MatchManager.TeamAttackingDirection kickoffTeamDirection = kickoffTeamIsHome
+            ? matchManager.homeTeamDirection
+            : matchManager.awayTeamDirection;
+        int goalKickX = kickoffTeamDirection == MatchManager.TeamAttackingDirection.LeftToRight ? -16 : 16;
+        HexCell goalKickHex = hexGrid.GetHexCellAt(new Vector3Int(goalKickX, 0, 0));
         HexCell kickoffHex = hexGrid.GetHexCellAt(new Vector3Int(0, 0, 0));
-        if (kickoffHex == null)
+        if (goalKickHex == null || kickoffHex == null)
         {
-            Debug.LogError("[GoalFlow] Cannot place ball on kickoff because hex (0, 0) was not found.");
-            return;
+            Debug.LogError("[GoalFlow] Cannot animate post-goal ball return because a goal-kick or kickoff hex was not found.");
+            yield break;
         }
 
         Ball resetBall = groundBallManager != null ? groundBallManager.ball : MatchManager.Instance?.ball;
         if (resetBall == null)
         {
-            Debug.LogError("[GoalFlow] Cannot place ball on kickoff because no ball reference is available.");
-            return;
+            Debug.LogError("[GoalFlow] Cannot animate post-goal ball return because no ball reference is available.");
+            yield break;
         }
 
+        Vector3 goalKickPosition = resetBall.transform.position;
+        Vector3 goalKickTargetPosition = goalKickHex.GetHexCenter();
+        goalKickTargetPosition.y += resetBall.groundHeightOffset;
+        yield return StartCoroutine(AnimateBallArc(resetBall, goalKickPosition, goalKickTargetPosition, 0.45f, 0f));
+        resetBall.PlaceAtCell(goalKickHex);
+
+        Vector3 kickoffPosition = kickoffHex.GetHexCenter();
+        kickoffPosition.y += resetBall.groundHeightOffset;
+        yield return StartCoroutine(AnimateBallArc(resetBall, resetBall.transform.position, kickoffPosition, 0.8f, 5f));
+        // PlaceAtCell updates the logical hex only after the ball has arrived.
         resetBall.PlaceAtCell(kickoffHex);
         MatchManager.Instance?.ClearGoalKickRestartTaker();
+    }
+
+    private static IEnumerator AnimateBallArc(Ball ball, Vector3 start, Vector3 end, float duration, float arcHeight)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = Mathf.Clamp01(elapsed / duration);
+            Vector3 position = Vector3.Lerp(start, end, t);
+            position.y += arcHeight * Mathf.Sin(Mathf.PI * t);
+            ball.transform.position = position;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        ball.transform.position = end;
     }
 
     private void CleanUpGoalFlow()
@@ -703,6 +738,7 @@ public class GoalFlowManager : MonoBehaviour
 
     private void CaptureGoalInstructionContext(PlayerToken shooterToken, bool scoringTeamIsHomeOverride, bool isOwnGoal)
     {
+        useFirstBraceWording = goalCopyRandom.Next(2) == 0;
         if (shooterToken == null)
         {
             goalScoringTeamIsHome = scoringTeamIsHomeOverride;
@@ -723,6 +759,8 @@ public class GoalFlowManager : MonoBehaviour
 
     private string BuildGoalResetInstruction()
     {
+        if (scorerGoalCount == 2)
+            return BuildSecondGoalInstruction(goalScorerName, goalAssisterName, GetCurrentScoreText(), useFirstBraceWording);
         string ordinalText = GetGoalOrdinalText(scorerGoalCount);
         string scorerText = string.IsNullOrWhiteSpace(ordinalText)
             ? $"Goal by {goalScorerName}!"
@@ -734,11 +772,18 @@ public class GoalFlowManager : MonoBehaviour
         return $"{scorerText}{assistText} {GetCurrentScoreText()}";
     }
 
+    public static string BuildSecondGoalInstruction(string scorer, string assister, string score, bool useBrace)
+    {
+        string goalText = useBrace ? $"A brace by {scorer}!" : $"Second goal by {scorer}!";
+        string assistText = string.IsNullOrWhiteSpace(assister) ? string.Empty : $" Assisted by {assister}!";
+        return $"{goalText}{assistText} {score}";
+    }
+
     private string GetGoalOrdinalText(int goalCount)
     {
         return goalCount switch
         {
-            2 => $"{goalCount}) {GetBraceLabel()}",
+            2 => "Second",
             3 => $"{goalCount}) Hat trick",
             4 => $"{goalCount}) Poker",
             5 => $"{goalCount}) Re-Poker",
@@ -746,13 +791,6 @@ public class GoalFlowManager : MonoBehaviour
             > 6 => $"{goalCount}) Double Hat trick",
             _ => string.Empty,
         };
-    }
-
-    private string GetBraceLabel()
-    {
-        // Placeholder for a future nationality field on PlayerToken/RosterPlayer:
-        // return scorerIsItalian ? "Doppietta" : "Brace";
-        return "Brace";
     }
 
     private string ResolveAssisterName(PlayerToken shooterToken)

@@ -75,8 +75,8 @@ public class HeaderManager : MonoBehaviour
     private bool automaticDefensiveHeaderRecoveryLogged = false;
     [Header("Tuning")]
     public bool allowUnchallengedDefenseControl = true;
-    private const int HEADER_SELECTION_RANGE = 2;
-    private const int MAX_OUTFIELD_HEADER_DEFENDERS = 2;
+    public const int HEADER_SELECTION_RANGE = 2;
+    public const int MAX_OUTFIELD_HEADER_DEFENDERS = 2;
 
 
     private void OnEnable()
@@ -325,24 +325,26 @@ public class HeaderManager : MonoBehaviour
         return key == KeyCode.Return || key == KeyCode.KeypadEnter;
     }
 
-    public IEnumerator FindEligibleHeaderTokens(HexCell landingHex)
+    private void RefreshHeaderEligibility(HexCell landingHex)
     {
-        while (finalThirdManager.isActivated) yield return null;
-        isActivated = true;
-        headerStartedWithOffsideAssessment = MatchManager.Instance != null
-            && MatchManager.Instance.offsideManager != null
-            && MatchManager.Instance.offsideManager.HasStoredAssessment;
-        MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
         hasEligibleAttackers = false;
         hasEligibleDefenders = false;
+        // Eligibility belongs to this landing, never the previous aerial ball.
+        attEligibleToHead.Clear();
+        defEligibleToHead.Clear();
+        attackerWillJump.Clear();
+        defenderWillJump.Clear();
         if (highPassManager.gkRushedOut) 
         {
             PlayerToken gk = hexGrid.GetDefendingGK();
-            if (gk != null && !defEligibleToHead.Contains(gk))
+            if (gk != null && gk.GetCurrentHex() != null
+                && HexGridUtils.GetHexStepDistance(gk.GetCurrentHex(), landingHex) <= HEADER_SELECTION_RANGE)
             {
                 defEligibleToHead.Add(gk);
+                defenderWillJump.Add(gk);
                 hasEligibleDefenders = true;
             }
+            else highPassManager.gkRushedOut = false;
         }
         List<HexCell> nearbyHexes = HexGrid.GetHexesInRange(hexGrid, landingHex, HEADER_SELECTION_RANGE);
 
@@ -370,6 +372,17 @@ public class HeaderManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public IEnumerator FindEligibleHeaderTokens(HexCell landingHex)
+    {
+        while (finalThirdManager.isActivated) yield return null;
+        isActivated = true;
+        headerStartedWithOffsideAssessment = MatchManager.Instance != null
+            && MatchManager.Instance.offsideManager != null
+            && MatchManager.Instance.offsideManager.HasStoredAssessment;
+        MatchManager.Instance.currentState = MatchManager.GameState.HeaderGeneric;
+        RefreshHeaderEligibility(landingHex);
         // Log the results for debugging
         Debug.Log($"hasEligibleAttackers: {hasEligibleAttackers}, hasEligibleDefenders: {hasEligibleDefenders}");
 
@@ -2132,6 +2145,65 @@ public class HeaderManager : MonoBehaviour
         HexCell controllingTokenHex = controllingToken.GetCurrentHex();
         bool hasControlPenalty = controllingTokenHex != ballHex && !controlBallNeighbors.Contains(controllingTokenHex);
         return hasControlPenalty ? -1 : 0;
+    }
+
+    /// <summary>
+    /// Read-only preview used by the room AI. Keeping this calculation in the
+    /// manager prevents the planner from becoming a second rules engine.
+    /// </summary>
+    public int GetControlPenaltyForPreview(PlayerToken controllingToken)
+    {
+        return GetControlPenalty(controllingToken);
+    }
+
+    /// <summary>
+    /// Returns the defenders that would receive sequential interception rolls
+    /// if a headed pass were sent to the supplied empty hex.
+    /// </summary>
+    public IReadOnlyList<PlayerToken> GetHeaderPassInterceptorsForPreview(HexCell targetHex)
+    {
+        if (targetHex == null || targetHex.isAttackOccupied || hexGrid == null)
+        {
+            return System.Array.Empty<PlayerToken>();
+        }
+
+        List<PlayerToken> interceptors = new List<PlayerToken>();
+        foreach (HexCell defenderHex in GetHeaderInterceptionDefenderHexes())
+        {
+            if (defenderHex == null || !defenderHex.GetNeighbors(hexGrid).Contains(targetHex))
+            {
+                continue;
+            }
+
+            PlayerToken interceptor = defenderHex.GetOccupyingToken();
+            if (interceptor != null)
+            {
+                interceptors.Add(interceptor);
+            }
+        }
+
+        return interceptors;
+    }
+
+    /// <summary>
+    /// Read-only equivalent of the six-hex free-header highlight. Interception is
+    /// intentionally not checked along the flight: under the rules only the
+    /// landing hex can produce a headed-pass interception.
+    /// </summary>
+    public IReadOnlyList<HexCell> GetLegalFreeHeaderTargetsForDecisionPreview()
+    {
+        HexCell startHex = ball != null ? ball.GetCurrentHex() : null;
+        if (hexGrid == null || startHex == null)
+        {
+            return System.Array.Empty<HexCell>();
+        }
+
+        return HexGrid.GetHexesInRange(hexGrid, startHex, 6)
+            .Where(hex => hex != null
+                && !hex.isOutOfBounds
+                && !hex.isDefenseOccupied
+                && CanHeaderTargetHexBeCollected(hex))
+            .ToList();
     }
 
     private int GetNeededControlRoll(PlayerToken controllingToken)

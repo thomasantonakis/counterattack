@@ -143,6 +143,12 @@ public class GameplayRoomDecisionSnapshot
     public string expectedTeam;
     public string expectedInput;
     public string persona;
+    public string providerName;
+    public string difficulty;
+    public string selectedAction;
+    public int selectedScore;
+    public float decisionDurationMilliseconds;
+    public string reasonSummary;
     public int candidateCount;
     public int keyCandidateCount;
     public int tokenCandidateCount;
@@ -167,6 +173,13 @@ public class GameplayRoomDecisionCandidate
     public bool isForfeit;
     public string executionCommand;
     public string reason;
+    public int rank;
+    public string tacticalTier;
+    public int score;
+    public int scoreDeltaFromBest;
+    public float expectedGoals = -1f;
+    public float expectedGoalsAgainst = -1f;
+    public bool selected;
 }
 
 public class GameplayPathInteractionPreview

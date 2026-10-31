@@ -110,14 +110,19 @@ public class PlayerTokenManager : MonoBehaviour
         homePositions = homeTeamPositions;
         awayPositions = awayTeamPositions;
 
-        if (Application.isEditor)
+        ApplicationManager.EnsureInstanceExists();
+        bool regularFormationRequested = ApplicationManager.Instance.ConsumeRegularFormationRoomLaunch();
+        if (Application.isEditor && !regularFormationRequested)
         {
+            Debug.Log("Using Room-scene editor test positions for direct Play Mode.");
             return;
         }
 
         homePositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection.LeftToRight);
         awayPositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection.RightToLeft);
-        Debug.Log("Using post-goal reset formations for standalone room start. Home starts on the left attacking right; Away starts on the right attacking left.");
+        Debug.Log(regularFormationRequested
+            ? "Using regular kickoff formations supplied by the Create/Load Game flow. Home starts on the left attacking right; Away starts on the right attacking left."
+            : "Using regular kickoff formations for a player build. Home starts on the left attacking right; Away starts on the right attacking left.");
     }
 
     private void InstantiateTeams(Vector3Int[] home, Vector3Int[] away)

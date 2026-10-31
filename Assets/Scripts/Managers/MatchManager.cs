@@ -106,6 +106,11 @@ public class MatchManager : MonoBehaviour
         public int saveSchemaVersion;
         public string createdUtc;
         public string lastSavedUtc;
+        public string playSessionId;
+        public string playSessionStartedUtc;
+        public string sourceSavePath;
+        public string sourceSaveSavedAtUtc;
+        public int inheritedEventSequence;
         public GameSettings gameSettings;
         [field: System.NonSerialized]
         public Rosters rosters { get; set; }
@@ -133,7 +138,9 @@ public class MatchManager : MonoBehaviour
     {
         public string gameMode;
         public string homeTeamName;
+        public string homeTeamAbbreviation;
         public string awayTeamName;
+        public string awayTeamAbbreviation;
         public string homeTeamControl;
         public string awayTeamControl;
         public string homeKit;
@@ -699,6 +706,9 @@ public class MatchManager : MonoBehaviour
                     logEntry += "wins possession";
                     switch (recoveryType)
                     {
+                        case "loose":
+                            logEntry += " by picking up a loose ball";
+                            break;
                         case "tackle":
                             logEntry += $" after tackling {connectedToken.name}";
                             break;
@@ -859,6 +869,9 @@ public class MatchManager : MonoBehaviour
                         case "keep":
                             logEntry += $"skips past {connectedToken.name}";
                             break;
+                        case "foul":
+                            logEntry += $"wins a foul against {connectedToken.name}";
+                            break;
                     }
                     playerStats.groundDuelsWon += value;
                     teamStats.totalGroundDuelsWon += value;
@@ -867,7 +880,7 @@ public class MatchManager : MonoBehaviour
                         playerStats.tacklesMade += value;
                         teamStats.totalTacklesMade += value;
                     }
-                    else if (tackleType == "nutmeg" || tackleType == "keep")
+                    else if (tackleType == "nutmeg" || tackleType == "keep" || tackleType == "foul")
                     {
                         playerStats.dribblesMade += value;
                         teamStats.totalDribblesMade += value;
@@ -1494,6 +1507,8 @@ public class MatchManager : MonoBehaviour
         {
             return;
         }
+
+        if (movementPhaseManager != null && movementPhaseManager.TryDeferDuelDoubleInjury(token)) return;
 
         if (token.IsGoalKeeper)
         {
@@ -2245,7 +2260,9 @@ public class MatchManager : MonoBehaviour
             return true;
         }
 
-        bool didWrite = RoomLiveLogService.PatchActiveLiveLog(this, out savedPath, out message);
+        bool didWrite = force
+            ? RoomLiveLogService.PatchActiveLiveLog(this, out savedPath, out message)
+            : RoomLiveLogService.AppendActiveLiveEvents(this, out savedPath, out message);
         if (didWrite)
         {
             liveLogDirty = false;
@@ -3778,6 +3795,8 @@ public class MatchManager : MonoBehaviour
     IEnumerator Start()
     {
         Debug.Log($"⚠️ MatchManager Start() - Entity ID: {GetEntityId()}");
+        RoomAIDecisionTraceService.ResetSession();
+        RoomLiveLogService.ResetSession();
         LoadGameSettingsFromJson();
         yield return new WaitUntil(() => gameData != null && gameData.rosters != null && gameData.rosters.home.Count > 10 && gameData.rosters.away.Count > 10);
         if (gameData != null && gameData.gameSettings != null)
@@ -3817,6 +3836,8 @@ public class MatchManager : MonoBehaviour
         }
         InitializeSubstitutionCountsFromStats();
 
+        ShotStatisticsRepair.RepairSavedGoals(gameData);
+
         if (gameData.gameLog == null)
         {
             Debug.LogWarning("⚠️ gameData.gameLog was NULL in Start! Reinitializing...");
@@ -3849,6 +3870,15 @@ public class MatchManager : MonoBehaviour
         {
             yield return new WaitUntil(() => playerTokenManager != null && playerTokenManager.allTokens.Count >= 22);
             ConfigureStandaloneRoomAsAwayGoalRestart();
+        }
+        else
+        {
+            // A newly created Editor match has no runtime snapshot to restore. The
+            // restore path activates KickoffManager through
+            // RebuildManagersAfterRuntimeRestore(), but the fresh-match path must
+            // do so explicitly or KickoffManager ignores every click/key while the
+            // MatchManager remains in KickOffSetup.
+            kickoffManager?.StartPreKickoffPhase();
         }
     }
 
@@ -3930,7 +3960,10 @@ public class MatchManager : MonoBehaviour
 
     private void FlushLiveLogBeforeExit()
     {
-        if (liveLogDirty && !FlushLiveLogNow(out _, out string message))
+        // Incremental JSONL flushing clears liveLogDirty without rewriting the
+        // resumable save. Pause/exit must therefore force one full synchronization
+        // even when all event segments were already current.
+        if (!FlushLiveLogNow(out _, out string message, force: true))
         {
             LogLiveLogFailure(message);
         }
@@ -4029,7 +4062,9 @@ public class MatchManager : MonoBehaviour
         }
 
         float multiplier = useFastClock ? Mathf.Max(1f, fastClockMultiplier) : 1f;
-        currentHalfRegulationSeconds += Time.deltaTime * multiplier;
+        // Account for elapsed time only when the game's clock rules permit it.
+        // AI analysis must neither pause open play nor bypass a stopped restart.
+        currentHalfRegulationSeconds += Time.unscaledDeltaTime * multiplier;
         float halfLimitSeconds = GetHalfDurationSeconds();
         if (currentHalfRegulationSeconds >= halfLimitSeconds)
         {
@@ -4047,6 +4082,7 @@ public class MatchManager : MonoBehaviour
             && !isMatchComplete
             && !isHalfTimeFlowRunning
             && !isPauseMenuOpen
+            && !DuelResolutionPanelController.IsMatchClockHeld
             && !IsClockPausedForCurrentState();
     }
 
@@ -4130,11 +4166,21 @@ public class MatchManager : MonoBehaviour
         return durationMinutes * 60f;
     }
 
+    public int GetCurrentHalfDurationMinutesForAI()
+    {
+        return Mathf.RoundToInt(GetHalfDurationSeconds() / 60f);
+    }
+
     private int GetConfiguredNumberOfHalfs()
     {
         return gameData?.gameSettings != null
             ? Mathf.Clamp(gameData.gameSettings.numberOfHalfs, 1, 2)
             : 2;
+    }
+
+    public int GetConfiguredHalfCountForAI()
+    {
+        return GetConfiguredNumberOfHalfs();
     }
 
     private int GetCurrentMatchHalfLimit()
@@ -4218,7 +4264,8 @@ public class MatchManager : MonoBehaviour
         }
 
         int playedExtraActions = Mathf.Clamp(extraActionsTotal - extraActionsRemaining, 0, extraActionsTotal);
-        return $"{regulation}\n0{playedExtraActions}:00 (+{extraActionsTotal})";
+        string extraActionsClock = FormatClockSeconds(playedExtraActions * 60);
+        return $"{regulation}\n{extraActionsClock} (+{extraActionsTotal})";
     }
 
     private static string FormatClockSeconds(int totalSeconds)
@@ -4317,12 +4364,7 @@ public class MatchManager : MonoBehaviour
             return;
         }
 
-        if (currentState == GameState.KickOffSetup && keyData.key == KeyCode.Space)
-        {
-            StartMatch();
-            keyData.Consume(nameof(MatchManager));
-        }
-        else if (currentState == GameState.GoalKick
+        if (currentState == GameState.GoalKick
             && pendingGoalKickRestartTaker != null
             && keyData.key == KeyCode.K)
         {
@@ -5216,8 +5258,16 @@ public class MatchManager : MonoBehaviour
         {
             pendingGoalKickRestartTaker = null;
         }
-        ResetPendingGroundBallOffer();
-        ApplyPendingGroundBallDistance();
+        // A ground-pass offer already carries the range earned by the preceding
+        // outcome. AnyOtherScenario recoveries (interception, steal, or loose-ball
+        // collection) offer the short 6-hex pass, while a completed movement phase
+        // or successful tackle offers 11. Preserve that range through commitment;
+        // resetting here used to silently turn every committed short pass into 11.
+        if (actionKind != MatchActionKind.StandardPass)
+        {
+            ResetPendingGroundBallOffer();
+            ApplyPendingGroundBallDistance();
+        }
         RefreshAerialTargetPrecomputations();
         RegisterCommittedAction(actionKind);
         RecordActionCommitted(actionKind, commitSource, commitReason);
@@ -5564,11 +5614,14 @@ public class MatchManager : MonoBehaviour
             }
             else
             {
-                if (ShouldShotBeAvailable()) shotManager.isAvailable = true;
-                else
-                {
-                    AutoCommitMovement("end_first_time_pass_shot_unavailable");
-                }
+                // A completed FTP with possession starts a genuine continuation
+                // choice. The receiver may move before shooting; previously this
+                // branch exposed only Snapshot and silently auto-committed an MP
+                // when Snapshot was unavailable.
+                movementPhaseManager.isAvailable = true;
+                shotManager.isAvailable = ShouldShotBeAvailable();
+                if (!shotManager.isAvailable)
+                    AutoCommitMovement("end_first_time_pass_only_movement_available");
             }
         }
         else if (currentState == GameState.AnyOtherScenario)
@@ -5989,6 +6042,7 @@ public class MatchManager : MonoBehaviour
         gameData.stats ??= new Stats();
         gameData.stats.homeTeamStats ??= new TeamStats();
         gameData.stats.awayTeamStats ??= new TeamStats();
+        ShotStatisticsRepair.RepairSavedGoals(gameData);
         gameData.gameLog ??= new GameLog(gameData.stats);
         gameData.gameLog.RebindStats(gameData.stats);
         gameData.gameLog.ReplaceEntries(snapshot.gameLog);
@@ -6546,6 +6600,7 @@ public class MatchManager : MonoBehaviour
 
             if (gameData != null && gameData.gameSettings != null)
             {
+                TeamNameAbbreviator.EnsureAbbreviations(gameData.gameSettings);
                 Debug.Log("Game settings loaded successfully! Invoking OnGameSettingsLoaded!");
                 // Trigger event or call methods to initialize gameplay settings
                 OnGameSettingsLoaded?.Invoke();

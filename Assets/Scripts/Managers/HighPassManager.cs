@@ -45,6 +45,7 @@ public class HighPassManager : MonoBehaviour
     [Header("Flags")]
     public bool didGKMoveInDefPhase = false;
     public bool gkRushedOut = false;
+    public bool IsDirectGoalKick { get; private set; }
     public PlayerToken defGK = null;
     public bool isWaitingForDefGKChallengeDecision = false;
     private bool canDefGKRushWithoutMoving = false;
@@ -55,9 +56,18 @@ public class HighPassManager : MonoBehaviour
     public bool useSlowerTargetPrecompute = false;
     private const int REGULAR_HIGH_PASS_MIN_DISTANCE = 3;
     private const int MAX_PASS_DISTANCE = 15;
-    private const int ATTACKER_MOVE_RANGE = 3;
-    private const int DEFENDER_MOVE_RANGE = 3;
+    public const int AttackerMoveRange = 3;
+    private const int ATTACKER_MOVE_RANGE = AttackerMoveRange;
+    public const int DefenderMoveRange = 3;
     private const int ACCURACY_THRESHOLD = 8;
+
+    public static float AccuracyProbabilityForDecisionPreview(int highPassAttribute)
+    {
+        int accurate = 0;
+        for (int roll = 1; roll <= 6; roll++)
+            if (roll + highPassAttribute >= ACCURACY_THRESHOLD) accurate++;
+        return accurate / 6f;
+    }
     private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
     private readonly List<HexCell> availableHighPassTargetHexes = new();
     private HexCell hoveredHighPassTargetHex;
@@ -71,6 +81,18 @@ public class HighPassManager : MonoBehaviour
     private HexCell highPassKickHexForInterceptionSuppression = null;
     private string latestOffsideInstruction = string.Empty;
 
+    public bool IsAvailableTargetEvaluationComplete =>
+        isAvailableTargetsReady && availableTargetPrecomputeRoutine == null;
+
+    public int AvailableTargetEvaluationVersion => availableTargetPrecomputeVersion;
+
+    public IReadOnlyList<HexCell> GetEvaluatedDecisionTargets()
+    {
+        return IsAvailableTargetEvaluationComplete
+            ? availableHighPassTargetHexes
+            : System.Array.Empty<HexCell>();
+    }
+
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
@@ -83,6 +105,37 @@ public class HighPassManager : MonoBehaviour
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
         GameInputManager.OnHover -= OnHoverReceived;
+    }
+
+    private void LateUpdate()
+    {
+        if (ShouldShowCommittedTargetOverlay())
+        {
+            // Reapply only the visual overlay. Adding the target back to the
+            // highlighted interaction list could make it an unintended move.
+            currentTargetHex.HighlightHex("passTargetCommitted");
+        }
+    }
+
+    private bool ShouldShowCommittedTargetOverlay()
+    {
+        return currentTargetHex != null
+            && isActivated
+            && (isWaitingForAttackerSelection
+                || isWaitingForAttackerMove
+                || isWaitingForDefenderSelection
+                || isWaitingForDefenderMove
+                || isWaitingForAccuracyRoll
+                || isWaitingForDefGKChallengeDecision);
+    }
+
+    private void ClearHighlightsPreservingCommittedTarget()
+    {
+        hexGrid.ClearHighlightedHexes();
+        if (ShouldShowCommittedTargetOverlay())
+        {
+            currentTargetHex.HighlightHex("passTargetCommitted");
+        }
     }
 
 
@@ -236,7 +289,7 @@ public class HighPassManager : MonoBehaviour
                     hexGrid.ClearHighlightedHexes();
                     if (MatchManager.Instance == null || MatchManager.Instance.difficulty_level < 3)
                     {
-                        movementPhaseManager.HighlightValidMovementHexes(selectedToken, DEFENDER_MOVE_RANGE);
+                        movementPhaseManager.HighlightValidMovementHexes(selectedToken, DefenderMoveRange);
                     }
                     isWaitingForDefenderMove = true;
                 }
@@ -479,6 +532,8 @@ public class HighPassManager : MonoBehaviour
 
     public void ActivateHighPass()
     {
+        gkRushedOut = false;
+        IsDirectGoalKick = false;
         CaptureHighPassKickContextForInterceptionSuppression();
         isActivated = true;
         isAvailable = false;  // Make it non available to avoid restarting this action again.
@@ -499,6 +554,8 @@ public class HighPassManager : MonoBehaviour
 
     public void ActivateGoalkeeperKick(bool commitImmediately = false)
     {
+        gkRushedOut = false;
+        IsDirectGoalKick = MatchManager.Instance.currentState == MatchManager.GameState.GoalKick;
         CaptureHighPassKickContextForInterceptionSuppression();
         ball.SelectBall();
         isActivated = true;
@@ -610,6 +667,7 @@ public class HighPassManager : MonoBehaviour
         {
             LogAvailableTargetPrecomputeEnded("completed_fast_no_ball", version, 0, 0);
             availableTargetPrecomputeRoutine = null;
+            isAvailableTargetsReady = true;
             yield break;
         }
 
@@ -1415,12 +1473,7 @@ public class HighPassManager : MonoBehaviour
 
             if (attackerToken != null)
             {
-                if (excludeSetPieceTaker && IsSetPieceTakerExcludedFromHighPassTarget(attackerToken))
-                {
-                    continue;
-                }
-
-                if (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(attackerToken))
+                if (!CanAttackerPrepareHighPassTargetForDecisionPreview(attackerToken, excludeSetPieceTaker))
                 {
                     continue;
                 }
@@ -1437,6 +1490,14 @@ public class HighPassManager : MonoBehaviour
         }
 
         return eligibleAttackers;
+    }
+
+    // Shared with tactical previews; reachability and target occupancy are
+    // checked separately for each landing hex.
+    public bool CanAttackerPrepareHighPassTargetForDecisionPreview(PlayerToken token, bool excludeSetPieceTaker = true)
+    {
+        return token != null && (!excludeSetPieceTaker || !IsSetPieceTakerExcludedFromHighPassTarget(token))
+            && (MatchManager.Instance == null || MatchManager.Instance.CanTokenCollectHangingPass(token));
     }
 
     private bool IsSetPieceTakerExcludedFromHighPassTarget(PlayerToken token)
@@ -1807,7 +1868,7 @@ public class HighPassManager : MonoBehaviour
         string noMoveOption = canDefGKRushWithoutMoving ? " Press [G] to rush without moving." : "";
         Debug.Log($"Defending GK {defGK.name} can rush out to challenge! Press [X] to forfeit, click a highlighted Hex to go and jump with GK.{noMoveOption}");
         isWaitingForDefGKChallengeDecision = true;
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         foreach (HexCell hex in gkReachableHexes)
         {
             hex.HighlightHex("ballPath");
@@ -2049,7 +2110,7 @@ public class HighPassManager : MonoBehaviour
         }
 
         Debug.Log("Attacker HP movement forfeited. Proceeding to Defender HP movement.");
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         selectedToken = null;
         isWaitingForAttackerMove = false;
         isWaitingForAttackerSelection = false;
@@ -2059,7 +2120,7 @@ public class HighPassManager : MonoBehaviour
     private void ForfeitDefenderHighPassMove()
     {
         Debug.Log("Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.");
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         selectedToken = null;
         isWaitingForDefenderMove = false;
         isWaitingForDefenderSelection = false;
@@ -2068,7 +2129,7 @@ public class HighPassManager : MonoBehaviour
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
     {
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         isWaitingForAttackerMove = false;  // Stop waiting for attacker move
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
@@ -2105,12 +2166,12 @@ public class HighPassManager : MonoBehaviour
             return false;
         }
 
-        return HexGridUtils.GetReachableHexes(hexGrid, selectedToken.GetCurrentHex(), DEFENDER_MOVE_RANGE).Item1.Contains(hex);
+        return HexGridUtils.GetReachableHexes(hexGrid, selectedToken.GetCurrentHex(), DefenderMoveRange).Item1.Contains(hex);
     }
 
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         if (selectedToken == hexGrid.GetDefendingGK()) didGKMoveInDefPhase = true;
         PlayerToken movedDefender = selectedToken;
         isWaitingForDefenderMove = false;  // Stop waiting for attacker move
@@ -2134,7 +2195,7 @@ public class HighPassManager : MonoBehaviour
 
     private async Task MoveGKForHP(HexCell hex)
     {
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         Debug.Log($"🧤 {defGK.name} moving to {hex.name}");
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defGK, false));
         Debug.Log($"🧤 {defGK.name} moved to {hex.name}");
@@ -2155,7 +2216,7 @@ public class HighPassManager : MonoBehaviour
             return;
         }
 
-        hexGrid.ClearHighlightedHexes();
+        ClearHighlightsPreservingCommittedTarget();
         Debug.Log($"🧤 {defGK.name} rushes out to challenge the High Pass without moving.");
         ConfirmGKHighPassRush();
     }
@@ -2172,6 +2233,7 @@ public class HighPassManager : MonoBehaviour
 
     public void CleanUpHighPass(bool preserveTargetPrecompute = false)
     {
+        IsDirectGoalKick = false;
         selectedToken = null;
         currentTargetHex = null;
         intendedTargetHex = null;
@@ -2250,7 +2312,10 @@ public class HighPassManager : MonoBehaviour
 
         snapshot.details ??= new Dictionary<string, string>();
         snapshot.relatedTokenKeys ??= new List<string>();
-        snapshot.currentTargetHex = RoomHexCoordinates.FromHex(currentTargetHex);
+        // Available HP shares the root instruction with an active Standard Pass.
+        // Its empty target must not erase the active action's selected target.
+        if (isActivated || string.Equals(snapshot.manager, nameof(HighPassManager), System.StringComparison.Ordinal))
+            snapshot.currentTargetHex = RoomHexCoordinates.FromHex(currentTargetHex);
 
         PlayerToken passer = MatchManager.Instance != null
             ? MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
@@ -2288,7 +2353,7 @@ public class HighPassManager : MonoBehaviour
             && isWaitingForConfirmation
             && MatchManager.Instance != null
             && MatchManager.Instance.difficulty_level < 3
-            && !isAvailableTargetsReady;
+            && !IsAvailableTargetEvaluationComplete;
     }
 
     public bool IsWaitingForAvailableDecisionTargetOptions()
@@ -2296,8 +2361,8 @@ public class HighPassManager : MonoBehaviour
         if (!isAvailable
             || isActivated
             || MatchManager.Instance == null
-            || MatchManager.Instance.difficulty_level != 1
-            || isAvailableTargetsReady)
+            || MatchManager.Instance.difficulty_level >= 3
+            || IsAvailableTargetEvaluationComplete)
         {
             return false;
         }
@@ -2320,6 +2385,15 @@ public class HighPassManager : MonoBehaviour
 
         if (isAvailable && !isActivated)
         {
+            if (MatchManager.Instance != null
+                && MatchManager.Instance.difficulty_level < 3
+                && IsAvailableTargetEvaluationComplete
+                && availableHighPassTargetHexes.Count == 0)
+            {
+                context.AddActionSummary("High Pass unavailable: evaluated target map has no legal targets");
+                return;
+            }
+
             string key = MatchManager.Instance != null && MatchManager.Instance.currentState == MatchManager.GameState.GoalKick
                 ? "K"
                 : "C";
@@ -2362,6 +2436,12 @@ public class HighPassManager : MonoBehaviour
             {
                 context.AddActionSummary("Click the selected orange High Pass target to confirm");
                 AddTargetHexOrToken(context, currentTargetHex, RoomDecisionStep.Confirm);
+                // Difficulty 1/2 uses a two-click target confirmation. Once the
+                // first click has selected a legal target, changing to another
+                // target is not a new tactical decision: it can make an automated
+                // player alternate forever between two near-equal destinations.
+                // Expose only the required confirmation until this target commits.
+                return;
             }
 
             context.AddActionSummary(isGoalkeeperKick
@@ -2555,7 +2635,8 @@ public class HighPassManager : MonoBehaviour
                     RoomActionType.SetupMove,
                     RoomDecisionStep.ChooseTarget,
                     hex,
-                    $"Move to hex {hex.coordinates}");
+                    $"Move to hex {hex.coordinates}",
+                    actor: selectedToken);
             }
         }
     }

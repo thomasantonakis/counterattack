@@ -202,6 +202,7 @@ public class DraftUIManager : MonoBehaviour
         Debug.Log($"Rosters saved to JSON: {filePath}");
 
         // Proceed to the game scene
+        ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
         SceneManager.LoadScene("Room");
     }
 

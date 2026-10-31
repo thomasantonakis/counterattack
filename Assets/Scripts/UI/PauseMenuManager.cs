@@ -49,6 +49,16 @@ public class PauseMenuManager : MonoBehaviour
     public TMP_Dropdown editHomeGKKitDropdown;
     public TMP_Dropdown editAwayGKKitDropdown;
 
+    [Header("Human Shadow Tactical Note UI")]
+    public GameObject tacticalNoteOverlay;
+    public Button addTacticalNoteButton;
+    public TMP_InputField tacticalNoteInput;
+    public TextMeshProUGUI tacticalNoteDecisionText;
+    public TextMeshProUGUI tacticalNoteStatusText;
+    public Button saveTacticalNoteButton;
+    public Button cancelTacticalNoteButton;
+    private readonly System.Collections.Generic.List<int> tacticalNoteDecisionIds = new();
+
     private bool isPaused = false;
     private bool isSaveAvailable = false;
     private string saveUnavailableReason = string.Empty;
@@ -90,14 +100,23 @@ public class PauseMenuManager : MonoBehaviour
         BindEditSettingsUiReferences();
         EnsureEditSettingsUi();
         ConfigureEditSettingsUi();
+        BindTacticalNoteUiReferences();
+        ConfigureTacticalNoteUi();
         EnsureGameplayInputConsumers();
     }
 
     void Update()
     {
+        if (DuelResolutionPanelController.ReservePauseEscape()) return;
         // Toggle the pause menu when the Escape key is pressed
         if (Input.GetKeyUp(KeyCode.Escape))
         {
+            if (tacticalNoteOverlay != null && tacticalNoteOverlay.activeSelf)
+            {
+                CloseTacticalNoteOverlay();
+                return;
+            }
+
             if (editSettingsPanel != null && editSettingsPanel.activeSelf)
             {
                 CloseEditSettingsPanel();
@@ -230,6 +249,43 @@ public class PauseMenuManager : MonoBehaviour
         CaptureLogFile();
     }
 
+    private void OnAddTacticalNoteButtonClicked()
+    {
+        LogUiClick("pause_menu", "add_tactical_note_button", "open_tactical_note");
+        OpenTacticalNoteOverlay();
+    }
+
+    private void OnSaveTacticalNoteButtonClicked()
+    {
+        string note = tacticalNoteInput != null ? tacticalNoteInput.text : string.Empty;
+        bool saved = RoomAIDecisionTraceService.TrySaveTacticalNote(note, tacticalNoteDecisionIds, out string message);
+        LogUiClick(
+            "tactical_note_panel",
+            "save_button",
+            "save_tactical_note",
+            ("saved", saved),
+            ("displayedDecisionNumbers", string.Join(",", tacticalNoteDecisionIds)));
+        ShowTacticalNoteStatus(message, !saved);
+        if (!saved)
+        {
+            return;
+        }
+
+        if (tacticalNoteInput != null)
+        {
+            tacticalNoteInput.text = string.Empty;
+        }
+
+        CloseTacticalNoteOverlay();
+        ResumeGame();
+    }
+
+    private void OnCancelTacticalNoteButtonClicked()
+    {
+        LogUiClick("tactical_note_panel", "cancel_button", "cancel_tactical_note");
+        CloseTacticalNoteOverlay();
+    }
+
     private void OnEditSettingsBackButtonClicked()
     {
         LogUiClick("edit_settings_panel", "back_button", "back_to_pause_menu");
@@ -256,10 +312,15 @@ public class PauseMenuManager : MonoBehaviour
         }
 
         pausePanel.SetActive(true);
+        if (tacticalNoteOverlay != null)
+        {
+            tacticalNoteOverlay.SetActive(false);
+        }
         MatchManager.Instance?.SetPauseMenuOpen(true);
         RefreshSaveButtonAvailability();
         ClearPauseSaveStatus();
         substitutionMenuManager?.RefreshOpenButtonState();
+        RefreshTacticalNoteUi();
         // Debug to confirm visibility
         // Debug.Log($"Pause panel active status: {pausePanel.activeSelf}");
         isPaused = true;
@@ -321,6 +382,11 @@ public class PauseMenuManager : MonoBehaviour
         if (editSettingsPanel != null)
         {
             editSettingsPanel.SetActive(false);
+        }
+
+        if (tacticalNoteOverlay != null)
+        {
+            tacticalNoteOverlay.SetActive(false);
         }
 
         pausePanel.SetActive(false);
@@ -521,12 +587,150 @@ public class PauseMenuManager : MonoBehaviour
         editAwayGKKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditAwayGKKitDropdown");
     }
 
+    private void BindTacticalNoteUiReferences()
+    {
+        addTacticalNoteButton ??= pausePanel != null
+            ? FindChildComponent<Button>(pausePanel.transform, "AddTacticalNoteButton")
+            : null;
+        tacticalNoteOverlay ??= FindChildObject(transform.root, "HumanShadowNotePanel");
+        if (tacticalNoteOverlay == null)
+        {
+            return;
+        }
+
+        Transform panelTransform = tacticalNoteOverlay.transform;
+        tacticalNoteInput ??= FindChildComponent<TMP_InputField>(panelTransform, "TacticalNoteInput");
+        tacticalNoteDecisionText ??= FindChildComponent<TextMeshProUGUI>(panelTransform, "DecisionSummaryText");
+        tacticalNoteStatusText ??= FindChildComponent<TextMeshProUGUI>(panelTransform, "TacticalNoteStatusText");
+        saveTacticalNoteButton ??= FindChildComponent<Button>(panelTransform, "SaveTacticalNoteButton");
+        cancelTacticalNoteButton ??= FindChildComponent<Button>(panelTransform, "CancelTacticalNoteButton");
+    }
+
+    private void ConfigureTacticalNoteUi()
+    {
+        if (addTacticalNoteButton != null)
+        {
+            addTacticalNoteButton.onClick.AddListener(OnAddTacticalNoteButtonClicked);
+        }
+
+        if (saveTacticalNoteButton != null)
+        {
+            saveTacticalNoteButton.onClick.AddListener(OnSaveTacticalNoteButtonClicked);
+        }
+
+        if (cancelTacticalNoteButton != null)
+        {
+            cancelTacticalNoteButton.onClick.AddListener(OnCancelTacticalNoteButtonClicked);
+        }
+
+        if (tacticalNoteOverlay != null)
+        {
+            tacticalNoteOverlay.SetActive(false);
+        }
+    }
+
+    private void OpenTacticalNoteOverlay()
+    {
+        if (tacticalNoteOverlay == null)
+        {
+            Debug.LogWarning("Human Shadow note panel is not present in the Room scene.");
+            return;
+        }
+
+        RefreshTacticalNoteUi();
+        pausePanel.SetActive(false);
+        tacticalNoteOverlay.SetActive(true);
+        if (tacticalNoteInput != null)
+        {
+            tacticalNoteInput.Select();
+            tacticalNoteInput.ActivateInputField();
+        }
+    }
+
+    private void CloseTacticalNoteOverlay()
+    {
+        if (tacticalNoteOverlay != null)
+        {
+            tacticalNoteOverlay.SetActive(false);
+        }
+
+        if (pausePanel != null && isPaused)
+        {
+            pausePanel.SetActive(true);
+        }
+    }
+
+    private void RefreshTacticalNoteUi()
+    {
+        // Fetch on each opening, including actions made since the previous note.
+        var latest = RoomAIDecisionTraceService.GetLatestDecisions(5);
+        tacticalNoteDecisionIds.Clear();
+        var summary = new System.Text.StringBuilder("Latest decisions — reference a number in your note:\n");
+        foreach (var entry in latest)
+        {
+            tacticalNoteDecisionIds.Add(entry.decisionNumber);
+            summary.AppendLine($"#{entry.decisionNumber} · {entry.clockDisplay} · {entry.expectedTeam} · {FormatTacticalNoteAction(entry)}");
+        }
+        if (addTacticalNoteButton != null)
+        {
+            addTacticalNoteButton.interactable = true;
+        }
+
+        if (saveTacticalNoteButton != null)
+        {
+            saveTacticalNoteButton.interactable = true;
+        }
+
+        if (tacticalNoteDecisionText != null)
+        {
+            tacticalNoteDecisionText.text = latest.Count > 0 ? summary.ToString() : "No decisions recorded yet. You can still add a match note.";
+        }
+
+        ShowTacticalNoteStatus(
+            "Identify the decision number(s) and explain your tactical observation.",
+            isError: false);
+    }
+
+    private static string FormatTacticalNoteAction(RoomAIDecisionTraceEntry entry)
+    {
+        string PlayerName(string key)
+        {
+            var player = MatchManager.Instance?.playerTokenManager?.allTokens?.FirstOrDefault(token => token != null
+                && MatchManager.GetStableTokenKey(token) == key);
+            return string.IsNullOrWhiteSpace(player?.playerName) ? key : player.playerName;
+        }
+        if (entry?.dribbleStopHex != null && !string.IsNullOrWhiteSpace(entry.dribbleStopTokenKey)
+            && entry.dribblePaceForfeited >= 0)
+            return $"{PlayerName(entry.dribbleStopTokenKey)} ends at ({entry.dribbleStopHex.x}, {entry.dribbleStopHex.z}); "
+                + $"{entry.dribblePaceForfeited} Pace forfeited"
+                + (entry.dribbleSnapshotDeclined ? "; Snapshot declined" : string.Empty);
+        string action = entry?.selectedAction ?? entry?.humanSelectedAction ?? "Unknown action";
+        action = System.Text.RegularExpressions.Regex.Replace(action,
+            @"\((-?\d+),\s*0,\s*(-?\d+)\)", "($1, $2)");
+        var selected = entry?.alternatives?.FirstOrDefault(candidate => candidate != null && candidate.selected);
+        if (selected?.step != nameof(RoomDecisionStep.ChooseTarget) || string.IsNullOrWhiteSpace(selected.actorTokenKey))
+            return action;
+        return $"{PlayerName(selected.actorTokenKey)}: {action}";
+    }
+
+    private void ShowTacticalNoteStatus(string message, bool isError)
+    {
+        if (tacticalNoteStatusText == null)
+        {
+            return;
+        }
+
+        tacticalNoteStatusText.text = message ?? string.Empty;
+        tacticalNoteStatusText.color = isError ? DangerColor : MutedTextColor;
+    }
+
     private void EnsureGameplayInputConsumers()
     {
         GameplayInputConsumer.Ensure(pausePanel, blocksGameplayWhileActive: true);
         GameplayInputConsumer.Ensure(saveAsOverlay, blocksGameplayWhileActive: true);
         GameplayInputConsumer.Ensure(overwriteConfirmPanel, blocksGameplayWhileActive: true);
         GameplayInputConsumer.Ensure(editSettingsPanel, blocksGameplayWhileActive: true);
+        GameplayInputConsumer.Ensure(tacticalNoteOverlay, blocksGameplayWhileActive: true);
     }
 
     private void ConfigureSaveUi()
