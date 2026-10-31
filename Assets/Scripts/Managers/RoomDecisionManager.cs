@@ -26,7 +26,7 @@ public class RoomDecisionManager : MonoBehaviour
     private bool CanDispatchAutomatedCandidate(RoomActionCandidate candidate)
     {
         var match = MatchManager.Instance;
-        if (match == null || match.IsGameplayInputBlocked || DuelResolutionPanelController.IsHoldingContinuation || match.freeKickManager?.IsResolvingSetup == true
+        if (match == null || match.IsGameplayInputBlocked || DuelResolutionPanelController.IsHoldingContinuation || StoppageActionsPanelController.IsHoldingContinuation || match.freeKickManager?.IsResolvingSetup == true
             || match.movementPhaseManager?.IsResolvingReposition == true
             || IsMovementBlockingDecision(executionInstruction) || match.movementPhaseManager?.goalKeeperManager?.IsResolvingMove == true
             || match.shotManager?.IsMovingSnapshotBlocker == true)
@@ -217,7 +217,7 @@ public class RoomDecisionManager : MonoBehaviour
         bool noDecisionNeeded = false,
         string noDecisionReason = "")
     {
-        if (MatchManager.Instance?.IsGameplayInputBlocked == true || DuelResolutionPanelController.IsHoldingContinuation)
+        if (MatchManager.Instance?.IsGameplayInputBlocked == true || DuelResolutionPanelController.IsHoldingContinuation || StoppageActionsPanelController.IsHoldingContinuation)
         {
             SuspendThinking();
             return;

@@ -288,7 +288,7 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
-        if (DuelResolutionPanelController.IsVisible)
+        if (DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible)
         {
             ClearHover();
             isDragging = false;
@@ -682,7 +682,7 @@ public class GameInputManager : MonoBehaviour
             try
             {
                 data.expectedByHomeTeam = inputTeam;
-                if (!DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
+                if (!StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
             }
             finally
             {
@@ -1117,7 +1117,7 @@ public class GameInputManager : MonoBehaviour
 
     private bool DispatchSyntheticClick(PlayerToken token, HexCell hex, string source)
     {
-        if (DuelResolutionPanelController.IsVisible) return false;
+        if (DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible) return false;
         if (IsGameplayInputBlocked()) return false;
         bool? inputTeam = ResolveInputTeamBeforeDispatch();
         Vector3Int coords = hex != null ? hex.coordinates : default;
@@ -1192,7 +1192,7 @@ public class GameInputManager : MonoBehaviour
         try
         {
             keyData.expectedByHomeTeam = inputTeam;
-            if (!DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
+            if (!StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
         }
         finally
         {

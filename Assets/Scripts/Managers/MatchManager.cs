@@ -1204,6 +1204,8 @@ public class MatchManager : MonoBehaviour
     public bool attackHasPossession; 
     // Singleton instance for easy access
     public static MatchManager Instance;
+    public StoppageActionsPanelController stoppageActionsPanel;
+    private int stoppagePresentationVersion;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
     public GroundBallManager groundBallManager;
@@ -1279,6 +1281,7 @@ public class MatchManager : MonoBehaviour
     private TeamInAttack firstHalfKickoffTeam = TeamInAttack.Home;
     private Action pendingHalfGateContinuation;
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
+    public int CurrentHalf => currentHalf;
     public bool IsPauseMenuOpen => isPauseMenuOpen;
     public bool IsGameplayInputBlocked => isPauseMenuOpen;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
@@ -4003,6 +4006,8 @@ public class MatchManager : MonoBehaviour
 
     private void ResetMatchClockForNewMatch()
     {
+        stoppagePresentationVersion++;
+        stoppageActionsPanel?.Cancel(this);
         currentHalf = 1;
         currentHalfRegulationSeconds = 0f;
         completedActionsThisHalf = 0;
@@ -4083,6 +4088,7 @@ public class MatchManager : MonoBehaviour
             && !isHalfTimeFlowRunning
             && !isPauseMenuOpen
             && !DuelResolutionPanelController.IsMatchClockHeld
+            && !StoppageActionsPanelController.IsMatchClockHeld
             && !IsClockPausedForCurrentState();
     }
 
@@ -4221,6 +4227,17 @@ public class MatchManager : MonoBehaviour
         return IsStandardTwoHalfMatch() && half > StandardNumberOfHalfs;
     }
 
+    public string GetCurrentPeriodLabel()
+    {
+        if (IsExtraTimeHalf(currentHalf))
+        {
+            int extraHalf = currentHalf - StandardNumberOfHalfs;
+            return extraHalf == 1 ? "Extra time — first half" : extraHalf == 2
+                ? "Extra time — second half" : $"Extra time — half {extraHalf}";
+        }
+        return currentHalf == 1 ? "First half" : currentHalf == 2 ? "Second half" : $"Half {currentHalf}";
+    }
+
     private int GetDisplayRegulationSeconds()
     {
         int priorHalfSeconds;
@@ -4345,6 +4362,8 @@ public class MatchManager : MonoBehaviour
 
     private void OnDisable()
     {
+        stoppagePresentationVersion++;
+        stoppageActionsPanel?.Cancel(this);
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
@@ -4357,7 +4376,8 @@ public class MatchManager : MonoBehaviour
     {
         if (keyData.isConsumed) return;
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
-        if (isWaitingForExtraActionsRoll && (keyData.key == KeyCode.R || hasRollOverride))
+        if (isWaitingForExtraActionsRoll && (keyData.key == KeyCode.R || hasRollOverride)
+            && (stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll))
         {
             DetermineExtraActions(hasRollOverride ? (RollInputOverride?)rollOverride : null);
             keyData.Consume(nameof(MatchManager));
@@ -4752,6 +4772,7 @@ public class MatchManager : MonoBehaviour
         if (highPassManager != null) highPassManager.isAvailable = false;
         if (longBallManager != null) longBallManager.isAvailable = false;
         if (shotManager != null) shotManager.isAvailable = false;
+        stoppageActionsPanel?.Begin(this);
         Debug.Log($"Half {currentHalf} regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].");
     }
 
@@ -4781,12 +4802,30 @@ public class MatchManager : MonoBehaviour
 
         Action continuation = pendingHalfGateContinuation;
         pendingHalfGateContinuation = null;
+        // Calculation/logging remain synchronous, including non-UI/scripted callers.
+        // Only a visible stoppage result defers the existing restart callback.
+        if (stoppageActionsPanel != null && stoppageActionsPanel.IsAwaitingRoll)
+        {
+            var presentation = stoppageActionsPanel.ShowResultAndWait(this, diceRoll, refereeLeniency, extraActionsTotal);
+            StartCoroutine(ResumeAfterStoppagePresentation(presentation, stoppagePresentationVersion, continuation));
+            return;
+        }
+        CompleteExtraActionsRoll(continuation);
+    }
+
+    private IEnumerator ResumeAfterStoppagePresentation(IEnumerator presentation, int version, Action continuation)
+    {
+        yield return presentation;
+        if (version == stoppagePresentationVersion) CompleteExtraActionsRoll(continuation);
+    }
+
+    private void CompleteExtraActionsRoll(Action continuation)
+    {
         if (extraActionsRemaining <= 0)
         {
             BeginHalfEndFlow();
             return;
         }
-
         continuation?.Invoke();
     }
 
@@ -6005,6 +6044,8 @@ public class MatchManager : MonoBehaviour
 
         if (snapshot.clock != null)
         {
+            stoppagePresentationVersion++;
+            stoppageActionsPanel?.Cancel(this);
             currentHalf = Mathf.Max(1, snapshot.clock.currentHalf);
             currentHalfRegulationSeconds = Mathf.Max(0f, snapshot.clock.currentHalfRegulationSeconds);
             completedActionsThisHalf = Mathf.Max(0, snapshot.clock.completedActionsThisHalf);

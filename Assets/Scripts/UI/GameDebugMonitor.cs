@@ -219,7 +219,7 @@ public class GameDebugMonitor : MonoBehaviour
         {
             // Preserve the instruction snapshot for deterministic input/AI and logging,
             // while the resolution overlay exclusively presents its active roll prompt.
-            instructionText.text = DuelResolutionPanelController.IsVisible ? string.Empty
+            instructionText.text = DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible ? string.Empty
                 : snapshot != null ? snapshot.instructionText : string.Empty;
             ApplyInstructionPalette(activeInstructionSide, shouldFlashInstruction);
         }
