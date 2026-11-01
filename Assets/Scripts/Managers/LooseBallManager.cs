@@ -32,6 +32,16 @@ public class LooseBallManager : MonoBehaviour
     [Header("Flags")]
     public bool isActivated = false;
     public LooseBallPresentationContext PresentationContext { get; private set; }
+    // Explicit header-deflection presentation owner, independent of gameplay/shot context.
+    private HeaderChallengePanelController headerPresentationOwner;
+    // Routing follows the explicit handoff, including while that presentation is suspended/disabled.
+    // Visibility must never silently opt a header scatter into the shared panel.
+    private bool HasHeaderPresentation => headerPresentationOwner != null;
+    private void ReleaseHeaderPresentation()
+    {
+        headerPresentationOwner?.Cancel(this);
+        headerPresentationOwner = null;
+    }
     public bool isWaitingForDirectionRoll = false;
     public bool isWaitingForDistanceRoll = false;
     public bool isWaitingForInterceptionRoll = false;
@@ -308,11 +318,13 @@ public class LooseBallManager : MonoBehaviour
 
     private IEnumerator MoveLooseBallToHex(HexCell targetHex, LooseBallSourceType sourceType, bool allowGKBoxMove)
     {
+        if (allowGKBoxMove) SuspendHeaderPresentationForGoalkeeper();
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, allowGKBoxMove: allowGKBoxMove));
     }
 
     private IEnumerator MoveLooseBallUntilGKBoxMove(HexCell targetHex)
     {
+        SuspendHeaderPresentationForGoalkeeper();
         if (ball == null)
         {
             Debug.LogError("LooseBallManager cannot move the ball to the defensive GK checkpoint because Ball is not linked.");
@@ -602,6 +614,7 @@ public class LooseBallManager : MonoBehaviour
 
     private void OnDisable()
     {
+        ReleaseHeaderPresentation();
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
     }
@@ -747,7 +760,9 @@ public class LooseBallManager : MonoBehaviour
             sourceHex: ball.GetCurrentHex());
         int roll = diceResult.roll;
         directionRoll = roll - 1;
-        if (PresentationContext == LooseBallPresentationContext.Standalone)
+        if (HasHeaderPresentation)
+            yield return headerPresentationOwner.ResolveScatter(this, diceResult, TranslateRollToDirection(directionRoll), true);
+        else if (PresentationContext == LooseBallPresentationContext.Standalone)
             yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, TranslateRollToDirection(directionRoll), true);
         isWaitingForDirectionRoll = false;
     }
@@ -783,8 +798,11 @@ public class LooseBallManager : MonoBehaviour
                 ["directionIndex"] = directionRoll.ToString()
             });
         distanceRoll = diceResult.roll;
-        if (PresentationContext == LooseBallPresentationContext.Standalone)
+        if (HasHeaderPresentation)
+            yield return headerPresentationOwner.ResolveScatter(this, diceResult, $"{distanceRoll} hexes", false);
+        else if (PresentationContext == LooseBallPresentationContext.Standalone)
             yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, $"{distanceRoll} hexes", false);
+        // The scatter result dismisses before movement/GK input, retaining header history for recovery.
         isWaitingForDistanceRoll = false;
     }
     
@@ -823,8 +841,10 @@ public class LooseBallManager : MonoBehaviour
             });
         interceptionRoll = diceResult.roll;
         // The same handler also serves GK wall/Saving rolls and shot spill recoveries.
-        // Only standalone outfield recoveries adopt this presentation; their rule is unchanged.
-        if (PresentationContext == LooseBallPresentationContext.Standalone
+        // Explicit header owners retain their outfield recoveries; GK/other shot flows remain separate.
+        if (HasHeaderPresentation && potentialInterceptor != null && !potentialInterceptor.IsGoalKeeper)
+            yield return headerPresentationOwner.ResolveRecovery(this, diceResult, CurrentRecoverySucceeds());
+        else if (PresentationContext == LooseBallPresentationContext.Standalone
             && potentialInterceptor != null && !potentialInterceptor.IsGoalKeeper)
         {
             var panel = DuelResolutionPanelController.Instance;
@@ -844,9 +864,11 @@ public class LooseBallManager : MonoBehaviour
     }
 
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove = true,
-        LooseBallPresentationContext presentationContext = LooseBallPresentationContext.Standalone)
+        LooseBallPresentationContext presentationContext = LooseBallPresentationContext.Standalone,
+        HeaderChallengePanelController presentationOwner = null)
     {
         PresentationContext = presentationContext;
+        headerPresentationOwner = sourceType == LooseBallSourceType.HeaderDeflection ? presentationOwner : null;
         isActivated = true;
         causingDeflection = startingToken; // TODO: I think this is redundant
         MatchManager.Instance.ClearPendingLooseBallCollectionReset();
@@ -867,6 +889,7 @@ public class LooseBallManager : MonoBehaviour
             // An explicitly pending scatter handoff must not block the intervening GK
             // movement clicks/keys. Direction/distance open afresh after that decision.
             DuelResolutionPanelController.Instance?.CancelSingle(this);
+            SuspendHeaderPresentationForGoalkeeper();
             Debug.Log($"Loose ball source {startingToken.name} is on the opponent box line. Offering the defending GK free move before loose-ball direction and distance rolls.");
             yield return StartCoroutine(MoveLooseBallUntilGKBoxMove(defenderHex));
             gkBoxMoveOfferedForThisLooseBall = true;
@@ -896,7 +919,9 @@ public class LooseBallManager : MonoBehaviour
         // Step 2: Roll for direction and distance
         // Wait for input to confirm the direction
         isWaitingForDirectionRoll = true;
-        if (PresentationContext == LooseBallPresentationContext.Standalone)
+        ResumeHeaderPresentationAfterGoalkeeper();
+        if (HasHeaderPresentation) headerPresentationOwner.BeginScatter(this, true);
+        else if (PresentationContext == LooseBallPresentationContext.Standalone)
             SingleRollResolutionPresentation.LooseBall(this, () => isWaitingForDirectionRoll,
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, true);
         while (isWaitingForDirectionRoll)
@@ -969,7 +994,8 @@ public class LooseBallManager : MonoBehaviour
         string direction = TranslateRollToDirection(directionRoll);
         Debug.Log($"Rolled Direction: {direction}");
         isWaitingForDistanceRoll = true;
-        if (PresentationContext == LooseBallPresentationContext.Standalone)
+        if (HasHeaderPresentation) headerPresentationOwner.BeginScatter(this, false);
+        else if (PresentationContext == LooseBallPresentationContext.Standalone)
             SingleRollResolutionPresentation.LooseBall(this, () => isWaitingForDistanceRoll,
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, false);
         while (isWaitingForDistanceRoll)
@@ -1090,7 +1116,9 @@ public class LooseBallManager : MonoBehaviour
                     MatchManager.Instance.gameData.gameLog.LogEvent(potentialInterceptor, MatchManager.ActionType.InterceptionAttempt);
 
                     isWaitingForInterceptionRoll = true;
-                    if (PresentationContext == LooseBallPresentationContext.Standalone
+                    if (HasHeaderPresentation && potentialInterceptor != null && !potentialInterceptor.IsGoalKeeper)
+                        headerPresentationOwner.BeginRecovery(this, potentialInterceptor);
+                    else if (PresentationContext == LooseBallPresentationContext.Standalone
                         && potentialInterceptor != null && !potentialInterceptor.IsGoalKeeper)
                         DuelResolutionPanelController.Instance?.BeginLooseBallRecovery(this,
                             () => isWaitingForInterceptionRoll, potentialInterceptor);
@@ -1350,8 +1378,19 @@ public class LooseBallManager : MonoBehaviour
             && movementPhaseManager.movedTokens.Contains(receiver);
     }
 
+    private void SuspendHeaderPresentationForGoalkeeper()
+    {
+        if (HasHeaderPresentation) headerPresentationOwner.SuspendForExternalInput(this);
+    }
+
+    private void ResumeHeaderPresentationAfterGoalkeeper()
+    {
+        headerPresentationOwner?.ResumeAfterExternalInput(this);
+    }
+
     public void EndLooseBallPhase(bool completeDeferredShotResolution = true)
     {
+        ReleaseHeaderPresentation();
         DuelResolutionPanelController.Instance?.ForgetLooseBallPresentation(this);
         if (completeDeferredShotResolution)
         {

@@ -288,9 +288,11 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
-        if (DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible)
+        if (IsDiceRollModalVisible)
         {
-            ClearHover();
+            // Read-only token inspection remains available; selection and gameplay hover stay blocked.
+            HandleMouseHover(previewOnlyForResolution: true);
+            UpdateHoverNameLabel();
             isDragging = false;
             suppressMouseClickUntilReleased = true;
             HandleKeyPresses();
@@ -356,7 +358,15 @@ public class GameInputManager : MonoBehaviour
         return false;
     }
 
-    private static bool IsPointerOverUi()
+    private static bool IsDiceRollModalVisible => HeaderChallengePanelController.IsVisible
+        || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible;
+
+    private static bool IsDiceResolutionUi(GameObject gameObject)
+        => gameObject.GetComponentInParent<HeaderChallengePanelController>() != null
+            || gameObject.GetComponentInParent<DuelResolutionPanelController>() != null
+            || gameObject.GetComponentInParent<StoppageActionsPanelController>() != null;
+
+    private static bool IsPointerOverUi(bool previewOnlyForResolution = false)
     {
         EventSystem eventSystem = EventSystem.current;
         if (eventSystem == null)
@@ -376,6 +386,13 @@ public class GameInputManager : MonoBehaviour
             if (result.gameObject == null || IsHoverNameRaycast(result.gameObject))
             {
                 continue;
+            }
+
+            if (previewOnlyForResolution && IsDiceResolutionUi(result.gameObject))
+            {
+                // Ignore the full-screen click blocker for observation, while respecting the visible panel.
+                if (result.gameObject.name == "InputBlocker") continue;
+                return true;
             }
 
             if (DoesUiRaycastConsumeGameplayInput(result.gameObject))
@@ -470,15 +487,15 @@ public class GameInputManager : MonoBehaviour
         return false;
     }
 
-    private void HandleMouseHover()
+    private void HandleMouseHover(bool previewOnlyForResolution = false)
     {
         // Token cards remain observable while the CPU searches, but gameplay
         // hover handlers must not mutate its target/preview/instruction state.
-        bool previewOnly = IsGameplayInputBlocked() || GameDebugMonitor.Instance?.IsAIThinking == true;
-        bool pointerOverUi = IsPointerOverUi();
+        bool previewOnly = previewOnlyForResolution || IsGameplayInputBlocked() || GameDebugMonitor.Instance?.IsAIThinking == true;
+        bool pointerOverUi = IsPointerOverUi(previewOnlyForResolution);
         bool pointerOverControl = UiRaycastResults.Exists(result => result.gameObject != null
             && result.gameObject.GetComponentInParent<Selectable>()?.isActiveAndEnabled == true);
-        if (pointerOverUi && (!previewOnly || pointerOverControl)) { ClearHover(); return; }
+        if (pointerOverUi && (previewOnlyForResolution || !previewOnly || pointerOverControl)) { ClearHover(); return; }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (!TryRaycastGameplay(ray, out RaycastHit hover))
         {
@@ -652,6 +669,10 @@ public class GameInputManager : MonoBehaviour
         HideHoverNameLabel();
     }
     
+    private bool TryHandleModalCameraPreset(KeyPressData keyData)
+        => IsDiceRollModalVisible && cameraController != null && cameraController.isActiveAndEnabled
+            && cameraController.TryHandlePresetKey(keyData);
+
     private void HandleKeyPresses()
     {
         if (!Input.anyKeyDown) return;
@@ -682,7 +703,7 @@ public class GameInputManager : MonoBehaviour
             try
             {
                 data.expectedByHomeTeam = inputTeam;
-                if (!StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
+                if (!TryHandleModalCameraPreset(data) && !HeaderChallengePanelController.ConsumeKey(data) && !StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
             }
             finally
             {
@@ -1117,7 +1138,7 @@ public class GameInputManager : MonoBehaviour
 
     private bool DispatchSyntheticClick(PlayerToken token, HexCell hex, string source)
     {
-        if (DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible) return false;
+        if (IsDiceRollModalVisible) return false;
         if (IsGameplayInputBlocked()) return false;
         bool? inputTeam = ResolveInputTeamBeforeDispatch();
         Vector3Int coords = hex != null ? hex.coordinates : default;
@@ -1192,7 +1213,7 @@ public class GameInputManager : MonoBehaviour
         try
         {
             keyData.expectedByHomeTeam = inputTeam;
-            if (!StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
+            if (!TryHandleModalCameraPreset(keyData) && !HeaderChallengePanelController.ConsumeKey(keyData) && !StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
         }
         finally
         {

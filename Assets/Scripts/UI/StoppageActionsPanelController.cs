@@ -61,7 +61,7 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
         // Wait for any originating duel/scatter presentation to finish; never replace its contents.
         if (!HasSceneBindings || IsOpen || manager == null || !manager.isActiveAndEnabled
             || manager.gameData?.gameSettings == null || !manager.IsWaitingForExtraActionsRoll
-            || DuelResolutionPanelController.IsVisible) return false;
+            || HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible) return false;
         match = manager;
         string currentMatch = manager.GetEntityId().ToString() + ":" + manager.gameData?.playSessionId;
         if (matchKey != currentMatch) { matchKey = currentMatch; rememberedPosition = false; }

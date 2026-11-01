@@ -102,20 +102,7 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        if (TryGetPresetIndex(keyData.key, out int presetIndex))
-        {
-            if (keyData.shift)
-            {
-                SaveCurrentCameraToPreset(presetIndex);
-            }
-            else
-            {
-                SetCameraToPreset(presetIndex);
-            }
-
-            keyData.Consume(nameof(CameraController));
-            return;
-        }
+        if (TryHandlePresetKey(keyData)) return;
 
         if (IsCameraNavigationKey(keyData.key))
         {
@@ -123,14 +110,27 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // Shared with modal input routing, so camera presets do not reach gameplay subscribers.
+    public bool TryHandlePresetKey(KeyPressData keyData)
+    {
+        if (keyData == null || keyData.isConsumed || keyData.ctrl
+            || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+            || !TryGetPresetIndex(keyData.key, out int presetIndex)) return false;
+
+        if (keyData.shift) SaveCurrentCameraToPreset(presetIndex);
+        else SetCameraToPreset(presetIndex);
+        keyData.Consume(nameof(CameraController));
+        return true;
+    }
+
     private static bool TryGetPresetIndex(KeyCode key, out int presetIndex)
     {
         presetIndex = key switch
         {
-            KeyCode.Alpha1 => 1,
-            KeyCode.Alpha2 => 2,
-            KeyCode.Alpha3 => 3,
-            KeyCode.Alpha4 => 4,
+            KeyCode.Alpha1 or KeyCode.Keypad1 => 1,
+            KeyCode.Alpha2 or KeyCode.Keypad2 => 2,
+            KeyCode.Alpha3 or KeyCode.Keypad3 => 3,
+            KeyCode.Alpha4 or KeyCode.Keypad4 => 4,
             _ => 0
         };
         return presetIndex > 0;

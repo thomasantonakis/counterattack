@@ -79,6 +79,8 @@ public class HeaderManager : MonoBehaviour
     public const int MAX_OUTFIELD_HEADER_DEFENDERS = 2;
     private const int CONTROL_TARGET = 9;
     private int controlPresentationVersion;
+    private int challengePresentationVersion;
+    public HeaderChallengePanelController headerChallengePanel;
 
 
     private void OnEnable()
@@ -90,6 +92,7 @@ public class HeaderManager : MonoBehaviour
 
     private void OnDisable()
     {
+        CancelHeaderChallengePresentation();
         CancelControlPresentation();
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnHover -= OnHoverReceived;
@@ -1153,49 +1156,59 @@ public class HeaderManager : MonoBehaviour
     }
 
     private string BuildHeaderNeededRollInstruction(PlayerToken currentToken, int penalty)
-    {
-        if (currentToken == null || tokenScores.Count == 0)
-        {
-            return "";
-        }
+        => GetHeaderRollGuidance(currentToken);
 
-        int currentAttribute = GetHeaderAttribute(currentToken) + penalty;
-        if (currentToken.isAttacker)
+    // Guidance uses the same stored maxima and best-player selection as resolution.
+    public string GetHeaderRollGuidance(PlayerToken current)
+    {
+        if (current == null) return "";
+        bool attacking = attackerWillJump.Contains(current);
+        var own = GetBestHeaderCandidate(attacking ? attackerWillJump : defenderWillJump, !attacking);
+        var opposing = GetBestHeaderCandidate(attacking ? defenderWillJump : attackerWillJump, attacking);
+        int effective = GetEffectiveHeaderAttribute(current);
+        string side = attacking ? "Attack" : "Defense";
+        var parts = new List<string>();
+        if (own == null && opposing == null) return "Sets the attacking team score.";
+        if (own != null)
         {
-            PlayerToken bestAttacker = GetBestHeaderCandidate(attackerWillJump);
-            if (bestAttacker == null)
+            int score = tokenScores[own].totalScore;
+            if (score == 50)
+                parts.Add(side + " already has JACKPOT; another jackpot matches it without increasing the team score.");
+            else
             {
-                return "";
+                parts.Add(HeaderTargetText(score + 1 - effective, "improves " + side + "’s best score of " + score));
+                int match = score - effective;
+                if (match >= 1 && match <= 6) parts.Add($"Roll {match} matches the team best without increasing it.");
             }
-
-            int neededToLeadAttack = tokenScores[bestAttacker].totalScore + 1 - currentAttribute;
-            return BuildNeededRollText(neededToLeadAttack, "needed to become best attack");
+            if (!attacking && current.IsGoalKeeper && !own.IsGoalKeeper)
+                parts.Add(score == 50 ? "A matching jackpot selects the goalkeeper as best defender; the team score stays JACKPOT."
+                    : $"Matching Defense’s {score} selects the goalkeeper as best defender without increasing the team score.");
+            else parts.Add("An equal teammate score retains the earlier roller as team best.");
         }
-
-        PlayerToken bestAttack = GetBestHeaderCandidate(attackerWillJump);
-        if (bestAttack == null)
+        if (opposing != null)
         {
-            return "";
+            int target = tokenScores[opposing].totalScore;
+            string other = attacking ? "Defense" : "Attack";
+            if (target == 50) parts.Add("Opposing JACKPOT cannot be beaten; a jackpot creates a team tie.");
+            else
+            {
+                if (own != null && tokenScores[own].totalScore > target)
+                    parts.Insert(0, side + " currently leads " + HeaderChallengePanelController.Score(tokenScores[own].totalScore)
+                        + "–" + target + ".");
+                int match = target - effective;
+                if (match >= 1 && match <= 6)
+                    parts.Add($"Roll {match} matches {other}’s {target}" + (own == null || tokenScores[own].totalScore <= target
+                        ? "; the team maxima tie if the team best is not higher." : "; the existing team best remains ahead."));
+                else if (match > 6) parts.Add($"No numeric roll can match {other}’s {target}.");
+                parts.Add(HeaderTargetText(target + 1 - effective, "beats " + other + "’s " + target));
+            }
         }
-
-        int neededToWin = tokenScores[bestAttack].totalScore - currentAttribute;
-        return BuildNeededRollText(neededToWin, "needed to win");
+        return string.Join(" ", parts);
     }
 
-    private string BuildNeededRollText(int neededRoll, string suffix)
-    {
-        if (neededRoll <= 1)
-        {
-            return $"1+ is {suffix}";
-        }
-
-        if (neededRoll <= 6)
-        {
-            return $"{neededRoll}+ is {suffix}";
-        }
-
-        return "Jackpot is needed to win";
-    }
+    private static string HeaderTargetText(int minimum, string effect)
+        => minimum > 6 ? "Only JACKPOT " + effect + "."
+            : $"Roll {Mathf.Max(1, minimum)}+ {effect}.";
 
     private string GetTokenSortName(PlayerToken token)
     {
@@ -1203,7 +1216,7 @@ public class HeaderManager : MonoBehaviour
         return string.IsNullOrWhiteSpace(token.playerName) ? token.name : token.playerName;
     }
 
-    private int GetHeaderAttribute(PlayerToken token)
+    public int GetHeaderAttribute(PlayerToken token)
     {
         if (token == null) return 0;
         return token.IsGoalKeeper ? token.aerial : token.heading;
@@ -1215,7 +1228,7 @@ public class HeaderManager : MonoBehaviour
         return GetHeaderAttribute(token) + GetHeaderPenalty(token);
     }
 
-    private int GetHeaderPenalty(PlayerToken token)
+    public int GetHeaderPenalty(PlayerToken token)
     {
         if (token == null) return 0;
         HexCell ballHex = ball.GetCurrentHex();
@@ -1309,7 +1322,7 @@ public class HeaderManager : MonoBehaviour
             .ToList();
     }
 
-    private PlayerToken GetBestHeaderCandidate(List<PlayerToken> orderedTokens, bool preferGoalkeeperOnTie = false)
+    public PlayerToken GetBestHeaderCandidate(List<PlayerToken> orderedTokens, bool preferGoalkeeperOnTie = false)
     {
         if (orderedTokens == null || orderedTokens.Count == 0) return null;
 
@@ -1371,12 +1384,16 @@ public class HeaderManager : MonoBehaviour
             yield break;
         }
 
+        int presentationVersion = challengePresentationVersion;
+        headerChallengePanel?.Begin(this);
         Debug.Log("Header at goal is already declared. Defense is not challenging, so rolling nominated attackers for the headed shot.");
         foreach (PlayerToken attacker in attackerWillJump)
         {
             tokenRolling = attacker;
             isWaitingForHeaderRoll = true;
-            while (isWaitingForHeaderRoll) yield return null;
+            headerChallengePanel?.Refresh();
+            while (isWaitingForHeaderRoll && presentationVersion == challengePresentationVersion) yield return null;
+            if (presentationVersion != challengePresentationVersion) yield break;
         }
 
         PlayerToken bestAttacker = GetBestHeaderCandidate(attackerWillJump);
@@ -1398,6 +1415,11 @@ public class HeaderManager : MonoBehaviour
         MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt, shotType: "header");
         LogExpectedHeaderGoal(bestAttacker, requireNaturalRollAboveOne: true, includeGoalkeeperSave: true);
 
+        if (headerChallengePanel != null)
+            yield return headerChallengePanel.Finish(this, bestAttacker,
+                bestAttackerRoll > 1 ? "Unchallenged header at goal · On target · Goalkeeper resolution follows"
+                    : "Unchallenged header at goal · Off target", false);
+        if (presentationVersion != challengePresentationVersion) yield break;
         if (bestAttackerRoll > 1)
         {
             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOnTarget);
@@ -1541,6 +1563,7 @@ public class HeaderManager : MonoBehaviour
 
     public IEnumerator ResolveHeaderChallenge()
     {
+        int presentationVersion = challengePresentationVersion;
         attackerWillJump = GetOrderedHeaderTokens(attackerWillJump, false);
         defenderWillJump = GetOrderedHeaderTokens(defenderWillJump, true);
         // If both lists are empty, do nothing
@@ -1614,6 +1637,7 @@ public class HeaderManager : MonoBehaviour
         if (attackerWillJump.Count > 0 && defenderWillJump.Count > 0)
         {
             // Both attackers and defenders are jumping
+            headerChallengePanel?.Begin(this);
             Debug.Log("Header challenge started. Rolling for attackers and defenders.");
             // Dictionary<PlayerToken, (int roll, int totalScore)> tokenScores = new Dictionary<PlayerToken, (int, int)>();
             // Get the ball's current hex and its neighbors
@@ -1624,14 +1648,18 @@ public class HeaderManager : MonoBehaviour
             {
                 tokenRolling = attacker;
                 isWaitingForHeaderRoll = true;
-                while (isWaitingForHeaderRoll) yield return null;
+                headerChallengePanel?.Refresh();
+                while (isWaitingForHeaderRoll && presentationVersion == challengePresentationVersion) yield return null;
+                if (presentationVersion != challengePresentationVersion) yield break;
             }
             // Roll for defenders
             foreach (PlayerToken defender in defenderWillJump)
             {
                 isWaitingForHeaderRoll = true;
                 tokenRolling = defender;
-                while (isWaitingForHeaderRoll) yield return null;
+                headerChallengePanel?.Refresh();
+                while (isWaitingForHeaderRoll && presentationVersion == challengePresentationVersion) yield return null;
+                if (presentationVersion != challengePresentationVersion) yield break;
             }
             
             PlayerToken bestAttacker = GetBestHeaderCandidate(attackerWillJump);
@@ -1659,6 +1687,12 @@ public class HeaderManager : MonoBehaviour
                     yield break;
                 }
 
+                if (headerChallengePanel != null)
+                    yield return headerChallengePanel.Finish(this, bestAttacker, headerAtGoalDeclared
+                        ? (bestAttackerRoll > 1 ? "Attack wins aerial contest · On-target header · Shot continuation follows"
+                            : "Attack wins aerial contest · Header off target")
+                        : "Attack wins · Headed pass follows", false);
+                if (presentationVersion != challengePresentationVersion) yield break;
                 MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestDefender);
                 LogExpectedHeaderRecoveriesForDefenders();
@@ -1714,6 +1748,10 @@ public class HeaderManager : MonoBehaviour
             {
                 // TODO: if headerAtGoalDeclared log a header at goal?
                 challengeWinner = bestDefender;
+                if (headerChallengePanel != null)
+                    yield return headerChallengePanel.Finish(this, bestDefender, bestDefender.IsGoalKeeper
+                        ? "Goalkeeper wins · Save and hold follows" : "Defense wins · Possession changes · Headed pass follows", false);
+                if (presentationVersion != challengePresentationVersion) yield break;
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestAttacker);
                 LogExpectedHeaderRecoveriesForDefenders();
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.BallRecovery, recoveryType: "header", connectedToken: bestAttacker);
@@ -1740,6 +1778,14 @@ public class HeaderManager : MonoBehaviour
             }
             else if (bestDefenderScore == bestAttackerScore)
             {
+                // Capture before cleanup clears the declaration; presentation never infers shot context.
+                bool shotTie = headerAtGoalDeclared;
+                var context = shotTie ? LooseBallPresentationContext.ShotResolution : LooseBallPresentationContext.Standalone;
+                if (headerChallengePanel != null)
+                    yield return headerChallengePanel.Finish(this, null, "TEAM TIE · Loose ball from "
+                        + HeaderChallengePanelController.PlayerName(bestDefender), true);
+                if (presentationVersion != challengePresentationVersion) yield break;
+                headerChallengePanel?.TransferScatter(this, looseBallManager);
                 if (headerAtGoalDeclared)
                 {
                     MatchManager.Instance.SetLastToken(bestAttacker);
@@ -1753,7 +1799,7 @@ public class HeaderManager : MonoBehaviour
                 }
                 MatchManager.Instance.SetHangingPass("aerial");
                 // MatchManager.Instance.gameData.gameLog.LogEvent(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, MatchManager.ActionType.AerialPassCompleted);
-                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection, allowGKBoxMove: !headerAtGoalDeclared, presentationContext: headerAtGoalDeclared ? LooseBallPresentationContext.ShotResolution : LooseBallPresentationContext.Standalone));
+                StartCoroutine(looseBallManager.ResolveLooseBall(bestDefender, LooseBallSourceType.HeaderDeflection, allowGKBoxMove: !shotTie, presentationContext: context, presentationOwner: headerChallengePanel));
                 Debug.Log("Loose ball from header challenge.");
                 CleanUpHeader();
             }
@@ -1799,6 +1845,7 @@ public class HeaderManager : MonoBehaviour
         tokenScores[tokenRolling] = (roll, totalScore);
         if (isJackpot) Debug.Log($"{attordef} {tokenRolling.name} rolled A JACKPOT!!");
         else Debug.Log($"{attordef} {tokenRolling.name} rolled {roll} + {attributelabel}: {attribute}{penaltyInfo}= {totalScore}");
+        headerChallengePanel?.Refresh();
         isWaitingForHeaderRoll = false; // Proceed to the next token
     }
     
@@ -2338,8 +2385,16 @@ public class HeaderManager : MonoBehaviour
         if (!preserveControlScatter) DuelResolutionPanelController.Instance?.CancelSingle(this);
     }
 
+    private void CancelHeaderChallengePresentation()
+    {
+        challengePresentationVersion++;
+        isWaitingForHeaderRoll = false;
+        headerChallengePanel?.Cancel(this);
+    }
+
     public void CleanUpHeader(bool preserveControlScatter = false)
     {
+        CancelHeaderChallengePresentation();
         CancelControlPresentation(preserveControlScatter);
         attEligibleToHead.Clear();
         defEligibleToHead.Clear();
@@ -2369,6 +2424,7 @@ public class HeaderManager : MonoBehaviour
     
     public void ResetHeader()
     {
+        CancelHeaderChallengePresentation();
         CancelControlPresentation();
         attEligibleToHead.Clear();
         defEligibleToHead.Clear();

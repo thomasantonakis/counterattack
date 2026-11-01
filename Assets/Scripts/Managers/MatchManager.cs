@@ -4087,6 +4087,7 @@ public class MatchManager : MonoBehaviour
             && !isMatchComplete
             && !isHalfTimeFlowRunning
             && !isPauseMenuOpen
+            && !HeaderChallengePanelController.IsMatchClockHeld
             && !DuelResolutionPanelController.IsMatchClockHeld
             && !StoppageActionsPanelController.IsMatchClockHeld
             && !IsClockPausedForCurrentState();
