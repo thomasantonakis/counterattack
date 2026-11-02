@@ -296,9 +296,10 @@ public class LooseBallManager : MonoBehaviour
         };
     }
 
-    private bool IsTokenUnavailableForLooseBall(PlayerToken token)
+    private bool IsTokenUnavailableForLooseBall(PlayerToken token, HashSet<PlayerToken> headerShotJumpers = null)
     {
         return token == null
+            || (headerShotJumpers != null && headerShotJumpers.Contains(token))
             || (MatchManager.Instance != null && !MatchManager.Instance.CanTokenCollectHangingPass(token))
             || movementPhaseManager.stunnedTokens.Contains(token)
             || movementPhaseManager.stunnedforNext.Contains(token)
@@ -885,8 +886,13 @@ public class LooseBallManager : MonoBehaviour
 
     public IEnumerator ResolveLooseBall(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove = true,
         LooseBallPresentationContext presentationContext = LooseBallPresentationContext.Standalone,
-        HeaderChallengePanelController presentationOwner = null)
+        HeaderChallengePanelController presentationOwner = null, bool isHeaderShotContinuation = false)
     {
+        // Keep the aerial participants unavailable throughout this save/spill continuation,
+        // even if another phase clears the HeaderManager's nomination lists.
+        HashSet<PlayerToken> headerShotJumpers = isHeaderShotContinuation
+            ? new HashSet<PlayerToken>(headerManager.attackerWillJump.Concat(headerManager.defenderWillJump))
+            : null;
         PresentationContext = presentationContext;
         headerPresentationOwner = sourceType == LooseBallSourceType.HeaderDeflection ? presentationOwner : null;
         isActivated = true;
@@ -1072,18 +1078,21 @@ public class LooseBallManager : MonoBehaviour
             PlayerToken tokenOnHex = hex.GetOccupyingToken();
             if (tokenOnHex != null)
             {
-                if (tokenOnHex.isAttacker
+                // A jumper cannot collect this rebound, including for offside purposes.
+                bool isHeaderShotJumper = headerShotJumpers != null && headerShotJumpers.Contains(tokenOnHex);
+                if (!isHeaderShotJumper && tokenOnHex.isAttacker
                     && MatchManager.Instance.TryHandleOffsideCollection(tokenOnHex, ResolveOffsideLooseBallSource(sourceType), hex))
                 {
                     EndLooseBallPhase(completeDeferredShotResolution: false);
                     yield break;
                 }
 
-                if (IsTokenUnavailableForLooseBall(tokenOnHex))
+                if (IsTokenUnavailableForLooseBall(tokenOnHex, headerShotJumpers))
                 {
-                    if (ShouldExtendPastJumpedToken(sourceType) && i == path.Count - 1)
+                    bool extendLanding = ShouldExtendPastJumpedToken(sourceType) || isHeaderShotJumper;
+                    if (extendLanding && i == path.Count - 1)
                     {
-                        Debug.Log("Moving a Hex further, as ball (after a header LB) landed on a jumped token.");
+                        Debug.Log("Extending loose ball path because the landing token is unavailable after a header.");
                         HexCell additionalHex = CalculateDirectionalTarget(hex, directionRoll, 1);
                         if (additionalHex == null)
                         {
@@ -1128,7 +1137,7 @@ public class LooseBallManager : MonoBehaviour
                     (potentialInterceptor != startingToken || distanceRoll == 1) && // the deflector can react only on a one-hex loose ball
                     potentialInterceptor != closestToken && // not the one who is the fallback hit
                     !potentialInterceptor.isAttacker && // exclude all attackers
-                    !IsTokenUnavailableForLooseBall(potentialInterceptor) &&
+                    !IsTokenUnavailableForLooseBall(potentialInterceptor, headerShotJumpers) &&
                     !defendersTriedToIntercept.Contains(potentialInterceptor)) // Ensure the defender hasn't already tried
                 {
                     Debug.Log($"{potentialInterceptor.name} is attempting to intercept the ball near {hexround2.coordinates}...");

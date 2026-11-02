@@ -2221,7 +2221,7 @@ public class ShotManager : MonoBehaviour
             MatchManager.Instance.SetHangingPass("shot");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex, allowGKBoxMove: false));
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
-            await helperFunctions.StartCoroutineAndWait(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution));
+            await helperFunctions.StartCoroutineAndWait(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution, isHeaderShotContinuation: true));
             ResetShotProcess();
         }
         else if (totalSavingPower > headerAttackerTotalScore)
@@ -4364,7 +4364,7 @@ public class ShotManager : MonoBehaviour
         {
             Debug.Log($"{gkToken.name} rolled {gkRoll} and can't hold it!");
             DeferShotActionResolutionUntilExternalRestart();
-            yield return StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GoalkeeperHandlingSpill, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution));
+            yield return StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GoalkeeperHandlingSpill, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution, isHeaderShotContinuation: isHeaderAtGoal));
         }
         ResetShotProcess();
     }

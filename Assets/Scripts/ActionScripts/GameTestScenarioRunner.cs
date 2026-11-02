@@ -785,6 +785,16 @@ public class GameTestScenarioRunner : MonoBehaviour
                 () => Scenario_038_HeaderAtGoal_Branch(capturedBranch)));
             branchIndex++;
         }
+
+        foreach (bool handlingSpill in new[] { false, true })
+        foreach (int occupiedLandingHexes in new[] { 0, 1, 2 })
+        {
+            bool spill = handlingSpill;
+            int occupied = occupiedLandingHexes;
+            scenarios.Add(new ScenarioDefinition(
+                $"Scenario_038_Jumpers_{(spill ? "HandlingSpill" : "TiedSave")}_{occupied}",
+                () => Scenario_038_HeaderSave_Jumpers(spill, occupied)));
+        }
     }
 
     private void AddThrowInAuditScenarios(List<ScenarioDefinition> scenarios)
@@ -20157,6 +20167,71 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(headerManager.defenderWillJump.Last() == kuzmic, "Defending GK should remain last in the defender challenge list.", kuzmic, headerManager.defenderWillJump.Last());
 
         LogFooterofTest("Header Roll Order Attackers First Defenders GK Last");
+    }
+
+    private IEnumerator Scenario_038_HeaderSave_Jumpers(bool handlingSpill, int occupiedLandingHexes)
+    {
+        // Start at the four-player challenge -> headed-shot handoff; exercise the real
+        // goalkeeper Saving/Handling branches rather than calling ResolveLooseBall directly.
+        yield return StartCoroutine(PrepareDirectHeaderAuditState());
+        ConfigureRightBoxGkWallAuditState();
+        PlayerToken attacker = RequirePlayerToken("Yaneva");
+        PlayerToken secondAttacker = RequirePlayerToken("Kalla");
+        PlayerToken defender = RequirePlayerToken("Soares");
+        PlayerToken secondDefender = RequirePlayerToken("Gilbert");
+        PlayerToken goalkeeper = RequirePlayerToken("Kuzmic");
+        HexCell origin = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(13, 0, 1)), "Header origin should exist.");
+        HexCell keeperHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16, 0, 0)), "Header save hex should exist.");
+        HexCell target = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(19, 0, -2)), "Header goal target should exist.");
+        const int direction = 1; // Sheet roll 2: SW, an in-play goalkeeper spill direction.
+        const int rolledDistance = 3;
+        List<HexCell> scatterPath = Enumerable.Range(1, rolledDistance + 2)
+            .Select(distance => RequireHex(looseBallManager.CalculateDirectionalTarget(keeperHex, direction, distance),
+                "Jumper regression scatter path should exist.")).ToList();
+        HexCell adjacent = scatterPath[rolledDistance - 1].GetNeighbors(hexgrid)
+            .First(hex => hex != null && !hex.isOutOfBounds && !scatterPath.Contains(hex) && hex != origin);
+        HexCell spare = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, 5)), "Spare jumper hex should exist.");
+        MoveTokensAwayFromOutsideBoxShotHexes(scatterPath.Concat(new[] { origin, keeperHex, target, adjacent, spare }));
+        PlaceTokenForScenario(attacker, origin, true);
+        PlaceTokenForScenario(secondAttacker, occupiedLandingHexes == 2 ? scatterPath[rolledDistance] : spare, true);
+        PlaceTokenForScenario(defender, occupiedLandingHexes > 0 ? scatterPath[rolledDistance - 1] : adjacent, false);
+        HexCell otherDefenderHex = RequireHex(hexgrid.GetHexCellAt(new Vector3Int(10, 0, -5)), "Other jumper hex should exist.");
+        MoveTokensAwayFromOutsideBoxShotHexes(new[] { otherDefenderHex }, attacker, secondAttacker, defender);
+        PlaceTokenForScenario(secondDefender, otherDefenderHex, false);
+        PlaceTokenForScenario(goalkeeper, keeperHex, false);
+        headerManager.attackerWillJump.AddRange(new[] { attacker, secondAttacker });
+        headerManager.defenderWillJump.AddRange(new[] { defender, secondDefender });
+        goalkeeper.saving = handlingSpill ? 6 : 4;
+        goalkeeper.handling = 1;
+        headerManager.ball.PlaceAtCell(origin);
+        MatchManager.Instance.SetLastToken(attacker);
+        MatchManager.Instance.SetHangingPass("shot");
+        MatchManager.Instance.attackHasPossession = true;
+        shotManager.ProcessHeaderAtGoal(attacker, 10, target, attackerHeaderRoll: 6);
+        headerManager.CleanUpHeader();
+        AssertTrue(headerManager.attackerWillJump.Count + headerManager.defenderWillJump.Count == 4,
+            "All four jumpers must survive the headed-shot handoff.");
+        yield return StartCoroutine(PerformHeaderAtGoalGkSave(6));
+        if (handlingSpill) yield return StartCoroutine(PerformHeaderAtGoalHandling(6));
+        AssertTrue(goalkeeper.GetCurrentHex() == keeperHex, "The regression should scatter from the expected SaveHex.");
+        yield return StartCoroutine(PerformRiggedLooseDirectionRoll(direction + 1));
+        yield return StartCoroutine(PerformRiggedLooseDistanceRoll(rolledDistance));
+
+        float elapsed = 0f;
+        while (looseBallManager.isActivated && elapsed < 10f)
+        {
+            AssertTrue(!looseBallManager.isWaitingForInterceptionRoll,
+                "Jumpers must not receive recovery rolls; other tokens are outside the scatter corridor.");
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        AssertTrue(!looseBallManager.isActivated, "The goalkeeper loose ball should finish without a jumper recovery roll.");
+        HexCell expected = scatterPath[rolledDistance + occupiedLandingHexes - 1];
+        AssertTrue(headerManager.ball.GetCurrentHex() == expected,
+            "The ball must extend past every jumped occupant, but not past an adjacent jumper.",
+            expected, headerManager.ball.GetCurrentHex());
+        AssertTrue(expected.GetOccupyingToken() == null, "The ball must finish on an unoccupied hex.");
+        LogFooterofTest($"Header save jumpers: spill={handlingSpill}, occupied landing hexes={occupiedLandingHexes}");
     }
 
     private IEnumerator Scenario_038_HeaderAtGoal_Branch(HeaderAtGoalBranchDefinition branch)
