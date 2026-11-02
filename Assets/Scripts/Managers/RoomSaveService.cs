@@ -221,6 +221,8 @@ public static class RoomSaveService
             root["gameLog"] = JObject.FromObject(new RoomGameLogJson { entries = snapshot.gameLog ?? new List<string>() });
             root["events"] = JToken.FromObject(gameData.events);
             root["runtimeSnapshot"] = JToken.FromObject(snapshot);
+            root["openingSetup"] = gameData.openingSetup != null
+                ? JToken.FromObject(gameData.openingSetup) : JValue.CreateNull();
 
             string retainedActivePath = WriteManualSave(root, filePath, activePath);
             ApplicationManager.Instance.SetActiveSaveFilePath(retainedActivePath);

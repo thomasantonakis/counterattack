@@ -98,6 +98,8 @@ public class PlayerTokenManager : MonoBehaviour
     {
         // Wait until the HexGrid has finished creating cells
         yield return new WaitUntil(() => hexgrid != null && hexgrid.IsGridInitialized());  // Check if grid is ready
+        yield return new WaitUntil(() => MatchManager.Instance?.gameData?.rosters?.home?.Count > 10
+            && MatchManager.Instance.gameData.rosters.away?.Count > 10);
 
         // Now proceed to instantiate teams
         ResolveInitialTeamPositions(out Vector3Int[] homePositions, out Vector3Int[] awayPositions);
@@ -118,11 +120,12 @@ public class PlayerTokenManager : MonoBehaviour
             return;
         }
 
-        homePositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection.LeftToRight);
-        awayPositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(MatchManager.TeamAttackingDirection.RightToLeft);
-        Debug.Log(regularFormationRequested
-            ? "Using regular kickoff formations supplied by the Create/Load Game flow. Home starts on the left attacking right; Away starts on the right attacking left."
-            : "Using regular kickoff formations for a player build. Home starts on the left attacking right; Away starts on the right attacking left.");
+        var opening = MatchManager.Instance.gameData.openingSetup;
+        var homeDirection = opening?.DirectionFor(true) ?? MatchManager.TeamAttackingDirection.LeftToRight;
+        var awayDirection = opening?.DirectionFor(false) ?? MatchManager.TeamAttackingDirection.RightToLeft;
+        homePositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(homeDirection);
+        awayPositions = GoalFlowManager.GetResetFormationCoordinatesForDirection(awayDirection);
+        Debug.Log($"Using regular kickoff formations. Home attacks {homeDirection}; Away attacks {awayDirection}.");
     }
 
     private void InstantiateTeams(Vector3Int[] home, Vector3Int[] away)
@@ -142,18 +145,21 @@ public class PlayerTokenManager : MonoBehaviour
         GameObject tokenBasePrefab = GetTokenBasePrefab();
         List<HexCell> homeTeamHexes = new List<HexCell>();
         List<HexCell> awayTeamHexes = new List<HexCell>();
+        bool homeAttacks = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
         foreach (Vector3Int vector in home)
         {
             HexCell hex = hexgrid.GetHexCellAt(vector); 
-            hex.isAttackOccupied = true;  // Mark as defender
-            hex.HighlightHex("isAttackOccupied");
+            hex.isAttackOccupied = homeAttacks;
+            hex.isDefenseOccupied = !homeAttacks;
+            hex.HighlightHex(homeAttacks ? "isAttackOccupied" : "isDefenseOccupied");
             homeTeamHexes.Add(hex);
         } 
         foreach (Vector3Int vector in away)
         {
             HexCell hex = hexgrid.GetHexCellAt(vector); 
-            hex.isDefenseOccupied = true;  // Mark as defender
-            hex.HighlightHex("isDefenseOccupied");
+            hex.isAttackOccupied = !homeAttacks;
+            hex.isDefenseOccupied = homeAttacks;
+            hex.HighlightHex(homeAttacks ? "isDefenseOccupied" : "isAttackOccupied");
             awayTeamHexes.Add(hex);
         } 
         MatchManager.Instance?.BeginGameplayEventLoggingSuppression();

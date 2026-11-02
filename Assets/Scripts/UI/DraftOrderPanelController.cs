@@ -1,17 +1,18 @@
 using TMPro;
 using UnityEngine;
 
-/// <summary>Scene-authored regular-draft roll-off. Dice animation never consumes gameplay randomness.</summary>
+/// <summary>Scene-authored first-pick and coin-toss roll-offs. Animation never consumes gameplay randomness.</summary>
 public sealed class DraftOrderPanelController : MonoBehaviour
 {
     public GameObject visuals;
     public RectTransform panel;
     public TMP_Text title, homeTeam, awayTeam, homeResult, awayResult, outcome, footer;
     public DuelDieView homeDie, awayDie;
-    private enum Stage { Closed, Home, Away, Result }
+    private enum Stage { Closed, Home, Away, Result, Choice }
     private Stage stage;
     private int homeScore, awayScore;
     private float resultUntil;
+    private bool coinToss;
     public bool IsOpen => stage != Stage.Closed;
     public bool? HomeWon { get; private set; }
     public bool IsAwaitingHomeRoll => stage == Stage.Home;
@@ -35,11 +36,12 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         return string.IsNullOrWhiteSpace(name) ? (home ? "Home" : "Away") : name;
     }
 
-    public bool Open(GameSettings settings)
+    public bool Open(GameSettings settings, bool forCoinToss = false)
     {
         if (!HasSceneBindings || settings == null || IsOpen) return false;
         HomeWon = null;
-        title.text = "ROLL FOR FIRST DRAFT PICK";
+        coinToss = forCoinToss;
+        title.text = coinToss ? "COIN TOSS FLIP" : "ROLL FOR FIRST DRAFT PICK";
         homeTeam.text = TeamName(settings, true);
         awayTeam.text = TeamName(settings, false);
         var home = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(settings.homeKit));
@@ -59,7 +61,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         homeScore = awayScore = 0;
         homeResult.text = "";
         awayResult.text = "Waiting for roll";
-        outcome.text = "Highest roll drafts first";
+        outcome.text = coinToss ? "Highest roll chooses kickoff or direction" : "Highest roll drafts first";
         homeDie.Begin(false);
         awayDie.Clear();
         stage = Stage.Home;
@@ -99,10 +101,11 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         awayDie.Resolve(roll, false);
         awayResult.text = result;
         outcome.text = homeScore == awayScore ? "TIE · Both managers roll again"
-            : $"{(homeScore > awayScore ? homeTeam.text : awayTeam.text)} drafts first";
+            : $"{(homeScore > awayScore ? homeTeam.text : awayTeam.text)} {(coinToss ? "wins the coin toss" : "drafts first")}";
         resultUntil = Time.unscaledTime + 2f;
         stage = Stage.Result;
-        footer.text = homeScore == awayScore ? "New rolls in 2 seconds" : "Draft begins in 2 seconds";
+        footer.text = homeScore == awayScore ? "New rolls in 2 seconds"
+            : coinToss ? "Choices open in 2 seconds" : "Draft begins in 2 seconds";
     }
 
     public void AdvanceResult(float unscaledTime)
@@ -110,6 +113,12 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         if (stage != Stage.Result || unscaledTime < resultUntil) return;
         if (homeScore == awayScore) { BeginRound(); return; }
         HomeWon = homeScore > awayScore;
+        if (coinToss) { stage = Stage.Choice; return; }
+        Close();
+    }
+
+    public void Close()
+    {
         stage = Stage.Closed;
         visuals.SetActive(false);
     }
@@ -135,6 +144,6 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     {
         if (panel == null || panel.parent is not RectTransform bounds) return;
         panel.localScale = Vector3.one * Mathf.Max(.001f,
-            Mathf.Min(1f, bounds.rect.width * .65f / 1440f, bounds.rect.height * .9f / 720f));
+            Mathf.Min(1f, bounds.rect.width * .65f / panel.sizeDelta.x, bounds.rect.height * .9f / panel.sizeDelta.y));
     }
 }

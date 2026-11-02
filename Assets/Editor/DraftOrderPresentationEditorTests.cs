@@ -139,7 +139,7 @@ public sealed class DraftOrderPresentationEditorTests
     }
 
     [Test]
-    public void SavedRegularDraftBindsPanelAndFreeDraftDoesNotContainIt()
+    public void SavedRegularDraftBindsFirstPickPanelAndFreeDraftHasOnlyCoinToss()
     {
         var regular = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Draft.unity");
         try
@@ -156,7 +156,9 @@ public sealed class DraftOrderPresentationEditorTests
         var free = EditorSceneManager.OpenPreviewScene("Assets/Scenes/FreeDraft.unity");
         try
         {
-            Assert.That(free.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<DraftOrderPanelController>(true)), Is.Empty);
+            var panels = free.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<DraftOrderPanelController>(true)).ToArray();
+            Assert.That(panels.Length, Is.EqualTo(1));
+            Assert.That(panels[0].GetComponent<CoinTossPanelController>(), Is.Not.Null);
         }
         finally { EditorSceneManager.ClosePreviewScene(free); }
     }

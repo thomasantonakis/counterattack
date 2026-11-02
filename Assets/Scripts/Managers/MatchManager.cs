@@ -117,6 +117,7 @@ public class MatchManager : MonoBehaviour
         public Stats stats;
         public GameLog gameLog;
         public RoomRuntimeSnapshot runtimeSnapshot;
+        public MatchOpeningSetup openingSetup;
         public int eventLogSchemaVersion;
         public List<GameplayEvent> events;
 
@@ -3801,6 +3802,13 @@ public class MatchManager : MonoBehaviour
         RoomAIDecisionTraceService.ResetSession();
         RoomLiveLogService.ResetSession();
         LoadGameSettingsFromJson();
+        // Resolve fresh-match possession before PlayerTokenManager creates its tokens.
+        var opening = gameData?.openingSetup;
+        teamInAttack = opening?.KickoffTeam ?? TeamInAttack.Home;
+        if (opening != null) attackHasPossession = true;
+        firstHalfKickoffTeam = teamInAttack;
+        homeTeamDirection = opening?.DirectionFor(true) ?? TeamAttackingDirection.LeftToRight;
+        awayTeamDirection = opening?.DirectionFor(false) ?? TeamAttackingDirection.RightToLeft;
         yield return new WaitUntil(() => gameData != null && gameData.rosters != null && gameData.rosters.home.Count > 10 && gameData.rosters.away.Count > 10);
         if (gameData != null && gameData.gameSettings != null)
         {
@@ -3858,18 +3866,13 @@ public class MatchManager : MonoBehaviour
         // Initialize the match in the KickOffSetup state
         currentState = GameState.KickOffSetup;
         Debug.Log("Game initialized in KickOffSetup state.");
-        // Initialize the attacking team and direction
-        teamInAttack = TeamInAttack.Home;  // Home team starts with the ball
-        firstHalfKickoffTeam = teamInAttack;
-        homeTeamDirection = TeamAttackingDirection.LeftToRight;  // Set home team attacking direction to LeftToRight
-        awayTeamDirection = TeamAttackingDirection.RightToLeft;  // Away team will attack in the opposite direction
         ResetMatchClockForNewMatch();
         ResolveClockDependencies();
         if (gameData.runtimeSnapshot != null)
         {
             StartCoroutine(RestoreRuntimeSnapshotWhenReady(gameData.runtimeSnapshot));
         }
-        else if (!Application.isEditor)
+        else if (!Application.isEditor && gameData.openingSetup == null)
         {
             yield return new WaitUntil(() => playerTokenManager != null && playerTokenManager.allTokens.Count >= 22);
             ConfigureStandaloneRoomAsAwayGoalRestart();

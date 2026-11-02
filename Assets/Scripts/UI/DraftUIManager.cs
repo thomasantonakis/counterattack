@@ -15,6 +15,8 @@ public class DraftUIManager : MonoBehaviour
 
     public Button startGameButton;  // Reference to the Start Game button
     public Button randomDraftButton;
+    public CoinTossPanelController coinTossPanel;
+    private bool isStartingMatch;
     private DraftManager draftManager;  // Reference to the DraftManager
     public GameObject homeTeamPanel;
     public GameObject awayTeamPanel;
@@ -159,11 +161,43 @@ public class DraftUIManager : MonoBehaviour
     // Method to load the game room scene
     public void OnStartGameButtonPressed()
     {
+        if (isStartingMatch) return;
+        if (draftManager == null) draftManager = FindAnyObjectByType<DraftManager>();
+        if (draftManager == null || !draftManager.IsDraftComplete()) return;
+        if (coinTossPanel == null || !coinTossPanel.Open(draftManager.currentSettings))
+        {
+            Debug.LogError("Cannot start match: Coin Toss Flip requires its scene-authored panel and loaded settings.");
+            return;
+        }
+        isStartingMatch = true;
+        startGameButton.interactable = false;
+        StartCoroutine(WaitForCoinToss());
+    }
+
+    private System.Collections.IEnumerator WaitForCoinToss()
+    {
+        while (coinTossPanel.IsOpen) yield return null;
+        bool loadingRoom = false;
+        try
+        {
+            if (coinTossPanel.Result != null) loadingRoom = SaveDraftAndStartRoom(coinTossPanel.Result);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to save match opening choices: {ex.Message}");
+        }
+        if (loadingRoom) yield break;
+        isStartingMatch = false;
+        CheckIfDraftIsComplete();
+    }
+
+    private bool SaveDraftAndStartRoom(MatchOpeningSetup openingSetup)
+    {
         // Ensure DraftManager has loaded the current game settings
         if (draftManager.currentSettings == null)
         {
             Debug.LogError("Game settings not loaded in DraftManager.");
-            return;
+            return false;
         }
 
         // Persist the final drafted lineups back into the same JSON that created this draft.
@@ -175,7 +209,7 @@ public class DraftUIManager : MonoBehaviour
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
         {
             Debug.LogError("Failed to locate the game settings file to update.");
-            return;
+            return false;
         }
 
         // If Draft was started from the protected Room fixture, fork it into a fresh save before
@@ -183,7 +217,7 @@ public class DraftUIManager : MonoBehaviour
         filePath = ResolveWritableSavePath(filePath);
         if (string.IsNullOrEmpty(filePath))
         {
-            return;
+            return false;
         }
 
         ApplicationManager.Instance.SetActiveSaveFilePath(filePath);
@@ -201,6 +235,9 @@ public class DraftUIManager : MonoBehaviour
         };
 
         jsonData["rosters"] = rosters;
+        jsonData["openingSetup"] = openingSetup;
+        // A newly drafted match starts at kickoff, rather than resuming a source save's live state.
+        jsonData["runtimeSnapshot"] = null;
 
         // Write updated JSON back to the file
         string updatedJson = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
@@ -211,6 +248,7 @@ public class DraftUIManager : MonoBehaviour
         // Proceed to the game scene
         ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
         SceneManager.LoadScene("Room");
+        return true;
     }
 
     private string ResolveWritableSavePath(string filePath)
@@ -342,7 +380,7 @@ public class DraftUIManager : MonoBehaviour
 
         if (draftManager != null && draftManager.IsDraftComplete())
         {
-            startGameButton.interactable = true;  // Enable the Start Game button
+            startGameButton.interactable = !isStartingMatch;
         }
 
         RefreshDraftStateUI();
