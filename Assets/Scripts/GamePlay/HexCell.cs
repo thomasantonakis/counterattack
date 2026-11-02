@@ -49,6 +49,8 @@ public class HexCell : MonoBehaviour
     [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
     private string currentHighlightReason;
+    private bool isCommittedGoalTarget;
+    private float goalTargetOriginalHeight;
     private bool hasInitializedOccupancyHighlightInstance;
     private bool lastKnownShowOccupancyHighlights = DefaultShowOccupancyHighlights;
 
@@ -229,6 +231,25 @@ public class HexCell : MonoBehaviour
         }
     }
     
+    public void SetCommittedGoalTarget(bool committed)
+    {
+        if (isCommittedGoalTarget == committed) return;
+
+        isCommittedGoalTarget = committed;
+        Vector3 position = transform.position;
+        if (committed)
+        {
+            goalTargetOriginalHeight = position.y;
+            position.y = Mathf.Max(position.y, 0.03f);
+        }
+        else
+        {
+            position.y = goalTargetOriginalHeight;
+        }
+        transform.position = position;
+        ResetHighlight();
+    }
+
     public void HighlightHex(string reason, float darkness = 0)
     {
         if (hexRenderer == null)
@@ -407,6 +428,12 @@ public class HexCell : MonoBehaviour
         if (hexRenderer == null)
         {
             return;
+        }
+
+        // Target selection survives path, challenge, and goalkeeper highlight cleanup.
+        if (isCommittedGoalTarget)
+        {
+            fillColor = new Color(1f, 0.48f, 0.05f, 1f);
         }
 
         Material runtimeMaterial = hexRenderer.material;

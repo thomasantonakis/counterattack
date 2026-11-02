@@ -19,6 +19,38 @@ public class Ball : MonoBehaviour
     public float groundHeightOffset = 0.2f;  // Height when ball is on the ground
     public float playerHeightOffset = 0.5f;  // Height when ball is on a player
     private MaterialPropertyBlock ballPropertyBlock;
+    private HexCell committedGoalTarget;
+    private Vector3 goalTargetBallPosition;
+
+    public void HoldGoalTargetUntilBallMoves(HexCell goalTarget)
+    {
+        ClearCommittedGoalTarget();
+        if (goalTarget == null) return;
+
+        committedGoalTarget = goalTarget;
+        goalTargetBallPosition = transform.position;
+        committedGoalTarget.SetCommittedGoalTarget(true);
+    }
+
+    private void ClearCommittedGoalTarget()
+    {
+        if (committedGoalTarget != null)
+        {
+            committedGoalTarget.SetCommittedGoalTarget(false);
+        }
+        committedGoalTarget = null;
+    }
+
+    private void LateUpdate()
+    {
+        // Some aerial/save animations move the transform without setting isMoving.
+        // Observe actual displacement so dice presentations and player moves keep the target.
+        if (committedGoalTarget != null
+            && (transform.position - goalTargetBallPosition).sqrMagnitude > 0.0000000001f)
+        {
+            ClearCommittedGoalTarget();
+        }
+    }
 
     private void Awake()
     {
@@ -39,6 +71,7 @@ public class Ball : MonoBehaviour
 
     private void OnDisable()
     {
+        ClearCommittedGoalTarget();
         if (MatchManager.Instance != null)
         {
             MatchManager.Instance.OnGameSettingsLoaded -= ApplyConfiguredBallColor;

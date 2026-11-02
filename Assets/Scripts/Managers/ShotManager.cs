@@ -1530,6 +1530,7 @@ public class ShotManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         isWaitingForTargetSelection = false;
         shotTargetSelectionTargets.Clear();
+        ball.HoldGoalTargetUntilBallMoves(targetHex);
         return trajectoryPath != null && trajectoryPath.Count > 0;
     }
 
@@ -2542,15 +2543,8 @@ public class ShotManager : MonoBehaviour
             return;
         }
 
-        Dictionary<HexCell, List<HexCell>> shootingPaths = originHex.ShootingPaths;
-        foreach (var canShootToHex in shootingPaths.Keys)
-        {
-            canShootToHex.ResetHighlight();
-            if (canShootToHex.transform.position.y >= 0)
-            {
-              canShootToHex.transform.position -= Vector3.up * ShotTargetElevation; // Sink it below the plane
-            }
-        }
+        ClearShotTargetSelectionHighlights();
+        ball.HoldGoalTargetUntilBallMoves(targetHex);
         trajectoryPath = originHex.ShootingPaths[targetHex];
         ClearPendingOutsideBoxGKShotDecision();
         outsideBoxGKShotDecisionResolved = false;

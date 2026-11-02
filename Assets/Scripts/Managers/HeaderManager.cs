@@ -71,6 +71,7 @@ public class HeaderManager : MonoBehaviour
     private readonly Dictionary<HexCell, float> headerAtGoalTargetOriginalHeights = new();
     private readonly HashSet<PlayerToken> headerInterceptionSuppressedTokens = new();
     private HexCell hoveredHeaderTargetHex;
+    private HexCell hoveredHeaderAtGoalTargetHex;
     private bool headerStartedWithOffsideAssessment;
     private bool automaticDefensiveHeaderRecoveryLogged = false;
     [Header("Tuning")]
@@ -190,6 +191,7 @@ public class HeaderManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
+        RefreshHeaderAtGoalHover(hex);
         if (!isActivated || !isWaitingForHeaderTargetSelection)
         {
             if (hoveredHeaderTargetHex != null)
@@ -209,6 +211,20 @@ public class HeaderManager : MonoBehaviour
 
         hoveredHeaderTargetHex = targetHex;
         RefreshHeaderTargetHighlights();
+    }
+
+    private void RefreshHeaderAtGoalHover(HexCell hex)
+    {
+        HexCell target = isActivated && isWaitingForHeaderAtGoal && headerAtGoalTargetHexes.Contains(hex)
+            ? hex : null;
+        if (hoveredHeaderAtGoalTargetHex == target) return;
+
+        if (hoveredHeaderAtGoalTargetHex != null)
+        {
+            hoveredHeaderAtGoalTargetHex.HighlightHex("CanShootFrom", 1);
+        }
+        hoveredHeaderAtGoalTargetHex = target;
+        if (target != null) target.HighlightHex("ShotTargetHover");
     }
 
     private void OnKeyReceived(KeyPressData keyData)
@@ -497,6 +513,7 @@ public class HeaderManager : MonoBehaviour
         headerAtGoalDeclared = true;
         isWaitingForHeaderAtGoal = false;
         ClearHeaderAtGoalTargets();
+        ball.HoldGoalTargetUntilBallMoves(hexcell);
     }
 
     private void DefenseFreeHeader()
@@ -726,6 +743,8 @@ public class HeaderManager : MonoBehaviour
           LiftHexesInGoal();
           while (isWaitingForHeaderAtGoal)
           {
+            // ClearHover does not emit OnHover when the pointer leaves the pitch or enters UI.
+            if (gameInputManager != null) RefreshHeaderAtGoalHover(gameInputManager.hoveredHex);
             yield return null;
           }
         }
@@ -772,6 +791,7 @@ public class HeaderManager : MonoBehaviour
 
     private void ClearHeaderAtGoalTargets()
     {
+        hoveredHeaderAtGoalTargetHex = null;
         foreach (HexCell hex in headerAtGoalTargetHexes)
         {
             if (hex == null)
