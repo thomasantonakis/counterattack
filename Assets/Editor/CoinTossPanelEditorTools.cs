@@ -10,6 +10,56 @@ namespace CounterAttack.Editor
 {
     public static class CoinTossPanelEditorTools
     {
+        [MenuItem("CounterAttack/Room/Ensure Coin Toss Panel")]
+        public static void EnsureRoomPanel()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Coin toss panel authoring requires edit mode.");
+            var active = SceneManager.GetActiveScene();
+            var room = SceneManager.GetSceneByPath("Assets/Scenes/Room.unity");
+            bool closeRoom = !room.isLoaded;
+            if (closeRoom) room = EditorSceneManager.OpenScene("Assets/Scenes/Room.unity", OpenSceneMode.Additive);
+            try
+            {
+                var match = room.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<MatchManager>(true)).Single();
+                var canvas = match.stoppageActionsPanel.GetComponentInParent<Canvas>();
+                if (canvas == null || canvas.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+                    throw new InvalidOperationException("Room requires its existing canvas and raycaster.");
+                var existing = canvas.transform.Find("CoinTossUI");
+                CoinTossPanelController controller;
+                if (existing != null) controller = existing.GetComponent<CoinTossPanelController>();
+                else
+                {
+                    var draft = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Draft.unity");
+                    try
+                    {
+                        var template = draft.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<CoinTossPanelController>(true)).Single();
+                        var root = UnityEngine.Object.Instantiate(template.gameObject, canvas.transform);
+                        root.name = "CoinTossUI";
+                        root.transform.SetAsLastSibling();
+                        controller = root.GetComponent<CoinTossPanelController>();
+                    }
+                    finally { EditorSceneManager.ClosePreviewScene(draft); }
+                }
+                if (controller == null || !controller.HasSceneBindings)
+                    throw new InvalidOperationException("Inspect Room CoinTossUI scene bindings.");
+                match.coinTossPanel = controller;
+                controller.dicePanel.roomMatch = match;
+                controller.dicePanel.externalInput = true;
+                controller.dicePanel.visuals.SetActive(false);
+                controller.choices.SetActive(false);
+                EditorUtility.SetDirty(match);
+                EditorUtility.SetDirty(controller.dicePanel);
+                EditorSceneManager.MarkSceneDirty(room);
+                EditorSceneManager.SaveScene(room);
+            }
+            finally
+            {
+                if (active.IsValid() && active.isLoaded) SceneManager.SetActiveScene(active);
+                if (closeRoom) EditorSceneManager.CloseScene(room, true);
+            }
+        }
+
         [MenuItem("CounterAttack/Draft/Ensure Coin Toss Panels")]
         public static void EnsurePanels()
         {

@@ -7,10 +7,13 @@ using UnityEngine.UI;
 
 public class PenaltyShootoutManager : MonoBehaviour
 {
-    private static readonly Vector3Int PenaltySpotCoordinates = new(-14, 0, 0);
-    private static readonly Vector3Int DefendingGoalkeeperCoordinates = new(-18, 0, 0);
-    private static readonly Vector3Int HomeGoalkeeperRestCoordinates = new(-18, 0, -9);
-    private static readonly Vector3Int AwayGoalkeeperRestCoordinates = new(-18, 0, 9);
+    private bool UseRightGoal => matchManager?.gameData?.penaltyShootoutSetup?.useRightGoal ?? false;
+    private int GoalSign => UseRightGoal ? 1 : -1;
+    private Vector3Int PenaltySpotCoordinates => new(14 * GoalSign, 0, 0);
+    private Vector3Int DefendingGoalkeeperCoordinates => new(18 * GoalSign, 0, 0);
+    private Vector3Int HomeGoalkeeperRestCoordinates => new(18 * GoalSign, 0, -9);
+    private Vector3Int AwayGoalkeeperRestCoordinates => new(18 * GoalSign, 0, 9);
+    private bool FirstKickIsHome => matchManager?.gameData?.penaltyShootoutSetup?.homeTakesFirstPenalty ?? true;
 
     public static PenaltyShootoutManager ActiveShootout { get; private set; }
 
@@ -199,7 +202,7 @@ public class PenaltyShootoutManager : MonoBehaviour
         homeAttempts = 0;
         awayAttempts = 0;
         isSuddenDeath = false;
-        nextKickIsHome = true;
+        nextKickIsHome = FirstKickIsHome;
         homeResults.Clear();
         awayResults.Clear();
         stagingHexes.Clear();
@@ -365,7 +368,7 @@ public class PenaltyShootoutManager : MonoBehaviour
         matchManager.ClearLastTokenChain();
         matchManager.SetLastToken(currentShooter);
         matchManager.currentState = MatchManager.GameState.PenaltyShootoutKickExecution;
-        Debug.Log($"[Shootout] {(shooterIsHome ? "Home" : "Away")} kick {homeAttempts + awayAttempts + 1}: {currentShooter.name} shoots at the west goal.");
+        Debug.Log($"[Shootout] {(shooterIsHome ? "Home" : "Away")} kick {homeAttempts + awayAttempts + 1}: {currentShooter.name} shoots at the {(UseRightGoal ? "right" : "left")} goal.");
         shotManager.StartPenaltyShotProcess(currentShooter, Hex(PenaltySpotCoordinates));
     }
 
@@ -497,7 +500,8 @@ public class PenaltyShootoutManager : MonoBehaviour
             new(-16, 0, z > 0 ? 10 : -10),
             new(-15, 0, z),
             new(-15, 0, z > 0 ? 11 : -11),
-        }.Select(Hex).Where(hex => hex != null).ToList();
+        }.Select(coords => new Vector3Int(-coords.x * GoalSign, coords.y, coords.z))
+            .Select(Hex).Where(hex => hex != null).ToList();
     }
 
     public string GetInstructions()
@@ -734,12 +738,12 @@ public class PenaltyShootoutManager : MonoBehaviour
     {
         matchManager.teamInAttack = shooterIsHome ? MatchManager.TeamInAttack.Home : MatchManager.TeamInAttack.Away;
         matchManager.attackHasPossession = true;
-        matchManager.homeTeamDirection = shooterIsHome
-            ? MatchManager.TeamAttackingDirection.RightToLeft
-            : MatchManager.TeamAttackingDirection.LeftToRight;
-        matchManager.awayTeamDirection = shooterIsHome
+        matchManager.homeTeamDirection = shooterIsHome == UseRightGoal
             ? MatchManager.TeamAttackingDirection.LeftToRight
             : MatchManager.TeamAttackingDirection.RightToLeft;
+        matchManager.awayTeamDirection = shooterIsHome == UseRightGoal
+            ? MatchManager.TeamAttackingDirection.RightToLeft
+            : MatchManager.TeamAttackingDirection.LeftToRight;
 
         foreach (PlayerToken token in playerTokenManager.allTokens)
         {

@@ -236,6 +236,8 @@ public class DraftUIManager : MonoBehaviour
 
         jsonData["rosters"] = rosters;
         jsonData["openingSetup"] = openingSetup;
+        jsonData["extraTimeOpeningSetup"] = null;
+        jsonData["penaltyShootoutSetup"] = null;
         // A newly drafted match starts at kickoff, rather than resuming a source save's live state.
         jsonData["runtimeSnapshot"] = null;
 

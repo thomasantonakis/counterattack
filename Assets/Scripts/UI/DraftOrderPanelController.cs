@@ -13,6 +13,9 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     private int homeScore, awayScore;
     private float resultUntil;
     private bool coinToss;
+    private string coinTossChoices;
+    public bool externalInput;
+    public MatchManager roomMatch;
     public bool IsOpen => stage != Stage.Closed;
     public bool? HomeWon { get; private set; }
     public bool IsAwaitingHomeRoll => stage == Stage.Home;
@@ -36,12 +39,13 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         return string.IsNullOrWhiteSpace(name) ? (home ? "Home" : "Away") : name;
     }
 
-    public bool Open(GameSettings settings, bool forCoinToss = false)
+    public bool Open(GameSettings settings, bool forCoinToss = false, string tossTitle = "COIN TOSS FLIP", string choicesCopy = "kickoff or direction")
     {
         if (!HasSceneBindings || settings == null || IsOpen) return false;
         HomeWon = null;
         coinToss = forCoinToss;
-        title.text = coinToss ? "COIN TOSS FLIP" : "ROLL FOR FIRST DRAFT PICK";
+        coinTossChoices = choicesCopy;
+        title.text = coinToss ? tossTitle : "ROLL FOR FIRST DRAFT PICK";
         homeTeam.text = TeamName(settings, true);
         awayTeam.text = TeamName(settings, false);
         var home = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(settings.homeKit));
@@ -61,7 +65,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         homeScore = awayScore = 0;
         homeResult.text = "";
         awayResult.text = "Waiting for roll";
-        outcome.text = coinToss ? "Highest roll chooses kickoff or direction" : "Highest roll drafts first";
+        outcome.text = coinToss ? $"Highest roll chooses {coinTossChoices}" : "Highest roll drafts first";
         homeDie.Begin(false);
         awayDie.Clear();
         stage = Stage.Home;
@@ -82,9 +86,15 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     public void Roll(RollInputOverride? rollOverride = null)
     {
         if (stage is not (Stage.Home or Stage.Away)) return;
-        int roll = rollOverride.HasValue && rollOverride.Value.hasOverride
-            ? rollOverride.Value.isJackpot ? 6 : Mathf.Clamp(rollOverride.Value.roll, 1, 6)
-            : Random.Range(1, 7);
+        int roll = roomMatch != null
+            ? roomMatch.ResolveGameplayDiceRoll("coin_toss", rollOverride, jackpotEnabled: false,
+                details: new System.Collections.Generic.Dictionary<string, string>
+                {
+                    ["team"] = stage == Stage.Home ? "Home" : "Away", ["purpose"] = title.text
+                }).roll
+            : rollOverride.HasValue && rollOverride.Value.hasOverride
+                ? rollOverride.Value.isJackpot ? 6 : Mathf.Clamp(rollOverride.Value.roll, 1, 6)
+                : Random.Range(1, 7);
         string result = $"Roll {roll}";
         if (stage == Stage.Home)
         {
@@ -128,6 +138,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         AdvanceResult(Time.unscaledTime);
         if (!IsOpen) return;
         Fit();
+        if (externalInput) return;
         if (Input.GetKeyDown(KeyCode.R)) HandleKey(new KeyPressData(KeyCode.R, false, false, false));
         if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
             || !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))) return;

@@ -118,6 +118,8 @@ public class MatchManager : MonoBehaviour
         public GameLog gameLog;
         public RoomRuntimeSnapshot runtimeSnapshot;
         public MatchOpeningSetup openingSetup;
+        public MatchOpeningSetup extraTimeOpeningSetup;
+        public PenaltyShootoutSetup penaltyShootoutSetup;
         public int eventLogSchemaVersion;
         public List<GameplayEvent> events;
 
@@ -1206,6 +1208,7 @@ public class MatchManager : MonoBehaviour
     // Singleton instance for easy access
     public static MatchManager Instance;
     public StoppageActionsPanelController stoppageActionsPanel;
+    public CoinTossPanelController coinTossPanel;
     private int stoppagePresentationVersion;
     public Ball ball;  // Reference to the ball
     public HexGrid hexGrid;  // Reference to the ball
@@ -1280,6 +1283,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private string pendingShotGoalTimeLabel = string.Empty;
     [SerializeField] private int pendingShotGoalExtraActionNumber = 0;
     private TeamInAttack firstHalfKickoffTeam = TeamInAttack.Home;
+    private bool isTieBreakerTossRunning;
     private Action pendingHalfGateContinuation;
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
     public int CurrentHalf => currentHalf;
@@ -4023,6 +4027,7 @@ public class MatchManager : MonoBehaviour
         isWaitingForExtraActionsRoll = false;
         isMatchComplete = false;
         isHalfTimeFlowRunning = false;
+        isTieBreakerTossRunning = false;
         isPauseMenuOpen = false;
         isHalfEndPendingAfterGoalFlow = false;
         pendingHalfGateContinuation = null;
@@ -4090,6 +4095,7 @@ public class MatchManager : MonoBehaviour
             && !isMatchComplete
             && !isHalfTimeFlowRunning
             && !isPauseMenuOpen
+            && !CoinTossPanelController.IsRoomVisible
             && !HeaderChallengePanelController.IsMatchClockHeld
             && !DuelResolutionPanelController.IsMatchClockHeld
             && !StoppageActionsPanelController.IsMatchClockHeld
@@ -4421,7 +4427,7 @@ public class MatchManager : MonoBehaviour
         highPassManager.isAvailable = true;
         longBallManager.isAvailable = true;
         LastTokenToTouchTheBallOnPurpose = kickoffToken;
-        firstHalfKickoffTeam = teamInAttack;
+        if (currentHalf == 1 && totalCompletedActions == 0) firstHalfKickoffTeam = teamInAttack;
         isClockRunning = true;
         RefreshAerialTargetPrecomputations();
         RecordMatchTransition(
@@ -4895,6 +4901,7 @@ public class MatchManager : MonoBehaviour
 
     private void CompleteHalfEndFlow()
     {
+        if (isHalfTimeFlowRunning || isTieBreakerTossRunning) return;
         if (currentHalf == GetConfiguredNumberOfHalfs() && ShouldStartExtraTime())
         {
             GrantExtraTimeSubstitutionCreditIfNeeded();
@@ -4940,7 +4947,7 @@ public class MatchManager : MonoBehaviour
     private void CompleteMatchAfterFinalHalf()
     {
         PenaltyShootoutManager existingShootoutManager = FindAnyObjectByType<PenaltyShootoutManager>();
-        if (existingShootoutManager != null && existingShootoutManager.IsOrderSelectionOrShootoutStarted)
+        if (isTieBreakerTossRunning || (existingShootoutManager != null && existingShootoutManager.IsOrderSelectionOrShootoutStarted))
         {
             Debug.Log("Ignoring duplicate final whistle because penalty shootout flow is already active.");
             return;
@@ -4960,8 +4967,8 @@ public class MatchManager : MonoBehaviour
 
         if (IsScoreTied() && TieBreakerIncludesPenalties())
         {
-            Debug.Log("Final whistle with tied score. Opening penalty shootout order selection.");
-            EnsurePenaltyShootoutManager().ShowOrderSelection();
+            Debug.Log("Final whistle with tied score. Opening penalty shootout coin toss.");
+            StartCoroutine(RunShootoutOpeningFlow());
             return;
         }
 
@@ -4988,10 +4995,21 @@ public class MatchManager : MonoBehaviour
             "half_time",
             "started",
             CreateDetails(("completedHalf", currentHalf)));
-        Debug.Log("Half-time whistle. Switching sides and resetting teams for the next kick-off.");
+        bool enteringExtraTime = currentHalf == GetConfiguredNumberOfHalfs() && ShouldStartExtraTime();
+        Debug.Log(enteringExtraTime ? "Extra time reached. Waiting for the coin toss before resetting teams."
+            : "Half-time whistle. Switching sides and resetting teams for the next kick-off.");
         ResolveClockDependencies();
-        SwitchSides();
-        currentHalf++;
+        if (enteringExtraTime)
+        {
+            while (HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible)
+                yield return null;
+            if (!OpenRoomCoinToss(CoinTossPurpose.ExtraTime)) yield break;
+            while (coinTossPanel.IsOpen) yield return null;
+            var opening = coinTossPanel.Result;
+            if (opening == null) yield break;
+            gameData.extraTimeOpeningSetup = opening;
+        }
+        SetUpNextHalf(enteringExtraTime);
         currentHalfRegulationSeconds = 0f;
         completedActionsThisHalf = 0;
         isHalfExpired = false;
@@ -5001,9 +5019,6 @@ public class MatchManager : MonoBehaviour
         pendingShotGoalTimeLabel = string.Empty;
         pendingShotGoalExtraActionNumber = 0;
 
-        teamInAttack = currentHalf % 2 == 0
-            ? (firstHalfKickoffTeam == TeamInAttack.Home ? TeamInAttack.Away : TeamInAttack.Home)
-            : firstHalfKickoffTeam;
         attackHasPossession = true;
         ClearLastTokenChain();
 
@@ -5025,6 +5040,53 @@ public class MatchManager : MonoBehaviour
             "half_time",
             "completed",
             CreateDetails(("newHalf", currentHalf)));
+    }
+
+    private TeamInAttack GetKickoffTeamForHalf(int half)
+    {
+        TeamInAttack openingTeam = half > StandardNumberOfHalfs && gameData?.extraTimeOpeningSetup != null
+            ? gameData.extraTimeOpeningSetup.KickoffTeam : firstHalfKickoffTeam;
+        return half % 2 == 0 ? (openingTeam == TeamInAttack.Home ? TeamInAttack.Away : TeamInAttack.Home) : openingTeam;
+    }
+
+    private void SetUpNextHalf(bool enteringExtraTime)
+    {
+        if (enteringExtraTime)
+        {
+            homeTeamDirection = gameData.extraTimeOpeningSetup.DirectionFor(true);
+            awayTeamDirection = gameData.extraTimeOpeningSetup.DirectionFor(false);
+        }
+        else SwitchSides();
+        currentHalf++;
+        teamInAttack = GetKickoffTeamForHalf(currentHalf);
+    }
+
+    private bool OpenRoomCoinToss(CoinTossPurpose purpose)
+    {
+        if (coinTossPanel != null && coinTossPanel.OpenForRoom(this, purpose))
+        {
+            FindAnyObjectByType<RoomDecisionManager>()?.SuspendThinking();
+            return true;
+        }
+        Debug.LogError($"Cannot start {purpose}: Room requires its scene-authored Coin Toss Flip panel.");
+        return false;
+    }
+
+    private IEnumerator RunShootoutOpeningFlow()
+    {
+        isTieBreakerTossRunning = true;
+        while (HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible)
+            yield return null;
+        if (OpenRoomCoinToss(CoinTossPurpose.PenaltyShootout))
+        {
+            while (coinTossPanel.IsOpen) yield return null;
+            if (coinTossPanel.ShootoutResult != null)
+            {
+                gameData.penaltyShootoutSetup = coinTossPanel.ShootoutResult;
+                EnsurePenaltyShootoutManager().ShowOrderSelection();
+            }
+        }
+        isTieBreakerTossRunning = false;
     }
 
     private void PlaceBallOnKickoffHex()
@@ -5795,7 +5857,7 @@ public class MatchManager : MonoBehaviour
             return false;
         }
 
-        if (isHalfTimeFlowRunning || isHalfEndPendingAfterGoalFlow)
+        if (isHalfTimeFlowRunning || isHalfEndPendingAfterGoalFlow || isTieBreakerTossRunning || CoinTossPanelController.IsRoomVisible)
         {
             reason = "Cannot save while half-time or full-time reset flow is running.";
             return false;

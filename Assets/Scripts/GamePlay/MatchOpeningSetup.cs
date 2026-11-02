@@ -16,7 +16,16 @@ public sealed class MatchOpeningSetup
         ? MatchManager.TeamInAttack.Home : MatchManager.TeamInAttack.Away;
 }
 
-public enum CoinTossChoice { Kickoff, LeftToRight, RightToLeft }
+public enum CoinTossPurpose { FirstHalf, ExtraTime, PenaltyShootout }
+public enum CoinTossChoice { Kickoff, LeftToRight, RightToLeft, LeftSide, RightSide }
+
+[Serializable]
+public sealed class PenaltyShootoutSetup
+{
+    public bool coinTossWinnerIsHome;
+    public bool homeTakesFirstPenalty;
+    public bool useRightGoal;
+}
 
 /// <summary>A direction always describes the choosing team's attack, never its Home/Away identity.</summary>
 public sealed class CoinTossDecision
@@ -25,17 +34,35 @@ public sealed class CoinTossDecision
     public bool ChoosingHome { get; private set; }
     public bool CanChooseKickoff { get; private set; } = true;
     public MatchOpeningSetup Result { get; private set; }
+    public PenaltyShootoutSetup ShootoutResult { get; private set; }
+    public CoinTossPurpose Purpose { get; }
+    public bool IsComplete => Result != null || ShootoutResult != null;
 
-    public CoinTossDecision(bool winnerIsHome) => WinnerIsHome = ChoosingHome = winnerIsHome;
+    public CoinTossDecision(bool winnerIsHome, CoinTossPurpose purpose = CoinTossPurpose.FirstHalf)
+    {
+        WinnerIsHome = ChoosingHome = winnerIsHome;
+        Purpose = purpose;
+    }
 
     public bool Choose(CoinTossChoice choice)
     {
-        if (Result != null) return false;
+        if (IsComplete) return false;
         if (choice == CoinTossChoice.Kickoff)
         {
             if (!CanChooseKickoff) return false;
             CanChooseKickoff = false;
             ChoosingHome = !WinnerIsHome;
+            return true;
+        }
+        if (Purpose == CoinTossPurpose.PenaltyShootout)
+        {
+            if (choice != CoinTossChoice.LeftSide && choice != CoinTossChoice.RightSide) return false;
+            ShootoutResult = new PenaltyShootoutSetup
+            {
+                coinTossWinnerIsHome = WinnerIsHome,
+                homeTakesFirstPenalty = CanChooseKickoff ? !WinnerIsHome : WinnerIsHome,
+                useRightGoal = choice == CoinTossChoice.RightSide
+            };
             return true;
         }
         if (choice != CoinTossChoice.LeftToRight && choice != CoinTossChoice.RightToLeft) return false;
@@ -49,6 +76,7 @@ public sealed class CoinTossDecision
     }
 
     public CoinTossChoice CpuChoice => CanChooseKickoff ? CoinTossChoice.Kickoff
+        : Purpose == CoinTossPurpose.PenaltyShootout ? CoinTossChoice.LeftSide
         : ChoosingHome ? CoinTossChoice.LeftToRight : CoinTossChoice.RightToLeft;
 
     public static bool IsCpuManager(GameSettings settings, bool home)

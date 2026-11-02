@@ -223,6 +223,10 @@ public static class RoomSaveService
             root["runtimeSnapshot"] = JToken.FromObject(snapshot);
             root["openingSetup"] = gameData.openingSetup != null
                 ? JToken.FromObject(gameData.openingSetup) : JValue.CreateNull();
+            root["extraTimeOpeningSetup"] = gameData.extraTimeOpeningSetup != null
+                ? JToken.FromObject(gameData.extraTimeOpeningSetup) : JValue.CreateNull();
+            root["penaltyShootoutSetup"] = gameData.penaltyShootoutSetup != null
+                ? JToken.FromObject(gameData.penaltyShootoutSetup) : JValue.CreateNull();
 
             string retainedActivePath = WriteManualSave(root, filePath, activePath);
             ApplicationManager.Instance.SetActiveSaveFilePath(retainedActivePath);

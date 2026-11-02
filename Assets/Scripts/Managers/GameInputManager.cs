@@ -359,7 +359,7 @@ public class GameInputManager : MonoBehaviour
     }
 
     private static bool IsDiceRollModalVisible => HeaderChallengePanelController.IsVisible
-        || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible;
+        || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible || CoinTossPanelController.IsRoomVisible;
 
     private static bool IsDiceResolutionUi(GameObject gameObject)
         => gameObject.GetComponentInParent<HeaderChallengePanelController>() != null
@@ -703,7 +703,7 @@ public class GameInputManager : MonoBehaviour
             try
             {
                 data.expectedByHomeTeam = inputTeam;
-                if (!TryHandleModalCameraPreset(data) && !HeaderChallengePanelController.ConsumeKey(data) && !StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
+                if (!CoinTossPanelController.ConsumeRoomKey(data) && !TryHandleModalCameraPreset(data) && !HeaderChallengePanelController.ConsumeKey(data) && !StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
             }
             finally
             {
@@ -1213,7 +1213,7 @@ public class GameInputManager : MonoBehaviour
         try
         {
             keyData.expectedByHomeTeam = inputTeam;
-            if (!TryHandleModalCameraPreset(keyData) && !HeaderChallengePanelController.ConsumeKey(keyData) && !StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
+            if (!CoinTossPanelController.ConsumeRoomKey(keyData) && !TryHandleModalCameraPreset(keyData) && !HeaderChallengePanelController.ConsumeKey(keyData) && !StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
         }
         finally
         {
@@ -1225,6 +1225,7 @@ public class GameInputManager : MonoBehaviour
 
     private static bool? ResolveInputTeamBeforeDispatch()
     {
+        if (CoinTossPanelController.IsRoomVisible) return CoinTossPanelController.RoomInputIsHome;
         string team = GameDebugMonitor.Instance?.GetCurrentInstructionSnapshotForLog()?.expectedTeam;
         return team == "Home" ? true : team == "Away" ? false : null;
     }
