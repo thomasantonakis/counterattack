@@ -76,6 +76,8 @@ public class HighPassManager : MonoBehaviour
     private float availableTargetPrecomputeStartedAt = 0f;
     private int availableTargetPrecomputeStartedFrame = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
+    private bool committedTargetMissed;
+    private bool missedTargetCleared;
     private PlayerToken pendingSetPieceTakerForCommit = null;
     private PlayerToken activeHighPassKickerForTargetExclusion = null;
     private HexCell highPassKickHexForInterceptionSuppression = null;
@@ -120,13 +122,15 @@ public class HighPassManager : MonoBehaviour
     private bool ShouldShowCommittedTargetOverlay()
     {
         return currentTargetHex != null
+            && !missedTargetCleared
             && isActivated
             && (isWaitingForAttackerSelection
                 || isWaitingForAttackerMove
                 || isWaitingForDefenderSelection
                 || isWaitingForDefenderMove
                 || isWaitingForAccuracyRoll
-                || isWaitingForDefGKChallengeDecision);
+                || isWaitingForDefGKChallengeDecision
+                || committedTargetMissed);
     }
 
     private void ClearHighlightsPreservingCommittedTarget()
@@ -1588,6 +1592,7 @@ public class HighPassManager : MonoBehaviour
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         bool accuratePass = diceRoll + highPassAttribute >= ACCURACY_THRESHOLD;
+        committedTargetMissed = !accuratePass;
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
             accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
         // Adjust threshold based on difficulty
@@ -1761,6 +1766,12 @@ public class HighPassManager : MonoBehaviour
             {
                 Debug.LogError($"❌ Invalid flatPosition at i={i}: {flatPosition}");
                 yield break;
+            }
+            if (committedTargetMissed && !missedTargetCleared && flatPosition != startPosition)
+            {
+                missedTargetCleared = true;
+                currentTargetHex?.ResetHighlight();
+                hexGrid.highlightedHexes.Remove(currentTargetHex);
             }
             ball.transform.position = flatPosition;
             yield return null;
@@ -2267,6 +2278,8 @@ public class HighPassManager : MonoBehaviour
 
     public void CleanUpHighPass(bool preserveTargetPrecompute = false)
     {
+        committedTargetMissed = false;
+        missedTargetCleared = false;
         IsDirectGoalKick = false;
         selectedToken = null;
         currentTargetHex = null;
