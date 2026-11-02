@@ -1269,8 +1269,10 @@ public class HeaderManager : MonoBehaviour
         }
     }
 
-    private void LogExpectedHeaderGoal(PlayerToken shooter, bool requireNaturalRollAboveOne, bool includeGoalkeeperSave)
+    public float CalculateHeaderExpectedGoals(PlayerToken shooter, bool requireNaturalRollAboveOne = true,
+        bool includeGoalkeeperSave = true)
     {
+        if (shooter == null || hexGrid == null || ball == null) return 0f;
         ExpectedStatsCalculator.AerialContestant[] contestants = BuildAerialContestants();
         ExpectedStatsCalculator.AerialContestant shooterContestant = contestants.FirstOrDefault(contestant => contestant.token == shooter);
         PlayerToken defendingGK = hexGrid.GetDefendingGK();
@@ -1299,14 +1301,20 @@ public class HeaderManager : MonoBehaviour
             }
         }
 
-        float xGoals = ExpectedStatsCalculator.CalculateHeaderGoalProbability(
+        return ExpectedStatsCalculator.CalculateHeaderGoalProbability(
             shooterContestant,
             contestants,
             requireNaturalRollAboveOne,
             keeperSaving,
             keeperPenalty
         );
+    }
+
+    private float LogExpectedHeaderGoal(PlayerToken shooter, bool requireNaturalRollAboveOne, bool includeGoalkeeperSave)
+    {
+        float xGoals = CalculateHeaderExpectedGoals(shooter, requireNaturalRollAboveOne, includeGoalkeeperSave);
         MatchManager.Instance.gameData.gameLog.LogExpectedGoal(shooter, xGoals, "header");
+        return xGoals;
     }
 
     private List<PlayerToken> GetOrderedHeaderTokens(IEnumerable<PlayerToken> tokens, bool keepGoalkeeperLast)
@@ -1413,7 +1421,7 @@ public class HeaderManager : MonoBehaviour
         );
         MatchManager.Instance.SetLastToken(bestAttacker);
         MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt, shotType: "header");
-        LogExpectedHeaderGoal(bestAttacker, requireNaturalRollAboveOne: true, includeGoalkeeperSave: true);
+        float headerXGoals = LogExpectedHeaderGoal(bestAttacker, requireNaturalRollAboveOne: true, includeGoalkeeperSave: true);
 
         if (headerChallengePanel != null)
             yield return headerChallengePanel.Finish(this, bestAttacker,
@@ -1423,7 +1431,8 @@ public class HeaderManager : MonoBehaviour
         if (bestAttackerRoll > 1)
         {
             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOnTarget);
-            shotManager.ProcessHeaderAtGoal(bestAttacker, bestAttackerScore, headerAtGoalTarget);
+            shotManager.ProcessHeaderAtGoal(bestAttacker, bestAttackerScore, headerAtGoalTarget,
+                bestAttackerRoll, GetHeaderPenalty(bestAttacker), headerXGoals);
             CleanUpHeader();
         }
         else
@@ -1701,7 +1710,7 @@ public class HeaderManager : MonoBehaviour
                 ReassessOffsideAfterHeaderWinner("high_pass_header_challenge_won");
                 if (headerAtGoalDeclared)
                 {
-                    LogExpectedHeaderGoal(bestAttacker, requireNaturalRollAboveOne: true, includeGoalkeeperSave: !defenderWillJump.Contains(hexGrid.GetDefendingGK()));
+                    float headerXGoals = LogExpectedHeaderGoal(bestAttacker, requireNaturalRollAboveOne: true, includeGoalkeeperSave: !defenderWillJump.Contains(hexGrid.GetDefendingGK()));
                     if (bestAttackerRoll > 1) // Header at goal ON target
                     {
                         if (defenderWillJump.Contains(hexGrid.GetDefendingGK())) // GK is in the challenge and was defeated
@@ -1719,7 +1728,8 @@ public class HeaderManager : MonoBehaviour
                         {
                             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotAttempt, shotType: "header");
                             MatchManager.Instance.gameData.gameLog.LogEvent(bestAttacker, MatchManager.ActionType.ShotOnTarget);
-                            shotManager.ProcessHeaderAtGoal(bestAttacker, bestAttackerScore, headerAtGoalTarget);
+                            shotManager.ProcessHeaderAtGoal(bestAttacker, bestAttackerScore, headerAtGoalTarget,
+                                bestAttackerRoll, GetHeaderPenalty(bestAttacker), headerXGoals);
                             CleanUpHeader();
                         }
                     }

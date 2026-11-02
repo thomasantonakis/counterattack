@@ -42,6 +42,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public DuelCheckPanelFields looseDistance = new();
     public GameObject scatterContinuationContent;
     public TMP_Text scatterCaption;
+    public TMP_Text scatterOutcome;
     public DuelCheckPanelFields continuationDirection = new();
     public DuelCheckPanelFields continuationDistance = new();
     private DuelCheckPanelFields activeDirection;
@@ -56,11 +57,15 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private MonoBehaviour scatterHistoryOwner;
     private bool looseRecoveryMode;
     private bool looseBallMode;
+    private bool looseBallSuspended;
     private bool looseDirectionPending;
     public DuelPlayerPanelFields singlePlayer = new();
     private MonoBehaviour singleOwner;
     private Func<bool> singleWaiting;
     private bool singleMode;
+    private DuelPlayerPanelFields singleRollView;
+    private bool shotComparison;
+    private PlayerToken shotComparisonKeeper;
     public DuelPlayerPanelFields leftPlayer = new();
     public DuelPlayerPanelFields rightPlayer = new();
     public DuelCheckPanelFields leniency = new();
@@ -95,7 +100,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public bool IsResultHeld { get; private set; }
     private static bool waitForEscapeRelease;
     private static int reservedEscapeFrame = -1;
-    public bool IsOpen => stage != Stage.Closed;
+    public bool IsOpen => stage != Stage.Closed && !looseBallSuspended;
     public bool IsComplete => stage == Stage.Complete;
     public bool DribblerOnLeft => dribblerView == leftPlayer;
     public bool HasSceneBindings => visuals != null && panel != null && title != null && outcome != null
@@ -135,6 +140,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     {
         if (!HasSceneBindings || attacker == null || defender == null) return false;
         singleMode = false;
+        looseBallSuspended = false;
+        if (scatterOutcome != null) scatterOutcome.gameObject.SetActive(false);
         looseBallMode = false;
         scatterHistoryOwner = null;
         looseRecoveryMode = false;
@@ -225,6 +232,11 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (!HasSceneBindings || singleRollContent == null || playerColumns == null || !PlayerBound(singlePlayer)) return false;
         if (IsOpen) return false;
         singleMode = true;
+        singleRollView = singlePlayer;
+        looseBallSuspended = false;
+        shotComparison = false;
+        shotComparisonKeeper = null;
+        if (scatterOutcome != null) scatterOutcome.gameObject.SetActive(false);
         looseBallMode = false;
         scatterHistoryOwner = null;
         looseRecoveryMode = false;
@@ -268,6 +280,111 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         return true;
     }
 
+    // Repeat the authoritative winning header beside the pending Saving check.
+    // Both columns already exist in the scene; the attacker never rolls again here.
+    public bool BeginHeaderSave(ShotManager manager, Func<bool> waiting, PlayerToken attacker,
+        int headerRoll, int headerPower, int headerModifier, PlayerToken goalkeeper, int saveModifier,
+        float? expectedGoals = null)
+    {
+        if (attacker == null || goalkeeper == null) return false;
+        if (!BeginSingle(manager, waiting, "Header at Goal · Goalkeeper Save", goalkeeper,
+            null, null, true)) return false;
+        singleRollContent.SetActive(false);
+        playerColumns.SetActive(true);
+        singlePlayer.die.Clear();
+        var match = MatchManager.Instance;
+        bool attackLeft = (attacker.isHomeTeam ? match.homeTeamDirection : match.awayTeamDirection)
+            == MatchManager.TeamAttackingDirection.LeftToRight;
+        dribblerView = attackLeft ? leftPlayer : rightPlayer;
+        defenderView = attackLeft ? rightPlayer : leftPlayer;
+        ConfigureHeaderSavePlayer(dribblerView, attacker);
+        ConfigureHeaderSavePlayer(defenderView, goalkeeper);
+        dribblerView.attribute.text = $"Heading: {attacker.heading}";
+        dribblerView.modifier.text = headerModifier == 0 ? "WINNING ATTACKING HEADER"
+            : $"WINNING ATTACKING HEADER · Modifier: {headerModifier:+0;-0}";
+        if (expectedGoals.HasValue) dribblerView.modifier.text += $" · xGoals {expectedGoals.Value:0.00}";
+        bool jackpot = headerPower == 50;
+        if (headerRoll > 0) dribblerView.die.Resolve(headerRoll, jackpot);
+        else dribblerView.die.Clear();
+        dribblerView.total.text = jackpot ? "Roll JACKPOT · Total: JACKPOT"
+            : headerRoll > 0 ? $"Roll {headerRoll} · Total: {headerPower}" : $"Header total: {headerPower}";
+        dribblerView.guidance.text = "Aerial challenge won · On target";
+        defenderView.attribute.text = saveModifier == 0 ? $"Saving {goalkeeper.saving}"
+            : $"Saving {goalkeeper.saving} {saveModifier:+0;-0} = {goalkeeper.saving + saveModifier} (Distance Penalty)";
+        defenderView.modifier.text = "GOALKEEPER SAVE";
+        defenderView.total.text = "";
+        defenderView.guidance.text = SingleRollResolutionPresentation.HeaderSaveGuidance(goalkeeper.saving, saveModifier, headerPower);
+        defenderView.die.Begin(true);
+        singleRollView = defenderView;
+        footer.text = "Press [R] — goalkeeper Saving roll";
+        FitAndClamp();
+        return true;
+    }
+
+    public bool IsShotComparisonFor(ShotManager manager)
+        => IsOpen && singleOwner == manager && shotComparison;
+
+    public bool BeginShotComparison(ShotManager manager, Func<bool> waiting, string situation,
+        PlayerToken shooter, PlayerToken goalkeeper, string shootingAttribute, string savingAttribute,
+        float? expectedGoals = null)
+    {
+        if (shooter == null || goalkeeper == null) return false;
+        if (!BeginSingle(manager, waiting, situation + " · Shot vs Saving", shooter, null, null, true)) return false;
+        singleRollContent.SetActive(false);
+        playerColumns.SetActive(true);
+        singlePlayer.die.Clear();
+        var match = MatchManager.Instance;
+        bool attackLeft = (shooter.isHomeTeam ? match.homeTeamDirection : match.awayTeamDirection)
+            == MatchManager.TeamAttackingDirection.LeftToRight;
+        dribblerView = attackLeft ? leftPlayer : rightPlayer;
+        defenderView = attackLeft ? rightPlayer : leftPlayer;
+        ConfigureHeaderSavePlayer(dribblerView, shooter);
+        ConfigureHeaderSavePlayer(defenderView, goalkeeper);
+        dribblerView.attribute.text = shootingAttribute;
+        dribblerView.modifier.text = "SHOOTER" + (expectedGoals.HasValue ? $" · xGoals {expectedGoals.Value:0.00}" : "");
+        dribblerView.total.text = "";
+        dribblerView.guidance.text = "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT";
+        defenderView.attribute.text = savingAttribute;
+        defenderView.modifier.text = "GOALKEEPER SAVE";
+        defenderView.total.text = "";
+        defenderView.guidance.text = "Shooter rolls first";
+        defenderView.die.Clear();
+        dribblerView.die.Begin(true);
+        singleRollView = dribblerView;
+        shotComparison = true;
+        shotComparisonKeeper = goalkeeper;
+        footer.text = "Press [R] — shooter roll";
+        FitAndClamp();
+        return true;
+    }
+
+    public bool ContinueShotSaving(ShotManager manager, Func<bool> waiting, PlayerToken goalkeeper,
+        int shotPower, int savingModifier, bool outsideBoxHandSave)
+    {
+        if (!IsShotComparisonFor(manager) || stage != Stage.Transition || shotComparisonKeeper != goalkeeper) return false;
+        singleWaiting = waiting;
+        stage = Stage.Single;
+        singleRollView = defenderView;
+        dribblerView.guidance.text = "Shot resolved · On target";
+        defenderView.guidance.text = outsideBoxHandSave ? "Tie or win: handball and red card · Lose: shot continues"
+            : SingleRollResolutionPresentation.HeaderSaveGuidance(goalkeeper.saving, savingModifier, shotPower);
+        defenderView.die.Begin(true);
+        outcome.text = "";
+        footer.text = "Press [R] — goalkeeper Saving roll";
+        return true;
+    }
+
+    private static void ConfigureHeaderSavePlayer(DuelPlayerPanelFields view, PlayerToken token)
+    {
+        var settings = MatchManager.Instance.gameData.gameSettings;
+        view.playerName.text = $"#{token.jerseyNumber}  {token.playerName}";
+        view.teamName.text = token.isHomeTeam ? settings.homeTeamName : settings.awayTeamName;
+        if (view.role != null) view.role.gameObject.SetActive(false);
+        var palette = TeamPalette(token);
+        view.playerName.color = Color.Lerp(palette.Primary, Color.white, .4f);
+        view.die.SetTeamColors(palette.Primary, palette.Secondary);
+    }
+
     // Explicit manager handoff: a failed accuracy check or tied duel owns this continuation.
     public bool PrepareScatterContinuation(MonoBehaviour manager, MonoBehaviour nextOwner)
     {
@@ -296,7 +413,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
                 stage = Stage.Single;
                 IsResultHeld = false;
                 looseBallContent.SetActive(false);
-                scatterCaption.text = inaccuracy ? "Inaccuracy" : "Loose Ball";
+                scatterCaption.text = (inaccuracy ? "Inaccuracy" : "Loose Ball")
+                    + (token != null ? $" · #{token.jerseyNumber} {token.playerName}" : "");
                 SetScatterExpandedLayout();
                 activeDirection = continuationDirection;
                 activeDistance = continuationDistance;
@@ -320,6 +438,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             looseBallPlayer.color = Color.Lerp(primary, Color.white, .4f);
             activeDirection.die.SetTeamColors(primary, secondary);
             activeDistance.die.SetTeamColors(primary, secondary);
+            activeDirection.column.gameObject.SetActive(true);
+            activeDistance.column.gameObject.SetActive(true);
             activeDirection.die.Clear();
             activeDistance.die.Clear();
             activeDirection.result.text = "Awaiting roll";
@@ -352,7 +472,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         => fields?.column != null && fields.rule != null && fields.result != null && fields.die != null;
 
     public IEnumerator ResolveLooseBallRoll(MonoBehaviour manager, GameplayDiceRollResult roll,
-        string result, bool direction)
+        string result, bool direction, bool continueWithMovement = false)
     {
         if (!looseBallMode || singleOwner != manager || stage != Stage.Single
             || direction != looseDirectionPending) return EmptyPresentation();
@@ -370,15 +490,45 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             // The panel stays open with the direction die and text intact throughout.
             return EmptyPresentation();
         }
+        if (continueWithMovement)
+        {
+            footer.text = "Loose ball resolved · Continuing play…";
+            return EmptyPresentation();
+        }
         return WaitForDismissal();
     }
 
-    public bool BeginLooseBallRecovery(MonoBehaviour manager, Func<bool> waiting, PlayerToken token)
+    public void SuspendLooseBallForExternalInput(MonoBehaviour manager)
     {
-        if (token == null || token.IsGoalKeeper || IsOpen || looseRecoveryContent == null
+        if (singleOwner != manager || !looseBallMode || stage != Stage.Transition) return;
+        looseBallSuspended = true;
+        visuals.SetActive(false);
+    }
+
+    public IEnumerator ResolveLooseBallCorner(MonoBehaviour manager)
+    {
+        if (!looseBallMode || singleOwner != manager || stage != Stage.Transition) return EmptyPresentation();
+        activeDistance.column.gameObject.SetActive(false);
+        activeDistance.die.Clear();
+        if (scatterOutcome != null)
+        {
+            scatterOutcome.text = "Corner kick awarded";
+            scatterOutcome.gameObject.SetActive(true);
+        }
+        FitAndClamp();
+        return WaitForDismissal();
+    }
+
+    public bool BeginLooseBallRecovery(MonoBehaviour manager, Func<bool> waiting, PlayerToken token,
+        bool useSaving = false, int modifier = 0)
+    {
+        bool continuingScatter = singleOwner == manager && looseBallMode && stage == Stage.Transition;
+        if (token == null || (IsOpen && !continuingScatter) || looseRecoveryContent == null
             || !PlayerBound(looseRecoveryPlayer)) return false;
         if (scatterHistoryOwner != manager) return false;
+        useSaving |= token.IsGoalKeeper;
         singleMode = true;
+        looseBallSuspended = false;
         singleOwner = manager;
         singleWaiting = waiting;
         owner = null;
@@ -386,12 +536,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         IsResultHeld = false;
         looseBallMode = false;
         looseRecoveryMode = true;
-        float expected = ExpectedStatsCalculator.CalculateRecoveryProbability(token);
-        ConfigurePlayer(looseRecoveryPlayer, token, "Tackling", token.tackling, 0, "xRecovery", expected);
-        looseRecoveryPlayer.attribute.text = $"Tackling {token.tackling}";
+        int skill = useSaving ? token.saving : token.tackling;
+        float expected = ExpectedStatsCalculator.CalculateRecoveryProbability(skill, modifier);
+        ConfigurePlayer(looseRecoveryPlayer, token, useSaving ? "Saving" : "Tackling", skill, 0, "xRecovery", expected);
+        looseRecoveryPlayer.attribute.text = SingleRollResolutionPresentation.LooseRecoveryAttribute(token, useSaving, modifier);
         looseRecoveryPlayer.modifier.text = $"xRecovery {expected:0.00}";
         looseRecoveryPlayer.total.text = "";
-        looseRecoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(token.tackling, 6, 0);
+        looseRecoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(skill + modifier, 6, 0);
         looseRecoveryPlayer.die.Begin(true);
         SetLooseRecoveryLayout(scatterAttached);
         footer.text = "Press [R] — recovery roll";
@@ -434,23 +585,27 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
 
     public void CancelSingle(MonoBehaviour manager)
     {
-        if (!IsOpen || (singleOwner != manager && pendingScatterOwner != manager)) return;
+        if (stage == Stage.Closed || (singleOwner != manager && pendingScatterOwner != manager)) return;
         stage = Stage.Complete;
         Dismiss();
     }
 
     public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result,
-        bool continueWithFoulChecks = false, bool continueWithScatter = false, MonoBehaviour scatterOwner = null)
+        bool continueWithFoulChecks = false, bool continueWithScatter = false, MonoBehaviour scatterOwner = null,
+        int? resolvedTotal = null, bool continueWithNextRoll = false)
     {
         if (!singleMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
         stage = Stage.Transition;
-        singlePlayer.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
-        singlePlayer.total.text = roll.isJackpot && roll.jackpotEnabled ? "JACKPOT ★" : $"Roll {roll.roll}";
+        var rollingView = singleRollView ?? singlePlayer;
+        rollingView.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
+        rollingView.total.text = roll.isJackpot && roll.jackpotEnabled
+            ? (resolvedTotal.HasValue ? "Roll JACKPOT · Total: JACKPOT" : "JACKPOT ★")
+            : $"Roll {roll.roll}" + (resolvedTotal.HasValue ? $" · Total: {resolvedTotal.Value}" : "");
         outcome.text = result;
         // A running dribbler's recovery foul continues directly into the existing checks.
         // Keep the resolved recovery die visible; only the final injury result starts dismissal.
         if (continueWithScatter && PrepareScatterContinuation(manager, scatterOwner != null ? scatterOwner : manager)) return EmptyPresentation();
-        return continueWithFoulChecks ? EmptyPresentation() : WaitForDismissal();
+        return continueWithFoulChecks || continueWithNextRoll ? EmptyPresentation() : WaitForDismissal();
     }
 
     public bool ContinueRecoveryFoul(MovementPhaseManager manager, PlayerToken attacker,
@@ -617,6 +772,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     {
         if (!IsComplete) return false;
         ReserveEscape();
+        looseBallSuspended = false;
         IsResultHeld = false;
         stage = Stage.Closed;
         owner = null;
@@ -769,6 +925,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             || (looseBallContent != null && looseBallContent.activeSelf);
         float width = Mathf.Max(1f, singleLayout && !expanded ? singleRollWidth : preferredWidth);
         float maximumHeight = Mathf.Max(1f, normalHeight, expandedHeight);
+        if (scatterOutcome != null && scatterContinuationContent != null)
+        {
+            var scatter = (RectTransform)scatterContinuationContent.transform;
+            var result = scatterOutcome.rectTransform;
+            maximumHeight = Mathf.Max(maximumHeight,
+                -scatter.anchoredPosition.y + scatter.rect.height + result.anchoredPosition.y + result.rect.height + 24f);
+        }
         if (looseRecoveryContent != null && looseRecoveryContent.activeSelf)
             maximumHeight = Mathf.Max(maximumHeight,
                 -((RectTransform)looseRecoveryContent.transform).anchoredPosition.y + recoveryContentHeight

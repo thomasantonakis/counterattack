@@ -251,13 +251,9 @@ public class ShotManager : MonoBehaviour
         return IsValidShotOriginForAttackingDirection(ball?.GetCurrentHex());
     }
 
-    private void LogExpectedGoalForCurrentShot(string outcomeContext)
+    public float CalculateCurrentShotExpectedGoals()
     {
-        if (expectedGoalLogged || shooter == null || isHeaderAtGoal)
-        {
-            return;
-        }
-
+        if (shooter == null || isHeaderAtGoal) return 0f;
         int shootingPenalty = CalculateShootingPenalty(GetShotOriginHex());
         List<ExpectedStatsCalculator.ShotBlockerExpectation> blockExpectations = expectedGoalOutfieldBlockInteractions
             .Where(interaction => interaction?.defender != null)
@@ -269,12 +265,18 @@ public class ShotManager : MonoBehaviour
 
         PlayerToken savingGk = expectedGoalGkSaveInteraction?.defender;
         int savingPenalty = expectedGoalGkSaveInteraction?.gkPenalty ?? 0;
-        float xGoals = ExpectedStatsCalculator.CalculateShotGoalProbability(
+        return ExpectedStatsCalculator.CalculateShotGoalProbability(
             shooter,
             shootingPenalty,
             blockExpectations,
             savingGk,
             savingPenalty);
+    }
+
+    private void LogExpectedGoalForCurrentShot(string outcomeContext)
+    {
+        if (expectedGoalLogged || shooter == null || isHeaderAtGoal) return;
+        float xGoals = CalculateCurrentShotExpectedGoals();
 
         string context = string.IsNullOrWhiteSpace(outcomeContext)
             ? shotType
@@ -728,6 +730,8 @@ public class ShotManager : MonoBehaviour
 
     private void OnDisable()
     {
+        headerSavePresentationVersion++;
+        DuelResolutionPanelController.Instance?.CancelSingle(this);
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
@@ -1059,7 +1063,6 @@ public class ShotManager : MonoBehaviour
         else if (isActivated && isHeaderAtGoal && isWaitingForGKDiceRoll && (keyData.key == KeyCode.R || hasRollOverride))
         {
             keyData.Consume(nameof(ShotManager));
-            isWaitingForGKDiceRoll = false;
             PerformGKHeaderSave(hasRollOverride ? (RollInputOverride?)rollOverride : null);
         }
         else if (isActivated && isWaitingForShotRoll && (keyData.key == KeyCode.R || hasRollOverride))
@@ -1121,6 +1124,8 @@ public class ShotManager : MonoBehaviour
 
     public void EnterSaveAndHoldDecision()
     {
+        headerSavePresentationVersion++;
+        DuelResolutionPanelController.Instance?.CancelSingle(this);
         isAvailable = false;
         isActivated = false;
         isWaitingforBlockerSelection = false;
@@ -2032,7 +2037,8 @@ public class ShotManager : MonoBehaviour
         }
     }
 
-    public async void ProcessHeaderAtGoal(PlayerToken attacker, int attackerTotalScore, HexCell headerTargetHex)
+    public async void ProcessHeaderAtGoal(PlayerToken attacker, int attackerTotalScore, HexCell headerTargetHex,
+        int attackerHeaderRoll = 0, int attackerHeaderModifier = 0, float? headerExpectedGoals = null)
     {
         isActivated = true;
         isHeaderAtGoal = true;
@@ -2075,6 +2081,75 @@ public class ShotManager : MonoBehaviour
         // StartCoroutine(PerformGKHeaderSave(defendingGK, headerGkPenalty));
         // Debug.Log($"Press [R] to roll for GK save attempt (header at goal).");
         isWaitingForGKDiceRoll = true;
+        DuelResolutionPanelController.Instance?.BeginHeaderSave(this, () => isWaitingForGKDiceRoll,
+            attacker, attackerHeaderRoll, attackerTotalScore, attackerHeaderModifier, defendingGK, headerGkPenalty, headerExpectedGoals);
+    }
+
+    private int headerSavePresentationVersion;
+    private bool UsesGroundShotPresentation => !isHeaderAtGoal && !IsFreeKickShot() && !IsPenaltyShot();
+
+    private void BeginShooterPresentation()
+    {
+        if (!UsesGroundShotPresentation) return;
+        var keeper = interceptors.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
+        var panel = DuelResolutionPanelController.Instance;
+        if (keeper != null && panel != null && panel.BeginShotComparison(this,
+            () => isWaitingForShotRoll || isWaitingForGKDiceRoll, GetActiveShotInstructionLabel(), shooter,
+            keeper.defender, BuildShotPresentationAttribute(), BuildGroundSaveAttribute(keeper), CalculateCurrentShotExpectedGoals())) return;
+        DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingForShotRoll,
+            GetActiveShotInstructionLabel() + " · Shooter", shooter,
+            BuildShotPresentationAttribute(),
+            $"xGoals {CalculateCurrentShotExpectedGoals():0.00}", true, "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT");
+    }
+
+    private string BuildShotPresentationAttribute()
+    {
+        var origin = GetShotOriginHex();
+        int penalty = CalculateShootingPenalty(origin);
+        if (penalty == 0) return $"Shooting {shooter.shooting}";
+        var reasons = GetShootingPenaltyReasons(origin);
+        string cap = reasons.Count > penalty ? "; capped at -2" : "";
+        return $"Shooting {shooter.shooting} -{penalty} = {shooter.shooting - penalty} ({string.Join(", ", reasons)}{cap})";
+    }
+
+    private string BuildGroundSaveAttribute(ShotInteraction interaction)
+    {
+        var keeper = interaction.defender;
+        int penalty = interaction.gkPenalty ?? 0;
+        if (penalty == 0) return $"Saving {keeper.saving}";
+        string reason = shotType == "snapshot" && tokenMoveforDeflection == keeper
+            ? "Snapshot movement / distance penalty" : "Distance Penalty";
+        return $"Saving {keeper.saving} {penalty:+0;-0} = {keeper.saving + penalty} ({reason})";
+    }
+
+    private void BeginGroundSavePresentation(ShotInteraction interaction)
+    {
+        if (!UsesGroundShotPresentation || interaction == null) return;
+        var keeper = interaction.defender;
+        int modifier = interaction.gkPenalty ?? 0;
+        var panel = DuelResolutionPanelController.Instance;
+        if (panel == null) return;
+        if (panel.ContinueShotSaving(this, () => isWaitingForGKDiceRoll, keeper,
+            totalShotPower, modifier, interaction.isOutsideBoxGoalkeeperHandSave)) return;
+        // Some save interactions become available only after an external GK decision.
+        // Reuse the already-resolved shot; no gameplay dice are consumed here.
+        if (!panel.BeginShotComparison(this, () => isWaitingForGKDiceRoll, GetActiveShotInstructionLabel(),
+            shooter, keeper, BuildShotPresentationAttribute(), BuildGroundSaveAttribute(interaction), CalculateCurrentShotExpectedGoals())) return;
+        panel.ResolveSingle(this, new GameplayDiceRollResult
+            { roll = shooterRoll, isJackpot = shooterRollWasJackpot, jackpotEnabled = true },
+            "", resolvedTotal: totalShotPower, continueWithNextRoll: true);
+        panel.ContinueShotSaving(this, () => isWaitingForGKDiceRoll, keeper,
+            totalShotPower, modifier, interaction.isOutsideBoxGoalkeeperHandSave);
+    }
+    private static string FormatHeaderPower(int value) => value == 50 ? "JACKPOT" : value.ToString();
+
+    private void BeginHeaderHandlingPresentation(PlayerToken goalkeeper)
+    {
+        DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingforHandlingTest,
+            (isHeaderAtGoal ? "Header at Goal" : GetActiveShotInstructionLabel()) + " · Handling", goalkeeper, $"Handling: {goalkeeper.handling}",
+            isHeaderAtGoal ? $"{GetTokenInstructionName(headerAttacker)} · Header power: {FormatHeaderPower(headerAttackerTotalScore)}"
+                : $"{GetTokenInstructionName(shooter)} · Shot power: {FormatHeaderPower(totalShotPower)}",
+            false, SingleRollResolutionPresentation.HandlingGuidance(goalkeeper.handling));
     }
 
     public void PerformGKHeaderSave(int? rigRoll = null)
@@ -2092,6 +2167,8 @@ public class ShotManager : MonoBehaviour
 
     public async void PerformGKHeaderSave(RollInputOverride? rollOverride)
     {
+        if (!isActivated || !isHeaderAtGoal || !isWaitingForGKDiceRoll) return;
+        int presentationVersion = headerSavePresentationVersion;
         // Roll for GK
         PlayerToken gkToken = hexGrid.GetDefendingGK();
         isWaitingForGKDiceRoll = false;
@@ -2117,6 +2194,14 @@ public class ShotManager : MonoBehaviour
             MatchManager.ActionType.SaveAttempt
         );
 
+        string saveOutcome = totalSavingPower == headerAttackerTotalScore ? "TIED SAVE · Loose ball follows"
+            : totalSavingPower > headerAttackerTotalScore ? "SAVED · Handling test follows" : "GOAL";
+        await helperFunctions.StartCoroutineAndWait(SingleRollResolutionPresentation.Resolve(this, saveRoll,
+            $"Saving total: {FormatHeaderPower(totalSavingPower)} · {saveOutcome}",
+            continueWithScatter: totalSavingPower == headerAttackerTotalScore,
+            scatterOwner: looseBallManager, resolvedTotal: totalSavingPower));
+        if (presentationVersion != headerSavePresentationVersion || !isActiveAndEnabled) return;
+
         // Compare with attacker's total
         if (totalSavingPower == headerAttackerTotalScore)
         {
@@ -2135,7 +2220,7 @@ public class ShotManager : MonoBehaviour
             MatchManager.Instance.SetHangingPass("shot");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex, allowGKBoxMove: false));
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
-            StartCoroutine(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution));
+            await helperFunctions.StartCoroutineAndWait(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution));
             ResetShotProcess();
         }
         else if (totalSavingPower > headerAttackerTotalScore)
@@ -2145,6 +2230,7 @@ public class ShotManager : MonoBehaviour
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
             // MatchManager.Instance.ChangePossession();
             isWaitingforHandlingTest = true;
+            BeginHeaderHandlingPresentation(gkToken);
         }
         else // attacker wins
         {
@@ -2965,6 +3051,7 @@ public class ShotManager : MonoBehaviour
             currentShotInteraction = null;
             currentDefenderBlockingHex = null;
             isWaitingForShotRoll = true;
+            BeginShooterPresentation();
             yield break;
         }
 
@@ -2978,11 +3065,13 @@ public class ShotManager : MonoBehaviour
             {
                 Debug.Log($"Goalkeeper {currentShotInteraction.defender.name} now attempts a save. Press [R] to roll");
                 isWaitingForGKDiceRoll = true;
+                BeginGroundSavePresentation(currentShotInteraction);
             }
             else
             {
                 Debug.Log("The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.");
                 isWaitingForShotRoll = true;
+                BeginShooterPresentation();
             }
         }
         else
@@ -2993,6 +3082,11 @@ public class ShotManager : MonoBehaviour
             string blockType = GetShotBlockTypeLabel(currentShotInteraction);
             Debug.Log($"{currentShotInteraction.defender.name} attempts an {blockType} shot block at {currentShotInteraction.interactionHex.coordinates}. {BuildNeededRollInstruction(finalRollNeeded, " to deflect")}. [R]oll!");
             isWaitingForBlockDiceRoll = true;
+            if (UsesGroundShotPresentation)
+                DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingForBlockDiceRoll,
+                    GetActiveShotInstructionLabel() + " · Defender Block", currentShotInteraction.defender,
+                    $"Tackling: {tackling} · {blockType}", null, true,
+                    BuildNeededRollInstruction(GetOutfieldBlockRequiredRoll(currentShotInteraction), " to deflect") + " · JACKPOT: block");
         }
     }
 
@@ -3245,6 +3339,15 @@ public class ShotManager : MonoBehaviour
                 // Calculate interception conditions
                 int requiredRoll = currentDefenderEntry.requiredNaturalRoll;
                 bool successfulInterception = isJackpot || diceRoll >= requiredRoll || diceRoll + tackling >= 10;
+                if (UsesGroundShotPresentation)
+                {
+                    int version = headerSavePresentationVersion;
+                    yield return SingleRollResolutionPresentation.Resolve(this, blockRoll,
+                        successfulInterception ? "BLOCKED · Loose ball follows" : "BLOCK FAILED · Shot continues",
+                        continueWithScatter: successfulInterception, scatterOwner: looseBallManager,
+                        continueWithNextRoll: successfulInterception);
+                    if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+                }
                 if (successfulInterception)
                 {
                     hexGrid.ClearHighlightedHexes();
@@ -3370,6 +3473,17 @@ public class ShotManager : MonoBehaviour
         difficultPenalty = originHex != null && originHex.isDifficultShotPosition ? ", -1 difficult shooting position" : "";
         shootingPenaltyInfo = BuildShootingPenaltyInfo(originHex, shootingPenalty);
         totalShotPower = isJackpot ? 50 : shooterRoll + shooter.shooting - shootingPenalty;
+        if (UsesGroundShotPresentation)
+        {
+            int version = headerSavePresentationVersion;
+            yield return SingleRollResolutionPresentation.Resolve(this, shotRoll,
+                $"Shot power: {FormatHeaderPower(totalShotPower)} · " + (shooterRoll == 1 ? "OFF TARGET" : "ON TARGET"),
+                resolvedTotal: totalShotPower,
+                continueWithNextRoll: shooterRoll != 1 && interceptors.Count > 0 && interceptors[0].IsGK
+                    && DuelResolutionPanelController.Instance != null
+                    && DuelResolutionPanelController.Instance.IsShotComparisonFor(this));
+            if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+        }
 
         if (IsFreeKickShot())
         {
@@ -3393,6 +3507,7 @@ public class ShotManager : MonoBehaviour
         {
             Debug.Log($"Goalkeeper {interceptors[0].defender.name} now attempts a save. Press [R] to roll");
             isWaitingForGKDiceRoll = true;
+            BeginGroundSavePresentation(interceptors[0]);
         }
         else // There's NO GOALKEEPER or more defenders! Shooter is attempting to put it on target. 
             {
@@ -3779,7 +3894,8 @@ public class ShotManager : MonoBehaviour
     private IEnumerator ResolveGKSavingAttempt(ShotInteraction gkEntry, RollInputOverride? rollOverride)
     {
         isWaitingForGKDiceRoll = false;
-        yield return null;
+        // Resolve the presentation in this frame: yielding with the waiting flag cleared
+        // would make the single-roll panel dismiss itself before displaying the result.
         if (gkEntry == null || !gkEntry.IsGK)
         {
             Debug.LogError("ResolveGKSavingAttempt called without a GK shot interaction.");
@@ -3810,6 +3926,19 @@ public class ShotManager : MonoBehaviour
         bool isJackpot = saveRoll.isJackpot;
         int gkRoll = saveRoll.roll;
         int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
+        if (UsesGroundShotPresentation)
+        {
+            int version = headerSavePresentationVersion;
+            string result = gkEntry.isOutsideBoxGoalkeeperHandSave && totalSavingPower >= totalShotPower
+                ? "HANDBALL · Red card and free kick"
+                : totalSavingPower == totalShotPower ? "TIED SAVE · Loose ball follows"
+                : totalSavingPower > totalShotPower ? "SAVED · Handling follows" : "SAVE FAILED · Shot continues";
+            yield return SingleRollResolutionPresentation.Resolve(this, saveRoll,
+                $"Saving total: {FormatHeaderPower(totalSavingPower)} · {result}",
+                continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave,
+                scatterOwner: looseBallManager, resolvedTotal: totalSavingPower);
+            if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+        }
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 6;
         if (isJackpot) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
@@ -3881,6 +4010,7 @@ public class ShotManager : MonoBehaviour
             // yield return null;
             Debug.Log($"{gkToken.name} saves the shot! Will they hold the ball? {gkToken} needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             isWaitingforHandlingTest = true;
+            if (UsesGroundShotPresentation) BeginHeaderHandlingPresentation(gkToken);
             yield break;
         }
         else if (totalSavingPower < totalShotPower)
@@ -4162,6 +4292,9 @@ public class ShotManager : MonoBehaviour
 
     public IEnumerator ResolveHandlingTest(RollInputOverride? rollOverride)
     {
+        bool presentHeaderHandling = isHeaderAtGoal || UsesGroundShotPresentation;
+        if (presentHeaderHandling && !isWaitingforHandlingTest) yield break;
+        int presentationVersion = headerSavePresentationVersion;
         PlayerToken gkToken = hexGrid.GetDefendingGK();
         GameplayDiceRollResult handlingRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "goalkeeper_handling",
@@ -4176,6 +4309,15 @@ public class ShotManager : MonoBehaviour
             });
         int gkRoll = handlingRoll.roll;
         isWaitingforHandlingTest = false;
+        if (presentHeaderHandling)
+        {
+            // Handling has no jackpot rule: the numeric roll alone controls hold/spill.
+            var displayRoll = new GameplayDiceRollResult { roll = gkRoll, jackpotEnabled = false };
+            yield return SingleRollResolutionPresentation.Resolve(this, displayRoll,
+                gkRoll < gkToken.handling ? "HELD · Save-and-hold choice follows" : "SPILLED · Loose ball follows",
+                continueWithScatter: gkRoll >= gkToken.handling, scatterOwner: looseBallManager);
+            if (presentationVersion != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+        }
         // Handling Test
         if (gkRoll < gkToken.handling)
         {
@@ -4280,6 +4422,8 @@ public class ShotManager : MonoBehaviour
 
     private void ResetShotProcess()
     {
+        headerSavePresentationVersion++;
+        DuelResolutionPanelController.Instance?.CancelSingle(this);
         bool preserveSaveAndHoldDecision = isWaitingForSaveandHoldScenario
             && MatchManager.Instance != null
             && MatchManager.Instance.currentState == MatchManager.GameState.ActivateFinalThirdsAfterSave;

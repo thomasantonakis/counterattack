@@ -3065,9 +3065,14 @@ public class MovementPhaseManager : MonoBehaviour
             activeDuelPanel.ShowOutcome(DuelRollGuidance.Outcome(defenderTotalScore, attackerTotalScore, CurrentGroundDuelPresentation));
             // A tied outfield duel expands into the loose-ball manager's rolls instead of closing.
             bool continueWithScatter = defenderTotalScore == attackerTotalScore
-                && !IsGoalkeeperDiveChallengeInProgress()
-                && activeDuelPanel.PrepareScatterContinuation(this, looseBallManager);
-            if (!continueWithScatter)
+                && !IsGoalkeeperDiveChallengeInProgress();
+            if (continueWithScatter)
+            {
+                // A tie is an immediate continuation, even if the authored expansion is unavailable.
+                if (!activeDuelPanel.PrepareScatterContinuation(this, looseBallManager))
+                    activeDuelPanel.Cancel(this);
+            }
+            else
             {
                 yield return activeDuelPanel.WaitForDismissal();
                 if (version != duelPresentationVersion) yield break;
@@ -3147,7 +3152,8 @@ public class MovementPhaseManager : MonoBehaviour
             remainingDribblerPace = 0;
             RegisterMovedToken(attackerToken);
             // TODO: in case of a Loose Ball, is the attacker stunned? I think not!, but cannot further move
-            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, LooseBallSourceType.GroundDeflection));
+            StartCoroutine(looseBallManager.ResolveLooseBall(selectedDefender, LooseBallSourceType.GroundDeflection,
+                presentationContext: LooseBallPresentationContext.GroundDuelResolution));
             // No further handling from here, LooseBallManager needs to handle everything from here on.
         }
     }

@@ -80,6 +80,9 @@ namespace CounterAttack.Editor
             Transform existing = canvas.Find("DuelResolutionUI");
             if (existing != null)
             {
+                // Keep the controller alive so Awake registers shared presentation access.
+                // Only its authored Visuals child should be hidden between rolls.
+                existing.gameObject.SetActive(true);
                 manager.duelResolutionPanel = existing.GetComponent<DuelResolutionPanelController>();
                 UpdatePanelDetails(manager.duelResolutionPanel);
                 if (manager.duelResolutionPanel == null || !manager.duelResolutionPanel.HasSceneBindings)
@@ -178,6 +181,7 @@ namespace CounterAttack.Editor
             EnsureSingleRollContent(panel);
             EnsureLooseBallContent(panel);
             EnsureScatterContinuation(panel);
+            EnsureScatterOutcomeFields(panel);
             EnsureLooseRecoveryContent(panel);
             foreach (var die in panel.GetComponentsInChildren<DuelDieView>(true)) EnsureDieBorder(die);
             if (panel.leftPlayer.role != null)
@@ -249,9 +253,9 @@ namespace CounterAttack.Editor
             Label("Situation", content, 0, 48, "Loose Ball Recovery", 34);
             RectTransform body = Top("RecoveryPlayer", content, 60, 340);
             RectTransform details = Column("Details", body, false, 340);
-            details.anchorMax = new Vector2(.65f, 1f);
+            details.anchorMax = new Vector2(.5f, 1f);
             RectTransform roll = Column("Roll", body, true, 340);
-            roll.anchorMin = new Vector2(.65f, 1f);
+            roll.anchorMin = new Vector2(.5f, 1f);
             controller.looseRecoveryPlayer = new DuelPlayerPanelFields
             {
                 playerName = Label("PlayerName", details, 0, 70, "#4  Recovering defender", 34),
@@ -259,10 +263,28 @@ namespace CounterAttack.Editor
                 attribute = Label("Attribute", details, 120, 48, "Tackling 6", 30),
                 modifier = Label("Probability", details, 173, 45, "xRecovery 0.50", 28),
                 guidance = Label("SuccessRolls", details, 225, 65, "Success: roll 4–6", 27),
-                die = Die("Die", roll, new Vector2(0, -20), true),
-                total = Label("Result", roll, 160, 120, "Awaiting roll", 30)
+                die = Die("Die", roll, Vector2.zero, true),
+                total = Label("Result", roll, 140, 120, "Awaiting roll", 30)
             };
             content.gameObject.SetActive(false);
+        }
+
+        [MenuItem("CounterAttack/Room/Align Loose Ball Recovery")]
+        public static void AlignLooseRecoveryColumns()
+        {
+            var controller = FindPanelForPreview();
+            EnsureLooseRecoveryContent(controller);
+            var details = (RectTransform)controller.looseRecoveryPlayer.playerName.transform.parent;
+            var roll = (RectTransform)controller.looseRecoveryPlayer.die.transform.parent;
+            var die = (RectTransform)controller.looseRecoveryPlayer.die.transform;
+            var result = controller.looseRecoveryPlayer.total.rectTransform;
+            Undo.RecordObjects(new UnityEngine.Object[] { details, roll, die, result }, "Align loose-ball recovery columns");
+            details.anchorMax = new Vector2(.5f, 1);
+            roll.anchorMin = new Vector2(.5f, 1);
+            die.anchoredPosition = Vector2.zero;
+            result.anchoredPosition = new Vector2(result.anchoredPosition.x, -140);
+            EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);
+            EditorSceneManager.SaveScene(controller.gameObject.scene);
         }
 
         [MenuItem("CounterAttack/Room/Preview Duel Panel/Loose Ball Recovery")]
@@ -293,6 +315,39 @@ namespace CounterAttack.Editor
             controller.SetLooseRecoveryLayout(true);
             controller.footer.text = "Press [R] — recovery roll";
             FinishPreview(controller);
+        }
+
+        [MenuItem("CounterAttack/Room/Ensure Scatter Outcome Footer")]
+        public static void EnsureScatterOutcome()
+        {
+            var controller = FindPanelForPreview();
+            EnsureScatterOutcomeFields(controller);
+            controller.FitAndClamp();
+            EditorUtility.SetDirty(controller);
+            EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);
+            EditorSceneManager.SaveScene(controller.gameObject.scene);
+        }
+
+        private static void EnsureScatterOutcomeFields(DuelResolutionPanelController controller)
+        {
+            if (controller.scatterOutcome != null) return;
+            var existing = controller.panel.Find("ScatterOutcome");
+            if (existing != null)
+            {
+                controller.scatterOutcome = existing.GetComponent<TMP_Text>();
+                if (controller.scatterOutcome == null) throw new InvalidOperationException("Inspect existing ScatterOutcome component.");
+                return;
+            }
+            font = controller.outcome.font;
+            var result = Rect("ScatterOutcome", controller.panel);
+            result.anchorMin = Vector2.zero;
+            result.anchorMax = new Vector2(1, 0);
+            result.pivot = new Vector2(.5f, 0);
+            result.anchoredPosition = new Vector2(0, controller.footer.rectTransform.anchoredPosition.y
+                + controller.footer.rectTransform.rect.height + 12f);
+            result.sizeDelta = new Vector2(-60, 60);
+            controller.scatterOutcome = Text(result, "", 34);
+            result.gameObject.SetActive(false);
         }
 
         private static void EnsureScatterContinuation(DuelResolutionPanelController controller)

@@ -4437,7 +4437,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         IncrementExpectedFloat(
             expectedShootingLooseXRecoveries,
             interceptorName,
-            ExpectedStatsCalculator.CalculateRecoveryProbability(interceptor));
+            ExpectedStatsCalculator.CalculateRecoveryProbability(interceptor.IsGoalKeeper ? interceptor.saving : interceptor.tackling));
 
         if (IsLooseRecoveryRollSuccessful(interceptor, rigRoll))
         {
@@ -4472,7 +4472,7 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private static bool IsLooseRecoveryRollSuccessful(PlayerToken interceptor, int roll)
     {
-        return interceptor != null && (roll == 6 || roll + interceptor.tackling >= 10);
+        return interceptor != null && (roll == 6 || roll + (interceptor.IsGoalKeeper ? interceptor.saving : interceptor.tackling) >= 10);
     }
 
     private float CalculateCurrentShootingExpectedGoal()
@@ -5931,6 +5931,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
     }
 
     private IEnumerator PerformRiggedShooterRoll(string expectedShooterName, int rigRoll)
@@ -5963,6 +5964,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             expectedShootingXGoals ??= CalculateCurrentShootingExpectedGoal();
         }
         yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
     }
 
     private IEnumerator PerformRiggedShotGkSaveRoll(string expectedGoalkeeperName, int rigRoll)
@@ -5987,10 +5989,11 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(coroutine != null, "GK save roll coroutine should be available for the Shooting branch.");
         if (coroutine != null)
         {
-            yield return StartCoroutine(coroutine);
+            StartCoroutine(coroutine);
         }
 
         yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
     }
 
     private IEnumerator PerformRiggedShotHandlingRoll(int rigRoll)
@@ -6002,6 +6005,8 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log($"Rigging GK handling roll to {rigRoll}");
         StartCoroutine(shotManager.ResolveHandlingTest(rigRoll));
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
 
         PlayerToken defendingGk = hexgrid.GetDefendingGK();
         bool shouldHold = defendingGk != null && rigRoll < defendingGk.handling;
@@ -6023,6 +6028,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log($"Rigging loose-ball direction roll to {rigRoll}");
         looseBallManager.PerformDirectionRoll(rigRoll);
         yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
     }
 
     private IEnumerator PerformRiggedLooseDistanceRoll(int rigRoll)
@@ -6035,6 +6041,7 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log($"Rigging loose-ball distance roll to {rigRoll}");
         looseBallManager.PerformDistanceRoll(rigRoll);
         yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
     }
 
     private IEnumerator PerformRiggedLooseInterceptionRoll(string expectedDefenderName, int rigRoll)
@@ -6072,6 +6079,23 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log($"Rigging {expectedDefenderName} loose-ball interception roll to {rigRoll}");
         looseBallManager.PerformInterceptionRoll(rigRoll);
         yield return new WaitForSeconds(0.3f);
+        yield return StartCoroutine(DismissCompletedShotPresentation());
+    }
+
+    private IEnumerator DismissCompletedShotPresentation()
+    {
+        var shared = DuelResolutionPanelController.Instance;
+        if (shared != null && shared.IsComplete)
+        {
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Escape, 0.1f));
+            yield return null;
+        }
+        var header = HeaderChallengePanelController.Instance;
+        if (header != null && header.IsOpen && HeaderChallengePanelController.IsHoldingContinuation)
+        {
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Escape, 0.1f));
+            yield return null;
+        }
     }
 
     private IEnumerator AssertShootingAnyOtherScenario(ShootingBranchDefinition branch, string expectedReceiverName)
@@ -14481,6 +14505,12 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Loose Ball Manager should wait for direction after the nutmeg tie.",
             true,
             looseBallManager.isWaitingForDirectionRoll);
+        AssertTrue(looseBallManager.PresentationContext == LooseBallPresentationContext.GroundDuelResolution,
+            "A tackle/nutmeg tie must use the continuous loose-ball presentation context.");
+        var tiePanel = DuelResolutionPanelController.Instance;
+        AssertTrue(tiePanel != null && tiePanel.IsOpen && !tiePanel.IsComplete
+                && tiePanel.scatterContinuationContent.activeSelf,
+            "The tied duel should remain visible with scatter input, without a dismissal countdown.");
 
         HexCell defenderHex = nutmegDefender.GetCurrentHex();
         HexCell dribblerHex = yaneva.GetCurrentHex();
@@ -14493,7 +14523,10 @@ public class GameTestScenarioRunner : MonoBehaviour
         looseBallManager.PerformDirectionRoll(returnDirectionIndex + 1);
         yield return new WaitForSeconds(0.1f);
         looseBallManager.PerformDistanceRoll(1);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.1f);
+        AssertTrue(!looseBallManager.isWaitingForDistanceRoll,
+            "A tackle loose ball must consume its distance roll immediately, without the five-second result wait.");
+        yield return new WaitForSeconds(1.4f);
 
         AssertTrue(
             !looseBallManager.isActivated,
@@ -20278,6 +20311,13 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log($"Rigging Header at Goal roll for {expectedTokenName} to {rigRoll}");
         headerManager.PerformHeaderRoll(rigRoll);
         yield return new WaitForSeconds(0.25f);
+        var headerPanel = HeaderChallengePanelController.Instance;
+        if (headerPanel != null && headerPanel.IsOpen && HeaderChallengePanelController.IsHoldingContinuation)
+        {
+            // The challenge's completed result owns input until dismissal.
+            yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Escape, 0.1f));
+            yield return null;
+        }
     }
 
     private IEnumerator PerformHeaderAtGoalGkSave(int rigRoll)
@@ -20288,8 +20328,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Header at Goal should wait for Kuzmic's saving roll."));
 
         Log($"Rigging Kuzmic header save roll to {rigRoll}");
+        var panel = DuelResolutionPanelController.Instance;
+        AssertTrue(panel != null && panel.IsOpen && panel.IsAwaitingRoll,
+            "Non-jumping GK Saving should use the authored single-roll panel.");
+        AssertTrue(!HeaderChallengePanelController.IsVisible,
+            "The aerial challenge must release input before the Saving roll.");
+        AssertTrue(!shotManager.isWaitingForShotRoll && !shotManager.isWaitingForBlockDiceRoll,
+            "A header save must not introduce shooter or outfield block rolls.");
         shotManager.PerformGKHeaderSave(rigRoll);
-        yield return new WaitForSeconds(0.4f);
+        yield return StartCoroutine(DismissHeaderGoalkeeperResult(panel));
     }
 
     private IEnumerator PerformHeaderAtGoalHandling(int rigRoll)
@@ -20300,7 +20347,31 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Header at Goal should wait for Kuzmic's handling roll."));
 
         Log($"Rigging Kuzmic handling roll to {rigRoll}");
+        var panel = DuelResolutionPanelController.Instance;
+        AssertTrue(panel != null && panel.IsOpen && panel.IsAwaitingRoll,
+            "Header Handling should use a separate single-roll check after Saving dismissal.");
         StartCoroutine(shotManager.ResolveHandlingTest(rigRoll));
+        yield return StartCoroutine(DismissHeaderGoalkeeperResult(panel));
+    }
+
+    private IEnumerator DismissHeaderGoalkeeperResult(DuelResolutionPanelController panel)
+    {
+        yield return StartCoroutine(WaitForCondition(() => panel != null
+                && (panel.IsComplete || looseBallManager.isWaitingForDirectionRoll),
+            4f, "Goalkeeper result should remain visible or expand into its loose-ball continuation."));
+        if (looseBallManager.isWaitingForDirectionRoll && panel != null)
+        {
+            AssertTrue(panel.IsOpen && panel.scatterContinuationContent.activeSelf,
+                "Tied Saving or failed Handling must retain its result above the loose-ball expansion.");
+            AssertTrue(looseBallManager.IsInstructionExpectingHomeTeam() == looseBallManager.causingDeflection.isHomeTeam,
+                "The deflecting defender's team must own loose-ball scatter input.");
+            yield break;
+        }
+        if (panel == null || !panel.IsComplete) yield break;
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.1f));
+        AssertTrue(panel.IsResultHeld, "Enter should hold the goalkeeper result.");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Escape, 0.1f));
+        AssertTrue(!panel.IsOpen, "Escape should release the goalkeeper result and input ownership.");
         yield return new WaitForSeconds(0.4f);
     }
 

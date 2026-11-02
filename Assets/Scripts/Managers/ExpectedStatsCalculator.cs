@@ -443,12 +443,16 @@ public static class ExpectedStatsCalculator
             return 0f;
         }
 
-        int tackling = defender.tackling;
+        return CalculateRecoveryProbability(defender.tackling, 0, minimumNaturalRollForSuccess);
+    }
+
+    public static float CalculateRecoveryProbability(int attribute, int modifier = 0, int minimumNaturalRollForSuccess = 6)
+    {
         int successfulRolls = 0;
 
         for (int roll = 1; roll <= 6; roll++)
         {
-            if (roll >= minimumNaturalRollForSuccess || roll + tackling >= 10)
+            if (roll >= minimumNaturalRollForSuccess || roll + attribute + modifier >= 10)
             {
                 successfulRolls++;
             }

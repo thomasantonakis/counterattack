@@ -133,6 +133,12 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
             row.player.text = PlayerName(row.token);
             int penalty = header.GetHeaderPenalty(row.token);
             row.attribute.text = AttributeText(row.token.IsGoalKeeper, header.GetHeaderAttribute(row.token), penalty);
+            if (header.headerAtGoalDeclared && rows == attackers)
+            {
+                float xGoals = header.CalculateHeaderExpectedGoals(row.token,
+                    includeGoalkeeperSave: !header.defenderWillJump.Contains(header.hexGrid.GetDefendingGK()));
+                row.attribute.text += $" · xGoals {xGoals:0.00}";
+            }
             var settings = MatchManager.Instance.gameData.gameSettings;
             var palette = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(
                 row.token.isHomeTeam ? settings.homeKit : settings.awayKit));
@@ -241,10 +247,11 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
         fields.result.text = $"Roll {roll.roll} · {result}";
         if (!isDirection) yield return WaitForDismissal();
     }
-    public bool BeginRecovery(LooseBallManager manager, PlayerToken token)
+    public bool BeginRecovery(LooseBallManager manager, PlayerToken token, bool useSaving = false, int modifier = 0)
     {
-        if (!RecoveryBound || token == null || token.IsGoalKeeper || scatterHistoryOwner != manager
+        if (!RecoveryBound || token == null || scatterHistoryOwner != manager
             || !isActiveAndEnabled) return false;
+        useSaving |= token.IsGoalKeeper;
         owner = manager; loose = manager; header = null;
         complete = IsResultHeld = suspended = false;
         IsOpen = true;
@@ -252,9 +259,10 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
         recoveryPlayer.playerName.text = PlayerName(token);
         var settings = MatchManager.Instance.gameData.gameSettings;
         recoveryPlayer.teamName.text = token.isHomeTeam ? settings.homeTeamName : settings.awayTeamName;
-        recoveryPlayer.attribute.text = $"Tackling: {token.tackling}";
-        recoveryPlayer.modifier.text = $"xRecovery {ExpectedStatsCalculator.CalculateRecoveryProbability(token):0.00}";
-        recoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(token.tackling, 6, 0);
+        int skill = useSaving ? token.saving : token.tackling;
+        recoveryPlayer.attribute.text = SingleRollResolutionPresentation.LooseRecoveryAttribute(token, useSaving, modifier);
+        recoveryPlayer.modifier.text = $"xRecovery {ExpectedStatsCalculator.CalculateRecoveryProbability(skill, modifier):0.00}";
+        recoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(skill + modifier, 6, 0);
         recoveryPlayer.total.text = "Awaiting roll";
         var palette = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(token.isHomeTeam ? settings.homeKit : settings.awayKit));
         recoveryPlayer.die.SetTeamColors(palette.Primary, palette.Secondary);
