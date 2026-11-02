@@ -86,6 +86,13 @@ public class DraftUIManager : MonoBehaviour
 
         int currentBatch = draftManager.GetCurrentBatchNumber();
         int totalBatches = draftManager.GetTotalBatchCount();
+        if (draftManager.IsDraftOrderPending)
+        {
+            draftTurnText.text = "ROLL FOR FIRST PICK";
+            draftBatchText.text = "Both managers roll";
+            draftMetaText.text = "Highest roll drafts first. Press R once for each manager.";
+            return;
+        }
 
         if (draftManager.IsDraftComplete())
         {
@@ -107,16 +114,16 @@ public class DraftUIManager : MonoBehaviour
         string pickLabel = picksLeftInBatch == 1 ? "pick" : "picks";
         string batchStarter = draftManager.GetCurrentBatchStarter();
 
-        draftTurnText.text = $"{currentTurn.ToUpperInvariant()} PICKS NOW";
+        draftTurnText.text = $"{draftManager.GetDraftTeamDisplayName(currentTurn)} PICKS NOW";
         draftBatchText.text = $"Batch {currentBatch} of {totalBatches} • {picksLeftInBatch} {pickLabel} left";
 
         if (currentBatch <= 1)
         {
-            draftMetaText.text = $"Coin toss: {draftManager.GetFirstBatchStarter()} starts batch 1.";
+            draftMetaText.text = $"First-pick roll: {draftManager.GetDraftTeamDisplayName(draftManager.GetFirstBatchStarter())} starts batch 1.";
         }
         else
         {
-            draftMetaText.text = $"{batchStarter} started this batch. Batch starters alternate every 4 picks.";
+            draftMetaText.text = $"{draftManager.GetDraftTeamDisplayName(batchStarter)} started this batch. Batch starters alternate every 4 picks.";
         }
     }
     // Method to load the previous scene

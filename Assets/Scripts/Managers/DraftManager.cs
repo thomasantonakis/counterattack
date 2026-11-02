@@ -86,6 +86,8 @@ public class DraftManager : MonoBehaviour
     public TMP_Text refereeText; // Reference to the TMP_Text for the referee
     public TMP_Text homeTeamName; // Reference to the TMP_Text for the Home Team
     public TMP_Text awayTeamName; // Reference to the TMP_Text for the Away Team
+    public DraftOrderPanelController draftOrderPanel;
+    public bool IsDraftOrderPending { get; private set; }
 
     private enum FreeDraftPhase
     {
@@ -108,7 +110,7 @@ public class DraftManager : MonoBehaviour
         // 1. Load the game-settings JSON produced by CreateNewHSGameScene.
         // 2. Filter/shuffle the outfielder and goalkeeper pools from the setup toggles.
         // 3. Create roster slots for both teams and auto-assign the two GKs per side.
-        // 4. Flip who picks first, then deal 4 outfield cards at a time until squads are full.
+        // 4. Both managers roll for first pick, then deal alternating 4-card batches.
         LoadGameSettings();
         ApplySettingsToDraft();
         LoadPlayersFromCSV("outfield_players");  // Load players from the CSV
@@ -124,10 +126,31 @@ public class DraftManager : MonoBehaviour
         }
 
         AssignGoalkeepersToSlots();  // Assign GKs before dealing player cards
-        PerformCoinFlip();
+        StartCoroutine(BeginRegularDraftWithRolls());
+    }
+
+    private IEnumerator BeginRegularDraftWithRolls()
+    {
+        IsDraftOrderPending = true;
+        GetDraftUIManager()?.RefreshDraftStateUI();
+        if (draftOrderPanel == null || !draftOrderPanel.Open(currentSettings))
+        {
+            Debug.LogError("Regular Draft requires its authored first-pick roll panel.");
+            yield break;
+        }
+        while (draftOrderPanel.IsOpen) yield return null;
+        if (!draftOrderPanel.HomeWon.HasValue) yield break;
+        currentTeamTurn = draftOrderPanel.HomeWon.Value ? "Home" : "Away";
+        isHomeFirstInNextRound = draftOrderPanel.HomeWon.Value;
+        firstBatchStarter = currentBatchStarter = currentTeamTurn;
+        IsDraftOrderPending = false;
         DealNewDraftCards();  // Start the first draft round
         TryAutoPickSinglePlayerAwayTurns();
     }
+
+    public string GetDraftTeamDisplayName(string side)
+        => side == "Home" ? DraftOrderPanelController.TeamName(currentSettings, true)
+            : side == "Away" ? DraftOrderPanelController.TeamName(currentSettings, false) : side ?? "";
 
     private void StartFreeDraftFlow()
     {
@@ -777,6 +800,7 @@ public class DraftManager : MonoBehaviour
 
     private string GetRegularDraftAutomationBlockReason()
     {
+        if (IsDraftOrderPending) return "managers are rolling for first draft pick.";
         if (SceneManager.GetActiveScene().name != DraftSceneName)
         {
             return "active scene is not Draft.unity.";
@@ -842,7 +866,7 @@ public class DraftManager : MonoBehaviour
 
     private bool IsSinglePlayerCpuDraftTurn()
     {
-        return IsSinglePlayerRegularDraftMode()
+        return !IsDraftOrderPending && IsSinglePlayerRegularDraftMode()
             && IsCurrentDraftTeamCpuControlled()
             && !IsDraftComplete();
     }
@@ -1365,6 +1389,7 @@ public class DraftManager : MonoBehaviour
     // Validate the target panel based on the current team's turn
     public bool IsValidTeamPanel(string rosterName)
     {
+        if (IsDraftOrderPending) return false;
         if (IsCurrentFreeDraftPhaseArcade())
         {
             bool isArcadePanel = rosterName == "HomeRoster" || rosterName == "AwayRoster";
