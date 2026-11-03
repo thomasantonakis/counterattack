@@ -813,6 +813,7 @@ public class PenaltyShootoutManager : MonoBehaviour
             yield return StartCoroutine(MoveTokenStraightToHex(occupyingToken, occupantRest, false, isDefense));
         }
 
+        using var movement = token.TrackMovement();
         HexCell previousHex = token.GetCurrentHex();
         if (previousHex != null)
         {

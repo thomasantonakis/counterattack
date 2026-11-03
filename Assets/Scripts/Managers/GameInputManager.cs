@@ -511,6 +511,19 @@ public class GameInputManager : MonoBehaviour
             return;
         }
 
+        ApplyHoverTarget(newHoveredToken, newHoveredHex, previewOnly);
+    }
+
+    private void ApplyHoverTarget(PlayerToken newHoveredToken, HexCell newHoveredHex, bool previewOnly)
+    {
+        // Suppress both reach/path previews and token-card/name hover. Do not
+        // reinterpret the moving token's intermediate hex as an empty-hex hover.
+        if (newHoveredToken != null && newHoveredToken.IsMoving)
+        {
+            ClearHover();
+            return;
+        }
+
         // ✅ Only update hover state when it changes
         if (newHoveredToken != hoveredToken || newHoveredHex != hoveredHex || lastHoverWasPreviewOnly && !previewOnly)
         {

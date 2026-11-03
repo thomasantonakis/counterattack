@@ -961,6 +961,7 @@ public class GoalFlowManager : MonoBehaviour
 
     private IEnumerator MoveTokenStraightToHex(PlayerToken token, HexCell targetHex, bool isForward, bool isDefense)
     {
+        using var movement = token.TrackMovement();
         Vector3 startPos = token.transform.position;
         Vector3 endPos = targetHex.transform.position;
 

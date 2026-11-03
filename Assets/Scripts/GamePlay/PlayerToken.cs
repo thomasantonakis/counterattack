@@ -12,6 +12,24 @@ public class PlayerToken : MonoBehaviour
     private bool _isGk = false;
     public bool isGk => _isGk;
     public bool IsGoalKeeper => isGk;
+    private int movementDepth;
+    public bool IsMoving => movementDepth > 0;
+
+    // Scopes also release on iterator disposal and keep overlapping animations
+    // from marking a token stationary before its final movement has completed.
+    public IDisposable TrackMovement() => new TokenMovementScope(this);
+
+    private sealed class TokenMovementScope : IDisposable
+    {
+        private PlayerToken token;
+        public TokenMovementScope(PlayerToken token) { this.token = token; token.movementDepth++; }
+        public void Dispose()
+        {
+            if (token == null) return;
+            token.movementDepth = Mathf.Max(0, token.movementDepth - 1);
+            token = null;
+        }
+    }
     [SerializeField] private bool isDribblerDebug;
     [SerializeField] private HexCell occupiedHexDebug;
     private static Ball ball;
@@ -428,6 +446,7 @@ public class PlayerToken : MonoBehaviour
             yield break;
         }
 
+        using var movement = TrackMovement();
         // Get starting and target positions
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();

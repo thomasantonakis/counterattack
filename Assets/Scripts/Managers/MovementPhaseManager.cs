@@ -2316,6 +2316,7 @@ public class MovementPhaseManager : MonoBehaviour
     )
     {
         Debug.Log($"MoveTokenAlongPath: shouldCarryBall: {shouldCarryBall}");
+        using var movement = token.TrackMovement();
         isPlayerMoving = true;  // Player starts moving
         float originalY = token.transform.position.y;
         HexCell originalHex = token.GetCurrentHex();

@@ -362,6 +362,7 @@ public class KickoffManager : MonoBehaviour
             yield break;
         }
 
+        using var movement = token.TrackMovement();
         Vector3 startPosition = token.transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();
         targetPosition.y = Mathf.Max(targetPosition.y, startPosition.y);

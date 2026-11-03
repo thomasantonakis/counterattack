@@ -489,6 +489,7 @@ public class GKPushManager : MonoBehaviour
 
     private IEnumerator MoveTokenAlongGround(PlayerToken token, HexCell targetHex, float duration)
     {
+        using var movement = token.TrackMovement();
         Vector3 startPosition = token.transform.position;
         Vector3 targetPosition = new(targetHex.GetHexCenter().x, startPosition.y, targetHex.GetHexCenter().z);
         if (duration <= 0f)
