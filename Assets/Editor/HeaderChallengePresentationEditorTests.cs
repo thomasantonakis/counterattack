@@ -399,6 +399,128 @@ public sealed class HeaderChallengePresentationEditorTests
         finally { EditorSceneManager.ClosePreviewScene(scene); }
     }
 
+    [TestCase(true, true, 1, false)]
+    [TestCase(false, true, 4, false)]
+    [TestCase(true, false, 5, false)]
+    [TestCase(false, false, 6, true)]
+    public void FreeKickRestoresShooterBesideWallAndUpdatedSaving(bool home, bool left, int roll, bool jackpot)
+    {
+        var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Room.unity");
+        try
+        {
+            var panel = scene.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<DuelResolutionPanelController>(true)).Single();
+            SetInstance(panel);
+            var match = AccuracyMatch();
+            match.homeTeamDirection = home == left ? MatchManager.TeamAttackingDirection.LeftToRight : MatchManager.TeamAttackingDirection.RightToLeft;
+            match.awayTeamDirection = home == left ? MatchManager.TeamAttackingDirection.RightToLeft : MatchManager.TeamAttackingDirection.LeftToRight;
+            var attacker = Component<PlayerToken>("FK shooter", false);
+            attacker.playerName = "FK shooter"; attacker.shooting = 5; attacker.isHomeTeam = home;
+            var keeper = Component<PlayerToken>("FK keeper", false);
+            keeper.playerName = "FK keeper"; keeper.isHomeTeam = !home; keeper.ConvertToGK(); keeper.saving = 5;
+            var origin = Component<HexCell>("FK origin", false);
+            origin.isDifficultShotPosition = true; // Free kicks apply only the outside-box penalty.
+            var keeperHex = Component<HexCell>("Keeper hex", false);
+            keeperHex.isDefenseOccupied = true; keeperHex.occupyingToken = keeper;
+            var shot = Component<ShotManager>("FK shot", false);
+            shot.hexGrid = Component<HexGrid>("Grid", false); shot.hexGrid.cells = new[,] { { keeperHex } };
+            shot.shotType = "freeKick"; shot.shooter = attacker; shot.isWaitingForShotRoll = true;
+            SetField(shot, "freeKickShotOriginHex", origin);
+            var begin = typeof(ShotManager).GetMethod("BeginFreeKickShotPresentation", Private);
+            string randomBefore = JsonUtility.ToJson(UnityEngine.Random.state);
+            Assert.That(begin.Invoke(shot, null), Is.True);
+            var attack = left ? panel.leftPlayer : panel.rightPlayer;
+            var defense = left ? panel.rightPlayer : panel.leftPlayer;
+            Assert.That(panel.DribblerOnLeft, Is.EqualTo(left));
+            Assert.That(attack.attribute.text, Is.EqualTo("Shooting 5 -1 = 4 (outside the box)"));
+            Assert.That(attack.modifier.text, Does.Contain("xGoals"));
+            Assert.That(attack.guidance.text, Does.Contain("Power 9+"));
+            Assert.That(attack.die.IsAnimating, Is.True);
+            Assert.That(defense.die.IsAnimating, Is.False);
+            shot.shooterRoll = roll; shot.totalShotPower = jackpot ? 50 : 4 + roll;
+            SetField(shot, "shooterRollWasJackpot", jackpot);
+            shot.isWaitingForShotRoll = false;
+            string guidance = ShotManager.FreeKickShotGuidance(roll, shot.totalShotPower);
+            var result = panel.ResolveSingle(shot,
+                new GameplayDiceRollResult { roll = roll, isJackpot = jackpot, jackpotEnabled = true },
+                guidance, resolvedTotal: shot.totalShotPower);
+            Assert.That(result.MoveNext(), Is.True);
+            Assert.That(panel.IsComplete, Is.True);
+            string frozen = attack.total.text;
+            Assert.That(panel.outcome.text, Is.EqualTo(guidance));
+            panel.ToggleResultHold(); Assert.That(panel.IsResultHeld, Is.True);
+            Assert.That(panel.Dismiss(), Is.True);
+            Assert.That(result.MoveNext(), Is.False);
+            Assert.That(DuelResolutionPanelController.IsVisible, Is.False, "The GK box move must receive pitch input.");
+
+            if (roll == 1 || shot.totalShotPower < 9)
+            {
+                var blocker = Component<PlayerToken>("Wall defender", false);
+                blocker.playerName = "Wall defender"; blocker.isHomeTeam = !home;
+                shot.isWaitingForBlockDiceRoll = true;
+                Assert.That(begin.Invoke(shot, null), Is.True);
+                Assert.That(panel.ContinueShotBlock(shot, () => shot.isWaitingForBlockDiceRoll, blocker,
+                    "Tackling: 4 · on-path", "Roll 5–6: block", guidance), Is.True);
+                Assert.That(attack.total.text, Is.EqualTo(frozen));
+                Assert.That(attack.die.IsAnimating, Is.False);
+                Assert.That(defense.playerName.text, Does.Contain("Wall defender"));
+                Assert.That(defense.die.IsAnimating, Is.True);
+                Assert.That(DuelResolutionPanelController.ConsumeKey(new KeyPressData(KeyCode.R, false, false, false)), Is.False);
+                var failed = panel.ResolveSingle(shot, new GameplayDiceRollResult { roll = 1 }, "BLOCK FAILED");
+                Assert.That(failed.MoveNext(), Is.True); panel.Dismiss();
+                shot.isWaitingForBlockDiceRoll = false;
+                if (roll == 1) return; // A natural one never reaches Saving.
+            }
+
+            // Restore after the box move with a freshly calculated distance penalty.
+            var interactionType = typeof(ShotManager).GetNestedType("ShotInteraction", BindingFlags.NonPublic);
+            var interaction = Activator.CreateInstance(interactionType, true);
+            interactionType.GetField("defender").SetValue(interaction, keeper);
+            interactionType.GetField("gkPenalty").SetValue(interaction, (int?)-1);
+            var typeField = interactionType.GetField("type");
+            typeField.SetValue(interaction, Enum.Parse(typeField.FieldType, "GKSave"));
+            shot.isWaitingForGKDiceRoll = true;
+            typeof(ShotManager).GetMethod("BeginGroundSavePresentation", Private).Invoke(shot, new[] { interaction });
+            Assert.That(panel.IsAwaitingRoll, Is.True);
+            Assert.That(attack.total.text, Is.EqualTo(frozen));
+            Assert.That(attack.die.IsAnimating, Is.False);
+            Assert.That(attack.guidance.text, Is.EqualTo(guidance));
+            Assert.That(defense.playerName.text, Does.Contain("FK keeper"));
+            Assert.That(defense.attribute.text, Is.EqualTo("Saving 5 -1 = 4 (Distance Penalty)"));
+            Assert.That(defense.die.IsAnimating, Is.True);
+            Assert.That(JsonUtility.ToJson(UnityEngine.Random.state), Is.EqualTo(randomBefore), "Restoring panels must not roll again.");
+
+            var loose = Component<LooseBallManager>("FK loose ball", false);
+            if (!jackpot)
+            {
+                var save = panel.ResolveSingle(shot, new GameplayDiceRollResult { roll = 6 }, "SAVED", resolvedTotal: 10);
+                Assert.That(save.MoveNext(), Is.True); panel.Dismiss();
+                shot.isWaitingForGKDiceRoll = false; shot.isWaitingforHandlingTest = true;
+                keeper.handling = 4;
+                typeof(ShotManager).GetMethod("BeginHeaderHandlingPresentation", Private).Invoke(shot, new object[] { keeper });
+                Assert.That(panel.title.text, Is.EqualTo("Free Kick Shot · Handling"));
+                Assert.That(panel.singlePlayer.die.IsAnimating, Is.True);
+                panel.ResolveSingle(shot, new GameplayDiceRollResult { roll = 6 }, "SPILLED",
+                    continueWithScatter: true, scatterOwner: loose);
+            }
+            else panel.ResolveSingle(shot, new GameplayDiceRollResult { roll = 6, isJackpot = true, jackpotEnabled = true },
+                "TIED SAVE", continueWithScatter: true, scatterOwner: loose, resolvedTotal: 50);
+            Assert.That(panel.BeginLooseBall(loose, () => true, keeper, true), Is.True);
+            Assert.That(panel.scatterContinuationContent.activeSelf, Is.True);
+            Assert.That(panel.scatterCaption.text, Does.Contain("FK keeper"));
+            Assert.That(panel.continuationDirection.die.IsAnimating, Is.True);
+            Assert.That(panel.continuationDistance.die.IsAnimating, Is.False);
+            panel.CancelSingle(loose);
+        }
+        finally { EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    [TestCase(1, 10, "Natural 1 · Off target unless blocked")]
+    [TestCase(4, 8, "Shot power below 9 · Outfield blocks may attempt")]
+    [TestCase(5, 9, "Perfect height · Outfield blocks skipped")]
+    [TestCase(6, 50, "Perfect height · Outfield blocks skipped")]
+    public void FreeKickPresentationExplainsNaturalOneAndPerfectHeight(int roll, int power, string expected)
+        => Assert.That(ShotManager.FreeKickShotGuidance(roll, power), Is.EqualTo(expected));
+
     [Test]
     public void ShotPanelXGoalsUsesCapturedDefendersWithoutConditioningOnRealizedRolls()
     {
@@ -571,6 +693,159 @@ public sealed class HeaderChallengePresentationEditorTests
             else header.Cancel(loose);
         }
         finally { EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    [TestCase(MatchManager.GameState.GoalKick, false, false, 0, true)] // Offer before K.
+    [TestCase(MatchManager.GameState.GoalKick, true, true, 0, true)]
+    [TestCase(MatchManager.GameState.HighPass, true, true, 5, true)] // Committed GK kick, 21 hexes.
+    [TestCase(MatchManager.GameState.HighPass, true, true, 9, false)] // Opposite final third.
+    [TestCase(MatchManager.GameState.HighPass, true, true, -14, false)] // Below the minimum.
+    [TestCase(MatchManager.GameState.HighPass, true, false, 0, false)] // Ordinary HP still capped.
+    [TestCase(MatchManager.GameState.HighPass, true, false, -4, true)]
+    public void GoalkeeperTargetMapUsesExtendedRangeBeforeAndAfterCommit(MatchManager.GameState state,
+        bool activated, bool goalkeeperKick, int targetX, bool allowed)
+    {
+        var match = AccuracyMatch(); match.currentState = state;
+        var hp = Component<HighPassManager>("Goal-kick target map", false);
+        hp.isActivated = activated; hp.isGoalkeeperKick = goalkeeperKick; hp.minPassDistance = 3;
+        var source = Component<HexCell>("Goal-kick spot", false);
+        source.coordinates = new Vector3Int(-16, 0, 0); source.isInFinalThird = -1;
+        var target = Component<HexCell>("Receiving target", false);
+        target.coordinates = new Vector3Int(targetX, 0, 0); target.isInFinalThird = targetX >= 8 ? 1 : targetX <= -8 ? -1 : 0;
+        var receiver = Component<PlayerToken>("Reachable receiver", false);
+        var reachable = new Dictionary<HexCell, List<PlayerToken>> { [target] = new() { receiver } };
+        var result = typeof(HighPassManager).GetMethod("IsHighPassTargetAvailableForPrecompute", Private)
+            .Invoke(hp, new object[] { target, source, reachable, new HashSet<HexCell>() });
+        Assert.That(result, Is.EqualTo(allowed));
+        var preview = (GameplayActionPreview)typeof(HighPassManager).GetMethod("BuildHighPassTargetPreview", Private)
+            .Invoke(hp, new object[] { target, false, "", false });
+        bool goalkeeperRules = goalkeeperKick || (!activated && state == MatchManager.GameState.GoalKick);
+        Assert.That(preview.imposedMaxDistance, Is.EqualTo(goalkeeperRules ? 0 : 15),
+            "Telemetry must not reintroduce a 15-hex goalkeeper-kick limit.");
+    }
+
+    [TestCase(false, false, false)] // Free kick / regular high pass.
+    [TestCase(true, false, false)] // Corner skips the movement phases.
+    [TestCase(false, true, false)] // Goalkeeper distribution.
+    [TestCase(false, true, true)] // Goal kick.
+    public void HighPassAccuracyShowsTheRestartTakerAndAnimatedTeamDie(bool corner, bool goalkeeper, bool goalKick)
+    {
+        var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Room.unity");
+        Material targetMaterial = null;
+        try
+        {
+            var panel = scene.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<DuelResolutionPanelController>(true)).Single();
+            SetInstance(panel);
+            AccuracyMatch();
+            var passer = Component<PlayerToken>("Restart taker", false);
+            passer.playerName = "Restart taker"; passer.isHomeTeam = false; passer.highPass = 4;
+            if (goalkeeper) passer.ConvertToGK();
+            // Keep LastToken unset: the explicitly selected restart taker remains authoritative.
+            var hp = Component<HighPassManager>("HP", false);
+            hp.isActivated = true; hp.isCornerKick = corner; hp.isGoalkeeperKick = goalkeeper;
+            SetProperty(hp, "IsDirectGoalKick", goalKick);
+            hp.SetPendingSetPieceTakerForCommit(passer);
+            hp.hexGrid = Component<HexGrid>("Grid", false);
+            if (corner)
+            {
+                var target = Component<HexCell>("Corner target", false);
+                target.hexRenderer = target.gameObject.AddComponent<MeshRenderer>();
+                targetMaterial = new Material(Shader.Find("Sprites/Default"));
+                target.hexRenderer.material = targetMaterial;
+                typeof(HighPassManager).GetMethod("ConfirmHighPassTargetSelection", Private)
+                    .Invoke(hp, new object[] { target, false });
+            }
+            else typeof(HighPassManager).GetMethod("ForfeitDefenderHighPassMove", Private).Invoke(hp, null);
+            Assert.That(hp.isWaitingForAccuracyRoll, Is.True);
+            AssertAccuracyPanel(panel, passer, "High Pass Accuracy", 8, "Success: roll 4–6");
+            Assert.That(panel.singlePlayer.modifier.text, Is.EqualTo($"Accuracy {0.5f:P1}"));
+
+            // Pending checks can recover after an overlapping originating result closes.
+            panel.CancelSingle(hp);
+            typeof(HighPassManager).GetMethod("LateUpdate", Private).Invoke(hp, null);
+            Assert.That(panel.IsOpen, Is.True);
+            panel.CancelSingle(hp);
+        }
+        finally
+        {
+            if (targetMaterial != null) Object.DestroyImmediate(targetMaterial);
+            EditorSceneManager.ClosePreviewScene(scene);
+        }
+    }
+
+    [TestCase(-1, 1, 4, 10, "Success: roll 6", 1f / 6f)]
+    [TestCase(1, -1, 4, 10, "Success: roll 6", 1f / 6f)]
+    [TestCase(-1, -1, 4, 9, "Success: roll 5–6", 2f / 6f)]
+    [TestCase(1, 1, 4, 9, "Success: roll 5–6", 2f / 6f)]
+    [TestCase(0, 1, 4, 9, "Success: roll 5–6", 2f / 6f)]
+    [TestCase(-1, 0, 4, 9, "Success: roll 5–6", 2f / 6f)]
+    [TestCase(0, 0, 4, 9, "Success: roll 5–6", 2f / 6f)]
+    [TestCase(-1, 1, 3, 10, "Success: jackpot only", 1f / 12f)]
+    [TestCase(-1, -1, 3, 9, "Success: roll 6", 1f / 6f)]
+    public void LongBallFreeKickUsesAdjacentTakerAndActualBallThirds(int sourceThird, int targetThird,
+        int highPass, int threshold, string guidance, float probability)
+    {
+        var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Room.unity");
+        try
+        {
+            var panel = scene.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<DuelResolutionPanelController>(true)).Single();
+            SetInstance(panel);
+            var match = AccuracyMatch();
+            match.helperFunctions = Component<HelperFunctions>("Dice helpers", false);
+            var source = Component<HexCell>("Unoccupied restart spot", false); source.isInFinalThird = sourceThird;
+            var target = Component<HexCell>("LB target", false); target.isInFinalThird = targetThird;
+            var passer = Component<PlayerToken>("Adjacent free kick taker", false);
+            passer.playerName = "Adjacent taker"; passer.isHomeTeam = true; passer.highPass = highPass;
+            match.LastTokenToTouchTheBallOnPurpose = passer;
+            var lb = Component<LongBallManager>("LB", false);
+            lb.ball = Component<Ball>("Ball", false); SetField(lb.ball, "currentCell", source);
+            lb.currentTargetHex = target;
+            var priorOwner = Component<ShotManager>("Previous result", false);
+            Assert.That(panel.BeginSingle(priorOwner, () => true, "Previous result", passer, "", "", true), Is.True);
+            // A stale cached danger flag must not determine the displayed range or probability.
+            SetField(lb, "isDangerous", threshold != 10);
+            typeof(LongBallManager).GetMethod("BeginAccuracyRoll", Private).Invoke(lb, null);
+            Assert.That(panel.title.text, Is.EqualTo("Previous result"), "Accuracy must not replace an originating result.");
+            panel.CancelSingle(priorOwner);
+            typeof(LongBallManager).GetMethod("LateUpdate", Private).Invoke(lb, null);
+            Assert.That(source.GetOccupyingToken(), Is.Null);
+            AssertAccuracyPanel(panel, passer, "Long Ball Accuracy", threshold, guidance);
+            Assert.That(panel.singlePlayer.attribute.text.Contains("Opposite final thirds"), Is.EqualTo(threshold == 10));
+            Assert.That(lb.AccuracyProbability(highPass), Is.EqualTo(probability).Within(.00001f));
+            Assert.That(panel.singlePlayer.modifier.text, Is.EqualTo($"Accuracy {probability:P1}"));
+            panel.CancelSingle(lb);
+            typeof(LongBallManager).GetMethod("LateUpdate", Private).Invoke(lb, null);
+            Assert.That(panel.IsOpen, Is.True);
+            panel.CancelSingle(lb);
+        }
+        finally { EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
+    private MatchManager AccuracyMatch()
+    {
+        var match = Component<MatchManager>("Accuracy match", false);
+        match.gameData = new MatchManager.GameData(); match.difficulty_level = 3;
+        match.gameData.gameSettings.homeTeamName = "Home"; match.gameData.gameSettings.awayTeamName = "Away";
+        match.gameData.gameSettings.homeKit = "blue"; match.gameData.gameSettings.awayKit = "red_white";
+        MatchManager.Instance = match;
+        return match;
+    }
+
+    private static void AssertAccuracyPanel(DuelResolutionPanelController panel, PlayerToken passer,
+        string title, int threshold, string guidance)
+    {
+        Assert.That(panel.IsOpen && panel.IsAwaitingRoll && panel.visuals.activeSelf, Is.True);
+        Assert.That(panel.title.text, Is.EqualTo(title));
+        Assert.That(panel.singlePlayer.playerName.text, Does.Contain(passer.playerName));
+        Assert.That(panel.singlePlayer.teamName.text, Is.EqualTo(passer.isHomeTeam ? "Home" : "Away"));
+        Assert.That(panel.singlePlayer.attribute.text, Does.Contain($"High Pass {passer.highPass} · Target {threshold}"));
+        Assert.That(panel.singlePlayer.guidance.text, Is.EqualTo(guidance));
+        Assert.That(panel.singlePlayer.die.IsAnimating, Is.True);
+        var settings = MatchManager.Instance.gameData.gameSettings;
+        var colors = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(passer.isHomeTeam ? settings.homeKit : settings.awayKit));
+        Assert.That(panel.singlePlayer.die.background.color, Is.EqualTo(colors.Primary));
+        Assert.That(panel.singlePlayer.die.face.color, Is.EqualTo(colors.Secondary));
+        Assert.That(DuelResolutionPanelController.ConsumeKey(new KeyPressData(KeyCode.R, false, false, false)), Is.False);
     }
 
     private HeaderChallengePanelController Panel()

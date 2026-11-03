@@ -326,7 +326,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
 
     public bool BeginShotComparison(ShotManager manager, Func<bool> waiting, string situation,
         PlayerToken shooter, PlayerToken goalkeeper, string shootingAttribute, string savingAttribute,
-        float? expectedGoals = null)
+        float? expectedGoals = null, string shooterGuidance = null, string goalkeeperGuidance = null)
     {
         if (shooter == null || goalkeeper == null) return false;
         if (!BeginSingle(manager, waiting, situation + " · Shot vs Saving", shooter, null, null, true)) return false;
@@ -343,11 +343,11 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         dribblerView.attribute.text = shootingAttribute;
         dribblerView.modifier.text = "SHOOTER" + (expectedGoals.HasValue ? $" · xGoals {expectedGoals.Value:0.00}" : "");
         dribblerView.total.text = "";
-        dribblerView.guidance.text = "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT";
+        dribblerView.guidance.text = shooterGuidance ?? "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT";
         defenderView.attribute.text = savingAttribute;
         defenderView.modifier.text = "GOALKEEPER SAVE";
         defenderView.total.text = "";
-        defenderView.guidance.text = "Shooter rolls first";
+        defenderView.guidance.text = goalkeeperGuidance ?? "Shooter rolls first";
         defenderView.die.Clear();
         dribblerView.die.Begin(true);
         singleRollView = dribblerView;
@@ -359,18 +359,46 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     }
 
     public bool ContinueShotSaving(ShotManager manager, Func<bool> waiting, PlayerToken goalkeeper,
-        int shotPower, int savingModifier, bool outsideBoxHandSave)
+        int shotPower, int savingModifier, bool outsideBoxHandSave,
+        string savingAttribute = null, string shooterGuidance = null)
     {
         if (!IsShotComparisonFor(manager) || stage != Stage.Transition || shotComparisonKeeper != goalkeeper) return false;
         singleWaiting = waiting;
         stage = Stage.Single;
         singleRollView = defenderView;
-        dribblerView.guidance.text = "Shot resolved · On target";
+        ConfigureHeaderSavePlayer(defenderView, goalkeeper);
+        if (savingAttribute != null) defenderView.attribute.text = savingAttribute;
+        defenderView.modifier.text = "GOALKEEPER SAVE";
+        defenderView.total.text = "";
+        dribblerView.guidance.text = shooterGuidance ?? "Shot resolved · On target";
         defenderView.guidance.text = outsideBoxHandSave ? "Tie or win: handball and red card · Lose: shot continues"
             : SingleRollResolutionPresentation.HeaderSaveGuidance(goalkeeper.saving, savingModifier, shotPower);
         defenderView.die.Begin(true);
         outcome.text = "";
         footer.text = "Press [R] — goalkeeper Saving roll";
+        return true;
+    }
+
+    // Free kicks roll the shooter before the wall. Keep that resolved roll in the
+    // attacking column while the existing defending column presents each blocker.
+    public bool ContinueShotBlock(ShotManager manager, Func<bool> waiting, PlayerToken blocker,
+        string attribute, string guidance, string shooterGuidance)
+    {
+        if (!IsShotComparisonFor(manager) || stage != Stage.Transition || blocker == null) return false;
+        singleWaiting = waiting;
+        stage = Stage.Single;
+        ConfigureHeaderSavePlayer(defenderView, blocker);
+        defenderView.attribute.text = attribute;
+        defenderView.modifier.text = "DEFENDER BLOCK";
+        defenderView.total.text = "";
+        defenderView.guidance.text = guidance;
+        dribblerView.guidance.text = shooterGuidance;
+        defenderView.die.Begin(true);
+        singleRollView = defenderView;
+        title.text = "Free Kick Shot · Defender Block";
+        outcome.text = "";
+        footer.text = "Press [R] — defender block roll";
+        FitAndClamp();
         return true;
     }
 

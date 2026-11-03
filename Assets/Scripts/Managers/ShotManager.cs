@@ -2087,11 +2087,51 @@ public class ShotManager : MonoBehaviour
     }
 
     private int headerSavePresentationVersion;
-    private bool UsesGroundShotPresentation => !isHeaderAtGoal && !IsFreeKickShot() && !IsPenaltyShot();
+    private bool UsesGroundShotPresentation => !isHeaderAtGoal && !IsPenaltyShot();
+
+    public static string FreeKickShotGuidance(int naturalRoll, int power)
+        => naturalRoll <= 0 ? "Natural 1: off target unless blocked · Power 9+: outfield blocks skipped · JACKPOT: perfect height"
+            : naturalRoll == 1 ? "Natural 1 · Off target unless blocked"
+            : power >= 9 ? "Perfect height · Outfield blocks skipped"
+            : "Shot power below 9 · Outfield blocks may attempt";
+
+    private bool BeginFreeKickShotPresentation()
+    {
+        var panel = DuelResolutionPanelController.Instance;
+        if (panel == null) return false;
+        if (panel.IsShotComparisonFor(this)) return true;
+        var keeper = hexGrid.GetDefendingGK();
+        var interaction = interceptors.FirstOrDefault(entry => entry != null && entry.IsGK)
+            ?? expectedGoalGkSaveInteraction;
+        if (keeper == null || !panel.BeginShotComparison(this,
+            () => isWaitingForShotRoll || isWaitingForGKDiceRoll || isWaitingForBlockDiceRoll,
+            "Free Kick Shot", shooter, keeper, BuildShotPresentationAttribute(),
+            interaction != null ? BuildGroundSaveAttribute(interaction) : $"Saving {keeper.saving}",
+            CalculateFreeKickPresentationExpectedGoals(), FreeKickShotGuidance(0, 0),
+            "Pending shot power, blocks and goalkeeper positioning")) return false;
+        // Restore the manager's authoritative shot after a result countdown or GK
+        // movement. Resolving the view consumes no gameplay dice and never rerolls.
+        if (shooterRoll > 0)
+            panel.ResolveSingle(this, new GameplayDiceRollResult
+                { roll = shooterRoll, isJackpot = shooterRollWasJackpot, jackpotEnabled = true },
+                FreeKickShotGuidance(shooterRoll, totalShotPower), resolvedTotal: totalShotPower,
+                continueWithNextRoll: true);
+        return true;
+    }
+
+    private float CalculateFreeKickPresentationExpectedGoals()
+    {
+        // Initial presentation needs the aimed trajectory, before gameplay starts
+        // gathering the post-roll block list. Do not change the logged shot context.
+        if (shooterRoll == 0 && TryCalculateExpectedGoalsPreview(targetHex, FreeKickShotType,
+            out float expectedGoals, out _, out _, out _)) return expectedGoals;
+        return CalculateCurrentShotExpectedGoals();
+    }
 
     private void BeginShooterPresentation()
     {
         if (!UsesGroundShotPresentation) return;
+        if (IsFreeKickShot() && BeginFreeKickShotPresentation()) return;
         var keeper = interceptors.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
         var panel = DuelResolutionPanelController.Instance;
         if (keeper != null && panel != null && panel.BeginShotComparison(this,
@@ -2100,7 +2140,8 @@ public class ShotManager : MonoBehaviour
         DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingForShotRoll,
             GetActiveShotInstructionLabel() + " · Shooter", shooter,
             BuildShotPresentationAttribute(),
-            $"xGoals {CalculateCurrentShotExpectedGoals():0.00}", true, "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT");
+            $"xGoals {CalculateCurrentShotExpectedGoals():0.00}", true, IsFreeKickShot() ? FreeKickShotGuidance(0, 0)
+                : "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT");
     }
 
     private string BuildShotPresentationAttribute()
@@ -2130,8 +2171,10 @@ public class ShotManager : MonoBehaviour
         int modifier = interaction.gkPenalty ?? 0;
         var panel = DuelResolutionPanelController.Instance;
         if (panel == null) return;
+        if (IsFreeKickShot()) BeginFreeKickShotPresentation();
         if (panel.ContinueShotSaving(this, () => isWaitingForGKDiceRoll, keeper,
-            totalShotPower, modifier, interaction.isOutsideBoxGoalkeeperHandSave)) return;
+            totalShotPower, modifier, interaction.isOutsideBoxGoalkeeperHandSave,
+            BuildGroundSaveAttribute(interaction), IsFreeKickShot() ? FreeKickShotGuidance(shooterRoll, totalShotPower) : null)) return;
         // Some save interactions become available only after an external GK decision.
         // Reuse the already-resolved shot; no gameplay dice are consumed here.
         if (!panel.BeginShotComparison(this, () => isWaitingForGKDiceRoll, GetActiveShotInstructionLabel(),
@@ -2140,7 +2183,8 @@ public class ShotManager : MonoBehaviour
             { roll = shooterRoll, isJackpot = shooterRollWasJackpot, jackpotEnabled = true },
             "", resolvedTotal: totalShotPower, continueWithNextRoll: true);
         panel.ContinueShotSaving(this, () => isWaitingForGKDiceRoll, keeper,
-            totalShotPower, modifier, interaction.isOutsideBoxGoalkeeperHandSave);
+            totalShotPower, modifier, interaction.isOutsideBoxGoalkeeperHandSave,
+            BuildGroundSaveAttribute(interaction));
     }
     private static string FormatHeaderPower(int value) => value == 50 ? "JACKPOT" : value.ToString();
 
@@ -2601,6 +2645,7 @@ public class ShotManager : MonoBehaviour
         outsideBoxGKShotDecisionResolved = false;
         CaptureExpectedGoalInteractions(interceptors);
         isWaitingForShotRoll = true;
+        BeginShooterPresentation();
         yield return null;
     }
 
@@ -3076,11 +3121,16 @@ public class ShotManager : MonoBehaviour
             string blockType = GetShotBlockTypeLabel(currentShotInteraction);
             Debug.Log($"{currentShotInteraction.defender.name} attempts an {blockType} shot block at {currentShotInteraction.interactionHex.coordinates}. {BuildNeededRollInstruction(finalRollNeeded, " to deflect")}. [R]oll!");
             isWaitingForBlockDiceRoll = true;
+            string blockAttribute = $"Tackling: {tackling} · {blockType}";
+            string blockGuidance = BuildNeededRollInstruction(GetOutfieldBlockRequiredRoll(currentShotInteraction), " to deflect") + " · JACKPOT: block";
+            if (IsFreeKickShot() && BeginFreeKickShotPresentation()
+                && DuelResolutionPanelController.Instance.ContinueShotBlock(this, () => isWaitingForBlockDiceRoll,
+                    currentShotInteraction.defender, blockAttribute, blockGuidance,
+                    FreeKickShotGuidance(shooterRoll, totalShotPower))) yield break;
             if (UsesGroundShotPresentation)
                 DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingForBlockDiceRoll,
                     GetActiveShotInstructionLabel() + " · Defender Block", currentShotInteraction.defender,
-                    $"Tackling: {tackling} · {blockType}", null, true,
-                    BuildNeededRollInstruction(GetOutfieldBlockRequiredRoll(currentShotInteraction), " to deflect") + " · JACKPOT: block");
+                    blockAttribute, null, true, blockGuidance);
         }
     }
 
@@ -3190,6 +3240,7 @@ public class ShotManager : MonoBehaviour
         saveHex = gkInteraction.interactionHex;
         Debug.Log($"Free Kick Shot has reached GK {gkInteraction.defender.name}. Press [R] to roll for the save.");
         isWaitingForGKDiceRoll = true;
+        BeginGroundSavePresentation(gkInteraction);
     }
 
     private IEnumerator StartPenaltyGKPhase()
@@ -3471,9 +3522,11 @@ public class ShotManager : MonoBehaviour
         {
             int version = headerSavePresentationVersion;
             yield return SingleRollResolutionPresentation.Resolve(this, shotRoll,
-                $"Shot power: {FormatHeaderPower(totalShotPower)} · " + (shooterRoll == 1 ? "OFF TARGET" : "ON TARGET"),
+                $"Shot power: {FormatHeaderPower(totalShotPower)} · " + (IsFreeKickShot()
+                    ? FreeKickShotGuidance(shooterRoll, totalShotPower)
+                    : shooterRoll == 1 ? "OFF TARGET" : "ON TARGET"),
                 resolvedTotal: totalShotPower,
-                continueWithNextRoll: shooterRoll != 1 && interceptors.Count > 0 && interceptors[0].IsGK
+                continueWithNextRoll: !IsFreeKickShot() && shooterRoll != 1 && interceptors.Count > 0 && interceptors[0].IsGK
                     && DuelResolutionPanelController.Instance != null
                     && DuelResolutionPanelController.Instance.IsShotComparisonFor(this));
             if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;

@@ -37,11 +37,16 @@ public static class SingleRollResolutionPresentation
     }
 
     public static void Accuracy(MonoBehaviour owner, Func<bool> waiting, PlayerToken token,
-        string situation, float probability, int threshold, bool jackpotAlwaysSucceeds = false)
+        string situation, float probability, int threshold, bool jackpotAlwaysSucceeds = false,
+        bool oppositeFinalThirds = false)
     {
-        if (token == null) return;
+        // An originating result can still be closing when the next accuracy check starts.
+        // The manager retries while waiting; never replace or overlap that result.
+        if (token == null || HeaderChallengePanelController.IsVisible
+            || StoppageActionsPanelController.IsVisible || CoinTossPanelController.IsRoomVisible) return;
         DuelResolutionPanelController.Instance?.BeginSingle(owner, waiting, situation, token,
-            $"High Pass {token.highPass} · Target {threshold}", $"Accuracy {probability:P1}", true,
+            $"High Pass {token.highPass} · Target {threshold}"
+                + (oppositeFinalThirds ? " · Opposite final thirds" : ""), $"Accuracy {probability:P1}", true,
             AccuracyGuidance(token.highPass, threshold, jackpotAlwaysSucceeds));
     }
 

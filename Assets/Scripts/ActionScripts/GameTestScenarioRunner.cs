@@ -4865,6 +4865,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             "Free Kick Shot should wait for Noruega's shot roll after target selection."));
 
         AssertFreeKickShotPathSetup();
+        AssertFreeKickDicePresentation();
     }
 
     private void AssertFreeKickShotPathSetup()
@@ -5888,6 +5889,9 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         PlayerToken defendingGk = hexgrid.GetDefendingGK();
         HexCell destinationHex = hexgrid.GetHexCellAt(new Vector3Int(destination.x, 0, destination.y));
+        if (shotManager.shotType == "freeKick")
+            AssertTrue(!DuelResolutionPanelController.IsVisible,
+                "Free Kick result must release the pitch before the GK box move.");
         if (defendingGk != null && destinationHex != null && defendingGk.GetCurrentHex() == destinationHex)
         {
             Log($"Defending GK is already on ({destination.x},{destination.y}) for the Shooting branch; forfeiting the redundant GK move.");
@@ -5913,6 +5917,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             () => shotManager.isWaitingForBlockDiceRoll,
             3f,
             $"Shot should be waiting for {expectedDefenderName}'s block roll."));
+
+        AssertFreeKickDicePresentation();
 
         string currentDefenderName = GetCurrentShotInteractionDefenderName();
         AssertTrue(
@@ -5951,6 +5957,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             3f,
             $"Shot should be waiting for {expectedShooterName}'s shot roll."));
 
+        AssertFreeKickDicePresentation();
+
         string shooterName = GetTokenTestName(shotManager.shooter);
         AssertTrue(
             NamesMatch(shooterName, expectedShooterName),
@@ -5974,6 +5982,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             expectedShootingXGoals ??= CalculateCurrentShootingExpectedGoal();
         }
         yield return new WaitForSeconds(0.2f);
+        if (shotManager.shotType == "freeKick")
+        {
+            var panel = DuelResolutionPanelController.Instance;
+            AssertTrue(panel != null && panel.IsComplete,
+                "Free Kick shot power must be displayed before blockers or the GK move start.");
+            if (panel != null && rigRoll != 1 && shotManager.totalShotPower >= 9)
+                AssertTrue(panel.outcome.text.Contains("Perfect height") && panel.outcome.text.Contains("blocks skipped"),
+                    "Power 9+ must explain that all outfield blocks are skipped.");
+        }
         yield return StartCoroutine(DismissCompletedShotPresentation());
     }
 
@@ -5983,6 +6000,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             () => shotManager.isWaitingForGKDiceRoll,
             3f,
             $"Shot should be waiting for {expectedGoalkeeperName}'s save roll."));
+
+        AssertFreeKickDicePresentation();
 
         string currentDefenderName = GetCurrentShotInteractionDefenderName();
         AssertTrue(
@@ -6012,6 +6031,14 @@ public class GameTestScenarioRunner : MonoBehaviour
             () => shotManager.isWaitingforHandlingTest,
             3f,
             "Shot should be waiting for the GK handling test."));
+
+        if (shotManager.shotType == "freeKick")
+        {
+            var panel = DuelResolutionPanelController.Instance;
+            AssertTrue(panel != null && panel.IsAwaitingRoll && panel.title.text == "Free Kick Shot · Handling"
+                && panel.singlePlayer.die.IsAnimating,
+                "Free Kick saves must show the goalkeeper's animated Handling panel.");
+        }
 
         Log($"Rigging GK handling roll to {rigRoll}");
         StartCoroutine(shotManager.ResolveHandlingTest(rigRoll));
@@ -6090,6 +6117,32 @@ public class GameTestScenarioRunner : MonoBehaviour
         looseBallManager.PerformInterceptionRoll(rigRoll);
         yield return new WaitForSeconds(0.3f);
         yield return StartCoroutine(DismissCompletedShotPresentation());
+    }
+
+    private void AssertFreeKickDicePresentation()
+    {
+        if (shotManager.shotType != "freeKick") return;
+        var panel = DuelResolutionPanelController.Instance;
+        AssertTrue(panel != null && panel.IsOpen && panel.IsAwaitingRoll && panel.playerColumns.activeSelf,
+            "Free Kick rolls must use the authored two-column shot panel.");
+        if (panel == null || !panel.IsOpen) return;
+        bool attackLeft = (shotManager.shooter.isHomeTeam ? MatchManager.Instance.homeTeamDirection
+            : MatchManager.Instance.awayTeamDirection) == MatchManager.TeamAttackingDirection.LeftToRight;
+        var attack = attackLeft ? panel.leftPlayer : panel.rightPlayer;
+        var defense = attackLeft ? panel.rightPlayer : panel.leftPlayer;
+        AssertTrue(attack.playerName.text.Contains(shotManager.shooter.playerName) && attack.modifier.text.Contains("xGoals"),
+            "Free Kick attacker and xGoals must follow the team's attack direction.");
+        if (shotManager.isWaitingForShotRoll)
+            AssertTrue(attack.die.IsAnimating && !defense.die.IsAnimating,
+                "The Free Kick shooter rolls before the wall and goalkeeper.");
+        else
+        {
+            AssertTrue(!attack.die.IsAnimating && attack.total.text.Contains($"Total: {shotManager.totalShotPower}")
+                && defense.die.IsAnimating,
+                "Block and Saving panels must preserve the authoritative Free Kick shot power.");
+            AssertTrue(defense.playerName.text.Contains(GetCurrentShotInteractionDefenderName()),
+                "The defending die must belong to the actual pending blocker or goalkeeper.");
+        }
     }
 
     private IEnumerator DismissCompletedShotPresentation()

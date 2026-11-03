@@ -61,6 +61,11 @@ public class HighPassManager : MonoBehaviour
     public const int DefenderMoveRange = 3;
     private const int ACCURACY_THRESHOLD = 8;
 
+    // Goal-kick offers are evaluated before [K] activates the manager as well as
+    // during aiming. Both maps must use the goalkeeper's extended range.
+    private bool UsesGoalkeeperTargetRules => isGoalkeeperKick
+        || (!isActivated && MatchManager.Instance?.currentState == MatchManager.GameState.GoalKick);
+
     public static float AccuracyProbabilityForDecisionPreview(int highPassAttribute)
     {
         int accurate = 0;
@@ -111,6 +116,8 @@ public class HighPassManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (isWaitingForAccuracyRoll && !DuelResolutionPanelController.IsVisible)
+            ShowAccuracyPanel();
         if (ShouldShowCommittedTargetOverlay())
         {
             // Reapply only the visual overlay. Adding the target back to the
@@ -377,8 +384,8 @@ public class HighPassManager : MonoBehaviour
                 isValid,
                 willConfirm);
             details["targetTokenKey"] = preview.targetTokenKey ?? string.Empty;
-            details["imposedMinDistance"] = (isGoalkeeperKick ? minPassDistance : REGULAR_HIGH_PASS_MIN_DISTANCE).ToString();
-            details["imposedMaxDistance"] = MAX_PASS_DISTANCE.ToString();
+            details["imposedMinDistance"] = (UsesGoalkeeperTargetRules ? minPassDistance : REGULAR_HIGH_PASS_MIN_DISTANCE).ToString();
+            details["imposedMaxDistance"] = UsesGoalkeeperTargetRules ? "none" : MAX_PASS_DISTANCE.ToString();
             details["targetHexStepDistance"] = preview.targetHexStepDistance.ToString();
             outcome = isValid
                 ? willConfirm ? "target_confirmed" : "target_selected"
@@ -795,7 +802,9 @@ public class HighPassManager : MonoBehaviour
         }
 
         int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
-        if (distance > MAX_PASS_DISTANCE || distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
+        if (UsesGoalkeeperTargetRules
+            ? distance < minPassDistance || ballHex.isInFinalThird * targetHex.isInFinalThird == -1
+            : distance > MAX_PASS_DISTANCE || distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
         {
             return false;
         }
@@ -1095,7 +1104,7 @@ public class HighPassManager : MonoBehaviour
             willCommit = willConfirm,
             targetHex = RoomHexCoordinates.FromHex(targetHex),
             targetTokenKey = MatchManager.GetStableTokenKey(targetToken),
-            imposedMaxDistance = MAX_PASS_DISTANCE,
+            imposedMaxDistance = UsesGoalkeeperTargetRules ? 0 : MAX_PASS_DISTANCE, // No numeric cap for goalkeeper kicks.
             targetHexStepDistance = targetDistance,
             pathHexCount = pathHexCount
         };
@@ -1122,7 +1131,7 @@ public class HighPassManager : MonoBehaviour
         int distance = HexGridUtils.GetHexStepDistance(ballHex, targetHex);
         if (isGK)
         {
-            if (distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
+            if (distance < minPassDistance)
             {
                 return "TooClose";
             }
@@ -1152,7 +1161,7 @@ public class HighPassManager : MonoBehaviour
                 return "OutOfRange";
             }
 
-            if (distance < minPassDistance)
+            if (distance < REGULAR_HIGH_PASS_MIN_DISTANCE)
             {
                 return "TooClose";
             }
@@ -1234,10 +1243,7 @@ public class HighPassManager : MonoBehaviour
         if (isCornerKick)
         {
             lockedAttacker = null;
-            isWaitingForAccuracyRoll = true;
-            SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll,
-                MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "High Pass Accuracy",
-                AccuracyProbabilityForDecisionPreview(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose?.highPass ?? 0), ACCURACY_THRESHOLD);
+            BeginAccuracyRoll();
             Debug.Log("Waiting for accuracy roll... Please Press R key.");
             return;
         }
@@ -1306,7 +1312,7 @@ public class HighPassManager : MonoBehaviour
 
     private bool IsHighPassTargetAvailableForPreview(HexCell targetHex)
     {
-        return TryValidateHighPassTarget(targetHex, isGK: isGoalkeeperKick, updateEligibleAttackers: false, logWarnings: false);
+        return TryValidateHighPassTarget(targetHex, isGK: UsesGoalkeeperTargetRules, updateEligibleAttackers: false, logWarnings: false);
     }
 
     private bool TryValidateHighPassTarget(HexCell targetHex, bool isGK, bool updateEligibleAttackers, bool logWarnings)
@@ -1539,6 +1545,23 @@ public class HighPassManager : MonoBehaviour
         return defenderHex.GetNeighbors(hexGrid).Contains(kickHex);
     }
 
+    private PlayerToken AccuracyPasser => activeHighPassKickerForTargetExclusion
+        ?? MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose
+        ?? ball?.GetCurrentHex()?.GetOccupyingToken();
+
+    private void BeginAccuracyRoll()
+    {
+        isWaitingForAccuracyRoll = true;
+        ShowAccuracyPanel();
+    }
+
+    private void ShowAccuracyPanel()
+    {
+        PlayerToken passer = AccuracyPasser;
+        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll, passer,
+            "High Pass Accuracy", AccuracyProbabilityForDecisionPreview(passer?.highPass ?? 0), ACCURACY_THRESHOLD);
+    }
+
     public void PerformAccuracyRoll(int? rigroll = null)
     {
         RollInputOverride? rollOverride = rigroll.HasValue
@@ -1563,10 +1586,10 @@ public class HighPassManager : MonoBehaviour
         lockedAttacker = null;
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for High Pass. Please Press R key.");
-        PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken attackerToken = AccuracyPasser;
         if (attackerToken == null)
         {
-            Debug.LogError("Error: No attacker token found on the ball's hex!");
+            Debug.LogError("No passer is available for the High Pass accuracy roll.");
             yield break;
         }
 
@@ -2163,10 +2186,7 @@ public class HighPassManager : MonoBehaviour
         selectedToken = null;
         isWaitingForDefenderMove = false;
         isWaitingForDefenderSelection = false;
-        isWaitingForAccuracyRoll = true;
-        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll,
-            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "High Pass Accuracy",
-            AccuracyProbabilityForDecisionPreview(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose?.highPass ?? 0), ACCURACY_THRESHOLD);
+        BeginAccuracyRoll();
     }
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
@@ -2230,10 +2250,7 @@ public class HighPassManager : MonoBehaviour
         movementPhaseManager.isActivated = false;
         movementPhaseManager.isBallPickable = false;
         selectedToken = null;
-        isWaitingForAccuracyRoll = true;
-        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll,
-            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "High Pass Accuracy",
-            AccuracyProbabilityForDecisionPreview(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose?.highPass ?? 0), ACCURACY_THRESHOLD);
+        BeginAccuracyRoll();
         Debug.Log("Waiting for accuracy roll... Please Press R key.");
         // CompleteDefenderMovementPhase();
     }
@@ -2390,8 +2407,8 @@ public class HighPassManager : MonoBehaviour
         AddInstructionDetail(snapshot.details, "highPassFinalTargetHex", FormatHex(finalTargetHex));
         AddInstructionDetail(snapshot.details, "highPassSelectedTokenKey", MatchManager.GetStableTokenKey(selectedToken));
         AddInstructionDetail(snapshot.details, "highPassLockedAttackerTokenKey", MatchManager.GetStableTokenKey(lockedAttacker));
-        AddInstructionDetail(snapshot.details, "highPassMinDistance", isGoalkeeperKick ? minPassDistance : REGULAR_HIGH_PASS_MIN_DISTANCE);
-        AddInstructionDetail(snapshot.details, "highPassMaxDistance", MAX_PASS_DISTANCE);
+        AddInstructionDetail(snapshot.details, "highPassMinDistance", UsesGoalkeeperTargetRules ? minPassDistance : REGULAR_HIGH_PASS_MIN_DISTANCE);
+        AddInstructionDetail(snapshot.details, "highPassMaxDistance", UsesGoalkeeperTargetRules ? "none" : MAX_PASS_DISTANCE.ToString());
     }
 
     public bool IsWaitingForDecisionTargetOptions()

@@ -51,6 +51,37 @@ public class LongBallManager : MonoBehaviour
     private int availableTargetPrecomputeStartedFrame = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
 
+    // Set-piece takers may stand beside the ball rather than occupy its hex.
+    private PlayerToken AccuracyPasser => MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose
+        ?? ball?.GetCurrentHex()?.GetOccupyingToken();
+
+    public static int AccuracyThresholdFor(HexCell source, HexCell target)
+        => source != null && target != null && source.isInFinalThird * target.isInFinalThird == -1 ? 10 : 9;
+
+    private int AccuracyThreshold => AccuracyThresholdFor(ball?.GetCurrentHex(), currentTargetHex);
+
+    private void LateUpdate()
+    {
+        if (isWaitingForAccuracyRoll && !DuelResolutionPanelController.IsVisible)
+            ShowAccuracyPanel();
+    }
+
+    private void BeginAccuracyRoll()
+    {
+        isDangerous = AccuracyThreshold == 10;
+        isWaitingForAccuracyRoll = true;
+        ShowAccuracyPanel();
+    }
+
+    private void ShowAccuracyPanel()
+    {
+        PlayerToken passer = AccuracyPasser;
+        int threshold = AccuracyThreshold;
+        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll, passer,
+            "Long Ball Accuracy", AccuracyProbability(passer?.highPass ?? 0), threshold, true,
+            oppositeFinalThirds: threshold == 10);
+    }
+
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
@@ -504,10 +535,7 @@ public class LongBallManager : MonoBehaviour
             MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             MatchManager.ActionType.AerialPassAttempt
         );
-        isWaitingForAccuracyRoll = true;
-        PlayerToken accuracyToken = ball.GetCurrentHex()?.GetOccupyingToken();
-        SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll, accuracyToken,
-            "Long Ball Accuracy", AccuracyProbability(accuracyToken?.highPass ?? 0), isDangerous ? 10 : 9, true);
+        BeginAccuracyRoll();
         Debug.Log("Long Ball confirmed. Waiting for accuracy roll. Please Press R key.");
     }
 
@@ -575,7 +603,7 @@ public class LongBallManager : MonoBehaviour
             if (logWarnings) Debug.Log("You cannot target a Long Ball on an Attacker or 5 Hexes away from any Attacker");
             return (false, false);
         }
-        if (targetHex.isInFinalThird * ballHex.isInFinalThird == -1)
+        if (AccuracyThresholdFor(ballHex, targetHex) == 10)
         {
           return (true, true);
         }
@@ -586,7 +614,7 @@ public class LongBallManager : MonoBehaviour
     // promotes the jackpot to 50; High Pass and recovery keep its numeric six.
     public float AccuracyProbability(int highPass)
     {
-        int threshold = isDangerous ? 10 : 9;
+        int threshold = AccuracyThreshold;
         float probability = 0f;
         for (int roll = 1; roll <= 6; roll++)
             if (roll + highPass >= threshold) probability += roll == 6 ? 1f / 12f : 1f / 6f;
@@ -617,14 +645,14 @@ public class LongBallManager : MonoBehaviour
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Get the passer's highPass attribute
-        PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
+        PlayerToken attackerToken = AccuracyPasser;
         if (attackerToken == null)
         {
-            Debug.LogError("Error: No attacker token found on the ball's hex!");
+            Debug.LogError("No passer is available for the Long Ball accuracy roll.");
             yield break;
         }
 
-        int accuracyThreshold = isDangerous ? 10 : 9;
+        int accuracyThreshold = AccuracyThreshold;
         GameplayDiceRollResult accuracyRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "long_ball_accuracy",
             rollOverride,
@@ -635,7 +663,7 @@ public class LongBallManager : MonoBehaviour
             {
                 ["highPassAttribute"] = attackerToken.highPass.ToString(),
                 ["threshold"] = accuracyThreshold.ToString(),
-                ["isDangerous"] = isDangerous.ToString()
+                ["isDangerous"] = (accuracyThreshold == 10).ToString()
             });
         int diceRoll = accuracyRoll.roll;
         // int diceRoll = 1; // Melina Mode
@@ -1628,7 +1656,7 @@ public class LongBallManager : MonoBehaviour
             return "a valid roll";
         }
 
-        int accuracyThreshold = isDangerous ? 10 : 9;
+        int accuracyThreshold = AccuracyThreshold;
         int neededRoll = accuracyThreshold - passer.highPass;
         if (neededRoll <= 1)
         {
