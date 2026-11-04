@@ -15,6 +15,8 @@ public class DraftManager : MonoBehaviour
     private const string DraftSceneName = "Draft";
     private const string FreeDraftSceneName = "FreeDraft";
     private const string DraftRegular = "Regular";
+    private static Dictionary<string, string> pendingGoalkeeperSlots;
+    private static string pendingGoalkeeperSavePath;
     private const string MatchTypeInternational = "International";
     private const string DraftInternational = "International";
     private const string DraftArcade = "Arcade";
@@ -125,25 +127,41 @@ public class DraftManager : MonoBehaviour
             return;
         }
 
-        AssignGoalkeepersToSlots();  // Assign GKs before dealing player cards
+        if (!RestoreSelectedGoalkeepers())
+        {
+            AssignGoalkeepersToSlots();
+        }
         StartCoroutine(BeginRegularDraftWithRolls());
     }
 
-    private IEnumerator BeginRegularDraftWithRolls()
+    private IEnumerator BeginRegularDraftWithRolls(bool forGoalkeepers = false, bool forFreeOutfielders = false)
     {
         IsDraftOrderPending = true;
         GetDraftUIManager()?.RefreshDraftStateUI();
         if (draftOrderPanel == null || !draftOrderPanel.Open(currentSettings))
         {
-            Debug.LogError("Regular Draft requires its authored first-pick roll panel.");
+            Debug.LogError("Draft requires its authored first-pick roll panel.");
             yield break;
         }
+        if (forGoalkeepers) draftOrderPanel.title.text = "ROLL FOR FIRST GK DRAFT PICK";
+        else if (forFreeOutfielders) draftOrderPanel.title.text = "ROLL FOR FIRST OUTFIELD DRAFT PICK";
         while (draftOrderPanel.IsOpen) yield return null;
         if (!draftOrderPanel.HomeWon.HasValue) yield break;
         currentTeamTurn = draftOrderPanel.HomeWon.Value ? "Home" : "Away";
         isHomeFirstInNextRound = draftOrderPanel.HomeWon.Value;
         firstBatchStarter = currentBatchStarter = currentTeamTurn;
         IsDraftOrderPending = false;
+        if (forGoalkeepers)
+        {
+            BeginFreeDraftGoalkeeperPhase();
+            yield break;
+        }
+        if (forFreeOutfielders)
+        {
+            RenderFreeDraftTable();
+            RefreshDraftUI();
+            yield break;
+        }
         DealNewDraftCards();  // Start the first draft round
         TryAutoPickSinglePlayerAwayTurns();
     }
@@ -154,6 +172,8 @@ public class DraftManager : MonoBehaviour
 
     private void StartFreeDraftFlow()
     {
+        pendingGoalkeeperSlots = null;
+        pendingGoalkeeperSavePath = null;
         LoadGameSettings();
         ApplySettingsToDraft();
         LoadPlayersFromCSV("outfield_players");
@@ -162,16 +182,24 @@ public class DraftManager : MonoBehaviour
         CreateTeamSlots(homeTeamPanel, homeAveragePanel);
         CreateTeamSlots(awayTeamPanel, awayAveragePanel);
         BindFreeDraftTable();
-        PerformCoinFlip();
 
         if (!IsArcadeGoalkeeperDraftMode() && currentSettings != null && currentSettings.gkDraft == "Deal")
         {
+            PerformCoinFlip();
             AssignGoalkeepersToSlots();
             BeginFreeDraftOutfielderPhase();
             return;
         }
 
-        BeginFreeDraftGoalkeeperPhase();
+        if (IsArcadeGoalkeeperDraftMode())
+        {
+            PerformCoinFlip();
+            BeginFreeDraftGoalkeeperPhase();
+        }
+        else
+        {
+            StartCoroutine(BeginRegularDraftWithRolls(forGoalkeepers: true));
+        }
     }
 
     private void LoadGameSettings()
@@ -1653,7 +1681,7 @@ public class DraftManager : MonoBehaviour
 
     private bool AssignFreeDraftCandidateToSlot(string candidateName, bool isGoalkeeper, PlayerSlotDropHandler targetSlot)
     {
-        if (!isFreeDraftScene || targetSlot == null)
+        if (IsDraftOrderPending || !isFreeDraftScene || targetSlot == null)
         {
             return false;
         }
@@ -1904,10 +1932,59 @@ public class DraftManager : MonoBehaviour
 
     private void BeginFreeDraftOutfielderPhase()
     {
+        if (currentSettings != null && string.Equals(currentSettings.draft, DraftRegular, System.StringComparison.OrdinalIgnoreCase))
+        {
+            pendingGoalkeeperSlots = new Dictionary<string, string>();
+            foreach (GameObject roster in new[] { homeTeamPanel, awayTeamPanel })
+            {
+                foreach (Transform child in roster.transform)
+                {
+                    PlayerSlotDropHandler slot = child.GetComponent<PlayerSlotDropHandler>();
+                    if (slot == null || !slot.IsGoalkeeperRosterSlot()) continue;
+                    TMP_Text nameText = child.Find("ContentWrapper/PlayerNameInSlot")?.GetComponent<TMP_Text>();
+                    string side = roster == homeTeamPanel ? "Home" : "Away";
+                    if (nameText != null) pendingGoalkeeperSlots[$"{side}-{slot.GetJerseyNumber()}"] = nameText.text.Trim();
+                }
+            }
+            pendingGoalkeeperSavePath = ApplicationManager.Instance.GetLastSavedFilePath();
+            SceneManager.LoadScene(DraftSceneName);
+            return;
+        }
+
         freeDraftPhase = FreeDraftPhase.Outfielders;
         ResetFreeDraftTableControls();
+        if (!IsArcadeOutfielderDraftMode())
+        {
+            ClearFreeDraftRows();
+            StartCoroutine(BeginRegularDraftWithRolls(forFreeOutfielders: true));
+            return;
+        }
         RenderFreeDraftTable();
         RefreshDraftUI();
+    }
+
+    private bool RestoreSelectedGoalkeepers()
+    {
+        Dictionary<string, string> slots = pendingGoalkeeperSlots;
+        string savePath = pendingGoalkeeperSavePath;
+        pendingGoalkeeperSlots = null;
+        pendingGoalkeeperSavePath = null;
+        if (slots == null || slots.Count != 4 || savePath != ApplicationManager.Instance.GetLastSavedFilePath())
+            return false;
+
+        foreach (KeyValuePair<string, string> slot in slots)
+        {
+            Goalkeeper goalkeeper = allGks.FirstOrDefault(candidate => candidate.Name == slot.Value);
+            if (goalkeeper == null) return false;
+        }
+        foreach (KeyValuePair<string, string> slot in slots)
+        {
+            Goalkeeper goalkeeper = allGks.First(candidate => candidate.Name == slot.Value);
+            AssignGoalkeeperToSlot(goalkeeper, slot.Key);
+            selectedGks.Remove(goalkeeper);
+        }
+        RefreshRosterAverages();
+        return true;
     }
 
     private void CompleteFreeDraft()

@@ -1193,6 +1193,18 @@ public class PauseMenuManager : MonoBehaviour
 
         if (!ValidateEditKitSelection(out string validationMessage))
         {
+            suppressEditSettingsEvents = true;
+            try
+            {
+                PopulateEditKitDropdown(editHomeKitDropdown, editHomeKitPresets, settings.homeKit);
+                PopulateEditKitDropdown(editAwayKitDropdown, editAwayKitPresets, settings.awayKit);
+                PopulateEditKitDropdown(editHomeGKKitDropdown, editGkKitPresets, settings.homeGKKit);
+                PopulateEditKitDropdown(editAwayGKKitDropdown, editGkKitPresets, settings.awayGKKit);
+            }
+            finally
+            {
+                suppressEditSettingsEvents = false;
+            }
             ShowLogFileStatus(validationMessage, isError: true);
             return;
         }

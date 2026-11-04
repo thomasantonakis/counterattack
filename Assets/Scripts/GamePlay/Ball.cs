@@ -83,6 +83,9 @@ public class Ball : MonoBehaviour
     {
         // Wait until the grid is fully initialized
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
+        // OnEnable may run before MatchManager.Awake creates the singleton.
+        MatchManager.Instance.OnGameSettingsLoaded -= ApplyConfiguredBallColor;
+        MatchManager.Instance.OnGameSettingsLoaded += ApplyConfiguredBallColor;
         ApplyConfiguredBallColor();
         // Subscribe to the event to know when players are instantiated
         MatchManager.Instance.OnPlayersInstantiated += PlayersReady;  // Subscribe to event

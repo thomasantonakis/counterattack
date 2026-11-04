@@ -56,6 +56,14 @@ public class DraftUIManager : MonoBehaviour
 
         RefreshRandomDraftButtonState();
 
+        if (draftManager.IsDraftOrderPending)
+        {
+            draftTurnText.text = "ROLL FOR FIRST PICK";
+            draftBatchText.text = "Both managers roll";
+            draftMetaText.text = "Highest roll drafts first. Press R once for each manager.";
+            return;
+        }
+
         if (draftManager.IsFreeDraftMode())
         {
             if (draftManager.IsDraftComplete())
@@ -80,7 +88,7 @@ public class DraftUIManager : MonoBehaviour
                 return;
             }
 
-            draftTurnText.text = $"{freeDraftTurn.ToUpperInvariant()} PICKS NOW";
+            draftTurnText.text = $"{draftManager.GetDraftTeamDisplayName(freeDraftTurn).ToUpperInvariant()} PICKS NOW";
             draftBatchText.text = $"{draftManager.GetFreeDraftPhaseName()} • {draftManager.GetFreeDraftProgressText()}";
             draftMetaText.text = "Drag a row into the active roster, or double-click to assign the next valid slot.";
             return;
@@ -88,14 +96,6 @@ public class DraftUIManager : MonoBehaviour
 
         int currentBatch = draftManager.GetCurrentBatchNumber();
         int totalBatches = draftManager.GetTotalBatchCount();
-        if (draftManager.IsDraftOrderPending)
-        {
-            draftTurnText.text = "ROLL FOR FIRST PICK";
-            draftBatchText.text = "Both managers roll";
-            draftMetaText.text = "Highest roll drafts first. Press R once for each manager.";
-            return;
-        }
-
         if (draftManager.IsDraftComplete())
         {
             draftTurnText.text = "DRAFT COMPLETE";
