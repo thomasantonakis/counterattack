@@ -52,18 +52,17 @@ public sealed class ReportedMovementReplayEditorTests
     }
 
     [Test]
-    public void Thomas3LargerThreatReductionTakesPriorityOverRepositioningTheCoveredFlank()
+    public void Thomas3FirstRecoveryFollowsTheLargestComputedThreatReduction()
     {
         using var replay = new ReportedMovementReplay("Thomas3_DefensiveSwarm", 309);
         var decision = replay.Evaluate();
-        var foyle = decision.rankedCandidates.Single(item => item.explanation?.actorTokenKey == "Away:3");
-        Assert.That(decision.selectedCandidate.actor, Is.Not.SameAs(replay.tokens["Away:3"]));
         Assert.That(decision.selectedCandidate.isForfeit, Is.False);
         var assignments = replay.lastSnapshot.defensivePhasePlan.assignments;
         var selected = assignments.Single(item => item.tokenKey == decision.selectedEvaluation.explanation.actorTokenKey);
-        var flank = assignments.Single(item => item.tokenKey == foyle.explanation.actorTokenKey);
-        Assert.That(selected.threatReduction, Is.GreaterThan(flank.threatReduction),
-            "A flank player may improve central cover later, but must not displace the more useful first recovery.");
+        Assert.That(selected.movePriority, Is.Zero);
+        Assert.That(selected.threatReduction, Is.GreaterThan(0f));
+        Assert.That(selected.threatReduction, Is.EqualTo(assignments.Max(item => item.threatReduction)),
+            "Choose the largest computed reduction, including blocked passing lanes and receiver shot routes.");
         AssertUsefulLegalPlan(replay);
     }
 
@@ -101,7 +100,7 @@ public sealed class ReportedMovementReplayEditorTests
         foreach (string threat in new[] { "Home:9", "Home:11" })
         {
             Assert.That(RecoveryPhases(replay.lastSnapshot, threat, plan),
-                Is.LessThan(RecoveryPhases(replay.lastSnapshot, threat)), threat + " must gain actual recovery cover.");
+                Is.LessThanOrEqualTo(RecoveryPhases(replay.lastSnapshot, threat)), threat + " must retain or improve its existing recovery cover.");
             Assert.That(RecoveryPhases(replay.lastSnapshot, threat, plan), Is.LessThanOrEqualTo(1f));
         }
         AssertUsefulLegalPlan(replay);

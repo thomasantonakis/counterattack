@@ -33,6 +33,46 @@ public sealed class RoomCoinTossEditorTests
         Object.DestroyImmediate(root);
     }
 
+    [TestCase(1, KeyCode.Return)]
+    [TestCase(1, KeyCode.KeypadEnter)]
+    [TestCase(2, KeyCode.Return)]
+    [TestCase(3, KeyCode.Return)]
+    [TestCase(4, KeyCode.Return)]
+    public void HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(int half, KeyCode key)
+    {
+        match.currentHalf = half;
+        match.gameData.gameSettings.homeRoomPersona = "AskHuman";
+        match.gameData.gameSettings.awayRoomPersona = "Codex Tactician Ultra Hard";
+        match.gameData.gameSettings.awayTeamControl = "Human";
+        var kickoff = root.AddComponent<KickoffManager>();
+        match.kickoffManager = kickoff;
+        match.currentState = half == 1 ? MatchManager.GameState.KickOffSetup : MatchManager.GameState.PostGoalKickOffSetup;
+        if (half == 1) kickoff.StartPreKickoffPhase();
+        else kickoff.StartPostGoalKickoffSetupPhase();
+
+        var space = new KeyPressData(KeyCode.Space, false, false, false);
+        Invoke(kickoff, "OnKeyReceived", space);
+        Assert.That(space.isConsumed, Is.False);
+        Assert.That(kickoff.IsSetupConfirmedForTeam("Home"), Is.False);
+        Assert.That(kickoff.GetInstructions(), Does.Contain("[Enter]"));
+        var enter = new KeyPressData(key, false, false, false);
+        Invoke(kickoff, "OnKeyReceived", enter);
+        Assert.That(enter.isConsumed, Is.True);
+        Assert.That(kickoff.IsSetupConfirmedForTeam("Home"), Is.True);
+        Assert.That(Invoke(kickoff, "ResolveConfirmingSetupTeam"), Is.EqualTo("Away"));
+        Assert.That(Invoke(kickoff, "TryConfirmSetupTeam", "Away"), Is.True);
+        Assert.That(kickoff.IsSetupConfirmedForTeam("Away"), Is.True);
+        Assert.That(AIManager.ResolveRoomPersona(match.gameData.gameSettings, "Away"), Is.EqualTo(AIManager.RoomPersona.AskHuman));
+    }
+
+    [Test]
+    public void SinglePlayerCpuPersonaRemainsAutomated()
+    {
+        match.gameData.gameSettings.gameMode = ApplicationManager.SinglePlayerGameMode;
+        match.gameData.gameSettings.awayRoomPersona = "Codex Tactician Ultra Hard";
+        Assert.That(AIManager.ResolveRoomPersona(match.gameData.gameSettings, "Away"), Is.EqualTo(AIManager.RoomPersona.CodexTactician));
+    }
+
     [TestCase(true, CoinTossChoice.LeftSide, false, false)]
     [TestCase(true, CoinTossChoice.RightSide, false, true)]
     [TestCase(false, CoinTossChoice.LeftSide, true, false)]

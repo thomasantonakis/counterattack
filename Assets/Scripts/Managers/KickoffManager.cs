@@ -192,7 +192,8 @@ public class KickoffManager : MonoBehaviour
             DeactivateSetup();
             return;
         }
-        if (currentState == MatchManager.GameState.KickOffSetup && keyData.key == KeyCode.Space)
+        if (currentState == MatchManager.GameState.KickOffSetup
+            && (keyData.key == KeyCode.Return || keyData.key == KeyCode.KeypadEnter))
         {
             ConfirmInitialSetup();
             keyData.Consume(nameof(KickoffManager));
@@ -211,7 +212,7 @@ public class KickoffManager : MonoBehaviour
     {
         isActivated = true;
         flowPhase = KickoffFlowPhase.InitialSetup;
-        Debug.Log("Pre-Kickoff Formation: Click tokens to reposition them. Press Space twice to continue to kick-off taker selection.");
+        Debug.Log("Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.");
         setupConfirmCount = 0;
         ResetSetupConfirmations();
     }
@@ -717,8 +718,8 @@ public class KickoffManager : MonoBehaviour
                 : $"Post-goal setup: click any token to reposition it in its own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press [Enter] twice when both teams are ready ({setupConfirmCount}/2).",
             KickoffFlowPhase.TakerSelection => "Kick-off taker selection: click an attacking token to move it to (0,0) and start the committed kick-off ground pass.",
             KickoffFlowPhase.InitialSetup => selectedToken != null
-                ? $"Pre-kickoff setup: click an empty hex in {selectedToken.name}'s own half, or click a teammate to swap positions. Defenders cannot stand in the center circle. Press [Space] twice to continue ({setupConfirmCount}/2)."
-                : $"Pre-kickoff setup: click tokens to reposition them. Press [Space] twice to continue ({setupConfirmCount}/2).",
+                ? $"Pre-kickoff setup: click an empty hex in {selectedToken.name}'s own half, or click a teammate to swap positions. Defenders cannot stand in the center circle. Press [Enter] twice to continue ({setupConfirmCount}/2)."
+                : $"Pre-kickoff setup: click tokens to reposition them. Press [Enter] twice to continue ({setupConfirmCount}/2).",
             _ => string.Empty,
         };
     }
@@ -749,8 +750,8 @@ public class KickoffManager : MonoBehaviour
                     nameof(KickoffManager),
                     RoomActionType.Kickoff,
                     RoomDecisionStep.Confirm,
-                    "Space",
-                    $"Press [Space] to confirm pre-kickoff setup ({setupConfirmCount}/2)");
+                    "Enter",
+                    $"Press [Enter] to confirm pre-kickoff setup ({setupConfirmCount}/2)");
                 PopulateSetupDecisionContext(context, isPostGoalSetup: false);
                 break;
             case KickoffFlowPhase.PostGoalSetup:
@@ -836,7 +837,7 @@ public class KickoffManager : MonoBehaviour
             step = RoomDecisionStep.Confirm,
             setupTeam = team,
             setupBoardStateKey = boardStateKey,
-            key = postGoal ? "Enter" : "Space",
+            key = "Enter",
             isExecutableNow = !isMovingSetupToken,
             label = $"Confirm {team} kick-off setup"
         });

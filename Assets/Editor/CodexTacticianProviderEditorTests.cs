@@ -83,15 +83,16 @@ public sealed class CodexTacticianProviderEditorTests
         while (work.MoveNext()) { }
         Assert.That(saferPass.score - unsafePass.score, Is.GreaterThan(250));
     }
-    [Test]
-    public void NearbySupportUsesOffsetHexDistance()
+    [TestCase(1, -1, 1)]
+    [TestCase(-1, 1, 0)]
+    public void NearbySupportUsesOffsetHexDistance(int x, int z, int expected)
     {
         var snapshot = new RoomAIDecisionSnapshot { expectedTeam = "Away" };
         snapshot.tokens.Add(new RoomAITokenSnapshot { tokenKey = "Away:8", teamSide = "Away", isPlaying = true,
-            currentHex = new RoomHexCoordinates { x = 1, z = -1 } });
+            currentHex = new RoomHexCoordinates { x = x, z = z } });
         var method = typeof(CodexTacticianProvider).GetMethod("CountNearbyTeammates", BindingFlags.NonPublic | BindingFlags.Static);
         int count = (int)method.Invoke(null, new object[] { snapshot, new RoomHexCoordinates { x = 0, z = 0 }, "Away:9", 1 });
-        Assert.That(count, Is.Zero, "The offset-grid route to (1, -1) takes two hexes.");
+        Assert.That(count, Is.EqualTo(expected), "Support must follow the even-column neighbour offsets, not axial distance.");
     }
     [Test]
     public void DecisionTrace_UsesTenMinuteMatchSegments()

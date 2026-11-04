@@ -42,6 +42,7 @@ public sealed class RoomAIActionSequencePreview
 [Serializable]
 public sealed class RoomAIScatterOutcome
 {
+    public List<string> headerParticipantTokenKeys = new();
     public int directionIndex;
     public int distance;
     public float conditionalProbability = 1f / 36f;
@@ -708,6 +709,8 @@ public static class RoomAIActionSequence
                 else continuation = AerialLanding(passer, origin, branch.landingHex, true);
                 branch.probability = (1f - accuracy) * branch.conditionalProbability;
                 branch.steps = new List<RoomAISequenceStep>(continuation.steps);
+                branch.headerParticipantTokenKeys = continuation.headerParticipants?.Select(Key)
+                    .OrderBy(key => key, StringComparer.Ordinal).ToList() ?? new List<string>();
                 branch.outcomes = continuation.outcomes;
                 branch.secondary = continuation.secondary;
                 branch.resolution = continuation.steps.FirstOrDefault()?.action ?? "Unexpanded landing continuation";

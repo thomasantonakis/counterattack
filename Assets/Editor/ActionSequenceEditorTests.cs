@@ -351,7 +351,12 @@ public sealed class HighPassScatterEditorTests
             Assert.That(branch.outcomes, Is.Not.Null);
             if (branch.isOutOfBounds) Assert.That(branch.outcomes.defendingRestartProbability, Is.EqualTo(1f));
             foreach (var step in branch.steps.Where(s => s.action == "Collect"))
-                Assert.That(step.remainingPace, Is.EqualTo(replay.tokens[step.actorTokenKey].pace - step.movementCost));
+            {
+                var collector = replay.tokens[step.actorTokenKey];
+                bool jumped = branch.headerParticipantTokenKeys.Contains(step.actorTokenKey);
+                Assert.That(step.remainingPace, Is.EqualTo(jumped ? 0 : collector.pace - step.movementCost));
+                if (jumped) Assert.That(step.movementCost, Is.Zero, "A header participant may receive in place but cannot move to collect.");
+            }
         }
         Assert.That(result.outcomes.goalProbability, Is.EqualTo(result.accuracyProbability * result.accurateOutcomes.goalProbability
             + (1f - result.accuracyProbability) * result.scatterConditionalOutcomes.goalProbability).Within(.00001f));

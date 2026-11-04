@@ -104,6 +104,11 @@ public class AIManager : MonoBehaviour
 
     public static RoomPersona ResolveRoomPersona(MatchManager.GameSettings settings, string expectedTeam)
     {
+        // Older Hot Seat saves can retain CPU personas from the creation UI.
+        // The mode owns control of both teams throughout regulation and extra time.
+        if (string.Equals(settings?.gameMode, ApplicationManager.HotSeatGameMode, System.StringComparison.OrdinalIgnoreCase))
+            return RoomPersona.AskHuman;
+
         string personaName = string.Equals(expectedTeam, "Away", System.StringComparison.OrdinalIgnoreCase)
             ? settings?.awayRoomPersona
             : string.Equals(expectedTeam, "Home", System.StringComparison.OrdinalIgnoreCase)

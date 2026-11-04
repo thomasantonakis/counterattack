@@ -572,6 +572,7 @@ public sealed class HeaderChallengePresentationEditorTests
             var loose = Component<LooseBallManager>("Loose", false);
             var keeper = Component<PlayerToken>("Deflecting goalkeeper", false);
             keeper.playerName = "Keeper"; keeper.isHomeTeam = defendingHome; keeper.saving = 5;
+            keeper.ConvertToGK(); keeper.saving = 5;
             var attacker = Component<PlayerToken>("Header winner", false);
             attacker.playerName = "Attacker"; attacker.isHomeTeam = !defendingHome; attacker.heading = 3;
             if (handling)

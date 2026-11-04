@@ -436,7 +436,19 @@ public class HexCell : MonoBehaviour
             fillColor = new Color(1f, 0.48f, 0.05f, 1f);
         }
 
-        Material runtimeMaterial = hexRenderer.material;
+        Material runtimeMaterial = Application.isPlaying ? hexRenderer.material : hexRenderer.sharedMaterial;
+        if (runtimeMaterial == null) return;
+
+        // Preview highlights must not instantiate or modify scene materials.
+        if (!Application.isPlaying)
+        {
+            var properties = new MaterialPropertyBlock();
+            hexRenderer.GetPropertyBlock(properties);
+            if (runtimeMaterial.HasProperty(ColorProperty)) properties.SetColor(ColorProperty, fillColor);
+            if (runtimeMaterial.HasProperty(BaseColorProperty)) properties.SetColor(BaseColorProperty, fillColor);
+            hexRenderer.SetPropertyBlock(properties);
+            return;
+        }
 
         if (runtimeMaterial.HasProperty(ColorProperty))
         {

@@ -2629,8 +2629,8 @@ public class CreateNewGameManager : MonoBehaviour
         settings.homeDraftPersona = ShouldApplyCpuDraftPersona(homeCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
         settings.awayDraftPersona = ShouldApplyCpuDraftPersona(awayCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
         settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
-        settings.homeRoomPersona = ResolveRoomPersonaFromTeamControl(homeTeamControlDropdown);
-        settings.awayRoomPersona = ResolveRoomPersonaFromTeamControl(awayTeamControlDropdown);
+        settings.homeRoomPersona = IsSinglePlayerCreateMode() ? ResolveRoomPersonaFromTeamControl(homeTeamControlDropdown) : RoomPersonaAskHuman;
+        settings.awayRoomPersona = IsSinglePlayerCreateMode() ? ResolveRoomPersonaFromTeamControl(awayTeamControlDropdown) : RoomPersonaAskHuman;
         settings.defaultRoomPersona = homeCpuControlled && awayCpuControlled
             ? RoomPersonaCodexTacticianUltraHard
             : RoomPersonaAskHuman;
