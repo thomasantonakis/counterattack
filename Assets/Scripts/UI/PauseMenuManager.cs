@@ -13,6 +13,7 @@ public class PauseMenuManager : MonoBehaviour
 
     private static readonly Color DangerColor = new(0.85f, 0.24f, 0.18f, 1f);
     private static readonly Color MutedTextColor = new(0.7f, 0.74f, 0.82f, 1f);
+    private static readonly Color CardStatusColor = new Color32(30, 69, 89, 255);
 
     public GameObject pausePanel;  // Reference to the Pause Panel
     public Button resumeButton;
@@ -861,7 +862,7 @@ public class PauseMenuManager : MonoBehaviour
             return;
         }
 
-        pauseSaveStatusText.color = isError ? DangerColor : MutedTextColor;
+        pauseSaveStatusText.color = isError ? DangerColor : CardStatusColor;
         pauseSaveStatusText.text = message;
     }
 
@@ -882,7 +883,7 @@ public class PauseMenuManager : MonoBehaviour
             return;
         }
 
-        logFileStatusText.color = isError ? DangerColor : MutedTextColor;
+        logFileStatusText.color = isError ? DangerColor : CardStatusColor;
         logFileStatusText.text = message;
     }
 
