@@ -397,7 +397,7 @@ public class PlayerTokenManager : MonoBehaviour
     private Vector3 GetBenchTokenPosition(bool isHomeTeam, int benchIndex)
     {
         float x = isHomeTeam ? -4f - benchIndex : 4f + benchIndex;
-        return new Vector3(x, 0.2f, -14f);
+        return new Vector3(x, 0.2f, -12f);
     }
 
     private Vector3 GetSentOffTokenPosition(bool isHomeTeam, int sentOffIndex)
