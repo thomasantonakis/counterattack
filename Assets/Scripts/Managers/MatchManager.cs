@@ -5075,18 +5075,21 @@ public class MatchManager : MonoBehaviour
     private IEnumerator RunShootoutOpeningFlow()
     {
         isTieBreakerTossRunning = true;
-        while (HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible)
-            yield return null;
-        if (OpenRoomCoinToss(CoinTossPurpose.PenaltyShootout))
+        try
         {
-            while (coinTossPanel.IsOpen) yield return null;
-            if (coinTossPanel.ShootoutResult != null)
+            while (HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible)
+                yield return null;
+            if (OpenRoomCoinToss(CoinTossPurpose.PenaltyShootout))
             {
-                gameData.penaltyShootoutSetup = coinTossPanel.ShootoutResult;
-                EnsurePenaltyShootoutManager().ShowOrderSelection();
+                while (coinTossPanel.IsOpen) yield return null;
+                if (coinTossPanel.ShootoutResult != null)
+                {
+                    gameData.penaltyShootoutSetup = coinTossPanel.ShootoutResult;
+                    EnsurePenaltyShootoutManager().ShowOrderSelection();
+                }
             }
         }
-        isTieBreakerTossRunning = false;
+        finally { isTieBreakerTossRunning = false; }
     }
 
     private void PlaceBallOnKickoffHex()

@@ -302,17 +302,13 @@ public static class PenaltyShootoutOrderPanelPrefabEditorTools
 
     private static Canvas ResolveMainCanvas()
     {
-        Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
-        Canvas namedCanvas = canvases.FirstOrDefault(candidate => candidate != null && candidate.name == "Canvas");
-        if (namedCanvas != null)
-        {
-            return namedCanvas;
-        }
-
-        return canvases.FirstOrDefault(candidate =>
-            candidate != null
-            && candidate.isRootCanvas
-            && candidate.name != "HoveredTokenNameCanvas");
+        Canvas[] canvases = SceneManager.GetActiveScene().GetRootGameObjects()
+            .SelectMany(root => root.GetComponentsInChildren<Canvas>(true)).ToArray();
+        return canvases.FirstOrDefault(candidate => candidate.GetComponentsInChildren<PenaltyShootoutOrderPanelController>(true)
+                .Any(panel => panel.name == SceneInstanceName))
+            ?? canvases.FirstOrDefault(candidate => candidate.name == "MainCanvas")
+            ?? canvases.FirstOrDefault(candidate => candidate.name == "Canvas")
+            ?? canvases.FirstOrDefault(candidate => candidate.isRootCanvas && candidate.name != "HoveredTokenNameCanvas");
     }
 
     private static GameObject CreateRect(string name, Transform parent, params System.Type[] components)

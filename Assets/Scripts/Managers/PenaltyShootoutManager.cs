@@ -107,6 +107,10 @@ public class PenaltyShootoutManager : MonoBehaviour
             return;
         }
 
+        // Resolve and validate the authored panel before marking selection as
+        // started. A missing UI must not leave a half-initialized shootout.
+        if (!EnsureOrderPanel()) return;
+
         homeOrder = BuildDefaultOrder(true).Take(listLength).ToList();
         awayOrder = BuildDefaultOrder(false).Take(listLength).ToList();
         CapturePreShootoutScore();
@@ -114,7 +118,6 @@ public class PenaltyShootoutManager : MonoBehaviour
         orderSelectionCompleted = false;
         matchManager.currentState = MatchManager.GameState.PenaltyShootoutOrderSelection;
         matchManager.MarkPenaltyShootoutInProgress();
-        EnsureOrderPanel();
         orderPanel.Configure(this, homeOrder, awayOrder);
         Debug.Log($"[Shootout] Order selection opened with {listLength} nominees per team.");
     }
@@ -975,35 +978,34 @@ public class PenaltyShootoutManager : MonoBehaviour
         }
     }
 
-    private void EnsureOrderPanel()
+    private bool EnsureOrderPanel()
     {
-        if (orderPanel != null)
+        var scene = matchManager != null ? matchManager.gameObject.scene : gameObject.scene;
+        if (orderPanel == null || orderPanel.gameObject.scene != scene)
         {
-            Canvas existingTargetCanvas = ResolveMainGameCanvas();
-            if (existingTargetCanvas != null && orderPanel.transform.parent != existingTargetCanvas.transform)
-            {
-                orderPanel.transform.SetParent(existingTargetCanvas.transform, false);
-            }
-
-            return;
+            // Runtime overlays and additive scenes can contain other Canvases.
+            // Find the actual inactive scene-owned panel, preserving its parent
+            // and designer layout instead of guessing a Canvas and reparenting.
+            orderPanel = scene.IsValid() && scene.isLoaded
+                ? scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren<PenaltyShootoutOrderPanelController>(true))
+                    .FirstOrDefault(controller => controller.name == "PenaltyShootoutOrderPanel")
+                : null;
         }
 
-        Canvas canvas = ResolveMainGameCanvas();
-        if (canvas == null)
+        if (orderPanel == null)
         {
-            Debug.LogError("[Shootout] Missing scene Canvas; cannot show designer-owned PenaltyShootoutOrderPanel.");
-            return;
+            Debug.LogError("[Shootout] Missing designer-owned PenaltyShootoutOrderPanel in the match scene.");
+            return false;
         }
 
-        orderPanel = canvas.GetComponentsInChildren<PenaltyShootoutOrderPanelController>(true)
-            .FirstOrDefault(controller => controller != null && controller.name == "PenaltyShootoutOrderPanel");
-        if (orderPanel != null)
+        var view = orderPanel.GetComponent<PenaltyShootoutOrderPanelView>();
+        if (orderPanel.GetComponentInParent<Canvas>(true) == null || view == null || !view.HasRequiredReferences())
         {
-            orderPanel.transform.SetParent(canvas.transform, false);
-            return;
+            Debug.LogError("[Shootout] PenaltyShootoutOrderPanel scene references are incomplete. Use Tools/Counter Attack/Ensure Scene-Owned Match Panels In Room.");
+            return false;
         }
-
-        Debug.LogError("[Shootout] Missing designer-owned PenaltyShootoutOrderPanel under the scene Canvas.");
+        return true;
     }
 
     private void HideOrderPanel()
@@ -1012,21 +1014,6 @@ public class PenaltyShootoutManager : MonoBehaviour
         {
             orderPanel.gameObject.SetActive(false);
         }
-    }
-
-    private static Canvas ResolveMainGameCanvas()
-    {
-        Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include);
-        Canvas namedCanvas = canvases.FirstOrDefault(candidate => candidate != null && candidate.name == "Canvas");
-        if (namedCanvas != null)
-        {
-            return namedCanvas;
-        }
-
-        return canvases.FirstOrDefault(candidate =>
-            candidate != null
-            && candidate.isRootCanvas
-            && candidate.name != "HoveredTokenNameCanvas");
     }
 
     private HexCell Hex(Vector3Int coordinates)

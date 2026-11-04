@@ -26,6 +26,16 @@ public class PenaltyShootoutOrderRowView : MonoBehaviour, IBeginDragHandler, IDr
         rectTransform ??= GetComponent<RectTransform>();
         canvasGroup ??= GetComponent<CanvasGroup>();
 
+        // Teams with dismissals can nominate fewer than the 11 authored rows.
+        // Inactive spare rows are configured with no token.
+        if (token == null)
+        {
+            if (labelText != null) labelText.text = "";
+            if (nameText != null) nameText.text = "";
+            if (shootingText != null) shootingText.text = "";
+            return;
+        }
+
         if (labelText != null)
         {
             string displayName = string.IsNullOrWhiteSpace(token.playerName) ? token.name : token.playerName;
