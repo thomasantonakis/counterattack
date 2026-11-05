@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -8,6 +9,89 @@ using Object = UnityEngine.Object;
 public sealed class MovingTokenHoverEditorTests
 {
     private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void NewPossessionBallCarrierShowsBothSharedZoneHexesBeforeMoving(bool alreadyRunning)
+    {
+        using var replay = new ReportedMovementReplay("ReportedMatch_11-30", 194, false);
+        var match = replay.match;
+        var movement = match.movementPhaseManager;
+        var origin = replay.Hex(new RoomHexCoordinates { x = 0, z = 0 });
+        var defenderHex = origin.GetNeighbors(match.hexGrid).First(h => h != null);
+        foreach (var hex in match.hexGrid.cells.Cast<HexCell>().Where(h => h != null))
+        {
+            hex.occupyingToken = null;
+            hex.isAttackOccupied = hex.isDefenseOccupied = false;
+        }
+        var carrier = replay.tokens["Away:10"];
+        var defender = replay.tokens["Home:9"];
+        carrier.isAttacker = true; defender.isAttacker = false;
+        typeof(PlayerToken).GetProperty("currentHex").SetValue(carrier, origin);
+        typeof(PlayerToken).GetProperty("currentHex").SetValue(defender, defenderHex);
+        origin.occupyingToken = carrier; origin.isAttackOccupied = true;
+        defenderHex.occupyingToken = defender; defenderHex.isDefenseOccupied = true;
+        typeof(Ball).GetField("currentCell", Private).SetValue(match.ball, origin);
+        movement.headerManager = movement.gameObject.AddComponent<HeaderManager>();
+        movement.gameInputManager = movement.gameObject.AddComponent<GameInputManager>();
+        movement.selectedToken = carrier;
+        movement.isAwaitingHexDestination = true;
+        movement.isMovementPhaseAttack = true;
+        movement.isDribblerRunning = alreadyRunning;
+        movement.remainingDribblerPace = 1; // Tests steal warnings independently of nutmeg availability.
+        var neighbors = origin.GetNeighbors(match.hexGrid).Where(h => h != null && h != defenderHex).ToArray();
+        var shared = neighbors.Intersect(defenderHex.GetNeighbors(match.hexGrid)).ToArray();
+        Assert.That(shared.Length, Is.EqualTo(2));
+        var material = new Material(Shader.Find("Sprites/Default"));
+        try
+        {
+            foreach (var hex in neighbors)
+            {
+                hex.hexRenderer = hex.gameObject.AddComponent<MeshRenderer>();
+                hex.hexRenderer.sharedMaterial = material;
+            }
+            movement.HighlightValidMovementHexes(carrier, 1);
+            var reason = typeof(HexCell).GetField("currentHighlightReason", Private);
+            foreach (var hex in shared)
+                Assert.That(reason.GetValue(hex), Is.EqualTo("PaceRisk"),
+                    "Both empty hexes shared with the defender's ZOI must be orange before the first step.");
+            foreach (var hex in neighbors.Except(shared))
+                Assert.That(reason.GetValue(hex), Is.EqualTo("PaceAvailable"));
+            Assert.That(movement.isDribblerRunning, Is.EqualTo(alreadyRunning),
+                "Displaying threats must not commit movement or change running state.");
+        }
+        finally { Object.DestroyImmediate(material); }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void MovementHoverPreservesDestinationWhileCollectorIsAnimating(bool tokenMovementScope)
+    {
+        var root = new GameObject("Collector highlights"); root.SetActive(false);
+        try
+        {
+            var manager = root.AddComponent<MovementPhaseManager>();
+            var token = root.AddComponent<PlayerToken>();
+            var hovered = root.AddComponent<HexCell>();
+            manager.selectedToken = token;
+            manager.isActivated = true;
+            manager.isAwaitingHexDestination = true;
+            manager.isPlayerMoving = !tokenMovementScope;
+            var hoverField = typeof(MovementPhaseManager).GetField("hoveredMovementHex", Private);
+            hoverField.SetValue(manager, hovered);
+            using var movement = tokenMovementScope ? token.TrackMovement() : null;
+            typeof(MovementPhaseManager).GetMethod("OnHoverReceived", Private)
+                .Invoke(manager, new object[] { null, null });
+            Assert.That(hoverField.GetValue(manager), Is.SameAs(hovered),
+                "Hover must leave the chosen destination untouched until collection movement finishes.");
+            // No grid is supplied: entering the refresh path would fail, so this
+            // also checks that direct refreshes cannot rebuild highlights mid-move.
+            typeof(MovementPhaseManager).GetField("lastMovementHighlightRange", Private).SetValue(manager, 5);
+            Assert.DoesNotThrow(() => typeof(MovementPhaseManager)
+                .GetMethod("RefreshMovementDestinationHighlights", Private).Invoke(manager, null));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
 
     [TestCase(false)]
     [TestCase(true)]

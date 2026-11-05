@@ -16448,6 +16448,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Pressing R for Accuracy");
         highPassManager.PerformAccuracyRoll(1);
         yield return new WaitForSeconds(0.2f);
+        AssertTrue(!hexgrid.highlightedHexes.Contains(highPassManager.currentTargetHex),
+            "An inaccurate High Pass must clear its committed target before the scatter rolls.");
         AssertTrue(
             !highPassManager.isWaitingForAccuracyRoll,
             "HP is NO longer waiting for accuracy Roll",
@@ -17722,6 +17724,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Pressing R for Accuracy");
         highPassManager.PerformAccuracyRoll(1);
         yield return new WaitForSeconds(0.2f);
+        AssertTrue(!hexgrid.highlightedHexes.Contains(highPassManager.currentTargetHex),
+            "An inaccurate High Pass must clear its committed target before the scatter rolls.");
         AssertTrue(
             !highPassManager.isWaitingForAccuracyRoll,
             "HP is NO longer waiting for accuracy Roll",

@@ -1616,6 +1616,7 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         bool accuratePass = diceRoll + highPassAttribute >= ACCURACY_THRESHOLD;
         committedTargetMissed = !accuratePass;
+        if (committedTargetMissed) ClearMissedTargetHighlight();
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
             accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
         // Adjust threshold based on difficulty
@@ -1790,12 +1791,6 @@ public class HighPassManager : MonoBehaviour
                 Debug.LogError($"❌ Invalid flatPosition at i={i}: {flatPosition}");
                 yield break;
             }
-            if (committedTargetMissed && !missedTargetCleared && flatPosition != startPosition)
-            {
-                missedTargetCleared = true;
-                currentTargetHex?.ResetHighlight();
-                hexGrid.highlightedHexes.Remove(currentTargetHex);
-            }
             ball.transform.position = flatPosition;
             yield return null;
         }
@@ -1960,9 +1955,16 @@ public class HighPassManager : MonoBehaviour
         return gkHex != null && HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2).Contains(gkHex);
     }
 
+    private void ClearMissedTargetHighlight()
+    {
+        missedTargetCleared = true;
+        currentTargetHex?.ResetHighlight();
+        hexGrid.highlightedHexes.Remove(currentTargetHex);
+    }
+
     private void HighlightCommittedHighPassTarget()
     {
-        if (currentTargetHex == null)
+        if (currentTargetHex == null || missedTargetCleared)
         {
             return;
         }

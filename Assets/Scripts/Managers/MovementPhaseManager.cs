@@ -533,6 +533,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
+        if (isPlayerMoving || (selectedToken != null && selectedToken.IsMoving)) return;
+        if (goalKeeperManager != null && goalKeeperManager.isActivated) return;
         if (shotManager != null && shotManager.isActivated)
         {
             return;
@@ -1363,7 +1365,9 @@ public class MovementPhaseManager : MonoBehaviour
             reachableHexes.Remove(ballHex);
             distanceData.Remove(ballHex);
         }
-        bool showThreatHints = ShouldShowEasyMovementThreats() && token == selectedToken && token.IsDribbler && isDribblerRunning;
+        // Selection already identifies the ball carrier. The running flag is
+        // only committed on the first step, but threats must be visible before it.
+        bool showThreatHints = ShouldShowEasyMovementThreats() && token == selectedToken && token.IsDribbler;
         RefreshCurrentMovementHoverFromInput();
 
         foreach (HexCell hex in reachableHexes)
@@ -1505,7 +1509,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void RefreshMovementDestinationHighlights()
     {
-        if (!isActivated || !isAwaitingHexDestination || selectedToken == null || lastMovementHighlightRange <= 0)
+        if (isPlayerMoving || (selectedToken != null && selectedToken.IsMoving)
+            || !isActivated || !isAwaitingHexDestination || selectedToken == null || lastMovementHighlightRange <= 0)
         {
             return;
         }
@@ -1557,7 +1562,6 @@ public class MovementPhaseManager : MonoBehaviour
         if (dribbler == null
             || targetHex == null
             || !dribbler.IsDribbler
-            || !isDribblerRunning
             || remainingDribblerPace - movementDistance < 2)
         {
             return false;
