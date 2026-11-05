@@ -26,6 +26,7 @@ namespace CounterAttack.Editor
                 Object.FindAnyObjectByType<PauseMenuManager>());
             AuthorLineupIcons();
             AuthorHoverReadability();
+            FooterButtonStylingTools.StyleOpenRoom();
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
         }

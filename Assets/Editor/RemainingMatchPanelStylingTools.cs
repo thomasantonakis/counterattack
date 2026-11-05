@@ -41,6 +41,7 @@ namespace CounterAttack.Editor
             SubstitutionReadabilityStylingTools.AuthorLineupIcons();
             SubstitutionReadabilityStylingTools.AuthorHoverReadability();
             EnsureDiceOutlines();
+            FooterButtonStylingTools.StyleOpenRoom();
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
         }

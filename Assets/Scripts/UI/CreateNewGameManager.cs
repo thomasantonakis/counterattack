@@ -35,7 +35,7 @@ public class CreateNewGameManager : MonoBehaviour
     private const string AIDifficultyUltraHardLabel = "Ultra Hard";
     private const string CurrentGameSettingsPlayerPrefsKey = "currentGameSettings";
     private const string CreateNewGameReturnSourcePlayerPrefsKey = "CreateNewGameReturnSource";
-    private const float KitDropdownScrollSensitivity = 55f;
+    public const float KitDropdownScrollSensitivity = 55f;
     private const int TeamNameCharacterLimit = 20;
     private static readonly string[] PlayerAssistanceLabels = { "Novice", "Intermediate", "Experienced" };
 

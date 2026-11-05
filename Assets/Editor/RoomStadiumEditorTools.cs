@@ -40,10 +40,13 @@ namespace CounterAttack.Editor
         };
 
         [MenuItem("CounterAttack/Room/Realign Stadium Aisles")]
-        public static void RealignAisles()
+        public static void RealignAisles() => RebuildCrowd();
+
+        [MenuItem("CounterAttack/Room/Refresh Crowd Appearance")]
+        public static void RebuildCrowd()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
-                throw new InvalidOperationException("Realign stadium aisles in Edit Mode.");
+                throw new InvalidOperationException("Refresh the stadium crowd in Edit Mode.");
             Material material = AssetDatabase.LoadAssetAtPath<Material>(Folder + "/Stadium.mat");
             if (material == null || AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) == null)
                 throw new InvalidOperationException("Build the stadium before realigning its aisles.");
@@ -69,7 +72,7 @@ namespace CounterAttack.Editor
                     PrefabUtility.SaveAsPrefabAsset(contents, PrefabPath);
                 }
                 finally { PrefabUtility.UnloadPrefabContents(contents); }
-                Debug.Log($"Stadium aisles realigned: {lowerCount + upperCount:N0} spectators. Straight aisles perpendicular to pitch edges; corner aisles radial. Scene changes preserved.");
+                Debug.Log($"Stadium crowd refreshed: {lowerCount + upperCount:N0} spectators; 4% empty seats; attending crowd 33% long-haired women, 13% bald, 54% short-haired (rounded to whole people per tier). Four skin colours. Scene changes preserved.");
             }
             finally
             {
@@ -200,6 +203,17 @@ namespace CounterAttack.Editor
             SaveGeometry(parent.name + " Concrete", structure, parent, mat);
             population = 0;
             var rng = new System.Random(seed);
+            int capacity = 0;
+            for (int section = 0; section < Sections; section++)
+                for (int row = 0; row < Rows; row++)
+                    capacity += SeatSlots(section, depth + (row + .55f) * RowDepth);
+            // Exact tier-wide quotas, shuffled independently of spectator geometry.
+            // Women are counted only among attendees, never among empty seats.
+            int[] occupancy = StadiumCrowdController.AllocateAndShuffle(capacity, new[] {96, 4}, rng);
+            int attendance = 0;
+            foreach (int category in occupancy) if (category == 0) attendance++;
+            int[] hairstyles = StadiumCrowdController.AllocateAndShuffle(attendance, new[] {33, 13, 54}, rng);
+            int seatIndex = 0;
             for (int section = 0; section < Sections; section++)
             {
                 var people = new Geometry();
@@ -216,7 +230,7 @@ namespace CounterAttack.Editor
                     float sectionLength = SectionLength(section, d);
                     const float aisleWidth = .38f;
                     float usableLength = sectionLength - aisleWidth;
-                    int slots = Mathf.Max(1, Mathf.FloorToInt(usableLength / .17f));
+                    int slots = SeatSlots(section, d);
                     for (int slot = 0; slot < slots; slot++)
                     {
                         // Equal half-aisles on each boundary, identical on every
@@ -228,8 +242,8 @@ namespace CounterAttack.Editor
                         Quaternion q = Quaternion.LookRotation(inward,Vector3.up);
                         seats.Box(p + Vector3.up * .10f, new Vector3(.12f,.025f,.12f), SeatBlue, q);
                         seats.Box(p + Vector3.up * .18f - inward*.052f,new Vector3(.12f,.14f,.025f),SeatBlue,q);
-                        if (rng.NextDouble() > .86) continue;
-                        Spectator(people, p, q, rng, tops, trousers);
+                        if (occupancy[seatIndex++] != 0) continue;
+                        Spectator(people, p, q, rng, tops, trousers, hairstyles[population]);
                         population++;
                     }
                 }
@@ -243,8 +257,11 @@ namespace CounterAttack.Editor
             }
         }
 
+        private static int SeatSlots(int section, float depth) =>
+            Mathf.Max(1, Mathf.FloorToInt((SectionLength(section, depth) - .38f) / .17f));
+
         private static void Spectator(Geometry mesh, Vector3 p, Quaternion q, System.Random rng,
-            List<Color32> tops, List<Color32> pants)
+            List<Color32> tops, List<Color32> pants, int hairstyle)
         {
             float scale = .90f + (float)rng.NextDouble() * .18f;
             Color shirt = Clothes[rng.Next(Clothes.Length)];
@@ -259,7 +276,18 @@ namespace CounterAttack.Editor
             mesh.PartData = new Vector2(id, 0);
             mesh.Ellipsoid(P(0,.335f,.006f),new Vector3(.028f,.035f,.029f)*scale,skin,q);
             Color hair = rng.NextDouble() < .20 ? new Color(.43f,.40f,.34f) : new Color(.055f,.043f,.035f);
-            mesh.Ellipsoid(P(0,.355f,.002f),new Vector3(.029f,.019f,.029f)*scale,hair,q);
+            // 0: long-haired woman, 1: bald, 2: short hair. Hair stays in
+            // the neutral vertex-colour role so team palettes never recolour it.
+            if (hairstyle != 1)
+                mesh.Ellipsoid(P(0,.355f,.002f),new Vector3(.029f,.019f,.029f)*scale,hair,q);
+            if (hairstyle == 0)
+            {
+                // Shoulder-length back and side locks leave the face exposed
+                // toward +Z (the pitch) and read clearly from behind the stands.
+                mesh.Ellipsoid(P(0,.310f,-.019f),new Vector3(.032f,.061f,.019f)*scale,hair,q);
+                foreach (float side in new[] {-1f, 1f})
+                    mesh.Ellipsoid(P(side*.026f,.311f,.003f),new Vector3(.012f,.055f,.025f)*scale,hair,q);
+            }
             foreach (float side in new[] {-1f,1f})
             {
                 mesh.PartData = new Vector2(id, 2);

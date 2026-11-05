@@ -819,6 +819,12 @@ public class PauseMenuManager : MonoBehaviour
 
     private void ConfigureEditSettingsUi()
     {
+        foreach (var dropdown in new[] { editHomeKitDropdown, editAwayKitDropdown, editHomeGKKitDropdown, editAwayGKKitDropdown })
+        {
+            var scroll = dropdown != null && dropdown.template != null
+                ? dropdown.template.GetComponentInChildren<ScrollRect>(true) : null;
+            if (scroll != null) scroll.scrollSensitivity = CreateNewGameManager.KitDropdownScrollSensitivity;
+        }
         ConfigureEditSettingsDropdownListeners();
 
         if (captureLogFileButton != null)
