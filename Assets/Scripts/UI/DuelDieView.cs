@@ -25,10 +25,44 @@ public sealed class DuelDieView : MonoBehaviour
 
     public void SetTeamColors(Color color, Color secondary)
     {
-        if (border != null) border.effectColor = secondary;
         if (background != null) background.color = color;
         if (face != null) face.color = secondary;
         if (fallbackText != null) fallbackText.color = secondary;
+        RefreshBorderContrast();
+    }
+
+    public void RefreshBorderContrast()
+    {
+        if (border == null || background == null) return;
+        Color secondary = face != null ? face.color : fallbackText != null ? fallbackText.color : Color.white;
+        Color surface = SurfaceColor();
+        float primaryLuminance = Luminance(background.color);
+        float surfaceLuminance = Luminance(surface);
+        float contrast = (Mathf.Max(primaryLuminance, surfaceLuminance) + .05f)
+            / (Mathf.Min(primaryLuminance, surfaceLuminance) + .05f);
+        border.effectColor = contrast < 1.8f ? Color.black : secondary;
+    }
+
+    private Color SurfaceColor()
+    {
+        for (var parent = transform.parent; parent != null; parent = parent.parent)
+        {
+            var white = parent.Find("WhiteSurface") as RectTransform;
+            if (white != null && white.gameObject.activeSelf && white.rect.Contains(white.InverseTransformPoint(transform.position)))
+            {
+                var surface = white.GetComponent<Image>();
+                if (surface != null && surface.color.a > .9f) return surface.color;
+            }
+            var image = parent.GetComponent<Image>();
+            if (image != null && image.color.a > .9f) return image.color;
+        }
+        return Color.white;
+    }
+
+    private static float Luminance(Color color)
+    {
+        Color linear = color.linear;
+        return .2126f * linear.r + .7152f * linear.g + .0722f * linear.b;
     }
 
     public void Clear()

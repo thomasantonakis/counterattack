@@ -2,6 +2,33 @@ using NUnit.Framework;
 
 public sealed class DuelResolutionPresentationEditorTests
 {
+    [TestCase(true, true, true)]
+    [TestCase(false, true, false)]
+    [TestCase(true, false, false)]
+    public void DiceKeepTeamColorsAndUseBlackOutlineWhenTheSurfaceConflicts(bool lightDie, bool lightSurface, bool blackBorder)
+    {
+        var surface = new UnityEngine.GameObject("Surface", typeof(UnityEngine.RectTransform), typeof(UnityEngine.UI.Image));
+        try
+        {
+            var navy = new UnityEngine.Color(.1f, .2f, .3f);
+            surface.GetComponent<UnityEngine.UI.Image>().color = lightSurface ? UnityEngine.Color.white : navy;
+            var root = new UnityEngine.GameObject("Die", typeof(UnityEngine.RectTransform), typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Outline), typeof(DuelDieView));
+            root.transform.SetParent(surface.transform, false);
+            var face = new UnityEngine.GameObject("Face", typeof(UnityEngine.RectTransform), typeof(UnityEngine.UI.Image));
+            face.transform.SetParent(root.transform, false);
+            var die = root.GetComponent<DuelDieView>();
+            die.background = root.GetComponent<UnityEngine.UI.Image>(); die.border = root.GetComponent<UnityEngine.UI.Outline>();
+            die.face = face.GetComponent<UnityEngine.UI.Image>();
+            var primary = lightDie ? UnityEngine.Color.white : navy;
+            var secondary = UnityEngine.Color.red;
+            die.SetTeamColors(primary, secondary);
+            Assert.That(die.border.effectColor, Is.EqualTo(blackBorder ? UnityEngine.Color.black : secondary));
+            Assert.That(die.background.color, Is.EqualTo(primary));
+            Assert.That(die.face.color, Is.EqualTo(secondary));
+        }
+        finally { UnityEngine.Object.DestroyImmediate(surface); }
+    }
+
     [Test]
     public void ExpectedDribblesIncludeFoulsAndKeepContinuationSeparate()
     {

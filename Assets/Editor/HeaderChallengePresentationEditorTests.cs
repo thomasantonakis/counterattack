@@ -399,6 +399,61 @@ public sealed class HeaderChallengePresentationEditorTests
         finally { EditorSceneManager.ClosePreviewScene(scene); }
     }
 
+    [TestCase(true, true)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    [TestCase(false, false)]
+    public void PenaltyPresentsShooterThenKeeperWithoutRerolling(bool home, bool left)
+    {
+        var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Room.unity");
+        try
+        {
+            var panel = scene.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<DuelResolutionPanelController>(true)).Single();
+            SetInstance(panel);
+            var match = AccuracyMatch();
+            match.homeTeamDirection = home == left ? MatchManager.TeamAttackingDirection.LeftToRight : MatchManager.TeamAttackingDirection.RightToLeft;
+            match.awayTeamDirection = home == left ? MatchManager.TeamAttackingDirection.RightToLeft : MatchManager.TeamAttackingDirection.LeftToRight;
+            var shooter = Component<PlayerToken>("Penalty shooter", false);
+            shooter.playerName = "Penalty shooter"; shooter.shooting = 6; shooter.isHomeTeam = home;
+            var keeper = Component<PlayerToken>("Penalty keeper", false);
+            keeper.playerName = "Penalty keeper"; keeper.isHomeTeam = !home; keeper.ConvertToGK(); keeper.saving = 5;
+            var keeperHex = Component<HexCell>("Keeper hex", false);
+            keeperHex.isDefenseOccupied = true; keeperHex.occupyingToken = keeper;
+            var shot = Component<ShotManager>("Penalty shot", false);
+            shot.hexGrid = Component<HexGrid>("Grid", false); shot.hexGrid.cells = new[,] { { keeperHex } };
+            shot.shotType = "penalty"; shot.shooter = shooter; shot.isWaitingForShotRoll = true;
+            string random = JsonUtility.ToJson(UnityEngine.Random.state);
+            typeof(ShotManager).GetMethod("BeginShooterPresentation", Private).Invoke(shot, null);
+            Assert.That(panel.IsShotComparisonFor(shot), Is.True);
+            var attack = left ? panel.leftPlayer : panel.rightPlayer;
+            var defense = left ? panel.rightPlayer : panel.leftPlayer;
+            Assert.That(attack.attribute.text, Is.EqualTo("Shooting 6"));
+            Assert.That(defense.attribute.text, Is.EqualTo("Saving 5 -2 = 3 (Penalty kick modifier)"));
+            Assert.That(attack.die.IsAnimating, Is.True);
+            Assert.That(defense.die.IsAnimating, Is.False);
+            shot.shooterRoll = 4; shot.totalShotPower = 10; shot.isWaitingForShotRoll = false;
+            var result = panel.ResolveSingle(shot, new GameplayDiceRollResult { roll = 4, jackpotEnabled = true },
+                "ON TARGET", resolvedTotal: 10);
+            Assert.That(result.MoveNext(), Is.True);
+            panel.Dismiss();
+            Assert.That(result.MoveNext(), Is.False);
+            var interactionType = typeof(ShotManager).GetNestedType("ShotInteraction", BindingFlags.NonPublic);
+            var interaction = Activator.CreateInstance(interactionType, true);
+            interactionType.GetField("defender").SetValue(interaction, keeper);
+            interactionType.GetField("gkPenalty").SetValue(interaction, (int?)-2);
+            shot.isWaitingForGKDiceRoll = true;
+            typeof(ShotManager).GetMethod("BeginGroundSavePresentation", Private).Invoke(shot, new[] { interaction });
+            Assert.That(panel.IsAwaitingRoll, Is.True);
+            Assert.That(attack.total.text, Does.Contain("Total: 10"));
+            Assert.That(attack.die.IsAnimating, Is.False);
+            Assert.That(defense.die.IsAnimating, Is.True);
+            Assert.That(defense.attribute.text, Is.EqualTo("Saving 5 -2 = 3 (Penalty kick modifier)"));
+            Assert.That(JsonUtility.ToJson(UnityEngine.Random.state), Is.EqualTo(random));
+            panel.CancelSingle(shot);
+        }
+        finally { EditorSceneManager.ClosePreviewScene(scene); }
+    }
+
     [TestCase(true, true, 1, false)]
     [TestCase(false, true, 4, false)]
     [TestCase(true, false, 5, false)]

@@ -14,6 +14,7 @@ public sealed class DuelPlayerPanelFields
     public TMP_Text total;
     public TMP_Text guidance;
     public DuelDieView die;
+    public UnityEngine.UI.Image modifierBackground;
 }
 
 [Serializable]
@@ -60,6 +61,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private bool looseBallSuspended;
     private bool looseDirectionPending;
     public DuelPlayerPanelFields singlePlayer = new();
+    public GameObject singleAttributeTile;
+    public GameObject singleProbabilityTile;
     private MonoBehaviour singleOwner;
     private Func<bool> singleWaiting;
     private bool singleMode;
@@ -261,10 +264,12 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             ? MatchManager.Instance.gameData.gameSettings.homeTeamName : MatchManager.Instance.gameData.gameSettings.awayTeamName;
         singlePlayer.attribute.text = attributeText ?? "";
         singlePlayer.modifier.text = probabilityText ?? "";
+        if (singleAttributeTile != null) singleAttributeTile.SetActive(!string.IsNullOrWhiteSpace(attributeText));
+        if (singleProbabilityTile != null) singleProbabilityTile.SetActive(!string.IsNullOrWhiteSpace(probabilityText));
         singlePlayer.total.text = "";
         singlePlayer.guidance.text = successGuidance ?? "";
         Color color = token != null ? TeamColor(token) : new Color(.13f, .35f, .63f);
-        singlePlayer.playerName.color = Color.Lerp(color, Color.white, .4f);
+        singlePlayer.playerName.color = PlayerNameColor;
         singlePlayer.die.SetTeamColors(color, token != null ? TeamPalette(token).Secondary : Color.white);
         singlePlayer.die.Begin(jackpotAllowed);
         footer.text = "Press [R] to roll";
@@ -409,7 +414,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         view.teamName.text = token.isHomeTeam ? settings.homeTeamName : settings.awayTeamName;
         if (view.role != null) view.role.gameObject.SetActive(false);
         var palette = TeamPalette(token);
-        view.playerName.color = Color.Lerp(palette.Primary, Color.white, .4f);
+        view.playerName.color = PlayerNameColor;
         view.die.SetTeamColors(palette.Primary, palette.Secondary);
     }
 
@@ -463,7 +468,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             looseDirectionPending = true;
             Color primary = token != null ? TeamColor(token) : new Color(.13f, .35f, .63f);
             Color secondary = token != null ? TeamPalette(token).Secondary : Color.white;
-            looseBallPlayer.color = Color.Lerp(primary, Color.white, .4f);
+            looseBallPlayer.color = PlayerNameColor;
             activeDirection.die.SetTeamColors(primary, secondary);
             activeDistance.die.SetTeamColors(primary, secondary);
             activeDirection.column.gameObject.SetActive(true);
@@ -681,7 +686,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         view.modifier.text = bonus != 0 ? $"Nutmeg Bonus  +{bonus}" : "";
         view.total.text = "Total  —";
         Color color = TeamColor(token);
-        view.playerName.color = Color.Lerp(color, Color.white, .4f);
+        view.playerName.color = PlayerNameColor;
         view.die.SetTeamColors(color, TeamPalette(token).Secondary);
         view.die.Clear();
     }
@@ -689,6 +694,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private static bool PlayerBound(DuelPlayerPanelFields view)
         => view?.playerName != null && view.teamName != null && view.attribute != null
             && view.modifier != null && view.total != null && view.guidance != null && view.die != null;
+
+    // Names sit on the authored white surface, including while its parent is hidden.
+    private static readonly Color PlayerNameColor = new Color32(30, 69, 89, 255);
 
     public void ShowDuelRoll(bool defender, GameplayDiceRollResult roll)
     {
@@ -878,6 +886,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private void Update()
     {
         if (!IsOpen) return;
+        RefreshModifierBackground(leftPlayer);
+        RefreshModifierBackground(rightPlayer);
         if (singleMode && stage == Stage.Single && (singleOwner == null || !singleOwner.isActiveAndEnabled
             || singleWaiting == null || !singleWaiting()))
         {
@@ -951,7 +961,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (panel == null || panel.parent is not RectTransform bounds) return;
         bool singleLayout = (singleRollContent != null && singleRollContent.activeSelf)
             || (looseBallContent != null && looseBallContent.activeSelf);
-        float width = Mathf.Max(1f, singleLayout && !expanded ? singleRollWidth : preferredWidth);
+        float width = Mathf.Max(1f, singleLayout ? singleRollWidth : preferredWidth);
         float maximumHeight = Mathf.Max(1f, normalHeight, expandedHeight);
         if (scatterOutcome != null && scatterContinuationContent != null)
         {
@@ -965,6 +975,19 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
                 -((RectTransform)looseRecoveryContent.transform).anchoredPosition.y + recoveryContentHeight
                     + footer.rectTransform.rect.height + 48f);
         float height = expanded ? maximumHeight : Mathf.Max(1f, normalHeight);
+        if (singleLayout && expanded)
+        {
+            float contentBottom = -outcome.rectTransform.anchoredPosition.y + outcome.rectTransform.rect.height;
+            contentBottom = Mathf.Max(contentBottom, VisibleSectionBottom(foulChecks));
+            contentBottom = Mathf.Max(contentBottom, VisibleSectionBottom(scatterContinuationContent));
+            contentBottom = Mathf.Max(contentBottom, VisibleSectionBottom(looseRecoveryContent));
+            float resultSpace = scatterOutcome != null && scatterOutcome.gameObject.activeSelf
+                ? scatterOutcome.rectTransform.rect.height + Mathf.Max(12f,
+                    scatterOutcome.rectTransform.anchoredPosition.y - footer.rectTransform.anchoredPosition.y
+                    - footer.rectTransform.rect.height) : 0f;
+            height = Mathf.Max(normalHeight, contentBottom + 24f + resultSpace
+                + footer.rectTransform.rect.height + footer.rectTransform.anchoredPosition.y);
+        }
         panel.sizeDelta = new Vector2(width, height);
         // Reserve the same scale for both states so expansion cannot move or resize existing content.
         float scale = Mathf.Max(.001f, Mathf.Min(1f, bounds.rect.width * .5f / Mathf.Max(1f, preferredWidth),
@@ -977,5 +1000,19 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         // The scene-authored pivot is top-centre. Raising this lower limit corrects only bottom overflow.
         panel.anchoredPosition = new Vector2(Mathf.Clamp(position.x, -horizontalLimit, horizontalLimit),
             Mathf.Clamp(position.y, lowestTop, screenTop));
+    }
+
+    private static float VisibleSectionBottom(GameObject section)
+    {
+        if (section == null || !section.activeSelf) return 0;
+        var rect = (RectTransform)section.transform;
+        return -rect.anchoredPosition.y + rect.rect.height;
+    }
+
+    private static void RefreshModifierBackground(DuelPlayerPanelFields view)
+    {
+        if (view?.modifierBackground == null || view.modifier == null) return;
+        bool visible = !string.IsNullOrWhiteSpace(view.modifier.text);
+        if (view.modifierBackground.enabled != visible) view.modifierBackground.enabled = visible;
     }
 }

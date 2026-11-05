@@ -73,7 +73,7 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
         var settings = manager.gameData.gameSettings;
         rollingTeam.text = $"Attacking team: {(home ? settings.homeTeamName : settings.awayTeamName)}";
         var colors = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(home ? settings.homeKit : settings.awayKit));
-        rollingTeam.color = Color.Lerp(colors.Primary, Color.white, .4f);
+        rollingTeam.color = new Color32(30, 69, 89, 255);
         die.SetTeamColors(colors.Primary, colors.Secondary);
         die.Begin(false);
         rule.text = $"Referee leniency {manager.refereeLeniency} + D6\nMaximum: 7 stoppage actions";

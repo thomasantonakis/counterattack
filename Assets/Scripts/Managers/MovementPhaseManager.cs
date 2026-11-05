@@ -161,6 +161,7 @@ public class MovementPhaseManager : MonoBehaviour
     private int throwInProtectedRadius;
     private bool throwInBlocksTackleWithoutMoving;
     private bool pendingFoulIsPenalty;
+    private PlayerToken pendingFouledAttacker;
     public bool PendingFoulIsPenalty => pendingFoulIsPenalty;
     private bool pendingDangerousTackleFoul;
     private bool pendingAutomaticTakeFoulAfterInjury;
@@ -178,6 +179,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void OnDisable()
     {
+        pendingFouledAttacker = null;
         duelPresentationVersion++;
         activeDuelPanel?.Cancel(this);
         activeDuelPanel = null;
@@ -212,7 +214,7 @@ public class MovementPhaseManager : MonoBehaviour
     public bool TryDeferDuelDoubleInjury(PlayerToken token)
     {
         if (activeDuelPanel == null || !activeDuelPanel.IsOpen
-            || token != MatchManager.Instance.LastTokenToTouchTheBallOnPurpose) return false;
+            || token != ResolveFouledAttacker()) return false;
         deferredDuelDoubleInjury = true;
         pendingDuelDoubleInjuryToken = token;
         return true;
@@ -3446,8 +3448,14 @@ public class MovementPhaseManager : MonoBehaviour
         if (MatchManager.Instance.currentState == MatchManager.GameState.MovementPhase) DribblerMoved1HexOrReposition();
     }
 
+    private PlayerToken ResolveFouledAttacker() => pendingFouledAttacker
+        ?? ball?.GetCurrentHex()?.GetOccupyingToken()
+        ?? MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken, bool needsReposition = true)
     {
+        pendingFouledAttacker = attackerToken;
+        isWaitingForFoulDecision = false;
         Debug.Log("Handling foul resolution process...");
         pendingFoulIsPenalty = IsCurrentBallHexInOpponentPenaltyBox();
         // Recovery fouls reuse the open single-roll layout and the same leniency/injury flow
@@ -3481,6 +3489,10 @@ public class MovementPhaseManager : MonoBehaviour
             yield return null;  // Wait for the next frame
         }
         Debug.Log("Foul process completed.");
+        // Substitution clears requiresSubstitution on the outgoing token. Commit
+        // the stoppage before dismissing the result or opening that modal.
+        bool forceTakeFoul = pendingAutomaticTakeFoulAfterInjury
+            || ShouldForceFreeKickAfterFoul(attackerToken, defenderToken);
         if (activeDuelPanel != null && activeDuelPanel.IsOpen)
         {
             int version = duelPresentationVersion;
@@ -3496,8 +3508,6 @@ public class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.HandleDoubleInjuredToken(injuredToken);
             while (MatchManager.Instance.IsGameplayInputBlocked) yield return null;
         }
-        bool forceTakeFoul = pendingAutomaticTakeFoulAfterInjury
-            || ShouldForceFreeKickAfterFoul(attackerToken, defenderToken);
         pendingAutomaticTakeFoulAfterInjury = false;
         if (forceTakeFoul)
         {
@@ -3529,7 +3539,7 @@ public class MovementPhaseManager : MonoBehaviour
         pendingFreeKickRestartSpot = null;
         isDribblerRunning = true;
 
-        PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken attackerToken = ResolveFouledAttacker();
         if (needsReposition)
         {
             await helperFunctions.StartCoroutineAndWait(PrepareAttackerReposition(attackerToken));
@@ -3703,7 +3713,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void PerformLeniencyTest(RollInputOverride? rollOverride)
     {
-        PlayerToken fouledAttacker = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken fouledAttacker = ResolveFouledAttacker();
         GameplayDiceRollResult leniencyRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "movement_foul_card_leniency",
             rollOverride,
@@ -3871,8 +3881,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void PerformInjuryTest(RollInputOverride? rollOverride)
     {
-        // PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
-        PlayerToken attackerToken = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
+        PlayerToken attackerToken = ResolveFouledAttacker();
         GameplayDiceRollResult injuryRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "movement_injury",
             rollOverride,
@@ -3891,6 +3900,7 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.Log($"Attacker {attackerToken.name} is injured!");
             bool wasAlreadyInjured = attackerToken.isInjured;
+            if (wasAlreadyInjured) pendingAutomaticTakeFoulAfterInjury = true;
             attackerToken.ReceiveInjury();
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 attackerToken,
@@ -3917,6 +3927,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void StartTackleDiceRollSequence()
     {
+        pendingFouledAttacker = null;
         duelPresentationVersion++;
         activeDuelPanel?.Cancel(this);
         activeDuelPanel = null;
@@ -3975,6 +3986,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void ResetMovementPhase()
     {
+        pendingFouledAttacker = null;
         duelPresentationVersion++;
         activeDuelPanel?.Cancel(this);
         activeDuelPanel = null;

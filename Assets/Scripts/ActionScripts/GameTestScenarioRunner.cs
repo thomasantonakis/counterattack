@@ -827,6 +827,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
             new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition("Scenario_041t_FoulTargetsCurrentAttackerAfterSubstitution", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: false, reverseDirection: false, leniencyRoll: 1, staleLastTouch: true)),
+            new ScenarioDefinition("Scenario_041u_SecondInjuryForcesFoulAfterSubstitution", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: false, reverseDirection: false, leniencyRoll: 1, forcedSecondInjury: true)),
             new ScenarioDefinition("Scenario_041p_OutsideBoxGK_Hands_NormalLeniency", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: false, reverseDirection: false, leniencyRoll: 1)),
             new ScenarioDefinition("Scenario_041q_OutsideBoxGK_Feet_FromBehind_HarshYellow", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: true, reverseDirection: false, leniencyRoll: 1)),
             new ScenarioDefinition("Scenario_041r_OutsideBoxGK_Hands_FromBehind_HarshRed_Mirrored", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: true, reverseDirection: true, leniencyRoll: 6)),
@@ -1005,6 +1007,8 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
             new ScenarioDefinition(nameof(Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice), Scenario_041i_OutsideBoxGK_Foul_NormalLeniency_Injury_AdvantageChoice),
+            new ScenarioDefinition("Scenario_041t_FoulTargetsCurrentAttackerAfterSubstitution", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: false, reverseDirection: false, leniencyRoll: 1, staleLastTouch: true)),
+            new ScenarioDefinition("Scenario_041u_SecondInjuryForcesFoulAfterSubstitution", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: false, reverseDirection: false, leniencyRoll: 1, forcedSecondInjury: true)),
             new ScenarioDefinition("Scenario_041p_OutsideBoxGK_Hands_NormalLeniency", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: false, reverseDirection: false, leniencyRoll: 1)),
             new ScenarioDefinition("Scenario_041q_OutsideBoxGK_Feet_FromBehind_HarshYellow", () => Scenario_041_GoalkeeperFoulByPosition(hands: false, dangerous: true, reverseDirection: false, leniencyRoll: 1)),
             new ScenarioDefinition("Scenario_041r_OutsideBoxGK_Hands_FromBehind_HarshRed_Mirrored", () => Scenario_041_GoalkeeperFoulByPosition(hands: true, dangerous: true, reverseDirection: true, leniencyRoll: 6)),
@@ -1655,12 +1659,13 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     // Regression: keeper identity and hands/feet must not select the leniency policy.
     // Roll 2 must foul from either cached rear hex; the ordinary position fouls only on 1.
-    private IEnumerator Scenario_041_GoalkeeperFoulByPosition(bool hands, bool dangerous, bool reverseDirection, int leniencyRoll)
+    private IEnumerator Scenario_041_GoalkeeperFoulByPosition(bool hands, bool dangerous, bool reverseDirection, int leniencyRoll, bool staleLastTouch = false, bool forcedSecondInjury = false)
     {
         yield return new WaitForSeconds(1.5f);
         Log($"Starting goalkeeper position-based foul test: hands={hands}, dangerous={dangerous}, mirrored={reverseDirection}, leniency roll={leniencyRoll}.");
         OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard(dangerous, reverseDirection);
         MatchManager.Instance.refereeLeniency = 4;
+        if (forcedSecondInjury) setup.Dribbler.ReceiveInjury();
         yield return StartCoroutine(hands ? StartOutsideBoxGoalkeeperDive(setup) : StartOutsideBoxGoalkeeperFootTackle(setup));
 
         string rollInstructions = movementPhaseManager.GetInstructions();
@@ -1692,6 +1697,15 @@ public class GameTestScenarioRunner : MonoBehaviour
             AssertTrue(panel.leniency.rule.text.Contains(dangerous ? "straight red" : "no card"),
                 "Expanded leniency copy must match the gameplay card policy.");
 
+        PlayerToken previousCarrier = null;
+        if (staleLastTouch)
+        {
+            previousCarrier = PlayerToken.GetPlayerTokenByName("Nazef");
+            AssertTrue(previousCarrier != setup.Dribbler, "The stale last-touch player must differ from the current fouled dribbler.");
+            if (!previousCarrier.isInjured) previousCarrier.ReceiveInjury();
+            AssertTrue(!setup.Dribbler.isInjured, "The current fouled dribbler must start healthy.");
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = previousCarrier;
+        }
         movementPhaseManager.PerformLeniencyTest(leniencyRoll);
         yield return StartCoroutine(WaitForCondition(
             () => movementPhaseManager.isWaitingForInjuryRoll, 2f,
@@ -1701,8 +1715,42 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(setup.Goalkeeper.isSentOff == expectedRed, "Goalkeeper dismissal must follow position and leniency, not identity.");
         AssertTrue(setup.Goalkeeper.isBooked == expectedYellow, "Goalkeeper booking must follow position and leniency, not identity.");
 
-        movementPhaseManager.PerformInjuryTest(1);
+        movementPhaseManager.PerformInjuryTest(staleLastTouch || forcedSecondInjury ? 6 : 1);
+        if (staleLastTouch)
+        {
+            AssertTrue(setup.Dribbler.isInjured && !setup.Dribbler.requiresSubstitution,
+                "The newly fouled dribbler must receive a first injury, regardless of historical last-touch state.");
+            AssertTrue(!previousCarrier.requiresSubstitution, "The replaced carrier must not receive another injury.");
+            if (panel != null && panel.IsOpen)
+                AssertTrue(!panel.injury.result.text.Contains("SECOND INJURY"), "Presentation must not inherit the previous carrier's injury.");
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose = setup.Dribbler;
+        }
         yield return WaitForDuelResultPresentation();
+        if (forcedSecondInjury)
+        {
+            var substitutions = FindAnyObjectByType<SubstitutionMenuManager>();
+            yield return WaitForCondition(() => substitutions != null && substitutions.IsOpen, 3f,
+                "A second injury must open forced substitutions after the result closes.");
+            AssertTrue(!movementPhaseManager.isWaitingForFoulDecision,
+                "Advantage must remain unavailable while replacing the double-injured player.");
+            var view = FindAnyObjectByType<SubstitutionMenuView>(FindObjectsInactive.Include);
+            var requiredRow = view.homeRows.First(row => row.gameObject.activeSelf
+                && row.outgoingDropdown.captionText.text.StartsWith(setup.Dribbler.jerseyNumber + ". "));
+            AssertTrue(requiredRow.incomingDropdown.options.Count > 1, "A bench replacement is required for this regression.");
+            requiredRow.incomingDropdown.value = 1;
+            AssertTrue(view.confirmButton.interactable, "The forced replacement must be confirmable.");
+            view.confirmButton.onClick.Invoke();
+            yield return null;
+            AssertTrue(setup.Dribbler.wasSubbedOff && !setup.Dribbler.requiresSubstitution,
+                "Completing substitution clears the outgoing token's replacement flag.");
+            AssertTrue(!movementPhaseManager.isWaitingForFoulDecision && !movementPhaseManager.isWaitingForReposition,
+                "Clearing that flag must not restore Play On or the old player's reposition listeners.");
+            yield return ResolvePendingFoulFinalThirdsBeforeFreeKick("Second injury after forced substitution");
+            AssertTrue(freeKickManager.isWaitingForKickerSelection && !movementPhaseManager.isActivated,
+                "The forced substitution must continue to the awarded free kick, ending movement.");
+            LogFooterofTest("Second injury commits to foul before substitution");
+            yield break;
+        }
         if (!expectedRed)
         {
             yield return StartCoroutine(WaitForCondition(

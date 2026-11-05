@@ -8,11 +8,7 @@ public class SubstitutionMenuManager : MonoBehaviour
 {
     private static readonly Color ButtonColor = new(0.88f, 0.88f, 0.88f, 1f);
     private static readonly Color DisabledButtonColor = new(0.42f, 0.42f, 0.42f, 1f);
-    private static readonly Color TextColor = new(0.94f, 0.94f, 0.94f, 1f);
-    private static readonly Color MutedTextColor = new(0.66f, 0.68f, 0.7f, 1f);
-    private static readonly Color InjuredColor = new(1f, 0.55f, 0.12f, 1f);
-    private static readonly Color CautionedColor = new(1f, 0.86f, 0.18f, 1f);
-    private static readonly Color SentOffColor = new(1f, 0.2f, 0.18f, 1f);
+    private static readonly Color TextColor = Color.black;
     private readonly List<SelectionRow> selectionRows = new();
     private PauseMenuManager pauseMenuManager;
     private GameObject pausePanel;
@@ -412,21 +408,23 @@ public class SubstitutionMenuManager : MonoBehaviour
             if (!hasEntry)
             {
                 rowText.text = string.Empty;
+                substitutionView.SetRosterStatus(rowText, Color.clear);
                 continue;
             }
 
             RosterEntry entry = entryList[i];
             rowText.text = BuildPlayerDisplay(entry.jersey, entry.playerName, entry.token);
             rowText.richText = true;
+            rowText.color = Color.black;
+            substitutionView.SetRosterStatus(rowText, RosterStatusColor(entry.token));
         }
     }
 
     private string BuildPlayerDisplay(int jersey, string playerName, PlayerToken token)
     {
-        string color = ColorUtility.ToHtmlStringRGB(ResolvePlayerTextColor(token));
         string goalkeeperSuffix = IsGoalkeeperRosterEntry(jersey, token) ? " (GK)" : string.Empty;
         string status = BuildStatusTags(token);
-        return $"<color=#{color}>{jersey}. {playerName}{goalkeeperSuffix}</color>{status}";
+        return $"{jersey}. {playerName}{goalkeeperSuffix}{status}";
     }
 
     private static bool IsGoalkeeperRosterEntry(int jersey, PlayerToken token)
@@ -439,29 +437,13 @@ public class SubstitutionMenuManager : MonoBehaviour
         return jersey == 1 || jersey == 12;
     }
 
-    private Color ResolvePlayerTextColor(PlayerToken token)
+    public static Color RosterStatusColor(PlayerToken token)
     {
-        if (token == null)
-        {
-            return MutedTextColor;
-        }
-
-        if (token.isSentOff)
-        {
-            return SentOffColor;
-        }
-
-        if (token.isBooked)
-        {
-            return CautionedColor;
-        }
-
-        if (token.isInjured || token.requiresSubstitution)
-        {
-            return InjuredColor;
-        }
-
-        return token.isPlaying ? TextColor : MutedTextColor;
+        if (token == null) return Color.clear;
+        if (token.isSentOff) return new Color32(245, 65, 55, 255);
+        if (token.isInjured || token.requiresSubstitution) return new Color32(255, 192, 112, 255);
+        if (token.isBooked) return new Color32(255, 226, 113, 255);
+        return Color.clear;
     }
 
     private string BuildStatusTags(PlayerToken token)
@@ -472,25 +454,13 @@ public class SubstitutionMenuManager : MonoBehaviour
         }
 
         List<string> tags = new();
-        if (token.isInjured || token.requiresSubstitution)
-        {
-            tags.Add("<color=#FF8C1A> INJ</color>");
-        }
-        if (token.isBooked)
-        {
-            tags.Add("<color=#FFD92E> YC</color>");
-        }
-        if (token.isSentOff)
-        {
-            tags.Add("<color=#FF332D> RC</color>");
-        }
         if (token.wasSubbedOn)
         {
-            tags.Add("<color=#48C774> IN</color>");
+            tags.Add(" · IN");
         }
         if (token.wasSubbedOff)
         {
-            tags.Add("<color=#FF5A5F> OUT</color>");
+            tags.Add(" · OUT");
         }
 
         return tags.Count == 0 ? string.Empty : string.Join("", tags);
@@ -756,6 +726,15 @@ public class SubstitutionMenuManager : MonoBehaviour
         int selectedIndex = Mathf.Max(0, optionTokens.IndexOf(selectedToken));
         dropdown.SetValueWithoutNotify(selectedIndex);
         dropdown.RefreshShownValue();
+        // The template is authored with the Settings style. Allow every option,
+        // including the empty selection, to be visible when TMP opens the list.
+        if (dropdown.template != null && dropdown.itemText != null)
+        {
+            var item = dropdown.itemText.GetComponentInParent<Toggle>(true);
+            float itemHeight = item != null ? ((RectTransform)item.transform).rect.height : 48;
+            dropdown.template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                Mathf.Max(1, optionTokens.Count) * itemHeight + 16);
+        }
     }
 
     private void RefreshConfirmButton()
@@ -766,17 +745,11 @@ public class SubstitutionMenuManager : MonoBehaviour
         }
 
         confirmButton.interactable = AreAllProposedSubstitutionsValid() && AreRequiredSubstitutionsSelected();
-        ColorBlock colors = confirmButton.colors;
-        colors.normalColor = confirmButton.interactable ? ButtonColor : DisabledButtonColor;
-        confirmButton.colors = colors;
 
         if (backButton != null)
         {
             bool backInteractable = !IsGoalkeeperSubstitutionBlockingExit();
             backButton.interactable = backInteractable;
-            ColorBlock backColors = backButton.colors;
-            backColors.normalColor = backInteractable ? ButtonColor : DisabledButtonColor;
-            backButton.colors = backColors;
         }
     }
 

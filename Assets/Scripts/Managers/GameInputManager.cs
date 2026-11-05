@@ -256,6 +256,7 @@ public class GameInputManager : MonoBehaviour
     public PlayerToken hoveredToken = null;
     public HexCell hoveredHex = null;
     [Header("Hover Name Label")]
+    [SerializeField] private float hoverNameScale = 1.3f;
     [SerializeField] private float hoverNameFontToTokenHeightRatio = 0.26f;
     [SerializeField] private float hoverNameOffsetToTokenHeightRatio = 0.08f;
     [SerializeField] private float hoverNameMinFontSize = 8f;
@@ -274,9 +275,10 @@ public class GameInputManager : MonoBehaviour
     [SerializeField]
     private bool logIsOn = false;    
     public float dragThreshold = 10f;
-    private Canvas hoverNameCanvas;
-    private RectTransform hoverNameRect;
-    private TextMeshProUGUI hoverNameLabel;
+    [SerializeField] private Canvas hoverNameCanvas;
+    [SerializeField] private RectTransform hoverNameRect;
+    [SerializeField] private TextMeshProUGUI hoverNameLabel;
+    private PlayerToken lineupHoverToken;
     private static ClickInputData currentClick;
     private bool suppressMouseClickUntilReleased;
 
@@ -286,13 +288,22 @@ public class GameInputManager : MonoBehaviour
         ProcessInputs();
     }
 
+    private void LateUpdate() => UpdateHoverNameLabel();
+
+    public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = token;
+
+    private void OnDisable()
+    {
+        lineupHoverToken = null;
+        HideHoverNameLabel();
+    }
+
     private void ProcessInputs()
     {
         if (IsDiceRollModalVisible)
         {
             // Read-only token inspection remains available; selection and gameplay hover stay blocked.
             HandleMouseHover(previewOnlyForResolution: true);
-            UpdateHoverNameLabel();
             isDragging = false;
             suppressMouseClickUntilReleased = true;
             HandleKeyPresses();
@@ -303,7 +314,6 @@ public class GameInputManager : MonoBehaviour
             // Observing a token is independent of issuing a gameplay action.
             // HandleMouseHover respects UI hit testing before raycasting the pitch.
             HandleMouseHover();
-            UpdateHoverNameLabel();
             isDragging = false;
             suppressMouseClickUntilReleased = true;
             return;
@@ -326,7 +336,6 @@ public class GameInputManager : MonoBehaviour
         }
 
         HandleMouseHover();
-        UpdateHoverNameLabel();
         DetectMouseDrag();     // Drag overrides click
         HandleKeyPresses();
     }
@@ -898,31 +907,31 @@ public class GameInputManager : MonoBehaviour
 
     private void UpdateHoverNameLabel()
     {
-        if (hoveredToken == null)
+        PlayerToken displayToken = lineupHoverToken != null ? lineupHoverToken : hoveredToken;
+        if (displayToken == null)
         {
             HideHoverNameLabel();
             return;
         }
 
-        EnsureHoverNameLabel();
-        if (hoverNameLabel == null)
+        if (hoverNameLabel == null || hoverNameCanvas == null || hoverNameRect == null)
         {
             return;
         }
 
         hoverNameCanvas.gameObject.SetActive(true);
         Camera activeCamera = Camera.main;
-        hoverNameLabel.text = hoveredToken.playerName;
-        hoverNameLabel.color = GetHoverNameLabelColor(hoveredToken);
+        hoverNameLabel.text = displayToken.playerName;
+        hoverNameLabel.color = GetHoverNameLabelColor(displayToken);
         if (activeCamera != null)
         {
-            if (!TryGetHoverNameScreenMetrics(activeCamera, hoveredToken, out Vector3 screenPoint, out float tokenScreenWidth, out float tokenScreenHeight))
+            if (!TryGetHoverNameScreenMetrics(activeCamera, displayToken, out Vector3 screenPoint, out float tokenScreenWidth, out float tokenScreenHeight))
             {
                 HideHoverNameLabel();
                 return;
             }
 
-            float fontSize = Mathf.Clamp(tokenScreenHeight * hoverNameFontToTokenHeightRatio, hoverNameMinFontSize, hoverNameMaxFontSize);
+            float fontSize = Mathf.Clamp(tokenScreenHeight * hoverNameFontToTokenHeightRatio, hoverNameMinFontSize, hoverNameMaxFontSize) * hoverNameScale;
             hoverNameLabel.fontSize = fontSize;
 
             Vector2 preferredSize = hoverNameLabel.GetPreferredValues(hoverNameLabel.text);
@@ -937,42 +946,6 @@ public class GameInputManager : MonoBehaviour
         {
             HideHoverNameLabel();
         }
-    }
-
-    private void EnsureHoverNameLabel()
-    {
-        if (hoverNameLabel != null)
-        {
-            return;
-        }
-
-        GameObject canvasObject = new(HoverNameCanvasName);
-        hoverNameCanvas = canvasObject.AddComponent<Canvas>();
-        hoverNameCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        hoverNameCanvas.sortingOrder = 500;
-        hoverNameCanvas.pixelPerfect = true;
-        CanvasScaler canvasScaler = canvasObject.AddComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
-        canvasScaler.scaleFactor = 1f;
-        canvasScaler.referencePixelsPerUnit = 100f;
-
-        GameObject labelObject = new("HoveredTokenNameLabel");
-        labelObject.transform.SetParent(canvasObject.transform, false);
-        hoverNameRect = labelObject.AddComponent<RectTransform>();
-        hoverNameRect.sizeDelta = new Vector2(120f, 24f);
-        hoverNameRect.pivot = new Vector2(0.5f, 0f);
-        hoverNameLabel = labelObject.AddComponent<TextMeshProUGUI>();
-        hoverNameLabel.text = string.Empty;
-        hoverNameLabel.enableAutoSizing = false;
-        hoverNameLabel.fontSize = 14f;
-        hoverNameLabel.alignment = TextAlignmentOptions.Bottom;
-        hoverNameLabel.textWrappingMode = TextWrappingModes.NoWrap;
-        hoverNameLabel.overflowMode = TextOverflowModes.Overflow;
-        hoverNameLabel.outlineWidth = 0.1f;
-        hoverNameLabel.outlineColor = new Color(0f, 0f, 0f, 0.85f);
-        hoverNameLabel.color = HoverNameDefaultColor;
-        hoverNameLabel.raycastTarget = false;
-        hoverNameCanvas.gameObject.SetActive(false);
     }
 
     private void HideHoverNameLabel()

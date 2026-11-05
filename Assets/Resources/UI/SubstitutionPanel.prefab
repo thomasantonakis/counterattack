@@ -5394,6 +5394,7 @@ MonoBehaviour:
   awayRows: []
   backButton: {fileID: 0}
   confirmButton: {fileID: 0}
+  rosterRowBackgrounds: []
 --- !u!1 &2152461283745847414
 GameObject:
   m_ObjectHideFlags: 0

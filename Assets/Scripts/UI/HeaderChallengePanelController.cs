@@ -128,7 +128,7 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
             row.die.Clear();
             row.result.text = "Roll — - Total: —";
             row.status.text = "Pending";
-            row.highlight.color = Color.clear;
+            row.highlight.color = new Color32(236, 242, 244, 255);
             if (row.token == null) continue;
             row.player.text = PlayerName(row.token);
             int penalty = header.GetHeaderPenalty(row.token);
@@ -179,8 +179,9 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
             bool rolled = header.tokenScores.TryGetValue(row.token, out var score);
             bool active = !rolled && header.tokenRolling == row.token;
             row.status.text = rolled ? (best == row.token ? "Rolled · TEAM BEST" : "Rolled") : active ? "ROLLING" : "Pending";
-            row.highlight.color = active ? new Color(.95f, .74f, .25f, .22f)
-                : rolled && best == row.token ? new Color(.3f, .85f, .65f, .16f) : Color.clear;
+            row.highlight.color = active ? new Color32(255, 239, 180, 255)
+                : rolled && best == row.token ? new Color32(224, 242, 237, 255) : new Color32(236, 242, 244, 255);
+            row.die.RefreshBorderContrast();
             if (rolled)
             {
                 bool jackpot = score.totalScore == 50;
@@ -198,7 +199,12 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
         outcome.text = result;
         guidance.text = "";
         foreach (var rows in new[] { attackers, defenders }) foreach (var row in rows)
-            if (winner != null && row.token == winner) { row.status.text = "WINNER · TEAM BEST"; row.highlight.color = new Color(.3f, .85f, .65f, .28f); }
+            if (winner != null && row.token == winner)
+            {
+                row.status.text = "WINNER · TEAM BEST";
+                row.highlight.color = new Color32(177, 224, 213, 255);
+                row.die.RefreshBorderContrast();
+            }
         if (scatterFollows) { footer.text = "Loose ball continuation"; yield break; }
         yield return WaitForDismissal();
     }

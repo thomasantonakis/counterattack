@@ -62,6 +62,9 @@ public class PauseMenuManager : MonoBehaviour
 
     private bool isPaused = false;
     private bool isSaveAvailable = false;
+    private TMP_Text saveMatchLabel;
+    private TMP_Text saveMatchAsLabel;
+    private TMP_Text substitutionsLabel;
     private string saveUnavailableReason = string.Empty;
     private SubstitutionMenuManager substitutionMenuManager;
     private bool suppressEditSettingsEvents = false;
@@ -722,7 +725,7 @@ public class PauseMenuManager : MonoBehaviour
         }
 
         tacticalNoteStatusText.text = message ?? string.Empty;
-        tacticalNoteStatusText.color = isError ? DangerColor : MutedTextColor;
+        tacticalNoteStatusText.color = isError ? DangerColor : CardStatusColor;
     }
 
     private void EnsureGameplayInputConsumers()
@@ -896,6 +899,33 @@ public class PauseMenuManager : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (pausePanel != null && pausePanel.activeInHierarchy) RefreshPauseActionColors();
+    }
+
+    private void RefreshPauseActionColors()
+    {
+        if (substitutionsButton != null)
+        {
+            substitutionsLabel ??= substitutionsButton.transform.Find("MaskContainer")?.GetComponentInChildren<TMP_Text>(true)
+                ?? substitutionsButton.GetComponentInChildren<TMP_Text>(true);
+            if (substitutionsLabel != null) substitutionsLabel.color = substitutionsButton.IsInteractable() ? CardStatusColor : new Color32(150, 160, 170, 255);
+        }
+        if (saveMatchButton != null)
+        {
+            saveMatchLabel ??= saveMatchButton.transform.Find("MaskContainer")?.GetComponentInChildren<TMP_Text>(true)
+                ?? saveMatchButton.GetComponentInChildren<TMP_Text>(true);
+            if (saveMatchLabel != null) saveMatchLabel.color = saveMatchButton.IsInteractable() ? CardStatusColor : new Color32(150, 160, 170, 255);
+        }
+        if (saveMatchAsButton != null)
+        {
+            saveMatchAsLabel ??= saveMatchAsButton.transform.Find("MaskContainer")?.GetComponentInChildren<TMP_Text>(true)
+                ?? saveMatchAsButton.GetComponentInChildren<TMP_Text>(true);
+            if (saveMatchAsLabel != null) saveMatchAsLabel.color = saveMatchAsButton.IsInteractable() ? CardStatusColor : new Color32(150, 160, 170, 255);
+        }
+    }
+
     private void RefreshSaveButtonAvailability()
     {
         MatchManager matchManager = MatchManager.Instance;
@@ -914,6 +944,7 @@ public class PauseMenuManager : MonoBehaviour
         {
             saveMatchAsButton.interactable = isSaveAvailable;
         }
+        RefreshPauseActionColors();
     }
 
     private void SetOverwriteConfirmActive(bool isActive)

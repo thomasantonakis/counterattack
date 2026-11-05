@@ -104,6 +104,7 @@ public class MatchStatsUI : MonoBehaviour
         public int subOns;
         public int subOffs;
         public bool isSubbedOff;
+        public bool isInjured;
     }
 
     private sealed class LineupHoverEntry
@@ -207,6 +208,7 @@ public class MatchStatsUI : MonoBehaviour
     private const float MonospaceStepPx = 7.25f;
     private const string LineupColumnGap = "   ";
     private static readonly Regex RichTagRegex = new("<.*?>", RegexOptions.Compiled);
+    private static readonly Regex SpriteTagRegex = new("<sprite\\b[^>]*>", RegexOptions.Compiled);
     private readonly List<TemplateRow> templateRows = new();
     private string currentHomeColor = HomeColor;
     private string currentAwayColor = AwayColor;
@@ -216,6 +218,7 @@ public class MatchStatsUI : MonoBehaviour
     private ColumnLayout currentLineupLayout;
     private PlayerToken lineupHoveredHomeToken;
     private PlayerToken lineupHoveredAwayToken;
+    [SerializeField] private GameInputManager lineupHoverInput;
     private PlayerToken lastHoveredHomeToken;
     private PlayerToken lastHoveredAwayToken;
     private Sprite previewValueBadgeSprite;
@@ -329,6 +332,7 @@ public class MatchStatsUI : MonoBehaviour
     private void OnDisable()
     {
         GameInputManager.OnTokenPreviewHover -= HandleHoverTokenChanged;
+        ClearLineupHoverOverrides();
     }
 
     private void Update()
@@ -544,9 +548,9 @@ public class MatchStatsUI : MonoBehaviour
 
             LineupPlayerRow homePlayer = index < homeLineup.Count ? homeLineup[index] : null;
             LineupPlayerRow awayPlayer = index < awayLineup.Count ? awayLineup[index] : null;
-            homeRows.Add(BuildDesignerLineupSideText(homePlayer));
+            homeRows.Add(BuildDesignerLineupSideText(homePlayer, true));
             numberRows.Add($"<color={MutedColor}>{BuildLineupCenterLabel(homePlayer, awayPlayer)}</color>");
-            awayRows.Add(BuildDesignerLineupSideText(awayPlayer));
+            awayRows.Add(BuildDesignerLineupSideText(awayPlayer, false));
         }
 
         homeLineupText.text = string.Join("\n", homeRows);
@@ -587,9 +591,9 @@ public class MatchStatsUI : MonoBehaviour
             LineupPlayerRow awayPlayer = index < awayLineup.Count ? awayLineup[index] : null;
             bool isVisibleRow = index < rowCount;
 
-            SetLineupField(homeLineupTexts, index, isVisibleRow ? BuildDesignerLineupSideText(homePlayer) : string.Empty);
+            SetLineupField(homeLineupTexts, index, isVisibleRow ? BuildDesignerLineupSideText(homePlayer, true) : string.Empty);
             SetLineupField(lineupNumberTexts, index, isVisibleRow ? BuildLineupCenterLabel(homePlayer, awayPlayer) : string.Empty);
-            SetLineupField(awayLineupTexts, index, isVisibleRow ? BuildDesignerLineupSideText(awayPlayer) : string.Empty);
+            SetLineupField(awayLineupTexts, index, isVisibleRow ? BuildDesignerLineupSideText(awayPlayer, false) : string.Empty);
 
             designerLineupHoverEntries[index] = isVisibleRow
                 ? new LineupHoverEntry
@@ -622,7 +626,7 @@ public class MatchStatsUI : MonoBehaviour
         }
     }
 
-    private static string BuildDesignerLineupSideText(LineupPlayerRow player)
+    private static string BuildDesignerLineupSideText(LineupPlayerRow player, bool isHomeSide)
     {
         if (player == null)
         {
@@ -633,7 +637,26 @@ public class MatchStatsUI : MonoBehaviour
         string formattedName = player.isSentOff || player.isSubbedOff
             ? $"<s>{displayName}</s>"
             : displayName;
-        return $"<color={GetLineupPlayerColor(player)}>{formattedName}</color>";
+        return WithLineupMarkers(player, $"<color={GetLineupPlayerColor(player)}>{formattedName}</color>", isHomeSide);
+    }
+
+    private static string LineupMarkers(LineupPlayerRow player)
+    {
+        string icons = string.Empty;
+        if (player.subOns > 0 || player.liveToken != null && player.liveToken.wasSubbedOn)
+            icons += "<sprite=\"LineupStatusIcons\" name=\"SubOn\">";
+        if (player.subOffs > 0 || player.isSubbedOff)
+            icons += "<sprite=\"LineupStatusIcons\" name=\"SubOff\">";
+        if (player.isInjured)
+            icons += "<sprite=\"LineupStatusIcons\" name=\"Injury\">";
+        return icons;
+    }
+
+    private static string WithLineupMarkers(LineupPlayerRow player, string name, bool isHomeSide)
+    {
+        string icons = LineupMarkers(player);
+        if (icons.Length == 0) return name;
+        return isHomeSide ? icons + " " + name : name + " " + icons;
     }
 
     private static void SetFieldText(TMP_Text[] fields, int index, string value)
@@ -2200,6 +2223,7 @@ public class MatchStatsUI : MonoBehaviour
                     subOns = subOns,
                     subOffs = subOffs,
                     isSubbedOff = liveToken != null ? liveToken.wasSubbedOff : subOffs > 0,
+                    isInjured = liveToken != null ? liveToken.isInjured || liveToken.requiresSubstitution : playerStats.injuries > 0,
                 };
             })
             .OrderBy(row => row.jerseyNumber)
@@ -2239,7 +2263,9 @@ public class MatchStatsUI : MonoBehaviour
             return AlignTo("-", width, alignment);
         }
 
-        int nameWidth = width;
+        int markerCount = (player.subOns > 0 || player.liveToken != null && player.liveToken.wasSubbedOn ? 1 : 0)
+            + (player.subOffs > 0 || player.isSubbedOff ? 1 : 0) + (player.isInjured ? 1 : 0);
+        int nameWidth = Mathf.Max(1, width - (markerCount > 0 ? markerCount + 1 : 0));
         string displayName = player.isGoalkeeper ? $"{player.displayName} (GK)" : player.displayName;
         string trimmedName = TrimToWidth(displayName, nameWidth);
         string formattedName = player.isSentOff || player.isSubbedOff
@@ -2247,7 +2273,7 @@ public class MatchStatsUI : MonoBehaviour
             : trimmedName;
         string coloredName = $"<color={GetLineupPlayerColor(player)}>{formattedName}</color>";
 
-        return AlignRich(coloredName, width, alignment);
+        return AlignRich(WithLineupMarkers(player, coloredName, isHomeSide), width, alignment);
     }
 
     private static bool IsNaturalGoalkeeperJersey(int jerseyNumber)
@@ -2553,6 +2579,7 @@ public class MatchStatsUI : MonoBehaviour
 
         lineupHoveredHomeToken = homeToken;
         lineupHoveredAwayToken = awayToken;
+        lineupHoverInput?.SetLineupHoverToken(homeToken != null ? homeToken : awayToken);
         RefreshHoverCards();
     }
 
@@ -2565,6 +2592,7 @@ public class MatchStatsUI : MonoBehaviour
 
         lineupHoveredHomeToken = null;
         lineupHoveredAwayToken = null;
+        lineupHoverInput?.SetLineupHoverToken(null);
         RefreshHoverCards();
     }
 
@@ -2649,7 +2677,7 @@ public class MatchStatsUI : MonoBehaviour
             return 0;
         }
 
-        string plain = RichTagRegex.Replace(value, string.Empty);
+        string plain = RichTagRegex.Replace(SpriteTagRegex.Replace(value, "\uFFFC"), string.Empty);
         return new StringInfo(plain).LengthInTextElements;
     }
 

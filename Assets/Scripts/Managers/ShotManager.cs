@@ -2087,7 +2087,7 @@ public class ShotManager : MonoBehaviour
     }
 
     private int headerSavePresentationVersion;
-    private bool UsesGroundShotPresentation => !isHeaderAtGoal && !IsPenaltyShot();
+    private bool UsesGroundShotPresentation => !isHeaderAtGoal;
 
     public static string FreeKickShotGuidance(int naturalRoll, int power)
         => naturalRoll <= 0 ? "Natural 1: off target unless blocked · Power 9+: outfield blocks skipped · JACKPOT: perfect height"
@@ -2131,6 +2131,7 @@ public class ShotManager : MonoBehaviour
     private void BeginShooterPresentation()
     {
         if (!UsesGroundShotPresentation) return;
+        if (IsPenaltyShot() && BeginPenaltyShotPresentation()) return;
         if (IsFreeKickShot() && BeginFreeKickShotPresentation()) return;
         var keeper = interceptors.FirstOrDefault(interaction => interaction != null && interaction.IsGK);
         var panel = DuelResolutionPanelController.Instance;
@@ -2142,6 +2143,24 @@ public class ShotManager : MonoBehaviour
             BuildShotPresentationAttribute(),
             $"xGoals {CalculateCurrentShotExpectedGoals():0.00}", true, IsFreeKickShot() ? FreeKickShotGuidance(0, 0)
                 : "Natural 1: off target · Other rolls: on target · JACKPOT total: JACKPOT");
+    }
+
+    private bool BeginPenaltyShotPresentation()
+    {
+        var panel = DuelResolutionPanelController.Instance;
+        var keeper = PenaltyShootoutManager.ActiveShootout?.currentDefendingGoalkeeper
+            ?? hexGrid.GetDefendingGK();
+        if (panel == null || keeper == null) return false;
+        float expectedGoals = TryCalculateExpectedGoalsPreview(targetHex, PenaltyShotType,
+            out float preview, out _, out _, out _) ? preview : CalculateCurrentShotExpectedGoals();
+        var savingPreview = new ShotInteraction
+        {
+            defender = keeper,
+            gkPenalty = CalculateGKSavePenalty(keeper, 0)
+        };
+        return panel.BeginShotComparison(this, () => isWaitingForShotRoll || isWaitingForGKDiceRoll,
+            GetActiveShotInstructionLabel(), shooter, keeper, BuildShotPresentationAttribute(),
+            BuildGroundSaveAttribute(savingPreview), expectedGoals);
     }
 
     private string BuildShotPresentationAttribute()
@@ -2159,7 +2178,8 @@ public class ShotManager : MonoBehaviour
         var keeper = interaction.defender;
         int penalty = interaction.gkPenalty ?? 0;
         if (penalty == 0) return $"Saving {keeper.saving}";
-        string reason = shotType == "snapshot" && tokenMoveforDeflection == keeper
+        string reason = IsPenaltyShot() ? "Penalty kick modifier"
+            : shotType == "snapshot" && tokenMoveforDeflection == keeper
             ? "Snapshot movement / distance penalty" : "Distance Penalty";
         return $"Saving {keeper.saving} {penalty:+0;-0} = {keeper.saving + penalty} ({reason})";
     }
@@ -3273,6 +3293,7 @@ public class ShotManager : MonoBehaviour
         saveHex = gkInteraction.interactionHex;
         Debug.Log($"Penalty Kick has reached GK {gkInteraction.defender.name}. Press [R] to roll for the save.");
         isWaitingForGKDiceRoll = true;
+        BeginGroundSavePresentation(gkInteraction);
     }
 
     private ShotInteraction BuildPenaltyShootoutGKSaveInteraction()
@@ -3978,11 +3999,14 @@ public class ShotManager : MonoBehaviour
             int version = headerSavePresentationVersion;
             string result = gkEntry.isOutsideBoxGoalkeeperHandSave && totalSavingPower >= totalShotPower
                 ? "HANDBALL · Red card and free kick"
-                : totalSavingPower == totalShotPower ? "TIED SAVE · Loose ball follows"
-                : totalSavingPower > totalShotPower ? "SAVED · Handling follows" : "SAVE FAILED · Shot continues";
+                : totalSavingPower == totalShotPower ? IsPenaltyShootoutShot()
+                    ? "TIED SAVE · Shootout deflection follows" : "TIED SAVE · Loose ball follows"
+                : totalSavingPower > totalShotPower ? IsPenaltyShootoutShot()
+                    ? "SAVED · Penalty missed" : "SAVED · Handling follows" : "SAVE FAILED · Shot continues";
             yield return SingleRollResolutionPresentation.Resolve(this, saveRoll,
                 $"Saving total: {FormatHeaderPower(totalSavingPower)} · {result}",
-                continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave,
+                continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave
+                    && !IsPenaltyShootoutShot(),
                 scatterOwner: looseBallManager, resolvedTotal: totalSavingPower);
             if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
         }

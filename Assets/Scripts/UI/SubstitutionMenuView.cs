@@ -29,6 +29,26 @@ public class SubstitutionMenuView : MonoBehaviour
     public Button backButton;
     public Button confirmButton;
 
+    [System.Serializable]
+    public sealed class RosterRowBackground
+    {
+        public TextMeshProUGUI label;
+        public Image background;
+    }
+
+    public RosterRowBackground[] rosterRowBackgrounds;
+
+    public void SetRosterStatus(TextMeshProUGUI label, Color color)
+    {
+        if (rosterRowBackgrounds == null) return;
+        foreach (var row in rosterRowBackgrounds)
+            if (row.label == label && row.background != null)
+            {
+                row.background.color = color;
+                return;
+            }
+    }
+
     public SubstitutionDropdownRowView[] GetRows(bool isHomeTeam)
     {
         SubstitutionDropdownRowView[] configuredRows = isHomeTeam ? homeRows : awayRows;
