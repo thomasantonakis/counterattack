@@ -12,13 +12,21 @@
 - Keep fixing compile errors until the open Unity editor reports clean scripts. Only then tell the user what was fixed.
 - Do not use `dotnet build Assembly-CSharp.csproj` as the Unity validation path for this project. It consumes time/tokens and does not stop or reload the open Unity editor.
 - Use static shell checks such as `rg`, `sed`, and `git diff --check` freely. For Unity compilation, rely on the open editor reload and Editor.log.
-- The user runs Play Mode and the test suite manually.
+- Codex is authorized to execute automated EditMode and PlayMode Unity Test Framework tests through the live Unity CLI/Pipeline, inspect their results, diagnose failures, and rerun affected tests. Framework-controlled entry/exit of Play Mode is authorized. Never launch Unity, use batchmode or GUI scripting, or start ordinary gameplay through `editor_play`.
+
+## Unity Test Framework Migration
+
+- Prefer isolated EditMode tests for rules and PlayMode tests for coroutines, movement, input and interruptions. Use deterministic boards and rigged dice; wait for meaningful states with bounded timeouts.
+- Framework tests must suppress the legacy runner, isolate singleton/event/scene/save state, and restore it even after failure. Never use live saves as mutable fixtures.
+- Keep legacy scenarios until equivalent replacement tests have passed. Record mappings and actual results in `Documentation/Testing/GameplayRegressionMigration.md`.
+- Execute relevant existing regressions after each focused migration batch. Report compilation separately from passed/failed/skipped test counts and retain result artifacts.
+- The selective manual scenario rules below apply to the legacy runner. Automated framework tests use filters to rerun failures and affected regressions; Codex executes and inspects these tests itself.
 
 ## Test Iteration Workflow
 
 - When the user is in testing mode and asks Codex to check logs or `Assets/TestResults.txt`, inspect the failure, identify where the fix belongs, apply the fix, and then use Unity CLI `editor_stop` only if Play Mode is active, followed by `unity recompile`. If the Pipeline connection is unavailable, ask the user to perform the required Editor action manually; never use GUI scripting.
 - Before reloading after a test failure fix, deactivate/comment out every test scenario that already succeeded earlier in the current testing pass. Leave enabled only the failed scenario and the scenarios that follow it, so the user can press Play and restart testing from the failure point.
-- The user, not Codex, presses Play to restart scenarios. Codex must not press Play or otherwise start tests.
+- For legacy scenarios the user presses Play. For Unity Test Framework tests Codex runs tests through CLI/Pipeline, including framework-controlled Play Mode transitions.
 - After incremental fixes have made the remaining tests pass, re-enable/release the full test suite only when the user asks, so the final snapshot can be checked for regressions.
 - When the user reports a failed Unity scenario, inspect bounded log slices from `Assets/TestResults.txt` and Unity `Editor.log`; never live-tail logs.
 - When the user reports a failure, assume Unity may be left open in the failed state for investigation.
