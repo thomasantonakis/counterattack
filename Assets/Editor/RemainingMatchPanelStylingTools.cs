@@ -172,9 +172,7 @@ namespace CounterAttack.Editor
                 var oldBorder = rect.Find("Border"); if (oldBorder != null) oldBorder.gameObject.SetActive(false);
                 Top(row.player.rectTransform, 4, 38, -32); row.player.font = heading; Label(row.player, 28, Navy);
                 Top(row.attribute.rectTransform, 44, 46, -32); Label(row.attribute, 22, Navy);
-                var die = (RectTransform)row.die.transform;
-                die.anchorMin = die.anchorMax = die.pivot = new Vector2(0, 1);
-                die.anchoredPosition = new Vector2(24, -94); die.sizeDelta = new Vector2(54, 54);
+                HeaderChallengePanelEditorTools.ConfigureContestantDice(row);
                 Top(row.result.rectTransform, 94, 28, -160); row.result.rectTransform.anchoredPosition += new Vector2(60, 0);
                 Label(row.result, 22, Navy);
                 Top(row.status.rectTransform, 124, 28, -160); row.status.rectTransform.anchoredPosition += new Vector2(60, 0);

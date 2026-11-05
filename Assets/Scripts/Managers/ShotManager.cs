@@ -2212,8 +2212,7 @@ public class ShotManager : MonoBehaviour
     {
         DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingforHandlingTest,
             (isHeaderAtGoal ? "Header at Goal" : GetActiveShotInstructionLabel()) + " · Handling", goalkeeper, $"Handling: {goalkeeper.handling}",
-            isHeaderAtGoal ? $"{GetTokenInstructionName(headerAttacker)} · Header power: {FormatHeaderPower(headerAttackerTotalScore)}"
-                : $"{GetTokenInstructionName(shooter)} · Shot power: {FormatHeaderPower(totalShotPower)}",
+            isHeaderAtGoal ? "Header saved" : "Shot saved",
             false, SingleRollResolutionPresentation.HandlingGuidance(goalkeeper.handling));
     }
 

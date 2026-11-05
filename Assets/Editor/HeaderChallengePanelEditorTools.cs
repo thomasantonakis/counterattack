@@ -110,6 +110,7 @@ namespace CounterAttack.Editor
                     result.sizeDelta = new Vector2(-40, 38);
                     result.anchoredPosition = new Vector2(0, -82);
                     row.result.alignment = TextAlignmentOptions.Center;
+                    ConfigureContestantDice(row);
                     EnsureTileBorder((RectTransform)row.root.transform);
                 }
             Preview(ui, 2);
@@ -179,6 +180,27 @@ namespace CounterAttack.Editor
             Image(edge, new Color(.65f, .7f, .78f, .8f));
         }
 
+        [MenuItem("CounterAttack/Room/Enlarge Header Challenge Dice")]
+        public static void EnlargeContestantDice()
+        {
+            var ui = Find();
+            foreach (var row in ui.attackers) ConfigureContestantDice(row);
+            foreach (var row in ui.defenders) ConfigureContestantDice(row);
+            EditorSceneManager.MarkSceneDirty(ui.gameObject.scene);
+        }
+
+        public static void ConfigureContestantDice(HeaderContestantFields row)
+        {
+            var die = (RectTransform)row.die.transform;
+            die.anchorMin = die.anchorMax = die.pivot = new Vector2(0, 1);
+            die.anchoredPosition = new Vector2(24, -52);
+            die.sizeDelta = Vector2.one * 96;
+            // Reserve the left side for the larger die, including long distance-penalty text.
+            var attribute = row.attribute.rectTransform;
+            attribute.sizeDelta = new Vector2(-176, attribute.sizeDelta.y);
+            attribute.anchoredPosition = new Vector2(64, attribute.anchoredPosition.y);
+        }
+
         private static HeaderContestantFields Row(string name, RectTransform parent, float top)
         {
             var row = Top(name, parent, top, 156);
@@ -193,6 +215,7 @@ namespace CounterAttack.Editor
             fields.result = Text(result, "Roll — - Total: —", 26);
             var status = Top("ContestantStatus", row, 120, 34);
             fields.status = Text(status, "Pending", 23);
+            ConfigureContestantDice(fields);
             EnsureTileBorder(row);
             return fields;
         }
