@@ -3430,7 +3430,9 @@ public class ShotManager : MonoBehaviour
                     );
                     MatchManager.Instance.SetHangingPass("shot"); // TODO: WHY?
                     DeferShotActionResolutionUntilExternalRestart();
-                    yield return StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution));
+                    yield return StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection,
+                        allowGKBoxMove: ball.GetCurrentHex()?.isInPenaltyBox == 0,
+                        presentationContext: LooseBallPresentationContext.ShotResolution));
                     ResetShotProcess();
                 }
                 else

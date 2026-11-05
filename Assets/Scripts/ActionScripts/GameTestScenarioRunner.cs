@@ -510,6 +510,9 @@ public class GameTestScenarioRunner : MonoBehaviour
     
     private void Awake()
     {
+#if UNITY_EDITOR
+        if (UnityEditor.SessionState.GetBool("CounterAttack.FrameworkTests", false)) return;
+#endif
         if (Instance != null && Instance != this)
         {
             Debug.LogWarning("⚠️ Duplicate GameTestScenarioRunner detected. Destroying the new one.");
@@ -656,6 +659,9 @@ public class GameTestScenarioRunner : MonoBehaviour
 
     private void StartTesting()
     {
+#if UNITY_EDITOR
+        if (UnityEditor.SessionState.GetBool("CounterAttack.FrameworkTests", false)) return;
+#endif
         if (shouldRunTests)
         {
             logFilePath = Path.Combine(Application.dataPath, "TestResults.txt");
@@ -822,7 +828,10 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
             new ScenarioDefinition(nameof(Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand), Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand),
             new ScenarioDefinition(nameof(Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall), Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall),
-            new ScenarioDefinition(nameof(Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove), Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove),
+            new ScenarioDefinition(nameof(Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_GKMove), Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_GKMove),
+            new ScenarioDefinition("OutsideBoxGK_FootWin_BoxMove", () => Scenario_041e_OutsideBoxGK_AttackerWin_BoxReposition_GKMove(false, false)),
+            new ScenarioDefinition("OutsideBoxGK_FootWin_BoxMove_Mirrored", () => Scenario_041e_OutsideBoxGK_AttackerWin_BoxReposition_GKMove(false, true)),
+            new ScenarioDefinition("OutsideBoxGK_DiveWin_BoxMove_Mirrored", () => Scenario_041e_OutsideBoxGK_AttackerWin_BoxReposition_GKMove(true, true)),
             new ScenarioDefinition(nameof(Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick), Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
@@ -860,6 +869,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
+        bool runRecoveryBoxMoveAuditOnly = true;
         bool runNutmegStealFoulAuditOnly = true;
         bool runManualStatsPreviewOnly = false;
         bool runFtpAuditOnly = true; // Temporary FTP audit selection; earlier batch flag is preserved below.
@@ -880,6 +890,26 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (runCodexKickoffOnly)
         {
             scenarios.Add(new ScenarioDefinition(nameof(Scenario_042_CodexKickoff_FirstPassOnReceiver), Scenario_042_CodexKickoff_FirstPassOnReceiver));
+        }
+        else if (runRecoveryBoxMoveAuditOnly)
+        {
+            foreach (bool reverse in new[] { false, true })
+                foreach (string branch in new[] { "standard", "ftp", "steal", "long", "long_direct", "header", "tackle_stay", "tackle_reposition", "loose_recovery", "loose", "same_box" })
+                {
+                    string selectedBranch = branch;
+                    bool selectedReverse = reverse;
+                    scenarios.Add(new ScenarioDefinition($"RecoveryBoxMove_{branch}_Reverse{reverse}",
+                        () => Scenario_041_RecoveryBoxMove(selectedBranch, selectedReverse)));
+                }
+            AddGkWallAuditScenarios(scenarios);
+            foreach (bool reverse in new[] { false, true })
+                foreach (string source in new[] { "tackle", "header", "shot" })
+                {
+                    bool selectedReverse = reverse;
+                    string selectedSource = source;
+                    scenarios.Add(new ScenarioDefinition($"LooseBallBoxEntry_{source}_Reverse{reverse}",
+                        () => Scenario_041_LooseBallBoxEntry(selectedSource, selectedReverse)));
+                }
         }
         else if (runNutmegStealFoulAuditOnly)
         {
@@ -1021,7 +1051,7 @@ public class GameTestScenarioRunner : MonoBehaviour
             new ScenarioDefinition(nameof(Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex), Scenario_041b_GKWall_SaveAndHold_Pushes_To_SaveHex),
             new ScenarioDefinition(nameof(Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand), Scenario_041c_OutsideBoxGK_Prompt_Dive_Tackle_Stand),
             new ScenarioDefinition(nameof(Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall), Scenario_041d_OutsideBoxGK_FootTackle_UsesZero_TieLooseBall),
-            new ScenarioDefinition(nameof(Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove), Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove),
+            new ScenarioDefinition(nameof(Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_GKMove), Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_GKMove),
             new ScenarioDefinition(nameof(Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick), Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick), Scenario_041g_OutsideBoxGK_Dive_Tie_ForcedRedFreeKick),
             new ScenarioDefinition(nameof(Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery), Scenario_041h_OutsideBoxGK_FootTackle_DefenderWin_NormalRecovery),
@@ -1238,6 +1268,225 @@ public class GameTestScenarioRunner : MonoBehaviour
         public HexCell GoalkeeperHex { get; }
         public HexCell TargetHex { get; }
         public List<HexCell> Path { get; }
+    }
+
+    private IEnumerator Scenario_041_RecoveryBoxMove(string branch, bool reverse)
+    {
+        EnsureTeamInAttackForTest(MatchManager.TeamInAttack.Home);
+        MatchManager.Instance.difficulty_level = 2;
+        MatchManager.Instance.homeTeamDirection = reverse ? MatchManager.TeamAttackingDirection.RightToLeft
+            : MatchManager.TeamAttackingDirection.LeftToRight;
+        MatchManager.Instance.awayTeamDirection = reverse ? MatchManager.TeamAttackingDirection.LeftToRight
+            : MatchManager.TeamAttackingDirection.RightToLeft;
+        int homeBoxSide = reverse ? 1 : -1;
+        int boxSide = branch == "long_direct" ? -homeBoxSide : homeBoxSide;
+        HexCell inside = hexgrid.cells.Cast<HexCell>()
+            .Where(h => h != null && !h.isOutOfBounds && h.isInPenaltyBox == boxSide && h.isInGoal == 0)
+            .OrderBy(h => Mathf.Abs(h.coordinates.z))
+            .First(h => h.GetNeighbors(hexgrid).Any(n => n != null && !n.isOutOfBounds && n.isInGoal == 0
+                && n.isInPenaltyBox == 0 && Mathf.Abs(n.coordinates.x) < Mathf.Abs(h.coordinates.x)));
+        HexCell outside = inside.GetNeighbors(hexgrid).First(h => h != null && !h.isOutOfBounds
+            && h.isInGoal == 0 && h.isInPenaltyBox == 0 && Mathf.Abs(h.coordinates.x) < Mathf.Abs(inside.coordinates.x));
+        HexCell source = branch == "same_box"
+            ? inside.GetNeighbors(hexgrid).First(h => h != null && h.isInPenaltyBox == boxSide && h.isInGoal == 0)
+            : outside;
+        HexCell recovery = branch == "tackle_reposition"
+            ? outside.GetNeighbors(hexgrid).First(h => h != null && !h.isOutOfBounds && h.isInPenaltyBox == 0)
+            : inside;
+        PlayerToken oldCarrier = RequirePlayerToken("Yaneva");
+        PlayerToken winner = RequirePlayerToken("Paterson");
+        PlayerToken homeKeeper = RequirePlayerToken("Aziz");
+        PlayerToken awayKeeper = RequirePlayerToken("Kuzmic");
+        MoveTokensAwayFromOutsideBoxShotHexes(new[] { source, recovery, inside }, oldCarrier, winner, homeKeeper, awayKeeper);
+        PlaceTokenForScenario(homeKeeper, RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16 * homeBoxSide, 0, 0)), "Home GK hex"), asAttacker: true);
+        PlaceTokenForScenario(awayKeeper, RequireHex(hexgrid.GetHexCellAt(new Vector3Int(-16 * homeBoxSide, 0, 0)), "Away GK hex"), asAttacker: false);
+        PlaceTokenForScenario(oldCarrier, source, asAttacker: true);
+        PlaceTokenForScenario(winner, recovery, asAttacker: false);
+        movementPhaseManager.ResetMovementPhase();
+        movementPhaseManager.ClearSetPieceTransientState();
+        goalKeeperManager.isActivated = false;
+        goalKeeperManager.NotifyBallPosition(null);
+        finalThirdManager.isActivated = false;
+        groundBallManager.ball.PlaceAtCell(source);
+        MatchManager.Instance.SetLastToken(oldCarrier);
+        MatchManager.Instance.UpdatePossessionAfterPass(source);
+
+        IEnumerator flow;
+        bool tackle = branch.StartsWith("tackle", StringComparison.Ordinal);
+        if (tackle)
+        {
+            movementPhaseManager.isActivated = true;
+            movementPhaseManager.isMovementPhaseDef = true;
+            movementPhaseManager.selectedToken = winner;
+            movementPhaseManager.selectedDefender = winner;
+            SetPrivateInstanceField(movementPhaseManager, "defenderDiceRoll", 50);
+            SetPrivateInstanceField(movementPhaseManager, "attackerDiceRoll", 2);
+            flow = (IEnumerator)GetPrivateInstanceMethod(typeof(MovementPhaseManager), "CompareTackleRolls")
+                .Invoke(movementPhaseManager, null);
+        }
+        else if (branch == "loose")
+        {
+            bool preRoll = (bool)GetPrivateInstanceMethod(typeof(LooseBallManager), "ShouldOfferPreRollGKBoxMove")
+                .Invoke(looseBallManager, new object[] { winner, LooseBallSourceType.GroundDeflection, true });
+            AssertTrue(!preRoll, "Deflection into the current attack's own box must not offer its attacking GK a pre-roll move.");
+            flow = (IEnumerator)GetPrivateInstanceMethod(typeof(LooseBallManager), "MoveLooseBallToHex")
+                .Invoke(looseBallManager, new object[] { inside, LooseBallSourceType.GroundDeflection, true });
+        }
+        else if (branch == "long_direct")
+        {
+            flow = longBallManager.HandleLongBallMovement(recovery);
+        }
+        else if (branch == "loose_recovery")
+        {
+            flow = (IEnumerator)GetPrivateInstanceMethod(typeof(LooseBallManager), "MoveToSuccessfulLooseBallInterceptor")
+                .Invoke(looseBallManager, new object[] { winner, recovery });
+        }
+        else if (branch == "header")
+        {
+            headerManager.interceptingDefenders = new List<HexCell> { recovery };
+            flow = (IEnumerator)GetPrivateInstanceMethod(typeof(HeaderManager), "PerformInterceptionCheck")
+                .Invoke(headerManager, null);
+        }
+        else if (branch == "long")
+        {
+            SetPrivateInstanceField(longBallManager, "interceptingDefenders", new List<HexCell> { recovery });
+            flow = (IEnumerator)typeof(LongBallManager).GetMethod("PerformInterceptionCheck",
+                BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(HexCell), typeof(int?) }, null)
+                .Invoke(longBallManager, new object[] { source, (int?)6 });
+        }
+        else
+        {
+            MonoBehaviour owner = branch == "ftp" ? firstTimePassManager
+                : branch == "steal" ? movementPhaseManager : groundBallManager;
+            MatchManager.Instance.SetLastToken(winner); // Successful-roll continuation already owns the touch.
+            flow = (IEnumerator)GetPrivateInstanceMethod(owner.GetType(), "HandleBallInterception")
+                .Invoke(owner, new object[] { recovery });
+        }
+        bool complete = false;
+        StartCoroutine(ObserveRecoveryBoxMoveFlow(flow, () => complete = true));
+        if (branch == "header")
+        {
+            yield return WaitForCondition(() => headerManager.isWaitingForInterceptionRoll, 3f,
+                "Header landing interception should wait for its recovery roll.");
+            headerManager.PerformInterceptionRoll(6);
+        }
+        if (branch == "tackle_reposition")
+        {
+            yield return WaitForCondition(() => movementPhaseManager.isWaitingForReposition, 10f,
+                "A tackle won outside the box must offer winner reposition.");
+            AssertTrue(!goalKeeperManager.isActivated && winner.isAttacker && !homeKeeper.isAttacker,
+                "Possession must change before the tackle winner can reposition into the new defending box.");
+            yield return gameInputManager.DelayedClick(ToClickCoordinates(inside), .1f);
+        }
+        if (branch is "loose" or "same_box")
+        {
+            yield return WaitForCondition(() => complete, 12f, "A movement without a new defending-box entry must complete without a GK pause.");
+            AssertTrue(!goalKeeperManager.isActivated, "Loose-ball own-box entry / same-box recovery must not offer a new GK move.");
+            if (branch == "loose")
+                AssertTrue(homeKeeper.isAttacker && !winner.isAttacker
+                    && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == oldCarrier,
+                    "A loose deflection must preserve possession and the purposeful-touch owner until recovery is resolved.");
+        }
+        else
+        {
+            yield return WaitForCondition(() => goalKeeperManager.isActivated, 12f,
+                $"{branch}: purposeful recovery entering the new defending box must offer its GK a move.");
+            PlayerToken expectedKeeper = branch == "long_direct" ? awayKeeper : homeKeeper;
+            AssertTrue(goalKeeperManager.GetCurrentDefendingGoalkeeper() == expectedKeeper
+                && !expectedKeeper.isAttacker && winner.isAttacker == (branch != "long_direct"),
+                "The GK offer must use the attacking action's possession, before any subsequent passive recovery.");
+            AssertTrue(!complete, "The recovery continuation must wait for the nested GK decision.");
+            yield return gameInputManager.DelayedKeyDataPress(KeyCode.X, .1f);
+            if (tackle && branch == "tackle_stay")
+            {
+                yield return WaitForCondition(() => movementPhaseManager.isWaitingForReposition, 5f,
+                    "Attraction into the box must finish its GK move before tackle reposition.");
+                yield return gameInputManager.DelayedKeyDataPress(KeyCode.X, .1f);
+            }
+            yield return WaitForCondition(() => complete, 12f, "Recovery should finish after GK move and optional reposition.");
+            AssertTrue(winner.isAttacker && !oldCarrier.isAttacker,
+                "Recovery must change possession exactly once.");
+            AssertTrue(goalKeeperManager.HasConsumedBoxMoveForDecisionPreview(boxSide),
+                "This box entry must remain consumed, preventing a duplicate offer.");
+        }
+        AssertTrue(groundBallManager.ball.GetCurrentHex() == (branch == "tackle_reposition" ? inside : recovery),
+            "Recovery must leave the ball at its final destination.");
+        LogFooterofTest($"Recovery box move {branch}, reverse={reverse}");
+    }
+
+    private IEnumerator Scenario_041_LooseBallBoxEntry(string source, bool reverse)
+    {
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard(reverseDirection: reverse);
+        int side = reverse ? -1 : 1;
+        PlayerToken blocker = RequirePlayerToken("Paterson");
+        PlaceTokenForScenario(setup.Goalkeeper,
+            RequireHex(hexgrid.GetHexCellAt(new Vector3Int(16 * side, 0, 0)), "GK inside own box"), asAttacker: false);
+        MoveTokensAwayFromOutsideBoxShotHexes(new[] { setup.DribblerHex, setup.BoxRepositionHex },
+            setup.Dribbler, setup.Goalkeeper, blocker);
+        PlaceTokenForScenario(blocker, setup.BoxRepositionHex, asAttacker: false);
+        groundBallManager.ball.PlaceAtCell(setup.DribblerHex);
+        goalKeeperManager.NotifyBallPosition(null);
+        MatchManager.Instance.SetLastToken(setup.Dribbler);
+        movementPhaseManager.isActivated = false;
+        LooseBallSourceType type = source == "header" ? LooseBallSourceType.HeaderDeflection : LooseBallSourceType.GroundDeflection;
+        LooseBallPresentationContext context = source == "shot" ? LooseBallPresentationContext.ShotResolution
+            : source == "tackle" ? LooseBallPresentationContext.GroundDuelResolution : LooseBallPresentationContext.Standalone;
+        Coroutine resolution = StartCoroutine(looseBallManager.ResolveLooseBall(blocker, type,
+            allowGKBoxMove: true, presentationContext: context));
+        try
+        {
+            if (source == "shot")
+            {
+                yield return WaitForCondition(() => goalKeeperManager.isActivated, 5f,
+                    "A blocked outside-box shot must offer the defending GK a box move before scatter rolls.");
+                AssertTrue(goalKeeperManager.GetCurrentDefendingGoalkeeper() == setup.Goalkeeper,
+                    "A shot block must preserve possession and move the original defending GK.");
+                yield return gameInputManager.DelayedKeyDataPress(KeyCode.X, .1f);
+            }
+            yield return WaitForCondition(() => looseBallManager.isWaitingForDirectionRoll, 8f,
+                "The loose ball should reach direction selection after its permitted box-entry handling.");
+            AssertTrue(!goalKeeperManager.isActivated, "Scatter direction selection must not overlap a GK move.");
+            AssertTrue(goalKeeperManager.HasConsumedBoxMoveForDecisionPreview(side) == (source == "shot"),
+                "Only the blocked shot may consume a box move before direction and distance; tackle/header checks are deferred.");
+            AssertTrue(setup.Dribbler.isAttacker && !blocker.isAttacker,
+                "Creating a loose ball must not transfer possession to the deflecting defender.");
+            if (source != "shot")
+            {
+                bool scatterOffer = (bool)GetPrivateInstanceMethod(typeof(LooseBallManager), "ShouldOfferLooseBallGKBoxMove")
+                    .Invoke(looseBallManager, new object[] { blocker, type, new List<HexCell> { setup.BoxRepositionHex } });
+                AssertTrue(scatterOffer, "After direction/distance resolve to the defending box, tackle/header loose balls must qualify.");
+                bool outsideOffer = (bool)GetPrivateInstanceMethod(typeof(LooseBallManager), "ShouldOfferLooseBallGKBoxMove")
+                    .Invoke(looseBallManager, new object[] { blocker, type, new List<HexCell> { setup.DribblerHex } });
+                AssertTrue(!outsideOffer, "A loose ball whose final destination is outside the box must not qualify.");
+                Vector3 beforeFlight = groundBallManager.ball.transform.position;
+                object result = Activator.CreateInstance(typeof(LooseBallManager).GetNestedType(
+                    "LooseBallGkCheckpointResult", BindingFlags.NonPublic));
+                IEnumerator checkpoint = (IEnumerator)GetPrivateInstanceMethod(typeof(LooseBallManager),
+                    "OfferDefendingGKMoveAndRecoveryAfterInterceptions").Invoke(looseBallManager,
+                        new object[] { blocker, type, new List<HexCell> { setup.BoxRepositionHex }, false, result });
+                bool checkpointComplete = false;
+                StartCoroutine(ObserveRecoveryBoxMoveFlow(checkpoint, () => checkpointComplete = true));
+                yield return WaitForCondition(() => goalKeeperManager.isActivated, 3f,
+                    "The resolved inside-box destination must offer its GK move before the loose-ball flight.");
+                AssertTrue(groundBallManager.ball.transform.position == beforeFlight,
+                    "Checking the resolved destination must not start moving the ball to the box boundary.");
+                yield return gameInputManager.DelayedKeyDataPress(KeyCode.X, .1f);
+                yield return WaitForCondition(() => checkpointComplete, 3f,
+                    "Skipping the deferred box move must finish its checkpoint.");
+            }
+        }
+        finally
+        {
+            StopCoroutine(resolution);
+            looseBallManager.EndLooseBallPhase(completeDeferredShotResolution: false);
+        }
+        LogFooterofTest($"Loose ball box entry source={source}, reverse={reverse}");
+    }
+
+    private IEnumerator ObserveRecoveryBoxMoveFlow(IEnumerator flow, Action completed)
+    {
+        yield return StartCoroutine(flow);
+        completed();
     }
 
     private OutsideBoxGoalkeeperChallengeSetup PrepareOutsideBoxGoalkeeperChallengeBoard(
@@ -1542,12 +1791,15 @@ public class GameTestScenarioRunner : MonoBehaviour
         LogFooterofTest("Outside Box GK Foot Tackle Uses Zero Tie Loose Ball");
     }
 
-    private IEnumerator Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_NoGKMove()
+    private IEnumerator Scenario_041e_OutsideBoxGK_Dive_AttackerWin_BoxReposition_GKMove()
+        => Scenario_041e_OutsideBoxGK_AttackerWin_BoxReposition_GKMove(hands: true, reverse: false);
+
+    private IEnumerator Scenario_041e_OutsideBoxGK_AttackerWin_BoxReposition_GKMove(bool hands, bool reverse)
     {
         yield return new WaitForSeconds(1.5f);
-        Log("Starting outside-box GK dive attacker-win reposition test.");
-        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard();
-        yield return StartCoroutine(StartOutsideBoxGoalkeeperDive(setup));
+        Log($"Starting outside-box GK attacker-win reposition test: hands={hands}, reverse={reverse}.");
+        OutsideBoxGoalkeeperChallengeSetup setup = PrepareOutsideBoxGoalkeeperChallengeBoard(reverseDirection: reverse);
+        yield return StartCoroutine(hands ? StartOutsideBoxGoalkeeperDive(setup) : StartOutsideBoxGoalkeeperFootTackle(setup));
         string diveRollInstructions = movementPhaseManager.GetInstructions();
         AssertTrue(diveRollInstructions.Contains("1 is a foul"), "Outside-box GK dive roll prompt should say a roll of 1 is a foul, not a penalty.", "1 is a foul", diveRollInstructions);
         AssertTrue(!diveRollInstructions.Contains("1 is a penalty"), "Outside-box GK dive roll prompt should not call an outside-box foul a penalty.", "no penalty text", diveRollInstructions);
@@ -1565,13 +1817,17 @@ public class GameTestScenarioRunner : MonoBehaviour
         AssertTrue(!goalKeeperManager.isActivated, "GK box move should not be active before the attacker repositions.");
         Log("Clicking GK old box hex - Reposition Yaneva into penalty box after beating GK dive");
         yield return StartCoroutine(gameInputManager.DelayedClick(ToClickCoordinates(setup.BoxRepositionHex), 0.1f));
-        yield return new WaitForSeconds(0.5f);
+        yield return WaitForCondition(() => goalKeeperManager.isActivated, 5f,
+            "Entering the box after beating an outside-box GK challenge must offer the defending GK a box move.");
 
         AssertTrue(setup.Dribbler.GetCurrentHex() == setup.BoxRepositionHex, "Yaneva should reposition into the penalty box.", setup.BoxRepositionHex, setup.Dribbler.GetCurrentHex());
         AssertTrue(groundBallManager.ball.GetCurrentHex() == setup.BoxRepositionHex, "Ball should follow Yaneva's reposition into the penalty box.", setup.BoxRepositionHex, groundBallManager.ball.GetCurrentHex());
-        AssertTrue(!goalKeeperManager.isActivated, "Reposition into the box after beating an outside-box GK dive should not offer GK free move.");
+        AssertTrue(goalKeeperManager.GetCurrentDefendingGoalkeeper() == setup.Goalkeeper,
+            "The GK who lost the challenge remains eligible for the box move.");
+        yield return gameInputManager.DelayedKeyDataPress(KeyCode.X, .1f);
+        AssertTrue(!goalKeeperManager.isActivated, "Skipping the offered box move must resume the reposition continuation.");
 
-        LogFooterofTest("Outside Box GK Dive Attacker Win Box Reposition No GK Move");
+        LogFooterofTest($"Outside Box GK Attacker Win Box Reposition GK Move: hands={hands}, reverse={reverse}");
     }
 
     private IEnumerator Scenario_041f_OutsideBoxGK_Dive_DefenderWin_ForcedRedFreeKick()

@@ -1105,10 +1105,11 @@ public class GroundBallManager : MonoBehaviour
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
-        yield return StartCoroutine(HandleGroundBallMovement(defenderHex, allowGKBoxMove: false));  // Move the ball to the defender's hex
         PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
-        // Call UpdatePossessionAfterPass after the ball has moved to the defender's hex
-        MatchManager.Instance.ChangePossession();  // Possession is now changed to the other team
+        // The interception is already won. Establish the new attacking side
+        // before its touch pulls the ball across a penalty-box boundary.
+        MatchManager.Instance.ChangePossession();
+        yield return StartCoroutine(HandleGroundBallMovement(defenderHex));
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession after the ball has reached the defender's hex
         ResetGroundPassInterceptionDiceRolls();
         CleanUpPass();

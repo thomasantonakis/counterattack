@@ -1448,9 +1448,9 @@ public class FirstTimePassManager : MonoBehaviour
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
         HighlightFtpBallMovementPath(defenderHex, hadInterceptionAttempt: true);
-        yield return StartCoroutine(HandleGroundBallMovement(defenderHex, allowGKBoxMove: false));
         PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : null;
         MatchManager.Instance.ChangePossession();
+        yield return StartCoroutine(HandleGroundBallMovement(defenderHex));
         MatchManager.Instance.currentState = MatchManager.GameState.LooseBallPickedUp;
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
         MatchManager.Instance.ResolveActionBeforeFinalThird(

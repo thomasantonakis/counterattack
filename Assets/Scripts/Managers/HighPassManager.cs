@@ -1798,8 +1798,8 @@ public class HighPassManager : MonoBehaviour
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}");
 
         if (
-            goalKeeperManager.ShouldGKMove(targetHex)
-            && positionOfpasser.isInPenaltyBox * targetHex.isInPenaltyBox != 1
+            positionOfpasser.isInPenaltyBox != targetHex.isInPenaltyBox
+            && goalKeeperManager.ShouldGKMove(targetHex)
         )
         {
             yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());

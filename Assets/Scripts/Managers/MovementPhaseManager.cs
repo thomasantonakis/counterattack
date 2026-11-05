@@ -141,7 +141,6 @@ public class MovementPhaseManager : MonoBehaviour
     private bool isGkWallDiveSequenceActive = false;
     private bool movementInterruptedByGKWallDive = false;
     private GoalkeeperChallengeMode goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
-    private bool suppressNextRepositionGKBoxMove = false;
     private bool suppressNextDribblerZoiStealAfterBallPickup = false;
     private int gkWallDiveSavingPenalty = 0;
     private HexCell gkWallDiveHex = null;
@@ -922,7 +921,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         if (isWaitingForReposition && keyData.key == KeyCode.X)
         {
-            if (isNutmegInProgress)
+            if (isNutmegInProgress && !isSuccessfulTackleRepositionPending)
             {
                 Debug.Log($"{repositionWinner.name} just nutmegged {repositionLoser.name}, they have to reposition.");
             }
@@ -2141,7 +2140,6 @@ public class MovementPhaseManager : MonoBehaviour
             return;
         }
 
-        MatchManager.Instance.ChangePossession();
         MatchManager.Instance.UpdatePossessionAfterPass(repositionWinner.GetCurrentHex());
         MatchManager.Instance.SetLastToken(repositionWinner);
         isSuccessfulTackleRepositionPending = false;
@@ -2860,6 +2858,8 @@ public class MovementPhaseManager : MonoBehaviour
         {
             Debug.LogError("selectedDefender is null during dice roll.");
         }
+    }
+
     // A foul followed by Play On consumes the same attempt as a missed steal.
     // Keep the reserved nutmeg victim and remaining queue across foul checks.
     private void ContinueAfterFailedSteal()
@@ -2894,15 +2894,11 @@ public class MovementPhaseManager : MonoBehaviour
         }
     }
 
-    }
-
     private IEnumerator HandleBallInterception(HexCell defenderHex)
     {
-        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(defenderHex));  // Move the ball to the defender's hex
         PlayerToken recoveringToken = defenderHex != null ? defenderHex.GetOccupyingToken() : selectedDefender;
-
-        // Change possession to the defending team
-        MatchManager.Instance.ChangePossession();  
+        MatchManager.Instance.ChangePossession();
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(defenderHex));
         MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
         bool consumesExtraAction = committedMovementConsumesExtraAction;
         EndMovementPhase(false);
@@ -3123,14 +3119,17 @@ public class MovementPhaseManager : MonoBehaviour
                 stunnedforNext.Add(attackerToken);
                 // DO NOT Set it to true
             }
-            ball.SetCurrentHex(selectedDefender.GetCurrentHex());
-            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(selectedDefender.GetCurrentHex()));  // Move the ball to the defender's hex
-            Debug.Log($"{selectedDefender.name} can reposition!");
             repositionWinner = selectedDefender;
             repositionLoser = attackerToken;
             isDribblerRunning  = false;
             remainingDribblerPace = 0;
             isSuccessfulTackleRepositionPending = true;
+            // Recovery is decided before the attraction/reposition. This makes
+            // the previous attacking GK the defending GK for any box entry.
+            MatchManager.Instance.ChangePossession();
+            MatchManager.Instance.ApplyBallCollectionOwnership(repositionWinner);
+            yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(repositionWinner.GetCurrentHex()));
+            Debug.Log($"{repositionWinner.name} can reposition!");
             yield return StartCoroutine(HandlePostTackleReposition());
             if (isNutmegInProgress)
             {
@@ -3150,10 +3149,6 @@ public class MovementPhaseManager : MonoBehaviour
                 MatchManager.ActionType.GroundDuelWon,
                 connectedToken: selectedDefender,
                 tackleType: isNutmegInProgress ? "nutmeg" : "keep");
-            if (wasOutsideBoxGoalkeeperFootTackle)
-            {
-                suppressNextRepositionGKBoxMove = true;
-            }
             yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
         }
         else if (defenderTotalScore == attackerTotalScore)
@@ -3239,7 +3234,6 @@ public class MovementPhaseManager : MonoBehaviour
                 MatchManager.ActionType.GroundDuelWon,
                 connectedToken: goalkeeper,
                 tackleType: "outside box gk dive keep");
-            suppressNextRepositionGKBoxMove = true;
             ResetGKWallDiveState();
             yield return StartCoroutine(PrepareAttackerReposition(attackerToken));
             yield break;
@@ -3325,7 +3319,7 @@ public class MovementPhaseManager : MonoBehaviour
     {
         // Get the loser's hex and neighboring hexes
         FindRepositionHexes();
-        if (isNutmegInProgress && repositionWinner.isAttacker)
+        if (isNutmegInProgress && !isSuccessfulTackleRepositionPending)
         {
             Debug.Log($"{repositionWinner.name} won the nutmeg tackle and is repositioning around {repositionLoser.name}. Click a Highlighted Hex to move there.");
             // @TODO: What if defense wins?
@@ -3347,7 +3341,6 @@ public class MovementPhaseManager : MonoBehaviour
         {
             yield return null;
         }
-        suppressNextRepositionGKBoxMove = false;
     }
 
     private void RefreshRepositionHighlights()
@@ -3437,8 +3430,7 @@ public class MovementPhaseManager : MonoBehaviour
         // clickedHex.ResetHighlight();
         // clickedHex.HighlightHex("isAttackOccupied");
         Debug.Log("Repositioning complete.");
-        isWaitingForReposition = false;
-        if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler && !suppressNextRepositionGKBoxMove)
+        if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler)
         {
             Debug.Log("⚽ Ball entered penalty box during a reposition! Offering GK a free move.");
             if (goalKeeperManager.ShouldGKMove(hex))
@@ -3446,10 +3438,9 @@ public class MovementPhaseManager : MonoBehaviour
                 await helperFunctions.StartCoroutineAndWait(goalKeeperManager.HandleGKFreeMove());
             }
         }
-        else if (winnerHex.isInPenaltyBox == 0 && hex.isInPenaltyBox != 0 && repositionWinner.IsDribbler && suppressNextRepositionGKBoxMove)
-        {
-            Debug.Log("GK box-entry free move suppressed because the dribbler repositioned after beating an outside-box GK challenge.");
-        }
+        // Keep the owning duel waiting until the nested GK decision finishes;
+        // otherwise it can end/reset movement while the GK is choosing a hex.
+        isWaitingForReposition = false;
         // this shows that it was the dribber winning the tackle
         if (isSuccessfulTackleRepositionPending)
         {
@@ -4054,7 +4045,6 @@ public class MovementPhaseManager : MonoBehaviour
         isGkWallDiveSequenceActive = false;
         movementInterruptedByGKWallDive = false;
         goalkeeperChallengeMode = GoalkeeperChallengeMode.None;
-        suppressNextRepositionGKBoxMove = false;
         suppressNextDribblerZoiStealAfterBallPickup = false;
         gkWallDiveSavingPenalty = 0;
         gkWallDiveHex = null;
@@ -4419,8 +4409,8 @@ public class MovementPhaseManager : MonoBehaviour
             if (isDribblerRunning && !isWaitingForGKWallDiveDecision && !isWaitingForReposition &&!isWaitingForInterceptionDiceRoll && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision && !isWaitingForTackleRoll) sb.Append($"Press [X] to forfeit {selectedTokenName}'s remaining pace ({remainingDribblerPace}), ");
             if (isWaitingForTackleDecision) sb.Append(BuildTackleDecisionInstruction(selectedTokenName, false));
             if (isWaitingForTackleDecisionWithoutMoving) sb.Append(BuildTackleDecisionInstruction(selectedTokenName, true));
-            if (isWaitingForReposition && isNutmegInProgress && repositionWinner.isAttacker) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
-            if (isWaitingForReposition && (!isNutmegInProgress || !repositionWinner.isAttacker)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put, ");
+            if (isWaitingForReposition && isNutmegInProgress && !isSuccessfulTackleRepositionPending) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! (you cannot stay there due the the nutmeg), ");
+            if (isWaitingForReposition && (!isNutmegInProgress || isSuccessfulTackleRepositionPending)) sb.Append($"Click on a Reposition Hex to move {repositionWinner.playerName} there! Press [X] to stay put, ");
         // }
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space

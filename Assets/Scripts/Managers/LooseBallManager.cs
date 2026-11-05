@@ -32,6 +32,9 @@ public class LooseBallManager : MonoBehaviour
     [Header("Flags")]
     public bool isActivated = false;
     public LooseBallPresentationContext PresentationContext { get; private set; }
+    private bool allowDeflectionGKBoxMove;
+    private bool allowScatterGKBoxMove;
+    private int looseBallOriginPenaltyBox;
     // Explicit header-deflection presentation owner, independent of gameplay/shot context.
     private HeaderChallengePanelController headerPresentationOwner;
     // Routing follows the explicit handoff, including while that presentation is suspended/disabled.
@@ -325,6 +328,16 @@ public class LooseBallManager : MonoBehaviour
         yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(targetHex, allowGKBoxMove: allowGKBoxMove));
     }
 
+    private IEnumerator MoveToSuccessfulLooseBallInterceptor(PlayerToken receiver, HexCell recoveryHex)
+    {
+        MatchManager.Instance.ClearHangingPass();
+        MatchManager.Instance.SetLastTokenFromLooseBall(receiver);
+        // This successful recovery is now a purposeful touch by the new attack.
+        MatchManager.Instance.ChangePossession();
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(recoveryHex));
+        MatchManager.Instance.UpdatePossessionAfterPass(recoveryHex);
+    }
+
     private IEnumerator MoveLooseBallUntilGKBoxMove(HexCell targetHex)
     {
         SuspendHeaderPresentationForGoalkeeper();
@@ -370,22 +383,25 @@ public class LooseBallManager : MonoBehaviour
 
     private bool ShouldOfferLooseBallGKBoxMove(PlayerToken startingToken, LooseBallSourceType sourceType, List<HexCell> movementPath)
     {
-        if (sourceType != LooseBallSourceType.GroundDeflection || startingToken == null || startingToken.IsGoalKeeper)
+        if (!allowScatterGKBoxMove || startingToken == null
+            || (sourceType != LooseBallSourceType.GroundDeflection && sourceType != LooseBallSourceType.HeaderDeflection))
         {
             return false;
         }
-
-        if (hexGrid == null || ball == null || hexGrid.CheckPenaltyBox(ball.transform.position) != 0)
+        HexCell destination = movementPath?.LastOrDefault(hex => hex != null);
+        if (ball == null || !IsOpponentPenaltyBoxForCurrentPurposefulTouch(destination))
         {
             return false;
         }
-
-        return FindFirstOpponentPenaltyBoxHex(movementPath) != null;
+        // Initial attraction to the deflector is setup for the rolls, not the
+        // loose-ball entry decision. Preserve its original box for this check.
+        return looseBallOriginPenaltyBox != destination.isInPenaltyBox
+            || ball.GetCurrentHex()?.isInPenaltyBox != destination.isInPenaltyBox;
     }
 
     private bool ShouldOfferPreRollGKBoxMove(PlayerToken startingToken, LooseBallSourceType sourceType, bool allowGKBoxMove)
     {
-        if (!allowGKBoxMove)
+        if (!allowGKBoxMove || !allowDeflectionGKBoxMove)
         {
             return false;
         }
@@ -509,11 +525,14 @@ public class LooseBallManager : MonoBehaviour
             yield break;
         }
 
-        Debug.Log($"Loose ball movement enters the opponent penalty box at {firstBoxHex.coordinates}. Stopping on the line for the defending GK free move before continuing.");
-        yield return StartCoroutine(MoveLooseBallUntilGKBoxMove(movementTargetHex));
+        GoalKeeperManager boxMoveManager = goalKeeperManager != null
+            ? goalKeeperManager : FindAnyObjectByType<GoalKeeperManager>();
+        if (boxMoveManager == null || !boxMoveManager.TryStartGKMoveForPenaltyBox(
+            movementTargetHex.isInPenaltyBox, movementTargetHex, out PlayerToken defendingGk)) yield break;
+        SuspendHeaderPresentationForGoalkeeper();
+        Debug.Log($"Loose-ball destination {movementTargetHex.coordinates} is in the defending box. Offering the GK move before the ball starts moving.");
+        yield return StartCoroutine(boxMoveManager.HandleGKFreeMove());
         result.GkMoveOffered = true;
-
-        PlayerToken defendingGk = hexGrid != null ? hexGrid.GetDefendingGK() : null;
         if (defendingGk == null)
         {
             yield break;
@@ -894,6 +913,8 @@ public class LooseBallManager : MonoBehaviour
             ? new HashSet<PlayerToken>(headerManager.attackerWillJump.Concat(headerManager.defenderWillJump))
             : null;
         PresentationContext = presentationContext;
+        looseBallOriginPenaltyBox = ball.GetCurrentHex()?.isInPenaltyBox ?? 0;
+        allowScatterGKBoxMove = allowGKBoxMove && !IsGoalkeeperHandlingSpill(sourceType);
         headerPresentationOwner = sourceType == LooseBallSourceType.HeaderDeflection ? presentationOwner : null;
         isActivated = true;
         causingDeflection = startingToken; // TODO: I think this is redundant
@@ -906,7 +927,12 @@ public class LooseBallManager : MonoBehaviour
             MatchManager.Instance.SetLastToken(startingToken);
         }
 
-        bool allowGKBoxMoveForLooseBallMovement = allowGKBoxMove && !IsGoalkeeperHandlingSpill(sourceType);
+        // Only blocked shots can offer the move during initial attraction.
+        // Tackle/header loose balls are assessed after direction and distance.
+        bool allowGKBoxMoveForLooseBallMovement = allowGKBoxMove
+            && sourceType == LooseBallSourceType.GroundDeflection
+            && presentationContext == LooseBallPresentationContext.ShotResolution;
+        allowDeflectionGKBoxMove = allowGKBoxMoveForLooseBallMovement;
         // Step 1: Move the ball to the starting token's hex
         HexCell defenderHex = startingToken.GetCurrentHex();
         bool gkBoxMoveOfferedForThisLooseBall = false;
@@ -1188,13 +1214,9 @@ public class LooseBallManager : MonoBehaviour
                             yield break;
                         }
 
-                        bool allowGKBoxMoveForInterception = allowGKBoxMoveForLooseBallMovement && !gkBoxMoveOfferedForThisLooseBall;
-                        yield return StartCoroutine(MoveLooseBallToHex(neighbor, sourceType, allowGKBoxMoveForInterception));
-                        MatchManager.Instance.ClearHangingPass();
-                        MatchManager.Instance.SetLastTokenFromLooseBall(potentialInterceptor);
-                        // Change possession to the defending team
-                        MatchManager.Instance.ChangePossession();  
-                        MatchManager.Instance.UpdatePossessionAfterPass(neighbor);  // Update possession
+                        // Reassess at the successful recovery: this is now a
+                        // purposeful touch by the new attack, not uncontrolled scatter.
+                        yield return StartCoroutine(MoveToSuccessfulLooseBallInterceptor(potentialInterceptor, neighbor));
                         movementPhaseManager.EndMovementPhase(false);
                         MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(potentialInterceptor, neighbor);
                         EndLooseBallPhase();
@@ -1279,7 +1301,10 @@ public class LooseBallManager : MonoBehaviour
                 {
                     Debug.LogWarning("There is no movement Phase going on, Attacker must choose what to do!");
                     finalThirdManager.TriggerFinalThirdPhase();
-                    MatchManager.Instance.BroadcastAnyOtherScenario(ShouldOfferShortGroundBallAfterAttackerPickup(sourceType, allowGKBoxMoveForLooseBallMovement));
+                    // Pass-distance restrictions belong to the source action,
+                    // independently of whether uncontrolled scatter can move a GK.
+                    MatchManager.Instance.BroadcastAnyOtherScenario(ShouldOfferShortGroundBallAfterAttackerPickup(
+                        sourceType, allowGKBoxMove && presentationContext != LooseBallPresentationContext.ShotResolution));
                     Debug.Log("Available Options are: [M]ovement Phase, Standard [P]ass, [L]ong Ball, [S]napshot");
                 }
                 else if (movementPhaseManager.isActivated)
@@ -1331,9 +1356,9 @@ public class LooseBallManager : MonoBehaviour
                 AssignLooseBallReceiver(closestToken, sourceType);
                 // Change possession to the defending team
                 MatchManager.Instance.ChangePossession();  
-                MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);  // Update possession
+                MatchManager.Instance.UpdatePossessionAfterPass(looseBallRestingHex);
                 movementPhaseManager.EndMovementPhase(false);
-                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(closestToken, defenderHex);
+                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(closestToken, looseBallRestingHex);
              }
         }
         else // ball hit no token and reached an empty Hex
@@ -1434,6 +1459,9 @@ public class LooseBallManager : MonoBehaviour
         }
 
         isActivated = false;
+        allowDeflectionGKBoxMove = false;
+        allowScatterGKBoxMove = false;
+        looseBallOriginPenaltyBox = 0;
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = false;
         isWaitingForInterceptionRoll = false;

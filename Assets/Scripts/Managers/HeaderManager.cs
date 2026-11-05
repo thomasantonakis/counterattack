@@ -2376,9 +2376,9 @@ public class HeaderManager : MonoBehaviour
                     , connectedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 );
                 MatchManager.Instance.SetLastToken(interceptingDefender);
-                // Move the ball to the defender's hex and change possession
-                yield return StartCoroutine(ball.MoveToCell(defenderHex));
+                // Resolve the winning touch before evaluating box entry on the attraction.
                 MatchManager.Instance.ChangePossession();
+                yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 // ball.AdjustBallHeightBasedOnOccupancy();
                 ball.PlaceAtCell(defenderHex);

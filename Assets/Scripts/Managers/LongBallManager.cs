@@ -818,6 +818,7 @@ public class LongBallManager : MonoBehaviour
             Debug.LogError("Target Hex is null in HandleLongBallMovement!");
             yield break;
         }
+        int sourcePenaltyBox = ball.GetCurrentHex()?.isInPenaltyBox ?? 0;
         Vector3 startPosition = ball.transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();
         float travelDuration = 2.0f;  // Duration of the ball's flight
@@ -861,7 +862,9 @@ public class LongBallManager : MonoBehaviour
         }
         else
         {
-            if (!targetHex.isDefenseOccupied && goalKeeperManager.ShouldGKMove(targetHex))
+            // A pass entering the defending box still qualifies when it lands
+            // directly on a defender. Recovery is assessed after this entry.
+            if (sourcePenaltyBox != targetHex.isInPenaltyBox && goalKeeperManager.ShouldGKMove(targetHex))
             {
                 yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
                 // TODO: Check if GK is already on the ball
@@ -1192,9 +1195,9 @@ public class LongBallManager : MonoBehaviour
                 );
                 MatchManager.Instance.SetLastToken(defenderToken);
                 MatchManager.Instance.ClearOffsideForLegalCollection(defenderToken, "long_ball_interception");
-                // Move the ball to the defender's hex and change possession
-                yield return StartCoroutine(ball.MoveToCell(defenderHex));
+                // A won interception is a purposeful touch by the new attack.
                 MatchManager.Instance.ChangePossession();
+                yield return StartCoroutine(ball.MoveToCell(defenderHex));
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 MatchManager.Instance.ResolveActionBeforeFinalThird(
                     MatchManager.MatchActionKind.LongBall,
