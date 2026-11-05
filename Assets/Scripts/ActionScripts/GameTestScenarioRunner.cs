@@ -860,6 +860,7 @@ public class GameTestScenarioRunner : MonoBehaviour
     private IEnumerator RunAllScenarios()
     {
         var scenarios = new List<ScenarioDefinition>();
+        bool runNutmegStealFoulAuditOnly = true;
         bool runManualStatsPreviewOnly = false;
         bool runFtpAuditOnly = true; // Temporary FTP audit selection; earlier batch flag is preserved below.
         bool runLongBallAuditOnly = false;
@@ -879,6 +880,24 @@ public class GameTestScenarioRunner : MonoBehaviour
         if (runCodexKickoffOnly)
         {
             scenarios.Add(new ScenarioDefinition(nameof(Scenario_042_CodexKickoff_FirstPassOnReceiver), Scenario_042_CodexKickoff_FirstPassOnReceiver));
+        }
+        else if (runNutmegStealFoulAuditOnly)
+        {
+            for (int difficulty = 1; difficulty <= 3; difficulty++)
+            {
+                int selectedDifficulty = difficulty;
+                scenarios.Add(new ScenarioDefinition($"StationaryNutmeg_Difficulty{difficulty}_Keyboard",
+                    () => Scenario_017e_d_StationaryNutmeg(selectedDifficulty, false)));
+                scenarios.Add(new ScenarioDefinition($"StationaryNutmeg_Difficulty{difficulty}_DefenderClick",
+                    () => Scenario_017e_d_StationaryNutmeg(selectedDifficulty, true)));
+            }
+            foreach (string branch in new[] { "miss", "foul", "injury", "post", "recover", "red" })
+            {
+                string selectedBranch = branch;
+                scenarios.Add(new ScenarioDefinition(
+                    $"Scenario_017e_c_Nutmeg_Steal_Foul_PlayOn({selectedBranch})",
+                    () => Scenario_017e_c_Nutmeg_Steal_Foul_PlayOn(selectedBranch)));
+            }
         }
         else if (runReleasedOobAndHeaderAtGoalOnly)
         {
@@ -12053,6 +12072,153 @@ public class GameTestScenarioRunner : MonoBehaviour
         );
 
         LogFooterofTest("MovementPhase Multiple Nutmeggable Defenders Select Victim");
+    }
+
+    private IEnumerator Scenario_017e_d_StationaryNutmeg(int difficulty, bool clickDefender)
+    {
+        yield return Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg_SetupOnly();
+        PlayerToken dribbler = movementPhaseManager.selectedToken;
+        HexCell origin = dribbler.GetCurrentHex();
+        // The setup positions the players in the preceding phase. Start a fresh
+        // phase so the nutmeg must be committed from the original selected hex.
+        movementPhaseManager.EndMovementPhase(false);
+        MatchManager.Instance.BroadcastSafeEndofMovementPhase();
+        MatchManager.Instance.difficulty_level = difficulty;
+        yield return gameInputManager.DelayedKeyDataPress(KeyCode.M, .1f);
+        yield return gameInputManager.DelayedClick(new Vector2Int(origin.coordinates.x, origin.coordinates.z), .3f);
+        AssertTrue(movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving,
+            $"Difficulty {difficulty}: selecting a stationary dribbler must offer nutmeg.");
+        PlayerToken victim = movementPhaseManager.nutmeggableDefenders.First();
+        var hover = typeof(MovementPhaseManager).GetMethod("OnHoverReceived",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        hover.Invoke(movementPhaseManager, new object[] { victim, victim.GetCurrentHex() });
+        hover.Invoke(movementPhaseManager, new object[] { null, null });
+        AssertTrue(movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+            && movementPhaseManager.nutmeggableDefenders.Contains(victim),
+            $"Difficulty {difficulty}: hover refresh must preserve the stationary nutmeg offer and victim.");
+        if (!clickDefender)
+            yield return gameInputManager.DelayedKeyDataPress(KeyCode.N, .1f);
+        if (clickDefender || movementPhaseManager.lookingForNutmegVictim)
+        {
+            HexCell victimHex = victim.GetCurrentHex();
+            yield return gameInputManager.DelayedClick(new Vector2Int(victimHex.coordinates.x, victimHex.coordinates.z), .3f);
+        }
+        AssertTrue(movementPhaseManager.isCommitted && movementPhaseManager.nutmegVictim == victim
+            && !movementPhaseManager.isWaitingForNutmegDecisionWithoutMoving
+            && (movementPhaseManager.isWaitingForInterceptionDiceRoll || movementPhaseManager.isWaitingForTackleRoll),
+            $"Difficulty {difficulty}: {(clickDefender ? "defender click" : "N")} must commit the stationary nutmeg.");
+        AssertTrue(dribbler.GetCurrentHex() == origin,
+            "Committing a stationary nutmeg must not spend a movement step first.");
+        LogFooterofTest($"Stationary nutmeg difficulty {difficulty}, click={clickDefender}");
+    }
+
+    private IEnumerator ResolveNutmegAuditStealFoul(bool injury, bool red = false)
+    {
+        PlayerToken defender = movementPhaseManager.selectedDefender;
+        if (red && !defender.isBooked) defender.ReceiveYellowCard();
+        StartCoroutine(movementPhaseManager.PerformBallInterceptionDiceRoll(1));
+        yield return WaitForCondition(() => movementPhaseManager.isWaitingForYellowCardRoll, 4f,
+            "Steal foul should open leniency checks.");
+        movementPhaseManager.PerformLeniencyTest(red ? 6 : 1);
+        yield return WaitForCondition(() => movementPhaseManager.isWaitingForInjuryRoll, 4f,
+            "Steal foul should open injury checks.");
+        movementPhaseManager.PerformInjuryTest(injury ? 6 : 1);
+        yield return WaitForDuelResultPresentation();
+        if (red) yield break;
+        yield return WaitForCondition(() => movementPhaseManager.isWaitingForFoulDecision, 4f,
+            "A non-forced steal foul must offer Play On.");
+        yield return gameInputManager.DelayedKeyDataPress(KeyCode.A, .1f);
+        AssertTrue(!movementPhaseManager.isWaitingForReposition,
+            "Steal foul followed by Play On must never offer reposition.");
+    }
+
+    private IEnumerator Scenario_017e_c_Nutmeg_Steal_Foul_PlayOn(string branch)
+    {
+        yield return Scenario_017d_Movement_Phase_Multiple_Nutmeggable_Defenders_Reject_Nutmeg_SetupOnly();
+        PlayerToken attacker = movementPhaseManager.selectedToken;
+        PlayerToken victim = PlayerToken.GetPlayerTokenByName("Paterson");
+        attacker.resilience = 3;
+        MatchManager.Instance.refereeLeniency = 3;
+        movementPhaseManager.remainingDribblerPace = 2;
+        yield return gameInputManager.DelayedKeyDataPress(KeyCode.N, .1f);
+        yield return gameInputManager.DelayedClick(new Vector2Int(3, 4), .5f);
+        PlayerToken secondStealer = movementPhaseManager.eligibleDefenders[1];
+        HexCell origin = attacker.GetCurrentHex();
+
+        bool injureAttacker = branch == "injury" || branch == "post";
+        yield return ResolveNutmegAuditStealFoul(injureAttacker);
+        AssertTrue(movementPhaseManager.isWaitingForInterceptionDiceRoll
+            && movementPhaseManager.selectedDefender == secondStealer
+            && movementPhaseManager.nutmegVictim == victim
+            && attacker.GetCurrentHex() == origin,
+            "Play On must preserve the victim and offer the next steal without moving the dribbler.");
+
+        if (branch == "recover")
+        {
+            yield return movementPhaseManager.PerformBallInterceptionDiceRoll(6);
+            yield return WaitForCondition(() => MatchManager.Instance.currentState == MatchManager.GameState.AnyOtherScenario,
+                8f, "Successful queued steal should end movement in AnyOtherScenario.");
+            AssertTrue(movementPhaseManager.ball.GetCurrentHex() == secondStealer.GetCurrentHex()
+                && MatchManager.Instance.LastTokenToTouchTheBallOnPurpose == secondStealer
+                && secondStealer.isAttacker && !attacker.isAttacker,
+                "Successful queued steal must transfer the ball and possession.");
+        }
+        else if (branch == "red")
+        {
+            yield return ResolveNutmegAuditStealFoul(false, red: true);
+            yield return new WaitForSeconds(.5f);
+            AssertTrue(secondStealer.isSentOff && !movementPhaseManager.isWaitingForFoulDecision
+                && !movementPhaseManager.isWaitingForTackleRoll && !movementPhaseManager.isWaitingForReposition,
+                "A sending-off must force the foul instead of resuming the nutmeg.");
+        }
+        else
+        {
+            if (branch == "miss")
+                yield return movementPhaseManager.PerformBallInterceptionDiceRoll(2);
+            else
+                yield return ResolveNutmegAuditStealFoul(false);
+            yield return WaitForCondition(() => movementPhaseManager.isWaitingForTackleRoll, 4f,
+                "Exhausting the steal queue after Play On must start the reserved nutmeg duel.");
+            AssertTrue(movementPhaseManager.nutmegVictim == victim
+                && movementPhaseManager.remainingDribblerPace == (injureAttacker ? 1 : 2),
+                "The nutmeg commitment must survive one injury leaving only one pace.");
+            movementPhaseManager.PerformTackleDiceRoll(true, 2);
+            yield return new WaitForSeconds(.2f);
+            movementPhaseManager.PerformTackleDiceRoll(false, new RollInputOverride
+                { hasOverride = true, roll = 6, isJackpot = true });
+            yield return WaitForDuelResultPresentation();
+            yield return WaitForCondition(() => movementPhaseManager.isWaitingForReposition, 4f,
+                "Winning the nutmeg must allow mandatory reposition even with one pace left.");
+            HexCell destination = movementPhaseManager.repositionHexes.First();
+            PlayerToken landingStealer = null;
+            if (branch == "post")
+            {
+                landingStealer = FindObjectsByType<PlayerToken>()
+                    .First(t => !t.isAttacker && !t.IsGoalKeeper && t != victim
+                        && !movementPhaseManager.defendersTriedToIntercept.Contains(t));
+                HexCell adjacent = destination.GetNeighbors(movementPhaseManager.hexGrid)
+                    .First(h => h != null && h != origin && !h.isAttackOccupied && !h.isDefenseOccupied);
+                yield return landingStealer.JumpToHex(adjacent);
+            }
+            yield return gameInputManager.DelayedClick(new Vector2Int(destination.coordinates.x, destination.coordinates.z), .5f);
+            yield return new WaitForSeconds(.5f);
+            AssertTrue(attacker.GetCurrentHex() == destination && movementPhaseManager.remainingDribblerPace == 0
+                && movementPhaseManager.movedTokens.Contains(attacker),
+                "Nutmeg reposition must finish the injured dribbler's turn without negative pace.");
+            AssertTrue(!movementPhaseManager.isWaitingForReposition,
+                "The nutmeg must finish its reposition without a softlock.");
+            if (branch == "post")
+            {
+                AssertTrue(movementPhaseManager.isWaitingForInterceptionDiceRoll
+                    && movementPhaseManager.selectedDefender == landingStealer,
+                    "A fresh defender must get a steal on the nutmeg landing hex even at zero pace.");
+                yield return ResolveNutmegAuditStealFoul(false);
+                AssertTrue(!movementPhaseManager.isDribblerRunning
+                    && !movementPhaseManager.isWaitingForReposition,
+                    "Landing-hex steal foul Play On must finish the exhausted turn without another reposition.");
+            }
+        }
+        LogFooterofTest($"Nutmeg steal foul Play On ({branch})");
     }
 
     private IEnumerator Scenario_017e_b_Movement_Phase_Multiple_Nutmeggable_Defenders_Select_Victim_Offers_Other_Steals()

@@ -1986,7 +1986,9 @@ public class MovementPhaseManager : MonoBehaviour
                 nutmegVictim = null;
                 if (remainingDribblerPace == 0)
                 {
-                    isDribblerRunning = false;
+                    // Keep ball-carrier foul rules active for steals on the
+                    // landing hex. ContinueDribblerMovement ends the turn once
+                    // those interruptions (including Play On) have resolved.
                     RegisterMovedToken(repositionWinner);
                     isAwaitingHexDestination = false;
                 }
@@ -2826,7 +2828,6 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log("Defender committed a foul.");
                 eligibleDefenders.Remove(selectedDefender);
                 defendersTriedToIntercept.Add(selectedDefender);
-                isResolvingPreNutmegSteals = false;
                 needsReposition = false;
                 isDribblerRunning = false;
                 yield return StartCoroutine(HandleFoulProcess(selectedToken, selectedDefender));
@@ -2852,40 +2853,47 @@ public class MovementPhaseManager : MonoBehaviour
                 // Move to the next defender, if any
                 eligibleDefenders.Remove(selectedDefender);
                 defendersTriedToIntercept.Add(selectedDefender);
-                if (eligibleDefenders.Count > 0)
-                {
-                    selectedDefender = eligibleDefenders[0];  // Move to the next defender
-                    isWaitingForInterceptionDiceRoll = true;
-                    SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionDiceRoll,
-                        selectedDefender, "Recovery Attempt", false, 6, isDribblerRunning ? FOUL_THRESHOLD : 0, IsCurrentBallHexInOpponentPenaltyBox());
-                    Debug.Log($"Selected defender for interception: {selectedDefender.name}. Press R to roll...");
-                }
-                else if (isResolvingPostSuccessfulTackleSteals)
-                {
-                    Debug.Log("No more post-tackle steal attempts remain. Completing successful tackle flow.");
-                    FinalizeSuccessfulTackleOutcome();
-                }
-                else if (isResolvingPreNutmegSteals)
-                {
-                    Debug.Log("No more pre-nutmeg steal attempts remain. Starting the nutmeg challenge.");
-                    ResetBallInterceptionDiceRolls();
-                    StartNutmegProcess();
-                }
-                else if (isDribblerRunning)
-                {
-                    Debug.Log("No more defenders to roll.");
-                    StartCoroutine(ContinueDribblerMovement());
-                }
-                else
-                {
-                    AdvanceMovementPhase();
-                }
+                ContinueAfterFailedSteal();
             }
         }
         else
         {
             Debug.LogError("selectedDefender is null during dice roll.");
         }
+    // A foul followed by Play On consumes the same attempt as a missed steal.
+    // Keep the reserved nutmeg victim and remaining queue across foul checks.
+    private void ContinueAfterFailedSteal()
+    {
+        if (eligibleDefenders.Count > 0)
+        {
+            selectedDefender = eligibleDefenders[0];  // Move to the next defender
+            isWaitingForInterceptionDiceRoll = true;
+            SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionDiceRoll,
+                selectedDefender, "Recovery Attempt", false, 6, isDribblerRunning ? FOUL_THRESHOLD : 0, IsCurrentBallHexInOpponentPenaltyBox());
+            Debug.Log($"Selected defender for interception: {selectedDefender.name}. Press R to roll...");
+        }
+        else if (isResolvingPostSuccessfulTackleSteals)
+        {
+            Debug.Log("No more post-tackle steal attempts remain. Completing successful tackle flow.");
+            FinalizeSuccessfulTackleOutcome();
+        }
+        else if (isResolvingPreNutmegSteals)
+        {
+            Debug.Log("No more pre-nutmeg steal attempts remain. Starting the nutmeg challenge.");
+            ResetBallInterceptionDiceRolls();
+            StartNutmegProcess();
+        }
+        else if (isDribblerRunning)
+        {
+            Debug.Log("No more defenders to roll.");
+            StartCoroutine(ContinueDribblerMovement());
+        }
+        else
+        {
+            AdvanceMovementPhase();
+        }
+    }
+
     }
 
     private IEnumerator HandleBallInterception(HexCell defenderHex)
@@ -3062,8 +3070,7 @@ public class MovementPhaseManager : MonoBehaviour
             isDribblerRunning = false;
             // If the nutmeg challenge results in a free-kick and attacker chooses to take it, the attacker does not get
             // through the defender and the free kick is taken from the Hex where the attacker started the nutmeg attampt.
-            if (isNutmegInProgress) yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender, false));
-            else yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
+            yield return StartCoroutine(HandleFoulProcess(attackerToken, selectedDefender));
             yield break;  // End tackle resolution as the foul process takes over
         }
         if (activeDuelPanel != null && activeDuelPanel.IsOpen)
@@ -3456,7 +3463,7 @@ public class MovementPhaseManager : MonoBehaviour
         ?? ball?.GetCurrentHex()?.GetOccupyingToken()
         ?? MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
 
-    private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken, bool needsReposition = true)
+    private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
     {
         pendingFouledAttacker = attackerToken;
         isWaitingForFoulDecision = false;
@@ -3550,7 +3557,7 @@ public class MovementPhaseManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ContinueDribblerMovement());
+            ContinueAfterFailedSteal();
         }
         // AdvanceMovementPhase();
     }
