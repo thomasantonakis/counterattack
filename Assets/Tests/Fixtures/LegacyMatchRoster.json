@@ -1,0 +1,442 @@
+{
+  "provenance": {
+    "description": "Static roster-only snapshot of the explicitly designated disposable legacy Room seed; no events, stats, runtime snapshot or save paths.",
+    "sourceSha256": "edb2741990d3887daf80465535d5e6913648eda08a9f3b64f1ea00ca6c7b2d5a",
+    "formationSource": "PlayerTokenManager initial coordinate arrays captured 2026-11-06"
+  },
+  "gameSettings": {
+    "homeTeamName": "Inverness CT",
+    "awayTeamName": "Aurora F.C.",
+    "homeKit": "France",
+    "awayKit": "Argentina",
+    "homeGKKit": "Orange",
+    "awayGKKit": "LightBlue",
+    "halfDuration": 15,
+    "numberOfHalfs": 1,
+    "tiebreaker": "Penalties",
+    "referee": "Webster - 2",
+    "squadSize": "16",
+    "playerAssistance": 1,
+    "matchType": "International"
+  },
+  "rosters": {
+    "home": {
+      "1": {
+        "name": "Aziz",
+        "aerial": 6,
+        "saving": 5,
+        "handling": 2,
+        "pace": 5,
+        "dribbling": 1,
+        "highPass": 4,
+        "resilience": 6
+      },
+      "2": {
+        "name": "Cafferata",
+        "pace": 5,
+        "dribbling": 1,
+        "heading": 4,
+        "highPass": 6,
+        "resilience": 6,
+        "shooting": 1,
+        "tackling": 4
+      },
+      "3": {
+        "name": "Kalla",
+        "pace": 5,
+        "dribbling": 3,
+        "heading": 3,
+        "highPass": 6,
+        "resilience": 5,
+        "shooting": 1,
+        "tackling": 4
+      },
+      "4": {
+        "name": "Toothnail",
+        "pace": 5,
+        "dribbling": 2,
+        "heading": 4,
+        "highPass": 5,
+        "resilience": 6,
+        "shooting": 2,
+        "tackling": 4
+      },
+      "5": {
+        "name": "Murphy",
+        "pace": 5,
+        "dribbling": 1,
+        "heading": 3,
+        "highPass": 5,
+        "resilience": 6,
+        "shooting": 4,
+        "tackling": 5
+      },
+      "6": {
+        "name": "Nazef",
+        "pace": 5,
+        "dribbling": 2,
+        "heading": 4,
+        "highPass": 6,
+        "resilience": 4,
+        "shooting": 3,
+        "tackling": 3
+      },
+      "7": {
+        "name": "Jansen",
+        "pace": 4,
+        "dribbling": 5,
+        "heading": 3,
+        "highPass": 6,
+        "resilience": 3,
+        "shooting": 4,
+        "tackling": 1
+      },
+      "8": {
+        "name": "Yaneva",
+        "pace": 6,
+        "dribbling": 3,
+        "heading": 3,
+        "highPass": 4,
+        "resilience": 5,
+        "shooting": 3,
+        "tackling": 3
+      },
+      "9": {
+        "name": "Pavlovic",
+        "pace": 4,
+        "dribbling": 2,
+        "heading": 6,
+        "highPass": 4,
+        "resilience": 5,
+        "shooting": 5,
+        "tackling": 1
+      },
+      "10": {
+        "name": "André Noruega",
+        "pace": 4,
+        "dribbling": 6,
+        "heading": 3,
+        "highPass": 5,
+        "resilience": 5,
+        "shooting": 4,
+        "tackling": 1
+      },
+      "11": {
+        "name": "Ulisses",
+        "pace": 5,
+        "dribbling": 3,
+        "heading": 2,
+        "highPass": 6,
+        "resilience": 4,
+        "shooting": 5,
+        "tackling": 2
+      },
+      "12": {
+        "name": "Firrell",
+        "aerial": 6,
+        "saving": 3,
+        "handling": 4,
+        "pace": 5,
+        "dribbling": 1,
+        "highPass": 5,
+        "resilience": 6
+      },
+      "13": {
+        "name": "Yugar",
+        "pace": 4,
+        "dribbling": 1,
+        "heading": 3,
+        "highPass": 6,
+        "resilience": 5,
+        "shooting": 2,
+        "tackling": 1
+      },
+      "14": {
+        "name": "Lopez",
+        "pace": 5,
+        "dribbling": 3,
+        "heading": 3,
+        "highPass": 4,
+        "resilience": 4,
+        "shooting": 4,
+        "tackling": 2
+      },
+      "15": {
+        "name": "Patras",
+        "pace": 5,
+        "dribbling": 1,
+        "heading": 3,
+        "highPass": 4,
+        "resilience": 4,
+        "shooting": 3,
+        "tackling": 2
+      },
+      "16": {
+        "name": "Baas",
+        "pace": 4,
+        "dribbling": 3,
+        "heading": 5,
+        "highPass": 5,
+        "resilience": 3,
+        "shooting": 4,
+        "tackling": 1
+      }
+    },
+    "away": {
+      "1": {
+        "name": "Kuzmic",
+        "aerial": 5,
+        "saving": 5,
+        "handling": 4,
+        "pace": 6,
+        "dribbling": 2,
+        "highPass": 6,
+        "resilience": 4
+      },
+      "2": {
+        "name": "Abraham",
+        "pace": 5,
+        "dribbling": 1,
+        "heading": 4,
+        "highPass": 6,
+        "resilience": 4,
+        "shooting": 1,
+        "tackling": 3
+      },
+      "3": {
+        "name": "Delgado",
+        "pace": 5,
+        "dribbling": 4,
+        "heading": 4,
+        "highPass": 5,
+        "resilience": 5,
+        "shooting": 2,
+        "tackling": 3
+      },
+      "4": {
+        "name": "Marell",
+        "pace": 4,
+        "dribbling": 1,
+        "heading": 6,
+        "highPass": 4,
+        "resilience": 6,
+        "shooting": 2,
+        "tackling": 5
+      },
+      "5": {
+        "name": "Vladoiu",
+        "pace": 5,
+        "dribbling": 4,
+        "heading": 4,
+        "highPass": 6,
+        "resilience": 4,
+        "shooting": 5,
+        "tackling": 3
+      },
+      "6": {
+        "name": "Gilbert",
+        "pace": 4,
+        "dribbling": 4,
+        "heading": 3,
+        "highPass": 6,
+        "resilience": 4,
+        "shooting": 4,
+        "tackling": 3
+      },
+      "7": {
+        "name": "Paterson",
+        "pace": 5,
+        "dribbling": 3,
+        "heading": 5,
+        "highPass": 4,
+        "resilience": 5,
+        "shooting": 4,
+        "tackling": 1
+      },
+      "8": {
+        "name": "Stewart",
+        "pace": 5,
+        "dribbling": 4,
+        "heading": 3,
+        "highPass": 5,
+        "resilience": 5,
+        "shooting": 4,
+        "tackling": 3
+      },
+      "9": {
+        "name": "McNulty",
+        "pace": 5,
+        "dribbling": 4,
+        "heading": 4,
+        "highPass": 5,
+        "resilience": 1,
+        "shooting": 5,
+        "tackling": 1
+      },
+      "10": {
+        "name": "Soares",
+        "pace": 5,
+        "dribbling": 5,
+        "heading": 3,
+        "highPass": 6,
+        "resilience": 4,
+        "shooting": 4,
+        "tackling": 1
+      },
+      "11": {
+        "name": "Poulsen",
+        "pace": 4,
+        "dribbling": 5,
+        "heading": 2,
+        "highPass": 5,
+        "resilience": 4,
+        "shooting": 4,
+        "tackling": 1
+      },
+      "12": {
+        "name": "Mooney",
+        "aerial": 6,
+        "saving": 4,
+        "handling": 5,
+        "pace": 6,
+        "dribbling": 1,
+        "highPass": 3,
+        "resilience": 4
+      },
+      "13": {
+        "name": "Hrstkova",
+        "pace": 5,
+        "dribbling": 2,
+        "heading": 3,
+        "highPass": 4,
+        "resilience": 5,
+        "shooting": 4,
+        "tackling": 3
+      },
+      "14": {
+        "name": "Gowman",
+        "pace": 4,
+        "dribbling": 2,
+        "heading": 5,
+        "highPass": 4,
+        "resilience": 4,
+        "shooting": 4,
+        "tackling": 3
+      },
+      "15": {
+        "name": "Spearman",
+        "pace": 5,
+        "dribbling": 3,
+        "heading": 4,
+        "highPass": 4,
+        "resilience": 4,
+        "shooting": 5,
+        "tackling": 2
+      },
+      "16": {
+        "name": "Polyakov",
+        "pace": 3,
+        "dribbling": 1,
+        "heading": 6,
+        "highPass": 4,
+        "resilience": 5,
+        "shooting": 2,
+        "tackling": 2
+      }
+    }
+  },
+  "positions": {
+    "home": {
+      "1": [
+        -16,
+        0
+      ],
+      "2": [
+        0,
+        0
+      ],
+      "3": [
+        6,
+        6
+      ],
+      "4": [
+        8,
+        8
+      ],
+      "5": [
+        12,
+        12
+      ],
+      "6": [
+        4,
+        4
+      ],
+      "7": [
+        10,
+        10
+      ],
+      "8": [
+        10,
+        0
+      ],
+      "9": [
+        -4,
+        -4
+      ],
+      "10": [
+        -6,
+        -6
+      ],
+      "11": [
+        -8,
+        -8
+      ]
+    },
+    "away": {
+      "1": [
+        16,
+        0
+      ],
+      "2": [
+        -12,
+        0
+      ],
+      "3": [
+        1,
+        -10
+      ],
+      "4": [
+        1,
+        10
+      ],
+      "5": [
+        1,
+        2
+      ],
+      "6": [
+        3,
+        3
+      ],
+      "7": [
+        4,
+        3
+      ],
+      "8": [
+        4,
+        5
+      ],
+      "9": [
+        5,
+        5
+      ],
+      "10": [
+        14,
+        0
+      ],
+      "11": [
+        18,
+        0
+      ]
+    }
+  }
+}

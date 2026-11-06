@@ -1,0 +1,6 @@
+{
+    "name": "CounterAttack.Gameplay.PlayMode",
+    "references": [],
+    "optionalUnityReferences": ["TestAssemblies"],
+    "autoReferenced": false
+}

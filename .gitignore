@@ -50,3 +50,6 @@ Assets/Logs/
 # CodeGraph local index
 
 .codegraph/
+
+# Retained local Unity Test Framework regression artifacts
+/TestResults/GameplayRegression/

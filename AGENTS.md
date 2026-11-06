@@ -20,6 +20,7 @@
 - Framework tests must suppress the legacy runner, isolate singleton/event/scene/save state, and restore it even after failure. Never use live saves as mutable fixtures.
 - Keep legacy scenarios until equivalent replacement tests have passed. Record mappings and actual results in `Documentation/Testing/GameplayRegressionMigration.md`.
 - Execute relevant existing regressions after each focused migration batch. Report compilation separately from passed/failed/skipped test counts and retain result artifacts.
+- Keep native XML and per-case progress under `TestResults/GameplayRegression/Runs/`, outside Unity’s temporary directory. Historical `Temp/GameplayRegression` artifacts are copied there so an Editor restart does not erase validation evidence.
 - The selective manual scenario rules below apply to the legacy runner. Automated framework tests use filters to rerun failures and affected regressions; Codex executes and inspects these tests itself.
 
 ## Test Iteration Workflow
