@@ -1,0 +1,197 @@
+# Gameplay regression migration
+
+Updated 2026-11-06. Active objective: migrate the full legacy suite and execute every replacement. Prioritize the user's existing scenarios; discretionary new unit coverage waits until all legacy scenarios are migrated. Compilation and discovery do not count as passing tests.
+
+## Inventory
+
+[LegacyScenarioInventory.md](LegacyScenarioInventory.md) preserves the original 147-method inventory and per-method replacement/artifact mapping. **145 methods have been retired after passing replacements; 2 remain without equivalent passing replacement coverage.** All 002–008 ground/FTP/commitment/cache scenarios are now migrated. [LegacyGeneratedBranches.md](LegacyGeneratedBranches.md) enumerates 31 shooting, 12 free-kick shot, 6 OOB long-ball and 13 header-at-goal definitions, plus runtime matrices.
+
+| Legacy groups | Focus | State |
+| --- | --- | --- |
+| 001 | stats/UI preview | Migrated and executed, including authored-layout preservation |
+| 002–008 | ground pass, FTP, commitment/input and caches | All migrated and executed; legacy methods retired |
+| 009–024 | movement, steals, tackles, nutmegs, fouls | 009–022 base flows and all 017b–g audits migrated; 023 and 024b2 loose-ball continuation audits migrated; 025a/b goal entry and both024 loose snapshot flows migrated |
+| 025–033 | aerial/header, loose balls, long ball | 026–028 aerial/header resolution, 030–031 long balls and 032–033 audits migrated; all029 original header-at-goal flows migrated; generated038 matrix retained |
+| 034–040 | shooting, set pieces, OOB, throw-ins, clock | 037 OOB, 039 throw-ins and 040 penalty cleanup migrated; all035/036 FK cases migrated; generated034 shooting and038 header matrices retained |
+| 041–042 | GK challenges, recovery/scatter, restart policy | All keeper wall/outside challenge, shot, foul and restart audits migrated and executed |
+
+Before migration, Assets/Editor contained 23 test source files for tactical decisions, saved-position reconstructions and UI rules. Relevant existing regressions must also execute after each migration batch.
+
+## First batch: goalkeeper box entry
+
+Native Test Runner fixtures: GoalkeeperBoxEntryEditorTests (8 rules) and GoalkeeperBoxEntryPlayModeTests (121 flow/cleanup cases). The latter covers both directions and move/skip decisions. All have passed actual execution.
+
+| Legacy behavior | Replacement cases |
+| --- | --- |
+| Eligibility, direction, duplicate memory/rearm, previously moved keeper | EditMode rule fixture |
+| Ground pass / FTP / dribble / reposition | ground, ftp, dribble, reposition |
+| Nonqualifying own-box/outside destinations and same-box possession change | own_box, outside, same_box_recovery |
+| Accurate/inaccurate aerial resolved box entry | high, long, high_inaccurate_*, long_inaccurate_* |
+| Successful recovery attraction | ground/ftp/steal/loose/header/long_recovery |
+| Direct long-ball defender landing / own-box loose attraction | long_direct, loose_own_box |
+| Won tackle attraction and reposition | tackle_stay, tackle_reposition |
+| GK loses outside-box feet/hands challenge then box reposition | lost_foot, lost_dive |
+| Post-roll tackle/header scatter and blocked-shot pre-roll entry | *_scatter_inside/outside |
+| Required interrupted cleanup | InterruptedFixtureReleasesAsyncWaitersAndRestoresState |
+
+Scatter cases roll actual direction/distance and assert no flight before the GK decision. Recovery cases assert possession timing and final continuation. GK movement uses the real synthetic input dispatcher. Some ground/FTP recovery cases still enter below winning-roll/pass-selection UI; those layers remain retained legacy coverage. Aerial cases observe the next rush/pace decision; the separate phase remains legacy coverage.
+
+## Isolation and result reporting
+
+- Deterministic additive PlayMode and preview EditMode boards, in-memory match data, and no Room bootstrap/live save writes.
+- Restore singleton/static ball, input subscriptions, random state, active scene, owned objects/materials and scene unload, including failure cleanup.
+- Resolve GK lookup within this match's registered tokens. Populate manager dependencies only; gameplay selection computes cached hex state.
+- Cancel helper completion tasks when their host is destroyed.
+- TestRunner callbacks suppress legacy startup across domain reloads and write native NUnit XML, current-test.txt and progress.jsonl under TestResults/GameplayRegression/Runs/.
+- Meaningful-state waits use eight active seconds (Stopwatch excludes OS sleep); authored High Pass flight also allows 120 rendered frames with a 30-second watchdog and board diagnostics. No arbitrary test sleeps.
+- A narrow reflection adapter connects the PlayMode asmdef to strongly typed editor fixtures without reorganizing Assembly-CSharp.
+
+## Remaining branch setup strategy
+
+The031 native shooting matrix uses the exact final roster positions from its shared
+legacy two-movement preparation, then enters through the real movement-ended action
+menu, two-step S confirmation, aiming, actual blockers, GK choice, dice and scatter.
+The pass/pickup/movement rules in that preparation already have separate passing
+replacements. No shot availability or expected outcome is set by fixture flags.
+The FK matrix executes the original full pass/pickup/tackle foul and every setup
+phase before aiming. Header matrices execute actual High Pass, defensive movement,
+accuracy, box-entry GK move, optional rush, Final Thirds, nominations and aerial rolls.
+The six jumper cases preserve their original direct resolved-header-to-shot handoff
+input (power10) and exercise the real Saving/Handling/scatter pipeline.
+
+The stats preview logs the original events and updates production-authored fields
+inside a disposable preview scene, asserting unchanged Stats geometry/components.
+Off-target shot cinematics use a camera-only prefab authored in Edit Mode from Room;
+no camera or other test visuals are built only at runtime.
+
+## Actual executed results
+
+| Run | Passed | Failed | Skipped | Artifact under TestResults/GameplayRegression/ |
+| --- | ---: | ---: | ---: | --- |
+| EditMode initial scene setup | 0 | 8 | 0 | 2026-11-05/editmode-run-2.json |
+| EditMode initial material cleanup | 0 | 8 | 0 | 2026-11-05/editmode-run-3.json |
+| EditMode after fixture fixes | 8 | 0 | 0 | 2026-11-05/editmode-run-4.json |
+| PlayMode ground-pass smoke | 1 | 0 | 0 | 2026-11-05/playmode-smoke-results.json |
+| PlayMode initial 89 cases | 56 | 33 | 0 | 2026-11-05/playmode-batch-1-results.json |
+| PlayMode after shared setup fixes | 85 | 4 | 0 | Runs/20261105T220205004Z/results.xml |
+| Expanded PlayMode 113 cases | 112 | 1 | 0 | Runs/20261105T220727020Z/results.xml |
+| Failed loose-recovery case in isolation | 1 | 0 | 0 | Runs/20261105T221214815Z/results.xml |
+| Deterministic snap-boundary reproduction before fix | 0 | 1 | 0 | Runs/20261105T222156793Z/results.xml |
+| Four controlled loose-recovery variants after fix | 4 | 0 | 0 | Runs/20261105T222317026Z/results.xml |
+| Complete goalkeeper batch after gameplay fix | 113 | 0 | 0 | Runs/20261105T222435645Z/results.xml |
+| Full EditMode regressions, including 008d replacements | 741 | 0 | 0 | Runs/20261105T222802989Z/results.xml |
+| Initial ground-pass migration | 1 | 3 | 0 | Runs/20261105T223452943Z/results.xml |
+| Ground-pass after setup/queue corrections | 3 | 1 | 0 | Runs/20261105T223911223Z/results.xml |
+| Complete 121 GK cases and four ground-pass cases | 125 | 0 | 0 | Runs/20261105T224030584Z/results.xml |
+| Initial FTP batch plus ground/clock (clock 5/0/0) | 9 | 7 | 0 | Runs/20261105T224501147Z/results.xml |
+| FTP phase/recovery batch after input observation fix | 7 | 0 | 0 | Runs/20261105T224649921Z/results.xml |
+| Ground/FTP/kickoff/clock combined | 18 | 0 | 0 | Runs/20261105T224825714Z/results.xml |
+| GK blocking and halfway kickoff interception rules | 4 | 0 | 0 | Runs/20261105T225043686Z/results.xml |
+| Expanded ground/FTP/kickoff/clock, including switching and forfeit | 22 | 0 | 0 | Runs/20261105T225200803Z/results.xml |
+| Full EditMode regressions after all ground/FTP retirements | 745 | 0 | 0 | Runs/20261105T225430660Z/results.xml |
+| Initial full movement/steal migration | 1 | 2 | 0 | Runs/20261105T225638636Z/results.xml |
+| Movement after nested-GK continuation wait correction | 2 | 1 | 0 | Runs/20261105T225844146Z/results.xml |
+| Full EditMode including GK wall and mixed-save selection | 747 | 0 | 0 | Runs/20261106T032921061Z/results.xml |
+| Expanded legacy replacements including movement and GK flows | 27 | 0 | 0 | Runs/20261106T033049755Z/results.xml |
+| Initial long-ball batch (legacy zero-based scatter input drift) | 2 | 4 | 0 | Runs/20261106T033402132Z/results.xml |
+| Long-ball batch after die-face translation | 6 | 0 | 0 | Runs/20261106T033602040Z/results.xml |
+| Authored duel bindings (014b) | 1 | 0 | 0 | Runs/20261106T034501169Z/results.xml |
+| First authored GK challenge batch | 7 | 1 | 0 | Runs/20261106T035025479Z/results.xml |
+| GK challenge cases after tie handoff correction | 7 | 0 | 0 | Runs/20261106T035302342Z/results.xml |
+| Complete migrated PlayMode suite, including authored cleanup | 162 | 0 | 0 | Runs/20261106T035732634Z/results.xml |
+| Expanded Legacy batch, including 031a–c and 013 | 44 | 1 | 0 | Runs/20261106T040847595Z/results.xml |
+| Foul Play On after teardown-order fix | 1 | 0 | 0 | Runs/20261106T041424650Z/results.xml |
+| Fixed and generated OOB long-ball cases | 9 | 0 | 0 | Runs/20261106T041600573Z/results.xml |
+| Nutmeg selection and stationary input matrix | 8 | 0 | 0 | Runs/20261106T041752093Z/results.xml |
+| Foul Play On and four taken-foul combinations | 5 | 0 | 0 | Runs/20261106T042024743Z/results.xml |
+| Combined Legacy including new High Pass | 69 | 1 | 0 | Runs/20261106T053048343Z/results.xml |
+| Combined Legacy after High Pass correction, with six nutmeg foul branches and header selection | 77 | 1 | 0 | Runs/20261106T053532210Z/results.xml |
+| Initial throw-in migration | 4 | 1 | 0 | Runs/20261106T054119792Z/results.xml |
+| Corrected nutmeg landing occupancy | 1 | 0 | 0 | Runs/20261106T054158602Z/results.xml |
+| Complete PlayMode attempt, interrupted by Mac sleep | 201 | 5 | 0 | Runs/20261106T054332293Z/results.xml |
+| Safe movement rerun while awake | 1 | 0 | 0 | Runs/20261106T065957436Z/results.xml |
+| First 014/015/017 tackle continuation migration | 2 | 1 | 0 | Runs/20261106T070141710Z/results.xml |
+| Later complete EditMode result inspected | 747 | 0 | 0 | Runs/20261106T074339803Z/results.xml |
+| Tackle continuation after stale victim cleanup fix | 3 | 0 | 0 | Runs/20261106T091307769Z/results.xml |
+| Own-goal accounting/reset after fixture wiring | 1 | 0 | 0 | Runs/20261106T091418718Z/results.xml |
+| Initial 016 repeated-foul migration | 3 | 1 | 0 | Runs/20261106T091729449Z/results.xml |
+| Repeated-foul branch split, first attempt | 4 | 1 | 0 | Runs/20261106T092152380Z/results.xml |
+| Original forced foul and corrected advantage-chain inputs | 2 | 0 | 0 | Runs/20261106T092449201Z/results.xml |
+| Complete migrated PlayMode; High Pass frame-budget timeouts | 203 | 8 | 0 | Runs/20261106T092624454Z/results.xml |
+| High Pass affected cases after authored-frame wait correction | 15 | 0 | 0 | Runs/20261106T094024161Z/results.xml |
+| Complete migrated PlayMode after gameplay and wait corrections | 211 | 0 | 0 | Runs/20261106T094138266Z/results.xml |
+| Complete EditMode after gameplay fix and all current migrations | 747 | 0 | 0 | Runs/20261106T095113728Z/results.xml |
+| High Pass movement / inaccurate landing / header nominations plus affected regressions | 28 | 0 | 0 | Runs/20261106T095832439Z/results.xml |
+| Initial contested header / scatter batch (incorrect migrated Long Ball availability assertion) | 11 | 1 | 0 | Runs/20261106T101004696Z/results.xml |
+| Contested header / scatter after restoring the original availability assertion | 12 | 0 | 0 | Runs/20261106T101129607Z/results.xml |
+| Defensive high-pass header/control, recovery and failed-recovery pickup | 7 | 0 | 0 | Runs/20261106T101346129Z/results.xml |
+| Complete migrated PlayMode including all current header/control replacements | 243 | 0 | 0 | Runs/20261106T101512527Z/results.xml |
+| Initial remaining keeper audits (replacement policy / Final Third setup corrections pending) | 10 | 3 | 0 | Runs/20261106T102616211Z/results.xml |
+| Remaining keeper audits after fixture/policy corrections | 13 | 0 | 0 | Runs/20261106T102856487Z/results.xml |
+| Restart preparation (corner, offside, goal-kick clearance, goalkeeper taker) | 6 | 0 | 0 | Runs/20261106T102925938Z/results.xml |
+| Initial Codex kickoff front-line migration, diagnosis pending | 0 | 1 | 0 | Runs/20261106T103004218Z/results.xml |
+| Codex kickoff, full decision diagnostics confirm generic gap safety overrides halfway | 0 | 1 | 0 | Runs/20261106T103323492Z/results.xml |
+| Codex kickoff after front-line fix, later unprepared-continuation assertion fails | 0 | 1 | 0 | Runs/20261106T103604106Z/results.xml |
+| Codex kickoff continuation diagnostics (initial forecast already unsupported) | 0 | 1 | 0 | Runs/20261106T103957563Z/results.xml |
+| In-box High Pass free GK move / rush / Final Third / header sequence | 1 | 0 | 0 | Runs/20261106T103755472Z/results.xml |
+| Restart + initial penalty cleanup migration (ambiguous reflection overload) | 6 | 1 | 0 | Runs/20261106T103821253Z/results.xml |
+| Restart + penalty cleanup after overload correction (inactive coroutine host) | 6 | 1 | 0 | Runs/20261106T144021815Z/results.xml |
+| Codex kickoff after actual attacking setup and narrow front-line policy fix | 1 | 0 | 0 | Runs/20261106T144205324Z/results.xml |
+| Penalty/no-Final-Third cleanup after owned-host correction | 1 | 0 | 0 | Runs/20261106T144307468Z/results.xml |
+| Full EditMode regressions after kickoff AI correction | 747 | 0 | 0 | Runs/20261106T144426744Z/results.xml |
+| Initial 017f/g movement recovery audits (incorrect completed-result wait after inline scatter) | 2 | 1 | 0 | Runs/20261106T144849353Z/results.xml |
+| Movement recovery audits after meaningful inline-scatter wait correction | 3 | 0 | 0 | Runs/20261106T145011501Z/results.xml |
+| Complete migrated PlayMode including keeper/restart/kickoff and 017f/g | 268 | 0 | 0 | Runs/20261106T145334545Z/results.xml |
+| Full 018–022 movement scatter, direct hits, throw-in and defensive pickup statistics | 5 | 0 | 0 | Runs/20261106T160705672Z/results.xml |
+| Relevant existing movement + recovery + new scatter regressions | 12 | 0 | 0 | Runs/20261106T161008784Z/results.xml |
+
+The four residual failures above rolled through the original dribbler; gameplay correctly stopped at that occupied intermediate hex. The fixture now uses unobstructed outward SW/SE rolls and retains exact-location assertions. No collision rule was changed or assertion relaxed.
+
+Latest live Unity recompile: zero errors and warnings. An import-order error in the result reporter was corrected and recompiled before the current run. Earlier Pipeline timeouts and rejected CLI flags are infrastructure events, not gameplay test verdicts.
+
+Ground-pass phase replacements for 002/002b/003/004 passed in LegacyGroundPassPlayModeTests. Current kickoff and ignored-input replacements passed in LegacyKickoffPlayModeTests. Seven FTP selection/movement/recovery cases passed in LegacyFirstTimePassPlayModeTests. Five restart-clock cases passed in LegacyRestartClockPlayModeTests. These legacy methods have been retired. Medium preview, live queue and kickoff-key drift decisions are in MorningReview.md.
+
+Action switching, movement forfeit, FTP continuation and GK blocking replacements also passed and were retired. Movement 009–011, GK wall/save-push and selected outside-GK shot rules also passed and were retired. Next: finish the current whole-suite run, then continue remaining movement duels, aerial/header resolutions, shooting and set-piece groups. Stats/UI coverage remains retained.
+
+| Affected movement regressions after 018–022 | 12 | 0 | 0 | Runs/20261106T161008784Z/results.xml |
+| Initial 023/024b2 box continuation (fixture mistakes) | 0 | 2 | 0 | Runs/20261106T161508887Z/results.xml |
+| Corrected box continuation fixtures | 2 | 0 | 0 | Runs/20261106T162018498Z/results.xml |
+
+| Movement regressions including dribble/reposition goal entry and real reset | 14 | 0 | 0 | Runs/20261106T162145297Z/results.xml |
+
+| Initial 024 snapshot goal/decline fixtures (incorrect migrated count) | 0 | 2 | 0 | Runs/20261106T162612880Z/results.xml |
+| 024 snapshot goal passed, decline fixture confirmation pending | 1 | 1 | 0 | Runs/20261106T162750328Z/results.xml |
+| First shooting smoke (incorrect completed gate after block) | 0 | 1 | 0 | Runs/20261106T162643888Z/results.xml |
+| First complete31 shooting branches; duplicate offer exposed | 12 | 19 | 0 | Runs/20261106T162951849Z/results.xml |
+
+| Shooting after duplicate fix; remaining presentation/Final Third fixture corrections | 14 | 17 | 0 | Runs/20261106T163524410Z/results.xml |
+| Formerly duplicated in-box blocker after fixture correction | 1 | 0 | 0 | Runs/20261106T163922645Z/results.xml |
+| Shooting; only obsolete own-box GK recovery menu expectations remain | 28 | 3 | 0 | Runs/20261106T164010013Z/results.xml |
+| Stats preview initial missing scoreboard fixture dependency | 0 | 1 | 0 | Runs/20261106T164349673Z/results.xml |
+| Stats preview authored values/markers and layout preservation | 1 | 0 | 0 | Runs/20261106T164455582Z/results.xml |
+| Initial generated header-at-goal; post-goal ownership, fixture wiring and corner waits diagnosed | 6 | 7 | 0 | Runs/20261106T164533996Z/results.xml |
+
+| Header33: six jumper cases and all14 existing regressions passed; three added attribution assertions pending rules review | 30 | 3 | 0 | Runs/20261106T165113194Z/results.xml |
+| First original FK setup; redundant M acceptance fixture assertion | 0 | 1 | 0 | Runs/20261106T165806505Z/results.xml |
+
+| FK setup waits needed manager resolution, not only token position | 0 | 1 | 0 | Runs/20261106T165917404Z/results.xml |
+| Original FK setup and12 shooting branches; missing camera in off-target fixture | 12 | 1 | 0 | Runs/20261106T170036296Z/results.xml |
+
+| FK01 camera supplied; obsolete post-restart shooter-touch expectation exposed | 0 | 1 | 0 | Runs/20261106T170914933Z/results.xml |
+| FK01 actual goal-kick ownership and exact stats, after fixture/oracle corrections | 1 | 0 | 0 | Runs/20261106T171139863Z/results.xml |
+
+| Original header goal/save/distribution/preparation cases; one same-frame spill fixture assertion | 19 | 1 | 0 | Runs/20261106T171358848Z/results.xml |
+
+| Original header spill after state-wait correction; all20 original header cases now passed | 1 | 0 | 0 | Runs/20261106T172004243Z/results.xml |
+
+| Both original024 loose-ball snapshot continuations after input/readiness corrections | 2 | 0 | 0 | Runs/20261106T172140032Z/results.xml |
+
+## Review and continuation
+
+[MorningReview.md](MorningReview.md) records decisions, drift, clarifications and the verified local retry for November 6 at 04:30 Europe/Athens. Never start a competing Test Runner job. Retire legacy scenarios only after equivalent coverage passes; renaming the runner or wrapping unisolated legacy scenarios is insufficient.
+
+PlayMode tests currently use an editor-side typed fixture through a small reflection
+adapter. They execute in the live Editor Test Runner; standalone Player test builds
+are not provided by this adapter. Presentation fixtures use an EditMode-exported
+copy of Room's authored panel roots and check its source hash. Regenerate in stopped
+Edit Mode through CLI eval: `return FrameworkAuthoredPanelAssets.Export();`.
