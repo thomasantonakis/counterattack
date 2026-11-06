@@ -21,41 +21,24 @@
 - Keep legacy scenarios until equivalent replacement tests have passed. Record mappings and actual results in `Documentation/Testing/GameplayRegressionMigration.md`.
 - Execute relevant existing regressions after each focused migration batch. Report compilation separately from passed/failed/skipped test counts and retain result artifacts.
 - Keep native XML and per-case progress under `TestResults/GameplayRegression/Runs/`, outside Unity’s temporary directory. Historical `Temp/GameplayRegression` artifacts are copied there so an Editor restart does not erase validation evidence.
-- The selective manual scenario rules below apply to the legacy runner. Automated framework tests use filters to rerun failures and affected regressions; Codex executes and inspects these tests itself.
+- Automated framework tests use filters to rerun failures and affected regressions; Codex executes and inspects these tests itself. Do not comment out passing cases or ask the user to press Play for automated regression verification.
+
+## Required coverage for future gameplay changes
+
+- Every change to gameplay code must add meaningful Unity Test Framework coverage: at least one new independently runnable test or new parameterized case for the changed behavior. This includes rules, possession, ball/player movement, action availability, input routing, coroutines, interruptions, scoring/statistics, restarts, and gameplay AI. A compilation check or changes to legacy runner scenarios do not satisfy this requirement.
+- Reproduce a bug with the new test before fixing it when practical. Exercise real gameplay entry points, deterministic board setup and rigged dice; assert observable outcomes and relevant continuation/state/statistics. Cover affected boundary, negative and interruption cases, and both attacking directions where applicable. Do not copy the implementation into the test or set fixture flags that supply the expected outcome.
+- Use EditMode for isolated rules/calculations and PlayMode for scene-dependent gameplay, input, animations and coroutines. Reuse the owned fixture/cleanup patterns; restore singleton, subscription, scene, time and temporary-save state even after failure. Never mutate live saves or designer-owned layouts.
+- Execute the new tests and relevant existing regressions through the live Unity CLI/Pipeline, or inspect results from the same native suite in Unity's Test Runner. Codex must execute and inspect results itself when doing the change; do not delegate automated verification to the user. Run both complete EditMode and PlayMode suites before declaring a gameplay change fully regression-validated. Use serial runs and wait for completion before editing scripts or starting another run.
+- Diagnose failures as gameplay defects, fixture defects or documented rule drift. Never weaken assertions or change gameplay merely to obtain green tests. If an intended rule is ambiguous, record the question in `Documentation/Testing/GameplayReview.md` and obtain clarification before changing that rule; unrelated authorized work can continue.
+- Report compilation separately from actual passed/failed/skipped counts, name any unexecuted coverage, and retain native result artifacts under `TestResults/GameplayRegression/Runs/`. Update the test-running guide and migration/review documents when their instructions or claims change.
 
 ## Test Iteration Workflow
 
-- When the user is in testing mode and asks Codex to check logs or `Assets/TestResults.txt`, inspect the failure, identify where the fix belongs, apply the fix, and then use Unity CLI `editor_stop` only if Play Mode is active, followed by `unity recompile`. If the Pipeline connection is unavailable, ask the user to perform the required Editor action manually; never use GUI scripting.
-- Before reloading after a test failure fix, deactivate/comment out every test scenario that already succeeded earlier in the current testing pass. Leave enabled only the failed scenario and the scenarios that follow it, so the user can press Play and restart testing from the failure point.
-- For legacy scenarios the user presses Play. For Unity Test Framework tests Codex runs tests through CLI/Pipeline, including framework-controlled Play Mode transitions.
-- After incremental fixes have made the remaining tests pass, re-enable/release the full test suite only when the user asks, so the final snapshot can be checked for regressions.
-- When the user reports a failed Unity scenario, inspect bounded log slices from `Assets/TestResults.txt` and Unity `Editor.log`; never live-tail logs.
-- When the user reports a failure, assume Unity may be left open in the failed state for investigation.
-- Use the bridge, `Assets/TestResults.txt`, and `Editor.log` directly instead of asking the user to diagnose failures.
-
-## FTP Development Workflow
-
-- When working on First Time Pass (`FTP`), always implement the requested gameplay change first and add or update the relevant runner scenarios.
-- When useful, ask the user for exact click paths or token/hex sequences before finalizing a new FTP scenario.
-
-## FTP Test Loop
-
-1. Comment in all FTP-related tests relevant to the current FTP change.
-2. Ensure the project compiles cleanly.
-3. Tell the user to run the tests.
-4. If the FTP batch passes, keep moving forward.
-5. If a test fails:
-   - inspect the failed Unity state yourself
-   - inspect token positions / ball position
-   - inspect `Assets/TestResults.txt`
-   - inspect Unity `Editor.log`
-   - determine whether the fix belongs in gameplay code or in the runner
-6. After each failure, comment out all previously passed FTP tests and keep only the first unresolved FTP test plus the remaining later FTP tests if needed.
-7. Repeat until all FTP-related tests have selectively passed.
-8. When the user asks for full FTP regression, comment all FTP-related tests back in and run them together.
-9. If the full FTP regression fails, go back to the selective loop above.
-10. When FTP is stable and the user asks for broader regression, comment in all audited tests so far and run the wider suite before merging.
-
+- Inspect reported failures yourself using native test XML, bounded slices of `Assets/TestResults.txt` when relevant, and the active Unity Editor log. Never live-tail logs or ask the user to diagnose the failure.
+- Assume the Editor may retain the failed state. Resolve pending Test Framework/Pipeline execution before another run or reload. If a manual stop is necessary, query `editor_status`, stop only when playing/paused, and wait for stopped status; never kill Unity.
+- Diagnose whether the failure belongs to gameplay, setup, asynchronous readiness or an obsolete expectation. Apply the justified fix, recompile through the open Editor, then run the failed cases and affected regressions with native filters. Leave passing tests enabled and independently selectable.
+- For First Time Pass changes, preserve real selection/confirmation/movement/interception and continuation coverage. Add new native tests for the requested change and execute them; current board/input paths should be investigated directly before asking for missing design information.
+- After focused cases pass, run the complete EditMode and PlayMode suites for gameplay changes and inspect actual results. Report counts and artifact paths; a CLI response of `running` is not a verdict.
 
 ## CodeGraph usage
 

@@ -360,3 +360,22 @@ or competing run. The prepared, unexecuted post-success editor cleanup snippet i
 `/private/tmp/retire_gameplay_runner.cs`; it removes only DummyLoader's obsolete
 Tester component/root, preserves Room hash/dirty state, then deletes the runner asset.
 Do not run it unless every relevant replacement in the full native result has passed.
+
+## User decision: consistent defensive-scatter own goals
+
+The user resolved the earlier tied-save attribution question: a rushing GK who
+ties the best attacking aerial score is treated like an outfield defender tying
+that score or a player blocking a shot. If their scatter enters their own goal,
+it is their own goal, with a team goal for the opponent and no attacker personal
+goal. Tied Saving scatters use the same attribution. Existing ResolveOwnGoalToken
+already implements this. The previously added Yaneva.goals=1 assertion was the
+incorrect expectation; no scoring gameplay is changed. Add explicit scorer-record
+and personal-stat assertions, including no-deflection attacker-goal counterexamples.
+See GameplayReview.md and FutureSessionPrompt.md for the consolidated review.
+
+The full PlayMode run completed362/0/0 in
+`Runs/20261106T172436176Z/results.xml`. A final original-manager-state assertion
+audit and scoped authored-panel fingerprint check are being executed separately.
+The first new off-target assertion incorrectly assumed FinalThirdManager was already
+active while its goal-kick preparation coroutine was still moving the keeper; that
+is a fixture readiness assumption, not a production gameplay defect.
