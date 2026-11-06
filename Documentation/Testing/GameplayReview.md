@@ -1,6 +1,7 @@
 # Gameplay decisions and changes to review
 
-Updated 2026-11-06. This is the review checklist for a future session, not a claim
+Updated 2026-11-06. Start with [SessionHandoff.md](SessionHandoff.md); the user
+requested handoff without another full test run. This is a review checklist, not a claim
 that passing regressions prove every football rule is correct.
 
 ## Validation and scope
@@ -35,7 +36,7 @@ resolved it in favor of consistent own-goal attribution, as recorded below.
    into the goal. `LooseBallManager.ResolveOwnGoalToken` already follows this policy
    (`c6f84969`, 2026-06-21); no scoring-code change is currently needed. A failed save
    without a deflection remains an attacker goal. Explicit personal/scorer-record
-   assertions are being added alongside the original team/touch/reset checks.
+   assertions remain to be added alongside the original team/touch/reset checks.
    This resolves the earlier extra Yaneva.goals=1 assertion in generated header
    branches02/03: its expectation was wrong. Review assists, scorer labels/keys,
    structured OwnGoalScored events and conceded-team reset for consistency.

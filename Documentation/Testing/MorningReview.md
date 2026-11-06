@@ -1,7 +1,9 @@
 # Gameplay regression migration: morning review
 
-Updated 2026-11-06, Europe/Athens. Full migration remains active. Existing legacy
-scenarios take priority over discretionary new unit coverage.
+Updated 2026-11-06, Europe/Athens. **Handed off at the user's request; do not run
+all tests again.** Read [SessionHandoff.md](SessionHandoff.md) first for the latest
+verified results, cancelled filtered audit and uncommitted test-only work. The
+historical checkpoints below precede that handoff.
 
 ## Verified checkpoint
 
@@ -379,3 +381,9 @@ audit and scoped authored-panel fingerprint check are being executed separately.
 The first new off-target assertion incorrectly assumed FinalThirdManager was already
 active while its goal-kick preparation coroutine was still moving the keeper; that
 is a fixture readiness assumption, not a production gameplay defect.
+
+Final handoff: filtered Shot audit cancelled through Pipeline, Editor confirmed
+ready/stopped/not compiling. Progress15passed/1failed, no final XML, in
+`Runs/20261106T214114486Z/`; the one new failure is the premature Final Third
+readiness assertion described above. No further runs requested or started. See
+SessionHandoff.md for exact pending files and the145/147 source-retirement status.

@@ -7,6 +7,7 @@ We are working in /Users/t.antonakis/Documents/Projects/Personal/counterattack.
 
 Review the gameplay decisions from the GameTestScenarioRunner migration with me.
 Read AGENTS.md, the relevant Unity skills, and these documents first:
+- Documentation/Testing/SessionHandoff.md
 - Documentation/Testing/GameplayReview.md
 - Documentation/Testing/GameplayRegressionMigration.md
 - Documentation/Testing/MorningReview.md
@@ -18,6 +19,12 @@ before claiming the migration is complete. Do not infer pass counts from discove
 or compilation. The known complete PlayMode result is362/0/0 in
 TestResults/GameplayRegression/Runs/20261106T172436176Z/results.xml; the documents
 may contain newer final EditMode/cleanup results. Inspect those too.
+
+The last instruction was to stop testing and hand off. Do not run the full suites
+again or automatically restart tests. Read the handoff for the cancelled filtered
+audit, its one premature Final Third readiness assertion, and uncommitted test-only
+work. Preserve that work. Discuss first; any later implementation must respect my
+then-current scope and testing instructions.
 
 First discuss intended rules with me; don't change gameplay just to match existing
 code or obtain green tests. Prioritize:

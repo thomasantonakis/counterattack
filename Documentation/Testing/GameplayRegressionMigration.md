@@ -1,10 +1,11 @@
 # Gameplay regression migration
 
-Updated 2026-11-06. Active objective: migrate the full legacy suite and execute every replacement. Prioritize the user's existing scenarios; discretionary new unit coverage waits until all legacy scenarios are migrated. Compilation and discovery do not count as passing tests.
+Updated 2026-11-06. **Handoff requested; do not run full suites again.** Read
+[SessionHandoff.md](SessionHandoff.md) for the current pending state. Original objective: migrate the full legacy suite and execute every replacement. Prioritize the user's existing scenarios; discretionary new unit coverage waits until all legacy scenarios are migrated. Compilation and discovery do not count as passing tests.
 
 ## Inventory
 
-[LegacyScenarioInventory.md](LegacyScenarioInventory.md) preserves the original 147-method inventory and per-method replacement/artifact mapping. **145 methods have been retired after passing replacements; 2 remain without equivalent passing replacement coverage.** All 002–008 ground/FTP/commitment/cache scenarios are now migrated. [LegacyGeneratedBranches.md](LegacyGeneratedBranches.md) enumerates 31 shooting, 12 free-kick shot, 6 OOB long-ball and 13 header-at-goal definitions, plus runtime matrices.
+[LegacyScenarioInventory.md](LegacyScenarioInventory.md) preserves the original 147-method inventory and per-method replacement/artifact mapping. **145 methods have been retired after passing replacements; 2 remain retained for a final common-assertion audit. Their native matrices passed in the complete362/0/0 PlayMode run, but the later strengthened audit is unfinished.** All 002–008 ground/FTP/commitment/cache scenarios are now migrated. [LegacyGeneratedBranches.md](LegacyGeneratedBranches.md) enumerates 31 shooting, 12 free-kick shot, 6 OOB long-ball and 13 header-at-goal definitions, plus runtime matrices.
 
 | Legacy groups | Focus | State |
 | --- | --- | --- |
@@ -195,3 +196,14 @@ adapter. They execute in the live Editor Test Runner; standalone Player test bui
 are not provided by this adapter. Presentation fixtures use an EditMode-exported
 copy of Room's authored panel roots and check its source hash. Regenerate in stopped
 Edit Mode through CLI eval: `return FrameworkAuthoredPanelAssets.Export();`.
+
+## Handoff checkpoint
+
+Complete current PlayMode:362passed/0failed/0skipped,
+`Runs/20261106T172436176Z/results.xml`. Last complete EditMode747/0/0 remains
+`Runs/20261106T144426744Z/results.xml`;748 are discovered, not all748 re-executed.
+Final strengthened Shot audit was cancelled at the user's handoff request:15passed,
+1failed, no final XML (`Runs/20261106T214114486Z/`). The new failure is a premature
+Final Third activation assertion before keeper goal-kick preparation completes.
+No production gameplay changed in that audit. Preserve pending test-only changes
+and read SessionHandoff.md before any new work. Do not rerun full suites automatically.
