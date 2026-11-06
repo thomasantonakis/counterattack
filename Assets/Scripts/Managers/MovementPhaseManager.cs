@@ -3298,7 +3298,9 @@ public class MovementPhaseManager : MonoBehaviour
         repositionWinner = attackerToken;
         repositionLoser = selectedDefender;
         yield return StartCoroutine(HandlePostTackleReposition());
-        if (isNutmegInProgress) nutmegVictim = null;
+        // DribblerMoved1HexOrReposition clears the completed nutmeg before
+        // offering the next choice. This coroutine can resume after that next
+        // nutmeg has started, so it must not clear the new victim here.
     }
     
     private List<HexCell> FindRepositionHexes()

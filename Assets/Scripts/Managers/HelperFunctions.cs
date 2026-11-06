@@ -5,22 +5,30 @@ using System.Threading.Tasks;
 
 public class HelperFunctions : MonoBehaviour
 {
-    public async Task StartCoroutineAndWait(IEnumerator coroutine)
+    private readonly HashSet<TaskCompletionSource<bool>> pendingCoroutines = new();
+
+    public Task StartCoroutineAndWait(IEnumerator coroutine)
     {
-        bool isDone = false;
-        StartCoroutine(WrapCoroutine(coroutine, () => isDone = true));
-        // await Task.Run(() => { while (!isDone) {await Task.Yield();} }); // Wait until coroutine completes
-        // Poll with delay to avoid blocking and allow coroutine to finish
-        while (!isDone)
-        {
-            await Task.Yield(); // Non-blocking, allows other tasks to run
-        }
+        var completion = new TaskCompletionSource<bool>();
+        pendingCoroutines.Add(completion);
+        StartCoroutine(WrapCoroutine(coroutine, completion));
+        return completion.Task;
     }
 
-    private IEnumerator WrapCoroutine(IEnumerator coroutine, System.Action onComplete)
+    private IEnumerator WrapCoroutine(IEnumerator coroutine, TaskCompletionSource<bool> completion)
     {
         yield return StartCoroutine(coroutine);
-        onComplete?.Invoke();
+        pendingCoroutines.Remove(completion);
+        completion.TrySetResult(true);
+    }
+
+    private void OnDestroy()
+    {
+        // A stopped/destroyed coroutine host must not leave async gameplay callers
+        // polling forever. This also releases failed framework fixtures safely.
+        var interrupted = new List<TaskCompletionSource<bool>>(pendingCoroutines);
+        pendingCoroutines.Clear();
+        foreach (var completion in interrupted) completion.TrySetCanceled();
     }
 
     public (int _roll, bool _isJackPot) DiceRoll()

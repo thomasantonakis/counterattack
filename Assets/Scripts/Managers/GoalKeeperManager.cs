@@ -443,7 +443,12 @@ public class GoalKeeperManager : MonoBehaviour
 
     private PlayerToken FindDefendingGoalkeeperForAttackingTeam(bool attackingTeamIsHome)
     {
-        return FindObjectsByType<PlayerToken>()
+        // Resolve within this match. Global searches can select a goalkeeper from
+        // another loaded scene and exclude isolated preview-scene boards entirely.
+        IEnumerable<PlayerToken> tokens = MatchManager.Instance?.playerTokenManager != null
+            ? MatchManager.Instance.playerTokenManager.allTokens
+            : FindObjectsByType<PlayerToken>();
+        return tokens
             .FirstOrDefault(token => token != null
                 && token.isPlaying
                 && token.IsGoalKeeper

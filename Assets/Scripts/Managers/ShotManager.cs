@@ -3205,7 +3205,10 @@ public class ShotManager : MonoBehaviour
         Debug.Log($"Shot has logically entered the penalty box at {firstPenaltyBoxHex?.coordinates}. GK gets the ball-in-box free move.");
 
         gkWasOfferedMoveForBox = true;
-        goalKeeperManager.isActivated = true;
+        // Register logical shot entry in the same memory used by physical ball
+        // movement, so the later attraction to an in-box blocker cannot offer it twice.
+        if (firstPenaltyBoxHex == null || !goalKeeperManager.TryStartGKMoveForPenaltyBox(
+            firstPenaltyBoxHex.isInPenaltyBox, firstPenaltyBoxHex, out _)) yield break;
         yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
         goalKeeperManager.isActivated = false;
 
@@ -3219,7 +3222,10 @@ public class ShotManager : MonoBehaviour
         Debug.Log($"Free Kick Shot has logically entered the penalty box at {firstPenaltyBoxHex?.coordinates}. GK gets the ball-in-box free move before remaining outfield blocks.");
 
         gkWasOfferedMoveForBox = true;
-        goalKeeperManager.isActivated = true;
+        // Register logical shot entry in the same memory used by physical ball
+        // movement, so the later attraction to an in-box blocker cannot offer it twice.
+        if (firstPenaltyBoxHex == null || !goalKeeperManager.TryStartGKMoveForPenaltyBox(
+            firstPenaltyBoxHex.isInPenaltyBox, firstPenaltyBoxHex, out _)) yield break;
         yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
         goalKeeperManager.isActivated = false;
     }

@@ -940,21 +940,25 @@ public sealed class CodexTacticianProvider : IRoomAIProvider
             || string.Equals(state, "PostGoalKickOffSetup", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static bool IsEarlyDefendingKickoffSetup(RoomAIDecisionSnapshot snapshot)
+    {
+        return IsKickoffSetupState(snapshot.currentState)
+            && snapshot.clock != null && snapshot.clock.currentHalf == 1
+            && snapshot.clock.currentHalfRegulationSeconds >= 0f
+            && snapshot.clock.currentHalfRegulationSeconds < 5 * 60
+            && !snapshot.clock.isHalfExpired && !snapshot.clock.isMatchComplete
+            && snapshot.expectedTeam is "Home" or "Away"
+            && snapshot.teamInAttack is "Home" or "Away"
+            && snapshot.expectedTeam != snapshot.teamInAttack;
+    }
+
     private static void ApplyEarlyDefendingKickoffFrontLinePriority(
         RoomAIDecisionSnapshot snapshot, List<RoomAITacticalEvaluation> evaluations)
     {
         // This is an opening press, not a possession/reception decision. Compare
         // legal placements geometrically after genuine safety constraints, so
         // generic tackle avoidance cannot strand a forward behind halfway.
-        if (!IsKickoffSetupState(snapshot.currentState)
-            || snapshot.clock == null || snapshot.clock.currentHalf != 1
-            || snapshot.clock.currentHalfRegulationSeconds < 0f
-            || snapshot.clock.currentHalfRegulationSeconds >= 5 * 60
-            || snapshot.clock.isHalfExpired || snapshot.clock.isMatchComplete
-            || snapshot.expectedTeam is not ("Home" or "Away")
-            || snapshot.teamInAttack is not ("Home" or "Away")
-            || snapshot.expectedTeam == snapshot.teamInAttack)
-            return;
+        if (!IsEarlyDefendingKickoffSetup(snapshot)) return;
 
         var frontLine = snapshot.tokens.Where(token => token != null && token.isPlaying
             && !token.isSentOff && !token.isGoalKeeper && token.currentHex != null
@@ -1924,7 +1928,14 @@ public sealed class CodexTacticianProvider : IRoomAIProvider
                 evaluation.tier = RoomAITacticalTier.Risky;
                 evaluation.reasons.Insert(0, "Distribution race has no safe continuation before opponent recovery");
             }
-            if (facts.defensiveLineLeavesFullback || facts.defensiveLineCreatesGap)
+            bool openingForwardPlacement = IsEarlyDefendingKickoffSetup(snapshot)
+                && evaluation.candidate.manager == nameof(KickoffManager)
+                && evaluation.candidate.actionType == RoomActionType.SetupMove
+                && facts.actorToken is { isGoalKeeper: false, jerseyNumber: 7 or 9 or 10 or 11 };
+            // Opening setup can reposition the whole defensive unit. A forward
+            // starting behind the backs must still reach the opening press line;
+            // the live ball's temporary anchor-gap penalty would strand them.
+            if (!openingForwardPlacement && (facts.defensiveLineLeavesFullback || facts.defensiveLineCreatesGap))
             {
                 evaluation.safetyPriority = System.Math.Max(1, evaluation.safetyPriority);
                 evaluation.reasons.Insert(0, "Preserve defensive cover: this advance isolates the remaining anchor and opens a recovery gap");

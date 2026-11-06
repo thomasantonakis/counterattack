@@ -218,6 +218,13 @@ public class Ball : MonoBehaviour
         {
             float step = adjustedSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
+            bool reachedTarget = Vector3.Distance(transform.position, targetPosition) < 0.001f;
+            if (reachedTarget)
+            {
+                // The arrival snap can itself cross the box line. Assess the
+                // final position before stopping, so frame timing cannot skip it.
+                transform.position = targetPosition;
+            }
             // ✅ Detect transition into penalty box
             int currentPenaltyBoxStatus = hexGrid.CheckPenaltyBox(transform.position);
             if (previousPenaltyBoxStatus == 0 && currentPenaltyBoxStatus != 0)
@@ -262,9 +269,8 @@ public class Ball : MonoBehaviour
             // Update previous status
             previousPenaltyBoxStatus = currentPenaltyBoxStatus;
             // Check if the ball has reached the target
-            if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
+            if (reachedTarget)
             {
-                transform.position = targetPosition;  // Snap exactly to the intended resting point
                 isMoving = false;  // Stop the movement
             }
 
