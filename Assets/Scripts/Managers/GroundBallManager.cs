@@ -529,7 +529,7 @@ public class GroundBallManager : MonoBehaviour
             HighlightCommittedTarget();
             latestValidationInstruction = currentTargetHex != null
                 ? "Click the orange target again to confirm, or choose another valid target."
-                : $"Hover a target within {imposedDistance} hexes, then click it to select.";
+                : isKickoffPass ? "Hover a target, then click it to select. Own half: no distance limit; elsewhere: 11 hexes." : $"Hover a target within {imposedDistance} hexes, then click it to select.";
             return;
         }
 
@@ -588,7 +588,7 @@ public class GroundBallManager : MonoBehaviour
         {
             latestValidationInstruction = currentTargetHex != null
                 ? GetEasyModeCommittedTargetInstruction(diceRollsPending, previewHasConditionalGoalkeeperInteraction)
-                : $"Hover a target within {imposedDistance} hexes to preview the pass.";
+                : isKickoffPass ? "Hover a target to preview the pass. Own half: no distance limit; elsewhere: 11 hexes." : $"Hover a target within {imposedDistance} hexes to preview the pass.";
             return;
         }
 
@@ -710,15 +710,15 @@ public class GroundBallManager : MonoBehaviour
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetExcludedFromNextTouch);
         }
 
-        bool useEasyOwnHalfKickoffRules = IsEasyOwnHalfKickoffPassTarget(targetHex);
+        bool useOwnHalfKickoffRules = IsOwnHalfKickoffPassTarget(targetHex);
         return GroundPassCommon.ValidateStandardPassPath(
             hexGrid,
             ball,
             targetHex,
             distance,
             isQuickThrow,
-            ignoreMaxDistance: useEasyOwnHalfKickoffRules,
-            suppressInterceptions: useEasyOwnHalfKickoffRules,
+            ignoreMaxDistance: useOwnHalfKickoffRules,
+            suppressInterceptions: useOwnHalfKickoffRules,
             logFailures: false
         );
     }
@@ -1199,7 +1199,7 @@ public class GroundBallManager : MonoBehaviour
         int minPathIndex = 0,
         bool includeGoalkeeperBoxMove = true)
     {
-        if (IsEasyOwnHalfKickoffPassTarget(targetHex))
+        if (IsOwnHalfKickoffPassTarget(targetHex))
         {
             return new List<GroundBallPathInteraction>();
         }
@@ -1217,10 +1217,10 @@ public class GroundBallManager : MonoBehaviour
         );
     }
 
-    private bool IsEasyOwnHalfKickoffPassTarget(HexCell targetHex)
+    private bool IsOwnHalfKickoffPassTarget(HexCell targetHex)
     {
         MatchManager matchManager = MatchManager.Instance;
-        if (!isKickoffPass || targetHex == null || matchManager == null || matchManager.difficulty_level != 1)
+        if (!isKickoffPass || targetHex == null || matchManager == null)
         {
             return false;
         }
@@ -1559,7 +1559,7 @@ public class GroundBallManager : MonoBehaviour
 
         foreach (HexCell hex in hexGrid.cells)
         {
-            if (hex != null && IsEasyOwnHalfKickoffPassTarget(hex))
+            if (hex != null && IsOwnHalfKickoffPassTarget(hex))
             {
                 candidates.Add(hex);
             }
@@ -1629,15 +1629,15 @@ public class GroundBallManager : MonoBehaviour
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.TargetExcludedFromNextTouch);
         }
 
-        bool useEasyOwnHalfKickoffRules = IsEasyOwnHalfKickoffPassTarget(targetHex);
+        bool useOwnHalfKickoffRules = IsOwnHalfKickoffPassTarget(targetHex);
         return GroundPassCommon.ValidateStandardPassPath(
             hexGrid,
             ball,
             targetHex,
             distance,
             isQuickThrow,
-            ignoreMaxDistance: useEasyOwnHalfKickoffRules,
-            suppressInterceptions: useEasyOwnHalfKickoffRules,
+            ignoreMaxDistance: useOwnHalfKickoffRules,
+            suppressInterceptions: useOwnHalfKickoffRules,
             logFailures: false);
     }
 
@@ -1682,7 +1682,7 @@ public class GroundBallManager : MonoBehaviour
                 }
                 else
                 {
-                    sb.Append($"Click on a valid target within {imposedDistance} hexes to attempt a pass. ");
+                    sb.Append(isKickoffPass ? "Click a valid target to take the kick-off. Own half: no distance limit; elsewhere: 11 hexes. " : $"Click on a valid target within {imposedDistance} hexes to attempt a pass. ");
                 }
             }
             else
@@ -1699,7 +1699,7 @@ public class GroundBallManager : MonoBehaviour
                     }
                     else
                     {
-                        sb.Append($"Hover a target within {imposedDistance} hexes to preview the pass. ");
+                        sb.Append(isKickoffPass ? "Hover a target to preview the pass. Own half: no distance limit; elsewhere: 11 hexes. " : $"Hover a target within {imposedDistance} hexes to preview the pass. ");
                     }
             }
             else
@@ -1714,7 +1714,7 @@ public class GroundBallManager : MonoBehaviour
                     }
                     else
                     {
-                        sb.Append($"Hover a target within {imposedDistance} hexes, then click it to select. ");
+                        sb.Append(isKickoffPass ? "Hover a target, then click it to select. Own half: no distance limit; elsewhere: 11 hexes. " : $"Hover a target within {imposedDistance} hexes, then click it to select. ");
                     }
                 }
             }

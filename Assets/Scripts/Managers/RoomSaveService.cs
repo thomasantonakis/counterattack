@@ -787,6 +787,7 @@ public class RoomSaveSummary
 [Serializable]
 public class RoomRuntimeSnapshot
 {
+    public bool kickoffGroundPassOnly;
     public int version = RoomSaveService.SaveSchemaVersion;
     public string savedAtUtc;
     public string currentState;

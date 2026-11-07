@@ -1,5 +1,17 @@
 # Running gameplay regressions
 
+Kickoff Ground Pass has fixture `KickoffGroundPassPlayModeTests` in
+`Assets/Tests/PlayMode/Features/KickoffGroundPass/`. It covers opening action
+availability across game modes, own-half uncapped passes at every difficulty,
+normal Standard Pass limits/interceptions for opponent-half and x=0 targets,
+both directions, post-goal and later-half restarts, ordinary-pass cleanup, and
+old/new snapshot options. Run only this fixture for the feature. Results and
+additional user-run checks are recorded in
+`Assets/Editor/FeatureTests/KickoffGroundPass/Verification.md`.
+For the snapshot-free Room seed exception, use the focused case filter
+`SeedWithoutSnapshotPreservesOpeningChoices`; it checks P/C/L availability,
+ordinary new-match restrictions, P activation and hover previews without live-save writes.
+
 Headed back-passes use dedicated fixtures `HeadedBackPassEditorTests` under
 `Assets/Editor/FeatureTests/HeadedBackPass/` and `HeadedBackPassPlayModeTests` under
 `Assets/Tests/PlayMode/Features/HeadedBackPass/`. Extra-time action caps use

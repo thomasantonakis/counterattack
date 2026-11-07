@@ -15,6 +15,9 @@ public class MatchManager : MonoBehaviour
     public const int MaxSubstitutionsPerTeam = 3;
     public const int ExtraTimeMaxSubstitutionsPerTeam = MaxSubstitutionsPerTeam + 1;
     private const int StandardHalfDurationMinutes = 45;
+    // Older snapshots retain their P/C/L choice; the snapshot-free Room seed is tracked separately.
+    private bool kickoffGroundPassOnly = true;
+    private bool isEditorDirectPlayFixture;
     private const int StandardNumberOfHalfs = 2;
     private const int ExtraTimeHalfDurationMinutes = 15;
     private const int ExtraTimeHalfs = 2;
@@ -4448,11 +4451,12 @@ public class MatchManager : MonoBehaviour
 
         string preTransitionStateHash = ComputeGameplayStateHash();
         currentState = GameState.KickoffBlown;
+        kickoffGroundPassOnly = !isEditorDirectPlayFixture;
         possessionActionTeam = teamInAttack;
         OfferStandardGroundBallPass();
         groundBallManager.isAvailable = true;
-        highPassManager.isAvailable = true;
-        longBallManager.isAvailable = true;
+        highPassManager.isAvailable = !kickoffGroundPassOnly;
+        longBallManager.isAvailable = !kickoffGroundPassOnly;
         LastTokenToTouchTheBallOnPurpose = kickoffToken;
         if (currentHalf == 1 && totalCompletedActions == 0) firstHalfKickoffTeam = teamInAttack;
         isClockRunning = true;
@@ -5694,8 +5698,8 @@ public class MatchManager : MonoBehaviour
             movementPhaseManager.isAvailable = false;
             groundBallManager.isAvailable = true;
             firstTimePassManager.isAvailable = false;
-            highPassManager.isAvailable = true;
-            longBallManager.isAvailable = true;
+            highPassManager.isAvailable = !kickoffGroundPassOnly;
+            longBallManager.isAvailable = !kickoffGroundPassOnly;
             shotManager.isAvailable = false;
         }
         else if (currentState == GameState.EndOfStandardPass)
@@ -5927,6 +5931,7 @@ public class MatchManager : MonoBehaviour
         return new RoomRuntimeSnapshot
         {
             version = RoomSaveService.SaveSchemaVersion,
+            kickoffGroundPassOnly = kickoffGroundPassOnly,
             currentState = currentState.ToString(),
             teamInAttack = teamInAttack.ToString(),
             attackHasPossession = attackHasPossession,
@@ -6121,6 +6126,7 @@ public class MatchManager : MonoBehaviour
 
     private void RestoreSnapshotStateFields(RoomRuntimeSnapshot snapshot)
     {
+        kickoffGroundPassOnly = snapshot.kickoffGroundPassOnly;
         if (Enum.TryParse(snapshot.currentState, out GameState restoredState))
         {
             currentState = restoredState;
@@ -6700,6 +6706,7 @@ public class MatchManager : MonoBehaviour
 
         // Never let Room mutate the canonical direct-play fixture. Always switch to a disposable
         // working copy before storing active save context or allowing any later writes.
+        ConfigureLoadedGameSource(filePath);
         filePath = SwapProtectedFixtureForWorkingCopy(filePath);
 
         if (!string.IsNullOrEmpty(filePath))
@@ -6764,6 +6771,13 @@ public class MatchManager : MonoBehaviour
         {
             Debug.LogWarning("Game settings file not found.");
         }
+    }
+
+    private void ConfigureLoadedGameSource(string sourcePath)
+    {
+        // The protected Room seed contains settings/rosters, not a runtime snapshot.
+        // Remember its source before cloning, so StartMatch preserves its P/C/L sandbox.
+        isEditorDirectPlayFixture = IsProtectedEditorFixturePath(sourcePath);
     }
 
     private string GetEditorDirectPlaySavePath()
