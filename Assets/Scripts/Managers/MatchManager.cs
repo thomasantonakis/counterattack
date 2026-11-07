@@ -4261,6 +4261,8 @@ public class MatchManager : MonoBehaviour
         return IsStandardTwoHalfMatch() && half > StandardNumberOfHalfs;
     }
 
+    public int GetStoppageActionCap() => IsExtraTimeHalf(currentHalf) ? 3 : 7;
+
     public string GetCurrentPeriodLabel()
     {
         if (IsExtraTimeHalf(currentHalf))
@@ -4823,7 +4825,7 @@ public class MatchManager : MonoBehaviour
             jackpotEnabled: false,
             details: CreateDetails(("refereeLeniency", refereeLeniency)));
         int roll = diceRoll.roll;
-        extraActionsTotal = Mathf.Min(refereeLeniency + roll, 7);
+        extraActionsTotal = Mathf.Min(refereeLeniency + roll, GetStoppageActionCap());
         extraActionsRemaining = extraActionsTotal;
         extraActionsDetermined = true;
         isWaitingForExtraActionsRoll = false;

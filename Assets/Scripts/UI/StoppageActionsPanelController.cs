@@ -76,7 +76,7 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
         rollingTeam.color = new Color32(30, 69, 89, 255);
         die.SetTeamColors(colors.Primary, colors.Secondary);
         die.Begin(false);
-        rule.text = $"Referee leniency {manager.refereeLeniency} + D6\nMaximum: 7 stoppage actions";
+        rule.text = $"Referee leniency {manager.refereeLeniency} + D6\nMaximum: {manager.GetStoppageActionCap()} stoppage actions";
         result.text = "";
         footer.text = "Press [R] to roll";
         visuals.SetActive(true);
