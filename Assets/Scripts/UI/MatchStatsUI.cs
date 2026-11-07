@@ -2091,13 +2091,13 @@ public class MatchStatsUI : MonoBehaviour
 
     private static string FormatPossession(MatchManager.TeamStats team, MatchManager.TeamStats opponent)
     {
-        int totalRecoveries = team.totalPossessionWon + opponent.totalPossessionWon;
-        if (totalRecoveries <= 0)
+        float totalSeconds = team.totalPossessionSeconds + opponent.totalPossessionSeconds;
+        if (totalSeconds <= 0f)
         {
             return "50%";
         }
 
-        float share = (float)team.totalPossessionWon / totalRecoveries;
+        float share = team.totalPossessionSeconds / totalSeconds;
         return $"{Mathf.RoundToInt(share * 100f)}%";
     }
 

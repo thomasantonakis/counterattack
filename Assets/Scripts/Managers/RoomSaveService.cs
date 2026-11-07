@@ -821,6 +821,7 @@ public class RoomClockSnapshot
     public bool isWaitingForExtraActionsRoll;
     public bool isMatchComplete;
     public string currentCommittedActionKind;
+    public string possessionActionTeam;
     public bool hasUnresolvedCommittedExtraAction;
     public int committedExtraActionNumber;
     public string pendingShotGoalTimeLabel;

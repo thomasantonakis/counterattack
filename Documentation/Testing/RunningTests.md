@@ -1,5 +1,15 @@
 # Running gameplay regressions
 
+Possession time has focused fixtures `PossessionTimeEditorTests` in
+`Assets/Editor/FeatureTests/PossessionTime/` and `PossessionTimePlayModeTests` in
+`Assets/Tests/PlayMode/Features/PossessionTime/`. Regulation credits actual live
+game-clock seconds to the current attacking team, switching immediately on
+recovery or a restart possession change, before the next action is committed.
+Each consumed stoppage action credits its starter 60 seconds, without wall-time
+accumulation. Timed totals and the current action starter survive save/load;
+older saves begin accumulating timed possession from zero. See the feature's
+`Verification.md` for the focused execution results and durable artifacts.
+
 Open **Window → General → Test Runner** in Unity. This is the same Unity Test
 Framework suite used by the CLI/Pipeline automation; there is no separate automated
 scenario runner to launch with ordinary Play.

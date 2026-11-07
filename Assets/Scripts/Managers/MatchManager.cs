@@ -291,7 +291,10 @@ public class MatchManager : MonoBehaviour
         public void UpdateTeamStats(bool isHomeTeam)
         {
             TeamStats teamStats = isHomeTeam ? homeTeamStats : awayTeamStats;
+            float possessionSeconds = teamStats.totalPossessionSeconds;
             teamStats.Reset();
+            // Team clock time cannot be reconstructed from individual player events.
+            teamStats.totalPossessionSeconds = possessionSeconds;
 
             foreach (var player in playerStats)
             {
@@ -419,6 +422,7 @@ public class MatchManager : MonoBehaviour
         public int totalSubstiutions;
         public int totalPossessionWon;
         public int totalPossessionLost;
+        public float totalPossessionSeconds;
         public int totalCorners;
         public float totalXRecoveries;
         public float totalXDribbles;
@@ -464,6 +468,7 @@ public class MatchManager : MonoBehaviour
         }
         public void Reset()
         {
+            totalPossessionSeconds = 0f;
             totalGoals = 0;
             totalShots = 0;
             totalShotsOnTarget = 0;
@@ -1278,6 +1283,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private bool extraTimeSubstitutionCreditGranted = false;
     [SerializeField] private bool isHalfEndPendingAfterGoalFlow = false;
     [SerializeField] private MatchActionKind currentCommittedActionKind = MatchActionKind.None;
+    private TeamInAttack? possessionActionTeam;
     [SerializeField] private bool hasUnresolvedCommittedExtraAction = false;
     [SerializeField] private int committedExtraActionNumber = 0;
     [SerializeField] private string pendingShotGoalTimeLabel = string.Empty;
@@ -4013,6 +4019,7 @@ public class MatchManager : MonoBehaviour
 
     private void ResetMatchClockForNewMatch()
     {
+        possessionActionTeam = null;
         stoppagePresentationVersion++;
         stoppageActionsPanel?.Cancel(this);
         currentHalf = 1;
@@ -4069,16 +4076,26 @@ public class MatchManager : MonoBehaviour
 
     private void UpdateMatchClock()
     {
-        if (!CanAdvanceMatchClock())
+        AdvanceMatchTime(Time.unscaledDeltaTime);
+    }
+
+    private void AdvanceMatchTime(float elapsedSeconds)
+    {
+        if (!CanAdvanceMatchClock() || elapsedSeconds <= 0f)
         {
             return;
         }
 
         float multiplier = useFastClock ? Mathf.Max(1f, fastClockMultiplier) : 1f;
+        float halfLimitSeconds = GetHalfDurationSeconds();
+        float liveSeconds = Mathf.Min(elapsedSeconds * multiplier,
+            Mathf.Max(0f, halfLimitSeconds - currentHalfRegulationSeconds));
+        // Live possession follows recoveries/restart awards immediately, independently
+        // of the starter retained for the fixed stoppage-action allocation.
+        CreditPossessionTime(teamInAttack, liveSeconds);
         // Account for elapsed time only when the game's clock rules permit it.
         // AI analysis must neither pause open play nor bypass a stopped restart.
-        currentHalfRegulationSeconds += Time.unscaledDeltaTime * multiplier;
-        float halfLimitSeconds = GetHalfDurationSeconds();
+        currentHalfRegulationSeconds += liveSeconds;
         if (currentHalfRegulationSeconds >= halfLimitSeconds)
         {
             currentHalfRegulationSeconds = halfLimitSeconds;
@@ -4101,6 +4118,12 @@ public class MatchManager : MonoBehaviour
             && !DuelResolutionPanelController.IsMatchClockHeld
             && !StoppageActionsPanelController.IsMatchClockHeld
             && !IsClockPausedForCurrentState();
+    }
+
+    private void CreditPossessionTime(TeamInAttack team, float seconds)
+    {
+        TeamStats stats = gameData?.stats?.GetTeamStats(team == TeamInAttack.Home);
+        if (stats != null) stats.totalPossessionSeconds += seconds;
     }
 
     private bool IsClockPausedForCurrentState()
@@ -4423,6 +4446,7 @@ public class MatchManager : MonoBehaviour
 
         string preTransitionStateHash = ComputeGameplayStateHash();
         currentState = GameState.KickoffBlown;
+        possessionActionTeam = teamInAttack;
         OfferStandardGroundBallPass();
         groundBallManager.isAvailable = true;
         highPassManager.isAvailable = true;
@@ -4724,6 +4748,8 @@ public class MatchManager : MonoBehaviour
 
         if (isHalfExpired && extraActionsDetermined && extraActionsRemaining > 0)
         {
+            // Stoppage is measured in actions: each consumed action represents a minute.
+            CreditPossessionTime(possessionActionTeam ?? teamInAttack, 60f);
             extraActionsRemaining = Mathf.Max(0, extraActionsRemaining - 1);
         }
 
@@ -5011,6 +5037,7 @@ public class MatchManager : MonoBehaviour
             gameData.extraTimeOpeningSetup = opening;
         }
         SetUpNextHalf(enteringExtraTime);
+        possessionActionTeam = null;
         currentHalfRegulationSeconds = 0f;
         completedActionsThisHalf = 0;
         isHalfExpired = false;
@@ -5394,6 +5421,7 @@ public class MatchManager : MonoBehaviour
         }
 
         currentCommittedActionKind = actionKind;
+        possessionActionTeam = teamInAttack;
         hasUnresolvedCommittedExtraAction = false;
         committedExtraActionNumber = 0;
         pendingShotGoalTimeLabel = string.Empty;
@@ -5916,6 +5944,7 @@ public class MatchManager : MonoBehaviour
                 isWaitingForExtraActionsRoll = isWaitingForExtraActionsRoll,
                 isMatchComplete = isMatchComplete,
                 currentCommittedActionKind = currentCommittedActionKind.ToString(),
+                possessionActionTeam = possessionActionTeam?.ToString(),
                 hasUnresolvedCommittedExtraAction = hasUnresolvedCommittedExtraAction,
                 committedExtraActionNumber = committedExtraActionNumber,
                 pendingShotGoalTimeLabel = pendingShotGoalTimeLabel,
@@ -6121,6 +6150,8 @@ public class MatchManager : MonoBehaviour
             completedActionsThisHalf = Mathf.Max(0, snapshot.clock.completedActionsThisHalf);
             totalCompletedActions = Mathf.Max(0, snapshot.clock.totalCompletedActions);
             isClockRunning = snapshot.clock.isClockRunning;
+            possessionActionTeam = Enum.TryParse(snapshot.clock.possessionActionTeam, out TeamInAttack savedPossessionTeam)
+                ? savedPossessionTeam : (TeamInAttack?)null;
             isHalfExpired = snapshot.clock.isHalfExpired;
             extraActionsDetermined = snapshot.clock.extraActionsDetermined;
             extraActionsTotal = Mathf.Max(0, snapshot.clock.extraActionsTotal);
