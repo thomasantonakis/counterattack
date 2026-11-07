@@ -1,5 +1,65 @@
 # Gameplay regression migration
 
+## Rules controls and Room layout correction — 2026-11-07
+
+User-reported follow-up: reading history now records manual scroll checkpoints;
+search uses TMP submit/cancel events for Enter-as-Next and Escape-as-Clear.
+The pause-menu Rules row is positioned above Back to Main Menu, and Room's direct
+button is a sibling above InstructionsPanel with navigation disabled. MatchStatsUI
+layout is not changed.
+
+| Filter | Passed | Failed | Skipped | Native XML under `TestResults/GameplayRegression/Runs/` |
+| --- | ---: | ---: | ---: | --- |
+| RulesViewerEditorTests | 11 | 0 | 0 | `20261107T101432316Z/results.xml` |
+| RulesViewerPlayModeTests | 3 | 0 | 0 | `20261107T101453780Z/results.xml` |
+| RoomPresentationEditorTests | 13 | 0 | 0 | `20261107T101232653Z/results.xml` |
+
+Total: **27 passed / 0 failed / 0 skipped**. Compilation through live Pipeline
+is clean. The PlayMode coverage now raycasts and dispatches pointer events to the
+history buttons, checks manual-scroll restoration, submits through TMP's native
+submit interface and cancels through TMP's Escape/deactivation path. It also
+checks Room pause restoration. The scene tests check separate row geometry and
+the direct button's parent, position and disabled navigation. The first pointer
+reproduction exposed a test-cleanup EventSystem restore error; that is fixed and
+the earlier failing artifact is retained.
+
+Isolated UI previews in `Runs/RulesViewerVisuals/room-pause-layout-fixed.png` and
+`room-instructions-layout-fixed.png` were inspected. Capture cameras now cull to
+the UI layer so unrelated production stadium geometry cannot obscure the preview.
+No full gameplay suites or ordinary gameplay were started for this UI correction.
+
+## Rules viewer validation — 2026-11-07
+
+This UI batch preserves all legacy gameplay scenarios. No gameplay rule changes
+were made. The rulebook's penalty-advantage wording was corrected with user approval.
+
+Compilation through the live Editor completed with **0 errors / 0 warnings**.
+Compilation is a separate gate from these executed tests:
+
+| Filter | Passed | Failed | Skipped | Native XML under `TestResults/GameplayRegression/Runs/` |
+| --- | ---: | ---: | ---: | --- |
+| RulesViewerEditorTests | 11 | 0 | 0 | `20261107T090903421Z/results.xml` |
+| RulesViewerPlayModeTests | 3 | 0 | 0 | `20261107T094550929Z/results.xml` |
+| RoomPresentationEditorTests | 13 | 0 | 0 | `20261107T090930523Z/results.xml` |
+| MovingTokenHoverEditorTests | 8 | 0 | 0 | `20261107T091134015Z/results.xml` |
+| ActionSequenceEditorTests | 14 | 0 | 0 | `20261107T094341862Z/results.xml` |
+
+Total for these filters: **49 passed / 0 failed / 0 skipped** (46 EditMode + 3
+PlayMode). This is not a full gameplay-regression run or proof of wiki/game parity.
+Earlier failed rulebook runs are retained; hidden text indexing was corrected
+before the final passing PlayMode runs.
+
+Coverage includes both scenes' persistent button wiring, shared prefab ownership,
+document/link validation, authored diagrams/result rows, phrase search and wraparound,
+actual inline-link pointer navigation, history, reopening, Room input ownership and
+pause/time-scale restoration. Tests use an isolated additive scene and inactive
+match stub, restore singleton/session state, and do not read or write live saves.
+The framework gate suppresses the legacy runner.
+
+Visual captures at 1600×900, 1280×720 and 1024×768 are retained under
+`Runs/RulesViewerVisuals/`. Toolbar and article captures were visually inspected.
+The broader rule comparison and pending decisions are in `Documentation/RulesWikiAudit.md`.
+
 2026-11-07 Room presentation follow-up: scene/prefab authoring and live compilation
 completed. Focused native Room checks passed: 13 EditMode and 22 PlayMode (including
 preview double-click and shutdown follow-ups, with a corrected fixture rerun), with
