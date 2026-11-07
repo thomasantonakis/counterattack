@@ -77,6 +77,30 @@ public sealed partial class GoalkeeperBoxEntryFixture
         LegacyKey("Escape"); yield return null;
     }
 
+    // Original legacy manager-state assertions, including unrelated action owners.
+    // A shot retains ownership while awaiting its child scatter coroutine.
+    private void AssertNativeShootingOwners(bool shotActive = false, bool looseActive = false,
+        bool keeperActive = false, bool movementActive = false, bool finalThirdActive = false,
+        bool freeKickActive = false, bool goalFlowActive = false)
+    {
+        Assert.That(match.shotManager.isActivated, Is.EqualTo(shotActive), "Shot owner");
+        Assert.That(loose.isActivated, Is.EqualTo(looseActive), "Loose-ball owner");
+        Assert.That(keeper.isActivated, Is.EqualTo(keeperActive), "GK move owner");
+        Assert.That(movement.isActivated, Is.EqualTo(movementActive), "Movement owner");
+        Assert.That(match.finalThirdManager.isActivated, Is.EqualTo(finalThirdActive), "Final Third owner");
+        Assert.That(match.freeKickManager.isActivated, Is.EqualTo(freeKickActive), "Free-kick owner");
+        Assert.That(match.goalFlowManager.isActivated, Is.EqualTo(goalFlowActive), "Goal-flow owner");
+        Assert.That(ground.isActivated || ftp.isActivated || high.isActivated || longBall.isActivated
+            || match.shotManager.headerManager.isActivated, Is.False, "Unrelated passing/header owners must be inactive.");
+    }
+
+    private void AssertNativeRestartAvailability()
+    {
+        Assert.That(movement.isAvailable || ground.isAvailable || ftp.isAvailable || high.isAvailable
+            || longBall.isAvailable || match.shotManager.isAvailable, Is.False,
+            "All live actions, including Shot, are unavailable during set-piece setup.");
+    }
+
     private IEnumerator ExecuteNativeShootingStep(ShootingBranchStep step, List<ShootingBranchStep> steps)
     {
         var shot = match.shotManager;
@@ -84,6 +108,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         {
             case ShootingBranchStepType.ShotBlockRoll:
                 yield return Until(() => shot.isWaitingForBlockDiceRoll, $"shot waits for {step.PlayerName} block");
+                AssertNativeShootingOwners(shotActive: true);
                 Assert.That(shot.isActivated && !shot.isWaitingForShotRoll && !shot.isWaitingForGKDiceRoll, Is.True);
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName, Is.EqualTo(nativeShotShooter));
                 AssertNativeFreeKickDicePresentation();
@@ -96,6 +121,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 yield return DismissNativeShotResult(); break;
             case ShootingBranchStepType.ShooterRoll:
                 yield return Until(() => shot.isWaitingForShotRoll, "shot waits for the shooter roll");
+                AssertNativeShootingOwners(shotActive: true);
                 AssertNativeFreeKickDicePresentation();
                 Assert.That(shot.isActivated, Is.True); Assert.That(shot.shooter.playerName, Does.Contain(step.PlayerName));
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose, Is.SameAs(shot.shooter));
@@ -117,6 +143,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 } break;
             case ShootingBranchStepType.GkSaveRoll:
                 yield return Until(() => shot.isWaitingForGKDiceRoll, "shot waits for goalkeeper save");
+                AssertNativeShootingOwners(shotActive: true);
                 Assert.That(shot.isActivated, Is.True);
                 AssertNativeFreeKickDicePresentation();
                 var save = CurrentLegacyShotInteraction(); var gk = LegacyShotField<PlayerToken>(save, "defender");
@@ -130,6 +157,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 yield return DismissNativeShotResult(); break;
             case ShootingBranchStepType.HandlingRoll:
                 yield return Until(() => shot.isWaitingforHandlingTest, "save opens Handling");
+                AssertNativeShootingOwners(shotActive: true);
                 if (shot.shotType == "freeKick") Assert.That(duelPanel.IsAwaitingRoll && duelPanel.title.text == "Free Kick Shot · Handling" && duelPanel.singlePlayer.die.IsAnimating, Is.True);
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName, Is.EqualTo(nativeShotShooter));
                 shot.StartCoroutine(shot.ResolveHandlingTest(step.Roll)); yield return DismissNativeShotResult();
@@ -150,6 +178,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 Assert.That(grid.GetDefendingGK().currentHex, Is.SameAs(destination)); break;
             case ShootingBranchStepType.LooseDirectionRoll:
                 yield return Until(() => loose.isActivated && loose.isWaitingForDirectionRoll, "shot scatter waits for direction");
+                AssertNativeShootingOwners(shotActive: true, looseActive: true);
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName,
                     Is.EqualTo(steps.Take(steps.IndexOf(step)).Any(s => s.Type == ShootingBranchStepType.HandlingRoll) ? "Kuzmic" : nativeShotShooter));
                 loose.PerformDirectionRoll(step.Roll);
@@ -157,15 +186,18 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 Assert.That(loose.directionRoll, Is.EqualTo(step.Roll - 1)); break;
             case ShootingBranchStepType.LooseDistanceRoll:
                 yield return Until(() => loose.isActivated && loose.isWaitingForDistanceRoll, "shot scatter waits for distance");
+                AssertNativeShootingOwners(shotActive: true, looseActive: true);
                 loose.PerformDistanceRoll(step.Roll);
                 yield return Until(() => !loose.isWaitingForDistanceRoll, "scatter distance is consumed");
                 Assert.That(loose.distanceRoll, Is.EqualTo(step.Roll)); break;
             case ShootingBranchStepType.GoalkeeperWallSaveRoll:
                 yield return Until(() => loose.isActivated && loose.isWaitingForInterceptionRoll, "keeper movement opens a real GK-wall saving attempt");
+                AssertNativeShootingOwners(shotActive: true, looseActive: true);
                 Assert.That(loose.potentialInterceptor.playerName, Is.EqualTo("Kuzmic"));
                 loose.PerformInterceptionRoll(step.Roll); yield return DismissNativeShotResult(); break;
             case ShootingBranchStepType.LooseInterceptionRoll:
                 yield return Until(() => loose.isActivated && loose.isWaitingForInterceptionRoll, $"shot scatter offers {step.PlayerName} recovery");
+                AssertNativeShootingOwners(shotActive: true, looseActive: true);
                 var interceptor = loose.potentialInterceptor; Assert.That(interceptor.playerName, Is.EqualTo(step.PlayerName));
                 CountBranch(scatterAttempts, step.PlayerName);
                 float probability = ExpectedStatsCalculator.CalculateRecoveryProbability(interceptor.IsGoalKeeper ? interceptor.saving : interceptor.tackling);
@@ -185,9 +217,11 @@ public sealed partial class GoalkeeperBoxEntryFixture
         {
             case ShootingBranchStepType.ExpectAnyOtherScenario:
                 yield return Until(() => !loose.isActivated && !shot.isActivated && !keeper.isActivated, "shooting recovery completes");
+                yield return ForfeitLegacyFinalThirds(); AssertNativeShootingOwners();
                 AssertLegacyMovementAnyOtherRecovery(match.playerTokenManager.allTokens.Single(t => t.playerName == step.PlayerName)); break;
             case ShootingBranchStepType.ExpectMovementToAttack:
                 yield return Until(() => !loose.isActivated && movement.isActivated, "shot scatter into empty space starts committed movement");
+                yield return ForfeitLegacyFinalThirds(); AssertNativeShootingOwners(movementActive: true);
                 Assert.That(movement.isMovementPhaseAttack && !match.attackHasPossession, Is.True);
                 Assert.That(ftp.isAvailable || movement.isAvailable || ground.isAvailable || high.isAvailable || longBall.isAvailable
                     || ftp.isActivated || ground.isActivated || high.isActivated || longBall.isActivated || shot.isActivated || keeper.isActivated, Is.False);
@@ -197,6 +231,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             case ShootingBranchStepType.ExpectGoalkeeperRecoveryHold:
             case ShootingBranchStepType.ExpectSaveAndHold:
                 yield return Until(() => shot.isWaitingForSaveandHoldScenario, "saved shot waits for goalkeeper distribution choice");
+                AssertNativeShootingOwners();
                 Assert.That(shot.isActivated || loose.isActivated || keeper.isActivated || movement.isActivated, Is.False);
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName, Is.EqualTo("Kuzmic"));
                 Assert.That(match.attackHasPossession && match.teamInAttack == MatchManager.TeamInAttack.Away, Is.True);
@@ -210,6 +245,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
                     Assert.That(match.freeKickManager.isWaitingForKickerSelection, Is.False); yield return ForfeitLegacyFinalThirds();
                 }
                 yield return Until(() => match.freeKickManager.isActivated && match.freeKickManager.isWaitingForKickerSelection, "goalkeeper deflection produces the expected corner restart", 1200);
+                AssertNativeShootingOwners(freeKickActive: true); AssertNativeRestartAvailability();
                 Assert.That(shot.isActivated || loose.isActivated || keeper.isActivated || movement.isActivated, Is.False);
                 Assert.That(ftp.isAvailable || ground.isAvailable || high.isAvailable || longBall.isAvailable || movement.isAvailable, Is.False);
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName, Is.EqualTo("Kuzmic"));
@@ -217,6 +253,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             case ShootingBranchStepType.ExpectGoal:
             case ShootingBranchStepType.ExpectOwnGoal:
                 yield return Until(() => match.goalFlowManager.isActivated, "shot or scatter reaches a goal through gameplay");
+                AssertNativeShootingOwners(goalFlowActive: true);
                 Assert.That(shot.isActivated || loose.isActivated || keeper.isActivated || movement.isActivated, Is.False);
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose, Is.Not.Null);
                 if (step.Type == ShootingBranchStepType.ExpectGoal) Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName, Is.EqualTo(nativeShotShooter));
@@ -227,6 +264,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 yield return Until(() => !shot.isActivated && !loose.isActivated && !keeper.isActivated && !match.goalFlowManager.isActivated,
                     "original natural-one free-kick shot finishes off target");
                 Assert.That(match.currentState, Is.EqualTo(MatchManager.GameState.WaitingForGoalKickFinalThirds));
+                AssertNativeShootingOwners(finalThirdActive: true); AssertNativeRestartAvailability();
                 Assert.That(match.teamInAttack, Is.EqualTo(MatchManager.TeamInAttack.Away));
                 Assert.That(match.LastTokenToTouchTheBallOnPurpose.playerName, Is.EqualTo("Kuzmic"),
                     "Goal-kick preparation establishes the new restart taker after the shooter owned the shot and failed-block inputs.");

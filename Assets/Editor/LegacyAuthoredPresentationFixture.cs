@@ -15,8 +15,8 @@ public sealed partial class GoalkeeperBoxEntryFixture
     private void AttachAuthoredPanels()
     {
         Assert.That(File.ReadAllText(FrameworkAuthoredPanelAssets.HashPath).Trim(),
-            Is.EqualTo(FrameworkAuthoredPanelAssets.SourceHash()),
-            "Room changed: explicitly regenerate the test-only authored panels with FrameworkAuthoredPanelAssets.Export before running presentation coverage.");
+            Is.EqualTo(FrameworkAuthoredPanelAssets.PanelSourceHash()),
+            "Authored resolution panels changed: explicitly regenerate the test-only authored panels with FrameworkAuthoredPanelAssets.Export before running presentation coverage.");
         var types = new[] { typeof(DuelResolutionPanelController), typeof(HeaderChallengePanelController), typeof(StoppageActionsPanelController) };
         var statics = types.SelectMany(t => t.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
             .Where(f => !f.IsInitOnly && !f.IsLiteral).Select(f => (field: f, value: f.GetValue(null))).ToArray();

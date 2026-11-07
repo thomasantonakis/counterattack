@@ -22,6 +22,8 @@ public static class FrameworkAuthoredPanelAssets
         return BitConverter.ToString(hash.ComputeHash(File.ReadAllBytes(SourceScene))).Replace("-", "");
     }
 
+    public static string PanelSourceHash() => FrameworkAuthoredPanelSourceFingerprint.Compute(SourceScene);
+
     public static object Export()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -72,10 +74,10 @@ public static class FrameworkAuthoredPanelAssets
             if (!AssetDatabase.IsValidFolder("Assets/Tests/Fixtures")) AssetDatabase.CreateFolder("Assets/Tests", "Fixtures");
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             if (prefab == null) throw new InvalidOperationException("Authored test panel export failed.");
-            File.WriteAllText(HashPath, SourceHash() + Environment.NewLine);
+            File.WriteAllText(HashPath, PanelSourceHash() + Environment.NewLine);
             AssetDatabase.ImportAsset(HashPath);
             return new { prefab = PrefabPath, panelRoots = panels.Select(p => p.gameObject.name).ToArray(),
-                transforms = root.GetComponentsInChildren<Transform>(true).Length, sourceHash = SourceHash() };
+                transforms = root.GetComponentsInChildren<Transform>(true).Length, sourceHash = SourceHash(), panelSourceHash = PanelSourceHash() };
         }
         finally
         {

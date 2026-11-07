@@ -151,6 +151,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             case HeaderAtGoalOutcomeExpectation.CornerKick:
                 yield return Until(() => match.finalThirdManager.isActivated, "headed-shot corner offers Final Thirds before setup", 1200);
                 Assert.That(match.freeKickManager.isWaitingForKickerSelection, Is.False); yield return ForfeitLegacyFinalThirds();
+                AssertNativeRestartAvailability();
                 yield return Until(() => match.freeKickManager.isActivated && match.freeKickManager.isCornerKick && match.freeKickManager.isWaitingForKickerSelection,
                     "header corner reaches actual kicker selection after Final Thirds");
                 Assert.That(movement.isAvailable || ground.isAvailable || ftp.isAvailable || high.isAvailable || longBall.isAvailable || match.shotManager.isAvailable, Is.False);
