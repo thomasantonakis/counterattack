@@ -26,7 +26,9 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
 
     private void Refresh(bool force)
     {
-        bool shouldShow = movementPhaseManager != null && movementPhaseManager.isActivated;
+        bool shouldShow = movementPhaseManager != null
+            && movementPhaseManager.isActivated
+            && (movementPhaseManager.finalThirdManager == null || !movementPhaseManager.finalThirdManager.isActivated);
         int signature = shouldShow ? BuildSignature(movementPhaseManager.MovedTokenEntries) : 0;
         if (shouldShow)
         {
