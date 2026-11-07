@@ -203,8 +203,10 @@ public static class RoomLiveLogService
     private static bool TryResolveWritableActiveSavePath(out string filePath, out string message)
     {
         filePath = string.Empty;
-        ApplicationManager.EnsureInstanceExists();
-        filePath = ApplicationManager.Instance.GetLastSavedFilePath();
+        // Reading save context must never resurrect a destroyed application during
+        // MatchManager.OnDestroy / Play Mode shutdown.
+        var application = ApplicationManager.Instance;
+        filePath = application != null ? application.GetLastSavedFilePath() : string.Empty;
         if (string.IsNullOrWhiteSpace(filePath))
         {
             message = "No active save file is selected for this match.";

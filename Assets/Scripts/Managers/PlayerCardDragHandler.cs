@@ -12,7 +12,8 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     // Placeholder to keep the grid structure while dragging
     private GameObject placeholder;
     private DraftManager draftManager;
-    private float lastClickTime = 0f;
+    private float lastClickTime = float.NegativeInfinity;
+    private bool isDragging;
     private bool originalIgnoreLayout;
     private const float doubleClickThreshold = 0.25f;  // Max time between clicks for a double click
 
@@ -26,6 +27,9 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        // Room previews share the draft card prefab, but have no draft interactions.
+        if (draftManager == null || !draftManager.isActiveAndEnabled || canvasGroup == null || layoutElement == null) return;
+        isDragging = true;
         // Save original parent and position
         originalParent = transform.parent;
         originalPosition = transform.position;
@@ -62,6 +66,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (draftManager == null || !draftManager.isActiveAndEnabled) return;
         // Detect double-click
         if (Time.time - lastClickTime < doubleClickThreshold)
         {
@@ -74,13 +79,16 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     private void HandleDoubleClick(PlayerCard card)
     {
+        if (card == null || draftManager == null || !draftManager.isActiveAndEnabled) return;
         Debug.Log($"Double-click detected on {gameObject.name}");
 
         // Double-click is the "quick pick" interaction:
         // place this card into the next available slot for whichever team is currently drafting.
         string validRosterPanel = draftManager.GetCurrentTeamTurn() == "Home" ? "HomeRoster" : "AwayRoster";
         // Get the valid panel transform
-        Transform validPanel = GameObject.Find(validRosterPanel).transform;
+        GameObject panelObject = GameObject.Find(validRosterPanel);
+        if (panelObject == null) return;
+        Transform validPanel = panelObject.transform;
         // Find the next available slot in the valid roster
         PlayerSlotDropHandler nextAvailableSlot = draftManager.FindNextAvailableSlot(validPanel.name);
 
@@ -101,6 +109,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!isDragging) return;
         // Update the slot's position to follow the pointer, maintaining the offset
         RectTransformUtility.ScreenPointToWorldPointInRectangle(
             GetComponent<RectTransform>(),
@@ -113,6 +122,8 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!isDragging) return;
+        isDragging = false;
         // Reset transparency and raycast settings
         if (canvasGroup != null)
         {

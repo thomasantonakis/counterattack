@@ -2,8 +2,14 @@ using UnityEngine;
 using TMPro;  // For TextMeshPro
 using UnityEngine.UI;
 
-public class GoalkeeperCard : MonoBehaviour
+public class GoalkeeperCard : MonoBehaviour, UnityEngine.EventSystems.IPointerClickHandler
 {
+    public PlayerToken DisplayedToken { get; private set; }
+    public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        if (eventData.button == UnityEngine.EventSystems.PointerEventData.InputButton.Left && eventData.clickCount == 2)
+            RoomInspectionCard.Instance?.InspectPreview(DisplayedToken);
+    }
     public TextMeshProUGUI playerNameText;
     public TextMeshProUGUI countryText;
     public TextMeshProUGUI aerialValueText;
@@ -24,6 +30,7 @@ public class GoalkeeperCard : MonoBehaviour
     // Method to update the card with player data
     public void UpdatePlayerCard(Goalkeeper goalkeeper)
     {
+        DisplayedToken = null;
         assignedgoalkeeper = goalkeeper;  // Store the player data
         playerNameText.text = goalkeeper.Name;
         countryText.text = goalkeeper.Country;
@@ -39,6 +46,7 @@ public class GoalkeeperCard : MonoBehaviour
 
     public void UpdateFromToken(PlayerToken token, string secondaryText = "")
     {
+        DisplayedToken = token;
         if (token == null)
         {
             return;

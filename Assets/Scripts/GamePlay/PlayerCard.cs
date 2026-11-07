@@ -2,8 +2,14 @@ using UnityEngine;
 using TMPro;  // For TextMeshPro
 using UnityEngine.UI;
 
-public class PlayerCard : MonoBehaviour
+public class PlayerCard : MonoBehaviour, UnityEngine.EventSystems.IPointerClickHandler
 {
+    public PlayerToken DisplayedToken { get; private set; }
+    public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        if (eventData.button == UnityEngine.EventSystems.PointerEventData.InputButton.Left && eventData.clickCount == 2)
+            RoomInspectionCard.Instance?.InspectPreview(DisplayedToken);
+    }
     [Header("Dependencies")]
     public TextMeshProUGUI playerNameText;
     public TextMeshProUGUI countryText;
@@ -20,6 +26,7 @@ public class PlayerCard : MonoBehaviour
     // Method to update the card with player data
     public void UpdatePlayerCard(Player player)
     {
+        DisplayedToken = null;
         assignedPlayer = player;  // Store the player data
         playerNameText.text = player.Name;
         countryText.text = player.Country;
@@ -35,6 +42,7 @@ public class PlayerCard : MonoBehaviour
 
     public void UpdateFromToken(PlayerToken token, string secondaryText = "")
     {
+        DisplayedToken = token;
         if (token == null)
         {
             return;
