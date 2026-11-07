@@ -8,6 +8,55 @@ automatically restart the old migration or run full suites.
 
 ## Current wiki comparison: findings and confidence
 
+**Latest score-floor rule:** all attribute-based numeric scores floor the current
+injured attribute plus signed modifiers at zero before adding dice. Accepted
+jackpots remain 50, and natural-one misses/fouls are preserved. Shared resolution,
+probability and guidance code uses GameplayScore. GK injury now reduces Aerial,
+Saving and Handling as required by the existing all-attributes injury rule.
+The user confirmed that difficult-angle hexes remain in the calculation, with
+the combined shooting penalty capped at -2. This is resolved.
+Focused results are in the AttributeScoreFloor feature checklist.
+Final execution: 23 EditMode and 14 PlayMode cases passed, zero failures/skips;
+clean native compilation. This validates the dedicated feature scope only.
+
+**Outside-keeper follow-up:** keep the separate GK nomination and third panel row
+outside the box; only the chosen attribute changes to Heading 0. Do not count
+that keeper among the two outfield players. Zero initial heading receives no
+further distance penalty. The reported Select All failure was reproduced in both
+directions and corrected; 18 EditMode and 12 focused PlayMode cases passed.
+Artifacts and scope are recorded in GameplayRegressionMigration.
+
+**User decisions supersede the initial findings:** WIKI-003 keeps the current
+7-action cap with extra-time cap 3 open; WIKI-004 explicitly allows automatic
+jackpots on HP/LB accuracy and Ball Control; WIKI-005/006 follow the wiki's
+own-box GK discipline and mandatory-stoppage limits; WIKI-007 retains GK priority;
+WIKI-008 permits ordinary Heading 0 challenges/rushes outside own box. See
+RulesWikiAudit for the exact contracts and the ApprovedRuleDecisions feature
+checklist for executed results. Further gaps are deferred by user instruction.
+
+The approved batch now has clean live compilation, 15 EditMode cases passed and
+35 distinct PlayMode cases green after the final four-case fixture-timing retest.
+Native XML and exact counts are recorded in GameplayRegressionMigration and the
+feature checklist; these are focused results, not full-suite validation.
+
+**Source-review refresh at `dd87cbd` (2026-11-07):** pending actions and detailed
+evidence are now in [RulesWikiAudit.md](../RulesWikiAudit.md), WIKI-003–013.
+Six concrete differences await a game-versus-wiki decision: extra-time stoppage
+cap, STAR on non-duel accuracy/control checks, own-box goalkeeper card policy,
+no-card fouls by booked defenders, goalkeeper priority on tied defensive header
+scores, and Aerial used for attacking goalkeeper headers. Five further entries
+track ambiguous/missing flows: headed-pass landing interceptions, header back to
+hands, last-man foul detection, keeper return/pickup eligibility and conflicting
+keeper/distribution wording. None was runtime-reproduced in this review; no
+gameplay changes, compilation or tests were performed.
+
+The older findings table and migration evidence below remain historical context.
+The rule-by-rule comparison is still incomplete. Next action: resolve those
+discrepancies with the user, then implement and run focused tests only for the
+approved scope. Migration readiness/scorer coverage and legacy 034/038 retirement
+remain separate pending work. The prior no-new-defect statement describes the
+viewer/import batch, not the new source-review findings.
+
 The English source is pinned to `counterattackgame/wiki@e9c0f9fe0d575d61368f20cfd412bc9194ca2e71`.
 Advanced variants take precedence; reckless tackles are excluded. All ten pages
 and eight diagrams are imported, but the full behavioral comparison is unfinished.
@@ -19,7 +68,7 @@ See [RulesWikiAudit.md](../RulesWikiAudit.md) for chapter coverage and decisions
 | Advanced long-pass accuracy | LongBallManager.AccuracyThresholdFor uses 10 across opposite final thirds, 9 otherwise. | Matches the Advanced threshold. Does not establish all destination restrictions, scatter, GK moves or subsequent action availability. | Source-level match; entire Long Pass rule group remains unaudited. |
 | Draft variants | Wiki describes 1 GK + 15 outfielders and an online 2 GK + 14 variant. DraftManager uses configured squad size, two keeper slots and squadSize - 2 outfielders. | Proposed digital-edition clarification needs user confirmation. Do not silently add a new draft mode or remove configurable squad sizes. | Source inspection; full draft lifecycle and roster variants still need review. |
 
-No new gameplay-code defect has been established by a completed wiki audit.
+During the earlier viewer/import batch, no new gameplay-code defect was established by a completed wiki audit.
 In particular, the six migration fixes below were discovered earlier and should
 not be relabeled as findings from this wiki import. Keeper pickup timing, aerial
 challenge outcomes, action transitions and repeated Quick Guide rules are next
@@ -87,15 +136,18 @@ resolved it in favor of consistent own-goal attribution, as recorded below.
    This resolves the earlier extra Yaneva.goals=1 assertion in generated header
    branches02/03: its expectation was wrong. Review assists, scorer labels/keys,
    structured OwnGoalScored events and conceded-team reset for consistency.
-2. **Must a previously booked defender force taking a foul even if the next foul
-   receives no additional card?** Existing `dff745b` policy says yes. Legacy016
+2. **RESOLVED: an existing booking alone does not force a foul stoppage.**
+   The user confirmed stoppages only for straight red, second yellow or second
+   injury. The no-new-card forced-stop branch has been removed and real
+   advantage continuation is covered by ApprovedRuleDecisionsPlayModeTests.
+   Historical context: `dff745b` policy said yes. Legacy016
    expected Play On; dangerous tackles also impose at least yellow under
    `db459a4`. The original booked-defender board now correctly asserts second
    yellow/sending-off and forced restart. A variant with a genuinely non-booking
    first roll retains the intended Play On and later tackle/stat assertions.
-   No discipline code was changed during migration. Confirm the policy; revising
-   it would affect advantage, repeated fouls, penalties, forced substitutions and
-   movement continuation, not only016.
+   No discipline code was changed during the original migration. This approved
+   follow-up changes that policy and can affect advantage, repeated fouls,
+   penalties and movement continuation, not only016.
 3. **Is Save and Hold intended whenever a keeper recovers in their own box?**
    Earlier `bd4347bd` / `d6fb7218` changes route those recoveries to the keeper's
    distribution decision. Three old shooting branches expected the generic

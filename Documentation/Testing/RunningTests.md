@@ -1,5 +1,25 @@
 # Running gameplay regressions
 
+The shared score floor has dedicated fixtures `AttributeScoreFloorEditorTests`
+in `Assets/Editor/FeatureTests/AttributeScoreFloor/` and
+`AttributeScoreFloorPlayModeTests` in
+`Assets/Tests/PlayMode/Features/AttributeScoreFloor/`. They verify pre-roll
+clamping, injuries (including GK skills), snapshot/save/control entry points,
+probabilities, labels and jackpot/natural-one preservation. Run only these filters
+for the feature; its Verification.md records native results and broader user-run
+checks. Do not substitute historical approved-decision results for this batch.
+
+Approved wiki decisions have dedicated fixtures `ApprovedRuleDecisionsEditorTests`
+in `Assets/Editor/FeatureTests/ApprovedRuleDecisions/` and
+`ApprovedRuleDecisionsPlayModeTests` in
+`Assets/Tests/PlayMode/Features/ApprovedRuleDecisions/`. They cover HP/LB/control
+jackpots, keeper header attributes/rushes, own-box card policy and mandatory foul
+stoppages. Use the explicit fixture filters, not all tests. The feature's
+`Verification.md` records actual native results and broader user-run coverage.
+The outside-keeper nomination/zero-Heading follow-up uses PlayMode category
+`OutsideKeeperHeaders`, which selects the two new cases plus related keeper
+header, rush and jackpot-tie cases without unrelated foul or accuracy checks.
+
 Possession time has focused fixtures `PossessionTimeEditorTests` in
 `Assets/Editor/FeatureTests/PossessionTime/` and `PossessionTimePlayModeTests` in
 `Assets/Tests/PlayMode/Features/PossessionTime/`. Regulation credits actual live

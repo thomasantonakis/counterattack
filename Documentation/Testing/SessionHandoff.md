@@ -2,6 +2,61 @@
 
 ## Start here
 
+**Latest batch: AttributeScoreFloor.** Numeric scores use
+`max(current injured attribute + signed modifiers, 0) + dice` across gameplay,
+probabilities and guidance. Accepted jackpots stay 50; natural-one outcomes stay.
+GK injuries also reduce Aerial/Saving/Handling (previously omitted). Keep the
+user-confirmed shooting penalty cap -2, including difficult-angle hexes in the
+calculation. The cap decision is resolved; do not reopen it. Read
+`Assets/Editor/FeatureTests/AttributeScoreFloor/Verification.md` for current
+focused execution results; earlier counts below are historical.
+Final floor validation: **23/0/0 EditMode**, **14/0/0 PlayMode** at
+`Runs/20261107T194634274Z/results.xml` and
+`Runs/20261107T194704757Z/results.xml`. Native compilation flags are clear and
+the loaded MainMenu scene is clean, with Play Mode stopped. Broader shared-rule
+regressions are handed to the user; no full suites were executed.
+
+**Latest correction:** GK identity always retains the separate nomination in
+addition to two outfield defenders, including outside own box. Only the chosen
+attribute changes to Heading 0. Zero Heading receives no additional distance
+penalty. The earlier implementation's ordinary-player nomination budget was
+incorrect and has been corrected. The focused follow-up uses PlayMode category
+`OutsideKeeperHeaders`; see the feature checklist for native results.
+Final follow-up: **18/0/0 EditMode**, **12/0/0 focused PlayMode**, clean live
+compilation. Native XML: `Runs/20261107T151402292Z/results.xml` and
+`Runs/20261107T151429305Z/results.xml`. These supersede the older nomination
+semantics below; the rest of the initial approved batch was not re-executed.
+
+**Approved implementation batch:** the user has now decided WIKI-003–008; see
+the approved-decisions section of RulesWikiAudit. Accuracy (HP/LB) and Ball
+Control accept automatic jackpots; own-box GK card policy is no-card/yellow;
+booked/no-new-card fouls permit advantage; retain GK tie priority and current
+7-action cap (extra-time cap 3 remains open). Outside-own-box keepers may contest
+and rush using Heading 0, with ordinary headed-pass continuation, not a catch.
+Use final keeper position to select the attribute. Dedicated fixtures are
+ApprovedRuleDecisionsEditorTests and ApprovedRuleDecisionsPlayModeTests.
+Further gaps WIKI-009–013 are explicitly deferred until this batch is done.
+
+**Approved batch completed:** 15 dedicated EditMode cases passed; all 35 distinct
+PlayMode cases are green after a four-case prompt-timing fixture retest. Final
+evidence: `Runs/20261107T145108743Z/results.xml` (15/0/0),
+`Runs/20261107T145149138Z/results.xml` (31/4/0; assertion timing), and
+`Runs/20261107T145407375Z/results.xml` (4/0/0 retest). There was also a 35/0/0
+checkpoint before that prompt assertion. Do not sum the overlapping runs.
+Scripts compile cleanly. Bundled text and existing Rules prefab are aligned;
+Room/MainMenu layouts and live saves were untouched. Broader regression checks
+are handed to the user, not automatically run. The extra-time cap discussion stays
+open. Wait for the user before opening the deferred further-gap discussion.
+
+**Current review refresh (2026-11-07):** source review started from clean
+`dd87cbd`, four commits after the old `58f92ff` handoff. The current task is to
+refresh pending actions and report wiki-to-gameplay discrepancies. See the
+current-review section in [../RulesWikiAudit.md](../RulesWikiAudit.md):
+WIKI-003–008 record concrete source differences; WIKI-009–013 record ambiguous
+or missing-flow candidates. No gameplay correction is approved by this review.
+No Editor operation, compilation or test run was performed. The material below
+describes the earlier session unless explicitly refreshed.
+
 The user requested coherent commits and a push, then a fresh session to review
 whether gameplay or documentation is missing. This is a review handoff, not an
 instruction to resume the old migration or run full test suites automatically.
@@ -148,6 +203,16 @@ run predates those stronger assertions. Old whole-Room hashes are historical;
 use the scoped panel fingerprint for owned presentation fixtures.
 
 ## Fresh-session review order
+
+Current priority is to discuss the new audit findings and record each decision:
+extra-time action cap, non-duel STAR handling, own-box keeper leniency,
+booked-defender no-card stoppage, defensive header tie priority and attacking
+keeper header attributes. Then resolve headed-pass landing recovery, header back
+to keeper, last-man fouls and legal keeper pickup timing. Preserve the existing
+penalty play-on and defensive own-goal decisions.
+
+The full clause/diagram comparison remains incomplete. Keep old migration work
+separate; do not automatically resume it or start complete suites.
 
 1. Inspect current git status/log and the evidence above. Do not assume old
    “uncommitted” lists, full-suite counts or scene hashes describe the new tree.

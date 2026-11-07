@@ -1,5 +1,70 @@
 # Gameplay regression migration
 
+## Shared attribute score floor — 2026-11-07
+
+Numeric scores now use `max(current injured attribute + signed modifiers, 0) +
+dice`, via GameplayScore. Resolution, xStats/AI odds and UI guidance agree; accepted
+jackpots stay 50 and natural-one misses/fouls remain. GK injury reductions now
+include Aerial/Saving/Handling. Existing penalty amounts and the shooting -2 cap
+remain; the user confirmed inclusion of difficult-angle hexes and the cap at 2.
+
+| Focused filter | Passed | Failed | Skipped | Native XML under `TestResults/GameplayRegression/Runs/` |
+| --- | ---: | ---: | ---: | --- |
+| AttributeScoreFloorEditorTests | 23 | 0 | 0 | `20261107T194634274Z/results.xml` |
+| AttributeScoreFloorPlayModeTests | 14 | 0 | 0 | `20261107T194704757Z/results.xml` |
+
+Native Editor compilation flags are clean. Reproduction, initial fixture failures
+and corrections are retained in the dedicated feature Verification.md, including
+the GK injury defect. These are new focused results, not full-suite validation.
+Broader existing fixtures and complete EditMode/PlayMode checks are handed to the
+user. No legacy migration retirement or deferred wiki-gap work was resumed.
+
+## Outside-box keeper header correction — 2026-11-07
+
+The earlier implementation incorrectly counted an outside keeper as an outfielder.
+Keeper identity now retains the separate nomination and third panel row regardless
+of position. Only the ability changes: outside-own-box Heading 0 receives no further
+distance penalty. Actual rolls, panel guidance and projected AI attributes agree.
+Both attacking directions are reproduced with a real HP, rush commitment, Select
+All, three player rolls and a winning outside-keeper headed-pass continuation.
+
+| Filter | Passed | Failed | Skipped | Native XML under `TestResults/GameplayRegression/Runs/` |
+| --- | ---: | ---: | ---: | --- |
+| New nomination reproduction, before fix | 0 | 2 | 0 | `20261107T151011856Z/results.xml` |
+| New nomination cases, after fix | 2 | 0 | 0 | `20261107T151140321Z/results.xml` |
+| ApprovedRuleDecisionsEditorTests, final | 18 | 0 | 0 | `20261107T151402292Z/results.xml` |
+| OutsideKeeperHeaders PlayMode category, final | 12 | 0 | 0 | `20261107T151429305Z/results.xml` |
+
+Live compilation is clean. An intermediate 17/1/0 EditMode result was a rulebook
+prose-spacing serialization mismatch, corrected without relaxing the exact-text
+assertion. The feature checklist retains its artifact path. Runs overlap and must
+not be added as unique cases. No broad fixture or complete suite was executed.
+
+## Approved wiki decisions — 2026-11-07
+
+This is a separate approved rule-correction batch, not migration resumption.
+Contracts are recorded in RulesWikiAudit and the checklist at
+`Assets/Editor/FeatureTests/ApprovedRuleDecisions/Verification.md`.
+Compilation through the live Editor is clean. Only the dedicated feature filters
+were executed; no complete suite was started.
+
+| Filter / stage | Passed | Failed | Skipped | Native XML under `TestResults/GameplayRegression/Runs/` |
+| --- | ---: | ---: | ---: | --- |
+| ApprovedRuleDecisionsEditorTests, final | 15 | 0 | 0 | `20261107T145108743Z/results.xml` |
+| ApprovedRuleDecisionsPlayModeTests, first green checkpoint | 35 | 0 | 0 | `20261107T144818634Z/results.xml` |
+| ApprovedRuleDecisionsPlayModeTests, final prompt assertion follow-up | 31 | 4 | 0 | `20261107T145149138Z/results.xml` |
+| OwnBoxKeeperUsesNormalCards, corrected assertion timing | 4 | 0 | 0 | `20261107T145407375Z/results.xml` |
+
+The final four failures were a fixture assertion at token selection rather than
+the tackle-roll state where leniency guidance is displayed. Its expected text and
+gameplay/card assertions were retained. All 35 distinct PlayMode cases are green
+after that focused retest; do not add overlapping runs as unique cases. Initial
+reproductions and fixture corrections are recorded in the feature checklist.
+Shared discipline, aerial continuation and AI checks warrant broader user-run
+regressions; the checklist names exact paths/fixtures. Legacy 034/038 retirement,
+the earlier premature off-target readiness assertion and scorer-event coverage
+remain pending. Further wiki gaps are deferred by user instruction.
+
 ## Rules controls and Room layout correction — 2026-11-07
 
 User-reported follow-up: reading history now records manual scroll checkpoints;
