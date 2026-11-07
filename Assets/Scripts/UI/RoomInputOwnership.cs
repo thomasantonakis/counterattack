@@ -5,13 +5,14 @@ public static class RoomInputOwnership
 {
     public static bool IntroActive => RoomMatchIntro.Instance != null && RoomMatchIntro.Instance.IsHoldingMatch;
     public static bool CardOpen => RoomInspectionCard.Instance != null && RoomInspectionCard.Instance.IsOpen;
-    public static bool BlocksHover => IntroActive || CardOpen;
-    public static bool BlocksCamera => IntroActive;
-    public static bool ReservePauseEscape => IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true;
+    public static bool BlocksHover => IntroActive || CardOpen || RulesViewer.IsOpen;
+    public static bool BlocksCamera => IntroActive || RulesViewer.IsOpen;
+    public static bool ReservePauseEscape => IntroActive || RulesViewer.ReserveEscape || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true;
 
     public static bool ConsumeKey(KeyPressData key, bool physical, PlayerToken hovered)
     {
         if (key == null || key.isConsumed) return key?.isConsumed == true;
+        if (RulesViewer.IsOpen) { key.Consume(nameof(RulesViewer)); return true; }
         if (IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true)
         {
             if (key.key == KeyCode.Escape) RoomMatchIntro.Instance.Skip();

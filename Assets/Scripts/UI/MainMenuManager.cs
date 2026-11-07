@@ -27,7 +27,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void OpenRules()
     {
-        Debug.Log("Rules Opened!");
+        RulesViewer.OpenRules();
     }
 
     public void OpenShop()
