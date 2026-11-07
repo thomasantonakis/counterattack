@@ -14,7 +14,7 @@ Wait for an active run to finish before editing scripts: a domain reload can int
 PlayMode execution. Native cases build and clean up their own deterministic boards;
 they do not use a mutable live save as their fixture.
 
-Current discovered suite: **748 EditMode + 362 PlayMode = 1,110 tests**. See
+Historical discovery before Room presentation additions: **748 EditMode + 362 PlayMode = 1,110 tests**. See
 [GameplayRegressionMigration.md](GameplayRegressionMigration.md) for actual completed
 run counts; discovery and compilation are not test results.
 
@@ -22,6 +22,16 @@ The CLI/Pipeline drives Unity's same TestRunner API. The Test Runner window show
 individual tests and failures; automation additionally writes durable NUnit XML,
 per-case progress and the current case under `TestResults/GameplayRegression/Runs/`.
 An async CLI response saying `running` does not mean the suite passed.
+
+Room presentation work on 2026-11-07 adds native fixtures
+`RoomPresentationEditorTests` and `RoomPresentationPlayModeTests`; the discovery
+count above predates these additions. Their view tests require the edit-mode export
+from `RoomPresentationEditorTools.Author()`. See
+[RoomPresentationImplementation.md](RoomPresentationImplementation.md) for the
+actual focused results and frame captures. The user explicitly reserved the complete
+EditMode/PlayMode suites for their own execution; Codex ran only the focused Room
+fixtures for this change (13 EditMode and 22 PlayMode cases, including final
+preview double-click and shutdown follow-ups).
 
 The retained historical `GameTestScenarioRunner` sequence was a different system:
 ordinary Play ran a serial scenario script and logged its assertions. Its replacements

@@ -1,5 +1,13 @@
 # Gameplay regression migration
 
+2026-11-07 Room presentation follow-up: scene/prefab authoring and live compilation
+completed. Focused native Room checks passed: 13 EditMode and 22 PlayMode (including
+preview double-click and shutdown follow-ups, with a corrected fixture rerun), with
+25 captured frames. The user explicitly requested that Codex leave the full suites
+for them; no full suites were run for this task. See
+[RoomPresentationImplementation.md](RoomPresentationImplementation.md) for artifacts
+and the final visual follow-up.
+
 Updated 2026-11-06. **Handoff requested; do not run full suites again.** Read
 [SessionHandoff.md](SessionHandoff.md) for the current pending state. Original objective: migrate the full legacy suite and execute every replacement. Prioritize the user's existing scenarios; discretionary new unit coverage waits until all legacy scenarios are migrated. Compilation and discovery do not count as passing tests.
 
