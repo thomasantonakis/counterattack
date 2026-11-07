@@ -13,6 +13,9 @@ public class CameraController : MonoBehaviour
     public GameInputManager gameInputManager;
     private Vector3 dragAnchorWorld;
     private bool hasDragAnchor;
+    private bool tracksPointerDrag;
+    private bool pointerDragThresholdPassed;
+    private Vector2 pointerDragStart;
     private bool isRotating = false;
     // Arrays to store position and rotation for 4 camera presets
     private Vector3[] presetPositions = new Vector3[4];
@@ -69,11 +72,11 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         ApplyProjectionShift(projectionShift);
-        if (RoomInputOwnership.BlocksCamera || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
-            || MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        if (IsCameraInputBlocked)
         {
             isRotating = false;
             hasDragAnchor = false;
+            tracksPointerDrag = false;
             return;
         }
 
@@ -87,6 +90,11 @@ public class CameraController : MonoBehaviour
         // HandlePresetKeys();
     }
 
+    private static bool IsCameraInputBlocked => RoomInputOwnership.BlocksCamera
+        || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
+            && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
+        || MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked;
+
     private void OnEnable()
     {
         // GameInputManager.OnClick += OnClickReceived;
@@ -97,6 +105,7 @@ public class CameraController : MonoBehaviour
     {
         // GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+        tracksPointerDrag = hasDragAnchor = isRotating = false;
         GetComponent<Camera>()?.ResetProjectionMatrix();
     }
 
@@ -255,26 +264,43 @@ public class CameraController : MonoBehaviour
 
     void HandleMouseDrag()
     {
-        if (Input.GetMouseButtonDown(0) && !isRotating)
+        HandlePointerDrag(Input.mousePosition, Input.GetMouseButtonDown(0),
+            Input.GetMouseButton(0), Input.GetMouseButtonUp(0), GameInputManager.IsCameraPointerOverUi);
+    }
+
+    // Camera gestures have their own lifetime: dice panels intentionally suppress
+    // GameInputManager's click/drag state while awaiting gameplay roll input.
+    private void HandlePointerDrag(Vector2 position, bool pressed, bool held, bool released, bool pointerOverUi)
+    {
+        if (IsCameraInputBlocked)
         {
-            hasDragAnchor = TryGetPitchPlanePoint(Input.mousePosition, out dragAnchorWorld);
+            tracksPointerDrag = hasDragAnchor = false;
+            return;
+        }
+        if (pressed)
+        {
+            pointerDragThresholdPassed = false;
+            pointerDragStart = position;
+            tracksPointerDrag = !isRotating && !pointerOverUi;
+            hasDragAnchor = tracksPointerDrag && TryGetPitchPlanePoint(position, out dragAnchorWorld);
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (released || !held)
         {
-            hasDragAnchor = false;
+            tracksPointerDrag = hasDragAnchor = false;
+            return;
         }
 
-        // Pan only after GameInputManager has classified the left mouse as a drag,
-        // so simple clicks on tokens/hexes do not move the camera.
-        if (Input.GetMouseButton(0) && !isRotating && gameInputManager != null && gameInputManager.isDragging)
+        float threshold = gameInputManager != null ? gameInputManager.dragThreshold : 10f;
+        pointerDragThresholdPassed |= tracksPointerDrag && Vector2.Distance(pointerDragStart, position) > threshold;
+        if (tracksPointerDrag && !isRotating && pointerDragThresholdPassed)
         {
             if (!hasDragAnchor)
             {
-                hasDragAnchor = TryGetPitchPlanePoint(Input.mousePosition, out dragAnchorWorld);
+                hasDragAnchor = TryGetPitchPlanePoint(position, out dragAnchorWorld);
             }
 
-            if (hasDragAnchor && TryGetPitchPlanePoint(Input.mousePosition, out Vector3 currentMouseWorld))
+            if (hasDragAnchor && TryGetPitchPlanePoint(position, out Vector3 currentMouseWorld))
             {
                 Vector3 worldDelta = dragAnchorWorld - currentMouseWorld;
                 worldDelta.y = 0f;
@@ -288,20 +314,33 @@ public class CameraController : MonoBehaviour
 
     void HandleRotation()
     {
-        if (Input.GetMouseButtonDown(1)) isRotating = true;
+        HandlePointerRotation(new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y")),
+            Input.GetMouseButtonDown(1), Input.GetMouseButton(1), Input.GetMouseButtonUp(1), Time.unscaledDeltaTime);
+    }
 
-        if (Input.GetMouseButton(1))
+    private void HandlePointerRotation(Vector2 delta, bool pressed, bool held, bool released, float elapsed)
+    {
+        if (IsCameraInputBlocked)
+        {
+            isRotating = false;
+            return;
+        }
+        if (pressed)
+        {
+            isRotating = true;
+            tracksPointerDrag = hasDragAnchor = false;
+        }
+        if (released || !held) { isRotating = false; return; }
+        if (isRotating)
         {
             adaptivePreset = 0;
-            float rotX = -Input.GetAxis("Mouse X") * rotationSpeed * 0.2f * Time.deltaTime;
-            float rotY = Input.GetAxis("Mouse Y") * rotationSpeed * 0.2f * Time.deltaTime;
+            float rotX = -delta.x * rotationSpeed * 0.2f * elapsed;
+            float rotY = delta.y * rotationSpeed * 0.2f * elapsed;
 
             orbitYaw += rotX;
             orbitPitch = Mathf.Clamp(orbitPitch - rotY, minPitch, maxPitch);
             ApplyOrbitTransform();
         }
-
-        if (Input.GetMouseButtonUp(1)) isRotating = false;
     }
 
     // TODO: restrict camera position to not drop under the table

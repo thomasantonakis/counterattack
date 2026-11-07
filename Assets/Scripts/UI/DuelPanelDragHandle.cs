@@ -8,7 +8,7 @@ public sealed class DuelPanelDragHandle : MonoBehaviour, IBeginDragHandler, IDra
 
     public void OnBeginDrag(PointerEventData data)
     {
-        if (owner == null || !owner.IsOpen) return;
+        if (data.button != PointerEventData.InputButton.Left || owner == null || !owner.IsOpen) return;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             owner.Panel.parent as RectTransform, data.position, data.pressEventCamera, out Vector2 point))
             pointerOffset = owner.Panel.anchoredPosition - point;
@@ -16,7 +16,7 @@ public sealed class DuelPanelDragHandle : MonoBehaviour, IBeginDragHandler, IDra
 
     public void OnDrag(PointerEventData data)
     {
-        if (owner == null || !owner.IsOpen) return;
+        if (data.button != PointerEventData.InputButton.Left || owner == null || !owner.IsOpen) return;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             owner.Panel.parent as RectTransform, data.position, data.pressEventCamera, out Vector2 point))
             owner.MovePanel(point + pointerOffset);
@@ -24,6 +24,6 @@ public sealed class DuelPanelDragHandle : MonoBehaviour, IBeginDragHandler, IDra
 
     public void OnEndDrag(PointerEventData data)
     {
-        if (owner != null && owner.IsOpen) owner.MovePanel(owner.Panel.anchoredPosition);
+        if (data.button == PointerEventData.InputButton.Left && owner != null && owner.IsOpen) owner.MovePanel(owner.Panel.anchoredPosition);
     }
 }

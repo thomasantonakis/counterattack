@@ -293,6 +293,7 @@ public class GameInputManager : MonoBehaviour
     public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = token;
     public PlayerToken InspectionHoverToken => lineupHoverToken ?? hoveredToken;
     public static bool IsPresentationModalActive => IsModalUiActive() || IsDiceRollModalVisible;
+    public static bool IsCameraPointerOverUi => IsPointerOverUi(previewOnlyForResolution: IsDiceRollModalVisible);
 
     private void OnDisable()
     {
