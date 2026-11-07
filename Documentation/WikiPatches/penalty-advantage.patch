@@ -1,0 +1,12 @@
+diff --git a/en/movement_phase.md b/en/movement_phase.md
+--- a/en/movement_phase.md
++++ b/en/movement_phase.md
+@@ -40,7 +40,7 @@
+ ## Foul
+ 
+-If your opponent rolls a 1 when making a tackle or a steal then a foul has been committed. Roll the dice to check for an injury (see below). You now have two choices: take the free kick or continue play. You cannot choose to not take a penalty kick.
++If your opponent rolls a 1 when making a tackle or a steal then a foul has been committed. Roll the dice to check for an injury (see below). You now have two choices: take the free kick or continue play. If the foul is inside the penalty area, you may take the penalty kick or play on. Play must stop if the foul requires a sending-off or a mandatory substitution.
+ 
+ Even if you choose to continue play, you still have to roll the dice to determine whether your player has been injured, and your opponent still has to roll the dice to check if the defender is booked. If you decide to stop play for a free kick/penalty, refer to Set Pieces.
+ 
+ ## To check for an injury
