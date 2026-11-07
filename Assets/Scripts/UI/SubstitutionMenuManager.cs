@@ -224,21 +224,11 @@ public class SubstitutionMenuManager : MonoBehaviour
             return;
         }
 
-        Transform parent = pausePanel.transform.parent != null
-            ? pausePanel.transform.parent
-            : pausePanel.transform;
-
-        substitutionView = parent.GetComponentsInChildren<SubstitutionMenuView>(true)
-            .FirstOrDefault(view => view != null && view.name == "SubstitutionPanel");
-        if (substitutionView == null)
-        {
-            substitutionView = FindObjectsByType<SubstitutionMenuView>(FindObjectsInactive.Include)
-                .FirstOrDefault(view => view != null && view.name == "SubstitutionPanel");
-        }
+        substitutionView = ResolveScenePanel(pausePanel.scene);
 
         if (substitutionView == null)
         {
-            Debug.LogError("[SubstitutionPanel] Missing designer-owned SubstitutionPanel under the scene Canvas.");
+            Debug.LogError("[SubstitutionPanel] Missing designer-owned MainCanvas/SubstitutionPanel.");
             return;
         }
 
@@ -251,14 +241,16 @@ public class SubstitutionMenuManager : MonoBehaviour
             return;
         }
 
-        if (substitutionPanel.transform.parent != parent)
-        {
-            substitutionPanel.transform.SetParent(parent, false);
-        }
-
         GameplayInputConsumer.Ensure(substitutionPanel, blocksGameplayWhileActive: true);
         WirePanelButtons();
         substitutionPanel.SetActive(false);
+    }
+
+    private static SubstitutionMenuView ResolveScenePanel(UnityEngine.SceneManagement.Scene scene)
+    {
+        GameObject canvas = scene.GetRootGameObjects()
+            .FirstOrDefault(candidate => candidate.name == "MainCanvas" && candidate.GetComponent<Canvas>() != null);
+        return canvas != null ? canvas.transform.Find("SubstitutionPanel")?.GetComponent<SubstitutionMenuView>() : null;
     }
 
     private void WirePanelButtons()

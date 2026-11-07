@@ -13,8 +13,8 @@ public static class EndGamePanelPrefabEditorTools
     private const string PrefabPath = "Assets/Resources/UI/EndGamePanel.prefab";
     private const string SceneInstanceName = "EndGamePanel";
     private const string RoomScenePath = "Assets/Scenes/Room.unity";
-    private const float PanelWidth = 860f;
-    private const float PanelHeight = 720f;
+    private const float PanelWidth = 1400f;
+    private const float PanelHeight = 1240f;
     private const float RecapHorizontalPadding = 34f;
     private const int StatsRowCount = 21;
     private static readonly string[] StatRowTitles =
@@ -211,14 +211,13 @@ public static class EndGamePanelPrefabEditorTools
             return;
         }
 
-        Canvas canvas = ResolveMainCanvas();
+        Canvas canvas = ResolveMainCanvas(SceneManager.GetActiveScene());
         if (canvas == null)
         {
             return;
         }
 
-        EndGamePanelManager existing = canvas.GetComponentsInChildren<EndGamePanelManager>(true)
-            .FirstOrDefault(manager => manager != null && (manager.name == SceneInstanceName || manager.name == "EndGamePanelManager"));
+        EndGamePanelManager existing = canvas.transform.Find(SceneInstanceName)?.GetComponent<EndGamePanelManager>();
         if (existing != null)
         {
             existing.gameObject.SetActive(false);
@@ -393,19 +392,11 @@ public static class EndGamePanelPrefabEditorTools
         return parent.Cast<Transform>().Count(child => child.GetComponent<TMP_Text>() != null);
     }
 
-    private static Canvas ResolveMainCanvas()
+    private static Canvas ResolveMainCanvas(Scene scene)
     {
-        Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
-        Canvas namedCanvas = canvases.FirstOrDefault(candidate => candidate != null && candidate.name == "Canvas");
-        if (namedCanvas != null)
-        {
-            return namedCanvas;
-        }
-
-        return canvases.FirstOrDefault(candidate =>
-            candidate != null
-            && candidate.isRootCanvas
-            && candidate.name != "HoveredTokenNameCanvas");
+        GameObject root = scene.GetRootGameObjects()
+            .FirstOrDefault(candidate => candidate.name == "MainCanvas" && candidate.GetComponent<Canvas>() != null);
+        return root != null ? root.GetComponent<Canvas>() : null;
     }
 
     private static GameObject CreateRect(string name, Transform parent, params System.Type[] components)

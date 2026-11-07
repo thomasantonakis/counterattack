@@ -132,13 +132,12 @@ public class EndGamePanelManager : MonoBehaviour
 
     private static EndGamePanelManager ResolveExisting(bool logIfMissing)
     {
-        EndGamePanelManager manager = FindObjectsByType<EndGamePanelManager>(FindObjectsInactive.Include)
-            .FirstOrDefault();
+        EndGamePanelManager manager = ResolveInScene(SceneManager.GetActiveScene());
         if (manager == null)
         {
             if (logIfMissing)
             {
-                Debug.LogError("[EndGamePanel] Missing designer-owned EndGamePanelManager under the scene Canvas. Use Tools/Counter Attack/Ensure End Game Panel In Scene.");
+                Debug.LogError("[EndGamePanel] Missing designer-owned MainCanvas/EndGamePanel. Use Tools/Counter Attack/Ensure End Game Panel In Scene.");
             }
 
             return null;
@@ -146,6 +145,17 @@ public class EndGamePanelManager : MonoBehaviour
 
         manager.EnsurePanelReferences();
         return manager;
+    }
+
+    private static EndGamePanelManager ResolveInScene(Scene scene)
+    {
+        // Other canvases must never supply the match recap, even if an old copy
+        // of the panel remains in a scene or another scene is loaded additively.
+        GameObject canvas = scene.GetRootGameObjects()
+            .FirstOrDefault(candidate => candidate.name == "MainCanvas" && candidate.GetComponent<Canvas>() != null);
+        return canvas != null
+            ? canvas.transform.Find("EndGamePanel")?.GetComponent<EndGamePanelManager>()
+            : null;
     }
 
     private void Awake()

@@ -93,14 +93,13 @@ namespace CounterAttack.Editor
                 return;
             }
 
-            Canvas canvas = ResolveMainCanvas();
+            Canvas canvas = ResolveMainCanvas(SceneManager.GetActiveScene());
             if (canvas == null)
             {
                 return;
             }
 
-            SubstitutionMenuView existing = canvas.GetComponentsInChildren<SubstitutionMenuView>(true)
-                .FirstOrDefault(view => view != null && view.name == SceneInstanceName);
+            SubstitutionMenuView existing = canvas.transform.Find(SceneInstanceName)?.GetComponent<SubstitutionMenuView>();
             if (existing != null && !existing.HasRequiredReferences())
             {
                 Object.DestroyImmediate(existing.gameObject);
@@ -631,19 +630,11 @@ namespace CounterAttack.Editor
             return view == null || !view.HasRequiredReferences();
         }
 
-        private static Canvas ResolveMainCanvas()
+        private static Canvas ResolveMainCanvas(Scene scene)
         {
-            Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
-            Canvas namedCanvas = canvases.FirstOrDefault(candidate => candidate != null && candidate.name == "Canvas");
-            if (namedCanvas != null)
-            {
-                return namedCanvas;
-            }
-
-            return canvases.FirstOrDefault(candidate =>
-                candidate != null
-                && candidate.isRootCanvas
-                && candidate.name != "HoveredTokenNameCanvas");
+            GameObject root = scene.GetRootGameObjects()
+                .FirstOrDefault(candidate => candidate.name == "MainCanvas" && candidate.GetComponent<Canvas>() != null);
+            return root != null ? root.GetComponent<Canvas>() : null;
         }
 
         private static void UnpackIfPrefabInstance(GameObject instance)
