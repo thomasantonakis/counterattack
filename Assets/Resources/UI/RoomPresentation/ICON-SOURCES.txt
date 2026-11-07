@@ -1,0 +1,5 @@
+SoccerBoot.png: Material Design Icons shoe-cleat.
+HeaderBust.png: Material Design Icons account.
+Source: https://github.com/Templarian/MaterialDesign/tree/master/svg
+License: Apache License 2.0 (see MDI-LICENSE.txt).
+Rasterized to white transparent PNG at 256px for weather tinting.

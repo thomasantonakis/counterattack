@@ -147,6 +147,9 @@ public class MovementPhaseManager : MonoBehaviour
     private PlayerToken gkWallDiveGoalkeeper = null;
     private readonly HashSet<HexCell> gkWallDiveOfferedHexes = new();
     public IReadOnlyList<MovementPhaseMovedTokenEntry> MovedTokenEntries => movedTokenEntries;
+    // Transient presentation only; deliberately excluded from match saves.
+    public bool AttackingMovementForfeited { get; private set; }
+    public bool DefensiveMovementForfeited { get; private set; }
     private List<HexCell> defenderHexesNearBall = new List<HexCell>();  // Defenders near the ball
     private readonly Dictionary<HexCell, bool> movementThreatByHex = new();
     private readonly HashSet<HexCell> heldReachOverlayHexes = new();
@@ -193,7 +196,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void Update()
     {
-        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        if (RoomInputOwnership.BlocksHover || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked))
         {
             if (showAttackerReachOverlay || showDefenderReachOverlay || showSafeDribblerReachOverlay)
             {
@@ -2651,6 +2654,7 @@ public class MovementPhaseManager : MonoBehaviour
             Debug.Log($"No more defenders wish to move. Attack gets 2f2 move.");
             defendersMoved = maxDefenderMoves-1;
             AdvanceMovementPhase();  // Reset the movement phase
+            DefensiveMovementForfeited |= !isMovementPhaseDef && isMovementPhase2f2;
             return;
         }
         if (isMovementPhaseAttack)
@@ -2668,6 +2672,7 @@ public class MovementPhaseManager : MonoBehaviour
                 Debug.Log($"No more Attackers wish to move. Defence's turn to move up to 5 tokens.");
                 attackersMoved = maxAttackerMoves-1;
                 AdvanceMovementPhase();  // Reset the movement phase
+                AttackingMovementForfeited |= !isMovementPhaseAttack && isMovementPhaseDef;
             }
             return;
         }
@@ -4000,6 +4005,8 @@ public class MovementPhaseManager : MonoBehaviour
         lastDuelDribbleProbability = 1f;
         movedTokens.Clear();  // Reset the list of moved tokens
         movedTokenEntries.Clear();
+        AttackingMovementForfeited = false;
+        DefensiveMovementForfeited = false;
         eligibleDefenders.Clear();
         nutmeggableDefenders.Clear();
         defendersTriedToIntercept.Clear();

@@ -14,6 +14,14 @@ public class ApplicationManager : MonoBehaviour
     public bool HasExplicitSaveContext { get; private set; }
     public string SelectedRoomGameMode { get; private set; } = HotSeatGameMode;
     public bool UseRegularFormationOnNextRoomLoad { get; private set; }
+    private bool playIntroOnNextRoomLoad;
+    public void PrepareDraftRoomIntro() => playIntroOnNextRoomLoad = true;
+    public bool ConsumeDraftRoomIntro()
+    {
+        bool requested = playIntroOnNextRoomLoad;
+        playIntroOnNextRoomLoad = false;
+        return requested;
+    }
 
     void Awake()
     {
@@ -75,6 +83,7 @@ public class ApplicationManager : MonoBehaviour
             return;
         }
 
+        playIntroOnNextRoomLoad = false;
         LastSavedFileName = filePath;
         HasExplicitSaveContext = true;
     }

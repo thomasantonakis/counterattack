@@ -291,6 +291,8 @@ public class GameInputManager : MonoBehaviour
     private void LateUpdate() => UpdateHoverNameLabel();
 
     public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = token;
+    public PlayerToken InspectionHoverToken => lineupHoverToken ?? hoveredToken;
+    public static bool IsPresentationModalActive => IsModalUiActive() || IsDiceRollModalVisible;
 
     private void OnDisable()
     {
@@ -300,6 +302,11 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
+        if (RoomInputOwnership.IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true)
+        {
+            ClearHover(); isDragging = false; suppressMouseClickUntilReleased = true;
+            HandleKeyPresses(); return;
+        }
         if (IsDiceRollModalVisible)
         {
             // Read-only token inspection remains available; selection and gameplay hover stay blocked.
@@ -327,6 +334,12 @@ public class GameInputManager : MonoBehaviour
             return;
         }
 
+        if (RoomInputOwnership.CardOpen)
+        {
+            DetectInspectionDrag();
+            HandleKeyPresses(); return;
+        }
+
         if (ShouldSuppressMouseInput())
         {
             ClearHover();
@@ -338,6 +351,14 @@ public class GameInputManager : MonoBehaviour
         HandleMouseHover();
         DetectMouseDrag();     // Drag overrides click
         HandleKeyPresses();
+    }
+
+    private void DetectInspectionDrag()
+    {
+        if (Input.GetMouseButtonDown(0)) mouseDownPosition = Input.mousePosition;
+        if (Input.GetMouseButton(0) && Vector3.Distance(mouseDownPosition, Input.mousePosition) > dragThreshold) isDragging = true;
+        if (Input.GetMouseButtonUp(0)) isDragging = false;
+        suppressMouseClickUntilReleased = true;
     }
 
     private bool ShouldSuppressMouseInput()
@@ -725,7 +746,9 @@ public class GameInputManager : MonoBehaviour
             try
             {
                 data.expectedByHomeTeam = inputTeam;
-                if (!CoinTossPanelController.ConsumeRoomKey(data) && !TryHandleModalCameraPreset(data) && !HeaderChallengePanelController.ConsumeKey(data) && !StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)) OnKeyPress?.Invoke(data);
+                if (RoomInputOwnership.IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true) RoomInputOwnership.ConsumeKey(data, true, InspectionHoverToken);
+                else if (!CoinTossPanelController.ConsumeRoomKey(data) && !TryHandleModalCameraPreset(data) && !HeaderChallengePanelController.ConsumeKey(data) && !StoppageActionsPanelController.ConsumeKey(data) && !DuelResolutionPanelController.ConsumeKey(data)
+                    && !RoomInputOwnership.ConsumeKey(data, true, InspectionHoverToken)) OnKeyPress?.Invoke(data);
             }
             finally
             {
@@ -1199,7 +1222,8 @@ public class GameInputManager : MonoBehaviour
         try
         {
             keyData.expectedByHomeTeam = inputTeam;
-            if (!CoinTossPanelController.ConsumeRoomKey(keyData) && !TryHandleModalCameraPreset(keyData) && !HeaderChallengePanelController.ConsumeKey(keyData) && !StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)) OnKeyPress?.Invoke(keyData);
+            if (!CoinTossPanelController.ConsumeRoomKey(keyData) && !TryHandleModalCameraPreset(keyData) && !HeaderChallengePanelController.ConsumeKey(keyData) && !StoppageActionsPanelController.ConsumeKey(keyData) && !DuelResolutionPanelController.ConsumeKey(keyData)
+                && !RoomInputOwnership.ConsumeKey(keyData, false, InspectionHoverToken)) OnKeyPress?.Invoke(keyData);
         }
         finally
         {

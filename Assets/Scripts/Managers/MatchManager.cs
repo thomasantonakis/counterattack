@@ -1288,7 +1288,7 @@ public class MatchManager : MonoBehaviour
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
     public int CurrentHalf => currentHalf;
     public bool IsPauseMenuOpen => isPauseMenuOpen;
-    public bool IsGameplayInputBlocked => isPauseMenuOpen;
+    public bool IsGameplayInputBlocked => isPauseMenuOpen || RoomInputOwnership.IntroActive;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
     public bool IsStopPlayRestartPending => pendingStopPlayRestart != PendingStopPlayRestartKind.None;
@@ -2262,8 +2262,8 @@ public class MatchManager : MonoBehaviour
     {
         if (!force && !liveLogDirty)
         {
-            ApplicationManager.EnsureInstanceExists();
-            savedPath = ApplicationManager.Instance.GetLastSavedFilePath();
+            var application = ApplicationManager.Instance;
+            savedPath = application != null ? application.GetLastSavedFilePath() : string.Empty;
             message = "Live log is already up to date.";
             return true;
         }
@@ -4095,6 +4095,7 @@ public class MatchManager : MonoBehaviour
             && !isMatchComplete
             && !isHalfTimeFlowRunning
             && !isPauseMenuOpen
+            && !RoomInputOwnership.IntroActive
             && !CoinTossPanelController.IsRoomVisible
             && !HeaderChallengePanelController.IsMatchClockHeld
             && !DuelResolutionPanelController.IsMatchClockHeld
@@ -7058,8 +7059,8 @@ public class MatchManager : MonoBehaviour
                 nameof(MatchManager),
                 RoomActionType.Confirm,
                 RoomDecisionStep.Confirm,
-                "Space",
-                "Press [Space] to start the match");
+                "Enter",
+                "Press [Enter] to confirm kickoff setup");
         }
 
         if (currentState == GameState.GoalKick

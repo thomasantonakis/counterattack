@@ -25,6 +25,16 @@ public class CameraController : MonoBehaviour
     private HexGrid hexGrid;
     private bool hasPitchBounds;
     private Bounds pitchBounds;
+    [Header("Room authored framing")]
+    [SerializeField] private RoomCameraEnvelope safeEnvelope;
+    [SerializeField] private RectTransform sidePanel;
+    [SerializeField, Range(0f, 0.15f)] private float framingMargin = 0.035f;
+    [SerializeField, Min(0.01f)] private float framingResponse = 8f;
+    private readonly bool[] customPresets = new bool[4];
+    private readonly float[] presetProjectionShifts = new float[4];
+    private float projectionShift;
+    private int adaptivePreset;
+    public bool IsReady { get; private set; }
 
     void Start()
     {
@@ -40,11 +50,11 @@ public class CameraController : MonoBehaviour
         presetPositions[1] = new Vector3(0f, 60f, 0f);  // Slot 2
         presetRotations[1] = Quaternion.Euler(90f, 0f, 0f);  // Slot 2
 
-        presetPositions[2] = new Vector3(-4f, 33f, -5f);  // Slot 3
-        presetRotations[2] = Quaternion.Euler(90f, 0f, 0f);  // Slot 3
+        presetPositions[2] = new Vector3(-12f, 26f, -11f);
+        presetRotations[2] = Quaternion.LookRotation(-presetPositions[2], Vector3.up);
 
-        presetPositions[3] = new Vector3(8f, 12f, -4f);  // Slot 4
-        presetRotations[3] = Quaternion.Euler(55f, -60f, 0f);  // Slot 4
+        presetPositions[3] = new Vector3(-13f, 7f, -8f);
+        presetRotations[3] = Quaternion.LookRotation(new Vector3(4f, 0f, 0f) - presetPositions[3], Vector3.up);
 
         for (int i = 0; i < presetPivots.Length; i++)
         {
@@ -53,11 +63,14 @@ public class CameraController : MonoBehaviour
 
         // Set the initial camera position to Slot 1
         SetCameraToPreset(1);
+        IsReady = true;
     }
 
     void Update()
     {
-        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        ApplyProjectionShift(projectionShift);
+        if (RoomInputOwnership.BlocksCamera || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
+            || MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
         {
             isRotating = false;
             hasDragAnchor = false;
@@ -65,6 +78,12 @@ public class CameraController : MonoBehaviour
         }
 
         HandleCameraInput();
+        if (adaptivePreset > 0 && !customPresets[adaptivePreset - 1])
+        {
+            GetAdaptivePresetPose(adaptivePreset, out Vector3 position, out Quaternion rotation);
+            float t = 1f - Mathf.Exp(-framingResponse * Time.unscaledDeltaTime);
+            ApplyPresentationPose(Vector3.Lerp(transform.position, position, t), Quaternion.Slerp(transform.rotation, rotation, t), Mathf.Lerp(projectionShift, GetAdaptiveProjectionShift(), t));
+        }
         // HandlePresetKeys();
     }
 
@@ -78,6 +97,7 @@ public class CameraController : MonoBehaviour
     {
         // GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
+        GetComponent<Camera>()?.ResetProjectionMatrix();
     }
 
     public void HandleCameraInput()
@@ -146,10 +166,18 @@ public class CameraController : MonoBehaviour
             || key == KeyCode.Minus;
     }
 
-    void SetCameraToPreset(int presetIndex)
+    public void SetCameraToPreset(int presetIndex)
     {
         if (presetIndex < 1 || presetIndex > 4) return;  // Safety check
+        adaptivePreset = presetIndex <= 2 && !customPresets[presetIndex - 1] ? presetIndex : 0;
+        if (adaptivePreset > 0)
+        {
+            GetAdaptivePresetPose(presetIndex, out Vector3 position, out Quaternion rotation);
+            ApplyPresentationPose(position, rotation, GetAdaptiveProjectionShift());
+            return;
+        }
         orbitPivot = ClampOrbitPivotToPitch(presetPivots[presetIndex - 1]);
+        ApplyProjectionShift(presetProjectionShifts[presetIndex - 1]);
         transform.position = presetPositions[presetIndex - 1];
         transform.rotation = presetRotations[presetIndex - 1];
         SyncOrbitStateFromTransform();
@@ -162,6 +190,9 @@ public class CameraController : MonoBehaviour
         presetPositions[presetIndex - 1] = transform.position;
         presetRotations[presetIndex - 1] = transform.rotation;
         presetPivots[presetIndex - 1] = orbitPivot;
+        presetProjectionShifts[presetIndex - 1] = projectionShift;
+        customPresets[presetIndex - 1] = true;
+        adaptivePreset = 0;
         Debug.Log($"Saved camera to preset {presetIndex}");
     }
 
@@ -208,8 +239,18 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        orbitDistance = Mathf.Clamp(orbitDistance - zoomDelta, minOrbitDistance, maxOrbitDistance);
-        ApplyOrbitTransform();
+        ZoomBy(zoomDelta);
+    }
+
+    public void ZoomBy(float amount)
+    {
+        adaptivePreset = 0;
+        float distance = Mathf.Clamp(orbitDistance - amount, minOrbitDistance, maxOrbitDistance);
+        Vector3 offset = transform.position - orbitPivot;
+        if (offset.sqrMagnitude < .0001f) offset = -transform.forward;
+        transform.position = orbitPivot + offset.normalized * distance;
+        ConstrainCurrentPose();
+        SyncOrbitStateFromTransform();
     }
 
     void HandleMouseDrag()
@@ -251,6 +292,7 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
+            adaptivePreset = 0;
             float rotX = -Input.GetAxis("Mouse X") * rotationSpeed * 0.2f * Time.deltaTime;
             float rotY = Input.GetAxis("Mouse Y") * rotationSpeed * 0.2f * Time.deltaTime;
 
@@ -266,6 +308,7 @@ public class CameraController : MonoBehaviour
 
     private void PanCamera(Vector3 worldDelta)
     {
+        adaptivePreset = 0;
         orbitPivot = ClampOrbitPivotToPitch(orbitPivot + worldDelta);
         ApplyOrbitTransform();
     }
@@ -301,6 +344,85 @@ public class CameraController : MonoBehaviour
             ? Quaternion.Euler(0f, orbitYaw, 0f) * Vector3.forward
             : Vector3.up;
         transform.rotation = Quaternion.LookRotation(lookDirection, upReference);
+        ConstrainCurrentPose();
+    }
+
+    private void ConstrainCurrentPose()
+    {
+        if (safeEnvelope == null) return;
+        Vector3 position = transform.position; Quaternion rotation = transform.rotation;
+        safeEnvelope.Constrain(GetComponent<Camera>(), orbitPivot, ref position, ref rotation, minViewDistance: minOrbitDistance);
+        transform.SetPositionAndRotation(position, rotation);
+        orbitPivot = ClampOrbitPivotToPitch(GetOrbitPivotForView(position, rotation));
+        SyncOrbitStateFromTransform();
+    }
+
+    public void ApplyPresentationPose(Vector3 position, Quaternion rotation, float? horizontalShift = null)
+    {
+        if (horizontalShift.HasValue) ApplyProjectionShift(horizontalShift.Value);
+        orbitPivot = ClampOrbitPivotToPitch(GetOrbitPivotForView(position, rotation));
+        transform.SetPositionAndRotation(position, rotation);
+        ConstrainCurrentPose();
+        SyncOrbitStateFromTransform();
+    }
+
+    private void ApplyProjectionShift(float shift)
+    {
+        projectionShift = shift;
+        Camera camera = GetComponent<Camera>();
+        Matrix4x4 projection = Matrix4x4.Perspective(camera.fieldOfView, camera.aspect, camera.nearClipPlane, camera.farClipPlane);
+        projection[0, 2] = shift;
+        camera.projectionMatrix = projection;
+    }
+
+    public float GetAdaptiveProjectionShift() => 1f - 2f * GetAvailableViewport(GetComponent<Camera>()).center.x;
+
+    public void GetAdaptivePresetPose(int preset, out Vector3 position, out Quaternion rotation)
+    {
+        EnsurePitchBounds();
+        Camera camera = GetComponent<Camera>();
+        rotation = Quaternion.Euler(preset == 2 ? 90f : 55f, 0f, 0f);
+        Vector3 center = hasPitchBounds ? pitchBounds.center : GetDefaultOrbitPivot();
+        Bounds bounds = hasPitchBounds ? pitchBounds : new Bounds(center, new Vector3(28f, 0.1f, 23f));
+        Rect available = GetAvailableViewport(camera);
+        float shift = 1f - 2f * available.center.x;
+        float tanV = Mathf.Tan(camera.fieldOfView * Mathf.Deg2Rad * 0.5f), tanH = tanV * camera.aspect;
+        float low = minOrbitDistance, high = maxOrbitDistance;
+        position = center - rotation * Vector3.forward * high;
+        Quaternion desiredRotation = rotation;
+        for (int iteration = 0; iteration < 24; iteration++)
+        {
+            float distance = (low + high) * 0.5f;
+            Vector3 target = center;
+            Vector3 candidate = target - desiredRotation * Vector3.forward * distance;
+            Quaternion candidateRotation = desiredRotation;
+            safeEnvelope?.Constrain(camera, target, ref candidate, ref candidateRotation, shift, minOrbitDistance);
+            bool fits = true;
+            for (int corner = 0; corner < 8; corner++)
+            {
+                Vector3 world = bounds.center + Vector3.Scale(bounds.extents, new Vector3((corner & 1) == 0 ? -1 : 1, (corner & 2) == 0 ? -1 : 1, (corner & 4) == 0 ? -1 : 1));
+                Vector3 local = Quaternion.Inverse(candidateRotation) * (world - candidate);
+                Vector2 viewport = new(0.5f - shift * 0.5f + local.x / (2f * local.z * tanH), 0.5f + local.y / (2f * local.z * tanV));
+                if (local.z <= 0f || !available.Contains(viewport)) fits = false;
+            }
+            if (fits) { high = distance; position = candidate; rotation = candidateRotation; }
+            else low = distance;
+        }
+    }
+
+    private Rect GetAvailableViewport(Camera camera)
+    {
+        Rect result = new(framingMargin, framingMargin, 1f - framingMargin * 2f, 1f - framingMargin * 2f);
+        if (sidePanel == null || !sidePanel.gameObject.activeInHierarchy || camera.pixelWidth <= 0) return result;
+        var corners = new Vector3[4]; sidePanel.GetWorldCorners(corners);
+        Canvas canvas = sidePanel.GetComponentInParent<Canvas>();
+        var canvasRect = canvas != null ? canvas.rootCanvas.transform as RectTransform : null;
+        if (canvasRect == null || canvasRect.rect.width <= 0f) return result;
+        float left = (canvasRect.InverseTransformPoint(corners[0]).x - canvasRect.rect.xMin) / canvasRect.rect.width;
+        float right = (canvasRect.InverseTransformPoint(corners[2]).x - canvasRect.rect.xMin) / canvasRect.rect.width;
+        if (left >= 0.5f && left < 1f) result.xMax = Mathf.Max(0.3f, left - framingMargin);
+        else if (right > 0f && right <= 0.5f) result.xMin = Mathf.Min(0.7f, right + framingMargin);
+        return result;
     }
 
     private Vector3 GetDefaultOrbitPivot()

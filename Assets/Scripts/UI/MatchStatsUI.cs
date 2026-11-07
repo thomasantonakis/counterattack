@@ -337,13 +337,15 @@ public class MatchStatsUI : MonoBehaviour
 
     private void Update()
     {
+        if (RoomInputOwnership.IntroActive) return;
+        if (RoomInputOwnership.CardOpen) return;
         if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
         {
             UpdateLineupHoverFromStatsText();
             return;
         }
 
-        if (Input.GetKeyUp(KeyCode.E))
+        if (!GameInputManager.IsPresentationModalActive && Input.GetKeyUp(KeyCode.E))
         {
             TogglePanel();
         }
@@ -1143,6 +1145,7 @@ public class MatchStatsUI : MonoBehaviour
 
     private void HandleHoverTokenChanged(PlayerToken token, HexCell hex)
     {
+        if (RoomInputOwnership.BlocksHover) return;
         if (token == null)
         {
             return;
@@ -1388,6 +1391,8 @@ public class MatchStatsUI : MonoBehaviour
         flagImage.raycastTarget = false;
     }
 
+    public string GetInspectionNationality(PlayerToken token) => ResolvePreviewNationality(token, string.Empty);
+
     private string ResolvePreviewNationality(PlayerToken token, string fallbackLabel)
     {
         if (token == null)
@@ -1531,6 +1536,8 @@ public class MatchStatsUI : MonoBehaviour
         badge.raycastTarget = false;
         valueText.raycastTarget = false;
     }
+
+    public static Color GetInspectionAttributeColor(int value) => GetPreviewValueBadgeColor(value);
 
     private static Color GetPreviewValueBadgeColor(int value)
     {

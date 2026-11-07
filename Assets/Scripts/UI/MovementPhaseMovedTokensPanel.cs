@@ -28,6 +28,16 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
     {
         bool shouldShow = movementPhaseManager != null && movementPhaseManager.isActivated;
         int signature = shouldShow ? BuildSignature(movementPhaseManager.MovedTokenEntries) : 0;
+        if (shouldShow)
+        {
+            unchecked
+            {
+                signature = signature * 31 + (movementPhaseManager.isMovementPhaseAttack ? 1 : movementPhaseManager.isMovementPhaseDef ? 2 : 3);
+                signature = signature * 31 + GetTokenSignature(movementPhaseManager.selectedToken);
+                signature = signature * 31 + (movementPhaseManager.AttackingMovementForfeited ? 1 : 0);
+                signature = signature * 31 + (movementPhaseManager.DefensiveMovementForfeited ? 1 : 0);
+            }
+        }
         if (!force && shouldShow == lastVisible && signature == lastRenderedSignature)
         {
             return;
@@ -72,9 +82,27 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
             }
         }
 
+        bool forfeited = section == MovementPhaseMovedTokenSection.AttMP ? movementPhaseManager.AttackingMovementForfeited
+            : section == MovementPhaseMovedTokenSection.DefMP && movementPhaseManager.DefensiveMovementForfeited;
+        bool active = section == MovementPhaseMovedTokenSection.AttMP ? movementPhaseManager.isMovementPhaseAttack
+            : section == MovementPhaseMovedTokenSection.DefMP ? movementPhaseManager.isMovementPhaseDef : movementPhaseManager.isMovementPhase2f2;
+        var settings = MatchManager.Instance?.gameData?.gameSettings;
+        bool home = MatchManager.Instance?.teamInAttack == MatchManager.TeamInAttack.Home;
+        if (section == MovementPhaseMovedTokenSection.DefMP) home = !home;
+        TokenKitInstructionPalette palette = TokenKitCatalog.ResolveInstructionPalette(settings == null ? null : home ? settings.homeKit : settings.awayKit, Color.white, Color.black);
+        int next = slotIndex;
         for (; slotIndex < slots.Length; slotIndex++)
         {
-            slots[slotIndex]?.Clear();
+            if (forfeited) slots[slotIndex]?.RenderForfeit(palette.Primary, palette.Secondary);
+            else if (active && slotIndex == next)
+            {
+                PlayerToken selected = movementPhaseManager.selectedToken;
+                for (int i = 0; i < entries.Count; i++)
+                    if (entries[i].section == section && entries[i].token == selected) { selected = null; break; }
+                slots[slotIndex]?.RenderActive(palette.Primary, selected != null ? ResolveStyle(selected) : null, selected != null ? selected.jerseyNumber : 0,
+                    TokenKitCatalog.ResolveStyle(settings == null ? null : home ? settings.homeKit : settings.awayKit));
+            }
+            else slots[slotIndex]?.Clear();
         }
     }
 

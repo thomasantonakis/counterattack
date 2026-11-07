@@ -57,6 +57,12 @@ public class PitchLines : MonoBehaviour
     private string cachedAwayKit = string.Empty;
     private TokenKitInstructionPalette homeInstructionPalette;
     private TokenKitInstructionPalette awayInstructionPalette;
+    [Header("Snow markings (action labels keep their kit styling)")]
+    [SerializeField] private Color snowMarkingColor = new(1f, 0.32f, 0.025f, 1f);
+    private readonly Dictionary<Renderer, MaterialPropertyBlock> originalMarkingBlocks = new();
+    private readonly Dictionary<SpriteRenderer, Color> originalSpotColors = new();
+    private bool? snowMarkingsApplied;
+    public bool HasAppliedWeather => snowMarkingsApplied.HasValue;
 
     // The Room board visuals are scene-owned. This builder recreates the serialized child
     // hierarchy in edit mode so play mode only consumes the authored result.
@@ -82,6 +88,48 @@ public class PitchLines : MonoBehaviour
     private void Update()
     {
         UpdateActionLabelColors();
+        RefreshWeatherMarkings();
+    }
+
+    public void RefreshWeatherMarkings()
+    {
+        string weather = MatchManager.Instance?.gameData?.gameSettings?.weatherConditions;
+        if (weather == null || generatedRoot == null) return;
+        bool snow = weather.StartsWith("Snow", System.StringComparison.OrdinalIgnoreCase);
+        if (snowMarkingsApplied == snow) return;
+        if (!snowMarkingsApplied.HasValue)
+        {
+            foreach (string name in new[] { MarkingsRootName, DotsRootName })
+            {
+                Transform root = generatedRoot.Find(name);
+                if (root == null) continue;
+                foreach (Renderer renderer in root.GetComponentsInChildren<Renderer>(true))
+                {
+                    if (renderer is SpriteRenderer sprite) originalSpotColors[sprite] = sprite.color;
+                    else { var block = new MaterialPropertyBlock(); renderer.GetPropertyBlock(block); originalMarkingBlocks[renderer] = block; }
+                }
+            }
+        }
+        foreach (var pair in originalMarkingBlocks)
+        {
+            if (pair.Key == null) continue;
+            if (!snow) pair.Key.SetPropertyBlock(pair.Value);
+            else
+            {
+                var block = new MaterialPropertyBlock(); pair.Key.GetPropertyBlock(block);
+                block.SetColor("_BaseColor", snowMarkingColor); block.SetColor("_Color", snowMarkingColor);
+                pair.Key.SetPropertyBlock(block);
+            }
+        }
+        foreach (var pair in originalSpotColors) if (pair.Key != null) pair.Key.color = snow ? snowMarkingColor : pair.Value;
+        snowMarkingsApplied = snow;
+    }
+
+    private void OnDisable()
+    {
+        foreach (var pair in originalMarkingBlocks) if (pair.Key != null) pair.Key.SetPropertyBlock(pair.Value);
+        foreach (var pair in originalSpotColors) if (pair.Key != null) pair.Key.color = pair.Value;
+        originalMarkingBlocks.Clear(); originalSpotColors.Clear(); snowMarkingsApplied = null;
     }
 
     public void RebuildSceneVisuals()

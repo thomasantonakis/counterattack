@@ -249,6 +249,7 @@ public class DraftUIManager : MonoBehaviour
 
         // Proceed to the game scene
         ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
+        ApplicationManager.Instance.PrepareDraftRoomIntro();
         SceneManager.LoadScene("Room");
         return true;
     }

@@ -1966,8 +1966,9 @@ public class GameTestScenarioRunner : MonoBehaviour
             MatchManager.Instance.gameData.gameSettings.playerAssistance = difficulty;
         }
         Log($"Setting difficulty to {difficulty}");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
-        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        Log("Confirming kickoff setup with Enter twice");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.05f));
         Log("Pressing P");
         yield return StartCoroutine(gameInputManager.DelayedClick(new Vector2Int(-6, -6), 0.2f));
@@ -2009,8 +2010,9 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
         Log($"Setting difficulty to {difficulty}");
 
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
-        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        Log("Confirming kickoff setup with Enter twice");
 
         AssertTrue(longBallManager.isAvailable, "Long Ball should be available after kickoff.");
 
@@ -2036,8 +2038,9 @@ public class GameTestScenarioRunner : MonoBehaviour
         highPassManager.minPassDistance = 6;
         Log($"Setting High Pass minimum distance to {highPassManager.minPassDistance}");
 
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
-        Log("Pressing Space");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        Log("Confirming kickoff setup with Enter twice");
 
         AssertTrue(
             MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
@@ -2132,8 +2135,9 @@ public class GameTestScenarioRunner : MonoBehaviour
         }
         Log($"Setting difficulty to {difficulty}");
 
-        Log("Pressing Space");
-        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Space, 0.05f));
+        Log("Confirming kickoff setup with Enter twice");
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
+        yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.Return, 0.05f));
         Log("Pressing P");
         yield return StartCoroutine(gameInputManager.DelayedKeyDataPress(KeyCode.P, 0.05f));
         Log("Clicking (-8, -4) - GBM target");
@@ -3185,7 +3189,8 @@ public class GameTestScenarioRunner : MonoBehaviour
         Log("Setting difficulty to 2 for the shared Shooting sheet preparation.");
 
         yield return StartCoroutine(PressShootingSheetKey("Camera preset 2", KeyCode.Alpha2));
-        yield return StartCoroutine(PressShootingSheetKey("KickOff", KeyCode.Space));
+        yield return StartCoroutine(PressShootingSheetKey("Confirm home kickoff setup", KeyCode.Return));
+        yield return StartCoroutine(PressShootingSheetKey("Confirm away kickoff setup", KeyCode.Return));
         AssertTrue(
             MatchManager.Instance.currentState == MatchManager.GameState.KickoffBlown,
             "Game should be in KickoffBlown after the Shooting prep kickoff.",
@@ -3499,7 +3504,8 @@ public class GameTestScenarioRunner : MonoBehaviour
 
         Log("Setting difficulty to 2 for the Free Kick prep script.");
         yield return StartCoroutine(PressShootingSheetKey("Camera preset 2", KeyCode.Alpha2));
-        yield return StartCoroutine(PressShootingSheetKey("KickOff", KeyCode.Space));
+        yield return StartCoroutine(PressShootingSheetKey("Confirm home kickoff setup", KeyCode.Return));
+        yield return StartCoroutine(PressShootingSheetKey("Confirm away kickoff setup", KeyCode.Return));
         yield return StartCoroutine(PressShootingSheetKey("StandardPass", KeyCode.P));
         yield return StartCoroutine(ClickShootingSheetHex("Target (8,0)", new Vector2Int(8, 0)));
         yield return StartCoroutine(ClickShootingSheetHex("ConfirmTarget (8,0)", new Vector2Int(8, 0)));

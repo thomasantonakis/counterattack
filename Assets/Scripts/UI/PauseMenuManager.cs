@@ -111,6 +111,7 @@ public class PauseMenuManager : MonoBehaviour
 
     void Update()
     {
+        if (RoomInputOwnership.ReservePauseEscape) return;
         if (CoinTossPanelController.IsRoomVisible || HeaderChallengePanelController.ReservePauseEscape() || DuelResolutionPanelController.ReservePauseEscape() || StoppageActionsPanelController.ReservePauseEscape()) return;
         // Toggle the pause menu when the Escape key is pressed
         if (Input.GetKeyUp(KeyCode.Escape))
