@@ -39,7 +39,7 @@ public sealed class RoomAIAerialReleasePlan
             .OrderByDescending(token => sign * token.currentHex.x).ToList();
         if (defense.Count < 2) return null;
         int line = sign * Math.Max(0, Math.Max(sign * defense[1].currentHex.x, sign * snapshot.ball.x));
-        float accuracy = Math.Max(0f, Math.Min(1f, (carrier.highPass - 1) / 6f));
+        float accuracy = HighPassManager.AccuracyProbabilityForDecisionPreview(carrier.highPass);
         RoomAIAerialReleasePlan best = null;
         foreach (var header in own.Where(token => token != carrier && token.heading >= 4))
         foreach (var runner in own.Where(token => token != carrier && token != header && token.pace >= 4 && token.shooting > 0))
@@ -83,7 +83,7 @@ public sealed class RoomAIAerialReleasePlan
         float probability = 0f;
         foreach (int a in rolls)
             foreach (int d in rolls)
-                if ((a == 50 ? 50 : a + heading) > (d == 50 ? 50 : d + defense))
+                if ((GameplayScore.Total(heading, a)) > (GameplayScore.Total(defense, d)))
                     probability += (a >= 6 ? 1f / 12f : 1f / 6f) * (d >= 6 ? 1f / 12f : 1f / 6f);
         return probability;
     }

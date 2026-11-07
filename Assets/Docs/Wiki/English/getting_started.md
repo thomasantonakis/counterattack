@@ -31,7 +31,7 @@ Place the referee cards face down and pick 1 at random. Place the referee card f
 
 ## Added time
 
-At the end of each half, roll the dice and add the result to the referee's Leniency. Play continues for that many Actions before the half/match is over. **The maximum number of actions there can be in each half is 7 (3 in extra time of cup games). The only time an action can be exceeded by 1 is if a penalty is awarded in the last action of the half.**
+At the end of each half, roll the dice and add the result to the referee's Leniency. Play continues for that many Actions before the half/match is over. **In this digital edition, the maximum is currently 7 actions in each half, including extra time. A proposed cap of 3 for extra-time halves remains under review. The only time an action can be exceeded by 1 is if a penalty is awarded in the last action of the half.**
 
 An Action is what an attacker can call as the next thing to happen.  The actions are the following: Movement Phase, Standard Pass, First Time Pass, Short Pass (from a throw-in or a corner), Goalkeepers' Quick Throw, High Pass, Long Pass, Header, Attempt to control the ball, and (Snap)Shot).
 
@@ -42,7 +42,7 @@ An Action is what an attacker can call as the next thing to happen.  The actions
 
 ## Jackpot STAR Roll
 
-When the game is played using 12-sided dice, the Jackpot Roll is in effect.  If a player rolls a STAR they automatically win whatever duel they are contesting. This is called a jackpot roll. If the opponent also rolls a STAR then the contest is a tie, regardless of the attribute values for those players, and is resolved as usual with a loose ball. For all other rolls, treat the STAR as a 6.
+When the game is played using 12-sided dice, the Jackpot Roll is in effect. A STAR automatically wins an eligible duel. If both opponents roll a STAR, the duel is a tie regardless of their attributes and is resolved with a loose ball. In this digital edition, a STAR also automatically succeeds on High Pass accuracy (including goalkeeper kicks and corners), Long Pass accuracy and Ball Control, regardless of attributes or distance penalties. Rolls that do not accept jackpots treat a STAR as a 6. Attribute-based totals use max(current attribute + all signed modifiers, 0) + dice: apply injuries and applicable modifiers before flooring the effective attribute at zero, then add the numeric roll. Eligible jackpots total 50 without attributes or penalties; natural-one misses and fouls retain their normal rules.
 Duels are the following:
 - Shots vs Saves
 - Tackling vs Dribbling

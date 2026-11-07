@@ -11,8 +11,24 @@ viewer. Reckless-tackle sections and dependent references are excluded.
 Tabletop setup and contradictory rules are retained for review rather than silently
 changed. Source attribution is retained.
 
-Use **CounterAttack > Rules > Rebuild Viewer and Scene Entries** in Edit Mode
-after editing Markdown. Save open scenes first. The builder validates internal
+Approved digital-edition decisions on 2026-11-07: keep the current 7-action
+stoppage cap in extra time while the proposed 3-action cap remains open; allow
+jackpots on High/Long Pass accuracy and Ball Control; prefer GK on equal defensive
+header scores; use Heading 0 for keeper challenges outside their own box, including
+rushes. Goalkeepers retain the separate GK nomination outside their box, alongside
+up to two outfield players; zero Heading receives no additional distance penalty.
+Own-box goalkeeper fouls use no-card/yellow leniency; previously booked defenders
+do not force a stoppage without a new sending-off or mandatory injury substitution.
+These local adaptations do not publish changes to the upstream wiki.
+All attribute-based scores floor the current injured attribute plus applicable
+signed modifiers at zero before adding the numeric roll. Jackpots stay 50 and
+natural-one miss/foul rules remain. Injuries reduce goalkeeper Aerial, Saving
+and Handling as well as their outfield attributes.
+
+For prose-only edits that preserve block count and anchors, use **CounterAttack >
+Rules > Refresh Existing Article Text** in Edit Mode. This updates existing prefab
+text without resaving scenes. For structural changes, use **CounterAttack > Rules >
+Rebuild Viewer and Scene Entries**. Save open scenes first. The builder validates internal
 links and diagrams, then authors `Assets/Prefabs/RulesViewer.prefab` and places
 instances in MainMenu and Room. It does not download content or update the source.
 Article objects, contents buttons and search-result slots all exist before Play.

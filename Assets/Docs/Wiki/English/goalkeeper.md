@@ -35,7 +35,7 @@ After a keeper makes a save but they fail the handling test, run a "loose ball" 
 
 If your opponent crosses the ball into the box, you can challenge to catch the ball. Your goalkeeper can do that by challenging for the Header (after the High Pass) using their Aerial Ability attribute. If the ball is aimed within 2 hexes of you, then you can choose to have a duel with your opponent (see [Heading](https://counterattackgame.github.io/wiki/en/heading)).
 
-After the Accuracy Check the GK has the option to move 3 Hexes, but the GK can only do this if they intend to challenge for the high ball (not just for better positioning), and that they have **not already** moved 3 hexes per the high cross rules.
+After the Accuracy Check the GK has the option to move 3 Hexes, but only if they commit to challenge for the high ball and have **not already** used the regular 3-hex defensive high-pass move. The keeper's final position, not the ball's hex, determines the attribute: a defending keeper inside their own penalty area uses Aerial Ability to catch; outside it they use Heading 0 and must head the ball away on a win. The goalkeeper always retains a separate nomination alongside up to two outfield players, even outside their box. A zero heading attribute receives no further distance penalty. The keeper may start or finish a rush outside their own box; this never authorizes handling there.
 
 If the cross ball is aimed **2** hexes away from you, your combined score suffers a -1 dice penalty. If the attacker wins the duel, a goal is scored! If you win the duel, play resumes as if you caught a shot (see After making a save and holding the ball).
 
@@ -96,10 +96,10 @@ Attack cannot place a player on a Hex that is in the 6-yard-box AND touching the
 
 ## Goalkeepers committing a foul
 
-A goal keeper committing a foul will only subject to No booking/Yellow leniency checks, even if their challenge was "from behind" or "professional".  Goalkeepers can be sent off with a second yellow
+A goalkeeper committing a foul in their own penalty area uses No booking/Yellow leniency checks, even for a challenge from behind or a professional foul, to avoid double jeopardy. A second yellow still sends the keeper off. Outside their own penalty area, regular foul discipline applies; handling the ball outside the box retains its separate straight-red rule.
 
 ## Goalkeeper as an outfield player
 
-Any attribute that is not listed on the GK card will be considered a zero.  E.g. if a keeper wants to attempt a shot, their shooting stat will be zero.
+Any attribute that is not listed on the GK card will be considered a zero. E.g. if a keeper wants to attempt a shot, their shooting stat will be zero.
 
 [Back to Home Page](https://counterattackgame.github.io/wiki/en/index)

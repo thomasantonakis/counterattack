@@ -504,14 +504,14 @@ public static class RoomAIActionSequence
         float win = 0f, loss = 0f;
         foreach (int roll in Rolls)
         {
-            int total = roll == 50 ? 50 : roll + attackerSkill;
+            int total = GameplayScore.Total(attackerSkill, roll);
             float allBelow = 1f, allAtMost = 1f;
             foreach (int skill in defenderSkills)
             {
                 float below = 0f, atMost = 0f;
                 foreach (int other in Rolls)
                 {
-                    int opponent = other == 50 ? 50 : other + skill;
+                    int opponent = GameplayScore.Total(skill, other);
                     if (opponent < total) below += Weight(other);
                     if (opponent <= total) atMost += Weight(other);
                 }
@@ -762,18 +762,17 @@ public static class RoomAIActionSequence
             // Movement stun is not a header-nomination restriction in the live
             // manager; movement eligibility is checked later during collection.
             var defenders = opponents.Where(t => Distance(t.GetCurrentHex(), landing) <= HeaderManager.HEADER_SELECTION_RANGE)
-                .OrderByDescending(t => (t.IsGoalKeeper ? t.aerial : t.heading)
-                    - (Distance(t.GetCurrentHex(), landing) > 1 ? 1 : 0)).ThenBy(Key, StringComparer.Ordinal).ToList();
+                .OrderByDescending(t => HeaderManager.EffectiveHeaderAttributeAt(t, t.GetCurrentHex(), landing)).ThenBy(Key, StringComparer.Ordinal).ToList();
             defenders = defenders.Where(t => !t.IsGoalKeeper).Take(HeaderManager.MAX_OUTFIELD_HEADER_DEFENDERS)
                 .Concat(defenders.Where(t => t.IsGoalKeeper)).ToList();
             var headers = own.Where(t => t != passer
                 && Distance(t.GetCurrentHex(), landing) <= HeaderManager.HEADER_SELECTION_RANGE
                 && !OffsideForFirstAerial(snapshot, RoomHexCoordinates.FromHex(t.GetCurrentHex()), RoomHexCoordinates.FromHex(origin)))
-                .OrderByDescending(t => t.IsGoalKeeper ? t.aerial : t.heading).ThenBy(Key, StringComparer.Ordinal).Take(scatter ? 1 : 2).ToList();
+                .OrderByDescending(t => HeaderManager.HeaderAttributeAt(t, t.GetCurrentHex())).ThenBy(Key, StringComparer.Ordinal).Take(scatter ? 1 : 2).ToList();
             // A possible rush from outside current header range changes the
             // pre-reception board. Do not call an unchallenged header certain.
             var keeper = opponents.FirstOrDefault(t => t.IsGoalKeeper);
-            if (keeper != null && landing.isInPenaltyBox != 0 && !defenders.Contains(keeper)
+            if (keeper != null && !defenders.Contains(keeper)
                 && !GoalkeeperAlreadyMovedInCurrentHighPass()
                 && KeeperRushReach(keeper).Any(h => Distance(h, landing) <= HeaderManager.HEADER_SELECTION_RANGE))
                 return Terminal("Possible pre-header GK rush; projected rush unexpanded", RoomAIPossessionOutcomeKind.Unresolved);
@@ -792,8 +791,7 @@ public static class RoomAIActionSequence
             RoomAIActionSequencePreview best = null;
             foreach (var header in headers)
             {
-                int Attribute(PlayerToken t) => (t.IsGoalKeeper ? t.aerial : t.heading)
-                    - (Distance(t.GetCurrentHex(), landing) > 1 ? 1 : 0);
+                int Attribute(PlayerToken t) => HeaderManager.EffectiveHeaderAttributeAt(t, t.GetCurrentHex(), landing);
                 var contest = HeaderContest(Attribute(header), defenders.Select(Attribute).ToArray());
                 var jumpers = new HashSet<PlayerToken>(defenders) { header };
                 // Header flight is six hexes from the BALL landing, not the jumper.
@@ -887,7 +885,7 @@ public static class RoomAIActionSequence
                             && Distance(hex, landing) <= HeaderManager.HEADER_SELECTION_RANGE)
                         .OrderBy(hex => Distance(hex, landing)).ThenBy(hex => hex.coordinates.x).ThenBy(hex => hex.coordinates.z)
                         .Take(3).Select(hex => (token: t, hex)))
-                    .OrderByDescending(p => p.token.heading - (Distance(p.hex, landing) > 1 ? 1 : 0))
+                    .OrderByDescending(p => HeaderManager.EffectiveHeaderAttributeAt(p.token, p.hex, landing))
                     .ThenBy(p => Key(p.token), StringComparer.Ordinal).Take(12).ToList();
                 // No defender intervention and no mandatory preparation are
                 // left to the established, deeper rollout.
@@ -913,19 +911,18 @@ public static class RoomAIActionSequence
                     var attackers = own.Where(t => t != passer && match.CanTokenCollectHangingPass(t)
                             && Distance(board[t], landing) <= HeaderManager.HEADER_SELECTION_RANGE
                             && !OffsideForFirstAerial(snapshot, RoomHexCoordinates.FromHex(initial[t]), RoomHexCoordinates.FromHex(origin)))
-                        .OrderByDescending(t => t.heading - (Distance(board[t], landing) > 1 ? 1 : 0))
+                        .OrderByDescending(t => HeaderManager.EffectiveHeaderAttributeAt(t, board[t], landing))
                         .ThenBy(Key, StringComparer.Ordinal).Take(2).ToList();
                     var defenders = opponents.Where(t => match.CanTokenCollectHangingPass(t)
                             && Distance(board[t], landing) <= HeaderManager.HEADER_SELECTION_RANGE)
-                        .OrderByDescending(t => (t.IsGoalKeeper ? t.aerial : t.heading) - (Distance(board[t], landing) > 1 ? 1 : 0))
+                        .OrderByDescending(t => HeaderManager.EffectiveHeaderAttributeAt(t, board[t], landing))
                         .ThenBy(Key, StringComparer.Ordinal).ToList();
                     defenders = defenders.Where(t => !t.IsGoalKeeper).Take(HeaderManager.MAX_OUTFIELD_HEADER_DEFENDERS)
                         .Concat(defenders.Where(t => t.IsGoalKeeper)).ToList();
                     RoomAIActionSequencePreview bestHeader = null;
                     foreach (var header in attackers)
                     {
-                        int Attribute(PlayerToken t) => (t.IsGoalKeeper ? t.aerial : t.heading)
-                            - (Distance(board[t], landing) > 1 ? 1 : 0);
+                        int Attribute(PlayerToken t) => HeaderManager.EffectiveHeaderAttributeAt(t, board[t], landing);
                         var contest = HeaderContest(Attribute(header), defenders.Select(Attribute).ToArray());
                         var receiver = own.Where(t => t != header && match.CanTokenCollectHangingPass(t)
                                 && Distance(board[t], landing) <= 6
@@ -1199,19 +1196,18 @@ public static class RoomAIActionSequence
             var nearby = board.Where(p => Distance(p.Value, landing) <= HeaderManager.HEADER_SELECTION_RANGE
                 && match.CanTokenCollectHangingPass(p.Key)).Select(p => p.Key).ToList();
             var defenders = nearby.Where(t => t.isHomeTeam != passer.isHomeTeam)
-                .OrderByDescending(t => (t.IsGoalKeeper ? t.aerial : t.heading) - (Distance(board[t], landing) > 1 ? 1 : 0))
+                .OrderByDescending(t => HeaderManager.EffectiveHeaderAttributeAt(t, board[t], landing))
                 .ThenBy(Key, StringComparer.Ordinal).ToList();
             defenders = defenders.Where(t => !t.IsGoalKeeper).Take(HeaderManager.MAX_OUTFIELD_HEADER_DEFENDERS)
                 .Concat(defenders.Where(t => t.IsGoalKeeper)).ToList();
             var headers = nearby.Where(t => t != passer && t.isHomeTeam == passer.isHomeTeam
                     && !OffsideForFirstAerial(snapshot, RoomHexCoordinates.FromHex(t.GetCurrentHex()), RoomHexCoordinates.FromHex(origin)))
-                .OrderByDescending(t => t.heading - (Distance(board[t], landing) > 1 ? 1 : 0))
+                .OrderByDescending(t => HeaderManager.EffectiveHeaderAttributeAt(t, board[t], landing))
                 .ThenBy(Key, StringComparer.Ordinal).Take(2).ToList();
             RoomAIActionSequencePreview bestHeader = null;
             foreach (var header in headers)
             {
-                int Attribute(PlayerToken t) => (t.IsGoalKeeper ? t.aerial : t.heading)
-                    - (Distance(board[t], landing) > 1 ? 1 : 0);
+                int Attribute(PlayerToken t) => HeaderManager.EffectiveHeaderAttributeAt(t, board[t], landing);
                 var contest = HeaderContest(Attribute(header), defenders.Select(Attribute).ToArray());
                 var receiver = own.Where(t => t != header && match.CanTokenCollectHangingPass(t)
                         && Distance(board[t], landing) <= 6
@@ -1322,7 +1318,7 @@ public static class RoomAIActionSequence
                 HexCell boxMove = box == keeperStart ? null : box;
                 // The keeper may decline either optional movement.
                 yield return (afterBox, boxMove, null);
-                if (landing.isInPenaltyBox == 0 || GoalkeeperAlreadyMovedInCurrentHighPass()) continue;
+                if (GoalkeeperAlreadyMovedInCurrentHighPass()) continue;
                 foreach (var rush in ProjectedReach(afterBox, keeper, 3)
                     .Where(h => Distance(h, landing) <= HeaderManager.HEADER_SELECTION_RANGE)
                     .OrderBy(h => Distance(h, landing)).ThenBy(h => h.coordinates.x).ThenBy(h => h.coordinates.z).Take(4))

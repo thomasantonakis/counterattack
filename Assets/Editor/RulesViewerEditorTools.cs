@@ -28,6 +28,28 @@ public static class RulesViewerEditorTools
         return blocks;
     }
 
+    [MenuItem("CounterAttack/Rules/Refresh Existing Article Text")]
+    public static void RefreshArticleText()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Refresh Rules in Edit Mode.");
+        var blocks = LoadDocument();
+        var root = PrefabUtility.LoadPrefabContents(PrefabPath);
+        try
+        {
+            var viewer = root.GetComponent<RulesViewer>();
+            if (viewer.entries.Length != blocks.Count)
+                throw new InvalidOperationException("Rulebook structure changed; use the full builder after saving scenes.");
+            // Validate the entire document before changing any serialized text.
+            for (int i = 0; i < blocks.Count; i++)
+                if (viewer.entries[i].text == null || (viewer.entries[i].anchor ?? "") != (blocks[i].anchor ?? "")
+                    || viewer.entries[i].section != blocks[i].section || viewer.entries[i].heading != (blocks[i].level > 0))
+                    throw new InvalidOperationException("Rulebook anchors changed; use the full builder after saving scenes.");
+            for (int i = 0; i < blocks.Count; i++) viewer.entries[i].text.text = blocks[i].text;
+            PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+    }
+
     [MenuItem("CounterAttack/Rules/Rebuild Viewer and Scene Entries")]
     public static void Build()
     {

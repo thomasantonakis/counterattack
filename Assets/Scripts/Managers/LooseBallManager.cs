@@ -580,7 +580,7 @@ public class LooseBallManager : MonoBehaviour
                 yield return null;
             }
 
-            int savingTotal = interceptionRoll + defendingGk.saving + wallSavingPenalty;
+            int savingTotal = GameplayScore.Total(defendingGk.saving, interceptionRoll, wallSavingPenalty);
             if (interceptionRoll == 6 || savingTotal >= 10)
             {
                 Debug.Log($"{defendingGk.name} successfully catches the loose ball from the GK Wall.");

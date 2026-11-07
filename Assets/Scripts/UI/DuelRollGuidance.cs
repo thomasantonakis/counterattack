@@ -8,7 +8,8 @@ public static class DuelRollGuidance
 
     public static string RollTotal(int roll, int skill, int bonus, bool jackpot)
         => jackpot ? "Roll JACKPOT · Total JACKPOT"
-            : $"Roll {roll} + {skill}{(bonus > 0 ? $" + {bonus}" : bonus < 0 ? $" − {-bonus}" : "")} = {roll + skill + bonus}";
+            : skill + bonus < 0 ? $"Roll {roll} + max({skill}{(bonus < 0 ? $" − {-bonus}" : $" + {bonus}")}, 0) = {GameplayScore.Total(skill, roll, bonus)}"
+            : $"Roll {roll} + {skill}{(bonus > 0 ? $" + {bonus}" : bonus < 0 ? $" − {-bonus}" : "")} = {GameplayScore.Total(skill, roll, bonus)}";
 
     public static string ThresholdCheck(string attribute, int threshold, string bad, string good)
     {

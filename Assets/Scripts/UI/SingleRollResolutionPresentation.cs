@@ -8,12 +8,12 @@ public static class SingleRollResolutionPresentation
     public static string LooseRecoveryAttribute(PlayerToken token, bool useSaving, int modifier)
         => !useSaving ? $"Tackling {token.tackling}"
             : modifier == 0 ? $"Saving {token.saving}"
-            : $"Saving {token.saving} {modifier:+0;-0} = {token.saving + modifier} (Distance Penalty)";
+            : $"Saving {token.saving} {modifier:+0;-0} = {GameplayScore.EffectiveAttribute(token.saving, modifier)} (Distance Penalty)";
 
     public static string HeaderSaveGuidance(int saving, int modifier, int headerPower)
     {
         if (headerPower == 50) return "JACKPOT: tied save / loose ball · Numeric rolls: goal";
-        int tie = headerPower - saving - modifier;
+        int tie = headerPower - GameplayScore.EffectiveAttribute(saving, modifier);
         return SuccessRange(tie + 1) + " to save · "
             + (tie >= 1 && tie <= 6 ? $"Roll {tie}: loose ball" : "No numeric tie")
             + " · JACKPOT: save";
@@ -56,11 +56,12 @@ public static class SingleRollResolutionPresentation
         if (token == null) return;
         DuelResolutionPanelController.Instance?.BeginSingle(owner, waiting, "Ball Control", token,
             BallControlAttribute(token.dribbling, modifier, target), $"Control {probability:P1}", true,
-            AccuracyGuidance(token.dribbling + modifier, target, true));
+            AccuracyGuidance(GameplayScore.EffectiveAttribute(token.dribbling, modifier), target, true));
     }
 
     public static string BallControlAttribute(int dribbling, int modifier, int target)
-        => $"Dribbling {dribbling}{(modifier == 0 ? "" : $" · Control modifier {modifier:+0;-0}")} · Target {target}";
+        => $"Dribbling {dribbling}{(modifier == 0 ? "" : $" · Control modifier {modifier:+0;-0}")}"
+            + (dribbling + modifier < 0 ? " · Effective 0 (minimum 0)" : "") + $" · Target {target}";
 
     // Explain the same thresholds supplied by the owning manager; no outcomes are resolved here.
     private static string SuccessRange(int minimum)

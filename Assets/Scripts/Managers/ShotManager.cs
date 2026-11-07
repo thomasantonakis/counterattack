@@ -2170,7 +2170,8 @@ public class ShotManager : MonoBehaviour
         if (penalty == 0) return $"Shooting {shooter.shooting}";
         var reasons = GetShootingPenaltyReasons(origin);
         string cap = reasons.Count > penalty ? "; capped at -2" : "";
-        return $"Shooting {shooter.shooting} -{penalty} = {shooter.shooting - penalty} ({string.Join(", ", reasons)}{cap})";
+        string floor = shooter.shooting < penalty ? "; minimum 0" : "";
+        return $"Shooting {shooter.shooting} -{penalty} = {GameplayScore.EffectiveAttribute(shooter.shooting, -penalty)} ({string.Join(", ", reasons)}{cap}{floor})";
     }
 
     private string BuildGroundSaveAttribute(ShotInteraction interaction)
@@ -2181,7 +2182,7 @@ public class ShotManager : MonoBehaviour
         string reason = IsPenaltyShot() ? "Penalty kick modifier"
             : shotType == "snapshot" && tokenMoveforDeflection == keeper
             ? "Snapshot movement / distance penalty" : "Distance Penalty";
-        return $"Saving {keeper.saving} {penalty:+0;-0} = {keeper.saving + penalty} ({reason})";
+        return $"Saving {keeper.saving} {penalty:+0;-0} = {GameplayScore.EffectiveAttribute(keeper.saving, penalty)} ({reason}{(keeper.saving + penalty < 0 ? "; minimum 0" : "")})";
     }
 
     private void BeginGroundSavePresentation(ShotInteraction interaction)
@@ -2250,7 +2251,7 @@ public class ShotManager : MonoBehaviour
             });
         bool isJackpot = saveRoll.isJackpot;
         int gkRoll = saveRoll.roll;
-        int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + headerGkPenalty;
+        int totalSavingPower = GameplayScore.Total(gkToken.saving, gkRoll, headerGkPenalty, isJackpot);
         if (totalSavingPower == 50) Debug.Log($"GK {gkToken.name} rolls A JACKPOT!!!");
         else Debug.Log($"GK {gkToken.name} rolls {gkRoll} + Saving: {gkToken.saving} + Penalty: {headerGkPenalty} = {totalSavingPower}");
         MatchManager.Instance.gameData.gameLog.LogEvent(
@@ -3545,7 +3546,7 @@ public class ShotManager : MonoBehaviour
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         difficultPenalty = originHex != null && originHex.isDifficultShotPosition ? ", -1 difficult shooting position" : "";
         shootingPenaltyInfo = BuildShootingPenaltyInfo(originHex, shootingPenalty);
-        totalShotPower = isJackpot ? 50 : shooterRoll == 1 ? 0 : shooterRoll + shooter.shooting - shootingPenalty;
+        totalShotPower = shooterRoll == 1 && !isJackpot ? 0 : GameplayScore.Total(shooter.shooting, shooterRoll, -shootingPenalty, isJackpot);
         if (UsesGroundShotPresentation)
         {
             int version = headerSavePresentationVersion;
@@ -3810,7 +3811,7 @@ public class ShotManager : MonoBehaviour
             return 7;
         }
 
-        return attackPower + 1 - gkToken.saving - savingPenalty;
+        return attackPower + 1 - GameplayScore.EffectiveAttribute(gkToken.saving, savingPenalty);
     }
 
     private int GetGKTieRoll(PlayerToken gkToken, int savingPenalty, int attackPower)
@@ -3820,7 +3821,7 @@ public class ShotManager : MonoBehaviour
             return 7;
         }
 
-        return attackPower - gkToken.saving - savingPenalty;
+        return attackPower - GameplayScore.EffectiveAttribute(gkToken.saving, savingPenalty);
     }
 
     private string BuildNeededRollInstruction(int neededRoll, string outcome)
@@ -4002,7 +4003,7 @@ public class ShotManager : MonoBehaviour
             });
         bool isJackpot = saveRoll.isJackpot;
         int gkRoll = saveRoll.roll;
-        int totalSavingPower = isJackpot ? 50 : gkRoll + gkToken.saving + gkPenalty;
+        int totalSavingPower = GameplayScore.Total(gkToken.saving, gkRoll, gkPenalty, isJackpot);
         if (UsesGroundShotPresentation)
         {
             int version = headerSavePresentationVersion;

@@ -14,7 +14,7 @@ Use the distance stick to judge how far the header can travel.
 
 If the [goalkeeper](https://counterattackgame.github.io/wiki/en/goalkeeper) loses a duel against an attacker and no defending player can win the header, the attacker scores a goal! Aerial Ability also gets a penalty of -1 in the second Hex away.
 
-If the goalkeeper wins the duel they [save and hold](https://counterattackgame.github.io/wiki/en/goalkeeper).
+If the goalkeeper wins a legal catch inside their own penalty area they [save and hold](https://counterattackgame.github.io/wiki/en/goalkeeper). Outside their own box they use Heading 0, and a win must be headed away as an ordinary headed pass.
 
 
 In all instances, follow the [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions if there is a tie. A [loose ball](https://counterattackgame.github.io/wiki/en/loose_ball) from a Header cannot hit players that were involved in the Headed Challenge.
@@ -56,10 +56,10 @@ If you choose to head the ball close to your goalkeeper's feet, in order to avoi
 7. Attack declares which (maximum 2) players will attempt to head, and in which order.
 8. Defence declares which (maximum 2) players will attempt to head, and in which order, and if the GK will be involved to the challenge. (Defence can chose to not challenge) If Defense does not or can't challenge, attack chooses between Header or Control (see below)
 9. Attack rolls with all the declared players. If the best score has been achieved with a dice roll of 1 (H6 + Roll1 and H3 + Roll3) and a Headed shot had been declared in Step 6, the Headed shot is OFF TARGET.
-10. Defence Rolls with all the declared players, and GK if he had been declared. Decide which player creates the best combined score (the first player you rolled the tying score with).
+10. Defence rolls with all declared players, including the GK if nominated. The best combined score wins. In this digital edition, a goalkeeper tied for their team's best defensive score takes priority; other ties retain the first rolled player. A keeper outside their own penalty area uses Heading 0 and heads the ball away on a win; only a legal catch inside their own penalty area uses Aerial Ability and leads to Save and Hold.
 11. Compare the attack's best combined score with the defence's.
 - **Attack Wins**: If GK was not involved in challenge, GK tries to save on the hex that Attack heads to. If GK was involved in challenge, it's a GOAL.
-- **Defence wins**. Play a headed pass from the ball, to the available distance, without interceptions. Beware of the pass back to the GK. If GK won the challenge, he attracts the ball and play continues as [Save and Hold](https://counterattackgame.github.io/wiki/en/goalkeeper)
+- **Defence wins**. Play a headed pass from the ball, to the available distance, without interceptions. Beware of the pass back to the GK. If the GK won a legal own-box catch, attract the ball and continue as [Save and Hold](https://counterattackgame.github.io/wiki/en/goalkeeper); a GK winning outside their own box instead heads the ball away with the ordinary headed-pass continuation.
 - **There is a TIE**. Follow [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions, players involved in the Aerial challenge cannot stop the ball. If the ball lands on a player that jumped, move it one Hex further away. If the Ball hits a player that has not jumped, continue play as "Any other Scenario". If the ball does not hit a player, check if it stopped in a defender's ZOI, and possibly attempt to gain it. If not, attacking team should start a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase).
 
 

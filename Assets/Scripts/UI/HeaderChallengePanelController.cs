@@ -132,7 +132,7 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
             if (row.token == null) continue;
             row.player.text = PlayerName(row.token);
             int penalty = header.GetHeaderPenalty(row.token);
-            row.attribute.text = AttributeText(row.token.IsGoalKeeper, header.GetHeaderAttribute(row.token), penalty);
+            row.attribute.text = AttributeText(HeaderManager.UsesAerialAbility(row.token), header.GetHeaderAttribute(row.token), penalty);
             if (header.headerAtGoalDeclared && rows == attackers)
             {
                 float xGoals = header.CalculateHeaderExpectedGoals(row.token,

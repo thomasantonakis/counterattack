@@ -28517,9 +28517,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: A goal keeper committing a foul will only subject to No booking/Yellow
-    leniency checks, even if their challenge was "from behind" or "professional".
-    Goalkeepers can be sent off with a second yellow
+  m_text: A goalkeeper committing a foul in their own penalty area uses No booking/Yellow
+    leniency checks, even for a challenge from behind or a professional foul, to
+    avoid double jeopardy. A second yellow still sends the keeper off. Outside their
+    own penalty area, regular foul discipline applies; handling the ball outside
+    the box retains its separate straight-red rule.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -126883,9 +126885,10 @@ MonoBehaviour:
       m_Calls: []
   m_text: At the end of each half, roll the dice and add the result to the referee's
     Leniency. Play continues for that many Actions before the half/match is over.
-    <b>The maximum number of actions there can be in each half is 7 (3 in extra time
-    of cup games). The only time an action can be exceeded by 1 is if a penalty is
-    awarded in the last action of the half.</b>
+    <b>In this digital edition, the maximum is currently 7 actions in each half,
+    including extra time. A proposed cap of 3 for extra-time halves remains under
+    review. The only time an action can be exceeded by 1 is if a penalty is awarded
+    in the last action of the half.</b>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -135356,10 +135359,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: After the Accuracy Check the GK has the option to move 3 Hexes, but the
-    GK can only do this if they intend to challenge for the high ball (not just for
-    better positioning), and that they have <b>not already</b> moved 3 hexes per
-    the high cross rules.
+  m_text: 'After the Accuracy Check the GK has the option to move 3 Hexes, but only
+    if they commit to challenge for the high ball and have <b>not already</b> used
+    the regular 3-hex defensive high-pass move. The keeper''s final position, not
+    the ball''s hex, determines the attribute: a defending keeper inside their own
+    penalty area uses Aerial Ability to catch; outside it they use Heading 0 and
+    must head the ball away on a win. The goalkeeper always retains a separate nomination
+    alongside up to two outfield players, even outside their box. A zero heading
+    attribute receives no further distance penalty. The keeper may start or finish
+    a rush outside their own box; this never authorizes handling there.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -139878,9 +139886,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u2022 <b>Defence wins</b>. Play a headed pass from the ball, to the available
-    distance, without interceptions. Beware of the pass back to the GK. If GK won
-    the challenge, he attracts the ball and play continues as <link=\"goalkeeper\"><color=#79CEF2><u>Save
-    and Hold</u></color></link>"
+    distance, without interceptions. Beware of the pass back to the GK. If the GK
+    won a legal own-box catch, attract the ball and continue as <link=\"goalkeeper\"><color=#79CEF2><u>Save
+    and Hold</u></color></link>; a GK winning outside their own box instead heads
+    the ball away with the ordinary headed-pass continuation."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -176058,9 +176067,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10. Defence Rolls with all the declared players, and GK if he had been
-    declared. Decide which player creates the best combined score (the first player
-    you rolled the tying score with).
+  m_text: 10. Defence rolls with all declared players, including the GK if nominated.
+    The best combined score wins. In this digital edition, a goalkeeper tied for
+    their team's best defensive score takes priority; other ties retain the first
+    rolled player. A keeper outside their own penalty area uses Heading 0 and heads
+    the ball away on a win; only a legal catch inside their own penalty area uses
+    Aerial Ability and leads to Save and Hold.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -205841,11 +205853,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: When the game is played using 12-sided dice, the Jackpot Roll is in effect.
-    If a player rolls a STAR they automatically win whatever duel they are contesting.
-    This is called a jackpot roll. If the opponent also rolls a STAR then the contest
-    is a tie, regardless of the attribute values for those players, and is resolved
-    as usual with a loose ball. For all other rolls, treat the STAR as a 6.
+  m_text: 'When the game is played using 12-sided dice, the Jackpot Roll is in effect.
+    A STAR automatically wins an eligible duel. If both opponents roll a STAR, the
+    duel is a tie regardless of their attributes and is resolved with a loose ball.
+    In this digital edition, a STAR also automatically succeeds on High Pass accuracy
+    (including goalkeeper kicks and corners), Long Pass accuracy and Ball Control,
+    regardless of attributes or distance penalties. Rolls that do not accept jackpots
+    treat a STAR as a 6. Attribute-based totals use max(current attribute + all signed
+    modifiers, 0) + dice: apply injuries and applicable modifiers before flooring
+    the effective attribute at zero, then add the numeric roll. Eligible jackpots
+    total 50 without attributes or penalties; natural-one misses and fouls retain
+    their normal rules.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -243705,8 +243723,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: If the goalkeeper wins the duel they <link="goalkeeper"><color=#79CEF2><u>save
-    and hold</u></color></link>.
+  m_text: If the goalkeeper wins a legal catch inside their own penalty area they
+    <link="goalkeeper"><color=#79CEF2><u>save and hold</u></color></link>. Outside
+    their own box they use Heading 0, and a win must be headed away as an ordinary
+    headed pass.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}

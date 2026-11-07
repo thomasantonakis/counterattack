@@ -611,7 +611,7 @@ public class LongBallManager : MonoBehaviour
     }
 
     // DiceRoll splits natural six equally between numeric six and jackpot. Long Ball alone
-    // promotes the jackpot to 50; High Pass and recovery keep its numeric six.
+    // promotes the jackpot to 50, as do High Pass accuracy and Ball Control.
     public float AccuracyProbability(int highPass)
     {
         int threshold = AccuracyThreshold;
@@ -659,6 +659,7 @@ public class LongBallManager : MonoBehaviour
             actor: attackerToken,
             sourceHex: attackerToken.GetCurrentHex(),
             targetHex: currentTargetHex,
+            jackpotEnabled: true,
             details: new Dictionary<string, string>
             {
                 ["highPassAttribute"] = attackerToken.highPass.ToString(),
@@ -672,7 +673,7 @@ public class LongBallManager : MonoBehaviour
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         // Adjust threshold based on difficulty
-        int totalAccuracy = accuracyRoll.isJackpot ? 50 : diceRoll + highPassAttribute;
+        int totalAccuracy = GameplayScore.Total(highPassAttribute, diceRoll, jackpot: accuracyRoll.isJackpot);
         bool accuratePass = totalAccuracy >= accuracyThreshold;
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
             accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);

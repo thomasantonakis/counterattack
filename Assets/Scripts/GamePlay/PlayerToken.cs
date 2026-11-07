@@ -392,6 +392,9 @@ public class PlayerToken : MonoBehaviour
         resilience = Mathf.Max(0, resilience - 1);
         shooting = Mathf.Max(0, shooting - 1);
         tackling = Mathf.Max(0, tackling - 1);
+        aerial = Mathf.Max(0, aerial - 1);
+        saving = Mathf.Max(0, saving - 1);
+        handling = Mathf.Max(0, handling - 1);
         Debug.Log($"{name}'s attributes after injury: Heading={heading}, Dribbling={dribbling}, Tackling={tackling}, Pace={pace}, HighPass={highPass}, Shooting={shooting}, Resilience={resilience}");
     }
 

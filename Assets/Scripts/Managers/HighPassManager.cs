@@ -68,10 +68,11 @@ public class HighPassManager : MonoBehaviour
 
     public static float AccuracyProbabilityForDecisionPreview(int highPassAttribute)
     {
-        int accurate = 0;
+        float probability = 1f / 12f; // STAR always succeeds, independently of the attribute.
         for (int roll = 1; roll <= 6; roll++)
-            if (roll + highPassAttribute >= ACCURACY_THRESHOLD) accurate++;
-        return accurate / 6f;
+            if (roll + highPassAttribute >= ACCURACY_THRESHOLD)
+                probability += roll == 6 ? 1f / 12f : 1f / 6f;
+        return Mathf.Min(1f, probability);
     }
     private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
     private readonly List<HexCell> availableHighPassTargetHexes = new();
@@ -1559,7 +1560,8 @@ public class HighPassManager : MonoBehaviour
     {
         PlayerToken passer = AccuracyPasser;
         SingleRollResolutionPresentation.Accuracy(this, () => isWaitingForAccuracyRoll, passer,
-            "High Pass Accuracy", AccuracyProbabilityForDecisionPreview(passer?.highPass ?? 0), ACCURACY_THRESHOLD);
+            "High Pass Accuracy", AccuracyProbabilityForDecisionPreview(passer?.highPass ?? 0), ACCURACY_THRESHOLD,
+            jackpotAlwaysSucceeds: true);
     }
 
     public void PerformAccuracyRoll(int? rigroll = null)
@@ -1599,6 +1601,7 @@ public class HighPassManager : MonoBehaviour
             actor: attackerToken,
             sourceHex: attackerToken.GetCurrentHex(),
             targetHex: intendedTargetHex,
+            jackpotEnabled: true,
             details: new Dictionary<string, string>
             {
                 ["highPassAttribute"] = attackerToken.highPass.ToString(),
@@ -1614,7 +1617,7 @@ public class HighPassManager : MonoBehaviour
 
         int highPassAttribute = attackerToken.highPass;
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
-        bool accuratePass = diceRoll + highPassAttribute >= ACCURACY_THRESHOLD;
+        bool accuratePass = GameplayScore.Total(highPassAttribute, diceRoll, jackpot: accuracyRoll.isJackpot) >= ACCURACY_THRESHOLD;
         committedTargetMissed = !accuratePass;
         if (committedTargetMissed) ClearMissedTargetHighlight();
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
@@ -1937,19 +1940,20 @@ public class HighPassManager : MonoBehaviour
     {
         if (didGKMoveInDefPhase) return new List<HexCell>(); // GK already used their movement
         if (hexGrid.GetDefendingGK() == null) return new List<HexCell>(); // No defending GK exists
-        if (finalTargetHex.isInPenaltyBox == 0) return new List<HexCell>(); // Better not rush to Handle a HP outside the box :)
+        if (finalTargetHex == null) return new List<HexCell>();
         HexCell gkHex = hexGrid.GetDefendingGK().GetCurrentHex();
         List<HexCell> reachableHexes = HexGridUtils.GetReachableHexes(hexGrid, gkHex, 3).Item1;
         List<HexCell> challengeHexes = HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2);
         // Find intersection of reachable hexes & valid challenge spots
-        return reachableHexes.Intersect(challengeHexes).ToList();
+        return reachableHexes.Intersect(challengeHexes)
+            .Where(hex => !hex.isOutOfBounds && (hex.GetOccupyingToken() == null || hex == gkHex)).ToList();
     }
 
     private bool CanDefendingGKChallengeFromCurrentHex()
     {
         if (didGKMoveInDefPhase) return false;
         PlayerToken defendingGK = hexGrid.GetDefendingGK();
-        if (defendingGK == null || finalTargetHex == null || finalTargetHex.isInPenaltyBox == 0) return false;
+        if (defendingGK == null || finalTargetHex == null) return false;
 
         HexCell gkHex = defendingGK.GetCurrentHex();
         return gkHex != null && HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2).Contains(gkHex);

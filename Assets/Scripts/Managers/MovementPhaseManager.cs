@@ -1695,7 +1695,10 @@ public class MovementPhaseManager : MonoBehaviour
             return " (1 is a foul; normal leniency)";
         }
 
-        return " (1-2 are a foul; from behind — harsh leniency)";
+        PlayerToken defender = selectedDefender != null ? selectedDefender : selectedToken;
+        bool ownBoxKeeper = defender != null && defender.IsGoalKeeper && IsCurrentBallHexInOpponentPenaltyBox();
+        return ownBoxKeeper ? " (1-2 are a foul; from behind — normal leniency)"
+            : " (1-2 are a foul; from behind — harsh leniency)";
     }
 
     private string BuildGKDiveFoulRiskInstruction()
@@ -1705,7 +1708,8 @@ public class MovementPhaseManager : MonoBehaviour
         bool dangerous = IsCurrentTackleDangerous(ball?.GetCurrentHex()?.GetOccupyingToken(), goalkeeper);
         string range = dangerous ? "1-2 are" : "1 is";
         string foul = IsCurrentBallHexInOpponentPenaltyBox() ? "a penalty" : "a foul";
-        return $"{range} {foul}; {(dangerous ? "from behind — harsh leniency" : "normal leniency")}";
+        bool harshCards = dangerous && !(goalkeeper != null && goalkeeper.IsGoalKeeper && IsCurrentBallHexInOpponentPenaltyBox());
+        return $"{range} {foul}; {(harshCards ? "from behind — harsh leniency" : "normal leniency")}";
     }
 
     private string BuildTackleDecisionInstruction(string selectedTokenName, bool withoutMoving)
@@ -3037,8 +3041,8 @@ public class MovementPhaseManager : MonoBehaviour
         int defenderSkill = defenderTackling;
         int attackerDribbling = attackerToken.dribbling;
         int defenderModifier = (isNutmegInProgress ? 1 : 0) + (IsGoalkeeperDiveChallengeInProgress() ? gkWallDiveSavingPenalty : 0);
-        int defenderTotalScore = defenderDiceRoll == 50 ? defenderDiceRoll : defenderSkill + defenderDiceRoll + defenderModifier;
-        int attackerTotalScore = attackerDiceRoll == 50 ? attackerDiceRoll : attackerToken.dribbling + attackerDiceRoll;
+        int defenderTotalScore = GameplayScore.Total(defenderSkill, defenderDiceRoll, defenderModifier);
+        int attackerTotalScore = GameplayScore.Total(attackerToken.dribbling, attackerDiceRoll);
 
         Debug.Log($"Defender Name: {selectedDefender.name} with {GetDefenderGroundDuelSkillLabel(selectedDefender)}, Attacker: {attackerToken.name} with Dribbling: {attackerDribbling}");
         bool isDangerousTackle = IsCurrentTackleDangerous(attackerToken, selectedDefender);
@@ -3467,6 +3471,10 @@ public class MovementPhaseManager : MonoBehaviour
         isWaitingForFoulDecision = false;
         Debug.Log("Handling foul resolution process...");
         pendingFoulIsPenalty = IsCurrentBallHexInOpponentPenaltyBox();
+        // Keep the from-behind foul threshold, but avoid double jeopardy for an
+        // own-box goalkeeper foul. Outside-box challenges retain normal card policy.
+        if (defenderToken != null && defenderToken.IsGoalKeeper && pendingFoulIsPenalty)
+            pendingDangerousTackleFoul = false;
         // Recovery fouls reuse the open single-roll layout and the same leniency/injury flow
         // as tackling fouls. No second panel, fresh roll, or intermediate dismissal is needed.
         if (activeDuelPanel == null && duelResolutionPanel != null
@@ -3730,6 +3738,7 @@ public class MovementPhaseManager : MonoBehaviour
             relatedToken: fouledAttacker,
             sourceHex: selectedDefender != null ? selectedDefender.GetCurrentHex() : null,
             targetHex: fouledAttacker != null ? fouledAttacker.GetCurrentHex() : null,
+            jackpotEnabled: false,
             details: new Dictionary<string, string>
             {
                 ["refereeLeniency"] = MatchManager.Instance.refereeLeniency.ToString(),
@@ -3827,14 +3836,6 @@ public class MovementPhaseManager : MonoBehaviour
                 }
                 Debug.Log($"Defender {selectedDefender.name} escapes a yellow card.");
 
-                // Check if defender is already booked and failed leniency test
-                if (selectedDefender.isBooked)
-                {
-                    Debug.Log($"AUTOMATIC TAKE FOUL: {selectedDefender.name} was already booked and failed leniency test!");
-                    isWaitingForYellowCardRoll = false;
-                    pendingAutomaticTakeFoulAfterInjury = true;
-                    return;
-                }
             }
             pendingDangerousTackleFoul = false;
             isWaitingForYellowCardRoll = false;
@@ -3898,6 +3899,7 @@ public class MovementPhaseManager : MonoBehaviour
             relatedToken: selectedDefender,
             sourceHex: attackerToken != null ? attackerToken.GetCurrentHex() : null,
             targetHex: selectedDefender != null ? selectedDefender.GetCurrentHex() : null,
+            jackpotEnabled: false,
             details: new Dictionary<string, string>
             {
                 ["attackerResilience"] = attackerToken != null ? attackerToken.resilience.ToString() : string.Empty
@@ -4913,7 +4915,7 @@ public class MovementPhaseManager : MonoBehaviour
 
             PlayerToken dribbler = MatchManager.Instance.LastTokenToTouchTheBallOnPurpose;
             int threshold = IsCurrentTackleDangerous(dribbler, selectedDefender) ? 2 : FOUL_THRESHOLD;
-            int defenderTotal = defenderDiceRoll == 50 ? 50 : GetDefenderGroundDuelSkill(selectedDefender) + defenderDiceRoll;
+            int defenderTotal = GameplayScore.Total(GetDefenderGroundDuelSkill(selectedDefender), defenderDiceRoll);
             string need = DuelRollGuidance.ForDribbler(dribbler.dribbling, defenderTotal,
                 defenderDiceRoll == 50, defenderDiceRoll <= threshold);
             return $"Press [R] to roll with {dribbler.playerName} for the tackle. Dribbling: {dribbler.dribbling}; {need}, ";
@@ -4980,7 +4982,7 @@ public class MovementPhaseManager : MonoBehaviour
             return $"Press [R] to roll with {dribbler.playerName} for the GK dive. Dribbling {dribbler.dribbling}, ";
         }
 
-        int defenderTotal = defenderDiceRoll == 50 ? 50 : goalkeeper.saving + defenderDiceRoll + gkWallDiveSavingPenalty;
+        int defenderTotal = GameplayScore.Total(goalkeeper.saving, defenderDiceRoll, gkWallDiveSavingPenalty);
         string needText = DuelRollGuidance.ForDribbler(dribbler.dribbling, defenderTotal,
             defenderDiceRoll == 50, defenderDiceRoll <= (IsCurrentTackleDangerous(dribbler, goalkeeper) ? 2 : FOUL_THRESHOLD),
             IsCurrentBallHexInOpponentPenaltyBox(), CurrentGroundDuelPresentation);
@@ -5000,7 +5002,7 @@ public class MovementPhaseManager : MonoBehaviour
             return $"Saving {goalkeeper.saving}";
         }
 
-        int effectiveSaving = goalkeeper.saving + gkWallDiveSavingPenalty;
+        int effectiveSaving = GameplayScore.EffectiveAttribute(goalkeeper.saving, gkWallDiveSavingPenalty);
         if (gkWallDiveSavingPenalty > 0)
         {
             return $"Saving: {goalkeeper.saving}+{gkWallDiveSavingPenalty}={effectiveSaving}";
@@ -5018,7 +5020,7 @@ public class MovementPhaseManager : MonoBehaviour
 
         int defenderTotal = defenderDiceRoll == 50
             ? 50
-            : defenderDiceRoll + nutmegVictim.tackling + 1;
+            : GameplayScore.Total(nutmegVictim.tackling, defenderDiceRoll, 1);
         return DuelRollGuidance.ForDribbler(attackerToken.dribbling, defenderTotal,
             defenderDiceRoll == 50, defenderDiceRoll <= FOUL_THRESHOLD);
     }

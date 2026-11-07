@@ -252,7 +252,7 @@ public class GroundBallManager : MonoBehaviour
             GroundBallPathInteractionType.OutfieldInterception => interaction.DefenderToken.tackling >= 4
                 ? Mathf.Max(1, 10 - interaction.DefenderToken.tackling)
                 : 6,
-            GroundBallPathInteractionType.GoalkeeperWallSave => Mathf.Max(1, 10 - interaction.DefenderToken.saving - interaction.GkPenalty),
+            GroundBallPathInteractionType.GoalkeeperWallSave => Mathf.Max(1, 10 - GameplayScore.EffectiveAttribute(interaction.DefenderToken.saving, interaction.GkPenalty)),
             _ => 0
         };
     }
@@ -1255,7 +1255,7 @@ public class GroundBallManager : MonoBehaviour
                 StartCoroutine(ResolveGoalkeeperDirectPickup(currentPathInteraction));
                 break;
             case GroundBallPathInteractionType.GoalkeeperWallSave:
-                int neededRoll = Mathf.Max(1, 10 - currentPathInteraction.DefenderToken.saving - currentPathInteraction.GkPenalty);
+                int neededRoll = Mathf.Max(1, 10 - GameplayScore.EffectiveAttribute(currentPathInteraction.DefenderToken.saving, currentPathInteraction.GkPenalty));
                 Debug.Log($"{currentPathInteraction.DefenderToken.name} can dive for a GK Wall save at {currentPathInteraction.InteractionHex.coordinates}. Needs {neededRoll}+ with Saving {currentPathInteraction.DefenderToken.saving} and penalty {currentPathInteraction.GkPenalty}, or natural 6/Jackpot. Press [R] to roll.");
                 isWaitingForDiceRoll = true;
                 break;
@@ -1327,7 +1327,7 @@ public class GroundBallManager : MonoBehaviour
             });
         bool isJackpot = saveRoll.isJackpot;
         int diceRoll = saveRoll.roll;
-        int savingTotal = diceRoll + goalkeeper.saving + interaction.GkPenalty;
+        int savingTotal = GameplayScore.Total(goalkeeper.saving, diceRoll, interaction.GkPenalty);
 
         MatchManager.Instance.gameData.gameLog.LogEvent(goalkeeper, MatchManager.ActionType.SaveAttempt);
         Debug.Log(isJackpot
@@ -1724,7 +1724,7 @@ public class GroundBallManager : MonoBehaviour
             if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
             {
                 PlayerToken gkToken = currentPathInteraction.DefenderToken;
-                int neededRoll = Mathf.Max(1, 10 - gkToken.saving - currentPathInteraction.GkPenalty);
+                int neededRoll = Mathf.Max(1, 10 - GameplayScore.EffectiveAttribute(gkToken.saving, currentPathInteraction.GkPenalty));
                 string penaltyText = currentPathInteraction.GkPenalty == 0
                     ? ""
                     : $", dive penalty {currentPathInteraction.GkPenalty}";

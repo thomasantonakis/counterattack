@@ -307,7 +307,7 @@ public static class ExpectedStatsCalculator
 
     private static int GetContestTotal(int attribute, int effectiveRoll)
     {
-        return effectiveRoll == 50 ? 50 : attribute + effectiveRoll;
+        return GameplayScore.Total(attribute, effectiveRoll);
     }
 
     public static float CalculateKeeperConcedeProbability(int shotPower, int keeperSaving, int keeperPenalty)
@@ -315,7 +315,7 @@ public static class ExpectedStatsCalculator
         float probability = 0f;
         foreach (DiceOutcome outcome in DuelDiceOutcomes)
         {
-            int savingPower = outcome.effectiveRoll == 50 ? 50 : keeperSaving + keeperPenalty + outcome.effectiveRoll;
+            int savingPower = GameplayScore.Total(keeperSaving, outcome.effectiveRoll, keeperPenalty);
             if (savingPower < shotPower)
             {
                 probability += outcome.probability;
@@ -354,7 +354,7 @@ public static class ExpectedStatsCalculator
         {
             int roll = knownShooterRoll.Value;
             if (roll <= 1) return 0f;
-            int power = roll == 50 ? 50 : shooter.shooting + roll - shootingPenalty;
+            int power = GameplayScore.Total(shooter.shooting, roll, -shootingPenalty);
             return noBlockProbability * (goalkeeper != null
                 ? CalculateKeeperConcedeProbability(power, goalkeeper.saving, goalkeeperPenalty) : 1f);
         }
@@ -369,7 +369,7 @@ public static class ExpectedStatsCalculator
 
             int shotPower = shooterOutcome.effectiveRoll == 50
                 ? 50
-                : shooter.shooting + naturalRoll - shootingPenalty;
+                : GameplayScore.Total(shooter.shooting, naturalRoll, -shootingPenalty);
 
             float concedeProbability = goalkeeper != null
                 ? CalculateKeeperConcedeProbability(shotPower, goalkeeper.saving, goalkeeperPenalty)
@@ -421,7 +421,7 @@ public static class ExpectedStatsCalculator
         {
             int total = outcome.effectiveRoll == 50
                 ? 50
-                : attribute + modifier + GetNaturalRoll(outcome);
+                : GameplayScore.Total(attribute, GetNaturalRoll(outcome), modifier);
             if (total >= target)
             {
                 successProbability += outcome.probability;
@@ -452,7 +452,7 @@ public static class ExpectedStatsCalculator
 
         for (int roll = 1; roll <= 6; roll++)
         {
-            if (roll >= minimumNaturalRollForSuccess || roll + attribute + modifier >= 10)
+            if (roll >= minimumNaturalRollForSuccess || GameplayScore.Total(attribute, roll, modifier) >= 10)
             {
                 successfulRolls++;
             }
@@ -571,10 +571,10 @@ public static class ExpectedStatsCalculator
 
                 int defenderTotal = defenderOutcome.effectiveRoll == 50
                     ? 50
-                    : defenderTackling + defenderOutcome.effectiveRoll;
+                    : GameplayScore.Total(defenderTackling, defenderOutcome.effectiveRoll);
                 int attackerTotal = attackerOutcome.effectiveRoll == 50
                     ? 50
-                    : attackerDribbling + attackerOutcome.effectiveRoll;
+                    : GameplayScore.Total(attackerDribbling, attackerOutcome.effectiveRoll);
 
                 if (defenderTotal > attackerTotal)
                 {
@@ -602,7 +602,7 @@ public static class ExpectedStatsCalculator
         float dribble = 0f, tackle = 0f, loose = 0f;
         foreach (DiceOutcome roll in DuelDiceOutcomes)
         {
-            int attackerTotal = roll.effectiveRoll == 50 ? 50 : attackerDribbling + roll.effectiveRoll;
+            int attackerTotal = GameplayScore.Total(attackerDribbling, roll.effectiveRoll);
             if (attackerTotal > defenderTotal) dribble += roll.probability;
             else if (attackerTotal < defenderTotal) tackle += roll.probability;
             else loose += roll.probability;

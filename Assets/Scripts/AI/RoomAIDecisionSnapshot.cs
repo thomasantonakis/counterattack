@@ -6141,7 +6141,7 @@ public static class RoomAIDecisionSnapshotBuilder
                         goalkeeperPenalty));
             }
 
-            if (forceGoalkeeperRush == false || headerTarget.isInPenaltyBox == 0)
+            if (forceGoalkeeperRush == false)
             {
                 continue;
             }
@@ -6153,11 +6153,10 @@ public static class RoomAIDecisionSnapshotBuilder
                 headerTarget,
                 forcedGoalkeeperHex))
             {
-                int rushDistanceToTarget = HexGridUtils.GetHexStepDistance(rushHex, headerTarget);
                 ExpectedStatsCalculator.AerialContestant goalkeeperContestant =
                     new ExpectedStatsCalculator.AerialContestant(
                         goalkeeper,
-                        goalkeeper.aerial + (rushDistanceToTarget > 1 ? -1 : 0));
+                        HeaderManager.EffectiveHeaderAttributeAt(goalkeeper, rushHex, headerTarget));
                 bestDefense = System.Math.Min(
                     bestDefense,
                     CalculateHeaderGoalForGoalkeeperChoice(
@@ -6339,10 +6338,7 @@ public static class RoomAIDecisionSnapshotBuilder
             return 0;
         }
 
-        int attribute = token.IsGoalKeeper ? token.aerial : token.heading;
-        return HexGridUtils.GetHexStepDistance(target, token.GetCurrentHex()) > 1
-            ? attribute - 1
-            : attribute;
+        return HeaderManager.EffectiveHeaderAttributeAt(token, token.GetCurrentHex(), target);
     }
 
     private static void PopulateSetPieceSetupFacts(

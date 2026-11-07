@@ -57,11 +57,11 @@ public class HeaderManager : MonoBehaviour
     public PlayerToken tokenRolling;
     public HexCell tokenRollingHex => tokenRolling?.GetCurrentHex();
     public HexCell[] ballNeighbors => ball.GetCurrentHex().GetNeighbors(hexGrid);
-    public bool hasHeadingPenalty => tokenRollingHex != ball.GetCurrentHex() && !ballNeighbors.Contains(tokenRollingHex);
+    public bool hasHeadingPenalty => GetHeaderPenalty(tokenRolling) < 0;
     public string penaltyInfo => hasHeadingPenalty ? ", with penalty (-1)" : "";
     public string attordef => tokenRolling.isAttacker ? "Attacker" : "Defender";
-    public int attribute => tokenRolling.IsGoalKeeper ? tokenRolling.aerial : tokenRolling.heading;
-    public string attributelabel => tokenRolling.IsGoalKeeper ? "aerial ability" : "heading";
+    public int attribute => GetHeaderAttribute(tokenRolling);
+    public string attributelabel => UsesAerialAbility(tokenRolling) ? "aerial ability" : "heading";
     [SerializeField]
     public List<HexCell> interceptingDefenders = new List<HexCell>();
     public PlayerToken interceptingDefender;
@@ -1110,7 +1110,7 @@ public class HeaderManager : MonoBehaviour
             return "";
         }
 
-        string abilityLabel = tokenRolling.IsGoalKeeper ? "Aerial" : "Header";
+        string abilityLabel = UsesAerialAbility(tokenRolling) ? "Aerial" : "Heading";
         int baseAttribute = GetHeaderAttribute(tokenRolling);
         int penalty = GetHeaderPenalty(tokenRolling);
         string penaltyInfo = penalty < 0 ? " -1 penalty" : "";
@@ -1237,30 +1237,38 @@ public class HeaderManager : MonoBehaviour
     }
 
     public int GetHeaderAttribute(PlayerToken token)
+        => HeaderAttributeAt(token, token != null ? token.GetCurrentHex() : null);
+
+    // The keeper's position, not the ball's landing hex, determines legal use
+    // of hands. Projected AI boards use these same rules at their projected hex.
+    public static bool UsesAerialAbility(PlayerToken token, HexCell position = null)
     {
-        if (token == null) return 0;
-        return token.IsGoalKeeper ? token.aerial : token.heading;
+        if (token == null || !token.IsGoalKeeper || token.isAttacker || MatchManager.Instance == null) return false;
+        position ??= token.GetCurrentHex();
+        var direction = token.isHomeTeam ? MatchManager.Instance.homeTeamDirection : MatchManager.Instance.awayTeamDirection;
+        int ownBox = direction == MatchManager.TeamAttackingDirection.LeftToRight ? -1 : 1;
+        return position != null && position.isInPenaltyBox == ownBox;
     }
+
+    public static int HeaderAttributeAt(PlayerToken token, HexCell position)
+        => token == null ? 0 : UsesAerialAbility(token, position) ? token.aerial : token.IsGoalKeeper ? 0 : token.heading;
+
+    public static int HeaderDistancePenaltyAt(PlayerToken token, HexCell position, HexCell landing)
+        => token != null && position != null && landing != null && HeaderAttributeAt(token, position) > 0
+            && HexGridUtils.GetHexStepDistance(position, landing) > 1 ? -1 : 0;
+
+    public static int EffectiveHeaderAttributeAt(PlayerToken token, HexCell position, HexCell landing)
+        => GameplayScore.EffectiveAttribute(HeaderAttributeAt(token, position), HeaderDistancePenaltyAt(token, position, landing));
 
     private int GetEffectiveHeaderAttribute(PlayerToken token)
     {
         if (token == null) return 0;
-        return GetHeaderAttribute(token) + GetHeaderPenalty(token);
+        return GameplayScore.EffectiveAttribute(GetHeaderAttribute(token), GetHeaderPenalty(token));
     }
 
     public int GetHeaderPenalty(PlayerToken token)
     {
-        if (token == null) return 0;
-        HexCell ballHex = ball.GetCurrentHex();
-        HexCell tokenHex = token.GetCurrentHex();
-        if (ballHex != null
-            && tokenHex != null
-            && HexGridUtils.GetHexStepDistance(ballHex, tokenHex) > 1)
-        {
-            return -1;
-        }
-
-        return 0;
+        return HeaderDistancePenaltyAt(token, token != null ? token.GetCurrentHex() : null, ball.GetCurrentHex());
     }
 
     private ExpectedStatsCalculator.AerialContestant[] BuildAerialContestants()
@@ -1650,7 +1658,9 @@ public class HeaderManager : MonoBehaviour
             MatchManager.Instance.ClearOffsideForLegalCollection(challengeWinner, "high_pass_defender_free_header_won");
             MatchManager.Instance.ChangePossession();
             ReassessOffsideAfterHeaderWinner("high_pass_defender_free_header_won");
-            if (challengeWinner.IsGoalKeeper)
+            // Possession has already changed here; use the legal catch hex
+            // rather than the newly updated attack/defense role.
+            if (challengeWinner.IsGoalKeeper && goalKeeperManager.IsGoalkeeperOwnPenaltyHex(challengeWinner, challengeWinner.GetCurrentHex()))
             {
                 yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(challengeWinner.GetCurrentHex()));
                 Debug.Log($"{challengeWinner.name} (DefenseGK) wins the free header. Switching possession. Save and hold scenario.");
@@ -1779,7 +1789,7 @@ public class HeaderManager : MonoBehaviour
                 // TODO: if headerAtGoalDeclared log a header at goal?
                 challengeWinner = bestDefender;
                 if (headerChallengePanel != null)
-                    yield return headerChallengePanel.Finish(this, bestDefender, bestDefender.IsGoalKeeper
+                    yield return headerChallengePanel.Finish(this, bestDefender, UsesAerialAbility(bestDefender)
                         ? "Goalkeeper wins · Save and hold follows" : "Defense wins · Possession changes · Headed pass follows", false);
                 if (presentationVersion != challengePresentationVersion) yield break;
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.AerialChallengeWon, connectedToken: bestAttacker);
@@ -1787,7 +1797,7 @@ public class HeaderManager : MonoBehaviour
                 MatchManager.Instance.gameData.gameLog.LogEvent(bestDefender, MatchManager.ActionType.BallRecovery, recoveryType: "header", connectedToken: bestAttacker);
                 MatchManager.Instance.SetLastToken(bestDefender);
                 MatchManager.Instance.ClearOffsideForLegalCollection(bestDefender, "high_pass_header_defender_won");
-                if (bestDefender.IsGoalKeeper) // TODO: in penalty area (their own)
+                if (UsesAerialAbility(bestDefender))
                 {
                     MatchManager.Instance.ChangePossession();
                     ReassessOffsideAfterHeaderWinner("high_pass_header_defender_won");
@@ -1870,7 +1880,7 @@ public class HeaderManager : MonoBehaviour
             });
         bool isJackpot = headerRoll.isJackpot;
         int roll = headerRoll.roll;
-        int totalScore = isJackpot ? 50 : roll + attribute + (hasHeadingPenalty ? -1 : 0);
+        int totalScore = GameplayScore.Total(attribute, roll, GetHeaderPenalty(tokenRolling), isJackpot);
         // int totalScore = roll + attacker.heading + (hasHeadingPenalty ? -1 : 0);
         tokenScores[tokenRolling] = (roll, totalScore);
         if (isJackpot) Debug.Log($"{attordef} {tokenRolling.name} rolled A JACKPOT!!");
@@ -1944,6 +1954,7 @@ public class HeaderManager : MonoBehaviour
             actor: controllingToken,
             sourceHex: controllingToken != null ? controllingToken.GetCurrentHex() : null,
             targetHex: ball.GetCurrentHex(),
+            jackpotEnabled: true,
             details: new Dictionary<string, string>
             {
                 ["dribbling"] = controllingToken != null ? controllingToken.dribbling.ToString() : string.Empty,
@@ -1951,7 +1962,7 @@ public class HeaderManager : MonoBehaviour
             });
         bool isJackpot = controlRoll.isJackpot;
         int roll = controlRoll.roll;
-        int totalScore = isJackpot ? 50 : roll + controllingToken.dribbling + controlPenalty;
+        int totalScore = GameplayScore.Total(controllingToken.dribbling, roll, controlPenalty, isJackpot);
         string controlPenaltyInfo = controlPenalty < 0 ? $", penalty ({controlPenalty})" : "";
         if (isJackpot) Debug.Log($"{controllingToken.name} rolled A JACKPOT for ball control!!");
         else Debug.Log($"Attacker {controllingToken.name} rolled {roll} + Dribbling {controllingToken.dribbling}{controlPenaltyInfo} = {totalScore}");
@@ -2322,13 +2333,14 @@ public class HeaderManager : MonoBehaviour
 
     private int GetNeededControlRoll(PlayerToken controllingToken)
     {
-        return CONTROL_TARGET - controllingToken.dribbling - GetControlPenalty(controllingToken);
+        return CONTROL_TARGET - GameplayScore.EffectiveAttribute(controllingToken.dribbling, GetControlPenalty(controllingToken));
     }
 
     private string GetControlRollInstruction()
     {
         int neededRoll = GetNeededControlRoll(challengeWinner);
         string controlPenaltyInfo = GetControlPenalty(challengeWinner) < 0 ? ", with penalty (-1)" : "";
+        if (challengeWinner.dribbling + GetControlPenalty(challengeWinner) < 0) controlPenaltyInfo += ", effective attribute 0 (minimum 0)";
         string neededRollInfo = neededRoll <= 6
             ? $"a roll of {Mathf.Max(1, neededRoll)}+ is needed"
             : "a Jackpot is needed";

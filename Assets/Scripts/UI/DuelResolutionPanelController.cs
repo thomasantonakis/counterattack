@@ -318,7 +318,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             : headerRoll > 0 ? $"Roll {headerRoll} · Total: {headerPower}" : $"Header total: {headerPower}";
         dribblerView.guidance.text = "Aerial challenge won · On target";
         defenderView.attribute.text = saveModifier == 0 ? $"Saving {goalkeeper.saving}"
-            : $"Saving {goalkeeper.saving} {saveModifier:+0;-0} = {goalkeeper.saving + saveModifier} (Distance Penalty)";
+            : $"Saving {goalkeeper.saving} {saveModifier:+0;-0} = {GameplayScore.EffectiveAttribute(goalkeeper.saving, saveModifier)} (Distance Penalty)";
         defenderView.modifier.text = "GOALKEEPER SAVE";
         defenderView.total.text = "";
         defenderView.guidance.text = SingleRollResolutionPresentation.HeaderSaveGuidance(goalkeeper.saving, saveModifier, headerPower);
@@ -595,7 +595,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         looseRecoveryPlayer.attribute.text = SingleRollResolutionPresentation.LooseRecoveryAttribute(token, useSaving, modifier);
         looseRecoveryPlayer.modifier.text = $"xRecovery {expected:0.00}";
         looseRecoveryPlayer.total.text = "";
-        looseRecoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(skill + modifier, 6, 0);
+        looseRecoveryPlayer.guidance.text = SingleRollResolutionPresentation.RecoveryGuidance(GameplayScore.EffectiveAttribute(skill, modifier), 6, 0);
         looseRecoveryPlayer.die.Begin(true);
         SetLooseRecoveryLayout(scatterAttached);
         footer.text = "Press [R] — recovery roll";
@@ -739,7 +739,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             stage = Stage.Dribbler;
             bool foul = roll.roll <= foulThreshold && !roll.isJackpot;
             defenderView.guidance.text = foul ? foulIsPenalty ? "Penalty roll" : "Foul roll" : "Rolled";
-            int defenderTotal = roll.isJackpot ? 50 : tackling + defenderBonus + roll.roll;
+            int defenderTotal = GameplayScore.Total(tackling, roll.roll, defenderBonus, roll.isJackpot);
             outcome.text = foul ? foulIsPenalty ? "PENALTY!" : "FOUL — tackler committed a foul"
                 : DuelRollGuidance.LiveOutcomes(ExpectedStatsCalculator.CalculateGroundDuelAfterDefenderRoll(dribbling, defenderTotal, false), duelKind);
             dribblerView.guidance.text = DuelRollGuidance.ForDribbler(dribbling,
