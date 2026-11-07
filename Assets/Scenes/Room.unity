@@ -171078,9 +171078,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1312322067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Script: {fileID: 11500000, guid: bb0bb3db7656c45dea22a33c0faa29d5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_InputField
+  m_EditorClassIdentifier: Assembly-CSharp::DesktopTextInputField
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -269213,9 +269213,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2001000030}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Script: {fileID: 11500000, guid: bb0bb3db7656c45dea22a33c0faa29d5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::DesktopTextInputField
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
