@@ -1,111 +1,181 @@
-# Session handoff — 2026-11-06
+# Session handoff — 2026-11-07
 
-## Latest user instructions
+## Start here
 
-Stop testing and hand off to a new session. **Do not run the full suites again.**
-The next session is to discuss the gameplay review. Do not automatically restart
-migration or tests merely because an older goal remains recorded.
+The user requested coherent commits and a push, then a fresh session to review
+whether gameplay or documentation is missing. This is a review handoff, not an
+instruction to resume the old migration or run full test suites automatically.
 
-The user resolved own-goal consistency: if a rushing GK or an outfield defender ties
-the best attacking aerial score and the resulting defensive scatter enters their
-own goal, it is that player's own goal. Blocked-shot and tied-save scatters follow
-the same attribution. No-deflection failed saves remain attacker goals. Do not
-reopen this as an unanswered question or change scoring code to award the attacker.
+Read this file, [GameplayReview.md](GameplayReview.md), and
+[../RulesWikiAudit.md](../RulesWikiAudit.md). The complete wiki-to-code audit is
+**not finished**. Importing all pages and passing viewer tests do not establish
+that every football rule is implemented correctly.
 
-## Completed and pushed
+## Decisions already made
 
-- Production fixes: `4cb471c` (six files), reviewed in GameplayReview.md.
-- Native fixtures/adapters and existing migration documentation are already in
-  `21b0531`, `5b754cc`, `c21c5f5`, `12b5694`.
-- Requested review, future-session prompt and mandatory future gameplay regression
-  policy: `0d2dcb0`, pushed to origin/master.
-- AGENTS.md now requires new meaningful native coverage for every gameplay code
-  change, execution/inspection, affected regressions and separate compile/results
-  reporting. Old instructions to have the user press Play/comment out tests were
-  replaced with the native filter workflow.
+- Audit common rules with **Advanced variants taking precedence**. Exclude
+  reckless tackles and their dependent references.
+- Resolve each gameplay/wiki discrepancy with the user before changing behavior.
+- **Penalty-area fouls can be played on.** The user explicitly confirmed the
+  game is right and the wiki's mandatory-penalty sentence is wrong. Keep gameplay;
+  the bundled Movement Phase page is corrected. An upstream patch is prepared,
+  checked against the pinned source, and has not been published to the wiki repo.
+- Defensive scatter into the player's own goal is that defender's own goal,
+  including a rushing keeper/aerial tie, outfield aerial tie, block or tied save.
+  No-deflection failed saves remain attacker goals. Do not reopen this decision.
+- Rules uses one offline continuous document, persistent contents, full-text
+  search with results AND next/previous matches, inline links, and reading history.
+- Main Menu, Room and pause-menu Rules all open the same viewer. Room progression
+  suspends while reading and the prior pause state is restored on close.
+- Enter in search means Next; Escape clears a nonempty search instead of closing.
+  Back/Forward includes manually scrolled reading positions.
+- Pause-menu Rules is a separate row immediately above Back to Main Menu.
+  Room Rules is above InstructionsPanel with automatic navigation disabled.
+  RoomTip is now above the instructions box, beside Rules.
 
-## Actual validation, with limits
+## What changed in this session
 
-- Complete PlayMode: **362 passed / 0 failed / 0 skipped**, native XML:
-  `TestResults/GameplayRegression/Runs/20261106T172436176Z/results.xml`.
-- Last complete EditMode: **747 / 0 / 0**, native XML:
-  `TestResults/GameplayRegression/Runs/20261106T144426744Z/results.xml`.
-- Current discovery:748 EditMode +362 PlayMode =1110. The newer stats-preview
-  EditMode test has passed in isolation, but a complete748-case run has not occurred.
-- Clean live compilation after final test-only edits:0errors/0warnings. This is
-  not a test verdict.
-- Full PlayMode XML logs explicitly show Kuzmic own goals for generated header02
-  (tied save) and09 (rushing aerial tie), and Soares own goal for shooting17
-  (outfield block). These passed. Explicit personal/scorer-record assertions for
-  the newly clarified rule are still a follow-up, not already written/executed.
+The starting repository was clean at `9862d4d` on master. Changes are grouped into
+content, viewer/scene integration, tests/results documentation, and review/handoff
+commits. No ball-action, scoring, discipline, AI or save-format rule was changed.
 
-## Filtered run ended for handoff
+- `4d48132`: bundled Advanced rulebook, diagrams, audit findings and penalty patch.
+- `9bc820d`: shared viewer, dedicated font, authoring tool and scene integration.
+- `3a05edd`: Rules tests and executed validation record.
+- The following documentation commit refreshes this handoff and GameplayReview.
 
-An additional **filtered `Shot` PlayMode audit**, not another full suite, was already
-running when the user requested handoff:
-`TestResults/GameplayRegression/Runs/20261106T214114486Z/`.
-Its durable progress contains **15 passed and1 failed** (16 completed), last case
-`LegacyFreeKickShotPlayModeTests.FreeKickShotBranch_10`. There is **no results.xml**,
-so this is an incomplete/cancelled run, not a full16-test verdict. Do not count
-unexecuted tests as passed or skipped.
+The viewer is `Assets/Prefabs/RulesViewer.prefab`, with an instance in MainMenu and
+Room. Its objects, diagrams, contents buttons and search rows are authored in edit
+mode. Runtime code updates visibility, search colors, input ownership and scrolling;
+it does not construct the UI hierarchy. A dedicated Rules font avoids changing
+shared designer fonts. MainMenuManager.OpenRules now opens the viewer.
+RoomInputOwnership reserves input/camera/Escape while it is open.
 
-The one failure is a new test-only assertion in FreeKickShotBranch_01:
-`Final Third owner: Expected True, But was False`.
-The gameplay had reached WaitingForGoalKickFinalThirds, but
-FinalThirdManager.TriggerOobGoalKickFinalThirdsAfterGoalkeeperReady first waits for
-the keeper to reach the goal-kick spot before activating Final Thirds. The new
-assertion assumed readiness too early. Diagnose/correct the wait before asserting
-that stable state; do not alter gameplay or silently remove the state assertion.
-No production gameplay code was changed in this final audit.
+Source is bundled under `Assets/Docs/Wiki/English/` and `Images/`, pinned to
+`counterattackgame/wiki@e9c0f9fe0d575d61368f20cfd412bc9194ca2e71`.
+Ten English pages, eight diagrams and 523 rendered/searchable blocks are included.
+The game edition excludes reckless tackles and has the approved penalty wording.
+Core/Advanced and tabletop setup text otherwise remains pending chapter review.
+Source attribution and authoring instructions are in the bundled README.
 
-Pipeline `cancel_tests` returned `cancelled`. Subsequent `editor_status` confirmed
-**ready, PlayMode stopped, compiling false**. The temporary InitTestScene files are
-no longer in git status. Before any future requested execution, recheck native UTF
-and Pipeline pending state; do not start a competing run. Do not launch Unity.
+`RulesViewerEditorTools.Build` validates internal links and rebuilds the prefab
+and entry buttons. Save scenes first. **Do not run broad Room authoring tools
+blindly:** `RoomPresentationEditorTools.AuthorTips` still has the older below-box
+tip defaults. The saved Room scene contains the user's latest above-box placement;
+bringing that helper into alignment is a small remaining tooling task.
 
-## Uncommitted test-only work to preserve and review
+Unity regenerated unrelated panel IDs while previewing the layout. Those changes
+were removed after comparing normalized serialized documents for semantic equality.
+The original unrelated text color was restored. MatchStatsUI/Stats was not restyled.
 
-- `Assets/Editor/FrameworkAuthoredPanelSourceFingerprint.cs` and `.meta` (new).
-- `Assets/Editor/FrameworkAuthoredPanelAssets.cs` and
-  `Assets/Editor/LegacyAuthoredPresentationFixture.cs`: use a hash of the three
-  authored panel hierarchies rather than the entire Room scene. This avoids
-  coupling fixtures to unrelated designer scene changes. Scoped hash is
-  `93FCA01594AC4E8FF35D07BD0A32C2438CB54DD13E9F84A0F5BD909721EC39AB`.
-- `Assets/Tests/Fixtures/RoomResolutionPanels.source.sha256.txt`: that scoped hash.
-- `Assets/Editor/LegacyShootingBranchesFixture.cs`: final port of original common
-  manager-owner assertions (including unrelated action owners and shot availability
-  during restart). Includes the premature off-target Final Third assertion above.
-- `Assets/Editor/LegacyHeaderGoalFixture.cs`: restore restart availability assertion
-  immediately after corner Final Thirds as well as at final kicker selection.
+## Findings versus the wiki
 
-These compile and the first15 affected cases passed, but this whole patch is not
-fully validated or committed. Preserve it as work in progress. Room scene SHA256
-remains `BE602B8B79E96EEB56873D17EE1948F557B85C237752250112EB22579703CD01`.
+1. **Confirmed wiki error, resolved:** mandatory penalties conflict with the
+   Set Pieces play-on option. Current HandleFoulProcess offers play-on for penalty
+   fouls; the user approved that behavior. See
+   `Documentation/WikiPatches/penalty-advantage.patch`.
+2. **Source-level match:** LongBallManager.AccuracyThresholdFor returns 10 for
+   opposite final thirds and 9 otherwise, matching Advanced Long Pass accuracy.
+   Eligibility, scatter, GK movement and continuation are not fully audited by
+   that observation.
+3. **Unresolved documentation variant:** Getting Started describes both one
+   keeper/fifteen outfielders and two keepers/fourteen outfielders. DraftManager
+   uses configured squad size (fallback sixteen), reserves two keeper slots and
+   selects `squadSize - 2` outfielders. Confirm the digital edition wording; do
+   not assume all tabletop draft variants must be implemented.
+4. The existing booked-defender forced-stoppage policy, GK recovery/distribution
+   boundaries and synthetic input return semantics remain separate review items.
+   Penalty play-on approval does not resolve those other questions.
 
-## Exact migration cleanup still outstanding
+There is **no newly confirmed gameplay-code defect from a completed wiki audit**.
+Do not present the older six migration fixes as new wiki discrepancies.
 
-All147 originals have native replacements and the complete362-case suite passed.
-However, only145 originals have been removed from the runtime source. Two remain:
-Scenario_034_Shooting_Branch (31 cases), Scenario_038_HeaderAtGoal_Branch (13 cases).
-They were deliberately retained until the last common-state assertion audit was
-complete. Do not claim the runtime runner is already deleted or the audit is green.
+## Executed validation and its limits
 
-The old helper assumed exclusive Shot/LooseBall activation during scatter. Current
-ShotManager awaits ResolveLooseBall before ResetShotProcess (the reset ordering
-predates this migration); parent action activation can coexist with child input
-ownership. Test that actual lifecycle and all unrelated inactive managers. Document
-that expectation correction, rather than changing game lifecycle to fit the old
-helper. Off-target goal-kick activation also needs its actual readiness wait.
+The final Rules controls batch passed:
 
-If the user later requests completion: finish that focused audit and clarified
-own-goal assertions, then retire the two methods and remove DummyLoader's Tester
-component plus GameTestScenarioRunner.cs/.meta. A prepared, **unexecuted** Editor
-snippet is `/private/tmp/retire_gameplay_runner.cs`; inspect it before use. It guards
-Room hash/dirty state and removes only the obsolete DummyLoader runner. The snapshot
-helper has already moved into Assets/Editor/LegacyGameStatusSnapshot.cs and no native
-test calls a legacy scenario. Respect the latest instruction against full-suite
-reruns; do not run one automatically in the discussion session.
+| Filter | Passed / failed / skipped | Native XML under TestResults/GameplayRegression/Runs/ |
+| --- | --- | --- |
+| RulesViewerEditorTests | 11 / 0 / 0 | 20261107T101432316Z/results.xml |
+| RulesViewerPlayModeTests | 3 / 0 / 0 | 20261107T101453780Z/results.xml |
+| RoomPresentationEditorTests | 13 / 0 / 0 | 20261107T101232653Z/results.xml |
 
-Read GameplayReview.md for six production changes, expected wider effects, baseline
-keeper changes and remaining policy/API review items. FutureSessionPrompt.md contains
-the copyable discussion prompt. MorningReview.md retains historical investigations.
+These 27 checks cover scene wiring/layout, local links, pointer-dispatched history
+buttons, manual scroll history, TMP submit/cancel events, search and Room pause
+restoration. The earlier viewer batch also passed 8 hover and 14 action-sequence
+tests; the 49-check and 27-check reports overlap and must not be summed as unique
+coverage. Paths and failed/retest history are in GameplayRegressionMigration.md.
+
+The subsequent RoomTip move was a scene-only RectTransform edit: verified and saved
+above the box with clearance for Rules. No automated tests were rerun for that
+low-impact layout-only adjustment. No scripts changed after clean live compilation.
+Editor was last observed ready, stopped, and with Room saved; recheck live state
+rather than assuming that remains true.
+
+PNG previews are in `Runs/RulesViewerVisuals/`. XML/progress and compilation
+envelopes are retained locally outside Temp. **TestResults is git-ignored**, so
+a fresh clone will not receive those files through this push. A new session in
+this workspace can inspect them; another machine needs copied artifacts or an
+explicitly requested rerun. Physical keyboard/hardware input is not established
+by UI-event tests or still images.
+
+Historical full-suite checkpoints remain 747 EditMode passed
+(`20261106T144426744Z/results.xml`) and 362 PlayMode passed
+(`20261106T172436176Z/results.xml`). They predate later Room/viewer changes.
+No full suites were run for the current UI work; do not quote those historical
+counts as full validation of the current tree or as current discovery totals.
+
+## Older migration follow-up: committed, still not fully validated
+
+The old handoff's “uncommitted test-only work” is now committed in `c391477`:
+scoped panel fingerprints, authored-panel fixture updates and strengthened
+shooting/header assertions. Earlier production fixes remain in `4cb471c`.
+Later Room work is in `f8295b4`, `018c242` and `9862d4d`; see
+[RoomPresentationImplementation.md](RoomPresentationImplementation.md).
+
+The interrupted Shot audit at `Runs/20261106T214114486Z/` recorded 15 passed
+and 1 failed, without final XML. Its premature off-target Final Third assertion
+is still present in LegacyShootingBranchesFixture.ExpectOffTarget:
+the keeper must finish goal-kick preparation before asserting Final Third
+activation and restart availability. No focused rerun resolved that in this
+session. This is a readiness/oracle investigation, not authority to change gameplay.
+
+Two legacy originals remain in GameTestScenarioRunner:
+Scenario_034_Shooting_Branch and Scenario_038_HeaderAtGoal_Branch. Do not delete
+them or DummyLoader's runner until the strengthened common-assertion audit and
+explicit own-goal scorer/event assertions pass. The previous complete 362-case
+run predates those stronger assertions. Old whole-Room hashes are historical;
+use the scoped panel fingerprint for owned presentation fixtures.
+
+## Fresh-session review order
+
+1. Inspect current git status/log and the evidence above. Do not assume old
+   “uncommitted” lists, full-suite counts or scene hashes describe the new tree.
+2. Complete a rule-by-rule matrix from every English chapter, Quick Guide and
+   diagram. Map rule to current code, reachable input flow, relevant fixture,
+   actual result and disposition. Distinguish source support from executed proof.
+3. Review drafting wording and the unresolved policy/API questions in
+   GameplayReview.md. Preserve approved penalty play-on and own-goal decisions.
+4. Review keeper pickup timing, own/opponent-touch conditions, entry/re-entry
+   interruptions, aerial/control continuations, shot/loose-ball ownership and
+   set-piece transitions. These are audit targets, not established new bugs.
+5. If authorized to finish migration, correct readiness waits without weakening
+   outcomes, add explicit own-goal attribution coverage, then retire the two
+   originals only after their replacements pass.
+6. Keep live saves and designer Stats layout untouched. Use live Unity CLI for
+   all Editor control; never launch Unity, use batchmode/GUI scripting, or start
+   ordinary gameplay. Framework tests are authorized, but this handoff does not
+   request another full-suite run.
+
+## Copyable prompt for the next session
+
+Read Documentation/Testing/SessionHandoff.md,
+Documentation/Testing/GameplayReview.md and Documentation/RulesWikiAudit.md.
+Review the current tree for missing gameplay rules,
+documentation or coverage against the pinned English wiki, using Advanced variants
+and excluding reckless tackles. Complete the rule-by-rule comparison before claiming
+parity. Preserve the confirmed penalty play-on and defensive own-goal decisions.
+Present each new discrepancy with code/source evidence and proposed game or wiki
+correction for my decision. Keep source inspection, executed tests and pending work
+distinct. Do not automatically resume migration, run full suites, modify live saves,
+or restyle designer-owned Stats. Check git and live Editor state before any execution.

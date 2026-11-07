@@ -1,17 +1,64 @@
 # Gameplay decisions and changes to review
 
-Updated 2026-11-06. Start with [SessionHandoff.md](SessionHandoff.md); the user
-requested handoff without another full test run. This is a review checklist, not a claim
-that passing regressions prove every football rule is correct.
+Updated 2026-11-07. Start with [SessionHandoff.md](SessionHandoff.md). This document
+separates current wiki findings, the new Rules UI, and older gameplay changes with
+their wider effects. Passing deterministic regressions does not prove every wiki
+rule or match combination. The user requested a fresh-session review; do not
+automatically restart the old migration or run full suites.
 
-## Validation and scope
+## Current wiki comparison: findings and confidence
+
+The English source is pinned to `counterattackgame/wiki@e9c0f9fe0d575d61368f20cfd412bc9194ca2e71`.
+Advanced variants take precedence; reckless tackles are excluded. All ten pages
+and eight diagrams are imported, but the full behavioral comparison is unfinished.
+See [RulesWikiAudit.md](../RulesWikiAudit.md) for chapter coverage and decisions.
+
+| Finding | Code and rule evidence | Decision / wider effect | Confidence |
+| --- | --- | --- | --- |
+| Penalty play-on | Movement Phase forbids declining a penalty; Set Pieces allows it. MovementPhaseManager.HandleFoulProcess offers A/F for penalty-area fouls. | User confirmed the game is right. Bundled wording is corrected and an upstream patch is prepared. No gameplay change. Mandatory substitution/sending-off restrictions remain; the older booked-defender stoppage question below is separate. | Confirmed source conflict and explicit user decision; no new runtime foul test in this UI batch. |
+| Advanced long-pass accuracy | LongBallManager.AccuracyThresholdFor uses 10 across opposite final thirds, 9 otherwise. | Matches the Advanced threshold. Does not establish all destination restrictions, scatter, GK moves or subsequent action availability. | Source-level match; entire Long Pass rule group remains unaudited. |
+| Draft variants | Wiki describes 1 GK + 15 outfielders and an online 2 GK + 14 variant. DraftManager uses configured squad size, two keeper slots and squadSize - 2 outfielders. | Proposed digital-edition clarification needs user confirmation. Do not silently add a new draft mode or remove configurable squad sizes. | Source inspection; full draft lifecycle and roster variants still need review. |
+
+No new gameplay-code defect has been established by a completed wiki audit.
+In particular, the six migration fixes below were discovered earlier and should
+not be relabeled as findings from this wiki import. Keeper pickup timing, aerial
+challenge outcomes, action transitions and repeated Quick Guide rules are next
+audit targets, not already-proven mismatches.
+
+## Rules viewer changes, reasons and wider effects
+
+| Change | Reason | Wider effect / review boundary |
+| --- | --- | --- |
+| Offline Markdown edition, diagrams, validated links and shared prefab | Rules should be available in Main Menu and during a match without a network dependency. | Bundled content changes only when regenerated/shipped. Source paragraphs may still contain tabletop variants and unresolved contradictions; import completeness is not rules parity. |
+| Continuous article, persistent contents, inline hyperlinks and reading history | Players need to move between related rules and return to their passage. | Back/Forward includes manual scroll checkpoints and match destinations. Positions/history persist only for the application session, not in match saves. |
+| Full-text results, highlights, next/previous and TMP keyboard events | Enter must advance search; Escape must clear it rather than close the viewer. Polling input focus missed native submit timing. | Tests exercise submit/cancel events and pointer dispatch; physical hardware and every IME/device are not covered. Search uses literal, case-insensitive phrases, not fuzzy matching. |
+| Room pause/input ownership | Reading must not allow board/camera actions or continue CPU/clock progression. | Viewer stores/restores the previous pause state and time scale. Existing forced-decision restrictions must remain intact. No football outcome or save format is changed. |
+| Separate pause Rules row and direct button above instructions | Original Resume clone overlapped Resume; automatic navigation produced arrows toward other UI controls. | Rules now precedes Back to Main Menu; direct navigation is None. RoomTip was moved above the box beside it. MatchStatsUI/Stats remains designer-owned. |
+| Dedicated font, edit-mode article/result objects | Keep visuals inspectable and prevent rulebook glyph generation from modifying shared panel fonts. | Rebuild through RulesViewerEditorTools after content changes. Review unsupported Markdown before adding new syntax. |
+
+Final controls batch: 11 Rules EditMode + 3 Rules PlayMode + 13 existing Room
+presentation tests passed, with zero failures/skips; compilation is clean. Native
+artifact paths and earlier failures/reruns are in GameplayRegressionMigration.md.
+The later RoomTip move was inspected/saved as a scene-only adjustment without
+another automated run. Test artifacts are local and git-ignored. The final UI
+tests overlap the earlier 49-check viewer batch and must not be added as unique
+coverage. No full gameplay suites were executed for these UI changes.
+
+Remaining tooling gap: RoomPresentationEditorTools.AuthorTips still authors the
+old below-box position. The saved Room scene is correct. Align or preserve the
+latest placement before rerunning wholesale presentation authoring. Also avoid
+blind scene resaves that regenerate unrelated panel IDs; the current diff removes
+that serialization churn after semantic comparison.
+
+## Historical migration validation and scope
 
 The complete native PlayMode run finished **362 passed / 0 failed / 0 skipped**:
 `TestResults/GameplayRegression/Runs/20261106T172436176Z/results.xml`.
 The preceding full EditMode run finished **747 / 0 / 0**:
 `TestResults/GameplayRegression/Runs/20261106T144426744Z/results.xml`.
-There are now 748 discovered EditMode tests; a final full run and final legacy
-assertion audit/runner retirement are tracked in the migration document. Do not
+The then-current discovery was 748 EditMode tests; this is not the current total
+after Room and Rules coverage was added. The final legacy assertion audit and
+runner retirement remain tracked in the migration document. Do not
 mistake discovery, clean compilation, or an earlier green checkpoint for later
 execution. The 147 original coroutine methods expand into many independent cases.
 
