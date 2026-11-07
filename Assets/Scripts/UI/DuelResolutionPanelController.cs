@@ -66,6 +66,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private MonoBehaviour singleOwner;
     private Func<bool> singleWaiting;
     private bool singleMode;
+    private KeyCode[] singleChoiceKeys;
     private DuelPlayerPanelFields singleRollView;
     private bool shotComparison;
     private PlayerToken shotComparisonKeeper;
@@ -144,6 +145,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     {
         if (!HasSceneBindings || attacker == null || defender == null) return false;
         singleMode = false;
+        singleChoiceKeys = null;
         looseBallSuspended = false;
         if (scatterOutcome != null) scatterOutcome.gameObject.SetActive(false);
         looseBallMode = false;
@@ -238,6 +240,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (IsOpen) return false;
         resultAllowsContinuation = false;
         singleMode = true;
+        singleChoiceKeys = null;
         singleRollView = singlePlayer;
         looseBallSuspended = false;
         shotComparison = false;
@@ -274,6 +277,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         Color color = token != null ? TeamColor(token) : new Color(.13f, .35f, .63f);
         singlePlayer.playerName.color = PlayerNameColor;
         singlePlayer.die.SetTeamColors(color, token != null ? TeamPalette(token).Secondary : Color.white);
+        singlePlayer.die.gameObject.SetActive(true);
         singlePlayer.die.Begin(jackpotAllowed);
         footer.text = "Press [R] to roll";
         visuals.SetActive(true);
@@ -285,6 +289,17 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (rememberedPosition) panel.anchoredPosition = lastDraggedPosition;
         else ResetPanelPosition();
         FitAndClamp();
+        return true;
+    }
+
+    // Reuses the scene-authored single-player panel for a choice before its roll.
+    public bool BeginSingleChoice(MonoBehaviour manager, Func<bool> waiting, string situation,
+        PlayerToken token, string guidance, string controls, params KeyCode[] keys)
+    {
+        if (!BeginSingle(manager, waiting, situation, token, null, null, false, guidance)) return false;
+        singleChoiceKeys = keys;
+        singlePlayer.die.gameObject.SetActive(false);
+        footer.text = controls;
         return true;
     }
 
@@ -912,7 +927,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         });
         if (current.singleMode && current.stage == Stage.Single) expected = current.singleOwner != null
             && current.singleWaiting != null && current.singleWaiting();
-        if (roll && expected) return false;
+        if (expected && (current.singleChoiceKeys != null
+            ? System.Array.IndexOf(current.singleChoiceKeys, key.key) >= 0 : roll)) return false;
         key.Consume(nameof(DuelResolutionPanelController));
         return true;
     }

@@ -8,17 +8,21 @@ English source pages and eight diagrams were retrieved on 2026-11-07.
 chapter audit, with Advanced variants taking precedence. Website language and
 home navigation are omitted by the parser. The landing page is adapted for the
 viewer. Reckless-tackle sections and dependent references are excluded.
-Tabletop setup and contradictory rules are retained for review rather than silently
-changed. Source attribution is retained.
+Unreviewed tabletop rules remain identified for review. Digital squads are 16 or
+18 players with exactly two goalkeepers. Source attribution is retained.
 
-Approved digital-edition decisions on 2026-11-07: keep the current 7-action
-stoppage cap in extra time while the proposed 3-action cap remains open; allow
+Approved digital-edition decisions on 2026-11-07: cap stoppage at 7 actions
+per regulation half and 3 per extra-time half; allow
 jackpots on High/Long Pass accuracy and Ball Control; prefer GK on equal defensive
 header scores; use Heading 0 for keeper challenges outside their own box, including
 rushes. Goalkeepers retain the separate GK nomination outside their box, alongside
 up to two outfield players; zero Heading receives no additional distance penalty.
 Own-box goalkeeper fouls use no-card/yellow leniency; previously booked defenders
 do not force a stoppage without a new sending-off or mandatory injury substitution.
+Direct teammate headers to the keeper allow hands (normal D6: 1 scatters, 2–6
+held) or feet (no roll), including corner-origin headers. Outside-box receptions
+stay at feet. Headed-pass interception attempts apply only at the landing hex.
+Delayed pickup after movement remains a separate planned feature.
 These local adaptations do not publish changes to the upstream wiki.
 All attribute-based scores floor the current injured attribute plus applicable
 signed modifiers at zero before adding the numeric roll. Jackpots stay 50 and

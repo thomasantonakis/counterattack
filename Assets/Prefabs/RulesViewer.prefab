@@ -1656,10 +1656,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: For online Games on Tabletopia, and especially official ones (matches played
-    for some competition organized by members of the Counter Attack Community), players
-    usually draft 2 <link="goalkeeper"><color=#79CEF2><u>goalkeepers</u></color></link>,
-    and 14 outfield players.
+  m_text: A 16-player squad has two goalkeepers and 14 outfield players; an 18-player
+    squad has two goalkeepers and 16 outfield players.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -8954,7 +8952,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Place the goalkeeper cards face down and pick 1 goalkeeper each.
+  m_text: Draft two goalkeepers for each squad.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -52349,9 +52347,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: If you choose to head the ball close to your goalkeeper's feet, in order
-    to avoid the above risk, remember that the GK can only pick up the ball at the
-    END of a <link="movement_phase"><color=#79CEF2><u>Movement Phase</u></color></link>.
+  m_text: Receiving a header at feet avoids the immediate catch risk. The separate
+    pickup-after-movement choice is planned but is not yet implemented in this edition;
+    see the goalkeeper chapter for the tabletop pickup rule.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -126885,9 +126883,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: At the end of each half, roll the dice and add the result to the referee's
     Leniency. Play continues for that many Actions before the half/match is over.
-    <b>In this digital edition, the maximum is currently 7 actions in each half,
-    including extra time. A proposed cap of 3 for extra-time halves remains under
-    review. The only time an action can be exceeded by 1 is if a penalty is awarded
+    <b>The maximum is 7 actions per regulation half and 3 actions per extra-time
+    half. The only time an action can be exceeded by 1 is if a penalty is awarded
     in the last action of the half.</b>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -139886,10 +139883,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u2022 <b>Defence wins</b>. Play a headed pass from the ball, to the available
-    distance, without interceptions. Beware of the pass back to the GK. If the GK
-    won a legal own-box catch, attract the ball and continue as <link=\"goalkeeper\"><color=#79CEF2><u>Save
-    and Hold</u></color></link>; a GK winning outside their own box instead heads
-    the ball away with the ordinary headed-pass continuation."
+    distance, without interceptions along the airborne path. At its final hex the
+    ball drops to the ground; eligible defenders whose ZOI covers that hex may attempt
+    an interception. Players who jumped or are otherwise ineligible cannot attempt
+    it. Beware of the pass back to the GK. If the GK won a legal own-box catch, attract
+    the ball and continue as <link=\"goalkeeper\"><color=#79CEF2><u>Save and Hold</u></color></link>;
+    a GK winning outside their own box instead heads the ball away with the ordinary
+    headed-pass continuation."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -151247,8 +151247,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You cannot head the ball back to your goalkeeper after winning a Heading
-    duel from a high pass of a corner kick.
+  m_text: In this digital edition, headed passes back to your goalkeeper are allowed
+    after open-play high passes and corner kicks.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -162854,9 +162854,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: A team squad is made up of 16 players; 1 <link="goalkeeper"><color=#79CEF2><u>goalkeeper</u></color></link>,
-    10 outfielders and 5 substitutes. Here's how to draft squads at the start of
-    the game.
+  m_text: In this digital edition, choose a squad of 16 or 18 players. Every squad
+    must contain exactly two <link="goalkeeper"><color=#79CEF2><u>goalkeepers</u></color></link>.
+    The configured squad size and digital draft take precedence over the original
+    printed setup.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -172964,7 +172965,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: Now it's time to decide which 11 players will make up your starting team,
-    and which will be your 5 substitutes. Allocate a squad number 1-11 to each starting
+    and which will be your substitutes. Allocate a squad number 1-11 to each starting
     player and place them in their corresponding spaces at the sides of the pitch.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -232629,11 +232630,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: After any open play High pass, the header-winning defender can choose to
-    send the ball back to the goalkeeper's safe hands, but bear in mind that heading
-    the ball back to the hands of the goalkeeper can be a risky move... If you choose
-    to do this, roll a dice. If you roll a 1, start a <link="loose_ball"><color=#79CEF2><u>Loose
-    Ball</u></color></link> process from the Goalkeeper.
+  m_text: "When a headed pass reaches your goalkeeper inside their own penalty area,
+    choose hands [H] or feet [F]. Hands requires a normal D6 catch roll with no attribute
+    modifier: 2\u20136 means held and offers goalkeeper distribution; 1 starts a
+    <link=\"loose_ball\"><color=#79CEF2><u>Loose Ball</u></color></link> from the
+    goalkeeper. Feet requires no roll and continues the headed-pass flow. Outside
+    their own penalty area the goalkeeper receives at feet and cannot choose hands."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}

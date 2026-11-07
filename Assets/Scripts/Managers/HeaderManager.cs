@@ -42,6 +42,11 @@ public class HeaderManager : MonoBehaviour
     public bool isWaitingForControlRoll = false;
     public bool isWaitingForHeaderTargetSelection = false;
     public bool isWaitingForInterceptionRoll = false;
+    public bool isWaitingForHeadedBackPassChoice;
+    public bool isWaitingForHeadedBackPassRoll;
+    private PlayerToken headedBackPassKeeper;
+    private bool headedBackPassRollInFlight;
+    private int headedBackPassVersion;
     public bool defenseWonFreeHeader = false;
     public bool defenseBallControl = false;
     public bool attackFreeHeader = false;
@@ -93,6 +98,7 @@ public class HeaderManager : MonoBehaviour
 
     private void OnDisable()
     {
+        CancelHeadedBackPass();
         CancelHeaderChallengePresentation();
         CancelControlPresentation();
         GameInputManager.OnClick -= OnClickReceived;
@@ -236,7 +242,17 @@ public class HeaderManager : MonoBehaviour
         else
         {
             bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
-            if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
+            if (isWaitingForHeadedBackPassChoice && (keyData.key == KeyCode.H || keyData.key == KeyCode.F))
+            {
+                keyData.Consume(nameof(HeaderManager));
+                ChooseHeadedBackPassHands(keyData.key == KeyCode.H);
+            }
+            else if (isWaitingForHeadedBackPassRoll && (keyData.key == KeyCode.R || hasRollOverride))
+            {
+                keyData.Consume(nameof(HeaderManager));
+                PerformHeadedBackPassRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null);
+            }
+            else if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 keyData.Consume(nameof(HeaderManager));
                 PerformInterceptionRoll(hasRollOverride ? (RollInputOverride?)rollOverride : null);
@@ -2118,6 +2134,7 @@ public class HeaderManager : MonoBehaviour
 
     private async Task MoveHeaderToTargetSelection(HexCell clickedHex)
     {
+        int version = headedBackPassVersion;
         hoveredHeaderTargetHex = null;
         headerTargetThreatByHex.Clear();
         hexGrid.ClearHighlightedHexes();
@@ -2126,6 +2143,7 @@ public class HeaderManager : MonoBehaviour
             , MatchManager.ActionType.PassAttempt
         );
         await helperFunctions.StartCoroutineAndWait(MoveHeaderBallToTarget(clickedHex));
+        if (version != headedBackPassVersion || !isActivated) return;
         Debug.Log($"Ball moved to {clickedHex.coordinates}");
         MatchManager.Instance.UpdatePossessionAfterPass(clickedHex);
         if (clickedHex.isAttackOccupied)
@@ -2143,6 +2161,31 @@ public class HeaderManager : MonoBehaviour
             MatchManager.Instance.SetLastToken(receiver);
             MatchManager.Instance.ClearOffsideForLegalCollection(receiver, "header_pass_completed");
             ball.AdjustBallHeightBasedOnOccupancy();
+            if (receiver.IsGoalKeeper && goalKeeperManager.IsGoalkeeperOwnPenaltyHex(receiver, clickedHex))
+            {
+                headedBackPassKeeper = receiver;
+                isWaitingForHeadedBackPassChoice = true;
+                while (isWaitingForHeadedBackPassChoice)
+                {
+                    DuelResolutionPanelController.Instance?.BeginSingleChoice(this,
+                        () => isWaitingForHeadedBackPassChoice, "Headed Back-Pass · Hands or Feet", receiver,
+                        "Hands: roll 2–6 to hold; 1 scatters from the keeper. Feet: no roll.",
+                        "[H] Hands · [F] Feet", KeyCode.H, KeyCode.F);
+                    await Task.Yield();
+                }
+                return;
+            }
+            CompleteHeadedPassAtFeet();
+        }
+        else
+        {
+            MatchManager.Instance.SetHangingPass("ground");
+            CheckForHeaderInterception(clickedHex);
+        }
+    }
+
+    private void CompleteHeadedPassAtFeet()
+    {
             CleanUpHeader();
             MatchManager.Instance.ResolveActionBeforeFinalThird(
                 MatchManager.MatchActionKind.Header,
@@ -2151,12 +2194,66 @@ public class HeaderManager : MonoBehaviour
                     finalThirdManager.TriggerFinalThirdPhase();
                     MatchManager.Instance.BroadcastHeaderCompleted();
                 });
-        }
-        else
+    }
+
+    public void ChooseHeadedBackPassHands(bool hands)
+    {
+        if (!isWaitingForHeadedBackPassChoice || headedBackPassKeeper == null) return;
+        isWaitingForHeadedBackPassChoice = false;
+        DuelResolutionPanelController.Instance?.CancelSingle(this);
+        if (!hands) { CompleteHeadedPassAtFeet(); return; }
+        isWaitingForHeadedBackPassRoll = true;
+        PresentHeadedBackPassRoll();
+    }
+
+    private void PresentHeadedBackPassRoll()
+        => DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingForHeadedBackPassRoll,
+            "Headed Back-Pass · Goalkeeper Catch", headedBackPassKeeper, null, "Catch 5/6", false,
+            "Roll 1: loose ball from goalkeeper · Rolls 2–6: hold · No attribute modifier");
+
+    public void PerformHeadedBackPassRoll(RollInputOverride? rollOverride = null)
+    {
+        if (!isWaitingForHeadedBackPassRoll || headedBackPassRollInFlight) return;
+        headedBackPassRollInFlight = true;
+        StartCoroutine(ResolveHeadedBackPassCatch(rollOverride, headedBackPassVersion));
+    }
+
+    private IEnumerator ResolveHeadedBackPassCatch(RollInputOverride? rollOverride, int version)
+    {
+        PlayerToken receiver = headedBackPassKeeper;
+        var result = MatchManager.Instance.ResolveGameplayDiceRoll("headed_back_pass_catch", rollOverride,
+            actor: receiver, sourceHex: receiver.GetCurrentHex(), jackpotEnabled: false);
+        bool caught = result.roll != 1;
+        yield return SingleRollResolutionPresentation.Resolve(this, result,
+            caught ? "HELD · Choose goalkeeper distribution" : "CATCH FAILED · Loose ball from goalkeeper",
+            continueWithScatter: !caught, scatterOwner: looseBallManager);
+        if (version != headedBackPassVersion || !isWaitingForHeadedBackPassRoll) yield break;
+        var panel = DuelResolutionPanelController.Instance;
+        bool scatterReserved = !caught && panel != null && panel.PrepareScatterContinuation(this, looseBallManager);
+        CleanUpHeader(preserveControlScatter: scatterReserved);
+        bool continuedImmediately = false;
+        MatchManager.Instance.ResolveActionBeforeFinalThird(MatchManager.MatchActionKind.Header, () =>
         {
-            MatchManager.Instance.SetHangingPass("ground");
-            CheckForHeaderInterception(clickedHex);
-        }
+            continuedImmediately = true;
+            if (caught)
+                MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(receiver, receiver.GetCurrentHex(), false);
+            else
+            {
+                MatchManager.Instance.SetHangingPass("ground");
+                StartCoroutine(looseBallManager.ResolveLooseBall(receiver, LooseBallSourceType.GroundDeflection,
+                    presentationContext: LooseBallPresentationContext.Standalone));
+            }
+        });
+        if (!continuedImmediately && scatterReserved) panel.CancelSingle(this);
+    }
+
+    private void CancelHeadedBackPass(bool preserveScatter = false)
+    {
+        headedBackPassVersion++;
+        isWaitingForHeadedBackPassChoice = isWaitingForHeadedBackPassRoll = false;
+        headedBackPassRollInFlight = false;
+        headedBackPassKeeper = null;
+        if (!preserveScatter) DuelResolutionPanelController.Instance?.CancelSingle(this);
     }
 
     private void CheckForHeaderInterception(HexCell landingHex)
@@ -2436,6 +2533,7 @@ public class HeaderManager : MonoBehaviour
 
     public void CleanUpHeader(bool preserveControlScatter = false)
     {
+        CancelHeadedBackPass(preserveControlScatter);
         CancelHeaderChallengePresentation();
         CancelControlPresentation(preserveControlScatter);
         attEligibleToHead.Clear();
@@ -2466,6 +2564,7 @@ public class HeaderManager : MonoBehaviour
     
     public void ResetHeader()
     {
+        CancelHeadedBackPass();
         CancelHeaderChallengePresentation();
         CancelControlPresentation();
         attEligibleToHead.Clear();
@@ -2512,6 +2611,20 @@ public class HeaderManager : MonoBehaviour
             return;
         }
 
+        if (isWaitingForHeadedBackPassChoice)
+        {
+            context.AddKeyActionCandidate(nameof(HeaderManager), RoomActionType.Header,
+                RoomDecisionStep.InterruptionChoice, "H", "Catch headed back-pass: roll 1 scatters; 2–6 held");
+            context.AddKeyActionCandidate(nameof(HeaderManager), RoomActionType.Header,
+                RoomDecisionStep.InterruptionChoice, "F", "Receive headed back-pass at feet without a roll");
+            return;
+        }
+        if (isWaitingForHeadedBackPassRoll)
+        {
+            context.AddKeyActionCandidate(nameof(HeaderManager), RoomActionType.Roll,
+                RoomDecisionStep.Roll, "R", "Roll headed back-pass catch");
+            return;
+        }
         if (isWaitingForAttackerSelection)
         {
             if (attEligibleToHead.Count <= 2)
@@ -2781,6 +2894,8 @@ public class HeaderManager : MonoBehaviour
     public string GetInstructions()
     {
         StringBuilder sb = new();
+        if (isWaitingForHeadedBackPassChoice) return "Headed back-pass: [H] hands (1 scatters, 2–6 held), [F] feet (no roll).";
+        if (isWaitingForHeadedBackPassRoll) return "Press [R] for goalkeeper catch: 1 scatters from the keeper; 2–6 held. No attribute modifier.";
         if (goalKeeperManager.isActivated) return "";
         if (finalThirdManager.isActivated) return "";
         if (isActivated) sb.Append("Head: ");
@@ -2815,6 +2930,9 @@ public class HeaderManager : MonoBehaviour
         }
 
         bool attackingTeamIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
+
+        if (isWaitingForHeadedBackPassChoice || isWaitingForHeadedBackPassRoll)
+            return headedBackPassKeeper?.isHomeTeam;
 
         if (isWaitingForAttackerSelection)
         {

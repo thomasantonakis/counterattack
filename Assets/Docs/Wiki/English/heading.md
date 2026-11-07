@@ -39,11 +39,11 @@ The players who challenged for the header cannot participate in the subsequent [
 
 ## Heading back to the goalkeeper
 
-You cannot head the ball back to your goalkeeper after winning a Heading duel from a high pass of a corner kick.
+In this digital edition, headed passes back to your goalkeeper are allowed after open-play high passes and corner kicks.
 
-After any open play High pass, the header-winning defender can choose to send the ball back to the goalkeeper's safe hands, but bear in mind that heading the ball back to the hands of the goalkeeper can be a risky move... If you choose to do this, roll a dice. If you roll a 1, start a [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) process from the Goalkeeper.
+When a headed pass reaches your goalkeeper inside their own penalty area, choose hands [H] or feet [F]. Hands requires a normal D6 catch roll with no attribute modifier: 2–6 means held and offers goalkeeper distribution; 1 starts a [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) from the goalkeeper. Feet requires no roll and continues the headed-pass flow. Outside their own penalty area the goalkeeper receives at feet and cannot choose hands.
 
-If you choose to head the ball close to your goalkeeper's feet, in order to avoid the above risk, remember that the GK can only pick up the ball at the END of a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase).
+Receiving a header at feet avoids the immediate catch risk. The separate pickup-after-movement choice is planned but is not yet implemented in this edition; see the goalkeeper chapter for the tabletop pickup rule.
 
 
 ## Heading Sequence
@@ -59,7 +59,7 @@ If you choose to head the ball close to your goalkeeper's feet, in order to avoi
 10. Defence rolls with all declared players, including the GK if nominated. The best combined score wins. In this digital edition, a goalkeeper tied for their team's best defensive score takes priority; other ties retain the first rolled player. A keeper outside their own penalty area uses Heading 0 and heads the ball away on a win; only a legal catch inside their own penalty area uses Aerial Ability and leads to Save and Hold.
 11. Compare the attack's best combined score with the defence's.
 - **Attack Wins**: If GK was not involved in challenge, GK tries to save on the hex that Attack heads to. If GK was involved in challenge, it's a GOAL.
-- **Defence wins**. Play a headed pass from the ball, to the available distance, without interceptions. Beware of the pass back to the GK. If the GK won a legal own-box catch, attract the ball and continue as [Save and Hold](https://counterattackgame.github.io/wiki/en/goalkeeper); a GK winning outside their own box instead heads the ball away with the ordinary headed-pass continuation.
+- **Defence wins**. Play a headed pass from the ball, to the available distance, without interceptions along the airborne path. At its final hex the ball drops to the ground; eligible defenders whose ZOI covers that hex may attempt an interception. Players who jumped or are otherwise ineligible cannot attempt it. Beware of the pass back to the GK. If the GK won a legal own-box catch, attract the ball and continue as [Save and Hold](https://counterattackgame.github.io/wiki/en/goalkeeper); a GK winning outside their own box instead heads the ball away with the ordinary headed-pass continuation.
 - **There is a TIE**. Follow [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions, players involved in the Aerial challenge cannot stop the ball. If the ball lands on a player that jumped, move it one Hex further away. If the Ball hits a player that has not jumped, continue play as "Any other Scenario". If the ball does not hit a player, check if it stopped in a defender's ZOI, and possibly attempt to gain it. If not, attacking team should start a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase).
 
 
