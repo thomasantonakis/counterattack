@@ -217,9 +217,14 @@ public class GameDebugMonitor : MonoBehaviour
             out bool shouldFlashInstruction);
         if (instructionText != null)
         {
-            // Preserve the instruction snapshot for deterministic input/AI and logging,
-            // while the resolution overlay exclusively presents its active roll prompt.
-            instructionText.text = HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible || StoppageActionsPanelController.IsVisible ? string.Empty
+            // Shootout stakes, walk-ups and celebrations stay visible while the
+            // shot panel displays its roll or counts down the previous result.
+            var shootout = PenaltyShootoutManager.ActiveShootout ?? penaltyShootoutManager;
+            bool showShootoutInstructions = shootout != null && shootout.IsOrderSelectionOrShootoutStarted;
+            bool hideForOverlay = HeaderChallengePanelController.IsVisible
+                || StoppageActionsPanelController.IsVisible
+                || DuelResolutionPanelController.IsVisible && !showShootoutInstructions;
+            instructionText.text = hideForOverlay ? string.Empty
                 : snapshot != null ? snapshot.instructionText : string.Empty;
             ApplyInstructionPalette(activeInstructionSide, shouldFlashInstruction);
         }
@@ -457,6 +462,12 @@ public class GameDebugMonitor : MonoBehaviour
         List<string> activeInstructions = new List<string>();
         List<string> activeManagers = new List<string>();
         InstructionSide resolvedInstructionSide = InstructionSide.Neutral;
+
+        // Walk-up/celebration messages take priority above. During the kick,
+        // retain its stakes alongside the active shooter/keeper/loose-ball prompt.
+        AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide,
+            nameof(PenaltyShootoutManager), activeShootoutManager?.GetCurrentKickStakesInstruction() ?? string.Empty,
+            InstructionSide.Neutral);
 
         AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(FinalThirdManager), finalThirdManager != null ? finalThirdManager.GetInstructions() : string.Empty, ResolveInstructionSide(finalThirdManager?.IsInstructionExpectingHomeTeam()));
         AddInstructionIfNotEmpty(activeManagers, activeInstructions, ref resolvedInstructionSide, nameof(MovementPhaseManager), movementPhaseManager != null ? movementPhaseManager.GetInstructions() : string.Empty, ResolveInstructionSide(movementPhaseManager?.IsInstructionExpectingHomeTeam()));

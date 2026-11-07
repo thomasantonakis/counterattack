@@ -44,6 +44,8 @@ public class PenaltyShootoutManager : MonoBehaviour
 
     private readonly List<bool> homeResults = new();
     private readonly List<bool> awayResults = new();
+    public IReadOnlyList<bool> HomeResults => homeResults;
+    public IReadOnlyList<bool> AwayResults => awayResults;
     private readonly Dictionary<PlayerToken, HexCell> stagingHexes = new();
     private PenaltyShootoutOrderPanelController orderPanel;
     private PlayerToken previousShooter;
@@ -306,6 +308,7 @@ public class PenaltyShootoutManager : MonoBehaviour
         matchManager.currentState = MatchManager.GameState.PenaltyShootoutTransition;
         transitionInstructionShooter = currentShooter;
         transitionInstructionActive = true;
+        FindAnyObjectByType<MatchStatsUI>()?.ShowShootoutContestants(currentShooter, currentDefendingGoalkeeper);
 
         List<Coroutine> moves = new();
         if (previousShooter != null
@@ -541,12 +544,7 @@ public class PenaltyShootoutManager : MonoBehaviour
             nextKickInfo += $". {stakes}";
         }
 
-        int nameWidth = Mathf.Max(homeName.Length, awayName.Length);
-        int cellCount = Mathf.Max(5, Mathf.Max(homeResults.Count, awayResults.Count));
-        string homeLine = FormatShootoutScoreLine(homeName, homeResults, nameWidth, cellCount);
-        string awayLine = FormatShootoutScoreLine(awayName, awayResults, nameWidth, cellCount);
-        return $"{homeLine}{(shooterIsHome ? $" - {nextKickInfo}" : string.Empty)}\n"
-            + $"{awayLine}{(!shooterIsHome ? $" - {nextKickInfo}" : string.Empty)}";
+        return nextKickInfo;
     }
 
     public bool? IsInstructionExpectingHomeTeam()
@@ -597,6 +595,15 @@ public class PenaltyShootoutManager : MonoBehaviour
         {
             context.AddActionSummary($"No Penalty Shootout decision needed; preparing {GetTokenDisplayName(transitionInstructionShooter)}'s penalty");
         }
+    }
+
+    public string GetCurrentKickStakesInstruction()
+    {
+        if (currentShooter == null || isComplete) return string.Empty;
+        string teamName = currentShooter.isHomeTeam
+            ? matchManager?.gameData?.gameSettings?.homeTeamName ?? "Home"
+            : matchManager?.gameData?.gameSettings?.awayTeamName ?? "Away";
+        return BuildKickStakesInstruction(currentShooter.isHomeTeam, GetTokenDisplayName(currentShooter), teamName);
     }
 
     private string BuildKickStakesInstruction(bool shooterIsHome, string shooterName, string shootingTeamName)

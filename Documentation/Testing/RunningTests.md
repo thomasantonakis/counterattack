@@ -8,11 +8,28 @@ scenario runner to launch with ordinary Play.
 - **PlayMode** tests cover gameplay input, movement, coroutines, interruption,
   presentations and continuations. Unity enters and exits Play Mode for these tests.
 - Select a fixture or case and choose **Run Selected** while iterating. After a change,
-  choose **Run All** on both tabs to check the full regression.
+  run only the feature's dedicated fixture or category filter. Create a dedicated
+  feature folder with its Unity tests and a short task/verification checklist.
+  Do not automatically start or wait for whole suites; those require an explicit
+  user request.
+
+At feature handoff, Codex identifies any additional affected test folders by exact
+path and Test Runner fixture/category, explaining why they need verification.
+The user runs these broader checks. When a complete regression check is warranted,
+Codex prompts the user to press **Run All** on the appropriate EditMode and/or
+PlayMode tabs, then hands over without waiting. The user reports failures for
+Codex to inspect and fix. Codex does not execute broader checks unless explicitly
+asked to do so.
 
 Wait for an active run to finish before editing scripts: a domain reload can interrupt
 PlayMode execution. Native cases build and clean up their own deterministic boards;
 they do not use a mutable live save as their fixture.
+
+Before starting tests, finish compilation/reload, save dirty loaded scenes through
+Unity CLI `save_all`, and verify their dirty flags are clear. Check after reload:
+editor initialization can modify Room. A pending scene-save dialog blocks test
+startup and can make CLI commands time out; resolve an already-open dialog manually
+with Save before continuing.
 
 Historical discovery before Room presentation additions: **748 EditMode + 362 PlayMode = 1,110 tests**. See
 [GameplayRegressionMigration.md](GameplayRegressionMigration.md) for actual completed

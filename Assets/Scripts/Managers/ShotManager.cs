@@ -2114,7 +2114,7 @@ public class ShotManager : MonoBehaviour
         if (shooterRoll > 0)
             panel.ResolveSingle(this, new GameplayDiceRollResult
                 { roll = shooterRoll, isJackpot = shooterRollWasJackpot, jackpotEnabled = true },
-                FreeKickShotGuidance(shooterRoll, totalShotPower), resolvedTotal: totalShotPower,
+                FreeKickShotGuidance(shooterRoll, totalShotPower), resolvedTotal: shooterRoll == 1 ? (int?)null : totalShotPower,
                 continueWithNextRoll: true);
         return true;
     }
@@ -3545,16 +3545,18 @@ public class ShotManager : MonoBehaviour
         snapPenalty = shotType == "snapshot" ? ", -1 for taking a Snapshot" : "";
         difficultPenalty = originHex != null && originHex.isDifficultShotPosition ? ", -1 difficult shooting position" : "";
         shootingPenaltyInfo = BuildShootingPenaltyInfo(originHex, shootingPenalty);
-        totalShotPower = isJackpot ? 50 : shooterRoll + shooter.shooting - shootingPenalty;
+        totalShotPower = isJackpot ? 50 : shooterRoll == 1 ? 0 : shooterRoll + shooter.shooting - shootingPenalty;
         if (UsesGroundShotPresentation)
         {
             int version = headerSavePresentationVersion;
             yield return SingleRollResolutionPresentation.Resolve(this, shotRoll,
-                $"Shot power: {FormatHeaderPower(totalShotPower)} · " + (IsFreeKickShot()
+                (shooterRoll == 1 ? string.Empty : $"Shot power: {FormatHeaderPower(totalShotPower)} · ") + (IsFreeKickShot()
                     ? FreeKickShotGuidance(shooterRoll, totalShotPower)
                     : shooterRoll == 1 ? "OFF TARGET" : "ON TARGET"),
-                resolvedTotal: totalShotPower,
-                continueWithNextRoll: !IsFreeKickShot() && shooterRoll != 1 && interceptors.Count > 0 && interceptors[0].IsGK
+                resolvedTotal: shooterRoll == 1 ? (int?)null : totalShotPower,
+                continueWhileResultVisible: IsPenaltyShootoutShot() && shooterRoll == 1,
+                continueWithNextRoll: !IsFreeKickShot() && shooterRoll != 1
+                    && (IsPenaltyShootoutShot() || interceptors.Count > 0 && interceptors[0].IsGK)
                     && DuelResolutionPanelController.Instance != null
                     && DuelResolutionPanelController.Instance.IsShotComparisonFor(this));
             if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
@@ -3842,17 +3844,17 @@ public class ShotManager : MonoBehaviour
         ShotInteraction interaction = currentShotInteraction;
         if (interaction == null || interaction.IsGK || interaction.defender == null)
         {
-            return "Click R to Roll for the block";
+            return "Press [R] to roll for the block";
         }
 
         int neededRoll = GetOutfieldBlockRequiredRoll(interaction);
         int tackling = GetEffectiveShotBlockTackling(interaction);
-        return $"Click R to Roll for a block with {GetTokenInstructionName(interaction.defender)} (Tackling: {tackling}). {BuildNeededRollInstruction(neededRoll, "")}";
+        return $"Press [R] to roll for a block with {GetTokenInstructionName(interaction.defender)} (Tackling: {tackling}). {BuildNeededRollInstruction(neededRoll, "")}";
     }
 
     private string BuildShotRollInstruction()
     {
-        return $"Click R to Roll for the {GetActiveShotInstructionLabel()} with {BuildShooterInstructionInfo(false)}";
+        return $"Press [R] to roll for the {GetActiveShotInstructionLabel()} with {BuildShooterInstructionInfo(false)}";
     }
 
     private string BuildSavingAttributeInstruction(PlayerToken gkToken, int savingPenalty)
@@ -3876,7 +3878,7 @@ public class ShotManager : MonoBehaviour
         int savingPenalty = gkInteraction?.gkPenalty ?? 0;
         int neededRoll = GetGKSavingRequiredRoll(gkToken, savingPenalty, totalShotPower);
         string tieInfo = BuildGKTieInstruction(gkToken, savingPenalty, totalShotPower);
-        return $"Click R to Roll for a save with {GetTokenInstructionName(gkToken)} ({BuildSavingAttributeInstruction(gkToken, savingPenalty)}). {BuildShooterInstructionInfo(true)}. {BuildNeededRollInstruction(neededRoll, " to save")}{tieInfo}";
+        return $"Press [R] to roll for a save with {GetTokenInstructionName(gkToken)} ({BuildSavingAttributeInstruction(gkToken, savingPenalty)}). {BuildShooterInstructionInfo(true)}. {BuildNeededRollInstruction(neededRoll, " to save")}{tieInfo}";
     }
 
     private string BuildHeaderGKSaveRollInstruction()
@@ -3887,7 +3889,7 @@ public class ShotManager : MonoBehaviour
         string headerInfo = headerAttacker != null
             ? $"{GetTokenInstructionName(headerAttacker)} header power: {headerAttackerTotalScore}"
             : $"Header power: {headerAttackerTotalScore}";
-        return $"Click R to Roll for a save with {GetTokenInstructionName(defendingGK)} ({BuildSavingAttributeInstruction(defendingGK, headerGkPenalty)}). {headerInfo}. {BuildNeededRollInstruction(neededRoll, " to save")}{tieInfo}";
+        return $"Press [R] to roll for a save with {GetTokenInstructionName(defendingGK)} ({BuildSavingAttributeInstruction(defendingGK, headerGkPenalty)}). {headerInfo}. {BuildNeededRollInstruction(neededRoll, " to save")}{tieInfo}";
     }
 
     private IEnumerator ResolveShotGoal()
@@ -4012,9 +4014,9 @@ public class ShotManager : MonoBehaviour
                     ? "SAVED · Penalty missed" : "SAVED · Handling follows" : "SAVE FAILED · Shot continues";
             yield return SingleRollResolutionPresentation.Resolve(this, saveRoll,
                 $"Saving total: {FormatHeaderPower(totalSavingPower)} · {result}",
-                continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave
-                    && !IsPenaltyShootoutShot(),
-                scatterOwner: looseBallManager, resolvedTotal: totalSavingPower);
+                continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave,
+                scatterOwner: looseBallManager, resolvedTotal: totalSavingPower,
+                continueWhileResultVisible: IsPenaltyShootoutShot() && totalSavingPower != totalShotPower);
             if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
         }
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
@@ -4211,6 +4213,8 @@ public class ShotManager : MonoBehaviour
             looseBallManager.causingDeflection = gkToken;
             looseBallManager.directionRoll = 240885;
             looseBallManager.isWaitingForDirectionRoll = true;
+            SingleRollResolutionPresentation.LooseBall(looseBallManager,
+                () => looseBallManager.isWaitingForDirectionRoll, gkToken, true);
             Debug.Log($"Penalty shootout save tie. Loose ball starts from {saveHex?.coordinates}. Press [R] for direction.");
             while (looseBallManager.isWaitingForDirectionRoll)
             {
@@ -4227,6 +4231,8 @@ public class ShotManager : MonoBehaviour
 
         HexCell oneHexTarget = CalculateDirectionalShotSpillTarget(saveHex, directionIndex, 1);
         bool behindIntoGoal = oneHexTarget != null && oneHexTarget.isInGoal == GetAttackingGoalSide();
+        DuelResolutionPanelController.Instance?.CompleteShootoutDeflection(
+            looseBallManager, this, behindIntoGoal ? 1 : 2, behindIntoGoal);
         Debug.Log($"Penalty shootout save tie direction {FormatShotSpillDirection(directionIndex)} from {saveHex?.coordinates}; forced distance {(behindIntoGoal ? 1 : 2)}.");
 
         if (behindIntoGoal)
@@ -4501,7 +4507,7 @@ public class ShotManager : MonoBehaviour
     private void ResetShotProcess()
     {
         headerSavePresentationVersion++;
-        DuelResolutionPanelController.Instance?.CancelSingle(this);
+        DuelResolutionPanelController.Instance?.CancelSingle(this, preserveResultCountdown: true);
         bool preserveSaveAndHoldDecision = isWaitingForSaveandHoldScenario
             && MatchManager.Instance != null
             && MatchManager.Instance.currentState == MatchManager.GameState.ActivateFinalThirdsAfterSave;
@@ -4859,7 +4865,7 @@ public class ShotManager : MonoBehaviour
         {
             sb.Append($"{BuildGKSaveRollInstruction()}, ");
         }
-        if (isWaitingforHandlingTest) sb.Append($"Click R to Roll for the Handling Test, ");
+        if (isWaitingforHandlingTest) sb.Append($"Press [R] to roll for the Handling Test, ");
         if (isWaitingForSaveandHoldScenario) sb.Append($"Press [Q]uick Throw or [K] to Activate Final thirds, ");
 
         if (sb.Length >= 2 && sb[^2] == ',') sb.Length -= 2; // Safely trim trailing comma + space

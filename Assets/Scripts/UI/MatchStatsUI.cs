@@ -1143,6 +1143,17 @@ public class MatchStatsUI : MonoBehaviour
             (availableHeight * previewCardHeightFill) / sourceHeight);
     }
 
+    public void ShowShootoutContestants(PlayerToken shooter, PlayerToken goalkeeper)
+    {
+        if (shooter == null || goalkeeper == null) return;
+        lineupHoveredHomeToken = null;
+        lineupHoveredAwayToken = null;
+        lineupHoverInput?.SetLineupHoverToken(null);
+        lastHoveredHomeToken = shooter.isHomeTeam ? shooter : goalkeeper;
+        lastHoveredAwayToken = shooter.isHomeTeam ? goalkeeper : shooter;
+        RefreshHoverCards();
+    }
+
     private void HandleHoverTokenChanged(PlayerToken token, HexCell hex)
     {
         if (RoomInputOwnership.BlocksHover) return;

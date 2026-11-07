@@ -275,3 +275,41 @@ Final strengthened Shot audit was cancelled at the user's handoff request:15pass
 Final Third activation assertion before keeper goal-kick preparation completes.
 No production gameplay changed in that audit. Preserve pending test-only changes
 and read SessionHandoff.md before any new work. Do not rerun full suites automatically.
+
+### Shootout roll panel flow — 2026-11-07
+
+Feature-only PlayMode run: **6 passed / 0 failed / 0 skipped**.
+Fixture: `ShootoutRollPanelPlayModeTests`, under
+`Assets/Tests/PlayMode/Features/ShootoutRollPanel/`; setup/checklist under
+`Assets/Editor/FeatureTests/ShootoutRollPanel/`. Both attacking directions cover
+immediate keeper prompts, off-target countdowns, shot animation during result
+countdowns, retained panel position and owner-disable cleanup. Unity compilation
+passed separately with zero errors/warnings. Native evidence:
+`TestResults/GameplayRegression/Runs/20261107T112014489Z/results.xml`.
+No broad gameplay suite was run for this feature; wider shared-panel checks are
+handed to the user under the focused-test workflow.
+
+### Shootout UI feedback — 2026-11-07
+
+Feature-only native PlayMode run: **6 passed / 0 failed / 0 skipped**.
+Fixture: `ShootoutUiFeedbackPlayModeTests` in
+`Assets/Tests/PlayMode/Features/ShootoutUiFeedback/`. Covers decisive kick stakes
+with the roll prompt, preview-card refresh and hover replacement across contestant
+changes, and natural-one off-target text without a power total. Native evidence:
+`TestResults/GameplayRegression/Runs/20261107T120318565Z/results.xml`.
+Final Press [R] copy was compiled after this run; no further tests were run for
+that wording-only edit. The substitution tool's automatic reload authoring was
+removed; a controlled script reload kept Room clean and compilation error-free.
+Full suites were not run. Manual checks and optional wider fixture are listed in
+`Assets/Editor/FeatureTests/ShootoutUiFeedback/TASKS.md`.
+
+### Shootout rendered instruction visibility — 2026-11-07
+
+Fixed the final display rule that blanked the instruction TextMeshPro element while
+the duel roll panel was visible, despite a correct instruction snapshot. Shootouts
+now retain that text; ordinary overlay visibility rules are preserved. Four focused
+native cases passed (0 failed/skipped), checking the actual text setter during roll
+prompts and countdowns in both shootout and ordinary modes. Compilation was clean.
+Fixture: `ShootoutInstructionVisibilityPlayModeTests`, under
+`Assets/Tests/PlayMode/Features/ShootoutInstructionVisibility/`.
+Evidence: `TestResults/GameplayRegression/Runs/20261107T121440378Z/results.xml`.

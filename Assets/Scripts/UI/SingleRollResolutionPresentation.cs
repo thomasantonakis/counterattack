@@ -98,10 +98,10 @@ public static class SingleRollResolutionPresentation
 
     public static IEnumerator Resolve(MonoBehaviour owner, GameplayDiceRollResult roll, string result,
         bool continueWithFoulChecks = false, bool continueWithScatter = false, MonoBehaviour scatterOwner = null,
-        int? resolvedTotal = null, bool continueWithNextRoll = false)
+        int? resolvedTotal = null, bool continueWithNextRoll = false, bool continueWhileResultVisible = false)
     {
         var panel = DuelResolutionPanelController.Instance;
-        return panel != null ? panel.ResolveSingle(owner, roll, result, continueWithFoulChecks, continueWithScatter, scatterOwner, resolvedTotal, continueWithNextRoll) : Empty();
+        return panel != null ? panel.ResolveSingle(owner, roll, result, continueWithFoulChecks, continueWithScatter, scatterOwner, resolvedTotal, continueWithNextRoll, continueWhileResultVisible) : Empty();
     }
 
     private static IEnumerator Empty() { yield break; }

@@ -14,6 +14,49 @@ public class ScoreboardManager : MonoBehaviour
     public TMP_Text awayScoreText;  // Drag and drop the TextMeshPro element here
 
     private RectTransform timerPanelRect;
+    public GameObject penaltyDots;
+    public UnityEngine.UI.Image[] homePenaltyDots = new UnityEngine.UI.Image[5];
+    public UnityEngine.UI.Image[] awayPenaltyDots = new UnityEngine.UI.Image[5];
+    public Color pendingPenaltyColor = new Color32(53, 60, 64, 255);
+    public Color scoredPenaltyColor = new Color32(79, 193, 74, 255);
+    public Color missedPenaltyColor = new Color32(222, 67, 65, 255);
+
+    public static int GetPenaltyDotDisplayRound(int homeAttempts, int awayAttempts, bool? upcomingHomeTeam)
+    {
+        int round = Mathf.Max(homeAttempts, awayAttempts);
+        if (upcomingHomeTeam.HasValue)
+            round = Mathf.Max(round, (upcomingHomeTeam.Value ? homeAttempts : awayAttempts) + 1);
+        return round;
+    }
+
+    public static bool? GetPenaltyDotResult(System.Collections.Generic.IReadOnlyList<bool> results, int slot, int? displayRound = null)
+    {
+        int index = Mathf.Max(0, (displayRound ?? results.Count) - 5) + slot;
+        return index < results.Count ? results[index] : (bool?)null;
+    }
+
+    private void RefreshPenaltyDots(bool visible)
+    {
+        if (penaltyDots != null) penaltyDots.SetActive(visible);
+        if (timeText != null) timeText.transform.parent.gameObject.SetActive(!visible);
+        if (!visible) return;
+        var shootout = PenaltyShootoutManager.ActiveShootout ?? FindAnyObjectByType<PenaltyShootoutManager>();
+        if (shootout == null) return;
+        bool? upcomingHomeTeam = shootout.currentShooter != null ? shootout.currentShooter.isHomeTeam : (bool?)null;
+        int displayRound = GetPenaltyDotDisplayRound(shootout.HomeResults.Count, shootout.AwayResults.Count, upcomingHomeTeam);
+        PaintDots(homePenaltyDots, shootout.HomeResults, displayRound);
+        PaintDots(awayPenaltyDots, shootout.AwayResults, displayRound);
+    }
+
+    private void PaintDots(UnityEngine.UI.Image[] dots, System.Collections.Generic.IReadOnlyList<bool> results, int displayRound)
+    {
+        for (int i = 0; i < dots.Length && i < 5; i++)
+        {
+            if (dots[i] == null) continue;
+            bool? scored = GetPenaltyDotResult(results, i, displayRound);
+            dots[i].color = !scored.HasValue ? pendingPenaltyColor : scored.Value ? scoredPenaltyColor : missedPenaltyColor;
+        }
+    }
 
     private void OnEnable()
     {
@@ -98,6 +141,7 @@ public class ScoreboardManager : MonoBehaviour
 
         if (PenaltyShootoutPresentation.TryGetDisplayState(matchManager, out PenaltyShootoutDisplayState shootoutState))
         {
+            RefreshPenaltyDots(true);
             if (homeScoreText != null)
             {
                 homeScoreText.text = $"({shootoutState.homeBaseGoals}) {shootoutState.homePenaltyGoals}";
@@ -110,13 +154,13 @@ public class ScoreboardManager : MonoBehaviour
 
             if (timeText != null)
             {
-                timeText.text = shootoutState.clockText;
-                FitTimerPanelToClockText();
+                timeText.text = string.Empty;
             }
 
             return;
         }
 
+        RefreshPenaltyDots(false);
         int homeGoals = matchManager?.gameData?.stats?.homeTeamStats.totalGoals ?? 0;
         int awayGoals = matchManager?.gameData?.stats?.awayTeamStats.totalGoals ?? 0;
 

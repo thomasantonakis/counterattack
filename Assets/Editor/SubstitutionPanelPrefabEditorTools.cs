@@ -28,16 +28,8 @@ namespace CounterAttack.Editor
         private static readonly Color OutDropdownColor = new(0.36f, 0.08f, 0.08f, 1f);
         private static readonly Color InDropdownColor = new(0.08f, 0.28f, 0.13f, 1f);
 
-        [InitializeOnLoadMethod]
-        private static void EnsurePrefabExistsOnEditorLoad()
-        {
-            if (!File.Exists(PrefabPath) || PrefabNeedsRebuild())
-            {
-                RebuildSubstitutionPanelPrefab();
-            }
-
-            EnsureSceneInstanceInEditMode();
-        }
+        // Authoring is explicit through the menu commands below. Domain reloads
+        // must not rebuild designer assets or modify the open Room scene.
 
         [MenuItem("CounterAttack/Room/Rebuild Substitution Panel Prefab")]
         public static void RebuildSubstitutionPanelPrefab()

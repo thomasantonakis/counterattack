@@ -96,6 +96,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private bool rememberedPosition;
     private Vector2 lastDraggedPosition;
     private string matchKey;
+    private bool resultAllowsContinuation;
     private Color attackerColor;
     private Color attackerSecondaryColor;
     private bool foulIsPenalty;
@@ -112,7 +113,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         && injury?.column != null && injury.rule != null && injury.result != null && injury.die != null;
     public RectTransform Panel => panel;
     public static bool IsVisible => Instance != null && Instance.IsOpen;
-    public static bool IsHoldingContinuation => IsVisible && !Instance.IsAwaitingRoll;
+    public static bool IsHoldingContinuation => IsVisible && !Instance.IsAwaitingRoll && !Instance.resultAllowsContinuation;
     public static bool IsMatchClockHeld => IsVisible && Instance.IsResultHeld;
     public bool IsAwaitingRoll => stage is Stage.Defender or Stage.Dribbler or Stage.Leniency or Stage.Injury or Stage.Single;
 
@@ -233,7 +234,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         PlayerToken token, string attributeText, string probabilityText, bool jackpotAllowed, string successGuidance = null)
     {
         if (!HasSceneBindings || singleRollContent == null || playerColumns == null || !PlayerBound(singlePlayer)) return false;
+        if (IsComplete && resultAllowsContinuation && singleOwner == manager) Dismiss();
         if (IsOpen) return false;
+        resultAllowsContinuation = false;
         singleMode = true;
         singleRollView = singlePlayer;
         looseBallSuspended = false;
@@ -359,6 +362,10 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         shotComparison = true;
         shotComparisonKeeper = goalkeeper;
         footer.text = "Press [R] — shooter roll";
+        // BeginSingle temporarily uses the narrower single-roll layout. Restore
+        // the dragged location after switching back to the comparison layout.
+        if (PenaltyShootoutManager.ActiveShootout != null && rememberedPosition)
+            panel.anchoredPosition = lastDraggedPosition;
         FitAndClamp();
         return true;
     }
@@ -493,6 +500,19 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         return true;
     }
 
+    public void CompleteShootoutDeflection(MonoBehaviour manager, ShotManager shot, int distance, bool goal)
+    {
+        if (!looseBallMode || singleOwner != manager || stage != Stage.Transition) return;
+        activeDistance.die.Clear();
+        activeDistance.result.text = $"Fixed distance: {distance} {(distance == 1 ? "hex" : "hexes")}";
+        outcome.text = goal ? "Shootout deflection · GOAL" : "Shootout deflection · Penalty missed";
+        // The shootout now owns the continuation; no distance die is rolled.
+        singleOwner = shot;
+        singleWaiting = null;
+        resultAllowsContinuation = true;
+        BeginResultCountdown();
+    }
+
     public void SetScatterExpandedLayout()
     {
         expanded = true;
@@ -616,16 +636,18 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (looseRecoveryContent != null) looseRecoveryContent.SetActive(false);
     }
 
-    public void CancelSingle(MonoBehaviour manager)
+    public void CancelSingle(MonoBehaviour manager, bool preserveResultCountdown = false)
     {
         if (stage == Stage.Closed || (singleOwner != manager && pendingScatterOwner != manager)) return;
+        // Resetting a resolved shootout shot must not erase its visible countdown.
+        if (preserveResultCountdown && IsComplete && resultAllowsContinuation) return;
         stage = Stage.Complete;
         Dismiss();
     }
 
     public IEnumerator ResolveSingle(MonoBehaviour manager, GameplayDiceRollResult roll, string result,
         bool continueWithFoulChecks = false, bool continueWithScatter = false, MonoBehaviour scatterOwner = null,
-        int? resolvedTotal = null, bool continueWithNextRoll = false)
+        int? resolvedTotal = null, bool continueWithNextRoll = false, bool continueWhileResultVisible = false)
     {
         if (!singleMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
         stage = Stage.Transition;
@@ -638,6 +660,12 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         // A running dribbler's recovery foul continues directly into the existing checks.
         // Keep the resolved recovery die visible; only the final injury result starts dismissal.
         if (continueWithScatter && PrepareScatterContinuation(manager, scatterOwner != null ? scatterOwner : manager)) return EmptyPresentation();
+        if (continueWhileResultVisible)
+        {
+            resultAllowsContinuation = true;
+            BeginResultCountdown();
+            return EmptyPresentation();
+        }
         return continueWithFoulChecks || continueWithNextRoll ? EmptyPresentation() : WaitForDismissal();
     }
 
@@ -797,11 +825,16 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     public IEnumerator WaitForDismissal()
     {
         if (!IsOpen) yield break;
+        BeginResultCountdown();
+        while (IsOpen) yield return null;
+    }
+
+    private void BeginResultCountdown()
+    {
         stage = Stage.Complete;
         IsResultHeld = false;
         closeAt = Time.unscaledTime + resultSeconds;
         UpdateFooter();
-        while (IsOpen) yield return null;
     }
 
     public bool Dismiss()
@@ -811,6 +844,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         looseBallSuspended = false;
         IsResultHeld = false;
         stage = Stage.Closed;
+        resultAllowsContinuation = false;
         owner = null;
         singleOwner = null;
         singleWaiting = null;
