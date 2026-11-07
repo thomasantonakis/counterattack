@@ -1,5 +1,39 @@
 # Session handoff — 2026-11-07
 
+## Follow-up decisions — 2026-11-07
+
+Implemented and focused-verified: direct headed-back-pass choice/catch, landing-ZOI
+wording, digital squad wording and period-specific stoppage cap. Compilation was
+clean through the live Editor. Native results: HeadedBackPassEditorTests **11/0/0**
+at `Runs/20261107T210952817Z/results.xml`, HeadedBackPassPlayModeTests **26/0/0**
+at `Runs/20261107T211031868Z/results.xml`, ExtraTimeStoppageEditorTests **16/0/0**
+at `Runs/20261107T210821974Z/results.xml`. These are focused counts, not full-suite
+validation. The dedicated feature checklists name broader user-run fixtures.
+Pickup after movement remains unimplemented and belongs to the separate prompt.
+
+The user resolved the remaining rule questions after the approved scoring batch:
+
+- WIKI-009: headed passes are airborne until the final hex, where the ball drops.
+  Eligible defenders in that hex's ZOI may attempt an interception; jumpers,
+  stunned players and other excluded players remain ineligible. Existing code
+  already implements landing-only attempts; clarify the bundled wording.
+- WIKI-010: allow teammate headers to the keeper after open play AND corners.
+  Direct reception inside the keeper's own box offers hands [H] / feet [F]. Hands
+  rolls an ordinary D6 with no attribute: 1 scatters from the keeper; 2–6 held.
+  Feet needs no roll. Outside-box receptions always go to feet.
+- WIKI-011: keep current from-behind discipline only. Do not add last-man logic.
+- WIKI-012/013: pickup after movement is a separate-session feature. The choice
+  occurs before Final Thirds; Quick Throw must bypass Final Thirds. Header-to-feet
+  eligibility persists through subsequent Movement Phases while the GK retains
+  possession, until pickup or passing. Teammate kicked passes never authorize
+  hands; deliberate Drop Ball forbids a re-pickup. Full prompt:
+  `Documentation/Testing/GoalkeeperPickupFutureSessionPrompt.md`.
+- WIKI-002: digital squads stay 16 or 18, with exactly two goalkeepers in either.
+  The old printed draft rules are superseded. No draft gameplay change requested.
+- WIKI-003: extra-time stoppage cap is now 3 per half; regulation remains 7.
+  This supersedes the earlier open discussion and previous all-halves cap 7.
+
+
 ## Start here
 
 **Latest batch: AttributeScoreFloor.** Numeric scores use
@@ -31,11 +65,11 @@ semantics below; the rest of the initial approved batch was not re-executed.
 the approved-decisions section of RulesWikiAudit. Accuracy (HP/LB) and Ball
 Control accept automatic jackpots; own-box GK card policy is no-card/yellow;
 booked/no-new-card fouls permit advantage; retain GK tie priority and current
-7-action cap (extra-time cap 3 remains open). Outside-own-box keepers may contest
+7-action regulation cap (extra-time cap is now 3). Outside-own-box keepers may contest
 and rush using Heading 0, with ordinary headed-pass continuation, not a catch.
 Use final keeper position to select the attribute. Dedicated fixtures are
 ApprovedRuleDecisionsEditorTests and ApprovedRuleDecisionsPlayModeTests.
-Further gaps WIKI-009–013 are explicitly deferred until this batch is done.
+WIKI-009–013 were subsequently reviewed; the follow-up decisions above supersede the original deferral.
 
 **Approved batch completed:** 15 dedicated EditMode cases passed; all 35 distinct
 PlayMode cases are green after a four-case prompt-timing fixture retest. Final
@@ -45,8 +79,7 @@ evidence: `Runs/20261107T145108743Z/results.xml` (15/0/0),
 checkpoint before that prompt assertion. Do not sum the overlapping runs.
 Scripts compile cleanly. Bundled text and existing Rules prefab are aligned;
 Room/MainMenu layouts and live saves were untouched. Broader regression checks
-are handed to the user, not automatically run. The extra-time cap discussion stays
-open. Wait for the user before opening the deferred further-gap discussion.
+are handed to the user, not automatically run. The extra-time cap is resolved at 3. Pickup after movement remains deferred to its separate prompt.
 
 **Current review refresh (2026-11-07):** source review started from clean
 `dd87cbd`, four commits after the old `58f92ff` handoff. The current task is to

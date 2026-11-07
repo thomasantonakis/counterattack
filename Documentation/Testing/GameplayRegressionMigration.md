@@ -1,5 +1,33 @@
 # Gameplay regression migration
 
+## Headed back-pass and extra-time follow-up — 2026-11-07
+
+Dedicated new feature fixtures cover direct teammate headers to the keeper after
+open play/corners, hands/feet choice, ordinary catch die, scatter/held continuation,
+outside-box exclusion and cancellation/input restoration. Landing-ZOI preview
+checks preserve jumper/stun/suppression exclusions; the existing runtime landing
+interception flow was retained. The bundled rulebook matches the digital decisions,
+including 16/18 squads with exactly two goalkeepers and cap 3 in extra time.
+
+`ExtraTimeStoppageEditorTests`: **16/0/0**, native XML
+`Runs/20261107T210821974Z/results.xml`.
+`HeadedBackPassEditorTests`: **11/0/0**, native XML
+`Runs/20261107T210952817Z/results.xml`.
+Final headed-pass PlayMode: **26/0/0** at
+`Runs/20261107T211031868Z/results.xml`.
+Initial headed-pass PlayMode checkpoint: **22/0/0** at
+`Runs/20261107T210333178Z/results.xml`; final expanded results follow in the
+feature checklist. Do not add overlapping checkpoints together.
+
+These are new feature cases, not retirement mappings for legacy scenarios.
+Compilation is checked separately through the open Editor. A concurrent kickoff
+fixture's NUnit collection-assertion syntax briefly blocked compilation and was
+corrected without changing its expectation. Broader fixtures remain user-run;
+see the two dedicated feature Verification.md files. Delayed pickup is deferred
+to `GoalkeeperPickupFutureSessionPrompt.md`; direct header catches do not implement
+its provenance, persistence or phase-end choice.
+
+
 ## Shared attribute score floor — 2026-11-07
 
 Numeric scores now use `max(current injured attribute + signed modifiers, 0) +

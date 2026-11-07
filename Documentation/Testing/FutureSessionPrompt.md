@@ -1,5 +1,39 @@
 # Prompt for a future gameplay review session
 
+## Follow-up decisions — 2026-11-07
+
+Implemented and focused-verified: direct headed-back-pass choice/catch, landing-ZOI
+wording, digital squad wording and period-specific stoppage cap. Compilation was
+clean through the live Editor. Native results: HeadedBackPassEditorTests **11/0/0**
+at `Runs/20261107T210952817Z/results.xml`, HeadedBackPassPlayModeTests **26/0/0**
+at `Runs/20261107T211031868Z/results.xml`, ExtraTimeStoppageEditorTests **16/0/0**
+at `Runs/20261107T210821974Z/results.xml`. These are focused counts, not full-suite
+validation. The dedicated feature checklists name broader user-run fixtures.
+Pickup after movement remains unimplemented and belongs to the separate prompt.
+
+The user resolved the remaining rule questions after the approved scoring batch:
+
+- WIKI-009: headed passes are airborne until the final hex, where the ball drops.
+  Eligible defenders in that hex's ZOI may attempt an interception; jumpers,
+  stunned players and other excluded players remain ineligible. Existing code
+  already implements landing-only attempts; clarify the bundled wording.
+- WIKI-010: allow teammate headers to the keeper after open play AND corners.
+  Direct reception inside the keeper's own box offers hands [H] / feet [F]. Hands
+  rolls an ordinary D6 with no attribute: 1 scatters from the keeper; 2–6 held.
+  Feet needs no roll. Outside-box receptions always go to feet.
+- WIKI-011: keep current from-behind discipline only. Do not add last-man logic.
+- WIKI-012/013: pickup after movement is a separate-session feature. The choice
+  occurs before Final Thirds; Quick Throw must bypass Final Thirds. Header-to-feet
+  eligibility persists through subsequent Movement Phases while the GK retains
+  possession, until pickup or passing. Teammate kicked passes never authorize
+  hands; deliberate Drop Ball forbids a re-pickup. Full prompt:
+  `Documentation/Testing/GoalkeeperPickupFutureSessionPrompt.md`.
+- WIKI-002: digital squads stay 16 or 18, with exactly two goalkeepers in either.
+  The old printed draft rules are superseded. No draft gameplay change requested.
+- WIKI-003: extra-time stoppage cap is now 3 per half; regulation remains 7.
+  This supersedes the earlier open discussion and previous all-halves cap 7.
+
+
 Refreshed 2026-11-07 after the source review of `dd87cbd`. The older prompt's
 uncommitted-work description and full-suite instruction have been superseded.
 
@@ -49,7 +83,7 @@ changes or new test results.
 
 WIKI-003–008 are decided and implemented in the ApprovedRuleDecisions batch.
 Read its Verification.md for actual focused results and remaining broader checks.
-The extra-time cap of 3 remains open; current code keeps 7. Keep goalkeeper
+The extra-time cap is now confirmed at 3; regulation remains 7. Keep goalkeeper
 priority on tied defensive scores. Preserve no-card/yellow inside-box goalkeeper
 discipline and advantage after a booked defender's no-new-card foul. Eligible
 accuracy/control jackpots succeed automatically; two duel jackpots tie at 50.

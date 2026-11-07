@@ -1,5 +1,14 @@
 # Running gameplay regressions
 
+Headed back-passes use dedicated fixtures `HeadedBackPassEditorTests` under
+`Assets/Editor/FeatureTests/HeadedBackPass/` and `HeadedBackPassPlayModeTests` under
+`Assets/Tests/PlayMode/Features/HeadedBackPass/`. Extra-time action caps use
+`ExtraTimeStoppageEditorTests` under `Assets/Editor/FeatureTests/ExtraTimeStoppage/`.
+Run these explicit fixture filters for this change. Their checklists record results
+and broader user-run coverage. Delayed goalkeeper pickup is a separate feature;
+its prompt is `GoalkeeperPickupFutureSessionPrompt.md`.
+
+
 The shared score floor has dedicated fixtures `AttributeScoreFloorEditorTests`
 in `Assets/Editor/FeatureTests/AttributeScoreFloor/` and
 `AttributeScoreFloorPlayModeTests` in
