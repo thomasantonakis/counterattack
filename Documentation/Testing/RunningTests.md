@@ -1,5 +1,10 @@
 # Running gameplay regressions
 
+Intro clock visibility uses `IntroClockVisibilityEditorTests` under
+`Assets/Editor/FeatureTests/IntroClockVisibility/`. Run only that fixture for
+the presentation change; its `TASKS.md` records results for hiding during intro,
+restoring after completion/skip/disable, and preserving shootout clock hiding.
+
 Match event banner presentation uses `MatchEventBannerEditorTests` under
 `Assets/Editor/FeatureTests/MatchEventBanners/` and `MatchEventBannerPlayModeTests`
 under `Assets/Tests/PlayMode/Features/MatchEventBanners/`. Run only these fixture

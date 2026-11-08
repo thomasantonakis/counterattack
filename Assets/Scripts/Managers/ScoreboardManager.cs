@@ -14,6 +14,7 @@ public class ScoreboardManager : MonoBehaviour
     public TMP_Text awayScoreText;  // Drag and drop the TextMeshPro element here
 
     private RectTransform timerPanelRect;
+    private bool showingPenaltyDots;
     public GameObject penaltyDots;
     public UnityEngine.UI.Image[] homePenaltyDots = new UnityEngine.UI.Image[5];
     public UnityEngine.UI.Image[] awayPenaltyDots = new UnityEngine.UI.Image[5];
@@ -37,8 +38,9 @@ public class ScoreboardManager : MonoBehaviour
 
     private void RefreshPenaltyDots(bool visible)
     {
+        showingPenaltyDots = visible;
         if (penaltyDots != null) penaltyDots.SetActive(visible);
-        if (timeText != null) timeText.transform.parent.gameObject.SetActive(!visible);
+        RefreshClockVisibility();
         if (!visible) return;
         var shootout = PenaltyShootoutManager.ActiveShootout ?? FindAnyObjectByType<PenaltyShootoutManager>();
         if (shootout == null) return;
@@ -46,6 +48,16 @@ public class ScoreboardManager : MonoBehaviour
         int displayRound = GetPenaltyDotDisplayRound(shootout.HomeResults.Count, shootout.AwayResults.Count, upcomingHomeTeam);
         PaintDots(homePenaltyDots, shootout.HomeResults, displayRound);
         PaintDots(awayPenaltyDots, shootout.AwayResults, displayRound);
+    }
+
+    private void LateUpdate() => RefreshClockVisibility();
+
+    private void RefreshClockVisibility()
+    {
+        if (timeText == null) return;
+        bool visible = !showingPenaltyDots && !(RoomMatchIntro.Instance != null && RoomMatchIntro.Instance.IsHoldingMatch);
+        GameObject timer = timeText.transform.parent.gameObject;
+        if (timer.activeSelf != visible) timer.SetActive(visible);
     }
 
     private void PaintDots(UnityEngine.UI.Image[] dots, System.Collections.Generic.IReadOnlyList<bool> results, int displayRound)
