@@ -2703,10 +2703,12 @@ public class DraftManager : MonoBehaviour
 
     void CreateTeamSlots(GameObject rosterPanel, GameObject averagePanel)
     {
+        GameObject goalkeeperSlotPrefab = Resources.Load<GameObject>("UI/List/GoalkeeperSlot");
         for (int i = 1; i <= squadSize; i++)
         {
             // Instantiate a new slot
-            GameObject newSlot = Instantiate(playerSlotPrefab, rosterPanel.transform);
+            GameObject slotPrefab = (i == 1 || i == 12) ? goalkeeperSlotPrefab : playerSlotPrefab;
+            GameObject newSlot = Instantiate(slotPrefab, rosterPanel.transform);
             string rosterType = rosterPanel.name.Contains("Home") ? "Home" : "Away";
             newSlot.name = $"{rosterType}-{i}";  // This will name it "Home-1", "Away-1", etc.
             // Check if instantiation was successful
