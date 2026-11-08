@@ -53,6 +53,7 @@ public class CreateNewGameManager : MonoBehaviour
     public TMP_Dropdown gkDraftDropdown;
     public TMP_Dropdown refereeDropdown;
     public TMP_Dropdown weatherDropdown;
+    public TMP_Dropdown fixtureLightingDropdown;
     public TMP_Dropdown ballColorDropdown;
     // public TMP_Dropdown playerDeckDropdown;
     public TMP_Dropdown homeKitDropdown;
@@ -482,6 +483,11 @@ public class CreateNewGameManager : MonoBehaviour
         List<string> weatherOptions = new List<string> { "Clear", "Rain", "Snow" };  // Define options
         weatherDropdown.ClearOptions();  // Clear any existing options
         weatherDropdown.AddOptions(weatherOptions);  // Add the default options
+        if (fixtureLightingDropdown != null)
+        {
+            fixtureLightingDropdown.ClearOptions();
+            fixtureLightingDropdown.AddOptions(FixtureLightingOptions.Labels);
+        }
         List<string> ballColorOptions = new List<string> { "White", "Orange", "Yellow" };  // Define options
         ballColorDropdown.ClearOptions();  // Clear any existing options
         ballColorDropdown.AddOptions(ballColorOptions);  // Add the default options
@@ -2238,6 +2244,7 @@ public class CreateNewGameManager : MonoBehaviour
 
         SelectDropdownOption(refereeDropdown, settings.referee, "Random");
         SelectDropdownOption(weatherDropdown, settings.weatherConditions, "Clear");
+        SelectDropdownOption(fixtureLightingDropdown, FixtureLightingOptions.Label(settings.fixtureLighting), "Mid afternoon");
         AdjustBallColorBasedOnWeather();
         string restoredBallColor = string.Equals(GetSelectedDropdownText(weatherDropdown), "Snow", StringComparison.OrdinalIgnoreCase)
             ? "Orange"
@@ -2617,6 +2624,7 @@ public class CreateNewGameManager : MonoBehaviour
             ? aiDifficultyDropdown.options[aiDifficultyDropdown.value].text
             : AIDifficultyUltraHardLabel;
         settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
+        settings.fixtureLighting = FixtureLightingOptions.FromIndex(fixtureLightingDropdown != null ? fixtureLightingDropdown.value : 0);
         settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
         settings.homeTeamName = homeTeamName;
         settings.awayTeamName = awayTeamName;
@@ -3101,6 +3109,7 @@ public class GameSettings
     public string gkDraft;
     public string referee;
     public string weatherConditions;
+    public string fixtureLighting = "MidAfternoon";
     public string ballColor;
     // public string playerDeck;
     public bool includeTabletopia;

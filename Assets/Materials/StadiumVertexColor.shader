@@ -13,7 +13,7 @@ Shader "CounterAttack/Stadium Vertex Color"
         Tags { "RenderType"="Opaque" }
         LOD 150
         CGPROGRAM
-        #pragma surface surf Lambert vertex:vert
+        #pragma surface surf Lambert vertex:vert fullforwardshadows addshadow
         #pragma target 3.0
         fixed4 _Color;
         fixed4 _SeatColor;

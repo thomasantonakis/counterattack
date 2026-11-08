@@ -44,6 +44,7 @@ public class PauseMenuManager : MonoBehaviour
     public TMP_Dropdown editTiebreakerDropdown;
     public TMP_Dropdown editPlayerAssistanceDropdown;
     public TMP_Dropdown editWeatherDropdown;
+    public TMP_Dropdown editFixtureLightingDropdown;
     public TMP_Dropdown editBallColorDropdown;
     public TMP_Dropdown editHomeKitDropdown;
     public TMP_Dropdown editAwayKitDropdown;
@@ -585,6 +586,7 @@ public class PauseMenuManager : MonoBehaviour
         editTiebreakerDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditTiebreakerDropdown");
         editPlayerAssistanceDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditPlayerAssistanceDropdown");
         editWeatherDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditWeatherDropdown");
+        editFixtureLightingDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditFixtureLightingDropdown");
         editBallColorDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditBallColorDropdown");
         editHomeKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditHomeKitDropdown");
         editAwayKitDropdown ??= FindChildComponent<TMP_Dropdown>(panelTransform, "EditAwayKitDropdown");
@@ -800,6 +802,7 @@ public class PauseMenuManager : MonoBehaviour
         AddMissingReference(missing, editTiebreakerDropdown, nameof(editTiebreakerDropdown));
         AddMissingReference(missing, editPlayerAssistanceDropdown, nameof(editPlayerAssistanceDropdown));
         AddMissingReference(missing, editWeatherDropdown, nameof(editWeatherDropdown));
+        AddMissingReference(missing, editFixtureLightingDropdown, nameof(editFixtureLightingDropdown));
         AddMissingReference(missing, editBallColorDropdown, nameof(editBallColorDropdown));
         AddMissingReference(missing, editHomeKitDropdown, nameof(editHomeKitDropdown));
         AddMissingReference(missing, editAwayKitDropdown, nameof(editAwayKitDropdown));
@@ -846,6 +849,7 @@ public class PauseMenuManager : MonoBehaviour
         ConfigureEditSettingsDropdownListener(editTiebreakerDropdown);
         ConfigureEditSettingsDropdownListener(editPlayerAssistanceDropdown);
         ConfigureEditSettingsDropdownListener(editWeatherDropdown);
+        ConfigureEditSettingsDropdownListener(editFixtureLightingDropdown);
         ConfigureEditSettingsDropdownListener(editBallColorDropdown);
         ConfigureEditSettingsDropdownListener(editHomeKitDropdown);
         ConfigureEditSettingsDropdownListener(editAwayKitDropdown);
@@ -1010,6 +1014,7 @@ public class PauseMenuManager : MonoBehaviour
             PopulateEditDropdown(editTiebreakerDropdown, GetTiebreakerOptions(settings), settings.tiebreaker);
             PopulateEditDropdown(editPlayerAssistanceDropdown, PlayerAssistanceLabels, GetPlayerAssistanceLabel(settings.playerAssistance));
             PopulateEditDropdown(editWeatherDropdown, new List<string> { "Clear", "Rain", "Snow" }, settings.weatherConditions);
+            PopulateEditDropdown(editFixtureLightingDropdown, FixtureLightingOptions.Labels, FixtureLightingOptions.Label(settings.fixtureLighting));
             string normalizedBallColor = GetValidBallColorForWeather(settings.weatherConditions, settings.ballColor);
             PopulateEditDropdown(editBallColorDropdown, GetBallColorOptions(settings.weatherConditions), normalizedBallColor);
             PopulateEditKitDropdown(editHomeKitDropdown, editHomeKitPresets, settings.homeKit);
@@ -1258,6 +1263,7 @@ public class PauseMenuManager : MonoBehaviour
 
         string appliedWeather = GetDropdownText(editWeatherDropdown);
         settings.weatherConditions = appliedWeather;
+        settings.fixtureLighting = FixtureLightingOptions.FromIndex(editFixtureLightingDropdown != null ? editFixtureLightingDropdown.value : 0);
         settings.ballColor = GetValidBallColorForWeather(appliedWeather, GetDropdownText(editBallColorDropdown));
         settings.homeKit = GetSelectedEditKitDisplayName(editHomeKitDropdown, editHomeKitPresets);
         settings.awayKit = GetSelectedEditKitDisplayName(editAwayKitDropdown, editAwayKitPresets);

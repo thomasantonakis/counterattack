@@ -169,6 +169,7 @@ public partial class MatchManager : MonoBehaviour
         public string tiebreaker;
         public string referee;
         public string weatherConditions;
+        public string fixtureLighting = "MidAfternoon";
         public bool includeTabletopia;
         public bool includeNonTabletopia;
         public bool includeInternationals;
@@ -4013,6 +4014,7 @@ public partial class MatchManager : MonoBehaviour
         }
 
         gameData.gameSettings.halfDuration = Mathf.Clamp(gameData.gameSettings.halfDuration, 15, 60);
+        gameData.gameSettings.fixtureLighting = FixtureLightingOptions.Normalize(gameData.gameSettings.fixtureLighting);
         gameData.gameSettings.numberOfHalfs = Mathf.Clamp(gameData.gameSettings.numberOfHalfs, 1, 2);
         if (!IsStandardTwoHalfMatch() && TieBreakerIncludesExtraTime())
         {
