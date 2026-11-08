@@ -1,5 +1,29 @@
 # Session handoff — 2026-11-07
 
+## Long Ball goalkeeper Pace ordering — 2026-11-08
+
+User-approved correction: for every in-bounds accurate/inaccurate Long Ball,
+finish the defending keeper's once-only Pace response before landing recovery
+(including automatic direct defender recovery), interception rolls or recipient
+options/Final Thirds. Retain the qualifying 1-hex box-entry move first; taking or
+declining it does not replace Pace. Recheck occupancy and ZOI after repositioning.
+Direct recipients retain their existing automatic recovery odds. Cancel/reset,
+offside, out-of-bounds and ended actions must not resume stale continuations.
+High Pass minimum distance stays exactly 3 hex steps; this is settled.
+
+Implementation and focused execution are tracked in
+`Assets/Editor/FeatureTests/LongBallGoalkeeperPace/Verification.md`.
+The separate delayed-pickup feature owns handling eligibility; this change reuses
+current keeper collection/feet and Save-and-Hold continuations without introducing
+a second eligibility model. Preserve concurrent pickup and kickoff work. The user manually checked the Long Ball
+correction on 2026-11-08 and reported it OK; automated results are recorded in the
+feature checklist. All 62 distinct feature cases now have passing native results:
+46 non-Landing cases at `Runs/20261108T081757906Z/results.xml` plus 16/0/0
+Landing retest at `Runs/20261108T082252170Z/results.xml`. The former full feature
+run was 54/8/0 due to a mid-movement fixture lookup; the final retest resolves
+those eight failures. Compilation is clean. No broader suites were run.
+
+
 ## Follow-up decisions — 2026-11-07
 
 Implemented and focused-verified: direct headed-back-pass choice/catch, landing-ZOI

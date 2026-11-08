@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Long Ball Pace ordering uses only `LongBallGoalkeeperPacePlayModeTests` in
+`Assets/Tests/PlayMode/Features/LongBallGoalkeeperPace/`, backed by the owned board
+in `Assets/Editor/FeatureTests/LongBallGoalkeeperPace/`. See its Verification.md
+for scope, retained native results and broader user-run fixtures. Serialize runs
+and recompiles across sessions sharing this Editor.
+
+
 Kickoff Ground Pass has fixture `KickoffGroundPassPlayModeTests` in
 `Assets/Tests/PlayMode/Features/KickoffGroundPass/`. It covers opening action
 availability across game modes, own-half uncapped passes at every difficulty,

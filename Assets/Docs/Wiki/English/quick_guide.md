@@ -97,7 +97,7 @@
 
 - Can travel to any hex on the pitch
 - Can't aim within 5 hexes of a teammate or 1 of an opponent
-- Opponent GK moves according to pace
+- After an in-bounds landing, opponent GK moves according to Pace (or declines) before landing recovery or recipient options; a qualifying separate 1-hex box-entry move comes first
 - ACCURACY: High pass + dice =>9
 - ACCURACY: (Final Third to Final Third) =>10
 

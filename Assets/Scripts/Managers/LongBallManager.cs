@@ -40,6 +40,9 @@ public class LongBallManager : MonoBehaviour
     // private Dictionary<HexCell, List<HexCell>> interceptionHexToDefendersMap = new Dictionary<HexCell, List<HexCell>>();
     private List<HexCell> interceptingDefenders;
     private bool currentLongBallGkMoveHandled = false;
+    private int longBallResolutionVersion;
+    private bool isResolvingGkPaceMove;
+    private bool isResolvingLandingInterception;
     private readonly HashSet<PlayerToken> attemptedLongBallInterceptors = new();
     private readonly List<HexCell> defenderLongBallMoveHexes = new();
     private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
@@ -102,10 +105,12 @@ public class LongBallManager : MonoBehaviour
         {
             HandleLongBallProcess(hex);
         }
-        else if (isWaitingForDefLBMove)
+        else if (isWaitingForDefLBMove && !isResolvingGkPaceMove)
         {
             if (hex != null && IsValidDefenderLongBallMoveHex(hex))
             {
+                GameInputManager.ConsumeCurrentClick(nameof(LongBallManager),
+                    "long_ball_gk_pace", "target_selected", consumedByHomeTeam: IsInstructionExpectingHomeTeam());
                 hexGrid.ClearHighlightedHexes();
                 _ = MoveGKForLB(hex);
             }
@@ -168,20 +173,20 @@ public class LongBallManager : MonoBehaviour
                 keyData.Consume(nameof(LongBallManager));
                 return;
             }
-            else if (isWaitingForInterceptionRoll && (keyData.key == KeyCode.R || hasRollOverride))
+            else if (isWaitingForInterceptionRoll && !isResolvingLandingInterception && (keyData.key == KeyCode.R || hasRollOverride))
             {
                 StartCoroutine(PerformInterceptionCheck(finalHex, hasRollOverride ? rollOverride : null));
                 keyData.Consume(nameof(LongBallManager));
                 return;
             }
-            else if (isWaitingForDefLBMove && keyData.key == KeyCode.V && CanGoalkeeperClaimLongBallLandingHex())
+            else if (isWaitingForDefLBMove && !isResolvingGkPaceMove && keyData.key == KeyCode.V && CanGoalkeeperClaimLongBallLandingHex())
             {
                 Debug.Log($"{hexGrid.GetDefendingGK().name} claims the long ball at {finalHex.coordinates}.");
                 _ = MoveGKForLB(finalHex);
                 keyData.Consume(nameof(LongBallManager));
                 return;
             }
-            else if (isWaitingForDefLBMove && keyData.key == KeyCode.X)
+            else if (isWaitingForDefLBMove && !isResolvingGkPaceMove && keyData.key == KeyCode.X)
             {
                 hexGrid.ClearHighlightedHexes();
                 defenderLongBallMoveHexes.Clear();
@@ -194,6 +199,7 @@ public class LongBallManager : MonoBehaviour
 
     public void ActivateLongBall()
     {
+        longBallResolutionVersion++;
         isActivated = true;
         isAvailable = false;
         isAwaitingTargetSelection = true;
@@ -642,6 +648,7 @@ public class LongBallManager : MonoBehaviour
 
     private IEnumerator PresentAccuracyRoll(RollInputOverride? rollOverride)
     {
+        int version = longBallResolutionVersion;
         // Placeholder for dice roll logic (will be expanded in later steps)
         Debug.Log("Performing accuracy roll for Long Pass. Please Press R key.");
         // Get the passer's highPass attribute
@@ -677,6 +684,7 @@ public class LongBallManager : MonoBehaviour
         bool accuratePass = totalAccuracy >= accuracyThreshold;
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
             accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
+        if (!IsLongBallResolutionCurrent(version)) yield break;
         if (accuratePass)
         {
             Debug.Log($"Long Ball is accurate, passer roll: {diceRoll}");
@@ -755,6 +763,7 @@ public class LongBallManager : MonoBehaviour
 
     private IEnumerator PerformDistanceRoll(RollInputOverride? rollOverride)
     {
+        int version = longBallResolutionVersion;
         // Debug.Log("Performing Direction roll to find Long Pass destination.");
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "long_ball_distance",
@@ -770,6 +779,7 @@ public class LongBallManager : MonoBehaviour
         int distanceRoll = diceResult.roll;
         // int distanceRoll = 6; // Melina Mode
         yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, $"{distanceRoll} hexes", false);
+        if (!IsLongBallResolutionCurrent(version)) yield break;
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final inaccurate target hex
@@ -812,8 +822,17 @@ public class LongBallManager : MonoBehaviour
         isWaitingForDistanceRoll = false;
     }
 
+    private bool IsLongBallResolutionCurrent(int version)
+    {
+        return version == longBallResolutionVersion
+            && MatchManager.Instance != null
+            && MatchManager.Instance.currentState != MatchManager.GameState.HalfTime
+            && MatchManager.Instance.currentState != MatchManager.GameState.MatchEnded;
+    }
+
     public IEnumerator HandleLongBallMovement(HexCell targetHex, bool isFromHandling = false)
     {
+        int version = longBallResolutionVersion;
         if (targetHex == null)
         {
             Debug.LogError("Target Hex is null in HandleLongBallMovement!");
@@ -829,6 +848,7 @@ public class LongBallManager : MonoBehaviour
 
         while (elapsedTime < travelDuration)
         {
+            if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / travelDuration;
             // Lerp position along the straight line
@@ -841,6 +861,7 @@ public class LongBallManager : MonoBehaviour
         }
         // isMoving = false;  // Stop the movement
         // Ensure the ball ends exactly on the target hex
+        if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
         ball.PlaceAtCell(targetHex);
         finalHex = targetHex;
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");
@@ -870,33 +891,29 @@ public class LongBallManager : MonoBehaviour
                 yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
                 // TODO: Check if GK is already on the ball
             }
-            if (targetHex.isDefenseOccupied)
-            {
-                yield return StartCoroutine(ResolveLongBallRecovery(targetHex.GetOccupyingToken(), targetHex));
-                yield break;
-            }
-            else if (targetHex.isAttackOccupied)
-            {
-                yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(targetHex));
-            }
-            else
-            {
-                MatchManager.Instance.UpdatePossessionAfterPass(targetHex);
-                bool waitingForInterception = CheckForLongBallInterception(targetHex);
-                if (!waitingForInterception)
-                {
-                    yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(targetHex));
-                }
-                yield break;
-            }
+            if (!IsLongBallResolutionCurrent(version)) yield break;
+            // Both direct recipients and space wait for the same Pace response.
+            // In particular, do not change possession before selecting the defending GK.
+            yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(targetHex));
         }
     }
 
     private IEnumerator HandleGKMoveThenRecheckInterceptions(HexCell landingHex)
     {
+        int version = longBallResolutionVersion;
         if (!currentLongBallGkMoveHandled)
         {
             yield return StartCoroutine(HandleGKLongBallMove());
+        }
+
+        if (!IsLongBallResolutionCurrent(version) || landingHex == null || landingHex.isOutOfBounds) yield break;
+
+        // Occupancy may have changed during either goalkeeper response. Direct
+        // defensive collection stays automatic, including a keeper claim [V].
+        if (landingHex.isDefenseOccupied)
+        {
+            yield return StartCoroutine(FinalizeLongBallAfterDefensiveResponses(landingHex));
+            yield break;
         }
 
         bool waitingForInterception = CheckForLongBallInterception(landingHex);
@@ -1001,6 +1018,7 @@ public class LongBallManager : MonoBehaviour
         if (defenderGK == null)
         {
             Debug.LogError("No defending goalkeeper found!");
+            isWaitingForDefLBMove = false;
             yield break;
         }
 
@@ -1028,7 +1046,8 @@ public class LongBallManager : MonoBehaviour
             ? "🧤 GK Free Long Ball Move: Click a reachable hex to move, or press [X] to skip."
             : "🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.");
 
-        while (isWaitingForDefLBMove)
+        int version = longBallResolutionVersion;
+        while (isWaitingForDefLBMove && IsLongBallResolutionCurrent(version))
         {
             yield return null;
         }
@@ -1064,18 +1083,23 @@ public class LongBallManager : MonoBehaviour
 
     private async Task MoveGKForLB(HexCell hex)
     {
+        if (!isWaitingForDefLBMove || isResolvingGkPaceMove || !defenderLongBallMoveHexes.Contains(hex)) return;
+        int version = longBallResolutionVersion;
+        PlayerToken defendingGK = hexGrid.GetDefendingGK();
+        isResolvingGkPaceMove = true;
         hexGrid.ClearHighlightedHexes();
-        // await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, hexGrid.GetDefendingGK(), false));
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(
             targetHex: hex
-            , token: hexGrid.GetDefendingGK()
+            , token: defendingGK
             , isCalledDuringMovement: false
             , shouldCountForDistance: true
             , shouldCarryBall: false
         ));
+        if (!IsLongBallResolutionCurrent(version)) return;
+        isResolvingGkPaceMove = false;
         isWaitingForDefLBMove = false;
         defenderLongBallMoveHexes.Clear();
-        Debug.Log($"🧤 {hexGrid.GetDefendingGK().name} moved to {hex.name}");
+        Debug.Log($"🧤 {defendingGK.name} moved to {hex.name}");
     }
 
     private bool CheckForLongBallInterception(HexCell landingHex)
@@ -1138,12 +1162,15 @@ public class LongBallManager : MonoBehaviour
 
     private IEnumerator PerformInterceptionCheck(HexCell landingHex, RollInputOverride? rollOverride)
     {
+        if (isResolvingLandingInterception) yield break;
+        int version = longBallResolutionVersion;
         if (interceptingDefenders == null || interceptingDefenders.Count == 0)
         {
             Debug.Log("No defenders available for interception.");
             yield break;
         }
 
+        isResolvingLandingInterception = true;
         foreach (HexCell defenderHex in interceptingDefenders)
         {
             PlayerToken defenderToken = defenderHex.GetOccupyingToken();
@@ -1184,6 +1211,7 @@ public class LongBallManager : MonoBehaviour
             bool successfulInterception = diceRoll == 6 || totalInterceptionScore >= 10;
             yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
                 successfulInterception ? "INTERCEPTED" : "INTERCEPTION FAILED");
+            if (!IsLongBallResolutionCurrent(version)) yield break;
             if (successfulInterception)
             {
                 Debug.Log($"Defender at {defenderHex.coordinates} successfully intercepted the ball!");
@@ -1199,6 +1227,7 @@ public class LongBallManager : MonoBehaviour
                 // A won interception is a purposeful touch by the new attack.
                 MatchManager.Instance.ChangePossession();
                 yield return StartCoroutine(ball.MoveToCell(defenderHex));
+                if (!IsLongBallResolutionCurrent(version)) yield break;
                 MatchManager.Instance.UpdatePossessionAfterPass(defenderHex);
                 MatchManager.Instance.ResolveActionBeforeFinalThird(
                     MatchManager.MatchActionKind.LongBall,
@@ -1215,6 +1244,7 @@ public class LongBallManager : MonoBehaviour
         // If no defender intercepts, the ball stays at the original hex
         Debug.Log("No defenders intercepted. Ball remains at the landing hex.");
         isWaitingForInterceptionRoll = false;
+        isResolvingLandingInterception = false;
         yield return StartCoroutine(HandleGKMoveThenRecheckInterceptions(landingHex));
     }
 
@@ -1330,6 +1360,12 @@ public class LongBallManager : MonoBehaviour
 
     public void CleanUpLongBall(bool preserveTargetPrecompute = false)
     {
+        longBallResolutionVersion++;
+        DuelResolutionPanelController.Instance?.CancelSingle(this);
+        isResolvingGkPaceMove = false;
+        isResolvingLandingInterception = false;
+        finalHex = null;
+        interceptingDefenders = null;
         isActivated = false;
         isAwaitingTargetSelection = false;
         isDangerous = false;
@@ -1451,7 +1487,7 @@ public class LongBallManager : MonoBehaviour
             return;
         }
 
-        if (isWaitingForDefLBMove)
+        if (isWaitingForDefLBMove && !isResolvingGkPaceMove)
         {
             context.AddKeyActionCandidate(
                 nameof(LongBallManager),

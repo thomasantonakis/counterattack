@@ -49,6 +49,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
             expectedLanding = distance == 1 ? Hex(5, -8) : distance == 5 ? Hex(1, -10) : Hex(2, -9);
             LongRoll("PerformDistanceRoll", distance);
         }
+        yield return Until(() => longBall.isWaitingForDefLBMove, "Pace precedes every in-bounds landing recovery");
+        Assert.That(LongInterceptionPending, Is.False);
+        LegacyKey("X");
         if (branch is "scatter_interception" or "scatter_miss")
         {
             yield return Until(() => LongInterceptionPending, "resolved scatter destination offers Delgado's interception");
@@ -79,8 +82,6 @@ public sealed partial class GoalkeeperBoxEntryFixture
         }
         else
         {
-            yield return Until(() => longBall.isWaitingForDefLBMove, "long ball offers the goalkeeper pace response");
-            LegacyKey("X");
             yield return Until(() => !longBall.isActivated && movement.isActivated && movement.isCommitted,
                 "forfeited goalkeeper pace response automatically starts movement");
             Assert.That(ball.GetCurrentHex(), Is.SameAs(expectedLanding));

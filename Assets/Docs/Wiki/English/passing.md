@@ -75,9 +75,9 @@ Accurate or not, the Long Pass travels high in the air and cannot be intercepted
 
 ### What is after a Long Pass?
 
-After a Long Pass has been made, the defending manager gets to move their goalkeeper according to the goalkeeper's pace.
+After an in-bounds Long Pass lands, accurate or inaccurate, the defending manager gets one opportunity to move their goalkeeper according to Pace, or decline with [X]. Finish this decision before any landing recovery/interception roll, automatic direct recovery, recipient action options or Final Thirds continuation. Then recheck the current landing occupancy and zones of influence; a direct defensive recipient still recovers automatically without a roll.
 
-In case the ball gets into the box, the defending keeper also gets 1 Hex move.
+When the ball qualifies for a new entry into the defending penalty box, resolve the separate 1-hex goalkeeper move first, then offer the Pace move. Taking or declining either move does not consume the other. Out-of-bounds restarts, offside and ended actions do not resume this response sequence.
 
 Play then resumes with a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase), with the attacking team moving first.
 

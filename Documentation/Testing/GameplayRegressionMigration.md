@@ -1,5 +1,18 @@
 # Gameplay regression migration
 
+## Additive Long Ball Pace ordering coverage — 2026-11-08
+
+`LongBallGoalkeeperPacePlayModeTests` adds dedicated native coverage under
+`Assets/Tests/PlayMode/Features/LongBallGoalkeeperPace/`, using the existing owned
+GoalkeeperBoxEntryFixture board through a new partial in
+`Assets/Editor/FeatureTests/LongBallGoalkeeperPace/`. See that feature's
+Verification.md for native XML, actual counts, fixture corrections and limits.
+Existing LegacyLongBallFixture and LegacyLongBallBoxFixture expectations now put
+Pace before landing recovery. They were not retired or automatically executed;
+broader legacy/OOB/box-entry verification remains user-run. This is additive
+behavior coverage, not another whole-suite migration checkpoint.
+
+
 ## Headed back-pass and extra-time follow-up — 2026-11-07
 
 Dedicated new feature fixtures cover direct teammate headers to the keeper after

@@ -23,6 +23,10 @@ Direct teammate headers to the keeper allow hands (normal D6: 1 scatters, 2–6
 held) or feet (no roll), including corner-origin headers. Outside-box receptions
 stay at feet. Headed-pass interception attempts apply only at the landing hex.
 Delayed pickup after movement remains a separate planned feature.
+Long Pass landings resolve the separate eligible 1-hex box-entry move, then one
+Pace response (move or decline), before landing recovery or recipient continuation.
+Recheck current occupancy/ZOI after Pace; direct recovery remains automatic.
+High Pass minimum distance remains 3 hex steps, as implemented.
 These local adaptations do not publish changes to the upstream wiki.
 All attribute-based scores floor the current injured attribute plus applicable
 signed modifiers at zero before adding the numeric roll. Jackpots stay 50 and

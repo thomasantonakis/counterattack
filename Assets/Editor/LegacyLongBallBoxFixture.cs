@@ -38,16 +38,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             yield return Until(() => !keeper.isActivated && !keeper.IsResolvingMove && awayGK.currentHex == Hex(15, -1),
                 "goalkeeper completes its free box move");
         }
-        if (branch == "box_intercept_miss")
-        {
-            yield return Until(() => LongInterceptionPending, "Poulsen is offered the recalculated landing interception");
-            var candidates = (List<HexCell>)typeof(LongBallManager).GetField("interceptingDefenders", Private).GetValue(longBall);
-            Assert.That(candidates, Is.EquivalentTo(new[] { poulsen.currentHex }));
-            var flow = (IEnumerator)typeof(LongBallManager).GetMethod("PerformInterceptionCheck", Private, null,
-                new[] { typeof(HexCell), typeof(int?) }, null).Invoke(longBall, new object[] { landing, (int?)1 });
-            longBall.StartCoroutine(flow);
-        }
-        yield return Until(() => longBall.isWaitingForDefLBMove, "long-ball goalkeeper pace response follows landing/free move/interception");
+        yield return Until(() => longBall.isWaitingForDefLBMove, "long-ball goalkeeper pace response follows landing/free move before interception");
         Assert.That(ball.GetCurrentHex(), Is.SameAs(landing));
         Assert.That(LongInterceptionPending, Is.False);
         if (branch == "keeper_collect")
@@ -64,6 +55,16 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(match.gameData.stats.GetPlayerStats(attacker).possessionLost, Is.EqualTo(1));
             yield break;
         }
+        LegacyKey("X");
+        if (branch == "box_intercept_miss")
+        {
+            yield return Until(() => LongInterceptionPending, "Poulsen is offered the recalculated landing interception");
+            var candidates = (List<HexCell>)typeof(LongBallManager).GetField("interceptingDefenders", Private).GetValue(longBall);
+            Assert.That(candidates, Is.EquivalentTo(new[] { poulsen.currentHex }));
+            var flow = (IEnumerator)typeof(LongBallManager).GetMethod("PerformInterceptionCheck", Private, null,
+                new[] { typeof(HexCell), typeof(int?) }, null).Invoke(longBall, new object[] { landing, (int?)1 });
+            longBall.StartCoroutine(flow);
+        }
         if (branch == "box_intercept_miss")
         {
             var stats = match.gameData.stats.GetPlayerStats(poulsen);
@@ -71,7 +72,6 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(stats.interceptionsMade, Is.EqualTo(0));
             Assert.That(stats.xRecoveries, Is.EqualTo(1f / 6f).Within(0.0001f));
         }
-        LegacyKey("X");
         yield return Until(() => !longBall.isActivated && match.finalThirdManager.isActivated, "completed long ball offers its Final Third continuation");
         if (branch == "receiver_choice") Assert.That(match.LastTokenToTouchTheBallOnPurpose, Is.SameAs(receiver));
         yield return ForfeitLegacyFinalThirds();
