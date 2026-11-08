@@ -52,10 +52,17 @@ public static class RulesViewerEditorTools
 
     [MenuItem("CounterAttack/Rules/Rebuild Viewer and Scene Entries")]
     public static void Build()
+        => BuildViewer(true);
+
+    [MenuItem("CounterAttack/Rules/Rebuild Viewer Prefab Only")]
+    public static void BuildPrefab()
+        => BuildViewer(false);
+
+    private static void BuildViewer(bool installSceneEntries)
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Author Rules in Edit Mode.");
         var setup = EditorSceneManager.GetSceneManagerSetup();
-        if (Enumerable.Range(0, SceneManager.sceneCount).Any(i => SceneManager.GetSceneAt(i).isDirty))
+        if (installSceneEntries && Enumerable.Range(0, SceneManager.sceneCount).Any(i => SceneManager.GetSceneAt(i).isDirty))
             throw new InvalidOperationException("Save open scenes before rebuilding Rules.");
         List<RulesDocument.Block> blocks = LoadDocument();
         var original = SceneManager.GetActiveScene();
@@ -160,14 +167,17 @@ public static class RulesViewerEditorTools
             Object.DestroyImmediate(root);
             EditorSceneManager.CloseScene(staging, true);
             SceneManager.SetActiveScene(original);
-            Install("Assets/Scenes/MainMenu.unity");
-            Install("Assets/Scenes/Room.unity");
+            if (installSceneEntries)
+            {
+                Install("Assets/Scenes/MainMenu.unity");
+                Install("Assets/Scenes/Room.unity");
+            }
             AssetDatabase.SaveAssets();
         }
         finally
         {
             if (staging.IsValid() && staging.isLoaded) EditorSceneManager.CloseScene(staging, true);
-            EditorSceneManager.RestoreSceneManagerSetup(setup);
+            if (installSceneEntries) EditorSceneManager.RestoreSceneManagerSetup(setup);
         }
         Debug.Log("Rules viewer authored: " + blocks.Count + " searchable blocks. All internal links validated.");
     }

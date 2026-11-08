@@ -6,23 +6,23 @@ This edition uses the Advanced rules wherever the original rules describe both C
 
 ## Chapters
 
-[Getting Started](https://counterattackgame.github.io/wiki/en/getting_started)
+[Getting Started](getting_started)
 
-[Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase)
+[Movement Phase](movement_phase)
 
-[Passing](https://counterattackgame.github.io/wiki/en/passing)
+[Passing](passing)
 
-[Shooting](https://counterattackgame.github.io/wiki/en/shooting)
+[Shooting](shooting)
 
-[Heading](https://counterattackgame.github.io/wiki/en/heading)
+[Heading](heading)
 
-[Goalkeepers](https://counterattackgame.github.io/wiki/en/goalkeeper)
+[Goalkeepers](goalkeeper)
 
-[Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball)
+[Loose Ball](loose_ball)
 
-[Set Pieces](https://counterattackgame.github.io/wiki/en/set_pieces)
+[Set Pieces](set_pieces)
 
-[Quick Guide](https://counterattackgame.github.io/wiki/en/quick_guide)
+[Quick Guide](quick_guide)
 
 ## Source
 

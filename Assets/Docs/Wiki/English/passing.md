@@ -1,6 +1,6 @@
-[Read this page in English](https://counterattackgame.github.io/wiki/en/passing) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/passing) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/passing) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/passing) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/passing)
+[Read this page in English](passing) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/passing) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/passing) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/passing) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/passing)
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)
 # Passing
 
 There are 3 types of passes in the Core Rules and a 4th one in the Advanced Rules.
@@ -24,7 +24,7 @@ The passer of a Standard Pass can pick up the ball if he/she wants.
 
 ## High Pass
 
-Use the distance stick to work out where you want to pass to. If your opponent is within 1 hex of the player making the pass and directly in the path of the high pass, the pass cannot be made. Place the ball where you want it to go. The ball must always be aimed to land on the [Head](https://counterattackgame.github.io/wiki/en/heading) of one of your players.
+Use the distance stick to work out where you want to pass to. If your opponent is within 1 hex of the player making the pass and directly in the path of the high pass, the pass cannot be made. Place the ball where you want it to go. The ball must always be aimed to land on the [Head](heading) of one of your players.
 
 Next, each team may move 1 player up to 3 hexes as the ball travels. This means that the offside position of each player is assessed before these two movements.
 
@@ -33,25 +33,25 @@ Goal kicks or High Passes from goalkeeper after "Save & Hold" must target a team
 
 Now test for accuracy: High Pass + dice must be 8+. If the pass is inaccurate, refer to Inaccurate high passes below.
 
-A High Pass has to be targeted at least 3 clear hexes away from the passer, but even in the scenario of the inaccuracy, you cannot [Head](https://counterattackgame.github.io/wiki/en/heading) your own High Pass. If the inaccurate High Pass lands on the passer, continue play with Any Other Scenario
+A High Pass has to be targeted at least 3 clear hexes away from the passer, but even in the scenario of the inaccuracy, you cannot [Head](heading) your own High Pass. If the inaccurate High Pass lands on the passer, continue play with Any Other Scenario
 
 ### Inaccurate high passes
 
-If a high pass is inaccurate, follow the [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions to find out the actual destination of the high pass. This can result to a ball moving out of the pitch for a Goal Kick or a Throw in.
+If a high pass is inaccurate, follow the [Loose Ball](loose_ball) instructions to find out the actual destination of the high pass. This can result to a ball moving out of the pitch for a Goal Kick or a Throw in.
 
 In case of inaccuracy the trajectory is considered to be a straight line between the passer's position and the final destination.
 
 An inaccurate High Pass cannot be intercepted.
 
-Once the ball's final destination is determined, if there are players within 2 hexes, a [Header](https://counterattackgame.github.io/wiki/en/heading) or control must be attempted by at least one player. If no player is close enough, resume play with a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase).
+Once the ball's final destination is determined, if there are players within 2 hexes, a [Header](heading) or control must be attempted by at least one player. If no player is close enough, resume play with a [Movement Phase](movement_phase).
 
 ### Attempt to Control the ball
 
-If no opponent is close enough to challenge for a [Header](https://counterattackgame.github.io/wiki/en/heading), you can choose to either (a) head the ball unopposed (see [Heading](https://counterattackgame.github.io/wiki/en/heading)) or (b) control the ball. For the latter option, run a dice test: dribbling + dice must equal 9+:
+If no opponent is close enough to challenge for a [Header](heading), you can choose to either (a) head the ball unopposed (see [Heading](heading)) or (b) control the ball. For the latter option, run a dice test: dribbling + dice must equal 9+:
 
 - If you are successful, continue play as if you've just won a tackle
-- If you are unsuccessul, follow the [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions
-- If no-one can challenge for the inaccurate high ball, continue play with a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase). Attacking team moves first.
+- If you are unsuccessul, follow the [Loose Ball](loose_ball) instructions
+- If no-one can challenge for the inaccurate high ball, continue play with a [Movement Phase](movement_phase). Attacking team moves first.
 
 ## Long Pass
 
@@ -69,7 +69,7 @@ You must check for accuracy when you play a Long Pass. A combined score (dice + 
 
 In Advanced Rules, a Long Pass from one Final Third to another is possible but it requires a combined score of 10+ to be accurate.
 
-If the pass is inaccurate, follow the [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions as in High Pass.
+If the pass is inaccurate, follow the [Loose Ball](loose_ball) instructions as in High Pass.
 
 Accurate or not, the Long Pass travels high in the air and cannot be intercepted en route to its destination. However, an inaccurate Long Pass could land directly on an opponent. The ball lands in its destination though. No header is involved.
 
@@ -79,7 +79,7 @@ After an in-bounds Long Pass lands, accurate or inaccurate, the defending manage
 
 When the ball qualifies for a new entry into the defending penalty box, resolve the separate 1-hex goalkeeper move first, then offer the Pace move. Taking or declining either move does not consume the other. Out-of-bounds restarts, offside and ended actions do not resume this response sequence.
 
-Play then resumes with a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase), with the attacking team moving first.
+Play then resumes with a [Movement Phase](movement_phase), with the attacking team moving first.
 
 ## First Time Pass
 
@@ -151,4 +151,4 @@ If W7 is unsuccessful, R10 collects the ball in the hex that player has moved in
 
 ![First time pass](../docs/pass_4.png)
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)

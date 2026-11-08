@@ -1,27 +1,27 @@
-[Read this page in English](https://counterattackgame.github.io/wiki/en/heading) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/heading) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/heading) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/heading) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/heading)
+[Read this page in English](heading) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/heading) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/heading) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/heading) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/heading)
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)
 # Heading
 
-A header must follow a [High pass](https://counterattackgame.github.io/wiki/en/passing). There is a limit of **2 outfield players** per team who can challenge for a header. Whether a player can challenge for the header or not depends on how close they are to the target.
+A header must follow a [High pass](passing). There is a limit of **2 outfield players** per team who can challenge for a header. Whether a player can challenge for the header or not depends on how close they are to the target.
 
 - Players within 1 hex can challenge for the header.
 - Players within 2 hexes can challenge for the header but willsuffer a -1 dice penalty.
 
 Use the distance stick to judge how far the header can travel.
 
-[Goalkeepers](https://counterattackgame.github.io/wiki/en/goalkeeper) can also challenge to catch a high pass if they are close enough, using their Aerial Ability.
+[Goalkeepers](goalkeeper) can also challenge to catch a high pass if they are close enough, using their Aerial Ability.
 
-If the [goalkeeper](https://counterattackgame.github.io/wiki/en/goalkeeper) loses a duel against an attacker and no defending player can win the header, the attacker scores a goal! Aerial Ability also gets a penalty of -1 in the second Hex away.
+If the [goalkeeper](goalkeeper) loses a duel against an attacker and no defending player can win the header, the attacker scores a goal! Aerial Ability also gets a penalty of -1 in the second Hex away.
 
-If the goalkeeper wins a legal catch inside their own penalty area they [save and hold](https://counterattackgame.github.io/wiki/en/goalkeeper). Outside their own box they use Heading 0, and a win must be headed away as an ordinary headed pass.
+If the goalkeeper wins a legal catch inside their own penalty area they [save and hold](goalkeeper). Outside their own box they use Heading 0, and a win must be headed away as an ordinary headed pass.
 
 
-In all instances, follow the [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions if there is a tie. A [loose ball](https://counterattackgame.github.io/wiki/en/loose_ball) from a Header cannot hit players that were involved in the Headed Challenge.
+In all instances, follow the [Loose Ball](loose_ball) instructions if there is a tie. A [loose ball](loose_ball) from a Header cannot hit players that were involved in the Headed Challenge.
 
 ## Headed Attempts at Goal
 
-Headed attempts at goal cannot be blocked or intercepted by defenders. If the attacker has won a duel with a defender, the goalkeeper now rolls to attempt a [save](https://counterattackgame.github.io/wiki/en/shooting). The attacker does not re-roll. Start counting Hexes from **THE BALL**, not the winner of the headed challenge.
+Headed attempts at goal cannot be blocked or intercepted by defenders. If the attacker has won a duel with a defender, the goalkeeper now rolls to attempt a [save](shooting). The attacker does not re-roll. Start counting Hexes from **THE BALL**, not the winner of the headed challenge.
 In a Heading Duel in which a Shot has been declared by the Attacker, if the best score has been achieved by an Attacker with a dice roll of 1 (ex. H6 + Roll 1 vs. H3 + Roll 3), only then is the Headed shot an automatic miss OFF TARGET. All challenging Defensive players still need to roll to determine if they win the duel.
 
 
@@ -35,13 +35,13 @@ Use the distance stick to judge how far it can travel. No interceptions are poss
 
 ## Following a Header
 
-The players who challenged for the header cannot participate in the subsequent [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase).
+The players who challenged for the header cannot participate in the subsequent [Movement Phase](movement_phase).
 
 ## Heading back to the goalkeeper
 
 In this digital edition, headed passes back to your goalkeeper are allowed after open-play high passes and corner kicks.
 
-When a headed pass reaches your goalkeeper inside their own penalty area, choose hands [H] or feet [F]. Hands requires a normal D6 catch roll with no attribute modifier: 2–6 means held and offers goalkeeper distribution; 1 starts a [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) from the goalkeeper. Feet requires no roll and continues the headed-pass flow. Outside their own penalty area the goalkeeper receives at feet and cannot choose hands.
+When a headed pass reaches your goalkeeper inside their own penalty area, choose hands [H] or feet [F]. Hands requires a normal D6 catch roll with no attribute modifier: 2–6 means held and offers goalkeeper distribution; 1 starts a [Loose Ball](loose_ball) from the goalkeeper. Feet requires no roll and continues the headed-pass flow. Outside their own penalty area the goalkeeper receives at feet and cannot choose hands.
 
 Receiving a header at feet avoids the immediate catch risk and grants eligibility for the pickup choice after a completed Movement Phase inside the keeper's own penalty area. This applies to open play and corners, including nearby headers collected during movement. Outside-box receptions remain at feet; the keeper may use their remaining movement allowance to return inside. Choosing feet preserves eligibility through later Movement Phases while that keeper retains possession, until pickup or passing.
 
@@ -59,8 +59,8 @@ Receiving a header at feet avoids the immediate catch risk and grants eligibilit
 10. Defence rolls with all declared players, including the GK if nominated. The best combined score wins. In this digital edition, a goalkeeper tied for their team's best defensive score takes priority; other ties retain the first rolled player. A keeper outside their own penalty area uses Heading 0 and heads the ball away on a win; only a legal catch inside their own penalty area uses Aerial Ability and leads to Save and Hold.
 11. Compare the attack's best combined score with the defence's.
 - **Attack Wins**: If GK was not involved in challenge, GK tries to save on the hex that Attack heads to. If GK was involved in challenge, it's a GOAL.
-- **Defence wins**. Play a headed pass from the ball, to the available distance, without interceptions along the airborne path. At its final hex the ball drops to the ground; eligible defenders whose ZOI covers that hex may attempt an interception. Players who jumped or are otherwise ineligible cannot attempt it. Beware of the pass back to the GK. If the GK won a legal own-box catch, attract the ball and continue as [Save and Hold](https://counterattackgame.github.io/wiki/en/goalkeeper); a GK winning outside their own box instead heads the ball away with the ordinary headed-pass continuation.
-- **There is a TIE**. Follow [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) instructions, players involved in the Aerial challenge cannot stop the ball. If the ball lands on a player that jumped, move it one Hex further away. If the Ball hits a player that has not jumped, continue play as "Any other Scenario". If the ball does not hit a player, check if it stopped in a defender's ZOI, and possibly attempt to gain it. If not, attacking team should start a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase).
+- **Defence wins**. Play a headed pass from the ball, to the available distance, without interceptions along the airborne path. At its final hex the ball drops to the ground; eligible defenders whose ZOI covers that hex may attempt an interception. Players who jumped or are otherwise ineligible cannot attempt it. Beware of the pass back to the GK. If the GK won a legal own-box catch, attract the ball and continue as [Save and Hold](goalkeeper); a GK winning outside their own box instead heads the ball away with the ordinary headed-pass continuation.
+- **There is a TIE**. Follow [Loose Ball](loose_ball) instructions, players involved in the Aerial challenge cannot stop the ball. If the ball lands on a player that jumped, move it one Hex further away. If the Ball hits a player that has not jumped, continue play as "Any other Scenario". If the ball does not hit a player, check if it stopped in a defender's ZOI, and possibly attempt to gain it. If not, attacking team should start a [Movement Phase](movement_phase).
 
 
 ## Controlling a High Pass
@@ -75,10 +75,10 @@ If the ball's final target is not on your player, but still in range for an unma
 
 # Extra Notes
 
-The Attacking team, if there is no challenge from the Defence, and the ball lands within range of an attacker, must declare a Header or a Control attempt and then proceed with a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase). If the ball is in range for a Header, [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase) in not an option for the attack.
+The Attacking team, if there is no challenge from the Defence, and the ball lands within range of an attacker, must declare a Header or a Control attempt and then proceed with a [Movement Phase](movement_phase). If the ball is in range for a Header, [Movement Phase](movement_phase) in not an option for the attack.
 
 All heading distances start from the Ball, not the winner of the challenge.
 
 Successful control attempts attract the ball to the controller, not the opposite.
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)

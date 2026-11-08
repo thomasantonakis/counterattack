@@ -1,13 +1,30 @@
-[Read this page in English](https://counterattackgame.github.io/wiki/en/getting_started) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/getting_started) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/getting_started) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/getting_started) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/getting_started)
+[Read this page in English](getting_started) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/getting_started) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/getting_started) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/getting_started) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/getting_started)
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)
 # Getting Started
 
-In this digital edition, choose a squad of 16 or 18 players. Every squad must contain exactly two [goalkeepers](https://counterattackgame.github.io/wiki/en/goalkeeper). The configured squad size and digital draft take precedence over the original printed setup.
+In this digital edition, choose a squad of 16 or 18 players. Every squad must contain exactly two [goalkeepers](goalkeeper). The configured squad size and digital draft take precedence over the original printed setup.
 
 A 16-player squad has two goalkeepers and 14 outfield players; an 18-player squad has two goalkeepers and 16 outfield players.
 
-## [Goalkeepers](https://counterattackgame.github.io/wiki/en/goalkeeper)
+## What the draft settings mean
+
+For Regular matches, choose the outfield and goalkeeper (GK) draft settings independently. Each uses its own eligible player pool from the setup checkboxes.
+
+| Setting | Behavior |
+| --- | --- |
+| Outfield Regular | Shuffle the eligible pool and select enough players to fill both squads. Reveal four cards at a time. Picks alternate; the starting team changes with each batch. Managers roll for the first pick. |
+| Outfield Free Regular | Show the full eligible outfield pool in the table. Managers roll for the first pick, then alternate selections. Selected players leave the pool. |
+| Outfield Arcade | Assign players to either team without alternating turns. Players remain available for repeated selection, and assigned players can be returned to the pool. |
+| GK Deal | Randomly deal four eligible goalkeepers: two per team, occupying slots 1 and 12. |
+| GK Free | Managers roll for the first goalkeeper pick, then alternate selections from the eligible goalkeeper table. Selected goalkeepers leave the pool. |
+| GK Arcade | Assign goalkeepers to either roster without alternating turns. Goalkeepers remain available for repeated selection and can be returned to the pool. |
+
+Arcade rules apply only to the phase set to Arcade. For example, GK Arcade with Outfield Free Regular allows unrestricted goalkeeper assignment, followed by alternating outfield picks.
+
+For International matches, both draft fields show **International** and cannot be changed. Squads contain 18 players, and the selected national teams' outfielders and goalkeepers are filled automatically; there are no draft picks.
+
+## [Goalkeepers](goalkeeper)
 
 Draft two goalkeepers for each squad.
 
@@ -49,4 +66,4 @@ Duels are the following:
 - GK Dive at Feet vs Dribbling
 - Header Challenge
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)

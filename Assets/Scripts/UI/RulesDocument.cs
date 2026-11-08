@@ -65,6 +65,20 @@ public static class RulesDocument
         {
             string line = source.Trim();
             if (line.Length == 0 || line.StartsWith("[Read this page") || line.StartsWith("[Back to Home Page]")) continue;
+            // The rulebook's two-column tables use a fixed label column and a
+            // wrapping description column, keeping every row searchable.
+            if (line.StartsWith("|") && line.EndsWith("|"))
+            {
+                string[] cells = line.Trim('|').Split('|').Select(cell => cell.Trim()).ToArray();
+                if (cells.Length == 2)
+                {
+                    if (cells.All(cell => Regex.IsMatch(cell, @"^:?-+:?$"))) continue;
+                    blocks.Add(new Block { section = section,
+                        text = "<b>" + Rich(cells[0], page) + "</b><indent=260>" + Rich(cells[1], page) + "</indent>",
+                        plain = Plain(cells[0] + " " + cells[1]) });
+                    continue;
+                }
+            }
             var heading = Regex.Match(line, @"^(#{1,6})\s+(.+)$");
             if (heading.Success)
             {

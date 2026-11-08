@@ -1,13 +1,13 @@
-[Read this page in English](https://counterattackgame.github.io/wiki/en/goalkeeper) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/goalkeeper) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/goalkeeper) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/goalkeeper) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/goalkeeper)
+[Read this page in English](goalkeeper) - [Lire cette page en Français](https://counterattackgame.github.io/wiki/fr/goalkeeper) - [Leggi questa pagina in Italiano](https://counterattackgame.github.io/wiki/it/goalkeeper) - [Lê esta página em Português](https://counterattackgame.github.io/wiki/pt/goalkeeper) - [Διαβάστε αυτή τη σελίδα στα Ελληνικά](https://counterattackgame.github.io/wiki/gr/goalkeeper)
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)
 # Goalkeeper
 
-Just like any other player, your goalkeeper can be moved in a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase). Your goalkeeper can also be moved 1 hex when the ball comes into the box by an opponent touch (dribble, pass, header). If the ball was sent in the box by a teammate (pass, dribble, header, loose ball from a tackle/header), the GK does **not** get that 1 extra Hex.
+Just like any other player, your goalkeeper can be moved in a [Movement Phase](movement_phase). Your goalkeeper can also be moved 1 hex when the ball comes into the box by an opponent touch (dribble, pass, header). If the ball was sent in the box by a teammate (pass, dribble, header, loose ball from a tackle/header), the GK does **not** get that 1 extra Hex.
 
 # Positioning to make a save
 
-You can dive 3 hexes in either direction parallel to the goal line when attempting a save. If a [shot](https://counterattackgame.github.io/wiki/en/shooting) is 4 or more hexes away, you can't save it!
+You can dive 3 hexes in either direction parallel to the goal line when attempting a save. If a [shot](shooting) is 4 or more hexes away, you can't save it!
 
 ## After making a save and holding the ball
 
@@ -33,7 +33,7 @@ After a keeper makes a save but they fail the handling test, run a "loose ball" 
 
 ## Competing for a high cross
 
-If your opponent crosses the ball into the box, you can challenge to catch the ball. Your goalkeeper can do that by challenging for the Header (after the High Pass) using their Aerial Ability attribute. If the ball is aimed within 2 hexes of you, then you can choose to have a duel with your opponent (see [Heading](https://counterattackgame.github.io/wiki/en/heading)).
+If your opponent crosses the ball into the box, you can challenge to catch the ball. Your goalkeeper can do that by challenging for the Header (after the High Pass) using their Aerial Ability attribute. If the ball is aimed within 2 hexes of you, then you can choose to have a duel with your opponent (see [Heading](heading)).
 
 After the Accuracy Check the GK has the option to move 3 Hexes, but only if they commit to challenge for the high ball and have **not already** used the regular 3-hex defensive high-pass move. The keeper's final position, not the ball's hex, determines the attribute: a defending keeper inside their own penalty area uses Aerial Ability to catch; outside it they use Heading 0 and must head the ball away on a win. The goalkeeper always retains a separate nomination alongside up to two outfield players, even outside their box. A zero heading attribute receives no further distance penalty. The keeper may start or finish a rush outside their own box; this never authorizes handling there.
 
@@ -57,8 +57,8 @@ Goalkeepers do not have a Tackling attribute, but they can instead dive with the
 
 You can dive at the attacker's feet during a:
 
-- Defensive [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase) if you move to an adjacent hex. Regular GK Tackling duel.
-- Attacking [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase), if an attacker attempts to dribble the ball around, you can try to dive at their feet (but you can choose not to). You can dive 3 hexes in either direction, parallel to the goal line. Diving at feet on the 3rd Hex away has a -1 dice penalty. The GK has the ability to "dive at feet" anytime a player is within a saving hex, even if a snapshot is about to be called on said saving hex
+- Defensive [Movement Phase](movement_phase) if you move to an adjacent hex. Regular GK Tackling duel.
+- Attacking [Movement Phase](movement_phase), if an attacker attempts to dribble the ball around, you can try to dive at their feet (but you can choose not to). You can dive 3 hexes in either direction, parallel to the goal line. Diving at feet on the 3rd Hex away has a -1 dice penalty. The GK has the ability to "dive at feet" anytime a player is within a saving hex, even if a snapshot is about to be called on said saving hex
 
 - GK can save/dive through opponents and teammates. If the GK is successful, and has to move on an occupied Hex, the GK moves all players from the occupied Hex and the direction of the dive one Hex away.
 
@@ -84,11 +84,11 @@ Goalkeepers can dive for a save or Tackle through opponents and teammates. In ca
 
 ## Goalkeeper's Snapshot Penalty
 
-When an attacker calls a [snapshot](https://counterattackgame.github.io/wiki/en/shooting) and you choose your goalkeeper as the one to move two hexes, your saving ability suffers a -1 dice penalty on the second hex away and a -2 dice penalty on the third hex away.
+When an attacker calls a [snapshot](shooting) and you choose your goalkeeper as the one to move two hexes, your saving ability suffers a -1 dice penalty on the second hex away and a -2 dice penalty on the third hex away.
 
 ## Goalkeepers can pick up the ball
 
-After receiving a teammate header at feet (open play or corner) or recovering an opponent's ball, a goalkeeper may run with it. At the successful end of the entire [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase), if the keeper still holds possession inside their own penalty area, choose [H] pickup without another catch roll or [F] continue at feet. Pickup offers Quick Throw [Q] without Final Thirds, or normal goalkeeper distribution [K] through the Save and Hold Final Thirds sequence. Feet retains Movement, Standard Pass, High Pass and Long Ball options; eligibility persists through subsequent Movement Phases until pickup or passing. No mid-phase pickup is offered, including when collecting a nearby header. Teammate kicked Ground Passes, First Time Passes, High Passes and Long Balls always go to feet and never grant handling permission. A deliberate Drop Ball forbids picking up again; location alone never grants handling permission.
+After receiving a teammate header at feet (open play or corner) or recovering an opponent's ball, a goalkeeper may run with it. At the successful end of the entire [Movement Phase](movement_phase), if the keeper still holds possession inside their own penalty area, choose [H] pickup without another catch roll or [F] continue at feet. Pickup offers Quick Throw [Q] without Final Thirds, or normal goalkeeper distribution [K] through the Save and Hold Final Thirds sequence. Feet retains Movement, Standard Pass, High Pass and Long Ball options; eligibility persists through subsequent Movement Phases until pickup or passing. No mid-phase pickup is offered, including when collecting a nearby header. Teammate kicked Ground Passes, First Time Passes, High Passes and Long Balls always go to feet and never grant handling permission. A deliberate Drop Ball forbids picking up again; location alone never grants handling permission.
 
 ## Goalkeepers cannot be marked at set-pieces
 
@@ -102,4 +102,4 @@ A goalkeeper committing a foul in their own penalty area uses No booking/Yellow 
 
 Any attribute that is not listed on the GK card will be considered a zero. E.g. if a keeper wants to attempt a shot, their shooting stat will be zero.
 
-[Back to Home Page](https://counterattackgame.github.io/wiki/en/index)
+[Back to Home Page](index)
