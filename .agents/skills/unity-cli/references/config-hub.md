@@ -4,6 +4,15 @@ Part of the **`unity-cli`** skill. See that skill's `SKILL.md` for CLI install, 
 environment variables, exit codes, and common workflows. All global flags (`--format json`,
 `--non-interactive`, `--yes`, `--proxy`, …) apply to every command below.
 
+Relative links in this file resolve to the skill directory's `references/` folder, so `../SKILL.md` is the skill's main page.
+
+### Contents
+
+- Config — persisted CLI configuration
+- config get / set / list / unset — read or write any setting by key
+- Context — named sets of the five defaults
+- Hub — install the Unity Hub application
+
 ---
 
 ### Config — persisted CLI configuration
@@ -15,7 +24,8 @@ The `config` command group manages settings that persist across invocations.
 View or change the configured HTTP/HTTPS/SOCKS/PAC proxy. The persisted value is read by every CLI command that issues outbound HTTP (releases, install, auth, telemetry, etc.).
 
 ```bash
-# Show the effective proxy configuration (resolution source + auth source)
+# Show the effective proxy configuration (resolution source + auth source).
+# With the global --proxy <url>, it shows that URL with source "flag".
 unity config proxy
 unity config proxy --json
 
@@ -23,8 +33,8 @@ unity config proxy --json
 unity config proxy http://proxy.example.com:8080
 
 # Embedded userinfo (user:password@host) is supported and redacted in echo
-# output, but prefer leaving credentials out of the URL — the CLI looks them
-# up in the OS keyring instead (see Resolution priority below).
+# output, but the URL is one of this command's arguments, so the credentials
+# show in the process list and CI logs (see Proxy credentials below).
 
 # Persist with bypass list (hosts that should NOT go through the proxy)
 unity config proxy http://proxy.example.com:8080 --bypass "localhost,127.0.0.1,*.internal"
@@ -47,7 +57,9 @@ unity config proxy --unset
 4. Persisted `proxy.json` (`unity config proxy <url>`)
 5. System proxy settings (where supported)
 
-Credentials missing from the URL are looked up in the OS keyring (shared with the GUI Hub); Kerberos/SPNEGO-authenticated proxies are supported. `--proxy-disable` short-circuits all of the above for the current invocation, which is the recommended way to diagnose a misconfigured proxy without clearing it.
+Kerberos/SPNEGO-authenticated proxies are supported: with no credentials in the URL, the CLI authenticates with your OS identity. `--proxy-disable` short-circuits all of the above for the current invocation, which is the recommended way to diagnose a misconfigured proxy without clearing it.
+
+**Proxy credentials.** Credentials embedded in a proxy URL end up in the process arguments whenever the URL is passed on the command line (`--proxy <url>`, `unity config proxy <url>`), so other users on the same host can read them in the process list, and CI runners that echo commands write them into their logs. Leave them out of the URL when the proxy accepts your OS identity. When it needs a user name and password, set the URL through `UNITY_PROXY` rather than `--proxy`: the environment isn't part of the process arguments. The CLI doesn't read proxy credentials from the OS keyring yet. `unity diagnose proxy` reports whether a keyring entry exists for the proxy host, but requests don't use it.
 
 #### config update-check
 
@@ -58,6 +70,16 @@ unity config update-check          # show the current setting
 unity config update-check off      # disable
 unity config update-check on       # enable
 unity config update-check --json
+```
+
+#### config path
+
+Print where the CLI keeps its configuration: the settings file every `config` key is stored in (`user-settings.json`, shared with the Hub) and the directory that holds it and the CLI's other config files. Works in every output format.
+
+```bash
+unity config path                  # Config file: ... / Config directory: ...
+unity config path --format tsv     # file<TAB>... and directory<TAB>... rows
+unity config path --json           # {file, directory}
 ```
 
 #### config accelerator
@@ -91,7 +113,7 @@ The reported source is one of `flag`, `env`, `settings`, `none`. The env var and
 
 `unity config accelerator` with no argument reports the `env` → `settings` → `none` view of persistent configuration. Use `unity diagnose accelerator` (see [diagnostics-maintenance.md](diagnostics-maintenance.md)) for the same resolution plus project settings and reachability. Neither command accepts `--accelerator`, so to see what a one-shot override resolves to, pass it to the `run` / `test` / `build` invocation that uses it.
 
-**A configured endpoint is not always enough.** Every `-cacheServer*` argument overrides *Editor Preferences*, not Project Settings, and `ProjectSettings/EditorSettings.asset`'s `m_CacheServerMode` decides whether preferences are consulted at all. A project set to `Disabled` (mode `2`) ignores the injected flags; the CLI warns when it sees that. Full explanation: `apps/cli/docs/accelerator.md`.
+**A configured endpoint is not always enough.** Every `-cacheServer*` argument overrides *Editor Preferences*, not Project Settings, and `ProjectSettings/EditorSettings.asset`'s `m_CacheServerMode` decides whether preferences are consulted at all. A project set to `Disabled` (mode `2`) ignores the injected flags; the CLI warns when it sees that.
 
 ---
 
@@ -101,8 +123,8 @@ A generic key-value interface over the same persisted settings the purpose-built
 
 ```bash
 # Every configuration key and its resolved value
-unity config list
-unity config list --format json
+unity config
+unity config --format json
 
 # Read one key
 unity config get proxy
@@ -123,8 +145,9 @@ Recognized keys, and what they back onto:
 | `proxy.bypass` | `unity config proxy <url> --bypass <hosts>` | Comma-separated hosts; writing/clearing it leaves the sibling `proxy` key untouched. |
 | `accelerator` | `unity config accelerator <endpoint>` | Normalized to `host:port` on write. |
 | `update-check` | `unity config update-check on\|off` | Value is `on`/`off`. |
+| `proxyRequestLogging` | `unity --log-proxy`'s persisted setting | Strict boolean `true`/`false`; the third tier of `--log-proxy`'s precedence (flag, then `UNITY_LOG_PROXY`, then this setting). |
 
-An unknown key, a read-only key (none exist yet — the mechanism exists for a future resolved-only value), or an invalid value for a writable key is rejected with exit **2** and a message pointing at `unity config list`. `--format json` returns `{key, value}` for `get`/`set`, `{key, cleared}` for `unset`, and `{entries: [{key, value, writable}, …]}` for `list`.
+An unknown key, a read-only key (none exist yet — the mechanism exists for a future resolved-only value), or an invalid value for a writable key is rejected with exit **2** and a message pointing at `unity config`. `--format json` returns `{key, value}` for `get`/`set`, `{key, cleared}` for `unset`, and `{entries: [{key, value, writable}, …]}` for `list`.
 
 #### config resolve — build/test defaults and the per-project `UnityCliConfig.json`
 
@@ -137,6 +160,8 @@ Precedence, highest first: command-line flag, environment variable (only `build.
 unity config resolve build.target /path/to/MyProject
 unity config resolve test.mode --format json     # {key, value, source}
 ```
+
+The same file can pin the CLI versions the project supports: `{"cli": {"version": "^1.0.0"}}`, an npm-style range. Every command run in the project checks it first. Outside the range a command warns (stderr, or `warnings` in json) and still runs, but in CI it stops before doing anything: exit **1**, error code `CLI_VERSION_OUT_OF_RANGE`, naming the range and the running version. `unity upgrade --target <version>` installs a version in range, and `upgrade`, `doctor`, `config` and `version` always run. A `cli.version` that isn't a range is exit **2**, `PROJECT_CONFIG_INVALID`, for every command. `config get` / `config resolve` don't report it.
 
 ---
 
@@ -152,7 +177,7 @@ unity context save work
 unity context use work
 
 # What exists, and which one is currently in effect
-unity context list
+unity contexts
 unity context current
 
 # Forget one (the settings it named are left as they are)
@@ -167,7 +192,7 @@ Names may use letters, digits, dots, dashes and underscores, up to 64 characters
 
 **Offline and signed-out still work.** When Unity Cloud cannot be reached the stored organization and project are applied as-is and a warning says they were not verified, rather than the switch being refused.
 
-`unity context use` reports every setting with a `*` against the ones that changed. The `setting` values are stable machine tokens — `account`, `organization`, `project`, `editor`, `install-path` — in every format, human included, so a script can key on them. Only `unity context list`'s column *headers* are translated.
+`unity context use` reports every setting with a `*` against the ones that changed. The `setting` values are stable machine tokens — `account`, `organization`, `project`, `editor`, `install-path` — in every format, human included, so a script can key on them. Only `unity contexts`'s column *headers* are translated.
 
 Two name collisions worth knowing: this is unrelated to `unity build --profile`, which names a Unity Build Profile asset; and inside `unity shell`, bare `context` still prints that session's own ephemeral project/org selection, while `context <subcommand>` reaches this group.
 
@@ -182,7 +207,7 @@ Bootstrap Unity Hub on a clean machine from the command line.
 unity hub install
 
 # Install a specific Hub version
-unity hub install --hub-version 3.17.0
+unity hub install --version 3.17.0
 
 # Force reinstall even when Hub is already detected
 unity hub install --force
@@ -197,11 +222,11 @@ unity hub install --architecture x64
 unity hub install --skip-signature-check
 ```
 
-Options: `-f` / `--force`, `--headless` (silent installer, Windows only), `-a` / `--architecture x64|arm64` (env `UNITY_ARCHITECTURE`), `--hub-version <version>` (default latest), `--skip-signature-check`.
+Options: `-f` / `--force`, `--headless` (silent installer, Windows only), `-a` / `--architecture x64|arm64` (env `UNITY_ARCHITECTURE`), `--version <version>` (default `latest`, and a leading `v` as in `v3.17.0` is accepted), `--skip-signature-check`.
 
 **Integrity & signature verification** — every download is checked against the SHA-512 from the HTTPS manifest, then the installer's **code signature** is verified before it runs with elevation: on macOS via `codesign` (signer `Developer ID Application: Unity Technologies`), on Windows via Authenticode (signer subject `Unity Technologies`), checked *before* the UAC prompt. Verification is **fail-closed** — if it fails or the verifier is unavailable, the command aborts with exit 6 and does not run the installer. Linux `.AppImage` has no standard verifier, so it is SHA-512-only. Pass `--skip-signature-check` to bypass (prints a warning; not recommended).
 
-**`--hub-version` behaviour** — fetches the version-specific manifest from the CDN; if that version does not exist, the command exits with code 6 (no fallback to latest).
+**`--version` behaviour** — fetches the version-specific manifest from the CDN; if that version does not exist, the command exits with code 6 (no fallback to latest).
 
 ```bash
 # JSON output
