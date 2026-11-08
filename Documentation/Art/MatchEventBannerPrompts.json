@@ -1,0 +1,75 @@
+{
+  "tool": "Built-in ImageGen",
+  "assets": [
+    {
+      "name": "yellow-card",
+      "file": "Assets/Art/UI/MatchEvents/yellow-card.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: referee's hand holding a single bright yellow caution card upright, wrist visible, crop ends neatly below wrist."
+    },
+    {
+      "name": "second-yellow",
+      "file": "Assets/Art/UI/MatchEvents/second-yellow.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Referee hand holding two fanned yellow caution cards with one vivid red dismissal card prominently in front. Clearly show two yellow and one red cards."
+    },
+    {
+      "name": "red-card",
+      "file": "Assets/Art/UI/MatchEvents/red-card.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Referee hand holding a single bright red dismissal card upright, wrist visible."
+    },
+    {
+      "name": "injury",
+      "file": "Assets/Art/UI/MatchEvents/injury.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: White circular medical badge with green rim and a bold red medical plus cross in its center, small adhesive bandage in foreground."
+    },
+    {
+      "name": "second-injury",
+      "file": "Assets/Art/UI/MatchEvents/second-injury.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Green football medical stretcher with dark navy tubular frame and two wheels, three-quarter side view. Small medical plus badge."
+    },
+    {
+      "name": "substitution",
+      "file": "Assets/Art/UI/MatchEvents/substitution.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Two thick rounded directional arrows, green upper arrow pointing right and red lower arrow pointing left."
+    },
+    {
+      "name": "corner-kick",
+      "file": "Assets/Art/UI/MatchEvents/corner-kick.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Football beside a red and yellow corner flag with white pole, white corner arc on a small isolated green pitch corner."
+    },
+    {
+      "name": "goal-kick",
+      "file": "Assets/Art/UI/MatchEvents/goal-kick.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Football at the corner of a small green six-yard goal area in front of a simple goal net, curved directional arrow pointing away from goal toward the foreground to indicate a restart kick."
+    },
+    {
+      "name": "throw-in",
+      "file": "Assets/Art/UI/MatchEvents/throw-in.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Football player in a plain blue shirt seen waist-up, both hands holding a football above and behind their head in the classic throw-in pose, elbows bent."
+    },
+    {
+      "name": "foul",
+      "file": "Assets/Art/UI/MatchEvents/foul.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Referee whistle in navy and silver, angled three-quarter view, small yellow sound bursts."
+    },
+    {
+      "name": "stoppage-time",
+      "file": "Assets/Art/UI/MatchEvents/stoppage-time.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Football referee electronic added-time board held by two hands from below. Dark board, luminous green plus symbol next to clock pictogram. No numerals or letters."
+    },
+    {
+      "name": "half-time",
+      "file": "Assets/Art/UI/MatchEvents/half-time.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Silver referee whistle in front of a small analog clock with hands at twelve and six. Tiny pause symbol beside clock."
+    },
+    {
+      "name": "extra-time",
+      "file": "Assets/Art/UI/MatchEvents/extra-time.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Analog football stopwatch with bold green plus sign beside it and a small football below, readable simple silhouette."
+    },
+    {
+      "name": "penalties",
+      "file": "Assets/Art/UI/MatchEvents/penalties.png",
+      "prompt": "A polished original cartoon sports UI icon for a football match event. Bold dark navy outlines, rounded shapes, flat saturated colors with restrained cel shading, simple readable silhouette at 128px. Centered single isolated subject, generous even padding, square composition, truly transparent background. No lettering, no watermark, no logos, no border or background tile. Cohesive football illustration style. Subject: Football on a white penalty spot on a small isolated green pitch patch, facing a goal net with a blue goalkeeper silhouette arms outstretched. Strong centered symmetrical composition."
+    }
+  ]
+}

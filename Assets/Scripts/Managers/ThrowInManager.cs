@@ -63,6 +63,7 @@ public class ThrowInManager : MonoBehaviour
 
         ResetThrowInState();
         isActivated = true;
+        MatchEventAnnouncements.Publish(MatchBannerEvent.ThrowIn, throwInAwardedTeam.ToString());
         throwInHex = inboundsHex;
         awardedTeam = throwInAwardedTeam;
         EnsureAwardedTeamInAttack();

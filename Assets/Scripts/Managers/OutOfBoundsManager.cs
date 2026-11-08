@@ -328,6 +328,7 @@ public class OutOfBoundsManager : MonoBehaviour
 
     private IEnumerator PrepareGoalKickRestart(HexCell spot)
     {
+        MatchEventAnnouncements.Publish(MatchBannerEvent.GoalKick);
         MatchManager.Instance?.movementPhaseManager?.ClearSetPieceTransientState();
         MatchManager.Instance?.SetSubstitutionsAvailable(true, "Goal Kick awarded");
         yield return StartCoroutine(ResolveOutOfBoundsPush(spot));

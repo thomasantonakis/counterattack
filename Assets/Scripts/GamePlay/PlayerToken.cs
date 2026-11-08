@@ -199,6 +199,7 @@ public class PlayerToken : MonoBehaviour
 
     public void MarkSentOff(Vector3? sentOffPosition = null)
     {
+        if (!isSentOff) MatchEventAnnouncements.Publish(MatchBannerEvent.RedCard, playerName);
         HexCell sentOffHex = currentHex;
         ClearSentOffHex(sentOffHex);
         SetCurrentHex(null);
@@ -352,11 +353,13 @@ public class PlayerToken : MonoBehaviour
         if (!isBooked)
         {
             isBooked = true;
+            MatchEventAnnouncements.Publish(MatchBannerEvent.YellowCard, playerName);
             Debug.Log($"{name} has been booked with a yellow card.");
         }
         else
         {
             Debug.LogWarning($"{name} receives a second yellow and is sent off.");
+            MatchEventAnnouncements.Publish(MatchBannerEvent.SecondYellow, playerName);
             isSentOff = true;
             MarkSentOff();
         }
@@ -370,6 +373,7 @@ public class PlayerToken : MonoBehaviour
         if (!isInjured)
         {
             isInjured = true;
+            MatchEventAnnouncements.Publish(MatchBannerEvent.Injury, playerName);
             Debug.Log($"{name} has been injured.");
             // Optional: Disable token movement or remove the player from the field
             HandleInjury();
@@ -377,6 +381,7 @@ public class PlayerToken : MonoBehaviour
         else
         {
             Debug.LogWarning($"{name} suffers a second injury and now requires substitution.");
+            MatchEventAnnouncements.Publish(MatchBannerEvent.SecondInjury, playerName);
             requiresSubstitution = true;
             MatchManager.Instance?.HandleDoubleInjuredToken(this);
         }

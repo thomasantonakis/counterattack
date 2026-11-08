@@ -2005,6 +2005,7 @@ public partial class MatchManager : MonoBehaviour
         {
             IncrementPlayerEventCount(playerSubOnCounts, GetStableTokenKey(playerOn), value);
         }
+        MatchEventAnnouncements.Publish(MatchBannerEvent.Substitution, $"{playerOff?.playerName} → {playerOn?.playerName}");
     }
 
     public int GetPlayerSubOnCount(string playerName)
@@ -2879,6 +2880,8 @@ public partial class MatchManager : MonoBehaviour
         string recoveryType = "",
         string saveType = "")
     {
+        if (value > 0 && actionType == ActionType.GroundDuelWon && tackleType == "foul")
+            MatchEventAnnouncements.Publish(MatchBannerEvent.Foul, token != null ? token.playerName : string.Empty);
         Dictionary<string, string> details = CreateDetails(
             ("actionType", actionType.ToString()),
             ("value", value),
@@ -4842,6 +4845,7 @@ public partial class MatchManager : MonoBehaviour
         extraActionsRemaining = extraActionsTotal;
         extraActionsDetermined = true;
         isWaitingForExtraActionsRoll = false;
+        MatchEventAnnouncements.Publish(MatchBannerEvent.StoppageTime, $"{extraActionsTotal} added actions");
         RecordGameplayOutcome(
             "clock.extra_actions",
             "stoppage_actions_roll",
@@ -4999,6 +5003,7 @@ public partial class MatchManager : MonoBehaviour
         currentState = GameState.MatchEnded;
         isMatchComplete = true;
         isPauseMenuOpen = false;
+        MatchEventAnnouncements.Publish(MatchBannerEvent.HalfTime, "Final whistle");
         RecordMatchTransition(
             IsExtraTimeHalf(currentHalf) ? "extra_time_full_time" : "full_time",
             "match_ended",
@@ -5011,6 +5016,7 @@ public partial class MatchManager : MonoBehaviour
         if (IsScoreTied() && TieBreakerIncludesPenalties())
         {
             Debug.Log("Final whistle with tied score. Opening penalty shootout coin toss.");
+            MatchEventAnnouncements.Publish(MatchBannerEvent.Penalties);
             StartCoroutine(RunShootoutOpeningFlow());
             return;
         }
@@ -5039,6 +5045,8 @@ public partial class MatchManager : MonoBehaviour
             "started",
             CreateDetails(("completedHalf", currentHalf)));
         bool enteringExtraTime = currentHalf == GetConfiguredNumberOfHalfs() && ShouldStartExtraTime();
+        MatchEventAnnouncements.Publish(MatchBannerEvent.HalfTime, $"Half {currentHalf}");
+        if (enteringExtraTime) MatchEventAnnouncements.Publish(MatchBannerEvent.ExtraTime);
         Debug.Log(enteringExtraTime ? "Extra time reached. Waiting for the coin toss before resetting teams."
             : "Half-time whistle. Switching sides and resetting teams for the next kick-off.");
         ResolveClockDependencies();
@@ -5358,6 +5366,7 @@ public partial class MatchManager : MonoBehaviour
 
     public void BeginCornerKickRestart()
     {
+        MatchEventAnnouncements.Publish(MatchBannerEvent.CornerKick);
         pendingStopPlayRestart = PendingStopPlayRestartKind.CornerKick;
         ClearLiveActionAvailabilityForStopPlay();
     }

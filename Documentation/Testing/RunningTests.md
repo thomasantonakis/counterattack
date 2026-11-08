@@ -1,5 +1,13 @@
 # Running gameplay regressions
 
+Match event banner presentation uses `MatchEventBannerEditorTests` under
+`Assets/Editor/FeatureTests/MatchEventBanners/` and `MatchEventBannerPlayModeTests`
+under `Assets/Tests/PlayMode/Features/MatchEventBanners/`. Run only these fixture
+filters (PlayMode category: `MatchEventBanners`). Their `TASKS.md` records the
+native results. These test the presentation queue, notifications, sprite wiring,
+unscaled animation and cleanup; they do not constitute full gameplay regression
+validation.
+
 Goalkeeper pickup after movement uses `GoalkeeperPickupEditorTests` under
 `Assets/Editor/FeatureTests/GoalkeeperPickup/` and `GoalkeeperPickupPlayModeTests`
 under `Assets/Tests/PlayMode/Features/GoalkeeperPickup/`. Use only these explicit
