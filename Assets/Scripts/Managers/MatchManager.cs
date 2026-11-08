@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using TMPro;
 
-public class MatchManager : MonoBehaviour
+public partial class MatchManager : MonoBehaviour
 {
     public const int MaxSubstitutionsPerTeam = 3;
     public const int ExtraTimeMaxSubstitutionsPerTeam = MaxSubstitutionsPerTeam + 1;
@@ -4493,6 +4493,7 @@ public class MatchManager : MonoBehaviour
 
     public void ChangePossession()
     {
+        movementPhaseManager?.goalKeeperManager?.CancelDeferredPickup();
         TeamInAttack previousTeamInAttack = teamInAttack;
         // Switch the team in attack
         if (teamInAttack == TeamInAttack.Home)
@@ -4528,6 +4529,11 @@ public class MatchManager : MonoBehaviour
         Debug.Log($"Possession changed! {teamInAttack} now is the Attacking Team.");
         // Now update the PlayerTokens to reflect the new possession
         UpdatePlayerTokensAfterPossessionChange();
+        if (handlingOwner != null && !handlingOwner.isAttacker)
+        {
+            handlingOwner = null;
+            handlingEligibility = GoalkeeperHandlingEligibility.None;
+        }
         RecordPossessionChanged(previousTeamInAttack, teamInAttack);
 
     }
@@ -4630,8 +4636,9 @@ public class MatchManager : MonoBehaviour
         clearPreviousOnNextBallCollection = false;
     }
 
-    public void ClearLastTokenChain()
+    public void ClearLastTokenChain(bool preserveHandling = false)
     {
+        if (!preserveHandling) ResetGoalkeeperHandling();
         LastTokenToTouchTheBallOnPurpose = null;
         PreviousTokenToTouchTheBallOnPurpose = null;
         ClearSetPieceTakerNextTouchExclusion();
@@ -4640,7 +4647,7 @@ public class MatchManager : MonoBehaviour
     public void SetLastTokenFromLooseBall(PlayerToken inputToken)
     {
         // Loose-ball contact is not a purposeful pass, so the new holder starts a fresh chain.
-        ClearLastTokenChain();
+        ClearLastTokenChain(preserveHandling: true);
         SetLastToken(inputToken);
         ClearOffsideForLegalCollection(inputToken, "loose_ball_collection");
         clearPreviousOnNextBallCollection = false;
@@ -4887,6 +4894,7 @@ public class MatchManager : MonoBehaviour
 
     private void BeginHalfEndFlow()
     {
+        ResetGoalkeeperHandling();
         pendingHalfGateContinuation = null;
         isWaitingForExtraActionsRoll = false;
         isClockRunning = false;
@@ -5359,6 +5367,7 @@ public class MatchManager : MonoBehaviour
 
     public void ClearLiveActionAvailabilityForStopPlay()
     {
+        ResetGoalkeeperHandling();
         ClearPendingActionPreviews();
         movementPhaseManager?.ResetMovementPhase();
         groundBallManager?.CleanUpPass();
@@ -5384,6 +5393,9 @@ public class MatchManager : MonoBehaviour
         string commitSource = "user",
         string commitReason = "")
     {
+        if (actionKind is MatchActionKind.StandardPass or MatchActionKind.FirstTimePass
+            or MatchActionKind.HighPass or MatchActionKind.LongBall or MatchActionKind.Shot)
+            BeginGoalkeeperBallDelivery(GoalkeeperDeliveryKind.Kick, LastTokenToTouchTheBallOnPurpose);
         if (actionKind != MatchActionKind.None)
         {
             SetSubstitutionsAvailable(false, $"Committed to {actionKind}");
@@ -5441,27 +5453,29 @@ public class MatchManager : MonoBehaviour
 
     public void BroadcastSafeEndofMovementPhase(bool countMovementAction = true, bool triggerFinalThird = true)
     {
+        if (countMovementAction && movementPhaseManager?.TryConsumeNormalMovementCompletion() != true) return;
         ResolveActionBeforeFinalThird(
             MatchActionKind.MovementPhase,
             () =>
             {
-                if (triggerFinalThird && finalThirdManager != null)
-                {
-                    finalThirdManager.TriggerFinalThirdPhase();
-                }
-
                 currentState = GameState.EndOfMovementPhase;
-                UpdatePossessionAfterPass(ball.GetCurrentHex());
-                OfferStandardGroundBallPass();
-                AssessOffsideBeforeOptions("end_movement_phase");
-                RefreshAvailableActions();
-                RecordGameplayOutcome(
-                    "action.phase",
-                    "movement",
-                    "ended",
-                    sourceHex: ball?.GetCurrentHex());
+                if (countMovementAction && triggerFinalThird
+                    && movementPhaseManager?.goalKeeperManager?.TryOfferDeferredPickup(
+                        () => CompleteMovementAtFeet(triggerFinalThird)) == true) return;
+                CompleteMovementAtFeet(triggerFinalThird);
             },
             countMovementAction);
+    }
+
+    private void CompleteMovementAtFeet(bool triggerFinalThird)
+    {
+        if (triggerFinalThird) finalThirdManager?.TriggerFinalThirdPhase();
+        currentState = GameState.EndOfMovementPhase;
+        UpdatePossessionAfterPass(ball.GetCurrentHex());
+        OfferStandardGroundBallPass();
+        AssessOffsideBeforeOptions("end_movement_phase");
+        RefreshAvailableActions();
+        RecordGameplayOutcome("action.phase", "movement", "ended", sourceHex: ball?.GetCurrentHex());
     }
     public void BroadcastSuccessfulTackle()
     {
@@ -5552,8 +5566,10 @@ public class MatchManager : MonoBehaviour
 
     public bool BroadcastDefensiveRecoveryOutcome(PlayerToken recoveringToken, HexCell recoveryHex, bool triggerFinalThirdsForAnyOther = true)
     {
-        if (IsGoalkeeperHoldingInOwnPenaltyBox(recoveringToken, recoveryHex))
+        if (IsGoalkeeperHoldingInOwnPenaltyBox(recoveringToken, recoveryHex)
+            && CanGoalkeeperHandle(recoveringToken))
         {
+            MarkGoalkeeperHolding(recoveringToken);
             if (movementPhaseManager != null && movementPhaseManager.isActivated)
             {
                 movementPhaseManager.EndMovementPhase(false);
@@ -5968,6 +5984,7 @@ public class MatchManager : MonoBehaviour
                 setPieceTakerExcludedFromNextTouch = CreateTokenReference(setPieceTakerExcludedFromNextTouch),
                 hangingPassType = hangingPassType,
                 hangingPassExcludedCollector = CreateTokenReference(hangingPassExcludedCollector),
+                goalkeeperHandling = CreateGoalkeeperHandlingSnapshot(),
                 clearPreviousOnNextBallCollection = clearPreviousOnNextBallCollection
             },
             offside = offsideManager != null ? offsideManager.CreateSnapshot() : new RoomOffsideSnapshot(),
@@ -6013,7 +6030,8 @@ public class MatchManager : MonoBehaviour
 
     private bool HasActiveRuntimeAction()
     {
-        return (movementPhaseManager != null && movementPhaseManager.isActivated)
+        return movementPhaseManager?.goalKeeperManager?.IsWaitingForPickupChoice == true
+            || (movementPhaseManager != null && movementPhaseManager.isActivated)
             || (groundBallManager != null && groundBallManager.isActivated)
             || (firstTimePassManager != null && firstTimePassManager.isActivated)
             || (highPassManager != null && highPassManager.isActivated)
@@ -6347,6 +6365,7 @@ public class MatchManager : MonoBehaviour
 
     private void RestoreTouchReferences(RoomTouchReferences references)
     {
+        RestoreGoalkeeperHandling(references?.goalkeeperHandling);
         LastTokenToTouchTheBallOnPurpose = ResolveTokenReference(references?.lastTokenToTouchTheBallOnPurpose);
         PreviousTokenToTouchTheBallOnPurpose = ResolveTokenReference(references?.previousTokenToTouchTheBallOnPurpose);
         pendingGoalKickRestartTaker = ResolveTokenReference(references?.pendingGoalKickRestartTaker);
@@ -6870,6 +6889,8 @@ public class MatchManager : MonoBehaviour
             return;
         }
 
+        RecordGoalkeeperBallTouch(inputToken);
+
         // If the input token is already the last token, do nothing
         if (LastTokenToTouchTheBallOnPurpose == inputToken)
         {
@@ -7026,6 +7047,7 @@ public class MatchManager : MonoBehaviour
 
     public string GetInstructions()
     {
+        if (movementPhaseManager?.goalKeeperManager?.IsWaitingForPickupChoice == true) return string.Empty;
         if (IsForcedGoalkeeperSubstitutionRequired(true) || IsForcedGoalkeeperSubstitutionRequired(false))
         {
             bool isHomeTeam = IsForcedGoalkeeperSubstitutionRequired(true);

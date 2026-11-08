@@ -1124,6 +1124,7 @@ public class ShotManager : MonoBehaviour
 
     public void EnterSaveAndHoldDecision()
     {
+        MatchManager.Instance?.MarkGoalkeeperHolding(ball?.GetCurrentHex()?.GetOccupyingToken());
         headerSavePresentationVersion++;
         DuelResolutionPanelController.Instance?.CancelSingle(this);
         isAvailable = false;

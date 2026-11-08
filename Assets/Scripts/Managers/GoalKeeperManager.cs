@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 
-public class GoalKeeperManager : MonoBehaviour
+public partial class GoalKeeperManager : MonoBehaviour
 {
     public MovementPhaseManager movementPhaseManager;
     public HelperFunctions helperFunctions;
@@ -30,6 +30,7 @@ public class GoalKeeperManager : MonoBehaviour
 
     private void OnDisable()
     {
+        CancelDeferredPickup();
         GameInputManager.OnClick -= OnClickReceived;
         GameInputManager.OnHover -= OnHoverReceived;
         GameInputManager.OnKeyPress -= OnKeyReceived;
@@ -107,6 +108,15 @@ public class GoalKeeperManager : MonoBehaviour
     private void OnKeyReceived(KeyPressData keyData)
     {
         if (keyData.isConsumed) return;
+        if (IsWaitingForPickupChoice)
+        {
+            if (keyData.key is KeyCode.H or KeyCode.F)
+            {
+                keyData.Consume(nameof(GoalKeeperManager), pickupKeeper?.isHomeTeam);
+                ChooseDeferredPickup(keyData.key == KeyCode.H);
+            }
+            return;
+        }
         if (isActivated && !IsResolvingMove && keyData.key == KeyCode.X)
         {
             hexGrid.ClearHighlightedHexes();
@@ -394,6 +404,7 @@ public class GoalKeeperManager : MonoBehaviour
             recoveryType: recoveryType
         );
 
+        MatchManager.Instance.MarkGoalkeeperHolding(goalkeeper);
         MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(goalkeeper, saveHex, triggerFinalThirdsForAnyOther: false);
     }
 
@@ -478,6 +489,7 @@ public class GoalKeeperManager : MonoBehaviour
 
     public string GetInstructions()
     {
+        if (IsWaitingForPickupChoice) return "Goalkeeper pickup (no roll), before Final Thirds:\n" + PickupChoiceGuidance;
         StringBuilder sb = new();
         if (isActivated) sb.Append("Defending GK is awarded a free move! Click on a highlighted hex to move, or Press [X] to stay there, ");
         
@@ -487,6 +499,14 @@ public class GoalKeeperManager : MonoBehaviour
 
     public void PopulateRoomDecisionContext(RoomDecisionContext context)
     {
+        if (context != null && IsWaitingForPickupChoice)
+        {
+            context.AddKeyActionCandidate(nameof(GoalKeeperManager), RoomActionType.GoalkeeperSave,
+                RoomDecisionStep.InterruptionChoice, "H", "Pick up the ball without a roll");
+            context.AddKeyActionCandidate(nameof(GoalKeeperManager), RoomActionType.Decline,
+                RoomDecisionStep.InterruptionChoice, "F", "Keep the ball at feet");
+            return;
+        }
         if (context == null || !isActivated || IsResolvingMove)
         {
             return;
@@ -535,6 +555,7 @@ public class GoalKeeperManager : MonoBehaviour
 
     public bool? IsInstructionExpectingHomeTeam()
     {
+        if (IsWaitingForPickupChoice) return pickupKeeper?.isHomeTeam;
         if (!isActivated || MatchManager.Instance == null)
         {
             return null;

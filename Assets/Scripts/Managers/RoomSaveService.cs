@@ -862,6 +862,7 @@ public class RoomTokenSnapshot
 [Serializable]
 public class RoomTouchReferences
 {
+    public RoomGoalkeeperHandlingSnapshot goalkeeperHandling;
     public RoomTokenReference lastTokenToTouchTheBallOnPurpose;
     public RoomTokenReference previousTokenToTouchTheBallOnPurpose;
     public RoomTokenReference pendingGoalKickRestartTaker;

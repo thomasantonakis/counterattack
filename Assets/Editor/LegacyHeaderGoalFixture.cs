@@ -5,7 +5,7 @@ using static LegacyHeaderGoalCatalog;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
-    private IEnumerator PrepareNativeHeaderAtGoal(bool rush, bool original)
+    private IEnumerator PrepareNativeHeaderAtGoal(bool rush, bool original, bool afterKickoff = false)
     {
         var p = LoadLegacyRoster(); var header = match.shotManager.headerManager;
         var throwIn = CreateLegacyThrowInManager(); AttachAuthoredPanels();
@@ -16,6 +16,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         oob.throwInManager = throwIn; oob.outOfBoundsPushManager = throwIn.outOfBoundsPushManager;
         oob.playerTokenManager = match.playerTokenManager; oob.finalThirdManager = match.finalThirdManager;
         match.shotManager.outOfBoundsManager = oob; loose.outOfBoundsManager = oob; header.outOfBoundsManager = oob;
+        if (afterKickoff) match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         LegacyKey("C"); Assert.That(high.isActivated, Is.True);
         input.TryExecuteSyntheticHexClick(Hex(13, 1), "Legacy migration", out _);
         Assert.That(high.currentTargetHex, Is.SameAs(Hex(13, 1))); Assert.That(high.eligibleAttackers.Count, Is.EqualTo(1));

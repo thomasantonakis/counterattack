@@ -5,7 +5,7 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
-    private IEnumerator PrepareHeadedBackPass(int side, bool corner, bool outside = false)
+    private IEnumerator PrepareHeadedBackPass(int side, bool corner, bool outside = false, bool nearby = false)
     {
         Board(side);
         Place(attacker, Hex(-13 * side));
@@ -20,7 +20,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(header.isWaitingForControlOrHeaderDecision, Is.True);
         LegacyKey("H");
         yield return Until(() => header.isWaitingForHeaderTargetSelection, "free header opens real target selection");
-        input.TryExecuteSyntheticHexClick(homeGK.currentHex, "Headed back-pass", out _);
+        input.TryExecuteSyntheticHexClick(nearby ? Hex(-15 * side) : homeGK.currentHex, "Headed back-pass", out _);
     }
 
     public IEnumerator RunHeadedBackPass(int side, bool corner, string branch)

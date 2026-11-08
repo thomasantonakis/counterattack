@@ -1114,6 +1114,7 @@ public class FinalThirdManager : MonoBehaviour
 
     public void DropBall()
     {
+        MatchManager.Instance.MarkGoalkeeperDeliberateDrop(ball.GetCurrentHex()?.GetOccupyingToken());
         isWaitingForWhatToDo = false;
         isWaitingForSetPieceGoalKickChoice = false;
         isActivated = false;

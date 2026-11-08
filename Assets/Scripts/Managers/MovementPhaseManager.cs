@@ -3997,6 +3997,8 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void ResetMovementPhase()
     {
+        normalCompletionPending = false;
+        goalKeeperManager?.CancelDeferredPickup();
         pendingFouledAttacker = null;
         duelPresentationVersion++;
         activeDuelPanel?.Cancel(this);
@@ -4089,9 +4091,20 @@ public class MovementPhaseManager : MonoBehaviour
         headerManager?.ResetHeader();
     }
 
+    private bool normalCompletionPending;
+
+    public bool TryConsumeNormalMovementCompletion()
+    {
+        if (!normalCompletionPending) return false;
+        normalCompletionPending = false;
+        return true;
+    }
+
     public void EndMovementPhase(bool triggerF3 = true)
     {
+        bool completedNormally = isActivated && triggerF3;
         ResetMovementPhase();  // Reset the moved tokens and phase counters
+        normalCompletionPending = completedNormally;
         nutmeggableDefenders.Clear();
         stunnedTokens.Clear();
         stunnedTokens.AddRange(stunnedforNext);

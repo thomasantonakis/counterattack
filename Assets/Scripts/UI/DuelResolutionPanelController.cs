@@ -278,6 +278,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         singlePlayer.playerName.color = PlayerNameColor;
         singlePlayer.die.SetTeamColors(color, token != null ? TeamPalette(token).Secondary : Color.white);
         singlePlayer.die.gameObject.SetActive(true);
+        if (singlePlayer.die.transform.parent.name == "RollTile")
+            singlePlayer.die.transform.parent.gameObject.SetActive(true);
         singlePlayer.die.Begin(jackpotAllowed);
         footer.text = "Press [R] to roll";
         visuals.SetActive(true);
@@ -299,6 +301,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (!BeginSingle(manager, waiting, situation, token, null, null, false, guidance)) return false;
         singleChoiceKeys = keys;
         singlePlayer.die.gameObject.SetActive(false);
+        if (singlePlayer.die.transform.parent.name == "RollTile")
+            singlePlayer.die.transform.parent.gameObject.SetActive(false);
         footer.text = controls;
         return true;
     }

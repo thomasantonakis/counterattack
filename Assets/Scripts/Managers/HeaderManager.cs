@@ -1734,6 +1734,18 @@ public class HeaderManager : MonoBehaviour
             int bestDefenderRoll = tokenScores[bestDefender].roll;
             Debug.Log($"Best Defender: {bestDefender.name} with a score of {bestDefenderScore} (roll = {bestDefenderRoll})");
 
+            if (headerAtGoalDeclared && bestDefenderScore >= bestAttackerScore)
+            {
+                ball.ClearCommittedGoalTarget();
+                ClearHeaderAtGoalTargets();
+                if (headerAtGoalTarget != null) headerAtGoalTarget.ResetHighlight();
+                if (bestDefenderScore > bestAttackerScore)
+                {
+                    headerAtGoalTarget = null;
+                    headerAtGoalDeclared = false;
+                }
+            }
+
             if (bestAttackerScore > bestDefenderScore)
             {
                 challengeWinner = bestAttacker;
@@ -2134,6 +2146,8 @@ public class HeaderManager : MonoBehaviour
 
     private async Task MoveHeaderToTargetSelection(HexCell clickedHex)
     {
+        MatchManager.Instance.BeginGoalkeeperBallDelivery(GoalkeeperDeliveryKind.Header,
+            MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
         int version = headedBackPassVersion;
         hoveredHeaderTargetHex = null;
         headerTargetThreatByHex.Clear();
@@ -2208,7 +2222,7 @@ public class HeaderManager : MonoBehaviour
 
     private void PresentHeadedBackPassRoll()
         => DuelResolutionPanelController.Instance?.BeginSingle(this, () => isWaitingForHeadedBackPassRoll,
-            "Headed Back-Pass · Goalkeeper Catch", headedBackPassKeeper, null, "Catch 5/6", false,
+            "Headed Back-Pass · Goalkeeper Catch", headedBackPassKeeper, null, "Catch 83.3%", false,
             "Roll 1: loose ball from goalkeeper · Rolls 2–6: hold · No attribute modifier");
 
     public void PerformHeadedBackPassRoll(RollInputOverride? rollOverride = null)
@@ -2236,7 +2250,10 @@ public class HeaderManager : MonoBehaviour
         {
             continuedImmediately = true;
             if (caught)
+            {
+                MatchManager.Instance.MarkGoalkeeperHolding(receiver);
                 MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(receiver, receiver.GetCurrentHex(), false);
+            }
             else
             {
                 MatchManager.Instance.SetHangingPass("ground");

@@ -32,7 +32,7 @@ public class Ball : MonoBehaviour
         committedGoalTarget.SetCommittedGoalTarget(true);
     }
 
-    private void ClearCommittedGoalTarget()
+    public void ClearCommittedGoalTarget()
     {
         if (committedGoalTarget != null)
         {
