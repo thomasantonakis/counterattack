@@ -43,7 +43,7 @@ In this digital edition, headed passes back to your goalkeeper are allowed after
 
 When a headed pass reaches your goalkeeper inside their own penalty area, choose hands [H] or feet [F]. Hands requires a normal D6 catch roll with no attribute modifier: 2–6 means held and offers goalkeeper distribution; 1 starts a [Loose Ball](https://counterattackgame.github.io/wiki/en/loose_ball) from the goalkeeper. Feet requires no roll and continues the headed-pass flow. Outside their own penalty area the goalkeeper receives at feet and cannot choose hands.
 
-Receiving a header at feet avoids the immediate catch risk. The separate pickup-after-movement choice is planned but is not yet implemented in this edition; see the goalkeeper chapter for the tabletop pickup rule.
+Receiving a header at feet avoids the immediate catch risk and grants eligibility for the pickup choice after a completed Movement Phase inside the keeper's own penalty area. This applies to open play and corners, including nearby headers collected during movement. Outside-box receptions remain at feet; the keeper may use their remaining movement allowance to return inside. Choosing feet preserves eligibility through later Movement Phases while that keeper retains possession, until pickup or passing.
 
 
 ## Heading Sequence

@@ -1,5 +1,16 @@
 # Gameplay decisions and changes to review
 
+## Goalkeeper pickup follow-up — 2026-11-08
+
+The approved WIKI-012/013 deferred pickup feature is implemented; older deferral
+statements below are historical. See
+`Assets/Editor/FeatureTests/GoalkeeperPickup/Verification.md` for the explicit
+provenance model, phase gate, Q/K routing, Drop Ball lockout, save compatibility,
+focused native execution and broader unexecuted coverage. No approved rule was
+reopened. Follow-up presentation uses separate next-action lines and instructions,
+no empty dice tile for pickup, and 83.3% for direct header catches. Defensive
+headed-goal winners immediately release the committed goal-target highlight.
+
 ## Long Ball goalkeeper Pace ordering — 2026-11-08
 
 User-approved correction: for every in-bounds accurate/inaccurate Long Ball,

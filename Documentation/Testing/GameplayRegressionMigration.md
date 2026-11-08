@@ -419,3 +419,18 @@ prompts and countdowns in both shootout and ordinary modes. Compilation was clea
 Fixture: `ShootoutInstructionVisibilityPlayModeTests`, under
 `Assets/Tests/PlayMode/Features/ShootoutInstructionVisibility/`.
 Evidence: `TestResults/GameplayRegression/Runs/20261107T121440378Z/results.xml`.
+
+# Goalkeeper pickup feature — 2026-11-08
+
+New dedicated feature coverage, not retirement of legacy cases:
+`Assets/Editor/FeatureTests/GoalkeeperPickup/` and
+`Assets/Tests/PlayMode/Features/GoalkeeperPickup/` map direct header feet,
+outside recovery/return, nearby collection and successful movement completion to
+`GoalkeeperPickupEditorTests` and `GoalkeeperPickupPlayModeTests`.
+Clean live compilation; 14/0/0 final EditMode at
+`Runs/20261108T092457421Z/results.xml`. All 41 distinct PlayMode feature cases
+passed across `Runs/20261108T091321442Z/results.xml` (36/3/0),
+`Runs/20261108T091759094Z/results.xml` (6/1/0) and
+`Runs/20261108T092026689Z/results.xml` (1/0/0). These overlap; do not add counts.
+The feature Verification.md explains fixture corrections and exact broader
+user-run coverage. No legacy scenario was retired and no whole suite was run.

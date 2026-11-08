@@ -17,7 +17,7 @@ After a GK saves and holds a ball, wins an aerial duel or picks the ball up when
 1. **Activate final thirds**: both teams can move any player in either final third a maximum of 6 hexes each. The goalkeeping team goes first. Opponents cannot stand in the keeper's Zone of Influence
 2. **Quick Throw**: Neither team is able to move their final thirds, the throw can be the length of a standard pass but cannot be intercepted. The receiving player continues as if they have just received a regular standard pass.
 
-**Remember**: _If the GK collects a loose ball outside the penalty area, they follow any other scenario. If they wish to pick the ball up, the GK only picks the ball up once the phase in which he is brought back into the box completely finishes. If the GK collects a loose ball within the penalty area, they pick it up immediately._
+**Remember**: _After recovering an opponent's ball outside their own penalty area, the GK follows Any Other Scenario and may carry it back during movement. Pickup is offered only when the entire Movement Phase completes successfully with that keeper still in possession inside their own box, before Final Thirds. Outside-box phase ends defer the choice. An eligible opponent-ball recovery inside the box still uses Save and Hold._
 
 If the player chooses to activate final thirds, they continue by doing the following two options:
 
@@ -88,7 +88,7 @@ When an attacker calls a [snapshot](https://counterattackgame.github.io/wiki/en/
 
 ## Goalkeepers can pick up the ball
 
-Goalkeepers can run to get the ball. If the ball is in their penalty box and it did not come from a teammate's kick, they can pick it up using their gloves. Continue Play as if there was a save and Hold. You can only pick the ball up when a [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase) ends (with a change of possession or regularly).
+After receiving a teammate header at feet (open play or corner) or recovering an opponent's ball, a goalkeeper may run with it. At the successful end of the entire [Movement Phase](https://counterattackgame.github.io/wiki/en/movement_phase), if the keeper still holds possession inside their own penalty area, choose [H] pickup without another catch roll or [F] continue at feet. Pickup offers Quick Throw [Q] without Final Thirds, or normal goalkeeper distribution [K] through the Save and Hold Final Thirds sequence. Feet retains Movement, Standard Pass, High Pass and Long Ball options; eligibility persists through subsequent Movement Phases until pickup or passing. No mid-phase pickup is offered, including when collecting a nearby header. Teammate kicked Ground Passes, First Time Passes, High Passes and Long Balls always go to feet and never grant handling permission. A deliberate Drop Ball forbids picking up again; location alone never grants handling permission.
 
 ## Goalkeepers cannot be marked at set-pieces
 

@@ -1,5 +1,22 @@
 # Session handoff — 2026-11-07
 
+## Goalkeeper pickup follow-up — 2026-11-08
+
+The separate approved pickup-after-movement feature is now implemented. This
+supersedes the deferral statements in the historical sections below. Explicit
+delivery/source/owner/handling state survives header landings, movement and stable
+runtime snapshots. Eligible keepers choose pickup [H] or feet [F] before Final
+Thirds; pickup reuses Q/K without a second catch roll. Teammate kicks and deliberate
+Drop Ball cannot authorize hands. Canceled phases cannot double-complete or offer
+a stale choice. The existing authored panel hides the whole dice tile for a choice,
+lists both next-action routes on separate lines and mirrors them in instructions.
+Direct header catches display 83.3%. A lost headed-goal challenge releases the
+committed goal target immediately at winner resolution.
+
+Focused execution history, final counts and exact broader user-run fixtures are in
+`Assets/Editor/FeatureTests/GoalkeeperPickup/Verification.md`. No whole suite was
+executed. Bundled rules and the existing RulesViewer prefab paragraphs are updated.
+
 ## Long Ball goalkeeper Pace ordering — 2026-11-08
 
 User-approved correction: for every in-bounds accurate/inaccurate Long Ball,

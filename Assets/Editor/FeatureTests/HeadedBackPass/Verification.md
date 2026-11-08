@@ -9,7 +9,7 @@
 - [x] Held ball offers distribution before Final Thirds without inventing a save stat.
 - [x] Cancel/reset invalidates pending choice/roll and permits the next normal duel.
 - [x] Bundle updated heading/draft/stoppage wording through existing rulebook prefab.
-- [ ] Persistent phase-end pickup eligibility is deferred to GoalkeeperPickupFutureSessionPrompt.md.
+- [x] Persistent phase-end pickup eligibility is implemented separately; see `../GoalkeeperPickup/Verification.md` for its own executed scope.
 
 Focused fixtures: HeadedBackPassEditorTests in this folder; HeadedBackPassPlayModeTests
 in Assets/Tests/PlayMode/Features/HeadedBackPass/. Tests reuse the isolated owned board

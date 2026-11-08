@@ -12808,11 +12808,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<b>Remember</b>: <i>If the GK collects a loose ball outside the penalty
-    area, they follow any other scenario. If they wish to pick the ball up, the GK
-    only picks the ball up once the phase in which he is brought back into the box
-    completely finishes. If the GK collects a loose ball within the penalty area,
-    they pick it up immediately.</i>'
+  m_text: '<b>Remember</b>: <i>After recovering an opponent''s ball outside their
+    own penalty area, the GK follows Any Other Scenario and may carry it back during
+    movement. Pickup is offered only when the entire Movement Phase completes successfully
+    with that keeper still in possession inside their own box, before Final Thirds.
+    Outside-box phase ends defer the choice. An eligible opponent-ball recovery inside
+    the box still uses Save and Hold.</i>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -52351,9 +52352,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Receiving a header at feet avoids the immediate catch risk. The separate
-    pickup-after-movement choice is planned but is not yet implemented in this edition;
-    see the goalkeeper chapter for the tabletop pickup rule.
+  m_text: Receiving a header at feet avoids the immediate catch risk and grants eligibility
+    for the pickup choice after a completed Movement Phase inside the keeper's own
+    penalty area. This applies to open play and corners, including nearby headers
+    collected during movement. Outside-box receptions remain at feet; the keeper
+    may use their remaining movement allowance to return inside. Choosing feet preserves
+    eligibility through later Movement Phases while that keeper retains possession,
+    until pickup or passing.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
@@ -231968,11 +231973,19 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Goalkeepers can run to get the ball. If the ball is in their penalty box
-    and it did not come from a teammate's kick, they can pick it up using their gloves.
-    Continue Play as if there was a save and Hold. You can only pick the ball up
-    when a <link="movement_phase"><color=#79CEF2><u>Movement Phase</u></color></link>
-    ends (with a change of possession or regularly).
+  m_text: After receiving a teammate header at feet (open play or corner) or recovering
+    an opponent's ball, a goalkeeper may run with it. At the successful end of the
+    entire <link="movement_phase"><color=#79CEF2><u>Movement Phase</u></color></link>,
+    if the keeper still holds possession inside their own penalty area, choose [H]
+    pickup without another catch roll or [F] continue at feet. Pickup offers Quick
+    Throw [Q] without Final Thirds, or normal goalkeeper distribution [K] through
+    the Save and Hold Final Thirds sequence. Feet retains Movement, Standard Pass,
+    High Pass and Long Ball options; eligibility persists through subsequent Movement
+    Phases until pickup or passing. No mid-phase pickup is offered, including when
+    collecting a nearby header. Teammate kicked Ground Passes, First Time Passes,
+    High Passes and Long Balls always go to feet and never grant handling permission.
+    A deliberate Drop Ball forbids picking up again; location alone never grants
+    handling permission.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}
   m_sharedMaterial: {fileID: -3696773024713006346, guid: c5fdfdb697f0641feb89600dc51bf367, type: 2}

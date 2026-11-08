@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Goalkeeper pickup after movement uses `GoalkeeperPickupEditorTests` under
+`Assets/Editor/FeatureTests/GoalkeeperPickup/` and `GoalkeeperPickupPlayModeTests`
+under `Assets/Tests/PlayMode/Features/GoalkeeperPickup/`. Use only these explicit
+filters; category `GoalkeeperPickupFollowup` selects the outside-phase, target
+cleanup and catch-percentage follow-ups. The dedicated Verification.md records
+execution evidence and exact broader user-run fixtures.
+
 Long Ball Pace ordering uses only `LongBallGoalkeeperPacePlayModeTests` in
 `Assets/Tests/PlayMode/Features/LongBallGoalkeeperPace/`, backed by the owned board
 in `Assets/Editor/FeatureTests/LongBallGoalkeeperPace/`. See its Verification.md
@@ -24,8 +31,9 @@ Headed back-passes use dedicated fixtures `HeadedBackPassEditorTests` under
 `Assets/Tests/PlayMode/Features/HeadedBackPass/`. Extra-time action caps use
 `ExtraTimeStoppageEditorTests` under `Assets/Editor/FeatureTests/ExtraTimeStoppage/`.
 Run these explicit fixture filters for this change. Their checklists record results
-and broader user-run coverage. Delayed goalkeeper pickup is a separate feature;
-its prompt is `GoalkeeperPickupFutureSessionPrompt.md`.
+and broader user-run coverage. Delayed goalkeeper pickup is implemented separately
+in the GoalkeeperPickup fixtures described above; its approved scope remains in
+`GoalkeeperPickupFutureSessionPrompt.md`.
 
 
 The shared score floor has dedicated fixtures `AttributeScoreFloorEditorTests`
