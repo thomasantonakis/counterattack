@@ -1,3 +1,10 @@
+## Personal Mac setup and portable paths
+
+- For a fresh machine, follow `Documentation/Setup/PersonalMac.md` before Editor operations. It includes terminal tools, Unity/Codex setup, connection checks and the current online-work handoff.
+- Resolve this checkout's absolute root with `git rev-parse --show-toplevel`. Throughout these instructions, replace the original `/Users/t.antonakis/Documents/Projects/Personal/counterattack` with that actual root on the current machine. Pass that absolute root explicitly on Unity CLI calls. Do not target a different checkout just because it matches the old path.
+- Resolve user-specific skill, Unity log and save locations under the current user's home directory. If Unity redirects its log, inspect `<checkout>/Logs/Editor.log`; the home-directory Editor.log may contain only startup output. Never copy account tokens or corporate configuration to make a path work.
+- Start Codex in this repository so the portable `.codex/config.toml` Unity MCP entry resolves the correct project. Use CLI for Editor control as required below; MCP configuration is optional for this shell-based workflow.
+
 ## Unity Workflow Rules
 
 - Never edit or whitespace-normalize a scene file on disk while it is loaded in the Editor. Make loaded-scene changes through Unity CLI/Pipeline and save through the Editor. Unity-generated whitespace is not a reason to rewrite a loaded scene to satisfy `git diff --check`; report serializer whitespace instead.

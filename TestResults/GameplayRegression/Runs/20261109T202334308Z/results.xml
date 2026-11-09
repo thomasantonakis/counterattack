@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="27" result="Passed" total="27" passed="27" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:35Z" duration="0.7989214">
+  <test-suite type="TestSuite" id="2419" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1192" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:35Z" duration="0.798921" total="27" passed="27" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2413" name="Assembly-CSharp-Editor.dll" fullname="/Users/t.antonakis/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1192" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:35Z" duration="0.685009" total="27" passed="27" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="18923" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1608" name="OnlineMatchProtocolEditorTests" fullname="OnlineMatchProtocolEditorTests" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" testcasecount="27" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:35Z" duration="0.615106" total="27" passed="27" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMatchProtocol" />
+        </properties>
+        <test-case id="1637" name="AnEvictedReceiptStillCannotBeReexecuted" fullname="OnlineMatchProtocolEditorTests.AnEvictedReceiptStillCannotBeReexecuted" methodname="AnEvictedReceiptStillCannotBeReexecuted" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1129164547" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.041319" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1627" name="AStaleTargetCannotBeAppliedToANewRevisionEvenWithTheSameDecisionLabel" fullname="OnlineMatchProtocolEditorTests.AStaleTargetCannotBeAppliedToANewRevisionEvenWithTheSameDecisionLabel" methodname="AStaleTargetCannotBeAppliedToANewRevisionEvenWithTheSameDecisionLabel" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="2136541671" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000351" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1622" name="DisconnectedOpponentBlocksNewCommandsWithoutLosingThePendingDecision" fullname="OnlineMatchProtocolEditorTests.DisconnectedOpponentBlocksNewCommandsWithoutLosingThePendingDecision" methodname="DisconnectedOpponentBlocksNewCommandsWithoutLosingThePendingDecision" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="929840472" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000214" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1613" name="DuplicateConfirmationAcknowledgesTheOriginalAdmissionWithoutReopeningTheDecision" fullname="OnlineMatchProtocolEditorTests.DuplicateConfirmationAcknowledgesTheOriginalAdmissionWithoutReopeningTheDecision" methodname="DuplicateConfirmationAcknowledgesTheOriginalAdmissionWithoutReopeningTheDecision" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="133957871" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000260" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1611" name="HostRoleDoesNotGrantControlOfTheOtherTeam" fullname="OnlineMatchProtocolEditorTests.HostRoleDoesNotGrantControlOfTheOtherTeam" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.050503" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1609" name="HostRoleDoesNotGrantControlOfTheOtherTeam(&quot;home-account&quot;)" fullname="OnlineMatchProtocolEditorTests.HostRoleDoesNotGrantControlOfTheOtherTeam(&quot;home-account&quot;)" methodname="HostRoleDoesNotGrantControlOfTheOtherTeam" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1037946345" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1610" name="HostRoleDoesNotGrantControlOfTheOtherTeam(&quot;away-account&quot;)" fullname="OnlineMatchProtocolEditorTests.HostRoleDoesNotGrantControlOfTheOtherTeam(&quot;away-account&quot;)" methodname="HostRoleDoesNotGrantControlOfTheOtherTeam" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="86619336" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000052" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1618" name="IncompatibleReconnectCannotEvictTheWorkingConnection" fullname="OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.100124" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1615" name="IncompatibleReconnectCannotEvictTheWorkingConnection(&quot;protocol&quot;)" fullname="OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection(&quot;protocol&quot;)" methodname="IncompatibleReconnectCannotEvictTheWorkingConnection" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="354844426" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000652" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1616" name="IncompatibleReconnectCannotEvictTheWorkingConnection(&quot;rules&quot;)" fullname="OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection(&quot;rules&quot;)" methodname="IncompatibleReconnectCannotEvictTheWorkingConnection" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="856486117" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000081" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1617" name="IncompatibleReconnectCannotEvictTheWorkingConnection(&quot;catalog&quot;)" fullname="OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection(&quot;catalog&quot;)" methodname="IncompatibleReconnectCannotEvictTheWorkingConnection" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1297098900" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:34Z" duration="0.000062" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1638" name="InvalidDecisionPublicationLeavesThePreviousDecisionIntact" fullname="OnlineMatchProtocolEditorTests.InvalidDecisionPublicationLeavesThePreviousDecisionIntact" methodname="InvalidDecisionPublicationLeavesThePreviousDecisionIntact" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="625297940" result="Passed" start-time="2026-11-09 20:23:34Z" end-time="2026-11-09 20:23:35Z" duration="0.031386" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1626" name="InvalidRequestsDoNotMutateOrConsumeTheDecision" fullname="OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.068165" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1623" name="InvalidRequestsDoNotMutateOrConsumeTheDecision(&quot;wrong-match&quot;,&quot;pass-choice&quot;,&quot;pass:token-7:hex-3-2&quot;,WrongMatch)" fullname="OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision(&quot;wrong-match&quot;,&quot;pass-choice&quot;,&quot;pass:token-7:hex-3-2&quot;,WrongMatch)" methodname="InvalidRequestsDoNotMutateOrConsumeTheDecision" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="481304798" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.001004" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1624" name="InvalidRequestsDoNotMutateOrConsumeTheDecision(&quot;match-1&quot;,&quot;old-choice&quot;,&quot;pass:token-7:hex-3-2&quot;,WrongDecision)" fullname="OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision(&quot;match-1&quot;,&quot;old-choice&quot;,&quot;pass:token-7:hex-3-2&quot;,WrongDecision)" methodname="InvalidRequestsDoNotMutateOrConsumeTheDecision" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="553850017" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000104" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1625" name="InvalidRequestsDoNotMutateOrConsumeTheDecision(&quot;match-1&quot;,&quot;pass-choice&quot;,&quot;debug:rig-roll-6&quot;,IllegalAction)" fullname="OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision(&quot;match-1&quot;,&quot;pass-choice&quot;,&quot;debug:rig-roll-6&quot;,IllegalAction)" methodname="InvalidRequestsDoNotMutateOrConsumeTheDecision" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1780262604" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000069" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1639" name="JsonRoundTripPreservesSemanticCommandAndStillChecksTheTransportSender" fullname="OnlineMatchProtocolEditorTests.JsonRoundTripPreservesSemanticCommandAndStillChecksTheTransportSender" methodname="JsonRoundTripPreservesSemanticCommandAndStillChecksTheTransportSender" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1257632818" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.004619" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1621" name="LiveRebindAlsoRetiresThePreviousConnection" fullname="OnlineMatchProtocolEditorTests.LiveRebindAlsoRetiresThePreviousConnection" methodname="LiveRebindAlsoRetiresThePreviousConnection" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="620293167" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000176" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1632" name="MalformedActionIdsAreRejected" fullname="OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.095021" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1628" name="MalformedActionIdsAreRejected(null)" fullname="OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(null)" methodname="MalformedActionIdsAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1756794463" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000532" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1629" name="MalformedActionIdsAreRejected(&quot;&quot;)" fullname="OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(&quot;&quot;)" methodname="MalformedActionIdsAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1698998759" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000081" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1630" name="MalformedActionIdsAreRejected(&quot; &quot;)" fullname="OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(&quot; &quot;)" methodname="MalformedActionIdsAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1588910557" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000065" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1631" name="MalformedActionIdsAreRejected(&quot;bad\nid&quot;)" fullname="OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(&quot;bad\nid&quot;)" methodname="MalformedActionIdsAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1443010705" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000069" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1640" name="MatchCreationRequiresDistinctParticipantsAndAParticipatingHost" fullname="OnlineMatchProtocolEditorTests.MatchCreationRequiresDistinctParticipantsAndAParticipatingHost" methodname="MatchCreationRequiresDistinctParticipantsAndAParticipatingHost" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1673333321" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000623" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1635" name="NonpositiveSequencesAreRejected" fullname="OnlineMatchProtocolEditorTests.NonpositiveSequencesAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.100485" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1633" name="NonpositiveSequencesAreRejected(0)" fullname="OnlineMatchProtocolEditorTests.NonpositiveSequencesAreRejected(0)" methodname="NonpositiveSequencesAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="235961069" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.001230" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1634" name="NonpositiveSequencesAreRejected(-1)" fullname="OnlineMatchProtocolEditorTests.NonpositiveSequencesAreRejected(-1)" methodname="NonpositiveSequencesAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="634120195" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000274" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1636" name="OversizedIdsAndNegativeRevisionsAreRejected" fullname="OnlineMatchProtocolEditorTests.OversizedIdsAndNegativeRevisionsAreRejected" methodname="OversizedIdsAndNegativeRevisionsAreRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="190260473" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000621" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1612" name="OwnershipTransfersToTheDefenderForAnInterruption" fullname="OnlineMatchProtocolEditorTests.OwnershipTransfersToTheDefenderForAnInterruption" methodname="OwnershipTransfersToTheDefenderForAnInterruption" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="2046215965" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000458" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1620" name="ReconnectKeepsTeamAndReceiptsButInvalidatesOldTraffic" fullname="OnlineMatchProtocolEditorTests.ReconnectKeepsTeamAndReceiptsButInvalidatesOldTraffic" methodname="ReconnectKeepsTeamAndReceiptsButInvalidatesOldTraffic" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1928655397" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000853" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1614" name="ReusingASequenceForADifferentActionIsRejected" fullname="OnlineMatchProtocolEditorTests.ReusingASequenceForADifferentActionIsRejected" methodname="ReusingASequenceForADifferentActionIsRejected" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1760719645" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000597" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1619" name="UnknownAccountsAndBorrowedConnectionIdsCannotClaimASeat" fullname="OnlineMatchProtocolEditorTests.UnknownAccountsAndBorrowedConnectionIdsCannotClaimASeat" methodname="UnknownAccountsAndBorrowedConnectionIdsCannotClaimASeat" classname="OnlineMatchProtocolEditorTests" runstate="Runnable" seed="1995696713" result="Passed" start-time="2026-11-09 20:23:35Z" end-time="2026-11-09 20:23:35Z" duration="0.000981" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults/GameplayRegression/Runs/20261109T202334308Z/results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

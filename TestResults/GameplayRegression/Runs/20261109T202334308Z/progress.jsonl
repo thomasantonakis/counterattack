@@ -1,0 +1,27 @@
+{"name":"OnlineMatchProtocolEditorTests.AnEvictedReceiptStillCannotBeReexecuted","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.AStaleTargetCannotBeAppliedToANewRevisionEvenWithTheSameDecisionLabel","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.DisconnectedOpponentBlocksNewCommandsWithoutLosingThePendingDecision","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.DuplicateConfirmationAcknowledgesTheOriginalAdmissionWithoutReopeningTheDecision","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.HostRoleDoesNotGrantControlOfTheOtherTeam(\"home-account\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.HostRoleDoesNotGrantControlOfTheOtherTeam(\"away-account\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection(\"protocol\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection(\"rules\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.IncompatibleReconnectCannotEvictTheWorkingConnection(\"catalog\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.InvalidDecisionPublicationLeavesThePreviousDecisionIntact","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision(\"wrong-match\",\"pass-choice\",\"pass:token-7:hex-3-2\",WrongMatch)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision(\"match-1\",\"old-choice\",\"pass:token-7:hex-3-2\",WrongDecision)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.InvalidRequestsDoNotMutateOrConsumeTheDecision(\"match-1\",\"pass-choice\",\"debug:rig-roll-6\",IllegalAction)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.JsonRoundTripPreservesSemanticCommandAndStillChecksTheTransportSender","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.LiveRebindAlsoRetiresThePreviousConnection","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(null)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(\"\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(\" \")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.MalformedActionIdsAreRejected(\"bad\\nid\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.MatchCreationRequiresDistinctParticipantsAndAParticipatingHost","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.NonpositiveSequencesAreRejected(0)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.NonpositiveSequencesAreRejected(-1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.OversizedIdsAndNegativeRevisionsAreRejected","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.OwnershipTransfersToTheDefenderForAnInterruption","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.ReconnectKeepsTeamAndReceiptsButInvalidatesOldTraffic","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.ReusingASequenceForADifferentActionIsRejected","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchProtocolEditorTests.UnknownAccountsAndBorrowedConnectionIdsCannotClaimASeat","status":"Passed","message":"","stackTrace":""}

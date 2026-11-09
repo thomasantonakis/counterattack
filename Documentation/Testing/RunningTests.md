@@ -1,5 +1,13 @@
 # Running gameplay regressions
 
+Online multiplayer's initial protocol foundation uses `OnlineMatchProtocolEditorTests`
+(EditMode category `OnlineMatchProtocol`) under
+`Assets/Editor/FeatureTests/OnlineMatch/`. Run only that explicit fixture for its
+isolated account/team, compatibility, revision and retry checks. Current evidence:
+27 passed, zero failed/skipped; compilation separately clean. See its
+`Verification.md` for native XML and unexecuted networking/gameplay coverage.
+This code is not wired into Room, and does not yet prove internet connectivity.
+
 Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
 RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.
 Method filters: ThrowSelectionTiming, PostHeaderMovementTiming, CornerTargets,

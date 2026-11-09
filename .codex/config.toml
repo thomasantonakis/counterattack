@@ -1,7 +1,9 @@
 
 [mcp_servers.unity]
-command = "/Users/t.antonakis/.unity/bin/unity"
-args = ["mcp","--project-path","/Users/t.antonakis/Documents/Projects/Personal/counterattack"]
+# Resolve the local CLI through PATH and the project from Codex's working directory.
+# Open Codex in this checkout. Shell-based Editor control still passes --project-path.
+command = "unity"
+args = ["mcp"]
 
 [sandbox_workspace_write]
 network_access = true
