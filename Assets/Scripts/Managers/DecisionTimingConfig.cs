@@ -87,7 +87,7 @@ public static class DecisionTimingConfig
         [DecisionKind.NutmegReposition]              = (15f,   10f,    5f),
         [DecisionKind.DefensiveBoxMovement]          = (10f,   10f,    8f),
 
-        // Outside a movement phase only; otherwise charge the owner's phase.
+        // Choice allowance; also charge the deciding team's MP when it is active.
         [DecisionKind.StandaloneTackleOrStand]       = (10f,   10f,    5f),
         [DecisionKind.StandaloneNutmegDecision]      = (10f,   10f,    5f),
 

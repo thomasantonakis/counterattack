@@ -27,7 +27,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         LegacyKey("A");
         yield return Until(() => !movement.isWaitingForFoulDecision && movement.isWaitingForSnapshotDecision,
             "legal advantage input remains available after expiry");
-        match.RefreshDecisionTiming(); Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(DecisionKind.AttackingMovement));
+        match.RefreshDecisionTiming(); Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(DecisionKind.SnapshotOrForfeitPace));
     }
 
     private DecisionTimingState ExpireTimingChoice(DecisionKind kind, string owner)

@@ -17,11 +17,11 @@ public sealed class DecisionTimingRegistration
     public DecisionTimingRegistration(MatchManager match, DecisionTimingService timing) { this.match = match; this.timing = timing; }
     public bool AttackHome => match.teamInAttack == MatchManager.TeamInAttack.Home;
     public void Scope(string name, bool? home) { scope = name; owner = home; }
-    public void Decision(DecisionKind kind, bool waiting, bool ready = true, string phase = "", bool? home = null)
+    public void Decision(DecisionKind kind, bool waiting, bool ready = true, string phase = "", bool? home = null, bool concurrentWithCurrent = false)
     {
         if (!waiting || (SharedActionSelection && kind != DecisionKind.SelectNextAction)) return;
         string team = (home ?? owner) is bool h ? h ? "Home" : "Away" : "Both teams";
-        timing.Register($"{match.totalCompletedActions}/{scope}/{phase}/{kind}/{team}", kind, team, match.difficulty_level, ready);
+        timing.Register($"{match.totalCompletedActions}/{scope}/{phase}/{kind}/{team}", kind, team, match.difficulty_level, ready, concurrentWithCurrent);
     }
     public void Roll(UnityEngine.Object manager, string stage, bool waiting, Func<bool> ready, Action<KeyPressData> command)
     {

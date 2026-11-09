@@ -36,6 +36,7 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
             {
                 signature = signature * 31 + (movementPhaseManager.isMovementPhaseAttack ? 1 : movementPhaseManager.isMovementPhaseDef ? 2 : 3);
                 signature = signature * 31 + GetTokenSignature(movementPhaseManager.selectedToken);
+                signature = signature * 31 + (IsShotResolving ? 1 : 0);
                 signature = signature * 31 + (movementPhaseManager.AttackingMovementForfeited ? 1 : 0);
                 signature = signature * 31 + (movementPhaseManager.DefensiveMovementForfeited ? 1 : 0);
             }
@@ -96,7 +97,7 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
         for (; slotIndex < slots.Length; slotIndex++)
         {
             if (forfeited) slots[slotIndex]?.RenderForfeit(palette.Primary, palette.Secondary);
-            else if (active && slotIndex == next)
+            else if (active && !IsShotResolving && slotIndex == next)
             {
                 PlayerToken selected = movementPhaseManager.selectedToken;
                 for (int i = 0; i < entries.Count; i++)
@@ -107,6 +108,10 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
             else slots[slotIndex]?.Clear();
         }
     }
+
+    // A declared snapshot completes the dribbler, but its shot still owns input.
+    private bool IsShotResolving => movementPhaseManager?.shotManager?.isActivated == true
+        || movementPhaseManager?.shotManager?.isWaitingForSnapshotDecisionFromLoose == true;
 
     private TokenStyleDefinition ResolveStyle(PlayerToken token)
     {

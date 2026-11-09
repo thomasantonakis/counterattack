@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Current concurrent MP choice checks use `DecisionTimingLiveClockEditorTests`,
+`DecisionTimingBannerEditorTests`, `DecisionTimingLiveClockPlayModeTests.SnapshotUsesPhase`,
+`.SnapshotDeclarationPanel`, `DecisionTimingPlayModeTests.Duel` and `.FoulFollowup`.
+Latest final outcomes: 38 EditMode + 45 PlayMode distinct cases passed; compile
+separately clean. Choice timers now consume their owning MP concurrently. See the
+first section of Verification.md for native XML and the failed-case rerun record.
+
 Latest decision-timing revision uses explicit fixtures
 `DecisionTimingLiveClockEditorTests` and `DecisionTimingLiveClockPlayModeTests`
 (category `DecisionTimingLiveClock`). It verifies shared diff 1–2 preview time,

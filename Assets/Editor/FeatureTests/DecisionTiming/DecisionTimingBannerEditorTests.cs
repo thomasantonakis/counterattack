@@ -6,6 +6,41 @@ using UnityEditor;
 [Category("DecisionTiming")]
 public sealed class DecisionTimingBannerEditorTests
 {
+    [TestCase(DecisionKind.SnapshotOrForfeitPace)]
+    [TestCase(DecisionKind.StandaloneNutmegDecision)]
+    [TestCase(DecisionKind.StandaloneTackleOrStand)]
+    public void ChoiceCountdownTakesPrecedenceAtOwnHalfwayPoint(DecisionKind kind)
+    {
+        var root = new GameObject("Concurrent timing display", typeof(RectTransform)); root.SetActive(false);
+        try
+        {
+            var banner = root.AddComponent<MatchEventBannerController>();
+            banner.timingVisibility = root.AddComponent<CanvasGroup>();
+            banner.timingCaption = new GameObject("Caption", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>();
+            banner.timingCaption.transform.SetParent(root.transform);
+            banner.timingDetail = new GameObject("Detail", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>();
+            banner.timingDetail.transform.SetParent(root.transform);
+            banner.timingIcon = new GameObject("Icon", typeof(RectTransform), typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+            banner.timingIcon.transform.SetParent(root.transform);
+            var t = new DecisionTimingService();
+            t.BeginDecision("phase", DecisionKind.AttackingMovement, "Home", 3); t.Select("phase"); t.Advance(31);
+            t.BeginRegistration(); t.Register("phase", DecisionKind.AttackingMovement, "Home", 3, true, true);
+            t.Register("choice", kind, "Home", 3, true); t.EndRegistration();
+            banner.SetTimingStatus(t);
+            Assert.That(banner.IsTimingVisible, Is.True);
+            Assert.That(banner.timingDetail.text, Does.Contain("Attacking Movement"));
+            t.Advance(2.49f); banner.SetTimingStatus(t);
+            Assert.That(banner.timingDetail.text, Does.Contain("Attacking Movement"));
+            t.Advance(.01f); banner.SetTimingStatus(t);
+            Assert.That(banner.timingDetail.text, Does.Not.Contain("Attacking Movement"));
+            Assert.That(banner.timingCaption.text, Is.EqualTo("3s remaining"));
+            t.BeginRegistration(); t.Register("phase", DecisionKind.AttackingMovement, "Home", 3, true); t.EndRegistration();
+            banner.SetTimingStatus(t);
+            Assert.That(banner.timingDetail.text, Does.Contain("Attacking Movement"));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
     [Test] public void AnnouncementsPreemptSeparateTimingDisplayAndDrainWithoutOverlap([Values] MatchBannerEvent occasion)
     {
         var root = new GameObject("Timing banner test", typeof(RectTransform)); root.SetActive(false);

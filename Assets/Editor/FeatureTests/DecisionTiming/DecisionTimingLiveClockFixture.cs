@@ -100,7 +100,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(longBall.isWaitingForDirectionRoll,Is.False);
     }
 
-    public IEnumerator RunLiveTimingSnapshot(int side)
+    public IEnumerator RunLiveTimingSnapshot(int side, bool declare = false)
     {
         yield return PrepareLegacySoaresStealFoul(side); match.isClockRunning=true;
         match.RefreshDecisionTiming(); var parent=match.DecisionTiming.Capture().decisions.Single(d=>d.kind==DecisionKind.AttackingMovement);
@@ -108,12 +108,47 @@ public sealed partial class GoalkeeperBoxEntryFixture
         movement.PerformInjuryTest(1); yield return DismissLegacyDuel(false);
         yield return Until(()=>movement.isWaitingForFoulDecision,"advantage choice"); LegacyKey("A");
         yield return Until(()=>movement.isWaitingForSnapshotDecision,"snapshot-or-forfeit pace");
-        match.RefreshDecisionTiming(); Assert.That(match.DecisionTiming.Current.kind,Is.EqualTo(DecisionKind.AttackingMovement));
-        Assert.That(match.DecisionTiming.Current.id,Is.EqualTo(parent.id));
+        match.RefreshDecisionTiming(); Assert.That(match.DecisionTiming.Current.kind,Is.EqualTo(DecisionKind.SnapshotOrForfeitPace));
+        Assert.That(match.DecisionTiming.Current.id,Is.Not.EqualTo(parent.id));
+        float parentBefore=parent.remaining;
         float before=match.DecisionTiming.Current.remaining; match.AdvanceDecisionTiming(3);
         Assert.That(match.DecisionTiming.Current.remaining,Is.EqualTo(before-3));
-        Assert.That(match.DecisionTiming.Capture().decisions.Any(d=>d.kind==DecisionKind.SnapshotOrForfeitPace),Is.False);
-        Assert.That(match.DecisionTiming.HoldsMatchClock,Is.False); LegacyKey("X");
+        Assert.That(match.DecisionTiming.Capture().decisions.Single(d=>d.id==parent.id).remaining,Is.EqualTo(parentBefore-3));
+        Assert.That(match.DecisionTiming.HoldsMatchClock,Is.False);
+        if (declare)
+        {
+            var root = new GameObject("Snapshot movement panel", typeof(RectTransform), typeof(CanvasGroup));
+            root.SetActive(false);
+            try
+            {
+                var panel = root.AddComponent<MovementPhaseMovedTokensPanel>();
+                var slots = Enumerable.Range(0, 6).Select(i => new GameObject("Slot " + i).AddComponent<MovementPhaseMovedTokenSlotView>()).ToArray();
+                foreach (var slot in slots) slot.transform.SetParent(root.transform);
+                typeof(MovementPhaseMovedTokensPanel).GetField("movementPhaseManager", Private).SetValue(panel, movement);
+                typeof(MovementPhaseMovedTokensPanel).GetField("canvasGroup", Private).SetValue(panel, root.GetComponent<CanvasGroup>());
+                typeof(MovementPhaseMovedTokensPanel).GetField("attackingMovementSlots", Private).SetValue(panel, slots);
+                EnableForAuthoredPresentation(match.shotManager);
+                Invoke(grid,"LoadPrecomputedShootingPaths");
+                var dribbler = movement.selectedToken;
+                LegacyKey("S");
+                yield return Until(() => match.shotManager.isWaitingforBlockerSelection, "declared snapshot owns defender input");
+                Invoke(panel,"Refresh",true);
+                Assert.That(movement.MovedTokenEntries.Any(e => e.token == dribbler),Is.True,"snapshot completes the dribbler");
+                Assert.That(slots.Any(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Completed),Is.True);
+                Assert.That(slots.Any(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Active),Is.False,"next mover must not pulse during snapshot resolution");
+                // Resolve the actual defender selection and movement; next mover remains unavailable.
+                var blocker = match.playerTokenManager.allTokens.First(t => !t.isAttacker && !t.IsGoalKeeper && match.shotManager.GetValidSnapshotBlockerDestinationsForDecisionPreview(t).Count > 0);
+                input.TryExecuteSyntheticHexClick(blocker.currentHex,"Snapshot blocker",out _);
+                var target = match.shotManager.GetValidSnapshotBlockerDestinationsForDecisionPreview(blocker).First();
+                input.TryExecuteSyntheticHexClick(target,"Snapshot blocker move",out _);
+                yield return Until(() => match.shotManager.isWaitingForTargetSelection,"snapshot goal-line target");
+                Invoke(panel,"Refresh",false);
+                Assert.That(slots.Any(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Active),Is.False);
+            }
+            finally { Object.DestroyImmediate(root); }
+            yield break;
+        }
+        LegacyKey("X");
         yield return Until(()=>!movement.isWaitingForSnapshotDecision,"forfeit pace continues the phase");
     }
 }

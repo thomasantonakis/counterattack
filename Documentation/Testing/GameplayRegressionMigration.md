@@ -1,5 +1,10 @@
 # Gameplay regression migration
 
+Decision-timing concurrent-choice correction adds four EditMode accounting cases,
+three EditMode choice-display cases and two PlayMode snapshot-panel cases. Final
+per-case outcomes across focused runs: 38 EditMode + 45 PlayMode passed; no legacy
+scenarios removed and no full suites run. Verification.md records native evidence.
+
 Decision-timing live-clock revision (2026-11-09): 17 new isolated EditMode cases and
 21 new real-input/coroutine PlayMode cases were added in the DecisionTiming feature
 folders, fixtures `DecisionTimingLiveClockEditorTests` and

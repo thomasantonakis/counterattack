@@ -32,6 +32,7 @@ public sealed class DecisionTimingService
     private readonly Dictionary<string, DecisionTimingState> unresolvedChoices = new();
     private readonly HashSet<string> suspended = new();
     private readonly HashSet<string> seen = new();
+    private readonly HashSet<string> concurrent = new();
     private DecisionTimingSnapshot restoring;
     private Func<bool> rollReady;
     private Action rollCommand;
@@ -46,6 +47,7 @@ public sealed class DecisionTimingService
     public bool GameClockStopped { get; set; }
     public bool HasCommandAuthority { get; set; } = true;
     public DecisionTimingState Current { get; private set; }
+    public IEnumerable<DecisionTimingState> ConcurrentDecisions => concurrent.Where(decisions.ContainsKey).Select(k => decisions[k]);
     public DecisionTimingState ExpiredDecision => decisions.Values.FirstOrDefault(d => d.expired);
     public bool HasRollWait => rollKey != null;
     public bool HasPendingRoll => rollKey != null && !rollSubmitted;
@@ -79,6 +81,7 @@ public sealed class DecisionTimingService
             Recorded?.Invoke("hold_released", state.owner, state.id);
         decisions.Remove(key);
         suspended.Remove(key);
+        concurrent.Remove(key);
         if (Current?.key == key) Current = null;
     }
     public void Suspend(string key) { suspended.Add(key); if (decisions.TryGetValue(key, out var state)) state.suspended = true; }
@@ -92,13 +95,14 @@ public sealed class DecisionTimingService
         || kind == DecisionKind.GoalKickTarget || kind == DecisionKind.AttackingMovement;
     public void Select(string key) => Current = key != null && decisions.TryGetValue(key, out var state) ? state : null;
 
-    // Managers retain their parent phase while offering a child. Only the selected ready decision advances.
-    public void BeginRegistration() { seen.Clear(); Current = null; }
-    public void Register(string key, DecisionKind kind, string owner, int difficulty, bool ready)
+    // Most children suspend the parent. Explicit concurrent registrations charge both.
+    public void BeginRegistration() { seen.Clear(); concurrent.Clear(); Current = null; }
+    public void Register(string key, DecisionKind kind, string owner, int difficulty, bool ready, bool concurrentWithCurrent = false)
     {
         if (GameClockStopped && !decisions.ContainsKey(key)) return;
         seen.Add(key);
         var state = BeginDecision(key, kind, owner, difficulty);
+        if (ready && concurrentWithCurrent && !GameClockStopped) concurrent.Add(key);
         Current = ready && !GameClockStopped ? state : null;
     }
     public void EndRegistration()
@@ -146,14 +150,16 @@ public sealed class DecisionTimingService
         if (Paused || BlockingResult) return;
         // Roll waits and ordinary result displays consume the active owner's
         // allowance alongside live match time. A roll never invents a budget.
-        bool ownsAllowance = !HasPendingRoll || RollOwner == Current?.owner || RollOwner == "Both teams";
-        if (!GameClockStopped && Current != null && !suspended.Contains(Current.key) && !Current.expired && ownsAllowance)
+        var charging = ConcurrentDecisions.Concat(Current != null ? new[] { Current } : Array.Empty<DecisionTimingState>()).Distinct().ToArray();
+        foreach (var state in charging)
         {
-            Current.remaining = Math.Max(0, Current.remaining - seconds);
-            if (Current.remaining <= 0)
+            bool ownsAllowance = !HasPendingRoll || RollOwner == state.owner || RollOwner == "Both teams";
+            if (GameClockStopped || suspended.Contains(state.key) || state.expired || !ownsAllowance) continue;
+            state.remaining = Math.Max(0, state.remaining - seconds);
+            if (state.remaining <= 0)
             {
-                Current.expired = true;
-                Recorded?.Invoke("expired", Current.owner, Current.id);
+                state.expired = true;
+                Recorded?.Invoke("expired", state.owner, state.id);
             }
         }
         if (HasPendingRoll)
@@ -174,7 +180,7 @@ public sealed class DecisionTimingService
         if (snapshot?.decisions != null) foreach (var state in snapshot.decisions)
             if (state.inactive && IsReopenable(state.kind)) unresolvedChoices[state.key] = Copy(state);
     }
-    public void Clear() { decisions.Clear(); unresolvedChoices.Clear(); suspended.Clear(); Current = null; restoring = null; EndRoll(); }
+    public void Clear() { decisions.Clear(); unresolvedChoices.Clear(); suspended.Clear(); concurrent.Clear(); Current = null; restoring = null; EndRoll(); }
     private static DecisionTimingState Copy(DecisionTimingState s) => new()
     { id = s.id, key = s.key, owner = s.owner, kind = s.kind, remaining = s.remaining, budget = s.budget, expired = s.expired, suspended = s.suspended, inactive = s.inactive };
 }

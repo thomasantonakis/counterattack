@@ -192,14 +192,12 @@ public partial class MovementPhaseManager
         bool child = isWaitingForReposition || isWaitingForFoulDecision || isWaitingForGKWallDiveDecision;
         bool ready = !child && !IsResolvingReposition;
         // Keep the team's entire phase registered through token moves, dice and nested decisions.
-        r.Decision(DecisionKind.AttackingMovement, isMovementPhaseAttack, ready && (!challenge || owner == phaseAttackHome), home: phaseAttackHome);
-        r.Decision(DecisionKind.DefensiveMovement, isMovementPhaseDef, ready && (!challenge || owner != phaseAttackHome), home: !phaseAttackHome);
-        r.Decision(DecisionKind.AttackingTwoForTwo, isMovementPhase2f2, ready && (!challenge || owner == phaseAttackHome), home: phaseAttackHome);
-        bool ownerHasPhase = owner == phaseAttackHome ? isMovementPhaseAttack || isMovementPhase2f2 : isMovementPhaseDef;
-        r.Decision(isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving || lookingForNutmegVictim ? DecisionKind.StandaloneNutmegDecision : DecisionKind.StandaloneTackleOrStand, challenge && !ownerHasPhase);
+        r.Decision(DecisionKind.AttackingMovement, isMovementPhaseAttack, ready && (!challenge || owner == phaseAttackHome), home: phaseAttackHome, concurrentWithCurrent: challenge || isWaitingForSnapshotDecision);
+        r.Decision(DecisionKind.DefensiveMovement, isMovementPhaseDef, ready && (!challenge || owner != phaseAttackHome), home: !phaseAttackHome, concurrentWithCurrent: challenge || isWaitingForSnapshotDecision);
+        r.Decision(DecisionKind.AttackingTwoForTwo, isMovementPhase2f2, ready && (!challenge || owner == phaseAttackHome), home: phaseAttackHome, concurrentWithCurrent: challenge || isWaitingForSnapshotDecision);
+        r.Decision(isWaitingForNutmegDecision || isWaitingForNutmegDecisionWithoutMoving || lookingForNutmegVictim ? DecisionKind.StandaloneNutmegDecision : DecisionKind.StandaloneTackleOrStand, challenge);
         r.Decision(isNutmegInProgress ? DecisionKind.NutmegReposition : DecisionKind.TackleReposition, isWaitingForReposition, !IsResolvingReposition);
-        r.Decision(DecisionKind.SnapshotOrForfeitPace, isWaitingForSnapshotDecision
-            && !isMovementPhaseAttack && !isMovementPhaseDef && !isMovementPhase2f2);
+        r.Decision(DecisionKind.SnapshotOrForfeitPace, isWaitingForSnapshotDecision);
         r.Decision(DecisionKind.AdvantageOrFreeKick, isWaitingForFoulDecision);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isWaitingForGKWallDiveDecision);
         r.Roll(this, "interception", isWaitingForInterceptionDiceRoll, () => isActivated && isWaitingForInterceptionDiceRoll, OnKeyReceived);

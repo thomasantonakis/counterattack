@@ -1,5 +1,15 @@
 # Decision timing PlayMode checklist
 
+## Concurrent-choice and snapshot-panel correction
+
+- [x] Own 10/10/5 choice allowance plus owning MP time for snapshot/tackle/nutmeg.
+- [x] Halfway choice priority, MP fallback and resumption; opponent budget excluded.
+- [x] Independent expiry, retained expired MP, pause and service snapshot restoration.
+- [x] Real N/T challenges and continuation; real S declaration through blocker move.
+- [x] Completed dribbler retained, next slot non-pulsing during snapshot resolution.
+- [x] 38 EditMode + 45 PlayMode distinct cases passed across final/rerun evidence.
+- [x] Compile clean separately; no full suites or ordinary gameplay.
+
 ## Latest live-clock revision
 
 - [x] Diff 1–2 shared preview allowance through switching/expiry and real commitment.

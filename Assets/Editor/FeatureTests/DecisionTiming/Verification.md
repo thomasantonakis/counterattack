@@ -3,6 +3,61 @@
 Core implementation added 2026-11-09. The latest user revision and its focused verification are recorded first; older batches below are historical. Broader regression suites remain unexecuted. The user's implementation-time clarifications are recorded in
 `Documentation/Plans/DecisionTimingImplementation.md`.
 
+## Concurrent choice allowances and snapshot panel follow-up (2026-11-09)
+
+Latest user clarification supersedes the earlier MP-only snapshot/challenge rule.
+Snapshot/forfeit-pace, tackle/stand and nutmeg choices each have their own 10/10/5
+seconds at difficulties 1/2/3. During an owning MP, both the choice and that team's
+phase allowance consume elapsed time. The opposing team's phase is not charged.
+Repositioning retains its previous separate, parent-suspending policy.
+
+An eligible MP countdown stays visible before the choice reaches halfway; at the
+choice's own halfway point, its countdown takes precedence. On dismissal the MP
+countdown returns if eligible. Manual holds and Pause still suspend accounting;
+choice expiry releases when its input ends, independently expired MP holds persist.
+The actual nutmeg input is N/X (or victim selection); tackle uses T/N.
+
+Snapshot declaration also no longer pulses the next moved-player slot while the
+shot owns input. Completed dribbler entries stay visible. Panel signature tracking
+includes shot ownership, so entry/exit of that state updates the existing authored
+UI without creating runtime visual structures.
+
+Focused results: **38 EditMode + 45 PlayMode distinct cases passed**, zero remaining
+failed/skipped cases. This is final outcome per case across the listed runs, not a
+claim that the intermediate 23-case run was wholly green. No full suites or ordinary
+gameplay ran. The Editor was already playing when verification began; CLI stopped
+it before framework execution. Room is preserved loaded and clean at handoff.
+
+| Run | Scope | Passed | Failed | Skipped |
+| --- | --- | ---: | ---: | ---: |
+| `20261109T152457084Z` | SnapshotUsesPhase reproduction of missing own allowance | 0 | 2 | 0 |
+| `20261109T152850887Z` | DecisionTimingLiveClockEditorTests, concurrent charging/expiry/restore plus affected service cases | 21 | 0 | 0 |
+| `20261109T152901692Z` | DecisionTimingBannerEditorTests, three new choice-priority cases plus announcements | 17 | 0 | 0 |
+| `20261109T152919496Z` | DecisionTimingLiveClockPlayModeTests | 21 | 2 | 0 |
+| `20261109T153046337Z` | SnapshotDeclarationPanel failed-case rerun | 2 | 0 | 0 |
+| `20261109T153111144Z` | DecisionTimingPlayModeTests.Duel | 20 | 0 | 0 |
+| `20261109T153141322Z` | DecisionTimingPlayModeTests.FoulFollowup | 2 | 0 | 0 |
+
+Native XML/progress are retained under `TestResults/GameplayRegression/Runs/`.
+The two panel fixture failures checked the fixture's original attacker instead of
+its loaded roster dribbler. Corrected tests capture the actual selected dribbler and
+select an actual roster defender. Both directions verify real S declaration,
+completed dribbler, absence of an Active next slot during defender selection/motion
+and goal-line target selection. Gameplay assertions were preserved.
+Compilation separately: live recompile completed without errors;
+`EditorUtility.scriptCompilationFailed` is false. `git diff --check` is clean.
+
+Budget source audit requested by the user: throw-in optional-MP/throw choice is
+configured 20/15/10 and the optional MP uses normal phase budgets. Throw-in taker
+and throw-type selection are excluded while WaitingForThrowInTaker stops the clock.
+Free-kick initial setup is excluded; final kicker and execution choices have
+20/15/10 after clock resumption. Corner late three-move phases and execution have
+20/15/10; initial stopped setup is excluded. Save-and-hold distribution is 10/10/5,
+quick-throw target 20/15/10; choosing K enters the stopped GoalKick flow. GoalKick
+budgets stay inactive during that built-in clock stop. Header-or-control is
+10/10/5. This audit inspected source paths; it is not a new complete restart-flow
+integration run. Broader regression and Load Game browser checks remain unexecuted.
+
 ## Latest user revision: live rolls and shared previews (2026-11-09)
 
 This revision supersedes historical statements below that roll waits or ordinary

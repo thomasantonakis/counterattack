@@ -18,7 +18,9 @@ public sealed class DecisionTimingLiveClockPlayModeTests
     [UnityTest] public IEnumerator AccuracyReview([Values(1,-1)] int side, [Values(false,true)] bool automatic)
         => (IEnumerator)Bridge.GetMethod("RunLiveTimingAccuracy").Invoke(board, new object[] {side,automatic});
     [UnityTest] public IEnumerator SnapshotUsesPhase([Values(1,-1)] int side)
-        => (IEnumerator)Bridge.GetMethod("RunLiveTimingSnapshot").Invoke(board, new object[] {side});
+        => (IEnumerator)Bridge.GetMethod("RunLiveTimingSnapshot").Invoke(board, new object[] {side,false});
+    [UnityTest] public IEnumerator SnapshotDeclarationPanel([Values(1,-1)] int side)
+        => (IEnumerator)Bridge.GetMethod("RunLiveTimingSnapshot").Invoke(board, new object[] {side,true});
     [UnityTest] public IEnumerator DifficultyThreeCommit([Values("P","C","L","F","S")] string action)
         => (IEnumerator)Bridge.GetMethod("RunLiveTimingDifficultyThree").Invoke(board, new object[] {action});
 }

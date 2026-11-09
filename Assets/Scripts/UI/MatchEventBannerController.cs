@@ -68,8 +68,14 @@ public class MatchEventBannerController : MonoBehaviour
         var icon = timingIcon;
         var content = timingContent;
         var current = timing?.Current ?? timing?.ExpiredDecision;
-        bool halfway = current != null && current.budget > 0
-            && current.remaining <= current.budget * (1f - DecisionTimingConfig.CountdownDisplaySpentFraction);
+        bool PastHalfway(DecisionTimingState state) => state != null && state.budget > 0
+            && state.remaining <= state.budget * (1f - DecisionTimingConfig.CountdownDisplaySpentFraction);
+        // A newly opened choice does not hide a phase countdown already on screen.
+        // Once the choice reaches its own halfway point, it takes precedence.
+        if (!PastHalfway(current) && timing != null)
+            foreach (var phase in timing.ConcurrentDecisions)
+                if (PastHalfway(phase)) { current = phase; break; }
+        bool halfway = PastHalfway(current);
         bool visible = !showing && pending.Count == 0 && timing != null
             && (timing.BlockingResult || (!timing.GameClockStopped && halfway));
         if (visibility == null || caption == null || icon == null) return;

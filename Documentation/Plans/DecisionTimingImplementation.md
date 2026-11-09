@@ -14,6 +14,17 @@ and continuations, manual header holds, inspection and actual MatchManager snaps
 rebuilds. Later batches resolved the remaining focused gaps; Verification.md records
 the current acceptance audit. Rules behavior was clarified by the user below.
 
+## Latest correction: concurrent MP choice timing
+
+Snapshot/forfeit-pace and tackle/nutmeg choices have their own 10/10/5 allowance
+AND consume the deciding team's active MP allowance. At half the choice allowance
+spent, its countdown takes precedence over the MP countdown. Before then, an
+already eligible MP countdown may remain visible. This supersedes the MP-only
+wording below. Repositioning still suspends its parent. Snapshot declaration ends
+the dribbler but does not start/pulse the next mover while the shot resolves.
+Focused evidence: 38 EditMode + 45 PlayMode distinct cases passed; compile separately
+clean. See Verification.md for intermediate failures and final native artifacts.
+
 ## Current timing rules (latest user clarification)
 
 - Difficulties 1–2 share one action-selection allowance across every uncommitted

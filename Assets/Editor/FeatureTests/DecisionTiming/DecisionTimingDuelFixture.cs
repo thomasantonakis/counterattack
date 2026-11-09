@@ -33,12 +33,15 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(input.TryExecuteSyntheticHexClick(actor.currentHex, "Timing duel", out var error), Is.True, error);
         Assert.That(nutmeg ? movement.isWaitingForNutmegDecisionWithoutMoving : movement.isWaitingForTackleDecisionWithoutMoving, Is.True);
         match.RefreshDecisionTiming();
-        Assert.That(match.DecisionTiming.Current.id, Is.EqualTo(parentId), "The deciding team's existing movement allowance owns this choice.");
+        var choice = match.DecisionTiming.Current;
+        Assert.That(choice.kind, Is.EqualTo(nutmeg ? DecisionKind.StandaloneNutmegDecision : DecisionKind.StandaloneTackleOrStand));
+        Assert.That(choice.id, Is.Not.EqualTo(parentId));
+        Assert.That(choice.owner, Is.EqualTo(parent.owner));
+        float choiceBefore = choice.remaining;
         match.AdvanceDecisionTiming(3);
         remaining = Mathf.Max(0, remaining - 3);
         Assert.That(parent.remaining, Is.EqualTo(remaining));
-        Assert.That(match.DecisionTiming.Capture().decisions.Any(d => !d.inactive &&
-            (d.kind == DecisionKind.StandaloneNutmegDecision || d.kind == DecisionKind.StandaloneTackleOrStand)), Is.False);
+        Assert.That(choice.remaining, Is.EqualTo(choiceBefore - 3), "The choice and the deciding team phase both consume time.");
         if (decline)
         {
             // Choose a legal empty destination instead of challenging in place.

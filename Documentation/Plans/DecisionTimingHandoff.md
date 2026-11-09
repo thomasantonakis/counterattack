@@ -1,5 +1,15 @@
 # Decision timing — next-session handoff
 
+## Subsequent clarification verified
+
+The current rule gives snapshot/forfeit-pace and tackle/nutmeg choices their own
+10/10/5 allowance while charging the owning MP concurrently. Choice countdown
+wins at its own halfway point; repositioning retains parent suspension. Snapshot
+resolution suppresses the next-mover pulse. Latest focused verification: 38 EditMode
+and 45 PlayMode distinct cases passed, compilation separately clean. Full suites
+remain unexecuted. Verification.md records failures/reruns and exact artifacts.
+Room is loaded, stopped and clean. Earlier MP-only choice wording below is historical.
+
 ## Latest revision handoff
 
 The user's subsequent rules are implemented and focused verification passed:
