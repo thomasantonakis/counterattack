@@ -3559,7 +3559,7 @@ public partial class ShotManager : MonoBehaviour
                 resolvedTotal: shooterRoll == 1 ? (int?)null : totalShotPower,
                 continueWhileResultVisible: IsPenaltyShootoutShot() && shooterRoll == 1,
                 continueWithNextRoll: !IsFreeKickShot() && shooterRoll != 1
-                    && (IsPenaltyShootoutShot() || interceptors.Count > 0 && interceptors[0].IsGK)
+                    && (IsPenaltyShot() || interceptors.Count > 0 && interceptors[0].IsGK)
                     && DuelResolutionPanelController.Instance != null
                     && DuelResolutionPanelController.Instance.IsShotComparisonFor(this));
             if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;

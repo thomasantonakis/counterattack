@@ -27,7 +27,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         yield return Until(() => shot.isWaitingForShotRoll && duelPanel.IsShotComparisonFor(shot), "penalty comparison ready");
         shot.StartCoroutine(shot.StartShotRoll(4));
         yield return null;
-        if (duelPanel.IsComplete) duelPanel.Dismiss(); // Normal penalties retain their shooter result countdown.
+        Assert.That(shot.isWaitingForGKDiceRoll, Is.True, "normal penalties and shootouts offer the keeper immediately");
         yield return Until(() => shot.isWaitingForGKDiceRoll, "keeper roll ready");
         var save = typeof(ShotManager).GetField("currentShotInteraction", Private).GetValue(shot);
         int modifier = LegacyShotField<int?>(save, "gkPenalty") ?? 0;

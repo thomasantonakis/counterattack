@@ -2120,6 +2120,9 @@ public partial class MovementPhaseManager : MonoBehaviour
                 {
                     yield return null;  // Wait until the snapshot decision is made
                 }
+                // A declared shot owns the pending mover. Its outcome (including
+                // an uncollected loose ball) advances MP; do not also count it here.
+                if (shotManager != null && shotManager.isActivated) yield break;
             }
             AdvanceMovementPhase();
         }

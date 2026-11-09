@@ -94,6 +94,10 @@ public partial class MatchManager
         timingRollManager = r.RollManager;
         r.ApplyRoll();
         timing.EndRegistration();
+        timing.CurrentLabel = timing.Current?.kind == DecisionKind.SnapshotOrForfeitPace
+            && movementPhaseManager?.isActivated == true
+            ? movementPhaseManager.isWaitingForSnapshotDecision ? "Snapshot, move or forfeit pace" : "Move or forfeit pace"
+            : null;
         ValidateTimingCoverage();
     }
 

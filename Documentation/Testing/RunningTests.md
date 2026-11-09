@@ -1,5 +1,15 @@
 # Running gameplay regressions
 
+Seven reported decision-timing issues use DecisionTimingReportedIssuesPlayModeTests
+(category DecisionTimingReportedIssues): SnapshotConsumesOneMove, FinalThirdMotion,
+TacklePanel and PenaltyKeeperImmediately. Run explicit fixture/method filters only.
+Affected checks: DecisionTimingBannerEditorTests, DribblePaceChoice and
+SnapshotDeclarationPanel on DecisionTimingLiveClockPlayModeTests,
+TiedPenaltyPanelPlayModeTests and DecisionTimingPlayModeTests.ShootoutReview.
+Latest final scope: 17 EditMode + 48 distinct PlayMode passes; compile separately
+clean. Events/timing now display simultaneously; older preemption claims are historical.
+See Verification.md for native XML, original missing-slot log evidence and reruns.
+
 Latest immediate-display checks: DecisionTimingBannerEditorTests (17 EditMode)
 and DecisionTimingLiveClockPlayModeTests.DribblePaceChoice (12 PlayMode). The latter
 covers both directions/difficulties and inside/outside snapshot range. Countdown

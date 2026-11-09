@@ -171,7 +171,7 @@ public partial class FinalThirdManager
         bool defense = currentTeamMoving == "defense";
         r.Decision(goalKick ? defense ? DecisionKind.GoalKickDefensiveSetup : DecisionKind.GoalKickAttackingSetup
             : defense ? DecisionKind.FinalThirdDefensiveMovement : DecisionKind.FinalThirdAttackingMovement,
-            isWaitingForTokenSelection || isWaitingForTargetHex || isMovingToken, !isMovingToken, thisIsTheSecond.ToString());
+            isWaitingForTokenSelection || isWaitingForTargetHex || isMovingToken, phase: thisIsTheSecond.ToString());
         r.Decision(DecisionKind.QuickThrowOrDistribution, isWaitingForWhatToDo);
         r.Decision(DecisionKind.GoalKickActionSelection, isWaitingForSetPieceGoalKickChoice);
     }

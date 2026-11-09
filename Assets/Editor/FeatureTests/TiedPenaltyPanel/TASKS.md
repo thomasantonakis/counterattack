@@ -1,5 +1,11 @@
 # Tied penalty panel
 
+Follow-up 2026-11-09: normal penalties now offer the keeper roll immediately after
+the shooter, matching shootouts. TiedPenaltyPanelPlayModeTests passed 4/4 in native
+run 20261109T181713641Z; DecisionTimingReportedIssuesPlayModeTests adds four explicit
+normal/shootout immediate-keeper cases. Compilation is separately clean. No full
+suites ran; see DecisionTiming/Verification.md for the complete focused record.
+
 Feature tests:
 - EditMode: `TiedPenaltyPanelInstructionEditorTests` (this folder).
 - PlayMode: `TiedPenaltyPanelPlayModeTests` in `Assets/Tests/PlayMode/Features/TiedPenaltyPanel/`.

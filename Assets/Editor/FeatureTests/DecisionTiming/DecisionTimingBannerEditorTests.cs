@@ -34,7 +34,7 @@ public sealed class DecisionTimingBannerEditorTests
             Assert.That(banner.timingDetail.text.Contains("Attacking Movement"), Is.EqualTo(!immediateChoice));
             t.Advance(.01f); banner.SetTimingStatus(t);
             Assert.That(banner.timingDetail.text, Does.Not.Contain("Attacking Movement"));
-            Assert.That(banner.timingCaption.text, Is.EqualTo("3s remaining"));
+            Assert.That(banner.timingCaption.text, Is.EqualTo("3\" remaining"));
             t.BeginRegistration(); t.Register("phase", DecisionKind.AttackingMovement, "Home", 3, true); t.EndRegistration();
             banner.SetTimingStatus(t);
             Assert.That(banner.timingDetail.text, Does.Contain("Attacking Movement"));
@@ -42,7 +42,7 @@ public sealed class DecisionTimingBannerEditorTests
         finally { Object.DestroyImmediate(root); }
     }
 
-    [Test] public void AnnouncementsPreemptSeparateTimingDisplayAndDrainWithoutOverlap([Values] MatchBannerEvent occasion)
+    [Test] public void AnnouncementsAndTimingStayVisibleInSeparateDisplays([Values] MatchBannerEvent occasion)
     {
         var root = new GameObject("Timing banner test", typeof(RectTransform)); root.SetActive(false);
         try
@@ -75,15 +75,15 @@ public sealed class DecisionTimingBannerEditorTests
             banner.Enqueue(occasion, "Original"); banner.Advance(2);
             banner.Enqueue(MatchBannerEvent.RedCard, "Queued");
             timing.Advance(5); banner.SetTimingStatus(timing);
-            Assert.That(banner.IsTimingVisible, Is.False);
-            Assert.That(banner.timingVisibility.alpha, Is.Zero);
+            Assert.That(banner.IsTimingVisible, Is.True);
+            Assert.That(banner.timingVisibility.alpha, Is.EqualTo(1));
             Assert.That(banner.caption.text, Is.EqualTo(MatchEventAnnouncements.Caption(occasion)));
             Assert.That(banner.detail.text, Is.EqualTo("Original"));
             Assert.That(banner.PendingCount, Is.EqualTo(1));
             Assert.That(banner.visibility.blocksRaycasts || banner.visibility.interactable, Is.False);
             banner.Advance(1.9f); Assert.That(banner.CurrentEvent, Is.EqualTo(occasion));
             banner.Advance(.2f); Assert.That(banner.CurrentEvent, Is.EqualTo(MatchBannerEvent.RedCard));
-            Assert.That(banner.IsTimingVisible, Is.False);
+            Assert.That(banner.IsTimingVisible, Is.True);
             banner.Advance(4.1f);
             Assert.That(banner.visibility.alpha, Is.Zero);
             Assert.That(banner.IsTimingVisible, Is.True);

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
             {
                 signature = signature * 31 + (movementPhaseManager.isMovementPhaseAttack ? 1 : movementPhaseManager.isMovementPhaseDef ? 2 : 3);
                 signature = signature * 31 + GetTokenSignature(movementPhaseManager.selectedToken);
-                signature = signature * 31 + (IsShotResolving ? 1 : 0);
+                signature = signature * 31 + (IsNextMoverBlocked ? 1 : 0);
                 signature = signature * 31 + (movementPhaseManager.AttackingMovementForfeited ? 1 : 0);
                 signature = signature * 31 + (movementPhaseManager.DefensiveMovementForfeited ? 1 : 0);
             }
@@ -97,7 +98,7 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
         for (; slotIndex < slots.Length; slotIndex++)
         {
             if (forfeited) slots[slotIndex]?.RenderForfeit(palette.Primary, palette.Secondary);
-            else if (active && !IsShotResolving && slotIndex == next)
+            else if (active && !IsNextMoverBlocked && slotIndex == next)
             {
                 PlayerToken selected = movementPhaseManager.selectedToken;
                 for (int i = 0; i < entries.Count; i++)
@@ -112,6 +113,11 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
     // A declared snapshot completes the dribbler, but its shot still owns input.
     private bool IsShotResolving => movementPhaseManager?.shotManager?.isActivated == true
         || movementPhaseManager?.shotManager?.isWaitingForSnapshotDecisionFromLoose == true;
+
+    // Registering a moved token does not finish its tackle/roll/reposition input.
+    // AdvanceMovementPhase releases selectedToken when the next mover may start.
+    private bool IsNextMoverBlocked => IsShotResolving || movementPhaseManager?.selectedToken != null
+        && movementPhaseManager.MovedTokenEntries.Any(e => e.token == movementPhaseManager.selectedToken);
 
     private TokenStyleDefinition ResolveStyle(PlayerToken token)
     {

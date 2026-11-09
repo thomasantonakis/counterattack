@@ -1,5 +1,16 @@
 # Approved plan: decision allowances and automatic rolls
 
+## Latest reported-issue corrections
+
+Events and decision timers now remain visible simultaneously in their disjoint,
+user-authored panels, superseding earlier temporal preemption. Seconds use ".
+F3 animation consumes its existing allowance; MP captions omit unavailable snapshot
+options. Pending mover ownership suppresses the next-slot pulse. Normal penalties
+advance directly from shooter to keeper roll. Exhausted-pace snapshots transfer
+movement advancement to their outcome, avoiding the reproduced double count.
+17 EditMode + 48 distinct PlayMode cases passed; compilation separately clean.
+See Verification.md for native evidence and remaining broader verification limits.
+
 ## Current override: visible immediately, every dribble choice covered
 
 The countdown visibility default is now 0f in CountdownDisplaySpentFraction at the

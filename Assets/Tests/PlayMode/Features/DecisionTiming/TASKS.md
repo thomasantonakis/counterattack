@@ -1,5 +1,19 @@
 # Decision timing PlayMode checklist
 
+## Seven reported issues
+
+- [x] Investigate missing MP slot first using active Editor log; reproduce two advances.
+- [x] Fix exhausted snapshot handoff; real shot/tied-save/scatter counts one mover.
+- [x] Keep F3 countdown/budget during actual animation, both teams and directions.
+- [x] Render seconds with " and omit snapshot when unavailable during dribbling.
+- [x] Display event and decision panels simultaneously; preserve disjoint saved layout.
+- [x] Suppress next-slot pulse until current mover releases tackle/roll ownership.
+- [x] Offer normal-penalty keeper roll immediately, preserving shootout/tie behavior.
+- [x] 17 EditMode + 48 distinct PlayMode cases passed; compilation clean separately.
+
+New fixture: DecisionTimingReportedIssuesPlayModeTests, category
+DecisionTimingReportedIssues. Use explicit method filters for subsequent changes.
+
 ## Immediate-display and mid-dribble correction
 
 - [x] Preserve user-saved timing/event panel positions without authoring overrides.

@@ -76,7 +76,7 @@ public class MatchEventBannerController : MonoBehaviour
             foreach (var phase in timing.ConcurrentDecisions)
                 if (PastHalfway(phase)) { current = phase; break; }
         bool halfway = PastHalfway(current);
-        bool visible = !showing && pending.Count == 0 && timing != null
+        bool visible = timing != null
             && (timing.BlockingResult || (!timing.GameClockStopped && halfway));
         if (visibility == null || caption == null || icon == null) return;
         if (!visible)
@@ -98,18 +98,20 @@ public class MatchEventBannerController : MonoBehaviour
         icon.enabled = clockArtwork != null;
         caption.color = current != null && current.remaining <= DecisionTimingConfig.CountdownWarningSeconds
             ? new Color(1f, 0.68f, 0.18f) : timingCaptionColor;
+        string choice = current != null && current.id == timing.Current?.id && !string.IsNullOrEmpty(timing.CurrentLabel)
+            ? timing.CurrentLabel : current != null ? FormatDecision(current.kind) : string.Empty;
         string description;
         if (timing.BlockingResult) { caption.text = "Match clock stopped"; description = "Reviewing result."; }
         else if (timing.HoldsMatchClock)
         {
             caption.text = "Match clock stopped";
-            description = current != null ? $"Awaiting {current.owner} · {FormatDecision(current.kind)}." : "Awaiting decision.";
+            description = current != null ? $"Awaiting {current.owner} · {choice}." : "Awaiting decision.";
         }
         else
         {
-            caption.text = $"{Mathf.CeilToInt(current.remaining)}s remaining";
-            description = $"{current.owner} · {FormatDecision(current.kind)}";
-            if (timing.HasPendingRoll) description += $" · Auto roll in {Mathf.CeilToInt(timing.RollRemaining)}s";
+            caption.text = $"{Mathf.CeilToInt(current.remaining)}\" remaining";
+            description = $"{current.owner} · {choice}";
+            if (timing.HasPendingRoll) description += $" · Auto roll in {Mathf.CeilToInt(timing.RollRemaining)}\"";
         }
         if (detail != null) detail.text = description;
     }

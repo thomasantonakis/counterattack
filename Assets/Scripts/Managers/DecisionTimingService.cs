@@ -47,6 +47,7 @@ public sealed class DecisionTimingService
     public bool GameClockStopped { get; set; }
     public bool HasCommandAuthority { get; set; } = true;
     public DecisionTimingState Current { get; private set; }
+    public string CurrentLabel { get; set; }
     public IEnumerable<DecisionTimingState> ConcurrentDecisions => concurrent.Where(decisions.ContainsKey).Select(k => decisions[k]);
     public DecisionTimingState ExpiredDecision => decisions.Values.FirstOrDefault(d => d.expired);
     public bool HasRollWait => rollKey != null;
@@ -180,7 +181,7 @@ public sealed class DecisionTimingService
         if (snapshot?.decisions != null) foreach (var state in snapshot.decisions)
             if (state.inactive && IsReopenable(state.kind)) unresolvedChoices[state.key] = Copy(state);
     }
-    public void Clear() { decisions.Clear(); unresolvedChoices.Clear(); suspended.Clear(); concurrent.Clear(); Current = null; restoring = null; EndRoll(); }
+    public void Clear() { decisions.Clear(); unresolvedChoices.Clear(); suspended.Clear(); concurrent.Clear(); Current = null; CurrentLabel = null; restoring = null; EndRoll(); }
     private static DecisionTimingState Copy(DecisionTimingState s) => new()
     { id = s.id, key = s.key, owner = s.owner, kind = s.kind, remaining = s.remaining, budget = s.budget, expired = s.expired, suspended = s.suspended, inactive = s.inactive };
 }

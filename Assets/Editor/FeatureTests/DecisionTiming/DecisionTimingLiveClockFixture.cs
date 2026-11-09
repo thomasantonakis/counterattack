@@ -26,9 +26,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         input.TryExecuteSyntheticHexClick(Hex(-15 * side, 8), "Invalid pace destination", out _);
         match.AdvanceDecisionTiming(choice.budget / 2 - .25f);
         Assert.That(match.DecisionTiming.Current.id, Is.EqualTo(choice.id));
-        AssertPaceTimingDisplay(match.DecisionTiming, DecisionTimingConfig.CountdownDisplaySpentFraction <= 0 ? "Snapshot Or Forfeit Pace" : "Attacking Movement");
+        AssertPaceTimingDisplay(match.DecisionTiming, DecisionTimingConfig.CountdownDisplaySpentFraction <= 0 ? inBox ? "Snapshot, move or forfeit pace" : "Move or forfeit pace" : "Attacking Movement");
         match.AdvanceDecisionTiming(.25f);
-        AssertPaceTimingDisplay(match.DecisionTiming, "Snapshot Or Forfeit Pace");
+        AssertPaceTimingDisplay(match.DecisionTiming, inBox ? "Snapshot, move or forfeit pace" : "Move or forfeit pace");
         match.AdvanceDecisionTiming(choice.remaining);
         Assert.That(match.DecisionTiming.HoldsMatchClock, Is.True);
         Assert.That(phase.remaining, Is.EqualTo(phaseBefore - choice.budget));

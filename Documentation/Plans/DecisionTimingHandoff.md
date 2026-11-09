@@ -1,5 +1,16 @@
 # Decision timing — next-session handoff
 
+## Seven-issue follow-up verified
+
+Item 7 was traced and fixed first: exhausted-pace snapshot coroutine advanced MP
+before the shot, then uncollected scatter advanced it again. Real shot/save/scatter
+coverage now proves one slot consumed. All other requests are implemented: F3
+budget during animation, seconds as " rather than S, accurate dribble captions,
+simultaneous event/timer display, no next-mover pulse during pending tackle/roll,
+and immediate normal-penalty keeper handoff. Final distinct scope is 17 EditMode
+and 48 PlayMode passes, compile separately clean. Verification.md has exact runs.
+Preserve the user-saved panel positions; Room was not modified. No full suites ran.
+
 ## Latest continuation
 
 The user saved timing/event panel positions: preserve Room as authored; do not

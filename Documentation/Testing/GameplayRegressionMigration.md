@@ -1,5 +1,13 @@
 # Gameplay regression migration
 
+Seven reported issues add DecisionTimingReportedIssuesPlayModeTests: 8 snapshot
+slot cases, 8 F3-motion cases, 4 tackle ownership/pulse cases and 4 immediate-keeper
+penalty cases. The exhausted/taken snapshots reproduced double advancement before
+the fix. Final focused scope including affected presentation/shot regressions passed
+17 EditMode + 48 distinct PlayMode cases, compilation separately clean. No legacy
+scenarios were removed and no full suites ran. DecisionTiming/Verification.md records
+the exact source log, failure diagnoses and durable native artifacts.
+
 Mid-dribble timing adds 12 native PlayMode cases in
 DecisionTimingLiveClockPlayModeTests.DribblePaceChoice. Six outside-box failures
 reproduced the missing choice allowance before the fix; all 12 passed afterward.

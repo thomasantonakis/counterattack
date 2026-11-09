@@ -3,6 +3,89 @@
 Core implementation added 2026-11-09. The latest user revision and its focused verification are recorded first; older batches below are historical. Broader regression suites remain unexecuted. The user's implementation-time clarifications are recorded in
 `Documentation/Plans/DecisionTimingImplementation.md`.
 
+## Seven reported issues: snapshot slot accounting first (2026-11-09)
+
+All seven requested follow-ups are implemented and focused verification passed.
+These current rules supersede historical event-preemption and seconds-suffix wording.
+
+1. F3 animation keeps the same active allowance, charges elapsed time and keeps the
+   timer visible. Both teams/directions and live/expired allowances are covered.
+2. Seconds use the double-quote symbol (for example 90"), including auto-roll notices.
+3. Live MP captions distinguish Snapshot, move or forfeit pace from Move or forfeit
+   pace, based on the actual snapshot offer. Configuration/decision IDs are unchanged.
+4. Events and timing remain visible together in their separately authored panels.
+   Live edit-mode bounds are disjoint: timing center x=180, event center x=740,
+   each width 320. The user-saved Room layout was not changed.
+5. A completed entry does not permit pulsing the next slot while the same selected
+   mover still owns tackle/roll/reposition input. The panel signature includes this
+   ownership boundary. Next-slot pulsing resumes when the next mover is offered.
+6. Normal penalty shooter results hand off immediately to the goalkeeper roll,
+   matching the shootout behavior; no five-second shooter-review delay is imposed.
+7. Exhausted-pace snapshots no longer consume two MP slots. ContinueDribblerMovement
+   transfers its pending mover to the active shot instead of advancing independently.
+   The actual shot/loose-ball outcome owns the single advancement.
+
+### Item 7: original live evidence and reproduced invariant
+
+The live CLI identified ApplicationManager's active save path as the RoomDirectPlay
+seed under SavedGames/__RoomPlaytests. That JSON contains settings/rosters only;
+its companions contain inherited older events without this live session's identity.
+They were not attributed to the current failure. The current Editor.log contains the
+actual reported sequence, before tests were run:
+
+- Lines 1642487 onward: Yaneva exhausts pace and waits for a snapshot decision.
+- Line 1642544: non-dribbler/exhausted-pace S declaration starts the snapshot.
+- Line 1642611: AdvanceMovementPhase is called by ContinueDribblerMovement at old
+  source line 2124 while blocker selection is still pending: premature count 1.
+- Line 1643382: AdvanceMovementPhase is called by ResolveLooseBall at source line
+  1404 after the uncollected scatter: count 2 for the same mover.
+
+SnapshotConsumesOneMove reproduces both directions, taken/declined shots and
+exhausted/remaining pace. Taken cases drive real blocker movement, goal-line target,
+rigged shot and tied save, real scatter and uncollected-ball continuation. They
+assert zero advances while the shot owns input, one advance after resolution, one
+moved-token entry and three remaining attacking slots. The two exhausted/taken
+cases failed before the gameplay fix in run 20261109T180950087Z. All eight passed
+in 20261109T181048131Z, before addressing the other six issues.
+
+### Final focused evidence
+
+**17 EditMode + 48 distinct PlayMode passed, zero remaining failed/skipped.** No
+full suites or ordinary gameplay ran. Every native results.xml/progress is retained
+under TestResults/GameplayRegression/Runs/:
+
+| Run | Scope | Passed | Failed | Skipped |
+| --- | --- | ---: | ---: | ---: |
+| `20261109T181604600Z` | ReportedIssues fixture: snapshot 8, penalty 4, initial F3 4 and tackle 2 | 18 | 0 | 0 |
+| `20261109T181629405Z` | DecisionTimingBannerEditorTests: quotes, choice priority, all 14 simultaneous event/timer kinds | 17 | 0 | 0 |
+| `20261109T181647287Z` | DribblePaceChoice: caption with/without S, all difficulties/directions | 12 | 0 | 0 |
+| `20261109T181713641Z` | TiedPenaltyPanelPlayModeTests: normal/shootout save-to-scatter continuation | 4 | 0 | 0 |
+| `20261109T181734594Z` | ShootoutReview: off-target, next roll, failed-save continuation | 6 | 0 | 0 |
+| `20261109T182005673Z` | FinalThirdMotion expanded to both teams/directions and live/expired allowances | 8 | 0 | 0 |
+| `20261109T182026563Z` | TacklePanel expanded to accept/decline in both directions | 4 | 0 | 0 |
+| `20261109T182045163Z` | SnapshotDeclarationPanel affected regression | 2 | 0 | 0 |
+
+The initial F3/tackle cases are superseded by the expanded rows, not counted twice.
+Compilation separately: live recompile succeeded, actual scriptCompilationFailed is
+false, and no compiler errors follow the latest assembly reload. Room is clean,
+loaded and stopped. Required Editor activity serialized font atlas/cache updates;
+those are preserved. git diff --check is clean.
+
+Historical reproduction/fixture results remain retained. Run 181243193Z reproduced
+normal-penalty delay and premature tackle-slot pulsing; its F3 setup incorrectly
+tried a player in the ball's third. Correct opposite-third selection reproduced the
+actual F3 suspension in all four cases in 181429687Z. A later defensive-side fixture
+needed a real Return transition past the attacking goalkeeper; it now uses that
+transition rather than setting phase flags. An initial snapshot fixture used dribbling
+instead of pace; correcting pace exposed the two real failures above. A test-only
+reflection compile error was corrected before native execution. No assertions were
+weakened or passing cases disabled.
+
+Broader checks remain user-run: Assets/Tests/PlayMode/ fixtures
+LegacyMovementGoalPlayModeTests and LegacyMovementScatterPlayModeTests for snapshot
+continuation; feature folders TiedPenaltyPanel and ShootoutRollPanel for shared
+penalty presentation. Focused verification does not claim a full regression result.
+
 ## Mid-dribble coverage and immediate countdown default (2026-11-09)
 
 Latest user instruction restores immediate countdown visibility. The prominent setting
