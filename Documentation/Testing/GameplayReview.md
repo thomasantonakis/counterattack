@@ -305,6 +305,11 @@ or revert all earlier commits as if they were six migration bug fixes.
 
 ## Remaining limits
 
+- Decision timing review resolved by the user (2026-11-09): Rules opened from Pause
+  preserves that pause; Rules opened beside instructions is inspection and does not
+  pause gameplay. Mandatory rolls and CPU commands continue through the live overlay.
+  Rules itself must neither create a pause nor restore/overwrite a caller's pause.
+
 - Native PlayMode adapters currently run inside the Unity Editor and bridge to typed
   editor fixtures. Standalone Player test builds are not implemented.
 - Deterministic scenarios cover specific rules and regressions; green tests do not

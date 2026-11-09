@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public class HeaderManager : MonoBehaviour
+public partial class HeaderManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public Ball ball;
@@ -235,6 +235,7 @@ public class HeaderManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;

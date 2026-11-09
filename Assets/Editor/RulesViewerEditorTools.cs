@@ -98,7 +98,7 @@ public static class RulesViewerEditorTools
             root.AddComponent<GraphicRaycaster>();
             var viewer = root.AddComponent<RulesViewer>();
             var surface = Panel("RulesSurface", root.transform, Background); Stretch(surface, 0, 0, 0, 0);
-            var consumer = surface.AddComponent<GameplayInputConsumer>(); consumer.BlocksGameplayWhileActive = true;
+            var consumer = surface.AddComponent<GameplayInputConsumer>(); consumer.BlocksGameplayWhileActive = false;
             viewer.surface = surface;
             var header = Node("Header", surface.transform);
             var headerRect = (RectTransform)header.transform; headerRect.anchorMin = new Vector2(0,1); headerRect.anchorMax = Vector2.one;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class LongBallManager : MonoBehaviour
+public partial class LongBallManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public Ball ball;
@@ -141,6 +141,7 @@ public class LongBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         // return;
         if (isAvailable

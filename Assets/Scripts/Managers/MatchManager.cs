@@ -2805,6 +2805,8 @@ public partial class MatchManager : MonoBehaviour
         bool jackpotEnabled = true,
         Dictionary<string, string> details = null)
     {
+        TimingRollSequence++;
+        DecisionTiming.EndRoll();
         int randomRoll;
         bool randomJackpot;
         if (jackpotEnabled && helperFunctions != null)
@@ -3942,6 +3944,7 @@ public partial class MatchManager : MonoBehaviour
         //     // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
         //     // You can also trigger transitions between game states based on player actions
         // }
+        AdvanceDecisionTiming(Time.unscaledDeltaTime);
         UpdateMatchClock();
         FlushLiveLogIfDue();
     }
@@ -4027,6 +4030,8 @@ public partial class MatchManager : MonoBehaviour
 
     private void ResetMatchClockForNewMatch()
     {
+        DecisionTiming.Clear();
+        TimingRollSequence = 0;
         possessionActionTeam = null;
         stoppagePresentationVersion++;
         stoppageActionsPanel?.Cancel(this);
@@ -4116,6 +4121,7 @@ public partial class MatchManager : MonoBehaviour
     private bool CanAdvanceMatchClock()
     {
         return isClockRunning
+            && !DecisionTiming.HoldsMatchClock
             && !isHalfExpired
             && !isMatchComplete
             && !isHalfTimeFlowRunning
@@ -4418,6 +4424,7 @@ public partial class MatchManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
         if (isWaitingForExtraActionsRoll && (keyData.key == KeyCode.R || hasRollOverride)
@@ -5957,6 +5964,8 @@ public partial class MatchManager : MonoBehaviour
 
         return new RoomRuntimeSnapshot
         {
+            decisionTiming = DecisionTiming.Capture(),
+            timingRollSequence = TimingRollSequence,
             version = RoomSaveService.SaveSchemaVersion,
             kickoffGroundPassOnly = kickoffGroundPassOnly,
             currentState = currentState.ToString(),
@@ -6142,6 +6151,9 @@ public partial class MatchManager : MonoBehaviour
             RestoreOffsideSnapshot(snapshot.offside);
             RestoreSubstitutionSnapshot(snapshot.substitutions);
             RebuildManagersAfterRuntimeRestore();
+            TimingRollSequence = snapshot.timingRollSequence;
+            timingCompletedActions = totalCompletedActions;
+            DecisionTiming.Restore(snapshot.decisionTiming);
         }
         finally
         {

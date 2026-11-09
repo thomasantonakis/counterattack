@@ -4,7 +4,7 @@ using System.Collections;
 using System.Text;
 using System.Linq;
 
-public class FinalThirdManager : MonoBehaviour
+public partial class FinalThirdManager : MonoBehaviour
 {
     public const int StandardMovementRange = 6;
 

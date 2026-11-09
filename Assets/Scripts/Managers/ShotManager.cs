@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
-public class ShotManager : MonoBehaviour
+public partial class ShotManager : MonoBehaviour
 {
     public const int SnapshotDefenderMovementRange = 2;
     private const string FreeKickShotType = "freeKick";
@@ -926,6 +926,7 @@ public class ShotManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (MatchManager.Instance != null && MatchManager.Instance.IsWaitingForExtraActionsRoll) return;
         if (finalThirdManager != null && finalThirdManager.isActivated) return;

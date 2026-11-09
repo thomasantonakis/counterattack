@@ -37,10 +37,6 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
     private List<RulesDocument.Match> matches = new();
     private string[] plain;
     private int activeMatch = -1;
-    private bool priorPause;
-    private float priorTimeScale;
-    private MatchManager pausedMatch;
-    private bool ownsPause;
     private GameObject priorSelection;
     private int highlightedContents = -1;
     private float observedPosition;
@@ -95,11 +91,8 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
         consumeSearchEscapeRelease = false;
         restoreSearchFocus = false;
         priorSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
-        pausedMatch = MatchManager.Instance;
-        priorPause = pausedMatch != null && pausedMatch.IsPauseMenuOpen;
-        priorTimeScale = Time.timeScale;
-        ownsPause = pausedMatch != null;
-        if (ownsPause) { pausedMatch.SetPauseMenuOpen(true); Time.timeScale = 0f; }
+        // Rules is an inspection overlay. A caller opening it from Pause retains
+        // that existing pause; the instruction-box shortcut leaves gameplay live.
         surface.SetActive(true);
         IsOpen = true;
         Canvas.ForceUpdateCanvases();
@@ -128,16 +121,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
         surface.SetActive(false);
         IsOpen = false;
         restoreSearchFocus = false;
-        RestorePause();
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(priorSelection);
-    }
-
-    void RestorePause()
-    {
-        if (!ownsPause) return;
-        if (pausedMatch != null) pausedMatch.SetPauseMenuOpen(priorPause);
-        Time.timeScale = priorTimeScale;
-        ownsPause = false;
     }
 
     void OnDisable()
@@ -148,7 +132,6 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
             savedQuery = search.text;
             IsOpen = false;
         }
-        RestorePause();
     }
 
     void Update()

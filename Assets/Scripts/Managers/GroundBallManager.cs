@@ -6,7 +6,7 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class GroundBallManager : MonoBehaviour
+public partial class GroundBallManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public Ball ball;
@@ -298,6 +298,7 @@ public class GroundBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)
         {

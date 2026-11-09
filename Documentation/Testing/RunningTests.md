@@ -1,5 +1,41 @@
 # Running gameplay regressions
 
+Decision allowances and automatic rolls use category `DecisionTiming`. EditMode fixtures are
+`DecisionTimingEditorTests` and `DecisionTimingBannerEditorTests` under
+`Assets/Editor/FeatureTests/DecisionTiming/`; PlayMode uses `DecisionTimingPlayModeTests`
+under `Assets/Tests/PlayMode/Features/DecisionTiming/`. Run these filters serially, following
+the clean-scene/recompile checks below. Budgets apply only while the underlying game clock
+can run; substitution/forced-replacement budgets are removed. Mandatory rolls still have
+five-second deadlines during built-in stoppages, with gameplay pauses respected.
+See `Assets/Editor/FeatureTests/DecisionTiming/Verification.md` for 192 EditMode and 35
+distinct initial PlayMode passes, subsequent focused duel runs, native XML under `TestResults/GameplayRegression/Runs/`, and
+broader user-run checks. The whole plan's acceptance verification remains in progress; this is focused validation, not a complete regression result.
+
+The 2026-11-09 continuation adds 22 passing focused cases. Use single method filters
+`DecisionTimingPlayModeTests.JumperSelection`, `.JumperContinuation`,
+`.ManualHeaderResult`, `.InspectionTiming`, `.GameplayTimingRestore` and
+`.GameplayRollRestore` (expand each suffix to the full fixture name). A semicolon
+combination matched zero cases on this Pipeline; inspect actual counts. Verification.md
+records native artifacts and remaining acceptance combinations, including Rules pause
+behavior and interrupted parent/child restoration.
+
+Follow-up filters: `DecisionTimingBannerEditorTests` (all 14 announcement kinds),
+`DecisionTimingPlayModeTests.RulesTiming`, `.CpuRollTiming`, `.DuelManualReview`,
+and `.JumperOverflow`; use the full fixture prefix for each method. The affected
+existing Rules checks use `RulesViewerPlayModeTests.Room` (live and paused paths).
+These focused runs passed 14 EditMode and 12 PlayMode cases. Rules opened beside
+instructions leaves gameplay/CPU/automatic rolls active; opening through Pause
+preserves that pause. Event announcements take priority over the separate timing
+display. Native XML and remaining acceptance work are recorded in Verification.md.
+
+The formerly pending filters `DecisionTimingPlayModeTests.StoppageManualReview`,
+`.FileTimingRestore` and `.InterruptedTimingRestore` passed 12 focused PlayMode cases.
+The latter verifies the stable-save guard and stale timing cleanup, not resumable
+mid-action saves. File tests use disposable paths and restore application/prefs state.
+Their native XML is retained in runs `20261109T123543740Z`, `20261109T123616744Z`
+and `20261109T123647770Z`; see Verification.md for the remaining acceptance audit.
+
+
 Intro clock visibility uses `IntroClockVisibilityEditorTests` under
 `Assets/Editor/FeatureTests/IntroClockVisibility/`. Run only that fixture for
 the presentation change; its `TASKS.md` records results for hiding during intro,

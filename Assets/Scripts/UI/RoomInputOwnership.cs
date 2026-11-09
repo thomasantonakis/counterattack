@@ -12,7 +12,7 @@ public static class RoomInputOwnership
     public static bool ConsumeKey(KeyPressData key, bool physical, PlayerToken hovered)
     {
         if (key == null || key.isConsumed) return key?.isConsumed == true;
-        if (RulesViewer.IsOpen) { key.Consume(nameof(RulesViewer)); return true; }
+        if (RulesViewer.IsOpen && physical) { key.Consume(nameof(RulesViewer)); return true; }
         if (IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true)
         {
             if (key.key == KeyCode.Escape) RoomMatchIntro.Instance.Skip();

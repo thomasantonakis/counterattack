@@ -27,7 +27,7 @@ public struct MovementPhaseMovedTokenEntry
     }
 }
 
-public class MovementPhaseManager : MonoBehaviour
+public partial class MovementPhaseManager : MonoBehaviour
 {
     private PlayerToken lastDuelAttacker;
     private float lastDuelDribbleProbability = 1f;
@@ -582,6 +582,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (isPlayerMoving && !isGkWallDiveSequenceActive) return;
         if (finalThirdManager.isActivated) return;
@@ -1051,6 +1052,7 @@ public class MovementPhaseManager : MonoBehaviour
    
    public void ActivateMovementPhase()
     {
+        timingPhaseAttackIsHome = MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home;
         isActivated = true;
         isAvailable = false;
         isMovementPhaseAttack = true;
@@ -3997,6 +3999,7 @@ public class MovementPhaseManager : MonoBehaviour
 
     public void ResetMovementPhase()
     {
+        timingPhaseAttackIsHome = null;
         normalCompletionPending = false;
         goalKeeperManager?.CancelDeferredPickup();
         pendingFouledAttacker = null;

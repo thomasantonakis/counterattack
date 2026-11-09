@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 
-public class HighPassManager : MonoBehaviour
+public partial class HighPassManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public Ball ball;
@@ -474,6 +474,7 @@ public class HighPassManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (isAvailable
             && !isActivated

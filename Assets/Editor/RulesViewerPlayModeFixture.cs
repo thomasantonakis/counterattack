@@ -49,7 +49,8 @@ public sealed class RulesViewerPlayModeFixture
         Assert.That(viewer.article.content.rect.height, Is.GreaterThan(viewer.article.viewport.rect.height));
         if (match != null)
         {
-            Assert.That(match.IsGameplayInputBlocked, Is.True); Assert.That(Time.timeScale, Is.Zero);
+            Assert.That(match.IsGameplayInputBlocked, Is.EqualTo(scenario == "room-paused"));
+            Assert.That(Time.timeScale, Is.EqualTo(timeScale));
             Assert.That(RoomInputOwnership.BlocksCamera && RoomInputOwnership.ReservePauseEscape, Is.True);
             var key = new KeyPressData(KeyCode.Space, false, false, false);
             Assert.That(RoomInputOwnership.ConsumeKey(key, true, null), Is.True);

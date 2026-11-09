@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class ThrowInManager : MonoBehaviour
+public partial class ThrowInManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public Ball ball;

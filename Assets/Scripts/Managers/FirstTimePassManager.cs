@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class FirstTimePassManager : MonoBehaviour
+public partial class FirstTimePassManager : MonoBehaviour
 {
     private const int FtpMaxDistance = 6;
     public static int MaxPassDistanceForDecisionPreview => FtpMaxDistance;
@@ -145,6 +145,7 @@ public class FirstTimePassManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed)
         {
             return;

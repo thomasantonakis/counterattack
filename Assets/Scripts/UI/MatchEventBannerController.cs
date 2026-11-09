@@ -18,6 +18,16 @@ public class MatchEventBannerController : MonoBehaviour
     public UnityEngine.UI.Image icon;
     public TMP_Text caption;
     public TMP_Text detail;
+    public Sprite clockArtwork;
+    [Header("Separate scene-authored timing display")]
+    public CanvasGroup timingVisibility;
+    public RectTransform timingContent;
+    public UnityEngine.UI.Image timingIcon;
+    public TMP_Text timingCaption, timingDetail;
+    private DecisionTimingService lastTiming;
+    private bool timingVisible;
+    private Color timingCaptionColor = Color.white;
+    public bool IsTimingVisible => timingVisible;
     public Artwork[] artwork = Array.Empty<Artwork>();
     [Range(3f, 5f)] public float displaySeconds = 4f;
     [Header("Edit Mode artwork preview")]
@@ -43,12 +53,77 @@ public class MatchEventBannerController : MonoBehaviour
         Clear();
     }
 
-    private void Update() => Advance(Time.unscaledDeltaTime);
+    private void Update()
+    {
+        SetTimingStatus(MatchManager.Instance?.DecisionTiming);
+        Advance(Time.unscaledDeltaTime);
+    }
+
+    public void SetTimingStatus(DecisionTimingService timing)
+    {
+        lastTiming = timing;
+        var visibility = timingVisibility;
+        var caption = timingCaption;
+        var detail = timingDetail;
+        var icon = timingIcon;
+        var content = timingContent;
+        bool visible = !showing && pending.Count == 0 && timing != null && (timing.HasPendingRoll || timing.BlockingResult || (!timing.GameClockStopped && (timing.Current != null || timing.HoldsMatchClock)));
+        if (visibility == null || caption == null || icon == null) return;
+        if (!visible)
+        {
+            timingVisible = false;
+            visibility.alpha = 0;
+            return;
+        }
+        if (!timingVisible)
+        {
+            caption.color = timingCaptionColor;
+        }
+        timingVisible = true;
+        visibility.alpha = 1;
+        visibility.blocksRaycasts = false;
+        visibility.interactable = false;
+        if (content != null) content.localScale = restingScale;
+        icon.sprite = clockArtwork;
+        icon.enabled = clockArtwork != null;
+        var current = timing.Current ?? timing.ExpiredDecision;
+        caption.color = current != null && current.remaining <= DecisionTimingConfig.CountdownWarningSeconds
+            ? new Color(1f, 0.68f, 0.18f) : timingCaptionColor;
+        string description;
+        if (timing.BlockingResult) { caption.text = "Match clock stopped"; description = "Reviewing result."; }
+        else if (timing.HasPendingRoll) { caption.text = "Match clock stopped"; description = $"Rolling automatically in {Mathf.CeilToInt(timing.RollRemaining)}s."; }
+        else if (timing.HoldsMatchClock)
+        {
+            caption.text = "Match clock stopped";
+            description = current != null ? $"Awaiting {current.owner} · {FormatDecision(current.kind)}." : "Awaiting decision.";
+        }
+        else
+        {
+            caption.text = $"{Mathf.CeilToInt(current.remaining)}s remaining";
+            description = $"{current.owner} · {FormatDecision(current.kind)}";
+        }
+        if (detail != null) detail.text = description;
+    }
+
+    private static string FormatDecision(DecisionKind kind)
+        => System.Text.RegularExpressions.Regex.Replace(kind.ToString(), "([a-z])([A-Z])", "$1 $2");
+
+    [ContextMenu("Preview decision timing in Edit Mode")]
+    private void PreviewDecisionTiming()
+    {
+        if (Application.isPlaying) return;
+        var timing = new DecisionTimingService();
+        timing.BeginDecision("preview", DecisionKind.SelectNextAction, "Home", 1);
+        timing.Select("preview");
+        timing.Advance(DecisionTimingConfig.GetBudget(DecisionKind.SelectNextAction, 1));
+        SetTimingStatus(timing);
+    }
 
     public void Enqueue(MatchBannerEvent kind, string description)
     {
         if (visibility == null || caption == null || icon == null) return;
         pending.Enqueue((kind, description));
+        SetTimingStatus(lastTiming);
         if (!showing) ShowNext();
     }
 
@@ -82,12 +157,20 @@ public class MatchEventBannerController : MonoBehaviour
         if (content != null) content.localScale = restingScale * Mathf.Lerp(0.94f, 1f, entrance);
         if (elapsed < duration) return;
         if (pending.Count > 0) ShowNext();
-        else Clear();
+        else
+        {
+            showing = false;
+            visibility.alpha = 0;
+            SetTimingStatus(lastTiming);
+        }
     }
 
     [ContextMenu("Hide preview / clear queue")]
     public void Clear()
     {
+        timingVisible = false;
+        lastTiming = null;
+        if (timingVisibility != null) timingVisibility.alpha = 0;
         pending.Clear();
         showing = false;
         elapsed = 0f;

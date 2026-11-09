@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FreeKickManager : MonoBehaviour
+public partial class FreeKickManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public HexGrid hexGrid;

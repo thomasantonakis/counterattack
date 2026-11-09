@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class PenaltyKickManager : MonoBehaviour
+public partial class PenaltyKickManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public MatchManager matchManager;

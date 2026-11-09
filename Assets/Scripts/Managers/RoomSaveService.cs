@@ -787,6 +787,8 @@ public class RoomSaveSummary
 [Serializable]
 public class RoomRuntimeSnapshot
 {
+    public DecisionTimingSnapshot decisionTiming;
+    public int timingRollSequence;
     public bool kickoffGroundPassOnly;
     public int version = RoomSaveService.SaveSchemaVersion;
     public string savedAtUtc;

@@ -44,7 +44,9 @@ public sealed partial class GoalkeeperBoxEntryFixture : IDisposable
     private bool disposed;
     private AsyncOperation unload;
 
-    public GoalkeeperBoxEntryFixture()
+    public GoalkeeperBoxEntryFixture() : this(false) { }
+
+    public GoalkeeperBoxEntryFixture(bool hostedTimingMatch)
     {
         scene = Application.isPlaying ? SceneManager.CreateScene("Goalkeeper box entry fixture")
             : EditorSceneManager.NewPreviewScene();
@@ -54,7 +56,7 @@ public sealed partial class GoalkeeperBoxEntryFixture : IDisposable
         {
             // Keep MatchManager inactive: its normal Awake/Start loads the user's match.
             var matchObject = Child("Isolated MatchManager");
-            match = matchObject.AddComponent<MatchManager>();
+            match = hostedTimingMatch ? matchObject.AddComponent<DecisionTimingHostedMatch>() : matchObject.AddComponent<MatchManager>();
             MatchManager.Instance = match;
             match.gameData = new MatchManager.GameData();
             match.gameData.gameSettings.homeTeamName = "Fixture Home";

@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PenaltyShootoutManager : MonoBehaviour
+public partial class PenaltyShootoutManager : MonoBehaviour
 {
     private bool UseRightGoal => matchManager?.gameData?.penaltyShootoutSetup?.useRightGoal ?? false;
     private int GoalSign => UseRightGoal ? 1 : -1;

@@ -14,7 +14,7 @@ public enum LooseBallSourceType
 
 public enum LooseBallPresentationContext { Standalone, ShotResolution, GroundDuelResolution }
 
-public class LooseBallManager : MonoBehaviour
+public partial class LooseBallManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public HexGrid hexGrid;
@@ -651,6 +651,7 @@ public class LooseBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (!isActivated) return;
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);

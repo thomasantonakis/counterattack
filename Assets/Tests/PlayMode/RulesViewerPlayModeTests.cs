@@ -11,6 +11,6 @@ public sealed class RulesViewerPlayModeTests
     [SetUp] public void SetUp() => fixture = Activator.CreateInstance(Bridge);
     [UnityTearDown] public IEnumerator Cleanup() => (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture, null);
     [UnityTest] public IEnumerator MainMenuNavigationAndSearch() => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[] { "menu" });
-    [UnityTest] public IEnumerator RoomSuspendsAndRestoresLivePlay() => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[] { "room-live" });
+    [UnityTest] public IEnumerator RoomKeepsLivePlayRunning() => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[] { "room-live" });
     [UnityTest] public IEnumerator RoomPreservesExistingPause() => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[] { "room-paused" });
 }

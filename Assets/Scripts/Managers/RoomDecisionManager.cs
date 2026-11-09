@@ -4886,6 +4886,10 @@ public class RoomDecisionManager : MonoBehaviour
             AddDecisionHash(ref hash, matchManager.currentHalf);
             AddDecisionHash(ref hash, matchManager.isHalfExpired);
             AddDecisionHash(ref hash, matchManager.IsWaitingForExtraActionsRoll);
+            // Automatic fallback can resolve a roll while CPU analysis is armed.
+            // A later roll on the same board is a new decision, even if its
+            // instruction/manager/team are otherwise identical.
+            AddDecisionHash(ref hash, matchManager.TimingRollSequence);
             AddDecisionHash(ref hash, matchManager.completedActionsThisHalf);
             AddDecisionHash(ref hash, matchManager.totalCompletedActions);
             AddDecisionHash(ref hash, matchManager.ball?.GetCurrentHex());
