@@ -10,6 +10,7 @@ public sealed class DecisionTimingState
     public string owner;
     public DecisionKind kind;
     public float remaining;
+    public float budget;
     public bool expired;
     public bool suspended;
     public bool inactive;
@@ -40,13 +41,16 @@ public sealed class DecisionTimingService
     public float RollRemaining { get; private set; }
     public bool Paused { get; set; }
     public bool BlockingResult { get; set; }
+    public bool AutomaticResult { get; set; }
+    public bool ContinuationInProgress { get; set; }
     public bool GameClockStopped { get; set; }
     public bool HasCommandAuthority { get; set; } = true;
     public DecisionTimingState Current { get; private set; }
     public DecisionTimingState ExpiredDecision => decisions.Values.FirstOrDefault(d => d.expired);
     public bool HasRollWait => rollKey != null;
     public bool HasPendingRoll => rollKey != null && !rollSubmitted;
-    public bool HoldsMatchClock => HasPendingRoll || BlockingResult || decisions.Values.Any(d => d.expired);
+    public bool HoldsMatchClock => BlockingResult || (!HasPendingRoll && !AutomaticResult
+        && !ContinuationInProgress && decisions.Values.Any(d => d.expired));
     public event Action<string, string, string> Recorded;
 
     public DecisionTimingState BeginDecision(string key, DecisionKind kind, string owner, int difficulty)
@@ -58,7 +62,8 @@ public sealed class DecisionTimingService
             if (saved == null) unresolvedChoices.TryGetValue(key, out saved);
             state = saved != null ? Copy(saved) : new DecisionTimingState
             { id = Guid.NewGuid().ToString("N"), key = key, kind = kind, owner = owner,
-                remaining = DecisionTimingConfig.GetBudget(kind, difficulty) };
+                remaining = DecisionTimingConfig.GetBudget(kind, difficulty), budget = DecisionTimingConfig.GetBudget(kind, difficulty) };
+            if (state.budget <= 0) state.budget = DecisionTimingConfig.GetBudget(kind, difficulty);
             state.inactive = false;
             decisions.Add(key, state);
             if (state.suspended) suspended.Add(key);
@@ -139,19 +144,23 @@ public sealed class DecisionTimingService
     {
         if (float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds < 0) throw new ArgumentOutOfRangeException(nameof(seconds));
         if (Paused || BlockingResult) return;
+        // Roll waits and ordinary result displays consume the active owner's
+        // allowance alongside live match time. A roll never invents a budget.
+        bool ownsAllowance = !HasPendingRoll || RollOwner == Current?.owner || RollOwner == "Both teams";
+        if (!GameClockStopped && Current != null && !suspended.Contains(Current.key) && !Current.expired && ownsAllowance)
+        {
+            Current.remaining = Math.Max(0, Current.remaining - seconds);
+            if (Current.remaining <= 0)
+            {
+                Current.expired = true;
+                Recorded?.Invoke("expired", Current.owner, Current.id);
+            }
+        }
         if (HasPendingRoll)
         {
             if (rollReady?.Invoke() != true) return;
             RollRemaining = Math.Max(0, RollRemaining - seconds);
             if (RollRemaining <= 0) SubmitRoll(RollId, RollOwner, automatic: true);
-            return;
-        }
-        if (GameClockStopped || Current == null || suspended.Contains(Current.key) || Current.expired) return;
-        Current.remaining = Math.Max(0, Current.remaining - seconds);
-        if (Current.remaining <= 0)
-        {
-            Current.expired = true;
-            Recorded?.Invoke("expired", Current.owner, Current.id);
         }
     }
     public DecisionTimingSnapshot Capture() => new()
@@ -167,5 +176,5 @@ public sealed class DecisionTimingService
     }
     public void Clear() { decisions.Clear(); unresolvedChoices.Clear(); suspended.Clear(); Current = null; restoring = null; EndRoll(); }
     private static DecisionTimingState Copy(DecisionTimingState s) => new()
-    { id = s.id, key = s.key, owner = s.owner, kind = s.kind, remaining = s.remaining, expired = s.expired, suspended = s.suspended, inactive = s.inactive };
+    { id = s.id, key = s.key, owner = s.owner, kind = s.kind, remaining = s.remaining, budget = s.budget, expired = s.expired, suspended = s.suspended, inactive = s.inactive };
 }

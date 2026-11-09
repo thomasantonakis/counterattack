@@ -38,7 +38,11 @@ public partial class MatchManager
             timingCompletedActions = totalCompletedActions;
         }
         timing.Paused = isPauseMenuOpen || RoomInputOwnership.IntroActive || CoinTossPanelController.IsRoomVisible;
-        timing.BlockingResult = TimingResultBlocked;
+        timing.BlockingResult = HeaderChallengePanelController.IsMatchClockHeld
+            || DuelResolutionPanelController.IsMatchClockHeld || StoppageActionsPanelController.IsMatchClockHeld;
+        timing.AutomaticResult = TimingResultBlocked && !timing.BlockingResult;
+        timing.ContinuationInProgress = movementPhaseManager?.isPlayerMoving == true
+            || movementPhaseManager?.IsResolvingReposition == true;
         // Tactical allowances protect running match time. Built-in stoppages do not
         // need their own budget, but an interrupted live allowance is not refilled.
         timing.GameClockStopped = !isClockRunning || isHalfExpired || isMatchComplete
@@ -52,8 +56,20 @@ public partial class MatchManager
         bool activated = groundBallManager?.isActivated == true || movementPhaseManager?.isActivated == true
             || highPassManager?.isActivated == true || longBallManager?.isActivated == true || firstTimePassManager?.isActivated == true
             || shotManager?.isActivated == true;
+        bool preview = movementPhaseManager?.isActivated == true && !movementPhaseManager.isCommitted
+            || groundBallManager?.isActivated == true && groundBallManager.isAwaitingTargetSelection
+            || highPassManager?.isActivated == true && highPassManager.isWaitingForConfirmation
+            || longBallManager?.isActivated == true && longBallManager.isAwaitingTargetSelection
+            || firstTimePassManager?.isActivated == true && firstTimePassManager.isAwaitingTargetSelection
+            || shotManager?.isWaitingForShotCommitConfirmation == true;
+        bool sharedSelection = difficulty_level < 3 && currentCommittedActionKind == MatchActionKind.None
+            && IsStableSaveState(currentState) && (preview || available && !activated)
+            && shotManager?.headerManager?.isActivated != true
+            && finalThirdManager?.isActivated != true && freeKickManager?.isActivated != true
+            && movementPhaseManager?.goalKeeperManager?.IsWaitingForPickupChoice != true;
+        r.SharedActionSelection = sharedSelection;
         r.Decision(currentState == GameState.GoalKick ? DecisionKind.GoalKickActionSelection : DecisionKind.SelectNextAction,
-            available && !activated && !isMatchComplete && !isHalfTimeFlowRunning);
+            (sharedSelection || available && !activated) && !isMatchComplete && !isHalfTimeFlowRunning);
         kickoffManager?.RegisterTiming(r);
         freeKickManager?.RegisterTiming(r);
         penaltyKickManager?.RegisterTiming(r);

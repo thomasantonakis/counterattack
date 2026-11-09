@@ -212,7 +212,7 @@ public sealed class DecisionTimingEditorTests
         => Assert.That(DecisionTimingConfig.Budgets.Keys, Is.EquivalentTo(Enum.GetValues(typeof(DecisionKind))));
 
     [TestCase(false)] [TestCase(true)]
-    public void ChildAndRollSuspendParentAndPreserveExpiredHold(bool expired)
+    public void ChildSuspendsParentAndRollConsumesChildAllowance(bool expired)
     {
         var t = new DecisionTimingService();
         var parent = t.BeginDecision("phase", DecisionKind.AttackingMovement, "Home", 3);
@@ -222,7 +222,7 @@ public sealed class DecisionTimingEditorTests
         Assert.That(parent.remaining, Is.EqualTo(expired ? 0 : 48));
         t.BeginRoll("roll", "Away", () => true, () => {});
         t.Advance(3);
-        Assert.That(child.remaining, Is.EqualTo(3));
+        Assert.That(child.remaining, Is.Zero);
         t.EndRoll(); t.EndDecision("child"); t.Select("phase");
         Assert.That(t.HoldsMatchClock, Is.EqualTo(expired));
         Assert.That(parent.remaining, Is.EqualTo(expired ? 0 : 48));

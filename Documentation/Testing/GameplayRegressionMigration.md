@@ -1,5 +1,16 @@
 # Gameplay regression migration
 
+Decision-timing live-clock revision (2026-11-09): 17 new isolated EditMode cases and
+21 new real-input/coroutine PlayMode cases were added in the DecisionTiming feature
+folders, fixtures `DecisionTimingLiveClockEditorTests` and
+`DecisionTimingLiveClockPlayModeTests`. Together with affected existing filters,
+33 EditMode + 136 PlayMode passed, zero failed/skipped in final runs. Compilation
+was separately clean. No legacy scenario was removed and no full suites ran.
+See `Assets/Editor/FeatureTests/DecisionTiming/Verification.md` for mappings,
+iteration diagnoses, exact XML/progress and supported-save limitations. Current
+roll/review timing supersedes historical freeze assertions in earlier evidence.
+
+
 ## Additive Long Ball Pace ordering coverage — 2026-11-08
 
 `LongBallGoalkeeperPacePlayModeTests` adds dedicated native coverage under

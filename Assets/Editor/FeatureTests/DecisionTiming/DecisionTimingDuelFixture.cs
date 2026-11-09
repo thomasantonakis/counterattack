@@ -20,6 +20,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         AttachAuthoredPanels(); EnableForAuthoredPresentation(movement); EnableForAuthoredPresentation(loose);
         if (timingManualReview) duelPanel.resultSeconds = .1f;
         movement.ActivateMovementPhase();
+        movement.CommitToAction();
         if (!nutmeg) movement.ForfeitTeamMovementPhase();
         match.RefreshDecisionTiming();
         var parent = match.DecisionTiming.Current;
@@ -53,11 +54,13 @@ public sealed partial class GoalkeeperBoxEntryFixture
         LegacyKey(nutmeg ? "N" : "T");
         Assert.That(movement.isWaitingForTackleRoll, Is.True);
         match.AdvanceDecisionTiming(2);
-        Assert.That(parent.remaining, Is.EqualTo(remaining), "Roll waits suspend phase time.");
+        if (match.DecisionTiming.RollOwner == parent.owner) remaining = Mathf.Max(0, remaining - 2);
+        Assert.That(parent.remaining, Is.EqualTo(remaining), "Roll waits charge only an existing allowance belonging to the roll owner.");
         movement.PerformTackleDiceRoll(true, new RollInputOverride { hasOverride = true, roll = defenderWins ? 6 : 2, isJackpot = false });
         yield return AssertLegacyOutfieldDefenderPresentation();
         match.RefreshDecisionTiming();
         match.AdvanceDecisionTiming(1);
+        if (match.DecisionTiming.RollOwner == parent.owner) remaining = Mathf.Max(0, remaining - 1);
         Assert.That(parent.remaining, Is.EqualTo(remaining));
         movement.PerformTackleDiceRoll(false, new RollInputOverride { hasOverride = true, roll = defenderWins ? 2 : 6, isJackpot = false });
         if (timingManualReview)
@@ -107,7 +110,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(match.DecisionTiming.HoldsMatchClock, Is.False);
             Assert.That(match.teamInAttack, Is.EqualTo(MatchManager.TeamInAttack.Away));
             Assert.That(match.LastTokenToTouchTheBallOnPurpose, Is.SameAs(defender));
-            movement.ActivateMovementPhase(); match.RefreshDecisionTiming();
+            movement.ActivateMovementPhase(); movement.CommitToAction(); match.RefreshDecisionTiming();
             Assert.That(match.DecisionTiming.Current.owner, Is.EqualTo("Away"));
             Assert.That(match.DecisionTiming.Current.id, Is.Not.EqualTo(parentId));
             Assert.That(match.DecisionTiming.Current.expired, Is.False);

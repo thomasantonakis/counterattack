@@ -212,6 +212,7 @@ public partial class LongBallManager : MonoBehaviour
         }
         else
         {
+            CommitToThisAction();
             hexGrid.ClearHighlightedHexes();
         }
         Debug.Log("Long Ball activated. Please select a target hex.");

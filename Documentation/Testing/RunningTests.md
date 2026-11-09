@@ -1,5 +1,16 @@
 # Running gameplay regressions
 
+Latest decision-timing revision uses explicit fixtures
+`DecisionTimingLiveClockEditorTests` and `DecisionTimingLiveClockPlayModeTests`
+(category `DecisionTimingLiveClock`). It verifies shared diff 1–2 preview time,
+immediate diff 3 commitment, live rolls/reviews/MP motion, and MP snapshot charging.
+Countdown boundary/event priority uses `DecisionTimingBannerEditorTests`. Latest
+focused runs passed 33 EditMode and 136 PlayMode cases, zero failed/skipped; compilation
+is separate. Verification.md lists every affected filter and retained native XML.
+Older result summaries below describe earlier policies; mandatory rolls and normal
+reviews now keep time running, while Enter manual holds/pause suspend timing.
+
+
 Decision allowances and automatic rolls use category `DecisionTiming`. EditMode fixtures are
 `DecisionTimingEditorTests` and `DecisionTimingBannerEditorTests` under
 `Assets/Editor/FeatureTests/DecisionTiming/`; PlayMode uses `DecisionTimingPlayModeTests`

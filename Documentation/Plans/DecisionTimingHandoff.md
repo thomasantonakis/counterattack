@@ -1,6 +1,23 @@
 # Decision timing — next-session handoff
 
-## Current status (supersedes the historical handoff below)
+## Latest revision handoff
+
+The user's subsequent rules are implemented and focused verification passed:
+33 EditMode + 136 PlayMode cases, zero failed/skipped in final runs; compilation
+separately clean. Difficulties 1–2 now share selection time across previews until
+commitment; difficulty 3 commits on the action key (Long Ball fixed). Rolls/automatic
+reviews and MP movement keep clock time running; manual Enter holds/pause suspend.
+Snapshot/forfeit uses MP time. Countdown starts at half spent; decision/events are
+centered under HOME/AWAY with announcement priority. See the first section of
+Verification.md and current rules in DecisionTimingImplementation.md.
+
+Historical roll-freeze/preview-budget and interrupted-save claims below are superseded.
+Committed mid-action gameplay is not a supported resumable save; normal guards reject
+it and restore cleanup drops stale timing. Supported stable/file saves are verified.
+Full suites and Load Game browser/bootstrap remain unexecuted; no full regression
+verdict is claimed. Continue on the existing branch, without a worktree.
+
+## Previous status (historical)
 
 All identified focused acceptance gaps have been implemented and verified. The final
 remaining-test batch passed 42 new PlayMode cases and 8 affected existing cases, with

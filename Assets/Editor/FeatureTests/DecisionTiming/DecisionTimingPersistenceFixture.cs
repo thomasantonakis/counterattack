@@ -13,6 +13,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Board(1); Place(attacker, Hex(0)); ball.PlaceAtCell(attacker.currentHex);
         match.SetLastToken(attacker); match.isClockRunning = true;
         movement.ActivateMovementPhase();
+        movement.CommitToAction();
         match.RefreshDecisionTiming(); var parent = match.DecisionTiming.Current;
         match.AdvanceDecisionTiming(expired ? parent.remaining : 7);
         float remaining = parent.remaining;
@@ -110,7 +111,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         ball.PlaceAtCell(attacker.currentHex); match.SetLastToken(attacker);
         match.currentState = MatchManager.GameState.EndOfMovementPhase; match.isClockRunning = true;
         AttachAuthoredPanels(); EnableForAuthoredPresentation(movement); EnableForAuthoredPresentation(loose);
-        movement.ActivateMovementPhase(); movement.ForfeitTeamMovementPhase();
+        movement.ActivateMovementPhase(); movement.CommitToAction(); movement.ForfeitTeamMovementPhase();
         match.RefreshDecisionTiming(); var parent = match.DecisionTiming.Current;
         match.AdvanceDecisionTiming(expired ? parent.remaining : 7);
         Invoke(movement, "OnClickReceived", defender, defender.currentHex); LegacyKey("T");
@@ -128,7 +129,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(movement.isActivated || movement.isWaitingForReposition, Is.False);
         Assert.That(match.DecisionTiming.Capture().decisions.Any(d => d.id == parent.id || d.id == child.id), Is.False);
         Assert.That(match.DecisionTiming.HoldsMatchClock, Is.False, "unreconstructed parent/child holds must be discarded");
-        Subscribe(ground); LegacyKey("P");
-        Assert.That(ground.isActivated, Is.True, "rebuilt stable gameplay accepts its next action");
+        Assert.That(match.DecisionTiming.Current, Is.Null, "unsupported committed actions are not reconstructed as a new tactical choice");
+        Assert.That(match.CanCreateRuntimeSnapshot(out _), Is.False, "this unsupported mid-action state is not a valid resumable save");
     }
 }

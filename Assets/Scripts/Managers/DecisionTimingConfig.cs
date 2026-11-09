@@ -64,6 +64,7 @@ public enum DecisionKind
 
 public static class DecisionTimingConfig
 {
+    public const float CountdownDisplaySpentFraction = 0.5f;
     public const float AutomaticRollSeconds = 5f;
     public const float CountdownWarningSeconds = 5f;
 

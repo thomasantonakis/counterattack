@@ -30,7 +30,9 @@ public sealed class DecisionTimingBannerEditorTests
             banner.clockArtwork = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/DecisionClock.png");
             Assert.That(banner.clockArtwork, Is.Not.Null);
             var timing = new DecisionTimingService(); timing.BeginDecision("target", DecisionKind.StandardPassTarget, "Away", 3); timing.Select("target");
-            timing.Advance(5); banner.SetTimingStatus(timing);
+            banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.False);
+            timing.Advance(4.75f); banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.False);
+            timing.Advance(.25f); banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.True);
             Assert.That(banner.timingIcon.sprite, Is.SameAs(banner.clockArtwork));
             Assert.That(banner.timingCaption.color.g, Is.EqualTo(.68f));
             Assert.That(banner.visibility.alpha, Is.Zero);

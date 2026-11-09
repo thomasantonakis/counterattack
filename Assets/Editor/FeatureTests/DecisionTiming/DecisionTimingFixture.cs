@@ -8,6 +8,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
     public IEnumerator RunDecisionTimingPass(int side, string action)
     {
         Board(side);
+        match.difficulty_level = 3;
         match.isClockRunning = true;
         Place(attacker, Hex(0)); ball.PlaceAtCell(attacker.currentHex);
         Place(defender, Hex(-10 * side, 7));
@@ -27,7 +28,8 @@ public sealed partial class GoalkeeperBoxEntryFixture
         string id = state.id;
         // An invalid off-pitch click exercises the real target validation path.
         var manager = action == "P" ? (object)ground : action == "C" ? high : action == "L" ? longBall : ftp;
-        Invoke(manager, "OnClickReceived", null, Hex(0, 12));
+        var outOfBounds = grid.cells.Cast<HexCell>().First(h => h != null && h.isOutOfBounds);
+        Invoke(manager, "OnClickReceived", null, outOfBounds);
         match.RefreshDecisionTiming();
         Assert.That(match.DecisionTiming.Current.id, Is.EqualTo(id));
         Assert.That(match.DecisionTiming.Current.remaining, Is.EqualTo(state.remaining));
@@ -47,6 +49,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Board(side); Place(attacker, Hex(0)); ball.PlaceAtCell(attacker.currentHex);
         match.isClockRunning = true;
         movement.ActivateMovementPhase();
+        movement.CommitToAction();
         match.RefreshDecisionTiming();
         var phase = match.DecisionTiming.Current;
         Assert.That(phase.kind, Is.EqualTo(DecisionKind.AttackingMovement));
@@ -69,7 +72,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Invoke(match, "EnterExtraActionsRollPrompt");
         match.RefreshDecisionTiming();
         Assert.That(match.DecisionTiming.HasPendingRoll, Is.True);
-        Assert.That(match.DecisionTiming.HoldsMatchClock, Is.True);
+        Assert.That(match.DecisionTiming.HoldsMatchClock, Is.False);
         match.AdvanceDecisionTiming(4);
         Assert.That(match.IsWaitingForExtraActionsRoll, Is.True);
         match.SetPauseMenuOpen(true); match.AdvanceDecisionTiming(100);
@@ -124,7 +127,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         yield return Until(() => longBall.isWaitingForAccuracyRoll, "actual long-ball target reaches accuracy roll");
         match.RefreshDecisionTiming();
         Assert.That(match.DecisionTiming.HasPendingRoll, Is.True);
-        Assert.That(match.DecisionTiming.HoldsMatchClock, Is.True);
+        Assert.That(match.DecisionTiming.HoldsMatchClock, Is.False);
         string id = match.DecisionTiming.RollId;
         // Rig the existing dice source without replacing rule evaluation or continuation.
         int seed = 1;
@@ -138,10 +141,10 @@ public sealed partial class GoalkeeperBoxEntryFixture
         else LegacyKey("R");
         Assert.That(match.DecisionTiming.SubmitRoll(id, "Home"), Is.False, "The old roll cannot be submitted twice.");
         Assert.That(match.TimingRollSequence, Is.EqualTo(1));
-        Assert.That(match.DecisionTiming.BlockingResult, Is.True, "the roll must immediately hold its blocking result");
+        Assert.That(match.DecisionTiming.BlockingResult, Is.False, "ordinary results keep live time running until Enter hold");
         float possessionBeforeReview = match.gameData.stats.homeTeamStats.totalPossessionSeconds;
         Invoke(match, "AdvanceMatchTime", 3f);
-        Assert.That(match.gameData.stats.homeTeamStats.totalPossessionSeconds, Is.EqualTo(possessionBeforeReview));
+        Assert.That(match.gameData.stats.homeTeamStats.totalPossessionSeconds, Is.GreaterThan(possessionBeforeReview));
         yield return Until(() => !longBall.isWaitingForAccuracyRoll, "accuracy continuation");
         Assert.That(longBall.isWaitingForDirectionRoll, Is.False, "The rigged successful accuracy must not scatter.");
     }

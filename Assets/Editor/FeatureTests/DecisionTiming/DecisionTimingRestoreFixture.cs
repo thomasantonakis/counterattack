@@ -41,7 +41,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         match.SetLastToken(attacker); match.isClockRunning = true;
         match.currentState = MatchManager.GameState.EndOfMovementPhase;
         match.RefreshAvailableActionsForCurrentState();
-        if (scenario == "movement") movement.ActivateMovementPhase();
+        if (scenario == "movement") { movement.ActivateMovementPhase(); movement.CommitToAction(); }
         match.RefreshDecisionTiming();
         var original = match.DecisionTiming.Current;
         Assert.That(original, Is.Not.Null);
@@ -53,6 +53,13 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Invoke(match, "ApplyRuntimeSnapshot", snapshot);
         match.RefreshDecisionTiming();
         var restored = match.DecisionTiming.Current;
+        if (scenario == "movement")
+        {
+            Assert.That(restored, Is.Null, "a committed mid-action snapshot has no reconstructed input decision");
+            Assert.That(match.DecisionTiming.Capture().decisions.Exists(d => d.id == original.id), Is.False);
+            Assert.That(match.DecisionTiming.HoldsMatchClock || movement.isActivated, Is.False);
+            yield break;
+        }
         Assert.That(restored, Is.Not.Null);
         if (scenario == "matching" || scenario == "expired")
         {
@@ -70,7 +77,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Subscribe(ground); LegacyKey("P");
         match.RefreshDecisionTiming();
         Assert.That(ground.isActivated, Is.True, "restored gameplay must accept the next real action");
-        Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(DecisionKind.StandardPassTarget));
+        Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(DecisionKind.SelectNextAction), "difficulty-two pass preview shares selection time until commitment");
         yield break;
     }
 }

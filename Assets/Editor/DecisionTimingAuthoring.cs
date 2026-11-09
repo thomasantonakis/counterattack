@@ -5,6 +5,28 @@ using UnityEngine;
 
 public static class DecisionTimingAuthoring
 {
+    public static string AlignLoadedTimingDisplays()
+    {
+        var scoreboard = Object.FindAnyObjectByType<ScoreboardManager>(FindObjectsInactive.Include);
+        var banner = scoreboard.GetComponentInChildren<MatchEventBannerController>(true);
+        var parent = (RectTransform)banner.transform.parent;
+        var home = parent.InverseTransformPoint(scoreboard.homeTeamText.rectTransform.TransformPoint(scoreboard.homeTeamText.rectTransform.rect.center));
+        var away = parent.InverseTransformPoint(scoreboard.awayTeamText.rectTransform.TransformPoint(scoreboard.awayTeamText.rectTransform.rect.center));
+        float width = Mathf.Min(320, Mathf.Abs(away.x-home.x)-20);
+        void Align(RectTransform panel, float x)
+        {
+            Undo.RecordObject(panel,"Align scoreboard notice");
+            panel.anchorMin=panel.anchorMax=new Vector2(.5f,0);
+            panel.pivot=new Vector2(.5f,1);
+            panel.sizeDelta=new Vector2(width,panel.sizeDelta.y);
+            panel.anchoredPosition=new Vector2(x-parent.rect.center.x,-20);
+            EditorUtility.SetDirty(panel);
+        }
+        Align((RectTransform)banner.timingVisibility.transform,home.x);
+        Align((RectTransform)banner.transform,away.x);
+        EditorSceneManager.MarkSceneDirty(banner.gameObject.scene);
+        return $"Decision centered at {home.x}; events centered at {away.x}; width {width}.";
+    }
     public static string SeparateLoadedTimingDisplay()
     {
         int count = 0;

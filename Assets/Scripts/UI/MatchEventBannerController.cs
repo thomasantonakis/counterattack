@@ -67,7 +67,11 @@ public class MatchEventBannerController : MonoBehaviour
         var detail = timingDetail;
         var icon = timingIcon;
         var content = timingContent;
-        bool visible = !showing && pending.Count == 0 && timing != null && (timing.HasPendingRoll || timing.BlockingResult || (!timing.GameClockStopped && (timing.Current != null || timing.HoldsMatchClock)));
+        var current = timing?.Current ?? timing?.ExpiredDecision;
+        bool halfway = current != null && current.budget > 0
+            && current.remaining <= current.budget * (1f - DecisionTimingConfig.CountdownDisplaySpentFraction);
+        bool visible = !showing && pending.Count == 0 && timing != null
+            && (timing.BlockingResult || (!timing.GameClockStopped && halfway));
         if (visibility == null || caption == null || icon == null) return;
         if (!visible)
         {
@@ -86,12 +90,10 @@ public class MatchEventBannerController : MonoBehaviour
         if (content != null) content.localScale = restingScale;
         icon.sprite = clockArtwork;
         icon.enabled = clockArtwork != null;
-        var current = timing.Current ?? timing.ExpiredDecision;
         caption.color = current != null && current.remaining <= DecisionTimingConfig.CountdownWarningSeconds
             ? new Color(1f, 0.68f, 0.18f) : timingCaptionColor;
         string description;
         if (timing.BlockingResult) { caption.text = "Match clock stopped"; description = "Reviewing result."; }
-        else if (timing.HasPendingRoll) { caption.text = "Match clock stopped"; description = $"Rolling automatically in {Mathf.CeilToInt(timing.RollRemaining)}s."; }
         else if (timing.HoldsMatchClock)
         {
             caption.text = "Match clock stopped";
@@ -101,6 +103,7 @@ public class MatchEventBannerController : MonoBehaviour
         {
             caption.text = $"{Mathf.CeilToInt(current.remaining)}s remaining";
             description = $"{current.owner} · {FormatDecision(current.kind)}";
+            if (timing.HasPendingRoll) description += $" · Auto roll in {Mathf.CeilToInt(timing.RollRemaining)}s";
         }
         if (detail != null) detail.text = description;
     }

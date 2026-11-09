@@ -1,9 +1,90 @@
 # Decision timing verification
 
-Core implementation added 2026-11-09; the identified focused acceptance checklist is now verified. Broader regression suites remain unexecuted. The user's implementation-time clarifications are recorded in
+Core implementation added 2026-11-09. The latest user revision and its focused verification are recorded first; older batches below are historical. Broader regression suites remain unexecuted. The user's implementation-time clarifications are recorded in
 `Documentation/Plans/DecisionTimingImplementation.md`.
 
-## Remaining acceptance work
+## Latest user revision: live rolls and shared previews (2026-11-09)
+
+This revision supersedes historical statements below that roll waits or ordinary
+result displays freeze match time/budgets, that each uncommitted preview has its own
+allowance, or that snapshot/forfeit inside MP has a separate allowance.
+
+- Difficulties 1–2: one SelectNextAction allowance survives all uncommitted action
+  previews and switches until actual commitment. No preview allowance can be banked.
+- Difficulty 3: an action key commits immediately and starts that action's allowance.
+  The new real-input test exposed Long Ball delaying commitment until target selection;
+  ActivateLongBall now commits on selection, consistent with P/C/F/S/M.
+- Mandatory rolls and normal automatic result reviews keep match time running.
+  A pending roll charges an existing active allowance only for its owner (or both
+  teams); it does not invent an allowance. Enter manual holds and actual pauses
+  suspend timing. Five-second auto-roll scheduling/race protection is preserved.
+- MP animation keeps its phase identity, budget consumption and countdown eligibility.
+  An expired allowance yields during automatic continuation, then holds again when
+  tactical input returns. Snapshot/forfeit-pace uses the MP allowance.
+- Countdown is hidden before 50% of the initial allowance is spent. The initial
+  budget is saved with timing; old timing data falls back to configured defaults.
+  Manual-hold notices remain visible independently of the countdown threshold.
+- Scene-authored decision/events panels are centered under HOME/AWAY respectively.
+  Verified saved world x centers: HOME/decision 140, AWAY/events 860. Event priority
+  still prevents simultaneous display. No designer-owned stats layout was changed.
+
+Final focused runs: **33 EditMode + 136 PlayMode passed, 0 failed, 0 skipped**.
+This includes 17 new service cases and 21 new integration cases, plus 131 affected
+existing cases. Filters ran serially through the live Editor; no complete suites or
+ordinary gameplay ran. Every run retained native XML/progress under
+`TestResults/GameplayRegression/Runs/`:
+
+| Run | Filter / scope | Passed | Failed | Skipped |
+| --- | --- | ---: | ---: | ---: |
+| `20261109T144614515Z` | `DecisionTimingLiveClockEditorTests` | 17 | 0 | 0 |
+| `20261109T145510752Z` | `DecisionTimingLiveClockPlayModeTests` | 21 | 0 | 0 |
+| `20261109T145628830Z` | `DecisionTimingBannerEditorTests` | 14 | 0 | 0 |
+| `20261109T145716101Z` | `DecisionTimingEditorTests.ChildSuspendsParentAndRollConsumesChildAllowance` | 2 | 0 | 0 |
+| `20261109T145734568Z` | `DecisionTimingPlayModeTests.Duel (20 cases)` | 20 | 0 | 0 |
+| `20261109T145805432Z` | `DecisionTimingPlayModeTests.RealAccuracyRoll` | 4 | 0 | 0 |
+| `20261109T145824803Z` | `DecisionTimingPlayModeTests.TargetReopening` | 16 | 0 | 0 |
+| `20261109T150119312Z` | `DecisionTimingPlayModeTests.TargetCountdownAndClock` | 8 | 0 | 0 |
+| `20261109T150137793Z` | `DecisionTimingPlayModeTests.WholeMovementPhase` | 2 | 0 | 0 |
+| `20261109T150531450Z` | `DecisionTimingPlayModeTests.GameplayTimingRestore` | 8 | 0 | 0 |
+| `20261109T150548664Z` | `DecisionTimingPlayModeTests.NonblockingScatter` | 8 | 0 | 0 |
+| `20261109T150616696Z` | `DecisionTimingPlayModeTests.FoulFollowup` | 2 | 0 | 0 |
+| `20261109T150639167Z` | `DecisionTimingPlayModeTests.AdditionalDecisions` | 12 | 0 | 0 |
+| `20261109T150656559Z` | `DecisionTimingPlayModeTests.StoppageManualReview` | 4 | 0 | 0 |
+| `20261109T150714072Z` | `DecisionTimingPlayModeTests.InterruptedTimingRestore` | 4 | 0 | 0 |
+| `20261109T150731269Z` | `DecisionTimingPlayModeTests.FileTimingRestore` | 4 | 0 | 0 |
+| `20261109T150748844Z` | `DecisionTimingPlayModeTests.ShotFollowup` | 4 | 0 | 0 |
+| `20261109T150811711Z` | `DecisionTimingPlayModeTests.KeeperFollowup` | 6 | 0 | 0 |
+| `20261109T150834146Z` | `DecisionTimingPlayModeTests.ShootoutReview` | 6 | 0 | 0 |
+| `20261109T150851507Z` | `DecisionTimingPlayModeTests.AutomaticStoppageRoll` | 1 | 0 | 0 |
+| `20261109T150908834Z` | `DecisionTimingPlayModeTests.RulesTiming` | 2 | 0 | 0 |
+| `20261109T150926498Z` | `DecisionTimingPlayModeTests.InspectionTiming` | 2 | 0 | 0 |
+| `20261109T150944102Z` | `DecisionTimingPlayModeTests.CpuRollTiming` | 2 | 0 | 0 |
+
+Compilation separately: open Editor reload completed and
+`EditorUtility.scriptCompilationFailed == false`. Historical test-fixture compiler
+errors were fixed before running tests. `git diff --check` reports only six
+Unity-serialized blank-field trailing spaces in Room; the scene was saved through
+Pipeline and was not rewritten to normalize them.
+
+Failed iteration artifacts are retained. Motion setup initially attempted an invalid
+move; it now uses a real legal off-ball MP animation. The old diff-3 Long Ball target
+fixture's supposedly invalid target was legal; it now selects an actual out-of-bounds
+hex. Committed movement restore fixtures now exercise actual committed state:
+normal save guards reject it, and an explicitly applied unsupported snapshot drops
+stale timing without claiming to reconstruct gameplay or accept a new action.
+Earlier historical claims that those interrupted saves reopened a pass were based on
+uncommitted snapshots and do not establish committed-action resumability. Supported
+stable/file saves still preserve IDs/time/expiry and accept the next real input.
+
+New service cases parameterized with roll-stage labels exercise shared timing policy;
+they are not independent integration tests of every named manager. Real integration
+runs cover accuracy, duels, fouls, scatter, shot/save/handling, keeper, shootout,
+manual reviews, CPU dispatch, rules/inspection and supported persistence paths.
+The Load Game browser/bootstrap UI and full regression suites were not executed.
+Broader user-run recommendations below remain applicable. Earlier audit/results are
+historical; do not interpret their roll-freezing assertions as current validation.
+
+## Historical acceptance work
 
 The previously pending 12-case batch compiled and passed after the user dismissed
 the external-scene-modification modal by reloading Room. That modal explained the

@@ -1,5 +1,23 @@
 # Decision timing PlayMode checklist
 
+## Latest live-clock revision
+
+- [x] Diff 1–2 shared preview allowance through switching/expiry and real commitment.
+- [x] Diff 3 immediate commitment on P/C/L/F/S and M; fix Long Ball commitment defect.
+- [x] Roll/automatic review live clock; manual Enter/pause freeze; CPU races preserved.
+- [x] Actual MP animation consumes phase time through expiry; snapshot uses MP budget.
+- [x] Halfway countdown boundary; announcements retain priority across all 14 kinds.
+- [x] Scene panels authored/saved under HOME/AWAY; no loaded-scene disk rewrite.
+- [x] Supported save restoration and unsupported committed-action stale-timing cleanup.
+- [x] 33 EditMode + 136 PlayMode passed, 0 failed/skipped; compile clean separately.
+- [ ] Broader user-run regression suites and Load Game browser/bootstrap (not run here).
+
+Run new fixtures `DecisionTimingLiveClockEditorTests` (EditMode) and
+`DecisionTimingLiveClockPlayModeTests` (PlayMode), category `DecisionTimingLiveClock`.
+Exact affected filters/native artifacts are in Verification.md. Historical checklist
+below predates the latest roll/preview rules; current policy is recorded above.
+
+
 - [x] Real target input, invalid-click stability, expiry and possession exclusion.
 - [x] Whole-team movement expiry and next-phase release.
 - [x] First Time Pass/High Pass movement, header, snapshot, goalkeeper and final-third ownership.

@@ -14,6 +14,25 @@ and continuations, manual header holds, inspection and actual MatchManager snaps
 rebuilds. Later batches resolved the remaining focused gaps; Verification.md records
 the current acceptance audit. Rules behavior was clarified by the user below.
 
+## Current timing rules (latest user clarification)
+
+- Difficulties 1–2 share one action-selection allowance across every uncommitted
+  preview until commitment; only then does the committed action get its own time.
+- Difficulty 3 commits the selected action immediately on its key press and starts
+  its own allowance. There is no difficulty-3 precommit preview budget.
+- Mandatory roll waits and automatic result-review durations keep match time and
+  applicable owner budgets running. Enter manual holds and actual Pause suspend them.
+  Built-in stopped-clock exclusions and five-second automatic-roll deadlines remain.
+- Player movement in MP keeps its budget/countdown active. Snapshot/forfeit-pace
+  inside MP uses the phase allowance. Expiry stops tactical-input waits; automatic
+  rolls/reviews/movement may continue before that hold returns.
+- Show countdown only from 50% spent. Center decision under HOME, events under AWAY;
+  event announcements retain priority and never appear simultaneously with timing.
+
+These rules supersede conflicting historical wording below. Latest focused evidence:
+33 EditMode and 136 PlayMode passed, zero failed/skipped; compilation separately
+clean. See Verification.md for exact artifacts and unsupported mid-action save limits.
+
 ## Follow-up clarifications (2026-11-09)
 
 - Opening Rules from Pause preserves the existing gameplay pause. Opening Rules
