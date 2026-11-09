@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Latest immediate-display checks: DecisionTimingBannerEditorTests (17 EditMode)
+and DecisionTimingLiveClockPlayModeTests.DribblePaceChoice (12 PlayMode). The latter
+covers both directions/difficulties and inside/outside snapshot range. Countdown
+threshold defaults to 0f; 0.5f restores halfway display. Latest affected focused scope
+passed 17 EditMode + 44 distinct PlayMode cases; Verification.md lists native runs.
+
 Current concurrent MP choice checks use `DecisionTimingLiveClockEditorTests`,
 `DecisionTimingBannerEditorTests`, `DecisionTimingLiveClockPlayModeTests.SnapshotUsesPhase`,
 `.SnapshotDeclarationPanel`, `DecisionTimingPlayModeTests.Duel` and `.FoulFollowup`.

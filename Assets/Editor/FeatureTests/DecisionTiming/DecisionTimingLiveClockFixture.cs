@@ -5,6 +5,66 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    public IEnumerator RunDribblePaceTiming(int side, int difficulty, bool inBox)
+    {
+        Board(side); match.difficulty_level = difficulty; match.isClockRunning = true;
+        Place(attacker, Hex(inBox ? 13 * side : 0)); Place(defender, Hex(-10 * side, 8));
+        Place(awayGK, Hex(18 * side, -4)); attacker.pace = 6; attacker.dribbling = 6;
+        ball.PlaceAtCell(attacker.currentHex); match.SetLastToken(attacker);
+        match.currentState = MatchManager.GameState.EndOfMovementPhase; match.RefreshAvailableActionsForCurrentState();
+        Subscribe(movement); LegacyKey("M"); if (difficulty < 3) movement.CommitToAction();
+        match.RefreshDecisionTiming(); var phase = match.DecisionTiming.Current;
+        match.AdvanceDecisionTiming(phase.budget / 2 + 1);
+        input.TryExecuteSyntheticHexClick(attacker.currentHex, "Pace timing select", out _);
+        input.TryExecuteSyntheticHexClick(Hex(inBox ? 14 * side : side, inBox ? 1 : 0), "Pace timing first step", out _);
+        yield return Until(() => !movement.isPlayerMoving && movement.isDribblerRunning && movement.isAwaitingHexDestination, "live mid-pace input");
+        Assert.That(movement.isWaitingForSnapshotDecision, Is.EqualTo(inBox));
+        match.RefreshDecisionTiming(); var choice = match.DecisionTiming.Current;
+        Assert.That(choice.kind, Is.EqualTo(DecisionKind.SnapshotOrForfeitPace), "move-or-forfeit needs an allowance even without S");
+        Assert.That(choice.id, Is.Not.EqualTo(phase.id));
+        float phaseBefore = phase.remaining;
+        input.TryExecuteSyntheticHexClick(Hex(-15 * side, 8), "Invalid pace destination", out _);
+        match.AdvanceDecisionTiming(choice.budget / 2 - .25f);
+        Assert.That(match.DecisionTiming.Current.id, Is.EqualTo(choice.id));
+        AssertPaceTimingDisplay(match.DecisionTiming, DecisionTimingConfig.CountdownDisplaySpentFraction <= 0 ? "Snapshot Or Forfeit Pace" : "Attacking Movement");
+        match.AdvanceDecisionTiming(.25f);
+        AssertPaceTimingDisplay(match.DecisionTiming, "Snapshot Or Forfeit Pace");
+        match.AdvanceDecisionTiming(choice.remaining);
+        Assert.That(match.DecisionTiming.HoldsMatchClock, Is.True);
+        Assert.That(phase.remaining, Is.EqualTo(phaseBefore - choice.budget));
+        input.TryExecuteSyntheticHexClick(Hex(inBox ? 14 * side : side, inBox ? 2 : 1), "Pace timing next step after expiry", out _);
+        yield return Until(() => movement.isPlayerMoving, "expired choice still permits movement");
+        match.AdvanceDecisionTiming(1);
+        Assert.That(match.DecisionTiming.HoldsMatchClock, Is.False, "animation keeps match time live");
+        yield return Until(() => !movement.isPlayerMoving && movement.isAwaitingHexDestination, "next pace choice");
+        match.RefreshDecisionTiming(); var next = match.DecisionTiming.Current;
+        Assert.That(next.kind, Is.EqualTo(DecisionKind.SnapshotOrForfeitPace));
+        Assert.That(next.id, Is.Not.EqualTo(choice.id), "a completed pace starts a new logical choice");
+        Assert.That(next.remaining, Is.EqualTo(next.budget));
+        match.AdvanceDecisionTiming(next.remaining); LegacyKey("X");
+        yield return Until(() => !movement.isDribblerRunning && movement.movedTokens.Contains(attacker), "forfeit remains legal after own expiry");
+        match.RefreshDecisionTiming();
+        Assert.That(match.DecisionTiming.Capture().decisions.Any(d => d.id == next.id && !d.inactive), Is.False);
+    }
+
+    private static void AssertPaceTimingDisplay(DecisionTimingService timing, string expected)
+    {
+        var root = new GameObject("Pace countdown assertion", typeof(RectTransform)); root.SetActive(false);
+        try
+        {
+            var banner = root.AddComponent<MatchEventBannerController>();
+            banner.timingVisibility = root.AddComponent<CanvasGroup>();
+            banner.timingCaption = new GameObject("Caption", typeof(RectTransform), typeof(TMPro.TextMeshProUGUI)).GetComponent<TMPro.TMP_Text>();
+            banner.timingDetail = new GameObject("Detail", typeof(RectTransform), typeof(TMPro.TextMeshProUGUI)).GetComponent<TMPro.TMP_Text>();
+            banner.timingIcon = new GameObject("Icon", typeof(RectTransform), typeof(UnityEngine.UI.Image)).GetComponent<UnityEngine.UI.Image>();
+            banner.timingCaption.transform.SetParent(root.transform); banner.timingDetail.transform.SetParent(root.transform); banner.timingIcon.transform.SetParent(root.transform);
+            banner.SetTimingStatus(timing);
+            Assert.That(banner.IsTimingVisible, Is.True);
+            Assert.That(banner.timingDetail.text, Does.Contain(expected));
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
     public IEnumerator RunLiveTimingDifficultyThree(string action)
     {
         Board(1); Place(attacker,Hex(action == "S" ? 8 : 0)); Place(defender,Hex(-10,8)); ball.PlaceAtCell(attacker.currentHex);

@@ -1,5 +1,14 @@
 # Decision timing PlayMode checklist
 
+## Immediate-display and mid-dribble correction
+
+- [x] Preserve user-saved timing/event panel positions without authoring overrides.
+- [x] Set prominent CountdownDisplaySpentFraction to 0f (0.5f restores halfway).
+- [x] Reproduce/fix move/X missing its own budget outside snapshot range.
+- [x] Add DribblePaceChoice: 12 cases, all difficulties/directions and inside/outside box.
+- [x] Verify concurrent charging, priority, invalid input, expiry, next movement/X.
+- [x] 17 EditMode + 44 PlayMode distinct passes; compile clean separately.
+
 ## Concurrent-choice and snapshot-panel correction
 
 - [x] Own 10/10/5 choice allowance plus owning MP time for snapshot/tackle/nutmeg.

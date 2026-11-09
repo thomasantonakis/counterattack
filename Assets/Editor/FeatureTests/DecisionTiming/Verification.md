@@ -3,6 +3,51 @@
 Core implementation added 2026-11-09. The latest user revision and its focused verification are recorded first; older batches below are historical. Broader regression suites remain unexecuted. The user's implementation-time clarifications are recorded in
 `Documentation/Plans/DecisionTimingImplementation.md`.
 
+## Mid-dribble coverage and immediate countdown default (2026-11-09)
+
+Latest user instruction restores immediate countdown visibility. The prominent setting
+at the top of DecisionTimingConfig is `CountdownDisplaySpentFraction = 0f`:
+0 shows immediately, 0.5 restores the halfway threshold. Event announcements still
+take priority; built-in clock stops still exclude decision budgets. A child choice
+now takes display priority immediately under the default, while both allowances run.
+
+Fixed missing mid-dribble coverage: the short SnapshotOrForfeitPace allowance now
+also covers move-another-hex / X waits when snapshot is unavailable. Explicit roll,
+keeper, shot, reposition and other child interruptions do not get misclassified as
+that choice. Each completed pace leads to its next logical choice; invalid clicks do
+not refill the current one. Both the choice and owning MP consume time.
+
+The user's manually saved timing/event panel positions and font changes are
+preserved. Room SHA-1 stayed fc86a26bb85ea0b4e65a1277938f467f5e4e543d throughout
+verification; no authoring alignment helper or loaded-scene disk rewrite was used.
+Room is loaded, stopped and clean. The earlier reported panel centers are historical.
+
+Reproduction `20261109T154857367Z`: 6 inside-box cases passed, 6 outside-box cases
+failed because only AttackingMovement was registered. All 12 new cases passed after
+the fix. Tests cover both directions, all difficulties, inside/outside snapshot range,
+concurrent charging, invalid clicks, countdown priority, expiry, legal next movement,
+animation and X after expiry. Their display expectations were updated for threshold 0
+and rerun following the presentation-only default change.
+
+Final distinct focused scope: **17 EditMode + 44 PlayMode passed, 0 remaining failed,
+0 skipped**. Native results/progress retained under TestResults/GameplayRegression/Runs:
+
+| Run | Filter | Passed | Failed | Skipped |
+| --- | --- | ---: | ---: | ---: |
+| `20261109T155004757Z` | LiveClockPlayModeTests.DribblePaceChoice, initial fixed run | 12 | 0 | 0 |
+| `20261109T155031056Z` | LiveClockPlayModeTests.SnapshotUsesPhase | 2 | 0 | 0 |
+| `20261109T155056520Z` | LiveClockPlayModeTests.SnapshotDeclarationPanel | 2 | 0 | 0 |
+| `20261109T155121944Z` | PlayModeTests.Duel | 20 | 0 | 0 |
+| `20261109T155152824Z` | PlayModeTests.FoulFollowup | 2 | 0 | 0 |
+| `20261109T155218505Z` | LiveClockPlayModeTests.CommittedMovement | 6 | 0 | 0 |
+| `20261109T155430123Z` | DecisionTimingBannerEditorTests, immediate display/choice priority/event preemption | 17 | 0 | 0 |
+| `20261109T155451965Z` | LiveClockPlayModeTests.DribblePaceChoice, threshold-0 rerun | 12 | 0 | 0 |
+
+Expand PlayMode filter names with the DecisionTiming fixture prefix. The repeated
+12-case run is counted once in the distinct total. Compilation separately: live
+recompile completed cleanly; scriptCompilationFailed is false. No full suites or
+ordinary gameplay ran. Full regression/Load Game browser limitations remain below.
+
 ## Concurrent choice allowances and snapshot panel follow-up (2026-11-09)
 
 Latest user clarification supersedes the earlier MP-only snapshot/challenge rule.

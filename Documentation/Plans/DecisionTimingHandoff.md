@@ -1,5 +1,14 @@
 # Decision timing — next-session handoff
 
+## Latest continuation
+
+The user saved timing/event panel positions: preserve Room as authored; do not
+rerun AlignLoadedTimingDisplays. Timer now shows immediately by default; adjust
+CountdownDisplaySpentFraction (0f immediate, 0.5f halfway) in DecisionTimingConfig.cs.
+All mid-dribble move/X choices now have the short allowance, even without S being
+available. 17 EditMode + 44 PlayMode distinct focused cases passed, compile clean
+separately; native evidence is first in Verification.md. No full suites ran.
+
 ## Subsequent clarification verified
 
 The current rule gives snapshot/forfeit-pace and tackle/nutmeg choices their own

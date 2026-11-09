@@ -11,6 +11,8 @@ public sealed class DecisionTimingLiveClockPlayModeTests
     private static Type Bridge => AppDomain.CurrentDomain.GetAssemblies().Single(a => a.GetName().Name == "Assembly-CSharp-Editor").GetType("GoalkeeperBoxEntryFixture", true);
     [SetUp] public void SetUp() => board = Activator.CreateInstance(Bridge);
     [UnityTearDown] public IEnumerator Cleanup() => (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(board, null);
+    [UnityTest] public IEnumerator DribblePaceChoice([Values(1,-1)] int side, [Values(1,2,3)] int difficulty, [Values(false,true)] bool inBox)
+        => (IEnumerator)Bridge.GetMethod("RunDribblePaceTiming").Invoke(board, new object[] {side,difficulty,inBox});
     [UnityTest] public IEnumerator SharedPreview([Values(1,2)] int difficulty, [Values(false,true)] bool expired)
         => (IEnumerator)Bridge.GetMethod("RunLiveTimingPreview").Invoke(board, new object[] {difficulty,expired});
     [UnityTest] public IEnumerator CommittedMovement([Values(1,2,3)] int difficulty, [Values(false,true)] bool expired)

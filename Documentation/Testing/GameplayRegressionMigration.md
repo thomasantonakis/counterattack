@@ -1,5 +1,11 @@
 # Gameplay regression migration
 
+Mid-dribble timing adds 12 native PlayMode cases in
+DecisionTimingLiveClockPlayModeTests.DribblePaceChoice. Six outside-box failures
+reproduced the missing choice allowance before the fix; all 12 passed afterward.
+Latest focused verification: 17 EditMode + 44 distinct PlayMode cases passed, compile
+separately clean, no legacy removals/full suites. See DecisionTiming/Verification.md.
+
 Decision-timing concurrent-choice correction adds four EditMode accounting cases,
 three EditMode choice-display cases and two PlayMode snapshot-panel cases. Final
 per-case outcomes across focused runs: 38 EditMode + 45 PlayMode passed; no legacy

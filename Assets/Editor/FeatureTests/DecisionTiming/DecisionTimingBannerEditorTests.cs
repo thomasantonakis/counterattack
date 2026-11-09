@@ -9,7 +9,7 @@ public sealed class DecisionTimingBannerEditorTests
     [TestCase(DecisionKind.SnapshotOrForfeitPace)]
     [TestCase(DecisionKind.StandaloneNutmegDecision)]
     [TestCase(DecisionKind.StandaloneTackleOrStand)]
-    public void ChoiceCountdownTakesPrecedenceAtOwnHalfwayPoint(DecisionKind kind)
+    public void ChoiceCountdownTakesPrecedenceAtConfiguredThreshold(DecisionKind kind)
     {
         var root = new GameObject("Concurrent timing display", typeof(RectTransform)); root.SetActive(false);
         try
@@ -28,9 +28,10 @@ public sealed class DecisionTimingBannerEditorTests
             t.Register("choice", kind, "Home", 3, true); t.EndRegistration();
             banner.SetTimingStatus(t);
             Assert.That(banner.IsTimingVisible, Is.True);
-            Assert.That(banner.timingDetail.text, Does.Contain("Attacking Movement"));
+            bool immediateChoice = DecisionTimingConfig.CountdownDisplaySpentFraction == 0;
+            Assert.That(banner.timingDetail.text.Contains("Attacking Movement"), Is.EqualTo(!immediateChoice));
             t.Advance(2.49f); banner.SetTimingStatus(t);
-            Assert.That(banner.timingDetail.text, Does.Contain("Attacking Movement"));
+            Assert.That(banner.timingDetail.text.Contains("Attacking Movement"), Is.EqualTo(!immediateChoice));
             t.Advance(.01f); banner.SetTimingStatus(t);
             Assert.That(banner.timingDetail.text, Does.Not.Contain("Attacking Movement"));
             Assert.That(banner.timingCaption.text, Is.EqualTo("3s remaining"));
@@ -65,8 +66,8 @@ public sealed class DecisionTimingBannerEditorTests
             banner.clockArtwork = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/DecisionClock.png");
             Assert.That(banner.clockArtwork, Is.Not.Null);
             var timing = new DecisionTimingService(); timing.BeginDecision("target", DecisionKind.StandardPassTarget, "Away", 3); timing.Select("target");
-            banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.False);
-            timing.Advance(4.75f); banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.False);
+            banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.EqualTo(DecisionTimingConfig.CountdownDisplaySpentFraction <= 0));
+            timing.Advance(4.75f); banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.EqualTo(DecisionTimingConfig.CountdownDisplaySpentFraction <= .475f));
             timing.Advance(.25f); banner.SetTimingStatus(timing); Assert.That(banner.IsTimingVisible, Is.True);
             Assert.That(banner.timingIcon.sprite, Is.SameAs(banner.clockArtwork));
             Assert.That(banner.timingCaption.color.g, Is.EqualTo(.68f));

@@ -1,5 +1,15 @@
 # Approved plan: decision allowances and automatic rolls
 
+## Current override: visible immediately, every dribble choice covered
+
+The countdown visibility default is now 0f in CountdownDisplaySpentFraction at the
+top of DecisionTimingConfig.cs; 0.5f restores half-spent visibility. This overrides
+all earlier halfway-default wording. Child priority uses that same setting.
+Move/X during any live dribble step has its own allowance even outside snapshot
+range, alongside the owning MP allowance. Saved designer panel positions are
+preserved. Latest focused scope: 17 EditMode + 44 PlayMode passed; compilation
+separately clean. Verification.md lists retained XML and remaining scope limits.
+
 Status: implementation and identified focused acceptance checklist verified. See `Assets/Editor/FeatureTests/DecisionTiming/Verification.md` for results and unexecuted broader user-run regression checks. Original plan prepared 2026-11-08.
 
 The 2026-11-09 stoppage/persistence continuation passed 12 further focused PlayMode

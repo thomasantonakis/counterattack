@@ -64,7 +64,9 @@ public enum DecisionKind
 
 public static class DecisionTimingConfig
 {
-    public const float CountdownDisplaySpentFraction = 0.5f;
+    // COUNTDOWN VISIBILITY: fraction of the allowance spent before showing it.
+    // 0f = show immediately (default); 0.5f = show after half is spent.
+    public const float CountdownDisplaySpentFraction = 0f;
     public const float AutomaticRollSeconds = 5f;
     public const float CountdownWarningSeconds = 5f;
 
