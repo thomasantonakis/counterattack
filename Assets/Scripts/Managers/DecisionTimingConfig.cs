@@ -84,7 +84,7 @@ public static class DecisionTimingConfig
         [DecisionKind.AttackingMovement]             = (90f,   80f,   60f),
         [DecisionKind.DefensiveMovement]             = (120f, 100f,   90f),
         [DecisionKind.AttackingTwoForTwo]            = (30f,   20f,   10f),
-        [DecisionKind.SnapshotOrForfeitPace]          = (10f,   10f,    5f),
+        [DecisionKind.SnapshotOrForfeitPace]         = (10f,   10f,    5f),
         [DecisionKind.TackleReposition]              = (15f,   10f,    5f),
         [DecisionKind.NutmegReposition]              = (15f,   10f,    5f),
         [DecisionKind.DefensiveBoxMovement]          = (10f,   10f,    8f),
@@ -161,7 +161,7 @@ public static class DecisionTimingConfig
 
         // Kickoff
         [DecisionKind.KickoffFormationSetup]         = (90f,   80f,   60f),
-        [DecisionKind.KickoffTakerSelection]          = (20f,   15f,   10f),
+        [DecisionKind.KickoffTakerSelection]         = (20f,   15f,   10f),
         [DecisionKind.KickoffConfirmation]           = (20f,   15f,   10f),
 
     };
