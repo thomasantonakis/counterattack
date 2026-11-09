@@ -40,6 +40,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         }
         bool easy = branch == "easy";
         match.difficulty_level = easy ? 1 : 3;
+        // Selection is tested from a completed movement, where HP is legal.
+        // Initial kickoff now offers only a standard pass.
+        match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         LegacyKey("C");
         Assert.That(high.isActivated && high.isWaitingForConfirmation, Is.True);
         Assert.That(match.currentState == MatchManager.GameState.HighPass, Is.EqualTo(!easy));

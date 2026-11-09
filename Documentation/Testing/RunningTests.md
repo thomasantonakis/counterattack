@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
+RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.
+Method filters: ThrowSelectionTiming, PostHeaderMovementTiming, CornerTargets,
+FinalThirdHover. Latest: 24 new plus 11 affected PlayMode cases passed; compilation
+separately clean. Native paths/limitations are recorded in
+Assets/Editor/FeatureTests/RestartSelectionFeedback/TASKS.md. No full suites ran.
+
 Seven reported decision-timing issues use DecisionTimingReportedIssuesPlayModeTests
 (category DecisionTimingReportedIssues): SnapshotConsumesOneMove, FinalThirdMotion,
 TacklePanel and PenaltyKeeperImmediately. Run explicit fixture/method filters only.

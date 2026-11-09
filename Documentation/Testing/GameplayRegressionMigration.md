@@ -1,5 +1,13 @@
 # Gameplay regression migration
 
+Restart selection feedback adds 24 native cases for stopped throw-in targeting,
+post-header MP commitment, corner HP yellow targets and F3 orange hover. Final
+focused runs passed these 24 plus 3 existing high-pass selection and 8 F3 timing
+cases. Two high-pass fixtures used obsolete kickoff availability; setup now enters
+the legal completed-MP state through the real domain entry point. Assertions and
+gameplay rules are preserved. No legacy tests removed or full suites run; see
+Assets/Editor/FeatureTests/RestartSelectionFeedback/TASKS.md for native evidence.
+
 Seven reported issues add DecisionTimingReportedIssuesPlayModeTests: 8 snapshot
 slot cases, 8 F3-motion cases, 4 tackle ownership/pulse cases and 4 immediate-keeper
 penalty cases. The exhausted/taken snapshots reproduced double advancement before

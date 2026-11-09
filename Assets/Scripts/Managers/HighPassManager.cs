@@ -558,7 +558,7 @@ public partial class HighPassManager : MonoBehaviour
             CommitToThisAction();
             Debug.Log("High Pass committed on [C]. Select a valid target to continue.");
         }
-        else if (MatchManager.Instance.difficulty_level < 3 && !isCornerKick)
+        else if (MatchManager.Instance.difficulty_level < 3)
         {
             HighlightAllValidHighPassTargets();
         }
@@ -1009,7 +1009,11 @@ public partial class HighPassManager : MonoBehaviour
                     : $"{offsideWarning} Click the orange hex again to confirm target.";
                 hexGrid.ClearHighlightedHexes();
 
-                if (!isCornerKick)
+                if (isCornerKick)
+                {
+                    HighlightAllValidHighPassTargets();
+                }
+                else
                 {
                     if (effectiveIsGK)
                     {
@@ -2052,8 +2056,7 @@ public partial class HighPassManager : MonoBehaviour
         return isActivated
             && isWaitingForConfirmation
             && MatchManager.Instance != null
-            && MatchManager.Instance.difficulty_level < 3
-            && !isCornerKick;
+            && MatchManager.Instance.difficulty_level < 3;
     }
 
     private void RefreshDifficultyOneHighPassTargetHighlights()
@@ -2067,7 +2070,7 @@ public partial class HighPassManager : MonoBehaviour
                 continue;
             }
 
-            bool shouldPaintTarget = MatchManager.Instance.difficulty_level == 1
+            bool shouldPaintTarget = isCornerKick || MatchManager.Instance.difficulty_level == 1
                 || hex == currentTargetHex
                 || hex == hoveredHighPassTargetHex;
             if (!shouldPaintTarget)

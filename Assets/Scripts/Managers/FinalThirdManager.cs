@@ -35,6 +35,7 @@ public partial class FinalThirdManager : MonoBehaviour
     private bool isWaitingForTargetHex = false;
     [SerializeField]
     private bool isMovingToken = false;
+    private HexCell hoveredMovementHex;
     public bool forfeitWasPressed = false;
     public bool isWaitingForWhatToDo = false;
     public bool isWaitingForSetPieceGoalKickChoice = false;
@@ -61,13 +62,43 @@ public partial class FinalThirdManager : MonoBehaviour
     private void OnEnable()
     {
         GameInputManager.OnClick += OnClickReceived;
+        GameInputManager.OnHover += OnHoverReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
 
     private void OnDisable()
     {
         GameInputManager.OnClick -= OnClickReceived;
+        GameInputManager.OnHover -= OnHoverReceived;
+        ClearMovementHover();
         GameInputManager.OnKeyPress -= OnKeyReceived;
+    }
+
+    private void OnHoverReceived(PlayerToken token, HexCell hex)
+    {
+        // Keep the chosen destination intact while the token is travelling.
+        if (isMovingToken) return;
+        if (!isActivated || !isWaitingForTargetHex || selectedToken == null
+            || MatchManager.Instance?.IsGameplayInputBlocked == true || hex == null
+            || hex.GetOccupyingToken() != null || hexGrid == null || !hexGrid.highlightedHexes.Contains(hex))
+        {
+            ClearMovementHover();
+            return;
+        }
+        if (hoveredMovementHex == hex) return;
+        ClearMovementHover();
+        hoveredMovementHex = hex;
+        hex.HighlightHex("MovementDestinationHover");
+    }
+
+    private void ClearMovementHover()
+    {
+        if (hoveredMovementHex == null) return;
+        var previous = hoveredMovementHex;
+        hoveredMovementHex = null;
+        previous.ResetHighlight();
+        if (isActivated && isWaitingForTargetHex && hexGrid != null && hexGrid.highlightedHexes.Contains(previous))
+            previous.HighlightHex("PaceAvailable");
     }
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
@@ -353,6 +384,7 @@ public partial class FinalThirdManager : MonoBehaviour
 
     public void HandleTokenSelectionForF3(PlayerToken token)
     {
+        ClearMovementHover();
         hexGrid.ClearHighlightedHexes();
         if (token == null)
         {
@@ -481,6 +513,7 @@ public partial class FinalThirdManager : MonoBehaviour
         }
 
         isMovingToken = false;
+        ClearMovementHover();
     }
 
     private IEnumerator NextF3Phase()
@@ -581,6 +614,7 @@ public partial class FinalThirdManager : MonoBehaviour
 
     private void EndF3Phase(bool preserveGoalKickContext = false)
     {
+        ClearMovementHover();
         string context = FormatFinalThirdContext();
         bool completedBothSides = bothSides;
         bool completedSecondPhase = thisIsTheSecond;
@@ -711,6 +745,7 @@ public partial class FinalThirdManager : MonoBehaviour
         }
 
         // yield return null;
+        ClearMovementHover();
         forfeitWasPressed = true;
         hexGrid.ClearHighlightedHexes();
         Debug.Log("Forfeiting Current F3 Moves.");

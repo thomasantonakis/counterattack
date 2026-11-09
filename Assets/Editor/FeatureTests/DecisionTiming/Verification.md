@@ -1,5 +1,27 @@
 # Decision timing verification
 
+## Throw-in audit and restart selection feedback (2026-11-09)
+
+Throw-now type selection, header targeting and diff 1–2 feet previews remain in
+WaitingForThrowInTaker: no timer while that built-in stop applies. Diff 3 feet commits
+on P, enters StandardPass and receives its target allowance. Post-header MP starts
+its own allowance at commitment: diff 1–2 previews use selection time first; diff 3
+and automatic MPs commit immediately. Clock rules were not changed.
+
+Corner HP valid targets now show yellow at difficulties 1–2, retaining orange hover
+and selected-target feedback; diff 3 stays unassisted. F3 selected-player destinations
+show orange on valid hover and restore on exit/forfeit. The filtered legality lists
+and designer-authored layout remain unchanged.
+
+Dedicated fixture/checklist: Assets/Editor/FeatureTests/RestartSelectionFeedback/
+TASKS.md; wrapper/category RestartSelectionFeedbackPlayModeTests /
+RestartSelectionFeedback. Final focused scope: 24 new + 11 affected PlayMode passes,
+zero remaining failed/skipped. Compilation separately clean. Native final runs:
+191413959Z (24), 191725347Z (3), 191742936Z (8), all prefixed 20261109T under
+TestResults/GameplayRegression/Runs/. No full suites or ordinary gameplay ran.
+See that checklist for reproduction results, obsolete kickoff fixture correction
+and explicit broader user-run recommendations.
+
 Core implementation added 2026-11-09. The latest user revision and its focused verification are recorded first; older batches below are historical. Broader regression suites remain unexecuted. The user's implementation-time clarifications are recorded in
 `Documentation/Plans/DecisionTimingImplementation.md`.
 
