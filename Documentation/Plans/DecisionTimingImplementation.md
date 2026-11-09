@@ -1,17 +1,18 @@
 # Approved plan: decision allowances and automatic rolls
 
-Status: core implementation present; focused acceptance verification is in progress. See `Assets/Editor/FeatureTests/DecisionTiming/Verification.md` for completed checks and remaining work. Original plan prepared 2026-11-08.
+Status: implementation and identified focused acceptance checklist verified. See `Assets/Editor/FeatureTests/DecisionTiming/Verification.md` for results and unexecuted broader user-run regression checks. Original plan prepared 2026-11-08.
 
 The 2026-11-09 stoppage/persistence continuation passed 12 further focused PlayMode
 cases, closing the named manual stoppage-review and supported save/rebuild gaps.
-The original-acceptance audit in Verification.md still identifies unverified combined
-GK/shot follow-up timing, actual target cancellation/reopening and nonblocking results.
-Whole-plan completion is not claimed.
+The subsequent remaining-test batch closed combined GK/shot/foul follow-up timing,
+actual target cancellation/reopening and nonblocking-result coverage: 42 new cases and
+8 affected regressions passed. It also reproduced/fixed nonblocking scatter's incorrect
+clock hold. Full-suite regression validation is unexecuted and is not claimed.
 
 Continuation 2026-11-09: 22 additional focused PlayMode cases passed for jumper lists
 and continuations, manual header holds, inspection and actual MatchManager snapshot
-rebuilds. Whole-plan acceptance remains open; Verification.md records the remaining
-combination gaps. Rules behavior was clarified by the user in the follow-up below.
+rebuilds. Later batches resolved the remaining focused gaps; Verification.md records
+the current acceptance audit. Rules behavior was clarified by the user below.
 
 ## Follow-up clarifications (2026-11-09)
 

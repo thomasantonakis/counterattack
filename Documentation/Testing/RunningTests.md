@@ -9,7 +9,7 @@ can run; substitution/forced-replacement budgets are removed. Mandatory rolls st
 five-second deadlines during built-in stoppages, with gameplay pauses respected.
 See `Assets/Editor/FeatureTests/DecisionTiming/Verification.md` for 192 EditMode and 35
 distinct initial PlayMode passes, subsequent focused duel runs, native XML under `TestResults/GameplayRegression/Runs/`, and
-broader user-run checks. The whole plan's acceptance verification remains in progress; this is focused validation, not a complete regression result.
+broader user-run checks. Identified focused acceptance gaps are now verified; this is not a complete regression result.
 
 The 2026-11-09 continuation adds 22 passing focused cases. Use single method filters
 `DecisionTimingPlayModeTests.JumperSelection`, `.JumperContinuation`,
@@ -34,6 +34,13 @@ The latter verifies the stable-save guard and stale timing cleanup, not resumabl
 mid-action saves. File tests use disposable paths and restore application/prefs state.
 Their native XML is retained in runs `20261109T123543740Z`, `20261109T123616744Z`
 and `20261109T123647770Z`; see Verification.md for the remaining acceptance audit.
+
+Remaining-test batch is complete: single filters `DecisionTimingPlayModeTests.TargetReopening`,
+`.KeeperFollowup`, `.ShotFollowup`, `.FoulFollowup`, `.NonblockingScatter` and `.ShootoutReview`
+(expand the fixture prefix) passed 42 new cases. Affected `.DuelManualReview` and
+`.RealAccuracyRoll` reruns passed 8 cases. No full suites ran. The fixed nonblocking
+scatter result allows travel/possession time while recovery rolls and blocking reviews
+retain their holds. Verification.md records final XML paths and the completed focused audit.
 
 
 Intro clock visibility uses `IntroClockVisibilityEditorTests` under

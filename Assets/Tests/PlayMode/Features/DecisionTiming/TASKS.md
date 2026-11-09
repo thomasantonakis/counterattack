@@ -13,7 +13,7 @@ result paths, limitations and broader user-run checks.
 
 - [x] Tackle/nutmeg owner, decline, expiry, reposition, turnover and next-phase timing:
   `DecisionTimingPlayModeTests.Duel`, 16/16 passed, run `20261109T102653052Z`.
-- [ ] Remaining plan acceptance: complete jumper-list timing, manual holds/inspection overlays,
+- [x] Handoff acceptance: complete jumper-list timing, manual holds/inspection overlays,
   and actual gameplay save/load restoration (see Verification.md).
 
 - [x] JumperSelection and JumperContinuation: two-player lists, reselection, expiry,
@@ -28,8 +28,17 @@ result paths, limitations and broader user-run checks.
 - [x] Jumper overflow/invalid clicks/optional GK and manual duel/expired-parent review cases.
 - [x] StoppageManualReview, FileTimingRestore and InterruptedTimingRestore: 12/12
   passed after resolving the external-scene modal and Editor-folder host fixture issue.
-- [ ] Complete partial rows in Verification.md's original acceptance audit: remaining
+- [x] Complete partial rows in Verification.md's original acceptance audit:
   GK/shot follow-up families, actual target cancellation/reopening and nonblocking results.
+
+- [x] TargetReopening (16), KeeperFollowup (6), ShotFollowup (4), FoulFollowup (2),
+  NonblockingScatter (8), ShootoutReview (6): 42 new cases passed.
+- [x] Affected DuelManualReview (4) and RealAccuracyRoll (4) regressions passed.
+- [x] Reproduce nonblocking scatter's incorrect result hold, fix it, verify recovery
+  rolls/results reclaim their holds and blocking/manual results remain unchanged.
+
+Final remaining-test batch: 50 passed, zero failed/skipped; compilation clean.
+Broader user-run checks remain unexecuted; see Verification.md for native artifacts.
 
 This continuation batch passed 22 cases; native evidence and compilation are recorded
 separately in Verification.md. Use each named method as a single explicit filter.

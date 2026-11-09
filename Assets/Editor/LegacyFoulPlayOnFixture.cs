@@ -22,9 +22,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(movement.isWaitingForReposition, Is.False, "A steal foul grants no tackle-winner reposition.");
         Assert.That(movement.isWaitingForSnapshotDecision, Is.True);
     }
-    private IEnumerator PrepareLegacySoaresStealFoul()
+    private IEnumerator PrepareLegacySoaresStealFoul(int side = 1)
     {
-        var players = LoadLegacyRoster();
+        var players = LoadLegacyRoster(side);
         var dribbler = players["Yaneva"];
         var soares = players["Soares"];
         AttachAuthoredPanels(); EnableForAuthoredPresentation(movement); EnableForAuthoredPresentation(loose);
@@ -34,13 +34,13 @@ public sealed partial class GoalkeeperBoxEntryFixture
         yield return ForfeitLegacyFinalThirds(); LegacyKey("M");
         input.TryExecuteSyntheticHexClick(dribbler.currentHex, "Legacy migration", out _);
         Assert.That(movement.selectedToken, Is.SameAs(dribbler));
-        yield return LegacyDribbleStep(dribbler, Hex(11));
-        input.TryExecuteSyntheticHexClick(Hex(12, 1), "Legacy migration", out _);
+        yield return LegacyDribbleStep(dribbler, Hex(11 * side));
+        input.TryExecuteSyntheticHexClick(Hex(12 * side, 1), "Legacy migration", out _);
         yield return Until(() => keeper.isActivated, "second pace offers the box-entry goalkeeper move");
-        input.TryExecuteSyntheticHexClick(Hex(16, -1), "Legacy migration", out _);
+        input.TryExecuteSyntheticHexClick(Hex(16 * side, -1), "Legacy migration", out _);
         yield return Until(() => !keeper.isActivated && !keeper.IsResolvingMove
             && movement.remainingDribblerPace == 4 && movement.isAwaitingHexDestination, "dribbler regains control after the nested goalkeeper move");
-        yield return LegacyDribbleStep(dribbler, Hex(13));
+        yield return LegacyDribbleStep(dribbler, Hex(13 * side));
         yield return Until(() => movement.isWaitingForNutmegDecision, "Soares offers the nutmeg choice");
         Assert.That(movement.nutmeggableDefenders, Is.EquivalentTo(new[] { soares }));
         LegacyKey("X");

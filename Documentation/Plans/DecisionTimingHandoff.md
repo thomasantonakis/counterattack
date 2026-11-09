@@ -1,5 +1,22 @@
 # Decision timing — next-session handoff
 
+## Current status (supersedes the historical handoff below)
+
+All identified focused acceptance gaps have been implemented and verified. The final
+remaining-test batch passed 42 new PlayMode cases and 8 affected existing cases, with
+zero failed/skipped in the final runs. Compilation is clean. A reproduced nonblocking
+scatter result-clock defect was fixed and both continuing and blocking review paths
+were tested. Current results/audit are in
+`Assets/Editor/FeatureTests/DecisionTiming/Verification.md`.
+
+Work continues in the same checkout on `feature/decision-timing-verification`, branched
+from master; `b8b4c59` checkpoints the entire original tracked/untracked work. No
+worktree was created. Do not restart the old remaining-work list below: it is retained
+as historical context. Broader/full-suite regression checks remain user-run and were
+not executed by Codex. All prior user clarifications remain in the approved plan.
+
+## Historical handoff
+
 Prepared 2026-11-09. Project: `/Users/t.antonakis/Documents/Projects/Personal/counterattack`.
 
 ## Objective and actual status

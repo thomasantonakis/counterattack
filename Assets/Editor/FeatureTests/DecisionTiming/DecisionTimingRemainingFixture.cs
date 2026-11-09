@@ -5,6 +5,31 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    public IEnumerator RunTimingFoulFollowup(int side)
+    {
+        yield return PrepareLegacySoaresStealFoul(side);
+        match.isClockRunning = true;
+        match.AdvanceDecisionTiming(2);
+        Assert.That(match.DecisionTiming.HasPendingRoll, Is.True);
+        string cardId = match.DecisionTiming.RollId;
+        Assert.That(match.DecisionTiming.RollRemaining, Is.EqualTo(3));
+        movement.PerformLeniencyTest(1);
+        yield return Until(() => movement.isWaitingForInjuryRoll, "foul card check continues to injury check");
+        match.AdvanceDecisionTiming(2);
+        Assert.That(match.DecisionTiming.RollId, Is.Not.EqualTo(cardId));
+        Assert.That(match.DecisionTiming.RollRemaining, Is.EqualTo(3));
+        movement.PerformInjuryTest(1);
+        yield return Until(() => duelPanel.IsComplete, "foul results wait before advantage input");
+        match.RefreshDecisionTiming(); Assert.That(match.DecisionTiming.BlockingResult, Is.True);
+        yield return DismissLegacyDuel(false);
+        yield return Until(() => movement.isWaitingForFoulDecision, "foul offers real advantage decision");
+        ExpireTimingChoice(DecisionKind.AdvantageOrFreeKick, "Home");
+        LegacyKey("A");
+        yield return Until(() => !movement.isWaitingForFoulDecision && movement.isWaitingForSnapshotDecision,
+            "legal advantage input remains available after expiry");
+        match.RefreshDecisionTiming(); Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(DecisionKind.SnapshotOrForfeitPace));
+    }
+
     private DecisionTimingState ExpireTimingChoice(DecisionKind kind, string owner)
     {
         match.RefreshDecisionTiming(); var state = match.DecisionTiming.Current;
@@ -27,9 +52,15 @@ public sealed partial class GoalkeeperBoxEntryFixture
         LegacyKey(action); match.RefreshDecisionTiming(); var original = match.DecisionTiming.Current;
         Assert.That(original, Is.Not.Null);
         match.AdvanceDecisionTiming(expired ? original.remaining : 4); float remaining = original.remaining;
-        LegacyKey("M"); match.RefreshDecisionTiming();
-        Assert.That(movement.isActivated, Is.True, "real action switch cancels target preview");
-        Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(DecisionKind.AttackingMovement));
+        if (action == "C")
+        {
+            Assert.That(input.TryExecuteSyntheticKeyPress("M", "Timing rejected switch", out _), Is.False);
+            match.RefreshDecisionTiming();
+            Assert.That(match.DecisionTiming.Current.id, Is.EqualTo(original.id));
+            Assert.That(match.DecisionTiming.Current.remaining, Is.EqualTo(remaining));
+        }
+        LegacyKey(action == "C" ? "P" : "M"); match.RefreshDecisionTiming();
+        Assert.That(match.DecisionTiming.Current.kind, Is.EqualTo(action == "C" ? DecisionKind.StandardPassTarget : DecisionKind.AttackingMovement));
         match.AdvanceDecisionTiming(3);
         LegacyKey(action); match.RefreshDecisionTiming();
         Assert.That(movement.isActivated, Is.False);
@@ -75,6 +106,11 @@ public sealed partial class GoalkeeperBoxEntryFixture
             match.RefreshDecisionTiming();
             LegacyKey("K");
             yield return Until(() => high.isActivated, "keeper kick target after final thirds");
+            match.RefreshDecisionTiming();
+            Assert.That(match.currentState, Is.EqualTo(MatchManager.GameState.GoalKick));
+            Assert.That(match.DecisionTiming.GameClockStopped, Is.True);
+            Assert.That(match.DecisionTiming.Current, Is.Null, "built-in goal-kick clock stop requires no allowance");
+            yield break;
         }
         else Assert.That(ground.isActivated && ground.isQuickThrow, Is.True);
         ExpireTimingChoice(DecisionKind.GoalkeeperDistributionTarget, "Home");
@@ -83,7 +119,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
     public IEnumerator RunTimingShotFollowup(int side, bool snapshot)
     {
         Board(side); match.isClockRunning = true;
-        Place(attacker, Hex(14 * side)); Place(defender, Hex(-10 * side, 8));
+        Place(attacker, Hex(8 * side)); Place(defender, Hex(-10 * side, 8));
         Place(awayGK, Hex(16 * side)); attacker.shooting = 3; awayGK.saving = 10; awayGK.handling = 10;
         ball.PlaceAtCell(attacker.currentHex); match.SetLastToken(attacker);
         Invoke(grid, "LoadPrecomputedShootingPaths");
@@ -93,11 +129,14 @@ public sealed partial class GoalkeeperBoxEntryFixture
         if (snapshot)
         {
             yield return Until(() => shot.isWaitingforBlockerSelection, "snapshot defender choice");
-            LegacyKey("X");
+            input.TryExecuteSyntheticHexClick(defender.currentHex, "Timing snapshot defender", out _);
+            var destination = shot.GetValidSnapshotBlockerDestinationsForDecisionPreview(defender).First();
+            input.TryExecuteSyntheticHexClick(destination, "Timing snapshot movement", out _);
         }
         yield return Until(() => shot.isWaitingForTargetSelection, "real shot goal-line target choice");
         ExpireTimingChoice(snapshot ? DecisionKind.SnapshotGoalLineTarget : DecisionKind.ShotGoalLineTarget, "Home");
-        Assert.That(input.TryExecuteSyntheticHexClick(Hex(19 * side), "Timing shot", out var error), Is.True, error);
+        input.TryExecuteSyntheticHexClick(Hex(19 * side), "Timing shot", out _);
+        Assert.That(shot.targetHex, Is.SameAs(Hex(19 * side)));
         yield return Until(() => keeper.isActivated || shot.isWaitingForShotRoll, "target confirmation continues shot");
         if (keeper.isActivated) LegacyKey("X");
         yield return Until(() => shot.isWaitingForShotRoll, "shooter roll after keeper reaction");
@@ -120,25 +159,45 @@ public sealed partial class GoalkeeperBoxEntryFixture
         ExpireTimingChoice(DecisionKind.GoalkeeperDistributionTarget, "Away");
     }
 
-    public IEnumerator RunTimingNonblockingScatter(int side)
+    public IEnumerator RunTimingNonblockingScatter(int side, bool recovery, string context)
     {
         Board(side); match.isClockRunning = true;
         Place(attacker, Hex(0)); Place(defender, Hex(-10 * side, 8)); ball.PlaceAtCell(attacker.currentHex);
         match.SetLastToken(attacker);
+        if (recovery)
+        {
+            var path = Enumerable.Range(1, 3).Select(n => loose.CalculateDirectionalTarget(Hex(0), 0, n)).ToArray();
+            var destination = path[2].GetNeighbors(grid).First(h => h != null && !h.isOutOfBounds && !path.Contains(h));
+            Place(defender, destination);
+        }
         AttachAuthoredPanels(); EnableForAuthoredPresentation(loose);
         loose.StartCoroutine(loose.ResolveLooseBall(attacker, LooseBallSourceType.GroundDeflection, false,
-            LooseBallPresentationContext.ShotResolution));
+            context == "shot" ? LooseBallPresentationContext.ShotResolution : LooseBallPresentationContext.GroundDuelResolution));
         yield return Until(() => loose.isWaitingForDirectionRoll, "scatter direction");
         loose.PerformDirectionRoll(1);
         yield return Until(() => loose.isWaitingForDistanceRoll, "scatter distance");
         loose.PerformDistanceRoll(3);
-        yield return Until(() => ball.isMoving, "nonblocking scatter result permits actual ball movement");
+        yield return Until(() => ball.isMoving || loose.isWaitingForInterceptionRoll, "nonblocking scatter continues to travel or recovery");
         Assert.That(duelPanel.IsOpen, Is.True);
         match.RefreshDecisionTiming();
         Assert.That(match.DecisionTiming.BlockingResult, Is.False, "visible nonblocking scatter cannot hold timing");
         float before = match.gameData.stats.homeTeamStats.totalPossessionSeconds;
         Invoke(match, "AdvanceMatchTime", 2f);
-        Assert.That(match.gameData.stats.homeTeamStats.totalPossessionSeconds, Is.GreaterThan(before));
+        if (recovery) Assert.That(match.gameData.stats.homeTeamStats.totalPossessionSeconds, Is.EqualTo(before), "the new mandatory recovery roll holds time");
+        else Assert.That(match.gameData.stats.homeTeamStats.totalPossessionSeconds, Is.GreaterThan(before));
+        if (recovery)
+        {
+            yield return Until(() => loose.isWaitingForInterceptionRoll, "scatter reaches actual recovery roll");
+            match.RefreshDecisionTiming();
+            Assert.That(match.DecisionTiming.HasPendingRoll, Is.True);
+            Assert.That(match.DecisionTiming.HoldsMatchClock, Is.True);
+            loose.PerformInterceptionRoll(6);
+            yield return Until(() => duelPanel.IsComplete, "recovery result reclaims a blocking review");
+            match.RefreshDecisionTiming();
+            Assert.That(match.DecisionTiming.BlockingResult, Is.True);
+            LegacyKey("Escape");
+        }
         yield return Until(() => !loose.isActivated, "scatter completes without result dismissal");
+        if (recovery) Assert.That(match.LastTokenToTouchTheBallOnPurpose, Is.SameAs(defender));
     }
 }

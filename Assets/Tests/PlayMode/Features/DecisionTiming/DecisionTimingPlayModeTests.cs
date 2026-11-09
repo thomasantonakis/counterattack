@@ -67,6 +67,10 @@ public sealed class DecisionTimingPlayModeTests
         => (IEnumerator)Bridge.GetMethod("RunTimingKeeperFollowup").Invoke(board, new object[] {side,choice});
     [UnityTest] public IEnumerator ShotFollowup([Values(1,-1)] int side, [Values(false,true)] bool snapshot)
         => (IEnumerator)Bridge.GetMethod("RunTimingShotFollowup").Invoke(board, new object[] {side,snapshot});
-    [UnityTest] public IEnumerator NonblockingScatter([Values(1,-1)] int side)
-        => (IEnumerator)Bridge.GetMethod("RunTimingNonblockingScatter").Invoke(board, new object[] {side});
+    [UnityTest] public IEnumerator NonblockingScatter([Values(1,-1)] int side, [Values(false,true)] bool recovery, [Values("shot","duel")] string context)
+        => (IEnumerator)Bridge.GetMethod("RunTimingNonblockingScatter").Invoke(board, new object[] {side,recovery,context});
+    [UnityTest] public IEnumerator FoulFollowup([Values(1,-1)] int side)
+        => (IEnumerator)Bridge.GetMethod("RunTimingFoulFollowup").Invoke(board, new object[] {side});
+    [UnityTest] public IEnumerator ShootoutReview([Values(1,-1)] int side, [Values("offtarget","keeper","save")] string branch)
+        => (IEnumerator)Bridge.GetMethod("RunTimingShootoutReview").Invoke(board, new object[] {side,branch});
 }

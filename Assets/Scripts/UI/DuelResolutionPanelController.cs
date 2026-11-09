@@ -548,6 +548,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     {
         if (!looseBallMode || singleOwner != manager || stage != Stage.Single
             || direction != looseDirectionPending) return EmptyPresentation();
+        resultAllowsContinuation = !direction && continueWithMovement;
         stage = Stage.Transition;
         var view = direction ? activeDirection : activeDistance;
         // Scatter has no jackpot outcome. Legacy/scripted jackpot inputs normalize to numeric six.
@@ -598,6 +599,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (token == null || (IsOpen && !continuingScatter) || looseRecoveryContent == null
             || !PlayerBound(looseRecoveryPlayer)) return false;
         if (scatterHistoryOwner != manager) return false;
+        resultAllowsContinuation = false;
         useSaving |= token.IsGoalKeeper;
         singleMode = true;
         looseBallSuspended = false;
@@ -669,6 +671,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         int? resolvedTotal = null, bool continueWithNextRoll = false, bool continueWhileResultVisible = false)
     {
         if (!singleMode || singleOwner != manager || stage != Stage.Single) return EmptyPresentation();
+        resultAllowsContinuation = false;
         stage = Stage.Transition;
         var rollingView = singleRollView ?? singlePlayer;
         rollingView.die.Resolve(roll.roll, roll.jackpotEnabled && roll.isJackpot);
