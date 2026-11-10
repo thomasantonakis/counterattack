@@ -21,4 +21,13 @@ public sealed class MenuAudioPolicy
         if (Priority(cue) == 2) lastNavigation = now;
         return true;
     }
+
+    // Pre-match roll-offs use the authored menu voice; match rolls use the match director.
+    public bool AcceptDice(double now, bool busy, GameplayAudioPool current)
+    {
+        if (double.IsNaN(now) || double.IsInfinity(now) || (busy && Priority(current) == 2 && current != GameplayAudioPool.Dice)) return false;
+        if (last.TryGetValue(GameplayAudioPool.Dice, out double previous) && now - previous < GameplayAudioConfig.Cooldown(GameplayAudioPool.Dice)) return false;
+        last[GameplayAudioPool.Dice] = now;
+        return true;
+    }
 }

@@ -29,13 +29,13 @@ public sealed class MenuAudioFeedback : MonoBehaviour, IPointerEnterHandler, IPo
     public void OnPointerEnter(PointerEventData data) { if (Ready) MenuAudioPlayer.Play(GameplayAudioPool.MenuHover); }
     public void OnPointerClick(PointerEventData data)
     {
-        if (Ready && IsDropdownControl && data.button == PointerEventData.InputButton.Left)
+        if (Ready && IsSelectionControl && data.button == PointerEventData.InputButton.Left)
             MenuAudioPlayer.Play(GameplayAudioPool.MenuSelect);
     }
-    public void OnSubmit(BaseEventData data) { if (Ready && IsDropdownControl) MenuAudioPlayer.Play(GameplayAudioPool.MenuSelect); }
+    public void OnSubmit(BaseEventData data) { if (Ready && IsSelectionControl) MenuAudioPlayer.Play(GameplayAudioPool.MenuSelect); }
     // Option feedback is authored on the dropdown template and inherited by TMP's normal clones.
     // Observe actual input rather than onValueChanged, which also fires during programmatic refresh.
-    private bool IsDropdownControl => dropdown != null || (selectable is UnityEngine.UI.Toggle && GetComponentInParent<TMP_Dropdown>() != null);
+    private bool IsSelectionControl => dropdown != null || selectable is UnityEngine.UI.Toggle;
     private void OnButtonClick() { if (buttonSelection && Ready) pendingSelection = true; }
     private void LateUpdate() => FlushPendingSelection();
     public void FlushPendingSelection()

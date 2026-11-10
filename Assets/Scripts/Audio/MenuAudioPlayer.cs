@@ -39,12 +39,16 @@ public sealed class MenuAudioPlayer : MonoBehaviour
 
     public bool TryPlay(GameplayAudioPool cue)
     {
-        if (!MenuAudioPolicy.IsMenuCue(cue) || voice == null || library == null) return false;
+        if ((!MenuAudioPolicy.IsMenuCue(cue) && cue != GameplayAudioPool.Dice) || voice == null || library == null) return false;
         float gain = GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Game);
         if (gain <= 0f) return false;
         var clips = library.Get(cue);
         AudioClip clip = System.Array.Find(clips, c => c != null);
-        if (clip == null || !policy.Accept(cue, Time.unscaledTimeAsDouble, voice.isPlaying, current)) return false;
+        if (clip == null) return false;
+        bool accepted = cue == GameplayAudioPool.Dice
+            ? policy.AcceptDice(Time.unscaledTimeAsDouble, voice.isPlaying, current)
+            : policy.Accept(cue, Time.unscaledTimeAsDouble, voice.isPlaying, current);
+        if (!accepted) return false;
         current = cue;
         voice.Stop();
         voice.clip = clip;

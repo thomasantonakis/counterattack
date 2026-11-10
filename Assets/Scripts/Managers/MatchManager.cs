@@ -2808,6 +2808,7 @@ public partial class MatchManager : MonoBehaviour
         bool jackpotEnabled = true,
         Dictionary<string, string> details = null)
     {
+        GameplayAudioEvents.PublishIncident(this, GameplayAudioEvents.IncidentKind.DiceRequested);
         TimingRollSequence++;
         DecisionTiming.EndRoll();
         int randomRoll;

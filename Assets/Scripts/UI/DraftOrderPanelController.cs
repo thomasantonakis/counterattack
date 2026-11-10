@@ -86,6 +86,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     public void Roll(RollInputOverride? rollOverride = null)
     {
         if (stage is not (Stage.Home or Stage.Away)) return;
+        if (roomMatch == null) MenuAudioPlayer.Play(GameplayAudioPool.Dice);
         int roll = roomMatch != null
             ? roomMatch.ResolveGameplayDiceRoll("coin_toss", rollOverride, jackpotEnabled: false,
                 details: new System.Collections.Generic.Dictionary<string, string>

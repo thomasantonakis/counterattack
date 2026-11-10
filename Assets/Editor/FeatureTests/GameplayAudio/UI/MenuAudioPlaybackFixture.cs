@@ -67,6 +67,72 @@ public sealed class MenuAudioPlaybackFixture
         Assert.That(player.TryPlay(GameplayAudioPool.MenuBack), Is.True);
     }
 
+    public IEnumerator RunCheckbox()
+    {
+        var go = Owned("Owned checkbox"); go.AddComponent<RectTransform>();
+        var toggle = go.AddComponent<UnityEngine.UI.Toggle>(); go.AddComponent<MenuAudioFeedback>();
+        toggle.isOn = true; toggle.isOn = false;
+        Assert.That(player.voice.clip, Is.Null, "Programmatic checkbox refresh must be silent.");
+        var click = new PointerEventData(null) { button = PointerEventData.InputButton.Right };
+        ExecuteEvents.Execute(go, click, ExecuteEvents.pointerClickHandler);
+        Assert.That(player.voice.clip, Is.Null);
+        click.button = PointerEventData.InputButton.Left;
+        toggle.interactable = false;
+        ExecuteEvents.Execute(go, click, ExecuteEvents.pointerClickHandler);
+        Assert.That(toggle.isOn, Is.False); Assert.That(player.voice.clip, Is.Null);
+        toggle.interactable = true;
+        ExecuteEvents.Execute(go, click, ExecuteEvents.pointerClickHandler);
+        Assert.That(toggle.isOn, Is.True);
+        Assert.That(player.voice.isPlaying, Is.True);
+        Assert.That(player.voice.clip, Is.SameAs(player.library.Get(GameplayAudioPool.MenuSelect)[0]));
+        player.voice.Stop(); yield return new WaitForSecondsRealtime(.1f);
+        ExecuteEvents.Execute(go, click, ExecuteEvents.pointerClickHandler);
+        Assert.That(toggle.isOn, Is.False); Assert.That(player.voice.isPlaying, Is.True);
+        player.voice.Stop(); yield return new WaitForSecondsRealtime(.1f);
+        ExecuteEvents.Execute(go, new BaseEventData(null), ExecuteEvents.submitHandler);
+        Assert.That(toggle.isOn, Is.True); Assert.That(player.voice.isPlaying, Is.True);
+        player.voice.Stop(); yield return new WaitForSecondsRealtime(.1f);
+        GameplayAudioPreferences.Local.SetEnabled(GameplayAudioCategory.Game, false);
+        ExecuteEvents.Execute(go, click, ExecuteEvents.pointerClickHandler);
+        Assert.That(toggle.isOn, Is.False); Assert.That(player.voice.isPlaying, Is.False);
+    }
+
+    public IEnumerator RunPreMatchDice(bool rigged)
+    {
+        var go = Owned("Owned draft roll-off"); go.AddComponent<RectTransform>();
+        var panel = go.AddComponent<DraftOrderPanelController>();
+        panel.visuals = Owned("Owned roll-off visuals"); panel.visuals.transform.SetParent(go.transform);
+        var body = Owned("Owned roll-off panel"); body.transform.SetParent(go.transform); panel.panel = body.AddComponent<RectTransform>();
+        TMP_Text Label(string name)
+        {
+            var label = Owned(name); label.transform.SetParent(go.transform);
+            return label.AddComponent<TextMeshProUGUI>();
+        }
+        panel.title = Label("Title"); panel.homeTeam = Label("Home"); panel.awayTeam = Label("Away");
+        panel.homeResult = Label("Home roll"); panel.awayResult = Label("Away roll");
+        panel.outcome = Label("Outcome"); panel.footer = Label("Footer");
+        panel.homeDie = Owned("Home die").AddComponent<DuelDieView>();
+        panel.awayDie = Owned("Away die").AddComponent<DuelDieView>();
+        var rng = UnityEngine.Random.state;
+        try
+        {
+            panel.Roll(); Assert.That(player.voice.clip, Is.Null, "Closed roll-off is not a roll request.");
+            Assert.That(panel.Open(new GameSettings()), Is.True);
+            var before = UnityEngine.Random.state;
+            int expected = UnityEngine.Random.Range(1, 7); var after = UnityEngine.Random.state;
+            UnityEngine.Random.state = before;
+            var key = new KeyPressData(rigged ? KeyCode.Alpha4 : KeyCode.R, rigged, rigged, false);
+            Assert.That(panel.HandleKey(key), Is.True);
+            Assert.That(panel.homeDie.DisplayedRoll, Is.EqualTo(rigged ? 4 : expected));
+            Assert.That(UnityEngine.Random.state, Is.EqualTo(rigged ? before : after));
+            Assert.That(panel.IsAwaitingAwayRoll, Is.True);
+            Assert.That(player.voice.isPlaying, Is.True);
+            Assert.That(player.voice.clip, Is.SameAs(player.library.Get(GameplayAudioPool.Dice)[0]));
+        }
+        finally { UnityEngine.Random.state = rng; }
+        yield return null;
+    }
+
     public IEnumerator RunDropdown()
     {
         var canvas = Owned("Owned menu canvas"); canvas.AddComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;

@@ -31,7 +31,7 @@ test artifacts; report listening acceptance separately from silent playback test
 | Event | Asset in Assets/Audio/UI | Duration | Source gain |
 | --- | --- | --- | --- |
 | Interactable menu hover | MenuHover.wav | 65 ms | .18 |
-| Dropdown open/choice, ordinary menu button | MenuSelect.wav | 85 ms | .35 |
+| Checkbox click/submit, dropdown open/choice, ordinary menu button | MenuSelect.wav | 85 ms | .35 |
 | Accepted advance/confirmation | MenuAdvance.wav | 180 ms | .45 |
 | Accepted back/return | MenuBack.wav | 160 ms | .40 |
 
@@ -65,3 +65,26 @@ hover sweeps stay subtle, dropdowns tick on actual choices, forward/back cues ar
 distinct and finish across scene changes, and Game sounds Off silences them.
 No ordinary gameplay or whole gameplay suite was started. No additional gameplay
 regression scope is warranted for these presentation-only hooks.
+
+Checkbox/dice follow-up: all authored Toggle controls now select on real left click
+or keyboard submit, including Pause and Game Settings. Right clicks, disabled
+controls and programmatic values stay silent. Game mute governs this feedback.
+Room binding audit confirmed every Pause/Game Settings Selectable has feedback,
+including all three audio toggles and the Back footer; no scene edits were needed.
+Back to Main Menu, Back to Pause and Resume retain their accepted Back callbacks.
+
+Pre-match roll-offs also play DiceRoll.wav through the persistent menu voice;
+normal and rigged rolls share the cue without adding gameplay RNG calls. Match
+rolls use the director's Game effects voice. Both respect the existing .1 s dice
+cooldown; no additional UI geometry or sources are created.
+
+Latest follow-up results: MenuAudioEditorTests 11/11 passed under
+TestResults/GameplayRegression/Runs/20261110T222145673Z/; MenuAudioPlayModeTests
+11/11 passed under TestResults/GameplayRegression/Runs/20261110T222114039Z/;
+GameplayDiceAudioPlayModeTests 8/8 passed under
+TestResults/GameplayRegression/Runs/20261110T221932665Z/. Native results.xml and
+progress.jsonl retained in each. Zero failed/skipped. Compilation independently
+clean. One prior setup attempt aborted before cases due to the framework's scene
+save task observing Play Mode; its pending collection was cancelled, stopped
+state confirmed, and the focused run restarted successfully. Actual listening
+remains user verification; tests mute their audio sources.

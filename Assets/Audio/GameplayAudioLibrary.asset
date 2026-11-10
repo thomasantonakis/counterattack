@@ -51,7 +51,8 @@ MonoBehaviour:
   - kind: 4
     clips: []
   - kind: 5
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 1efa3b7267fe34edbb89d3d60037e483, type: 3}
   - kind: 6
     clips: []
   - kind: 7

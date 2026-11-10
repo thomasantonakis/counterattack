@@ -31,6 +31,11 @@ public sealed partial class GameplayAudioDirector
     {
         if (!stadiumActive || cue.Source != MatchManager.Instance || !incidentDelivery.AcceptEvent(cue.IncidentId)) return;
         SetPaused(cue.Source.IsPauseMenuOpen);
+        if (cue.Kind == GameplayAudioEvents.IncidentKind.DiceRequested)
+        {
+            PlayGameCue(GameplayAudioPool.Dice);
+            return;
+        }
         if (cue.Kind == GameplayAudioEvents.IncidentKind.SnapshotAvailable)
         {
             pendingSnapshotId = cue.IncidentId;

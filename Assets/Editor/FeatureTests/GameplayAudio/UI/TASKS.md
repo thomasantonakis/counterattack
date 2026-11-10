@@ -17,3 +17,11 @@ Zero failed/skipped in final runs. Tests use muted owned sources; no listening
 claim or complete gameplay regression claim. Specification and binding counts:
 Documentation/Plans/UiAudio.md. Existing RectTransform records also compared
 against HEAD with zero changed records in all six scenes.
+
+Follow-up: checkbox left clicks/submits are audible; programmatic changes,
+disabled input and right clicks silent. Pre-match normal/rigged roll-offs use
+the assigned dice pool and preserve RNG/results. Audited all Pause/Game Settings
+bindings, including Back footer and audio toggles. Latest compilation clean;
+MenuAudioEditorTests 11/11: 20261110T222145673Z; MenuAudioPlayModeTests 11/11:
+20261110T222114039Z (both under TestResults/GameplayRegression/Runs/).
+Zero failed/skipped, XML/progress retained. Listening still pending.

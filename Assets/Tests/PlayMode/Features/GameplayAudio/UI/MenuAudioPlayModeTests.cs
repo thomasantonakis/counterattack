@@ -16,6 +16,8 @@ public sealed class MenuAudioPlayModeTests
     private IEnumerator Run(string name, params object[] args) => (IEnumerator)Bridge.GetMethod(name).Invoke(fixture, args);
     [UnityTest] public IEnumerator EachCueWorksDuringPause([Values(0, 1, 2, 3)] int cue) => Run("RunPlayback", cue);
     [UnityTest] public IEnumerator PriorityDuplicatesAndMute() => Run("RunPriorityMute");
+    [UnityTest] public IEnumerator CheckboxInputSelectsButRefreshAndDisabledInputStaySilent() => Run("RunCheckbox");
+    [UnityTest] public IEnumerator PreMatchRollOffUsesDiceCue([Values(false, true)] bool rigged) => Run("RunPreMatchDice", rigged);
     [UnityTest] public IEnumerator DropdownInputIsDistinctFromProgrammaticRefresh() => Run("RunDropdown");
     [UnityTest] public IEnumerator DisabledButtonsAndRejectedNavigationStaySilent() => Run("RunButtonAndRejectedAction");
     [UnityTest] public IEnumerator NavigationVoiceSurvivesSceneChangeWithoutDuplicates() => Run("RunSceneLifetime");

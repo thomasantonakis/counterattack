@@ -4,6 +4,19 @@ Status: agreed foundation; implementation started on `feature/gameplay-audio`.
 
 ## Current specification decisions (2026-11-10)
 
+UI/dice follow-up: Game sounds controls hovers, selections (including checkboxes),
+advance/back navigation and dice. Stadium sounds controls Walla, chants, match
+reactions, celebrations, whistles and tannoy. Pause and Game Settings controls
+have authored hover/selection feedback; return callbacks emit Back. Local mute
+is authoritative, including when clicking the Game sounds checkbox itself.
+A 250 ms original procedural dice rattle is now assigned. Accepted match roll
+requests emit a uniquely identified incident before resolution for both normal
+and rigged dice; pre-match roll-offs use the existing menu voice. Existing .1 s
+cooldown prevents rapid stacking. No RNG, rules, timing or input changes. Older
+notes deferring interface/dice cues below describe earlier implementation batches.
+Current UI details and native validation: UiAudio.md and the Dice feature TASKS.md.
+
+
 Snapshot/international follow-up: movement-owned snapshot opportunities must play
 the urging cue as well as ShotManager opportunities. Use 80% of its stand share with +6 dB recording compensation (about +10 dB
 relative to the previous 50% cue), keep its one-shot playing through subsequent frames and GK movement,
@@ -168,7 +181,7 @@ share × event intensity × configured Stadium gain (zero when locally disabled)
 | Set-piece preparation | SetPiecePreparation crossfade loop at +50% | SetPiecePreparation crossfade loop at +50% | Both stands; base Walla continues, chants fade; stop on execution | Connected |
 | Snapshot available | Urging clip for possessing stand once per availability edge | Same routing by team | Lower priority than outcomes; not shot-commit anticipation | Connected |
 | Inaccurate ball out | OpponentError for restart beneficiary | Same routing by award | +50%; only inaccuracy, not every deflection | Connected |
-| Actual dice roll | No crowd cue by default | No crowd cue by default | Random dice pool; bounded overlap | Agreed cue; clips pending |
+| Actual dice roll | No crowd cue by default | No crowd cue by default | Random dice pool; bounded overlap | Implemented original DiceRoll.wav, Game category |
 | Invalid click | None | None | Brief invalid cue; cooldown | Agreed cue; validation hooks pending |
 | Accepted pause/open or resume | Stop/restart chatter | Stop/restart chatter | Pause/resume cue; music while paused | Agreed |
 | Menu item hover | None | None | Quiet hover cue; cooldown | Agreed |

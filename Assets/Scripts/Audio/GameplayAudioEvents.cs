@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GameplayAudioEvents
 {
     public enum IncidentKind { DuelWon, DuelLost, OffTarget, BlockedShot, Save, Foul, OpponentError,
-        SnapshotAvailable, KickOff, HalfTime, FullTime, Substitution, InjurySubstitution, CardShown }
+        SnapshotAvailable, KickOff, HalfTime, FullTime, Substitution, InjurySubstitution, CardShown, DiceRequested }
 
     public readonly struct IncidentCue
     {
