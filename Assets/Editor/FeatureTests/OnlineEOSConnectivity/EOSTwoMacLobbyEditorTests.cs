@@ -18,7 +18,7 @@ public sealed class EOSTwoMacLobbyEditorTests
     }
 
     [UnityTest]
-    [Timeout(360000)]
+    [Timeout(420000)]
     public IEnumerator HostWaitsForDistinctGuestAndDestroysLobby()
     {
         const string marker = "Temp/OnlineEOSTwoMacHost.run";
@@ -68,15 +68,28 @@ public sealed class EOSTwoMacLobbyEditorTests
             Assert.That(string.IsNullOrEmpty(lobbyId), Is.False, "Lobby ID for the guest");
 
             bool distinctGuestJoined = false;
+            bool distinctGuestLeft = false;
+            string guestId = null;
             var notificationOptions = new AddNotifyLobbyMemberStatusReceivedOptions();
             notificationId = lobby.AddNotifyLobbyMemberStatusReceived(ref notificationOptions, null,
                 (ref LobbyMemberStatusReceivedCallbackInfo info) =>
                 {
+                    if (!string.Equals(info.LobbyId, lobbyId, StringComparison.Ordinal) ||
+                        info.TargetUserId == null || !info.TargetUserId.IsValid())
+                        return;
+                    var targetId = info.TargetUserId.ToString();
                     if (info.CurrentStatus == LobbyMemberStatus.Joined &&
-                        string.Equals(info.LobbyId, lobbyId, StringComparison.Ordinal) &&
-                        info.TargetUserId != null && info.TargetUserId.IsValid() &&
-                        !string.Equals(info.TargetUserId.ToString(), session.UserId.ToString(), StringComparison.Ordinal))
+                        !string.Equals(targetId, session.UserId.ToString(), StringComparison.Ordinal))
+                    {
+                        guestId = targetId;
                         distinctGuestJoined = true;
+                    }
+                    else if ((info.CurrentStatus == LobbyMemberStatus.Left ||
+                              info.CurrentStatus == LobbyMemberStatus.Disconnected) &&
+                             string.Equals(targetId, guestId, StringComparison.Ordinal))
+                    {
+                        distinctGuestLeft = true;
+                    }
                 });
             Assert.That(notificationId, Is.GreaterThan(0UL), "Lobby member notification registration");
 
@@ -86,6 +99,15 @@ public sealed class EOSTwoMacLobbyEditorTests
             {
                 session.Platform.Tick();
                 yield return null;
+            }
+            if (distinctGuestJoined)
+            {
+                deadline = EditorApplication.timeSinceStartup + 30;
+                while (!distinctGuestLeft && EditorApplication.timeSinceStartup < deadline)
+                {
+                    session.Platform.Tick();
+                    yield return null;
+                }
             }
 
             Result? destroyResult = null;
@@ -101,6 +123,7 @@ public sealed class EOSTwoMacLobbyEditorTests
             }
 
             Assert.That(distinctGuestJoined, Is.True, "A distinct EOS product user did not join within five minutes");
+            Assert.That(distinctGuestLeft, Is.True, "The guest did not leave before lobby cleanup");
             Assert.That(destroyResult.HasValue, Is.True, "DestroyLobby callback timed out");
             Assert.That(destroyResult.Value, Is.EqualTo(Result.Success), "Destroying the host lobby");
         }
