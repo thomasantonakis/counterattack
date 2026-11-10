@@ -18,6 +18,10 @@ on this Mac. The separate `EOSPrivateLobbyEditorTests` case uses
 SDK down, so reopen Unity before another EOS probe. Room must be clean before
 running a fixture. See `OnlineEOSConnectivity/Verification.md` for results and
 native XML. These probes never start ordinary gameplay.
+The two-Mac host/guest lobby join cases are compiled but unrun. Their exact
+filters, one-use markers and local lobby-ID handoff are in the same
+`Verification.md`. Do not run the host's five-minute wait until both Editors
+are ready. Neither case proves P2P packet delivery.
 
 Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
 RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.

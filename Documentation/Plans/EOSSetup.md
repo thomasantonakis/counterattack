@@ -127,6 +127,10 @@ requirements and must not be bundled indiscriminately.
   reserved match/team in the protocol; do not trust a sender-claimed team.
 - Create/join a private match. A join code must resolve through actual room
   coordination; an EOS account ID alone is not a complete invite-code system.
+  EOS invite-only lobbies require invitations. For the two-Mac development
+  proof, use an unadvertised `Joinviapresence` lobby found by its full ID; any
+  user who learns that ID can join, so a short private code needs a separate
+  mapping/permission design before release.
 - Exchange a compatible handshake, a semantic command and an acknowledgement.
 - Test direct connections and forced fallback routing, both host OS directions,
   disconnect/rejoin, stale traffic and version rejection.
@@ -170,4 +174,5 @@ yet connected to Room input, a network transport, pause UI, dice or persistence.
 - [Epic's Peer2Peer client setup example (portal steps; not its Unreal configuration)](https://dev.epicgames.com/documentation/en-us/unreal-engine/using-lyra-with-epic-online-services-in-unreal-engine)
 - [EOS cross-store authentication](https://dev.epicgames.com/docs/epic-online-services/accounts-and-social/crossplay/crossplay-introduction)
 - [EOS routing controls](https://dev.epicgames.com/docs/en-US/api-ref/enums/eos-e-relay-control)
+- [EOS lobby permission levels and exact-ID search](https://dev.epicgames.com/docs/epic-online-services/multiplayer/lobbies-and-sessions/lobby-interface/lobby-interface-reference)
 - [Plugin configuration security](https://github.com/EOS-Contrib/eos_plugin_for_unity/blob/stable/com.playeveryware.eos/Documentation~/eos_config_security.md)

@@ -50,3 +50,23 @@ This second fixture uses a fresh Editor process, logs in one device identity,
 creates a private lobby and destroys it. It does not prove another player can
 join or that EOS P2P transport works. If the configured policy rejects lobby
 creation, record the service error before changing portal permissions.
+
+## Two-Mac lobby join probe (pending)
+
+- [ ] Prepare two clean Editor processes with the same EOS deployment and
+  separate local device identities. Do not copy EOS identity storage.
+- [ ] Run only `EOSTwoMacLobbyEditorTests.HostWaitsForDistinctGuestAndDestroysLobby`
+  with `Temp/OnlineEOSTwoMacHost.run` on the first Mac. It writes a temporary
+  lobby ID to `Temp/OnlineEOSHostLobbyId.txt` and waits up to five minutes.
+- [ ] Transfer that temporary lobby ID locally to the second Mac as
+  `Temp/OnlineEOSJoinId.txt`; do not paste product/client values or IDs into chat.
+- [ ] Run only `EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId`
+  with `Temp/OnlineEOSTwoMacGuest.run` on the second Mac. Inspect both native
+  XML results and confirm the host saw a distinct product user.
+- [ ] Repeat on separate networks after a same-network connection succeeds.
+
+This probe uses an unadvertised `Joinviapresence` lobby and an exact-ID search.
+The earlier invite-only lobby creation test does not establish code-based joins:
+EOS invite-only lobbies require an actual invitation. The full lobby ID serves
+only as a temporary development join code; a user-friendly code resolver is
+future work. These tests have not yet been run and do not send P2P packets.
