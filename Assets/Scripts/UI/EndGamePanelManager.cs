@@ -568,6 +568,7 @@ public class EndGamePanelManager : MonoBehaviour
     private void ReturnToMainMenu()
     {
         MatchManager.Instance?.SetPauseMenuOpen(false);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(MainMenuSceneName);
     }
 }

@@ -133,11 +133,13 @@ public class DraftUIManager : MonoBehaviour
     {
         PlayerPrefs.SetString(CreateNewGameReturnSourcePlayerPrefsKey, SceneManager.GetActiveScene().name);
         PlayerPrefs.Save();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene("CreateNewGameScene");
     }
     public void OnBackToMainButtonPressed()
     {
         // Assuming you want to load a previous scene, change "PreviousSceneName" to the actual scene name
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -169,6 +171,7 @@ public class DraftUIManager : MonoBehaviour
             Debug.LogError("Cannot start match: Coin Toss Flip requires its scene-authored panel and loaded settings.");
             return;
         }
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         isStartingMatch = true;
         startGameButton.interactable = false;
         StartCoroutine(WaitForCoinToss());
@@ -250,6 +253,7 @@ public class DraftUIManager : MonoBehaviour
         // Proceed to the game scene
         ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
         ApplicationManager.Instance.PrepareDraftRoomIntro();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene("Room");
         return true;
     }

@@ -169,6 +169,7 @@ public class SubstitutionMenuManager : MonoBehaviour
             "back_to_pause_menu",
             ("selectedRowCount", CountSelectedRows()),
             ("selectedSubstitutions", BuildSelectedSubstitutionsSummary()));
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         CloseToPauseMenu();
     }
 
@@ -200,6 +201,7 @@ public class SubstitutionMenuManager : MonoBehaviour
         pausePanel.SetActive(false);
         substitutionPanel.SetActive(true);
         RebuildMenu();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
     }
 
     public void CloseToPauseMenu()

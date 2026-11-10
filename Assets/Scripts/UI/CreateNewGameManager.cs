@@ -2000,6 +2000,7 @@ public class CreateNewGameManager : MonoBehaviour
         PlayerPrefs.Save();
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(GetSelectedCreateMenuGameMode());
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(CreateLoadRoomSceneName);
     }
 
@@ -2675,6 +2676,7 @@ public class CreateNewGameManager : MonoBehaviour
             ? $"Existing draft game settings updated at {path}"
             : $"Game settings saved to {path}");
 
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         // Check the draft and gkDraft settings to determine the scene to load
         if ((settings.draft == "Regular" && settings.gkDraft == "Deal")
             || (settings.draft == DraftInternational && settings.gkDraft == DraftInternational))

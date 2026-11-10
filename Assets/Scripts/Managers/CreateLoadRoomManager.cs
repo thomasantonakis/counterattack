@@ -57,6 +57,7 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(selectedGameMode);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene(CreateNewGameSceneName);
     }
 
@@ -70,11 +71,13 @@ public class CreateLoadRoomManager : MonoBehaviour
         loadBrowserOverlay.SetActive(true);
         if (loadBrowserStatusText != null) loadBrowserStatusText.text = string.Empty;
         RebuildSaveRows();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         Debug.Log($"Opening {selectedGameMode} save browser");
     }
 
     public void BackToMainMenu()
     {
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(MainMenuSceneName);
     }
     
@@ -181,9 +184,15 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         if (loadBrowserCancelButton != null)
         {
-            loadBrowserCancelButton.onClick.RemoveListener(CloseLoadBrowser);
-            loadBrowserCancelButton.onClick.AddListener(CloseLoadBrowser);
+            loadBrowserCancelButton.onClick.RemoveListener(CloseLoadBrowserFromInput);
+            loadBrowserCancelButton.onClick.AddListener(CloseLoadBrowserFromInput);
         }
+    }
+
+    private void CloseLoadBrowserFromInput()
+    {
+        if (loadBrowserOverlay != null && loadBrowserOverlay.activeSelf) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+        CloseLoadBrowser();
     }
 
     private void CloseLoadBrowser()
@@ -286,6 +295,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         PlayerPrefs.Save();
         CloseLoadBrowser();
         ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene(RoomSceneName);
     }
 

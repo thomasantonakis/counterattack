@@ -51,6 +51,7 @@ public class MainMenuManager : MonoBehaviour
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(gameMode);
         Debug.Log($"Opening {gameMode} create/load room.");
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene(CreateLoadRoomSceneName);
     }
 }

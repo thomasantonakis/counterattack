@@ -8,6 +8,9 @@ public sealed class GameplayAudioHoverFeedback : MonoBehaviour, IPointerEnterHan
     {
         var selectable = GetComponent<UnityEngine.UI.Selectable>();
         if (selectable != null && selectable.IsActive() && selectable.IsInteractable())
-            director?.PlayGameCue(GameplayAudioPool.MenuHover);
+        {
+            if (MenuAudioPlayer.Instance != null) MenuAudioPlayer.Play(GameplayAudioPool.MenuHover);
+            else director?.PlayGameCue(GameplayAudioPool.MenuHover);
+        }
     }
 }

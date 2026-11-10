@@ -2453,7 +2453,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 16706455}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 16706454}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 16706453}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &16706448 stripped
 RectTransform:
@@ -2465,12 +2474,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 16706447}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 16706452}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &16706450 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 16706447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &16706451 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 16706447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &16706452 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 16706447}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &16706453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16706450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &16706454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16706451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &16706455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16706452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &17616809
 GameObject:
   m_ObjectHideFlags: 0
@@ -4897,6 +4960,7 @@ GameObject:
   - component: {fileID: 36043718}
   - component: {fileID: 36043720}
   - component: {fileID: 36043719}
+  - component: {fileID: 36043721}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -4993,6 +5057,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &36043721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36043717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &37541470
 GameObject:
   m_ObjectHideFlags: 0
@@ -16759,6 +16836,7 @@ GameObject:
   m_Component:
   - component: {fileID: 115407098}
   - component: {fileID: 115407099}
+  - component: {fileID: 115407100}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -16835,6 +16913,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &115407100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115407097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &116632847
 GameObject:
   m_ObjectHideFlags: 0
@@ -19951,7 +20042,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 131737418}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 131737417}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 131737416}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &131737411 stripped
 RectTransform:
@@ -19963,12 +20063,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 131737410}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 131737415}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &131737413 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 131737410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &131737414 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 131737410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &131737415 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 131737410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &131737416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131737413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &131737417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131737414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &131737418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131737415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &131948915
 GameObject:
   m_ObjectHideFlags: 0
@@ -22730,6 +22884,7 @@ GameObject:
   - component: {fileID: 150050417}
   - component: {fileID: 150050419}
   - component: {fileID: 150050418}
+  - component: {fileID: 150050420}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -22826,6 +22981,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &150050420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150050416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &151061035
 GameObject:
   m_ObjectHideFlags: 0
@@ -23655,6 +23823,7 @@ GameObject:
   - component: {fileID: 156072264}
   - component: {fileID: 156072266}
   - component: {fileID: 156072265}
+  - component: {fileID: 156072267}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -23751,6 +23920,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &156072267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156072263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &156099960
 GameObject:
   m_ObjectHideFlags: 0
@@ -46643,6 +46825,7 @@ GameObject:
   - component: {fileID: 336649376}
   - component: {fileID: 336649375}
   - component: {fileID: 336649374}
+  - component: {fileID: 336649377}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -46757,6 +46940,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 336649372}
   m_CullTransparentMesh: 1
+--- !u!114 &336649377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336649372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &337203035
 GameObject:
   m_ObjectHideFlags: 0
@@ -51121,6 +51317,7 @@ GameObject:
   - component: {fileID: 372922795}
   - component: {fileID: 372922797}
   - component: {fileID: 372922796}
+  - component: {fileID: 372922798}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -51217,6 +51414,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &372922798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372922794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &374702019 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4828649286224459557, guid: 85bb5f9aef43f48c98d2f76feb2bf06e, type: 3}
@@ -53763,6 +53973,7 @@ GameObject:
   - component: {fileID: 394341716}
   - component: {fileID: 394341718}
   - component: {fileID: 394341717}
+  - component: {fileID: 394341719}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -53859,6 +54070,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &394341719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394341715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &395398020
 GameObject:
   m_ObjectHideFlags: 0
@@ -55282,6 +55506,7 @@ GameObject:
   - component: {fileID: 406932788}
   - component: {fileID: 406932787}
   - component: {fileID: 406932786}
+  - component: {fileID: 406932789}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -55396,6 +55621,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 406932784}
   m_CullTransparentMesh: 1
+--- !u!114 &406932789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406932784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &409283678
 GameObject:
   m_ObjectHideFlags: 0
@@ -56285,6 +56523,7 @@ GameObject:
   - component: {fileID: 411002831}
   - component: {fileID: 411002830}
   - component: {fileID: 411002829}
+  - component: {fileID: 411002832}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -56399,6 +56638,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 411002827}
   m_CullTransparentMesh: 1
+--- !u!114 &411002832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411002827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &411533398
 GameObject:
   m_ObjectHideFlags: 0
@@ -59426,6 +59678,7 @@ GameObject:
   - component: {fileID: 434672391}
   - component: {fileID: 434672394}
   - component: {fileID: 434672395}
+  - component: {fileID: 434672396}
   m_Layer: 5
   m_Name: CaptureLogFileButton
   m_TagString: Untagged
@@ -59584,6 +59837,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &434672396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434672389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &435788928
 GameObject:
   m_ObjectHideFlags: 0
@@ -60539,6 +60805,7 @@ GameObject:
   - component: {fileID: 441160263}
   - component: {fileID: 441160265}
   - component: {fileID: 441160264}
+  - component: {fileID: 441160266}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -60635,6 +60902,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &441160266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441160262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &441775798
 GameObject:
   m_ObjectHideFlags: 0
@@ -63878,7 +64158,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 467138233}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 467138232}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 467138231}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &467138226 stripped
 RectTransform:
@@ -63890,12 +64179,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 467138225}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 467138230}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &467138228 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 467138225}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &467138229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 467138225}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &467138230 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 467138225}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &467138231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467138228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &467138232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467138229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &467138233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467138230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &467142515
 GameObject:
   m_ObjectHideFlags: 0
@@ -65764,10 +66107,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 480623213}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &482524042
 GameObject:
   m_ObjectHideFlags: 0
@@ -70126,6 +70469,7 @@ GameObject:
   - component: {fileID: 519869290}
   - component: {fileID: 519869292}
   - component: {fileID: 519869291}
+  - component: {fileID: 519869293}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -70222,6 +70566,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &519869293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519869289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &521023441
 GameObject:
   m_ObjectHideFlags: 0
@@ -70584,10 +70941,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 523730741}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &524167004
 GameObject:
   m_ObjectHideFlags: 0
@@ -71986,6 +72343,7 @@ GameObject:
   - component: {fileID: 534720497}
   - component: {fileID: 534720496}
   - component: {fileID: 534720495}
+  - component: {fileID: 534720498}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -72100,6 +72458,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534720493}
   m_CullTransparentMesh: 1
+--- !u!114 &534720498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534720493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &535228524
 GameObject:
   m_ObjectHideFlags: 0
@@ -72931,6 +73302,7 @@ GameObject:
   - component: {fileID: 540580999}
   - component: {fileID: 540580998}
   - component: {fileID: 540580997}
+  - component: {fileID: 540581000}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -73045,6 +73417,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540580995}
   m_CullTransparentMesh: 1
+--- !u!114 &540581000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540580995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &541170942
 GameObject:
   m_ObjectHideFlags: 0
@@ -77065,6 +77450,7 @@ GameObject:
   - component: {fileID: 578735074}
   - component: {fileID: 578735073}
   - component: {fileID: 578735072}
+  - component: {fileID: 578735075}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -77179,6 +77565,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578735070}
   m_CullTransparentMesh: 1
+--- !u!114 &578735075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 578735070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &578848645
 GameObject:
   m_ObjectHideFlags: 0
@@ -85174,10 +85573,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 639807334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
 --- !u!1 &640533095
 GameObject:
   m_ObjectHideFlags: 0
@@ -86487,6 +86886,7 @@ GameObject:
   - component: {fileID: 648889429}
   - component: {fileID: 648889428}
   - component: {fileID: 648889427}
+  - component: {fileID: 648889430}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -86601,6 +87001,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 648889425}
   m_CullTransparentMesh: 1
+--- !u!114 &648889430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648889425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &649647805
 GameObject:
   m_ObjectHideFlags: 0
@@ -87135,6 +87548,7 @@ GameObject:
   - component: {fileID: 654568655}
   - component: {fileID: 654568654}
   - component: {fileID: 654568653}
+  - component: {fileID: 654568656}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -87249,6 +87663,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 654568651}
   m_CullTransparentMesh: 1
+--- !u!114 &654568656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654568651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &654750193
 GameObject:
   m_ObjectHideFlags: 0
@@ -90581,10 +91008,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 682286316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
 --- !u!1 &683065541
 GameObject:
   m_ObjectHideFlags: 0
@@ -92045,6 +92472,7 @@ GameObject:
   - component: {fileID: 698047408}
   - component: {fileID: 698047410}
   - component: {fileID: 698047409}
+  - component: {fileID: 698047411}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -92141,6 +92569,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &698047411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698047407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &698419904
 GameObject:
   m_ObjectHideFlags: 0
@@ -102985,6 +103426,7 @@ GameObject:
   - component: {fileID: 775356163}
   - component: {fileID: 775356162}
   - component: {fileID: 775356161}
+  - component: {fileID: 775356164}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -103099,6 +103541,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 775356159}
   m_CullTransparentMesh: 1
+--- !u!114 &775356164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 775356159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &776627801
 GameObject:
   m_ObjectHideFlags: 0
@@ -105041,6 +105496,7 @@ GameObject:
   - component: {fileID: 792586100}
   - component: {fileID: 792586099}
   - component: {fileID: 792586102}
+  - component: {fileID: 792586103}
   m_Layer: 5
   m_Name: CancelTacticalNoteButton
   m_TagString: Untagged
@@ -105173,6 +105629,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &792586103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792586097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &792954931
 GameObject:
   m_ObjectHideFlags: 0
@@ -119152,7 +119621,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 905820394}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 905820393}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 905820392}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &905820387 stripped
 RectTransform:
@@ -119164,12 +119642,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 905820386}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 905820391}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &905820389 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 905820386}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &905820390 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 905820386}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &905820391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 905820386}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &905820392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905820389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &905820393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905820390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &905820394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905820391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &907445073
 GameObject:
   m_ObjectHideFlags: 0
@@ -124484,6 +125016,7 @@ GameObject:
   - component: {fileID: 947506326}
   - component: {fileID: 947506325}
   - component: {fileID: 947506324}
+  - component: {fileID: 947506327}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -124598,6 +125131,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 947506322}
   m_CullTransparentMesh: 1
+--- !u!114 &947506327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947506322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &947664974
 GameObject:
   m_ObjectHideFlags: 0
@@ -129179,6 +129725,7 @@ GameObject:
   - component: {fileID: 975272614}
   - component: {fileID: 975272613}
   - component: {fileID: 975272612}
+  - component: {fileID: 975272616}
   m_Layer: 5
   m_Name: EditFixtureLightingDropdown
   m_TagString: Untagged
@@ -129330,6 +129877,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 975272610}
   m_CullTransparentMesh: 1
+--- !u!114 &975272616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975272610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &975285238
 GameObject:
   m_ObjectHideFlags: 0
@@ -133402,6 +133962,7 @@ GameObject:
   - component: {fileID: 1002802316}
   - component: {fileID: 1002802318}
   - component: {fileID: 1002802317}
+  - component: {fileID: 1002802319}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -133498,6 +134059,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1002802319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002802315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1005570448
 GameObject:
   m_ObjectHideFlags: 0
@@ -134947,6 +135521,7 @@ GameObject:
   - component: {fileID: 1016475833}
   - component: {fileID: 1016475832}
   - component: {fileID: 1016475831}
+  - component: {fileID: 1016475834}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -135061,6 +135636,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016475829}
   m_CullTransparentMesh: 1
+--- !u!114 &1016475834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1016475829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1016585385
 GameObject:
   m_ObjectHideFlags: 0
@@ -143472,6 +144060,7 @@ GameObject:
   - component: {fileID: 1080657834}
   - component: {fileID: 1080657833}
   - component: {fileID: 1080657832}
+  - component: {fileID: 1080657835}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -143586,6 +144175,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080657830}
   m_CullTransparentMesh: 1
+--- !u!114 &1080657835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080657830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1081102836
 GameObject:
   m_ObjectHideFlags: 0
@@ -145287,6 +145889,7 @@ GameObject:
   - component: {fileID: 1096822861}
   - component: {fileID: 1096822860}
   - component: {fileID: 1096822859}
+  - component: {fileID: 1096822862}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -145401,6 +146004,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1096822857}
   m_CullTransparentMesh: 1
+--- !u!114 &1096822862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096822857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1097774669
 GameObject:
   m_ObjectHideFlags: 0
@@ -152739,6 +153355,7 @@ GameObject:
   - component: {fileID: 1152563894}
   - component: {fileID: 1152563893}
   - component: {fileID: 1152563892}
+  - component: {fileID: 1152563895}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -152853,6 +153470,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1152563890}
   m_CullTransparentMesh: 1
+--- !u!114 &1152563895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1152563890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1152700136
 GameObject:
   m_ObjectHideFlags: 0
@@ -154050,6 +154680,7 @@ GameObject:
   - component: {fileID: 1157484597}
   - component: {fileID: 1157484596}
   - component: {fileID: 1157484599}
+  - component: {fileID: 1157484600}
   m_Layer: 5
   m_Name: SaveTacticalNoteButton
   m_TagString: Untagged
@@ -154182,6 +154813,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1157484600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1157484594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!43 &1157570275
 Mesh:
   m_ObjectHideFlags: 0
@@ -161355,6 +161999,7 @@ GameObject:
   - component: {fileID: 1217000815}
   - component: {fileID: 1217000814}
   - component: {fileID: 1217000817}
+  - component: {fileID: 1217000818}
   m_Layer: 5
   m_Name: EditSettingsBackButton
   m_TagString: Untagged
@@ -161487,6 +162132,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1217000818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217000812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
 --- !u!1 &1218025946
 GameObject:
   m_ObjectHideFlags: 0
@@ -164265,6 +164923,7 @@ GameObject:
   - component: {fileID: 1246427017}
   - component: {fileID: 1246427019}
   - component: {fileID: 1246427018}
+  - component: {fileID: 1246427020}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -164361,6 +165020,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1246427020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246427016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1246993121
 GameObject:
   m_ObjectHideFlags: 0
@@ -173621,6 +174293,7 @@ GameObject:
   - component: {fileID: 1312322071}
   - component: {fileID: 1312322070}
   - component: {fileID: 1312322069}
+  - component: {fileID: 1312322072}
   m_Layer: 5
   m_Name: TacticalNoteInput
   m_TagString: Untagged
@@ -173787,6 +174460,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312322067}
   m_CullTransparentMesh: 1
+--- !u!114 &1312322072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312322067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1312715735
 GameObject:
   m_ObjectHideFlags: 0
@@ -178233,6 +178919,7 @@ GameObject:
   - component: {fileID: 1329065114}
   - component: {fileID: 1329065113}
   - component: {fileID: 1329065112}
+  - component: {fileID: 1329065115}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -178347,6 +179034,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1329065110}
   m_CullTransparentMesh: 1
+--- !u!114 &1329065115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329065110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1329770194
 GameObject:
   m_ObjectHideFlags: 0
@@ -179076,6 +179776,7 @@ GameObject:
   - component: {fileID: 1333678894}
   - component: {fileID: 1333678893}
   - component: {fileID: 1333678892}
+  - component: {fileID: 1333678895}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -179190,6 +179891,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333678890}
   m_CullTransparentMesh: 1
+--- !u!114 &1333678895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333678890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1334301785
 GameObject:
   m_ObjectHideFlags: 0
@@ -199344,6 +200058,7 @@ GameObject:
   - component: {fileID: 1486752264}
   - component: {fileID: 1486752266}
   - component: {fileID: 1486752265}
+  - component: {fileID: 1486752267}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -199440,6 +200155,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1486752267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486752263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1487379237
 GameObject:
   m_ObjectHideFlags: 0
@@ -201052,6 +201780,7 @@ GameObject:
   - component: {fileID: 1497454260}
   - component: {fileID: 1497454262}
   - component: {fileID: 1497454261}
+  - component: {fileID: 1497454263}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -201148,6 +201877,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1497454263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497454259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1497916458
 GameObject:
   m_ObjectHideFlags: 0
@@ -203711,7 +204453,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511271914}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511271913}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511271912}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &1511271907 stripped
 RectTransform:
@@ -203723,12 +204474,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 1511271906}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1511271911}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1511271909 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1511271906}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1511271910 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1511271906}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1511271911 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1511271906}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1511271912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511271909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &1511271913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511271910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &1511271914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511271911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1511728724
 GameObject:
   m_ObjectHideFlags: 0
@@ -215937,7 +216742,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1597550327}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1597550326}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1597550325}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &1597550320 stripped
 RectTransform:
@@ -215949,12 +216763,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 1597550319}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1597550324}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1597550322 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1597550319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1597550323 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1597550319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1597550324 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1597550319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1597550325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597550322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &1597550326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597550323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &1597550327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597550324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1597949470
 GameObject:
   m_ObjectHideFlags: 0
@@ -217523,10 +218391,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1610199477}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
 --- !u!1 &1610926407
 GameObject:
   m_ObjectHideFlags: 0
@@ -226268,10 +227136,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1670406881}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
 --- !u!1 &1671021457
 GameObject:
   m_ObjectHideFlags: 0
@@ -227101,6 +227969,63 @@ Transform:
   - {fileID: 1732343008}
   m_Father: {fileID: 1594000596}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1673168092
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4660118024722002885, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_Name
+      value: MenuAudio
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053742121987496837, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ed52c5a60568c4d0f94be5d644f61bae, type: 3}
 --- !u!1 &1673694586
 GameObject:
   m_ObjectHideFlags: 0
@@ -241682,6 +242607,7 @@ GameObject:
   - component: {fileID: 1766896017}
   - component: {fileID: 1766896019}
   - component: {fileID: 1766896018}
+  - component: {fileID: 1766896020}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -241778,6 +242704,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1766896020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766896016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1766991175
 GameObject:
   m_ObjectHideFlags: 0
@@ -246215,10 +247154,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1807908836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1808190078
 GameObject:
   m_ObjectHideFlags: 0
@@ -258502,7 +259441,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1888425645}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1888425644}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1888425643}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &1888425638 stripped
 RectTransform:
@@ -258514,12 +259462,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 1888425637}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1888425642}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1888425640 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1888425637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1888425641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1888425637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1888425642 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 1888425637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1888425643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888425640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &1888425644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888425641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &1888425645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888425642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1889683276
 GameObject:
   m_ObjectHideFlags: 0
@@ -258743,6 +259745,7 @@ GameObject:
   - component: {fileID: 1890225986}
   - component: {fileID: 1890225985}
   - component: {fileID: 1890225984}
+  - component: {fileID: 1890225987}
   m_Layer: 5
   m_Name: Scrollbar
   m_TagString: Untagged
@@ -258857,6 +259860,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1890225982}
   m_CullTransparentMesh: 1
+--- !u!114 &1890225987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1890225982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1890252913
 GameObject:
   m_ObjectHideFlags: 0
@@ -260109,6 +261125,7 @@ GameObject:
   - component: {fileID: 1900809667}
   - component: {fileID: 1900809669}
   - component: {fileID: 1900809668}
+  - component: {fileID: 1900809670}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -260205,6 +261222,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1900809670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900809666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1901416968
 GameObject:
   m_ObjectHideFlags: 0
@@ -265313,10 +266343,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1934764841}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1935496749
 GameObject:
   m_ObjectHideFlags: 0
@@ -269088,6 +270118,7 @@ GameObject:
   - component: {fileID: 1963842025}
   - component: {fileID: 1963842027}
   - component: {fileID: 1963842026}
+  - component: {fileID: 1963842028}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -269184,6 +270215,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1963842028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1963842024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &1964010025
 GameObject:
   m_ObjectHideFlags: 0
@@ -274276,6 +275320,7 @@ GameObject:
   - component: {fileID: 2001000032}
   - component: {fileID: 2001000033}
   - component: {fileID: 2001000034}
+  - component: {fileID: 2001000035}
   m_Layer: 5
   m_Name: SaveNameInput
   m_TagString: Untagged
@@ -274442,6 +275487,19 @@ MonoBehaviour:
   isAlert: 0
   m_InputValidator: {fileID: 0}
   m_ShouldActivateOnSelect: 1
+--- !u!114 &2001000035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001000030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2001000040
 GameObject:
   m_ObjectHideFlags: 0
@@ -275270,6 +276328,7 @@ GameObject:
   - component: {fileID: 2001000113}
   - component: {fileID: 2001000114}
   - component: {fileID: 2001000115}
+  - component: {fileID: 2001000116}
   m_Layer: 5
   m_Name: ReplaceButton
   m_TagString: Untagged
@@ -275402,6 +276461,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2001000116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001000110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2001000120
 GameObject:
   m_ObjectHideFlags: 0
@@ -275552,6 +276624,7 @@ GameObject:
   - component: {fileID: 2001000133}
   - component: {fileID: 2001000134}
   - component: {fileID: 2001000135}
+  - component: {fileID: 2001000136}
   m_Layer: 5
   m_Name: CancelOverwriteButton
   m_TagString: Untagged
@@ -275684,6 +276757,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2001000136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001000130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2001000140
 GameObject:
   m_ObjectHideFlags: 0
@@ -275834,6 +276920,7 @@ GameObject:
   - component: {fileID: 2001000153}
   - component: {fileID: 2001000154}
   - component: {fileID: 2001000155}
+  - component: {fileID: 2001000156}
   m_Layer: 5
   m_Name: SaveButton
   m_TagString: Untagged
@@ -275966,6 +277053,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2001000156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001000150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2001000160
 GameObject:
   m_ObjectHideFlags: 0
@@ -276116,6 +277216,7 @@ GameObject:
   - component: {fileID: 2001000173}
   - component: {fileID: 2001000174}
   - component: {fileID: 2001000175}
+  - component: {fileID: 2001000176}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -276248,6 +277349,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2001000176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001000170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
 --- !u!1 &2001000180
 GameObject:
   m_ObjectHideFlags: 0
@@ -284995,6 +286109,7 @@ GameObject:
   - component: {fileID: 2061171665}
   - component: {fileID: 2061171667}
   - component: {fileID: 2061171666}
+  - component: {fileID: 2061171668}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -285091,6 +286206,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &2061171668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061171664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2061604875
 GameObject:
   m_ObjectHideFlags: 0
@@ -286132,10 +287260,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2071675947}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2071720353
 GameObject:
   m_ObjectHideFlags: 0
@@ -286459,7 +287587,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2071899479}
+    - targetCorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2071899478}
+    - targetCorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2071899477}
   m_SourcePrefab: {fileID: 100100000, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
 --- !u!224 &2071899472 stripped
 RectTransform:
@@ -286471,12 +287608,66 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1701914755387099940, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
   m_PrefabInstance: {fileID: 2071899471}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2071899476}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2071899474 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9028566982890015622, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 2071899471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2071899475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5110487309884043082, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 2071899471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2071899476 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 262701769810921965, guid: ed2ecf88ef2da447ca631cc500b60474, type: 3}
+  m_PrefabInstance: {fileID: 2071899471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2071899477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071899474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &2071899478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071899475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
+--- !u!114 &2071899479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071899476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &2072979616
 GameObject:
   m_ObjectHideFlags: 0
@@ -303558,6 +304749,7 @@ GameObject:
   - component: {fileID: 4116347226229940729}
   - component: {fileID: 8081903810244734354}
   - component: {fileID: 8989024225534155702}
+  - component: {fileID: 8989024225534155703}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -305401,6 +306593,7 @@ GameObject:
   - component: {fileID: 1786992429054258946}
   - component: {fileID: 8043835759803129093}
   - component: {fileID: 5317914325728139770}
+  - component: {fileID: 8043835759803129094}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -306036,6 +307229,7 @@ GameObject:
   - component: {fileID: 3508492230103589049}
   - component: {fileID: 2826416718304414009}
   - component: {fileID: 2748441406079977961}
+  - component: {fileID: 3508492230103589050}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -306349,6 +307543,7 @@ GameObject:
   - component: {fileID: 6544623958352492903}
   - component: {fileID: 46126944329427256}
   - component: {fileID: 8276587755263574887}
+  - component: {fileID: 8276587755263574888}
   m_Layer: 5
   m_Name: ConfirmSubsButton
   m_TagString: Untagged
@@ -306525,6 +307720,7 @@ GameObject:
   - component: {fileID: 8514278101254029578}
   - component: {fileID: 4685976670733190149}
   - component: {fileID: 478668542529453846}
+  - component: {fileID: 8514278101254029579}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -309103,6 +310299,7 @@ GameObject:
   - component: {fileID: 2176769446005537976}
   - component: {fileID: 429204640806123927}
   - component: {fileID: 2308975422931533493}
+  - component: {fileID: 5320349268182169882}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -311794,6 +312991,7 @@ GameObject:
   - component: {fileID: 8426925529223459311}
   - component: {fileID: 7869569721530436779}
   - component: {fileID: 8426925529223459312}
+  - component: {fileID: 8426925529223459313}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -315106,6 +316304,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3508492230103589050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641429358463235204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!224 &3517243041458228166
 RectTransform:
   m_ObjectHideFlags: 0
@@ -316494,6 +317705,7 @@ GameObject:
   - component: {fileID: 8618748318773553334}
   - component: {fileID: 7699045825362168893}
   - component: {fileID: 8119258406717017570}
+  - component: {fileID: 8618748318773553335}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -316771,6 +317983,7 @@ GameObject:
   - component: {fileID: 8167340432002076236}
   - component: {fileID: 956399203727655221}
   - component: {fileID: 6030979330708581618}
+  - component: {fileID: 8663431701192859776}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -317810,6 +319023,7 @@ GameObject:
   - component: {fileID: 5115076685051806244}
   - component: {fileID: 2443885519116401909}
   - component: {fileID: 1872527491161792245}
+  - component: {fileID: 5115076685051806245}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -319094,6 +320308,7 @@ GameObject:
   - component: {fileID: 3978005752609387299}
   - component: {fileID: 3096663902473606408}
   - component: {fileID: 6274283671411309426}
+  - component: {fileID: 6274283671411309427}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -321777,6 +322992,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5115076685051806245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4232648443473220261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &5132527663516637026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322630,6 +323858,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2337524857988139162}
   m_CullTransparentMesh: 1
+--- !u!114 &5320349268182169882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2337524857988139162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!222 &5328670019139419424
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -322651,6 +323892,7 @@ GameObject:
   - component: {fileID: 3498929150546137045}
   - component: {fileID: 4375889092499805433}
   - component: {fileID: 7028421063028370285}
+  - component: {fileID: 8454507246106114781}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -322815,10 +324057,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2543357997057079859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &5344475743205711373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326435,6 +327677,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &6274283671411309427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4444810959268679535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!222 &6277342598840697021
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -328025,6 +329280,7 @@ GameObject:
   - component: {fileID: 7241194728828223171}
   - component: {fileID: 2612527107666819422}
   - component: {fileID: 6008671246728230649}
+  - component: {fileID: 7241194728828223172}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -328462,6 +329718,7 @@ GameObject:
   - component: {fileID: 1658273234731854824}
   - component: {fileID: 5182165155896665276}
   - component: {fileID: 2008793008095982079}
+  - component: {fileID: 6862782483063855888}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -328469,6 +329726,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6862782483063855888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6862782483063855887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!222 &6880110179941060364
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -329240,6 +330510,7 @@ GameObject:
   - component: {fileID: 4642199162187042807}
   - component: {fileID: 8971806005648938600}
   - component: {fileID: 8729047345563244850}
+  - component: {fileID: 8971806005648938601}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -329741,6 +331012,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7241194728828223172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6688095157035315976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!224 &7243406260100232838
 RectTransform:
   m_ObjectHideFlags: 0
@@ -333462,6 +334746,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &8043835759803129094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415510262577697104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!224 &8046137276035422180
 RectTransform:
   m_ObjectHideFlags: 0
@@ -334623,6 +335920,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8276587755263574888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662441713869509494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!224 &8276740836186780547
 RectTransform:
   m_ObjectHideFlags: 0
@@ -335459,6 +336769,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8426925529223459313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2868580017704200835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!222 &8427891468380691705
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -335559,6 +336882,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5333049775690625702}
   m_CullTransparentMesh: 1
+--- !u!114 &8454507246106114781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5333049775690625702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &8462185651847418830
 GameObject:
   m_ObjectHideFlags: 0
@@ -335819,6 +337155,7 @@ GameObject:
   - component: {fileID: 2490742866359381061}
   - component: {fileID: 8556684117659189954}
   - component: {fileID: 6910834418133937388}
+  - component: {fileID: 8556684117659189955}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -335876,6 +337213,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8514278101254029579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1681260435199673326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &8514728446602174749
 GameObject:
   m_ObjectHideFlags: 0
@@ -336023,10 +337373,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5657184505686052044}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &8537075568602286338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336113,6 +337463,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &8556684117659189955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8511920051297185970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!224 &8567807164820028121
 RectTransform:
   m_ObjectHideFlags: 0
@@ -336389,6 +337752,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8618748318773553335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3921162692614645474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &8623730345542830782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336561,6 +337937,19 @@ RectTransform:
   m_AnchoredPosition: {x: -2, y: 0}
   m_SizeDelta: {x: -4, y: -4}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8663431701192859776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4008564886153074447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!1 &8666124425923467386
 GameObject:
   m_ObjectHideFlags: 0
@@ -337022,6 +338411,7 @@ GameObject:
   - component: {fileID: 4817289502843552702}
   - component: {fileID: 5873670669219830591}
   - component: {fileID: 4976757326655318941}
+  - component: {fileID: 8794738270914064186}
   m_Layer: 5
   m_Name: OutgoingDropdown
   m_TagString: Untagged
@@ -337029,6 +338419,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8794738270914064186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8794738270914064185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &8798169453066619706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337834,6 +339237,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &8971806005648938601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111034558303490418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!222 &8976127073412132154
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -337910,6 +339326,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8989024225534155703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067621563422262650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!222 &9003350501227132594
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -338249,10 +339678,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1503625546897273432}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa8830cec164ef0bfacbbdca7b49bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameplayAudioHoverFeedback
-  director: {fileID: 351124632}
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!114 &9061314401168485643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338289,6 +339718,7 @@ GameObject:
   - component: {fileID: 7819646194195364293}
   - component: {fileID: 7481168513077564773}
   - component: {fileID: 4004168830531541737}
+  - component: {fileID: 9073576366819939969}
   m_Layer: 5
   m_Name: IncomingDropdown
   m_TagString: Untagged
@@ -338296,6 +339726,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9073576366819939969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9073576366819939968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 1
 --- !u!225 &9090961731389913689
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -339037,3 +340480,4 @@ SceneRoots:
   - {fileID: 28946210}
   - {fileID: 781472326}
   - {fileID: 351124633}
+  - {fileID: 1673168092}

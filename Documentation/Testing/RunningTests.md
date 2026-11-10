@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Menu interaction audio: run only `MenuAudioEditorTests` under
+`Assets/Editor/FeatureTests/GameplayAudio/UI/` and `MenuAudioPlayModeTests` under
+`Assets/Tests/PlayMode/Features/GameplayAudio/UI/` (category `MenuAudio`). Latest:
+11 EditMode and 8 PlayMode passed, zero failed/skipped; compilation separately
+clean. Exact artifacts and pending listening checks are in the feature TASKS.md
+and `Documentation/Plans/UiAudio.md`. No whole gameplay suites are needed.
+
 Recovery audio: run only `GameplayRecoveryAudioPlayModeTests` (category
 `GameplayRecoveryAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/Recovery/`.
 Latest: 41 passed, zero failed/skipped; Editor compilation clean. Native artifact

@@ -8,6 +8,7 @@ public enum GameplayAudioPool
     DuelWon, DuelLost, DefensiveShotRelief, OpponentError, FoulReaction,
     KickOff, HalfTime, FullTime, HomeSubstitution, AwaySubstitution,
     DoubleAwaySubstitution, InjurySubstitution, SnapshotAvailable, SetPiecePreparation,
+    MenuSelect, MenuAdvance, MenuBack,
     None = -1
 }
 
@@ -42,6 +43,9 @@ public static class GameplayAudioConfig
     public const int CardPriority = 50;
     public const int GoalPriority = 100;
     public const int RememberedEventCount = 512;
+    public const double MenuHoverCooldownSeconds = 0.18;
+    public const double MenuSelectCooldownSeconds = 0.08;
+    public const double MenuNavigationCooldownSeconds = 0.1;
 
     // Player-facing settings are On/Off only. Adjust category mix levels here.
     public static float CategoryVolume(GameplayAudioCategory category) => category switch
@@ -130,7 +134,10 @@ public static class GameplayAudioConfig
     public static float PoolGain(GameplayAudioPool pool) => pool switch
     {
         GameplayAudioPool.SnapshotAvailable => Mathf.Pow(10f, SnapshotClipGainDb / 20f),
-        GameplayAudioPool.MenuHover => 0.25f,
+        GameplayAudioPool.MenuHover => 0.18f,
+        GameplayAudioPool.MenuSelect => 0.35f,
+        GameplayAudioPool.MenuAdvance => 0.45f,
+        GameplayAudioPool.MenuBack => 0.4f,
         GameplayAudioPool.Invalid => 0.5f,
         GameplayAudioPool.Dice => 0.65f,
         GameplayAudioPool.StatsShow or GameplayAudioPool.StatsHide => 0.45f,

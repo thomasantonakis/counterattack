@@ -59,7 +59,8 @@ MonoBehaviour:
   - kind: 8
     clips: []
   - kind: 9
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 64de44e54e5074acaada03993492de2f, type: 3}
   - kind: 10
     clips: []
   - kind: 11
@@ -117,3 +118,12 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 824d695135c44614aaffe77e5bb84fb7, type: 3}
     - {fileID: 8300000, guid: 1f6ffed74e190bf4da6c5215d8a9468b, type: 3}
     - {fileID: 8300000, guid: 9f61eb3adc833414885e172de9a2f680, type: 3}
+  - kind: 27
+    clips:
+    - {fileID: 8300000, guid: 753fb6945025149b2aafa988e15da438, type: 3}
+  - kind: 28
+    clips:
+    - {fileID: 8300000, guid: 976b5fa664fbe4f4689388f512fbfd56, type: 3}
+  - kind: 29
+    clips:
+    - {fileID: 8300000, guid: 4eb9ba82f21ea43718f8d71e14285d5e, type: 3}

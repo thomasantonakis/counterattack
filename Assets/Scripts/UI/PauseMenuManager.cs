@@ -220,6 +220,7 @@ public class PauseMenuManager : MonoBehaviour
 
     private void OnSaveAsCancelButtonClicked()
     {
+        if (saveAsOverlay != null && saveAsOverlay.activeSelf) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         LogUiClick(
             "save_as_panel",
             "cancel_button",
@@ -405,6 +406,7 @@ public class PauseMenuManager : MonoBehaviour
         // Debug to confirm visibility
         // Debug.Log($"Pause panel active status: {pausePanel.activeSelf}");
         isPaused = false;
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
     }
 
     public void SaveMatch()
@@ -1417,11 +1419,13 @@ public class PauseMenuManager : MonoBehaviour
 
         MatchManager.Instance?.SetPauseMenuOpen(true);
         isPaused = true;
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         Debug.Log("Entering Edit Settings Mode.");
     }
 
     public void CloseEditSettingsPanel()
     {
+        bool wasOpen = editSettingsPanel != null && editSettingsPanel.activeSelf;
         if (editSettingsPanel != null)
         {
             editSettingsPanel.SetActive(false);
@@ -1434,6 +1438,7 @@ public class PauseMenuManager : MonoBehaviour
 
         RefreshSaveButtonAvailability();
         substitutionMenuManager?.RefreshOpenButtonState();
+        if (wasOpen) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
     }
 
     public void CaptureLogFile()
@@ -1468,6 +1473,7 @@ public class PauseMenuManager : MonoBehaviour
         // Implement your logic for "Save Match As" functionality
         Debug.Log("Back To Main Menu Scene!");
         MatchManager.Instance?.SetPauseMenuOpen(false);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene("MainMenu");  // Adjust to your actual Main Menu scene name
     }
 
