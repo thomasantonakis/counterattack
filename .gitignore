@@ -53,3 +53,8 @@ Assets/Logs/
 
 # Retained local Unity Test Framework regression artifacts
 /TestResults/GameplayRegression/
+
+# Local EOS product/client configuration written by the plugin
+/Assets/StreamingAssets.meta
+/Assets/StreamingAssets/EOS.meta
+/Assets/StreamingAssets/EOS/

@@ -2,7 +2,7 @@
 
 2026-11-09. Scope: isolated provider-independent identity, compatibility and
 command admission. No existing gameplay manager, scene or UI callback is changed.
-No live network service is installed or configured.
+EOS plugin 6.2.0 is installed but no live network service is configured.
 
 ## Implemented and verified
 
@@ -29,6 +29,19 @@ future integration work; identifier validation is not a complete packet decoder.
 
 ## Actual execution
 
+Personal-Mac rerun on 2026-11-10: Unity 6000.5.3f1 compilation up to date with
+zero errors; Room clean; `OnlineMatchProtocolEditorTests` completed 27 passed,
+0 failed, 0 skipped, 0 inconclusive. Native XML:
+`TestResults/GameplayRegression/Runs/20261110T071405532Z/results.xml`.
+Only this fixture ran. The portal product and PeerToPeer desktop client are now
+ready, but this run did not use EOS.
+
+After EOS plugin 6.2.0 import, live Unity 6000.5.3f1 compilation completed with
+zero errors. The same focused fixture ran again: **27 passed, 0 failed, 0 skipped,
+0 inconclusive**. Native XML:
+`TestResults/GameplayRegression/Runs/20261110T080134239Z/results.xml`.
+The plugin is unwired, so these cases still exercise only local protocol rules.
+
 - Unity 6000.5.2f1, live Editor through CLI/Pipeline.
 - Compilation: completed, zero errors; Editor not compiling/reloading afterward.
 - Loaded Room scene: clean before the test run; no scene save required.
@@ -51,10 +64,15 @@ XML. There is no reason to run existing gameplay suites for this unwired class.
 
 ## Pending M0/M1 evidence
 
-- [ ] User-owned EOS development product/client configuration; see
-  Documentation/Plans/EOSSetup.md. User requested setup instructions, not an
-  existing product connection.
-- [ ] Pin and validate SDK/transport/native compatibility with this Unity version.
+- [x] User-owned EOS product and PeerToPeer desktop client created in the portal;
+  see Documentation/Plans/EOSSetup.md. No project-side credentials or live
+  connection are configured.
+- [x] Pin EOS plugin 6.2.0 and validate Editor import and compilation with this
+  Unity version; bundled macOS libraries contain x86_64 and arm64 slices.
+- [x] Validate local-config native initialization and platform creation on this
+  Intel Mac in the stopped Editor (`init=Success`, `create=True`,
+  `shutdown=Success`); no login or Play Mode entered.
+- [ ] Validate transport, login and standalone packaging on macOS and Windows.
 - [ ] Actual two-identity authentication, private room/code and connection proof.
 - [ ] Windows/macOS both host directions on distinct networks, including fallback.
 - [ ] Packet/byte limits, loss/jitter/reconnect and current free service quotas.

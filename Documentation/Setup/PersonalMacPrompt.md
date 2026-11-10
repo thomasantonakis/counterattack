@@ -29,7 +29,7 @@ Work through these steps:
 3. Verify Codex installation/sign-in and project trust. Use the current official
    setup docs where needed; do not copy old authentication files or global config.
 4. Check/install Unity Hub and the exact Editor from ProjectVersion.txt
-   (currently 6000.5.2f1), with architecture/build support appropriate to this Mac.
+   (currently 6000.5.3f1), with architecture/build support appropriate to this Mac.
    Ask me to complete sign-in/license dialogs and to open Unity manually. Never
    start Unity yourself, use batchmode, kill it or start ordinary gameplay.
 5. Install/update Unity CLI through one supported installation route. Ensure

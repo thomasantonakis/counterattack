@@ -8,6 +8,17 @@ isolated account/team, compatibility, revision and retry checks. Current evidenc
 `Verification.md` for native XML and unexecuted networking/gameplay coverage.
 This code is not wired into Room, and does not yet prove internet connectivity.
 
+Live EOS probes live under `Assets/Editor/FeatureTests/OnlineEOSConnectivity/`.
+They require the ignored local EOS configuration and a fresh Editor process.
+Create the one-use `Temp/OnlineEOSConnectivity.run` marker before running only
+`EOSConnectLoginEditorTests.DeviceIdentityCanLogInThroughConnect` by exact EditMode
+test-name filter; without the marker, routine runs skip the case. It passed 1/1
+on this Mac. The separate `EOSPrivateLobbyEditorTests` case uses
+`Temp/OnlineEOSLobby.run` and also passed 1/1. Each probe shuts the native
+SDK down, so reopen Unity before another EOS probe. Room must be clean before
+running a fixture. See `OnlineEOSConnectivity/Verification.md` for results and
+native XML. These probes never start ordinary gameplay.
+
 Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
 RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.
 Method filters: ThrowSelectionTiming, PostHeaderMovementTiming, CornerTargets,

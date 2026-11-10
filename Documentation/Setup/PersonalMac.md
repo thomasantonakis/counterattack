@@ -1,6 +1,6 @@
 # Counterattack on your personal Mac
 
-Prepared 2026-11-09. Follow in order on the PERSONAL Mac. These are installation
+Prepared 2026-11-09; verified on the personal Mac 2026-11-10. Follow in order on the PERSONAL Mac. These are installation
 instructions, not a script to run blindly on the company laptop. No company
 network bypass, company credentials or machine-wide configuration transfer is
 needed. Keep working on `codex/online-foundation-personal-mac`, not `master`.
@@ -115,8 +115,11 @@ brew install --cask unity-hub
 ```
 
 Open Unity Hub yourself. Sign into your Unity account and activate an appropriate
-license through Hub. Install **6000.5.2f1**, matching
-`ProjectSettings/ProjectVersion.txt`; do not upgrade the project to a newer Editor.
+license through Hub. Install **6000.5.3f1**, matching
+`ProjectSettings/ProjectVersion.txt`. The previously pinned 6000.5.2f1 could
+not start the existing Pipeline server; the personal-Mac setup therefore moved
+to the next 6000.5 patch release. Do not upgrade to a newer Editor without
+checking the project version and Pipeline compatibility.
 If Hub does not list it, use the official Unity download archive's Hub link for
 that exact version.
 
@@ -240,10 +243,16 @@ open, Play Mode stopped and no pending tests:
 
 ```sh
 PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-unity recompile --project-path "$PROJECT_ROOT" --format json
+unity command recompile --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
+unity command recompile_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
 unity command editor_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
 unity command list_open_scenes --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
 ```
+
+With the pinned Pipeline 0.8.0-exp.1, the top-level `unity recompile` CLI may
+look for an unavailable `script recompile` name. The direct `unity command
+recompile` above succeeded on this Mac; verify `recompile_status` is
+`up_to_date` with no errors before tests.
 
 If any loaded scene is dirty, save through the Editor, then recheck it is clean:
 
@@ -267,8 +276,10 @@ failures directly; never ask Codex to start ordinary gameplay as a substitute.
 
 ## 10. Resume online development
 
-Create the EOS development product/client using `Documentation/Plans/EOSSetup.md`.
-No EOS package, login, relay or Windows/macOS internet proof is complete yet.
+The EOS product/client are ready, and EOS Unity plugin 6.2.0 imports and compiles
+in Unity 6000.5.3f1. See `Documentation/Plans/EOSSetup.md` for the recorded proof.
+One local EOS Connect Device ID login passed; no second-identity, relay or
+Windows/macOS internet proof is complete yet.
 Do not paste credentials in chat. Current gameplay remains Hotseat/PvC; the new
 online code is an isolated protocol foundation, not a playable online mode.
 

@@ -11,10 +11,23 @@ started; live connectivity, M0 acceptance and M1 gameplay proof remain pending.
 - Live Editor compilation clean; 27 focused EditMode cases passed, zero failed
   or skipped. Native run: TestResults/GameplayRegression/Runs/20261109T202334308Z/.
   Details: Assets/Editor/FeatureTests/OnlineMatch/Verification.md.
-- User confirmed no EOS product exists. Prepared [EOS setup](EOSSetup.md);
-  no SDK/package/service/account created or configured.
-- EOS plugin platform documentation and its Netcode sample target older Unity/
-  Netcode versions; Unity 6000.5.2f1 compatibility remains an investigation gate.
+- User created an EOS product and desktop client with the predefined PeerToPeer
+  policy. [EOS setup](EOSSetup.md) records the portal configuration;
+  no credentials are configured in the project.
+- Pinned EOS Unity plugin 6.2.0; live Unity 6000.5.3f1 import and compilation
+  succeeded. The focused protocol fixture passed 27/27 again after import:
+  `TestResults/GameplayRegression/Runs/20261110T080134239Z/results.xml`.
+  The user saved local config; an isolated Mac Editor probe returned native
+  `init=Success`, `create=True`, `shutdown=Success`. Transport, identity,
+  standalone builds and cross-platform connectivity remain gates.
+- One focused live EOS Connect Device ID EditMode case passed after an Editor
+  restart: 1 passed, 0 failed; a valid Product User ID was returned. Native XML:
+  `TestResults/GameplayRegression/Runs/20261110T204345472Z/results.xml`.
+  This proves one local development login, not a second user or P2P connection.
+- A separate focused EOS private-lobby case passed 1/1 after a fresh Editor
+  start: a two-seat invite-only lobby with join-by-ID was created and destroyed.
+  Native XML: `TestResults/GameplayRegression/Runs/20261110T205106861Z/results.xml`.
+  No remote join or transport result is claimed.
 - No Windows/macOS internet connectivity, relay, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 
@@ -84,7 +97,7 @@ Inspected source and CodeGraph on 2026-11-09; this is not a runtime audit.
 
 | Existing seam | Finding and consequence |
 | --- | --- |
-| Unity 6000.5.2f1; Packages/manifest.json | Multiplayer Center exists; no established gameplay networking package is declared. Select and verify a stack in M0. |
+| Unity 6000.5.3f1; Packages/manifest.json | EOS Unity plugin 6.2.0 is pinned and imports cleanly. Multiplayer Center exists; no gameplay transport is wired. Select and verify one in M0. |
 | CreateNewGameManager and GameSettings | Existing settings, kit/team validation and six deck-category flags can be reused. Saving local JSON and loading Draft/FreeDraft currently drives progression; online needs an agreed manifest and coordinated transitions. |
 | ApplicationManager | Persists local mode and save path. Add explicit online match/participant context; local paths must never be network identities. |
 | DraftManager and DraftOrderPanelController | Draft pools, shuffles, first-pick rolls and scene flow currently run locally. The authority must own them; guest startup must not generate a second draft. |
@@ -451,8 +464,9 @@ a modified hosting client; dedicated trusted authority is a separate fairness st
 4. Prove the M1 real ground-pass/interception flow on independent processes.
 5. Re-estimate remaining work using M1 evidence; proceed M2 through M5.
 
-The first implementation batch creates no accounts, purchases no services,
-installs no networking packages and changes no existing gameplay/scenes.
+The first protocol batch changed no existing gameplay/scenes. The subsequent M0
+compatibility check installed the EOS Unity plugin, without credentials or a
+paid service.
 
 ## Primary references checked 2026-11-09
 
