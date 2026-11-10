@@ -49,7 +49,7 @@ public class GameDebugMonitor : MonoBehaviour
     private StringBuilder builder = new();
     private StringBuilder instruction = new();
     private static readonly Color NeutralInstructionColor = Color.white;
-    private static readonly Color NeutralInstructionPanelColor = new Color(0f, 0f, 0f, 0.392f);
+    private static readonly Color NeutralInstructionPanelColor = new Color(0f, 0f, 0f, 1f);
     private Image instructionPanelImage;
     private Image decisionMakingPanelImage;
     private GameObject decisionMakingPanelObject;
@@ -1012,7 +1012,7 @@ public class GameDebugMonitor : MonoBehaviour
         bool useSwappedColors = shouldFlash && Mathf.FloorToInt(Time.unscaledTime * 6f) % 2 == 1;
         Color textColor = useSwappedColors ? palette.Primary : palette.Secondary;
         Color panelColor = useSwappedColors ? palette.Secondary : palette.Primary;
-        panelColor.a = side == InstructionSide.Neutral ? NeutralInstructionPanelColor.a : 0.82f;
+        panelColor.a = 1f;
 
         if (instructionText != null)
         {
