@@ -53,3 +53,7 @@ Assets/Logs/
 
 # Retained local Unity Test Framework regression artifacts
 /TestResults/GameplayRegression/
+
+# Local audition recordings; release library uses the curated crowd assets.
+/Assets/Audio/Placeholders/
+/Assets/Audio/Placeholders.meta

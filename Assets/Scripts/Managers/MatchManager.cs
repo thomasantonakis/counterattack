@@ -2006,6 +2006,9 @@ public partial class MatchManager : MonoBehaviour
             IncrementPlayerEventCount(playerSubOnCounts, GetStableTokenKey(playerOn), value);
         }
         MatchEventAnnouncements.Publish(MatchBannerEvent.Substitution, $"{playerOff?.playerName} → {playerOn?.playerName}");
+        if (playerOff != null && playerOn != null)
+            GameplayAudioEvents.PublishIncident(this, GameplayAudioEvents.IncidentKind.Substitution,
+                playerOff.isHomeTeam, playerOff.isInjured);
     }
 
     public int GetPlayerSubOnCount(string playerName)
@@ -2882,6 +2885,7 @@ public partial class MatchManager : MonoBehaviour
         string recoveryType = "",
         string saveType = "")
     {
+        GameplayAudioEvents.PublishAction(this, token, actionType, value, tackleType, recoveryType, saveType, connectedToken);
         if (value > 0 && actionType == ActionType.GroundDuelWon && tackleType == "foul")
             MatchEventAnnouncements.Publish(MatchBannerEvent.Foul, token != null ? token.playerName : string.Empty);
         Dictionary<string, string> details = CreateDetails(
@@ -3126,6 +3130,10 @@ public partial class MatchManager : MonoBehaviour
 
     public void RecordMatchTransition(string transition, string outcome, Dictionary<string, string> details = null, string preStateHash = null)
     {
+        if (transition == "half_time" && outcome == "started")
+            GameplayAudioEvents.PublishIncident(this, GameplayAudioEvents.IncidentKind.HalfTime);
+        else if ((transition == "full_time" || transition == "extra_time_full_time") && outcome == "match_ended")
+            GameplayAudioEvents.PublishIncident(this, GameplayAudioEvents.IncidentKind.FullTime);
         RecordGameplayOutcome(
             "match.transition",
             transition,
@@ -6997,6 +7005,7 @@ public partial class MatchManager : MonoBehaviour
                 ("assist", assist),
                 ("homeScore", gameData?.stats?.homeTeamStats?.totalGoals ?? 0),
                 ("awayScore", gameData?.stats?.awayTeamStats?.totalGoals ?? 0)));
+        GameplayAudioEvents.PublishGoalConfirmed(this, isHomeTeam);
         matchStatsUI.UpdateScorersDisplay();
     }
     

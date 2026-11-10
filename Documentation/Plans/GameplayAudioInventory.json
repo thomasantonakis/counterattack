@@ -1,0 +1,2454 @@
+{
+  "root": "Assets/344SFX_Football_Crowd",
+  "review": "Filename and embedded metadata inspection only; not a listening verdict or pool assignment.",
+  "clips": [
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Anticipation_Cheer_Applause_01.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Anticipation_Cheer_Applause_01",
+      "durationSeconds": 29.377292,
+      "bytes": 8461000,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Anticipation_Excited_01.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Anticipation_Excited_01",
+      "durationSeconds": 8.725333,
+      "bytes": 2513236,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Anticipation_Excited_02.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Anticipation_Excited_02",
+      "durationSeconds": 5.213333,
+      "bytes": 1501828,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Build_Up_Cheer_Applause_01.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Build_Up_Cheer_Applause_01",
+      "durationSeconds": 20.368,
+      "bytes": 5866372,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Build_Up_Cheer_Applause_02.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Build_Up_Cheer_Applause_02",
+      "durationSeconds": 17.353375,
+      "bytes": 4998160,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Build_Up_Cheer_Applause_03.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Build_Up_Cheer_Applause_03",
+      "durationSeconds": 12.392646,
+      "bytes": 3569470,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Distant_Excited_Applause_01.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Distant_Excited_Applause_01",
+      "durationSeconds": 15.08,
+      "bytes": 4343380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Anticipation_Cheers/Audio/Excited_Applause_01.wav",
+      "category": "Anticipation_Cheers",
+      "name": "Excited_Applause_01",
+      "durationSeconds": 11.0,
+      "bytes": 3168340,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_01.wav",
+      "category": "Applause",
+      "name": "Applause_01",
+      "durationSeconds": 5.186521,
+      "bytes": 1494106,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_02.wav",
+      "category": "Applause",
+      "name": "Applause_02",
+      "durationSeconds": 7.888833,
+      "bytes": 2272372,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Multiple_01.wav",
+      "category": "Applause",
+      "name": "Applause_Multiple_01",
+      "durationSeconds": 57.2,
+      "bytes": 16473940,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_01.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_01",
+      "durationSeconds": 9.005333,
+      "bytes": 2593876,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_02.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_02",
+      "durationSeconds": 7.650667,
+      "bytes": 2203732,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_03.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_03",
+      "durationSeconds": 13.296,
+      "bytes": 3829588,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_04.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_04",
+      "durationSeconds": 9.912,
+      "bytes": 2854996,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_05.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_05",
+      "durationSeconds": 18.648521,
+      "bytes": 5371114,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_06.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_06",
+      "durationSeconds": 6.333333,
+      "bytes": 1824340,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_07.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_07",
+      "durationSeconds": 14.08,
+      "bytes": 4055380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_08.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_08",
+      "durationSeconds": 9.314667,
+      "bytes": 2682964,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_09.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_09",
+      "durationSeconds": 28.08,
+      "bytes": 8087380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_10.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_10",
+      "durationSeconds": 10.354667,
+      "bytes": 2982484,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_11.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_11",
+      "durationSeconds": 6.76,
+      "bytes": 1947220,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Walla_12.wav",
+      "category": "Applause",
+      "name": "Applause_Walla_12",
+      "durationSeconds": 6.08,
+      "bytes": 1751380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Applause_Whistle_01.wav",
+      "category": "Applause",
+      "name": "Applause_Whistle_01",
+      "durationSeconds": 8.653333,
+      "bytes": 2492500,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Distant_Applause_01.wav",
+      "category": "Applause",
+      "name": "Distant_Applause_01",
+      "durationSeconds": 6.152,
+      "bytes": 1772116,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Distant_Applause_02.wav",
+      "category": "Applause",
+      "name": "Distant_Applause_02",
+      "durationSeconds": 4.911979,
+      "bytes": 1414990,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Distant_Applause_03.wav",
+      "category": "Applause",
+      "name": "Distant_Applause_03",
+      "durationSeconds": 8.318708,
+      "bytes": 2396128,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Distant_Applause_04.wav",
+      "category": "Applause",
+      "name": "Distant_Applause_04",
+      "durationSeconds": 8.055833,
+      "bytes": 2320438,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Away Team, Gameplay, Football Kicks, Reactions, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Applause/Audio/Gameplay_Applause_01.wav",
+      "category": "Applause",
+      "name": "Gameplay_Applause_01",
+      "durationSeconds": 12.288333,
+      "bytes": 3539414,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Player Shouts, Murmurs, Football Kicks, Distant Applause, Quiet, Coach",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Applause_Chant_01.wav",
+      "category": "Chants_Singing",
+      "name": "Applause_Chant_01",
+      "durationSeconds": 7.504,
+      "bytes": 2161492,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Applause_Chant_02.wav",
+      "category": "Chants_Singing",
+      "name": "Applause_Chant_02",
+      "durationSeconds": 24.809458,
+      "bytes": 7145464,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Applause_Singing_01.wav",
+      "category": "Chants_Singing",
+      "name": "Applause_Singing_01",
+      "durationSeconds": 23.834667,
+      "bytes": 6864724,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Clap_01.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Clap_01",
+      "durationSeconds": 15.643375,
+      "bytes": 4505632,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Clap_02.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Clap_02",
+      "durationSeconds": 11.841667,
+      "bytes": 3410710,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Short_01.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Short_01",
+      "durationSeconds": 4.64225,
+      "bytes": 1337308,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Walla_01.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Walla_01",
+      "durationSeconds": 9.08,
+      "bytes": 2615380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Walla_02.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Walla_02",
+      "durationSeconds": 12.989333,
+      "bytes": 3741268,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Walla_03.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Walla_03",
+      "durationSeconds": 8.941333,
+      "bytes": 2575444,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Chant_Walla_04.wav",
+      "category": "Chants_Singing",
+      "name": "Chant_Walla_04",
+      "durationSeconds": 9.379833,
+      "bytes": 2701732,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Chant_01.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Chant_01",
+      "durationSeconds": 11.700833,
+      "bytes": 3370180,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Chant_02.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Chant_02",
+      "durationSeconds": 8.496667,
+      "bytes": 2447398,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Away Team, Gameplay, Football Kicks, Reactions, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Chant_03.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Chant_03",
+      "durationSeconds": 15.832,
+      "bytes": 4559956,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Chant_04.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Chant_04",
+      "durationSeconds": 8.959146,
+      "bytes": 2580574,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Chant_05.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Chant_05",
+      "durationSeconds": 10.855,
+      "bytes": 3126598,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Away Team, Gameplay, Football Kicks, Reactions, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Chant_Gradually_Increasing_Applause_01.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Chant_Gradually_Increasing_Applause_01",
+      "durationSeconds": 25.773333,
+      "bytes": 7423060,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_01.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_01",
+      "durationSeconds": 12.08,
+      "bytes": 3479380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_02.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_02",
+      "durationSeconds": 28.741333,
+      "bytes": 8277844,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_03.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_03",
+      "durationSeconds": 21.76,
+      "bytes": 6267220,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_04.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_04",
+      "durationSeconds": 25.24,
+      "bytes": 7269460,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_05.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_05",
+      "durationSeconds": 19.778667,
+      "bytes": 5696596,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_06.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_06",
+      "durationSeconds": 21.08,
+      "bytes": 6071380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Distant_Singing_07.wav",
+      "category": "Chants_Singing",
+      "name": "Distant_Singing_07",
+      "durationSeconds": 31.34625,
+      "bytes": 9028060,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Rhythmic_Chant_Clap_01.wav",
+      "category": "Chants_Singing",
+      "name": "Rhythmic_Chant_Clap_01",
+      "durationSeconds": 17.749271,
+      "bytes": 5112130,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Rhythmic_Chant_Clap_02.wav",
+      "category": "Chants_Singing",
+      "name": "Rhythmic_Chant_Clap_02",
+      "durationSeconds": 21.409646,
+      "bytes": 6166318,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Chants_Singing/Audio/Singing_Walla_01.wav",
+      "category": "Chants_Singing",
+      "name": "Singing_Walla_01",
+      "durationSeconds": 13.08,
+      "bytes": 3767380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Crowd_Walla/Audio/Distant_Reaction_01.wav",
+      "category": "Crowd_Walla",
+      "name": "Distant_Reaction_01",
+      "durationSeconds": 11.928,
+      "bytes": 3435622,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Away Team, Gameplay, Football Kicks, Reactions, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Crowd_Walla/Audio/General_Walla_01.wav",
+      "category": "Crowd_Walla",
+      "name": "General_Walla_01",
+      "durationSeconds": 9.83,
+      "bytes": 2831414,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Player Shouts, Murmurs, Football Kicks, Distant Applause, Quiet, Coach",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Crowd_Walla/Audio/General_Walla_02.wav",
+      "category": "Crowd_Walla",
+      "name": "General_Walla_02",
+      "durationSeconds": 13.256729,
+      "bytes": 3818312,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Player Shouts, Murmurs, Football Kicks, Distant Applause, Quiet, Coach",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Crowd_Walla/Audio/General_Walla_03.wav",
+      "category": "Crowd_Walla",
+      "name": "General_Walla_03",
+      "durationSeconds": 33.758354,
+      "bytes": 9722780,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Player Shouts, Murmurs, Football Kicks, Distant Applause, Quiet, Coach",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Crowd_Walla/Audio/Lively_Distant_01.wav",
+      "category": "Crowd_Walla",
+      "name": "Lively_Distant_01",
+      "durationSeconds": 14.616,
+      "bytes": 4209738,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Distant Kick, Claps, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Crowd_Walla/Audio/Player_Coach_01.wav",
+      "category": "Crowd_Walla",
+      "name": "Player_Coach_01",
+      "durationSeconds": 8.784354,
+      "bytes": 2530220,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kicks, Shouts",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Goal_Celebrations/Audio/Build_Up_Goal_Cheer_Applause_01.wav",
+      "category": "Goal_Celebrations",
+      "name": "Build_Up_Goal_Cheer_Applause_01",
+      "durationSeconds": 31.312,
+      "bytes": 9018244,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Goal_Celebrations/Audio/Goal_Cheer_Applause_01.wav",
+      "category": "Goal_Celebrations",
+      "name": "Goal_Cheer_Applause_01",
+      "durationSeconds": 33.098333,
+      "bytes": 9532708,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Goal_Celebrations/Audio/Goal_Cheer_Applause_02.wav",
+      "category": "Goal_Celebrations",
+      "name": "Goal_Cheer_Applause_02",
+      "durationSeconds": 16.704,
+      "bytes": 4811140,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Goal_Celebrations/Audio/Goal_Cheer_Celebrate_01.wav",
+      "category": "Goal_Celebrations",
+      "name": "Goal_Cheer_Celebrate_01",
+      "durationSeconds": 44.607292,
+      "bytes": 12847240,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Goal_Celebrations/Audio/Goal_Cheer_Celebrate_02.wav",
+      "category": "Goal_Celebrations",
+      "name": "Goal_Cheer_Celebrate_02",
+      "durationSeconds": 40.08,
+      "bytes": 11543380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Goal_Celebrations/Audio/Goal_Cheer_Offside_01.wav",
+      "category": "Goal_Celebrations",
+      "name": "Goal_Cheer_Offside_01",
+      "durationSeconds": 8.898667,
+      "bytes": 2563156,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Anticipation_Big_Groan_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Anticipation_Big_Groan_01",
+      "durationSeconds": 10.822667,
+      "bytes": 3117316,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Anticipation_Big_Groan_02.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Anticipation_Big_Groan_02",
+      "durationSeconds": 10.288333,
+      "bytes": 2963428,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Anticipation_Big_Groan_Applause_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Anticipation_Big_Groan_Applause_01",
+      "durationSeconds": 6.832333,
+      "bytes": 1968100,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Anticipation_Cheer_Groan_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Anticipation_Cheer_Groan_01",
+      "durationSeconds": 11.424,
+      "bytes": 3290452,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Anticipation_Groan_Applause_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Anticipation_Groan_Applause_01",
+      "durationSeconds": 20.674625,
+      "bytes": 5954632,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Anticipation_Groan_Applause_02.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Anticipation_Groan_Applause_02",
+      "durationSeconds": 13.858667,
+      "bytes": 3991636,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_01",
+      "durationSeconds": 2.315,
+      "bytes": 667108,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_02.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_02",
+      "durationSeconds": 8.0015,
+      "bytes": 2304820,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_03.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_03",
+      "durationSeconds": 5.898833,
+      "bytes": 1699252,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_Applause_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_Applause_01",
+      "durationSeconds": 9.505333,
+      "bytes": 2737924,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_Applause_02.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_Applause_02",
+      "durationSeconds": 5.532021,
+      "bytes": 1593610,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_Applause_03.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_Applause_03",
+      "durationSeconds": 7.631333,
+      "bytes": 2198212,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Big_Groan_Applause_04.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Big_Groan_Applause_04",
+      "durationSeconds": 13.7965,
+      "bytes": 3973780,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Disappointed_Groan_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Disappointed_Groan_01",
+      "durationSeconds": 6.778667,
+      "bytes": 1952596,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Applause_Shout_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Applause_Shout_01",
+      "durationSeconds": 21.542333,
+      "bytes": 6204532,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Applause_Whistle_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Applause_Whistle_01",
+      "durationSeconds": 7.992,
+      "bytes": 2302046,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistles",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Disappointed_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Disappointed_01",
+      "durationSeconds": 9.08,
+      "bytes": 2615380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Disappointed_02.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Disappointed_02",
+      "durationSeconds": 2.352,
+      "bytes": 677716,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Disappointed_03.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Disappointed_03",
+      "durationSeconds": 3.870708,
+      "bytes": 1115104,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Disappointed_04.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Disappointed_04",
+      "durationSeconds": 2.274667,
+      "bytes": 655444,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Groan_Short_Applause_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Groan_Short_Applause_01",
+      "durationSeconds": 8.125333,
+      "bytes": 2340436,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Impatient_Groan_Applause_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Impatient_Groan_Applause_01",
+      "durationSeconds": 29.544708,
+      "bytes": 8509216,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_01",
+      "durationSeconds": 7.565333,
+      "bytes": 2179156,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_02.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_02",
+      "durationSeconds": 3.504,
+      "bytes": 1009492,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_03.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_03",
+      "durationSeconds": 20.509021,
+      "bytes": 5906938,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_04.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_04",
+      "durationSeconds": 16.545625,
+      "bytes": 4765480,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_05.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_05",
+      "durationSeconds": 9.733333,
+      "bytes": 2803540,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_06.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_06",
+      "durationSeconds": 12.189333,
+      "bytes": 3510868,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_07.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_07",
+      "durationSeconds": 13.588667,
+      "bytes": 3913876,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_08.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_08",
+      "durationSeconds": 7.718375,
+      "bytes": 2223232,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Groans_Near_Misses/Audio/Near_Miss_Groan_Applause_Chant_01.wav",
+      "category": "Groans_Near_Misses",
+      "name": "Near_Miss_Groan_Applause_Chant_01",
+      "durationSeconds": 15.342625,
+      "bytes": 4419016,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Final_Whistle_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Final_Whistle_Applause_01",
+      "durationSeconds": 18.346667,
+      "bytes": 5284180,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Full_Time_Whistle_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Full_Time_Whistle_Applause_01",
+      "durationSeconds": 10.308188,
+      "bytes": 2969112,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Whistle, Applause, Cheers, Movement, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Half_Time_Whistle_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Half_Time_Whistle_Applause_01",
+      "durationSeconds": 14.294333,
+      "bytes": 4117122,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Whistle, Applause, Cheers, Movement, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Injured_Player_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Injured_Player_Applause_01",
+      "durationSeconds": 7.08,
+      "bytes": 2039394,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Player Walking Off Injured, Walla, Chant, Applause",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Injured_Player_Stands_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Injured_Player_Stands_Applause_01",
+      "durationSeconds": 37.08,
+      "bytes": 10679380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Kick_Off_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Kick_Off_Applause_01",
+      "durationSeconds": 10.970667,
+      "bytes": 3159892,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Referee_Whistle_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Referee_Whistle_Applause_01",
+      "durationSeconds": 11.496,
+      "bytes": 3311206,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistle, Referee",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Referee_Whistle_Applause_02.wav",
+      "category": "Match_Events",
+      "name": "Referee_Whistle_Applause_02",
+      "durationSeconds": 16.665,
+      "bytes": 4799878,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistle, Referee",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Referee_Whistle_Chant_Applause_01.wav",
+      "category": "Match_Events",
+      "name": "Referee_Whistle_Chant_Applause_01",
+      "durationSeconds": 6.994667,
+      "bytes": 2014822,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistle, Referee",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Match_Events/Audio/Referee_Whistle_Chant_Applause_02.wav",
+      "category": "Match_Events",
+      "name": "Referee_Whistle_Chant_Applause_02",
+      "durationSeconds": 27.09,
+      "bytes": 7802278,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistle, Referee",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Angry_Booing_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Angry_Booing_01",
+      "durationSeconds": 20.858667,
+      "bytes": 6007636,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Angry_Groan_Impatient_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Angry_Groan_Impatient_01",
+      "durationSeconds": 33.230292,
+      "bytes": 9570664,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2022-08-31",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Angry_Impatient_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Angry_Impatient_01",
+      "durationSeconds": 7.290667,
+      "bytes": 2100052,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Angry_Shout_Swearing_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Angry_Shout_Swearing_01",
+      "durationSeconds": 13.871083,
+      "bytes": 3995212,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Angry_Whistle_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Angry_Whistle_01",
+      "durationSeconds": 8.421333,
+      "bytes": 2425694,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistles",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Angry_Whistle_02.wav",
+      "category": "Shouts_Jeers",
+      "name": "Angry_Whistle_02",
+      "durationSeconds": 10.072,
+      "bytes": 2901086,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistles",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Applause_Shout_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Applause_Shout_01",
+      "durationSeconds": 10.4605,
+      "bytes": 3013012,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Football Kick, Shot At Goal, Missed Goal, Walla, Claps, Applause, Reaction, Disappo",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Booing_Disappointed_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Booing_Disappointed_01",
+      "durationSeconds": 5.258667,
+      "bytes": 1514836,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Build_Up_Shout_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Build_Up_Shout_01",
+      "durationSeconds": 6.199333,
+      "bytes": 1785796,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Yeah!, Walla, Groan, Anticipation, Lively, Ref Whistle, Chants, Goal, Excited, Live",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Coach_Yelling_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Coach_Yelling_01",
+      "durationSeconds": 7.371667,
+      "bytes": 2123380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Crowd, Walla, Distant Kicks, Focus!",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Distant_Shout_Applause_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Distant_Shout_Applause_01",
+      "durationSeconds": 9.08,
+      "bytes": 2615380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Foul_Angry_Reaction_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Foul_Angry_Reaction_01",
+      "durationSeconds": 6.615333,
+      "bytes": 1905604,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Walla, Jeers, Tannoy, Substitution, Claps, Shouts, Loudspeaker, Distant Kicks, Ref!",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Foul_Angry_Reaction_Referee_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Foul_Angry_Reaction_Referee_01",
+      "durationSeconds": 6.186667,
+      "bytes": 1782148,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Walla, Jeers, Tannoy, Substitution, Claps, Shouts, Loudspeaker, Distant Kicks, Ref!",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Foul_Angry_Reaction_Referee_02.wav",
+      "category": "Shouts_Jeers",
+      "name": "Foul_Angry_Reaction_Referee_02",
+      "durationSeconds": 5.685833,
+      "bytes": 1637908,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Walla, Jeers, Tannoy, Substitution, Claps, Shouts, Loudspeaker, Distant Kicks, Ref!",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Impatient_Shout_Whistle_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Impatient_Shout_Whistle_01",
+      "durationSeconds": 17.1905,
+      "bytes": 4951214,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistles",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Impatient_Shout_Whistle_02.wav",
+      "category": "Shouts_Jeers",
+      "name": "Impatient_Shout_Whistle_02",
+      "durationSeconds": 15.616,
+      "bytes": 4497758,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistles",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Impatient_Shout_Whistle_03.wav",
+      "category": "Shouts_Jeers",
+      "name": "Impatient_Shout_Whistle_03",
+      "durationSeconds": 12.317333,
+      "bytes": 3547742,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Whistles",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Lively_Shout_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Lively_Shout_01",
+      "durationSeconds": 12.996667,
+      "bytes": 3743370,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Distant Kick, Claps, Walla",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Player_Sarcastic_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Player_Sarcastic_01",
+      "durationSeconds": 7.5555,
+      "bytes": 2176338,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Taunting, Walla, Shouts, Come On!, Football Kicks",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Sarcastic_Shout_Whey_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Sarcastic_Shout_Whey_01",
+      "durationSeconds": 9.466667,
+      "bytes": 2726740,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Sarcastic_Shout_Whey_Distant_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Sarcastic_Shout_Whey_Distant_01",
+      "durationSeconds": 5.08,
+      "bytes": 1463380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Sarcastic_Shout_Whey_Distant_02.wav",
+      "category": "Shouts_Jeers",
+      "name": "Sarcastic_Shout_Whey_Distant_02",
+      "durationSeconds": 6.034667,
+      "bytes": 1738324,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Shout_Hand_Ball_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Shout_Hand_Ball_01",
+      "durationSeconds": 5.92,
+      "bytes": 1705300,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Shouts_Jeers/Audio/Shout_Urging_Player_Shoot_01.wav",
+      "category": "Shouts_Jeers",
+      "name": "Shout_Urging_Player_Shoot_01",
+      "durationSeconds": 5.366542,
+      "bytes": 1545904,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Foul_Angry_Reaction_Tannoy_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Foul_Angry_Reaction_Tannoy_01",
+      "durationSeconds": 10.740188,
+      "bytes": 3093562,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Walla, Jeers, Tannoy, Substitution, Claps, Shouts, Loudspeaker, Distant Kicks, Ref!",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Substitute_Tannoy_Announcement_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Substitute_Tannoy_Announcement_01",
+      "durationSeconds": 18.08,
+      "bytes": 5207380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Substitute_Tannoy_Announcement_02.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Substitute_Tannoy_Announcement_02",
+      "durationSeconds": 26.8,
+      "bytes": 7718740,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_01",
+      "durationSeconds": 9.08,
+      "bytes": 2615380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_02.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_02",
+      "durationSeconds": 12.739417,
+      "bytes": 3669326,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Tannoy, Announcer, Announcement",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_03.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_03",
+      "durationSeconds": 9.230208,
+      "bytes": 2658640,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_04.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_04",
+      "durationSeconds": 12.08,
+      "bytes": 3479414,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Tannoy, Announcer, Announcement",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_05.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_05",
+      "durationSeconds": 8.121667,
+      "bytes": 2339416,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_01",
+      "durationSeconds": 16.08,
+      "bytes": 4631380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_02.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_02",
+      "durationSeconds": 13.515979,
+      "bytes": 3892978,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_03.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_03",
+      "durationSeconds": 95.84,
+      "bytes": 27602294,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport, Tannoy, Announcer, Announcement",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_04.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_04",
+      "durationSeconds": 31.08,
+      "bytes": 8951380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_05.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_05",
+      "durationSeconds": 13.016979,
+      "bytes": 3749266,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_06.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_06",
+      "durationSeconds": 15.692333,
+      "bytes": 4519768,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_07.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_07",
+      "durationSeconds": 17.6805,
+      "bytes": 5092360,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_08.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_08",
+      "durationSeconds": 21.174167,
+      "bytes": 6098536,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Applause_09.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Applause_09",
+      "durationSeconds": 8.951333,
+      "bytes": 2578360,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Long_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Long_01",
+      "durationSeconds": 28.08,
+      "bytes": 8087380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Man_Match_Applause_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Man_Match_Applause_01",
+      "durationSeconds": 18.08,
+      "bytes": 5207380,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "UK, British Football, Football, England, Walla, Football Match, Reactions, Crowd, Sports Fans, Gameplay, Crowd Walla, Foul, Moans, Shouts, Yells, Spectator, English Accent, British Accent, Soccer, Voice, Sport",
+        "date": "2024-05-17",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Shout_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Shout_01",
+      "durationSeconds": 10.371667,
+      "bytes": 2987416,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    },
+    {
+      "path": "Assets/344SFX_Football_Crowd/Tannoy_Announcements/Audio/Tannoy_Announcement_Substitute_01.wav",
+      "category": "Tannoy_Announcements",
+      "name": "Tannoy_Announcement_Substitute_01",
+      "durationSeconds": 43.452667,
+      "bytes": 12514744,
+      "sampleRate": 48000,
+      "channels": 2,
+      "bitsPerSample": 24,
+      "codec": "pcm_s24le",
+      "metadata": {
+        "comment": "Women's Football, UK Football, British Football, England, English, English Accent, Voices, Female Voices, Match, Game, Soccer, Stadium, Arena, Sport, Spectator Sport, Team, Claps, Applause, Cheers, Whistles, Walla, Loudspeaker, PA, Announcement",
+        "date": "2024-05-20",
+        "encoder": "Lavf63.5.101"
+      }
+    }
+  ]
+}

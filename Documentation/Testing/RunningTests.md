@@ -1,5 +1,57 @@
 # Running gameplay regressions
 
+Recovery audio: run only `GameplayRecoveryAudioPlayModeTests` (category
+`GameplayRecoveryAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/Recovery/`.
+Latest: 41 passed, zero failed/skipped; Editor compilation clean. Native artifact
+and precise scope: `Assets/Editor/FeatureTests/GameplayAudio/Recovery/TASKS.md`.
+
+Snapshot availability / international mix uses `GameplaySnapshotAudioPlayModeTests`
+(category `GameplaySnapshotAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/SnapshotAndMix/`.
+Latest: 13 passed, zero failed/skipped; Editor compilation separately clean.
+Native reproduction/results, exact scope and pending real-clip listening:
+`Assets/Editor/FeatureTests/GameplayAudio/SnapshotAndMix/TASKS.md`.
+
+Foul timing/card follow-up uses `GameplayFoulAudioTimingPlayModeTests` (category
+`GameplayFoulAudioTiming`), under `Assets/Tests/PlayMode/Features/GameplayAudio/FoulTiming/`.
+Latest focused new-fixture result: 48 passed, zero failed/skipped; Editor compilation
+separately clean. Covers early tackler foul audio and actual leniency/card responses,
+including normal/dangerous thresholds, nutmegs, jackpot, both teams/directions and
+no duplicate after later foul stats. Affected `GameplayIncidentAudioPlayModeTests`: 74 passed, zero failed/skipped.
+Final follow-up scope: 122 PlayMode passes, no whole gameplay suites.
+Native evidence and reproduction history:
+`Assets/Editor/FeatureTests/GameplayAudio/FoulTiming/TASKS.md`.
+
+Confirmed-goal audio uses `GameplayGoalAudioPlayModeTests` (category
+`GameplayGoalAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/Goals/`.
+Run that explicit fixture only. Latest: 16 passed, zero failed/skipped; Editor
+compilation separately clean. Tests cover live normal/own-goal attribution for
+both teams/directions, duplicate delivery, pause/mute, missing clips, disabled
+audio and silent scorer-history restoration. Native artifacts and listening
+criteria: `Assets/Editor/FeatureTests/GameplayAudio/Goals/TASKS.md`.
+
+Other match incidents use `GameplayIncidentAudioPlayModeTests` (category
+`GameplayIncidentAudio`) in `Assets/Tests/PlayMode/Features/GameplayAudio/Incidents/`.
+Its 74 cases passed across the initial 72-case run and two new handball cases;
+the two snapshot cases were also rerun after adding break/setup guards. Zero
+failed/skipped. Dedicated task checklist, exact native paths, test scope and
+pending actual-clip listening: `Assets/Editor/FeatureTests/GameplayAudio/Incidents/TASKS.md`.
+The revised 70/30 mix and goals filling remaining stand gain additionally passed
+the 23 EditMode and six existing ambience playback cases, without whole suites.
+
+Gameplay audio uses `GameplayAudioEditorTests` under
+`Assets/Editor/FeatureTests/GameplayAudio/` and
+`GameplayAudioPlaybackPlayModeTests` under
+`Assets/Tests/PlayMode/Features/GameplayAudio/` (category `GameplayAudio`).
+Run these explicit fixture filters only; PlayMode requires async execution over
+Pipeline HTTP and inspection of the completed result. Latest foundation scope:
+23 EditMode and 6 PlayMode passes, zero failed/skipped; compilation separately
+clean. The playback cases use owned silent clips, preserve local preferences,
+and do not load live saves. They cover continuous crossfades for zero/one/two/many
+clips, bounded gain, mute during a crossfade, stop/restart and fading chants while
+Walla continues under event reactions. Checkbox tests cover all three categories, binding
+cleanup, persistence and ignoring obsolete slider values. Native XML and pending real-asset listening/UI
+acceptance are recorded in the feature TASKS.md. No full suites ran.
+
 Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
 RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.
 Method filters: ThrowSelectionTiming, PostHeaderMovementTiming, CornerTargets,

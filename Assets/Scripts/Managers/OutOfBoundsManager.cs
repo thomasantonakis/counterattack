@@ -144,6 +144,8 @@ public class OutOfBoundsManager : MonoBehaviour
         }
 
         MatchManager.TeamInAttack awardedTeam = DetermineThrowInAwardedTeam(source, lastTouchToken);
+        if (source == "inaccuracy") GameplayAudioEvents.PublishIncident(MatchManager.Instance,
+            GameplayAudioEvents.IncidentKind.OpponentError, awardedTeam == MatchManager.TeamInAttack.Home);
         Debug.Log($"Throw-in awarded to: {awardedTeam} (source: {source}, lastTouch: {lastTouchToken?.name ?? "unknown"}).");
         if (MatchManager.Instance.teamInAttack != awardedTeam)
         {
@@ -217,6 +219,8 @@ public class OutOfBoundsManager : MonoBehaviour
         {
             Debug.Log("It's a Corner Kick");
             LogCornerWon(source, lastTouchToken, cornerWinnerToken);
+            if (source == "inaccuracy") GameplayAudioEvents.PublishIncident(MatchManager.Instance,
+                GameplayAudioEvents.IncidentKind.OpponentError, MatchManager.Instance.teamInAttack != MatchManager.TeamInAttack.Home);
             if (source == "inaccuracy")
             {
                 MatchManager.Instance.ChangePossession();
@@ -278,6 +282,8 @@ public class OutOfBoundsManager : MonoBehaviour
         {
             // It is a Goal Kick
             Debug.Log("It's a Goal Kick.");
+            if (source == "inaccuracy") GameplayAudioEvents.PublishIncident(MatchManager.Instance,
+                GameplayAudioEvents.IncidentKind.OpponentError, MatchManager.Instance.teamInAttack != MatchManager.TeamInAttack.Home);
             if (source == "inaccuracy")
             {
                 MatchManager.Instance.ChangePossession();

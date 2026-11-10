@@ -2831,6 +2831,8 @@ public partial class MovementPhaseManager : MonoBehaviour
 
             bool foul = isDribblerRunning && diceRoll <= FOUL_THRESHOLD;
             bool recovered = diceRoll == 6 || diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD;
+            if (foul)
+                GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.Foul, selectedDefender.isHomeTeam);
             yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
                 foul ? (IsCurrentBallHexInOpponentPenaltyBox() ? "PENALTY!" : "FOUL")
                     : recovered ? "BALL RECOVERED" : "RECOVERY FAILED", continueWithFoulChecks: foul);
@@ -2862,6 +2864,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             else
             {
                 Debug.Log($"{selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates} failed to intercept.");
+                GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.DuelLost, selectedDefender.isHomeTeam);
                 // Move to the next defender, if any
                 eligibleDefenders.Remove(selectedDefender);
                 defendersTriedToIntercept.Add(selectedDefender);
@@ -2964,6 +2967,9 @@ public partial class MovementPhaseManager : MonoBehaviour
         {
             defenderDiceRoll = diceRoll;
             tackleDefenderRolled = true;
+            int foulThreshold = IsCurrentTackleDangerous(attackerToken, rollingToken) ? 2 : FOUL_THRESHOLD;
+            if (rollingToken != null && diceRoll <= foulThreshold)
+                GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.Foul, rollingToken.isHomeTeam);
             activeDuelPanel?.ShowDuelRoll(true, tackleRoll);
             if (diceRoll == 50) Debug.Log($"Defender rolled A JACKPOT!!!");
             else Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
@@ -3272,6 +3278,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         }
 
         foulHex ??= attackerToken.GetCurrentHex();
+        GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.Foul, goalkeeper.isHomeTeam);
         Debug.Log($"{goalkeeper.name} touches the ball with hands outside the penalty box at {foulHex?.coordinates.ToString() ?? "<unknown>"}. Forced free kick and straight red card.");
         selectedDefender = goalkeeper;
         MarkTokenCurrentHexOccupied(attackerToken);
