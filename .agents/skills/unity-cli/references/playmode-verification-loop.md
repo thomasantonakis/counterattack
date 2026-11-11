@@ -49,7 +49,7 @@ If nothing is reachable, rule out Safe Mode and a sandboxed shell before conclud
 down: see [integration-advanced.md → Recovering from Safe Mode](integration-advanced.md#recovering-from-safe-mode-connection-fails-because-of-compile-errors)
 and [integration-advanced.md → Sandboxed agent tooling can hide a running Editor](integration-advanced.md#sandboxed-agent-tooling-can-hide-a-running-editor).
 
-Then read the play state before you change anything: `unity command editor status` reports it, and
+Then read the play state before you change anything: `unity command editor_status` reports it, and
 its `playMode` reads `stopped` when the Editor is not playing. If the Editor is already playing or
 paused, that session is the user's. Reading it is fine (steps 4 to 6 only read). Leave the settings in
 step 2, `editor.playmode start` in step 3, the pause and step recipe in step 4, the tuning in step 7 and
@@ -255,7 +255,7 @@ unity command editor.playmode set_run_in_background -- --enabled false
 unity command editor set_auto_tick -- --enabled false
 ```
 
-Stop only a session you started. One that was already playing when you read `editor status` in
+Stop only a session you started. One that was already playing when you read `editor_status` in
 step 1 is the user's. Then put back what step 2 changed: with `persist=true`, auto-tick otherwise
 keeps the Editor ticking while unfocused for the rest of the session. Skip the `editor set_auto_tick`
 revert if you'll keep driving the Editor, because an unfocused Editor stalls without it.
@@ -264,7 +264,7 @@ revert if you'll keep driving the Editor, because an unfocused Editor stalls wit
 
 ```bash
 unity status --format json
-unity command editor status   # already playing or paused? Then the session is the user's: read it, change nothing
+unity command editor_status   # already playing or paused? Then the session is the user's: read it, change nothing
 unity command editor set_auto_tick
 unity command editor.playmode set_run_in_background
 unity command editor.playmode start
