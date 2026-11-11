@@ -16,6 +16,7 @@ if [ "$(git branch --show-current)" != codex/online-foundation-personal-mac ]; t
     exit 1
 fi
 
+printf 'Checking the son Mac Editor connection...\n'
 status="$(unity status --project-path "$repo_root" --format json)"
 printf '%s\n' "$status" | jq -e --arg root "$repo_root" \
     '.success == true and any(.data.instances[]?; .projectPath == $root and .state == "ready")' >/dev/null || {
@@ -23,12 +24,13 @@ printf '%s\n' "$status" | jq -e --arg root "$repo_root" \
     exit 1
 }
 
+printf 'Checking Unity compilation...\n'
 unity command recompile --project-path "$repo_root" --caller codex --skill unity-cli --format json >/dev/null
 compile_ready=false
 for (( attempt = 0; attempt < 60; attempt++ )); do
     compile="$(unity command recompile_status --project-path "$repo_root" --caller codex --skill unity-cli --format json)"
     if printf '%s\n' "$compile" | jq -e \
-        '.success == true and .data.result.status == "up_to_date" and .data.result.failed == false' >/dev/null; then
+        '.success == true and (.data.result.status == "up_to_date" or .data.result.status == "completed") and .data.result.failed == false' >/dev/null; then
         compile_ready=true
         break
     fi
@@ -42,6 +44,7 @@ if [ "$compile_ready" != true ]; then
     exit 1
 fi
 
+printf 'Checking Play Mode, scenes and pending tests...\n'
 editor="$(unity command editor_status --project-path "$repo_root" --caller codex --skill unity-cli --format json)"
 printf '%s\n' "$editor" | jq -e \
     '.success == true and .data.result.playMode == "stopped" and .data.result.compiling == false and .data.result.domainReloadInProgress == false' >/dev/null || {
@@ -63,6 +66,7 @@ printf '%s\n' "$tests" | jq -e \
     exit 1
 }
 
+printf 'Fetching the current lobby handoff...\n'
 handoff="$(gh api 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/ActiveEOSLobby.json?ref=codex/online-foundation-personal-mac' --jq '.content | @base64d')"
 lobby_id="$(printf '%s\n' "$handoff" | jq -er '.lobbyId | select(test("^[0-9a-f]{32}$"))')"
 created_unix="$(printf '%s\n' "$handoff" | jq -er '.createdUnix | numbers')"

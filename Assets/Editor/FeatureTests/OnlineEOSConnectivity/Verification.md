@@ -51,19 +51,19 @@ creates a private lobby and destroys it. It does not prove another player can
 join or that EOS P2P transport works. If the configured policy rejects lobby
 creation, record the service error before changing portal permissions.
 
-## Two-Mac lobby join probe (guest join pending)
+## Two-Mac lobby join probe (passed)
 
-- [ ] Prepare two clean Editor processes with the same EOS deployment and
+- [x] Prepare two clean Editor processes with the same EOS deployment and
   separate local device identities. Do not copy EOS identity storage.
-- [ ] Run only `EOSTwoMacLobbyEditorTests.HostWaitsForDistinctGuestAndDestroysLobby`
+- [x] Run only `EOSTwoMacLobbyEditorTests.HostWaitsForDistinctGuestAndDestroysLobby`
   with `Temp/OnlineEOSTwoMacHost.run` on the first Mac. It writes a temporary
   lobby ID to `Temp/OnlineEOSHostLobbyId.txt` and waits up to fifteen minutes.
-- [ ] Publish that one-use ID to the private repository handoff, then run
+- [x] Publish that one-use ID to the private repository handoff, then run
   `Documentation/Setup/RunEOSGuest.sh` on the second Mac. Remove the remote
   handoff after the attempt; keep product/client values and product user IDs local.
-- [ ] Run only `EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId`
-  with `Temp/OnlineEOSTwoMacGuest.run` on the second Mac. Inspect both native
-  XML results and confirm the host saw a distinct product user.
+- [x] Run only `EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId`
+  with `Temp/OnlineEOSTwoMacGuest.run` on the second Mac. Inspect both completed
+  test results and confirm the host saw a distinct product user.
 - [ ] Repeat on separate networks after a same-network connection succeeds.
 
 This probe uses an unadvertised `Joinviapresence` lobby and an exact-ID search.
@@ -71,6 +71,19 @@ The earlier invite-only lobby creation test does not establish code-based joins:
 EOS invite-only lobbies require an actual invitation. The full lobby ID serves
 only as a temporary development join code; a user-friendly code resolver is
 future work. These tests do not send P2P packets.
+
+On 2026-11-11, the personal Mac host passed: **1 passed, 0 failed, 0 skipped**.
+It observed a distinct EOS product user join and leave, then destroyed the lobby.
+Native XML: `TestResults/GameplayRegression/Runs/20261111T144217103Z/results.xml`.
+The family Mac guest also passed: **1 passed, 0 failed, 0 skipped**, as reported
+by its live `test_status` result. It found the host lobby by exact ID, joined
+and left. Its native XML remains on that Mac and was not copied here. Both
+Editors were stopped, and Room remained clean on the host. The helper initially
+rejected a clean Unity `completed` compilation state, then passed on retry;
+its readiness check was corrected afterward. This proves two distinct Mac device
+identities can coordinate through the configured EOS lobby. It does not yet
+prove P2P packets, relay routing, a different network, Windows interoperability
+or playable online matches.
 
 Two host attempts on 2026-11-10 each created and then destroyed a lobby, but
 neither observed a distinct guest within five minutes: **0 passed, 1 failed**

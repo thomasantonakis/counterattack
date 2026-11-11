@@ -2,8 +2,9 @@
 
 Prepared 2026-11-09; portal guidance corrected 2026-11-10. The user has created
 an EOS product, found its IDs, and created a desktop client with the predefined
-PeerToPeer policy. EOS Unity plugin 6.2.0 is pinned in the project. No credentials
-are configured in the project, and no paid service has been activated.
+PeerToPeer policy. EOS Unity plugin 6.2.0 is pinned in the project. Credentials
+were entered locally on the personal and family Macs in Git-ignored files;
+none are tracked, and no paid service has been activated.
 
 ## What this enables
 
@@ -116,6 +117,13 @@ requirements and must not be bundled indiscriminately.
   it successfully: 1 passed, 0 failed. Native XML:
   `TestResults/GameplayRegression/Runs/20261110T205106861Z/results.xml`.
   This confirms this client policy permits private lobby creation, not joining.
+- On 2026-11-11, a focused host EditMode case on the personal Mac and guest case
+  on the family Mac each passed 1/1. The guest found the unadvertised lobby by
+  exact ID, joined and left; the host observed a distinct product user join and
+  leave, then destroyed the lobby. Host XML:
+  `TestResults/GameplayRegression/Runs/20261111T144217103Z/results.xml`.
+  The guest's completed result was reported from its live Unity CLI; its native
+  XML remains on that Mac. This is lobby coordination, not P2P or gameplay.
 
 ## Codex's remaining technical proof
 
@@ -123,10 +131,12 @@ requirements and must not be bundled indiscriminately.
   an Apple Silicon runtime check. Check Windows separately.
   The plugin's platform page targets Unity 2021.3 and its Netcode example cites
   old verified versions; successful import alone does not prove connectivity.
-- Authenticate a second distinct test identity. Bind each provider identity to the
-  reserved match/team in the protocol; do not trust a sender-claimed team.
-- Create/join a private match. A join code must resolve through actual room
-  coordination; an EOS account ID alone is not a complete invite-code system.
+- Bind each authenticated provider identity to the reserved match/team in the
+  protocol; do not trust a sender-claimed team. Two distinct development device
+  identities have now joined the same EOS lobby.
+- Extend the verified lobby join into private match coordination. A short join
+  code must resolve through an actual room mapping; an EOS account ID alone is
+  not a complete invite-code system.
   EOS invite-only lobbies require invitations. For the two-Mac development
   proof, use an unadvertised `Joinviapresence` lobby found by its full ID; any
   user who learns that ID can join, so a short private code needs a separate
@@ -139,26 +149,20 @@ requirements and must not be bundled indiscriminately.
 
 ## Current evidence and external dependencies
 
-The EOS plugin is installed and the local product/client configuration has passed
-native initialization, one EOS Connect Device ID login and private lobby
-create/destroy on this Mac. A second identity, private room joining, P2P traffic
-and relay tests remain unverified pending transport and identity integration.
+The EOS plugin is installed, and local product/client configuration has passed
+native initialization, Connect Device ID login and a two-Mac private lobby
+join/leave. P2P traffic, relay tests and match integration remain unverified.
 The local configuration is Git ignored.
 The cross-platform proof also requires an available Windows machine and a macOS
 machine on different networks. Existing connected Editor tests cannot supply
 that evidence. No separate Unity instance is launched by Codex.
 
-The user has a second Mac and can boot this Mac into Windows. First use both
-Macs at once to prove two distinct device identities, private-lobby joining and
-P2P traffic; then pair the second Mac with this Mac running Windows to check
-cross-platform behavior. The Boot Camp installation cannot run concurrently
-with macOS on the same machine. For the second Mac, follow
-`Documentation/Setup/PersonalMac.md` from this branch, install Unity 6000.5.3f1,
-and enter the same product/sandbox/deployment and desktop client values locally
-through the EOS plugin. Sign in to GitHub/Unity on that Mac yourself; do not
-copy this Mac's local EOS configuration or device-identity storage. The joining
-test harness and standalone build are still to be implemented before asking
-the user to launch a second copy or start a match.
+The family Mac is configured as the second macOS test machine. Next, prove P2P
+traffic and relay behavior between the two Macs, then pair the family Mac with
+this Mac running Windows to check cross-platform behavior. The Boot Camp
+installation cannot run concurrently with macOS on the same machine. Do not
+copy local EOS configuration or device-identity storage between machines.
+Standalone builds and playable match integration remain to be implemented.
 
 The first code batch is provider-independent command admission only. It is not
 yet connected to Room input, a network transport, pause UI, dice or persistence.

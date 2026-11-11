@@ -1,7 +1,8 @@
 # Counterattack online PvP implementation plan
 
 Prepared: 2026-11-09. Status: M0 investigation and isolated protocol foundation
-started; live connectivity, M0 acceptance and M1 gameplay proof remain pending.
+started; two-Mac EOS lobby joining passed, while P2P transport, M0 acceptance
+and M1 gameplay proof remain pending.
 
 ## Implementation evidence — first M0 batch
 
@@ -13,7 +14,7 @@ started; live connectivity, M0 acceptance and M1 gameplay proof remain pending.
   Details: Assets/Editor/FeatureTests/OnlineMatch/Verification.md.
 - User created an EOS product and desktop client with the predefined PeerToPeer
   policy. [EOS setup](EOSSetup.md) records the portal configuration;
-  no credentials are configured in the project.
+  local credentials are Git ignored and are not tracked.
 - Pinned EOS Unity plugin 6.2.0; live Unity 6000.5.3f1 import and compilation
   succeeded. The focused protocol fixture passed 27/27 again after import:
   `TestResults/GameplayRegression/Runs/20261110T080134239Z/results.xml`.
@@ -27,7 +28,13 @@ started; live connectivity, M0 acceptance and M1 gameplay proof remain pending.
 - A separate focused EOS private-lobby case passed 1/1 after a fresh Editor
   start: a two-seat invite-only lobby with join-by-ID was created and destroyed.
   Native XML: `TestResults/GameplayRegression/Runs/20261110T205106861Z/results.xml`.
-  No remote join or transport result is claimed.
+  This case alone did not attempt a remote join.
+- On 2026-11-11, separate focused Mac host and guest EditMode cases each passed
+  1/1: the guest found an unadvertised lobby by exact ID, joined and left, and
+  the host observed a distinct product user before destroying the lobby. Host
+  XML: `TestResults/GameplayRegression/Runs/20261111T144217103Z/results.xml`.
+  Guest completed status was reported from the family Mac; its native XML remains
+  there. No P2P packet was sent.
 - No Windows/macOS internet connectivity, relay, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 
