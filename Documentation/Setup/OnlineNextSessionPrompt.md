@@ -1,162 +1,202 @@
-# Counterattack online work: Windows Boot Camp handoff
+# Online next session: four steps to first Room integration
 
-Start Codex from a fresh Windows checkout of branch
-`codex/online-foundation-personal-mac` in **PowerShell**, then say only:
+## Start here
 
-> Read `Documentation/Setup/OnlineNextSessionPrompt.md` and continue the
-> focused Windows-host EOS connectivity proof.
+Use **Windows as the development machine and authoritative host**, with the
+family Mac as guest on its hotspot for paired tests. Switching the host to
+macOS is not needed for these four steps. Reverse roles remain a later
+acceptance check; do not claim them without an actual run.
 
-This file is committed so it is available after booting into Windows. Follow
-`Documentation/Setup/WindowsBootCamp.md` for installation, sign-in, checkout,
-Unity, local EOS configuration, and the exact Windows-host/family-Mac-guest
-commands. Use PowerShell, not Git Bash or WSL, for Windows steps.
+Start Codex in this checkout with the settings in
+`Documentation/Setup/CodexContinuousWork.md`, then send:
 
-## Current evidence
+> Read Documentation/Setup/OnlineNextSessionPrompt.md. Implement and verify all
+> four steps through the first real ground-pass/interception flow in Room.
+> Continue across focused batches without asking whether to proceed. Preserve
+> unrelated edits, execute focused tests, fix failures, commit/push task-related
+> work and update this handoff. Ask only for genuinely missing design information
+> or a necessary manual/external action that available tools cannot perform.
 
-The online foundation remains isolated from gameplay. The provider-independent
-protocol fixture passed 27/27. EOS Connect login, private lobby creation,
-two-Mac exact-ID lobby joining, and exact two-way P2P packet exchange passed
-in focused Editor tests. With both peers configured for `ForceRelays`, the
-packet test passed 1/1 on each Mac across user-reported separate networks in
-both network arrangements. In the latest run, the personal Mac was on an
-iPhone hotspot and the family Mac was on home Wi-Fi. Latest native XML:
+## Authorization and continuity
 
-- Personal Mac host:
-  `TestResults/GameplayRegression/Runs/20261111T163354297Z/results.xml`.
-- Family Mac guest, on that machine:
-  `TestResults/GameplayRegression/Runs/20261111T163544902Z/results.xml`.
+The user authorizes **all four steps below**, including code, authored
+scenes/prefabs/UI, focused framework tests, live-Editor builds, standalone
+probe launches and necessary task-related Git add/commit/fetch/pull/push.
+Implement serial verified batches and continue to the next authorized step.
+Do not stop after each batch to ask "shall I continue?"
 
-The focused EOS session-reuse test passed 1/1 at
-`TestResults/GameplayRegression/Runs/20261111T163147731Z/results.xml`.
-The subsequent host test passed in the same personal Mac Editor process
-without a Unity restart. The current helper keeps the native EOS SDK
-initialized between focused runs; it releases each platform handle and
-shuts EOS down when the Editor quits. The one-use lobby handoff was removed
-after the run. Full evidence is in
-`Assets/Editor/FeatureTests/OnlineEOSConnectivity/Verification.md`.
+Preserve unrelated local changes. Current Windows leftovers include dynamic
+fonts, project/coverage/time settings, solution metadata and generated EOS
+plugin resources/configuration. Inspect actual diffs; do not commit/discard
+them just to clean the worktree. Never commit local credentials, exports or
+device identity. No paid services are authorized.
 
-Windows native initialization and two sequential device logins passed 1/1 on
-2026-11-11 after fixing duplicate platform-adapter registration. Native XML:
-`TestResults/GameplayRegression/Runs/20261111T203927659Z/results.xml`.
-Windows/macOS relay-only packet exchange also passed 1/1 on each peer:
-Windows host `TestResults/GameplayRegression/Runs/20261111T204115387Z/results.xml`;
-family Mac guest (user-reported result, XML on that Mac)
-`TestResults/GameplayRegression/Runs/20261111T204153959Z/results.xml`.
-The user confirmed that initial run used the same network. A separate-network
-rerun passed 1/1 on each peer with the family Mac on a hotspot and Windows on
-its original network. Windows host native XML:
-`TestResults/GameplayRegression/Runs/20261111T204607920Z/results.xml`.
-Family Mac guest XML (user-reported completed pass, file on that Mac):
-`TestResults/GameplayRegression/Runs/20261111T204630735Z/results.xml`.
-The temporary remote handoff was confirmed removed after the rerun.
-Standalone Windows-host/macOS-guest relay-only packets subsequently passed on
-user-reported separate networks (family Mac hotspot). Windows report:
-`TestResults/GameplayRegression/Runs/20261111T211010725Z-Standalone-host/result.json`.
-Mac report, user supplied and retained on that machine:
-`TestResults/GameplayRegression/Runs/20261111T211038Z-Standalone-guest-65900/result.json`.
-The temporary standalone handoff was confirmed removed. Reverse roles, other
-platform pairs, per-connection route introspection and playable online gameplay
-remain unverified.
+This prompt cannot change an enforced sandbox/approval policy. If prompts
+remain, report the active setting and how the user can change it. Full access
+does not grant remote control of the family Mac, dismiss OS dialogs or remove
+usage limits. If paired testing is unavailable, finish independent local work
+first, then identify the exact external dependency.
 
-## Next session actions
+## Read and connect
 
-The newest batch adds requester-owned shared pause to the prepared online
-board, using wire/handoff v2. Read
-`Assets/Editor/FeatureTests/OnlineSharedPause/Verification.md` first. Focused
-tests passed 11 EditMode + 13 PlayMode, with zero failures/skips and clean
-compilation. Rebuild both applications before running the upgraded pause
-proof; the local/paired evidence now requires sharedPauseRevision=2. The
-previous completed paired gameplay result below is the earlier v1 pass.
-Production Room input, real transport disconnect detection/freezing/resync,
-substitution/settings subflows and full M1 remain pending.
-The v2 paired pause proof subsequently passed: Windows host
-`TestResults/GameplayRegression/Runs/20261111T221104422Z-Gameplay-host/result.json`;
-Mac guest (file on that Mac)
-`TestResults/GameplayRegression/Runs/20261111T221131Z-gameplay-guest-68731/result.json`.
-Both report the same digest, sharedPauseRevision=2, publicationSequence=9 and
-one roll; guest rules remained inactive. Remote handoff cleanup was verified.
-Do not rerun this proof by default. Next work is actual disconnect handling
-and resynchronization, or interactive online command submission in this owned
-scene, before broader Room integration.
-Updated Windows local packaged pause check passed at
-`TestResults/GameplayRegression/Runs/20261111T220654045Z-Gameplay-local/result.json`,
-with sharedPauseRevision=2 and one roll. Next pull/rebuild on the family Mac,
-run its local gameplay check, then start the Windows host for the paired v2
-pause proof. Existing EOS login evidence remains valid; native initialization
-code/configuration was not changed by this pause batch.
+- Read AGENTS.md, Documentation/Setup/WindowsBootCamp.md,
+  Documentation/Plans/OnlineMultiplayer.md, Documentation/Plans/EOSSetup.md,
+  and Documentation/Testing/RunningTests.md.
+- Read Verification.md under Assets/Editor/FeatureTests/OnlineGroundPass/,
+  OnlineGroundPassNetwork/, OnlineSharedPause/ and EOSStandaloneProof/.
+- Resolve the root with `git rev-parse --show-toplevel`; pass the actual absolute
+  root explicitly on Unity CLI calls, with required caller/skill metadata.
+- Follow the unity-cli skill. Check this project's ready connection,
+  compilation/reload, Play Mode, dirty scenes and pending tests/builds first.
+  Save through Unity as needed; preserve unsaved work.
+- Never launch Unity, use batchmode/editor_play, edit a loaded scene on disk,
+  open scenes additively or automate modal dismissal. Framework-controlled
+  PlayMode tests are authorized. Preserve designer-owned MatchStats layout.
 
-Latest work connects the ground-pass gateway to authenticated EOS semantic
-commands/state and an authored guest replica scene. Read
-`Documentation/Setup/OnlineGroundPassNetwork.md` and
-`Assets/Editor/FeatureTests/OnlineGroundPassNetwork/Verification.md` first.
-The focused category passed 13 EditMode + 2 PlayMode cases; Windows packaged
-local gameplay and EOS login passed. Next prepare the family Mac with
-`BuildEOSStandaloneMac.sh gameplay`, then `RunEOSStandaloneMac.sh login gameplay`
-and `RunEOSStandaloneMac.sh local gameplay`. Only after both pass start Windows
-`RunEOSStandaloneWindows.ps1 host -Gameplay`; after Gameplay handoff published,
-run the Mac `RunEOSStandaloneMac.sh guest gameplay` on the hotspot. The paired
-gameplay proof passed. Windows report:
-`TestResults/GameplayRegression/Runs/20261111T214927469Z-Gameplay-host/result.json`;
-Mac report (on that Mac):
-`TestResults/GameplayRegression/Runs/20261111T215035Z-gameplay-guest-67466/result.json`.
-Both have the same digest, publicationSequence=7 and rollSequence=1;
-guestRulesInactive=true on the guest. Handoff removal was verified.
-The earlier raw-packet proof is also complete.
-Do not claim full M1: interactive Room input, Room-wide pause/subflow integration
-and actual disconnect freezing/resync are still unimplemented.
+## Proven baseline — do not rerun by default
 
-The latest gameplay batch added `OnlineGroundPassAuthority`, an isolated
-semantic adapter to real pass selection/confirmation/interception and
-continuation, with detached state publications. Final focused native results:
-1 EditMode pass at `Runs/20261111T212209215Z/results.xml` and 14 PlayMode passes
-at `Runs/20261111T212340273Z/results.xml`, beneath
-`TestResults/GameplayRegression/`; zero failures/skips, clean compilation.
-Read `Assets/Editor/FeatureTests/OnlineGroundPass/Verification.md` before
-continuing. Next: authenticated EOS command/state transport, authored guest
-replica startup/input ownership, shared pause and active-resolution recovery.
-The gateway is not installed into Room and M1 is not yet complete. Do not claim
-the packet proof already carries gameplay or independently simulate guest rules.
+Branch: codex/online-foundation-personal-mac. Latest evidence commit before
+this handoff rewrite: **5038c52**. Shared-pause feature uses wire/handoff **v2**.
 
-The Editor and initial standalone Windows-host/Mac-guest proofs are complete.
-Repeat instructions are in `Documentation/Setup/EOSStandaloneProof.md`.
-Windows application build and local login passed; latest report:
-`TestResults/GameplayRegression/Runs/20261111T210221320Z-Standalone-login/result.json`.
-Build diagnostics include missing Visual Studio vswhere.exe, although export
-reported Succeeded and the application ran. Mac build/login and the paired
-standalone relay run passed; see the feature verification document for the
-retained reports and scope. Next assess the remaining M0 gates in the online
-plan before the M1 gameplay proof. The older Editor checklist below is retained
-for reruns.
+- Windows/macOS standalone EOS login and relay-only packet exchange passed
+  across separate networks, with the family Mac on the hotspot.
+- Real prepared-board pass preview/confirm/interception, host-only roll,
+  detached guest display and matching final state passed on both applications.
+- The paired v2 pause proof also passed: guest-owned pause/resume, duplicate
+  pause, rejected host resume, stale-confirm rejection and one authority roll.
+- Windows host report, directly inspected:
+  TestResults/GameplayRegression/Runs/20261111T221104422Z-Gameplay-host/result.json.
+- Mac guest report, user supplied and retained on that Mac:
+  TestResults/GameplayRegression/Runs/20261111T221131Z-gameplay-guest-68731/result.json.
+- Both recorded sharedPauseRevision=2, publicationSequence=9, rollSequence=1 and
+  digest BD30B1171DCA79D53321D313092B72836719DB5A44DA84190D787773C969CED3.
+  guestRulesInactive=true on the guest. Remote handoff removal was verified;
+  no paired execution is pending.
+- OnlineSharedPause: **11 EditMode + 13 PlayMode passed**, zero failures/skips,
+  compilation separately clean. Native XML under TestResults/GameplayRegression/:
+  Runs/20261111T220310248Z/results.xml and Runs/20261111T220358201Z/results.xml.
+  Earlier gateway/network evidence remains in the feature verification files.
+- Windows exports report Succeeded with a missing Visual Studio vswhere.exe
+  diagnostic and existing warnings; the exported applications ran. The latest
+  Mac export reported Succeeded, zero errors and six warnings.
 
-1. Read `AGENTS.md`, `Documentation/Setup/WindowsBootCamp.md`,
-   `Documentation/Plans/EOSSetup.md`,
-   `Documentation/Plans/OnlineMultiplayer.md`, and the EOS verification file.
-   Resolve the Windows checkout root with `git rev-parse --show-toplevel`; pass
-   it explicitly on Unity CLI calls. Preserve any local changes.
-2. Confirm the open Windows Unity Editor is the exact checkout, version
-   6000.5.3f1, with a ready Pipeline connection. Check compilation, Play Mode,
-   every loaded scene's dirty state, and pending tests before a focused run.
-   Never launch Unity from Codex, enter ordinary gameplay, use batchmode,
-   modify a loaded scene file on disk, or run whole test suites.
-3. Enter the same EOS development product/deployment/desktop client locally
-   for **Windows** through the plugin configuration UI. Keep credentials and
-   Windows device identity storage local and Git-ignored. Do not ask the user
-   to paste IDs or secrets into chat or copy another machine's identity.
-4. Run only `EOSProbeSessionReuseEditorTests` first. Inspect the completed
-   result and native XML. Diagnose Windows compile/native failures before
-   continuing. Then the Windows machine is the **host** and the family Mac
-   is the macOS **guest**. Use `RunEOSWindowsHost.ps1 relay` on Windows and
-   `RunEOSGuest.sh relay` on the family Mac as documented in the Windows
-   guide. Keep the machines on different networks for that proof.
-5. Record actual passed/failed/skipped counts and native XML paths from both
-   machines. Remove the one-use handoff after the run; the Windows host helper
-   handles this automatically. Distinguish evidence from inference. Do not
-   claim Windows support from a macOS-only compile or a queued send call.
+The probe scene is **Assets/Scenes/OnlineGroundPassProof.unity**. Its guest
+rules hierarchy stays inactive. **Room is not yet an online match.** Device ID
+identities prove this development connection, not production account or
+entitlement verification. Do not repeat completed connectivity work instead
+of implementing the remaining steps.
 
-The family Mac checkout is
-`/Users/vasilisantonakis/Documents/Projects/Personal/counterattack`.
-Give the user short pull/run commands for it when needed. The repository
-owner has authorized necessary Git add, commit, fetch, pull and push commands
-without repeated permission requests; `AGENTS.md` records this. Commit only
-task-related files. The personal Mac checkout has unrelated local font asset
-edits and `Assets/Scripts/ActionScripts/obj.meta`; preserve them.
+## 1. Disconnect detection and reconnect recovery
+
+- Add authenticated peer liveness, bounded heartbeat/timeouts and connection
+  generations; distinguish transport loss from voluntary leave.
+- Hold authority gameplay, rolls, timers and active movement/coroutines when
+  loss is detected. Continue networking/presentation on unscaled time. Keep a
+  connection hold separate from requester-owned shared pause; reconnect must
+  not resume somebody else's pause or transfer ownership.
+- Stop guest submission immediately on local loss. Reauthenticate/rejoin to
+  the reserved team, retire the old connection and reject its queued packets.
+- Resynchronize the current decision, accepted receipts, publication/outcome/
+  roll sequences, pause requester and remaining timing. Resume a still-live
+  authority resolution without another pass, roll or stats mutation.
+- Cover loss at preview, confirm/roll boundaries, mid-movement and while paused;
+  late packets, duplicate retries, wrong accounts, stale generations, timeout/
+  cancel and return. Use injected clocks/transport interruption for deterministic
+  focused tests, followed by a bounded standalone recovery scenario.
+- Do not invent defeat/AI takeover, seamless host migration or arbitrary
+  mid-action crash restore as shortcuts.
+
+Acceptance: returning guest retains its team and accepted outcome; no duplicate
+stats/draws, unauthorized resume or stale-peer mutation occurs.
+
+## 2. Manual online controls in the owned scene
+
+- Author inspectable target/input and pause/resume controls in edit mode.
+  Replace scripted actions with human-selectable start, target preview/confirm,
+  defending roll and requester-only pause/resume.
+- Route **host physical input and guest intentions through the same gateway**.
+  Derive sender/team from authenticated connections. Transmit semantic IDs/hex
+  coordinates, never arbitrary methods, synthetic keys or screen coordinates.
+- Display authoritative legal choices, owner, pending/rejected commands,
+  shared pause and connection holds. Keep the opponent pause view passive.
+- Keep camera/pointer/inspection/statistics visibility personal; host personal
+  UI must not obstruct the guest's authorized action.
+- Test real clicks/buttons/keys, stale targets, double confirms, roll retries,
+  wrong-team input and pause/disconnect races in both attacking directions.
+
+Acceptance: two humans can perform the prepared pass/interception flow through
+the gateway with the same once-only outcomes already proven automatically.
+
+## 3. Safe guest startup for Room
+
+- Audit Room's serialized references and Awake/OnEnable/Start/Update/events,
+  UI buttons and synthetic-input mutation routes before enabling a guest.
+  Include ApplicationManager/save selection, MatchManager, input, AI, clocks,
+  automatic rolls, movement and scene/bootstrap effects.
+- Introduce explicit host-authority versus guest-replica startup. Guest must
+  not load/run a second match, shuffle/draw, advance timers, resolve rules,
+  subscribe mutation handlers or write the user's live saves.
+- Preserve offline Room behavior. Prefer an explicit online context and owned
+  fixture/scene configuration over speculative rewrites of every manager.
+- Make scene changes through the live Editor; preserve unsaved work. Never
+  edit loaded Room YAML on disk or create visuals only at runtime.
+  Canvas/MatchStatsUI/Stats remains designer-owned; only permitted text values
+  and identity/status colors may change through scripts.
+- Add focused lifecycle/input/startup tests proving inert guest authority
+  callbacks and no save writes, while presentation/inspection remain usable.
+
+Acceptance: normally loaded guest Room is a replica with no independent rules;
+offline behavior remains intact at affected, tested seams.
+
+## 4. Publish and render the first complete Room action
+
+- Extend publications to the real Room pass/interception boundary: stable
+  roster/token IDs, ball/token positions, selection/legal choices, decision
+  owner, pending interactions, accepted roll/outcome IDs, statistics, timing/
+  holds and the next decision/continuation.
+- Separate reliable committed outcomes, animation presentation and full resync
+  snapshots. Reject old/conflicting state and incompatible roster/catalogs.
+  Guest animation completion must never advance rules.
+- Connect manual commands and recovery from steps 1–2 to host Room; apply
+  authoritative values/presentation on the inert guest from step 3.
+- Use owned deterministic board/roster fixtures and disposable save paths.
+  Prove safe passes, successful/failed interceptions, pause and reconnect with
+  real gameplay entry points, fixture-rigged dice and both directions.
+- Build the focused Room proof and execute Windows host/macOS guest across
+  separate networks. Record both completed reports and matching outcomes/next
+  decisions. Prepare reverse-role support without claiming an unexecuted run.
+
+Acceptance: one human-controlled real Room pass/interception and continuation
+agrees across both processes, including ownership, roll, stats and recovery.
+This does not claim every movement/shot/restart/draft flow is online.
+
+## Verification and continuity
+
+Create dedicated feature test folders/checklists per batch. Run serial explicit
+fixture/category filters through live CLI/Pipeline after clean compilation and
+scene checks. Retain native XML/progress under TestResults/GameplayRegression/Runs/.
+Diagnose/fix failures yourself. Report compile status separately from actual
+passed/failed/skipped counts. Follow AGENTS.md: broader affected-folder/full-suite
+verification is handed to the user; this task does not request whole suites.
+
+Commit/push verified task-related batches and update this handoff with actual
+results and remaining steps. Continue while meaningful authorized work remains.
+If a manual/remote action is unavailable, finish independent implementation and
+local tests before handing over that dependency. Do not idle waiting for a
+second machine when local work can continue.
+
+## Machines and unavoidable manual dependencies
+
+Windows root: resolve locally; current checkout is
+C:/Users/thomas/Documents/Projects/Personal/counterattack.
+Family Mac: /Users/vasilisantonakis/Documents/Projects/Personal/counterattack.
+Extend Documentation/Setup/OnlineGroundPassNetwork.md's current helpers for
+recovery/manual Room work instead of repeating the completed old probes.
+
+No remote shell/control connection to the family Mac is currently available.
+Full access on Windows does not create one. Give concise Mac pull/build/run
+commands when needed and continue independent work meanwhile. The user must
+open Unity manually, change physical networks and handle blocking Editor/OS
+dialogs. macOS may request EOS Connect login-keychain access after rebuilds;
+never request passwords/tokens in chat. Stable signing and first-install/
+relaunch/update keychain UX remain release validation work.
