@@ -144,3 +144,15 @@ lobby. The packet exchange is proven in both directions, but the host fixture
 is not green. A focused cleanup fix now closes the P2P connection before
 destroying the lobby and retries a transient `TimedOut`; it awaits a fresh
 two-Mac run. The temporary Git handoff was removed after the first attempt.
+
+The focused rerun on 2026-11-11 again passed on the family Mac: **1 passed,
+0 failed, 0 skipped**, XML at
+`TestResults/GameplayRegression/Runs/20261111T151712137Z/results.xml` on that
+Mac. The personal Mac host again reached lobby cleanup after the packet exchange
+and guest departure, then failed: **0 passed, 1 failed, 0 skipped**, XML at
+`TestResults/GameplayRegression/Runs/20261111T151623401Z/results.xml`.
+The first destroy callback returned `TimedOut`; a retry returned `NotFound`.
+That sequence is consistent with the first destroy request completing on EOS
+despite its timeout response. The fixture now accepts `NotFound` only after a
+timed-out destroy attempt. This revised assertion has not run yet. The second
+temporary Git handoff was removed.

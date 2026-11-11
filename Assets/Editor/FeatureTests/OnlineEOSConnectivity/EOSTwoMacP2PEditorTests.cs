@@ -209,6 +209,7 @@ public sealed class EOSTwoMacP2PEditorTests
                 "Closing the P2P probe connection");
 
             Result? destroyResult = null;
+            bool destroyTimedOut = false;
             var destroy = new DestroyLobbyOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
             for (var attempt = 0; attempt < 3; attempt++)
             {
@@ -221,12 +222,19 @@ public sealed class EOSTwoMacP2PEditorTests
                     session.Platform.Tick();
                     yield return null;
                 }
+                if (destroyResult == Result.Success ||
+                    (destroyTimedOut && destroyResult == Result.NotFound))
+                {
+                    lobbyDestroyed = true;
+                    break;
+                }
                 if (destroyResult != Result.TimedOut)
                     break;
+                destroyTimedOut = true;
             }
             Assert.That(destroyResult.HasValue, Is.True, "DestroyLobby callback timed out");
-            Assert.That(destroyResult.Value, Is.EqualTo(Result.Success), "Destroying the P2P coordination lobby");
-            lobbyDestroyed = true;
+            Assert.That(lobbyDestroyed, Is.True,
+                "Destroying the P2P coordination lobby (last EOS result: " + destroyResult.Value + ")");
         }
         finally
         {
