@@ -17,8 +17,14 @@ case "${1:-lobby}" in
         marker=Temp/OnlineEOSP2PGuest.run
         fixture=EOSTwoMacP2PEditorTests.GuestSendsPacketAndReceivesAcknowledgement
         ;;
+    relay)
+        handoff_name=ActiveEOSP2PLobby.json
+        id_file=Temp/OnlineEOSP2PJoinId.txt
+        marker=Temp/OnlineEOSRelayGuest.run
+        fixture=EOSTwoMacP2PEditorTests.GuestExchangesPacketsWithForcedRelays
+        ;;
     *)
-        printf 'Usage: %s [lobby|p2p]\n' "$0" >&2
+        printf 'Usage: %s [lobby|p2p|relay]\n' "$0" >&2
         exit 2
         ;;
 esac

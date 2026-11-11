@@ -27,11 +27,27 @@ public sealed class EOSTwoMacP2PEditorTests
     private static byte[] ProbeBytes(string prefix, string lobbyId) =>
         Encoding.ASCII.GetBytes(prefix + lobbyId);
 
+    private static void RequireForcedRelays(P2PInterface p2p)
+    {
+        var set = new SetRelayControlOptions { RelayControl = RelayControl.ForceRelays };
+        Assert.That(p2p.SetRelayControl(ref set), Is.EqualTo(Result.Success), "Forcing EOS relay routing");
+        var get = new GetRelayControlOptions();
+        Assert.That(p2p.GetRelayControl(ref get, out var configured), Is.EqualTo(Result.Success),
+            "Reading EOS relay control");
+        Assert.That(configured, Is.EqualTo(RelayControl.ForceRelays), "EOS relay control setting");
+    }
+
     [UnityTest]
     [Timeout(1320000)]
-    public IEnumerator HostReceivesPacketAndAcknowledgesDistinctGuest()
+    public IEnumerator HostReceivesPacketAndAcknowledgesDistinctGuest() => HostProbe(false);
+
+    [UnityTest]
+    [Timeout(1320000)]
+    public IEnumerator HostExchangesPacketsWithForcedRelays() => HostProbe(true);
+
+    private static IEnumerator HostProbe(bool forceRelays)
     {
-        const string marker = "Temp/OnlineEOSP2PHost.run";
+        string marker = forceRelays ? "Temp/OnlineEOSRelayHost.run" : "Temp/OnlineEOSP2PHost.run";
         const string lobbyIdFile = "Temp/OnlineEOSP2PHostLobbyId.txt";
         if (!File.Exists(marker))
             Assert.Ignore("The one-use two-Mac P2P host marker is absent.");
@@ -55,6 +71,7 @@ public sealed class EOSTwoMacP2PEditorTests
             p2p = session.Platform.GetP2PInterface();
             Assert.That(lobby, Is.Not.Null, "EOS Lobby interface");
             Assert.That(p2p, Is.Not.Null, "EOS P2P interface");
+            if (forceRelays) RequireForcedRelays(p2p);
 
             Result? createResult = null;
             var create = new CreateLobbyOptions
@@ -267,9 +284,15 @@ public sealed class EOSTwoMacP2PEditorTests
 
     [UnityTest]
     [Timeout(300000)]
-    public IEnumerator GuestSendsPacketAndReceivesAcknowledgement()
+    public IEnumerator GuestSendsPacketAndReceivesAcknowledgement() => GuestProbe(false);
+
+    [UnityTest]
+    [Timeout(300000)]
+    public IEnumerator GuestExchangesPacketsWithForcedRelays() => GuestProbe(true);
+
+    private static IEnumerator GuestProbe(bool forceRelays)
     {
-        const string marker = "Temp/OnlineEOSP2PGuest.run";
+        string marker = forceRelays ? "Temp/OnlineEOSRelayGuest.run" : "Temp/OnlineEOSP2PGuest.run";
         const string lobbyIdFile = "Temp/OnlineEOSP2PJoinId.txt";
         if (!File.Exists(marker))
             Assert.Ignore("The one-use two-Mac P2P guest marker is absent.");
@@ -297,6 +320,7 @@ public sealed class EOSTwoMacP2PEditorTests
             p2p = session.Platform.GetP2PInterface();
             Assert.That(lobby, Is.Not.Null, "EOS Lobby interface");
             Assert.That(p2p, Is.Not.Null, "EOS P2P interface");
+            if (forceRelays) RequireForcedRelays(p2p);
             var createSearch = new CreateLobbySearchOptions { MaxResults = 1 };
             Assert.That(lobby.CreateLobbySearch(ref createSearch, out search), Is.EqualTo(Result.Success),
                 "Creating a P2P lobby-ID search");
