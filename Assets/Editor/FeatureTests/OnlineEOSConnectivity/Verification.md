@@ -111,18 +111,18 @@ Do not copy corporate credentials or device identity storage between machines.
 References: [Epic firewall requirements](https://dev.epicgames.com/docs/epic-online-services/firewall-considerations),
 [Cisco Umbrella block page addresses](https://www.cisco.com/c/en/us/support/docs/security/umbrella/224799-learn-the-umbrella-block-page-ip.html).
 
-## Two-Mac P2P packet probe (pending)
+## Two-Mac P2P packet probe (passed)
 
 - [x] Add isolated host and guest fixtures with one-use local markers, an
   exact-ID coordination lobby, and a socket derived from that lobby ID.
 - [x] Compile the new fixtures in the open personal Mac Editor.
-- [ ] Reopen both Editors manually after their prior EOS tests shut down the SDK.
-- [ ] Run only `EOSTwoMacP2PEditorTests.HostReceivesPacketAndAcknowledgesDistinctGuest`
+- [x] Reopen both Editors manually after their prior EOS tests shut down the SDK.
+- [x] Run only `EOSTwoMacP2PEditorTests.HostReceivesPacketAndAcknowledgesDistinctGuest`
   on the personal Mac with `Temp/OnlineEOSP2PHost.run`.
-- [ ] After the host writes `Temp/OnlineEOSP2PHostLobbyId.txt`, publish its
+- [x] After the host writes `Temp/OnlineEOSP2PHostLobbyId.txt`, publish its
   one-use ID in the private `ActiveEOSP2PLobby.json` handoff. Run
   `bash Documentation/Setup/RunEOSGuest.sh p2p` on the family Mac.
-- [ ] Confirm the host receives the guest's exact hello bytes and the guest
+- [x] Confirm the host receives the guest's exact hello bytes and the guest
   receives the host's exact acknowledgement bytes. Record both actual results
   and native XML paths, then remove the remote handoff.
 
@@ -154,5 +154,18 @@ and guest departure, then failed: **0 passed, 1 failed, 0 skipped**, XML at
 The first destroy callback returned `TimedOut`; a retry returned `NotFound`.
 That sequence is consistent with the first destroy request completing on EOS
 despite its timeout response. The fixture now accepts `NotFound` only after a
-timed-out destroy attempt. This revised assertion has not run yet. The second
+timed-out destroy attempt. The second
 temporary Git handoff was removed.
+
+The final focused run on 2026-11-11 passed on both Macs. The personal Mac host:
+**1 passed, 0 failed, 0 skipped**, XML at
+`TestResults/GameplayRegression/Runs/20261111T152710314Z/results.xml`.
+The family Mac guest: **1 passed, 0 failed, 0 skipped**, XML at
+`TestResults/GameplayRegression/Runs/20261111T152822714Z/results.xml` on that
+Mac. The host confirmed the distinct lobby member, received the exact hello
+payload, sent the acknowledgement, observed guest leave and completed cleanup.
+The guest received the exact acknowledgement from the host. This is a two-way
+EOS P2P packet proof between two macOS Editors on the current networks. It does
+not reveal whether EOS used a direct or relay route and does not prove separate
+networks, Windows, standalone builds or playable match synchronization. The
+third one-use Git handoff was removed after both tests completed.

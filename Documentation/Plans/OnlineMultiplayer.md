@@ -1,8 +1,8 @@
 # Counterattack online PvP implementation plan
 
 Prepared: 2026-11-09. Status: M0 investigation and isolated protocol foundation
-started; two-Mac EOS lobby joining passed, while P2P transport, M0 acceptance
-and M1 gameplay proof remain pending.
+started; two-Mac EOS lobby joining and a two-way P2P packet exchange passed,
+while M0 acceptance and M1 gameplay proof remain pending.
 
 ## Implementation evidence — first M0 batch
 
@@ -36,6 +36,21 @@ and M1 gameplay proof remain pending.
   Guest completed status was reported from the family Mac; its native XML remains
   there at `TestResults/GameplayRegression/Runs/20261111T144726042Z/results.xml`.
   No P2P packet was sent.
+- Two focused two-Mac P2P attempts delivered an exact guest hello packet and
+  host acknowledgement through EOS reliable ordered P2P. The family Mac guest
+  passed 1/1 each time; its latest XML is
+  `TestResults/GameplayRegression/Runs/20261111T151712137Z/results.xml` on that
+  Mac. The host reached lobby cleanup after verifying the hello, but failed
+  0/1 when EOS returned `TimedOut`, then `NotFound` on retry. Latest host XML:
+  `TestResults/GameplayRegression/Runs/20261111T151623401Z/results.xml`.
+  The cleanup assertion was narrowed to accept `NotFound` only after a timed-out
+  destroy request.
+- The final focused P2P run passed 1/1 on each Mac. Host XML:
+  `TestResults/GameplayRegression/Runs/20261111T152710314Z/results.xml`.
+  Guest XML on the family Mac:
+  `TestResults/GameplayRegression/Runs/20261111T152822714Z/results.xml`.
+  The host verified the guest's exact hello and the guest verified the host's
+  exact acknowledgement. Both cases finished with zero failures or skips.
 - No Windows/macOS internet connectivity, relay, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 

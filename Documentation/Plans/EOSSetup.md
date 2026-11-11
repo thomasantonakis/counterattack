@@ -126,6 +126,20 @@ requirements and must not be bundled indiscriminately.
   XML remains on that Mac at
   `TestResults/GameplayRegression/Runs/20261111T144726042Z/results.xml`.
   This is lobby coordination, not P2P or gameplay.
+- Two subsequent focused two-Mac attempts exchanged exact EOS P2P hello and
+  acknowledgement bytes on a reliable ordered channel. The family Mac guest
+  passed 1/1 each time; latest guest XML:
+  `TestResults/GameplayRegression/Runs/20261111T151712137Z/results.xml` on
+  that Mac. The personal Mac host verified the hello and observed guest leave,
+  but failed 0/1 during lobby cleanup. Latest host XML:
+  `TestResults/GameplayRegression/Runs/20261111T151623401Z/results.xml`.
+  EOS returned `TimedOut` for destroy and `NotFound` on retry. A focused cleanup
+  assertion fix then passed in a fresh focused run. Final host result:
+  **1 passed, 0 failed, 0 skipped**, XML at
+  `TestResults/GameplayRegression/Runs/20261111T152710314Z/results.xml`.
+  Final family Mac guest result: **1 passed, 0 failed, 0 skipped**, XML at
+  `TestResults/GameplayRegression/Runs/20261111T152822714Z/results.xml` on
+  that Mac. Both directions of packet delivery and host lobby cleanup are verified.
 
 ## Codex's remaining technical proof
 
@@ -152,15 +166,16 @@ requirements and must not be bundled indiscriminately.
 ## Current evidence and external dependencies
 
 The EOS plugin is installed, and local product/client configuration has passed
-native initialization, Connect Device ID login and a two-Mac private lobby
-join/leave. P2P traffic, relay tests and match integration remain unverified.
+native initialization, Connect Device ID login, a two-Mac private lobby
+join/leave, and two-way EOS P2P packet delivery with host lobby cleanup. Relay
+route, separate-network tests and match integration remain unverified.
 The local configuration is Git ignored.
 The cross-platform proof also requires an available Windows machine and a macOS
 machine on different networks. Existing connected Editor tests cannot supply
 that evidence. No separate Unity instance is launched by Codex.
 
-The family Mac is configured as the second macOS test machine. Next, prove P2P
-traffic and relay behavior between the two Macs, then pair the family Mac with
+The family Mac is configured as the second macOS test machine. Next, verify
+relay behavior, then pair the family Mac with
 this Mac running Windows to check cross-platform behavior. The Boot Camp
 installation cannot run concurrently with macOS on the same machine. Do not
 copy local EOS configuration or device-identity storage between machines.
