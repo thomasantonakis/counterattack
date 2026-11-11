@@ -66,6 +66,14 @@ while M0 acceptance and M1 gameplay proof remain pending.
   `TestResults/GameplayRegression/Runs/20261111T161910290Z/results.xml`.
   This proves two-way packet delivery across the reported separate networks
   with relay-only settings in Editor processes.
+- A second relay-only run passed 1/1 on each Mac after reversing the network
+  roles: personal Mac on an iPhone hotspot, family Mac on home Wi-Fi. Host XML:
+  `TestResults/GameplayRegression/Runs/20261111T163354297Z/results.xml`;
+  guest XML on the family Mac:
+  `TestResults/GameplayRegression/Runs/20261111T163544902Z/results.xml`.
+  The host reused EOS after a separate focused login-reuse test in the same
+  Editor process; that test passed 1/1 at
+  `TestResults/GameplayRegression/Runs/20261111T163147731Z/results.xml`.
 - No Windows/macOS, standalone-build, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 

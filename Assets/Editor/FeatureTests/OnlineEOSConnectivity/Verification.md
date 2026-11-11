@@ -6,7 +6,7 @@
   releasing each test's platform handle and connection/lobby resources.
 - [x] Add a one-use `EOSProbeSessionReuseEditorTests` case that opens, disposes
   and reopens a session with the same local device identity in one Editor process.
-- [ ] Run the reuse case, then a separate focused P2P host case without restarting
+- [x] Run the reuse case, then a separate focused P2P host case without restarting
   Unity in between. Record both native XML files and confirm clean compilation.
 
 The helper shuts the native SDK down when the Editor quits. Unity's domain
@@ -21,8 +21,9 @@ adapter rejected a second registration. Native XML:
 The helper now registers the adapter once per C# domain. The focused rerun
 passed **1/1**, with zero failures and skips, in the same Unity Editor process:
 `TestResults/GameplayRegression/Runs/20261111T163147731Z/results.xml`.
-Compilation completed with zero errors. A separate focused P2P host run is
-still needed to verify reuse across test runs.
+Compilation completed with zero errors. The subsequent focused P2P host case
+passed **1/1** in the same Editor process, without a restart. Its native XML is
+`TestResults/GameplayRegression/Runs/20261111T163354297Z/results.xml`.
 
 - [x] Create the ignored one-use `Temp/OnlineEOSConnectivity.run` marker, then
   run `EOSConnectLoginEditorTests.DeviceIdentityCanLogInThroughConnect` by exact
@@ -236,3 +237,16 @@ Both cases had zero failures and skips. This proves two-way EOS packet delivery
 with relay-only settings across the two reported networks in Editor processes.
 It does not establish standalone build behavior, Windows interoperability,
 latency, per-connection route introspection, or a playable online match.
+
+The network roles were reversed for another focused run: the user put the
+personal Mac on the iPhone hotspot and kept the family Mac on home Wi-Fi. Both
+Editors were restarted once before the new helper was used. The personal Mac
+ran the session-reuse case above, then the relay host case without another
+restart. The host passed **1/1**, native XML
+`TestResults/GameplayRegression/Runs/20261111T163354297Z/results.xml`.
+The family Mac guest passed **1/1**, as reported by its live `test_status`;
+native XML on that Mac is
+`TestResults/GameplayRegression/Runs/20261111T163544902Z/results.xml`.
+Both runs had zero failures and skips. This confirms the packet proof across
+the user-reported network arrangement with the personal Mac on the hotspot.
+The guest helper printed its native XML path automatically.

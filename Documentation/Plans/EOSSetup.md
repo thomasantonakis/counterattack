@@ -182,6 +182,15 @@ hotspot according to the user: host **1/1** at
 `TestResults/GameplayRegression/Runs/20261111T161910290Z/results.xml`.
 Both runs had zero failures or skips. Standalone builds, Windows/macOS
 interoperability and match integration remain unverified.
+The network roles were reversed in a second focused relay-only run: the user
+put the personal Mac on an iPhone hotspot and the family Mac on home Wi-Fi.
+The host passed **1/1**, native XML
+`TestResults/GameplayRegression/Runs/20261111T163354297Z/results.xml`;
+the guest passed **1/1**, native XML on that Mac
+`TestResults/GameplayRegression/Runs/20261111T163544902Z/results.xml`.
+The host ran after a separate passing EOS session-reuse case in the same Editor
+process, verifying that these focused probes no longer require a restart
+between runs.
 The local configuration is Git ignored.
 The cross-platform proof also requires an available Windows machine and a macOS
 machine on different networks. Existing connected Editor tests cannot supply
