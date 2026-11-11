@@ -110,3 +110,25 @@ native XML has not been collected here. It is the guest for the next attempt.
 Do not copy corporate credentials or device identity storage between machines.
 References: [Epic firewall requirements](https://dev.epicgames.com/docs/epic-online-services/firewall-considerations),
 [Cisco Umbrella block page addresses](https://www.cisco.com/c/en/us/support/docs/security/umbrella/224799-learn-the-umbrella-block-page-ip.html).
+
+## Two-Mac P2P packet probe (pending)
+
+- [x] Add isolated host and guest fixtures with one-use local markers, an
+  exact-ID coordination lobby, and a socket derived from that lobby ID.
+- [x] Compile the new fixtures in the open personal Mac Editor.
+- [ ] Reopen both Editors manually after their prior EOS tests shut down the SDK.
+- [ ] Run only `EOSTwoMacP2PEditorTests.HostReceivesPacketAndAcknowledgesDistinctGuest`
+  on the personal Mac with `Temp/OnlineEOSP2PHost.run`.
+- [ ] After the host writes `Temp/OnlineEOSP2PHostLobbyId.txt`, publish its
+  one-use ID in the private `ActiveEOSP2PLobby.json` handoff. Run
+  `bash Documentation/Setup/RunEOSGuest.sh p2p` on the family Mac.
+- [ ] Confirm the host receives the guest's exact hello bytes and the guest
+  receives the host's exact acknowledgement bytes. Record both actual results
+  and native XML paths, then remove the remote handoff.
+
+The host accepts a P2P connection only from the distinct product user that
+joined its two-seat lobby. Both directions use EOS reliable ordered packets on
+the same socket and channel. A successful send call only queues a packet; the
+receive assertions are the delivery proof. This fixture has not run yet. It
+will not establish relay routing, separate-network or Windows interoperability,
+or playable online matches.

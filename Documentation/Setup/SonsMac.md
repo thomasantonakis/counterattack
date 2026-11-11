@@ -216,3 +216,19 @@ only the exact guest fixture. It polls the result and prints actual counts.
 It rejects a stale handoff. Do not run it before the host is live. Report its
 completed result and native XML path to Codex. Local ID files remain ignored by
 Git; the temporary remote handoff is removed from the branch after the attempt.
+
+## 8. Run the focused P2P packet probe
+
+The lobby join proof has passed. Pull the latest branch while preserving local
+edits, let Unity finish compiling, then manually close and reopen Unity before
+this probe. The prior EOS guest fixture shut down the SDK in that Editor process.
+When Codex confirms the new host P2P lobby is live, run only:
+
+```sh
+bash Documentation/Setup/RunEOSGuest.sh p2p
+```
+
+This mode performs the same readiness checks and uses a separate one-use
+handoff. It runs only the P2P guest fixture, then prints the completed result.
+Send Codex the actual passed/failed/skipped counts and native XML path. Do not
+paste the lobby ID or EOS credentials into chat.

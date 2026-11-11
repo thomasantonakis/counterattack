@@ -4,6 +4,25 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
 
+case "${1:-lobby}" in
+    lobby)
+        handoff_name=ActiveEOSLobby.json
+        id_file=Temp/OnlineEOSJoinId.txt
+        marker=Temp/OnlineEOSTwoMacGuest.run
+        fixture=EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId
+        ;;
+    p2p)
+        handoff_name=ActiveEOSP2PLobby.json
+        id_file=Temp/OnlineEOSP2PJoinId.txt
+        marker=Temp/OnlineEOSP2PGuest.run
+        fixture=EOSTwoMacP2PEditorTests.GuestSendsPacketAndReceivesAcknowledgement
+        ;;
+    *)
+        printf 'Usage: %s [lobby|p2p]\n' "$0" >&2
+        exit 2
+        ;;
+esac
+
 for tool in git gh jq unity; do
     if ! command -v "$tool" >/dev/null 2>&1; then
         printf 'Missing tool: %s\n' "$tool" >&2
@@ -67,7 +86,7 @@ printf '%s\n' "$tests" | jq -e \
 }
 
 printf 'Fetching the current lobby handoff...\n'
-handoff="$(gh api 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/ActiveEOSLobby.json?ref=codex/online-foundation-personal-mac' --jq '.content | @base64d')"
+handoff="$(gh api "repos/thomasantonakis/counterattack/contents/Documentation/Setup/${handoff_name}?ref=codex/online-foundation-personal-mac" --jq '.content | @base64d')"
 lobby_id="$(printf '%s\n' "$handoff" | jq -er '.lobbyId | select(test("^[0-9a-f]{32}$"))')"
 created_unix="$(printf '%s\n' "$handoff" | jq -er '.createdUnix | numbers')"
 now_unix="$(date +%s)"
@@ -77,12 +96,12 @@ if (( created_unix > now_unix || now_unix - created_unix > 900 )); then
 fi
 
 mkdir -p Temp
-printf '%s' "$lobby_id" > Temp/OnlineEOSJoinId.txt
-touch Temp/OnlineEOSTwoMacGuest.run
+printf '%s' "$lobby_id" > "$id_file"
+touch "$marker"
 
 printf 'Running the one-case EOS guest fixture against the current host lobby.\n'
 unity command run_tests --mode editor \
-    --filter EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId \
+    --filter "$fixture" \
     --filter_type testName --async_tests true \
     --project-path "$repo_root" --caller codex --skill unity-cli --format json
 
