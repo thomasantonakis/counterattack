@@ -35,12 +35,33 @@ shuts EOS down when the Editor quits. The one-use lobby handoff was removed
 after the run. Full evidence is in
 `Assets/Editor/FeatureTests/OnlineEOSConnectivity/Verification.md`.
 
-**No Windows native initialization, Windows/macOS packet exchange, standalone
-build, per-connection route introspection, or playable online match is
-verified yet.** The macOS Editor compiled the Windows adapter conditional
-but cannot validate the Windows branch of that code.
+Windows native initialization and two sequential device logins passed 1/1 on
+2026-11-11 after fixing duplicate platform-adapter registration. Native XML:
+`TestResults/GameplayRegression/Runs/20261111T203927659Z/results.xml`.
+Windows/macOS relay-only packet exchange also passed 1/1 on each peer:
+Windows host `TestResults/GameplayRegression/Runs/20261111T204115387Z/results.xml`;
+family Mac guest (user-reported result, XML on that Mac)
+`TestResults/GameplayRegression/Runs/20261111T204153959Z/results.xml`.
+The user confirmed that initial run used the same network. A separate-network
+rerun passed 1/1 on each peer with the family Mac on a hotspot and Windows on
+its original network. Windows host native XML:
+`TestResults/GameplayRegression/Runs/20261111T204607920Z/results.xml`.
+Family Mac guest XML (user-reported completed pass, file on that Mac):
+`TestResults/GameplayRegression/Runs/20261111T204630735Z/results.xml`.
+The temporary remote handoff was confirmed removed after the rerun.
+Standalone builds, per-connection route introspection, and a playable online
+match remain unverified. Next proof: standalone Windows host/macOS guest.
 
 ## Next session actions
+
+The Editor proof above is complete. The current next action is the dedicated
+standalone proof in `Documentation/Setup/EOSStandaloneProof.md`.
+Windows application build and local login passed; latest report:
+`TestResults/GameplayRegression/Runs/20261111T210221320Z-Standalone-login/result.json`.
+Build diagnostics include missing Visual Studio vswhere.exe, although export
+reported Succeeded and the application ran. Mac build/login and the paired
+standalone relay run remain pending. Prepare the Mac before starting the
+Windows host helper. The older Editor checklist below is retained for reruns.
 
 1. Read `AGENTS.md`, `Documentation/Setup/WindowsBootCamp.md`,
    `Documentation/Plans/EOSSetup.md`,

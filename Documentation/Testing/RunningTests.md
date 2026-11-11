@@ -1,5 +1,15 @@
 # Running gameplay regressions
 
+Standalone EOS packaging uses the dedicated authored scene
+`Assets/Scenes/EOSStandaloneProof.unity` and instructions in
+`Documentation/Setup/EOSStandaloneProof.md`. Argument validation uses only
+EditMode category `EOSStandaloneProof`, fixture `EOSStandaloneProofEditorTests`
+under `Assets/Editor/FeatureTests/EOSStandaloneProof/` (9/9 passed).
+Standalone application reports are JSON with local Player.log, separate from
+native Unity Test Framework XML. Windows build/login passed; paired standalone
+Windows/Mac relay packets remain pending. No gameplay suites are needed for
+this isolated probe. See that feature folder's `Verification.md` for evidence.
+
 Online multiplayer's initial protocol foundation uses `OnlineMatchProtocolEditorTests`
 (EditMode category `OnlineMatchProtocol`) under
 `Assets/Editor/FeatureTests/OnlineMatch/`. Run only that explicit fixture for its
@@ -9,19 +19,22 @@ isolated account/team, compatibility, revision and retry checks. Current evidenc
 This code is not wired into Room, and does not yet prove internet connectivity.
 
 Live EOS probes live under `Assets/Editor/FeatureTests/OnlineEOSConnectivity/`.
-They require the ignored local EOS configuration and a fresh Editor process.
+They require the ignored local EOS configuration. The shared EOSProbeSession
+helper supports sequential probes in one Editor process, keeping the native
+SDK initialized and releasing each platform handle after use.
 Create the one-use `Temp/OnlineEOSConnectivity.run` marker before running only
 `EOSConnectLoginEditorTests.DeviceIdentityCanLogInThroughConnect` by exact EditMode
 test-name filter; without the marker, routine runs skip the case. It passed 1/1
 on this Mac. The separate `EOSPrivateLobbyEditorTests` case uses
-`Temp/OnlineEOSLobby.run` and also passed 1/1. Each probe shuts the native
-SDK down, so reopen Unity before another EOS probe. Room must be clean before
+`Temp/OnlineEOSLobby.run` and also passed 1/1. An Editor that ran older probes
+which called SDK Shutdown needs a manual restart first. Room must be clean before
 running a fixture. See `OnlineEOSConnectivity/Verification.md` for results and
 native XML. These probes never start ordinary gameplay.
-The two-Mac host/guest lobby join cases are compiled but unrun. Their exact
+The two-Mac host/guest lobby join and relay packet cases passed; Windows
+session reuse also passed 1/1. Windows/macOS packets remain pending. Exact
 filters, one-use markers and local lobby-ID handoff are in the same
 `Verification.md`. Do not run the host's five-minute wait until both Editors
-are ready. Neither case proves P2P packet delivery.
+are ready. Lobby joining alone does not prove P2P packet delivery.
 
 Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
 RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.

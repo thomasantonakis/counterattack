@@ -250,3 +250,43 @@ native XML on that Mac is
 Both runs had zero failures and skips. This confirms the packet proof across
 the user-reported network arrangement with the personal Mac on the hotspot.
 The guest helper printed its native XML path automatically.
+## Windows session reuse — 2026-11-11
+
+The first Windows session-reuse run failed because the probe registered
+`WindowsPlatformSpecifics` when the plugin singleton already held that adapter.
+Native failure: `TestResults/GameplayRegression/Runs/20261111T203544721Z/results.xml`.
+The probe now registers only when the singleton is empty and verifies that the
+existing adapter matches the Editor platform before loading native libraries.
+Live Windows Editor recompilation completed with zero errors and warnings.
+The exact `EOSProbeSessionReuseEditorTests.TwoSequentialSessionsLogInWithoutRestartingEditor`
+rerun passed **1 passed, 0 failed, 0 skipped**; native XML:
+`TestResults/GameplayRegression/Runs/20261111T203927659Z/results.xml`.
+Room was clean and Play Mode stopped before the run. This establishes Windows
+native initialization and two sequential device logins, not Windows/macOS
+packet delivery or standalone builds. The relay host/guest proof remains pending.
+
+## Windows host / macOS guest relay packet proof — 2026-11-11
+
+The Windows host `EOSTwoMacP2PEditorTests.HostExchangesPacketsWithForcedRelays`
+passed **1 passed, 0 failed, 0 skipped**, verified through live test_status and
+native XML `TestResults/GameplayRegression/Runs/20261111T204115387Z/results.xml`.
+The user supplied completed family Mac guest status for
+`GuestExchangesPacketsWithForcedRelays`: **1 passed, 0 failed, 0 skipped**.
+Guest native XML remains on that Mac at
+`TestResults/GameplayRegression/Runs/20261111T204153959Z/results.xml`.
+This establishes exact two-way Windows/macOS packet delivery under ForceRelays
+in Editor processes. The user confirmed this first run used the same network.
+Standalone builds,
+per-connection route introspection and playable online gameplay remain pending.
+
+The separate-network rerun also passed: **1 passed, 0 failed, 0 skipped** on
+each peer. The user confirmed the family Mac used a hotspot after changing
+networks; Windows remained on its original network. Windows host status and
+native XML were inspected directly:
+`TestResults/GameplayRegression/Runs/20261111T204607920Z/results.xml`.
+The supplied Mac guest completed status reported the same counts; native XML
+on that Mac: `TestResults/GameplayRegression/Runs/20261111T204630735Z/results.xml`.
+The remote setup directory was checked after completion and contained no
+temporary lobby handoff. This verifies Windows/macOS Editor packet exchange
+under ForceRelays across the user-reported separate networks. It does not
+establish standalone builds or playable online gameplay.
