@@ -175,7 +175,7 @@ third one-use Git handoff was removed after both tests completed.
 - [x] Add focused host and guest cases that set EOS `RelayControl.ForceRelays`
   before making a P2P connection, read back that setting, and verify the same
   exact hello and acknowledgement payloads as the default-route probe.
-- [ ] After both Editors have been manually reopened, run only
+- [x] After manually reopening the personal Mac Editor, run only
   `EOSTwoMacP2PEditorTests.HostExchangesPacketsWithForcedRelays` on the personal
   Mac with `Temp/OnlineEOSRelayHost.run`. Share its one-use lobby ID through
   the private `ActiveEOSP2PLobby.json` handoff.
@@ -184,8 +184,17 @@ third one-use Git handoff was removed after both tests completed.
   then remove the temporary handoff.
 - [ ] Repeat the forced-relay proof with the Macs on separate networks.
 
-Both peers must use the relay variant for this proof. A successful run would
-show packet delivery while EOS was configured to allow only relay servers;
-the test does not inspect a per-connection route or measure relay latency.
+The personal Mac host case passed on 2026-11-11: **1 passed, 0 failed,
+0 skipped**, native XML at
+`TestResults/GameplayRegression/Runs/20261111T161052518Z/results.xml`.
+It read back `ForceRelays`, received the guest's exact hello, sent the
+acknowledgement, observed guest departure, and destroyed the lobby. The guest
+fixture result and native XML have not yet been collected from the family Mac.
+The one-use lobby handoff was removed after the host completed.
+
+Both peers must use the relay variant for this proof. The host result shows
+packet delivery while the local EOS instance was configured to allow only
+relay servers; the test does not inspect a per-connection route or measure
+relay latency.
 The default-route result alone does not identify whether its packets used a
 direct or relayed path. See Epic's [relay-control reference](https://dev.epicgames.com/docs/en-US/api-ref/enums/eos-e-relay-control).
