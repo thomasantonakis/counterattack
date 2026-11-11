@@ -8,6 +8,10 @@ and PlayMode `OnlineSharedPausePlayModeTests` /
 + 13 PlayMode passed, zero failed/skipped; compilation separately clean.
 See the Editor feature folder's Verification.md for native XML and the v2
 packaged/paired pause proof checklist. No broad suites ran.
+The paired Windows-host/Mac-guest pause proof also passed, with matching state
+digests, sharedPauseRevision=2 and one authority roll; see that verification
+file for both retained application report paths. This is separate from the
+11 EditMode + 13 PlayMode framework counts.
 
 EOS gameplay command/state and authored replica proof uses explicit category
 `OnlineGroundPassNetwork`: EditMode fixture `OnlineGroundPassWireEditorTests`

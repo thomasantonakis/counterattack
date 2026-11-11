@@ -12,7 +12,7 @@
 - [x] Author requester/passive pause views outside the local statistics display.
 - [x] Add dedicated EditMode/PlayMode cases and execute only this feature.
 - [x] Export updated Windows application and run its packaged local pause check.
-- [ ] Rebuild Mac and run its local/login checks, then the paired pause proof.
+- [x] Rebuild Mac and run its local check, then the paired pause proof.
 
 This is the prepared-board shared pause slice. It does not install online
 controls into Room, implement substitutions/settings subflows, detect real
@@ -48,6 +48,31 @@ check **passed**:
 Its gameplay-evidence.json records sharedPauseRevision=2, rollSequence=1 and
 publicationSequence=8. Build report and Player.log are retained beside it.
 This is a local packaging check; the v2 paired network result remains pending.
+
+## Completed paired pause proof
+
+The family Mac export reported Succeeded with zero errors and six warnings.
+Its user-supplied local pause report passed at
+`TestResults/GameplayRegression/Runs/20261111T221020Z-gameplay-local-68554/result.json`.
+The separate-network paired run then passed on both standalone applications:
+
+- Windows host, directly inspected with launcher exit 0:
+  `TestResults/GameplayRegression/Runs/20261111T221104422Z-Gameplay-host/result.json`.
+- Mac guest, completed report supplied by the user, retained on that Mac:
+  `TestResults/GameplayRegression/Runs/20261111T221131Z-gameplay-guest-68731/result.json`.
+
+Both evidence files report sharedPauseRevision=2, rollSequence=1,
+publicationSequence=9 and identical digest
+`BD30B1171DCA79D53321D313092B72836719DB5A44DA84190D787773C969CED3`.
+The guest reports guestRulesInactive=true. The host passed its rejected
+opponent-resume, duplicate-pause and stale-confirmation checks before final
+digest acknowledgement. The helper removed the remote handoff; directory
+inspection confirmed ActiveEOSGameplayLobby.json was absent. The guest Mac
+remained on the hotspot per the test setup. A macOS login-keychain prompt for
+the EOS Connect access token appeared during this run; it still completed.
+
+This completes the prepared-board paired requester-owned pause proof, not the
+remaining interactive Room/subflow or actual transport-disconnect work above.
 
 The PlayMode fixture uses the existing owned board and cleanup pattern, real
 pass/roll entry points, both attacking directions and both requester/host-team

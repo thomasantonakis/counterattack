@@ -69,6 +69,15 @@ proof; the local/paired evidence now requires sharedPauseRevision=2. The
 previous completed paired gameplay result below is the earlier v1 pass.
 Production Room input, real transport disconnect detection/freezing/resync,
 substitution/settings subflows and full M1 remain pending.
+The v2 paired pause proof subsequently passed: Windows host
+`TestResults/GameplayRegression/Runs/20261111T221104422Z-Gameplay-host/result.json`;
+Mac guest (file on that Mac)
+`TestResults/GameplayRegression/Runs/20261111T221131Z-gameplay-guest-68731/result.json`.
+Both report the same digest, sharedPauseRevision=2, publicationSequence=9 and
+one roll; guest rules remained inactive. Remote handoff cleanup was verified.
+Do not rerun this proof by default. Next work is actual disconnect handling
+and resynchronization, or interactive online command submission in this owned
+scene, before broader Room integration.
 Updated Windows local packaged pause check passed at
 `TestResults/GameplayRegression/Runs/20261111T220654045Z-Gameplay-local/result.json`,
 with sharedPauseRevision=2 and one roll. Next pull/rebuild on the family Mac,
