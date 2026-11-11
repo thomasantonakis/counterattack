@@ -44,7 +44,7 @@ public sealed class EOSTwoMacP2PEditorTests
         ulong lobbyNotification = 0;
         ulong connectionNotification = 0;
         ProductUserId acceptedGuest = null;
-        bool destroyAttempted = false;
+        bool lobbyDestroyed = false;
         try
         {
             var login = Login(session);
@@ -197,21 +197,36 @@ public sealed class EOSTwoMacP2PEditorTests
                 session.Platform.Tick();
                 yield return null;
             }
+            Assert.That(guestLeft, Is.True, "The acknowledged guest did not leave the lobby");
+
+            var closeAfterExchange = new CloseConnectionOptions
+            {
+                LocalUserId = session.UserId,
+                RemoteUserId = acceptedGuest,
+                SocketId = socket
+            };
+            Assert.That(p2p.CloseConnection(ref closeAfterExchange), Is.EqualTo(Result.Success),
+                "Closing the P2P probe connection");
 
             Result? destroyResult = null;
             var destroy = new DestroyLobbyOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
-            destroyAttempted = true;
-            lobby.DestroyLobby(ref destroy, null,
-                (ref DestroyLobbyCallbackInfo info) => destroyResult = info.ResultCode);
-            deadline = EditorApplication.timeSinceStartup + 25;
-            while (!destroyResult.HasValue && EditorApplication.timeSinceStartup < deadline)
+            for (var attempt = 0; attempt < 3; attempt++)
             {
-                session.Platform.Tick();
-                yield return null;
+                destroyResult = null;
+                lobby.DestroyLobby(ref destroy, null,
+                    (ref DestroyLobbyCallbackInfo info) => destroyResult = info.ResultCode);
+                deadline = EditorApplication.timeSinceStartup + 30;
+                while (!destroyResult.HasValue && EditorApplication.timeSinceStartup < deadline)
+                {
+                    session.Platform.Tick();
+                    yield return null;
+                }
+                if (destroyResult != Result.TimedOut)
+                    break;
             }
-            Assert.That(guestLeft, Is.True, "The acknowledged guest did not leave the lobby");
             Assert.That(destroyResult.HasValue, Is.True, "DestroyLobby callback timed out");
             Assert.That(destroyResult.Value, Is.EqualTo(Result.Success), "Destroying the P2P coordination lobby");
+            lobbyDestroyed = true;
         }
         finally
         {
@@ -229,7 +244,7 @@ public sealed class EOSTwoMacP2PEditorTests
                 p2p.RemoveNotifyPeerConnectionRequest(connectionNotification);
             if (lobbyNotification != 0)
                 lobby.RemoveNotifyLobbyMemberStatusReceived(lobbyNotification);
-            if (lobby != null && !string.IsNullOrEmpty(lobbyId) && !destroyAttempted && session.Platform != null)
+            if (lobby != null && !string.IsNullOrEmpty(lobbyId) && !lobbyDestroyed && session.Platform != null)
             {
                 var cleanup = new DestroyLobbyOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
                 lobby.DestroyLobby(ref cleanup, null, (ref DestroyLobbyCallbackInfo _) => { });

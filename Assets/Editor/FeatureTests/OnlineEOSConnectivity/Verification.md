@@ -129,6 +129,18 @@ References: [Epic firewall requirements](https://dev.epicgames.com/docs/epic-onl
 The host accepts a P2P connection only from the distinct product user that
 joined its two-seat lobby. Both directions use EOS reliable ordered packets on
 the same socket and channel. A successful send call only queues a packet; the
-receive assertions are the delivery proof. This fixture has not run yet. It
-will not establish relay routing, separate-network or Windows interoperability,
-or playable online matches.
+receive assertions are the delivery proof. It will not establish relay routing,
+separate-network or Windows interoperability, or playable online matches.
+
+On 2026-11-11, the family Mac guest passed: **1 passed, 0 failed, 0 skipped**.
+It received the exact acknowledgement from the host after sending its hello;
+the result and XML path remain on that Mac. The personal Mac host failed:
+**0 passed, 1 failed, 0 skipped**. Native XML:
+`TestResults/GameplayRegression/Runs/20261111T150722348Z/results.xml`.
+The host reached its final lobby-destroy assertion, which establishes that it
+received and checked the guest's exact hello bytes, sent the acknowledgement,
+and observed the guest leave. EOS then returned `TimedOut` when destroying the
+lobby. The packet exchange is proven in both directions, but the host fixture
+is not green. A focused cleanup fix now closes the P2P connection before
+destroying the lobby and retries a transient `TimedOut`; it awaits a fresh
+two-Mac run. The temporary Git handoff was removed after the first attempt.
