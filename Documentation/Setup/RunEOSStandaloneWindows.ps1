@@ -1,20 +1,29 @@
-param([ValidateSet('login', 'host')][string]$Role = 'host')
+param([ValidateSet('login', 'host', 'local')][string]$Role = 'host', [switch]$Gameplay)
 $ErrorActionPreference = 'Stop'
 $repoRoot = (git -C $PSScriptRoot rev-parse --show-toplevel).Trim()
 Set-Location $repoRoot
 $exe = Join-Path $repoRoot 'Build/EOSProof/Windows/CounterattackEOSProof.exe'
+if ($Gameplay) { $exe = Join-Path $repoRoot 'Build/OnlineGroundPass/Windows/CounterattackOnlineGroundPass.exe' }
+if ($Role -eq 'local' -and -not $Gameplay) { throw 'The local role requires -Gameplay.' }
 if (-not (Test-Path -LiteralPath $exe)) { throw 'Build the dedicated Windows proof first; see EOSStandaloneProof.md.' }
-$run = Join-Path $repoRoot ('TestResults/GameplayRegression/Runs/' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '-Standalone-' + $Role)
+$proofName = if ($Gameplay) { 'Gameplay' } else { 'Standalone' }
+$run = Join-Path $repoRoot ('TestResults/GameplayRegression/Runs/' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '-' + $proofName + '-' + $Role)
 New-Item -ItemType Directory -Path $run | Out-Null
 $resultPath = Join-Path $run 'result.json'
 $lobbyPath = Join-Path $run 'lobby-id.txt'
 $branch = 'codex/online-foundation-personal-mac'
 $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/ActiveEOSStandaloneLobby.json'
+$handoffName = 'ActiveEOSStandaloneLobby.json'
+$handoffKind = 'standalone-relay-v1'
+if ($Gameplay) {
+    $handoffName = 'ActiveEOSGameplayLobby.json'; $handoffKind = 'ground-gameplay-v1'
+    $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/' + $handoffName
+}
 $publishedSha = $null
 if ($Role -eq 'host') {
     $names = & gh api "repos/thomasantonakis/counterattack/contents/Documentation/Setup?ref=$branch" --jq '.[].name'
     if ($LASTEXITCODE -ne 0) { throw 'Could not inspect remote handoff state.' }
-    if ($names -contains 'ActiveEOSStandaloneLobby.json') { throw 'A previous standalone handoff exists; resolve it before hosting.' }
+    if ($names -contains $handoffName) { throw 'A previous handoff exists; resolve it before hosting.' }
 }
 Write-Host "Starting standalone $Role. Local artifacts: $run"
 # Paths are quoted for Windows native argument parsing; no secrets travel on the command line.
@@ -30,12 +39,13 @@ try {
         }
         $lobbyId = (Get-Content -Raw -LiteralPath $lobbyPath).Trim()
         if ($lobbyId -cnotmatch '^[0-9a-f]{32}$') { throw 'Unexpected lobby ID format.' }
-        $handoff = @{ kind = 'standalone-relay-v1'; lobbyId = $lobbyId; createdUnix = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() } | ConvertTo-Json -Compress
+        $handoff = @{ kind = $handoffKind; lobbyId = $lobbyId; createdUnix = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() } | ConvertTo-Json -Compress
         $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($handoff + "`n"))
         $raw = & gh api -X PUT $uri -f 'message=Share temporary standalone EOS lobby' -f "content=$encoded" -f "branch=$branch"
         if ($LASTEXITCODE -ne 0) { throw 'Could not publish standalone handoff.' }
         $publishedSha = (($raw -join "`n") | ConvertFrom-Json).content.sha
-        Write-Host 'Standalone handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest'
+        if ($Gameplay) { Write-Host 'Gameplay handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest gameplay' }
+        else { Write-Host 'Standalone handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest' }
     }
     $deadline = [DateTime]::UtcNow.AddSeconds($(if ($Role -eq 'host') { 1250 } else { 120 }))
     while (-not (Test-Path -LiteralPath $resultPath) -and -not $player.HasExited -and [DateTime]::UtcNow -lt $deadline) { Start-Sleep -Seconds 1 }
@@ -44,6 +54,11 @@ try {
     $report | ConvertTo-Json | Write-Host
     Write-Host "Standalone result: $resultPath"
     if ($report.status -ne 'passed') { throw 'Standalone probe failed; retain the local report and Player.log.' }
+    if ($Gameplay -and $Role -ne 'login') {
+        $evidencePath = Join-Path $run 'gameplay-evidence.json'
+        if (-not (Test-Path -LiteralPath $evidencePath)) { throw 'No gameplay evidence: verify the correct gameplay build was used.' }
+        Get-Content -LiteralPath $evidencePath | Write-Host
+    }
 } finally {
     if ($publishedSha) {
         & gh api -X DELETE $uri -f 'message=Remove temporary standalone EOS lobby' -f "sha=$publishedSha" -f "branch=$branch" | Out-Null

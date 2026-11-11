@@ -60,6 +60,20 @@ remain unverified.
 
 ## Next session actions
 
+Latest work connects the ground-pass gateway to authenticated EOS semantic
+commands/state and an authored guest replica scene. Read
+`Documentation/Setup/OnlineGroundPassNetwork.md` and
+`Assets/Editor/FeatureTests/OnlineGroundPassNetwork/Verification.md` first.
+The focused category passed 13 EditMode + 2 PlayMode cases; Windows packaged
+local gameplay and EOS login passed. Next prepare the family Mac with
+`BuildEOSStandaloneMac.sh gameplay`, then `RunEOSStandaloneMac.sh login gameplay`
+and `RunEOSStandaloneMac.sh local gameplay`. Only after both pass start Windows
+`RunEOSStandaloneWindows.ps1 host -Gameplay`; after Gameplay handoff published,
+run the Mac `RunEOSStandaloneMac.sh guest gameplay` on the hotspot. The paired
+gameplay result is pending. The earlier raw-packet proof is already complete.
+Do not claim full M1: interactive Room input, shared pause ownership and actual
+disconnect freezing/resync are still unimplemented.
+
 The latest gameplay batch added `OnlineGroundPassAuthority`, an isolated
 semantic adapter to real pass selection/confirmation/interception and
 continuation, with detached state publications. Final focused native results:

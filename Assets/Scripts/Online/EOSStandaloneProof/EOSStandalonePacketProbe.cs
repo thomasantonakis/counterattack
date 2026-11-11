@@ -33,7 +33,8 @@ internal sealed class EOSStandalonePacketProbe
         EOSProofCheck.Require(configured == RelayControl.ForceRelays, "EOS relay control setting");
     }
 
-    internal static IEnumerator HostProbe(string outputDirectory)
+    internal static IEnumerator HostProbe(string outputDirectory,
+        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null)
     {
         var lobbyIdFile = Path.Combine(outputDirectory, "lobby-id.txt");
 
@@ -190,6 +191,13 @@ internal sealed class EOSStandalonePacketProbe
             };
             EOSProofCheck.Require(p2p.SendPacket(ref send) == Result.Success, "Queueing the P2P acknowledgement");
 
+            if (exchange != null)
+            {
+                var gameplay = exchange(session, acceptedGuest, socket, lobbyIdText);
+                try { while (gameplay.MoveNext()) yield return gameplay.Current; }
+                finally { (gameplay as IDisposable)?.Dispose(); }
+            }
+
             deadline = Time.realtimeSinceStartupAsDouble + 60;
             while (!guestLeft && Time.realtimeSinceStartupAsDouble < deadline)
             {
@@ -262,7 +270,8 @@ internal sealed class EOSStandalonePacketProbe
         }
     }
 
-    internal static IEnumerator GuestProbe(string inputLobbyId)
+    internal static IEnumerator GuestProbe(string inputLobbyId,
+        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null)
     {
         var lobbyId = inputLobbyId;
         EOSProofCheck.Require(lobbyId != null && lobbyId.Length == 32, "Expected a 32-character lobby ID");
@@ -375,6 +384,13 @@ internal sealed class EOSStandalonePacketProbe
                 yield return null;
             }
             EOSProofCheck.Require(ackReceived, "No P2P acknowledgement arrived from the host");
+
+            if (exchange != null)
+            {
+                var gameplay = exchange(session, hostId, socket, lobbyId);
+                try { while (gameplay.MoveNext()) yield return gameplay.Current; }
+                finally { (gameplay as IDisposable)?.Dispose(); }
+            }
 
             Result? leaveResult = null;
             var leave = new LeaveLobbyOptions { LocalUserId = session.UserId, LobbyId = lobbyId };

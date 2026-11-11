@@ -2,6 +2,14 @@
 set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
+scene=Assets/Scenes/EOSStandaloneProof.unity
+output=Build/EOSProof/Mac/CounterattackEOSProof.app
+mode="${1:-packets}"
+case "$mode" in
+    packets) ;;
+    gameplay) scene=Assets/Scenes/OnlineGroundPassProof.unity; output=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app ;;
+    *) printf 'Usage: %s [packets|gameplay]\n' "$0" >&2; exit 2 ;;
+esac
 pipeline() { unity command "$@" --project-path "$repo_root" --caller codex --skill unity-cli --format json; }
 unity status --project-path "$repo_root" --format json | jq -e '.success and any(.data.instances[]?; .state == "ready")' >/dev/null
 unity recompile --project-path "$repo_root" --format json | jq -e '.success and .data.compilationFailed == false' >/dev/null
@@ -9,7 +17,8 @@ pipeline editor_status | jq -e '.success and .data.result.playMode == "stopped" 
 pipeline list_open_scenes | jq -e '.success and all(.data.result.scenes[]; .isDirty == false)' >/dev/null
 pipeline test_status | jq -e '.success and (.data.result.status == "completed" or .data.result.status == "no_tests")' >/dev/null
 printf 'Building only the standalone EOS proof scene through the open Editor...\n'
-queued="$(pipeline build --target StandaloneOSX --outputPath Build/EOSProof/Mac/CounterattackEOSProof.app --scenes '["Assets/Scenes/EOSStandaloneProof.unity"]' --confirm true)"
+scenes="$(jq -cn --arg scene "$scene" '[$scene]')"
+queued="$(pipeline build --target StandaloneOSX --outputPath "$output" --scenes "$scenes" --confirm true)"
 printf '%s\n' "$queued" | jq -e '.success and .data.result.status == "queued"' >/dev/null
 build_id="$(printf '%s\n' "$queued" | jq -r '.data.result.buildId')"
 for ((i=0; i<600; i++)); do
@@ -18,7 +27,7 @@ for ((i=0; i<600; i++)); do
     if [ "$(printf '%s\n' "$status" | jq -r '.data.result.status')" = completed ]; then
         printf '%s\n' "$status" | jq '.data.result | {status, result, totalErrors, totalWarnings, errors, warnings}'
         printf '%s\n' "$status" | jq -e '.data.result.result == "Succeeded"' >/dev/null
-        printf 'Mac proof build ready. Run: bash Documentation/Setup/RunEOSStandaloneMac.sh login\n'
+        printf 'Mac proof build ready. Run: bash Documentation/Setup/RunEOSStandaloneMac.sh login %s\n' "$mode"
         exit 0
     fi
     sleep 2

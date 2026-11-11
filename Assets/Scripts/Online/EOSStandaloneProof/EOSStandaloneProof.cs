@@ -6,6 +6,7 @@ using UnityEngine;
 // Attached only to the authored proof scene. No startup hooks run in game scenes.
 public sealed class EOSStandaloneProof : MonoBehaviour
 {
+    public CounterAttack.Online.OnlineGroundPassBoard gameplayBoard;
     [Serializable]
     private sealed class Report
     {
@@ -21,6 +22,7 @@ public sealed class EOSStandaloneProof : MonoBehaviour
 
     private IEnumerator Start()
     {
+        if (Application.isEditor) yield break;
         Application.runInBackground = true;
         var started = DateTime.UtcNow.ToString("O");
         EOSProofArguments arguments = null;
@@ -30,10 +32,14 @@ public sealed class EOSStandaloneProof : MonoBehaviour
         {
             arguments = EOSProofArguments.Parse(Environment.GetCommandLineArgs());
             Directory.CreateDirectory(arguments.OutputDirectory);
-            probe = arguments.Role == "host"
-                ? EOSStandalonePacketProbe.HostProbe(arguments.OutputDirectory)
+            var gameplay = gameplayBoard == null ? null
+                : new CounterAttack.Online.EOSGroundPassExchange(gameplayBoard, arguments.OutputDirectory);
+            probe = arguments.Role == "local"
+                ? gameplay != null ? gameplay.Local() : throw new EOSProofFailure("Local gameplay role needs the gameplay scene")
+                : arguments.Role == "host"
+                ? EOSStandalonePacketProbe.HostProbe(arguments.OutputDirectory, gameplay == null ? null : gameplay.Host)
                 : arguments.Role == "guest"
-                    ? EOSStandalonePacketProbe.GuestProbe(File.ReadAllText(arguments.LobbyFile).Trim())
+                    ? EOSStandalonePacketProbe.GuestProbe(File.ReadAllText(arguments.LobbyFile).Trim(), gameplay == null ? null : gameplay.Guest)
                     : LoginOnly();
         }
         catch (Exception exception) { failure = exception; }
@@ -64,7 +70,7 @@ public sealed class EOSStandaloneProof : MonoBehaviour
             // Assertion messages contain stage names, never credentials or user IDs.
             message = failure == null ? "Probe completed" : failure is EOSProofFailure
                 ? failure.Message : failure.GetType().Name + ": inspect the local Player.log",
-            relayControl = arguments?.Role == "login" ? "not exercised" : "ForceRelays"
+            relayControl = arguments?.Role == "login" || arguments?.Role == "local" ? "not exercised" : "ForceRelays"
         };
         if (arguments != null)
         {
@@ -117,7 +123,7 @@ public sealed class EOSProofArguments
                 default: throw new EOSProofFailure("Unknown probe argument");
             }
         }
-        EOSProofCheck.Require(result.Role == "host" || result.Role == "guest" || result.Role == "login", "Expected host, guest or login role");
+        EOSProofCheck.Require(result.Role == "host" || result.Role == "guest" || result.Role == "login" || result.Role == "local", "Expected host, guest, login or local role");
         EOSProofCheck.Require(!string.IsNullOrWhiteSpace(result.OutputDirectory) && Path.IsPathRooted(result.OutputDirectory), "Expected absolute output directory");
         EOSProofCheck.Require(!File.Exists(Path.Combine(result.OutputDirectory, "result.json")), "Use a fresh run directory");
         if (result.Role == "guest")

@@ -14,12 +14,16 @@
 - [x] Add focused real-rule PlayMode coverage in both attacking directions,
   deterministic board setup and fixture-controlled next random draw.
 - [x] Reuse owned fixture cleanup and the global framework legacy-runner gate.
-- [ ] Wire this adapter to authenticated EOS semantic messages and host input.
-- [ ] Author the guest replica scene; suppress guest rules/clock/AI/roll execution.
+- [x] Wire this adapter to authenticated EOS semantic messages and automated
+  host/guest commands in the isolated network proof (paired run pending).
+- [x] Author the guest replica scene; suppress guest rules/clock/AI/roll execution.
+- [ ] Route physical online input through the authority gateway in an interactive mode.
 - [ ] Complete M1 shared pause ownership, personal presentation independence,
   active-resolution disconnect freezing and authoritative resynchronization.
 - [ ] Prove matching outcomes in standalone Windows/Mac runs in both host roles.
 
+The network-proof follow-up is recorded in
+`Assets/Editor/FeatureTests/OnlineGroundPassNetwork/Verification.md`.
 No online adapter is installed into Room yet. Existing offline input continues
 through its current entry points. This is a tested M1 foundation batch, not
 complete M1 or playable online gameplay. DTOs cover this ground-pass slice;

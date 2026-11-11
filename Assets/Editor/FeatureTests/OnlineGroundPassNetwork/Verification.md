@@ -1,0 +1,83 @@
+# EOS ground-pass command/state proof
+
+## Checklist and scope
+
+- [x] Add bounded versioned message framing below EOS's packet-size limit.
+- [x] Validate EOS peer/socket/channel identity on every received fragment.
+- [x] Bind the authenticated guest to Home and the host to Away; host role does
+  not override team ownership. Route both through the tested authority gateway.
+- [x] Send real start, preview and confirm commands; return duplicate receipts
+  and reject the guest's defending-team roll request without mutating rules.
+- [x] Let the authority alone draw/resolve the real interception roll and publish
+  ordered detached state. Retried defender roll must return Duplicate.
+- [x] Author a separate scene with all board/display/camera/UI objects in edit mode.
+- [x] Keep the guest's complete rules/input/clock/AI hierarchy inactive. Update
+  separate authored display objects from the published state, without rerolling.
+- [x] Add focused framing/replica/real-scene tests and execute them serially.
+- [x] Build Windows and run packaged local gameplay and EOS login checks.
+- [ ] Build Mac and run packaged login/local gameplay checks there.
+- [ ] Execute the separate-network Windows-host/Mac-guest gameplay exchange;
+  retain both final-state digests, reports and handoff-cleanup evidence.
+
+This automated prepared-board probe is not an interactive Room match or full
+M1 completion. Shared pause ownership, active-resolution disconnect/recovery,
+physical command submission, reverse host roles, clock synchronization, full
+animation replication and production roster/catalog compatibility remain open.
+No local save, Room scene, designer-owned Stats layout or existing gameplay
+rule was modified. Camera pan/zoom and Tab visibility are personal controls
+on this new proof scene, never rule commands.
+
+## Validation evidence
+
+Live Windows Editor recompilation completed cleanly, zero script errors/warnings.
+Final focused EditMode category `OnlineGroundPassNetwork`: **13 passed,
+0 failed, 0 skipped**, native XML:
+`TestResults/GameplayRegression/Runs/20261111T213927358Z/results.xml`.
+PlayMode: **2 passed, 0 failed, 0 skipped**, native XML:
+`TestResults/GameplayRegression/Runs/20261111T213735511Z/results.xml`.
+Earlier scene-loading setup failed 0/2 because SceneManager could not load a
+scene outside the shared build list. Native failure:
+`TestResults/GameplayRegression/Runs/20261111T213700031Z/results.xml`.
+The fixture now uses EditorSceneManager.LoadSceneAsyncInPlayMode with Single
+loading, without modifying the user's build scene list or additive loading.
+
+The scene tests exercise normal scene replacement, the actual authored manager
+dependencies, real pass/interception execution and encoded/fragmented command
+roundtrips. A fresh guest receives the outcome without executing rules or
+rerolling. Framework gating suppresses the legacy runner; fixture cleanup
+restores random/time and clears its owned singleton/ball reference. The Editor
+returns to the clean Room scene on framework completion.
+
+Windows build `build_b67c0a325e3c` reported Succeeded with 7 warnings and one
+diagnostic about missing Visual Studio vswhere.exe. The application launched:
+
+- Packaged real gameplay **passed**:
+  `TestResults/GameplayRegression/Runs/20261111T214055519Z-Gameplay-local/result.json`.
+  Its `gameplay-evidence.json` records rollSequence=1; final-state.json and
+  Player.log retain the real outcome. Local evidence is not a two-peer pass.
+- Packaged EOS login **passed**:
+  `TestResults/GameplayRegression/Runs/20261111T214249833Z-Gameplay-login/result.json`.
+
+The host/guest exchange uses reliable ordered EOS channel 8 after the existing
+relay-only lobby/P2P handshake. Only the exact joined peer is accepted. Payloads
+are capped at 64 KiB; fragments have 900 data bytes plus a 10-byte header. A
+single bounded assembler rejects bad sizes, ordering and versions before
+dispatch. Published states have their own monotonic sequence; guest replicas
+reject old/conflicting publications and copy all exposed values. The paired
+proof requires final SHA-256 state agreement before the guest leaves.
+
+## Run / broader affected checks
+
+Instructions: `Documentation/Setup/OnlineGroundPassNetwork.md`.
+Feature-only tests: EditMode `OnlineGroundPassWireEditorTests` under this folder;
+PlayMode `OnlineGroundPassNetworkPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineGroundPassNetwork/`. Both use explicit
+category `OnlineGroundPassNetwork`; no full suites were run.
+
+Broader user-run checks, not executed in this batch:
+`Assets/Tests/PlayMode/Features/OnlineGroundPass/` fixture/category
+`OnlineGroundPassPlayModeTests` / `OnlineGroundPass` (existing gateway behavior),
+and `Assets/Editor/FeatureTests/EOSStandaloneProof/` fixture
+`EOSStandaloneProofEditorTests` (shared launcher argument parsing). The prior
+packet-only host/guest remains selectable through the default packets mode;
+rerun only if investigating changes to the shared transport lifetime.
