@@ -155,6 +155,16 @@ namespace CounterAttack.Online
             return true;
         }
 
+        /// <summary>Authority revokes a boundary when live rules no longer offer it.</summary>
+        public void WithdrawDecision()
+        {
+            if (decisionId == null) return;
+            long nextRevision = checked(Revision + 1);
+            decisionId = null;
+            actions.Clear();
+            Revision = nextRevision;
+        }
+
         /// <summary>Authority publishes legal actions after rules have reached an input boundary.</summary>
         public void PublishDecision(string id, OnlineTeam owner, IEnumerable<string> legalActionIds)
         {

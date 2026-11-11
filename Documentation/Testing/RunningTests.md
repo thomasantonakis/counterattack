@@ -1,5 +1,14 @@
 # Running gameplay regressions
 
+The first isolated online gameplay authority slice uses category
+`OnlineGroundPass`: EditMode fixture `OnlineGroundPassBoundaryEditorTests` under
+`Assets/Editor/FeatureTests/OnlineGroundPass/` and PlayMode fixture
+`OnlineGroundPassPlayModeTests` under `Assets/Tests/PlayMode/Features/OnlineGroundPass/`.
+Final focused scope: 1 EditMode + 14 PlayMode passed, zero failed/skipped;
+compilation separately clean. See the Editor feature folder's `Verification.md`
+for native XML, coverage and unexecuted affected checks. This gateway is not
+wired into Room or EOS; guest replication and complete M1 remain pending.
+
 Standalone EOS packaging uses the dedicated authored scene
 `Assets/Scenes/EOSStandaloneProof.unity` and instructions in
 `Documentation/Setup/EOSStandaloneProof.md`. Argument validation uses only

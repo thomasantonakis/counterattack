@@ -1,10 +1,23 @@
 # Counterattack online PvP implementation plan
 
 Prepared: 2026-11-09. Status: M0 investigation and isolated protocol foundation
-started; two-Mac EOS lobby joining and a two-way P2P packet exchange passed,
-while M0 acceptance and M1 gameplay proof remain pending.
+started; Windows-host/macOS-guest standalone relay packet exchange passed on
+separate networks. The first real ground-pass authority adapter passed focused
+tests; full M0 acceptance and M1 cross-process gameplay remain pending.
 
 ## Implementation evidence — first M0 batch
+
+- On 2026-11-11, standalone Windows-host/macOS-guest relay-only packet reports
+  passed on separate networks with the family Mac on a hotspot. See
+  `Assets/Editor/FeatureTests/EOSStandaloneProof/Verification.md` for exact
+  report paths and packaging limitations.
+- Added isolated `OnlineGroundPassAuthority` using real gameplay entry points,
+  shared host/guest admission checks, read-only semantic snapshots and ordered
+  coroutine outcome publications. Focused validation: 1 EditMode + 14 PlayMode
+  passes, zero failures/skips; compilation separately clean. See
+  `Assets/Editor/FeatureTests/OnlineGroundPass/Verification.md`. It is not wired
+  into Room/EOS yet; guest startup, live physical input/clock authority, shared
+  pause/recovery and the complete M1 paired proof remain pending.
 
 - Added provider-independent OnlineMatchProtocol under Assets/Scripts/Online/.
   This is an unwired command-admission foundation, not transport/authentication

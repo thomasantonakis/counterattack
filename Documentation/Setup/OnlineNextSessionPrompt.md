@@ -60,6 +60,18 @@ remain unverified.
 
 ## Next session actions
 
+The latest gameplay batch added `OnlineGroundPassAuthority`, an isolated
+semantic adapter to real pass selection/confirmation/interception and
+continuation, with detached state publications. Final focused native results:
+1 EditMode pass at `Runs/20261111T212209215Z/results.xml` and 14 PlayMode passes
+at `Runs/20261111T212340273Z/results.xml`, beneath
+`TestResults/GameplayRegression/`; zero failures/skips, clean compilation.
+Read `Assets/Editor/FeatureTests/OnlineGroundPass/Verification.md` before
+continuing. Next: authenticated EOS command/state transport, authored guest
+replica startup/input ownership, shared pause and active-resolution recovery.
+The gateway is not installed into Room and M1 is not yet complete. Do not claim
+the packet proof already carries gameplay or independently simulate guest rules.
+
 The Editor and initial standalone Windows-host/Mac-guest proofs are complete.
 Repeat instructions are in `Documentation/Setup/EOSStandaloneProof.md`.
 Windows application build and local login passed; latest report:
