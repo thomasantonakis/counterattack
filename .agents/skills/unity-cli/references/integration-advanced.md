@@ -597,7 +597,7 @@ unity command editor status
 unity command capture screenshot --output-path ./shot.png --width 1920 --height 1080
 
 # Target a specific project (the CLI discovers the running Editor itself) or a Player runtime
-unity command editor.playmode start --project-path /path/to/MyProject
+unity command editor_play --project-path /path/to/MyProject
 unity command <command> --runtime "MyGame"
 unity command <command> --runtime-path /path/to/port-file
 
@@ -606,7 +606,7 @@ unity command editor.playmode start --timeout 60
 
 # Only the Editor’s own result value, as JSON — no command/parameters/target envelope
 # (implies --format json; cannot be combined with --detach)
-unity command script recompile_status --result-only
+unity command recompile_status --result-only
 ```
 
 **Flag names and value formats belong to each Editor command, not to the CLI.** `unity command` forwards what the Editor's own command declares, so two commands that do similar things can spell a flag differently. Read the spelling from the command's own parameter schema (`unity command --detail full --format json`), not from a neighbour. The ones that trip an agent most:
@@ -1069,7 +1069,7 @@ public static class MyPipelineCommands
   `unity command <command> --runtime <runtime>`.
 - After adding or changing a command, rebuild with `unity recompile` — it triggers the recompile, polls
   to completion and reports any compile errors in one call — then `unity command` to confirm it registered.
-  (The raw `unity command script recompile` + polling `unity command script recompile_status` until `completed` still
+  (The raw `unity command recompile` + polling `unity command recompile_status` until `completed` still
   works, and is what `unity recompile` does for you.) The Pipeline package also ships built-in commands,
   including `script eval` / `script eval_file` (run C# in the Editor).
 

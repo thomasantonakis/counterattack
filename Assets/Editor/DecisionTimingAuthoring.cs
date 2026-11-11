@@ -30,7 +30,7 @@ public static class DecisionTimingAuthoring
     public static string SeparateLoadedTimingDisplay()
     {
         int count = 0;
-        foreach (var banner in Object.FindObjectsByType<MatchEventBannerController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        foreach (var banner in Object.FindObjectsByType<MatchEventBannerController>(FindObjectsInactive.Include))
         {
             if (banner.timingVisibility != null) continue;
             var clone = Object.Instantiate(banner.gameObject, banner.transform.parent);
@@ -75,7 +75,7 @@ public static class DecisionTimingAuthoring
         importer.alphaIsTransparency = true;
         importer.SaveAndReimport();
         int count = 0;
-        foreach (var banner in Object.FindObjectsByType<MatchEventBannerController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        foreach (var banner in Object.FindObjectsByType<MatchEventBannerController>(FindObjectsInactive.Include))
         {
             if (!banner.gameObject.scene.IsValid()) continue;
             Undo.RecordObject(banner, "Bind decision clock artwork");

@@ -250,7 +250,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private void ConfigureAIDifficultyDropdown(bool isSinglePlayerCreateMode)
     {
-        aiDifficultyDropdown = FindObjectsByType<TMP_Dropdown>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        aiDifficultyDropdown = FindObjectsByType<TMP_Dropdown>(FindObjectsInactive.Include)
             .FirstOrDefault(candidate => string.Equals(candidate.gameObject.name, "AIDifficultyDropDown", StringComparison.OrdinalIgnoreCase));
         if (aiDifficultyDropdown == null)
         {
