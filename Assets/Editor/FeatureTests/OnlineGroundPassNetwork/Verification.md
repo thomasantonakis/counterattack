@@ -15,8 +15,8 @@
   separate authored display objects from the published state, without rerolling.
 - [x] Add focused framing/replica/real-scene tests and execute them serially.
 - [x] Build Windows and run packaged local gameplay and EOS login checks.
-- [ ] Build Mac and run packaged login/local gameplay checks there.
-- [ ] Execute the separate-network Windows-host/Mac-guest gameplay exchange;
+- [x] Build Mac and run packaged login/local gameplay checks there.
+- [x] Execute the separate-network Windows-host/Mac-guest gameplay exchange;
   retain both final-state digests, reports and handoff-cleanup evidence.
 
 This automated prepared-board probe is not an interactive Room match or full
@@ -67,6 +67,28 @@ reject old/conflicting publications and copy all exposed values. The paired
 proof requires final SHA-256 state agreement before the guest leaves.
 
 ## Run / broader affected checks
+
+The paired standalone run passed on 2026-11-11 with the family Mac on the
+hotspot. Mac export reported Succeeded, zero errors and six warnings. The
+user-supplied Mac login/local reports passed at
+`Runs/20261111T214718Z-gameplay-login-67110/result.json` and
+`Runs/20261111T214803Z-gameplay-local-67286/result.json`, beneath
+`TestResults/GameplayRegression/` on that Mac.
+
+Windows host **passed**, verified directly in result.json, evidence and launcher
+exit 0: `TestResults/GameplayRegression/Runs/20261111T214927469Z-Gameplay-host/result.json`.
+Mac guest **passed**, per its supplied completed report on that Mac:
+`TestResults/GameplayRegression/Runs/20261111T215035Z-gameplay-guest-67466/result.json`.
+Both reported ForceRelays, publicationSequence=7, rollSequence=1 and identical
+digest `29742BBEA911125326BE16797FD90561A540D60E59111A5ADEE72F03584B98BB`.
+Guest evidence reported guestRulesInactive=true. The host completed its
+duplicate-confirmation, unauthorized guest-roll and duplicate-defender-roll
+checks before acknowledging final-state agreement. Host final-state.json
+records one completed Home pass, one failed Away interception attempt, ball
+at (0,6), last touch home:10 and Home possession at continuation.
+The helper removed the temporary handoff; remote directory listing confirmed
+ActiveEOSGameplayLobby.json was absent. Full M1 remains incomplete for the
+limitations above. No further suites ran.
 
 Instructions: `Documentation/Setup/OnlineGroundPassNetwork.md`.
 Feature-only tests: EditMode `OnlineGroundPassWireEditorTests` under this folder;

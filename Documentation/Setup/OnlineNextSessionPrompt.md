@@ -70,7 +70,13 @@ local gameplay and EOS login passed. Next prepare the family Mac with
 and `RunEOSStandaloneMac.sh local gameplay`. Only after both pass start Windows
 `RunEOSStandaloneWindows.ps1 host -Gameplay`; after Gameplay handoff published,
 run the Mac `RunEOSStandaloneMac.sh guest gameplay` on the hotspot. The paired
-gameplay result is pending. The earlier raw-packet proof is already complete.
+gameplay proof passed. Windows report:
+`TestResults/GameplayRegression/Runs/20261111T214927469Z-Gameplay-host/result.json`;
+Mac report (on that Mac):
+`TestResults/GameplayRegression/Runs/20261111T215035Z-gameplay-guest-67466/result.json`.
+Both have the same digest, publicationSequence=7 and rollSequence=1;
+guestRulesInactive=true on the guest. Handoff removal was verified.
+The earlier raw-packet proof is also complete.
 Do not claim full M1: interactive Room input, shared pause ownership and actual
 disconnect freezing/resync are still unimplemented.
 

@@ -6,8 +6,8 @@ under `Assets/Editor/FeatureTests/OnlineGroundPassNetwork/` and PlayMode fixture
 `OnlineGroundPassNetworkPlayModeTests` under
 `Assets/Tests/PlayMode/Features/OnlineGroundPassNetwork/`. Focused results:
 13 EditMode + 2 PlayMode passed, zero failed/skipped; compilation separately
-clean. Packaged Windows local gameplay and EOS login passed. Mac preparation
-and the paired gameplay run are pending; commands and limits are in
+clean. Windows/Mac packaged checks and the separate-network paired gameplay
+run passed with matching final-state digests and one host-only roll; commands and limits are in
 `Documentation/Setup/OnlineGroundPassNetwork.md`. These probes are automated
 prepared-board checks, not full M1 or an interactive Room match.
 
