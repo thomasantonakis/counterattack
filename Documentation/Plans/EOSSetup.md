@@ -167,8 +167,15 @@ requirements and must not be bundled indiscriminately.
 
 The EOS plugin is installed, and local product/client configuration has passed
 native initialization, Connect Device ID login, a two-Mac private lobby
-join/leave, and two-way EOS P2P packet delivery with host lobby cleanup. Relay
-route, separate-network tests and match integration remain unverified.
+join/leave, and two-way EOS P2P packet delivery with host lobby cleanup. A
+focused two-Mac forced-relay packet exchange passed on 2026-11-11 with 1/1 host
+and 1/1 guest cases. Host native XML:
+`TestResults/GameplayRegression/Runs/20261111T161052518Z/results.xml`;
+guest XML on the family Mac:
+`TestResults/GameplayRegression/Runs/20261111T161217944Z/results.xml`.
+Both peers read back `ForceRelays` before connecting. This tests the relay-only
+configuration; it does not report a per-connection route. Separate-network
+tests and match integration remain unverified.
 The local configuration is Git ignored.
 The cross-platform proof also requires an available Windows machine and a macOS
 machine on different networks. Existing connected Editor tests cannot supply

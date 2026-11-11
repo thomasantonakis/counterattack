@@ -51,7 +51,15 @@ while M0 acceptance and M1 gameplay proof remain pending.
   `TestResults/GameplayRegression/Runs/20261111T152822714Z/results.xml`.
   The host verified the guest's exact hello and the guest verified the host's
   exact acknowledgement. Both cases finished with zero failures or skips.
-- No Windows/macOS internet connectivity, relay, scene/input, pause or full-match
+- A focused relay-only packet run then passed 1/1 on each Mac. Both peers set
+  and read back EOS `ForceRelays` before connecting, and each received the
+  expected packet. Host XML:
+  `TestResults/GameplayRegression/Runs/20261111T161052518Z/results.xml`.
+  Family Mac guest XML:
+  `TestResults/GameplayRegression/Runs/20261111T161217944Z/results.xml`.
+  This establishes packet exchange under relay-only settings on the current
+  networks, but does not inspect a per-connection route.
+- No separate-network, Windows/macOS, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 
 Updated 2026-11-09: explore free, distributor-independent infrastructure first;

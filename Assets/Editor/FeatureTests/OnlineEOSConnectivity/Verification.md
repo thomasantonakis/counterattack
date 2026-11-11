@@ -179,7 +179,7 @@ third one-use Git handoff was removed after both tests completed.
   `EOSTwoMacP2PEditorTests.HostExchangesPacketsWithForcedRelays` on the personal
   Mac with `Temp/OnlineEOSRelayHost.run`. Share its one-use lobby ID through
   the private `ActiveEOSP2PLobby.json` handoff.
-- [ ] Run `bash Documentation/Setup/RunEOSGuest.sh relay` on the family Mac
+- [x] Run `bash Documentation/Setup/RunEOSGuest.sh relay` on the family Mac
   after pulling the probe commit. Confirm both completed results and native XML,
   then remove the temporary handoff.
 - [ ] Repeat the forced-relay proof with the Macs on separate networks.
@@ -188,13 +188,15 @@ The personal Mac host case passed on 2026-11-11: **1 passed, 0 failed,
 0 skipped**, native XML at
 `TestResults/GameplayRegression/Runs/20261111T161052518Z/results.xml`.
 It read back `ForceRelays`, received the guest's exact hello, sent the
-acknowledgement, observed guest departure, and destroyed the lobby. The guest
-fixture result and native XML have not yet been collected from the family Mac.
+acknowledgement, observed guest departure, and destroyed the lobby. The family
+Mac guest also passed: **1 passed, 0 failed, 0 skipped**, as reported by its
+live `test_status`; its native XML remains on that machine at
+`TestResults/GameplayRegression/Runs/20261111T161217944Z/results.xml`.
+The guest read back `ForceRelays` and received the host's exact acknowledgement.
 The one-use lobby handoff was removed after the host completed.
 
-Both peers must use the relay variant for this proof. The host result shows
-packet delivery while the local EOS instance was configured to allow only
-relay servers; the test does not inspect a per-connection route or measure
-relay latency.
+Both peers used the relay variant. The paired result shows packet delivery
+while EOS on both machines was configured to allow only relay servers. It does
+not inspect a per-connection route or measure relay latency.
 The default-route result alone does not identify whether its packets used a
 direct or relayed path. See Epic's [relay-control reference](https://dev.epicgames.com/docs/en-US/api-ref/enums/eos-e-relay-control).
