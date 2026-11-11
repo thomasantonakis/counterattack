@@ -18,7 +18,7 @@ public sealed class EOSTwoMacLobbyEditorTests
     }
 
     [UnityTest]
-    [Timeout(420000)]
+    [Timeout(1080000)]
     public IEnumerator HostWaitsForDistinctGuestAndDestroysLobby()
     {
         const string marker = "Temp/OnlineEOSTwoMacHost.run";
@@ -94,7 +94,7 @@ public sealed class EOSTwoMacLobbyEditorTests
             Assert.That(notificationId, Is.GreaterThan(0UL), "Lobby member notification registration");
 
             File.WriteAllText(lobbyIdFile, lobbyId);
-            deadline = EditorApplication.timeSinceStartup + 300;
+            deadline = EditorApplication.timeSinceStartup + 900;
             while (!distinctGuestJoined && EditorApplication.timeSinceStartup < deadline)
             {
                 session.Platform.Tick();
@@ -122,7 +122,7 @@ public sealed class EOSTwoMacLobbyEditorTests
                 yield return null;
             }
 
-            Assert.That(distinctGuestJoined, Is.True, "A distinct EOS product user did not join within five minutes");
+            Assert.That(distinctGuestJoined, Is.True, "A distinct EOS product user did not join within fifteen minutes");
             Assert.That(distinctGuestLeft, Is.True, "The guest did not leave before lobby cleanup");
             Assert.That(destroyResult.HasValue, Is.True, "DestroyLobby callback timed out");
             Assert.That(destroyResult.Value, Is.EqualTo(Result.Success), "Destroying the host lobby");

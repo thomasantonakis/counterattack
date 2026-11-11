@@ -51,15 +51,16 @@ creates a private lobby and destroys it. It does not prove another player can
 join or that EOS P2P transport works. If the configured policy rejects lobby
 creation, record the service error before changing portal permissions.
 
-## Two-Mac lobby join probe (blocked at guest connectivity)
+## Two-Mac lobby join probe (guest join pending)
 
 - [ ] Prepare two clean Editor processes with the same EOS deployment and
   separate local device identities. Do not copy EOS identity storage.
 - [ ] Run only `EOSTwoMacLobbyEditorTests.HostWaitsForDistinctGuestAndDestroysLobby`
   with `Temp/OnlineEOSTwoMacHost.run` on the first Mac. It writes a temporary
-  lobby ID to `Temp/OnlineEOSHostLobbyId.txt` and waits up to five minutes.
-- [ ] Transfer that temporary lobby ID to the second Mac as
-  `Temp/OnlineEOSJoinId.txt`; keep product/client values and product user IDs local.
+  lobby ID to `Temp/OnlineEOSHostLobbyId.txt` and waits up to fifteen minutes.
+- [ ] Publish that one-use ID to the private repository handoff, then run
+  `Documentation/Setup/RunEOSGuest.sh` on the second Mac. Remove the remote
+  handoff after the attempt; keep product/client values and product user IDs local.
 - [ ] Run only `EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId`
   with `Temp/OnlineEOSTwoMacGuest.run` on the second Mac. Inspect both native
   XML results and confirm the host saw a distinct product user.
@@ -88,10 +89,9 @@ documents that address as a Cisco Umbrella content/application block page.
 The company security policy must allow the EOS endpoint before that
 Mac can complete the probe; do not bypass the filter or disable TLS validation.
 Boot Camp on the personal host Mac cannot supply a simultaneous second Editor
-while macOS hosts the lobby. A separate family Mac is available but still
-needs the project, matching Unity version and locally entered EOS settings.
-The next attempt therefore needs either the company Mac's approved EOS access
-or that family Mac configured as the guest. Do not copy corporate credentials
-or device identity storage between machines.
+while macOS hosts the lobby. The family Mac has now completed local setup and
+the user reports that its protocol and EOS Connect login fixtures passed; its
+native XML has not been collected here. It is the guest for the next attempt.
+Do not copy corporate credentials or device identity storage between machines.
 References: [Epic firewall requirements](https://dev.epicgames.com/docs/epic-online-services/firewall-considerations),
 [Cisco Umbrella block page addresses](https://www.cisco.com/c/en/us/support/docs/security/umbrella/224799-learn-the-umbrella-block-page-ip.html).

@@ -192,43 +192,27 @@ Report the Unity readiness state, compilation result, both actual test counts
 and XML paths to Codex. Do not claim a two-Mac join, P2P or Windows proof from
 these single-Mac checks.
 
-## 7. Prepare the two-Mac guest, then wait for the host
+## 7. Run the two-Mac guest after the host is live
 
 The test code is already on this branch. After the EOS login fixture has passed
-and Unity has been reopened manually on this Mac, prepare the one-use guest
-marker in the checkout. Check that the Editor is ready, Play Mode stopped, no
-test running, compilation complete and every loaded scene clean. Save dirty
-scenes through Unity before testing.
+and Unity has been reopened manually on this Mac, pull the guest helper once:
 
 ```sh
 cd "$HOME/Documents/Projects/Personal/counterattack"
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-git status --short --branch
 git pull --ff-only origin codex/online-foundation-personal-mac
-unity status --project-path "$PROJECT_ROOT" --format json
-unity command editor_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
-unity command recompile_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
-unity command list_open_scenes --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
-unity command test_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
-touch Temp/OnlineEOSTwoMacGuest.run
-ls -l Temp/OnlineEOSTwoMacGuest.run
 ```
 
-If `git pull` refuses because of local edits, stop and preserve them. Do not
-start the guest fixture until the host on the other Mac has created a new
-temporary lobby ID. The host shares that one-use ID during coordination; old
-IDs expire after each host test. In the same Terminal, enter the current ID
-locally, then run the exact guest fixture:
+If that refuses because of local edits, stop and preserve them. When Codex
+reports that the host has created its new lobby, run just:
 
 ```sh
-printf 'Current host lobby ID: '
-IFS= read -r EOS_LOBBY_ID
-printf '%s' "$EOS_LOBBY_ID" > Temp/OnlineEOSJoinId.txt
-unity command run_tests --mode editor --filter EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId --filter_type testName --async_tests true --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
-unity command test_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
+bash Documentation/Setup/RunEOSGuest.sh
 ```
 
-Run the `read` line by itself and type/paste the current ID when prompted;
-do not paste the whole block into Terminal at once. Poll `test_status` to a
-completed result, then report the actual counts and native XML path. The
-temporary ID files and consumed marker stay out of Git.
+The helper checks the Editor, compilation, scene cleanliness and pending-test
+state. It reads the current temporary lobby ID from this private GitHub
+repository using the local `gh` sign-in, creates the one-use marker and runs
+only the exact guest fixture. It polls the result and prints actual counts.
+It rejects a stale handoff. Do not run it before the host is live. Report its
+completed result and native XML path to Codex. Local ID files remain ignored by
+Git; the temporary remote handoff is removed from the branch after the attempt.
