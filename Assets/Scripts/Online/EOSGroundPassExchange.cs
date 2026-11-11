@@ -76,20 +76,22 @@ namespace CounterAttack.Online
             File.WriteAllText(Path.Combine(output, "gameplay-evidence.json"), JsonUtility.ToJson(new Evidence
             {
                 role = role, digest = Digest(state), publicationSequence = state.publicationSequence,
-                rollSequence = state.rollSequence, guestRulesInactive = !board.authorityRoot.activeSelf
+                rollSequence = state.rollSequence, guestRulesInactive = !board.authorityRoot.activeSelf,
+                sharedPauseRevision = state.sharedPauseRevision
             }, true));
         }
 
         [Serializable] private sealed class Evidence
-        { public string role, digest; public long publicationSequence, rollSequence; public bool guestRulesInactive; }
+        { public string role, digest; public long publicationSequence, rollSequence, sharedPauseRevision; public bool guestRulesInactive; }
 
         internal IEnumerator Local()
         {
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v1", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v2", "ground-rules-v1", "prepared-board-v1");
             var protocol = new OnlineMatchProtocol("local-ground", "home", "away", "away", version);
             protocol.BindAuthenticatedAccount("home", "guest", version); protocol.BindAuthenticatedAccount("away", "host", version);
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
+            using var pause = new OnlineSharedPause(protocol, board.match);
             void Submit(string connection, long sequence, string action)
             {
                 var state = authority.Capture();
@@ -100,13 +102,22 @@ namespace CounterAttack.Online
             }
             Submit("guest", 1, OnlineGroundPassAuthority.StartAction);
             Submit("guest", 2, OnlineGroundPassAuthority.TargetAction(0, 6));
+            var request = new OnlineMatchCommand(protocol.MatchId, 1, pause.Revision, "shared-pause", OnlineSharedPause.RequestAction);
+            EOSProofCheck.Require(pause.Submit("guest", request).Status == OnlineCommandStatus.Accepted, "Local guest pause");
+            var paused = pause.Capture(authority); board.Display(paused, "Local shared pause check");
+            EOSProofCheck.Require(paused.isSharedPaused && Time.timeScale == 0, "Local shared pause applied");
+            EOSProofCheck.Require(pause.Submit("host", new OnlineMatchCommand(protocol.MatchId, 1, pause.Revision,
+                "shared-pause", OnlineSharedPause.ResumeAction)).Status == OnlineCommandStatus.WrongTeam, "Local opponent cannot resume");
+            for (var frame = 0; frame < 5; frame++) yield return null;
+            EOSProofCheck.Require(pause.Submit("guest", new OnlineMatchCommand(protocol.MatchId, 2, pause.Revision,
+                "shared-pause", OnlineSharedPause.ResumeAction)).Status == OnlineCommandStatus.Accepted, "Local requester resumes");
             Submit("guest", 3, OnlineGroundPassAuthority.TargetAction(0, 6));
             var deadline = Time.realtimeSinceStartupAsDouble + 30;
             while (!board.match.groundBallManager.isWaitingForDiceRoll && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             EOSProofCheck.Require(board.match.groundBallManager.isWaitingForDiceRoll, "Local authored interception boundary");
             Submit("host", 1, OnlineGroundPassAuthority.RollAction);
             while (board.match.groundBallManager.isActivated && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
-            var final = authority.Capture();
+            var final = pause.Capture(authority);
             EOSProofCheck.Require(!final.passActive && final.rollSequence == 1, "Local authored gameplay outcome");
             var replica = new OnlineGroundPassReplica("local-ground");
             EOSProofCheck.Require(replica.Apply(final), "Local detached replica accepts outcome");
@@ -117,16 +128,18 @@ namespace CounterAttack.Online
         {
             SetPeer(session, remote, socket, lobby);
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v1", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v2", "ground-rules-v1", "prepared-board-v1");
             var protocol = new OnlineMatchProtocol(matchId, remote.ToString(), session.UserId.ToString(), session.UserId.ToString(), version);
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(remote.ToString(), "guest-home", version), "Binding guest Home identity");
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
+            using var pause = new OnlineSharedPause(protocol, board.match);
             var first = authority.Capture();
             EOSProofCheck.Require(authority.Submit("host-away", new OnlineMatchCommand(matchId, 1, first.revision,
                 first.decisionId, OnlineGroundPassAuthority.StartAction)).Status == OnlineCommandStatus.WrongTeam,
                 "Host cannot start the guest team's pass");
             bool ready = false, duplicateConfirmed = false, rejectedGuestRoll = false, rolled = false, done = false;
+            bool opponentResumeRejected = false, duplicatePause = false, staleConfirmation = false;
             long sent = -1;
             var deadline = Time.realtimeSinceStartupAsDouble + 180;
             while (!done && Time.realtimeSinceStartupAsDouble < deadline)
@@ -142,28 +155,45 @@ namespace CounterAttack.Online
                         var reply = authority.Submit("guest-home", message.ToCommand());
                         duplicateConfirmed |= message.sequence == 3 && reply.Status == OnlineCommandStatus.Duplicate;
                         rejectedGuestRoll |= message.actionId == OnlineGroundPassAuthority.RollAction && reply.Status == OnlineCommandStatus.WrongTeam;
+                        staleConfirmation |= message.sequence == 3 && reply.Status == OnlineCommandStatus.StaleRevision;
                         EOSProofCheck.Require(reply.Status == OnlineCommandStatus.Accepted || reply.Status == OnlineCommandStatus.Duplicate
-                            || reply.Status == OnlineCommandStatus.WrongTeam, "Unexpected gameplay command rejection: " + reply.Status);
+                            || reply.Status == OnlineCommandStatus.WrongTeam || reply.Status == OnlineCommandStatus.StaleRevision,
+                            "Unexpected gameplay command rejection: " + reply.Status);
                         Send(new OnlineGroundPassMessage { kind = "reply", sequence = message.sequence, status = reply.Status.ToString(), revision = reply.Revision });
+                    }
+                    else if (message.kind == "control")
+                    {
+                        var reply = pause.Submit("guest-home", message.ToCommand());
+                        EOSProofCheck.Require(reply.Status == OnlineCommandStatus.Accepted || reply.Status == OnlineCommandStatus.Duplicate, "Shared pause control accepted");
+                        duplicatePause |= message.actionId == OnlineSharedPause.RequestAction && reply.Status == OnlineCommandStatus.Duplicate;
+                        if (pause.IsPaused && !opponentResumeRejected)
+                        {
+                            EOSProofCheck.Require(pause.Submit("host-away", new OnlineMatchCommand(matchId, 1, pause.Revision,
+                                "shared-pause", OnlineSharedPause.ResumeAction)).Status == OnlineCommandStatus.WrongTeam, "Host cannot resume guest-owned pause");
+                            opponentResumeRejected = true;
+                        }
+                        Send(new OnlineGroundPassMessage { kind = "control-reply", sequence = message.sequence, status = reply.Status.ToString(), revision = reply.Revision });
                     }
                     else if (message.kind == "done")
                     {
-                        var final = authority.Capture();
+                        var final = pause.Capture(authority);
                         EOSProofCheck.Require(rolled && duplicateConfirmed && rejectedGuestRoll && !final.passActive && final.rollSequence == 1,
                             "Authority outcome and negative-command checks completed");
+                        EOSProofCheck.Require(opponentResumeRejected && duplicatePause && staleConfirmation && pause.Revision == 2 && !pause.IsPaused,
+                            "Shared pause ownership, retry and stale-confirmation checks completed");
                         EOSProofCheck.Require(message.digest == Digest(final), "Guest final-state digest matches authority");
                         Retain(final, "host");
                         Send(new OnlineGroundPassMessage { kind = "finish", digest = message.digest }); done = true;
                     }
                     else throw new EOSProofFailure("Unexpected host gameplay message kind");
                 }
-                var state = authority.Capture();
+                var state = pause.Capture(authority);
                 if (!rolled && rejectedGuestRoll && state.stage == "interception")
                 {
                     var command = new OnlineMatchCommand(matchId, 1, state.revision, state.decisionId, OnlineGroundPassAuthority.RollAction);
                     EOSProofCheck.Require(authority.Submit("host-away", command).Status == OnlineCommandStatus.Accepted, "Authority defender roll");
                     EOSProofCheck.Require(authority.Submit("host-away", command).Status == OnlineCommandStatus.Duplicate, "Defender retry cannot roll twice");
-                    rolled = true; state = authority.Capture();
+                    rolled = true; state = pause.Capture(authority);
                 }
                 board.Display(state, "Windows/Mac authority: Away");
                 if (ready && !done && state.publicationSequence != sent)
@@ -181,6 +211,8 @@ namespace CounterAttack.Online
             Send(new OnlineGroundPassMessage { kind = "hello" });
             bool started = false, previewed = false, confirmed = false, wrongRollSent = false;
             bool duplicateReply = false, wrongTeamReply = false, doneSent = false, finished = false;
+            bool pauseSent = false, resumeSent = false, duplicatePauseReply = false, staleReply = false;
+            double pausedAt = 0;
             var deadline = Time.realtimeSinceStartupAsDouble + 180;
             while (!finished && Time.realtimeSinceStartupAsDouble < deadline)
             {
@@ -197,7 +229,10 @@ namespace CounterAttack.Online
                     {
                         duplicateReply |= message.sequence == 3 && message.status == "Duplicate";
                         wrongTeamReply |= message.sequence == 4 && message.status == "WrongTeam";
+                        staleReply |= message.sequence == 3 && message.status == "StaleRevision";
                     }
+                    else if (message.kind == "control-reply")
+                        duplicatePauseReply |= message.sequence == 1 && message.status == "Duplicate";
                     else if (message.kind == "finish")
                     {
                         EOSProofCheck.Require(doneSent && message.digest == Digest(replica.State), "Authority confirms guest final state");
@@ -212,14 +247,35 @@ namespace CounterAttack.Online
                     { Send(OnlineGroundPassMessage.Command(state, 1, OnlineGroundPassAuthority.StartAction)); started = true; }
                     else if (!previewed && state.stage == "target" && !state.hasSelectedTarget)
                     { Send(OnlineGroundPassMessage.Command(state, 2, OnlineGroundPassAuthority.TargetAction(0, 6))); previewed = true; }
-                    else if (!confirmed && previewed && state.stage == "target" && state.hasSelectedTarget)
+                    else if (!pauseSent && previewed && state.stage == "target" && state.hasSelectedTarget)
+                    {
+                        var pause = new OnlineGroundPassMessage { kind = "control", sequence = 1, revision = state.sharedPauseRevision,
+                            decisionId = "shared-pause", actionId = OnlineSharedPause.RequestAction };
+                        Send(pause); Send(pause);
+                        Send(OnlineGroundPassMessage.Command(state, 3, OnlineGroundPassAuthority.TargetAction(0, 6)));
+                        pauseSent = true;
+                    }
+                    else if (pauseSent && !resumeSent && state.isSharedPaused)
+                    {
+                        EOSProofCheck.Require(state.pauseRequester == "Home" && board.sharedPausePanel.activeSelf
+                            && board.requesterPauseMessage.activeSelf && !board.passivePauseMessage.activeSelf, "Guest sees its own authored pause presentation");
+                        if (pausedAt == 0) pausedAt = Time.realtimeSinceStartupAsDouble;
+                        if (duplicatePauseReply && staleReply && Time.realtimeSinceStartupAsDouble - pausedAt >= 1)
+                        {
+                            Send(new OnlineGroundPassMessage { kind = "control", sequence = 2, revision = state.sharedPauseRevision,
+                                decisionId = "shared-pause", actionId = OnlineSharedPause.ResumeAction }); resumeSent = true;
+                        }
+                    }
+                    else if (!confirmed && resumeSent && !state.isSharedPaused && state.sharedPauseRevision == 2
+                        && state.stage == "target" && state.hasSelectedTarget)
                     {
                         var confirm = OnlineGroundPassMessage.Command(state, 3, OnlineGroundPassAuthority.TargetAction(0, 6));
                         Send(confirm); Send(confirm); confirmed = true;
                     }
                     else if (!wrongRollSent && state.stage == "interception")
                     { Send(OnlineGroundPassMessage.Command(state, 4, OnlineGroundPassAuthority.RollAction)); wrongRollSent = true; }
-                    else if (confirmed && duplicateReply && wrongTeamReply && !state.passActive && state.rollSequence == 1)
+                    else if (confirmed && duplicateReply && wrongTeamReply && duplicatePauseReply && staleReply
+                        && state.sharedPauseRevision == 2 && !state.passActive && state.rollSequence == 1)
                     {
                         EOSProofCheck.Require(state.tokens.Single(t => t.id == "home:9").passesAttempted == 1,
                             "Exactly one authoritative pass attempt");

@@ -15,6 +15,13 @@ resolves. Either legal dice outcome is accepted, with both sides requiring
 the same final-state digest and one pass/interception attempt. The guest
 acknowledges that state before leaving; the host destroys the lobby.
 
+The current v2 proof also has the Home guest pause its selected target, retry
+that pause, and submit a stale confirmation. The host's attempt to resume the
+guest-owned pause must be rejected. After at least one unscaled second the
+guest alone resumes and sends a fresh confirmation. Evidence must include
+sharedPauseRevision=2. Rebuild both applications after pulling this update;
+v1 messages and handoffs cannot silently bypass the pause checks.
+
 ## Prepare the Mac before hosting
 
 Keep Windows on home Wi-Fi and the family Mac on its hotspot. Save dirty
@@ -77,7 +84,7 @@ Do not commit or share exported applications/configuration or raw local EOS
 logs; builds contain local development credentials. Report the safe result and
 evidence JSON, not account/client secrets. Source changes contain none.
 
-Shared pause ownership, actual disconnect freezing/resync, interactive input,
+Shared pause ownership in this prepared board is now implemented. Actual disconnect freezing/resync, interactive input,
 full animation replication, reverse roles and a full online Room match remain
 later M1 work. Timing/AI/presentation callbacks are disabled in this prepared
 fixture rather than claiming those integration risks are already solved.

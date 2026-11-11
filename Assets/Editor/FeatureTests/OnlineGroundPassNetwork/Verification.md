@@ -1,5 +1,10 @@
 # EOS ground-pass command/state proof
 
+Shared-pause v2 follow-up: see
+`Assets/Editor/FeatureTests/OnlineSharedPause/Verification.md`. The completed
+paired evidence below is the earlier v1 run; it does not prove the new pause
+exchange. Both applications need rebuilding for v2.
+
 ## Checklist and scope
 
 - [x] Add bounded versioned message framing below EOS's packet-size limit.

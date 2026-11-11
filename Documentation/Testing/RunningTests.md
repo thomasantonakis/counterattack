@@ -1,5 +1,14 @@
 # Running gameplay regressions
 
+Prepared online shared pause uses category `OnlineSharedPause`: EditMode
+`OnlineSharedPauseEditorTests` under `Assets/Editor/FeatureTests/OnlineSharedPause/`
+and PlayMode `OnlineSharedPausePlayModeTests` /
+`OnlineSharedPausePresentationPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineSharedPause/`. Focused results: 11 EditMode
++ 13 PlayMode passed, zero failed/skipped; compilation separately clean.
+See the Editor feature folder's Verification.md for native XML and the v2
+packaged/paired pause proof checklist. No broad suites ran.
+
 EOS gameplay command/state and authored replica proof uses explicit category
 `OnlineGroundPassNetwork`: EditMode fixture `OnlineGroundPassWireEditorTests`
 under `Assets/Editor/FeatureTests/OnlineGroundPassNetwork/` and PlayMode fixture

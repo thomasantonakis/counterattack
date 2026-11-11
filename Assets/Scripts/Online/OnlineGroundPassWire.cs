@@ -32,7 +32,7 @@ namespace CounterAttack.Online
 
         public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message)
         {
-            message.version = "ground-wire-v1";
+            message.version = "ground-wire-v2";
             var payload = Encoding.UTF8.GetBytes(JsonUtility.ToJson(message));
             if (payload.Length == 0 || payload.Length > PayloadLimit) throw new InvalidDataException("Gameplay message size");
             var count = (ushort)((payload.Length + FragmentPayload - 1) / FragmentPayload);
@@ -70,8 +70,8 @@ namespace CounterAttack.Online
                 var json = new UTF8Encoding(false, true).GetString(pending.ToArray());
                 Reset();
                 var message = JsonUtility.FromJson<OnlineGroundPassMessage>(json);
-                if (message == null || message.version != "ground-wire-v1" || !OnlineProtocolIds.IsValid(message.matchId)
-                    || !(new[] { "hello", "command", "state", "reply", "done", "finish" }).Contains(message.kind))
+                if (message == null || message.version != "ground-wire-v2" || !OnlineProtocolIds.IsValid(message.matchId)
+                    || !(new[] { "hello", "command", "state", "reply", "control", "control-reply", "done", "finish" }).Contains(message.kind))
                     throw new InvalidDataException("Gameplay message contract");
                 return message;
             }

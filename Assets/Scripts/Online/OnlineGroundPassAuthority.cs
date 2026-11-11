@@ -18,8 +18,9 @@ namespace CounterAttack.Online
     [Serializable]
     public sealed class OnlineGroundPassState
     {
-        public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch;
-        public long revision, publicationSequence, rollSequence;
+        public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester;
+        public long revision, publicationSequence, rollSequence, sharedPauseRevision;
+        public bool isSharedPaused;
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;

@@ -19,11 +19,14 @@ namespace CounterAttack.Online
         public Camera boardCamera;
         public Text statusText;
         public GameObject localStatsPanel;
+        public GameObject sharedPausePanel, requesterPauseMessage, passivePauseMessage;
+        public OnlineTeam localTeam = OnlineTeam.Home;
         private MatchManager previousMatch;
         private bool ownsMatch;
 
         public void InitializeAuthority()
         {
+            localTeam = OnlineTeam.Away;
             previousMatch = MatchManager.Instance;
             MatchManager.Instance = match; ownsMatch = true;
             match.gameData = new MatchManager.GameData();
@@ -65,6 +68,10 @@ namespace CounterAttack.Online
 
         public void Display(OnlineGroundPassState state, string role)
         {
+            if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused);
+            var requester = state.isSharedPaused && state.pauseRequester == localTeam.ToString();
+            if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
+            if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);
             foreach (var token in state.tokens)
             {
                 var index = Array.FindIndex(tokens, t => (t.isHomeTeam ? "home:" : "away:") + t.jerseyNumber == token.id);

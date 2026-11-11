@@ -10,7 +10,7 @@ handoff_name=ActiveEOSStandaloneLobby.json
 handoff_kind=standalone-relay-v1
 case "$mode" in
     packets) if [ "$role" = local ]; then printf 'Local role requires gameplay mode.\n' >&2; exit 2; fi ;;
-    gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; handoff_kind=ground-gameplay-v1 ;;
+    gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; handoff_kind=ground-gameplay-v2 ;;
     *) printf 'Expected packets or gameplay mode.\n' >&2; exit 2 ;;
 esac
 if [ ! -d "$app/Contents/MacOS" ]; then printf 'Build the Mac proof first.\n' >&2; exit 1; fi
@@ -36,6 +36,8 @@ printf '\nStandalone result: %s/result.json\n' "$run"
 jq -e '.status == "passed"' "$run/result.json" >/dev/null
 if [ "$mode" = gameplay ] && [ "$role" != login ]; then
     test -f "$run/gameplay-evidence.json"
+    jq -e '.sharedPauseRevision == 2 and .rollSequence == 1' "$run/gameplay-evidence.json" >/dev/null
+    if [ "$role" = guest ]; then jq -e '.guestRulesInactive == true' "$run/gameplay-evidence.json" >/dev/null; fi
     cat "$run/gameplay-evidence.json"
     printf '\nGameplay evidence: %s/gameplay-evidence.json\n' "$run"
 fi

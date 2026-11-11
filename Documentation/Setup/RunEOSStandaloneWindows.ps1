@@ -16,7 +16,7 @@ $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/ActiveE
 $handoffName = 'ActiveEOSStandaloneLobby.json'
 $handoffKind = 'standalone-relay-v1'
 if ($Gameplay) {
-    $handoffName = 'ActiveEOSGameplayLobby.json'; $handoffKind = 'ground-gameplay-v1'
+    $handoffName = 'ActiveEOSGameplayLobby.json'; $handoffKind = 'ground-gameplay-v2'
     $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/' + $handoffName
 }
 $publishedSha = $null
@@ -57,6 +57,8 @@ try {
     if ($Gameplay -and $Role -ne 'login') {
         $evidencePath = Join-Path $run 'gameplay-evidence.json'
         if (-not (Test-Path -LiteralPath $evidencePath)) { throw 'No gameplay evidence: verify the correct gameplay build was used.' }
+        $evidence = Get-Content -Raw -LiteralPath $evidencePath | ConvertFrom-Json
+        if ($evidence.sharedPauseRevision -ne 2 -or $evidence.rollSequence -ne 1) { throw 'Missing shared-pause evidence; rebuild the updated gameplay application.' }
         Get-Content -LiteralPath $evidencePath | Write-Host
     }
 } finally {

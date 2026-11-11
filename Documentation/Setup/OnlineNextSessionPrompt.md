@@ -60,6 +60,22 @@ remain unverified.
 
 ## Next session actions
 
+The newest batch adds requester-owned shared pause to the prepared online
+board, using wire/handoff v2. Read
+`Assets/Editor/FeatureTests/OnlineSharedPause/Verification.md` first. Focused
+tests passed 11 EditMode + 13 PlayMode, with zero failures/skips and clean
+compilation. Rebuild both applications before running the upgraded pause
+proof; the local/paired evidence now requires sharedPauseRevision=2. The
+previous completed paired gameplay result below is the earlier v1 pass.
+Production Room input, real transport disconnect detection/freezing/resync,
+substitution/settings subflows and full M1 remain pending.
+Updated Windows local packaged pause check passed at
+`TestResults/GameplayRegression/Runs/20261111T220654045Z-Gameplay-local/result.json`,
+with sharedPauseRevision=2 and one roll. Next pull/rebuild on the family Mac,
+run its local gameplay check, then start the Windows host for the paired v2
+pause proof. Existing EOS login evidence remains valid; native initialization
+code/configuration was not changed by this pause batch.
+
 Latest work connects the ground-pass gateway to authenticated EOS semantic
 commands/state and an authored guest replica scene. Read
 `Documentation/Setup/OnlineGroundPassNetwork.md` and
@@ -77,8 +93,8 @@ Mac report (on that Mac):
 Both have the same digest, publicationSequence=7 and rollSequence=1;
 guestRulesInactive=true on the guest. Handoff removal was verified.
 The earlier raw-packet proof is also complete.
-Do not claim full M1: interactive Room input, shared pause ownership and actual
-disconnect freezing/resync are still unimplemented.
+Do not claim full M1: interactive Room input, Room-wide pause/subflow integration
+and actual disconnect freezing/resync are still unimplemented.
 
 The latest gameplay batch added `OnlineGroundPassAuthority`, an isolated
 semantic adapter to real pass selection/confirmation/interception and
