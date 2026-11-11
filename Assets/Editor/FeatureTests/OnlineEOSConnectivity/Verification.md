@@ -51,15 +51,15 @@ creates a private lobby and destroys it. It does not prove another player can
 join or that EOS P2P transport works. If the configured policy rejects lobby
 creation, record the service error before changing portal permissions.
 
-## Two-Mac lobby join probe (pending)
+## Two-Mac lobby join probe (blocked at guest connectivity)
 
 - [ ] Prepare two clean Editor processes with the same EOS deployment and
   separate local device identities. Do not copy EOS identity storage.
 - [ ] Run only `EOSTwoMacLobbyEditorTests.HostWaitsForDistinctGuestAndDestroysLobby`
   with `Temp/OnlineEOSTwoMacHost.run` on the first Mac. It writes a temporary
   lobby ID to `Temp/OnlineEOSHostLobbyId.txt` and waits up to five minutes.
-- [ ] Transfer that temporary lobby ID locally to the second Mac as
-  `Temp/OnlineEOSJoinId.txt`; do not paste product/client values or IDs into chat.
+- [ ] Transfer that temporary lobby ID to the second Mac as
+  `Temp/OnlineEOSJoinId.txt`; keep product/client values and product user IDs local.
 - [ ] Run only `EOSTwoMacLobbyEditorTests.GuestSearchesAndJoinsHostByLobbyId`
   with `Temp/OnlineEOSTwoMacGuest.run` on the second Mac. Inspect both native
   XML results and confirm the host saw a distinct product user.
@@ -69,4 +69,29 @@ This probe uses an unadvertised `Joinviapresence` lobby and an exact-ID search.
 The earlier invite-only lobby creation test does not establish code-based joins:
 EOS invite-only lobbies require an actual invitation. The full lobby ID serves
 only as a temporary development join code; a user-friendly code resolver is
-future work. These tests have not yet been run and do not send P2P packets.
+future work. These tests do not send P2P packets.
+
+Two host attempts on 2026-11-10 each created and then destroyed a lobby, but
+neither observed a distinct guest within five minutes: **0 passed, 1 failed**
+per attempt. Native XML on the personal Mac:
+`TestResults/GameplayRegression/Runs/20261110T212318979Z/results.xml` and
+`TestResults/GameplayRegression/Runs/20261110T213157947Z/results.xml`.
+The first guest run on the company Mac skipped before EOS initialization because
+its one-use marker was absent. In the second attempt, the guest ran but failed
+at Connect `CreateDeviceId` with `NoConnection`, before lobby search or join:
+**0 passed, 1 failed** (result reported from the company Mac; its native XML
+was not collected here). Thus neither host failure is evidence about join-by-ID.
+
+A credential-free HTTPS check on the company Mac for `api.epicgames.dev`
+returned curl certificate error 60 and remote IP `146.112.61.106`. Cisco
+documents that address as a Cisco Umbrella content/application block page.
+The company security policy must allow the EOS endpoint before that
+Mac can complete the probe; do not bypass the filter or disable TLS validation.
+Boot Camp on the personal host Mac cannot supply a simultaneous second Editor
+while macOS hosts the lobby. A separate family Mac is available but still
+needs the project, matching Unity version and locally entered EOS settings.
+The next attempt therefore needs either the company Mac's approved EOS access
+or that family Mac configured as the guest. Do not copy corporate credentials
+or device identity storage between machines.
+References: [Epic firewall requirements](https://dev.epicgames.com/docs/epic-online-services/firewall-considerations),
+[Cisco Umbrella block page addresses](https://www.cisco.com/c/en/us/support/docs/security/umbrella/224799-learn-the-umbrella-block-page-ip.html).
