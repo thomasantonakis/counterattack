@@ -131,7 +131,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private void MaintainKitDropdownPopupHeight(TMP_Dropdown dropdown)
     {
-        if (dropdown == null || dropdown.options.Count == 0 || !IsAlwaysVisibleKitDropdown(dropdown))
+        if (dropdown == null || dropdown.options.Count == 0)
         {
             return;
         }
@@ -147,6 +147,12 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         float desiredHeight = item.rect.height * dropdown.options.Count;
+        // TMP can shrink its generated popup during layout. Regular kit lists keep
+        // the authored scroll-window height in both Single Player and Hot Seat.
+        if (!IsAlwaysVisibleKitDropdown(dropdown))
+        {
+            desiredHeight = Mathf.Min(desiredHeight, dropdown.template.rect.height);
+        }
         popupRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, desiredHeight);
         RectTransform viewport = popup.Find("Viewport") as RectTransform;
         if (viewport != null)

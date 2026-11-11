@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Jersey list height: `KitDropdownHeightPlayModeTests` (category `KitDropdownHeight`)
+under `Assets/Tests/PlayMode/Features/KitDropdownHeight/`. Latest: 10 passed,
+zero failed/skipped; compilation clean. Tests verify actual TMP popups for both
+setup modes, home/away, goalkeeper and international list sizing. Native artifacts
+and scope: `Assets/Editor/FeatureTests/KitDropdownHeight/TASKS.md`.
+
 Menu interaction audio: run only `MenuAudioEditorTests` under
 `Assets/Editor/FeatureTests/GameplayAudio/UI/` and `MenuAudioPlayModeTests` under
 `Assets/Tests/PlayMode/Features/GameplayAudio/UI/` (category `MenuAudio`). Latest:
