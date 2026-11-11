@@ -9,6 +9,9 @@ the company Mac or the personal host Mac.
 The project branch is `codex/online-foundation-personal-mac`. It contains the
 two-Mac test harness from commit `033ecea9f8504d5dbe3fdc13a5ea0a3c53d7d550`.
 Use the branch tip after this guide is committed; it includes that commit.
+Current focused EOS fixtures keep the native SDK initialized between runs;
+the old restart instructions below applied to earlier commits. For a Windows
+host, follow `WindowsBootCamp.md` and join with `RunEOSGuest.sh relay`.
 Do not launch ordinary gameplay, run whole test suites, or start Unity from
 Codex. The human opens Unity manually.
 
@@ -183,9 +186,9 @@ unity command run_tests --mode editor --filter EOSConnectLoginEditorTests.Device
 unity command test_status --project-path "$PROJECT_ROOT" --caller codex --skill unity-cli --format json
 ```
 
-Poll to a completed result and inspect its native XML. The EOS login fixture
-shuts down EOS in that Editor process. **Manually close and reopen Unity** before
-the two-Mac lobby test. Prepare the guest marker after reopening, but do not
+Poll to a completed result and inspect its native XML. The current EOS probe
+helper keeps the native SDK available for another focused run. Prepare the
+guest marker after the host is ready, but do not
 run the guest fixture or use a lobby ID until the host's fresh lobby is live.
 
 Report the Unity readiness state, compilation result, both actual test counts
@@ -194,8 +197,8 @@ these single-Mac checks.
 
 ## 7. Run the two-Mac guest after the host is live
 
-The test code is already on this branch. After the EOS login fixture has passed
-and Unity has been reopened manually on this Mac, pull the guest helper once:
+The test code is already on this branch. After the EOS login fixture has passed,
+pull the guest helper once:
 
 ```sh
 cd "$HOME/Documents/Projects/Personal/counterattack"
@@ -220,8 +223,9 @@ Git; the temporary remote handoff is removed from the branch after the attempt.
 ## 8. Run the focused P2P packet probe
 
 The lobby join proof has passed. Pull the latest branch while preserving local
-edits, let Unity finish compiling, then manually close and reopen Unity before
-this probe. The prior EOS guest fixture shut down the SDK in that Editor process.
+edits, then let Unity finish compiling. The current fixture keeps EOS available
+between focused runs; a Unity restart is needed only if an older fixture already
+shut the native SDK down in this Editor process.
 When Codex confirms the new host P2P lobby is live, run only:
 
 ```sh
@@ -232,3 +236,8 @@ This mode performs the same readiness checks and uses a separate one-use
 handoff. It runs only the P2P guest fixture, then prints the completed result.
 Send Codex the actual passed/failed/skipped counts and native XML path. Do not
 paste the lobby ID or EOS credentials into chat.
+
+For the Windows-host cross-platform proof, the family Mac is the guest. Use
+`bash Documentation/Setup/RunEOSGuest.sh relay` after the Windows helper has
+published its one-use handoff. This mode forces relay settings on both peers
+and prints the native XML path automatically.

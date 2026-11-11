@@ -47,7 +47,13 @@ internal sealed class EOSProbeSession : IDisposable
     {
         if (!platformSpecificsRegistered)
         {
+#if UNITY_EDITOR_WIN
+            WindowsPlatformSpecifics.Register();
+#elif UNITY_EDITOR_OSX
             MacOSPlatformSpecifics.Register();
+#else
+            Assert.Inconclusive("EOS connectivity probes support the Windows and macOS Editors only.");
+#endif
             EOSManager.EOSSingleton.LoadEOSLibraries();
             platformSpecificsRegistered = true;
         }

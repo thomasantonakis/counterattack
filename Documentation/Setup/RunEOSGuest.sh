@@ -41,7 +41,7 @@ if [ "$(git branch --show-current)" != codex/online-foundation-personal-mac ]; t
     exit 1
 fi
 
-printf 'Checking the son Mac Editor connection...\n'
+printf 'Checking the guest Mac Editor connection...\n'
 status="$(unity status --project-path "$repo_root" --format json)"
 printf '%s\n' "$status" | jq -e --arg root "$repo_root" \
     '.success == true and any(.data.instances[]?; .projectPath == $root and .state == "ready")' >/dev/null || {
@@ -86,7 +86,7 @@ printf '%s\n' "$scenes" | jq -e \
 
 tests="$(unity command test_status --project-path "$repo_root" --caller codex --skill unity-cli --format json)"
 printf '%s\n' "$tests" | jq -e \
-    '.success == true and .data.result.status == "no_tests"' >/dev/null || {
+    '.success == true and (.data.result.status == "no_tests" or .data.result.status == "completed")' >/dev/null || {
     printf 'Resolve the existing test run before starting the guest fixture.\n' >&2
     exit 1
 }

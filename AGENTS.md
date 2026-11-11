@@ -1,9 +1,14 @@
 ## Personal Mac setup and portable paths
 
-- For a fresh machine, follow `Documentation/Setup/PersonalMac.md` before Editor operations. It includes terminal tools, Unity/Codex setup, connection checks and the current online-work handoff.
+- For the Boot Camp Windows checkout and its cross-platform EOS proof, follow `Documentation/Setup/WindowsBootCamp.md` before Editor operations.
+- For a fresh macOS machine, follow `Documentation/Setup/PersonalMac.md` before Editor operations. It includes terminal tools, Unity/Codex setup, connection checks and the current online-work handoff.
 - Resolve this checkout's absolute root with `git rev-parse --show-toplevel`. Throughout these instructions, replace the original `/Users/t.antonakis/Documents/Projects/Personal/counterattack` with that actual root on the current machine. Pass that absolute root explicitly on Unity CLI calls. Do not target a different checkout just because it matches the old path.
 - Resolve user-specific skill, Unity log and save locations under the current user's home directory. If Unity redirects its log, inspect `<checkout>/Logs/Editor.log`; the home-directory Editor.log may contain only startup output. Never copy account tokens or corporate configuration to make a path work.
 - Start Codex in this repository so the portable `.codex/config.toml` Unity MCP entry resolves the correct project. Use CLI for Editor control as required below; MCP configuration is optional for this shell-based workflow.
+
+## Git authorization
+
+- The repository owner has authorized Codex to run necessary Git commands in this project, including add, commit, fetch, pull and push, without asking again. Keep commits limited to task-related files and preserve unrelated local edits. Tool-enforced sandbox or credential prompts may still apply.
 
 ## Unity Workflow Rules
 
