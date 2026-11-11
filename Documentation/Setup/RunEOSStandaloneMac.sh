@@ -10,16 +10,16 @@ player="$(find "$app/Contents/MacOS" -maxdepth 1 -type f -perm -111 -print -quit
 if [ -z "$player" ]; then printf 'No executable in the proof app.\n' >&2; exit 1; fi
 run="$repo_root/TestResults/GameplayRegression/Runs/$(date -u +%Y%m%dT%H%M%SZ)-Standalone-$role-$$"
 mkdir -p "$run"
-extra=()
+set -- -ca-eos-role "$role" -ca-eos-output "$run" -logFile "$run/Player.log" -screen-fullscreen 0 -screen-width 640 -screen-height 360
 if [ "$role" = guest ]; then
     handoff="$(gh api 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/ActiveEOSStandaloneLobby.json?ref=codex/online-foundation-personal-mac' --jq '.content' | tr -d '\n' | base64 -D)"
     printf '%s' "$handoff" | jq -e --argjson now "$(date +%s)" '.kind == "standalone-relay-v1" and (.lobbyId | test("^[0-9a-f]{32}$")) and (.createdUnix <= $now + 30) and ($now - .createdUnix < 900)' >/dev/null
     printf '%s' "$handoff" | jq -r '.lobbyId' > "$run/lobby-id.txt"
-    extra=(-ca-eos-lobby-file "$run/lobby-id.txt")
+    set -- "$@" -ca-eos-lobby-file "$run/lobby-id.txt"
 fi
 printf 'Running standalone %s. Artifacts: %s\n' "$role" "$run"
 set +e
-"$player" -ca-eos-role "$role" -ca-eos-output "$run" "${extra[@]}" -logFile "$run/Player.log" -screen-fullscreen 0 -screen-width 640 -screen-height 360 > "$run/stdout.log" 2>&1
+"$player" "$@" > "$run/stdout.log" 2>&1
 player_exit=$?
 set -e
 if [ ! -f "$run/result.json" ]; then printf 'No report; inspect local Player.log and stdout.log. Exit: %s\n' "$player_exit" >&2; exit 1; fi
