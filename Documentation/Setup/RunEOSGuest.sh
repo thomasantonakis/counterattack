@@ -106,6 +106,7 @@ printf '%s' "$lobby_id" > "$id_file"
 touch "$marker"
 
 printf 'Running the one-case EOS guest fixture against the current host lobby.\n'
+run_started_unix="$(date +%s)"
 unity command run_tests --mode editor \
     --filter "$fixture" \
     --filter_type testName --async_tests true \
@@ -116,6 +117,12 @@ for (( attempt = 0; attempt < 90; attempt++ )); do
     state="$(printf '%s\n' "$result" | jq -r '.data.result.status // "unknown"')"
     if [ "$state" != running ]; then
         printf '%s\n' "$result"
+        latest_xml="$(rg --files TestResults/GameplayRegression/Runs 2>/dev/null | rg '/results\.xml$' | sort | tail -n 1 || true)"
+        if [ -n "$latest_xml" ] && [ "$(stat -f %m "$latest_xml")" -ge "$run_started_unix" ]; then
+            printf 'Native test XML: %s\n' "$latest_xml"
+        else
+            printf 'No new native test XML was found for this run.\n' >&2
+        fi
         [ "$state" = completed ]
         exit $?
     fi

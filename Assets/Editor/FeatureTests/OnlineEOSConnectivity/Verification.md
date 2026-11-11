@@ -182,7 +182,7 @@ third one-use Git handoff was removed after both tests completed.
 - [x] Run `bash Documentation/Setup/RunEOSGuest.sh relay` on the family Mac
   after pulling the probe commit. Confirm both completed results and native XML,
   then remove the temporary handoff.
-- [ ] Repeat the forced-relay proof with the Macs on separate networks.
+- [x] Repeat the forced-relay proof with the Macs on separate networks.
 
 The personal Mac host case passed on 2026-11-11: **1 passed, 0 failed,
 0 skipped**, native XML at
@@ -200,3 +200,15 @@ while EOS on both machines was configured to allow only relay servers. It does
 not inspect a per-connection route or measure relay latency.
 The default-route result alone does not identify whether its packets used a
 direct or relayed path. See Epic's [relay-control reference](https://dev.epicgames.com/docs/en-US/api-ref/enums/eos-e-relay-control).
+
+For the separate-network run on 2026-11-11, the user placed the family Mac on
+an iPhone hotspot while the personal Mac stayed on its existing network, then
+manually restarted both Editors. The personal Mac host passed **1/1**, native
+XML `TestResults/GameplayRegression/Runs/20261111T161817260Z/results.xml`.
+The family Mac guest passed **1/1**, reported by its live `test_status`, with
+native XML on that Mac at
+`TestResults/GameplayRegression/Runs/20261111T161910290Z/results.xml`.
+Both cases had zero failures and skips. This proves two-way EOS packet delivery
+with relay-only settings across the two reported networks in Editor processes.
+It does not establish standalone build behavior, Windows interoperability,
+latency, per-connection route introspection, or a playable online match.

@@ -59,7 +59,14 @@ while M0 acceptance and M1 gameplay proof remain pending.
   `TestResults/GameplayRegression/Runs/20261111T161217944Z/results.xml`.
   This establishes packet exchange under relay-only settings on the current
   networks, but does not inspect a per-connection route.
-- No separate-network, Windows/macOS, scene/input, pause or full-match
+- The same relay-only host and guest cases each passed 1/1 after the user put
+  the family Mac on an iPhone hotspot and restarted both Editors. Host XML:
+  `TestResults/GameplayRegression/Runs/20261111T161817260Z/results.xml`.
+  Family Mac guest XML:
+  `TestResults/GameplayRegression/Runs/20261111T161910290Z/results.xml`.
+  This proves two-way packet delivery across the reported separate networks
+  with relay-only settings in Editor processes.
+- No Windows/macOS, standalone-build, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 
 Updated 2026-11-09: explore free, distributor-independent infrastructure first;

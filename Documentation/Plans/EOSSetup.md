@@ -174,15 +174,21 @@ and 1/1 guest cases. Host native XML:
 guest XML on the family Mac:
 `TestResults/GameplayRegression/Runs/20261111T161217944Z/results.xml`.
 Both peers read back `ForceRelays` before connecting. This tests the relay-only
-configuration; it does not report a per-connection route. Separate-network
-tests and match integration remain unverified.
+configuration; it does not report a per-connection route. The same focused
+cases then passed across separate networks, with the family Mac on an iPhone
+hotspot according to the user: host **1/1** at
+`TestResults/GameplayRegression/Runs/20261111T161817260Z/results.xml`, guest
+**1/1** on the family Mac at
+`TestResults/GameplayRegression/Runs/20261111T161910290Z/results.xml`.
+Both runs had zero failures or skips. Standalone builds, Windows/macOS
+interoperability and match integration remain unverified.
 The local configuration is Git ignored.
 The cross-platform proof also requires an available Windows machine and a macOS
 machine on different networks. Existing connected Editor tests cannot supply
 that evidence. No separate Unity instance is launched by Codex.
 
-The family Mac is configured as the second macOS test machine. Next, verify
-relay behavior, then pair the family Mac with
+The family Mac is configured as the second macOS test machine. Relay-only
+packet delivery has passed across separate networks. Next, pair the family Mac with
 this Mac running Windows to check cross-platform behavior. The Boot Camp
 installation cannot run concurrently with macOS on the same machine. Do not
 copy local EOS configuration or device-identity storage between machines.
