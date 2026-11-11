@@ -6,8 +6,8 @@ Standalone EOS packaging uses the dedicated authored scene
 EditMode category `EOSStandaloneProof`, fixture `EOSStandaloneProofEditorTests`
 under `Assets/Editor/FeatureTests/EOSStandaloneProof/` (9/9 passed).
 Standalone application reports are JSON with local Player.log, separate from
-native Unity Test Framework XML. Windows build/login passed; paired standalone
-Windows/Mac relay packets remain pending. No gameplay suites are needed for
+native Unity Test Framework XML. Windows/Mac builds, logins and paired standalone
+relay packets passed on user-reported separate networks. No gameplay suites are needed for
 this isolated probe. See that feature folder's `Verification.md` for evidence.
 
 Online multiplayer's initial protocol foundation uses `OnlineMatchProtocolEditorTests`

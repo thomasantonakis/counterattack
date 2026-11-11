@@ -49,19 +49,27 @@ its original network. Windows host native XML:
 Family Mac guest XML (user-reported completed pass, file on that Mac):
 `TestResults/GameplayRegression/Runs/20261111T204630735Z/results.xml`.
 The temporary remote handoff was confirmed removed after the rerun.
-Standalone builds, per-connection route introspection, and a playable online
-match remain unverified. Next proof: standalone Windows host/macOS guest.
+Standalone Windows-host/macOS-guest relay-only packets subsequently passed on
+user-reported separate networks (family Mac hotspot). Windows report:
+`TestResults/GameplayRegression/Runs/20261111T211010725Z-Standalone-host/result.json`.
+Mac report, user supplied and retained on that machine:
+`TestResults/GameplayRegression/Runs/20261111T211038Z-Standalone-guest-65900/result.json`.
+The temporary standalone handoff was confirmed removed. Reverse roles, other
+platform pairs, per-connection route introspection and playable online gameplay
+remain unverified.
 
 ## Next session actions
 
-The Editor proof above is complete. The current next action is the dedicated
-standalone proof in `Documentation/Setup/EOSStandaloneProof.md`.
+The Editor and initial standalone Windows-host/Mac-guest proofs are complete.
+Repeat instructions are in `Documentation/Setup/EOSStandaloneProof.md`.
 Windows application build and local login passed; latest report:
 `TestResults/GameplayRegression/Runs/20261111T210221320Z-Standalone-login/result.json`.
 Build diagnostics include missing Visual Studio vswhere.exe, although export
 reported Succeeded and the application ran. Mac build/login and the paired
-standalone relay run remain pending. Prepare the Mac before starting the
-Windows host helper. The older Editor checklist below is retained for reruns.
+standalone relay run passed; see the feature verification document for the
+retained reports and scope. Next assess the remaining M0 gates in the online
+plan before the M1 gameplay proof. The older Editor checklist below is retained
+for reruns.
 
 1. Read `AGENTS.md`, `Documentation/Setup/WindowsBootCamp.md`,
    `Documentation/Plans/EOSSetup.md`,
