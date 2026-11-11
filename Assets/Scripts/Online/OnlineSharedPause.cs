@@ -21,6 +21,8 @@ namespace CounterAttack.Online
         private readonly Dictionary<(OnlineTeam, long), long> acceptedRevision = new();
         private float previousScale;
         private bool disposed;
+        private bool holdingTime;
+        public bool ConnectionHeld { get; private set; }
 
         public bool IsPaused { get; private set; }
         public OnlineTeam? Requester { get; private set; }
@@ -51,21 +53,19 @@ namespace CounterAttack.Online
             if (control.DecisionId != "shared-pause") return Reply(OnlineCommandStatus.WrongDecision);
             if (control.ActionId != RequestAction && control.ActionId != ResumeAction) return Reply(OnlineCommandStatus.IllegalAction);
             if (IsPaused && Requester != team) return Reply(OnlineCommandStatus.WrongTeam);
-            if (control.ActionId == RequestAction && (IsPaused || match.IsPauseMenuOpen)
+            if (control.ActionId == RequestAction && (IsPaused || match.IsPauseMenuOpen && !ConnectionHeld)
                 || control.ActionId == ResumeAction && !IsPaused) return Reply(OnlineCommandStatus.NotReady);
 
             var nextRevision = checked(Revision + 1);
             if (control.ActionId == RequestAction)
             {
-                previousScale = Time.timeScale;
                 Requester = team; IsPaused = true;
-                match.SetPauseMenuOpen(true); Time.timeScale = 0;
             }
             else
             {
-                match.SetPauseMenuOpen(false); Time.timeScale = previousScale;
                 IsPaused = false; Requester = null;
             }
+            ApplyHold();
             Revision = nextRevision;
             lastSequence[team] = control.Sequence;
             receipts[team].Add(control.Sequence, control); order[team].Enqueue(control.Sequence);
@@ -79,19 +79,36 @@ namespace CounterAttack.Online
 
         public OnlineGroundPassState Capture(OnlineGroundPassAuthority authority)
         {
-            var state = authority.Capture();
-            state.sharedPauseRevision = Revision;
-            state.isSharedPaused = IsPaused;
-            state.pauseRequester = Requester?.ToString();
-            return state;
+            return authority.Capture(this);
+        }
+
+        // A transport hold is independent of requester-owned pause. Releasing
+        // either one cannot release the other's scaled-time/coroutine hold.
+        public void SetConnectionHold(bool held)
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(OnlineSharedPause));
+            if (ConnectionHeld == held) return;
+            ConnectionHeld = held;
+            ApplyHold();
+        }
+
+        private void ApplyHold()
+        {
+            var hold = IsPaused || ConnectionHeld;
+            if (hold && !holdingTime) previousScale = Time.timeScale;
+            match.SetPauseMenuOpen(hold);
+            if (hold) Time.timeScale = 0;
+            else if (holdingTime) Time.timeScale = previousScale;
+            holdingTime = hold;
         }
 
         public void Dispose()
         {
             if (disposed) return; disposed = true;
-            if (!IsPaused) return;
+            if (!holdingTime) return;
             if (match != null) match.SetPauseMenuOpen(false);
             Time.timeScale = previousScale; IsPaused = false; Requester = null;
+            holdingTime = false; ConnectionHeld = false;
         }
     }
 }

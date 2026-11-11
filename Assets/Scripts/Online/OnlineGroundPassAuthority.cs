@@ -20,7 +20,7 @@ namespace CounterAttack.Online
     {
         public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester;
         public long revision, publicationSequence, rollSequence, sharedPauseRevision;
-        public bool isSharedPaused;
+        public bool isSharedPaused, connectionHeld;
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
@@ -46,6 +46,7 @@ namespace CounterAttack.Online
         private string fingerprint, decisionId;
         private long decisionSequence, publicationSequence;
         private bool executing, faulted;
+        private OnlineSharedPause sharedPause;
 
         public OnlineGroundPassAuthority(MatchManager match, OnlineMatchProtocol protocol)
         {
@@ -61,11 +62,14 @@ namespace CounterAttack.Online
         private static string TokenId(PlayerToken token) => token == null ? null
             : (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber;
 
+        internal OnlineGroundPassState Capture(OnlineSharedPause pause)
+        { sharedPause = pause; return Capture(); }
+
         public OnlineGroundPassState Capture()
         {
             var state = ReadState();
             var next = JsonUtility.ToJson(state);
-            if (next != fingerprint)
+            if (next != fingerprint || decisionId != null && !protocol.HasPendingDecision && state.legalActions.Length > 0)
             {
                 publicationSequence = checked(publicationSequence + 1);
                 protocol.WithdrawDecision();
@@ -126,6 +130,10 @@ namespace CounterAttack.Online
                 stage = "continuation", owner = attacking, gameState = match.currentState.ToString(),
                 possessionTeam = attacking, lastTouch = TokenId(match.LastTokenToTouchTheBallOnPurpose),
                 rollSequence = match.TimingRollSequence,
+                sharedPauseRevision = sharedPause?.Revision ?? 0,
+                isSharedPaused = sharedPause?.IsPaused == true,
+                pauseRequester = sharedPause?.Requester?.ToString(),
+                connectionHeld = sharedPause?.ConnectionHeld == true,
                 ballOnBoard = ballHex != null, ballX = ballHex == null ? 0 : ballHex.coordinates.x,
                 ballZ = ballHex == null ? 0 : ballHex.coordinates.z,
                 ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress,

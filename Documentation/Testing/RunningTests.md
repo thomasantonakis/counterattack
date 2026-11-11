@@ -1,5 +1,13 @@
 # Running gameplay regressions
 
+Online recovery infrastructure uses explicit category `OnlineRecovery`:
+`Assets/Editor/FeatureTests/OnlineRecovery/OnlineRecoveryEditorTests.cs` and
+`Assets/Tests/PlayMode/Features/OnlineRecovery/OnlineRecoveryPlayModeTests.cs`.
+Focused results: 8 EditMode + 8 PlayMode passed, zero failures/skips;
+compilation separately clean. See the Editor folder's Verification.md for XML
+and remaining transport integration. These are injected-clock authority tests,
+not a standalone reconnect or Room acceptance claim.
+
 Prepared online shared pause uses category `OnlineSharedPause`: EditMode
 `OnlineSharedPauseEditorTests` under `Assets/Editor/FeatureTests/OnlineSharedPause/`
 and PlayMode `OnlineSharedPausePlayModeTests` /

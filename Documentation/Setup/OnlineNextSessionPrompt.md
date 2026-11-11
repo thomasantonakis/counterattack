@@ -88,6 +88,16 @@ of implementing the remaining steps.
 
 ## 1. Disconnect detection and reconnect recovery
 
+Implementation in progress: `OnlinePeerRecovery` and independent connection
+holds have focused Windows evidence (8 EditMode + 8 PlayMode passes, zero
+failures/skips, compilation separately clean). See
+`Assets/Editor/FeatureTests/OnlineRecovery/Verification.md`. This covers
+injected-clock timeout, reserved-account rebind, retired generations/receipts,
+and live preview/movement/roll/paused authority recovery in both directions.
+EOS heartbeat/rejoin/resync integration and packaged recovery are still pending;
+do not treat this infrastructure batch as completion of this step. Steps 2–4
+remain authorized and pending.
+
 - Add authenticated peer liveness, bounded heartbeat/timeouts and connection
   generations; distinguish transport loss from voluntary leave.
 - Hold authority gameplay, rolls, timers and active movement/coroutines when
