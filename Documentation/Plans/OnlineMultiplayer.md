@@ -34,7 +34,8 @@ and M1 gameplay proof remain pending.
   the host observed a distinct product user before destroying the lobby. Host
   XML: `TestResults/GameplayRegression/Runs/20261111T144217103Z/results.xml`.
   Guest completed status was reported from the family Mac; its native XML remains
-  there. No P2P packet was sent.
+  there at `TestResults/GameplayRegression/Runs/20261111T144726042Z/results.xml`.
+  No P2P packet was sent.
 - No Windows/macOS internet connectivity, relay, scene/input, pause or full-match
   synchronization proof is claimed. No existing gameplay/visual wiring changed.
 

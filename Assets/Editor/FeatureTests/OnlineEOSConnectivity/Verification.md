@@ -77,8 +77,10 @@ It observed a distinct EOS product user join and leave, then destroyed the lobby
 Native XML: `TestResults/GameplayRegression/Runs/20261111T144217103Z/results.xml`.
 The family Mac guest also passed: **1 passed, 0 failed, 0 skipped**, as reported
 by its live `test_status` result. It found the host lobby by exact ID, joined
-and left. Its native XML remains on that Mac and was not copied here. Both
-Editors were stopped, and Room remained clean on the host. The helper initially
+and left. Its native XML remains on that Mac at
+`TestResults/GameplayRegression/Runs/20261111T144726042Z/results.xml` and was
+not copied here. Both Editors were stopped, and Room remained clean on the host.
+The helper initially
 rejected a clean Unity `completed` compilation state, then passed on retry;
 its readiness check was corrected afterward. This proves two distinct Mac device
 identities can coordinate through the configured EOS lobby. It does not yet

@@ -123,7 +123,9 @@ requirements and must not be bundled indiscriminately.
   leave, then destroyed the lobby. Host XML:
   `TestResults/GameplayRegression/Runs/20261111T144217103Z/results.xml`.
   The guest's completed result was reported from its live Unity CLI; its native
-  XML remains on that Mac. This is lobby coordination, not P2P or gameplay.
+  XML remains on that Mac at
+  `TestResults/GameplayRegression/Runs/20261111T144726042Z/results.xml`.
+  This is lobby coordination, not P2P or gameplay.
 
 ## Codex's remaining technical proof
 
