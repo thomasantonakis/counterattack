@@ -1,5 +1,29 @@
 # EOS Connect login proof
 
+## Reusable Editor process (pending verification)
+
+- [x] Keep the native EOS SDK initialized between focused Editor tests while
+  releasing each test's platform handle and connection/lobby resources.
+- [x] Add a one-use `EOSProbeSessionReuseEditorTests` case that opens, disposes
+  and reopens a session with the same local device identity in one Editor process.
+- [ ] Run the reuse case, then a separate focused P2P host case without restarting
+  Unity in between. Record both native XML files and confirm clean compilation.
+
+The helper shuts the native SDK down when the Editor quits. Unity's domain
+reload releases any active platform handle but keeps the SDK initialized, so a
+subsequent focused test can create a new handle. A process that ran the older
+fixtures that called `Shutdown` still needs one manual Editor restart before
+using this version. Do not run two EOS probes concurrently in one Editor.
+
+The first focused reuse attempt failed **0/1** because PlayEveryWare's macOS
+adapter rejected a second registration. Native XML:
+`TestResults/GameplayRegression/Runs/20261111T163031328Z/results.xml`.
+The helper now registers the adapter once per C# domain. The focused rerun
+passed **1/1**, with zero failures and skips, in the same Unity Editor process:
+`TestResults/GameplayRegression/Runs/20261111T163147731Z/results.xml`.
+Compilation completed with zero errors. A separate focused P2P host run is
+still needed to verify reuse across test runs.
+
 - [x] Create the ignored one-use `Temp/OnlineEOSConnectivity.run` marker, then
   run `EOSConnectLoginEditorTests.DeviceIdentityCanLogInThroughConnect` by exact
   name through the connected Editor, with local EOS configuration and Room clean.

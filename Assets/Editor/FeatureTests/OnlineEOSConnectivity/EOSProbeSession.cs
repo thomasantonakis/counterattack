@@ -7,29 +7,71 @@ using NUnit.Framework;
 using PlayEveryWare.EpicOnlineServices;
 using PlayEveryWare.EpicOnlineServices.Utility;
 using UnityEditor;
+using UnityEngine;
 
-// One EOS SDK lifetime per Editor process. Only focused, one-use probes use this helper.
+// Keep the native SDK alive across focused tests. EOS cannot initialize again after Shutdown.
 internal sealed class EOSProbeSession : IDisposable
 {
-    private bool ownsInitialization;
+    private const string InitializedKey = "Counterattack.OnlineEOSConnectivity.Initialized";
+    private static PlatformInterface activePlatform;
+    private static bool sessionActive;
+    private static bool platformSpecificsRegistered;
+
+    static EOSProbeSession()
+    {
+        AssemblyReloadEvents.beforeAssemblyReload += ReleaseForDomainReload;
+        EditorApplication.quitting += ShutdownOnEditorQuit;
+    }
+
+    private static void ReleaseForDomainReload()
+    {
+        activePlatform?.Release();
+        activePlatform = null;
+        sessionActive = false;
+    }
+
+    private static void ShutdownOnEditorQuit()
+    {
+        ReleaseForDomainReload();
+        if (!SessionState.GetBool(InitializedKey, false)) return;
+        SessionState.SetBool(InitializedKey, false);
+        var result = PlatformInterface.Shutdown();
+        if (result != Result.Success)
+            Debug.LogError("EOS probe shutdown on Editor quit failed: " + result);
+    }
 
     public PlatformInterface Platform { get; private set; }
     public ProductUserId UserId { get; private set; }
 
+    internal static void EnsureInitialized()
+    {
+        if (!platformSpecificsRegistered)
+        {
+            MacOSPlatformSpecifics.Register();
+            EOSManager.EOSSingleton.LoadEOSLibraries();
+            platformSpecificsRegistered = true;
+        }
+        if (!SessionState.GetBool(InitializedKey, false))
+        {
+            var initializeOptions = ConfigurationUtility.GetEOSInitializeOptions();
+            var initializeResult = PlatformInterface.Initialize(ref initializeOptions.options);
+            if (initializeResult == Result.AlreadyConfigured)
+                Assert.Inconclusive("EOS was initialized outside this probe helper; reopen Unity before isolated probes.");
+            Assert.That(initializeResult, Is.EqualTo(Result.Success), "EOS native initialization");
+            SessionState.SetBool(InitializedKey, true);
+        }
+    }
+
     public IEnumerator OpenAndLogin()
     {
-        MacOSPlatformSpecifics.Register();
-        EOSManager.EOSSingleton.LoadEOSLibraries();
-        var initializeOptions = ConfigurationUtility.GetEOSInitializeOptions();
-        var initializeResult = PlatformInterface.Initialize(ref initializeOptions.options);
-        if (initializeResult == Result.AlreadyConfigured)
-            Assert.Inconclusive("EOS is already configured; reopen Unity before this isolated probe.");
-        Assert.That(initializeResult, Is.EqualTo(Result.Success), "EOS native initialization");
-        ownsInitialization = true;
+        Assert.That(sessionActive, Is.False, "Another EOS probe session is still active");
+        EnsureInitialized();
 
         var createOptions = ConfigurationUtility.GetEOSCreateOptions();
         Platform = PlatformInterface.Create(ref createOptions.options);
         Assert.That(Platform, Is.Not.Null, "EOS platform creation");
+        activePlatform = Platform;
+        sessionActive = true;
 
         var connect = Platform.GetConnectInterface();
         Assert.That(connect, Is.Not.Null, "EOS Connect interface");
@@ -97,10 +139,8 @@ internal sealed class EOSProbeSession : IDisposable
     {
         Platform?.Release();
         Platform = null;
-        if (ownsInitialization)
-        {
-            ownsInitialization = false;
-            Assert.That(PlatformInterface.Shutdown(), Is.EqualTo(Result.Success), "EOS native shutdown");
-        }
+        UserId = null;
+        activePlatform = null;
+        sessionActive = false;
     }
 }

@@ -22,14 +22,7 @@ public sealed class EOSConnectLoginEditorTests
             Assert.Ignore("The one-use local EOS connectivity marker is absent.");
         File.Delete(runMarker);
 
-        MacOSPlatformSpecifics.Register();
-        EOSManager.EOSSingleton.LoadEOSLibraries();
-
-        var initializeOptions = ConfigurationUtility.GetEOSInitializeOptions();
-        var initializeResult = PlatformInterface.Initialize(ref initializeOptions.options);
-        if (initializeResult == Result.AlreadyConfigured)
-            Assert.Inconclusive("EOS is already configured in this Editor process; reopen Unity before this isolated probe.");
-        Assert.That(initializeResult, Is.EqualTo(Result.Success), "EOS native initialization");
+        EOSProbeSession.EnsureInitialized();
 
         PlatformInterface platform = null;
         try
@@ -106,7 +99,6 @@ public sealed class EOSConnectLoginEditorTests
         finally
         {
             platform?.Release();
-            Assert.That(PlatformInterface.Shutdown(), Is.EqualTo(Result.Success), "EOS native shutdown");
         }
     }
 }
