@@ -13,7 +13,7 @@ namespace CounterAttack.Online
 {
     // Automated independent-process gameplay probe. EOS peer identity is checked
     // on every fragment; clients never supply a claimed team or roll override.
-    internal sealed class EOSGroundPassExchange
+    internal sealed partial class EOSGroundPassExchange
     {
         private const byte Channel = 8;
         private readonly OnlineGroundPassBoard board;
@@ -25,15 +25,29 @@ namespace CounterAttack.Online
         private ProductUserId remote;
         private SocketId socket;
         private string matchId;
+        private string peerAccount;
+        private readonly Action<OnlineGroundPassMessage> sendOverride;
+        private readonly Action pollOverride;
+        private readonly Func<double> recoveryClock;
 
         internal EOSGroundPassExchange(OnlineGroundPassBoard board, string output) { this.board = board; this.output = output; }
 
+        // Owned deterministic framework transport. No packet can select this seam.
+        internal EOSGroundPassExchange(OnlineGroundPassBoard board, string output, Action<OnlineGroundPassMessage> send,
+            Action poll, string authenticatedPeer, string match, Func<double> clock)
+        {
+            this.board = board; this.output = output; sendOverride = send; pollOverride = poll;
+            peerAccount = authenticatedPeer; matchId = match; recoveryClock = clock;
+        }
+        private double RecoveryNow => recoveryClock?.Invoke() ?? Time.realtimeSinceStartupAsDouble;
+
         private void SetPeer(EOSStandaloneSession session, ProductUserId remote, SocketId socket, string lobby)
-        { this.session = session; this.remote = remote; this.socket = socket; matchId = "ground-" + lobby; }
+        { this.session = session; this.remote = remote; this.socket = socket; peerAccount = remote.ToString(); matchId = "ground-" + lobby; }
 
         private void Send(OnlineGroundPassMessage message)
         {
             message.matchId = matchId;
+            if (sendOverride != null) { sendOverride(message); return; }
             foreach (var fragment in OnlineGroundPassWire.Encode(message))
             {
                 var send = new SendPacketOptions { LocalUserId = session.UserId, RemoteUserId = remote,
@@ -45,6 +59,7 @@ namespace CounterAttack.Online
 
         private void Poll()
         {
+            if (pollOverride != null) { pollOverride(); return; }
             session.Platform.Tick();
             var options = new ReceivePacketOptions { LocalUserId = session.UserId, MaxDataSizeBytes = (uint)receiveBuffer.Length, RequestedChannel = Channel };
             for (var i = 0; i < 128; i++)
@@ -70,19 +85,19 @@ namespace CounterAttack.Online
             return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(JsonUtility.ToJson(state)))).Replace("-", "");
         }
 
-        private void Retain(OnlineGroundPassState state, string role)
+        private void Retain(OnlineGroundPassState state, string role, long recoveryGenerations = 0)
         {
             File.WriteAllText(Path.Combine(output, "final-state.json"), JsonUtility.ToJson(state, true));
             File.WriteAllText(Path.Combine(output, "gameplay-evidence.json"), JsonUtility.ToJson(new Evidence
             {
                 role = role, digest = Digest(state), publicationSequence = state.publicationSequence,
                 rollSequence = state.rollSequence, guestRulesInactive = !board.authorityRoot.activeSelf,
-                sharedPauseRevision = state.sharedPauseRevision
+                sharedPauseRevision = state.sharedPauseRevision, recoveryGenerations = recoveryGenerations
             }, true));
         }
 
         [Serializable] private sealed class Evidence
-        { public string role, digest; public long publicationSequence, rollSequence, sharedPauseRevision; public bool guestRulesInactive; }
+        { public string role, digest; public long publicationSequence, rollSequence, sharedPauseRevision, recoveryGenerations; public bool guestRulesInactive; }
 
         internal IEnumerator Local()
         {
@@ -116,12 +131,31 @@ namespace CounterAttack.Online
             while (!board.match.groundBallManager.isWaitingForDiceRoll && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             EOSProofCheck.Require(board.match.groundBallManager.isWaitingForDiceRoll, "Local authored interception boundary");
             Submit("host", 1, OnlineGroundPassAuthority.RollAction);
+            // Bounded packaged recovery using an injected liveness clock. This
+            // holds the real in-flight authority coroutine, without requiring a
+            // second machine or claiming transport interruption was exercised.
+            double recoveryClock = 0;
+            var recovery = new OnlinePeerRecovery(protocol, version, pause, "home", () => recoveryClock);
+            EOSProofCheck.Require(recovery.BindAuthenticated("home", "guest-recovery-1", version), "Local recovery initial generation");
+            EOSProofCheck.Require(recovery.AcknowledgeSnapshot("guest-recovery-1", 1), "Local initial resync acknowledged");
+            recoveryClock = 5; recovery.Tick();
+            EOSProofCheck.Require(pause.ConnectionHeld && !protocol.BothConnected, "Local liveness loss holds authority");
+            yield return null;
+            var heldPosition = board.match.ball.transform.position;
+            var heldRoll = board.match.TimingRollSequence;
+            for (var frame = 0; frame < 15; frame++) yield return null;
+            EOSProofCheck.Require(Vector3.Distance(heldPosition, board.match.ball.transform.position) < .0001f
+                && heldRoll == board.match.TimingRollSequence, "Local recovery preserves movement and accepted roll");
+            EOSProofCheck.Require(recovery.BindAuthenticated("home", "guest-recovery-2", version), "Local authenticated return");
+            EOSProofCheck.Require(!recovery.AcknowledgeSnapshot("guest-recovery-1", 1)
+                && recovery.AcknowledgeSnapshot("guest-recovery-2", 2), "Local retired generation cannot release hold");
             while (board.match.groundBallManager.isActivated && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             var final = pause.Capture(authority);
             EOSProofCheck.Require(!final.passActive && final.rollSequence == 1, "Local authored gameplay outcome");
             var replica = new OnlineGroundPassReplica("local-ground");
             EOSProofCheck.Require(replica.Apply(final), "Local detached replica accepts outcome");
-            board.Display(replica.State, "Local packaged gameplay check"); Retain(final, "local");
+            EOSProofCheck.Require(final.tokens.Where(t => t.id == "home:9").Single().passesAttempted == 1, "Local recovery cannot replay the pass");
+            board.Display(replica.State, "Local packaged gameplay/recovery check"); Retain(final, "local", recovery.Generation);
         }
 
         internal IEnumerator Host(EOSStandaloneSession session, ProductUserId remote, SocketId socket, string lobby)
@@ -134,6 +168,12 @@ namespace CounterAttack.Online
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
             using var pause = new OnlineSharedPause(protocol, board.match);
+            if (Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
+            {
+                var manual = ManualHost(authority, protocol, pause);
+                while (manual.MoveNext()) yield return manual.Current;
+                yield break;
+            }
             var first = authority.Capture();
             EOSProofCheck.Require(authority.Submit("host-away", new OnlineMatchCommand(matchId, 1, first.revision,
                 first.decisionId, OnlineGroundPassAuthority.StartAction)).Status == OnlineCommandStatus.WrongTeam,
@@ -208,6 +248,12 @@ namespace CounterAttack.Online
             SetPeer(session, remote, socket, lobby);
             EOSProofCheck.Require(!board.authorityRoot.activeSelf, "Guest gameplay managers must remain inactive");
             var replica = new OnlineGroundPassReplica(matchId);
+            if (Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
+            {
+                var manual = ManualGuest(replica);
+                while (manual.MoveNext()) yield return manual.Current;
+                yield break;
+            }
             Send(new OnlineGroundPassMessage { kind = "hello" });
             bool started = false, previewed = false, confirmed = false, wrongRollSent = false;
             bool duplicateReply = false, wrongTeamReply = false, doneSent = false, finished = false;

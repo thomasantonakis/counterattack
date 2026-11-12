@@ -13,6 +13,9 @@ namespace CounterAttack.Online
         public string version;
         public string kind, matchId, decisionId, actionId, status, digest;
         public long sequence, revision;
+        // Used only by the explicitly negotiated manual recovery handoff.
+        public string peerNonce;
+        public long connectionGeneration;
         public OnlineGroundPassState state;
 
         public OnlineMatchCommand ToCommand() => new(matchId, sequence, revision, decisionId, actionId);

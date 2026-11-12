@@ -1,5 +1,6 @@
-param([ValidateSet('login', 'host', 'local')][string]$Role = 'host', [switch]$Gameplay)
+param([ValidateSet('login', 'host', 'local')][string]$Role = 'host', [switch]$Gameplay, [switch]$Manual)
 $ErrorActionPreference = 'Stop'
+if ($Manual -and (-not $Gameplay -or $Role -ne 'host')) { throw 'Manual requires host -Gameplay.' }
 $repoRoot = (git -C $PSScriptRoot rev-parse --show-toplevel).Trim()
 Set-Location $repoRoot
 $exe = Join-Path $repoRoot 'Build/EOSProof/Windows/CounterattackEOSProof.exe'
@@ -19,6 +20,7 @@ if ($Gameplay) {
     $handoffName = 'ActiveEOSGameplayLobby.json'; $handoffKind = 'ground-gameplay-v2'
     $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/' + $handoffName
 }
+if ($Manual) { $handoffKind = 'ground-manual-v1' }
 $publishedSha = $null
 if ($Role -eq 'host') {
     $names = & gh api "repos/thomasantonakis/counterattack/contents/Documentation/Setup?ref=$branch" --jq '.[].name'
@@ -28,7 +30,9 @@ if ($Role -eq 'host') {
 Write-Host "Starting standalone $Role. Local artifacts: $run"
 # Paths are quoted for Windows native argument parsing; no secrets travel on the command line.
 $playerArgs = '-ca-eos-role ' + $Role + ' -ca-eos-output "' + $run + '" -logFile "' + (Join-Path $run 'Player.log') + '" -screen-fullscreen 0 -screen-width 640 -screen-height 360'
-$player = Start-Process -FilePath $exe -ArgumentList $playerArgs -WindowStyle Hidden -PassThru
+if ($Manual) { $playerArgs += ' -ca-online-manual'; $playerArgs = $playerArgs.Replace('-screen-width 640 -screen-height 360', '-screen-width 1280 -screen-height 720') }
+$proofWindow = if ($Manual) { 'Normal' } else { 'Hidden' }
+$player = Start-Process -FilePath $exe -ArgumentList $playerArgs -WindowStyle $proofWindow -PassThru
 try {
     if ($Role -eq 'host') {
         $deadline = [DateTime]::UtcNow.AddSeconds(120)
@@ -44,7 +48,8 @@ try {
         $raw = & gh api -X PUT $uri -f 'message=Share temporary standalone EOS lobby' -f "content=$encoded" -f "branch=$branch"
         if ($LASTEXITCODE -ne 0) { throw 'Could not publish standalone handoff.' }
         $publishedSha = (($raw -join "`n") | ConvertFrom-Json).content.sha
-        if ($Gameplay) { Write-Host 'Gameplay handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest gameplay' }
+        if ($Manual) { Write-Host 'Manual handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest gameplay manual' }
+        elseif ($Gameplay) { Write-Host 'Gameplay handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest gameplay' }
         else { Write-Host 'Standalone handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest' }
     }
     $deadline = [DateTime]::UtcNow.AddSeconds($(if ($Role -eq 'host') { 1250 } else { 120 }))
@@ -58,7 +63,8 @@ try {
         $evidencePath = Join-Path $run 'gameplay-evidence.json'
         if (-not (Test-Path -LiteralPath $evidencePath)) { throw 'No gameplay evidence: verify the correct gameplay build was used.' }
         $evidence = Get-Content -Raw -LiteralPath $evidencePath | ConvertFrom-Json
-        if ($evidence.sharedPauseRevision -ne 2 -or $evidence.rollSequence -ne 1) { throw 'Missing shared-pause evidence; rebuild the updated gameplay application.' }
+        if (-not $Manual -and ($evidence.sharedPauseRevision -ne 2 -or $evidence.rollSequence -ne 1)) { throw 'Missing shared-pause evidence; rebuild the updated gameplay application.' }
+        if ($Manual -and $evidence.role -ne 'host-manual') { throw 'Missing manual exchange evidence.' }
         Get-Content -LiteralPath $evidencePath | Write-Host
     }
 } finally {

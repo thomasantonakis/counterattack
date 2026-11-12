@@ -1,5 +1,14 @@
 # Running gameplay regressions
 
+Manual prepared-board controls and recovery exchange use explicit PlayMode
+category/fixture `OnlineManualControls` / `OnlineManualControlsPlayModeTests`
+under `Assets/Tests/PlayMode/Features/OnlineManualControls/`. Final scope: 5
+passed, zero failed/skipped, compilation separately clean. Three cases cover
+authored button/input behavior; two run real host/guest exchange iterators
+through encoded interrupted fake transport. See
+`Assets/Editor/FeatureTests/OnlineManualControls/Verification.md` for native XML,
+paired local evidence and unexecuted EOS/Room acceptance.
+
 Online recovery infrastructure uses explicit category `OnlineRecovery`:
 `Assets/Editor/FeatureTests/OnlineRecovery/OnlineRecoveryEditorTests.cs` and
 `Assets/Tests/PlayMode/Features/OnlineRecovery/OnlineRecoveryPlayModeTests.cs`.

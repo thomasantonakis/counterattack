@@ -21,6 +21,7 @@ namespace CounterAttack.Online
         public GameObject localStatsPanel;
         public GameObject sharedPausePanel, requesterPauseMessage, passivePauseMessage;
         public OnlineTeam localTeam = OnlineTeam.Home;
+        public OnlineGroundPassControls controls;
         private MatchManager previousMatch;
         private bool ownsMatch;
 
@@ -68,6 +69,7 @@ namespace CounterAttack.Online
 
         public void Display(OnlineGroundPassState state, string role)
         {
+            if (controls != null) controls.Display(state);
             if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused);
             var requester = state.isSharedPaused && state.pauseRequester == localTeam.ToString();
             if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);

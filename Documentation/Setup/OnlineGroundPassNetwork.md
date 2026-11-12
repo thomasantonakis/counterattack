@@ -24,6 +24,36 @@ v1 messages and handoffs cannot silently bypass the pause checks.
 
 ## Prepare the Mac before hosting
 
+### Manual prepared-board mode (Room integration still pending)
+
+Pull and rebuild using the commands below. On Windows, start an interactive
+host only when the Mac guest is ready:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File Documentation/Setup/RunEOSStandaloneWindows.ps1 host -Gameplay -Manual
+```
+
+After `Manual handoff published`, run on the Mac:
+
+```sh
+bash Documentation/Setup/RunEOSStandaloneMac.sh guest gameplay manual
+```
+
+Home on the Mac clicks Start pass, enters target X=0/Z=6, and clicks
+Preview/confirm twice (once to preview, once to confirm). Windows Away clicks
+Defender roll when offered. Either player can pause; only its requester can
+resume. The first complete action automatically acknowledges the final digest
+and ends the proof. This mode uses a distinct `ground-manual-v1` handoff so it
+cannot accidentally pair with the automated exchange. Reports use roles
+host-manual/guest-manual in gameplay-evidence.json. This human-controlled
+exchange has not been paired on the Mac yet. Its liveness lane sends one-second
+heartbeats, holds after five seconds without a valid peer heartbeat, retires the
+old connection generation and requires an acknowledged full snapshot before
+release. The guest disables submission on local timeout and rejoins with a fresh
+connection nonce. Shared pause ownership remains independent. Deterministic
+interrupted-transport tests pass, but actual EOS interruption/rejoin is unverified.
+Do not use it as Room, recovery or reverse-role acceptance evidence.
+
 Keep Windows on home Wi-Fi and the family Mac on its hotspot. Save dirty
 Editor scenes. On the family Mac:
 

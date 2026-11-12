@@ -6,7 +6,7 @@
 - [x] Connection hold independent of shared pause; preserve original time scale.
 - [x] Focused owned-board preview, pending roll, movement and paused recovery tests.
 - [x] Execute focused EditMode and PlayMode category OnlineRecovery.
-- [ ] Wire heartbeat/rejoin/snapshot exchange into EOS and guest submission.
+- [x] Wire heartbeat/rejoin/snapshot acknowledgement into the manual exchange and gate guest submission.
 - [ ] Bounded packaged recovery scenario and separate-network paired run.
 
 This is live-authority recovery infrastructure, not process-crash restoration.
@@ -21,3 +21,15 @@ An initial fixture clock-reset defect and the rejection of pause requests
 during a connection hold were diagnosed from native results and corrected.
 Failed runs remain retained in Runs/20261111T222913027Z and
 Runs/20261111T222946588Z. This does not complete handoff step 1.
+
+Affected shared-pause PlayMode scope: 13 passed, 0 failed/skipped, native XML
+`TestResults/GameplayRegression/Runs/20261111T223301198Z/results.xml`.
+Windows export build_3d3a2bcd40cb reported Succeeded, seven warnings and the
+known missing vswhere.exe diagnostic. Its bounded packaged local recovery
+scenario passed at
+`TestResults/GameplayRegression/Runs/20261111T223558929Z-Gameplay-local/result.json`:
+recoveryGenerations=2, sharedPauseRevision=2, rollSequence=1 and one pass attempt.
+Relay transport is explicitly not exercised by this local report. The manual
+exchange's deterministic interrupted-transport tests are recorded under
+OnlineManualControls/Verification.md. Actual EOS interruption/rejoin and Room
+clock/startup integration still require acceptance evidence.

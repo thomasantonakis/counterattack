@@ -94,9 +94,15 @@ failures/skips, compilation separately clean). See
 `Assets/Editor/FeatureTests/OnlineRecovery/Verification.md`. This covers
 injected-clock timeout, reserved-account rebind, retired generations/receipts,
 and live preview/movement/roll/paused authority recovery in both directions.
-EOS heartbeat/rejoin/resync integration and packaged recovery are still pending;
-do not treat this infrastructure batch as completion of this step. Steps 2–4
-remain authorized and pending.
+Manual-exchange heartbeat/rejoin/resync integration now has deterministic
+encoded interrupted-transport evidence in both directions (part of the five
+passing OnlineManualControls PlayMode cases). A bounded Windows packaged local
+recovery scenario also passed. Actual EOS interruption/rejoin is unverified;
+do not treat these tests as completion of this step. Step 2 has authored controls
+and a manual host/guest exchange in OnlineGroundPassProof; its paired human run
+is pending. Steps 3–4 remain unimplemented. The live hierarchy/startup audit is
+recorded in Documentation/Setup/OnlineRoomStartupAudit.md. Continue independent
+Room implementation; lack of Mac access does not block that work.
 
 - Add authenticated peer liveness, bounded heartbeat/timeouts and connection
   generations; distinguish transport loss from voluntary leave.
