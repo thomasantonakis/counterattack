@@ -37,6 +37,8 @@ to ordinary movement are integrated. High passes support preparation, accuracy,
 scatter, keeper rush responses and unchallenged ball control. Headers now support
 owned nominations, confirmation, automatic/manual rolls, result holds and headed
 passes, headed keeper back-pass hands/feet/catch choices and landing interceptions.
+Successful catches now offer quick throw or Final Third moves, followed by
+drop/high kick. Quick throws use the real committed pass targeting/collection.
 Guests receive detached nominees, actual scores and the winner. Header
 goal-line choices are wired; headed-shot and loose-ball resolution,
 dribbling/interactions, shots and restarts are still being integrated;

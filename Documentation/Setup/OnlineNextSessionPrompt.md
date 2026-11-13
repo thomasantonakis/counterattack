@@ -7,8 +7,9 @@ Room, preparation, accuracy/scatter/control, keeper responses, holds, cancellati
 and deadlines). See Assets/Editor/FeatureTests/OnlineHighPass/Verification.md.
 Contested header nominations/results/targeting and headed-pass collection now
 have focused coverage, including headed keeper back-passes and landing
-interceptions (40 PlayMode + 10 EditMode passed). Continue goalkeeper
-distribution, headed shots, loose balls, then shots and restarts.
+interceptions (40 PlayMode + 10 EditMode passed). Goalkeeper distribution has
+14 focused passes for quick throws and Final Third drop/kick targeting.
+Continue loose balls, headed shots, then shots and restarts.
 See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
 Keep paired/manual sessions deferred while independent implementation continues.
 

@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Goalkeeper distribution uses PlayMode category `OnlineKeeperDistribution`:
+14 distinct cases passed, zero failed/skipped, compilation separately clean.
+Tests/checklist/XML are under `Assets/Tests/PlayMode/Features/OnlineKeeperDistribution/`
+and `Assets/Editor/FeatureTests/OnlineKeeperDistribution/`. Covers real catches
+through owned quick throws and Final Third drop/kick targeting, both teams and
+directions, holds and invalidated choices.
+
 Online headers use category `OnlineHeaders`: 10 EditMode and 40 PlayMode passed,
 zero failed/skipped, compilation separately clean. Select only this category in
 the corresponding tabs. Tests/checklist and retained XML paths are under

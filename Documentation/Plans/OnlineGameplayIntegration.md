@@ -60,7 +60,10 @@ same-team automatic roll boundaries and unchallenged headers. Headed keeper
 back-passes and landing interceptions now have typed admission, deadlines,
 overlapping holds and cancellation coverage. Corrected interception roll actor
 attribution and retired cancelled continuations before cleared-state access.
-Headed shots, loose-ball ties, goalkeeper distribution and restart outcomes remain next.
+Goalkeeper distribution now has owned quick-throw / Final Third choices,
+completed quick throws, drop/high-kick targeting and 14 focused cases including
+both teams, both directions, guest rejection, stale views and overlapping holds.
+Headed shots, loose-ball ties, general keeper moves and restart outcomes remain next.
 
 ## Ordered implementation batches
 

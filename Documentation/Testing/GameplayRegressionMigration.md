@@ -1,5 +1,13 @@
 # Gameplay regression migration
 
+Online keeper distribution adds 14 independently selectable PlayMode cases,
+category OnlineKeeperDistribution. All pass with zero failed/skipped; compilation
+separately clean. Includes real catches, both-team quick throws, Final Third
+drop/kick targeting, holds and stale/guest/replay rejection. Six missing-choice
+failures were reproduced before implementation. See the feature Verification.md
+for native XML, fixture correction and unexecuted branches. No legacy removals
+or complete-suite runs.
+
 Online header integration adds 10 EditMode + 40 PlayMode cases in category
 OnlineHeaders. Four result-hold failures were reproduced before the fix; the
 final focused feature runs pass with zero failed/skipped, compilation separately

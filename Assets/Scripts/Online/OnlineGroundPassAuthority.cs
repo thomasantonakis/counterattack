@@ -211,11 +211,12 @@ namespace CounterAttack.Online
             if (faulted) state.stage = "faulted";
             // Pause/intro need their own shared authority adapter. Never bypass them
             // by accepting a command in this initial, unwired proof slice.
-            else if (match.IsGameplayInputBlocked || ground.isQuickThrow || ground.isKickoffPass) state.stage = "blocked";
+            else if (match.IsGameplayInputBlocked || ground.isKickoffPass) state.stage = "blocked";
             else if (match.longBallManager != null && match.longBallManager.isActivated)
                 ReadLongPassDecision(state, actions, attacking);
             else if(match.highPassManager?.isActivated==true) ReadHighPassDecision(state,actions);
             else if (state.ballMoving) state.stage = "resolving";
+            else if(match.shotManager?.isWaitingForSaveandHoldScenario==true)ReadKeeperDistribution(state,actions);
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
             else if(HeaderRules?.isActivated==true) ReadHeaderDecision(state,actions,HeaderRules);
             else if (state.movementActive) ReadMovementDecision(state,actions);
@@ -239,7 +240,9 @@ namespace CounterAttack.Online
             else if (ground.isAvailable)
             {
                 state.stage = "action";
-                actions.Add(StartAction);
+                if(match.currentState==MatchManager.GameState.QuickThrow)
+                    AddAdditional(actions,KeeperQuickStartAction,()=>match.TriggerQuickThrowPass());
+                else actions.Add(StartAction);
             }
             if ((state.stage == "action" || state.stage == "target" || state.stage == "long.target" || state.stage=="high.target") && match.longBallManager?.isAvailable == true)
                 AddAdditional(actions, LongStartAction, () => match.TriggerLongPass());

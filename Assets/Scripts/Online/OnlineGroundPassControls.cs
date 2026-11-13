@@ -72,6 +72,8 @@ namespace CounterAttack.Online
             "header.backpass.hands"=>"Keeper catches headed back-pass", "header.backpass.feet"=>"Keeper receives at feet",
             "header.backpass.roll"=>"Roll keeper catch",
             "header.interception"=>"Roll headed-pass interception",
+            "keeper.quick"=>"Choose quick goalkeeper throw", "keeper.quick.start"=>"Aim goalkeeper throw",
+            "keeper.final-third"=>"Take Final Third moves before distribution",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")
