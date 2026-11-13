@@ -7,7 +7,7 @@ An explicit guest session suppresses authority startup in normal Room; the
 owned proof also serializes its authority hierarchy inactive on guest load.
 It is a first ground-pass/interception slice, not a complete online match.
 
-Wire is ground-wire-v6. Roster/catalog incompatibility is rejected before
+Wire is ground-wire-v7 (binary CA07). Roster/catalog incompatibility is rejected before
 replica application. Committed snapshots carry decision/owner/legal actions,
 token and ball cells, statistics, clock/timing values and holds. Animation
 frames are a separate presentation payload, bound to the accepted publication;
@@ -34,8 +34,11 @@ Space landings can automatically start movement under the existing rules.
 Basic movement now supports player selection, destinations, team-phase completion
 and read-only player animation. Final Third player movement/forfeit and return
 to ordinary movement are integrated. High passes support preparation, accuracy,
-scatter, keeper rush responses and unchallenged ball control. Dribbling/interactions,
-headers, shots and restarts are still being integrated;
+scatter, keeper rush responses and unchallenged ball control. Headers now support
+owned nominations, confirmation, automatic/manual rolls, result holds and headed
+passes. Guests receive detached nominees, actual scores and the winner. Header
+goal-line choices are wired; headed-shot resolution, keeper back-passes,
+dribbling/interactions, shots and restarts are still being integrated;
 this proof is not a complete online match. Manual paired checks stay deferred.
 
 ## Mac setup, build and local checks

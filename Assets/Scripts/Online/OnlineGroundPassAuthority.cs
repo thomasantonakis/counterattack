@@ -37,6 +37,7 @@ namespace CounterAttack.Online
         public bool clockRunning;
         public MatchManager.TeamStats homeStats, awayStats;
         public OnlineRollPublication[] rolls;
+        public OnlineHeaderObservation header;
     }
 
     /// <summary>
@@ -69,6 +70,7 @@ namespace CounterAttack.Online
             public long pauseRevision;
             public string[] actions;
             public OnlineGroundPassTokenState[] tokens;
+            public OnlineHeaderObservation header;
         }
 
         public OnlineGroundPassAuthority(MatchManager match, OnlineMatchProtocol protocol)
@@ -97,7 +99,7 @@ namespace CounterAttack.Online
                 interceptor=state.hasInterceptor, interceptorX=state.interceptorX, interceptorZ=state.interceptorZ,
                 paused=state.isSharedPaused, pauseRevision=state.sharedPauseRevision, connectionHeld=state.connectionHeld,
                 movementActive=state.movementActive,playerMoving=state.playerMoving,selectedPlayer=state.selectedPlayer,
-                actions=state.legalActions, tokens=state.tokens });
+                actions=state.legalActions, tokens=state.tokens, header=state.header });
             bool boundaryChanged = boundary != boundaryFingerprint
                 || decisionId != null && !protocol.HasPendingDecision && state.legalActions.Length > 0;
             if (next != fingerprint || boundaryChanged)
@@ -169,6 +171,7 @@ namespace CounterAttack.Online
             {
                 catalogId = protocol.Compatibility.Catalog,
                 rolls = match.CaptureOnlineRolls(),
+                header = CaptureHeaderObservation(),
                 homeAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Home),
                 awayAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Away),
                 homePauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Home) ?? 0,
@@ -214,7 +217,7 @@ namespace CounterAttack.Online
             else if(match.highPassManager?.isActivated==true) ReadHighPassDecision(state,actions);
             else if (state.ballMoving) state.stage = "resolving";
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
-            else if(HeaderRules?.isActivated==true) ReadHeaderControlDecision(state,actions,HeaderRules);
+            else if(HeaderRules?.isActivated==true) ReadHeaderDecision(state,actions,HeaderRules);
             else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {

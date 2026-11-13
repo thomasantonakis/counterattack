@@ -67,6 +67,8 @@ namespace CounterAttack.Online
             "high.start"=>"Start high pass", "high.roll"=>"Roll high pass", "high.skip"=>"Keep players in position",
             "high.keeper.stay"=>"Goalkeeper challenges from here", "high.keeper.decline"=>"Decline goalkeeper challenge",
             "header.control"=>"Bring the ball down", "header.control.roll"=>"Roll ball control",
+            "header.free"=>"Take a free header", "header.confirm"=>"Confirm header nominations",
+            "header.roll"=>"Roll header challenge", "header.pass"=>"Choose a headed pass",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")
@@ -77,6 +79,9 @@ namespace CounterAttack.Online
                 .Replace("high.player:home:","Select Home #").Replace("high.player:away:","Select Away #")
                 .Replace("high.keeper.move:","Goalkeeper challenge at ").Replace("header.control.player:home:","Control with Home #")
                 .Replace("header.control.player:away:","Control with Away #")
+                .Replace("header.nominate:home:","Nominate Home #").Replace("header.nominate:away:","Nominate Away #")
+                .Replace("header.remove:home:","Remove Home #").Replace("header.remove:away:","Remove Away #")
+                .Replace("header.target:","Headed pass to ").Replace("header.goal:","Head at goal to ")
                 .Replace("ground.roll","Interception roll").Replace(':',',')
         };
         public void ExecuteSelectedCommand()

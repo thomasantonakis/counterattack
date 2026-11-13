@@ -1,5 +1,13 @@
 # Running gameplay regressions
 
+Online headers use category `OnlineHeaders`: 10 EditMode and 18 PlayMode passed,
+zero failed/skipped, compilation separately clean. Select only this category in
+the corresponding tabs. Tests/checklist and retained XML paths are under
+`Assets/Editor/FeatureTests/OnlineHeaders/` and
+`Assets/Tests/PlayMode/Features/OnlineHeaders/`. Includes actual high-pass-to-header
+contests, typed nominations/rolls/collection, result holds/cancellation and v7
+guest observations. Headed goals, ties and keeper back-passes remain subsequent.
+
 Online high passes use PlayMode category `OnlineHighPass`: 21 passed, zero
 failed/skipped, compilation separately clean. Tests live under
 `Assets/Tests/PlayMode/Features/OnlineHighPass/`; implementation/verification

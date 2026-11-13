@@ -22,9 +22,10 @@ instead of advancing gameplay coverage.
 
 Authoritative roll-result publication is implemented: detached, bounded host
 observations carry actor, context, face and jackpot without replaying dice on the
-guest. The extended wire is v6; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
+guest. The extended wire is v7; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
 through overlapping connection/shared holds; focused continuation and offline
-checks passed. Header/stoppage panels still require equivalent integration.
+checks passed. Header results now have equivalent hold/disabled-owner handling;
+stoppage panels still require integration.
 
 Long-pass integration now has typed start, target preview/confirm, accuracy,
 scatter and defending goalkeeper Pace commands. Authored action choices are
@@ -51,8 +52,12 @@ High passes now have typed targets, attacker/defender preparation, accuracy/
 scatter, keeper rush responses and unchallenged ball-control continuation.
 Frame-based flight respects shared/connection holds and versioned cancellation.
 Typed deadlines cover high-pass and control rolls. Twenty-one focused cases
-passed, including real Room managers. Contested headers and headed passes/shots
-are next, with result-panel hold ownership before shot/restart expansion.
+passed, including real Room managers. Contested headers now have typed
+nominations, confirmations, rolls, headed-pass targeting and detached nominee/
+score/winner publication. Authority holds freeze result continuation and local
+keys cannot dismiss it. Focused tests cover both-team winners, collection,
+same-team automatic roll boundaries and unchallenged headers. Headed shots,
+loose-ball ties, goalkeeper back-passes and restart outcomes remain next.
 
 ## Ordered implementation batches
 

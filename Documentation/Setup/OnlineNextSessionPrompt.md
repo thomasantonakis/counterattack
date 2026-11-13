@@ -5,14 +5,16 @@
 High-pass integration now has 21 focused PlayMode passes (both directions, actual
 Room, preparation, accuracy/scatter/control, keeper responses, holds, cancellation
 and deadlines). See Assets/Editor/FeatureTests/OnlineHighPass/Verification.md.
-Continue contested header nominations/results/targeting, then shots and restarts.
+Contested header nominations/results/targeting and headed-pass collection now
+have focused coverage. Continue headed shots, loose balls, keeper back-passes,
+then shots and restarts. See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
 Keep paired/manual sessions deferred while independent implementation continues.
 
 Further Windows checkpoints add host dice results (5943f15), result holds
 (987fd30), long passes/action controls (f4a209e), movement/player presentation
 (09ddeed), and Final Third selection/continuation. See the OnlineRollResults,
 OnlineResultHold, OnlineLongPass, OnlineMovement and OnlineFinalThird feature
-Verification.md files for exact focused counts and XML. Current wire is v6.
+Verification.md files for exact focused counts and XML. Current wire is v7.
 The long-pass automatic-roll admission audit is verified; use its typed timing
 registration for subsequent online adapters. Continue high passes, headers,
 dribbles/duels, shots and restarts; full six-token proof/lifecycle limitations
@@ -32,7 +34,7 @@ isolation and `Assets/Scenes/OnlineRoomProof.unity`, an authored deterministic
 copy using Room's real serialized managers and a controlled six-token roster.
 It reuses manual commands/recovery, exact catalog/roster checks, accepted
 sequence watermarks, stats/timing snapshots and separate presentation frames.
-Wire is now ground-wire-v6; old exports must be rebuilt. Subsequent batches
+Wire is now ground-wire-v7; old exports must be rebuilt. Subsequent batches
 5943f15 and 987fd30 add immutable host roll observations and result continuation
 holds. The current long-pass batch adds typed action selection, accuracy/scatter,
 keeper Pace and landing recovery; see its feature verification. Continue into
@@ -45,7 +47,7 @@ Compilation is separately clean. Earlier recovery 8 EditMode + 8 PlayMode and
 pause 13 PlayMode evidence remains retained. Exact XML and limitations are in
 the feature Verification.md files. No full suites ran. Windows Room export and
 packaged local/login checks passed, including native liveness notification
-registration. Both applications must rebuild for the current v6 framing.
+registration. Both applications must rebuild for the current v7 framing.
 
 Use Documentation/Setup/OnlineRoomProof.md for current Mac setup/build/local/
 manual Room commands and prepared reverse-role support. Actual two-human

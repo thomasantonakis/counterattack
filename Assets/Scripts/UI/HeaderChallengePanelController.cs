@@ -34,6 +34,22 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     private LooseBallManager scatterHistoryOwner;
     private bool complete, remembered, suspended;
     private float closeAt, remaining;
+    private bool onlineAuthorityControlled, onlineAuthorityHeld;
+    private float onlineSecondsRemaining;
+
+    public void SetOnlineAuthorityControl(bool controlled, bool held)
+    {
+        bool nextHeld = controlled && held;
+        if (nextHeld && !onlineAuthorityHeld && complete)
+            onlineSecondsRemaining = IsResultHeld ? remaining : Mathf.Max(0f, closeAt - Time.unscaledTime);
+        if (!nextHeld && onlineAuthorityHeld && complete)
+        {
+            if (IsResultHeld) remaining = onlineSecondsRemaining;
+            else closeAt = Time.unscaledTime + onlineSecondsRemaining;
+        }
+        onlineAuthorityControlled = controlled;
+        onlineAuthorityHeld = nextHeld;
+    }
     private string matchKey;
     private static int escapeFrame = -1;
     private static bool escapeHeld;
@@ -62,14 +78,14 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     }
     private static bool CheckBound(DuelCheckPanelFields fields) => fields?.column != null
         && fields.rule != null && fields.result != null && fields.die != null;
-    private void Awake() { Instance = this; Close(); }
-    private void OnDisable() { Close(); scatterHistoryOwner = null; }
+    private void Awake() { Instance = this; CloseCore(); }
+    private void OnDisable() { CloseCore(); scatterHistoryOwner = null; }
     private void OnDestroy() { if (Instance == this) Instance = null; }
 
     public bool Begin(HeaderManager manager)
     {
         if (!HasSceneBindings || manager == null) return false;
-        Close();
+        CloseCore();
         scatterHistoryOwner = null;
         recoveryContent.SetActive(false);
         header = manager;
@@ -291,15 +307,21 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     private IEnumerator WaitForDismissal()
     {
         complete = true; closeAt = Time.unscaledTime + resultSeconds;
+        if (onlineAuthorityHeld) onlineSecondsRemaining = resultSeconds;
         UpdateFooter();
         while (IsOpen) yield return null;
     }
     public void Cancel(MonoBehaviour manager)
     {
         if (owner != manager && scatterHistoryOwner != manager) return;
-        Close(); scatterHistoryOwner = null;
+        CloseCore(); scatterHistoryOwner = null;
     }
     public void Close()
+    {
+        if (onlineAuthorityHeld) return;
+        CloseCore();
+    }
+    private void CloseCore()
     {
         if (IsOpen) { escapeFrame = Time.frameCount; escapeHeld |= Input.GetKey(KeyCode.Escape); }
         IsOpen = complete = IsResultHeld = suspended = false;
@@ -319,6 +341,10 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     }
     public static bool ConsumeKey(KeyPressData key)
     {
+        if (IsVisible && Instance.onlineAuthorityControlled)
+        {
+            key.Consume(nameof(HeaderChallengePanelController)); return true;
+        }
         if (key.key == KeyCode.Escape && ReservePauseEscape())
         {
             escapeHeld |= Input.GetKey(KeyCode.Escape);
@@ -340,14 +366,25 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     private void Update()
     {
         if (!IsOpen) return;
-        if (owner == null || !owner.isActiveAndEnabled) { Close(); return; }
-        if (Input.GetKeyDown(KeyCode.Escape)) { escapeHeld = true; if (complete) { Close(); return; } }
-        if (complete) { UpdateFooter(); if (!IsResultHeld && Time.unscaledTime >= closeAt) Close(); }
+        if (owner == null || !(onlineAuthorityControlled ? owner.gameObject.activeInHierarchy : owner.isActiveAndEnabled))
+        { CloseCore(); return; }
+        if (!onlineAuthorityControlled && Input.GetKeyDown(KeyCode.Escape)) { escapeHeld = true; if (complete) { Close(); return; } }
+        if (complete) { UpdateFooter(); if (!onlineAuthorityHeld && !IsResultHeld && Time.unscaledTime >= closeAt) Close(); }
         FitAndClamp();
     }
-    private void UpdateFooter() => footer.text = IsResultHeld
+    private void UpdateFooter()
+    {
+        if (onlineAuthorityControlled)
+        {
+            footer.text = onlineAuthorityHeld ? "Waiting for the match to resume"
+                : IsResultHeld ? "Result held"
+                : $"Closes automatically in {Mathf.Max(0, Mathf.CeilToInt(closeAt - Time.unscaledTime))} seconds";
+            return;
+        }
+        footer.text = IsResultHeld
         ? "Result held · Match clock stopped · [Enter] resume · [Esc] close"
         : $"Closes in {Mathf.Max(0, Mathf.CeilToInt(closeAt - Time.unscaledTime))}s · [Enter] hold · [Esc] close";
+    }
     public void MovePanel(Vector2 position) { panel.anchoredPosition = position; remembered = true; FitAndClamp(); }
     public void FitAndClamp()
     {

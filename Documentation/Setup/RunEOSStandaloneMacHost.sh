@@ -5,8 +5,8 @@ interaction="${2:-manual}"
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
 case "$mode" in
-  room) app=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app; handoff_name=ActiveEOSRoomLobby.json; kind=room-gameplay-v4; manual_kind=room-manual-v4 ;;
-  gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; kind=ground-gameplay-v6; manual_kind=ground-manual-v5 ;;
+  room) app=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app; handoff_name=ActiveEOSRoomLobby.json; kind=room-gameplay-v5; manual_kind=room-manual-v5 ;;
+  gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; kind=ground-gameplay-v7; manual_kind=ground-manual-v6 ;;
   *) printf 'Expected room or gameplay.\n' >&2; exit 2 ;;
 esac
 case "$interaction" in manual) kind="$manual_kind" ;; automatic) ;; *) printf 'Expected manual or automatic.\n' >&2; exit 2 ;; esac

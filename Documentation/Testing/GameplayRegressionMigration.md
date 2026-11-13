@@ -1,5 +1,12 @@
 # Gameplay regression migration
 
+Online header integration adds 10 EditMode + 18 PlayMode cases in category
+OnlineHeaders. Four result-hold failures were reproduced before the fix; the
+final focused feature runs pass with zero failed/skipped, compilation separately
+clean. Existing offline ManualHeaderResult (2) and wire/shared-pause (11 EditMode)
+also pass. No legacy cases were removed and no complete suites ran. The feature
+Verification.md records actual XML and still-unexecuted header branches.
+
 Online high-pass integration adds 21 independently selectable native PlayMode
 cases (category OnlineHighPass), with compilation clean and zero failed/skipped
 in `Runs/20261113T214426081Z/results.xml`. LegacyHighPassBoxSequencePlayModeTests

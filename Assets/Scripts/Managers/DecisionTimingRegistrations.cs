@@ -78,7 +78,10 @@ public partial class HeaderManager
         r.Decision(DecisionKind.HeadedPassOrHeaderAtGoal, isActivated && isWaitingForHeaderAtGoal);
         r.Decision(DecisionKind.HeadedPassTarget, isActivated && isWaitingForHeaderTargetSelection);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isActivated && isWaitingForHeadedBackPassChoice);
-        r.Roll(this, "header", isWaitingForHeaderRoll, () => isActivated && isWaitingForHeaderRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"header",isWaitingForHeaderRoll,()=>isActivated && isWaitingForHeaderRoll && tokenRolling!=null,
+                ()=>{TryExecuteOnlineHeader(OnlineHeaderIntent.Roll);});
+        else r.Roll(this, "header", isWaitingForHeaderRoll, () => isActivated && isWaitingForHeaderRoll, OnKeyReceived);
         if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
             r.Roll(this,"control",isWaitingForControlRoll,()=>isActivated && isWaitingForControlRoll,
                 ()=>{TryExecuteOnlineHeaderControl(OnlineHeaderControlIntent.Roll);});

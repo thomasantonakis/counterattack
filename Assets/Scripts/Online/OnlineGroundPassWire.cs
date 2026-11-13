@@ -55,7 +55,7 @@ namespace CounterAttack.Online
 
         public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message)
         {
-            message.version = "ground-wire-v6";
+            message.version = "ground-wire-v7";
             // Unity serializes null inline DTO fields as fully expanded default
             // objects. Keep heartbeats/controls small instead of embedding an
             // unused full roster/statistics/timing payload in every message.
@@ -68,7 +68,7 @@ namespace CounterAttack.Online
             {
                 using var stream = new MemoryStream();
                 using var writer = new BinaryWriter(stream);
-                writer.Write((ushort)0xCA06); writer.Write(index); writer.Write(count); writer.Write(payload.Length); writer.Write(identity);
+                writer.Write((ushort)0xCA07); writer.Write(index); writer.Write(count); writer.Write(payload.Length); writer.Write(identity);
                 writer.Write(payload, index * FragmentPayload, Math.Min(FragmentPayload, payload.Length - index * FragmentPayload));
                 yield return stream.ToArray();
             }
@@ -81,7 +81,7 @@ namespace CounterAttack.Online
                 if (packet == null || length < HeaderSize + 1 || length > FragmentPayload + HeaderSize || length > packet.Length)
                     throw new InvalidDataException("Gameplay fragment size");
                 using var reader = new BinaryReader(new MemoryStream(packet, 0, length));
-                if (reader.ReadUInt16() != 0xCA06) throw new InvalidDataException("Gameplay fragment version");
+                if (reader.ReadUInt16() != 0xCA07) throw new InvalidDataException("Gameplay fragment version");
                 var index = reader.ReadUInt16(); var count = reader.ReadUInt16(); var size = reader.ReadInt32();
                 var identity = new Guid(reader.ReadBytes(16));
                 if (size < 1 || size > PayloadLimit || count != (size + FragmentPayload - 1) / FragmentPayload
@@ -105,7 +105,7 @@ namespace CounterAttack.Online
                 var json = new UTF8Encoding(false, true).GetString(pending.ToArray());
                 Reset();
                 var message = JsonConvert.DeserializeObject<OnlineGroundPassMessage>(json);
-                if (message == null || message.version != "ground-wire-v6" || !OnlineProtocolIds.IsValid(message.matchId)
+                if (message == null || message.version != "ground-wire-v7" || !OnlineProtocolIds.IsValid(message.matchId)
                     || !(new[] { "hello", "command", "state", "presentation", "reply", "control", "control-reply", "done", "finish" }).Contains(message.kind))
                     throw new InvalidDataException("Gameplay message contract");
                 return message;
@@ -176,7 +176,7 @@ namespace CounterAttack.Online
                 || state.legalActions.Any(a => !OnlineProtocolIds.IsValid(a))) return false;
             if (catalog != null && state.catalogId != catalog || roster != null && !roster.SetEquals(state.tokens.Select(token => token.id))) return false;
             if(!string.IsNullOrEmpty(state.selectedPlayer) && !state.tokens.Any(token=>token.id==state.selectedPlayer)) return false;
-            if (state.rollSequence < rollSequence || state.rollSequence < 0 || !ValidRolls(state)) return false;
+            if (state.rollSequence < rollSequence || state.rollSequence < 0 || !ValidRolls(state) || !ValidHeader(state)) return false;
             var prior = State;
             if (prior?.rolls != null && state.rolls != null)
                 foreach (var result in state.rolls)
@@ -189,6 +189,22 @@ namespace CounterAttack.Online
             if (state.publicationSequence == sequence) return json == currentJson;
             currentJson = json; sequence = state.publicationSequence; revision = state.revision; rollSequence = state.rollSequence;
             return true;
+        }
+
+        private static bool ValidHeader(OnlineGroundPassState state)
+        {
+            var header=state.header;
+            if(header==null) return true;
+            bool Known(string id)=>!string.IsNullOrEmpty(id) && state.tokens.Any(t=>t.id==id);
+            if(header.attackers==null || header.defenders==null || header.scores==null
+                || header.attackers.Length>2 || header.defenders.Length>3 || header.scores.Length>5) return false;
+            var nominations=header.attackers.Concat(header.defenders).ToArray();
+            if(nominations.Any(id=>!Known(id)) || nominations.Distinct().Count()!=nominations.Length) return false;
+            if(!string.IsNullOrEmpty(header.roller) && !nominations.Contains(header.roller)
+                || !string.IsNullOrEmpty(header.winner) && !Known(header.winner)) return false;
+            return header.scores.All(score=>score!=null && nominations.Contains(score.actorId) && score.roll>=1 && score.roll<=6
+                && score.total>=-64 && score.total<=64)
+                && header.scores.Select(score=>score.actorId).Distinct().Count()==header.scores.Length;
         }
 
         private static bool ValidRolls(OnlineGroundPassState state)

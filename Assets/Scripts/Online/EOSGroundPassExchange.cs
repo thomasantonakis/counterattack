@@ -155,7 +155,7 @@ namespace CounterAttack.Online
         internal IEnumerator Local()
         {
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v6", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", "prepared-board-v1");
             var protocol = new OnlineMatchProtocol("local-ground", "home", "away", "away", version);
             protocol.BindAuthenticatedAccount("home", "guest", version); protocol.BindAuthenticatedAccount("away", "host", version);
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
@@ -215,7 +215,7 @@ namespace CounterAttack.Online
         {
             SetPeer(session, remote, socket, lobby);
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v6", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", "prepared-board-v1");
             var protocol = new OnlineMatchProtocol(matchId, remote.ToString(), session.UserId.ToString(), session.UserId.ToString(), version);
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(remote.ToString(), "guest-home", version), "Binding guest Home identity");
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");

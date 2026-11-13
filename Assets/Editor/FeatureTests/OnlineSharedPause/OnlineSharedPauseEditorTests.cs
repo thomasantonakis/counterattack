@@ -66,7 +66,7 @@ public sealed class OnlineSharedPauseEditorTests
             revision = 3, decisionId = "shared-pause", actionId = OnlineSharedPause.RequestAction };
         var packet = OnlineGroundPassWire.Encode(message).Single();
         var decoded = new OnlineGroundPassWire().Receive(packet, packet.Length);
-        Assert.That(decoded.kind, Is.EqualTo("control")); Assert.That(decoded.version, Is.EqualTo("ground-wire-v6"));
+        Assert.That(decoded.kind, Is.EqualTo("control")); Assert.That(decoded.version, Is.EqualTo("ground-wire-v7"));
         Assert.That(decoded.ToCommand().Sequence, Is.EqualTo(7)); Assert.That(decoded.ToCommand().Revision, Is.EqualTo(3));
         Assert.That(decoded.ToCommand().DecisionId, Is.EqualTo("shared-pause"));
     }
@@ -74,7 +74,7 @@ public sealed class OnlineSharedPauseEditorTests
     [Test] public void OldWireVersionCannotSilentlySkipSharedPause()
     {
         var packet = OnlineGroundPassWire.Encode(new OnlineGroundPassMessage { kind = "hello", matchId = "match" }).Single();
-        var oldJson = Encoding.UTF8.GetString(packet, OnlineGroundPassWire.HeaderSize, packet.Length - OnlineGroundPassWire.HeaderSize).Replace("ground-wire-v6", "ground-wire-v1");
+        var oldJson = Encoding.UTF8.GetString(packet, OnlineGroundPassWire.HeaderSize, packet.Length - OnlineGroundPassWire.HeaderSize).Replace("ground-wire-v7", "ground-wire-v1");
         var oldBytes = Encoding.UTF8.GetBytes(oldJson); System.Buffer.BlockCopy(oldBytes, 0, packet, OnlineGroundPassWire.HeaderSize, oldBytes.Length);
         Assert.Throws<InvalidDataException>(() => new OnlineGroundPassWire().Receive(packet, packet.Length));
     }

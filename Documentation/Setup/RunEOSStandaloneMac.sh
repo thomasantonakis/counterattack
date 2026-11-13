@@ -12,12 +12,12 @@ handoff_name=ActiveEOSStandaloneLobby.json
 handoff_kind=standalone-relay-v1
 case "$mode" in
     packets) if [ "$role" = local ]; then printf 'Local role requires gameplay mode.\n' >&2; exit 2; fi ;;
-    gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; handoff_kind=ground-gameplay-v6 ;;
-    room) app=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app; handoff_name=ActiveEOSRoomLobby.json; handoff_kind=room-gameplay-v4 ;;
+    gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; handoff_kind=ground-gameplay-v7 ;;
+    room) app=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app; handoff_name=ActiveEOSRoomLobby.json; handoff_kind=room-gameplay-v5 ;;
     *) printf 'Expected packets or gameplay mode.\n' >&2; exit 2 ;;
 esac
 if [ "$interaction" = manual ]; then
-    if [ "$mode" = room ]; then handoff_kind=room-manual-v4; else handoff_kind=ground-manual-v5; fi
+    if [ "$mode" = room ]; then handoff_kind=room-manual-v5; else handoff_kind=ground-manual-v6; fi
 fi
 if [ ! -d "$app/Contents/MacOS" ]; then printf 'Build the Mac proof first.\n' >&2; exit 1; fi
 player="$(find "$app/Contents/MacOS" -maxdepth 1 -type f -perm -111 -print -quit)"

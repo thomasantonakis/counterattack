@@ -94,6 +94,11 @@ namespace CounterAttack.Online
                 statusText.text += "\n" + roll.context.Replace('_',' ') + ": " + (roll.isJackpot ? "STAR" : roll.roll.ToString())
                     + (roll.actorId == null ? "" : " | " + roll.actorId + " " + roll.actorName);
             }
+            if(statusText!=null && state.header!=null)
+                statusText.text+="\nHeader attack: "+string.Join(", ",state.header.attackers)
+                    +" | defense: "+string.Join(", ",state.header.defenders)
+                    +"\n"+string.Join(" | ",state.header.scores.Select(score=>score.actorId+" rolled "+score.roll+" = "+score.total))
+                    +(string.IsNullOrEmpty(state.header.winner)?"":" | winner "+state.header.winner);
         }
 
         private Vector3 Center(int x, int z) => grid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));
