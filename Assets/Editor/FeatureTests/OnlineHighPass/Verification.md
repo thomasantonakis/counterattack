@@ -6,7 +6,7 @@
 - [x] Typed automatic deadlines for accuracy/scatter/control.
 - [x] Dedicated OnlineHighPass focused tests in both directions.
 - [x] Real Room manager coverage.
-- [ ] Updated Windows builds.
+- [x] Updated Windows builds.
 
 Contested headers, header passes/shots, loose-ball spills, general goalkeeper box
 moves, special restarts and native paired checks are subsequent integration work.
@@ -50,3 +50,13 @@ Broader user-run checks if wanted: category DecisionTiming in
 `Assets/Tests/PlayMode/Features/DecisionTiming/` for other timing/interruptions;
 legacy aerial/header fixtures in `Assets/Tests/PlayMode/` for remaining offline
 header and restart sequences. Run only reported failing cases afterward.
+
+Both Windows exports refreshed: Room build_5cf78b5bb17c Succeeded (eight
+warnings), prepared board build_6e9697781de9 Succeeded (two warnings). Each has
+the known missing-vswhere.exe diagnostic (one build-report error, no script
+compile errors). Existing packaged local checks passed in
+`TestResults/GameplayRegression/Runs/20261113T215314796Z-Room-local/` and
+`TestResults/GameplayRegression/Runs/20261113T215335610Z-Gameplay-local/`.
+Their result.json, gameplay-evidence.json and build-report.json are retained.
+These packaged checks exercise the existing local ground/pause/recovery probe;
+high-pass behavior itself has the focused real Room framework evidence above.
