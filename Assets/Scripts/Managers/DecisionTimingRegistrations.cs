@@ -118,6 +118,13 @@ public partial class LooseBallManager
     public void RegisterTiming(DecisionTimingRegistration r)
     {
         r.Scope(nameof(LooseBallManager), IsInstructionExpectingHomeTeam());
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            void OnlineRoll(string phase,OnlineLooseBallIntent intent)=>r.Roll(this,phase,OnlineDecisionStage==phase,
+                ()=>isActivated && OnlineDecisionStage==phase,()=>{TryExecuteOnlineLooseBall(intent);});
+            OnlineRoll("direction",OnlineLooseBallIntent.Direction);OnlineRoll("distance",OnlineLooseBallIntent.Distance);OnlineRoll("recovery",OnlineLooseBallIntent.Recovery);
+            return;
+        }
         r.Roll(this, "direction", isActivated && isWaitingForDirectionRoll, () => isActivated && isWaitingForDirectionRoll, OnKeyReceived);
         r.Roll(this, "distance", isActivated && isWaitingForDistanceRoll, () => isActivated && isWaitingForDistanceRoll, OnKeyReceived);
         r.Roll(this, "interception", isActivated && isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);

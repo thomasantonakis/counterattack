@@ -9,7 +9,9 @@ Contested header nominations/results/targeting and headed-pass collection now
 have focused coverage, including headed keeper back-passes and landing
 interceptions (40 PlayMode + 10 EditMode passed). Goalkeeper distribution has
 14 focused passes for quick throws and Final Third drop/kick targeting.
-Continue loose balls, headed shots, then shots and restarts.
+Loose-ball ties and keeper spills now have 18 focused passes, including recovery,
+holds and replacement races. Continue headed shots, then shots, general keeper
+moves and restarts.
 See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
 Keep paired/manual sessions deferred while independent implementation continues.
 

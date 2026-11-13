@@ -63,7 +63,10 @@ attribution and retired cancelled continuations before cleared-state access.
 Goalkeeper distribution now has owned quick-throw / Final Third choices,
 completed quick throws, drop/high-kick targeting and 14 focused cases including
 both teams, both directions, guest rejection, stale views and overlapping holds.
-Headed shots, loose-ball ties, general keeper moves and restart outcomes remain next.
+Loose balls now have typed direction/distance/recovery with automatic deadlines,
+mandatory-action routing priority, real tied-header and keeper-spill continuation,
+overlapping holds and cancelled/replaced result version guards (18 focused passes).
+Headed shots, general keeper moves and restart outcomes remain next.
 
 ## Ordered implementation batches
 

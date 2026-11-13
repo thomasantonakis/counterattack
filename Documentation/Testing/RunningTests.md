@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Loose balls use PlayMode category `OnlineLooseBall`: 18 distinct cases passed,
+zero failed/skipped, compilation separately clean. Test/checklist/XML locations:
+`Assets/Tests/PlayMode/Features/OnlineLooseBall/` and
+`Assets/Editor/FeatureTests/OnlineLooseBall/`. Covers actual tied headers and keeper
+spills through direction/distance/recovery, automatic deadlines, holds and
+cancelled/replaced result continuations. Broader shot/keeper/restart paths remain.
+
 Goalkeeper distribution uses PlayMode category `OnlineKeeperDistribution`:
 14 distinct cases passed, zero failed/skipped, compilation separately clean.
 Tests/checklist/XML are under `Assets/Tests/PlayMode/Features/OnlineKeeperDistribution/`

@@ -1,5 +1,12 @@
 # Gameplay regression migration
 
+Online loose balls add 18 independently selectable PlayMode cases, category
+OnlineLooseBall, all passed with zero failed/skipped and compilation separately
+clean. Mandatory-action routing and cancelled-result replacement races were
+reproduced before fixes. Existing LegacyHeaderResolutionPlayModeTests also passed
+12 cases. See OnlineLooseBall/Verification.md for XML and remaining boundaries;
+no legacy cases removed or complete suites run.
+
 Online keeper distribution adds 14 independently selectable PlayMode cases,
 category OnlineKeeperDistribution. All pass with zero failed/skipped; compilation
 separately clean. Includes real catches, both-team quick throws, Final Third
