@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Online result continuation uses PlayMode category `OnlineResultHold` /
+`OnlineResultHoldPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineResultHold/`: 6 passed, zero failed/skipped.
+Affected shared-pause 13 and offline DuelManualReview 4 also passed; compilation
+separately clean. See `Assets/Editor/FeatureTests/OnlineResultHold/Verification.md`.
+
 Authoritative dice observations use focused EditMode category `OnlineRollResults`
 / fixture `OnlineRollResultsEditorTests` in
 `Assets/Editor/FeatureTests/OnlineRollResults/`. This covers real authority rolls,

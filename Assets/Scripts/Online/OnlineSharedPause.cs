@@ -22,6 +22,7 @@ namespace CounterAttack.Online
         private float previousScale;
         private bool disposed;
         private bool holdingTime;
+        private readonly DuelResolutionPanelController resultPanel;
         public bool ConnectionHeld { get; private set; }
 
         public bool IsPaused { get; private set; }
@@ -33,6 +34,8 @@ namespace CounterAttack.Online
         {
             this.protocol = protocol ?? throw new ArgumentNullException(nameof(protocol));
             this.match = match != null ? match : throw new ArgumentNullException(nameof(match));
+            resultPanel = match.movementPhaseManager?.duelResolutionPanel;
+            resultPanel?.SetOnlineAuthorityControl(true, false);
             foreach (OnlineTeam team in Enum.GetValues(typeof(OnlineTeam)))
             { receipts[team] = new(); order[team] = new(); lastSequence[team] = 0; }
         }
@@ -96,6 +99,7 @@ namespace CounterAttack.Online
         private void ApplyHold()
         {
             var hold = IsPaused || ConnectionHeld;
+            resultPanel?.SetOnlineAuthorityControl(true, hold);
             if (hold && !holdingTime) previousScale = Time.timeScale;
             match.SetPauseMenuOpen(hold);
             if (hold) Time.timeScale = 0;
@@ -106,6 +110,7 @@ namespace CounterAttack.Online
         public void Dispose()
         {
             if (disposed) return; disposed = true;
+            resultPanel?.SetOnlineAuthorityControl(false, false);
             if (!holdingTime) return;
             if (match != null) match.SetPauseMenuOpen(false);
             Time.timeScale = previousScale; IsPaused = false; Requester = null;

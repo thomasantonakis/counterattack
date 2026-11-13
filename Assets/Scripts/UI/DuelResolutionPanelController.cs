@@ -102,6 +102,23 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private Color attackerSecondaryColor;
     private bool foulIsPenalty;
     private float heldSecondsRemaining;
+    private bool onlineAuthorityControlled, onlineAuthorityHeld;
+    private float onlineSecondsRemaining;
+
+    // Called by the match's authority pause lane, never by a remote UI message.
+    public void SetOnlineAuthorityControl(bool controlled, bool held)
+    {
+        bool nextHeld = controlled && held;
+        if (nextHeld && !onlineAuthorityHeld && IsComplete)
+            onlineSecondsRemaining = IsResultHeld ? heldSecondsRemaining : Mathf.Max(0f, closeAt - Time.unscaledTime);
+        if (!nextHeld && onlineAuthorityHeld && IsComplete)
+        {
+            if (IsResultHeld) heldSecondsRemaining = onlineSecondsRemaining;
+            else closeAt = Time.unscaledTime + onlineSecondsRemaining;
+        }
+        onlineAuthorityControlled = controlled;
+        onlineAuthorityHeld = nextHeld;
+    }
     public bool IsResultHeld { get; private set; }
     private static bool waitForEscapeRelease;
     private static int reservedEscapeFrame = -1;
@@ -856,12 +873,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         stage = Stage.Complete;
         IsResultHeld = false;
         closeAt = Time.unscaledTime + resultSeconds;
+        if (onlineAuthorityHeld) onlineSecondsRemaining = resultSeconds;
         UpdateFooter();
     }
 
     public bool Dismiss()
     {
-        if (!IsComplete) return false;
+        if (!IsComplete || onlineAuthorityHeld) return false;
         ReserveEscape();
         looseBallSuspended = false;
         IsResultHeld = false;
@@ -908,6 +926,11 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
 
     public static bool ConsumeKey(KeyPressData key)
     {
+        if (IsVisible && Instance.onlineAuthorityControlled)
+        {
+            key.Consume(nameof(DuelResolutionPanelController));
+            return true;
+        }
         // Update may already have dismissed the panel on this physical key-down.
         // Keep that same press exclusive to the panel regardless of script order.
         if (key.key == KeyCode.Escape && ReservePauseEscape())
@@ -945,7 +968,8 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (!IsOpen) return;
         RefreshModifierBackground(leftPlayer);
         RefreshModifierBackground(rightPlayer);
-        if (singleMode && stage == Stage.Single && (singleOwner == null || !singleOwner.isActiveAndEnabled
+        if (singleMode && stage == Stage.Single && (singleOwner == null
+            || !(onlineAuthorityControlled ? singleOwner.gameObject.activeInHierarchy : singleOwner.isActiveAndEnabled)
             || singleWaiting == null || !singleWaiting()))
         {
             stage = Stage.Complete;
@@ -953,7 +977,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
             return;
         }
         FitAndClamp();
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (!onlineAuthorityControlled && Input.GetKeyDown(KeyCode.Escape))
         {
             waitForEscapeRelease = true;
             if (IsComplete) { Dismiss(); return; }
@@ -961,13 +985,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if (IsComplete)
         {
             UpdateFooter();
-            if (!IsResultHeld && Time.unscaledTime >= closeAt) Dismiss();
+            if (!onlineAuthorityHeld && !IsResultHeld && Time.unscaledTime >= closeAt) Dismiss();
         }
     }
 
     public void ToggleResultHold()
     {
-        if (!IsComplete) return;
+        if (!IsComplete || onlineAuthorityHeld) return;
         if (IsResultHeld)
         {
             closeAt = Time.unscaledTime + heldSecondsRemaining;
@@ -983,6 +1007,13 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
 
     private void UpdateFooter()
     {
+        if (onlineAuthorityControlled)
+        {
+            footer.text = onlineAuthorityHeld ? "Waiting for the match to resume"
+                : IsResultHeld ? "Result held"
+                : $"Closes automatically in {Mathf.Max(0, Mathf.CeilToInt(closeAt - Time.unscaledTime))} seconds";
+            return;
+        }
         footer.text = IsResultHeld ? "Result held — match clock stopped. [Enter] resume · [Esc] close"
             : $"Closes automatically in {Mathf.Max(0, Mathf.CeilToInt(closeAt - Time.unscaledTime))} seconds — [Enter] hold · [Esc] close now";
     }

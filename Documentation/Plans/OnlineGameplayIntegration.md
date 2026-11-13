@@ -22,8 +22,9 @@ instead of advancing gameplay coverage.
 
 Authoritative roll-result publication is implemented: detached, bounded host
 observations carry actor, context, face and jackpot without replaying dice on the
-guest. The extended wire is v4; both desktop exports must rebuild. Result-panel
-hold integration is the next dependency before aerial/shot continuation.
+guest. The extended wire is v4; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
+through overlapping connection/shared holds; focused continuation and offline
+checks passed. Header/stoppage panels still require equivalent integration.
 
 ## Ordered implementation batches
 
