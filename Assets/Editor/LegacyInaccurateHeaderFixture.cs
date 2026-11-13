@@ -71,6 +71,8 @@ public sealed partial class GoalkeeperBoxEntryFixture
     {
         var players = LoadLegacyRoster(); var header = match.shotManager.headerManager;
         Subscribe(high); Subscribe(movement); Subscribe(match.finalThirdManager); Subscribe(header);
+        // This scenario begins in open play; StartMatch itself only permits the kickoff ground pass.
+        match.BroadcastSafeEndofMovementPhase(countMovementAction:false,triggerFinalThird:false);
         LegacyKey("C");
         input.TryExecuteSyntheticHexClick(players["Nazef"].currentHex, "Legacy migration", out _);
         Assert.That(high.eligibleAttackers.Count, Is.EqualTo(1));

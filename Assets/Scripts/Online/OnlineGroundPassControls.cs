@@ -69,6 +69,9 @@ namespace CounterAttack.Online
             "header.control"=>"Bring the ball down", "header.control.roll"=>"Roll ball control",
             "header.free"=>"Take a free header", "header.confirm"=>"Confirm header nominations",
             "header.roll"=>"Roll header challenge", "header.pass"=>"Choose a headed pass",
+            "header.backpass.hands"=>"Keeper catches headed back-pass", "header.backpass.feet"=>"Keeper receives at feet",
+            "header.backpass.roll"=>"Roll keeper catch",
+            "header.interception"=>"Roll headed-pass interception",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")

@@ -20,4 +20,8 @@ public sealed class OnlineHeaderResultPlayModeTests
         =>(IEnumerator)Bridge.GetMethod("RunOnlineHeaderCompletion").Invoke(fixture,new object[]{side,defenseWins,automatic});
     [UnityTest] public IEnumerator HeaderNominationsAndFreeHeader([Values(1,-1)]int side,[Values(false,true)]bool unchallenged)
         =>(IEnumerator)Bridge.GetMethod("RunOnlineHeaderNominations").Invoke(fixture,new object[]{side,unchallenged});
+    [UnityTest] public IEnumerator HeaderKeeperBackPass([Values(1,-1)]int side,[Values("feet","catch","automatic","spill","cancel","hold")]string branch)
+        =>(IEnumerator)Bridge.GetMethod("RunOnlineHeadedBackPass").Invoke(fixture,new object[]{side,branch});
+    [UnityTest] public IEnumerator HeaderLandingInterception([Values(1,-1)]int side,[Values("success","miss","automatic","cancel","hold")]string branch)
+        =>(IEnumerator)Bridge.GetMethod("RunOnlineHeadedInterception").Invoke(fixture,new object[]{side,branch});
 }

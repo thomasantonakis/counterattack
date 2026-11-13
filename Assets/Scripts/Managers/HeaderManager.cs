@@ -2352,15 +2352,17 @@ public partial class HeaderManager : MonoBehaviour
 
     private IEnumerator PresentHeaderInterception(RollInputOverride? rollOverride)
     {
+        int version=challengePresentationVersion;
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "header_interception",
             rollOverride,
-            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            actor: interceptingDefender,
             sourceHex: ball.GetCurrentHex());
         interceptionDiceRoll = diceResult.roll;
         yield return SingleRollResolutionPresentation.Resolve(this, diceResult,
             HeaderInterceptionSucceeded()
                 ? "INTERCEPTED" : "INTERCEPTION FAILED");
+        if(version!=challengePresentationVersion || !isActivated)yield break;
         isWaitingForInterceptionRoll = false;
     }
 
@@ -2465,6 +2467,7 @@ public partial class HeaderManager : MonoBehaviour
 
     private IEnumerator PerformInterceptionCheck()
     {
+        int version=challengePresentationVersion;
         if (interceptingDefenders == null || interceptingDefenders.Count == 0)
         {
             Debug.Log("No defenders available for interception.");
@@ -2485,7 +2488,8 @@ public partial class HeaderManager : MonoBehaviour
             }
             SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionRoll,
                 interceptingDefender, "Landing Ball Interception");
-            while (isWaitingForInterceptionRoll) yield return null;
+            while (isWaitingForInterceptionRoll && version==challengePresentationVersion && isActivated) yield return null;
+            if(version!=challengePresentationVersion || !isActivated)yield break;
 
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             Debug.Log($"Dice roll for defender {interceptingDefender.name} at {defenderHex.coordinates}: {interceptionDiceRoll}");
@@ -2546,6 +2550,7 @@ public partial class HeaderManager : MonoBehaviour
     {
         challengePresentationVersion++;
         isWaitingForHeaderRoll = false;
+        isWaitingForInterceptionRoll = false;
         headerChallengePanel?.Cancel(this);
     }
 

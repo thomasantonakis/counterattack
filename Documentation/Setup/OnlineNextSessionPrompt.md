@@ -6,8 +6,10 @@ High-pass integration now has 21 focused PlayMode passes (both directions, actua
 Room, preparation, accuracy/scatter/control, keeper responses, holds, cancellation
 and deadlines). See Assets/Editor/FeatureTests/OnlineHighPass/Verification.md.
 Contested header nominations/results/targeting and headed-pass collection now
-have focused coverage. Continue headed shots, loose balls, keeper back-passes,
-then shots and restarts. See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
+have focused coverage, including headed keeper back-passes and landing
+interceptions (40 PlayMode + 10 EditMode passed). Continue goalkeeper
+distribution, headed shots, loose balls, then shots and restarts.
+See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
 Keep paired/manual sessions deferred while independent implementation continues.
 
 Further Windows checkpoints add host dice results (5943f15), result holds

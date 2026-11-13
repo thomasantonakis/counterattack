@@ -86,8 +86,14 @@ public partial class HeaderManager
             r.Roll(this,"control",isWaitingForControlRoll,()=>isActivated && isWaitingForControlRoll,
                 ()=>{TryExecuteOnlineHeaderControl(OnlineHeaderControlIntent.Roll);});
         else r.Roll(this, "control", isWaitingForControlRoll, () => isActivated && isWaitingForControlRoll, OnKeyReceived);
-        r.Roll(this, "interception", isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);
-        r.Roll(this, "backpass", isWaitingForHeadedBackPassRoll, () => isActivated && isWaitingForHeadedBackPassRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"interception",OnlineHeaderStage=="interception",()=>isActivated && OnlineHeaderStage=="interception",
+                ()=>{TryExecuteOnlineHeader(OnlineHeaderIntent.Interception);});
+        else r.Roll(this, "interception", isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"backpass",OnlineHeaderStage=="backpass.roll",()=>isActivated && OnlineHeaderStage=="backpass.roll",
+                ()=>{TryExecuteOnlineHeader(OnlineHeaderIntent.KeeperCatch);});
+        else r.Roll(this, "backpass", isWaitingForHeadedBackPassRoll, () => isActivated && isWaitingForHeadedBackPassRoll, OnKeyReceived);
     }
 }
 public partial class ShotManager

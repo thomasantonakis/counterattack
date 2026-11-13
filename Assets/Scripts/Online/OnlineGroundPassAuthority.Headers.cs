@@ -21,7 +21,9 @@ namespace CounterAttack.Online
             };
         }
         public const string HeaderFreeAction = "header.free", HeaderConfirmAction = "header.confirm",
-            HeaderRollAction = "header.roll", HeaderPassAction = "header.pass";
+            HeaderRollAction = "header.roll", HeaderPassAction = "header.pass",
+            HeaderKeeperHandsAction="header.backpass.hands",HeaderKeeperFeetAction="header.backpass.feet",HeaderKeeperRollAction="header.backpass.roll";
+        public const string HeaderInterceptionAction="header.interception";
         public static string HeaderPlayerAction(string id, bool nominated = false) => (nominated ? "header.remove:" : "header.nominate:") + id;
         public static string HeaderTargetAction(int x, int z) => "header.target:" + x + ":" + z;
         public static string HeaderGoalAction(int x, int z) => "header.goal:" + x + ":" + z;
@@ -38,11 +40,20 @@ namespace CounterAttack.Online
             state.stage = "header." + phase;
             var home = manager.IsInstructionExpectingHomeTeam();
             state.owner = home == null ? "None" : home.Value ? "Home" : "Away";
-            state.awaitingRoll = phase == "roll";
+            state.awaitingRoll = phase is "roll" or "backpass.roll" or "interception";
             state.awaitingTarget = phase is "target" or "goal-choice";
-            state.selectedPlayer = TokenId(phase == "roll" ? manager.tokenRolling : manager.challengeWinner);
+            state.selectedPlayer = TokenId(manager.OnlineHeaderActor);
             if (home == null) return;
-            if (phase is "attackers" or "defenders")
+            if(phase=="interception")AddHeaderCommand(actions,manager,HeaderInterceptionAction,OnlineHeaderIntent.Interception);
+            else if(phase=="interception.pending")return;
+            else if(phase=="backpass.choice")
+            {
+                AddHeaderCommand(actions,manager,HeaderKeeperHandsAction,OnlineHeaderIntent.KeeperHands);
+                AddHeaderCommand(actions,manager,HeaderKeeperFeetAction,OnlineHeaderIntent.KeeperFeet);
+            }
+            else if(phase=="backpass.roll")AddHeaderCommand(actions,manager,HeaderKeeperRollAction,OnlineHeaderIntent.KeeperCatch);
+            else if(phase=="backpass.pending")return;
+            else if (phase is "attackers" or "defenders")
             {
                 foreach (var player in manager.OnlineHeaderPlayers)
                     AddHeaderCommand(actions, manager, HeaderPlayerAction(TokenId(player), manager.OnlineHeaderNominated(player)), OnlineHeaderIntent.Nominate, player);

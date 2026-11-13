@@ -36,8 +36,9 @@ and read-only player animation. Final Third player movement/forfeit and return
 to ordinary movement are integrated. High passes support preparation, accuracy,
 scatter, keeper rush responses and unchallenged ball control. Headers now support
 owned nominations, confirmation, automatic/manual rolls, result holds and headed
-passes. Guests receive detached nominees, actual scores and the winner. Header
-goal-line choices are wired; headed-shot resolution, keeper back-passes,
+passes, headed keeper back-pass hands/feet/catch choices and landing interceptions.
+Guests receive detached nominees, actual scores and the winner. Header
+goal-line choices are wired; headed-shot and loose-ball resolution,
 dribbling/interactions, shots and restarts are still being integrated;
 this proof is not a complete online match. Manual paired checks stay deferred.
 

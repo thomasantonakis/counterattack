@@ -56,8 +56,11 @@ passed, including real Room managers. Contested headers now have typed
 nominations, confirmations, rolls, headed-pass targeting and detached nominee/
 score/winner publication. Authority holds freeze result continuation and local
 keys cannot dismiss it. Focused tests cover both-team winners, collection,
-same-team automatic roll boundaries and unchallenged headers. Headed shots,
-loose-ball ties, goalkeeper back-passes and restart outcomes remain next.
+same-team automatic roll boundaries and unchallenged headers. Headed keeper
+back-passes and landing interceptions now have typed admission, deadlines,
+overlapping holds and cancellation coverage. Corrected interception roll actor
+attribution and retired cancelled continuations before cleared-state access.
+Headed shots, loose-ball ties, goalkeeper distribution and restart outcomes remain next.
 
 ## Ordered implementation batches
 

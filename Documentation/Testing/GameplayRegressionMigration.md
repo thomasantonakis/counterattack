@@ -1,11 +1,18 @@
 # Gameplay regression migration
 
-Online header integration adds 10 EditMode + 18 PlayMode cases in category
+Online header integration adds 10 EditMode + 40 PlayMode cases in category
 OnlineHeaders. Four result-hold failures were reproduced before the fix; the
 final focused feature runs pass with zero failed/skipped, compilation separately
 clean. Existing offline ManualHeaderResult (2) and wire/shared-pause (11 EditMode)
 also pass. No legacy cases were removed and no complete suites ran. The feature
 Verification.md records actual XML and still-unexecuted header branches.
+Keeper back-pass and landing interception extensions reproduced missing commands,
+wrong dice actors and cancellation null references before fixes. Final focused
+coverage includes all 40 cases with unchanged dice thresholds and offline rules.
+Affected LegacyHeaderResolutionPlayModeTests passed all 12 after correcting its
+shared inaccurate-header fixture to enter legal open play before requesting C.
+The initial failures and final XML are recorded in OnlineHeaders/Verification.md;
+all downstream assertions remain enabled.
 
 Online high-pass integration adds 21 independently selectable native PlayMode
 cases (category OnlineHighPass), with compilation clean and zero failed/skipped
