@@ -42,6 +42,16 @@ public partial class LongBallManager
         r.Scope(nameof(LongBallManager), IsInstructionExpectingHomeTeam());
         r.Decision(DecisionKind.LongBallTarget, isActivated && isAwaitingTargetSelection);
         r.Decision(DecisionKind.LongBallGoalkeeperRush, isActivated && isWaitingForDefLBMove);
+        if (MatchManager.Instance?.IsOnlineAuthorityControlled == true)
+        {
+            void OnlineRoll(string phase, bool waiting, OnlineLongBallIntent intent) => r.Roll(this, phase, waiting,
+                () => isActivated && OnlineDecisionStage == phase, () => { TryExecuteOnlineLongBall(intent); });
+            OnlineRoll("accuracy", isWaitingForAccuracyRoll, OnlineLongBallIntent.Accuracy);
+            OnlineRoll("direction", isWaitingForDirectionRoll, OnlineLongBallIntent.Direction);
+            OnlineRoll("distance", isWaitingForDistanceRoll, OnlineLongBallIntent.Distance);
+            OnlineRoll("interception", isWaitingForInterceptionRoll, OnlineLongBallIntent.Interception);
+            return;
+        }
         r.Roll(this, "accuracy", isWaitingForAccuracyRoll, () => isActivated && isWaitingForAccuracyRoll, OnKeyReceived);
         r.Roll(this, "direction", isWaitingForDirectionRoll, () => isActivated && isWaitingForDirectionRoll, OnKeyReceived);
         r.Roll(this, "distance", isWaitingForDistanceRoll, () => isActivated && isWaitingForDistanceRoll, OnKeyReceived);

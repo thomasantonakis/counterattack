@@ -38,6 +38,7 @@ namespace CounterAttack.Online
             resultPanel?.SetOnlineAuthorityControl(true, false);
             foreach (OnlineTeam team in Enum.GetValues(typeof(OnlineTeam)))
             { receipts[team] = new(); order[team] = new(); lastSequence[team] = 0; }
+            match.RegisterOnlineAuthorityScope();
         }
 
         public OnlineCommandReply Submit(string connection, OnlineMatchCommand control)
@@ -110,6 +111,7 @@ namespace CounterAttack.Online
         public void Dispose()
         {
             if (disposed) return; disposed = true;
+            if (match != null) match.UnregisterOnlineAuthorityScope();
             resultPanel?.SetOnlineAuthorityControl(false, false);
             if (!holdingTime) return;
             if (match != null) match.SetPauseMenuOpen(false);

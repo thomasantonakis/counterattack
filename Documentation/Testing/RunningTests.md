@@ -1,5 +1,10 @@
 # Running gameplay regressions
 
+Online automatic deadline admission uses PlayMode category `OnlineAutomaticRoll`
+under `Assets/Tests/PlayMode/Features/OnlineAutomaticRoll/`: 4 passed, zero
+failed/skipped, compilation separately clean. The Editor feature folder records
+the reproduced race, actual native XML and affected long/pause/offline cases.
+
 Online Final Third uses PlayMode category `OnlineFinalThird` under
 `Assets/Tests/PlayMode/Features/OnlineFinalThird/`: 6 passed, zero failed/skipped,
 compilation separately clean. See `Assets/Editor/FeatureTests/OnlineFinalThird/`

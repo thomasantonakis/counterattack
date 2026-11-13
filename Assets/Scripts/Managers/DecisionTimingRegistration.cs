@@ -24,6 +24,10 @@ public sealed class DecisionTimingRegistration
         timing.Register($"{match.totalCompletedActions}/{scope}/{phase}/{kind}/{team}", kind, team, match.difficulty_level, ready, concurrentWithCurrent);
     }
     public void Roll(UnityEngine.Object manager, string stage, bool waiting, Func<bool> ready, Action<KeyPressData> command)
+        => Roll(manager, stage, waiting, ready, () => command(new KeyPressData(KeyCode.R, false, false, false)));
+
+    // Online authority supplies a typed command; no keyboard event is needed.
+    public void Roll(UnityEngine.Object manager, string stage, bool waiting, Func<bool> ready, Action command)
     {
         if (!waiting) return;
         HasRoll = true;
@@ -32,7 +36,7 @@ public sealed class DecisionTimingRegistration
         pendingRollKey = $"{scope}/{stage}/{team}/{match.TimingRollSequence}";
         pendingRollOwner = team;
         pendingRollReady = () => manager != null && !match.IsPauseMenuOpen && !MatchManager.TimingResultBlocked && ready();
-        pendingRollCommand = () => match.ExecuteTimingRoll(() => command(new KeyPressData(KeyCode.R, false, false, false)));
+        pendingRollCommand = () => match.ExecuteTimingRoll(command);
 
     }
     public void ApplyRoll()

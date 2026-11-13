@@ -12,6 +12,10 @@ public partial class MatchManager
     private ThrowInManager timingThrowIn;
     private PenaltyShootoutManager timingShootout;
     public int TimingRollSequence { get; private set; }
+    private int onlineAuthorityScopes;
+    public bool IsOnlineAuthorityControlled => onlineAuthorityScopes > 0;
+    internal void RegisterOnlineAuthorityScope() => onlineAuthorityScopes++;
+    internal void UnregisterOnlineAuthorityScope() => onlineAuthorityScopes = Math.Max(0, onlineAuthorityScopes - 1);
     public DecisionTimingSnapshot CaptureOnlineDecisionTiming() => decisionTiming?.Capture();
     public float OnlineRegulationSeconds => currentHalfRegulationSeconds;
     public void AdvanceOnlineAuthorityTime(float seconds)

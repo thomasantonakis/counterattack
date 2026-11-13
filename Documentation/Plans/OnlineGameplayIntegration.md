@@ -43,8 +43,9 @@ Final Third now has typed owned selection, destinations and phase completion
 with focused real Room evidence. Destination publication waits for the existing
 coroutine to acknowledge selection, preventing same-frame network input from
 stranding continuation. Special keeper/restart branches remain unexecuted.
-Next audit: automatic roll deadlines must share the same typed busy/admission
-boundary as manual online rolls before further aerial/header/shot integration.
+Automatic long-pass deadlines now share the typed busy/admission boundary after
+a reproduced late-input race. Focused authority and offline timing checks passed.
+Use the typed deadline registration for upcoming high/header/shot adapters.
 
 ## Ordered implementation batches
 
