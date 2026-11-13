@@ -7,7 +7,7 @@
 - [x] Own authored semantic action dropdown and execute button in both proofs.
 - [x] Focused OnlineLongPass PlayMode verification in both directions.
 - [x] Affected ground/manual exchange checks.
-- [ ] Updated Windows export/local check.
+- [x] Updated Windows export/local check.
 
 Separate penalty-box free goalkeeper moves, header/loose-ball continuations and
 full-match lifecycle remain further integration tasks. Paired checks deferred.
@@ -41,3 +41,12 @@ Broader user-run coverage if wanted: category LongBallGoalkeeperPace in
 `Assets/Tests/PlayMode/Features/LongBallGoalkeeperPace/` for offline aerial recovery;
 category DecisionTiming in `Assets/Tests/PlayMode/Features/DecisionTiming/` for
 other timers and continuations. Keep paired Mac acceptance for the user.
+
+Windows Room v5 build `build_5fac1e5a3108`: Succeeded, eight warnings and the
+known missing-vswhere.exe diagnostic (one build-report error, no script compile
+errors). The packaged existing ground/pause/recovery local check passed in
+`TestResults/GameplayRegression/Runs/20261113T174615261Z-Room-local/result.json`;
+its build-report.json is retained alongside. The packaged EOS login and native
+liveness registration check passed in
+`TestResults/GameplayRegression/Runs/20261113T174628922Z-Room-login/result.json`.
+These application checks do not claim paired native long-pass acceptance.
