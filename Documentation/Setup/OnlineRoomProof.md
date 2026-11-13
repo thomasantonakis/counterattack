@@ -7,7 +7,7 @@ An explicit guest session suppresses authority startup in normal Room; the
 owned proof also serializes its authority hierarchy inactive on guest load.
 It is a first ground-pass/interception slice, not a complete online match.
 
-Wire is ground-wire-v4. Roster/catalog incompatibility is rejected before
+Wire is ground-wire-v5. Roster/catalog incompatibility is rejected before
 replica application. Committed snapshots carry decision/owner/legal actions,
 token and ball cells, statistics, clock/timing values and holds. Animation
 frames are a separate presentation payload, bound to the accepted publication;
@@ -20,6 +20,19 @@ The first-action completion snapshot stays immutable during its final digest
 acknowledgement; this proof then ends rather than running a second action.
 Interrupted EOS connections and send failures disable local submission; a
 known graceful peer close is distinguished from a recoverable transport loss.
+
+## Integrated action controls
+
+The authored action dropdown and Execute button now expose real ground and long
+pass commands for the current team. Long pass supports preview/confirmation,
+accuracy, scatter direction/distance, mandatory defending goalkeeper Pace
+move/claim/decline, and landing interceptions. Roll observations and aerial pass
+statistics come from the host. Selecting a dropdown option is personal; Execute
+submits its exact current semantic command. Ordinary Room remains offline.
+
+Space landings can automatically start movement under the existing rules.
+Movement, high passes, headers, shots and restarts are still being integrated;
+this proof is not a complete online match. Manual paired checks stay deferred.
 
 ## Mac setup, build and local checks
 

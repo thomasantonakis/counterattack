@@ -60,13 +60,13 @@ public sealed class OnlineSharedPauseEditorTests
         Assert.That(pause.Submit("h", new OnlineMatchCommand("match", 66, 65, "shared-pause", "pause.request")).Status, Is.EqualTo(OnlineCommandStatus.SequenceConflict));
     }
 
-    [Test] public void VersionFourControlFramePreservesItsSeparateRevisionAndSequence()
+    [Test] public void VersionFiveControlFramePreservesItsSeparateRevisionAndSequence()
     {
         var message = new OnlineGroundPassMessage { kind = "control", matchId = "match", sequence = 7,
             revision = 3, decisionId = "shared-pause", actionId = OnlineSharedPause.RequestAction };
         var packet = OnlineGroundPassWire.Encode(message).Single();
         var decoded = new OnlineGroundPassWire().Receive(packet, packet.Length);
-        Assert.That(decoded.kind, Is.EqualTo("control")); Assert.That(decoded.version, Is.EqualTo("ground-wire-v4"));
+        Assert.That(decoded.kind, Is.EqualTo("control")); Assert.That(decoded.version, Is.EqualTo("ground-wire-v5"));
         Assert.That(decoded.ToCommand().Sequence, Is.EqualTo(7)); Assert.That(decoded.ToCommand().Revision, Is.EqualTo(3));
         Assert.That(decoded.ToCommand().DecisionId, Is.EqualTo("shared-pause"));
     }
@@ -74,7 +74,7 @@ public sealed class OnlineSharedPauseEditorTests
     [Test] public void OldWireVersionCannotSilentlySkipSharedPause()
     {
         var packet = OnlineGroundPassWire.Encode(new OnlineGroundPassMessage { kind = "hello", matchId = "match" }).Single();
-        var oldJson = Encoding.UTF8.GetString(packet, OnlineGroundPassWire.HeaderSize, packet.Length - OnlineGroundPassWire.HeaderSize).Replace("ground-wire-v4", "ground-wire-v1");
+        var oldJson = Encoding.UTF8.GetString(packet, OnlineGroundPassWire.HeaderSize, packet.Length - OnlineGroundPassWire.HeaderSize).Replace("ground-wire-v5", "ground-wire-v1");
         var oldBytes = Encoding.UTF8.GetBytes(oldJson); System.Buffer.BlockCopy(oldBytes, 0, packet, OnlineGroundPassWire.HeaderSize, oldBytes.Length);
         Assert.Throws<InvalidDataException>(() => new OnlineGroundPassWire().Receive(packet, packet.Length));
     }

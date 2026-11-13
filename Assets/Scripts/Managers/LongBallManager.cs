@@ -846,22 +846,22 @@ public partial class LongBallManager : MonoBehaviour
         float travelDuration = 2.0f;  // Duration of the ball's flight
         float elapsedTime = 0;
         float height = 10f;// Height of the arc for the aerial trajectory
-        // isMoving = true;
-
-        while (elapsedTime < travelDuration)
+        onlineFlightVersion = version;
+        onlineFlightInProgress = true;
+        try
         {
-            if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / travelDuration;
-            // Lerp position along the straight line
-            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
-            // // Add the arc (use a sine curve to create the arc)
-            flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
-            // // Combine the flat position with the height offset to create the arc
-            ball.transform.position = flatPosition;
-            yield return null;  // Wait for the next frame
+            while (elapsedTime < travelDuration)
+            {
+                if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
+                elapsedTime += Time.deltaTime;
+                float progress = elapsedTime / travelDuration;
+                Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+                flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
+                ball.transform.position = flatPosition;
+                yield return null;
+            }
         }
-        // isMoving = false;  // Stop the movement
+        finally { if (onlineFlightVersion == version) onlineFlightInProgress = false; }
         // Ensure the ball ends exactly on the target hex
         if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
         ball.PlaceAtCell(targetHex);

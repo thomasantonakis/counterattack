@@ -20,12 +20,12 @@ $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/ActiveE
 $handoffName = 'ActiveEOSStandaloneLobby.json'
 $handoffKind = 'standalone-relay-v1'
 if ($Gameplay) {
-    $handoffName = 'ActiveEOSGameplayLobby.json'; $handoffKind = 'ground-gameplay-v4'
+    $handoffName = 'ActiveEOSGameplayLobby.json'; $handoffKind = 'ground-gameplay-v5'
     $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/' + $handoffName
 }
-if ($Manual) { $handoffKind = 'ground-manual-v3' }
+if ($Manual) { $handoffKind = 'ground-manual-v4' }
 if ($Room) {
-    $handoffName = 'ActiveEOSRoomLobby.json'; $handoffKind = if ($Manual) { 'room-manual-v2' } else { 'room-gameplay-v2' }
+    $handoffName = 'ActiveEOSRoomLobby.json'; $handoffKind = if ($Manual) { 'room-manual-v3' } else { 'room-gameplay-v3' }
     $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/' + $handoffName
 }
 $publishedSha = $null

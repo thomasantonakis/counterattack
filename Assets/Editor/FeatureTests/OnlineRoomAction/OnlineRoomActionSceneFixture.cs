@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public sealed class OnlineRoomActionSceneFixture
+public sealed partial class OnlineRoomActionSceneFixture
 {
     private OnlineRoomSession host;
     private OnlineGroundPassBoard board;

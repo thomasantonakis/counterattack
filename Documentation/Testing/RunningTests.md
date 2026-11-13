@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+Typed online long passes use PlayMode category `OnlineLongPass` under
+`Assets/Tests/PlayMode/Features/OnlineLongPass/`: 16 passed, zero failed/skipped,
+compilation separately clean. Fixtures cover isolated real rules, authored
+semantic controls and actual Room managers. See
+`Assets/Editor/FeatureTests/OnlineLongPass/Verification.md` for native XML and
+remaining movement/aerial/shot/restart integration.
+
 Online result continuation uses PlayMode category `OnlineResultHold` /
 `OnlineResultHoldPlayModeTests` under
 `Assets/Tests/PlayMode/Features/OnlineResultHold/`: 6 passed, zero failed/skipped.

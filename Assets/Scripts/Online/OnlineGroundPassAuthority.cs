@@ -12,6 +12,7 @@ namespace CounterAttack.Online
         public int x, z;
         public bool onBoard;
         public int passesAttempted, passesCompleted, interceptionsAttempted, interceptionsMade, possessionWon, possessionLost;
+        public int aerialPassesAttempted, aerialPassesTargeted, aerialPassesCompleted;
     }
 
     /// <summary>Detached values for the first authority slice, not a Room restore/save format.</summary>
@@ -42,7 +43,7 @@ namespace CounterAttack.Online
     /// No network message can name a method, synthetic key, team or rigged roll.
     /// Not installed into Room until guest startup/input and clock ownership are wired.
     /// </summary>
-    public sealed class OnlineGroundPassAuthority
+    public sealed partial class OnlineGroundPassAuthority
     {
         public const string StartAction = "ground.start";
         public const string RollAction = "ground.roll";
@@ -132,6 +133,7 @@ namespace CounterAttack.Online
             {
                 if (command.ActionId == StartAction) match.TriggerStandardPass();
                 else if (command.ActionId == RollAction) ground.PerformGroundInterceptionDiceRoll();
+                else if (additionalActions.TryGetValue(command.ActionId,out var execute)) execute();
                 else ground.HandleGroundBallPath(targetActions[command.ActionId]);
             }
             catch
@@ -152,8 +154,9 @@ namespace CounterAttack.Online
         private OnlineGroundPassState ReadState()
         {
             targetActions.Clear();
+            additionalActions.Clear();
             var ballHex = match.ball.GetCurrentHex();
-            var selected = ground.currentTargetHex;
+            var selected = match.longBallManager?.isActivated == true ? match.longBallManager.currentTargetHex : ground.currentTargetHex;
             var interceptor = ground.PendingOnlineInterceptionHex;
             var attacking = match.teamInAttack == MatchManager.TeamInAttack.Home ? "Home" : "Away";
             var state = new OnlineGroundPassState
@@ -177,9 +180,9 @@ namespace CounterAttack.Online
                 connectionHeld = sharedPause?.ConnectionHeld == true,
                 ballOnBoard = ballHex != null, ballX = ballHex == null ? 0 : ballHex.coordinates.x,
                 ballZ = ballHex == null ? 0 : ballHex.coordinates.z,
-                ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress,
+                ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true,
                 attackHasPossession = match.attackHasPossession,
-                passActive = ground.isActivated, awaitingTarget = ground.isAwaitingTargetSelection,
+                passActive = ground.isActivated || match.longBallManager?.isActivated == true, awaitingTarget = ground.isAwaitingTargetSelection,
                 awaitingRoll = ground.isWaitingForDiceRoll,
                 hasSelectedTarget = selected != null, selectedX = selected == null ? 0 : selected.coordinates.x,
                 selectedZ = selected == null ? 0 : selected.coordinates.z,
@@ -196,6 +199,8 @@ namespace CounterAttack.Online
             // Pause/intro need their own shared authority adapter. Never bypass them
             // by accepting a command in this initial, unwired proof slice.
             else if (match.IsGameplayInputBlocked || ground.isQuickThrow || ground.isKickoffPass) state.stage = "blocked";
+            else if (match.longBallManager != null && match.longBallManager.isActivated)
+                ReadLongPassDecision(state, actions, attacking);
             else if (state.ballMoving) state.stage = "resolving";
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {
@@ -219,6 +224,9 @@ namespace CounterAttack.Online
                 state.stage = "action";
                 actions.Add(StartAction);
             }
+            if ((state.stage == "action" || state.stage == "target" || state.stage == "long.target") && match.longBallManager?.isAvailable == true)
+                AddAdditional(actions, LongStartAction, () => match.TriggerLongPass());
+            if (state.stage == "long.target" && ground.isAvailable) actions.Add(StartAction);
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             return state;
         }
@@ -236,6 +244,8 @@ namespace CounterAttack.Online
                 passesAttempted = stats?.passesAttempted ?? 0, passesCompleted = stats?.passesCompleted ?? 0,
                 interceptionsAttempted = stats?.interceptionsAttempted ?? 0, interceptionsMade = stats?.interceptionsMade ?? 0,
                 possessionWon = stats?.possessionWon ?? 0, possessionLost = stats?.possessionLost ?? 0
+                , aerialPassesAttempted = stats?.aerialPassesAttempted ?? 0, aerialPassesTargeted = stats?.aerialPassesTargeted ?? 0,
+                aerialPassesCompleted = stats?.aerialPassesCompleted ?? 0
             };
         }
     }

@@ -116,7 +116,7 @@ namespace CounterAttack.Online
                         var position = board.match.ball.transform.position;
                         Send(new OnlineGroundPassMessage { kind = "presentation", peerNonce = nonce, connectionGeneration = recovery.Generation,
                             presentation = new OnlineGroundPassPresentation { matchId = matchId, publicationSequence = sent,
-                                frameSequence = ++presentationSequence, ballX = position.x, ballY = 1.2f, ballZ = position.z } });
+                                frameSequence = ++presentationSequence, ballX = position.x, ballY = position.y + 1f, ballZ = position.z } });
                         nextPresentation = RecoveryNow + .05;
                     }
                     yield return null;

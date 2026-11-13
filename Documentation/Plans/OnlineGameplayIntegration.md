@@ -22,9 +22,16 @@ instead of advancing gameplay coverage.
 
 Authoritative roll-result publication is implemented: detached, bounded host
 observations carry actor, context, face and jackpot without replaying dice on the
-guest. The extended wire is v4; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
+guest. The extended wire is v5; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
 through overlapping connection/shared holds; focused continuation and offline
 checks passed. Header/stoppage panels still require equivalent integration.
+
+Long-pass integration now has typed start, target preview/confirm, accuracy,
+scatter and defending goalkeeper Pace commands. Authored action choices are
+available in both proof scenes. Full-space landings use the existing automatic
+movement phase; this continuation is the next integration priority, alongside
+remaining aerial/header/shot and restart actions. See OnlineLongPass verification
+for actual focused evidence and remaining boundaries.
 
 ## Ordered implementation batches
 

@@ -13,6 +13,9 @@ namespace CounterAttack.Online
         public InputField targetX, targetZ;
         public Text commandStatus;
         public Dropdown legalTargets;
+        public Dropdown legalCommands;
+        public Button commandButton;
+        private string[] commandOptions=Array.Empty<string>();
         private string[] targetOptions = Array.Empty<string>();
         public event Action<OnlineGroundPassMessage> Requested;
         private OnlineGroundPassState state;
@@ -28,6 +31,7 @@ namespace CounterAttack.Online
             pauseButton.onClick.AddListener(Pause);
             resumeButton.onClick.AddListener(Resume);
             if (legalTargets != null) legalTargets.onValueChanged.AddListener(SelectLegalTarget);
+            if (commandButton != null) commandButton.onClick.AddListener(ExecuteSelectedCommand);
         }
 
         public void Configure(OnlineTeam localTeam)
@@ -55,6 +59,20 @@ namespace CounterAttack.Online
             Refresh();
         }
 
+        private static string CommandLabel(string action) => action switch
+        {
+            "ground.start"=>"Start ground pass", "long.start"=>"Start long pass", "long.roll"=>"Roll",
+            "long.keeper.decline"=>"Keep goalkeeper in position", "long.keeper.claim"=>"Claim long pass",
+            _=>action.Replace("long.target:","Preview / confirm long pass to ")
+                .Replace("long.keeper.move:","Move goalkeeper to ").Replace("ground.target:","Preview / confirm ground pass to ")
+                .Replace("ground.roll","Interception roll").Replace(':',',')
+        };
+        public void ExecuteSelectedCommand()
+        {
+            if(legalCommands==null || legalCommands.value<0 || legalCommands.value>=commandOptions.Length) return;
+            Gameplay(commandOptions[legalCommands.value]);
+        }
+
         public void SetConnected(bool value)
         { connected = value; if (!value) { pending = false; commandStatus.text = "Connection unavailable"; } Refresh(); }
 
@@ -70,6 +88,16 @@ namespace CounterAttack.Online
 
         private void Refresh()
         {
+            var options=state?.legalActions ?? Array.Empty<string>();
+            if(legalCommands!=null && !options.SequenceEqual(commandOptions))
+            {
+                string selected=legalCommands.value>=0 && legalCommands.value<commandOptions.Length?commandOptions[legalCommands.value]:null;
+                commandOptions=options.ToArray();legalCommands.ClearOptions();
+                legalCommands.AddOptions(commandOptions.Select(CommandLabel).ToList());
+                legalCommands.SetValueWithoutNotify(Math.Max(0,Array.IndexOf(commandOptions,selected)));
+            }
+            if(commandButton!=null) commandButton.interactable=CanAct && commandOptions.Length>0;
+            if(legalCommands!=null) legalCommands.interactable=CanAct && commandOptions.Length>0;
             bool Legal(string id) => CanAct && state.legalActions?.Contains(id) == true;
             startButton.interactable = Legal(OnlineGroundPassAuthority.StartAction);
             rollButton.interactable = Legal(OnlineGroundPassAuthority.RollAction);
