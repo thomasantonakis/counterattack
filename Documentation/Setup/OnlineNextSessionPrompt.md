@@ -2,6 +2,38 @@
 
 ## Start here
 
+### Current Windows implementation update (2026-11-13)
+
+User expanded scope to full internet gameplay: continue beyond passes into
+headers, shots, movement, interactions, restarts and set pieces. Defer all
+paired/manual acceptance sessions with the user while continuing focused
+automated Windows work. Priorities and boundaries are tracked in
+Documentation/Plans/OnlineGameplayIntegration.md. Do not stop at long passes.
+
+The recovery and manual prepared-board batches are pushed as 64cd596 and
+52d7bf7. The subsequent Room work adds explicit normal-scene guest startup
+isolation and `Assets/Scenes/OnlineRoomProof.unity`, an authored deterministic
+copy using Room's real serialized managers and a controlled six-token roster.
+It reuses manual commands/recovery, exact catalog/roster checks, accepted
+sequence watermarks, stats/timing snapshots and separate presentation frames.
+Wire is now ground-wire-v3; old exports must be rebuilt.
+
+Focused Windows evidence: startup 2 EditMode + 1 PlayMode, Room action 6
+EditMode + 6 PlayMode, manual/recovery exchange 7 PlayMode, affected wire 13
+EditMode and pause 11 EditMode; all final results pass with zero failures/skips.
+Compilation is separately clean. Earlier recovery 8 EditMode + 8 PlayMode and
+pause 13 PlayMode evidence remains retained. Exact XML and limitations are in
+the feature Verification.md files. No full suites ran. Windows Room export and
+packaged local/login checks passed, including native liveness notification
+registration. Both applications must rebuild for the final v3 framing.
+
+Use Documentation/Setup/OnlineRoomProof.md for current Mac setup/build/local/
+manual Room commands and prepared reverse-role support. Actual two-human
+Windows/Mac Room operation and EOS interruption/rejoin still need both reports;
+do not mark the four-step acceptance complete from the deterministic/local
+checks. No remote Mac shell is available. Continue independent work before
+requesting an external action. Normal offline Room remains the default.
+
 Use **Windows as the development machine and authoritative host**, with the
 family Mac as guest on its hotspot for paired tests. Switching the host to
 macOS is not needed for these four steps. Reverse roles remain a later
@@ -100,7 +132,8 @@ passing OnlineManualControls PlayMode cases). A bounded Windows packaged local
 recovery scenario also passed. Actual EOS interruption/rejoin is unverified;
 do not treat these tests as completion of this step. Step 2 has authored controls
 and a manual host/guest exchange in OnlineGroundPassProof; its paired human run
-is pending. Steps 3–4 remain unimplemented. The live hierarchy/startup audit is
+is pending. Steps 3–4 now have local startup/action implementations and focused
+evidence described at the top of this handoff. The live hierarchy/startup audit is
 recorded in Documentation/Setup/OnlineRoomStartupAudit.md. Continue independent
 Room implementation; lack of Mac access does not block that work.
 

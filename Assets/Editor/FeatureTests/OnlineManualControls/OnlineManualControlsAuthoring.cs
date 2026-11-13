@@ -9,6 +9,32 @@ using UnityEngine.UI;
 
 public static class OnlineManualControlsAuthoring
 {
+    [CliCommand("author_online_target_choices", "Author the legal target dropdown in the owned controls and shared Room prefab")]
+    public static string Targets()
+    {
+        var previous = SceneManager.GetActiveScene(); var path = previous.path;
+        if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode || previous.isDirty || SceneManager.sceneCount != 1)
+            throw new InvalidOperationException("Expected one clean stopped scene");
+        try
+        {
+            var scene = EditorSceneManager.OpenScene(OnlineGroundPassSceneAuthoring.ScenePath, OpenSceneMode.Single);
+            var board = UnityEngine.Object.FindAnyObjectByType<OnlineGroundPassBoard>(); var controls = board.controls;
+            if (controls.legalTargets == null)
+            {
+                var obj = DefaultControls.CreateDropdown(new DefaultControls.Resources()); obj.name = "Authoritative legal targets";
+                obj.transform.SetParent(controls.transform, false);
+                var rect = obj.GetComponent<RectTransform>(); rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
+                rect.anchoredPosition = new Vector2(0,80); rect.sizeDelta = new Vector2(570,28);
+                foreach (var text in obj.GetComponentsInChildren<Text>(true)) text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                controls.legalTargets = obj.GetComponent<Dropdown>(); controls.legalTargets.ClearOptions();
+                EditorSceneManager.MarkSceneDirty(scene);
+                if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save legal target control");
+            }
+            UnityEditor.PrefabUtility.SaveAsPrefabAsset(controls.gameObject,"Assets/Settings/OnlineGroundPassProof/ManualControls.prefab");
+            return scene.path;
+        }
+        finally { EditorSceneManager.OpenScene(path,OpenSceneMode.Single); }
+    }
     [CliCommand("author_online_manual_controls", "Author semantic manual controls in the owned online proof scene")]
     public static string Prepare()
     {

@@ -382,6 +382,7 @@ public partial class GroundBallManager : MonoBehaviour
     
     public void HandleGroundBallPath(HexCell clickedHex, bool isGk = false)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         if (clickedHex != null)
         {
             HexCell ballHex = ball.GetCurrentHex();
@@ -993,6 +994,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     public void PerformGroundInterceptionDiceRoll(RollInputOverride? rollOverride)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         StartCoroutine(PresentGroundInterception(rollOverride));
     }
 

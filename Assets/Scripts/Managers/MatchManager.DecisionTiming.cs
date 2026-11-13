@@ -12,6 +12,15 @@ public partial class MatchManager
     private ThrowInManager timingThrowIn;
     private PenaltyShootoutManager timingShootout;
     public int TimingRollSequence { get; private set; }
+    public DecisionTimingSnapshot CaptureOnlineDecisionTiming() => decisionTiming?.Capture();
+    public float OnlineRegulationSeconds => currentHalfRegulationSeconds;
+    public void AdvanceOnlineAuthorityTime(float seconds)
+    {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
+        if (float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds < 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+        AdvanceDecisionTiming(seconds);
+        AdvanceMatchTime(seconds);
+    }
     public DecisionTimingService DecisionTiming
     {
         get

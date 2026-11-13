@@ -1318,6 +1318,7 @@ public class GameInputManager : MonoBehaviour
 
     private static bool IsGameplayInputBlocked()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return true;
         return (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
             || IsModalUiActive()
             || PenaltyShootoutOrderPanelController.IsAnyPanelActive;

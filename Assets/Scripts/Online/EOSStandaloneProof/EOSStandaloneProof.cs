@@ -18,6 +18,7 @@ public sealed class EOSStandaloneProof : MonoBehaviour
         public string status;
         public string message;
         public string relayControl = "ForceRelays";
+        public bool livenessNotificationRegistration;
     }
 
     private IEnumerator Start()
@@ -70,7 +71,8 @@ public sealed class EOSStandaloneProof : MonoBehaviour
             // Assertion messages contain stage names, never credentials or user IDs.
             message = failure == null ? "Probe completed" : failure is EOSProofFailure
                 ? failure.Message : failure.GetType().Name + ": inspect the local Player.log",
-            relayControl = arguments?.Role == "login" || arguments?.Role == "local" ? "not exercised" : "ForceRelays"
+            relayControl = arguments?.Role == "login" || arguments?.Role == "local" ? "not exercised" : "ForceRelays",
+            livenessNotificationRegistration = failure == null && arguments?.Role == "login"
         };
         if (arguments != null)
         {
@@ -90,6 +92,7 @@ public sealed class EOSStandaloneProof : MonoBehaviour
         {
             var login = session.OpenAndLogin();
             while (login.MoveNext()) yield return login.Current;
+            CounterAttack.Online.EOSGroundPassExchange.VerifyNativeLivenessRegistration(session);
         }
     }
 }

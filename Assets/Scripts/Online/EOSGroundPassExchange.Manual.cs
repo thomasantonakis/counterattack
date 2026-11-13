@@ -10,6 +10,7 @@ namespace CounterAttack.Online
         private IEnumerator ManualHost(OnlineGroundPassAuthority authority, OnlineMatchProtocol protocol, OnlineSharedPause pause)
         {
             EOSProofCheck.Require(board.controls != null, "Authored manual controls required");
+            using var transport = ObserveManualTransport();
             board.controls.Configure(OnlineTeam.Away);
             var version = protocol.Compatibility;
             var recovery = new OnlinePeerRecovery(protocol, version, pause, peerAccount, () => RecoveryNow);
@@ -17,6 +18,11 @@ namespace CounterAttack.Online
             string guestConnection = "guest-home";
             string snapshotDigest = null;
             double nextPublication = 0;
+            double nextTimedSnapshot = 0;
+            string sentBoundary = null;
+            double nextPresentation = 0;
+            long presentationSequence = 0;
+            OnlineGroundPassState finishingSnapshot = null;
             void Publish(OnlineGroundPassState state, string status)
             {
                 Send(new OnlineGroundPassMessage { kind = "state", state = state, status = status,
@@ -40,7 +46,12 @@ namespace CounterAttack.Online
                 while (!done && RecoveryNow < deadline)
                 {
                     Poll();
+                    if (peerLeft) { recovery.Leave(guestConnection, recovery.Generation); throw new EOSProofFailure("Manual peer voluntarily left"); }
+                    if (transportUnavailable)
+                    { transportUnavailable = false; recovery.TransportLost(guestConnection, recovery.Generation); board.controls.SetConnected(false); }
                     recovery.Tick();
+                    if (recovery.State != OnlinePeerState.Connected) finishingSnapshot = null;
+                    if (finishingSnapshot == null) board.match.AdvanceOnlineAuthorityTime(Time.unscaledDeltaTime);
                     while (messages.Count > 0)
                     {
                         var message = messages.Dequeue();
@@ -51,7 +62,8 @@ namespace CounterAttack.Online
                             else if (message.status == "resync-ack")
                             {
                                 if (message.peerNonce == nonce && message.digest == snapshotDigest
-                                    && recovery.AcknowledgeSnapshot(guestConnection, message.connectionGeneration)) ready = true;
+                                    && recovery.AcknowledgeSnapshot(guestConnection, message.connectionGeneration))
+                                { ready = true; board.controls.SetConnected(true); }
                             }
                             else if (Guid.TryParseExact(message.peerNonce, "N", out _))
                             {
@@ -60,6 +72,7 @@ namespace CounterAttack.Online
                                     || recovery.BindAuthenticated(peerAccount, candidate, version))
                                 {
                                     nonce = message.peerNonce; guestConnection = candidate; ready = false;
+                                    finishingSnapshot = null;
                                     var snapshot = pause.Capture(authority); snapshotDigest = Digest(snapshot);
                                     Publish(snapshot, "resync");
                                 }
@@ -70,23 +83,41 @@ namespace CounterAttack.Online
                         // state, even when EOS still authenticates the same product user.
                         if (message.peerNonce != nonce || message.connectionGeneration != recovery.Generation || !recovery.CanSubmit) continue;
                         EOSProofCheck.Require(ready, "Manual handshake before commands");
-                        if (message.kind == "command" || message.kind == "control") Dispatch(guestConnection, message, false);
+                        if (message.kind == "command" || message.kind == "control")
+                        { if (finishingSnapshot == null) Dispatch(guestConnection, message, false); }
                         else if (message.kind == "done")
                         {
-                            var final = pause.Capture(authority);
+                            var final = finishingSnapshot ?? pause.Capture(authority);
                             EOSProofCheck.Require(CompletedManualAction(final) && message.digest == Digest(final), "Manual outcome and next decision agree");
                             Retain(final, "host-manual", recovery.Generation); Send(new OnlineGroundPassMessage { kind = "finish", digest = message.digest,
                                 peerNonce = nonce, connectionGeneration = recovery.Generation }); done = true;
                         }
                         else throw new EOSProofFailure("Unexpected manual host message");
                     }
-                    var state = pause.Capture(authority);
+                    var state = finishingSnapshot ?? pause.Capture(authority);
+                    if (ready && finishingSnapshot == null && CompletedManualAction(state))
+                    { finishingSnapshot = state; board.controls.SetConnected(false); }
                     board.Display(state, "Authority Away | enter target X/Z; Home chooses the pass");
-                    if (nonce != null && !done && (state.publicationSequence != sent || RecoveryNow >= nextPublication))
+                    var boundary = state.revision + ":" + state.sharedPauseRevision + ":" + state.connectionHeld
+                        + ":" + state.stage + ":" + state.owner + ":" + state.rollSequence;
+                    // Commit/hold/owner changes go immediately. Budget and clock
+                    // refreshes are bounded to four full snapshots per second;
+                    // presentation has its own lighter twenty-Hz lane.
+                    if (nonce != null && !done && (boundary != sentBoundary
+                        || state.publicationSequence != sent && RecoveryNow >= nextTimedSnapshot || RecoveryNow >= nextPublication))
                     {
                         Publish(state, recovery.State == OnlinePeerState.TransportLost ? "rejoin-required" : ready ? null : "resync");
                         if (!ready && recovery.State == OnlinePeerState.Connected) snapshotDigest = Digest(state);
-                        sent = state.publicationSequence; nextPublication = RecoveryNow + 1;
+                        sent = state.publicationSequence; sentBoundary = boundary;
+                        nextTimedSnapshot = RecoveryNow + .25; nextPublication = RecoveryNow + 1;
+                    }
+                    if (ready && !done && state.ballMoving && RecoveryNow >= nextPresentation)
+                    {
+                        var position = board.match.ball.transform.position;
+                        Send(new OnlineGroundPassMessage { kind = "presentation", peerNonce = nonce, connectionGeneration = recovery.Generation,
+                            presentation = new OnlineGroundPassPresentation { matchId = matchId, publicationSequence = sent,
+                                frameSequence = ++presentationSequence, ballX = position.x, ballY = 1.2f, ballZ = position.z } });
+                        nextPresentation = RecoveryNow + .05;
                     }
                     yield return null;
                 }
@@ -98,10 +129,11 @@ namespace CounterAttack.Online
         private IEnumerator ManualGuest(OnlineGroundPassReplica replica)
         {
             EOSProofCheck.Require(board.controls != null && !board.authorityRoot.activeSelf, "Authored inert guest manual controls");
+            using var transport = ObserveManualTransport();
             board.controls.Configure(OnlineTeam.Home); board.controls.SetConnected(false);
             string nonce = Guid.NewGuid().ToString("N");
             long generation = 0, heartbeat = 0;
-            double lastHost = RecoveryNow, nextHeartbeat = 0;
+            double lastHost = RecoveryNow, nextHeartbeat = 0, nextRejoin = 0;
             void SendCurrent(OnlineGroundPassMessage message)
             { message.peerNonce = nonce; message.connectionGeneration = generation; Send(message); }
             void Local(OnlineGroundPassMessage command) => SendCurrent(command);
@@ -114,6 +146,7 @@ namespace CounterAttack.Online
                 while (!finished && RecoveryNow < deadline)
                 {
                     Poll();
+                    if (peerLeft) { board.controls.SetConnected(false); throw new EOSProofFailure("Manual authority voluntarily left"); }
                     while (messages.Count > 0)
                     {
                         var message = messages.Dequeue();
@@ -133,6 +166,8 @@ namespace CounterAttack.Online
                                 SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "resync-ack", digest = Digest(message.state) });
                             board.controls.SetConnected(!message.state.connectionHeld && message.status != "resync");
                         }
+                        else if (message.kind == "presentation")
+                        { if (replica.ApplyPresentation(message.presentation)) board.DisplayPresentation(message.presentation); }
                         else if (message.kind == "reply" || message.kind == "control-reply") board.controls.Reply(message);
                         else if (message.kind == "finish")
                         {
@@ -142,15 +177,19 @@ namespace CounterAttack.Online
                         else throw new EOSProofFailure("Unexpected manual guest message");
                     }
                     var state = replica.State;
-                    if (RecoveryNow - lastHost >= 5)
+                    if (transportUnavailable || RecoveryNow - lastHost >= 5)
                     {
-                        board.controls.SetConnected(false); nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
-                        SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); lastHost = RecoveryNow;
+                        board.controls.SetConnected(false);
+                        if (RecoveryNow >= nextRejoin)
+                        {
+                            transportUnavailable = false; nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
+                            SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); lastHost = RecoveryNow; nextRejoin = RecoveryNow + 1;
+                        }
                     }
                     if (generation > 0 && RecoveryNow >= nextHeartbeat)
                     { SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "heartbeat", sequence = ++heartbeat }); nextHeartbeat = RecoveryNow + 1; }
                     if (!doneSent && state != null && CompletedManualAction(state))
-                    { SendCurrent(new OnlineGroundPassMessage { kind = "done", digest = Digest(state) }); doneSent = true; }
+                    { SendCurrent(new OnlineGroundPassMessage { kind = "done", digest = Digest(state) }); doneSent = true; board.controls.SetConnected(false); }
                     yield return null;
                 }
                 EOSProofCheck.Require(finished, "Manual guest action timed out");
@@ -159,7 +198,7 @@ namespace CounterAttack.Online
         }
 
         private static bool CompletedManualAction(OnlineGroundPassState state) => !state.passActive && !state.ballMoving
-            && !state.isSharedPaused && !state.connectionHeld && state.stage == "continuation"
+            && !state.isSharedPaused && !state.connectionHeld && (state.stage == "continuation" || state.stage == "action")
             && state.tokens.Any(token => token.passesAttempted == 1);
     }
 }

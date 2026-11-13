@@ -1,0 +1,67 @@
+# Continuous online gameplay integration
+
+User scope expanded on 2026-11-13: prepare the full game for internet play.
+Continue independent Windows implementation and focused automated testing;
+defer paired/manual acceptance to sessions with the user. Keep the son's Mac
+guest helpers current. Do not stop at long passes or repeat completed probes
+instead of advancing gameplay coverage.
+
+## Verified foundation
+
+- Authenticated reserved teams, command receipts/revisions and connection generations.
+- Shared requester-owned pause, separate connection hold and unscaled networking.
+- Heartbeat and native EOS interruption/close observation, resync acknowledgement,
+  local input loss blocking, and retired-peer/fragment rejection.
+- Normal Room guest startup isolation, persistence/input guards and offline default.
+- Authored Room proof using actual serialized managers, manual semantic controls,
+  legal target choices, host-only rolls/clock, snapshots and presentation frames.
+- Focused deterministic ground-pass/interception, both directions and outcomes,
+  interrupted transport and inert fresh guest checks. See feature verification.
+- Windows packaged Room local/login checks, including native liveness notification
+  registration. Actual paired Room/reconnect acceptance is deferred, not claimed.
+
+## Ordered implementation batches
+
+1. Generalize the authoritative command boundary for multiple action families.
+   Preserve the existing ground flow and receipt/hold behavior while adding
+   semantic action selection and phase/actor/target publications.
+2. Long passes: target preview/commit, accuracy/scatter draws, goalkeeper Pace
+   move/claim/decline, landing recovery/interception and continuation. Reuse
+   real manager entry points and existing rules; do not route remote raw keys.
+3. High passes: target and attacker/defender selection/movement, accuracy/scatter,
+   goalkeeper challenge, aerial continuation and interruption handling.
+4. Headers: eligible jumpers, both-team choices, rolls, challenge/result ownership,
+   header pass/shot continuations and goalkeeper interactions.
+5. Ground movement, dribbling/tackles and First Time Pass, including confirmations,
+   interceptions, possession changes, timing and interrupted continuations.
+6. Shots, snapshots and header shots: legal goal-line targets, blocker/keeper
+   responses, rolls/results, saves/rebounds, loose balls, goals and statistics.
+7. Restarts and set pieces: kickoff, throw-in, corners, free kicks, goal kicks,
+   penalties/shootouts, OOB/scatter, offside and mandatory replacement flows.
+8. Full roster/card/token identity and editable authored replica presentation;
+   full-match frontend/lobby/settings/draft/intro and match lifecycle integration.
+9. Shared substitutions/settings with team-specific confirmations and existing
+   eligibility/ownership rules. Preserve personal camera/inspection/statistics UI.
+10. Recovery/continuation coverage across every integrated family; focused builds
+    and repeatable host/guest scripts, followed by deferred paired acceptance.
+
+This ordering may change when real dependencies make another batch necessary.
+No defeat, AI takeover, host migration or unsupported crash restore is implied.
+Store/production entitlement verification remains distinct from development
+Device ID connectivity and is not proven by these gameplay fixtures.
+
+## Verification and persistence
+
+Each feature gets its own test folder/checklist and independently selectable
+Unity framework coverage. Run explicit focused filters serially through the
+live Editor, resolve failures, preserve XML/progress under
+TestResults/GameplayRegression/Runs/, and commit/push verified batches. Preserve
+unrelated edits and loaded scene state. Use Scene/Prefab authoring through the
+Editor; do not create new UI only at runtime or restyle designer-owned Stats.
+Broader regressions and paired/manual checks are retained for the user; do not
+launch whole suites or wait for the Mac while independent work remains.
+
+Current full-match limitation: OnlineRoomProof is still a controlled six-token,
+first-action proof. It is not a completed playable full online match. The next
+batch must expand its authority/publication boundary rather than label this
+fixture as full-game acceptance.

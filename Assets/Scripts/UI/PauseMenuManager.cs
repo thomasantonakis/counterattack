@@ -76,6 +76,7 @@ public class PauseMenuManager : MonoBehaviour
 
     void Awake()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current != null) { enabled = false; return; }
         // Set up button listeners
         resumeButton.onClick.AddListener(OnResumeButtonClicked);
         saveMatchButton.onClick.AddListener(OnSaveMatchButtonClicked);

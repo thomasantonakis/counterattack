@@ -4,6 +4,13 @@ Inspected from this Windows checkout through live Pipeline hierarchy and source.
 This is an implementation boundary record, not guest Room acceptance evidence.
 Room has not been changed by the recovery/manual prepared-board batches.
 
+Implementation follow-up: Room now has an explicit authored startup gate with
+28 authority-root references, scoped guest context and persistence/input guards.
+Only that startup object/reference change is staged in Room; incidental layout
+serialization is excluded. The audit below records the pre-integration seams.
+The owned OnlineRoomProof uses these actual serialized managers and has focused
+startup/action evidence. See the corresponding feature verification files.
+
 ## Serialized scene boundaries
 
 The live clean Room hierarchy has 39 roots. Rules are separate roots:

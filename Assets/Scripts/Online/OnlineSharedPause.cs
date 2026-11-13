@@ -27,6 +27,7 @@ namespace CounterAttack.Online
         public bool IsPaused { get; private set; }
         public OnlineTeam? Requester { get; private set; }
         public long Revision { get; private set; }
+        public long LastAcceptedSequence(OnlineTeam team) => lastSequence[team];
 
         public OnlineSharedPause(OnlineMatchProtocol protocol, MatchManager match)
         {

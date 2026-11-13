@@ -32,6 +32,7 @@ public static class RoomSaveService
     public static bool CreateLoadedRunCopy(string sourcePath, out string runPath, out string message)
     {
         runPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
         try
         {
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
@@ -103,6 +104,7 @@ public static class RoomSaveService
     public static bool SaveInPlace(MatchManager matchManager, out string savedPath, out string message)
     {
         savedPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
         ApplicationManager.EnsureInstanceExists();
         string activePath = ApplicationManager.Instance.GetLastSavedFilePath();
         if (string.IsNullOrWhiteSpace(activePath))
@@ -125,6 +127,7 @@ public static class RoomSaveService
     public static bool SaveAs(MatchManager matchManager, string requestedName, bool overwrite, out string savedPath, out string message)
     {
         savedPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
         string filePath = BuildSaveAsPath(requestedName);
         if (string.IsNullOrWhiteSpace(filePath))
         {
@@ -138,6 +141,7 @@ public static class RoomSaveService
     public static bool SaveToPath(MatchManager matchManager, string filePath, bool overwrite, out string savedPath, out string message)
     {
         savedPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
         if (matchManager == null)
         {
             message = "MatchManager is not available.";

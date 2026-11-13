@@ -18,8 +18,9 @@ namespace CounterAttack.Online
     [Serializable]
     public sealed class OnlineGroundPassState
     {
-        public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester;
+        public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester, catalogId;
         public long revision, publicationSequence, rollSequence, sharedPauseRevision;
+        public long homeAcceptedSequence, awayAcceptedSequence, homePauseSequence, awayPauseSequence;
         public bool isSharedPaused, connectionHeld;
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
@@ -27,6 +28,11 @@ namespace CounterAttack.Online
         public bool hasSelectedTarget, hasInterceptor;
         public string[] legalActions;
         public OnlineGroundPassTokenState[] tokens;
+        public DecisionTimingSnapshot timing;
+        public float regulationSeconds;
+        public int half;
+        public bool clockRunning;
+        public MatchManager.TeamStats homeStats, awayStats;
     }
 
     /// <summary>
@@ -47,6 +53,17 @@ namespace CounterAttack.Online
         private long decisionSequence, publicationSequence;
         private bool executing, faulted;
         private OnlineSharedPause sharedPause;
+        private string boundaryFingerprint;
+
+        [Serializable] private sealed class Boundary
+        {
+            public string stage, owner, gameState, possession, lastTouch;
+            public bool ballOnBoard, ballMoving, selected, interceptor, paused, connectionHeld;
+            public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
+            public long pauseRevision;
+            public string[] actions;
+            public OnlineGroundPassTokenState[] tokens;
+        }
 
         public OnlineGroundPassAuthority(MatchManager match, OnlineMatchProtocol protocol)
         {
@@ -69,9 +86,23 @@ namespace CounterAttack.Online
         {
             var state = ReadState();
             var next = JsonUtility.ToJson(state);
-            if (next != fingerprint || decisionId != null && !protocol.HasPendingDecision && state.legalActions.Length > 0)
+            var boundary = JsonUtility.ToJson(new Boundary { stage=state.stage, owner=state.owner, gameState=state.gameState,
+                possession=state.possessionTeam, lastTouch=state.lastTouch, ballOnBoard=state.ballOnBoard, ballMoving=state.ballMoving,
+                ballX=state.ballX, ballZ=state.ballZ, selected=state.hasSelectedTarget, selectedX=state.selectedX, selectedZ=state.selectedZ,
+                interceptor=state.hasInterceptor, interceptorX=state.interceptorX, interceptorZ=state.interceptorZ,
+                paused=state.isSharedPaused, pauseRevision=state.sharedPauseRevision, connectionHeld=state.connectionHeld,
+                actions=state.legalActions, tokens=state.tokens });
+            bool boundaryChanged = boundary != boundaryFingerprint
+                || decisionId != null && !protocol.HasPendingDecision && state.legalActions.Length > 0;
+            if (next != fingerprint || boundaryChanged)
             {
                 publicationSequence = checked(publicationSequence + 1);
+                fingerprint = next;
+            }
+            // Clock/budget publications must not revoke an otherwise unchanged
+            // legal command merely because it spent time in transit.
+            if (boundaryChanged)
+            {
                 protocol.WithdrawDecision();
                 decisionId = null;
                 if (!faulted && state.legalActions.Length > 0)
@@ -79,7 +110,7 @@ namespace CounterAttack.Online
                     decisionId = "ground-" + checked(++decisionSequence);
                     protocol.PublishDecision(decisionId, state.owner == "Home" ? OnlineTeam.Home : OnlineTeam.Away, state.legalActions);
                 }
-                fingerprint = next;
+                boundaryFingerprint = boundary;
             }
             state.matchId = protocol.MatchId;
             state.decisionId = decisionId;
@@ -127,6 +158,15 @@ namespace CounterAttack.Online
             var attacking = match.teamInAttack == MatchManager.TeamInAttack.Home ? "Home" : "Away";
             var state = new OnlineGroundPassState
             {
+                catalogId = protocol.Compatibility.Catalog,
+                homeAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Home),
+                awayAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Away),
+                homePauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Home) ?? 0,
+                awayPauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Away) ?? 0,
+                timing = match.CaptureOnlineDecisionTiming(), regulationSeconds = match.OnlineRegulationSeconds,
+                half = match.currentHalf, clockRunning = match.isClockRunning,
+                homeStats = JsonUtility.FromJson<MatchManager.TeamStats>(JsonUtility.ToJson(match.gameData.stats.homeTeamStats)),
+                awayStats = JsonUtility.FromJson<MatchManager.TeamStats>(JsonUtility.ToJson(match.gameData.stats.awayTeamStats)),
                 stage = "continuation", owner = attacking, gameState = match.currentState.ToString(),
                 possessionTeam = attacking, lastTouch = TokenId(match.LastTokenToTouchTheBallOnPurpose),
                 rollSequence = match.TimingRollSequence,

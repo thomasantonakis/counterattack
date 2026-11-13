@@ -1,5 +1,14 @@
 # Shared pause ownership in the prepared online board
 
+Room/v3 follow-up: current wire is ground-wire-v3 (the paired v2 evidence below
+is historical). Final affected EditMode scope: 11 passed, 0 failed/skipped,
+`TestResults/GameplayRegression/Runs/20261112T070135110Z/results.xml`.
+Current commands are in Documentation/Setup/OnlineRoomProof.md. The initial
+follow-up run at Runs/20261112T060159717Z had two framing-fixture failures:
+Unity expanded unused null DTO fields into multiple packets. The codec now
+omits unused null payloads; both framing cases pass without weakening their
+single-control-packet assertions. No new paired v3 pause result is claimed.
+
 ## Task checklist
 
 - [x] Resolve pause requester from the authenticated connection's reserved team.

@@ -155,6 +155,13 @@ namespace CounterAttack.Online
             return true;
         }
 
+        public long LastAcceptedSequence(OnlineTeam team)
+        {
+            foreach (var participant in accounts.Values)
+                if (participant.Team == team) return participant.LastSequence;
+            throw new ArgumentOutOfRangeException(nameof(team));
+        }
+
         /// <summary>Authority revokes a boundary when live rules no longer offer it.</summary>
         public void WithdrawDecision()
         {

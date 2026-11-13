@@ -40,6 +40,7 @@ namespace CounterAttack.Online
                 throw new ArgumentOutOfRangeException(nameof(timeoutSeconds));
             timeout = timeoutSeconds;
             lastClock = Now();
+            pause.SetConnectionHold(true);
         }
 
         private double Now()

@@ -8,12 +8,18 @@ mode="${1:-packets}"
 case "$mode" in
     packets) ;;
     gameplay) scene=Assets/Scenes/OnlineGroundPassProof.unity; output=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app ;;
-    *) printf 'Usage: %s [packets|gameplay]\n' "$0" >&2; exit 2 ;;
+    room) scene=Assets/Scenes/OnlineRoomProof.unity; output=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app ;;
+    *) printf 'Usage: %s [packets|gameplay|room]\n' "$0" >&2; exit 2 ;;
 esac
 pipeline() { unity command "$@" --project-path "$repo_root" --caller codex --skill unity-cli --format json; }
 unity status --project-path "$repo_root" --format json | jq -e '.success and any(.data.instances[]?; .state == "ready")' >/dev/null
 unity recompile --project-path "$repo_root" --format json | jq -e '.success and .data.compilationFailed == false' >/dev/null
-pipeline editor_status | jq -e '.success and .data.result.playMode == "stopped" and (.data.result.compiling | not)' >/dev/null
+ready_deadline=$((SECONDS + 90))
+while :; do
+    if editor="$(pipeline editor_status)" && printf '%s\n' "$editor" | jq -e '.success and .data.result.playMode == "stopped" and (.data.result.compiling | not) and (.data.result.domainReloadInProgress | not)' >/dev/null; then break; fi
+    if [ "$SECONDS" -ge "$ready_deadline" ]; then printf 'Editor did not finish reload; inspect its log/dialog before retrying.\n' >&2; exit 1; fi
+    sleep 2
+done
 pipeline list_open_scenes | jq -e '.success and all(.data.result.scenes[]; .isDirty == false)' >/dev/null
 pipeline test_status | jq -e '.success and (.data.result.status == "completed" or .data.result.status == "no_tests")' >/dev/null
 printf 'Building only the standalone EOS proof scene through the open Editor...\n'

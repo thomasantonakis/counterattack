@@ -3,7 +3,7 @@ set -euo pipefail
 role="${1:-guest}"
 mode="${2:-packets}"
 interaction="${3:-automatic}"
-case "$interaction" in automatic) ;; manual) if [ "$role" != guest ] || [ "$mode" != gameplay ]; then printf 'Manual requires guest gameplay.\n' >&2; exit 2; fi ;; *) printf 'Expected automatic or manual.\n' >&2; exit 2 ;; esac
+case "$interaction" in automatic) ;; manual) if [ "$role" != guest ] || { [ "$mode" != gameplay ] && [ "$mode" != room ]; }; then printf 'Manual requires guest gameplay or room.\n' >&2; exit 2; fi ;; *) printf 'Expected automatic or manual.\n' >&2; exit 2 ;; esac
 case "$role" in guest|login|local) ;; *) printf 'Usage: %s [login|guest|local] [packets|gameplay]\n' "$0" >&2; exit 2 ;; esac
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
@@ -12,10 +12,13 @@ handoff_name=ActiveEOSStandaloneLobby.json
 handoff_kind=standalone-relay-v1
 case "$mode" in
     packets) if [ "$role" = local ]; then printf 'Local role requires gameplay mode.\n' >&2; exit 2; fi ;;
-    gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; handoff_kind=ground-gameplay-v2 ;;
+    gameplay) app=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app; handoff_name=ActiveEOSGameplayLobby.json; handoff_kind=ground-gameplay-v3 ;;
+    room) app=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app; handoff_name=ActiveEOSRoomLobby.json; handoff_kind=room-gameplay-v1 ;;
     *) printf 'Expected packets or gameplay mode.\n' >&2; exit 2 ;;
 esac
-if [ "$interaction" = manual ]; then handoff_kind=ground-manual-v1; fi
+if [ "$interaction" = manual ]; then
+    if [ "$mode" = room ]; then handoff_kind=room-manual-v1; else handoff_kind=ground-manual-v2; fi
+fi
 if [ ! -d "$app/Contents/MacOS" ]; then printf 'Build the Mac proof first.\n' >&2; exit 1; fi
 player="$(find "$app/Contents/MacOS" -maxdepth 1 -type f -perm -111 -print -quit)"
 if [ -z "$player" ]; then printf 'No executable in the proof app.\n' >&2; exit 1; fi
@@ -38,7 +41,7 @@ if [ ! -f "$run/result.json" ]; then printf 'No report; inspect local Player.log
 cat "$run/result.json"
 printf '\nStandalone result: %s/result.json\n' "$run"
 jq -e '.status == "passed"' "$run/result.json" >/dev/null
-if [ "$mode" = gameplay ] && [ "$role" != login ]; then
+if { [ "$mode" = gameplay ] || [ "$mode" = room ]; } && [ "$role" != login ]; then
     test -f "$run/gameplay-evidence.json"
     if [ "$interaction" = manual ]; then
         jq -e '.role == "guest-manual"' "$run/gameplay-evidence.json" >/dev/null

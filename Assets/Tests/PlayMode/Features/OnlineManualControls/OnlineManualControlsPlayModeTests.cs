@@ -17,6 +17,6 @@ public sealed class OnlineManualControlsPlayModeTests
         => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture, new object[] { side });
     [UnityTest] public IEnumerator PendingAndLocalLossStopSubmission()
         => (IEnumerator)Bridge.GetMethod("RunPending").Invoke(fixture, null);
-    [UnityTest] public IEnumerator RealExchangeRecoversInterruptedTransport([Values(1,-1)] int side)
-        => (IEnumerator)Bridge.GetMethod("RunTransport").Invoke(fixture, new object[] { side });
+    [UnityTest] public IEnumerator RealExchangeRecoversInterruptedTransport([Values(1,-1)] int side, [Values(false,true)] bool intercept)
+        => (IEnumerator)Bridge.GetMethod("RunTransport").Invoke(fixture, new object[] { side, intercept });
 }

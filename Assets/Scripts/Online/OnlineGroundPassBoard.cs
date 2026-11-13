@@ -38,6 +38,7 @@ namespace CounterAttack.Online
             match.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
             match.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
             match.teamInAttack = MatchManager.TeamInAttack.Home;
+            match.isClockRunning = true;
             grid.cells = new HexCell[grid.GridWidth, grid.GridHeight];
             foreach (var cell in cells)
             {
@@ -83,11 +84,19 @@ namespace CounterAttack.Online
             if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * 1.2f;
             if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
                 + "\nState " + state.publicationSequence + " | Rolls " + state.rollSequence
+                + " | Clock " + state.regulationSeconds.ToString("F1")
+                + (state.connectionHeld ? "\nConnection interrupted - waiting for player" : state.isSharedPaused ? "\nPaused by " + state.pauseRequester : "")
                 + "\n" + string.Join("  ", state.tokens.Where(t => t.passesAttempted > 0 || t.interceptionsAttempted > 0)
                     .Select(t => t.id + " passes " + t.passesCompleted + "/" + t.passesAttempted + " interceptions " + t.interceptionsMade));
         }
 
         private Vector3 Center(int x, int z) => grid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));
+
+        public void DisplayPresentation(OnlineGroundPassPresentation frame)
+        {
+            // Trusted, validated presentation values only; completion never calls rules.
+            displayedBall.position = new Vector3(frame.ballX, frame.ballY, frame.ballZ);
+        }
 
         private void Update()
         {

@@ -22,7 +22,7 @@ public sealed class OnlineManualControlsSceneFixture
     private OnlineGroundPassBoard guest;
     private IEnumerator hostFlow, guestFlow;
 
-    public IEnumerator RunTransport(int side)
+    public IEnumerator RunTransport(int side, bool intercept)
     {
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode(OnlineGroundPassSceneAuthoring.ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
         board = Object.FindAnyObjectByType<OnlineGroundPassBoard>();
@@ -79,6 +79,9 @@ public sealed class OnlineManualControlsSceneFixture
             if (confirmed && board.match.groundBallManager.isWaitingForDiceRoll && !interrupted)
             {
                 dropped = true; interrupted = true; now += 6;
+                type.GetMethod("MarkTransportUnavailable", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(guestExchange, null);
+                type.GetMethod("MarkTransportUnavailable", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(hostExchange, null);
+                Assert.That(guest.controls.pauseButton.interactable, Is.False, "reported local transport loss stops submission immediately");
                 hostInbox.Clear(); guestInbox.Clear();
             }
             else if (interrupted && !restored && pause.ConnectionHeld)
@@ -90,7 +93,10 @@ public sealed class OnlineManualControlsSceneFixture
             if (restored && generation >= 2 && board.controls.rollButton.interactable && !rolled)
             {
                 Assert.That(stale, Is.Not.Null); hostInbox.Enqueue(stale);
-                Random.InitState(1234); Click(board.controls.rollButton); rolled = true;
+                var desired = intercept ? 6 : 1; var seed = 0;
+                for (; seed < 1000; seed++) { Random.InitState(seed); if (board.match.helperFunctions.DiceRoll()._roll == desired) break; }
+                Assert.That(seed, Is.LessThan(1000)); Random.InitState(seed);
+                Click(board.controls.rollButton); rolled = true;
             }
             yield return null;
         }
@@ -98,6 +104,7 @@ public sealed class OnlineManualControlsSceneFixture
         Assert.That(interrupted && restored && rolled, Is.True);
         Assert.That(board.match.TimingRollSequence, Is.EqualTo(1));
         Assert.That(board.match.gameData.stats.playerStats.Sum(entry => entry.stats.passesAttempted), Is.EqualTo(1));
+        Assert.That(board.match.gameData.stats.playerStats.Sum(entry => entry.stats.interceptionsMade), Is.EqualTo(intercept ? 1 : 0));
         Assert.That(File.Exists(output + "/host/gameplay-evidence.json") && File.Exists(output + "/guest/gameplay-evidence.json"), Is.True);
         Assert.That(guest.authorityRoot.activeSelf, Is.False);
     }
@@ -108,16 +115,19 @@ public sealed class OnlineManualControlsSceneFixture
         var controls = board.controls;
         controls.Configure(OnlineTeam.Home);
         var publication = new OnlineGroundPassState { matchId = "pending-test", decisionId = "preview", owner = "Home",
-            stage = "target", legalActions = new[] { OnlineGroundPassAuthority.TargetAction(0,6) }, revision = 4 };
+            stage = "target", legalActions = new[] { OnlineGroundPassAuthority.TargetAction(0,6) }, revision = 4, homeAcceptedSequence = 7 };
         controls.Display(publication);
+        Assert.That(controls.legalTargets, Is.Not.Null);
+        Assert.That(controls.legalTargets.options.Select(option => option.text), Does.Contain("Target (0,6)"));
         publication.legalActions[0] = "wrong";
         int sent = 0; OnlineGroundPassMessage accepted = null;
         controls.Requested += message => { sent++; accepted = message; };
         controls.targetX.text = "0"; controls.targetZ.text = "6";
-        controls.Target(); controls.Target(); controls.Pause();
+        controls.Target(); controls.Target(); controls.Escape();
         Assert.That(sent, Is.EqualTo(1), "pending confirmation cannot submit twice or race pause");
         Assert.That(accepted.actionId, Is.EqualTo(OnlineGroundPassAuthority.TargetAction(0,6)));
         Assert.That(accepted.revision, Is.EqualTo(4), "displayed decision was detached from its publisher");
+        Assert.That(accepted.sequence, Is.EqualTo(8), "a fresh view resumes after authoritative accepted receipts");
         controls.SetConnected(false); controls.Target(); Assert.That(sent, Is.EqualTo(1));
         controls.Reply(new OnlineGroundPassMessage { status = "Disconnected" });
         Assert.That(controls.commandStatus.text, Is.EqualTo("Disconnected"));

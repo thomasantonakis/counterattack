@@ -1,5 +1,15 @@
 # EOS ground-pass command/state proof
 
+Room/v3 follow-up: explicit catalog/roster checks, receipt watermarks and
+separate animation payloads now require ground-wire-v3. The final affected
+EditMode wire fixture passed 13/13 with zero failures/skips:
+`TestResults/GameplayRegression/Runs/20261112T070127603Z/results.xml`.
+V3 uses message identities on every fragment and a 26-byte header, still below
+the EOS packet limit. Strict framing and recovery restart behavior have
+separate checks; the historical v1/v2 header sizes below describe those runs.
+Both applications must rebuild. Paired v1/v2 evidence below remains historical;
+use Documentation/Setup/OnlineRoomProof.md for the current focused Room proof.
+
 Shared-pause v2 follow-up: see
 `Assets/Editor/FeatureTests/OnlineSharedPause/Verification.md`. The completed
 paired evidence below is the earlier v1 run; it does not prove the new pause

@@ -203,6 +203,7 @@ public static class RoomLiveLogService
     private static bool TryResolveWritableActiveSavePath(out string filePath, out string message)
     {
         filePath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match logs."; return false; }
         // Reading save context must never resurrect a destroyed application during
         // MatchManager.OnDestroy / Play Mode shutdown.
         var application = ApplicationManager.Instance;

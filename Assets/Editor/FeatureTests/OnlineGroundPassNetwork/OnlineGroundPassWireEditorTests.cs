@@ -26,7 +26,7 @@ public sealed class OnlineGroundPassWireEditorTests
     {
         var state = State(); state.legalActions = Enumerable.Range(0, actions).Select(i => "ground.target:" + i + ":0").ToArray();
         var packets = OnlineGroundPassWire.Encode(new OnlineGroundPassMessage { kind = "state", matchId = "match", state = state }).ToArray();
-        Assert.That(packets.All(p => p.Length <= 910), Is.True, "EOS packet limit is respected");
+        Assert.That(packets.All(p => p.Length <= OnlineGroundPassWire.FragmentPayload + OnlineGroundPassWire.HeaderSize && p.Length <= 1170), Is.True, "EOS packet limit is respected");
         var reader = new OnlineGroundPassWire(); OnlineGroundPassMessage decoded = null;
         for (var i = 0; i < packets.Length; i++)
         {

@@ -1,10 +1,29 @@
 # Running gameplay regressions
 
+Room online startup uses category `OnlineRoomStartup`: EditMode fixture
+`OnlineRoomStartupEditorTests` in `Assets/Editor/FeatureTests/OnlineRoomStartup/`
+(2 passed) and PlayMode fixture `OnlineRoomStartupPlayModeTests` in
+`Assets/Tests/PlayMode/Features/OnlineRoomStartup/` (1 passed).
+The owned real Room action uses category `OnlineRoomAction`: EditMode
+`OnlineRoomPublicationEditorTests` in `Assets/Editor/FeatureTests/OnlineRoomAction/`
+(6 passed), PlayMode `OnlineRoomActionPlayModeTests` in
+`Assets/Tests/PlayMode/Features/OnlineRoomAction/` (6 passed).
+All have zero failed/skipped tests; compilation separately clean. Native XML,
+fixture boundaries and external acceptance are in those Verification.md files.
+Do not count these as a full regression suite or paired online Room acceptance.
+Broader user-run checks: `Assets/Tests/PlayMode/LegacyGroundPassPlayModeTests.cs`
+(`LegacyGroundPassPlayModeTests`) for offline passes;
+`Assets/Editor/RoomSaveBrowserEditorTests.cs` (`RoomSaveBrowserEditorTests`) for
+offline save browsing; and `Assets/Tests/PlayMode/Features/DecisionTiming/`
+(`DecisionTimingPlayModeTests.FileTimingRestore`) for offline timing persistence.
+Run only affected cases if failures
+are reported; no broad suites were started by these online batches.
+
 Manual prepared-board controls and recovery exchange use explicit PlayMode
 category/fixture `OnlineManualControls` / `OnlineManualControlsPlayModeTests`
-under `Assets/Tests/PlayMode/Features/OnlineManualControls/`. Final scope: 5
+under `Assets/Tests/PlayMode/Features/OnlineManualControls/`. Final scope: 7
 passed, zero failed/skipped, compilation separately clean. Three cases cover
-authored button/input behavior; two run real host/guest exchange iterators
+authored button/input behavior; four run real host/guest exchange iterators
 through encoded interrupted fake transport. See
 `Assets/Editor/FeatureTests/OnlineManualControls/Verification.md` for native XML,
 paired local evidence and unexecuted EOS/Room acceptance.

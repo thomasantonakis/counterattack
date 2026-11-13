@@ -29,6 +29,54 @@ namespace CounterAttack.Online
         private readonly Action<OnlineGroundPassMessage> sendOverride;
         private readonly Action pollOverride;
         private readonly Func<double> recoveryClock;
+        private bool manualTransport, transportUnavailable, peerLeft;
+
+        private void MarkTransportUnavailable()
+        { transportUnavailable = true; if (board.controls != null) board.controls.SetConnected(false); }
+
+        private sealed class TransportSubscription : IDisposable
+        {
+            private Action release;
+            internal TransportSubscription(Action release) { this.release = release; }
+            public void Dispose() { var action = release; release = null; action?.Invoke(); }
+        }
+
+        private IDisposable ObserveManualTransport()
+        {
+            manualTransport = true;
+            if (session == null) return new TransportSubscription(() => manualTransport = false);
+            var p2p = session.Platform.GetP2PInterface();
+            bool Peer(ProductUserId local, ProductUserId peer, SocketId? actual) => local?.ToString() == session.UserId.ToString()
+                && peer?.ToString() == peerAccount && actual.HasValue && actual.Value.SocketName == socket.SocketName;
+            var interrupted = new AddNotifyPeerConnectionInterruptedOptions { LocalUserId = session.UserId, SocketId = socket };
+            var closed = new AddNotifyPeerConnectionClosedOptions { LocalUserId = session.UserId, SocketId = socket };
+            var interruption = p2p.AddNotifyPeerConnectionInterrupted(ref interrupted, this, (ref OnPeerConnectionInterruptedInfo info) =>
+            { if (Peer(info.LocalUserId, info.RemoteUserId, info.SocketId)) transportUnavailable = true; });
+            var closure = p2p.AddNotifyPeerConnectionClosed(ref closed, this, (ref OnRemoteConnectionClosedInfo info) =>
+            {
+                if (!Peer(info.LocalUserId, info.RemoteUserId, info.SocketId)) return;
+                if (info.Reason == ConnectionClosedReason.ClosedByPeer) peerLeft = true;
+                else transportUnavailable = true;
+            });
+            if (interruption == 0 || closure == 0)
+            {
+                if (interruption != 0) p2p.RemoveNotifyPeerConnectionInterrupted(interruption);
+                if (closure != 0) p2p.RemoveNotifyPeerConnectionClosed(closure);
+                throw new EOSProofFailure("Registering authenticated peer liveness notifications");
+            }
+            return new TransportSubscription(() => { p2p.RemoveNotifyPeerConnectionInterrupted(interruption);
+                p2p.RemoveNotifyPeerConnectionClosed(closure); manualTransport = false; });
+        }
+
+        internal static void VerifyNativeLivenessRegistration(EOSStandaloneSession authenticatedSession)
+        {
+            // Registration/cleanup needs one authenticated local user, not a
+            // second machine. No packet or connection to self is created.
+            var probe = new EOSGroundPassExchange(null, null)
+            { session = authenticatedSession, peerAccount = authenticatedSession.UserId.ToString(),
+                socket = new SocketId { SocketName = "CARecoveryLogin" } };
+            using (probe.ObserveManualTransport()) { }
+        }
 
         internal EOSGroundPassExchange(OnlineGroundPassBoard board, string output) { this.board = board; this.output = output; }
 
@@ -53,7 +101,10 @@ namespace CounterAttack.Online
                 var send = new SendPacketOptions { LocalUserId = session.UserId, RemoteUserId = remote,
                     SocketId = socket, Channel = Channel, Data = new ArraySegment<byte>(fragment),
                     AllowDelayedDelivery = true, Reliability = PacketReliability.ReliableOrdered };
-                EOSProofCheck.Require(session.Platform.GetP2PInterface().SendPacket(ref send) == Result.Success, "Sending gameplay fragment");
+                var result = session.Platform.GetP2PInterface().SendPacket(ref send);
+                if (manualTransport && (result == Result.NoConnection || result == Result.TimedOut || result == Result.LimitExceeded))
+                { MarkTransportUnavailable(); return; }
+                EOSProofCheck.Require(result == Result.Success, "Sending gameplay fragment");
             }
         }
 
@@ -71,7 +122,9 @@ namespace CounterAttack.Online
                 EOSProofCheck.Require(result == Result.Success, "Receiving gameplay fragment");
                 EOSProofCheck.Require(sender?.ToString() == remote.ToString() && channel == Channel
                     && receivedSocket.SocketName == socket.SocketName, "Gameplay peer/socket/channel identity");
-                var message = wire.Receive(receiveBuffer, (int)written);
+                OnlineGroundPassMessage message;
+                try { message = wire.Receive(receiveBuffer, (int)written, manualTransport); }
+                catch (InvalidDataException) when (manualTransport) { continue; }
                 if (message == null) continue;
                 EOSProofCheck.Require(message.matchId == matchId, "Gameplay match identity");
                 EOSProofCheck.Require(messages.Count < 64, "Gameplay receive queue bound");
@@ -102,7 +155,7 @@ namespace CounterAttack.Online
         internal IEnumerator Local()
         {
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v2", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v3", "ground-rules-v1", "prepared-board-v1");
             var protocol = new OnlineMatchProtocol("local-ground", "home", "away", "away", version);
             protocol.BindAuthenticatedAccount("home", "guest", version); protocol.BindAuthenticatedAccount("away", "host", version);
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
@@ -162,7 +215,7 @@ namespace CounterAttack.Online
         {
             SetPeer(session, remote, socket, lobby);
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v2", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v3", "ground-rules-v1", "prepared-board-v1");
             var protocol = new OnlineMatchProtocol(matchId, remote.ToString(), session.UserId.ToString(), session.UserId.ToString(), version);
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(remote.ToString(), "guest-home", version), "Binding guest Home identity");
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");
@@ -247,7 +300,7 @@ namespace CounterAttack.Online
         {
             SetPeer(session, remote, socket, lobby);
             EOSProofCheck.Require(!board.authorityRoot.activeSelf, "Guest gameplay managers must remain inactive");
-            var replica = new OnlineGroundPassReplica(matchId);
+            var replica = new OnlineGroundPassReplica(matchId, board.tokens.Select(token => (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber), "prepared-board-v1");
             if (Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
             {
                 var manual = ManualGuest(replica);

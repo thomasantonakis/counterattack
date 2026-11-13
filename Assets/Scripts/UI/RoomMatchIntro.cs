@@ -36,6 +36,7 @@ public sealed class RoomMatchIntro : MonoBehaviour
 
     private void Awake()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current != null) { enabled = false; return; }
         Instance = this;
         IsHoldingMatch = ApplicationManager.Instance != null && ApplicationManager.Instance.ConsumeDraftRoomIntro();
         if (introUI != null) introUI.SetActive(false);

@@ -1,5 +1,14 @@
 # Online recovery
 
+Room/clock follow-up rerun: 8 EditMode passed at
+`TestResults/GameplayRegression/Runs/20261112T063233913Z/results.xml` and 8
+PlayMode passed at `Runs/20261112T063248480Z/results.xml`, zero failed/skipped;
+compilation separately clean. A new coordinator holds from construction until
+the first authenticated snapshot acknowledgement. Manual exchange observes
+authenticated EOS interruption/close notifications and send failures, with
+bounded heartbeat fallback. Known graceful leave is distinct from transport
+loss. Actual two-machine EOS interruption/rejoin is deferred with the user.
+
 - [x] Injectable monotonic liveness timeout and sequenced authenticated heartbeats.
 - [x] Authority connection generations; retire peers before permitting return.
 - [x] Reserved-account return; snapshot acknowledgement gates release.

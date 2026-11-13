@@ -1298,7 +1298,7 @@ public partial class MatchManager : MonoBehaviour
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
     public int CurrentHalf => currentHalf;
     public bool IsPauseMenuOpen => isPauseMenuOpen;
-    public bool IsGameplayInputBlocked => isPauseMenuOpen || RoomInputOwnership.IntroActive;
+    public bool IsGameplayInputBlocked => CounterAttack.Online.OnlineRoomSession.IsGuest || isPauseMenuOpen || RoomInputOwnership.IntroActive;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
     public bool IsStopPlayRestartPending => pendingStopPlayRestart != PendingStopPlayRestartKind.None;
@@ -3716,6 +3716,7 @@ public partial class MatchManager : MonoBehaviour
 
     private void Awake()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         Debug.Log("MatchManager Awake() - Starting Initialization");
         Debug.Log($"⚠️ MatchManager Awake() - Entity ID: {GetEntityId()}");
 
@@ -3817,6 +3818,7 @@ public partial class MatchManager : MonoBehaviour
 
     IEnumerator Start()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) yield break;
         Debug.Log($"⚠️ MatchManager Start() - Entity ID: {GetEntityId()}");
         RoomAIDecisionTraceService.ResetSession();
         RoomLiveLogService.ResetSession();
@@ -3933,6 +3935,7 @@ public partial class MatchManager : MonoBehaviour
 
     private void Update()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         // // Handle state transitions or global inputs, like starting the match
         // if (currentState == GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
         // {
@@ -4406,6 +4409,7 @@ public partial class MatchManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         GameInputManager.OnClick += OnClickReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
@@ -5190,6 +5194,7 @@ public partial class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass(PlayerToken pendingSetPieceTaker = null)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         bool isInitialKickoffPass = currentState == GameState.KickoffBlown && pendingSetPieceTaker == null;
         PlayerToken kickoffTaker = isInitialKickoffPass
             ? ball?.GetCurrentHex()?.GetOccupyingToken() ?? LastTokenToTouchTheBallOnPurpose
@@ -6655,6 +6660,7 @@ public partial class MatchManager : MonoBehaviour
     
     public void LoadGameSettingsFromJson()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         ApplicationManager.EnsureInstanceExists();
         string filePath = string.Empty;
         bool hasExplicitRuntimeSaveContext = ApplicationManager.Instance.HasExplicitSaveContext &&

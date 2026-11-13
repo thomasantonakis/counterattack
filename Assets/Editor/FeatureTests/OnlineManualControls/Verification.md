@@ -42,3 +42,14 @@ Its evidence records recoveryGenerations=2, sharedPauseRevision=2 and one roll.
 The export is local and ignored; no credentials or application bundle are
 committed. The packaged local check is separate from the five framework cases
 and does not exercise EOS or the two-human interactive exchange.
+
+Room/wire-v3 follow-up: final manual/exchange scope is **7 passed,
+0 failed/skipped**, native XML
+`TestResults/GameplayRegression/Runs/20261112T070149071Z/results.xml`.
+This additionally checks fresh controls resume after accepted sequence
+watermarks, shared-authority Escape, authored legal-target choices and separate
+presentation frames. The four real-exchange cases cover both attacking
+directions and successful/failed interceptions with the live authority clock,
+immediate reported-loss input blocking, rebind and stale-peer rejection. Actual
+Mac/Windows paired human acceptance remains pending. The current Room commands
+are in Documentation/Setup/OnlineRoomProof.md; both applications must rebuild.
