@@ -9,11 +9,18 @@ using Newtonsoft.Json;
 namespace CounterAttack.Online
 {
     [Serializable]
+    public sealed class OnlinePlayerPresentation
+    {
+        public string id;
+        public float x,y,z;
+    }
+    [Serializable]
     public sealed class OnlineGroundPassPresentation
     {
         public string matchId;
         public long publicationSequence, frameSequence;
         public float ballX, ballY, ballZ;
+        public OnlinePlayerPresentation[] players;
     }
     [Serializable]
     public sealed class OnlineGroundPassMessage
@@ -48,7 +55,7 @@ namespace CounterAttack.Online
 
         public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message)
         {
-            message.version = "ground-wire-v5";
+            message.version = "ground-wire-v6";
             // Unity serializes null inline DTO fields as fully expanded default
             // objects. Keep heartbeats/controls small instead of embedding an
             // unused full roster/statistics/timing payload in every message.
@@ -61,7 +68,7 @@ namespace CounterAttack.Online
             {
                 using var stream = new MemoryStream();
                 using var writer = new BinaryWriter(stream);
-                writer.Write((ushort)0xCA05); writer.Write(index); writer.Write(count); writer.Write(payload.Length); writer.Write(identity);
+                writer.Write((ushort)0xCA06); writer.Write(index); writer.Write(count); writer.Write(payload.Length); writer.Write(identity);
                 writer.Write(payload, index * FragmentPayload, Math.Min(FragmentPayload, payload.Length - index * FragmentPayload));
                 yield return stream.ToArray();
             }
@@ -74,7 +81,7 @@ namespace CounterAttack.Online
                 if (packet == null || length < HeaderSize + 1 || length > FragmentPayload + HeaderSize || length > packet.Length)
                     throw new InvalidDataException("Gameplay fragment size");
                 using var reader = new BinaryReader(new MemoryStream(packet, 0, length));
-                if (reader.ReadUInt16() != 0xCA05) throw new InvalidDataException("Gameplay fragment version");
+                if (reader.ReadUInt16() != 0xCA06) throw new InvalidDataException("Gameplay fragment version");
                 var index = reader.ReadUInt16(); var count = reader.ReadUInt16(); var size = reader.ReadInt32();
                 var identity = new Guid(reader.ReadBytes(16));
                 if (size < 1 || size > PayloadLimit || count != (size + FragmentPayload - 1) / FragmentPayload
@@ -98,7 +105,7 @@ namespace CounterAttack.Online
                 var json = new UTF8Encoding(false, true).GetString(pending.ToArray());
                 Reset();
                 var message = JsonConvert.DeserializeObject<OnlineGroundPassMessage>(json);
-                if (message == null || message.version != "ground-wire-v5" || !OnlineProtocolIds.IsValid(message.matchId)
+                if (message == null || message.version != "ground-wire-v6" || !OnlineProtocolIds.IsValid(message.matchId)
                     || !(new[] { "hello", "command", "state", "presentation", "reply", "control", "control-reply", "done", "finish" }).Contains(message.kind))
                     throw new InvalidDataException("Gameplay message contract");
                 return message;
@@ -149,6 +156,12 @@ namespace CounterAttack.Online
             bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value) && Math.Abs(value) <= 100;
             if (frame == null || frame.matchId != matchId || frame.publicationSequence != sequence || frame.frameSequence < 1
                 || frame.frameSequence < presentationFrame || !Finite(frame.ballX) || !Finite(frame.ballY) || !Finite(frame.ballZ)) return false;
+            if(frame.players!=null)
+            {
+                var state=State;
+                if(frame.players.Length>64 || state==null || frame.players.Any(p=>p==null || !state.tokens.Any(t=>t.id==p.id)
+                    || !Finite(p.x) || !Finite(p.y) || !Finite(p.z)) || frame.players.Select(p=>p.id).Distinct().Count()!=frame.players.Length) return false;
+            }
             var json = JsonUtility.ToJson(frame);
             if (frame.frameSequence == presentationFrame) return json == presentationJson;
             presentationFrame = frame.frameSequence; presentationJson = json; return true;
@@ -162,6 +175,7 @@ namespace CounterAttack.Online
                 || state.legalActions == null || state.legalActions.Length > 4096
                 || state.legalActions.Any(a => !OnlineProtocolIds.IsValid(a))) return false;
             if (catalog != null && state.catalogId != catalog || roster != null && !roster.SetEquals(state.tokens.Select(token => token.id))) return false;
+            if(!string.IsNullOrEmpty(state.selectedPlayer) && !state.tokens.Any(token=>token.id==state.selectedPlayer)) return false;
             if (state.rollSequence < rollSequence || state.rollSequence < 0 || !ValidRolls(state)) return false;
             var prior = State;
             if (prior?.rolls != null && state.rolls != null)

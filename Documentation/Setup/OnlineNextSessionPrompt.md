@@ -16,7 +16,7 @@ isolation and `Assets/Scenes/OnlineRoomProof.unity`, an authored deterministic
 copy using Room's real serialized managers and a controlled six-token roster.
 It reuses manual commands/recovery, exact catalog/roster checks, accepted
 sequence watermarks, stats/timing snapshots and separate presentation frames.
-Wire is now ground-wire-v5; old exports must be rebuilt. Subsequent batches
+Wire is now ground-wire-v6; old exports must be rebuilt. Subsequent batches
 5943f15 and 987fd30 add immutable host roll observations and result continuation
 holds. The current long-pass batch adds typed action selection, accuracy/scatter,
 keeper Pace and landing recovery; see its feature verification. Continue into
@@ -29,7 +29,7 @@ Compilation is separately clean. Earlier recovery 8 EditMode + 8 PlayMode and
 pause 13 PlayMode evidence remains retained. Exact XML and limitations are in
 the feature Verification.md files. No full suites ran. Windows Room export and
 packaged local/login checks passed, including native liveness notification
-registration. Both applications must rebuild for the current v5 framing.
+registration. Both applications must rebuild for the current v6 framing.
 
 Use Documentation/Setup/OnlineRoomProof.md for current Mac setup/build/local/
 manual Room commands and prepared reverse-role support. Actual two-human

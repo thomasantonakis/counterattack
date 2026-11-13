@@ -102,6 +102,12 @@ namespace CounterAttack.Online
         {
             // Trusted, validated presentation values only; completion never calls rules.
             displayedBall.position = new Vector3(frame.ballX, frame.ballY, frame.ballZ);
+            if(frame.players!=null)
+                foreach(var player in frame.players)
+                {
+                    int index=Array.FindIndex(tokens,token=>OnlineRollPublication.ActorId(token)==player.id);
+                    if(index>=0) displayedTokens[index].position=new Vector3(player.x,player.y,player.z);
+                }
         }
 
         private void Update()

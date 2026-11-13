@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Basic online movement uses category `OnlineMovement`: 6 EditMode and 7 PlayMode
+passed, zero failed/skipped, compilation separately clean. Tests are under
+`Assets/Editor/FeatureTests/OnlineMovement/` and
+`Assets/Tests/PlayMode/Features/OnlineMovement/`. See the Editor folder checklist
+for native XML, affected checks and remaining Final Third/interaction coverage.
+
 Typed online long passes use PlayMode category `OnlineLongPass` under
 `Assets/Tests/PlayMode/Features/OnlineLongPass/`: 16 passed, zero failed/skipped,
 compilation separately clean. Fixtures cover isolated real rules, authored

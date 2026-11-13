@@ -22,7 +22,7 @@ instead of advancing gameplay coverage.
 
 Authoritative roll-result publication is implemented: detached, bounded host
 observations carry actor, context, face and jackpot without replaying dice on the
-guest. The extended wire is v5; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
+guest. The extended wire is v6; both desktop exports must rebuild. The common result panel now freezes its unscaled countdown and local dismissal
 through overlapping connection/shared holds; focused continuation and offline
 checks passed. Header/stoppage panels still require equivalent integration.
 
@@ -32,6 +32,12 @@ available in both proof scenes. Full-space landings use the existing automatic
 movement phase; this continuation is the next integration priority, alongside
 remaining aerial/header/shot and restart actions. See OnlineLongPass verification
 for actual focused evidence and remaining boundaries.
+
+Basic online movement now has typed selection, destinations, phase completion,
+connection-held real movement, Room control coverage and read-only player frames.
+Final Third movement takes priority next because long-pass landings can open it
+before ordinary movement continues. Dribbling/duels and other interruption
+choices remain subsequent slices; basic movement is not full movement coverage.
 
 ## Ordered implementation batches
 

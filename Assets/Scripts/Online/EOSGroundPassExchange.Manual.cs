@@ -111,12 +111,14 @@ namespace CounterAttack.Online
                         sent = state.publicationSequence; sentBoundary = boundary;
                         nextTimedSnapshot = RecoveryNow + .25; nextPublication = RecoveryNow + 1;
                     }
-                    if (ready && !done && state.ballMoving && RecoveryNow >= nextPresentation)
+                    if (ready && !done && (state.ballMoving || state.playerMoving) && RecoveryNow >= nextPresentation)
                     {
                         var position = board.match.ball.transform.position;
                         Send(new OnlineGroundPassMessage { kind = "presentation", peerNonce = nonce, connectionGeneration = recovery.Generation,
                             presentation = new OnlineGroundPassPresentation { matchId = matchId, publicationSequence = sent,
-                                frameSequence = ++presentationSequence, ballX = position.x, ballY = position.y + 1f, ballZ = position.z } });
+                                frameSequence = ++presentationSequence, ballX = position.x, ballY = position.y + 1f, ballZ = position.z,
+                                players=board.tokens.Select(token=>new OnlinePlayerPresentation{id=OnlineRollPublication.ActorId(token),
+                                    x=token.transform.position.x,y=token.transform.position.y+.5f,z=token.transform.position.z}).ToArray() } });
                         nextPresentation = RecoveryNow + .05;
                     }
                     yield return null;

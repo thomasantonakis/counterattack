@@ -25,6 +25,8 @@ namespace CounterAttack.Online
         public bool isSharedPaused, connectionHeld;
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
+        public bool movementActive, playerMoving;
+        public string selectedPlayer;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
         public bool hasSelectedTarget, hasInterceptor;
         public string[] legalActions;
@@ -61,6 +63,8 @@ namespace CounterAttack.Online
         {
             public string stage, owner, gameState, possession, lastTouch;
             public bool ballOnBoard, ballMoving, selected, interceptor, paused, connectionHeld;
+            public bool movementActive, playerMoving;
+            public string selectedPlayer;
             public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
             public long pauseRevision;
             public string[] actions;
@@ -92,6 +96,7 @@ namespace CounterAttack.Online
                 ballX=state.ballX, ballZ=state.ballZ, selected=state.hasSelectedTarget, selectedX=state.selectedX, selectedZ=state.selectedZ,
                 interceptor=state.hasInterceptor, interceptorX=state.interceptorX, interceptorZ=state.interceptorZ,
                 paused=state.isSharedPaused, pauseRevision=state.sharedPauseRevision, connectionHeld=state.connectionHeld,
+                movementActive=state.movementActive,playerMoving=state.playerMoving,selectedPlayer=state.selectedPlayer,
                 actions=state.legalActions, tokens=state.tokens });
             bool boundaryChanged = boundary != boundaryFingerprint
                 || decisionId != null && !protocol.HasPendingDecision && state.legalActions.Length > 0;
@@ -189,6 +194,9 @@ namespace CounterAttack.Online
                 hasInterceptor = interceptor != null, interceptorX = interceptor == null ? 0 : interceptor.coordinates.x,
                 interceptorZ = interceptor == null ? 0 : interceptor.coordinates.z,
                 movementAvailable = match.movementPhaseManager?.isAvailable == true,
+                movementActive = match.movementPhaseManager?.isActivated == true,
+                playerMoving = match.movementPhaseManager?.isPlayerMoving == true,
+                selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
                 tokens = match.playerTokenManager.allTokens.Where(t => t != null).Select(ReadToken)
@@ -202,6 +210,7 @@ namespace CounterAttack.Online
             else if (match.longBallManager != null && match.longBallManager.isActivated)
                 ReadLongPassDecision(state, actions, attacking);
             else if (state.ballMoving) state.stage = "resolving";
+            else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {
                 state.stage = "interception";
@@ -227,6 +236,14 @@ namespace CounterAttack.Online
             if ((state.stage == "action" || state.stage == "target" || state.stage == "long.target") && match.longBallManager?.isAvailable == true)
                 AddAdditional(actions, LongStartAction, () => match.TriggerLongPass());
             if (state.stage == "long.target" && ground.isAvailable) actions.Add(StartAction);
+            bool preview = state.stage == "action" || state.stage == "target" || state.stage == "long.target";
+            if(preview && match.movementPhaseManager?.isAvailable == true && !state.movementActive)
+                AddAdditional(actions,MovementStartAction,()=>match.TriggerMovement());
+            if(state.movementActive && !match.movementPhaseManager.isCommitted && match.movementPhaseManager.OnlineBasicMovementAvailable)
+            {
+                if(ground.isAvailable) actions.Add(StartAction);
+                if(match.longBallManager?.isAvailable == true) AddAdditional(actions,LongStartAction,()=>match.TriggerLongPass());
+            }
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             return state;
         }
