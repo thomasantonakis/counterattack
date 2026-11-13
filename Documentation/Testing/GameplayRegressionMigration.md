@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Online high-pass integration adds 21 independently selectable native PlayMode
+cases (category OnlineHighPass), with compilation clean and zero failed/skipped
+in `Runs/20261113T214426081Z/results.xml`. LegacyHighPassBoxSequencePlayModeTests
+was retained and passed (1 case) in `Runs/20261113T214249988Z/results.xml`. Its
+fixture now enters open play through the normal match phase API before pressing
+C: StartMatch correctly offers only a ground pass at kickoff. The original box
+entry, keeper move/rush, F3 and header assertions are preserved. See the
+OnlineHighPass feature verification for the initial failure and affected scope.
+
 Restart selection feedback adds 24 native cases for stopped throw-in targeting,
 post-header MP commitment, corner HP yellow targets and F3 orange hover. Final
 focused runs passed these 24 plus 3 existing high-pass selection and 8 F3 timing

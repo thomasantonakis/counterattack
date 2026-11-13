@@ -545,6 +545,8 @@ public partial class HighPassManager : MonoBehaviour
 
     public void ActivateHighPass()
     {
+        onlineResolutionVersion++;
+        onlineTargetFingerprint=null;
         gkRushedOut = false;
         IsDirectGoalKick = false;
         CaptureHighPassKickContextForInterceptionSuppression();
@@ -567,6 +569,8 @@ public partial class HighPassManager : MonoBehaviour
 
     public void ActivateGoalkeeperKick(bool commitImmediately = false)
     {
+        onlineResolutionVersion++;
+        onlineTargetFingerprint=null;
         gkRushedOut = false;
         IsDirectGoalKick = MatchManager.Instance.currentState == MatchManager.GameState.GoalKick;
         CaptureHighPassKickContextForInterceptionSuppression();
@@ -1589,6 +1593,7 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator PresentAccuracyRoll(RollInputOverride? rollOverride)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         // TODO: Refine order and logs
         lockedAttacker = null;
         // Placeholder for dice roll logic (will be expanded in later steps)
@@ -1627,6 +1632,7 @@ public partial class HighPassManager : MonoBehaviour
         if (committedTargetMissed) ClearMissedTargetHighlight();
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
             accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         // Adjust threshold based on difficulty
         if (accuratePass)
         {
@@ -1668,6 +1674,7 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator PresentInaccuracyDirection(RollInputOverride? rollOverride)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         // directionRoll = 0; // S  : PerformDirectionRoll(1)
         // directionRoll = 1; // SW : PerformDirectionRoll(2)
         // directionRoll = 2; // NW : PerformDirectionRoll(3)
@@ -1689,6 +1696,7 @@ public partial class HighPassManager : MonoBehaviour
         string rolledDirection = looseBallManager.TranslateRollToDirection(diceRoll);
         Debug.Log($"Rolled {diceRollLabel}: Moving in {rolledDirection} direction");
         yield return SingleRollResolutionPresentation.ResolveLooseBall(this, directionRoll, rolledDirection, true);
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         isWaitingForDirectionRoll = false;
         isWaitingForDistanceRoll = true;
         SingleRollResolutionPresentation.Inaccuracy(this, () => isWaitingForDistanceRoll,
@@ -1716,6 +1724,7 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator PresentInaccuracyDistance(RollInputOverride? rollOverride)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         Debug.Log("Performing Direction roll to find Long Pass destination.");
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "high_pass_distance",
@@ -1731,6 +1740,7 @@ public partial class HighPassManager : MonoBehaviour
         int distanceRoll = diceResult.roll;
         // int distanceRoll = 5; // Melina Mode
         yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, $"{distanceRoll} hexes", false);
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         isWaitingForDistanceRoll = false;
         Debug.Log($"Distance Roll: {distanceRoll} hexes away from target.");
         // Calculate the final target hex based on the direction and distance
@@ -1775,6 +1785,7 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator HandleHighPassMovement(HexCell targetHex)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         HexCell positionOfpasser = ball.GetCurrentHex();
         if (targetHex == null)
         {
@@ -1785,23 +1796,30 @@ public partial class HighPassManager : MonoBehaviour
         Vector3 targetPosition = targetHex.GetHexCenter();
         float height = 10f;
         int steps = 90;
-        for (int i = 0; i <= steps; i++)
+        onlineFlightVersion=onlineVersion;onlineFlightInProgress=true;
+        try
         {
-            float t = i / (float)steps;
-            Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, t);
-            flatPosition.y += height * Mathf.Sin(Mathf.PI * t);
-            if (
-                float.IsNaN(flatPosition.x) || float.IsInfinity(flatPosition.x)
-                || float.IsNaN(flatPosition.y) || float.IsInfinity(flatPosition.y)
-                || float.IsNaN(flatPosition.z) || float.IsInfinity(flatPosition.z)
-            )
+            for (int i = 0; i <= steps; i++)
             {
-                Debug.LogError($"❌ Invalid flatPosition at i={i}: {flatPosition}");
-                yield break;
+                if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
+                while(online && MatchManager.Instance.IsPauseMenuOpen)
+                {yield return null;if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;}
+                float t = i / (float)steps;
+                Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, t);
+                flatPosition.y += height * Mathf.Sin(Mathf.PI * t);
+                if (float.IsNaN(flatPosition.x) || float.IsInfinity(flatPosition.x)
+                    || float.IsNaN(flatPosition.y) || float.IsInfinity(flatPosition.y)
+                    || float.IsNaN(flatPosition.z) || float.IsInfinity(flatPosition.z))
+                {
+                    Debug.LogError($"❌ Invalid flatPosition at i={i}: {flatPosition}");
+                    yield break;
+                }
+                ball.transform.position = flatPosition;
+                yield return null;
             }
-            ball.transform.position = flatPosition;
-            yield return null;
         }
+        finally{if(onlineFlightVersion==onlineVersion)onlineFlightInProgress=false;}
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         ball.PlaceAtCell(targetHex);
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}");
 
@@ -1813,6 +1831,7 @@ public partial class HighPassManager : MonoBehaviour
             yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
         }
 
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         StartCoroutine(PostBallMovementHandling());
     }
 
@@ -1886,6 +1905,7 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator PostBallMovementHandling()
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         // Debug.Log("[PostBallMovementHandling] Entered coroutine");
         // After movement completes, check if the ball is out of bounds
         if (finalTargetHex.isOutOfBounds)
@@ -1910,6 +1930,7 @@ public partial class HighPassManager : MonoBehaviour
                 while (isWaitingForDefGKChallengeDecision)
                 {
                     yield return null;
+                    if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
                 }
             }
             else
@@ -2201,12 +2222,14 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator MoveSelectedAttackerToHex(HexCell hex)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         ClearHighlightsPreservingCommittedTarget();
         isWaitingForAttackerMove = false;  // Stop waiting for attacker move
         isWaitingForAttackerSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         // yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(hex, selectedToken, false));  // Pass the selected token
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex: hex, token: selectedToken, isCalledDuringMovement: false, shouldCountForDistance: true, shouldCarryBall: false));  // Pass the selected token
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         movementPhaseManager.isActivated = false;
         selectedToken = null;
         StartDefenderMovementPhase();
@@ -2243,6 +2266,7 @@ public partial class HighPassManager : MonoBehaviour
 
     private IEnumerator MoveSelectedDefenderToHex(HexCell hex)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         ClearHighlightsPreservingCommittedTarget();
         if (selectedToken == hexGrid.GetDefendingGK()) didGKMoveInDefPhase = true;
         PlayerToken movedDefender = selectedToken;
@@ -2250,6 +2274,7 @@ public partial class HighPassManager : MonoBehaviour
         isWaitingForDefenderSelection = false;  // Stop waiting for attacker selection
         Debug.Log($"Moving {selectedToken.name} to hex {hex.coordinates}");
         yield return StartCoroutine(movementPhaseManager.MoveTokenToHex(targetHex: hex, token: selectedToken, isCalledDuringMovement: false, shouldCountForDistance: true));  // Pass the selected token
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         HexCell movedDefenderHex = movedDefender != null ? movedDefender.GetCurrentHex() : hex;
         if (ShouldSuppressHeaderInterceptionForDefensiveHpMove(movedDefender, movedDefenderHex))
         {
@@ -2267,9 +2292,11 @@ public partial class HighPassManager : MonoBehaviour
 
     private async Task MoveGKForHP(HexCell hex)
     {
+        int onlineVersion=onlineResolutionVersion;bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         ClearHighlightsPreservingCommittedTarget();
         Debug.Log($"🧤 {defGK.name} moving to {hex.name}");
         await helperFunctions.StartCoroutineAndWait(movementPhaseManager.MoveTokenToHex(hex, defGK, false));
+        if(!IsOnlineHighResolutionCurrent(onlineVersion,online))return;
         Debug.Log($"🧤 {defGK.name} moved to {hex.name}");
         ConfirmGKHighPassRush();
     }
@@ -2305,6 +2332,8 @@ public partial class HighPassManager : MonoBehaviour
 
     public void CleanUpHighPass(bool preserveTargetPrecompute = false)
     {
+        onlineResolutionVersion++;onlineKeeperMoving=false;onlineTargetFingerprint=null;
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)DuelResolutionPanelController.Instance?.CancelSingle(this);
         committedTargetMissed = false;
         missedTargetCleared = false;
         IsDirectGoalKick = false;

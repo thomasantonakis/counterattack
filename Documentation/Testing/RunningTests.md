@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Online high passes use PlayMode category `OnlineHighPass`: 21 passed, zero
+failed/skipped, compilation separately clean. Tests live under
+`Assets/Tests/PlayMode/Features/OnlineHighPass/`; implementation/verification
+checklist and exact XML are in `Assets/Editor/FeatureTests/OnlineHighPass/`.
+The affected manual exchange (7) and offline box sequence (1) also passed.
+
 Online automatic deadline admission uses PlayMode category `OnlineAutomaticRoll`
 under `Assets/Tests/PlayMode/Features/OnlineAutomaticRoll/`: 4 passed, zero
 failed/skipped, compilation separately clean. The Editor feature folder records

@@ -2,6 +2,12 @@
 
 ## Start here
 
+High-pass integration now has 21 focused PlayMode passes (both directions, actual
+Room, preparation, accuracy/scatter/control, keeper responses, holds, cancellation
+and deadlines). See Assets/Editor/FeatureTests/OnlineHighPass/Verification.md.
+Continue contested header nominations/results/targeting, then shots and restarts.
+Keep paired/manual sessions deferred while independent implementation continues.
+
 Further Windows checkpoints add host dice results (5943f15), result holds
 (987fd30), long passes/action controls (f4a209e), movement/player presentation
 (09ddeed), and Final Third selection/continuation. See the OnlineRollResults,

@@ -33,7 +33,8 @@ submits its exact current semantic command. Ordinary Room remains offline.
 Space landings can automatically start movement under the existing rules.
 Basic movement now supports player selection, destinations, team-phase completion
 and read-only player animation. Final Third player movement/forfeit and return
-to ordinary movement are integrated. Dribbling/interactions, high passes,
+to ordinary movement are integrated. High passes support preparation, accuracy,
+scatter, keeper rush responses and unchallenged ball control. Dribbling/interactions,
 headers, shots and restarts are still being integrated;
 this proof is not a complete online match. Manual paired checks stay deferred.
 

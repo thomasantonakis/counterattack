@@ -64,12 +64,19 @@ namespace CounterAttack.Online
             "ground.start"=>"Start ground pass", "long.start"=>"Start long pass", "long.roll"=>"Roll",
             "long.keeper.decline"=>"Keep goalkeeper in position", "long.keeper.claim"=>"Claim long pass",
             "movement.start"=>"Start movement", "movement.forfeit"=>"Finish this team's movement",
+            "high.start"=>"Start high pass", "high.roll"=>"Roll high pass", "high.skip"=>"Keep players in position",
+            "high.keeper.stay"=>"Goalkeeper challenges from here", "high.keeper.decline"=>"Decline goalkeeper challenge",
+            "header.control"=>"Bring the ball down", "header.control.roll"=>"Roll ball control",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")
                 .Replace("long.keeper.move:","Move goalkeeper to ").Replace("ground.target:","Preview / confirm ground pass to ")
                 .Replace("movement.target:","Move to ").Replace("movement.player:home:","Select Home #").Replace("movement.player:away:","Select Away #")
                 .Replace("final-third.target:","Final Third move to ").Replace("final-third.player:home:","Select Home #").Replace("final-third.player:away:","Select Away #")
+                .Replace("high.target:","Preview / confirm high pass to ").Replace("high.move:","High pass move to ")
+                .Replace("high.player:home:","Select Home #").Replace("high.player:away:","Select Away #")
+                .Replace("high.keeper.move:","Goalkeeper challenge at ").Replace("header.control.player:home:","Control with Home #")
+                .Replace("header.control.player:away:","Control with Away #")
                 .Replace("ground.roll","Interception roll").Replace(':',',')
         };
         public void ExecuteSelectedCommand()

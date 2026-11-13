@@ -2002,12 +2002,12 @@ public partial class HeaderManager : MonoBehaviour
         await helperFunctions.StartCoroutineAndWait(SingleRollResolutionPresentation.Resolve(this, controlRoll,
             controlResult,
             continueWithScatter: !controlled, scatterOwner: looseBallManager));
-        if (version != controlPresentationVersion || !isActiveAndEnabled) return;
+        if (!IsOnlineControlContinuationCurrent(version)) return;
         if (controlled)
         {
             Debug.Log($"You beauty! {controllingToken.name} brings the ball down on their feet! Continue as if it were a SuccessfulTackle");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(controllingToken.GetCurrentHex()));
-            if (version != controlPresentationVersion || !isActiveAndEnabled) return;
+            if (!IsOnlineControlContinuationCurrent(version)) return;
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 , MatchManager.ActionType.AerialPassCompleted

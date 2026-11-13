@@ -30,6 +30,15 @@ public partial class HighPassManager
         r.Decision(DecisionKind.HighPassAttackerMovement, isActivated && (isWaitingForAttackerSelection || isWaitingForAttackerMove), movementPhaseManager?.isPlayerMoving != true);
         r.Decision(DecisionKind.HighPassDefenderMovement, isActivated && (isWaitingForDefenderSelection || isWaitingForDefenderMove), movementPhaseManager?.isPlayerMoving != true);
         r.Decision(DecisionKind.HighPassGoalkeeperRush, isActivated && isWaitingForDefGKChallengeDecision);
+        if (MatchManager.Instance?.IsOnlineAuthorityControlled == true)
+        {
+            void OnlineRoll(string phase,bool waiting,OnlineHighPassIntent intent)=>r.Roll(this,phase,waiting,
+                ()=>isActivated && OnlineDecisionStage==phase,()=>{TryExecuteOnlineHighPass(intent);});
+            OnlineRoll("accuracy",isWaitingForAccuracyRoll,OnlineHighPassIntent.Accuracy);
+            OnlineRoll("direction",isWaitingForDirectionRoll,OnlineHighPassIntent.Direction);
+            OnlineRoll("distance",isWaitingForDistanceRoll,OnlineHighPassIntent.Distance);
+            return;
+        }
         r.Roll(this, "accuracy", isWaitingForAccuracyRoll, () => isActivated && isWaitingForAccuracyRoll, OnKeyReceived);
         r.Roll(this, "direction", isWaitingForDirectionRoll, () => isActivated && isWaitingForDirectionRoll, OnKeyReceived);
         r.Roll(this, "distance", isWaitingForDistanceRoll, () => isActivated && isWaitingForDistanceRoll, OnKeyReceived);
@@ -70,7 +79,10 @@ public partial class HeaderManager
         r.Decision(DecisionKind.HeadedPassTarget, isActivated && isWaitingForHeaderTargetSelection);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isActivated && isWaitingForHeadedBackPassChoice);
         r.Roll(this, "header", isWaitingForHeaderRoll, () => isActivated && isWaitingForHeaderRoll, OnKeyReceived);
-        r.Roll(this, "control", isWaitingForControlRoll, () => isActivated && isWaitingForControlRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"control",isWaitingForControlRoll,()=>isActivated && isWaitingForControlRoll,
+                ()=>{TryExecuteOnlineHeaderControl(OnlineHeaderControlIntent.Roll);});
+        else r.Roll(this, "control", isWaitingForControlRoll, () => isActivated && isWaitingForControlRoll, OnKeyReceived);
         r.Roll(this, "interception", isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);
         r.Roll(this, "backpass", isWaitingForHeadedBackPassRoll, () => isActivated && isWaitingForHeadedBackPassRoll, OnKeyReceived);
     }

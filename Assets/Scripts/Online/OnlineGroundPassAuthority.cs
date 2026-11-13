@@ -161,7 +161,8 @@ namespace CounterAttack.Online
             targetActions.Clear();
             additionalActions.Clear();
             var ballHex = match.ball.GetCurrentHex();
-            var selected = match.longBallManager?.isActivated == true ? match.longBallManager.currentTargetHex : ground.currentTargetHex;
+            var selected = match.highPassManager?.isActivated == true ? match.highPassManager.currentTargetHex
+                : match.longBallManager?.isActivated == true ? match.longBallManager.currentTargetHex : ground.currentTargetHex;
             var interceptor = ground.PendingOnlineInterceptionHex;
             var attacking = match.teamInAttack == MatchManager.TeamInAttack.Home ? "Home" : "Away";
             var state = new OnlineGroundPassState
@@ -185,9 +186,10 @@ namespace CounterAttack.Online
                 connectionHeld = sharedPause?.ConnectionHeld == true,
                 ballOnBoard = ballHex != null, ballX = ballHex == null ? 0 : ballHex.coordinates.x,
                 ballZ = ballHex == null ? 0 : ballHex.coordinates.z,
-                ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true,
+                ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true || match.highPassManager?.OnlineFlightInProgress==true,
                 attackHasPossession = match.attackHasPossession,
-                passActive = ground.isActivated || match.longBallManager?.isActivated == true, awaitingTarget = ground.isAwaitingTargetSelection,
+                passActive = ground.isActivated || match.longBallManager?.isActivated == true || match.highPassManager?.isActivated==true
+                    || HeaderRules?.isActivated==true, awaitingTarget = ground.isAwaitingTargetSelection,
                 awaitingRoll = ground.isWaitingForDiceRoll,
                 hasSelectedTarget = selected != null, selectedX = selected == null ? 0 : selected.coordinates.x,
                 selectedZ = selected == null ? 0 : selected.coordinates.z,
@@ -209,8 +211,10 @@ namespace CounterAttack.Online
             else if (match.IsGameplayInputBlocked || ground.isQuickThrow || ground.isKickoffPass) state.stage = "blocked";
             else if (match.longBallManager != null && match.longBallManager.isActivated)
                 ReadLongPassDecision(state, actions, attacking);
+            else if(match.highPassManager?.isActivated==true) ReadHighPassDecision(state,actions);
             else if (state.ballMoving) state.stage = "resolving";
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
+            else if(HeaderRules?.isActivated==true) ReadHeaderControlDecision(state,actions,HeaderRules);
             else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {
@@ -234,16 +238,19 @@ namespace CounterAttack.Online
                 state.stage = "action";
                 actions.Add(StartAction);
             }
-            if ((state.stage == "action" || state.stage == "target" || state.stage == "long.target") && match.longBallManager?.isAvailable == true)
+            if ((state.stage == "action" || state.stage == "target" || state.stage == "long.target" || state.stage=="high.target") && match.longBallManager?.isAvailable == true)
                 AddAdditional(actions, LongStartAction, () => match.TriggerLongPass());
-            if (state.stage == "long.target" && ground.isAvailable) actions.Add(StartAction);
-            bool preview = state.stage == "action" || state.stage == "target" || state.stage == "long.target";
+            if ((state.stage == "long.target" || state.stage=="high.target") && ground.isAvailable) actions.Add(StartAction);
+            bool preview = state.stage == "action" || state.stage == "target" || state.stage == "long.target" || state.stage=="high.target";
+            bool canHigh=match.highPassManager?.isAvailable==true && match.currentState!=MatchManager.GameState.GoalKick;
+            if(preview && canHigh)AddAdditional(actions,HighStartAction,()=>match.TriggerHighPass());
             if(preview && match.movementPhaseManager?.isAvailable == true && !state.movementActive)
                 AddAdditional(actions,MovementStartAction,()=>match.TriggerMovement());
             if(state.movementActive && !match.movementPhaseManager.isCommitted && match.movementPhaseManager.OnlineBasicMovementAvailable)
             {
                 if(ground.isAvailable) actions.Add(StartAction);
                 if(match.longBallManager?.isAvailable == true) AddAdditional(actions,LongStartAction,()=>match.TriggerLongPass());
+                if(canHigh)AddAdditional(actions,HighStartAction,()=>match.TriggerHighPass());
             }
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             return state;

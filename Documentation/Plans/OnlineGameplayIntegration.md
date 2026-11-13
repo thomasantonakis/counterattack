@@ -47,6 +47,13 @@ Automatic long-pass deadlines now share the typed busy/admission boundary after
 a reproduced late-input race. Focused authority and offline timing checks passed.
 Use the typed deadline registration for upcoming high/header/shot adapters.
 
+High passes now have typed targets, attacker/defender preparation, accuracy/
+scatter, keeper rush responses and unchallenged ball-control continuation.
+Frame-based flight respects shared/connection holds and versioned cancellation.
+Typed deadlines cover high-pass and control rolls. Twenty-one focused cases
+passed, including real Room managers. Contested headers and headed passes/shots
+are next, with result-panel hold ownership before shot/restart expansion.
+
 ## Ordered implementation batches
 
 1. Generalize the authoritative command boundary for multiple action families.
