@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Authoritative dice observations use focused EditMode category `OnlineRollResults`
+/ fixture `OnlineRollResultsEditorTests` in
+`Assets/Editor/FeatureTests/OnlineRollResults/`. This covers real authority rolls,
+no guest RNG, detached bounded history, run isolation and atomic replica rejection.
+See that folder for actual results; this is separate from paired acceptance.
+
 Room online startup uses category `OnlineRoomStartup`: EditMode fixture
 `OnlineRoomStartupEditorTests` in `Assets/Editor/FeatureTests/OnlineRoomStartup/`
 (2 passed) and PlayMode fixture `OnlineRoomStartupPlayModeTests` in

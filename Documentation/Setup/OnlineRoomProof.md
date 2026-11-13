@@ -7,7 +7,7 @@ An explicit guest session suppresses authority startup in normal Room; the
 owned proof also serializes its authority hierarchy inactive on guest load.
 It is a first ground-pass/interception slice, not a complete online match.
 
-Wire is ground-wire-v3. Roster/catalog incompatibility is rejected before
+Wire is ground-wire-v4. Roster/catalog incompatibility is rejected before
 replica application. Committed snapshots carry decision/owner/legal actions,
 token and ball cells, statistics, clock/timing values and holds. Animation
 frames are a separate presentation payload, bound to the accepted publication;

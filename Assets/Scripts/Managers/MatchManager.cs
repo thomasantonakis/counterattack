@@ -2805,6 +2805,8 @@ public partial class MatchManager : MonoBehaviour
         bool jackpotEnabled = true,
         Dictionary<string, string> details = null)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest)
+            throw new InvalidOperationException("Guest replicas cannot resolve gameplay dice");
         TimingRollSequence++;
         DecisionTiming.EndRoll();
         int randomRoll;
@@ -2835,6 +2837,7 @@ public partial class MatchManager : MonoBehaviour
             randomRoll = randomRoll,
             randomJackpot = randomJackpot
         };
+        PublishOnlineRoll(rollResult, actor);
 
         Dictionary<string, string> resultDetails = details != null
             ? new Dictionary<string, string>(details)
@@ -4035,6 +4038,7 @@ public partial class MatchManager : MonoBehaviour
     {
         DecisionTiming.Clear();
         TimingRollSequence = 0;
+        ClearOnlineRollHistory();
         possessionActionTeam = null;
         stoppagePresentationVersion++;
         stoppageActionsPanel?.Cancel(this);
@@ -6157,6 +6161,7 @@ public partial class MatchManager : MonoBehaviour
             RestoreSubstitutionSnapshot(snapshot.substitutions);
             RebuildManagersAfterRuntimeRestore();
             TimingRollSequence = snapshot.timingRollSequence;
+            ClearOnlineRollHistory();
             timingCompletedActions = totalCompletedActions;
             DecisionTiming.Restore(snapshot.decisionTiming);
         }

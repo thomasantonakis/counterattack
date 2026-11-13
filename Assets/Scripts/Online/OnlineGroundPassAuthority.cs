@@ -33,6 +33,7 @@ namespace CounterAttack.Online
         public int half;
         public bool clockRunning;
         public MatchManager.TeamStats homeStats, awayStats;
+        public OnlineRollPublication[] rolls;
     }
 
     /// <summary>
@@ -76,8 +77,7 @@ namespace CounterAttack.Online
         }
 
         public static string TargetAction(int x, int z) => "ground.target:" + x + ":" + z;
-        private static string TokenId(PlayerToken token) => token == null ? null
-            : (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber;
+        private static string TokenId(PlayerToken token) => OnlineRollPublication.ActorId(token);
 
         internal OnlineGroundPassState Capture(OnlineSharedPause pause)
         { sharedPause = pause; return Capture(); }
@@ -159,6 +159,7 @@ namespace CounterAttack.Online
             var state = new OnlineGroundPassState
             {
                 catalogId = protocol.Compatibility.Catalog,
+                rolls = match.CaptureOnlineRolls(),
                 homeAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Home),
                 awayAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Away),
                 homePauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Home) ?? 0,

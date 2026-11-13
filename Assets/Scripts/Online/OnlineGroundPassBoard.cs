@@ -88,6 +88,12 @@ namespace CounterAttack.Online
                 + (state.connectionHeld ? "\nConnection interrupted - waiting for player" : state.isSharedPaused ? "\nPaused by " + state.pauseRequester : "")
                 + "\n" + string.Join("  ", state.tokens.Where(t => t.passesAttempted > 0 || t.interceptionsAttempted > 0)
                     .Select(t => t.id + " passes " + t.passesCompleted + "/" + t.passesAttempted + " interceptions " + t.interceptionsMade));
+            if (statusText != null && state.rolls?.Length > 0)
+            {
+                var roll = state.rolls[state.rolls.Length - 1];
+                statusText.text += "\n" + roll.context.Replace('_',' ') + ": " + (roll.isJackpot ? "STAR" : roll.roll.ToString())
+                    + (roll.actorId == null ? "" : " | " + roll.actorId + " " + roll.actorName);
+            }
         }
 
         private Vector3 Center(int x, int z) => grid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));

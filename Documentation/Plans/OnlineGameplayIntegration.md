@@ -20,6 +20,11 @@ instead of advancing gameplay coverage.
 - Windows packaged Room local/login checks, including native liveness notification
   registration. Actual paired Room/reconnect acceptance is deferred, not claimed.
 
+Authoritative roll-result publication is implemented: detached, bounded host
+observations carry actor, context, face and jackpot without replaying dice on the
+guest. The extended wire is v4; both desktop exports must rebuild. Result-panel
+hold integration is the next dependency before aerial/shot continuation.
+
 ## Ordered implementation batches
 
 1. Generalize the authoritative command boundary for multiple action families.
