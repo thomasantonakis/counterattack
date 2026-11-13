@@ -36,3 +36,10 @@ DecisionTimingReportedIssuesPlayModeTests.FinalThirdMotion in
 LegacyHighPassBoxSequencePlayModeTests in
 `Assets/Tests/PlayMode/LegacyHighPassBoxSequencePlayModeTests.cs`.
 Paired native acceptance remains deferred.
+
+Windows Room export `build_e4c872018cdf` succeeded (eight warnings and the
+known missing-vswhere.exe diagnostic, no script compile errors). Existing
+packaged ground/pause/recovery check passed in
+`TestResults/GameplayRegression/Runs/20261113T181112789Z-Room-local/result.json`;
+build report retained alongside. Final Third-specific evidence is the focused
+Room framework coverage above, not a paired native acceptance claim.
