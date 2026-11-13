@@ -6,7 +6,7 @@
 - [x] Freeze/resume real movement across connection hold.
 - [x] Focused OnlineMovement PlayMode execution and snapshot publication.
 - [x] Version extended contract as ground-wire-v6 / binary CA06.
-- [ ] Rebuild/check updated Windows export.
+- [x] Rebuild/check updated Windows export.
 
 Dribbling, tackles/nutmegs, goalkeeper interactions, movement rolls and other
 interruption choices are the next feature slices. Paired checks deferred.
@@ -36,3 +36,11 @@ and suffix `/results.xml`. Zero failed/skipped. No full suites ran.
 Broader user-run check if needed: category DecisionTiming under
 `Assets/Tests/PlayMode/Features/DecisionTiming/` for other movement interruptions;
 legacy movement fixtures under `Assets/Tests/PlayMode/` for offline movement.
+
+Windows Room v6 export `build_b5b794829160` succeeded (eight warnings and the
+known missing-vswhere.exe diagnostic; no script compile errors). Packaged local
+ground/pause/recovery and snapshot-codec check passed:
+`TestResults/GameplayRegression/Runs/20261113T180039013Z-Room-local/result.json`.
+Build report is retained alongside. This checks the rebuilt application but is
+not paired native movement acceptance; movement itself has the focused Room
+framework evidence above.
