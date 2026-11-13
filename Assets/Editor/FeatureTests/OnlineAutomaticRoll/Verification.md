@@ -35,3 +35,13 @@ outcomes, and equivalent typed deadline routing for future high/header/shot
 adapters. Broader user-run timing coverage: category DecisionTiming in
 `Assets/Tests/PlayMode/Features/DecisionTiming/` when requested. The new typed
 registration overload is intended for upcoming online action families.
+
+Both Windows exports refreshed after this fix: Room `build_5428d4f1d0fa`
+Succeeded (eight warnings), prepared board `build_10beb3d0c739` Succeeded
+(two warnings). Both retain the known missing-vswhere.exe diagnostic (one build
+report error each; no script compile errors). Packaged existing local checks
+passed in `TestResults/GameplayRegression/Runs/20261113T182248410Z-Room-local/`
+and `TestResults/GameplayRegression/Runs/20261113T182302253Z-Gameplay-local/`.
+Each retains result.json, gameplay-evidence.json and build-report.json. These
+are local packaged ground/pause/recovery checks, not native paired deadline-race
+acceptance; actual deadline behavior has the focused framework evidence above.
