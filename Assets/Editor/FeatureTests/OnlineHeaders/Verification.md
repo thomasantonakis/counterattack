@@ -50,3 +50,12 @@ Paired Mac/Windows acceptance remains deferred. Broader user-run checks:
 `LegacyHeaderResolutionPlayModeTests.cs`, `LegacyHeaderGoalBranchPlayModeTests.cs`
 and category DecisionTiming under `Assets/Tests/PlayMode/Features/DecisionTiming/`
 for remaining offline nominations, ties, headed goals and timing branches.
+
+Windows exports after source bd15ac3: Room `build_4c0da126ced0` Succeeded
+(7 warnings); prepared board `build_1530a316baf7` Succeeded (2 warnings).
+Each retains the known missing-vswhere.exe diagnostic (one report error;
+no script compile errors). Existing packaged local ground/pause/recovery probes
+passed in `Runs/20261113T221441263Z-Room-local/` and
+`Runs/20261113T221531403Z-Gameplay-local/`, with result.json,
+gameplay-evidence.json and build-report.json retained. These packaged probes
+are not human header or paired-network acceptance.
