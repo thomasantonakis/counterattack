@@ -39,6 +39,13 @@ Final Third movement takes priority next because long-pass landings can open it
 before ordinary movement continues. Dribbling/duels and other interruption
 choices remain subsequent slices; basic movement is not full movement coverage.
 
+Final Third now has typed owned selection, destinations and phase completion
+with focused real Room evidence. Destination publication waits for the existing
+coroutine to acknowledge selection, preventing same-frame network input from
+stranding continuation. Special keeper/restart branches remain unexecuted.
+Next audit: automatic roll deadlines must share the same typed busy/admission
+boundary as manual online rolls before further aerial/header/shot integration.
+
 ## Ordered implementation batches
 
 1. Generalize the authoritative command boundary for multiple action families.

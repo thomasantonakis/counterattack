@@ -1,5 +1,10 @@
 # Running gameplay regressions
 
+Online Final Third uses PlayMode category `OnlineFinalThird` under
+`Assets/Tests/PlayMode/Features/OnlineFinalThird/`: 6 passed, zero failed/skipped,
+compilation separately clean. See `Assets/Editor/FeatureTests/OnlineFinalThird/`
+for the race reproduction, native XML and unexecuted special restart branches.
+
 Basic online movement uses category `OnlineMovement`: 6 EditMode and 7 PlayMode
 passed, zero failed/skipped, compilation separately clean. Tests are under
 `Assets/Editor/FeatureTests/OnlineMovement/` and

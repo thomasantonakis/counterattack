@@ -2,6 +2,15 @@
 
 ## Start here
 
+Further Windows checkpoints add host dice results (5943f15), result holds
+(987fd30), long passes/action controls (f4a209e), movement/player presentation
+(09ddeed), and Final Third selection/continuation. See the OnlineRollResults,
+OnlineResultHold, OnlineLongPass, OnlineMovement and OnlineFinalThird feature
+Verification.md files for exact focused counts and XML. Current wire is v6.
+Continue the automatic-roll admission audit, then high passes, headers,
+dribbles/duels, shots and restarts; full six-token proof/lifecycle limitations
+still apply. Do not treat local builds as paired or full-match acceptance.
+
 ### Current Windows implementation update (2026-11-13)
 
 User expanded scope to full internet gameplay: continue beyond passes into

@@ -210,6 +210,7 @@ namespace CounterAttack.Online
             else if (match.longBallManager != null && match.longBallManager.isActivated)
                 ReadLongPassDecision(state, actions, attacking);
             else if (state.ballMoving) state.stage = "resolving";
+            else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
             else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {

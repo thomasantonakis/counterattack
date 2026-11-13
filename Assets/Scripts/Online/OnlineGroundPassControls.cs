@@ -64,9 +64,12 @@ namespace CounterAttack.Online
             "ground.start"=>"Start ground pass", "long.start"=>"Start long pass", "long.roll"=>"Roll",
             "long.keeper.decline"=>"Keep goalkeeper in position", "long.keeper.claim"=>"Claim long pass",
             "movement.start"=>"Start movement", "movement.forfeit"=>"Finish this team's movement",
+            "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
+            "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")
                 .Replace("long.keeper.move:","Move goalkeeper to ").Replace("ground.target:","Preview / confirm ground pass to ")
                 .Replace("movement.target:","Move to ").Replace("movement.player:home:","Select Home #").Replace("movement.player:away:","Select Away #")
+                .Replace("final-third.target:","Final Third move to ").Replace("final-third.player:home:","Select Home #").Replace("final-third.player:away:","Select Away #")
                 .Replace("ground.roll","Interception roll").Replace(':',',')
         };
         public void ExecuteSelectedCommand()
