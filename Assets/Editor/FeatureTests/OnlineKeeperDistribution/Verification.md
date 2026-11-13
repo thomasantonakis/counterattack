@@ -40,6 +40,14 @@ if needed: `Assets/Tests/PlayMode/Features/HeadedBackPass/`,
 
 Keeper high kick coverage currently reaches real high-pass targeting; subsequent
 kick accuracy/landing, general keeper box moves, shot saves, loose-ball outcomes
-and restarts remain separate integration work. Existing Windows exports recorded
-by OnlineHeaders/Verification.md precede this distribution batch; refresh before
-paired acceptance. Exact Mac commands remain in Documentation/Setup/OnlineRoomProof.md.
+and restarts remain separate integration work. Exact Mac commands remain in
+Documentation/Setup/OnlineRoomProof.md.
+
+Both Windows exports refreshed after 9ce1247: Room `build_6f8e9a05c43a` Succeeded
+(7 warnings), prepared `build_68bd30105314` Succeeded (2 warnings). Each retains
+the known missing-vswhere.exe diagnostic (one build-report error, no script
+compile errors). Existing packaged local ground/pause/recovery probes passed in
+`Runs/20261113T223919018Z-Room-local/` and
+`Runs/20261113T224002025Z-Gameplay-local/`; result.json,
+gameplay-evidence.json and build-report.json are retained. These are local probes,
+not paired or human goalkeeper acceptance.
