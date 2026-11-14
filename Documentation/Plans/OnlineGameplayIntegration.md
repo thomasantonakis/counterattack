@@ -97,9 +97,10 @@ first-action transport ending, with 8 EditMode and 2 PlayMode passing cases and
 watchdog. Default proof behavior stays short. Fixed six-token startup, remaining
 duels/restarts and normal Room roster/lifecycle are still pending.
 
-The current user priority is one-command son's Mac verification and a Windows
-host supervisor. See OnlineMacVerification.md. Keep exported sources stable
-until the Mac reports arrive; resume additional gameplay integration afterward.
+The Mac verifier/host supervisor is prepared and deferred until the user asks.
+Continue gameplay implementation now. Add every new test/case to
+Documentation/Setup/OnlineMacTestManifest.json so one later Mac run includes
+all additions. The waiting host has been stopped; do not await Mac responses.
 
 ## Ordered implementation batches
 

@@ -1,5 +1,10 @@
 # One-command son's Mac verification
 
+Prepared for later use. The user will explicitly request the Mac run and host
+supervisor; neither should run while independent gameplay development continues.
+OnlineMacTestManifest.json is the maintained inventory. Every new test/case is
+appended there, and fixture definition hashes prevent silently missing additions.
+
 Follow `PersonalMac.md` once for GitHub/Unity/EOS setup. Manually open this
 checkout in Unity 6000.5.3f1 and stop ordinary Play Mode. Do not copy account
 configuration from Windows. Keep the Mac awake and online during the run.

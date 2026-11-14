@@ -258,7 +258,10 @@ public partial class MovementPhaseManager
         r.Decision(DecisionKind.SnapshotOrForfeitPace, paceChoice);
         r.Decision(DecisionKind.AdvantageOrFreeKick, isWaitingForFoulDecision);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isWaitingForGKWallDiveDecision);
-        r.Roll(this, "interception", isWaitingForInterceptionDiceRoll, () => isActivated && isWaitingForInterceptionDiceRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"interception",isWaitingForInterceptionDiceRoll,()=>isActivated && isWaitingForInterceptionDiceRoll,
+                ()=>{TryExecuteOnlineDribble(OnlineDribbleIntent.Steal);});
+        else r.Roll(this, "interception", isWaitingForInterceptionDiceRoll, () => isActivated && isWaitingForInterceptionDiceRoll, OnKeyReceived);
         r.Roll(this, "tackle", isWaitingForTackleRoll, () => isActivated && isWaitingForTackleRoll, OnKeyReceived);
         r.Roll(this, "card", isWaitingForYellowCardRoll, () => isActivated && isWaitingForYellowCardRoll, OnKeyReceived);
         r.Roll(this, "injury", isWaitingForInjuryRoll, () => isActivated && isWaitingForInjuryRoll, OnKeyReceived);

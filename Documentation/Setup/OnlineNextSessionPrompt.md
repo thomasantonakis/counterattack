@@ -2,7 +2,21 @@
 
 ## Start here
 
-Latest user task: one-command son's Mac verification with one giant JSON report
+Latest steering: the son's Mac verification is deferred until the user explicitly
+requests it. The waiting supervisor was stopped; do not host or await reports
+now. Continue implementing gameplay and normal Room integration. Maintain
+OnlineMacTestManifest.json: each new test or parameterized case gets a separate
+test_additions entry, and changed fixture definitions need refreshed hashes.
+The verifier refuses unregistered fixtures or changed test definitions. Run
+focused Windows tests independently; do not spend the task on Mac coordination.
+Dribble continuation/pace forfeit and declined-nutmeg steals now have 12 focused
+PlayMode passes plus 3 affected offline passes, compilation separately clean.
+See OnlineDribble/Verification.md. All 12 cases have explicit Mac manifest
+entries. Next: nutmeg attempts/victim selection, tackle rolls/results/reposition,
+fouls/cards/injuries, then remaining restarts and normal full Room lifecycle.
+Exports precede this dribble batch; refresh before any future paired run.
+
+Prepared tooling: one-command son's Mac verification with one giant JSON report
 committed/pushed for inspection, and a Windows host supervisor that starts/retires
 automatic paired sessions and retrieves reports. Use OnlineMacVerification.md.
 The command is `bash Documentation/Setup/VerifyOnlineMac.sh`; the Windows helper
@@ -12,13 +26,10 @@ checks. It records failed/skipped stages and native evidence, publishes a separa
 verification branch, and preserves source branches/local edits. Host retries are
 bounded and every failed attempt stays in the report. Actual Mac execution is
 still external; do not claim it from Windows unit or syntax checks.
-The Windows watcher is running in a hidden PowerShell process for eight hours
-from 2026-11-14 14:23 UTC. Check Temp/MacVerificationHost.process.json and its
-bounded stdout/stderr files before starting another watcher. It starts hosts
-only when requested, keeps Windows from idle sleep, and downloads published Mac
-reports automatically. Actual GitHub request/rejection and 3 MiB report download
-smokes passed; see Documentation/Setup/tests/Verification.md. Do not change the
-pinned gameplay exports while awaiting the Mac run.
+The earlier Windows watcher was stopped when the user deferred the Mac run.
+Check Temp/MacVerificationHost.process.json and actual process state before
+starting another watcher, only when requested. Actual GitHub request/rejection
+and 3 MiB report-download smokes passed; see Documentation/Setup/tests/Verification.md.
 
 User resumed independent work after the shot-block break (2026-11-14).
 The block extension has 10 focused passes; the preceding shot category has 30.

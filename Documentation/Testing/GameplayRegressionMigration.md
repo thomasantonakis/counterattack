@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Online dribble continuation adds 12 independently selectable PlayMode cases
+under `Assets/Tests/PlayMode/Features/OnlineDribble/`, category `OnlineDribble`:
+12 passed, zero failed/skipped, in `Runs/20261114T144142718Z/results.xml`.
+Compilation separately clean. Affected offline movement steals passed 2 in
+`Runs/20261114T144326376Z/results.xml`; dribble forfeit passed 1 in
+`Runs/20261114T144435409Z/results.xml`. No legacy cases retired or full suites run.
+Each new case is registered separately in OnlineMacTestManifest.json; Mac is
+deferred. See feature Verification.md for reproduction and coverage boundaries.
+
 Online continuous-session completion adds 8 EditMode cases in
 `Assets/Editor/FeatureTests/OnlineContinuousSession/` and 2 real multi-pass
 PlayMode cases in `Assets/Tests/PlayMode/Features/OnlineContinuousSession/`,

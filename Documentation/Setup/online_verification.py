@@ -98,9 +98,28 @@ def discover_fixtures(root):
             # Fixture filters avoid substring overlap between online categories.
             for name in re.findall(r"public\s+(?:sealed\s+)?(?:partial\s+)?class\s+(\w+Tests)\b", source):
                 plan.append({"mode": mode, "fixture": name, "categories": categories,
+                             "definition_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
                              "route": "packaged-eos" if name in {"EOSConnectLoginEditorTests", "EOSPrivateLobbyEditorTests", "EOSTwoMacLobbyEditorTests", "EOSTwoMacP2PEditorTests"} else "native",
                              "source": path.relative_to(root).as_posix()})
     return list({(p["mode"], p["fixture"]): p for p in plan}.values())
+
+
+def load_fixture_manifest(root):
+    path = root / "Documentation/Setup/OnlineMacTestManifest.json"
+    manifest = json.loads(path.read_text(encoding="utf-8-sig"))
+    if manifest.get("schema") != "counterattack-online-mac-tests-v1":
+        raise RuntimeError("Unsupported son's Mac test manifest")
+    discovered = {(f["mode"], f["fixture"]): f for f in discover_fixtures(root)}
+    registered = {(f["mode"], f["fixture"]): f for f in manifest["fixtures"]}
+    if set(discovered) != set(registered):
+        raise RuntimeError("Online fixtures changed; add/update their entries in OnlineMacTestManifest.json before verification")
+    for key, fixture in discovered.items():
+        if registered[key].get("definition_sha256") != fixture["definition_sha256"]:
+            raise RuntimeError("Tests changed in " + fixture["fixture"] + "; append new case entries to OnlineMacTestManifest.json and refresh its definition hash")
+    ids = [entry["id"] for entry in manifest.get("test_additions", [])]
+    if len(ids) != len(set(ids)):
+        raise RuntimeError("Duplicate case entries in son's Mac manifest")
+    return manifest, list(discovered.values())
 
 
 def parse_xml(text):
@@ -394,10 +413,11 @@ class Runner:
             self.assert_source()
             checked(["git", "var", "GIT_AUTHOR_IDENT"], self.root)
             checked(["gh", "auth", "status"], self.root)
-            plan = discover_fixtures(self.root)
+            manifest, plan = load_fixture_manifest(self.root)
             if not plan:
                 raise RuntimeError("No implemented online fixtures discovered")
             self.report["fixture_plan"] = plan
+            self.report["test_manifest"] = manifest
             compiled = self.stage("compile", self.compile)
             usable = compiled["status"] == "passed"
             for fixture in plan:

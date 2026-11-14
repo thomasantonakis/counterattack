@@ -687,10 +687,7 @@ public partial class MovementPhaseManager : MonoBehaviour
                 bool? choosingTeam = IsInstructionExpectingHomeTeam();
                 RecordNutmegChoiceSelected("X", "allow_interceptions", choosingTeam);
                 ConsumeMovementKey(keyData, choosingTeam);
-                CommitToAction();
-                isWaitingForNutmegDecision = false;
-                Debug.Log($"Reject Nutmeg. Check for interceptions.");
-                ContinueFromRejectedNutmeg();
+                DeclineRunningNutmeg();
                 return;
             }
         }
@@ -736,9 +733,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             if (keyData.key == KeyCode.X)
             {
                 bool? choosingTeam = IsInstructionExpectingHomeTeam();
-                CommitToAction();
-                Debug.Log("Dribbler is running. Forfeiting remaining pace.");
-                AdvanceMovementPhase();
+                FinishRunningDribble();
                 ConsumeMovementKey(keyData, choosingTeam);
                 return;
             }
@@ -2786,6 +2781,7 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator PerformBallInterceptionDiceRoll(RollInputOverride? rollOverride)
     {
+        int version=duelPresentationVersion;
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
         {
@@ -2834,6 +2830,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
                 foul ? (IsCurrentBallHexInOpponentPenaltyBox() ? "PENALTY!" : "FOUL")
                     : recovered ? "BALL RECOVERED" : "RECOVERY FAILED", continueWithFoulChecks: foul);
+            if(version!=duelPresentationVersion || !isActivated)yield break;
             // Check if there was a foul
             if (foul)
             {

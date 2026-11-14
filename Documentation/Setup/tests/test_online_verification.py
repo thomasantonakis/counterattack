@@ -52,6 +52,18 @@ class VerificationTests(unittest.TestCase):
             plan = verification.discover_fixtures(root)
             self.assertEqual([(p["mode"], p["fixture"]) for p in plan], [("editor", "GroundRulesTests"), ("playmode", "NetworkTests")])
 
+    def test_manifest_requires_a_new_entry_when_test_definitions_change(self):
+        with tempfile.TemporaryDirectory(prefix="counterattack-verifier-manifest-") as temporary:
+            root=Path(temporary);tests=root/"Assets/Tests/PlayMode";tests.mkdir(parents=True)
+            source=tests/"Online.cs";source.write_text('[Category("OnlineExample")] public sealed class OnlineExampleTests {}')
+            setup=root/"Documentation/Setup";setup.mkdir(parents=True)
+            manifest={"schema":"counterattack-online-mac-tests-v1","fixtures":verification.discover_fixtures(root),"test_additions":[]}
+            path=setup/"OnlineMacTestManifest.json";path.write_text(json.dumps(manifest))
+            self.assertEqual(len(verification.load_fixture_manifest(root)[1]),1)
+            source.write_text(source.read_text()+' // new test case')
+            with self.assertRaisesRegex(RuntimeError,"append new case entries"):
+                verification.load_fixture_manifest(root)
+
     def test_report_only_commit_preserves_head_index_and_local_edits(self):
         with tempfile.TemporaryDirectory(prefix="counterattack-verifier-git-") as temporary:
             root = Path(temporary)

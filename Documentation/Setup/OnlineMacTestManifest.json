@@ -1,0 +1,646 @@
+{
+  "schema": "counterattack-online-mac-tests-v1",
+  "purpose": "Single maintained test file for the sons Mac; append a separate test_additions entry for each new or parameterized case. Refresh fixture definition hashes when tests change. Run only when the user requests.",
+  "fixtures": [
+    {
+      "mode": "editor",
+      "fixture": "OnlineContinuousSessionEditorTests",
+      "categories": [
+        "OnlineContinuousSession"
+      ],
+      "definition_sha256": "f949371f0bf24e6fe2248003d5ad5018f3b061702fc49e7a9ed37b7a96b2ae9e",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineContinuousSession/OnlineContinuousSessionEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "EOSConnectLoginEditorTests",
+      "categories": [
+        "OnlineEOSConnectivity"
+      ],
+      "definition_sha256": "84cbefef9c54dec84d8d775dc85ed3e0d4dd560f40f87c1222241e84fcba249c",
+      "route": "packaged-eos",
+      "source": "Assets/Editor/FeatureTests/OnlineEOSConnectivity/EOSConnectLoginEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "EOSPrivateLobbyEditorTests",
+      "categories": [
+        "OnlineEOSConnectivity"
+      ],
+      "definition_sha256": "d56a6b1a6c3748be5ee4b23339c749d81db53a5c6ef5ac5fecc2c64e12c063b3",
+      "route": "packaged-eos",
+      "source": "Assets/Editor/FeatureTests/OnlineEOSConnectivity/EOSPrivateLobbyEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "EOSProbeSessionReuseEditorTests",
+      "categories": [
+        "OnlineEOSConnectivity"
+      ],
+      "definition_sha256": "b243eb8b9eb933e2958d9f5b73d238f10a52a7466bd75ac8431422a624898b24",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineEOSConnectivity/EOSProbeSessionReuseEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "EOSTwoMacLobbyEditorTests",
+      "categories": [
+        "OnlineEOSConnectivity"
+      ],
+      "definition_sha256": "2e38b5b9c74b48730a24d1b108a34ad898b35552b4f446f69f17696ee763d599",
+      "route": "packaged-eos",
+      "source": "Assets/Editor/FeatureTests/OnlineEOSConnectivity/EOSTwoMacLobbyEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "EOSTwoMacP2PEditorTests",
+      "categories": [
+        "OnlineEOSConnectivity"
+      ],
+      "definition_sha256": "da2ef1b7f0675a73c94833cb2f802d5415aca12806460deeb50c291c20458b12",
+      "route": "packaged-eos",
+      "source": "Assets/Editor/FeatureTests/OnlineEOSConnectivity/EOSTwoMacP2PEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineGroundPassBoundaryEditorTests",
+      "categories": [
+        "OnlineGroundPass"
+      ],
+      "definition_sha256": "a0c8d5393dbdfedafca5e8efa40157ab9f74242c3211ac2c527d155478c1bfc6",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineGroundPass/OnlineGroundPassBoundaryEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineGroundPassWireEditorTests",
+      "categories": [
+        "OnlineGroundPassNetwork"
+      ],
+      "definition_sha256": "9fc4e868b0ea29fdb82a0c6e8a7345ed980e65839632af86292510bb4c318f93",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineGroundPassNetwork/OnlineGroundPassWireEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineHeaderObservationEditorTests",
+      "categories": [
+        "OnlineHeaders"
+      ],
+      "definition_sha256": "0703a6002d0f60a3c96a1ea6656a717e7efb56cddbe4cb8103acf0b98d34e9af",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineHeaders/OnlineHeaderObservationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineMatchProtocolEditorTests",
+      "categories": [
+        "OnlineMatchProtocol"
+      ],
+      "definition_sha256": "ba8bf4c06f3cbdffd885da53f4aeaddac47fdccfbacf53f9b1d090094fa39f03",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineMatch/OnlineMatchProtocolEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineMovementPresentationEditorTests",
+      "categories": [
+        "OnlineMovement"
+      ],
+      "definition_sha256": "2eb5ff1d311a8d8301f0803b8616811100d630530e9a11514fce30bda5614ac8",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineMovement/OnlineMovementPresentationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineRecoveryEditorTests",
+      "categories": [
+        "OnlineRecovery"
+      ],
+      "definition_sha256": "2a61351f3c63cc5637daffd9b6a84247b7b20896e906a53ff08128d7bcff94f4",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRecovery/OnlineRecoveryEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineRollResultsEditorTests",
+      "categories": [
+        "OnlineRollResults"
+      ],
+      "definition_sha256": "41953f410ac4d75d06b2e12889673854cb3517c900683f5153d3e00567b4823e",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRollResults/OnlineRollResultsEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineRoomPublicationEditorTests",
+      "categories": [
+        "OnlineRoomAction"
+      ],
+      "definition_sha256": "4435f7b6c17851de5cc1fb9b1d9a872b0302c67713ccee22c1f90fa7c3ab4c9e",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRoomAction/OnlineRoomPublicationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineRoomStartupEditorTests",
+      "categories": [
+        "OnlineRoomStartup"
+      ],
+      "definition_sha256": "29fecc42789b0084c5ab8768eb4a001603ae2893d0be9baafb1f8128149c2f36",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRoomStartup/OnlineRoomStartupEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineSharedPauseEditorTests",
+      "categories": [
+        "OnlineSharedPause"
+      ],
+      "definition_sha256": "330bd0d79b2921b857455484e6b573442201473e0fd76a0835acdbd83adda319",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSharedPause/OnlineSharedPauseEditorTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineAutomaticRollPlayModeTests",
+      "categories": [
+        "OnlineAutomaticRoll"
+      ],
+      "definition_sha256": "5f85b1d38350e0002a2fe2d39e66c01989ef4ad720492f413fb63864999400b1",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineAutomaticRoll/OnlineAutomaticRollPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineContinuousSessionPlayModeTests",
+      "categories": [
+        "OnlineContinuousSession"
+      ],
+      "definition_sha256": "6da5851ff7d6bb0a89eacfdea8769891cc9b69b2d497b9c1bd78c2507b294b94",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineContinuousSession/OnlineContinuousSessionPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "categories": [
+        "OnlineDribble"
+      ],
+      "definition_sha256": "d2bb428f0349fc9e6060164b8b03470db4a9f5dc323d3a259faf1fdc954fce82",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineDribble/OnlineDribblePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineFinalThirdPlayModeTests",
+      "categories": [
+        "OnlineFinalThird"
+      ],
+      "definition_sha256": "e5724057c4b2a76f8ca0237c1029459f2ef8eb30049af48ae16fe0a489bd9109",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFinalThird/OnlineFinalThirdPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomFinalThirdPlayModeTests",
+      "categories": [
+        "OnlineFinalThird"
+      ],
+      "definition_sha256": "e5724057c4b2a76f8ca0237c1029459f2ef8eb30049af48ae16fe0a489bd9109",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFinalThird/OnlineFinalThirdPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineFirstTimePassPlayModeTests",
+      "categories": [
+        "OnlineFirstTimePass"
+      ],
+      "definition_sha256": "ca4d962464c3ee83f63b81467ff2f6120d30fd0ac369df73c1236aad3bf11b0a",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFirstTimePass/OnlineFirstTimePassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomFirstTimePassPlayModeTests",
+      "categories": [
+        "OnlineFirstTimePass"
+      ],
+      "definition_sha256": "230240f81ae810a75836983029e16360631ae1820614e5032f790be5824c27e5",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFirstTimePass/OnlineRoomFirstTimePassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineGoalkeeperPlayModeTests",
+      "categories": [
+        "OnlineGoalkeeper"
+      ],
+      "definition_sha256": "d6b7ba4abc8389a4cd3069ecbd433314a963525e32a7a12e8b11c8964c034436",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineGoalkeeper/OnlineGoalkeeperPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineGoalPlayModeTests",
+      "categories": [
+        "OnlineGoals"
+      ],
+      "definition_sha256": "d5cf4dcab3bf1e12c1310120d775660e93e067f327479b38c0304afee4012803",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineGoals/OnlineGoalPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineGroundPassPlayModeTests",
+      "categories": [
+        "OnlineGroundPass"
+      ],
+      "definition_sha256": "72702bd48fef87dc645e061da0997f358514cec50217075165ad4b763e2f0488",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineGroundPass/OnlineGroundPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineGroundPassNetworkPlayModeTests",
+      "categories": [
+        "OnlineGroundPassNetwork"
+      ],
+      "definition_sha256": "c5f373ffbbbb4c4e959a88ef2b9b648c24f434c48b521106f03897216798e55d",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineGroundPassNetwork/OnlineGroundPassNetworkPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineHeaderResultPlayModeTests",
+      "categories": [
+        "OnlineHeaders"
+      ],
+      "definition_sha256": "b0511653361e8890af74de276d79a2326245a1b5c31a160fc29e47be4a46dce3",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineHeaders/OnlineHeaderResultPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineHighPassPlayModeTests",
+      "categories": [
+        "OnlineHighPass"
+      ],
+      "definition_sha256": "acc65da134adfb7747a2be35d39375583e08ac91d3c4fedf8dd0b768eccf20ea",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineHighPass/OnlineHighPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomHighPassPlayModeTests",
+      "categories": [
+        "OnlineHighPass"
+      ],
+      "definition_sha256": "acc65da134adfb7747a2be35d39375583e08ac91d3c4fedf8dd0b768eccf20ea",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineHighPass/OnlineHighPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineKeeperDistributionPlayModeTests",
+      "categories": [
+        "OnlineKeeperDistribution"
+      ],
+      "definition_sha256": "5909fb045d5ca84c8bcece338b414bfac4e0e08190fa874a78208a50a99054a8",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineKeeperDistribution/OnlineKeeperDistributionPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineLongPassPlayModeTests",
+      "categories": [
+        "OnlineLongPass"
+      ],
+      "definition_sha256": "7358a4a58f41177ac7941d7c2d2d0c7bd812ac906ed753cde165cb3c1f8a3613",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineLongPass/OnlineLongPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineActionControlsPlayModeTests",
+      "categories": [
+        "OnlineLongPass"
+      ],
+      "definition_sha256": "7358a4a58f41177ac7941d7c2d2d0c7bd812ac906ed753cde165cb3c1f8a3613",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineLongPass/OnlineLongPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomLongPassPlayModeTests",
+      "categories": [
+        "OnlineLongPass"
+      ],
+      "definition_sha256": "7358a4a58f41177ac7941d7c2d2d0c7bd812ac906ed753cde165cb3c1f8a3613",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineLongPass/OnlineLongPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineLooseBallPlayModeTests",
+      "categories": [
+        "OnlineLooseBall"
+      ],
+      "definition_sha256": "ba0e45b4930405a1d5341d0ec1078d6249b63ec3be43ffc78637c7ec48db29a9",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineLooseBall/OnlineLooseBallPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineManualControlsPlayModeTests",
+      "categories": [
+        "OnlineManualControls"
+      ],
+      "definition_sha256": "61dedb5e98d7016380a8a8d93d0af61bf85ee24e9a0214d075a5c70ddb2d2b9e",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineManualControls/OnlineManualControlsPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineMovementPlayModeTests",
+      "categories": [
+        "OnlineMovement"
+      ],
+      "definition_sha256": "2a67022698a6748663b056e0c6f9ce86be2483200e5072b0bed0a79e0fab3782",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineMovement/OnlineMovementPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomMovementPlayModeTests",
+      "categories": [
+        "OnlineMovement"
+      ],
+      "definition_sha256": "2a67022698a6748663b056e0c6f9ce86be2483200e5072b0bed0a79e0fab3782",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineMovement/OnlineMovementPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRecoveryPlayModeTests",
+      "categories": [
+        "OnlineRecovery"
+      ],
+      "definition_sha256": "d2285989c3195608bf0a1cb1080162115ada77aa4f0acb6cc050e257b355bf85",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRecovery/OnlineRecoveryPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineResultHoldPlayModeTests",
+      "categories": [
+        "OnlineResultHold"
+      ],
+      "definition_sha256": "a0151cc1e658d79db1a7241a62939562e9fbf133cd5ddcc75e82b3c155700287",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineResultHold/OnlineResultHoldPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomActionPlayModeTests",
+      "categories": [
+        "OnlineRoomAction"
+      ],
+      "definition_sha256": "8da6b020c973ef607c4066e4a6cf91edf9a63f4e25b7e54b9d18ee47a3766499",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRoomAction/OnlineRoomActionPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomStartupPlayModeTests",
+      "categories": [
+        "OnlineRoomStartup"
+      ],
+      "definition_sha256": "400f08d9931237875981b5c68bb0e307faf9804d6561e5260c4ac4e29bcc50bf",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRoomStartup/OnlineRoomStartupPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSharedPausePlayModeTests",
+      "categories": [
+        "OnlineSharedPause"
+      ],
+      "definition_sha256": "ee65035a22813404da064c6fe357fa520d4f3f6bc61ee7ea7b1bdba087772e4d",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSharedPause/OnlineSharedPausePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSharedPausePresentationPlayModeTests",
+      "categories": [
+        "OnlineSharedPause"
+      ],
+      "definition_sha256": "ee65035a22813404da064c6fe357fa520d4f3f6bc61ee7ea7b1bdba087772e4d",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSharedPause/OnlineSharedPausePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineGroundShotPlayModeTests",
+      "categories": [
+        "OnlineShots"
+      ],
+      "definition_sha256": "579708def30cc03343bb443fdc2afae09809c1c3b8d4997fca2dd3631e728bb8",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineShots/OnlineGroundShotPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineHeaderShotPlayModeTests",
+      "categories": [
+        "OnlineShots"
+      ],
+      "definition_sha256": "c31e956d9a27e36534684566ce0e1a95e3280445fcc084ab32f9b100269c7de3",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineShots/OnlineHeaderShotPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineShotBlockPlayModeTests",
+      "categories": [
+        "OnlineShots"
+      ],
+      "definition_sha256": "07de3f4956cc3b57ef569a36800ef872484edcd96ca2b8e3bf06778cebc3e7dc",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineShots/OnlineShotBlockPlayModeTests.cs"
+    }
+  ],
+  "test_additions": [
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"safe\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        1,
+        "safe"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"miss\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        1,
+        "miss"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"hit\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        1,
+        "hit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"automatic\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        1,
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"hold\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"cancel\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        1,
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"safe\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        -1,
+        "safe"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"miss\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        -1,
+        "miss"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"hit\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        -1,
+        "hit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"automatic\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        -1,
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"hold\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        -1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"cancel\")",
+      "feature": "OnlineDribble",
+      "mode": "playmode",
+      "fixture": "OnlineDribblePlayModeTests",
+      "method": "DribbleContinuesThroughRecovery",
+      "parameters": [
+        -1,
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    }
+  ]
+}

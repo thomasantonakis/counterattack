@@ -80,6 +80,7 @@ namespace CounterAttack.Online
             "shot.block"=>"Roll shot block",
             "kickoff.confirm"=>"Confirm kick-off setup",
             "ftp.start"=>"Start First Time Pass", "ftp.skip"=>"Skip preparation move", "ftp.roll"=>"Roll First Time Pass interception",
+            "dribble.finish"=>"Finish this player's dribble", "dribble.decline-nutmeg"=>"Decline nutmeg and face steals", "dribble.roll"=>"Roll ball recovery",
             "keeper.stay"=>"Keep goalkeeper in position", "keeper.pickup.hands"=>"Pick up the ball", "keeper.pickup.feet"=>"Keep the ball at feet",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
