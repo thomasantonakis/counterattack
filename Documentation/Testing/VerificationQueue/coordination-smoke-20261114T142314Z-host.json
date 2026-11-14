@@ -1,0 +1,9 @@
+{
+    "message":  "Gameplay/assets/package/settings fingerprint mismatch or unsupported mode; do not pair different builds.",
+    "startedUtc":  "2026-11-14T14:23:26.2975866Z",
+    "sourceCommit":  "b2d06a07513b06fcabbd5ef5d1a9039ad7aae1d3",
+    "requestId":  "coordination-smoke-20261114T142314Z",
+    "sourceFingerprint":  "6988f5df3e711e50f7ce6abc20aaa4802db07276402efbbf74503eec4a311863",
+    "mode":  "unsupported-smoke-check",
+    "status":  "rejected"
+}
