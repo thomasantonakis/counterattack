@@ -1,5 +1,15 @@
 # Gameplay regression migration
 
+Online goals/kickoff add six independently selectable cases in category
+`OnlineGoals`, fixture `OnlineGoalPlayModeTests`, under
+`Assets/Tests/PlayMode/Features/OnlineGoals/`. All six passed (0 failed/skipped)
+in `Runs/20261114T095649920Z/results.xml`; compilation separately clean.
+These extend online coverage rather than replace legacy scenarios. See
+OnlineGoals/Verification.md for reproductions, fixture timing correction and
+broader user-run kickoff coverage. The subsequent offline kickoff check and
+builds could not start because Editor commands timed out after restoring Room;
+Pipeline discovery still responds. No whole suites ran.
+
 Online outfield blocks add 10 independently selectable PlayMode cases, all passed
 with zero failed/skipped and compilation separately clean. Includes late input
 around the existing one-frame delay, cancellation before dice, misses/saves,

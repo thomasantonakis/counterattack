@@ -2,10 +2,11 @@
 
 ## Start here
 
-User requested a break after the current shot-block test phase (2026-11-14).
+User resumed independent work after the shot-block break (2026-11-14).
 The block extension has 10 focused passes; the preceding shot category has 30.
-Resume only when the user asks. Next: goals/restarts and general goalkeeper moves,
-then First Time Pass, dribbling/duels, set pieces and full-match lifecycle.
+Goal/reset and typed kickoff integration is underway; see OnlineGoals/Verification.md
+for actual focused results. Next: general goalkeeper moves, then First Time Pass,
+dribbling/duels, set pieces and full-match lifecycle.
 Current Windows exports precede the block extension and must rebuild before
 packaged acceptance. Paired/manual sessions remain deferred. Exact Mac commands
 are in Documentation/Setup/OnlineRoomProof.md.

@@ -200,7 +200,8 @@ namespace CounterAttack.Online
                 interceptorZ = interceptor == null ? 0 : interceptor.coordinates.z,
                 movementAvailable = match.movementPhaseManager?.isAvailable == true,
                 movementActive = match.movementPhaseManager?.isActivated == true,
-                playerMoving = match.movementPhaseManager?.isPlayerMoving == true,
+                playerMoving = match.movementPhaseManager?.isPlayerMoving == true
+                    || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true,
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
@@ -211,7 +212,10 @@ namespace CounterAttack.Online
             if (faulted) state.stage = "faulted";
             // Pause/intro need their own shared authority adapter. Never bypass them
             // by accepting a command in this initial, unwired proof slice.
-            else if (match.IsGameplayInputBlocked || ground.isKickoffPass) state.stage = "blocked";
+            else if (match.IsGameplayInputBlocked) state.stage = "blocked";
+            else if (match.goalFlowManager?.isActivated == true)
+            { state.stage="goal.resolving";state.owner="None";state.awaitingRoll=false;state.awaitingTarget=false; }
+            else if (match.kickoffManager?.OnlineActive == true) ReadKickoffDecision(state,actions);
             else if (match.longBallManager != null && match.longBallManager.isActivated)
                 ReadLongPassDecision(state, actions, attacking);
             else if(match.highPassManager?.isActivated==true) ReadHighPassDecision(state,actions);

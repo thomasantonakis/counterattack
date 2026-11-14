@@ -75,7 +75,13 @@ defender movement, manual/automatic shooter/save/handling, post-pass action
 choices and interrupted previews. Final Third has priority over shot input.
 Outfield blocks add 10 further focused passes through misses/saves, successful
 scatter, automatic delayed-roll admission, holds and cancellation before dice.
-Goals, general keeper moves and restart outcomes remain next.
+Goal celebration/reset publication and typed kickoff setup/taker/pass now have
+six focused passing cases, including actual goals through conceding restart,
+both directions and overlapping holds. Existing presentation frames stream
+goal/player reset and ball return; normal commands stay unavailable throughout.
+Home then Away confirmation serializes setup ownership. See OnlineGoals
+verification for evidence and remaining setup swap/full-match boundaries.
+General keeper moves and other restart outcomes remain next.
 
 ## Ordered implementation batches
 
