@@ -13,4 +13,6 @@ public sealed class OnlineFoulPlayModeTests
     {if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest] public IEnumerator FoulContinues([Values(1,-1)]int side,[Values("booking","injury","automatic","hold","cancel","advantage","take","sent-off")]string branch)
         =>(IEnumerator)Bridge.GetMethod("RunOnlineFoul").Invoke(fixture,new object[]{side,branch});
+    [UnityTest] public IEnumerator InBoxStealFoulAwardsPenalty([Values(1,-1)]int side)
+        =>(IEnumerator)Bridge.GetMethod("RunOnlineFoul").Invoke(fixture,new object[]{side,"penalty"});
 }

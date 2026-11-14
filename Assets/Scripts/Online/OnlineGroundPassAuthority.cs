@@ -204,7 +204,7 @@ namespace CounterAttack.Online
                 playerMoving = match.movementPhaseManager?.isPlayerMoving == true
                     || match.movementPhaseManager?.IsResolvingReposition == true
                     || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true
-                    || KeeperRules?.IsResolvingMove == true || match.freeKickManager?.IsResolvingSetup == true,
+                    || KeeperRules?.IsResolvingMove == true || match.freeKickManager?.IsResolvingSetup == true || match.penaltyKickManager?.OnlinePenaltyMoving == true,
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
@@ -228,6 +228,7 @@ namespace CounterAttack.Online
             else if(match.looseBallManager?.isActivated==true)ReadLooseBallDecision(state,actions);
             else if(match.shotManager?.isWaitingForSaveandHoldScenario==true)ReadKeeperDistribution(state,actions);
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
+            else if(match.penaltyKickManager?.isActivated==true)ReadPenaltyDecision(state,actions);
             else if(match.shotManager?.isActivated==true)ReadShotDecision(state,actions);
             else if(match.freeKickManager?.isWaitingForExecution==true && match.shotManager?.isWaitingForShotCommitConfirmation==true)ReadSetPieceDecision(state,actions);
             else if(match.shotManager?.isWaitingForShotCommitConfirmation==true)ReadShotDecision(state,actions);

@@ -9,16 +9,22 @@ public sealed partial class GoalkeeperBoxEntryFixture
     public IEnumerator RunOnlineFoul(int side,string branch)
     {
         var authority=OnlineGroundBoard(side,true,false,out var protocol,out _);
-        Place(defender,Hex(3*side));Subscribe(movement);AttachAuthoredPanels();duelPanel.resultSeconds=.1f;
+        int offset=branch=="penalty"?12:0;
+        if(branch=="penalty")
+        {
+            Place(attacker,Hex(offset*side));ball.PlaceAtCell(attacker.currentHex);
+            var penalty=Add<PenaltyKickManager>();match.penaltyKickManager=penalty;penalty.Configure(match,grid,ball,movement,match.shotManager);
+        }
+        Place(defender,Hex((offset+3)*side));Subscribe(movement);AttachAuthoredPanels();duelPanel.resultSeconds=.1f;
         attacker.resilience=4;match.refereeLeniency=3;
         if(branch=="sent-off")defender.ReceiveYellowCard();
         using var pause=new OnlineSharedPause(protocol,match);pause.Capture(authority);
         void Submit(string connection,string action)=>OnlineAccepted(authority,connection,
             protocol.LastAcceptedSequence(connection=="home"?OnlineTeam.Home:OnlineTeam.Away)+1,action);
         Submit("home","movement.start");Submit("home","movement.player:home:9");
-        Submit("home","movement.target:"+side+":0");
+        Submit("home","movement.target:"+((offset+1)*side)+":0");
         yield return Until(()=>authority.Capture().stage=="dribble.target","first dribble pace");
-        Submit("home","movement.target:"+(2*side)+":0");
+        Submit("home","movement.target:"+((offset+2)*side)+":0");
         yield return Until(()=>movement.isWaitingForNutmegDecision,"nutmeg offer");
         Submit("home","dribble.decline-nutmeg");
         yield return Until(()=>authority.Capture().stage=="dribble.steal","real defender steal");
@@ -65,7 +71,12 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(match.TimingRollSequence,Is.EqualTo(3));
         Assert.That(authority.Capture().awayStats.totalYellowCards,Is.EqualTo(branch=="booking"?1:0));
         Assert.That(authority.Capture().homeStats.totalInjuries,Is.EqualTo(branch=="injury"?1:0));
-        Submit("home",branch=="take"?"foul.take":"foul.advantage");
+        Submit("home",branch=="take" || branch=="penalty"?"foul.take":"foul.advantage");
+        if(branch=="penalty")
+        {
+            yield return Until(()=>match.penaltyKickManager.isActivated,"actual in-box steal foul awards a penalty");
+            Assert.That(match.finalThirdManager.isActivated,Is.False);Assert.That(match.penaltyKickManager.penaltySpot,Is.SameAs(Hex(14*side)));yield break;
+        }
         if(branch=="take")
         {
             for(int i=0;i<8 && match.freeKickManager.isActivated==false;i++)

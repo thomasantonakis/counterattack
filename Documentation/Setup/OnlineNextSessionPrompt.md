@@ -373,3 +373,10 @@ restart ownership leak. All 24 own-feature cases passed at
 Both exports refreshed successfully; packaged local checks and native Room
 login passed. See OnlineSetPieces/Verification.md for 15:43 UTC evidence.
 Next penalties/throw-ins, substitutions and normal Room.
+
+Online penalties now have 12 isolated and 2 actual serialized Room-proof passes,
+plus 2 real in-box steal-foul award cases, zero failed/skipped. Compilation clean.
+See OnlinePenalties/Verification.md for native evidence and resolved missing grid
+cache initialization. Mac cases registered individually. Exports at84d016e
+precede penalties/caches; refresh again before paired execution. Next throw-ins,
+remaining substitutions/keeper replacement and normal full Room lifecycle.

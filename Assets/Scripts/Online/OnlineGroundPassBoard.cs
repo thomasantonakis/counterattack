@@ -47,6 +47,7 @@ namespace CounterAttack.Online
                 grid.cells[cell.coordinates.x + grid.GridWidth / 2, cell.coordinates.z + grid.GridHeight / 2] = cell;
                 cell.occupyingToken = null; cell.isAttackOccupied = cell.isDefenseOccupied = false;
             }
+            grid.InitializePrecomputedGameplayCaches();
             PlayerToken.SetBallReference(match.ball);
             match.playerTokenManager.allTokens = tokens.ToList();
             for (var i = 0; i < tokens.Length; i++)

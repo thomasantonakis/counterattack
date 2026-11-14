@@ -17,9 +17,13 @@ continuation and awarded free-kick preparation. No remote dice overrides or raw
 keys. Epoch checks prevent a cancelled foul reopening injury or choice flags.
 Mac execution remains deferred; every parameter case has its own manifest row.
 
-Free-kick preparation/execution commands, double injury/substitution and penalty
-preparation still need their own online integration. This is no full-match or
+Free-kick/corner and penalty preparation/execution now have separate integration
+coverage in OnlineSetPieces and OnlinePenalties. Double injury/substitution still
+needs online integration. This is no full-match or
 paired acceptance claim. No complete suite ran.
 
 Affected `LegacyFoulPlayModeTests`: 5 passed, zero failed/skipped,
 `Runs/20261114T152445990Z/results.xml`.
+
+In-box extension: two additional `InBoxStealFoulAwardsPenalty` cases passed
+at `Runs/20261114T155456793Z/results.xml`, no failures/skips. Mac rows appended.

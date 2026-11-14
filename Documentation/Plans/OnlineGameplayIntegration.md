@@ -153,3 +153,10 @@ Online set pieces: 20 isolated and 2 actual serialized Room-proof passes, plus
 See OnlineSetPieces/Verification.md. Typed setup, restrictions and execution
 choices now connect to existing pass/cross/long/shot managers. Each new case
 has a deferred Mac manifest entry. Full normal Room remains future work.
+
+Online penalties now have 12 isolated and 2 actual serialized Room-proof passes,
+plus 2 real in-box steal-foul award cases, zero failed/skipped. Compilation clean.
+See OnlinePenalties/Verification.md for native evidence and resolved missing grid
+cache initialization. Mac cases registered individually. Exports at84d016e
+precede penalties/caches; refresh again before paired execution. Next throw-ins,
+remaining substitutions/keeper replacement and normal full Room lifecycle.

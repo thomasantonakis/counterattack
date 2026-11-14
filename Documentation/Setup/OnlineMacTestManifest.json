@@ -238,7 +238,7 @@
       "categories": [
         "OnlineFouls"
       ],
-      "definition_sha256": "5574d9cd8e51e0168fd3c50b8db66dec0f8c609157e8e768d966ffbc4d72e3c2",
+      "definition_sha256": "d5f19f2d74e711cb1b22c08af22a910225ca153c40b84490112b9a7a59c9b2c4",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineFouls/OnlineFoulPlayModeTests.cs"
     },
@@ -401,6 +401,26 @@
       "definition_sha256": "2a67022698a6748663b056e0c6f9ce86be2483200e5072b0bed0a79e0fab3782",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineMovement/OnlineMovementPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "categories": [
+        "OnlinePenalties"
+      ],
+      "definition_sha256": "b0d2e5f82715dbd0b635680502b61317ef46a6265e6ea9ffb40c3821c59b5463",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePenalties/OnlinePenaltyPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomPenaltyPlayModeTests",
+      "categories": [
+        "OnlinePenalties"
+      ],
+      "definition_sha256": "70227b6d20e90188f3d1b3bb85e267d90d491b45b7636a2d08504783518105cb",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePenalties/OnlineRoomPenaltyPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -1835,6 +1855,226 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"goal\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        1,
+        "goal"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"save\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        1,
+        "save"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"automatic\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        1,
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"hold\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"defence-clearance\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        1,
+        "defence-clearance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"attack-clearance\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        1,
+        "attack-clearance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"goal\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        -1,
+        "goal"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"save\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        -1,
+        "save"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"automatic\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        -1,
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"hold\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        -1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"defence-clearance\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        -1,
+        "defence-clearance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"attack-clearance\")",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlinePenaltyPlayModeTests",
+      "method": "PenaltyContinues",
+      "parameters": [
+        -1,
+        "attack-clearance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154938927Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.InBoxStealFoulAwardsPenalty(1)",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "InBoxStealFoulAwardsPenalty",
+      "parameters": [
+        1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T155456793Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomPenaltyPlayModeTests.RoomPenaltySetupReachesShot(1)",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlineRoomPenaltyPlayModeTests",
+      "method": "RoomPenaltySetupReachesShot",
+      "parameters": [
+        1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T155418827Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.InBoxStealFoulAwardsPenalty(-1)",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "InBoxStealFoulAwardsPenalty",
+      "parameters": [
+        -1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T155456793Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomPenaltyPlayModeTests.RoomPenaltySetupReachesShot(-1)",
+      "feature": "OnlinePenalties",
+      "mode": "playmode",
+      "fixture": "OnlineRoomPenaltyPlayModeTests",
+      "method": "RoomPenaltySetupReachesShot",
+      "parameters": [
+        -1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T155418827Z/results.xml"
     }
   ]
 }

@@ -59,8 +59,7 @@ public class HexGrid : MonoBehaviour
             CreateGrid();  // Generate the grid
         }
 
-        LoadPrecomputedShootingPaths();
-        CalculateGoalDistanceAndDangerousTackleCaches();
+        InitializePrecomputedGameplayCaches();
         // HighlightShootingHexes();
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(12, 0, 0)).GetHexCenter()}");
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()}");
@@ -1134,6 +1133,14 @@ public class HexGrid : MonoBehaviour
         UnityEditor.AssetDatabase.ImportAsset(HeadingPathsAssetPath);
     }
 #endif
+
+    public void InitializePrecomputedGameplayCaches()
+    {
+        if(CounterAttack.Online.OnlineRoomSession.IsGuest)return;
+        if(!HasLiveGrid())throw new InvalidOperationException("Gameplay caches require an initialized hex board");
+        LoadPrecomputedShootingPaths();
+        CalculateGoalDistanceAndDangerousTackleCaches();
+    }
 
     private void LoadPrecomputedShootingPaths()
     {
