@@ -71,7 +71,16 @@ Broader user-run checks when appropriate: `Assets/Tests/PlayMode/LegacyHeaderGoa
 `LegacyOriginalHeaderGoalPlayModeTests.cs` and category DecisionTiming in
 `Assets/Tests/PlayMode/Features/DecisionTiming/` for other shot/restart timing paths.
 
-Windows exports after 7d69148 (before the ordinary-shot extension): Room `build_2f27f3571268` Succeeded (7 warnings),
+Current Windows exports after 3d50d86: Room `build_7c547af10080` Succeeded
+(7 warnings), prepared `build_3ffe256f4de2` Succeeded (2 warnings). Both retain
+the known missing-vswhere.exe diagnostic, with no script compile errors.
+Packaged local ground/pause/recovery checks passed in
+`Runs/20261114T083231230Z-Room-local/` and
+`Runs/20261114T083440776Z-Gameplay-local/`, retaining result.json,
+gameplay-evidence.json and build-report.json. Shot behavior has the focused native
+evidence above; these local probes do not constitute human shot or paired acceptance.
+
+Earlier Windows exports after 7d69148 (before the ordinary-shot extension): Room `build_2f27f3571268` Succeeded (7 warnings),
 prepared `build_46d25681fc94` Succeeded (2 warnings). Each retains the known
 missing-vswhere.exe diagnostic (one report error, no script compile errors).
 Existing packaged local ground/pause/recovery checks passed in
