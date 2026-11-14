@@ -444,6 +444,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineRosterPresentationPlayModeTests",
+      "categories": [
+        "OnlineRosterPresentation"
+      ],
+      "definition_sha256": "bac55f01fbea201313d87806e4d8d351faf29178ec4b7389184a7244348578ab",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRosterPresentation/OnlineRosterPresentationPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineRoomSetPiecePlayModeTests",
       "categories": [
         "OnlineSetPieces"
@@ -1743,6 +1753,62 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153309128Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterPresentationPlayModeTests.RosterVisibility(False,False)",
+      "feature": "OnlineRosterPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineRosterPresentationPlayModeTests",
+      "method": "RosterVisibility",
+      "parameters": [
+        false,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153651364Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterPresentationPlayModeTests.RosterVisibility(False,True)",
+      "feature": "OnlineRosterPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineRosterPresentationPlayModeTests",
+      "method": "RosterVisibility",
+      "parameters": [
+        false,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153651364Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterPresentationPlayModeTests.RosterVisibility(True,False)",
+      "feature": "OnlineRosterPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineRosterPresentationPlayModeTests",
+      "method": "RosterVisibility",
+      "parameters": [
+        true,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153651364Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterPresentationPlayModeTests.RosterVisibility(True,True)",
+      "feature": "OnlineRosterPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineRosterPresentationPlayModeTests",
+      "method": "RosterVisibility",
+      "parameters": [
+        true,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153651364Z/results.xml"
     }
   ]
 }

@@ -81,8 +81,10 @@ namespace CounterAttack.Online
             {
                 var index = Array.FindIndex(tokens, t => (t.isHomeTeam ? "home:" : "away:") + t.jerseyNumber == token.id);
                 EOSProofCheck.Require(index >= 0, "Published roster must match the authored board");
+                displayedTokens[index].gameObject.SetActive(token.onBoard);
                 if (token.onBoard) displayedTokens[index].position = Center(token.x, token.z) + Vector3.up * .5f;
             }
+            displayedBall.gameObject.SetActive(state.ballOnBoard);
             if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * 1.2f;
             if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
                 + " | Score " + (state.homeStats?.totalGoals ?? 0) + " - " + (state.awayStats?.totalGoals ?? 0)
