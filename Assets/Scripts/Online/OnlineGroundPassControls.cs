@@ -77,6 +77,7 @@ namespace CounterAttack.Online
             "loose.roll"=>"Roll loose ball",
             "shot.save"=>"Roll goalkeeper save", "shot.handling"=>"Roll goalkeeper handling",
             "shot.start"=>"Select shot / snapshot", "shot.confirm"=>"Commit shot", "shot.cancel"=>"Cancel shot preview", "shot.roll"=>"Roll shooter",
+            "shot.block"=>"Roll shot block",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")

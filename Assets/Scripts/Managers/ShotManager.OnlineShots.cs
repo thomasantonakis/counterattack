@@ -1,10 +1,12 @@
 using CounterAttack.Online;
 using System.Linq;
+using System.Collections;
 
-public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlocker, MoveBlocker, Shoot, Save, HeaderSave, Handling }
+public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlocker, MoveBlocker, Shoot, Save, HeaderSave, Handling, Block }
 
 public partial class ShotManager
 {
+    private int onlineShotBlockVersion=-1;
     private bool IsOnlineShotContinuationCurrent(int version)=>this!=null && version==headerSavePresentationVersion
         && (isActiveAndEnabled || MatchManager.Instance?.IsOnlineAuthorityControlled==true && gameObject.activeInHierarchy);
     private bool OnlineShotContextBlocked=>MatchManager.Instance?.IsWaitingForExtraActionsRoll==true || finalThirdManager?.isActivated==true
@@ -14,9 +16,11 @@ public partial class ShotManager
         && CanStartShotFromCurrentPossession(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
     public string OnlineShotStage => OnlineShotContextBlocked ? "pending" : isWaitingForShotCommitConfirmation && !isActivated ? "confirm" : !isActivated ? null
         : IsMovingSnapshotBlocker ? "resolving" : isWaitingforBlockerSelection ? "snapshot.select" : isWaitingforBlockerMovement ? "snapshot.target"
-        : isWaitingForTargetSelection ? "target" : isWaitingForShotRoll ? "roll"
+        : isWaitingForTargetSelection ? "target" : isWaitingForBlockDiceRoll ? onlineShotBlockVersion==headerSavePresentationVersion ? "pending" : "block"
+        : isWaitingForShotRoll ? "roll"
         : isWaitingForGKDiceRoll ? isHeaderAtGoal ? "header.save" : "save" : isWaitingforHandlingTest ? "handling" : "pending";
-    public PlayerToken OnlineShotActor => isWaitingForGKDiceRoll || isWaitingforHandlingTest ? hexGrid.GetDefendingGK()
+    public PlayerToken OnlineShotActor => isWaitingForBlockDiceRoll ? currentShotInteraction?.defender
+        : isWaitingForGKDiceRoll || isWaitingforHandlingTest ? hexGrid.GetDefendingGK()
         : isWaitingforBlockerSelection || isWaitingforBlockerMovement || IsMovingSnapshotBlocker ? tokenMoveforDeflection
         : shooter ?? MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose;
     public PlayerToken[] OnlineSnapshotBlockers=>GetSelectableSnapshotBlockers()
@@ -30,6 +34,8 @@ public partial class ShotManager
         if(OnlineRoomSession.IsGuest || MatchManager.Instance==null || MatchManager.Instance.IsGameplayInputBlocked || OnlineShotContextBlocked)return false;
         switch(intent)
         {
+            case OnlineShotIntent.Block when OnlineShotStage=="block" && currentShotInteraction!=null && !currentShotInteraction.IsGK:
+                onlineShotBlockVersion=headerSavePresentationVersion;StartCoroutine(ResolveOnlineShotBlock(headerSavePresentationVersion));return true;
             case OnlineShotIntent.Select when OnlineCanSelectShot && !isWaitingForShotCommitConfirmation:
                 BeginOnlineShotSelection();return true;
             case OnlineShotIntent.Confirm when OnlineShotStage=="confirm" && OnlineCanSelectShot:
@@ -52,6 +58,11 @@ public partial class ShotManager
                 StartCoroutine(ResolveHandlingTest((RollInputOverride?)null));return true;
             default:return false;
         }
+    }
+    private IEnumerator ResolveOnlineShotBlock(int version)
+    {
+        try { yield return StartShotBlockRoll((RollInputOverride?)null); }
+        finally { if(onlineShotBlockVersion==version)onlineShotBlockVersion=-1; }
     }
     private void BeginOnlineShotSelection()
     {

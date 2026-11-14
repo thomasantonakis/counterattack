@@ -73,7 +73,9 @@ handling observations correctly carry no jackpot. The shot category now has
 30 focused passes including ordinary selection/confirmation, aiming, snapshot
 defender movement, manual/automatic shooter/save/handling, post-pass action
 choices and interrupted previews. Final Third has priority over shot input.
-Outfield blocks, goals, general keeper moves and restart outcomes remain next.
+Outfield blocks add 10 further focused passes through misses/saves, successful
+scatter, automatic delayed-roll admission, holds and cancellation before dice.
+Goals, general keeper moves and restart outcomes remain next.
 
 ## Ordered implementation batches
 

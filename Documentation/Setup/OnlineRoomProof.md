@@ -46,7 +46,8 @@ Header goal-line choices, keeper saves/handling, held distribution and rebounds
 are wired. Ordinary shots/snapshots now support selection/confirmation, aiming,
 defender movement, shooter/save/handling rolls and held distribution. Post-pass
 shot/movement choices remain available even when another ground pass is unavailable.
-Outfield blocks, goals, dribbling/interactions and restarts
+Outfield blocks now have typed rolls and real miss/scatter continuation; rebuild
+both desktop exports for the latest block code. Goals, dribbling/interactions and restarts
 are still being integrated;
 this proof is not a complete online match. Manual paired checks stay deferred.
 

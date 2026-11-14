@@ -5,7 +5,8 @@
 - [x] Handling, possession/distribution and rebound continuation, both directions.
 - [x] Ordinary shot/snapshot selection, confirmation, aiming and snapshot defender movement.
 - [x] Post-pass action choices and interrupted preview validation.
-- [ ] Outfield shot blocks and general keeper choices.
+- [x] Outfield shot blocks, delayed-roll admission, cancellation and scatter continuation.
+- [ ] General keeper choices.
 - [ ] Goals, restarts and statistics through actual match flow.
 - [ ] Focused tests, compilation and refreshed builds.
 
@@ -20,6 +21,27 @@ Ordinary coverage includes real preview/cancel/confirmation, legal goal-line
 targeting, actual snapshot defender movement, shooter/save/handling rolls,
 numeric power/statistics, automatic deadlines, post-pass action choices, lost
 ball possession and Final Third preview interruption, all in both directions.
+
+The subsequent outfield-block extension adds **10 passed**, zero failed/skipped,
+in `Runs/20261114T083951023Z/results.xml`, fixture `OnlineShotBlockPlayModeTests`.
+This brings the feature to **40 distinct cases with passing outcomes across
+focused runs**; the preceding 30-case run was not repeated for this extension.
+Block coverage includes misses through shooter/save/handling, successful blocks
+through real scatter, automatic roll admission, late manual requests, overlapping
+holds and cancellation before the one-frame dice draw, all in both directions.
+The initial 10 missing-block-stage failures remain in
+`Runs/20261114T083734057Z/results.xml`. The authority now claims the pending block
+before the existing frame delay; version checks prevent cancelled rolls and old
+continuations from affecting replacement state. Offline timing and thresholds
+are unchanged.
+Affected `LegacyGoalkeeperShotPlayModeTests`: **1 passed**, zero failed/skipped,
+in `Runs/20261114T084139593Z/results.xml`. Compilation is separately clean;
+the Editor is stopped and the loaded Room scene is clean at this checkpoint.
+Further user-run coverage when resuming: category OnlineShots (40 cases) under
+`Assets/Tests/PlayMode/Features/OnlineShots/` and fixture
+`LegacyFreeKickShotPlayModeTests` in `Assets/Tests/PlayMode/LegacyFreeKickShotPlayModeTests.cs`,
+because free kicks share the block coroutine. These broader checks were not run
+for the block extension; the user requested a break after this phase.
 
 Reproductions for the ordinary batch: 8 missing-start failures in
 `20261114T074345707Z/results.xml`; 8 disabled-owner shooter continuations in
@@ -64,7 +86,7 @@ Affected offline checks: `AttributeScoreFloorPlayModeTests.SavingZeroTiesHeaderD
 `LegacyHeaderSaveJumpersPlayModeTests` **6 passed** in
 `20261114T073252978Z/results.xml`. No complete suites ran.
 
-Still pending: outfield shot blocking, general goalkeeper movement, scored goals
+Still pending: general goalkeeper movement, scored goals
 and restart continuations, dedicated guest shot-result
 presentation, and paired acceptance.
 Broader user-run checks when appropriate: `Assets/Tests/PlayMode/LegacyHeaderGoalBranchPlayModeTests.cs`,
@@ -79,6 +101,8 @@ Packaged local ground/pause/recovery checks passed in
 `Runs/20261114T083440776Z-Gameplay-local/`, retaining result.json,
 gameplay-evidence.json and build-report.json. Shot behavior has the focused native
 evidence above; these local probes do not constitute human shot or paired acceptance.
+These exports precede the outfield-block extension; rebuild both desktops before
+testing that extension in packaged or paired play.
 
 Earlier Windows exports after 7d69148 (before the ordinary-shot extension): Room `build_2f27f3571268` Succeeded (7 warnings),
 prepared `build_46d25681fc94` Succeeded (2 warnings). Each retains the known

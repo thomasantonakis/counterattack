@@ -1,5 +1,11 @@
 # Gameplay regression migration
 
+Online outfield blocks add 10 independently selectable PlayMode cases, all passed
+with zero failed/skipped and compilation separately clean. Includes late input
+around the existing one-frame delay, cancellation before dice, misses/saves,
+successful scatter and holds. OnlineShots now has 40 distinct passing outcomes
+across focused runs; see Verification.md for exact scope and retained XML.
+
 Ordinary online shots add 14 cases to OnlineShots, bringing its focused category
 to **30 passed**, zero failed/skipped, compilation separately clean. Reproduced
 missing selection, disabled-owner continuation, empty post-pass menus and Final

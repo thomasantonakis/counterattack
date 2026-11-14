@@ -2,6 +2,31 @@
 
 ## Start here
 
+User requested a break after the current shot-block test phase (2026-11-14).
+The block extension has 10 focused passes; the preceding shot category has 30.
+Resume only when the user asks. Next: goals/restarts and general goalkeeper moves,
+then First Time Pass, dribbling/duels, set pieces and full-match lifecycle.
+Current Windows exports precede the block extension and must rebuild before
+packaged acceptance. Paired/manual sessions remain deferred. Exact Mac commands
+are in Documentation/Setup/OnlineRoomProof.md.
+
+For the son's Mac when testing resumes, follow PersonalMac.md first on a fresh
+machine and manually open this checkout in Unity 6000.5.3f1. Then:
+
+```sh
+cd /Users/vasilisantonakis/Documents/Projects/Personal/counterattack
+git pull --ff-only origin codex/online-foundation-personal-mac
+bash Documentation/Setup/BuildEOSStandaloneMac.sh room
+bash Documentation/Setup/RunEOSStandaloneMac.sh login room
+bash Documentation/Setup/RunEOSStandaloneMac.sh local room
+```
+
+Only during an arranged paired session, after Windows publishes its host handoff:
+
+```sh
+bash Documentation/Setup/RunEOSStandaloneMac.sh guest room manual
+```
+
 High-pass integration now has 21 focused PlayMode passes (both directions, actual
 Room, preparation, accuracy/scatter/control, keeper responses, holds, cancellation
 and deadlines). See Assets/Editor/FeatureTests/OnlineHighPass/Verification.md.
@@ -12,8 +37,8 @@ interceptions (40 PlayMode + 10 EditMode passed). Goalkeeper distribution has
 Loose-ball ties and keeper spills now have 18 focused passes, including recovery,
 holds and replacement races. Headed shots now have 16 focused passing outcomes
 through save/handling, distribution and completed rebounds. The shot category
-now has 30 passes including ordinary shots, snapshot defender movement,
-post-pass choices and interrupted previews. Continue outfield blocks, goals,
+now has 40 distinct passing cases including ordinary shots, snapshot defender
+movement, post-pass choices, interrupted previews and outfield blocks. Continue goals,
 general keeper moves and restarts. See OnlineShots/Verification.md.
 See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
 Keep paired/manual sessions deferred while independent implementation continues.

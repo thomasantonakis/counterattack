@@ -3376,7 +3376,9 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator StartShotBlockRoll(RollInputOverride? rollOverride)
     {
+        int admissionVersion=headerSavePresentationVersion;
         yield return null; // Wait for next frame
+        if(!IsOnlineShotContinuationCurrent(admissionVersion) || !isActivated || !isWaitingForBlockDiceRoll)yield break;
         RecordSnapshotBallStartedIfNeeded();
         ShotInteraction currentDefenderEntry = currentShotInteraction;
         if (currentDefenderEntry != null && currentDefenderBlockingHex != null)
@@ -3426,7 +3428,7 @@ public partial class ShotManager : MonoBehaviour
                         successfulInterception ? "BLOCKED · Loose ball follows" : "BLOCK FAILED · Shot continues",
                         continueWithScatter: successfulInterception, scatterOwner: looseBallManager,
                         continueWithNextRoll: successfulInterception);
-                    if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+                    if (!IsOnlineShotContinuationCurrent(version)) yield break;
                 }
                 if (successfulInterception)
                 {
@@ -3448,6 +3450,7 @@ public partial class ShotManager : MonoBehaviour
                     yield return StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection,
                         allowGKBoxMove: ball.GetCurrentHex()?.isInPenaltyBox == 0,
                         presentationContext: LooseBallPresentationContext.ShotResolution));
+                    if(!IsOnlineShotContinuationCurrent(admissionVersion))yield break;
                     ResetShotProcess();
                 }
                 else

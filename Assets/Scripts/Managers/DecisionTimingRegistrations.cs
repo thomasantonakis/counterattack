@@ -109,6 +109,7 @@ public partial class ShotManager
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isWaitingForOutsideBoxGKShotDecision);
         if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
         {
+            r.Roll(this,"block",OnlineShotStage=="block",()=>OnlineShotStage=="block",()=>{TryExecuteOnlineShot(OnlineShotIntent.Block);});
             r.Roll(this,"shot",OnlineShotStage=="roll",()=>OnlineShotStage=="roll",()=>{TryExecuteOnlineShot(OnlineShotIntent.Shoot);});
             r.Roll(this,"save",OnlineShotStage is "header.save" or "save",()=>OnlineShotStage is "header.save" or "save",
                 ()=>{TryExecuteOnlineShot(isHeaderAtGoal?OnlineShotIntent.HeaderSave:OnlineShotIntent.Save);});

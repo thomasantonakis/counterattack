@@ -6,7 +6,10 @@ and `OnlineGroundShotPlayModeTests` (14).
 Exact native XML and initial failures are recorded in
 `Assets/Editor/FeatureTests/OnlineShots/Verification.md`; native tests live under
 `Assets/Tests/PlayMode/Features/OnlineShots/`. Includes targeting, snapshot defender
-movement, held saves, rebound and preview interruption. Outfield blocks/goals remain pending.
+movement, held saves, rebound and preview interruption. The later
+`OnlineShotBlockPlayModeTests` extension has 10 focused passes, bringing the
+feature to 40 distinct passing outcomes across scoped runs. No complete suites
+ran. General keeper moves/goals/restarts remain pending.
 
 The currently installed Pipeline's `testName` filter compares literal substrings;
 it does not interpret regex. A method name selects all its parameter cases. For
