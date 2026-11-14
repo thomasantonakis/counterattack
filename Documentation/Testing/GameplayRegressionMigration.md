@@ -578,3 +578,13 @@ passed across `Runs/20261108T091321442Z/results.xml` (36/3/0),
 `Runs/20261108T092026689Z/results.xml` (1/0/0). These overlap; do not add counts.
 The feature Verification.md explains fixture corrections and exact broader
 user-run coverage. No legacy scenario was retired and no whole suite was run.
+
+# Online ground duels ? 2026-11-14
+
+Dedicated `OnlineGroundDuelPlayModeTests` / category `OnlineGroundDuels` cover
+real nutmeg attempts, victim selection, tackle/stand, rolls, reposition and ties
+in both directions: 36/0/0 at `Runs/20261114T150325167Z/results.xml`.
+Affected online dribble 12/0/0 at `Runs/20261114T150922447Z/results.xml`;
+offline tackle continuation 1/0/0 at `Runs/20261114T151340606Z/results.xml`.
+Compilation separately clean. Legacy cases retained; no whole suite run.
+Mac cases registered individually and deferred. Fouls and restarts follow.

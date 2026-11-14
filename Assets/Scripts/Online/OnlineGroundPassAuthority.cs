@@ -202,6 +202,7 @@ namespace CounterAttack.Online
                 movementAvailable = match.movementPhaseManager?.isAvailable == true,
                 movementActive = match.movementPhaseManager?.isActivated == true,
                 playerMoving = match.movementPhaseManager?.isPlayerMoving == true
+                    || match.movementPhaseManager?.IsResolvingReposition == true
                     || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true
                     || KeeperRules?.IsResolvingMove == true,
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),

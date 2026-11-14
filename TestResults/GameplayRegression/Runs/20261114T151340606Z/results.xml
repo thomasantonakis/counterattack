@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:13:40Z" end-time="2026-11-14 15:14:11Z" duration="31.2799787">
+  <test-suite type="TestSuite" id="2433" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1179" result="Passed" start-time="2026-11-14 15:13:40Z" end-time="2026-11-14 15:14:11Z" duration="31.279979" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2430" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1179" result="Passed" start-time="2026-11-14 15:13:40Z" end-time="2026-11-14 15:14:11Z" duration="31.234626" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2385" name="LegacyTackleContinuationPlayModeTests" fullname="LegacyTackleContinuationPlayModeTests" classname="LegacyTackleContinuationPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-14 15:13:40Z" end-time="2026-11-14 15:14:11Z" duration="31.227104" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2386" name="RepositionInterceptionsAndStationaryDefenderTackle" fullname="LegacyTackleContinuationPlayModeTests.RepositionInterceptionsAndStationaryDefenderTackle" methodname="RepositionInterceptionsAndStationaryDefenderTackle" classname="LegacyTackleContinuationPlayModeTests" runstate="Runnable" seed="675339573" result="Passed" start-time="2026-11-14 15:13:40Z" end-time="2026-11-14 15:14:11Z" duration="31.186881" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Legacy migration click -> hex: Hex 35,19 @ (10, 0, 0), token: Yaneva
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 35,19 @ (10, 0, 0), token: Yaneva
+[Game Log] Cafferata (Inverness CT) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0) -> (7, 0, -1) -> (7, 0, 0) -> (8, 0, 0) -> (9, 0, -1) -> (9, 0, 0) -> (10, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=16, tokens=none.
+Pass completed to (10, 0, 0)
+[Game Log] Cafferata (Inverness CT) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Yaneva
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+attack Final Third Movement Phase Done.
+Legacy migration key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Legacy migration key press -> M
+Movement phase has been reset.
+Legacy migration click -> hex: Hex 35,19 @ (10, 0, 0), token: Yaneva
+Passing Yaneva to HandleTokenSelection
+Yaneva selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Yaneva's Pace: 6
+Checking for nutmeggable Defenders
+Legacy migration click -> hex: Hex 34,19 @ (9, 0, 0), token: None
+Committing to Movement Phase action. section=AttMP, selectedToken=Yaneva, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 34,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 34,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 34,19
+Attacking team has possession: True.
+[Game Log] Yaneva (Inverness CT) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: True, remainingDribblerPace: 6
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 5, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 5 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Legacy migration click -> hex: Hex 33,20 @ (8, 0, 1), token: None
+Passing Hex 33,20 to AsyncMoveTokenToHexRegularly
+Passing Hex 33,20 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 33,20
+Attacking team has possession: True.
+[Game Log] Yaneva (Inverness CT) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Legacy migration click -> hex: Hex 32,20 @ (7, 0, 1), token: None
+Passing Hex 32,20 to AsyncMoveTokenToHexRegularly
+Passing Hex 32,20 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 32,20
+Attacking team has possession: True.
+[Game Log] Yaneva (Inverness CT) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 3, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 3 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Legacy migration click -> hex: Hex 31,21 @ (6, 0, 2), token: None
+Passing Hex 31,21 to AsyncMoveTokenToHexRegularly
+Passing Hex 31,21 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 31,21
+Attacking team has possession: True.
+[Game Log] Yaneva (Inverness CT) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Legacy migration click -> hex: Hex 30,21 @ (5, 0, 2), token: None
+Passing Hex 30,21 to AsyncMoveTokenToHexRegularly
+Passing Hex 30,21 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 30,21
+Attacking team has possession: True.
+[Game Log] Yaneva (Inverness CT) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: True, remainingDribblerPace: 2
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Paterson
+remainingDribblerPace: 1, nutmeggableDefenders: 1
+Not enough pace to nutmeg
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Paterson
+eligibleDefenders.Count: 1
+There are possible Interceptions
+Eligible defenders for interception: Paterson
+Selected defender for interception: Paterson. Press R to roll...
+[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+PerformBallInterceptionDiceRoll Runs
+Defender: Paterson, Tackling: 1, Dice Roll: 2
+[Expected Stats] Paterson records xRecovery 0.167 on steal against Yaneva
+[Game Log] Paterson (Aurora F.C.) attempts an interception
+Paterson at (4, 0, 3) failed to intercept.
+No more defenders to roll.
+Dribbler has 1 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Legacy migration key press -> X
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration click -> hex: Hex 29,22 @ (4, 0, 3), token: Paterson
+Passing Paterson to HandleTokenSelection
+A Valid Defender was selected: Paterson
+Paterson is adjacent to Yaneva. Press 'T' to tackle or select a hex to move.
+Legacy migration click -> hex: Hex 31,23 @ (6, 0, 4), token: None
+Passing Hex 31,23 to AsyncMoveTokenToHexRegularly
+Passing Hex 31,23 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 31,23
+[Game Log] Paterson (Aurora F.C.) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Legacy migration click -> hex: Hex 28,22 @ (3, 0, 3), token: Gilbert
+Passing Gilbert to HandleTokenSelection
+A Valid Defender was selected: Gilbert
+Legacy migration click -> hex: Hex 30,22 @ (5, 0, 3), token: None
+Passing Hex 30,22 to AsyncMoveTokenToHexRegularly
+Passing Hex 30,22 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,22
+[Game Log] Gilbert (Aurora F.C.) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender lands next to the dribbler Prompt for Tackle or not.
+Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle
+Legacy migration key press -> T
+Tackle chosen. Starting tackle dice rolls...
+🔍 Connected Token Found: Gilbert
+[Game Log] Yaneva (Inverness CT) engages in a ground duel
+[Expected Stats] Yaneva vs Gilbert (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Legacy migration key press -> Escape
+Legacy migration key press -> Return
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Gilbert with Tackling: 3, Attacker: Yaneva with Dribbling: 3
+Legacy migration key press -> A
+Legacy migration key press -> F
+Legacy migration key press -> Escape
+Tackle failed! Gilbert Roll(2)+Tackling(3)=5 loses to Yaneva's Roll(6)+Dribbling(3) = 9, who retains possession of the ball.
+🔍 Connected Token Found: Gilbert
+[Game Log] Yaneva (Inverness CT) skips past Gilbert
+Yaneva can reposition!
+Yaneva won the tackle and is repositioning around Gilbert. Click a Highlighted Hex to move there or Press X to stay put.
+Legacy migration click -> hex: Hex 30,23 @ (5, 0, 4), token: None
+Passing the Handling of Yaneva's repositioning to (5, 0, 4) in AsyncRepositionTokenToHex.
+Yaneva repositioning to Hex 30,23.
+Repositioning complete.
+Dribbler repositioned after tackle
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva avoided tackle and repositioned, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Stewart, McNulty
+eligibleDefenders.Count: 2
+There are possible Interceptions
+Eligible defenders for interception: Stewart, McNulty
+Selected defender for interception: Stewart. Press R to roll...
+PerformBallInterceptionDiceRoll Runs
+Defender: Stewart, Tackling: 3, Dice Roll: 2
+[Expected Stats] Stewart records xRecovery 0.167 on steal against Yaneva
+[Game Log] Stewart (Aurora F.C.) attempts an interception
+Stewart at (4, 0, 5) failed to intercept.
+Selected defender for interception: McNulty. Press R to roll...
+PerformBallInterceptionDiceRoll Runs
+Defender: McNulty, Tackling: 1, Dice Roll: 2
+[Expected Stats] McNulty records xRecovery 0.167 on steal against Yaneva
+[Game Log] McNulty (Aurora F.C.) attempts an interception
+McNulty at (5, 0, 5) failed to intercept.
+Advancing Movement Phase
+Legacy migration click -> hex: Hex 30,24 @ (5, 0, 5), token: McNulty
+Passing McNulty to HandleTokenSelection
+A Valid Defender was selected: McNulty
+McNulty is adjacent to Yaneva. Press 'T' to tackle or select a hex to move.
+Legacy migration key press -> T
+McNulty initiates a tackle without moving. Starting Dice Rolls...
+🔍 Connected Token Found: McNulty
+[Game Log] Yaneva (Inverness CT) engages in a ground duel
+[Expected Stats] Yaneva vs McNulty (tackle duel) xDribbles=0.712, xTackles=0.288, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Legacy migration key press -> Escape
+Legacy migration key press -> Return
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: McNulty with Tackling: 1, Attacker: Yaneva with Dribbling: 3
+Legacy migration key press -> A
+Legacy migration key press -> F
+Legacy migration key press -> Escape
+Tackle failed! McNulty Roll(2)+Tackling(1)=3 loses to Yaneva's Roll(6)+Dribbling(3) = 9, who retains possession of the ball.
+🔍 Connected Token Found: McNulty
+[Game Log] Yaneva (Inverness CT) skips past McNulty
+Yaneva can reposition!
+Yaneva won the tackle and is repositioning around McNulty. Click a Highlighted Hex to move there or Press X to stay put.
+Legacy migration click -> hex: Hex 29,25 @ (4, 0, 6), token: None
+Passing the Handling of Yaneva's repositioning to (4, 0, 6) in AsyncRepositionTokenToHex.
+Yaneva repositioning to Hex 29,25.
+Repositioning complete.
+Dribbler repositioned after tackle
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva avoided tackle and repositioned, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Stewart
+eligibleDefenders.Count: 1
+There are possible Interceptions
+Eligible defenders for interception: Stewart
+Selected defender for interception: Stewart. Press R to roll...
+PerformBallInterceptionDiceRoll Runs
+Defender: Stewart, Tackling: 3, Dice Roll: 2
+[Expected Stats] Stewart records xRecovery 0.167 on steal against Yaneva
+[Game Log] Stewart (Aurora F.C.) attempts an interception
+Stewart at (4, 0, 5) failed to intercept.
+Advancing Movement Phase
+Legacy migration click -> hex: Hex 29,24 @ (4, 0, 5), token: Stewart
+Passing Stewart to HandleTokenSelection
+A Valid Defender was selected: Stewart
+Stewart is adjacent to Yaneva. Press 'T' to tackle or select a hex to move.
+Legacy migration click -> hex: Hex 25,26 @ (0, 0, 7), token: None
+Passing Hex 25,26 to AsyncMoveTokenToHexRegularly
+Passing Hex 25,26 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 25,26
+[Game Log] Stewart (Aurora F.C.) moves 4 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Passing André Noruega to HandleTokenSelection
+Legacy migration click -> hex: Hex 17,13 @ (-8, 0, -6), token: None
+Passing Hex 17,13 to AsyncMoveTokenToHexRegularly
+Passing Hex 17,13 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 17,13
+[Game Log] André Noruega (Inverness CT) moves 2 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: André Noruega, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Legacy migration click -> hex: Hex 37,31 @ (12, 0, 12), token: Murphy
+Passing Murphy to HandleTokenSelection
+Legacy migration click -> hex: Hex 35,31 @ (10, 0, 12), token: None
+Passing Hex 35,31 to AsyncMoveTokenToHexRegularly
+Passing Hex 35,31 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 35,31
+[Game Log] Murphy (Inverness CT) moves 2 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Murphy, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Last two attackers have moved in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=16, tokens=none.
+Saving results to: TestResults\GameplayRegression\Runs\20261114T151340606Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

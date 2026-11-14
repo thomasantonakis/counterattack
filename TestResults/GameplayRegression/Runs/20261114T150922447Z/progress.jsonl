@@ -1,0 +1,12 @@
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"safe\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"miss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"hit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"safe\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"miss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"hit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,\"cancel\")","status":"Passed","message":"","stackTrace":""}

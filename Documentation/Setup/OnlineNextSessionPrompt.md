@@ -12,7 +12,8 @@ focused Windows tests independently; do not spend the task on Mac coordination.
 Dribble continuation/pace forfeit and declined-nutmeg steals now have 12 focused
 PlayMode passes plus 3 affected offline passes, compilation separately clean.
 See OnlineDribble/Verification.md. All 12 cases have explicit Mac manifest
-entries. Next: nutmeg attempts/victim selection, tackle rolls/results/reposition,
+entries. Ground duels now have 36 focused passes and 13 affected passes; see
+OnlineGroundDuels/Verification.md. Next:
 fouls/cards/injuries, then remaining restarts and normal full Room lifecycle.
 Exports precede this dribble batch; refresh before any future paired run.
 

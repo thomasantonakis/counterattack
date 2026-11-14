@@ -254,6 +254,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "categories": [
+        "OnlineGroundDuels"
+      ],
+      "definition_sha256": "a4920472a9d6fdb8122392ccc734129cda659a64a6fd7f0093fd1f270e45d96e",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineGroundDuels/OnlineGroundDuelPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineGroundPassPlayModeTests",
       "categories": [
         "OnlineGroundPass"
@@ -641,6 +651,538 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T144142718Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"attacker\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "attacker"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"defender\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "defender"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"tie\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "tie"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"automatic\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"hold\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"cancel\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"attacker\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "attacker"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"defender\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "defender"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"tie\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "tie"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"automatic\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"hold\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"cancel\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"attacker\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "attacker"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"defender\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "defender"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"tie\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "tie"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"automatic\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"hold\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"cancel\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"attacker\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "attacker"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"defender\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "defender"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"tie\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "tie"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"automatic\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"hold\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"cancel\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.MovedDefenderMayStand(1)",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "MovedDefenderMayStand",
+      "parameters": [
+        1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.MovedDefenderMayStand(-1)",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "MovedDefenderMayStand",
+      "parameters": [
+        -1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"nutmeg\",\"defender-stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "nutmeg",
+        "defender-stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,\"tackle\",\"defender-stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        1,
+        "tackle",
+        "defender-stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"nutmeg\",\"defender-stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "nutmeg",
+        "defender-stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,\"tackle\",\"defender-stay\")",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "GroundDuelContinues",
+      "parameters": [
+        -1,
+        "tackle",
+        "defender-stay"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.NutmegVictimSelectionKeepsOtherSteals(1)",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "NutmegVictimSelectionKeepsOtherSteals",
+      "parameters": [
+        1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundDuelPlayModeTests.NutmegVictimSelectionKeepsOtherSteals(-1)",
+      "feature": "OnlineGroundDuels",
+      "mode": "playmode",
+      "fixture": "OnlineGroundDuelPlayModeTests",
+      "method": "NutmegVictimSelectionKeepsOtherSteals",
+      "parameters": [
+        -1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
     }
   ]
 }
