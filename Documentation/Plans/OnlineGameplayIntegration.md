@@ -147,3 +147,9 @@ Current full-match limitation: OnlineRoomProof is still a controlled six-token,
 first-action proof. It is not a completed playable full online match. The next
 batch must expand its authority/publication boundary rather than label this
 fixture as full-game acceptance.
+
+Online set pieces: 20 isolated and 2 actual serialized Room-proof passes, plus
+1 affected offline setup pass, zero failed/skipped; compilation separately clean.
+See OnlineSetPieces/Verification.md. Typed setup, restrictions and execution
+choices now connect to existing pass/cross/long/shot managers. Each new case
+has a deferred Mac manifest entry. Full normal Room remains future work.

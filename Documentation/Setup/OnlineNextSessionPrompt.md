@@ -360,3 +360,9 @@ Online fouls: 16 focused passes (`20261114T152353072Z`) and 5 affected
 offline passes (`20261114T152445990Z`), zero failures/skips. Compilation clean.
 See OnlineFouls/Verification.md. Each new case registered in the deferred Mac
 manifest. Next: set-piece preparation and execution, normal Room lifecycle.
+
+Online set pieces: 20 isolated and 2 actual serialized Room-proof passes, plus
+1 affected offline setup pass, zero failed/skipped; compilation separately clean.
+See OnlineSetPieces/Verification.md. Typed setup, restrictions and execution
+choices now connect to existing pass/cross/long/shot managers. Each new case
+has a deferred Mac manifest entry. Full normal Room remains future work.

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:31:38Z" end-time="2026-11-14 15:31:58Z" duration="20.4057898">
+  <test-suite type="TestSuite" id="2473" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1215" result="Passed" start-time="2026-11-14 15:31:38Z" end-time="2026-11-14 15:31:58Z" duration="20.405790" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2470" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1215" result="Passed" start-time="2026-11-14 15:31:38Z" end-time="2026-11-14 15:31:58Z" duration="20.359791" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2182" name="LegacyFreeKickShotPlayModeTests" fullname="LegacyFreeKickShotPlayModeTests" classname="LegacyFreeKickShotPlayModeTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-14 15:31:38Z" end-time="2026-11-14 15:31:58Z" duration="20.353531" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="2183" name="OriginalFreeKickSheetSetupKeepsPhaseOwnershipAndOffersShot" fullname="LegacyFreeKickShotPlayModeTests.OriginalFreeKickSheetSetupKeepsPhaseOwnershipAndOffersShot" methodname="OriginalFreeKickSheetSetupKeepsPhaseOwnershipAndOffersShot" classname="LegacyFreeKickShotPlayModeTests" runstate="Runnable" seed="647602707" result="Passed" start-time="2026-11-14 15:31:38Z" end-time="2026-11-14 15:31:58Z" duration="20.321936" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Legacy migration click -> hex: Hex 33,19 @ (8, 0, 0), token: None
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 33,19 @ (8, 0, 0), token: None
+[Game Log] Cafferata (Inverness CT) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0) -> (7, 0, -1) -> (7, 0, 0) -> (8, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Pass completed to (8, 0, 0)
+Legacy migration key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+attack Final Third Movement Phase Done.
+Legacy migration key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Legacy migration key press -> M
+Legacy migration click -> hex: Hex 35,19 @ (10, 0, 0), token: Yaneva
+Passing Yaneva to HandleTokenSelection
+Legacy migration key press -> V
+Passing Hex 33,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 33,19
+Attacking team has possession: True.
+[Game Log] Yaneva (Inverness CT) moves 2 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: True, remainingDribblerPace: 6
+[Game Log] Cafferata (Inverness CT) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Yaneva
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Yaneva Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Legacy migration key press -> X
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+Legacy migration click -> hex: Hex 31,25 @ (6, 0, 6), token: Kalla
+Passing Kalla to HandleTokenSelection
+Legacy migration click -> hex: Hex 36,22 @ (11, 0, 3), token: None
+Passing Hex 36,22 to AsyncMoveTokenToHexRegularly
+Passing Hex 36,22 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 36,22
+[Game Log] Kalla (Inverness CT) moves 5 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Kalla, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration click -> hex: Hex 29,22 @ (4, 0, 3), token: Paterson
+Passing Paterson to HandleTokenSelection
+A Valid Defender was selected: Paterson
+Legacy migration click -> hex: Hex 34,19 @ (9, 0, 0), token: None
+Passing Hex 34,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 34,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 34,19
+[Game Log] Paterson (Aurora F.C.) moves 5 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender lands next to the dribbler Prompt for Tackle or not.
+Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle
+Legacy migration key press -> T
+Tackle chosen. Starting tackle dice rolls...
+[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+🔍 Connected Token Found: Paterson
+[Game Log] Yaneva (Inverness CT) engages in a ground duel
+[Expected Stats] Yaneva vs Paterson (tackle duel) xDribbles=0.712, xTackles=0.288, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 1. Now it's the attacker's turn.
+Legacy migration key press -> Escape
+Legacy migration key press -> Return
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Paterson with Tackling: 1, Attacker: Yaneva with Dribbling: 3
+🔍 Connected Token Found: Paterson
+[Game Log] Yaneva (Inverness CT) wins a foul against Paterson
+Defender committed a foul.
+Handling foul resolution process...
+Press 'R' to roll for a Booking.
+Yellow card roll: 6
+Defender Paterson receives a yellow card!
+Paterson has been booked with a yellow card.
+🔍 Connected Token Found: Yaneva
+[Game Log] Paterson (Aurora F.C.) is shown a Yellow Card 🟨 for something on Yaneva
+Press 'R' to roll for attacker injury.
+Injury roll: 2
+Attacker Yaneva avoids injury.
+Foul process completed.
+Legacy migration key press -> A
+Legacy migration key press -> F
+Legacy migration key press -> Escape
+Press 'A' to Play On or 'F' to Take the Foul.
+Legacy migration key press -> F
+Attacker chooses to take the foul. Transitioning to Free Kick.
+Substitutions are now available: Foul awarded
+Movement phase has been reset.
+Movement phase is over.
+Waiting for Final Third movement to finish before starting Free Kick preparation.
+Legacy migration key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+attack Final Third Movement Phase Done.
+Legacy migration key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Handling kicker selection for André Noruega...
+Selected André Noruega as the kicker.
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Legacy migration click -> hex: Hex 41,19 @ (16, 0, 0), token: Kuzmic
+Clicked token during free kick setup: Kuzmic
+Token Kuzmic is not an attacker. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 9,19 @ (-16, 0, 0), token: Aziz
+Clicked token during free kick setup: Aziz
+Token Aziz selected for current phase FreeKickAttGK. Awaiting destination hex.
+Legacy migration click -> hex: Hex 11,19 @ (-14, 0, 0), token: None
+Token Aziz moving to Hex (-14, 0, 0)
+Token Aziz moving to hex (-14, 0, 0).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 1 just performed
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Legacy migration click -> hex: Hex 11,19 @ (-14, 0, 0), token: Aziz
+Clicked token during free kick setup: Aziz
+Token Aziz is not a defender. Invalid selection for this phase.
+Legacy migration key press -> X
+Player attempts to forfeit the remaining moves for this phase.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Legacy migration click -> hex: Hex 26,29 @ (1, 0, 10), token: Marell
+Clicked token during free kick setup: Marell
+Token Marell is not an attacker. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 35,29 @ (10, 0, 10), token: Jansen
+Clicked token during free kick setup: Jansen
+Token Jansen selected for current phase FreeKickAtt1. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,21 @ (14, 0, 2), token: None
+Token Jansen moving to Hex (14, 0, 2)
+Token Jansen moving to hex (14, 0, 2).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 1 just performed
+Legacy migration click -> hex: Hex 33,27 @ (8, 0, 8), token: Toothnail
+Clicked token during free kick setup: Toothnail
+Token Toothnail selected for current phase FreeKickAtt1. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,18 @ (14, 0, -1), token: None
+Token Toothnail moving to Hex (14, 0, -1)
+Token Toothnail moving to hex (14, 0, -1).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 2 just performed
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Legacy migration click -> hex: Hex 37,31 @ (12, 0, 12), token: Murphy
+Clicked token during free kick setup: Murphy
+Token Murphy is not a defender. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 26,29 @ (1, 0, 10), token: Marell
+Clicked token during free kick setup: Marell
+Token Marell selected for current phase FreeKickDef1. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,22 @ (14, 0, 3), token: None
+Token Marell moving to Hex (14, 0, 3)
+Token Marell moving to hex (14, 0, 3).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Marell moved to hex (14, 0, 3). Not in the list of defenders that need to move.
+Move 1 just performed
+Legacy migration click -> hex: Hex 26,21 @ (1, 0, 2), token: Vladoiu
+Clicked token during free kick setup: Vladoiu
+Token Vladoiu selected for current phase FreeKickDef1. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,17 @ (14, 0, -2), token: None
+Token Vladoiu moving to Hex (14, 0, -2)
+Token Vladoiu moving to hex (14, 0, -2).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Vladoiu moved to hex (14, 0, -2). Not in the list of defenders that need to move.
+Move 2 just performed
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Legacy migration click -> hex: Hex 43,19 @ (18, 0, 0), token: Poulsen
+Clicked token during free kick setup: Poulsen
+Token Poulsen is not an attacker. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 37,31 @ (12, 0, 12), token: Murphy
+Clicked token during free kick setup: Murphy
+Token Murphy selected for current phase FreeKickAtt2. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,16 @ (14, 0, -3), token: None
+Token Murphy moving to Hex (14, 0, -3)
+Token Murphy moving to hex (14, 0, -3).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 1 just performed
+Legacy migration click -> hex: Hex 25,19 @ (0, 0, 0), token: Cafferata
+Clicked token during free kick setup: Cafferata
+Token Cafferata selected for current phase FreeKickAtt2. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,13 @ (14, 0, -6), token: None
+Token Cafferata moving to Hex (14, 0, -6)
+Token Cafferata moving to hex (14, 0, -6).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 2 just performed
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Pavlovic
+Clicked token during free kick setup: Pavlovic
+Token Pavlovic is not a defender. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 43,19 @ (18, 0, 0), token: Poulsen
+Clicked token during free kick setup: Poulsen
+Token Poulsen selected for current phase FreeKickDef2. Awaiting destination hex.
+Legacy migration click -> hex: Hex 39,25 @ (14, 0, 6), token: None
+Token Poulsen moving to Hex (14, 0, 6)
+Token Poulsen moving to hex (14, 0, 6).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Poulsen moved to hex (14, 0, 6). Not in the list of defenders that need to move.
+Move 1 just performed
+Legacy migration key press -> X
+Player attempts to forfeit the remaining moves for this phase.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Clicked token during free kick setup: Delgado
+Token Delgado is not an attacker. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Pavlovic
+Clicked token during free kick setup: Pavlovic
+Token Pavlovic selected for current phase FreeKickAtt3. Awaiting destination hex.
+Legacy migration click -> hex: Hex 38,17 @ (13, 0, -2), token: None
+Token Pavlovic moving to Hex (13, 0, -2)
+Token Pavlovic moving to hex (13, 0, -2).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 1 just performed
+Legacy migration key press -> X
+Player attempts to forfeit the remaining moves for this phase.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Legacy migration click -> hex: Hex 38,17 @ (13, 0, -2), token: Pavlovic
+Clicked token during free kick setup: Pavlovic
+Token Pavlovic is not a defender. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Clicked token during free kick setup: Delgado
+Token Delgado selected for current phase FreeKickDef3. Awaiting destination hex.
+Legacy migration click -> hex: Hex 26,11 @ (1, 0, -8), token: None
+Token Delgado moving to Hex (1, 0, -8)
+Token Delgado moving to hex (1, 0, -8).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Delgado moved to hex (1, 0, -8). Not in the list of defenders that need to move.
+Move 1 just performed
+Legacy migration key press -> X
+Player attempts to forfeit the remaining moves for this phase.
+You cannot forfeit this defensive move. Remaining defender moves would be 0, but defenders within 2 hexes still need to move: Paterson.
+Legacy migration click -> hex: Hex 34,19 @ (9, 0, 0), token: Paterson
+Clicked token during free kick setup: Paterson
+Token Paterson selected for current phase FreeKickDef3. Awaiting destination hex.
+Legacy migration click -> hex: Hex 24,26 @ (-1, 0, 7), token: None
+Token Paterson moving to Hex (-1, 0, 7)
+Token Paterson moving to hex (-1, 0, 7).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Paterson moved to hex (-1, 0, 7). Removing from list of defenders that need to move.
+Move 2 just performed
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Legacy migration click -> hex: Hex 11,19 @ (-14, 0, 0), token: Aziz
+Clicked token during free kick setup: Aziz
+Token Aziz is not a defender. Invalid selection for this phase.
+Legacy migration click -> hex: Hex 41,19 @ (16, 0, 0), token: Kuzmic
+Clicked token during free kick setup: Kuzmic
+Token Kuzmic selected for current phase FreeKickDefGK2. Awaiting destination hex.
+Legacy migration click -> hex: Hex 43,19 @ (18, 0, 0), token: None
+Token Kuzmic moving to Hex (18, 0, 0)
+Token Kuzmic moving to hex (18, 0, 0).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Kuzmic moved to hex (18, 0, 0). Not in the list of defenders that need to move.
+Move 1 just performed
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Multiple potential kickers available. Select one from the 2 near the ball!
+Legacy migration click -> hex: Hex 24,26 @ (-1, 0, 7), token: Paterson
+Legacy migration click -> hex: Hex 32,18 @ (7, 0, -1), token: André Noruega
+André Noruega took the set piece and cannot be the next player to touch the ball.
+André Noruega selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=14, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Saving results to: TestResults\GameplayRegression\Runs\20261114T153138519Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

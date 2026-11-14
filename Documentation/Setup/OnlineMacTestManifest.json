@@ -444,6 +444,26 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineRoomSetPiecePlayModeTests",
+      "categories": [
+        "OnlineSetPieces"
+      ],
+      "definition_sha256": "a22e3653939fea0a63c22b74f0f247daaac564c7051d2e2d4df10e207379264b",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSetPieces/OnlineRoomSetPiecePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "categories": [
+        "OnlineSetPieces"
+      ],
+      "definition_sha256": "3e3de66bfe47537aa3fc985ba4be3488400c765f6ea56926f6c703f4be19b7e2",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSetPieces/OnlineSetPiecePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineSharedPausePlayModeTests",
       "categories": [
         "OnlineSharedPause"
@@ -1417,6 +1437,312 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"ground\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "ground"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"high\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "high"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"long\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "long"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"indirect\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "indirect"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"corner-ground\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "corner-ground"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"corner-high\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "corner-high"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"move\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "move"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"clearance\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "clearance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"ground\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "ground"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"high\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "high"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"long\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "long"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"indirect\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "indirect"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"corner-ground\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "corner-ground"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"corner-high\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "corner-high"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"move\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "move"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"clearance\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "clearance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"shot\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "shot"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"hold\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"shot\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "shot"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"hold\")",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineSetPiecePlayModeTests",
+      "method": "SetPieceContinues",
+      "parameters": [
+        -1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass(1)",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineRoomSetPiecePlayModeTests",
+      "method": "RoomFreeKickCompletesPass",
+      "parameters": [
+        1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153309128Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass(-1)",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineRoomSetPiecePlayModeTests",
+      "method": "RoomFreeKickCompletesPass",
+      "parameters": [
+        -1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153309128Z/results.xml"
     }
   ]
 }

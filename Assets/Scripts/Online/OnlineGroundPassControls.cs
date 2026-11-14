@@ -83,6 +83,8 @@ namespace CounterAttack.Online
             "dribble.finish"=>"Finish this player's dribble", "dribble.decline-nutmeg"=>"Decline nutmeg and face steals", "dribble.roll"=>"Roll ball recovery",
             "duel.nutmeg"=>"Attempt nutmeg", "duel.tackle"=>"Attempt tackle", "duel.stand"=>"Stand without tackling", "duel.roll"=>"Roll ground duel", "duel.stay"=>"Stay after ground duel",
             "keeper.stay"=>"Keep goalkeeper in position", "keeper.pickup.hands"=>"Pick up the ball", "keeper.pickup.feet"=>"Keep the ball at feet",
+            "set-piece.skip"=>"Finish this setup phase", "set-piece.ground"=>"Set-piece ground pass",
+            "set-piece.high"=>"Set-piece cross", "set-piece.long"=>"Set-piece long pass", "set-piece.shot"=>"Set-piece shot / confirm",
             "foul.leniency"=>"Roll for booking", "foul.injury"=>"Roll for injury",
             "foul.advantage"=>"Play advantage", "foul.take"=>"Take awarded restart",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
@@ -106,6 +108,7 @@ namespace CounterAttack.Online
                 .Replace("keeper.move:","Free goalkeeper move to ")
                 .Replace("ftp.target:","Preview / confirm First Time Pass to ").Replace("ftp.move:","Preparation move to ")
                 .Replace("ftp.player:home:","Select Home #").Replace("ftp.player:away:","Select Away #")
+                .Replace("set-piece.player:home:","Select Home #").Replace("set-piece.player:away:","Select Away #").Replace("set-piece.target:","Set-piece move to ")
                 .Replace("duel.target:","Reposition to ").Replace("duel.victim:home:","Nutmeg Home #").Replace("duel.victim:away:","Nutmeg Away #")
                 .Replace("ground.roll","Interception roll").Replace(':',',')
         };

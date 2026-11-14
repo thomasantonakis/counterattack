@@ -242,9 +242,11 @@ public partial class FreeKickManager : MonoBehaviour
         }
     }
 
-    private bool HandleCornerKickExecutionKey(KeyCode key)
+    private bool HandleCornerKickExecutionKey(KeyCode key)=>HandleCornerKickExecutionChoice(SetPieceChoice(key));
+
+    private bool HandleCornerKickExecutionChoice(OnlineSetPieceIntent choice)
     {
-        if (key == KeyCode.C)
+        if (choice == OnlineSetPieceIntent.High)
         {
             RecordSetPieceSelection("cross_selected", KeyCode.C);
             CancelShotPreview();
@@ -254,7 +256,7 @@ public partial class FreeKickManager : MonoBehaviour
             return true;
         }
 
-        if (key == KeyCode.P)
+        if (choice == OnlineSetPieceIntent.Ground)
         {
             RecordSetPieceSelection("short_pass_selected", KeyCode.P);
             CancelShotPreview();
@@ -268,9 +270,11 @@ public partial class FreeKickManager : MonoBehaviour
         return false;
     }
 
-    private bool HandleFreeKickExecutionKey(KeyCode key)
+    private bool HandleFreeKickExecutionKey(KeyCode key)=>HandleFreeKickExecutionChoice(SetPieceChoice(key));
+
+    private bool HandleFreeKickExecutionChoice(OnlineSetPieceIntent choice)
     {
-        if (key == KeyCode.L)
+        if (choice == OnlineSetPieceIntent.Long)
         {
             RecordSetPieceSelection("long_ball_selected", KeyCode.L);
             CancelShotPreview();
@@ -284,7 +288,7 @@ public partial class FreeKickManager : MonoBehaviour
             return true;
         }
 
-        if (key == KeyCode.C)
+        if (choice == OnlineSetPieceIntent.High)
         {
             RecordSetPieceSelection("cross_selected", KeyCode.C);
             CancelShotPreview();
@@ -294,7 +298,7 @@ public partial class FreeKickManager : MonoBehaviour
             return true;
         }
 
-        if (key == KeyCode.P)
+        if (choice == OnlineSetPieceIntent.Ground)
         {
             RecordSetPieceSelection("standard_pass_selected", KeyCode.P);
             CancelShotPreview();
@@ -304,7 +308,7 @@ public partial class FreeKickManager : MonoBehaviour
             return true;
         }
 
-        if (key == KeyCode.S)
+        if (choice == OnlineSetPieceIntent.Shot)
         {
             return HandleFreeKickShotSelection();
         }
