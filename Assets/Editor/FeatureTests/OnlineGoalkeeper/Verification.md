@@ -5,8 +5,18 @@
 - [x] Ten focused PlayMode cases under category `OnlineGoalkeeper`.
 - [x] Compile/reload in the live Editor.
 - [x] Execute `OnlineGoalkeeperPlayModeTests`; retain and inspect native XML.
-- [ ] Resolve failures, run focused affected checks and refresh exports.
+- [x] Resolve failures, run focused affected checks and refresh exports.
 - [ ] Paired acceptance (deferred).
+
+Windows refresh for checkpoint `61e3e38`: Room `build_db66e2a92ecd`
+Succeeded (7 warnings), prepared `build_6fda365964c7` Succeeded (2 warnings).
+Both reports retain the known missing-vswhere.exe diagnostic (one report error,
+no script compile errors). Packaged local ground/pause/recovery checks passed
+in `Runs/20261114T102124157Z-Room-local/` and
+`Runs/20261114T102306317Z-Gameplay-local/`, with result.json,
+gameplay-evidence.json and build-report.json. They do not prove paired online
+goalkeeper play. Exact Mac continuation is in
+`Documentation/Setup/OnlineMacContinuation.md`.
 
 Compilation separately clean. Category `OnlineGoalkeeper`, fixture
 `OnlineGoalkeeperPlayModeTests`: **10 passed**, zero failed/skipped, in

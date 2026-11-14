@@ -12,11 +12,14 @@ zero failed/skipped; compilation separately clean. Deferred offline kickoff
 checks also passed (two cases). See OnlineGoalkeeper/Verification.md.
 The Editor timeout was the low-disk-space dialog. The user closed it and freed
 space; C: now has approximately 129 GiB free and Unity is ready again.
-Windows export refresh is underway; consult the latest feature verification
-before claiming packaged evidence. Next: First Time Pass,
+Windows Room and prepared exports succeeded; both packaged local checks passed.
+See OnlineGoalkeeper/Verification.md for build IDs and retained native reports.
+For moving development/hosting to Mac, use OnlineMacContinuation.md; it includes
+exact commands, a pasteable development prompt and an offline Git bundle fallback.
+Next: First Time Pass,
 dribbling/duels, set pieces and full-match lifecycle.
-Current Windows exports precede the block extension and must rebuild before
-packaged acceptance. Paired/manual sessions remain deferred. Exact Mac commands
+Current Windows exports include blocks, goals/kickoff and goalkeeper choices.
+Paired/manual sessions remain deferred. Exact Mac commands
 are in Documentation/Setup/OnlineRoomProof.md.
 
 For the son's Mac when testing resumes, follow PersonalMac.md first on a fresh
