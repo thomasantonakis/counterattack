@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:34:12Z" end-time="2026-11-14 10:34:49Z" duration="36.8785353">
+  <test-suite type="TestSuite" id="2371" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1127" result="Passed" start-time="2026-11-14 10:34:12Z" end-time="2026-11-14 10:34:49Z" duration="36.878535" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2368" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1127" result="Passed" start-time="2026-11-14 10:34:12Z" end-time="2026-11-14 10:34:49Z" duration="36.839743" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2061" name="LegacyFirstTimePassPlayModeTests" fullname="LegacyFirstTimePassPlayModeTests" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-14 10:34:12Z" end-time="2026-11-14 10:34:49Z" duration="36.832690" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2072" name="FirstTimePass" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-14 10:34:12Z" end-time="2026-11-14 10:34:49Z" duration="36.817102" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2062" name="FirstTimePass(&quot;to_space&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;to_space&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="914058238" result="Passed" start-time="2026-11-14 10:34:12Z" end-time="2026-11-14 10:34:17Z" duration="5.166696" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 24,10 @ (-1, 0, -9), token: None
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 24,10 @ (-1, 0, -9), token: None
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 17,11 @ (-8, 0, -8), token: Ulisses
+Attacker Ulisses selected.
+Legacy migration click -> hex: Hex 18,11 @ (-7, 0, -8), token: None
+Valid Hex to move the Attacker.
+Moving Ulisses to hex (-7, 0, -8)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 18,11
+[Game Log] Ulisses (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 26,11 @ (1, 0, -8), token: None
+Invalid token or not a defender clicked. Please click on a defender or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 26,10 @ (1, 0, -9), token: None
+Valid Hex to move the Defender.
+Moving Delgado to hex (1, 0, -9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 26,10
+[Game Log] Delgado (Fixture Away) moves 1 paces
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2063" name="FirstTimePass(&quot;to_player&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;to_player&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="1267793050" result="Passed" start-time="2026-11-14 10:34:17Z" end-time="2026-11-14 10:34:21Z" duration="4.155150" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Relay receiver
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Relay receiver
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Attacker André Noruega selected.
+Legacy migration click -> hex: Hex 19,12 @ (-6, 0, -7), token: None
+Valid Hex to move the Attacker.
+Moving André Noruega to hex (-6, 0, -7)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 19,12
+[Game Log] André Noruega (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 26,10 @ (1, 0, -9), token: None
+Valid Hex to move the Defender.
+Moving Delgado to hex (1, 0, -9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 26,10
+[Game Log] Delgado (Fixture Away) moves 1 paces
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] André Noruega (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Relay receiver
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=1, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2064" name="FirstTimePass(&quot;easy_hover&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;easy_hover&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="1615522896" result="Passed" start-time="2026-11-14 10:34:21Z" end-time="2026-11-14 10:34:25Z" duration="3.523015" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Pass is out of range. Maximum steps allowed: 6. Current steps: 18
+Path blocked by defender at hex: (-4, 0, -6)
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Relay receiver
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Relay receiver
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration key press -> X
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration key press -> X
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] André Noruega (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Relay receiver
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=1, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2065" name="FirstTimePass(&quot;hard_commit&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;hard_commit&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="1271781148" result="Passed" start-time="2026-11-14 10:34:25Z" end-time="2026-11-14 10:34:28Z" duration="3.084868" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+Substitutions are no longer available: Committed to FirstTimePass
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 20,13 @ (-5, 0, -6), token: None
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration key press -> X
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration key press -> X
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2066" name="FirstTimePass(&quot;auto_recovery&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;auto_recovery&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="1491017177" result="Passed" start-time="2026-11-14 10:34:28Z" end-time="2026-11-14 10:34:33Z" duration="5.125601" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 25,10 @ (0, 0, -9), token: None
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 25,10 @ (0, 0, -9), token: None
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 25,19 @ (0, 0, 0), token: Cafferata
+Attacker Cafferata selected.
+Legacy migration click -> hex: Hex 25,20 @ (0, 0, 1), token: None
+Valid Hex to move the Attacker.
+Moving Cafferata to hex (0, 0, 1)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 25,20
+[Game Log] Cafferata (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 25,10 @ (0, 0, -9), token: None
+Valid Hex to move the Defender.
+Moving Delgado to hex (0, 0, -9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 25,10
+[Game Log] Delgado (Fixture Away) moves 1 paces
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+Delgado recovers the First-Time Pass on the intended target at (0, 0, -9) without an interception roll.
+[Expected Stats] Delgado records xRecovery 1 on ftp_target against André Noruega
+[Game Log] Delgado (Fixture Away) attempts an interception
+🔍 Connected Token Found: André Noruega
+[Game Log] Delgado (Fixture Away) Intercepts a First-Time Pass from André Noruega
+Offside assessment cleared: first_time_pass_target_defender_recovery.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2067" name="FirstTimePass(&quot;zoi_recovery&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;zoi_recovery&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="1077093194" result="Passed" start-time="2026-11-14 10:34:33Z" end-time="2026-11-14 10:34:38Z" duration="5.088900" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 24,10 @ (-1, 0, -9), token: None
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 24,10 @ (-1, 0, -9), token: None
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 25,19 @ (0, 0, 0), token: Cafferata
+Attacker Cafferata selected.
+Legacy migration click -> hex: Hex 25,20 @ (0, 0, 1), token: None
+Valid Hex to move the Attacker.
+Moving Cafferata to hex (0, 0, 1)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 25,20
+[Game Log] Cafferata (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 25,10 @ (0, 0, -9), token: None
+Valid Hex to move the Defender.
+Moving Delgado to hex (0, 0, -9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 25,10
+[Game Log] Delgado (Fixture Away) moves 1 paces
+FTP interception order: Delgado (blocking: False, at (-1, 0, -9))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Delgado. Press [R] to roll.
+Dice roll by Delgado at (0, 0, -9): 6
+[Expected Stats] Delgado records xRecovery 0.167 on ftp against André Noruega
+[Game Log] Delgado (Fixture Away) attempts an interception
+Pass intercepted by Delgado at (0, 0, -9)!
+🔍 Connected Token Found: André Noruega
+[Game Log] Delgado (Fixture Away) Intercepts a First-Time Pass from André Noruega
+Offside assessment cleared: first_time_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Highlights cleared after ball movement.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2068" name="FirstTimePass(&quot;excluded_passer&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;excluded_passer&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="82829786" result="Passed" start-time="2026-11-14 10:34:38Z" end-time="2026-11-14 10:34:41Z" duration="3.129412" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 20,13 @ (-5, 0, -6), token: None
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 20,13 @ (-5, 0, -6), token: None
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration key press -> X
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration key press -> X
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Passing André Noruega to HandleTokenSelection
+Legacy migration click -> hex: Hex 20,13 @ (-5, 0, -6), token: None
+André Noruega cannot reach the ball with their available pace.
+]]></output>
+          </test-case>
+          <test-case id="2069" name="FirstTimePass(&quot;switch_options&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;switch_options&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="229868203" result="Passed" start-time="2026-11-14 10:34:41Z" end-time="2026-11-14 10:34:45Z" duration="3.897549" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 21,15 @ (-4, 0, -4), token: Relay receiver
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration key press -> M
+Movement phase has been reset.
+Legacy migration key press -> F
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 20,14 @ (-5, 0, -5), token: None
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 20,14 @ (-5, 0, -5), token: None
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=1, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] André Noruega (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 17,11 @ (-8, 0, -8), token: Ulisses
+Attacker Ulisses selected.
+Legacy migration click -> hex: Hex 17,12 @ (-8, 0, -7), token: None
+Valid Hex to move the Attacker.
+Moving Ulisses to hex (-8, 0, -7)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 17,12
+[Game Log] Ulisses (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 26,11 @ (1, 0, -8), token: None
+Invalid token or not a defender clicked. Please click on a defender or press [X] to skip.
+Legacy migration click -> hex: Hex 26,9 @ (1, 0, -10), token: Delgado
+Defender Delgado selected.
+Legacy migration click -> hex: Hex 26,10 @ (1, 0, -9), token: None
+Valid Hex to move the Defender.
+Moving Delgado to hex (1, 0, -9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 26,10
+[Game Log] Delgado (Fixture Away) moves 1 paces
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2070" name="FirstTimePass(&quot;reset_movement&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;reset_movement&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="714758319" result="Passed" start-time="2026-11-14 10:34:45Z" end-time="2026-11-14 10:34:48Z" duration="2.789734" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 19,13 @ (-6, 0, -6), token: André Noruega
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Cafferata (Fixture Home) attempts a ground pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-2, 0, -3) -> (-3, 0, -3) -> (-3, 0, -4) -> (-4, 0, -3) -> (-4, 0, -4) -> (-4, 0, -5) -> (-5, 0, -5) -> (-5, 0, -6) -> (-6, 0, -5) -> (-6, 0, -6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=1, tokens=none.
+Pass completed to (-6, 0, -6)
+[Game Log] Cafferata (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to André Noruega
+Offside assessment cleared: ground_pass_completed.
+Legacy migration key press -> M
+Movement phase has been reset.
+Legacy migration click -> hex: Hex 17,11 @ (-8, 0, -8), token: Ulisses
+Passing Ulisses to HandleTokenSelection
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="2071" name="FirstTimePass(&quot;end_options&quot;)" fullname="LegacyFirstTimePassPlayModeTests.FirstTimePass(&quot;end_options&quot;)" methodname="FirstTimePass" classname="LegacyFirstTimePassPlayModeTests" runstate="Runnable" seed="1330926656" result="Passed" start-time="2026-11-14 10:34:48Z" end-time="2026-11-14 10:34:49Z" duration="0.806096" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Set LastTokenToTouchTheBallOnPurpose to FTP receiver
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=0, tokens=Home carrier.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Movement phase has been reset.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=10, tokens=none.
+Saving results to: TestResults\GameplayRegression\Runs\20261114T103412350Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

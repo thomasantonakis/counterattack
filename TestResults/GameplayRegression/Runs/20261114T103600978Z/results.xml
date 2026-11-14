@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:36:01Z" end-time="2026-11-14 10:36:15Z" duration="14.4673076">
+  <test-suite type="TestSuite" id="2375" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1129" result="Failed" site="Child" start-time="2026-11-14 10:36:01Z" end-time="2026-11-14 10:36:15Z" duration="14.467308" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2372" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1129" result="Failed" site="Child" start-time="2026-11-14 10:36:01Z" end-time="2026-11-14 10:36:15Z" duration="14.435823" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1545" name="OnlineRoomFirstTimePassPlayModeTests" fullname="OnlineRoomFirstTimePassPlayModeTests" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-14 10:36:01Z" end-time="2026-11-14 10:36:15Z" duration="14.430632" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFirstTimePass" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1548" name="RoomPassContinuesThroughFtp" fullname="OnlineRoomFirstTimePassPlayModeTests.RoomPassContinuesThroughFtp" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-14 10:36:01Z" end-time="2026-11-14 10:36:15Z" duration="14.416267" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1546" name="RoomPassContinuesThroughFtp(1)" fullname="OnlineRoomFirstTimePassPlayModeTests.RoomPassContinuesThroughFtp(1)" methodname="RoomPassContinuesThroughFtp" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" seed="1382237759" result="Failed" label="Error" start-time="2026-11-14 10:36:01Z" end-time="2026-11-14 10:36:09Z" duration="8.657634" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[System.InvalidOperationException : An online Room session is already active]]></message>
+              <stack-trace><![CDATA[  at CounterAttack.Online.OnlineRoomSession..ctor (System.String matchId, System.Boolean guestReplica) [0x00037] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Scripts\Online\OnlineRoomSession.cs:20 
+  at OnlineRoomActionSceneFixture+<RunRoomFirstTimePass>d__1.MoveNext () [0x00301] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineRoomFirstTimePassFixture.cs:44 
+  at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44 ]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1547" name="RoomPassContinuesThroughFtp(-1)" fullname="OnlineRoomFirstTimePassPlayModeTests.RoomPassContinuesThroughFtp(-1)" methodname="RoomPassContinuesThroughFtp" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" seed="1149892398" result="Failed" label="Error" start-time="2026-11-14 10:36:09Z" end-time="2026-11-14 10:36:15Z" duration="5.703006" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[System.InvalidOperationException : An online Room session is already active]]></message>
+              <stack-trace><![CDATA[  at CounterAttack.Online.OnlineRoomSession..ctor (System.String matchId, System.Boolean guestReplica) [0x00037] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Scripts\Online\OnlineRoomSession.cs:20 
+  at OnlineRoomActionSceneFixture+<RunRoomFirstTimePass>d__1.MoveNext () [0x00301] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineRoomFirstTimePassFixture.cs:44 
+  at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44 ]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Fixture Home 1.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261114T103600978Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

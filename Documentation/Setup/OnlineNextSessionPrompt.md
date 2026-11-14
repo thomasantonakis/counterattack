@@ -16,8 +16,14 @@ Windows Room and prepared exports succeeded; both packaged local checks passed.
 See OnlineGoalkeeper/Verification.md for build IDs and retained native reports.
 For moving development/hosting to Mac, use OnlineMacContinuation.md; it includes
 exact commands, a pasteable development prompt and an offline Git bundle fallback.
-Next: First Time Pass,
-dribbling/duels, set pieces and full-match lifecycle.
+First Time Pass now has typed targeting, preparation moves/skip and interceptions,
+with 16 focused passing cases (14 isolated + 2 actual Room serialized cases),
+10 affected offline passes and separately clean compilation. See
+Assets/Editor/FeatureTests/OnlineFirstTimePass/Verification.md for exact XML.
+Next: continuous-session boundary, dribbling/duels, set pieces and full-match
+roster/lifecycle. Do not confuse these passing Room-manager tests with a normal
+full Room online match: fixed roster/startup replacement and first-action ending
+are still in place. Windows exports need refreshing for this FTP batch.
 Current Windows exports include blocks, goals/kickoff and goalkeeper choices.
 Paired/manual sessions remain deferred. Exact Mac commands
 are in Documentation/Setup/OnlineRoomProof.md.

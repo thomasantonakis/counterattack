@@ -192,7 +192,8 @@ namespace CounterAttack.Online
                 ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true || match.highPassManager?.OnlineFlightInProgress==true,
                 attackHasPossession = match.attackHasPossession,
                 passActive = ground.isActivated || match.longBallManager?.isActivated == true || match.highPassManager?.isActivated==true
-                    || HeaderRules?.isActivated==true || match.looseBallManager?.isActivated==true || match.shotManager?.isActivated==true, awaitingTarget = ground.isAwaitingTargetSelection,
+                    || HeaderRules?.isActivated==true || match.looseBallManager?.isActivated==true || match.shotManager?.isActivated==true
+                    || match.firstTimePassManager?.isActivated==true, awaitingTarget = ground.isAwaitingTargetSelection,
                 awaitingRoll = ground.isWaitingForDiceRoll,
                 hasSelectedTarget = selected != null, selectedX = selected == null ? 0 : selected.coordinates.x,
                 selectedZ = selected == null ? 0 : selected.coordinates.z,
@@ -229,6 +230,7 @@ namespace CounterAttack.Online
             else if(match.shotManager?.isActivated==true)ReadShotDecision(state,actions);
             else if(match.shotManager?.isWaitingForShotCommitConfirmation==true)ReadShotDecision(state,actions);
             else if(HeaderRules?.isActivated==true) ReadHeaderDecision(state,actions,HeaderRules);
+            else if(match.firstTimePassManager?.isActivated==true)ReadFirstTimePassDecision(state,actions);
             else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {
@@ -248,7 +250,7 @@ namespace CounterAttack.Online
             }
             else if (ground.isActivated) state.stage = "resolving";
             else if (ground.isAvailable || match.movementPhaseManager?.isAvailable==true || match.longBallManager?.isAvailable==true
-                || match.shotManager?.OnlineCanSelectShot==true
+                || match.shotManager?.OnlineCanSelectShot==true || match.firstTimePassManager?.isAvailable==true
                 || match.highPassManager?.isAvailable==true && match.currentState!=MatchManager.GameState.GoalKick)
             {
                 state.stage = "action";
@@ -263,6 +265,7 @@ namespace CounterAttack.Online
             if(preview && match.shotManager?.OnlineCanSelectShot==true)AddShotCommand(actions,ShotStartAction,OnlineShotIntent.Select);
             bool canHigh=match.highPassManager?.isAvailable==true && match.currentState!=MatchManager.GameState.GoalKick;
             if(preview && canHigh)AddAdditional(actions,HighStartAction,()=>match.TriggerHighPass());
+            if(preview && match.firstTimePassManager?.isAvailable==true)AddAdditional(actions,"ftp.start",()=>match.TriggerFTP());
             if(preview && match.movementPhaseManager?.isAvailable == true && !state.movementActive)
                 AddAdditional(actions,MovementStartAction,()=>match.TriggerMovement());
             if(state.movementActive && !match.movementPhaseManager.isCommitted && match.movementPhaseManager.OnlineBasicMovementAvailable)

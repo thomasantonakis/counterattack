@@ -17,6 +17,11 @@ public partial class FirstTimePassManager
         r.Decision(DecisionKind.FirstTimePassTarget, isActivated && isAwaitingTargetSelection);
         r.Decision(DecisionKind.FirstTimePassAttackerMovement, isActivated && (isWaitingForAttackerSelection || isWaitingForAttackerMove), movementPhaseManager?.isPlayerMoving != true);
         r.Decision(DecisionKind.FirstTimePassDefenderMovement, isActivated && (isWaitingForDefenderSelection || isWaitingForDefenderMove), movementPhaseManager?.isPlayerMoving != true);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            r.Roll(this,"interception",isActivated && isWaitingForDiceRoll,()=>isActivated && isWaitingForDiceRoll,
+                ()=>{TryExecuteOnlineFtp(OnlineFtpIntent.Roll);});return;
+        }
         r.Roll(this, "interception", isActivated && isWaitingForDiceRoll, () => isActivated && isWaitingForDiceRoll, OnKeyReceived);
     }
 }

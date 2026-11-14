@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Passed" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:32:18Z" end-time="2026-11-14 10:33:19Z" duration="61.2037031">
+  <test-suite type="TestSuite" id="2371" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1127" result="Passed" start-time="2026-11-14 10:32:18Z" end-time="2026-11-14 10:33:19Z" duration="61.203703" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2368" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1127" result="Passed" start-time="2026-11-14 10:32:18Z" end-time="2026-11-14 10:33:19Z" duration="61.173199" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1529" name="OnlineFirstTimePassPlayModeTests" fullname="OnlineFirstTimePassPlayModeTests" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-14 10:32:18Z" end-time="2026-11-14 10:33:19Z" duration="61.157363" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFirstTimePass" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1544" name="RealPassEntersOwnedFtp" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-14 10:32:18Z" end-time="2026-11-14 10:33:19Z" duration="61.138233" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1530" name="RealPassEntersOwnedFtp(1,&quot;safe&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;safe&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="869298958" result="Passed" start-time="2026-11-14 10:32:18Z" end-time="2026-11-14 10:32:23Z" duration="4.963395" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1531" name="RealPassEntersOwnedFtp(1,&quot;move&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;move&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="650646064" result="Passed" start-time="2026-11-14 10:32:23Z" end-time="2026-11-14 10:32:28Z" duration="4.950915" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP support selected.
+Valid Hex to move the Attacker.
+Moving FTP support to hex (-4, 0, -3)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 21,16
+[Game Log] FTP support (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender Away recovering player selected.
+Valid Hex to move the Defender.
+Moving Away recovering player to hex (8, 0, 9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 33,28
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1532" name="RealPassEntersOwnedFtp(1,&quot;miss&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;miss&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="118089665" result="Passed" start-time="2026-11-14 10:32:28Z" end-time="2026-11-14 10:32:33Z" duration="4.864727" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (1, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1533" name="RealPassEntersOwnedFtp(1,&quot;hit&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;hit&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="454925574" result="Passed" start-time="2026-11-14 10:32:33Z" end-time="2026-11-14 10:32:37Z" duration="3.640725" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (1, 0, 3): 6
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Pass intercepted by Away recovering player at (1, 0, 3)!
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) Intercepts a First-Time Pass from Online receiver
+Offside assessment cleared: first_time_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Highlights cleared after ball movement.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=0, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1534" name="RealPassEntersOwnedFtp(1,&quot;automatic&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;automatic&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1442895147" result="Passed" start-time="2026-11-14 10:32:37Z" end-time="2026-11-14 10:32:41Z" duration="4.546772" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (1, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1535" name="RealPassEntersOwnedFtp(1,&quot;cancel&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;cancel&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1793023539" result="Passed" start-time="2026-11-14 10:32:41Z" end-time="2026-11-14 10:32:44Z" duration="3.025361" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+]]></output>
+          </test-case>
+          <test-case id="1536" name="RealPassEntersOwnedFtp(1,&quot;hold&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;hold&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="552638647" result="Passed" start-time="2026-11-14 10:32:44Z" end-time="2026-11-14 10:32:49Z" duration="4.956702" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (1, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1537" name="RealPassEntersOwnedFtp(-1,&quot;safe&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;safe&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1938112356" result="Passed" start-time="2026-11-14 10:32:49Z" end-time="2026-11-14 10:32:53Z" duration="4.321509" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1538" name="RealPassEntersOwnedFtp(-1,&quot;move&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;move&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="686219190" result="Passed" start-time="2026-11-14 10:32:53Z" end-time="2026-11-14 10:32:58Z" duration="4.942101" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP support selected.
+Valid Hex to move the Attacker.
+Moving FTP support to hex (4, 0, -3)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 29,16
+[Game Log] FTP support (Fixture Home) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender Away recovering player selected.
+Valid Hex to move the Defender.
+Moving Away recovering player to hex (-8, 0, 9)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 17,28
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1539" name="RealPassEntersOwnedFtp(-1,&quot;miss&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;miss&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1621240809" result="Passed" start-time="2026-11-14 10:32:58Z" end-time="2026-11-14 10:33:03Z" duration="4.573430" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (-1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (-1, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1540" name="RealPassEntersOwnedFtp(-1,&quot;hit&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;hit&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1660438022" result="Passed" start-time="2026-11-14 10:33:03Z" end-time="2026-11-14 10:33:07Z" duration="3.632776" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (-1, 0, 3): 6
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Pass intercepted by Away recovering player at (-1, 0, 3)!
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) Intercepts a First-Time Pass from Online receiver
+Offside assessment cleared: first_time_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Highlights cleared after ball movement.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=0, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1541" name="RealPassEntersOwnedFtp(-1,&quot;automatic&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;automatic&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="671493893" result="Passed" start-time="2026-11-14 10:33:07Z" end-time="2026-11-14 10:33:11Z" duration="4.598608" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (-1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (-1, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1542" name="RealPassEntersOwnedFtp(-1,&quot;cancel&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;cancel&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1170701343" result="Passed" start-time="2026-11-14 10:33:11Z" end-time="2026-11-14 10:33:14Z" duration="3.092468" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (-1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+]]></output>
+          </test-case>
+          <test-case id="1543" name="RealPassEntersOwnedFtp(-1,&quot;hold&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;hold&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="365357319" result="Passed" start-time="2026-11-14 10:33:14Z" end-time="2026-11-14 10:33:19Z" duration="4.956242" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+FTP interception order: Away recovering player (blocking: False, at (0, 0, 4))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: Away recovering player. Press [R] to roll.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away recovering player at (-1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on ftp against Online receiver
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (-1, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Saving results to: TestResults\GameplayRegression\Runs\20261114T103218502Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

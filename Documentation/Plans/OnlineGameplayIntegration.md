@@ -87,6 +87,13 @@ ownership, interruption and holds. Existing status text displays published
 team goals. See OnlineGoalkeeper verification. First Time Pass and the remaining
 duel/restart families are next.
 
+First Time Pass now has typed target preview/confirmation, both-team preparation
+selection/movement/skip and interceptions, including typed automatic deadlines
+and cancelled-result guards. Sixteen focused cases passed across isolated and
+actual Room-manager fixtures; ten offline FTP regressions also passed.
+See OnlineFirstTimePass verification. The existing first-action transport ending
+and fixed six-token startup still prevent a continuous full Room session.
+
 ## Ordered implementation batches
 
 1. Generalize the authoritative command boundary for multiple action families.

@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Online First Time Pass adds 16 independently selectable PlayMode cases in
+`Assets/Tests/PlayMode/Features/OnlineFirstTimePass/`, category
+`OnlineFirstTimePass`: 14 isolated cases in `Runs/20261114T103218502Z/results.xml`
+and 2 real Room-manager cases in `Runs/20261114T103724760Z/results.xml`, all
+passed (zero failed/skipped). Compilation separately clean. Affected offline
+`LegacyFirstTimePassPlayModeTests` passed 10 cases in
+`Runs/20261114T103412350Z/results.xml`. No legacy case was retired or full suite
+run. See feature Verification.md for reproductions and fixture correction.
+
 Online goalkeeper interruptions add ten independently selectable PlayMode
 cases in category `OnlineGoalkeeper`, fixture `OnlineGoalkeeperPlayModeTests`,
 under `Assets/Tests/PlayMode/Features/OnlineGoalkeeper/`. All ten passed,
