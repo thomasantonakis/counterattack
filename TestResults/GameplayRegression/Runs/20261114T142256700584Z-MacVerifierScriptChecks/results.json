@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "testsRun": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "unitOutput": "test_credential_redaction_preserves_gameplay_token_identity (test_online_verification.VerificationTests) ... ok\ntest_failed_stage_retains_native_evidence_and_redacts_it (test_online_verification.VerificationTests) ... ok\ntest_fatal_preflight_still_publishes_failed_report (test_online_verification.VerificationTests) ... ok\ntest_invalid_report_branch_id_does_not_run_git (test_online_verification.VerificationTests) ... ok\ntest_legacy_live_markers_are_replaced_by_packaged_eos_checks (test_online_verification.VerificationTests) ... ok\ntest_lobby_commits_preserve_source_identity_but_gameplay_changes_do_not (test_online_verification.VerificationTests) ... ok\ntest_native_xml_preserves_parameter_case_failures (test_online_verification.VerificationTests) ... ok\ntest_nested_host_guest_evidence_is_included_but_config_files_are_not (test_online_verification.VerificationTests) ... ok\ntest_plan_selects_only_online_fixtures_and_preserves_modes (test_online_verification.VerificationTests) ... ok\ntest_report_only_commit_preserves_head_index_and_local_edits (test_online_verification.VerificationTests) ... ok\ntest_timeout_retires_only_the_owned_command (test_online_verification.VerificationTests) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 3.700s\n\nOK\n",
+  "syntaxChecks": [
+    {
+      "name": "VerifyOnlineMac.sh",
+      "kind": "bash-syntax",
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "BuildEOSStandaloneMac.sh",
+      "kind": "bash-syntax",
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "RunEOSStandaloneMac.sh",
+      "kind": "bash-syntax",
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "RunEOSStandaloneMacHost.sh",
+      "kind": "bash-syntax",
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "HostOnlineMacVerification.ps1",
+      "kind": "powershell-syntax",
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "name": "RunEOSStandaloneWindows.ps1",
+      "kind": "powershell-syntax",
+      "exitCode": 0,
+      "output": ""
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "scope": "Actual report-only commit/push and automatic Windows retrieval of a 3 MiB JSON; not a Mac gameplay result",
+  "publication": {
+    "branch": "verification/sons-mac-report-smoke-20261114T142457Z",
+    "commit": "c31f553659256045c583f5f61353800a50c44834",
+    "report_path": "Documentation/Testing/MacReports/report-smoke-20261114T142457Z.json"
+  },
+  "download": "C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\TestResults\\GameplayRegression\\Runs\\20261114T142313738Z-WindowsVerificationHost\\report-smoke-20261114T142457Z-Mac-report.json",
+  "bytes": 3146133
+}

@@ -12,6 +12,13 @@ checks. It records failed/skipped stages and native evidence, publishes a separa
 verification branch, and preserves source branches/local edits. Host retries are
 bounded and every failed attempt stays in the report. Actual Mac execution is
 still external; do not claim it from Windows unit or syntax checks.
+The Windows watcher is running in a hidden PowerShell process for eight hours
+from 2026-11-14 14:23 UTC. Check Temp/MacVerificationHost.process.json and its
+bounded stdout/stderr files before starting another watcher. It starts hosts
+only when requested, keeps Windows from idle sleep, and downloads published Mac
+reports automatically. Actual GitHub request/rejection and 3 MiB report download
+smokes passed; see Documentation/Setup/tests/Verification.md. Do not change the
+pinned gameplay exports while awaiting the Mac run.
 
 User resumed independent work after the shot-block break (2026-11-14).
 The block extension has 10 focused passes; the preceding shot category has 30.
