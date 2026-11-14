@@ -370,4 +370,6 @@ has a deferred Mac manifest entry. Full normal Room remains future work.
 Latest: online set-piece continuation audit reproduced and fixed disabled-Update
 restart ownership leak. All 24 own-feature cases passed at
 20261114T154013072Z; roster replica visibility 4 passed at153651364Z.
-Next refresh exports, then penalties/throw-ins, substitutions and normal Room.
+Both exports refreshed successfully; packaged local checks and native Room
+login passed. See OnlineSetPieces/Verification.md for 15:43 UTC evidence.
+Next penalties/throw-ins, substitutions and normal Room.

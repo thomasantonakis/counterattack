@@ -1,0 +1,45 @@
+{
+  "status": "completed",
+  "buildId": "build_5a530af4a1d5",
+  "result": "Succeeded",
+  "platform": "StandaloneWindows64",
+  "outputPath": "C:/Users/thomas/Documents/Projects/Personal/counterattack/Build/OnlineRoom/Windows/CounterattackOnlineRoom.exe",
+  "totalSizeBytes": 464720067,
+  "buildTimeMs": 51187,
+  "buildStartedAt": "2026-11-14T13:41:49.8915934Z",
+  "buildEndedAt": "2026-11-14T13:42:41.0788087Z",
+  "totalWarnings": 7,
+  "totalErrors": 1,
+  "errors": [
+    {
+      "message": "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+    }
+  ],
+  "warnings": [
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    },
+    {
+      "message": "Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds."
+    },
+    {
+      "message": "warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'",
+      "file": "Assets\\Scripts\\UI\\CreateNewGameManager.cs"
+    },
+    {
+      "message": "warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'",
+      "file": "Assets\\Scripts\\UI\\CreateNewGameManager.cs"
+    },
+    {
+      "message": "warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'",
+      "file": "Assets\\Scripts\\UI\\RulesViewer.cs"
+    },
+    {
+      "message": "warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'",
+      "file": "Assets\\Scripts\\UI\\RulesViewer.cs"
+    },
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    }
+  ]
+}

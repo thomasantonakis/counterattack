@@ -41,3 +41,13 @@ commit now retires that restart synchronously. The full focused feature category
 then passed **24/0/0** at `Runs/20261114T154013072Z/results.xml` (20 isolated +
 4 actual Room cases), compilation separately clean. These replace the earlier
 22-case verdict; do not add overlapping run counts. New cases registered for Mac.
+
+Windows exports refreshed at a40ba06 plus presentation fix d611230:
+Room `build_5a530af4a1d5` and prepared `build_76ecc6959882` both Succeeded.
+Reports retain 7/2 warnings respectively and one known EOS post-build
+missing-vswhere.exe lookup error each; no script compilation errors.
+Packaged local checks passed at `Runs/20261114T154318506Z-Room-local/` and
+`Runs/20261114T154345316Z-Gameplay-local/`, with build summaries retained there.
+Native Room login passed at `Runs/20261114T154345328Z-Room-login/result.json`,
+liveness notification registration true. These are limited local/login probes,
+not paired, relay, full-match or cross-platform acceptance.
