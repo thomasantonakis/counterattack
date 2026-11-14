@@ -44,8 +44,18 @@ Affected offline checks: `AttributeScoreFloorPlayModeTests.SavingZeroTiesHeaderD
 
 Still pending: ordinary shot/snapshot targeting, blocking, general goalkeeper
 movement, scored goals and restart continuations, dedicated guest shot-result
-presentation, and paired acceptance. Windows exports recorded by
-OnlineKeeperDistribution/Verification.md precede this batch and need rebuilding.
+presentation, and paired acceptance.
 Broader user-run checks when appropriate: `Assets/Tests/PlayMode/LegacyHeaderGoalBranchPlayModeTests.cs`,
 `LegacyOriginalHeaderGoalPlayModeTests.cs` and category DecisionTiming in
 `Assets/Tests/PlayMode/Features/DecisionTiming/` for other shot/restart timing paths.
+
+Windows exports after 7d69148: Room `build_2f27f3571268` Succeeded (7 warnings),
+prepared `build_46d25681fc94` Succeeded (2 warnings). Each retains the known
+missing-vswhere.exe diagnostic (one report error, no script compile errors).
+Existing packaged local ground/pause/recovery checks passed in
+`Runs/20261114T073800755Z-Room-local/` and
+`Runs/20261114T073921462Z-Gameplay-local/`, retaining result.json,
+gameplay-evidence.json and build-report.json. Packaged Room native login also
+passed with liveness notification registration in
+`Runs/20261114T073831991Z-Room-login/result.json`. No paired relay or human shot
+acceptance is implied by these local/login checks.

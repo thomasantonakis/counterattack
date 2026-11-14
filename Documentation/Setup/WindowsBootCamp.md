@@ -8,9 +8,12 @@ the family Mac on macOS as the guest. The Windows laptop hosts the match probe.
 Current branch: `codex/online-foundation-personal-mac`. Read `AGENTS.md`,
 `Documentation/Plans/OnlineMultiplayer.md`, `Documentation/Plans/EOSSetup.md`,
 and `Assets/Editor/FeatureTests/OnlineEOSConnectivity/Verification.md` after
-cloning. The previous proof passed relay-only packets between two macOS Editors
-on separate networks. **Windows native initialization, host packets and builds
-are still unverified** until the focused Windows runs below pass.
+cloning. Windows native initialization/login, liveness registration, exports
+and local gameplay/recovery checks have passed. Current evidence is recorded in
+`Assets/Editor/FeatureTests/OnlineShots/Verification.md`; current Mac/Windows
+commands are in `Documentation/Setup/OnlineRoomProof.md`. The setup steps below
+remain applicable to a fresh Windows installation. Paired/manual Room acceptance
+is deferred and full-match internet play is still being integrated.
 
 ## 1. Install Windows tools in PowerShell
 
