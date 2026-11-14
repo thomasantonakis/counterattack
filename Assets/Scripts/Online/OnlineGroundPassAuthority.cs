@@ -218,8 +218,9 @@ namespace CounterAttack.Online
             else if (state.ballMoving) state.stage = "resolving";
             else if(match.looseBallManager?.isActivated==true)ReadLooseBallDecision(state,actions);
             else if(match.shotManager?.isWaitingForSaveandHoldScenario==true)ReadKeeperDistribution(state,actions);
-            else if(match.shotManager?.isActivated==true)ReadShotDecision(state,actions);
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
+            else if(match.shotManager?.isActivated==true)ReadShotDecision(state,actions);
+            else if(match.shotManager?.isWaitingForShotCommitConfirmation==true)ReadShotDecision(state,actions);
             else if(HeaderRules?.isActivated==true) ReadHeaderDecision(state,actions,HeaderRules);
             else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
@@ -239,17 +240,20 @@ namespace CounterAttack.Online
                 }
             }
             else if (ground.isActivated) state.stage = "resolving";
-            else if (ground.isAvailable)
+            else if (ground.isAvailable || match.movementPhaseManager?.isAvailable==true || match.longBallManager?.isAvailable==true
+                || match.shotManager?.OnlineCanSelectShot==true
+                || match.highPassManager?.isAvailable==true && match.currentState!=MatchManager.GameState.GoalKick)
             {
                 state.stage = "action";
-                if(match.currentState==MatchManager.GameState.QuickThrow)
+                if(ground.isAvailable && match.currentState==MatchManager.GameState.QuickThrow)
                     AddAdditional(actions,KeeperQuickStartAction,()=>match.TriggerQuickThrowPass());
-                else actions.Add(StartAction);
+                else if(ground.isAvailable)actions.Add(StartAction);
             }
             if ((state.stage == "action" || state.stage == "target" || state.stage == "long.target" || state.stage=="high.target") && match.longBallManager?.isAvailable == true)
                 AddAdditional(actions, LongStartAction, () => match.TriggerLongPass());
             if ((state.stage == "long.target" || state.stage=="high.target") && ground.isAvailable) actions.Add(StartAction);
             bool preview = state.stage == "action" || state.stage == "target" || state.stage == "long.target" || state.stage=="high.target";
+            if(preview && match.shotManager?.OnlineCanSelectShot==true)AddShotCommand(actions,ShotStartAction,OnlineShotIntent.Select);
             bool canHigh=match.highPassManager?.isAvailable==true && match.currentState!=MatchManager.GameState.GoalKick;
             if(preview && canHigh)AddAdditional(actions,HighStartAction,()=>match.TriggerHighPass());
             if(preview && match.movementPhaseManager?.isAvailable == true && !state.movementActive)

@@ -1,5 +1,12 @@
 # Gameplay regression migration
 
+Ordinary online shots add 14 cases to OnlineShots, bringing its focused category
+to **30 passed**, zero failed/skipped, compilation separately clean. Reproduced
+missing selection, disabled-owner continuation, empty post-pass menus and Final
+Third preview priority before fixes. Manual controls 7 and offline ShotFollowup 4
+also pass. Exact XML and unexecuted blocking/goal paths are in the feature
+Verification.md; no complete suites ran or legacy scenarios removed.
+
 Online headed shots add 16 independently selectable PlayMode cases in category
 OnlineShots with passing final outcomes. Missing save routing, disabled-authority
 continuation and jackpot-enabled numeric handling were reproduced and fixed.

@@ -69,8 +69,11 @@ overlapping holds and cancelled/replaced result version guards (18 focused passe
 Headed shots now have 16 focused passing outcomes through actual goal-line
 declaration, challenge, owned save/handling, held distribution or completed
 rebound. Active disabled authority managers can continue after result holds;
-handling observations correctly carry no jackpot. Ordinary shots/snapshots,
-goals, general keeper moves and restart outcomes remain next.
+handling observations correctly carry no jackpot. The shot category now has
+30 focused passes including ordinary selection/confirmation, aiming, snapshot
+defender movement, manual/automatic shooter/save/handling, post-pass action
+choices and interrupted previews. Final Third has priority over shot input.
+Outfield blocks, goals, general keeper moves and restart outcomes remain next.
 
 ## Ordered implementation batches
 

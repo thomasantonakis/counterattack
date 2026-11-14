@@ -3,16 +3,38 @@
 - [x] Real header goal-line declaration, challenge and keeper-save command.
 - [x] Disabled authority owner, save/handling result holds, cancellation and deadlines.
 - [x] Handling, possession/distribution and rebound continuation, both directions.
-- [ ] Ground shots, snapshots, blockers and general keeper choices.
+- [x] Ordinary shot/snapshot selection, confirmation, aiming and snapshot defender movement.
+- [x] Post-pass action choices and interrupted preview validation.
+- [ ] Outfield shot blocks and general keeper choices.
 - [ ] Goals, restarts and statistics through actual match flow.
 - [ ] Focused tests, compilation and refreshed builds.
 
 Paired acceptance remains deferred. This checklist tracks partial progress;
 it does not claim complete shot or full-match internet play.
 
-Compilation separately clean. `OnlineHeaderShotPlayModeTests` / category
-`OnlineShots`: **16 distinct PlayMode cases have passing final outcomes**,
-zero skipped. Native XML under `TestResults/GameplayRegression/Runs/`:
+Compilation separately clean. Category `OnlineShots`: **30 PlayMode passed,
+zero failed/skipped**, in
+`TestResults/GameplayRegression/Runs/20261114T082408043Z/results.xml`.
+This includes 16 headed-shot cases and 14 ordinary-shot/snapshot cases.
+Ordinary coverage includes real preview/cancel/confirmation, legal goal-line
+targeting, actual snapshot defender movement, shooter/save/handling rolls,
+numeric power/statistics, automatic deadlines, post-pass action choices, lost
+ball possession and Final Third preview interruption, all in both directions.
+
+Reproductions for the ordinary batch: 8 missing-start failures in
+`20261114T074345707Z/results.xml`; 8 disabled-owner shooter continuations in
+`20261114T081008014Z/results.xml`; 2 empty post-pass menus in
+`20261114T081521984Z/results.xml`; 2 passes / 2 Final Third priority failures in
+`20261114T082237069Z/results.xml`. Supported action availability now considers
+movement/shot/long/high choices independently of ground-pass availability.
+Final Third owns input ahead of shot previews; typed input also preserves
+existing extra-roll, free-kick and final-extra-movement restrictions.
+
+Affected manual controls: **7 passed** in `20261114T082609343Z/results.xml`.
+Existing offline `DecisionTimingPlayModeTests.ShotFollowup`: **4 passed** in
+`20261114T082715704Z/results.xml`. No complete suites ran.
+
+Earlier headed-shot checkpoint (native XML under the same Runs directory):
 
 - `20261113T230140267Z/results.xml`: 14 passed; 2 tied-save cases failed in
   teardown because the fixture ended with the async save owner still awaiting
@@ -42,14 +64,14 @@ Affected offline checks: `AttributeScoreFloorPlayModeTests.SavingZeroTiesHeaderD
 `LegacyHeaderSaveJumpersPlayModeTests` **6 passed** in
 `20261114T073252978Z/results.xml`. No complete suites ran.
 
-Still pending: ordinary shot/snapshot targeting, blocking, general goalkeeper
-movement, scored goals and restart continuations, dedicated guest shot-result
+Still pending: outfield shot blocking, general goalkeeper movement, scored goals
+and restart continuations, dedicated guest shot-result
 presentation, and paired acceptance.
 Broader user-run checks when appropriate: `Assets/Tests/PlayMode/LegacyHeaderGoalBranchPlayModeTests.cs`,
 `LegacyOriginalHeaderGoalPlayModeTests.cs` and category DecisionTiming in
 `Assets/Tests/PlayMode/Features/DecisionTiming/` for other shot/restart timing paths.
 
-Windows exports after 7d69148: Room `build_2f27f3571268` Succeeded (7 warnings),
+Windows exports after 7d69148 (before the ordinary-shot extension): Room `build_2f27f3571268` Succeeded (7 warnings),
 prepared `build_46d25681fc94` Succeeded (2 warnings). Each retains the known
 missing-vswhere.exe diagnostic (one report error, no script compile errors).
 Existing packaged local ground/pause/recovery checks passed in

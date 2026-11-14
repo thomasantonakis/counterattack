@@ -107,9 +107,11 @@ public partial class ShotManager
         r.Decision(shotType == "snapshot" ? DecisionKind.SnapshotGoalLineTarget : DecisionKind.ShotGoalLineTarget, isWaitingForTargetSelection);
         r.Decision(DecisionKind.QuickThrowOrDistribution, isWaitingForSaveandHoldScenario);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isWaitingForOutsideBoxGKShotDecision);
-        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true && isHeaderAtGoal)
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
         {
-            r.Roll(this,"save",OnlineShotStage=="header.save",()=>OnlineShotStage=="header.save",()=>{TryExecuteOnlineShot(OnlineShotIntent.HeaderSave);});
+            r.Roll(this,"shot",OnlineShotStage=="roll",()=>OnlineShotStage=="roll",()=>{TryExecuteOnlineShot(OnlineShotIntent.Shoot);});
+            r.Roll(this,"save",OnlineShotStage is "header.save" or "save",()=>OnlineShotStage is "header.save" or "save",
+                ()=>{TryExecuteOnlineShot(isHeaderAtGoal?OnlineShotIntent.HeaderSave:OnlineShotIntent.Save);});
             r.Roll(this,"handling",OnlineShotStage=="handling",()=>OnlineShotStage=="handling",()=>{TryExecuteOnlineShot(OnlineShotIntent.Handling);});
             return;
         }

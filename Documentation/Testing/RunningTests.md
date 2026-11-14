@@ -1,10 +1,12 @@
 # Running gameplay regressions
 
-Headed shots use PlayMode category `OnlineShots` / `OnlineHeaderShotPlayModeTests`:
-16 distinct cases have passing final outcomes, compilation separately clean.
+Shots use PlayMode category `OnlineShots`: 30 passed, zero failed/skipped,
+compilation separately clean. Fixtures are `OnlineHeaderShotPlayModeTests` (16)
+and `OnlineGroundShotPlayModeTests` (14).
 Exact native XML and initial failures are recorded in
 `Assets/Editor/FeatureTests/OnlineShots/Verification.md`; native tests live under
-`Assets/Tests/PlayMode/Features/OnlineShots/`. Ordinary shots/goals remain pending.
+`Assets/Tests/PlayMode/Features/OnlineShots/`. Includes targeting, snapshot defender
+movement, held saves, rebound and preview interruption. Outfield blocks/goals remain pending.
 
 The currently installed Pipeline's `testName` filter compares literal substrings;
 it does not interpret regex. A method name selects all its parameter cases. For

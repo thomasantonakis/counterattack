@@ -11,8 +11,10 @@ interceptions (40 PlayMode + 10 EditMode passed). Goalkeeper distribution has
 14 focused passes for quick throws and Final Third drop/kick targeting.
 Loose-ball ties and keeper spills now have 18 focused passes, including recovery,
 holds and replacement races. Headed shots now have 16 focused passing outcomes
-through save/handling, distribution and completed rebounds. Continue ordinary
-shots/snapshots, goals, general keeper moves and restarts. See OnlineShots/Verification.md.
+through save/handling, distribution and completed rebounds. The shot category
+now has 30 passes including ordinary shots, snapshot defender movement,
+post-pass choices and interrupted previews. Continue outfield blocks, goals,
+general keeper moves and restarts. See OnlineShots/Verification.md.
 See Assets/Editor/FeatureTests/OnlineHeaders/Verification.md.
 Keep paired/manual sessions deferred while independent implementation continues.
 

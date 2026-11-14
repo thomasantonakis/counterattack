@@ -3568,7 +3568,7 @@ public partial class ShotManager : MonoBehaviour
                     && (IsPenaltyShot() || interceptors.Count > 0 && interceptors[0].IsGK)
                     && DuelResolutionPanelController.Instance != null
                     && DuelResolutionPanelController.Instance.IsShotComparisonFor(this));
-            if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+            if (!IsOnlineShotContinuationCurrent(version)) yield break;
         }
 
         if (IsFreeKickShot())
@@ -4026,7 +4026,7 @@ public partial class ShotManager : MonoBehaviour
                 continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave,
                 scatterOwner: looseBallManager, resolvedTotal: totalSavingPower,
                 continueWhileResultVisible: IsPenaltyShootoutShot() && totalSavingPower != totalShotPower);
-            if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+            if (!IsOnlineShotContinuationCurrent(version)) yield break;
         }
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 6;
