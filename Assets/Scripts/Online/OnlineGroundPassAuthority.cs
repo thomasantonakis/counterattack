@@ -204,7 +204,7 @@ namespace CounterAttack.Online
                 playerMoving = match.movementPhaseManager?.isPlayerMoving == true
                     || match.movementPhaseManager?.IsResolvingReposition == true
                     || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true
-                    || KeeperRules?.IsResolvingMove == true || match.freeKickManager?.IsResolvingSetup == true || match.penaltyKickManager?.OnlinePenaltyMoving == true,
+                    || KeeperRules?.IsResolvingMove == true || match.freeKickManager?.IsResolvingSetup == true || match.penaltyKickManager?.OnlinePenaltyMoving == true || ThrowInRules?.OnlineThrowInMoving == true,
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
@@ -235,6 +235,7 @@ namespace CounterAttack.Online
             else if(HeaderRules?.isActivated==true) ReadHeaderDecision(state,actions,HeaderRules);
             else if(match.firstTimePassManager?.isActivated==true)ReadFirstTimePassDecision(state,actions);
             else if(match.freeKickManager?.OnlineSetPieceStage!=null)ReadSetPieceDecision(state,actions);
+            else if(ThrowInRules?.OnlineThrowInStage!=null)ReadThrowInDecision(state,actions);
             else if (state.movementActive) ReadMovementDecision(state,actions);
             else if (ground.isActivated && ground.isWaitingForDiceRoll && interceptor != null)
             {

@@ -1,0 +1,5 @@
+{"name":"LegacyThrowInPlayModeTests.ThrowExecution(\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyThrowInPlayModeTests.ThrowExecution(\"single\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyThrowInPlayModeTests.ThrowExecution(\"easy\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyThrowInPlayModeTests.ThrowExecution(\"hard\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyThrowInPlayModeTests.ThrowInDisplacementAndRestrictedMovement","status":"Passed","message":"","stackTrace":""}

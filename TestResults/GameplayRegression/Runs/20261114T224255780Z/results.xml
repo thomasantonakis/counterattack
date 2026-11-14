@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 22:42:55Z" end-time="2026-11-14 22:43:21Z" duration="25.3765911">
+  <test-suite type="TestSuite" id="2525" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1253" result="Passed" start-time="2026-11-14 22:42:55Z" end-time="2026-11-14 22:43:21Z" duration="25.376591" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2522" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1253" result="Passed" start-time="2026-11-14 22:42:55Z" end-time="2026-11-14 22:43:21Z" duration="25.324746" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1976" name="OnlineRoomThrowInPlayModeTests" fullname="OnlineRoomThrowInPlayModeTests" classname="OnlineRoomThrowInPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 22:42:55Z" end-time="2026-11-14 22:43:21Z" duration="25.312545" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineThrowIns" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1981" name="RoomThrowInContinues" fullname="OnlineRoomThrowInPlayModeTests.RoomThrowInContinues" classname="OnlineRoomThrowInPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 22:42:55Z" end-time="2026-11-14 22:43:21Z" duration="25.302021" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1977" name="RoomThrowInContinues(1,False)" fullname="OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(1,False)" methodname="RoomThrowInContinues" classname="OnlineRoomThrowInPlayModeTests" runstate="Runnable" seed="453526157" result="Passed" start-time="2026-11-14 22:42:55Z" end-time="2026-11-14 22:43:04Z" duration="8.176044" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Fixture Home 9 took the set piece and cannot be the next player to touch the ball.
+Fixture Home 9 moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Fixture Home 9, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1978" name="RoomThrowInContinues(1,True)" fullname="OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(1,True)" methodname="RoomThrowInContinues" classname="OnlineRoomThrowInPlayModeTests" runstate="Runnable" seed="1014538290" result="Passed" start-time="2026-11-14 22:43:04Z" end-time="2026-11-14 22:43:09Z" duration="5.773496" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Fixture Home 9 took the set piece and cannot be the next player to touch the ball.
+Fixture Home 9 moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Fixture Home 9, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Throw-to-head auto-targeted: Fixture Home 10.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Fixture Home 10 at (0, 0, 8)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1979" name="RoomThrowInContinues(-1,False)" fullname="OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(-1,False)" methodname="RoomThrowInContinues" classname="OnlineRoomThrowInPlayModeTests" runstate="Runnable" seed="999688900" result="Passed" start-time="2026-11-14 22:43:09Z" end-time="2026-11-14 22:43:15Z" duration="5.697500" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Fixture Home 1.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Fixture Home 9 took the set piece and cannot be the next player to touch the ball.
+Fixture Home 9 moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Fixture Home 9, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1980" name="RoomThrowInContinues(-1,True)" fullname="OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(-1,True)" methodname="RoomThrowInContinues" classname="OnlineRoomThrowInPlayModeTests" runstate="Runnable" seed="1191768423" result="Passed" start-time="2026-11-14 22:43:15Z" end-time="2026-11-14 22:43:21Z" duration="5.629327" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Fixture Home 1.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Fixture Home 9 took the set piece and cannot be the next player to touch the ball.
+Fixture Home 9 moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Fixture Home 9, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Unknown kit preset ''. Falling back to blue token style.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Throw-to-head auto-targeted: Fixture Home 10.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Fixture Home 10 at (0, 0, 8)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261114T224255780Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

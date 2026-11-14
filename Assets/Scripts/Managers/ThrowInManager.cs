@@ -178,41 +178,47 @@ public partial class ThrowInManager : MonoBehaviour
 
             if (keyData.key == KeyCode.C)
             {
-                List<HexCell> availableHeaderTargets = GetAvailableHeaderThrowTargets();
-                if (availableHeaderTargets.Count == 0)
-                {
-                    keyData.Consume(nameof(ThrowInManager));
-                    MatchManager.Instance.RecordGameplayOutcome(
-                        "restart.option_unavailable",
-                        "throw_in",
-                        "throw_to_head_unavailable",
-                        actor: selectedThrower,
-                        sourceHex: throwInHex,
-                        details: new Dictionary<string, string> { ["key"] = "C" });
-                    Debug.LogWarning("Throw-to-head is not available: no attacker is within 6 hexes of the throw-in taker.");
-                    return;
-                }
-
                 keyData.Consume(nameof(ThrowInManager));
-                isWaitingForThrowTypeSelection = false;
-                RecordThrowInSelection("throw_to_head_selected", "C");
-                if (availableHeaderTargets.Count == 1)
-                {
-                    Debug.Log($"Throw-to-head auto-targeted: {availableHeaderTargets[0].GetOccupyingToken()?.name ?? availableHeaderTargets[0].name}.");
-                    StartCoroutine(CommitThrowToHead(availableHeaderTargets[0]));
-                    return;
-                }
-
-                isWaitingForHeaderTarget = true;
-                currentHeaderThrowTarget = null;
-                HighlightHeaderThrowTargets(availableHeaderTargets);
-                Debug.Log(MatchManager.Instance.difficulty_level == 3
-                    ? "Throw-in option selected: [C] to head. Click an eligible attacker to commit."
-                    : "Throw-in option selected: [C] to head. Click an eligible attacker, then click again to confirm.");
+                ChooseHeaderThrow();
                 return;
             }
         }
     }
+
+    private bool ChooseHeaderThrow()
+    {
+        List<HexCell> availableHeaderTargets = GetAvailableHeaderThrowTargets();
+        if (availableHeaderTargets.Count == 0)
+        {
+            MatchManager.Instance.RecordGameplayOutcome(
+                "restart.option_unavailable",
+                "throw_in",
+                "throw_to_head_unavailable",
+                actor: selectedThrower,
+                sourceHex: throwInHex,
+                details: new Dictionary<string, string> { ["key"] = "C" });
+            Debug.LogWarning("Throw-to-head is not available: no attacker is within 6 hexes of the throw-in taker.");
+            return false;
+        }
+
+        isWaitingForThrowTypeSelection = false;
+        RecordThrowInSelection("throw_to_head_selected", "C");
+        if (availableHeaderTargets.Count == 1)
+        {
+            Debug.Log($"Throw-to-head auto-targeted: {availableHeaderTargets[0].GetOccupyingToken()?.name ?? availableHeaderTargets[0].name}.");
+            StartCoroutine(CommitThrowToHead(availableHeaderTargets[0]));
+            return true;
+        }
+
+        isWaitingForHeaderTarget = true;
+        currentHeaderThrowTarget = null;
+        HighlightHeaderThrowTargets(availableHeaderTargets);
+        Debug.Log(MatchManager.Instance.difficulty_level == 3
+            ? "Throw-in option selected: [C] to head. Click an eligible attacker to commit."
+            : "Throw-in option selected: [C] to head. Click an eligible attacker, then click again to confirm.");
+        return true;
+    }
+
 
     private IEnumerator HandleThrowerSelection(PlayerToken token)
     {

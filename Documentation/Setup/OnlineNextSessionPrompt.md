@@ -380,3 +380,10 @@ See OnlinePenalties/Verification.md for native evidence and resolved missing gri
 cache initialization. Mac cases registered individually. Exports at84d016e
 precede penalties/caches; refresh again before paired execution. Next throw-ins,
 remaining substitutions/keeper replacement and normal full Room lifecycle.
+
+Online throw-ins: 10 isolated + 4 actual Room-proof passes and 5 affected offline
+passes, zero failed/skipped; compilation clean. See OnlineThrowIns/Verification.md.
+New user priority: complete Create New Game guest joining/team names/jerseys/both
+ready, Draft owned rolls/picks/slot moves/start, and Room pause/settings,
+substitutions and shootout ordering. See OnlineSessionLifecycle.md. Paired Mac
+execution remains deferred; each new case still requires its own manifest row.

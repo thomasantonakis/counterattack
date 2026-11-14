@@ -541,6 +541,26 @@
       "definition_sha256": "07de3f4956cc3b57ef569a36800ef872484edcd96ca2b8e3bf06778cebc3e7dc",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineShots/OnlineShotBlockPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomThrowInPlayModeTests",
+      "categories": [
+        "OnlineThrowIns"
+      ],
+      "definition_sha256": "68094e7f2d7831851900852581a4024c1cc5f7aae7ad994a3e24e98dc9c9cf61",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineThrowIns/OnlineRoomThrowInPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "categories": [
+        "OnlineThrowIns"
+      ],
+      "definition_sha256": "4395b65d941b1545714ae7e00539ed63261ca420a0c91b11c9fa1f8b7afc4257",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineThrowIns/OnlineThrowInPlayModeTests.cs"
     }
   ],
   "test_additions": [
@@ -2075,6 +2095,202 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T155418827Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(1,\"feet\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        1,
+        "feet"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(1,\"head\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        1,
+        "head"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(1,\"head-target\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        1,
+        "head-target"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(1,\"optional\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        1,
+        "optional"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(1,\"hold\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"feet\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        -1,
+        "feet"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"head\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        -1,
+        "head"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"head-target\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        -1,
+        "head-target"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"optional\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        -1,
+        "optional"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"hold\")",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineThrowInPlayModeTests",
+      "method": "ThrowInContinues",
+      "parameters": [
+        -1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224107950Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(1,False)",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineRoomThrowInPlayModeTests",
+      "method": "RoomThrowInContinues",
+      "parameters": [
+        1,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224255780Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(1,True)",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineRoomThrowInPlayModeTests",
+      "method": "RoomThrowInContinues",
+      "parameters": [
+        1,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224255780Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(-1,False)",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineRoomThrowInPlayModeTests",
+      "method": "RoomThrowInContinues",
+      "parameters": [
+        -1,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224255780Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(-1,True)",
+      "feature": "OnlineThrowIns",
+      "mode": "playmode",
+      "fixture": "OnlineRoomThrowInPlayModeTests",
+      "method": "RoomThrowInContinues",
+      "parameters": [
+        -1,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224255780Z/results.xml"
     }
   ]
 }
