@@ -7,6 +7,8 @@ public partial class CreateNewGameManager
     public void BindOnlineSetupConfirmation(Action<GameSettings> submit)
         =>onlineSetupConfirmation=submit??throw new ArgumentNullException(nameof(submit));
     public void UnbindOnlineSetupConfirmation()=>onlineSetupConfirmation=null;
+    public GameSettings CaptureOnlineSetupDraft()=>CaptureSettingsFromUi(GetHomeTeamNameForSettings(),GetAwayTeamNameForSettings(),false);
+    public void ApplyOnlineSetupSettings(GameSettings settings)=>ApplyExistingSettingsToUi(CounterAttack.Online.OnlineSetupRules.Copy(settings));
     private bool RouteOnlineSetupConfirmation()
     {
         if(onlineSetupConfirmation==null)return false;
@@ -18,19 +20,23 @@ public partial class CreateNewGameManager
     public bool TryCaptureOnlineSetupSettings(out GameSettings settings,out string error)
     {
         settings=null;
-        if(!TryGetValidatedTeamNames(out var home,out var away,out error))return false;
-        error=GetKitValidationMessage(TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown),GetSelectedKitPresetId(awayKitDropdown)));
-        if(!string.IsNullOrEmpty(error))return false;
-        settings=CaptureSettingsFromUi(home,away,false);return true;
+        if(!ValidateOnlineSetupSelection(out error))return false;
+        settings=CaptureSettingsFromUi(GetHomeTeamNameForSettings(),GetAwayTeamNameForSettings(),false);return true;
     }
-    private GameSettings CaptureSettingsFromUi(string homeTeamName,string awayTeamName,bool resolveRandomReferee)
+    public bool ValidateOnlineSetupSelection(out string error)
+    {
+        if(!TryGetValidatedTeamNames(out _,out _,out error))return false;
+        error=GetKitValidationMessage(TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown),GetSelectedKitPresetId(awayKitDropdown)));
+        return string.IsNullOrEmpty(error);
+    }
+    private GameSettings CaptureSettingsFromUi(string homeTeamName,string awayTeamName,bool finalizeForLocalSave)
     {
         // Create a GameSettings object and populate it from the UI input fields
         GameSettings settings = new GameSettings();
         settings.gameMode = GetSelectedGameModeForSettings();
         settings.halfDuration = (int)halfDurationSlider.value;
         settings.numberOfHalfs = int.Parse(numberOfHalvesDropdown.options[numberOfHalvesDropdown.value].text);
-        RefreshTiebreakerOptions();
+        if(finalizeForLocalSave)RefreshTiebreakerOptions();
         settings.tiebreaker = tiebreakerDropdown.options[tiebreakerDropdown.value].text;
         settings.matchType = matchTypeDropdown.options[matchTypeDropdown.value].text;
         settings.squadSize = squadSizeDropdown.options[squadSizeDropdown.value].text;
@@ -38,7 +44,7 @@ public partial class CreateNewGameManager
         settings.gkDraft = gkDraftDropdown.options[gkDraftDropdown.value].text;
         string selectedReferee = refereeDropdown.options[refereeDropdown.value].text;
         // Check if the selected referee is "Random"
-        if (selectedReferee == "Random" && resolveRandomReferee)
+        if (selectedReferee == "Random" && finalizeForLocalSave)
         {
             // Create a list of referees excluding "Random"
             List<string> nonRandomReferees = new List<string> { "Webster - 2", "Castolo - 3", "Bakker - 4", "Read - 5" };

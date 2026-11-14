@@ -1,0 +1,24 @@
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"agree-start\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"local-edit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"remote-edit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"pending-edit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"reconnect\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"rejected\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"role-filter\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"detached\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"duplicate-ack\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"stale-snapshot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"wrong-match\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(False,\"revision-conflict\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"agree-start\")","status":"Failed","message":"  Expected: 1\r\n  But was:  2\r\n","stackTrace":"at OnlineSetupClientEditorTests.ClientFlow (System.Boolean hostAway, System.String branch) [0x00053] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineSetupClient\\OnlineSetupClientEditorTests.cs:46\r\n"}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"local-edit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"remote-edit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"pending-edit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"reconnect\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"rejected\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"role-filter\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"detached\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"duplicate-ack\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"stale-snapshot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"wrong-match\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupClientEditorTests.ClientFlow(True,\"revision-conflict\")","status":"Passed","message":"","stackTrace":""}

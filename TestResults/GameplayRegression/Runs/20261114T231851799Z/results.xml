@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Passed" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 23:18:51Z" end-time="2026-11-14 23:19:07Z" duration="15.7710149">
+  <test-suite type="TestSuite" id="2642" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1378" result="Passed" start-time="2026-11-14 23:18:51Z" end-time="2026-11-14 23:19:07Z" duration="15.771015" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2636" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1378" result="Passed" start-time="2026-11-14 23:18:51Z" end-time="2026-11-14 23:19:07Z" duration="15.668445" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1825" name="OnlineSetupViewEditorTests" fullname="OnlineSetupViewEditorTests" classname="OnlineSetupViewEditorTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-11-14 23:18:52Z" end-time="2026-11-14 23:19:07Z" duration="15.644697" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSetupView" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1850" name="AuthoredView" fullname="OnlineSetupViewEditorTests.AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-11-14 23:18:52Z" end-time="2026-11-14 23:19:07Z" duration="15.634894" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1826" name="AuthoredView(False,False,&quot;ownership&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,False,&quot;ownership&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1171351338" result="Passed" start-time="2026-11-14 23:18:52Z" end-time="2026-11-14 23:18:52Z" duration="0.625907" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+]]></output>
+          </test-case>
+          <test-case id="1827" name="AuthoredView(False,False,&quot;confirm&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,False,&quot;confirm&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="921243623" result="Passed" start-time="2026-11-14 23:18:52Z" end-time="2026-11-14 23:18:53Z" duration="0.611662" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1828" name="AuthoredView(False,False,&quot;edit&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,False,&quot;edit&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1919060201" result="Passed" start-time="2026-11-14 23:18:53Z" end-time="2026-11-14 23:18:54Z" duration="0.777316" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1829" name="AuthoredView(False,False,&quot;invalid&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,False,&quot;invalid&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="960467752" result="Passed" start-time="2026-11-14 23:18:54Z" end-time="2026-11-14 23:18:54Z" duration="0.319311" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Online setup confirmation blocked: Both team names are required.
+]]></output>
+          </test-case>
+          <test-case id="1830" name="AuthoredView(False,False,&quot;remote-update&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,False,&quot;remote-update&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1899817585" result="Passed" start-time="2026-11-14 23:18:54Z" end-time="2026-11-14 23:18:55Z" duration="0.541410" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1831" name="AuthoredView(False,False,&quot;start&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,False,&quot;start&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1500738532" result="Passed" start-time="2026-11-14 23:18:55Z" end-time="2026-11-14 23:18:55Z" duration="0.861522" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+]]></output>
+          </test-case>
+          <test-case id="1832" name="AuthoredView(False,True,&quot;ownership&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,True,&quot;ownership&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="182630158" result="Passed" start-time="2026-11-14 23:18:55Z" end-time="2026-11-14 23:18:56Z" duration="0.357979" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+]]></output>
+          </test-case>
+          <test-case id="1833" name="AuthoredView(False,True,&quot;confirm&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,True,&quot;confirm&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1960600642" result="Passed" start-time="2026-11-14 23:18:56Z" end-time="2026-11-14 23:18:56Z" duration="0.675242" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1834" name="AuthoredView(False,True,&quot;edit&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,True,&quot;edit&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1370233745" result="Passed" start-time="2026-11-14 23:18:56Z" end-time="2026-11-14 23:18:57Z" duration="0.999357" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1835" name="AuthoredView(False,True,&quot;invalid&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,True,&quot;invalid&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1600434709" result="Passed" start-time="2026-11-14 23:18:57Z" end-time="2026-11-14 23:18:58Z" duration="0.362538" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Online setup confirmation blocked: Both team names are required.
+]]></output>
+          </test-case>
+          <test-case id="1836" name="AuthoredView(False,True,&quot;remote-update&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,True,&quot;remote-update&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="644755391" result="Passed" start-time="2026-11-14 23:18:58Z" end-time="2026-11-14 23:18:58Z" duration="0.590737" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1837" name="AuthoredView(False,True,&quot;start&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(False,True,&quot;start&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="377426899" result="Passed" start-time="2026-11-14 23:18:58Z" end-time="2026-11-14 23:18:59Z" duration="1.058776" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1838" name="AuthoredView(True,False,&quot;ownership&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,False,&quot;ownership&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="903161433" result="Passed" start-time="2026-11-14 23:18:59Z" end-time="2026-11-14 23:19:00Z" duration="0.367081" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+]]></output>
+          </test-case>
+          <test-case id="1839" name="AuthoredView(True,False,&quot;confirm&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,False,&quot;confirm&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1438070017" result="Passed" start-time="2026-11-14 23:19:00Z" end-time="2026-11-14 23:19:00Z" duration="0.629135" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1840" name="AuthoredView(True,False,&quot;edit&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,False,&quot;edit&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1581989697" result="Passed" start-time="2026-11-14 23:19:00Z" end-time="2026-11-14 23:19:01Z" duration="0.903343" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1841" name="AuthoredView(True,False,&quot;invalid&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,False,&quot;invalid&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1456266515" result="Passed" start-time="2026-11-14 23:19:01Z" end-time="2026-11-14 23:19:02Z" duration="0.412143" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Online setup confirmation blocked: Both team names are required.
+]]></output>
+          </test-case>
+          <test-case id="1842" name="AuthoredView(True,False,&quot;remote-update&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,False,&quot;remote-update&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="409927979" result="Passed" start-time="2026-11-14 23:19:02Z" end-time="2026-11-14 23:19:02Z" duration="0.596344" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1843" name="AuthoredView(True,False,&quot;start&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,False,&quot;start&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="2046080210" result="Passed" start-time="2026-11-14 23:19:02Z" end-time="2026-11-14 23:19:03Z" duration="0.862383" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+]]></output>
+          </test-case>
+          <test-case id="1844" name="AuthoredView(True,True,&quot;ownership&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,True,&quot;ownership&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1111120844" result="Passed" start-time="2026-11-14 23:19:03Z" end-time="2026-11-14 23:19:04Z" duration="0.329257" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+]]></output>
+          </test-case>
+          <test-case id="1845" name="AuthoredView(True,True,&quot;confirm&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,True,&quot;confirm&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="660321239" result="Passed" start-time="2026-11-14 23:19:04Z" end-time="2026-11-14 23:19:04Z" duration="0.679593" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1846" name="AuthoredView(True,True,&quot;edit&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,True,&quot;edit&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1750479600" result="Passed" start-time="2026-11-14 23:19:04Z" end-time="2026-11-14 23:19:05Z" duration="0.862307" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1847" name="AuthoredView(True,True,&quot;invalid&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,True,&quot;invalid&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1804555525" result="Passed" start-time="2026-11-14 23:19:05Z" end-time="2026-11-14 23:19:05Z" duration="0.354138" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Online setup confirmation blocked: Both team names are required.
+]]></output>
+          </test-case>
+          <test-case id="1848" name="AuthoredView(True,True,&quot;remote-update&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,True,&quot;remote-update&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="1957083443" result="Passed" start-time="2026-11-14 23:19:05Z" end-time="2026-11-14 23:19:06Z" duration="0.572280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1849" name="AuthoredView(True,True,&quot;start&quot;)" fullname="OnlineSetupViewEditorTests.AuthoredView(True,True,&quot;start&quot;)" methodname="AuthoredView" classname="OnlineSetupViewEditorTests" runstate="Runnable" seed="690696161" result="Passed" start-time="2026-11-14 23:19:06Z" end-time="2026-11-14 23:19:07Z" duration="1.132639" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Red' (id '021'), Away 'Juventus Away' (id 'juvea'), Home GK 'Black' (id 'gk1'), Away GK 'Green' (id 'gk2').
+Match type is Regular or other. Reset checkboxes.
+Saving results to: TestResults\GameplayRegression\Runs\20261114T231851799Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

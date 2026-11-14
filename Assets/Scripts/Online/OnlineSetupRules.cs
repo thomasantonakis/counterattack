@@ -6,6 +6,18 @@ namespace CounterAttack.Online
     public static class OnlineSetupRules
     {
         public static GameSettings Copy(GameSettings settings)=>settings==null?null:JsonConvert.DeserializeObject<GameSettings>(JsonConvert.SerializeObject(settings));
+        public static GameSettings MergeOwnedSelection(GameSettings current,GameSettings proposed,OnlineTeam actor,bool ownsShared)
+        {
+            var merged=Copy(ownsShared?proposed:current);
+            merged.homeTeamName=current.homeTeamName;merged.awayTeamName=current.awayTeamName;
+            merged.homeKit=current.homeKit;merged.awayKit=current.awayKit;merged.homeGKKit=current.homeGKKit;merged.awayGKKit=current.awayGKKit;
+            merged.homeTeamAbbreviation=current.homeTeamAbbreviation;merged.awayTeamAbbreviation=current.awayTeamAbbreviation;
+            if(actor==OnlineTeam.Home){merged.homeTeamName=proposed.homeTeamName;merged.homeKit=proposed.homeKit;merged.homeGKKit=proposed.homeGKKit;}
+            else{merged.awayTeamName=proposed.awayTeamName;merged.awayKit=proposed.awayKit;merged.awayGKKit=proposed.awayGKKit;}
+            if(merged.homeTeamName!=current.homeTeamName)merged.homeTeamAbbreviation=null;
+            if(merged.awayTeamName!=current.awayTeamName)merged.awayTeamAbbreviation=null;
+            return merged;
+        }
         public static GameSettings Normalize(GameSettings source)
         {
             var s=Copy(source);if(s==null)return null;

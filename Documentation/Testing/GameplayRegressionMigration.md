@@ -621,3 +621,12 @@ and host start are implemented. The existing Create New Game button can bind
 confirmation to its session; unbound online guests cannot save/load Draft locally.
 Actual lobby UI/transport, session persistence, Draft and Room menu integration
 remain next. Do not claim the frontend is connected yet. All Mac cases registered.
+
+Online setup client/view: 48 distinct focused EditMode cases passed, plus 24
+affected agreement and 5 authored capture cases. See OnlineSetupClient/Verification.md.
+CreateNewGameScene now owns OnlineSetupView and a Header status object, hidden
+offline; bindings enforce own names/kits, host shared settings and agreed start.
+Unsaved edits survive remote snapshots and pending replies. The persistent EOS
+lobby/session must still supply that client; Main Menu multiplayer is still a
+placeholder. Continue actual host/join transport, scene handoff, Draft, and Room
+menus/substitutions/shootout ordering. Mac manual execution remains deferred.

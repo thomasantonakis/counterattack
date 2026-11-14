@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 23:19:44Z" end-time="2026-11-14 23:19:45Z" duration="0.5446973">
+  <test-suite type="TestSuite" id="2643" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1378" result="Passed" start-time="2026-11-14 23:19:44Z" end-time="2026-11-14 23:19:45Z" duration="0.544697" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2636" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1378" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.439151" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1750" name="OnlineSetupAgreementEditorTests" fullname="OnlineSetupAgreementEditorTests" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.425151" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSetupAgreement" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1798" name="AuthoredCreateGameSnapshot" fullname="OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.422753" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1793" name="AuthoredCreateGameSnapshot(&quot;capture&quot;)" fullname="OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(&quot;capture&quot;)" methodname="AuthoredCreateGameSnapshot" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1985397770" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.073813" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[CreateNewGameManager] Selected kits: Home 'Juventus' (id 'juve'), Away 'Red' (id '021'), Home GK 'Green' (id 'gk2'), Away GK 'Orange' (id 'gk3').
+]]></output>
+          </test-case>
+          <test-case id="1794" name="AuthoredCreateGameSnapshot(&quot;blank&quot;)" fullname="OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(&quot;blank&quot;)" methodname="AuthoredCreateGameSnapshot" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="2074491924" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.047808" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1795" name="AuthoredCreateGameSnapshot(&quot;same-name&quot;)" fullname="OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(&quot;same-name&quot;)" methodname="AuthoredCreateGameSnapshot" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1667130124" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.082396" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1796" name="AuthoredCreateGameSnapshot(&quot;bound-confirm&quot;)" fullname="OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(&quot;bound-confirm&quot;)" methodname="AuthoredCreateGameSnapshot" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="212338730" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.059752" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[CreateNewGameManager] Selected kits: Home 'Juventus' (id 'juve'), Away 'Red' (id '021'), Home GK 'Green' (id 'gk2'), Away GK 'Orange' (id 'gk3').
+[CreateNewGameManager] Selected kits: Home 'Juventus' (id 'juve'), Away 'Red' (id '021'), Home GK 'Green' (id 'gk2'), Away GK 'Orange' (id 'gk3').
+]]></output>
+          </test-case>
+          <test-case id="1797" name="AuthoredCreateGameSnapshot(&quot;guest-unbound&quot;)" fullname="OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(&quot;guest-unbound&quot;)" methodname="AuthoredCreateGameSnapshot" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1771256093" result="Passed" start-time="2026-11-14 23:19:45Z" end-time="2026-11-14 23:19:45Z" duration="0.051980" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[CreateNewGameManager] Selected kits: Home 'Juventus' (id 'juve'), Away 'Red' (id '021'), Home GK 'Green' (id 'gk2'), Away GK 'Orange' (id 'gk3').
+Online setup must be connected to its session before confirmation
+Saving results to: TestResults\GameplayRegression\Runs\20261114T231944951Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

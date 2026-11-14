@@ -11,7 +11,7 @@ public sealed class OnlineSetupAgreementEditorTests
     private OnlineMatchProtocol protocol;private OnlineSetupAuthority authority;
     private static GameSettings valid;
     private static readonly OnlineCompatibility Version=new("setup-1","rules-1","catalog-1");
-    private static GameSettings Valid()
+    public static GameSettings Valid()
     {
         if(valid!=null)return OnlineSetupRules.Copy(valid);
         var s=new GameSettings{halfDuration=45,numberOfHalfs=2,tiebreaker="None",playerAssistance=2,matchType="Regular",squadSize="16",

@@ -1,0 +1,5 @@
+{"name":"OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"capture\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"blank\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"same-name\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"bound-confirm\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"guest-unbound\")","status":"Passed","message":"","stackTrace":""}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 namespace CounterAttack.Online
 {
-    public enum OnlineSetupIntent { Team, Settings, Ready, Unready, Start }
+    public enum OnlineSetupIntent { Team, Settings, Ready, Unready, Start, Confirm }
     [Serializable] public sealed class OnlineSetupTeam { public string name,kit,goalkeeperKit; }
     [Serializable] public sealed class OnlineSetupRequest
     {
@@ -12,7 +12,7 @@ namespace CounterAttack.Online
     }
     [Serializable] public sealed class OnlineSetupState
     {
-        public string matchId,phase;public long revision,configurationRevision;public bool connected,homeReady,awayReady;
+        public string matchId,phase;public long revision,configurationRevision,connectionRevision;public OnlineTeam hostTeam;public bool connected,homeReady,awayReady;
         public long homeSequence,awaySequence;public GameSettings settings;
     }
     // Separate setup lane: reuses authenticated identity and connection lifetime,
@@ -42,7 +42,7 @@ namespace CounterAttack.Online
         }
         public OnlineSetupState Capture()
         {
-            ObserveConnections();return new OnlineSetupState{matchId=protocol.MatchId,revision=revision,configurationRevision=configurationRevision,
+            ObserveConnections();return new OnlineSetupState{matchId=protocol.MatchId,revision=revision,configurationRevision=configurationRevision,connectionRevision=protocol.ConnectionRevision,hostTeam=protocol.HostTeam,
                 phase=started?"draft-ready":"setup",connected=protocol.BothConnected,homeReady=homeReady,awayReady=awayReady,
                 homeSequence=sequence[OnlineTeam.Home],awaySequence=sequence[OnlineTeam.Away],settings=OnlineSetupRules.Copy(settings)};
         }
@@ -59,7 +59,12 @@ namespace CounterAttack.Online
             if(!protocol.BothConnected)return Reply(OnlineCommandStatus.Disconnected);
             if(request.revision!=revision)return Reply(OnlineCommandStatus.StaleRevision);
             if(started)return Reply(OnlineCommandStatus.NotReady);
-            if((request.intent==OnlineSetupIntent.Team)!=(request.team!=null) || (request.intent==OnlineSetupIntent.Settings)!=(request.settings!=null))return Reply(OnlineCommandStatus.InvalidCommand);
+            if(request.intent==OnlineSetupIntent.Confirm)
+            {
+                if(request.team==null)return Reply(OnlineCommandStatus.InvalidCommand);
+                if(request.settings!=null && actor!=protocol.HostTeam)return Reply(OnlineCommandStatus.WrongTeam);
+            }
+            else if((request.intent==OnlineSetupIntent.Team)!=(request.team!=null) || (request.intent==OnlineSetupIntent.Settings)!=(request.settings!=null))return Reply(OnlineCommandStatus.InvalidCommand);
             if(request.intent is OnlineSetupIntent.Settings or OnlineSetupIntent.Start && actor!=protocol.HostTeam)return Reply(OnlineCommandStatus.WrongTeam);
             GameSettings next=null;
             if(request.intent==OnlineSetupIntent.Team)
@@ -75,10 +80,18 @@ namespace CounterAttack.Online
                 next.homeKit=settings.homeKit;next.awayKit=settings.awayKit;next.homeGKKit=settings.homeGKKit;next.awayGKKit=settings.awayGKKit;
                 next.homeTeamAbbreviation=settings.homeTeamAbbreviation;next.awayTeamAbbreviation=settings.awayTeamAbbreviation;
             }
+            if(request.intent==OnlineSetupIntent.Confirm)
+            {
+                next=OnlineSetupRules.MergeOwnedSelection(settings,request.settings??settings,actor,request.settings!=null);
+                if(actor==OnlineTeam.Home){next.homeTeamName=request.team.name;next.homeKit=request.team.kit;next.homeGKKit=request.team.goalkeeperKit;}
+                else{next.awayTeamName=request.team.name;next.awayKit=request.team.kit;next.awayGKKit=request.team.goalkeeperKit;}
+            }
             if(next!=null)
             {
                 next=OnlineSetupRules.Normalize(next);if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(next)))return Reply(OnlineCommandStatus.IllegalAction);
-                settings=next;homeReady=awayReady=false;configurationRevision=checked(configurationRevision+1);
+                if(JsonConvert.SerializeObject(next)!=JsonConvert.SerializeObject(settings))
+                {settings=next;homeReady=awayReady=false;configurationRevision=checked(configurationRevision+1);}
+                if(request.intent==OnlineSetupIntent.Confirm){if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;}
             }
             else switch(request.intent)
             {
