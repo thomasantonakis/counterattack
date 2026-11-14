@@ -66,7 +66,11 @@ both teams, both directions, guest rejection, stale views and overlapping holds.
 Loose balls now have typed direction/distance/recovery with automatic deadlines,
 mandatory-action routing priority, real tied-header and keeper-spill continuation,
 overlapping holds and cancelled/replaced result version guards (18 focused passes).
-Headed shots, general keeper moves and restart outcomes remain next.
+Headed shots now have 16 focused passing outcomes through actual goal-line
+declaration, challenge, owned save/handling, held distribution or completed
+rebound. Active disabled authority managers can continue after result holds;
+handling observations correctly carry no jackpot. Ordinary shots/snapshots,
+goals, general keeper moves and restart outcomes remain next.
 
 ## Ordered implementation batches
 

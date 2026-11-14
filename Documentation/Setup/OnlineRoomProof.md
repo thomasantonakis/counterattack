@@ -42,8 +42,9 @@ drop/high kick. Quick throws use the real committed pass targeting/collection.
 Guests receive detached nominees, actual scores and the winner. Header
 Loose balls now expose owned direction/distance/recovery rolls and automatic
 deadlines; tied headers and keeper spills resume real possession or movement.
-Header goal-line choices are wired; headed-shot resolution,
-dribbling/interactions, shots and restarts are still being integrated;
+Header goal-line choices, keeper saves/handling, held distribution and rebounds
+are wired. Ordinary shots/snapshots, goals, dribbling/interactions and restarts
+are still being integrated;
 this proof is not a complete online match. Manual paired checks stay deferred.
 
 ## Mac setup, build and local checks

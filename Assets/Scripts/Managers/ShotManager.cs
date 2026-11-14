@@ -2267,7 +2267,7 @@ public partial class ShotManager : MonoBehaviour
             $"Saving total: {FormatHeaderPower(totalSavingPower)} · {saveOutcome}",
             continueWithScatter: totalSavingPower == headerAttackerTotalScore,
             scatterOwner: looseBallManager, resolvedTotal: totalSavingPower));
-        if (presentationVersion != headerSavePresentationVersion || !isActiveAndEnabled) return;
+        if (!IsOnlineShotContinuationCurrent(presentationVersion)) return;
 
         // Compare with attacker's total
         if (totalSavingPower == headerAttackerTotalScore)
@@ -2286,15 +2286,20 @@ public partial class ShotManager : MonoBehaviour
             );
             MatchManager.Instance.SetHangingPass("shot");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex, allowGKBoxMove: false));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             await helperFunctions.StartCoroutineAndWait(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution, isHeaderShotContinuation: true));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             ResetShotProcess();
         }
         else if (totalSavingPower > headerAttackerTotalScore)
         {
             Debug.Log($"{gkToken.name} saves the header! Will they hold the ball? Needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex, allowGKBoxMove: false));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             // MatchManager.Instance.ChangePossession();
             isWaitingforHandlingTest = true;
             BeginHeaderHandlingPresentation(gkToken);
@@ -2303,6 +2308,7 @@ public partial class ShotManager : MonoBehaviour
         {
             Debug.Log($"{headerAttacker.name} wins the header at goal! GOAL!");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex, headerAttackerTotalScore/2, allowGKBoxMove: false));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             MatchManager.Instance.gameData.gameLog.LogEvent(headerAttacker, MatchManager.ActionType.ShotOnTarget);
             MatchManager.Instance.gameData.gameLog.LogEvent(
                         headerAttacker
@@ -4386,6 +4392,7 @@ public partial class ShotManager : MonoBehaviour
         GameplayDiceRollResult handlingRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "goalkeeper_handling",
             rollOverride,
+            jackpotEnabled: false,
             actor: gkToken,
             relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: gkToken != null ? gkToken.GetCurrentHex() : null,
@@ -4403,7 +4410,7 @@ public partial class ShotManager : MonoBehaviour
             yield return SingleRollResolutionPresentation.Resolve(this, displayRoll,
                 gkRoll < gkToken.handling ? "HELD · Save-and-hold choice follows" : "SPILLED · Loose ball follows",
                 continueWithScatter: gkRoll >= gkToken.handling, scatterOwner: looseBallManager);
-            if (presentationVersion != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+            if (!IsOnlineShotContinuationCurrent(presentationVersion)) yield break;
         }
         // Handling Test
         if (gkRoll < gkToken.handling)

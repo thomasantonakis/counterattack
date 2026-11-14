@@ -1,5 +1,17 @@
 # Running gameplay regressions
 
+Headed shots use PlayMode category `OnlineShots` / `OnlineHeaderShotPlayModeTests`:
+16 distinct cases have passing final outcomes, compilation separately clean.
+Exact native XML and initial failures are recorded in
+`Assets/Editor/FeatureTests/OnlineShots/Verification.md`; native tests live under
+`Assets/Tests/PlayMode/Features/OnlineShots/`. Ordinary shots/goals remain pending.
+
+The currently installed Pipeline's `testName` filter compares literal substrings;
+it does not interpret regex. A method name selects all its parameter cases. For
+one failed case, use its native XML FullName and preserve embedded quotes when
+passing it through Windows PowerShell (for example `\"tie\"`). A zero-test result
+is not validation. Keep runs serial and inspect the native counts.
+
 Loose balls use PlayMode category `OnlineLooseBall`: 18 distinct cases passed,
 zero failed/skipped, compilation separately clean. Test/checklist/XML locations:
 `Assets/Tests/PlayMode/Features/OnlineLooseBall/` and

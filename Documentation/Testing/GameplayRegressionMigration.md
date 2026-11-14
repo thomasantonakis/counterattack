@@ -1,5 +1,13 @@
 # Gameplay regression migration
 
+Online headed shots add 16 independently selectable PlayMode cases in category
+OnlineShots with passing final outcomes. Missing save routing, disabled-authority
+continuation and jackpot-enabled numeric handling were reproduced and fixed.
+Two fixture tie cases now finish their real rebound before teardown; their
+focused reruns pass without suppressing logs. Offline save-floor 4 and retained
+jumper/scatter 6 also pass; compilation separately clean, no complete suites.
+See OnlineShots/Verification.md for exact XML, mixed initial runs and pending paths.
+
 Online loose balls add 18 independently selectable PlayMode cases, category
 OnlineLooseBall, all passed with zero failed/skipped and compilation separately
 clean. Mandatory-action routing and cancelled-result replacement races were

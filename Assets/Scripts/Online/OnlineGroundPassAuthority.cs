@@ -192,7 +192,7 @@ namespace CounterAttack.Online
                 ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true || match.highPassManager?.OnlineFlightInProgress==true,
                 attackHasPossession = match.attackHasPossession,
                 passActive = ground.isActivated || match.longBallManager?.isActivated == true || match.highPassManager?.isActivated==true
-                    || HeaderRules?.isActivated==true || match.looseBallManager?.isActivated==true, awaitingTarget = ground.isAwaitingTargetSelection,
+                    || HeaderRules?.isActivated==true || match.looseBallManager?.isActivated==true || match.shotManager?.isActivated==true, awaitingTarget = ground.isAwaitingTargetSelection,
                 awaitingRoll = ground.isWaitingForDiceRoll,
                 hasSelectedTarget = selected != null, selectedX = selected == null ? 0 : selected.coordinates.x,
                 selectedZ = selected == null ? 0 : selected.coordinates.z,
@@ -218,6 +218,7 @@ namespace CounterAttack.Online
             else if (state.ballMoving) state.stage = "resolving";
             else if(match.looseBallManager?.isActivated==true)ReadLooseBallDecision(state,actions);
             else if(match.shotManager?.isWaitingForSaveandHoldScenario==true)ReadKeeperDistribution(state,actions);
+            else if(match.shotManager?.isActivated==true)ReadShotDecision(state,actions);
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
             else if(HeaderRules?.isActivated==true) ReadHeaderDecision(state,actions,HeaderRules);
             else if (state.movementActive) ReadMovementDecision(state,actions);
