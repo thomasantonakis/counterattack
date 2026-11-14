@@ -355,3 +355,8 @@ open Unity manually, change physical networks and handle blocking Editor/OS
 dialogs. macOS may request EOS Connect login-keychain access after rebuilds;
 never request passwords/tokens in chat. Stable signing and first-install/
 relaunch/update keychain UX remain release validation work.
+
+Online fouls: 16 focused passes (`20261114T152353072Z`) and 5 affected
+offline passes (`20261114T152445990Z`), zero failures/skips. Compilation clean.
+See OnlineFouls/Verification.md. Each new case registered in the deferred Mac
+manifest. Next: set-piece preparation and execution, normal Room lifecycle.

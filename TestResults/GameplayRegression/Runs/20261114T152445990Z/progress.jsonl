@@ -1,0 +1,5 @@
+{"name":"LegacyFoulPlayModeTests.StealFoulPlayOnResumesSnapshotWithoutTackleReposition","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFoulPlayModeTests.StealFoulTaken(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFoulPlayModeTests.StealFoulTaken(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFoulPlayModeTests.StealFoulTaken(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFoulPlayModeTests.StealFoulTaken(True,True)","status":"Passed","message":"","stackTrace":""}

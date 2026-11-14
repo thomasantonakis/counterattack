@@ -83,6 +83,8 @@ namespace CounterAttack.Online
             "dribble.finish"=>"Finish this player's dribble", "dribble.decline-nutmeg"=>"Decline nutmeg and face steals", "dribble.roll"=>"Roll ball recovery",
             "duel.nutmeg"=>"Attempt nutmeg", "duel.tackle"=>"Attempt tackle", "duel.stand"=>"Stand without tackling", "duel.roll"=>"Roll ground duel", "duel.stay"=>"Stay after ground duel",
             "keeper.stay"=>"Keep goalkeeper in position", "keeper.pickup.hands"=>"Pick up the ball", "keeper.pickup.feet"=>"Keep the ball at feet",
+            "foul.leniency"=>"Roll for booking", "foul.injury"=>"Roll for injury",
+            "foul.advantage"=>"Play advantage", "foul.take"=>"Take awarded restart",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")

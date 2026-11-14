@@ -588,3 +588,8 @@ Affected online dribble 12/0/0 at `Runs/20261114T150922447Z/results.xml`;
 offline tackle continuation 1/0/0 at `Runs/20261114T151340606Z/results.xml`.
 Compilation separately clean. Legacy cases retained; no whole suite run.
 Mac cases registered individually and deferred. Fouls and restarts follow.
+
+Online fouls: 16 focused passes (`20261114T152353072Z`) and 5 affected
+offline passes (`20261114T152445990Z`), zero failures/skips. Compilation clean.
+See OnlineFouls/Verification.md. Each new case registered in the deferred Mac
+manifest. Next: set-piece preparation and execution, normal Room lifecycle.

@@ -234,6 +234,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "categories": [
+        "OnlineFouls"
+      ],
+      "definition_sha256": "5574d9cd8e51e0168fd3c50b8db66dec0f8c609157e8e768d966ffbc4d72e3c2",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFouls/OnlineFoulPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineGoalkeeperPlayModeTests",
       "categories": [
         "OnlineGoalkeeper"
@@ -1183,6 +1193,230 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T150325167Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"booking\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "booking"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"injury\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "injury"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"automatic\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"hold\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"cancel\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"advantage\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "advantage"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"take\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "take"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"booking\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "booking"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"injury\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "injury"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"automatic\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "automatic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"hold\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"cancel\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "cancel"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"advantage\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "advantage"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"take\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "take"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(1,\"sent-off\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        1,
+        "sent-off"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
+    },
+    {
+      "id": "OnlineFoulPlayModeTests.FoulContinues(-1,\"sent-off\")",
+      "feature": "OnlineFouls",
+      "mode": "playmode",
+      "fixture": "OnlineFoulPlayModeTests",
+      "method": "FoulContinues",
+      "parameters": [
+        -1,
+        "sent-off"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T152353072Z/results.xml"
     }
   ]
 }

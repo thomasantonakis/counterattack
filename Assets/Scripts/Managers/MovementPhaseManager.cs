@@ -3469,6 +3469,8 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
     {
+        int foulVersion=duelPresentationVersion;
+        onlineFoulVersion=foulVersion;
         pendingFouledAttacker = attackerToken;
         isWaitingForFoulDecision = false;
         Debug.Log("Handling foul resolution process...");
@@ -3494,19 +3496,21 @@ public partial class MovementPhaseManager : MonoBehaviour
             attackerToken.resilience, attackerToken.isInjured);
         // Introduce a brief delay to ensure previous keypresses are ignored
         yield return null;
-        while (isWaitingForYellowCardRoll)
+        while (isWaitingForYellowCardRoll && foulVersion==duelPresentationVersion)
         {
             yield return null;  // Wait for the next frame
         }
+        if(foulVersion!=duelPresentationVersion)yield break;
         // Phase 2: Injury decision
         Debug.Log("Press 'R' to roll for attacker injury.");
         isWaitingForInjuryRoll = true;
         activeDuelPanel?.BeginInjury(attackerToken.resilience, attackerToken.isInjured);
         yield return null;   // Delay to avoid immediate triggering
-        while (isWaitingForInjuryRoll)
+        while (isWaitingForInjuryRoll && foulVersion==duelPresentationVersion)
         {
             yield return null;  // Wait for the next frame
         }
+        if(foulVersion!=duelPresentationVersion)yield break;
         Debug.Log("Foul process completed.");
         // Substitution clears requiresSubstitution on the outgoing token. Commit
         // the stoppage before dismissing the result or opening that modal.
@@ -3527,10 +3531,12 @@ public partial class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.HandleDoubleInjuredToken(injuredToken);
             while (MatchManager.Instance.IsGameplayInputBlocked) yield return null;
         }
+        if(foulVersion!=duelPresentationVersion)yield break;
         pendingAutomaticTakeFoulAfterInjury = false;
         if (forceTakeFoul)
         {
             Debug.Log("Play On is not available after the foul resolution.");
+            onlineFoulVersion=null;
             TakeAwardedFoul();
             yield break;
         }
@@ -3539,10 +3545,11 @@ public partial class MovementPhaseManager : MonoBehaviour
             ? "Press 'A' to Play On or 'F' to Take a PENALTY!!"
             : "Press 'A' to Play On or 'F' to Take the Foul.");
         isWaitingForFoulDecision = true;
-        while (isWaitingForFoulDecision)
+        while (isWaitingForFoulDecision && foulVersion==duelPresentationVersion)
         {
             yield return null;  // Wait for the next frame
         }
+        if(foulVersion==duelPresentationVersion)onlineFoulVersion=null;
     }
 
     private static bool ShouldForceFreeKickAfterFoul(PlayerToken attackerToken, PlayerToken defenderToken)

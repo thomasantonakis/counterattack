@@ -266,7 +266,15 @@ public partial class MovementPhaseManager
             r.Roll(this,"tackle",isWaitingForTackleRoll,()=>isActivated && OnlineGroundDuelStage=="roll",
                 ()=>{TryExecuteOnlineGroundDuel(OnlineGroundDuelIntent.Roll);});
         else r.Roll(this, "tackle", isWaitingForTackleRoll, () => isActivated && isWaitingForTackleRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            r.Roll(this,"card",isWaitingForYellowCardRoll,()=>OnlineFoulStage=="leniency",()=>{TryExecuteOnlineFoul(OnlineFoulIntent.Leniency);});
+            r.Roll(this,"injury",isWaitingForInjuryRoll,()=>OnlineFoulStage=="injury",()=>{TryExecuteOnlineFoul(OnlineFoulIntent.Injury);});
+        }
+        else
+        {
         r.Roll(this, "card", isWaitingForYellowCardRoll, () => isActivated && isWaitingForYellowCardRoll, OnKeyReceived);
         r.Roll(this, "injury", isWaitingForInjuryRoll, () => isActivated && isWaitingForInjuryRoll, OnKeyReceived);
+        }
     }
 }

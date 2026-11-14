@@ -11,6 +11,7 @@ namespace CounterAttack.Online
         private void ReadMovementDecision(OnlineGroundPassState state,List<string> actions)
         {
             var manager=match.movementPhaseManager;
+            if(manager.OnlineFoulStage!=null){ReadFoulDecision(state,actions);return;}
             if(manager.OnlineGroundDuelStage!=null){ReadGroundDuelDecision(state,actions);return;}
             if(manager.OnlineDribbleStage!=null){ReadDribbleDecision(state,actions);return;}
             string phase=manager.isMovementPhaseDef?"defence":manager.isMovementPhase2f2?"two-for-two":"attack";
