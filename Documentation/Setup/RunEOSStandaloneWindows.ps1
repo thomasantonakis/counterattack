@@ -1,7 +1,9 @@
-param([ValidateSet('login', 'host', 'guest', 'local')][string]$Role = 'host', [switch]$Gameplay, [switch]$Manual, [switch]$Room)
+param([ValidateSet('login', 'host', 'guest', 'local')][string]$Role = 'host', [switch]$Gameplay, [switch]$Manual, [switch]$Room, [switch]$Continuous, [switch]$Managed, [string]$RunDirectory, [string]$VerificationRequestId)
 $ErrorActionPreference = 'Stop'
 if ($Room) { $Gameplay = $true }
+if ($Continuous) { $Manual = $true }
 if ($Manual -and (-not $Gameplay -or $Role -notin @('host','guest'))) { throw 'Manual requires host/guest -Gameplay or -Room.' }
+if ($Managed -and ($Manual -or $Role -ne 'host')) { throw 'Managed is only for the automatic verification host.' }
 $repoRoot = (git -C $PSScriptRoot rev-parse --show-toplevel).Trim()
 Set-Location $repoRoot
 $exe = Join-Path $repoRoot 'Build/EOSProof/Windows/CounterattackEOSProof.exe'
@@ -12,6 +14,7 @@ if (-not (Test-Path -LiteralPath $exe)) { throw 'Build the dedicated Windows pro
 $proofName = if ($Gameplay) { 'Gameplay' } else { 'Standalone' }
 if ($Room) { $proofName = 'Room' }
 $run = Join-Path $repoRoot ('TestResults/GameplayRegression/Runs/' + [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ') + '-' + $proofName + '-' + $Role)
+if ($RunDirectory) { $run = [IO.Path]::GetFullPath($RunDirectory) }
 New-Item -ItemType Directory -Path $run | Out-Null
 $resultPath = Join-Path $run 'result.json'
 $lobbyPath = Join-Path $run 'lobby-id.txt'
@@ -28,6 +31,7 @@ if ($Room) {
     $handoffName = 'ActiveEOSRoomLobby.json'; $handoffKind = if ($Manual) { 'room-manual-v5' } else { 'room-gameplay-v5' }
     $uri = 'repos/thomasantonakis/counterattack/contents/Documentation/Setup/' + $handoffName
 }
+if ($Continuous) { $handoffKind = if ($Room) { 'room-continuous-v1' } else { 'gameplay-continuous-v1' } }
 $publishedSha = $null
 if ($Role -eq 'guest') {
     $encodedHandoff = & gh api ($uri + '?ref=' + $branch) --jq '.content'
@@ -48,6 +52,7 @@ Write-Host "Starting standalone $Role. Local artifacts: $run"
 # Paths are quoted for Windows native argument parsing; no secrets travel on the command line.
 $playerArgs = '-ca-eos-role ' + $Role + ' -ca-eos-output "' + $run + '" -logFile "' + (Join-Path $run 'Player.log') + '" -screen-fullscreen 0 -screen-width 640 -screen-height 360'
 if ($Manual) { $playerArgs += ' -ca-online-manual'; $playerArgs = $playerArgs.Replace('-screen-width 640 -screen-height 360', '-screen-width 1280 -screen-height 720') }
+if ($Continuous) { $playerArgs += ' -ca-online-continuous' }
 if ($Role -eq 'guest') { $playerArgs += ' -ca-eos-lobby-file "' + $lobbyPath + '"' }
 $proofWindow = if ($Manual) { 'Normal' } else { 'Hidden' }
 $player = Start-Process -FilePath $exe -ArgumentList $playerArgs -WindowStyle $proofWindow -PassThru
@@ -61,7 +66,9 @@ try {
         }
         $lobbyId = (Get-Content -Raw -LiteralPath $lobbyPath).Trim()
         if ($lobbyId -cnotmatch '^[0-9a-f]{32}$') { throw 'Unexpected lobby ID format.' }
-        $handoff = @{ kind = $handoffKind; lobbyId = $lobbyId; createdUnix = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() } | ConvertTo-Json -Compress
+        $handoffData = @{ kind = $handoffKind; lobbyId = $lobbyId; createdUnix = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
+        if ($Managed -and $VerificationRequestId) { $handoffData.requestId = $VerificationRequestId }
+        $handoff = $handoffData | ConvertTo-Json -Compress
         $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($handoff + "`n"))
         $raw = & gh api -X PUT $uri -f 'message=Share temporary standalone EOS lobby' -f "content=$encoded" -f "branch=$branch"
         if ($LASTEXITCODE -ne 0) { throw 'Could not publish standalone handoff.' }
@@ -71,7 +78,7 @@ try {
         elseif ($Gameplay) { Write-Host "Gameplay handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest $guestMode" }
         else { Write-Host 'Standalone handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest' }
     }
-    $deadline = [DateTime]::UtcNow.AddSeconds($(if ($Role -eq 'host' -or $Manual) { 1250 } else { 120 }))
+    $deadline = [DateTime]::UtcNow.AddSeconds($(if ($Managed) { 300 } elseif ($Continuous) { 7500 } elseif ($Role -eq 'host' -or $Manual) { 1250 } else { 120 }))
     while (-not (Test-Path -LiteralPath $resultPath) -and -not $player.HasExited -and [DateTime]::UtcNow -lt $deadline) { Start-Sleep -Seconds 1 }
     if (-not (Test-Path -LiteralPath $resultPath)) { throw "No completed report. Inspect $run/Player.log; close only the proof application if it is still running." }
     $report = Get-Content -Raw -LiteralPath $resultPath | ConvertFrom-Json
@@ -88,6 +95,11 @@ try {
         Get-Content -LiteralPath $evidencePath | Write-Host
     }
 } finally {
+    if ($Managed -and $player -and -not $player.HasExited) {
+        # The exact standalone process launched by this attempt, never Unity.
+        $player.Kill()
+        $player.WaitForExit(10000) | Out-Null
+    }
     if ($publishedSha) {
         & gh api -X DELETE $uri -f 'message=Remove temporary standalone EOS lobby' -f "sha=$publishedSha" -f "branch=$branch" | Out-Null
         if ($LASTEXITCODE -ne 0) { Write-Warning 'Standalone handoff cleanup failed; resolve it before another host run.' }

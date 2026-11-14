@@ -6,6 +6,11 @@ Manually open this checkout in Unity 6000.5.3f1 before Editor operations.
 
 ## Bring over the checkpoint
 
+For the son's verification run, use `OnlineMacVerification.md` and the single
+`VerifyOnlineMac.sh` command. It handles native online fixtures, builds, local/
+login checks, Windows-host requests and a committed JSON report automatically.
+The individual manual commands below remain available for development.
+
 ```sh
 cd "$HOME/Documents/Projects/Personal/counterattack"
 git status --short
@@ -64,26 +69,29 @@ Windows/Mac acceptance has not run. Local reports do not prove internet play.
 > Verify that checkpoint 61e3e38 is present. Goalkeeper integration has ten focused
 > PlayMode passes, offline kickoff has two, and goal/kickoff has six. Read the feature
 > Verification.md files and retained XML; do not rerun broad suites by default.
-> First Time Pass is next: only source inspection has been done, with no partial
-> implementation. Add typed selection, target confirmation, attacker/defender
-> preparation moves, skip, interceptions and deadlines using the real manager
-> entry points. Create a dedicated OnlineFirstTimePass folder/checklist and
-> meaningful focused Unity coverage; reproduce gaps before fixing when practical.
+> First Time Pass is implemented in 90a0af2 with 16 focused passes and 10 affected
+> offline passes. The continuous-session boundary has 8 EditMode and 2 PlayMode
+> passes plus 7 affected manual transport passes. Read the latest feature
+> Verification.md files. Prioritize the one-command Mac verifier and host
+> supervisor until the paired run is collected; keep their source/binaries stable.
+> Then implement the remaining movement/dribbling/duel decisions with dedicated
+> native coverage, followed by set pieces and normal full-Room roster/lifecycle.
 > Preserve mandatory keeper/Final Third/loose-ball priority, receipt/revision
 > validation, host-only RNG and guest inactivity. Then continue dribbling/duels,
 > restarts/set pieces and full-match roster/lifecycle. Keep paired/manual sessions
 > deferred until I have time. Compile/test/build through the open Editor, commit
 > and push verified batches. Never launch Unity, batchmode, ordinary editor_play,
 > GUI automation or additive scenes. Preserve unrelated local scene/font/settings
-> edits. The current Room proof is still six tokens and ends after the first
-> completed ground action; it is not a complete online match. Continue independent
+> edits. Room's current online startup still uses six prepared tokens. Default
+> proof mode ends after the first action; opt-in continuous mode removes that
+> boundary but does not make it a complete normal Room match. Continue independent
 > work when a second-machine action is unavailable.
 
-First Time Pass source navigation: `FirstTimePassManager.cs` already provides
+Implemented First Time Pass source navigation: `FirstTimePassManager.cs` provides
 `GetLegalFirstTimePassTargetsForDecisionPreview()` and
 `GetValidFtpMovementDestinationsForDecision(...)`. Its real path uses
 `MatchManager.TriggerFTP()`, `HandleFTPBallPath(...)`, attacker/defender selection
 and movement, `SkipAttackerMovementPhase()` / `SkipDefenderMovementPhase()`, and
-`PerformFTPInterceptionRolls(...)`. Match decision timing needs a typed roll
-registration consistent with the integrated long/high/header/shot adapters.
-Inspect current signatures/access and continuation guards before implementation.
+`PerformFTPInterceptionRolls(...)`. `FirstTimePassManager.Online.cs`, the authority
+partial and Match decision timing now use a typed roll entry point and cancelled
+result guard. Extend these patterns for movement/duel choices.

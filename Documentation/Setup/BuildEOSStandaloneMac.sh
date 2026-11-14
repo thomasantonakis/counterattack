@@ -31,6 +31,10 @@ for ((i=0; i<600; i++)); do
     status="$(pipeline build_status)"
     printf '%s\n' "$status" | jq -e --arg id "$build_id" '.success and .data.result.buildId == $id' >/dev/null
     if [ "$(printf '%s\n' "$status" | jq -r '.data.result.status')" = completed ]; then
+        report_dir="$repo_root/TestResults/GameplayRegression/Runs/$(date -u +%Y%m%dT%H%M%SZ)-$mode-Mac-build-$$"
+        mkdir -p "$report_dir"
+        printf '%s\n' "$status" | jq '.data.result' > "$report_dir/build-report.json"
+        printf 'Retained build report: %s/build-report.json\n' "$report_dir"
         printf '%s\n' "$status" | jq '.data.result | {status, result, totalErrors, totalWarnings, errors, warnings}'
         printf '%s\n' "$status" | jq -e '.data.result.result == "Succeeded"' >/dev/null
         printf 'Mac proof build ready. Run: bash Documentation/Setup/RunEOSStandaloneMac.sh login %s\n' "$mode"

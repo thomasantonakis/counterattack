@@ -91,8 +91,15 @@ First Time Pass now has typed target preview/confirmation, both-team preparation
 selection/movement/skip and interceptions, including typed automatic deadlines
 and cancelled-result guards. Sixteen focused cases passed across isolated and
 actual Room-manager fixtures; ten offline FTP regressions also passed.
-See OnlineFirstTimePass verification. The existing first-action transport ending
-and fixed six-token startup still prevent a continuous full Room session.
+See OnlineFirstTimePass verification. Opt-in continuous mode now removes the
+first-action transport ending, with 8 EditMode and 2 PlayMode passing cases and
+7 affected manual transport passes. It has a distinct catalog and a two-hour
+watchdog. Default proof behavior stays short. Fixed six-token startup, remaining
+duels/restarts and normal Room roster/lifecycle are still pending.
+
+The current user priority is one-command son's Mac verification and a Windows
+host supervisor. See OnlineMacVerification.md. Keep exported sources stable
+until the Mac reports arrive; resume additional gameplay integration afterward.
 
 ## Ordered implementation batches
 

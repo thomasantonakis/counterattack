@@ -2,6 +2,17 @@
 
 ## Start here
 
+Latest user task: one-command son's Mac verification with one giant JSON report
+committed/pushed for inspection, and a Windows host supervisor that starts/retires
+automatic paired sessions and retrieves reports. Use OnlineMacVerification.md.
+The command is `bash Documentation/Setup/VerifyOnlineMac.sh`; the Windows helper
+is HostOnlineMacVerification.ps1. Both need the latest branch pulled first.
+The verifier selects implemented online fixtures, then builds/login/local/paired
+checks. It records failed/skipped stages and native evidence, publishes a separate
+verification branch, and preserves source branches/local edits. Host retries are
+bounded and every failed attempt stays in the report. Actual Mac execution is
+still external; do not claim it from Windows unit or syntax checks.
+
 User resumed independent work after the shot-block break (2026-11-14).
 The block extension has 10 focused passes; the preceding shot category has 30.
 Goal/reset and typed kickoff integration is pushed as 4668d13: six focused
@@ -20,10 +31,13 @@ First Time Pass now has typed targeting, preparation moves/skip and interception
 with 16 focused passing cases (14 isolated + 2 actual Room serialized cases),
 10 affected offline passes and separately clean compilation. See
 Assets/Editor/FeatureTests/OnlineFirstTimePass/Verification.md for exact XML.
-Next: continuous-session boundary, dribbling/duels, set pieces and full-match
-roster/lifecycle. Do not confuse these passing Room-manager tests with a normal
-full Room online match: fixed roster/startup replacement and first-action ending
-are still in place. Windows exports need refreshing for this FTP batch.
+Continuous-session boundary now has 8 EditMode and 2 PlayMode passes; affected
+manual transport has 7 passes. The default proof still ends after one action;
+an opt-in continuous profile remains open until MatchEnded, with its own catalog.
+See OnlineContinuousSession/Verification.md. Both Windows exports and local
+checks have refreshed for FTP/continuous code, and native login passed.
+Next gameplay: dribbling/duels, set pieces and normal full Room roster/lifecycle.
+Fixed six-token startup replacement remains; this is not yet a normal online Room.
 Current Windows exports include blocks, goals/kickoff and goalkeeper choices.
 Paired/manual sessions remain deferred. Exact Mac commands
 are in Documentation/Setup/OnlineRoomProof.md.

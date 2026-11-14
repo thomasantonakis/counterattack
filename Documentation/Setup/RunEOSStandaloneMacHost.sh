@@ -2,6 +2,8 @@
 set -euo pipefail
 mode="${1:-room}"
 interaction="${2:-manual}"
+continuous=false
+if [ "$interaction" = continuous ]; then continuous=true; interaction=manual; fi
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
 case "$mode" in
@@ -10,6 +12,7 @@ case "$mode" in
   *) printf 'Expected room or gameplay.\n' >&2; exit 2 ;;
 esac
 case "$interaction" in manual) kind="$manual_kind" ;; automatic) ;; *) printf 'Expected manual or automatic.\n' >&2; exit 2 ;; esac
+if [ "$continuous" = true ]; then kind="$mode-continuous-v1"; fi
 test -d "$app/Contents/MacOS" || { printf 'Build the Mac proof first.\n' >&2; exit 1; }
 player="$(find "$app/Contents/MacOS" -maxdepth 1 -type f -perm -111 -print -quit)"
 test -n "$player"
@@ -27,6 +30,7 @@ cleanup() {
 trap cleanup EXIT
 set -- -ca-eos-role host -ca-eos-output "$run" -logFile "$run/Player.log" -screen-fullscreen 0 -screen-width 1280 -screen-height 720
 if [ "$interaction" = manual ]; then set -- "$@" -ca-online-manual; fi
+if [ "$continuous" = true ]; then set -- "$@" -ca-online-continuous; fi
 "$player" "$@" > "$run/stdout.log" 2>&1 &
 player_pid=$!
 for ((i=0; i<120; i++)); do
