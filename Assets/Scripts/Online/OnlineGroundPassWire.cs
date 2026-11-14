@@ -40,90 +40,22 @@ namespace CounterAttack.Online
                 revision = state.revision, decisionId = state.decisionId, actionId = action };
     }
 
-    /// <summary>Bounded framing for an already authenticated reliable ordered EOS peer.</summary>
+    /// <summary>Existing v7 gameplay framing, shared with the separate frontend codec.</summary>
     public sealed class OnlineGroundPassWire
     {
-        public const int PayloadLimit = 65536;
-        public const int FragmentPayload = 900;
-        public const int HeaderSize = 26;
-        private readonly MemoryStream pending = new();
-        private int expectedSize;
-        private ushort expectedIndex, fragmentCount;
-        private Guid expectedMessage;
-        private readonly HashSet<Guid> retiredMessages = new();
-        private readonly Queue<Guid> retiredOrder = new();
-
+        public const int PayloadLimit=OnlineReliableJsonWire<OnlineGroundPassMessage>.PayloadLimit;
+        public const int FragmentPayload=OnlineReliableJsonWire<OnlineGroundPassMessage>.FragmentPayload;
+        public const int HeaderSize=OnlineReliableJsonWire<OnlineGroundPassMessage>.HeaderSize;
+        private readonly OnlineReliableJsonWire<OnlineGroundPassMessage> framing=new(0xCA07,Valid);
+        private static bool Valid(OnlineGroundPassMessage message)=>message.version=="ground-wire-v7" && OnlineProtocolIds.IsValid(message.matchId)
+            && new[]{"hello","command","state","presentation","reply","control","control-reply","done","finish"}.Contains(message.kind);
         public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message)
         {
-            message.version = "ground-wire-v7";
-            // Unity serializes null inline DTO fields as fully expanded default
-            // objects. Keep heartbeats/controls small instead of embedding an
-            // unused full roster/statistics/timing payload in every message.
-            var payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message,
-                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-            if (payload.Length == 0 || payload.Length > PayloadLimit) throw new InvalidDataException("Gameplay message size");
-            var count = (ushort)((payload.Length + FragmentPayload - 1) / FragmentPayload);
-            var identity = Guid.NewGuid().ToByteArray();
-            for (ushort index = 0; index < count; index++)
-            {
-                using var stream = new MemoryStream();
-                using var writer = new BinaryWriter(stream);
-                writer.Write((ushort)0xCA07); writer.Write(index); writer.Write(count); writer.Write(payload.Length); writer.Write(identity);
-                writer.Write(payload, index * FragmentPayload, Math.Min(FragmentPayload, payload.Length - index * FragmentPayload));
-                yield return stream.ToArray();
-            }
+            message.version="ground-wire-v7";
+            foreach(var fragment in new OnlineReliableJsonWire<OnlineGroundPassMessage>(0xCA07,Valid).Encode(message))yield return fragment;
         }
-
-        public OnlineGroundPassMessage Receive(byte[] packet, int length, bool allowConnectionRestart = false)
-        {
-            try
-            {
-                if (packet == null || length < HeaderSize + 1 || length > FragmentPayload + HeaderSize || length > packet.Length)
-                    throw new InvalidDataException("Gameplay fragment size");
-                using var reader = new BinaryReader(new MemoryStream(packet, 0, length));
-                if (reader.ReadUInt16() != 0xCA07) throw new InvalidDataException("Gameplay fragment version");
-                var index = reader.ReadUInt16(); var count = reader.ReadUInt16(); var size = reader.ReadInt32();
-                var identity = new Guid(reader.ReadBytes(16));
-                if (size < 1 || size > PayloadLimit || count != (size + FragmentPayload - 1) / FragmentPayload
-                    || identity == Guid.Empty || index >= count || length - HeaderSize != Math.Min(FragmentPayload, size - index * FragmentPayload))
-                    throw new InvalidDataException("Gameplay fragment header");
-                if (allowConnectionRestart && (retiredMessages.Contains(identity) || index > 0 && identity != expectedMessage)) return null;
-                if (index == 0)
-                {
-                    if (expectedIndex != 0)
-                    {
-                        if (!allowConnectionRestart) throw new InvalidDataException("Interrupted gameplay message");
-                        if (identity == expectedMessage) return null;
-                        Reset(true);
-                    }
-                    expectedSize = size; fragmentCount = count; expectedMessage = identity;
-                }
-                if (identity != expectedMessage || index != expectedIndex || count != fragmentCount || size != expectedSize)
-                    throw new InvalidDataException("Out-of-order gameplay fragment");
-                pending.Write(packet, HeaderSize, length - HeaderSize); expectedIndex++;
-                if (expectedIndex != fragmentCount) return null;
-                var json = new UTF8Encoding(false, true).GetString(pending.ToArray());
-                Reset();
-                var message = JsonConvert.DeserializeObject<OnlineGroundPassMessage>(json);
-                if (message == null || message.version != "ground-wire-v7" || !OnlineProtocolIds.IsValid(message.matchId)
-                    || !(new[] { "hello", "command", "state", "presentation", "reply", "control", "control-reply", "done", "finish" }).Contains(message.kind))
-                    throw new InvalidDataException("Gameplay message contract");
-                return message;
-            }
-            catch (JsonException error) { Reset(true); throw new InvalidDataException("Gameplay JSON contract", error); }
-            catch (DecoderFallbackException error) { Reset(true); throw new InvalidDataException("Gameplay UTF8 contract", error); }
-            catch { Reset(true); throw; }
-        }
-
-        private void Reset(bool retire = false)
-        {
-            if (retire && expectedMessage != Guid.Empty && retiredMessages.Add(expectedMessage))
-            {
-                retiredOrder.Enqueue(expectedMessage);
-                if (retiredOrder.Count > 64) retiredMessages.Remove(retiredOrder.Dequeue());
-            }
-            pending.SetLength(0); pending.Position = 0; expectedIndex = fragmentCount = 0; expectedSize = 0; expectedMessage = Guid.Empty;
-        }
+        public OnlineGroundPassMessage Receive(byte[] packet,int length,bool allowConnectionRestart=false)
+            =>framing.Receive(packet,length,allowConnectionRestart);
     }
 
     /// <summary>Guest value replica. It has no gameplay manager, dice or clock references.</summary>

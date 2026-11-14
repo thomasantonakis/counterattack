@@ -154,6 +154,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "categories": [
+        "OnlineSessionTransport"
+      ],
+      "definition_sha256": "72dc9f30c050972d9337a8517065bc426e18fa84b1ed5d4873d102e6eba71324",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSessionTransport/OnlineSessionWireEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineSetupAgreementEditorTests",
       "categories": [
         "OnlineSetupAgreement"
@@ -3613,6 +3623,282 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T231851799Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"hello\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "hello"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"setup-request\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "setup-request"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"setup-state\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "setup-state"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"setup-reply\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "setup-reply"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"heartbeat\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "heartbeat"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"leave\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "leave"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"phase-ready\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "phase-ready"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.ControlRoundTrip(\"phase-ack\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "ControlRoundTrip",
+      "parameters": [
+        "phase-ack"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsHeader(\"size\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsHeader",
+      "parameters": [
+        "size"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsHeader(\"count\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsHeader",
+      "parameters": [
+        "count"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsHeader(\"index\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsHeader",
+      "parameters": [
+        "index"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsHeader(\"empty-id\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsHeader",
+      "parameters": [
+        "empty-id"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsHeader(\"magic\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsHeader",
+      "parameters": [
+        "magic"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsContract(\"json\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsContract",
+      "parameters": [
+        "json"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsContract(\"version\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsContract",
+      "parameters": [
+        "version"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsContract(\"kind\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsContract",
+      "parameters": [
+        "kind"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.RejectsContract(\"match\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "RejectsContract",
+      "parameters": [
+        "match"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.FragmentedControlPreservesUnicode()",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "FragmentedControlPreservesUnicode",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.FrontendAndGameplayFramesCannotCrossDecode()",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "FrontendAndGameplayFramesCannotCrossDecode",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.OversizeIsRejectedBeforeSending()",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "OversizeIsRejectedBeforeSending",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.OutOfOrderControlFragmentsAreRejected()",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "OutOfOrderControlFragmentsAreRejected",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSessionWireEditorTests.InterruptedConnectionRetiresOldPartialControl()",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSessionWireEditorTests",
+      "method": "InterruptedConnectionRetiresOldPartialControl",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
     }
   ]
 }

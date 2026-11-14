@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="22" result="Passed" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.6238694">
+  <test-suite type="TestSuite" id="2668" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1400" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.623869" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2662" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1400" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.510110" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1750" name="OnlineSessionWireEditorTests" fullname="OnlineSessionWireEditorTests" classname="OnlineSessionWireEditorTests" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.461953" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSessionTransport" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1759" name="ControlRoundTrip" fullname="OnlineSessionWireEditorTests.ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.320724" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1751" name="ControlRoundTrip(&quot;hello&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;hello&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1022376333" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.154586" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+]]></output>
+          </test-case>
+          <test-case id="1752" name="ControlRoundTrip(&quot;setup-request&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;setup-request&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1763140589" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000811" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1753" name="ControlRoundTrip(&quot;setup-state&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;setup-state&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="851263283" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000689" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1754" name="ControlRoundTrip(&quot;setup-reply&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;setup-reply&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="2065767577" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000514" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1755" name="ControlRoundTrip(&quot;heartbeat&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;heartbeat&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1397974523" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000687" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1756" name="ControlRoundTrip(&quot;leave&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;leave&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="487992649" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000642" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1757" name="ControlRoundTrip(&quot;phase-ready&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;phase-ready&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1516135075" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000613" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1758" name="ControlRoundTrip(&quot;phase-ack&quot;)" fullname="OnlineSessionWireEditorTests.ControlRoundTrip(&quot;phase-ack&quot;)" methodname="ControlRoundTrip" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="298811866" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000811" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1760" name="FragmentedControlPreservesUnicode" fullname="OnlineSessionWireEditorTests.FragmentedControlPreservesUnicode" methodname="FragmentedControlPreservesUnicode" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1145305439" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.009684" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1761" name="FrontendAndGameplayFramesCannotCrossDecode" fullname="OnlineSessionWireEditorTests.FrontendAndGameplayFramesCannotCrossDecode" methodname="FrontendAndGameplayFramesCannotCrossDecode" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1326480390" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.018782" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1775" name="InterruptedConnectionRetiresOldPartialControl" fullname="OnlineSessionWireEditorTests.InterruptedConnectionRetiresOldPartialControl" methodname="InterruptedConnectionRetiresOldPartialControl" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="355252039" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.005062" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1774" name="OutOfOrderControlFragmentsAreRejected" fullname="OnlineSessionWireEditorTests.OutOfOrderControlFragmentsAreRejected" methodname="OutOfOrderControlFragmentsAreRejected" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="519579775" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.002443" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1773" name="OversizeIsRejectedBeforeSending" fullname="OnlineSessionWireEditorTests.OversizeIsRejectedBeforeSending" methodname="OversizeIsRejectedBeforeSending" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1695727384" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.001481" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1772" name="RejectsContract" fullname="OnlineSessionWireEditorTests.RejectsContract" classname="OnlineSessionWireEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.030192" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1768" name="RejectsContract(&quot;json&quot;)" fullname="OnlineSessionWireEditorTests.RejectsContract(&quot;json&quot;)" methodname="RejectsContract" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1890879622" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.004654" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1769" name="RejectsContract(&quot;version&quot;)" fullname="OnlineSessionWireEditorTests.RejectsContract(&quot;version&quot;)" methodname="RejectsContract" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1069096932" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000357" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1770" name="RejectsContract(&quot;kind&quot;)" fullname="OnlineSessionWireEditorTests.RejectsContract(&quot;kind&quot;)" methodname="RejectsContract" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="2700382" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1771" name="RejectsContract(&quot;match&quot;)" fullname="OnlineSessionWireEditorTests.RejectsContract(&quot;match&quot;)" methodname="RejectsContract" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="534856840" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000286" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1767" name="RejectsHeader" fullname="OnlineSessionWireEditorTests.RejectsHeader" classname="OnlineSessionWireEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.034778" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1762" name="RejectsHeader(&quot;size&quot;)" fullname="OnlineSessionWireEditorTests.RejectsHeader(&quot;size&quot;)" methodname="RejectsHeader" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="245975962" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000709" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1763" name="RejectsHeader(&quot;count&quot;)" fullname="OnlineSessionWireEditorTests.RejectsHeader(&quot;count&quot;)" methodname="RejectsHeader" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="952940210" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000257" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1764" name="RejectsHeader(&quot;index&quot;)" fullname="OnlineSessionWireEditorTests.RejectsHeader(&quot;index&quot;)" methodname="RejectsHeader" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="485361743" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000246" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1765" name="RejectsHeader(&quot;empty-id&quot;)" fullname="OnlineSessionWireEditorTests.RejectsHeader(&quot;empty-id&quot;)" methodname="RejectsHeader" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="989852685" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000244" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1766" name="RejectsHeader(&quot;magic&quot;)" fullname="OnlineSessionWireEditorTests.RejectsHeader(&quot;magic&quot;)" methodname="RejectsHeader" classname="OnlineSessionWireEditorTests" runstate="Runnable" seed="1891518473" result="Passed" start-time="2026-11-14 23:30:20Z" end-time="2026-11-14 23:30:20Z" duration="0.000244" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261114T233020058Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

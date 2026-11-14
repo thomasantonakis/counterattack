@@ -404,3 +404,9 @@ Unsaved edits survive remote snapshots and pending replies. The persistent EOS
 lobby/session must still supply that client; Main Menu multiplayer is still a
 placeholder. Continue actual host/join transport, scene handoff, Draft, and Room
 menus/substitutions/shootout ordering. Mac manual execution remains deferred.
+
+Frontend wire: 22 focused passes and 13 affected gameplay-wire passes. Shared
+framing preserves gameplay v7, frontend uses session-wire-v1/CA11. Persistent
+EOS lobby/peer dispatch and authored host/join controls remain next. Full low-
+latency multiplayer is the explicit target; see OnlineSessionLifecycle latency
+acceptance notes. No actual RTT or complete frontend connection is claimed.

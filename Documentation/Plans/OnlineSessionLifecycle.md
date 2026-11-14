@@ -62,3 +62,25 @@ Unsaved edits survive remote snapshots and pending replies. The persistent EOS
 lobby/session must still supply that client; Main Menu multiplayer is still a
 placeholder. Continue actual host/join transport, scene handoff, Draft, and Room
 menus/substitutions/shootout ordering. Mac manual execution remains deferred.
+
+## Latency and state synchronization acceptance
+
+User explicitly targets the full multiplayer game with low latency. Production
+adapters already send authoritative token/ball hexes, stats, score, clock/half,
+team in attack, possession, last touch, rolls and legal decisions; guest rules
+remain inactive. Current proof sends boundary changes immediately, clock/budget
+updates at up to 4 Hz and movement poses at 20 Hz. Pose application is currently
+direct and reliable ordered; interpolation/queue prioritization need work.
+
+Target confirmed guest actions near measured RTT plus processing/rendering,
+without artificial decision delays. Add monotonic-clock RTT instrumentation and
+report p50/p95, snapshot bytes, pose age and queue pressure under injected delay,
+jitter/loss and real Windows/Mac relay sessions. Do not infer real latency from
+local or deterministic tests. Separate reliable rules/control delivery from
+superseded visual frames and avoid head-of-line waiting for obsolete movement.
+Preserve state sequence, nonce/generation and roster validation while improving
+presentation; never predict dice outcomes or run a second guest rules simulation.
+
+Frontend framing now passed 22 focused cases plus 13 affected gameplay-wire cases;
+see OnlineSessionTransport/Verification.md. Persistent actual session/host/join
+remains next, with separate frontend and gameplay protocol identities.
