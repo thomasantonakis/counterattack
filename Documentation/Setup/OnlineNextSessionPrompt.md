@@ -410,3 +410,10 @@ framing preserves gameplay v7, frontend uses session-wire-v1/CA11. Persistent
 EOS lobby/peer dispatch and authored host/join controls remain next. Full low-
 latency multiplayer is the explicit target; see OnlineSessionLifecycle latency
 acceptance notes. No actual RTT or complete frontend connection is claimed.
+
+Frontend authenticated channels and RTT telemetry now have 33 additional own-
+feature passes (55 distinct including framing). Real serialized messages cover
+peer identity, compatibility, nonce/rejoin, agreement and monotonic RTT; no actual
+internet RTT is claimed. Native persistent EOS lifetime and host/join controls
+remain next. See OnlineSessionTransport/Verification.md. All cases registered
+for deferred Mac execution; keep full setup/Draft/Room and low latency as target.

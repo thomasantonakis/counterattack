@@ -84,3 +84,10 @@ presentation; never predict dice outcomes or run a second guest rules simulation
 Frontend framing now passed 22 focused cases plus 13 affected gameplay-wire cases;
 see OnlineSessionTransport/Verification.md. Persistent actual session/host/join
 remains next, with separate frontend and gameplay protocol identities.
+
+Frontend authenticated channels and RTT telemetry now have 33 additional own-
+feature passes (55 distinct including framing). Real serialized messages cover
+peer identity, compatibility, nonce/rejoin, agreement and monotonic RTT; no actual
+internet RTT is claimed. Native persistent EOS lifetime and host/join controls
+remain next. See OnlineSessionTransport/Verification.md. All cases registered
+for deferred Mac execution; keep full setup/Draft/Room and low latency as target.

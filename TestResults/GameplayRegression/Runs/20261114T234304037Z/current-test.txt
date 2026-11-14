@@ -1,0 +1,1 @@
+OnlineSetupChannelEditorTests.AuthenticatedChannel(True,"local-loss")

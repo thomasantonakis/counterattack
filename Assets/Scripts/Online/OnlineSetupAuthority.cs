@@ -37,8 +37,8 @@ namespace CounterAttack.Online
         {
             if(connectionRevision==protocol.ConnectionRevision)return;
             connectionRevision=protocol.ConnectionRevision;
-            if(started)return;
-            homeReady=awayReady=false;revision=checked(revision+1);
+            if(!started)homeReady=awayReady=false;
+            revision=checked(revision+1);
         }
         public OnlineSetupState Capture()
         {

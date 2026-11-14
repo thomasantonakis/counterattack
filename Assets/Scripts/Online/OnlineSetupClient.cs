@@ -13,7 +13,7 @@ namespace CounterAttack.Online
         public bool Dirty=>draft!=null;
         public bool LocalReady=>state!=null && (Team==OnlineTeam.Home?state.homeReady:state.awayReady);
         public bool BothReady=>state?.homeReady==true && state.awayReady;
-        public bool Connected=>state?.connected==true;
+        public bool Connected=>state?.connected==true && transportAvailable;
         public OnlineCommandStatus? LastReply {get;private set;}
         public bool CanConfirm=>state?.phase=="setup" && Connected && !Pending && (!LocalReady || Dirty || IsHost && BothReady);
         private readonly string matchId;
@@ -22,6 +22,12 @@ namespace CounterAttack.Online
         private OnlineSetupRequest pending;
         private long nextSequence,editVersion,pendingEditVersion;
         private bool agreed;
+        private bool transportAvailable=true;
+        public void SetTransportAvailable(bool available)
+        {
+            if(transportAvailable==available)return;transportAvailable=available;Changed?.Invoke();
+            if(available)FlushUnready();
+        }
         public OnlineSetupClient(string matchId,OnlineTeam team)
         {OnlineProtocolIds.Require(matchId,nameof(matchId));if(!Enum.IsDefined(typeof(OnlineTeam),team))throw new ArgumentOutOfRangeException(nameof(team));this.matchId=matchId;Team=team;}
         public OnlineSetupState Capture()=>state==null?null:JsonConvert.DeserializeObject<OnlineSetupState>(JsonConvert.SerializeObject(state));

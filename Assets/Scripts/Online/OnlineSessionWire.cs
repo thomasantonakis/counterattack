@@ -5,7 +5,7 @@ namespace CounterAttack.Online
 {
     [Serializable] public sealed class OnlineSessionMessage
     {
-        public string version,kind,matchId,status,protocol,rules,catalog;
+        public string version,kind,matchId,status,protocol,rules,catalog,nonce;
         public long sequence;
         public OnlineSetupRequest request;
         public OnlineSetupState state;

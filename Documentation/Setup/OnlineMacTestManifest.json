@@ -154,6 +154,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "categories": [
+        "OnlineSessionTransport"
+      ],
+      "definition_sha256": "18e1ebc91f529e6159abb01730ff3c0d006fb80557d17975bd0d0c03fe5523da",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSessionTransport/OnlineRoundTripStatisticsEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineSessionWireEditorTests",
       "categories": [
         "OnlineSessionTransport"
@@ -161,6 +171,16 @@
       "definition_sha256": "72dc9f30c050972d9337a8517065bc426e18fa84b1ed5d4873d102e6eba71324",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineSessionTransport/OnlineSessionWireEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "categories": [
+        "OnlineSessionTransport"
+      ],
+      "definition_sha256": "c1639ce7dbf31cb54e67cd2f6f48439842a3abb7e931f6ea9a987ee4b0c2d4ba",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSessionTransport/OnlineSetupChannelEditorTests.cs"
     },
     {
       "mode": "editor",
@@ -3899,6 +3919,461 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T233020058Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"agreement\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "agreement"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"unauthenticated\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "unauthenticated"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"before-hello\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "before-hello"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"wrong-version\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "wrong-version"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"wrong-catalog\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "wrong-catalog"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"nonce\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "nonce"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"reconnect\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "reconnect"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"heartbeat\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "heartbeat"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"leave\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "leave"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"guest-injection\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "guest-injection"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"stale-frame\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "stale-frame"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"local-loss\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "local-loss"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"agreement\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "agreement"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"unauthenticated\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "unauthenticated"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"before-hello\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "before-hello"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"wrong-version\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "wrong-version"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"wrong-catalog\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "wrong-catalog"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"nonce\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "nonce"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"reconnect\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "reconnect"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"heartbeat\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "heartbeat"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"leave\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "leave"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"guest-injection\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "guest-injection"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"stale-frame\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "stale-frame"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"local-loss\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "local-loss"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234304037Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"one-clock\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "one-clock"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"duplicate\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "duplicate"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"unknown\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "unknown"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"negative\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "negative"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"pending-bound\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "pending-bound"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"samples-bound\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "samples-bound"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"percentiles\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineRoundTripStatisticsEditorTests",
+      "method": "MeasuresBoundedMonotonicRoundTrips",
+      "parameters": [
+        "percentiles"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234528535Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(False,\"reconnect-after-start\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        false,
+        "reconnect-after-start"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234645532Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupChannelEditorTests.AuthenticatedChannel(True,\"reconnect-after-start\")",
+      "feature": "OnlineSessionTransport",
+      "mode": "editor",
+      "fixture": "OnlineSetupChannelEditorTests",
+      "method": "AuthenticatedChannel",
+      "parameters": [
+        true,
+        "reconnect-after-start"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234645532Z/results.xml"
     }
   ]
 }
