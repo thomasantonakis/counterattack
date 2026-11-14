@@ -458,7 +458,7 @@
       "categories": [
         "OnlineSetPieces"
       ],
-      "definition_sha256": "a22e3653939fea0a63c22b74f0f247daaac564c7051d2e2d4df10e207379264b",
+      "definition_sha256": "7febebe352c1e7cb2e5f84da91c0c23a4bfc2871f286524a135c85f0eaa0a8e6",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineSetPieces/OnlineRoomSetPiecePlayModeTests.cs"
     },
@@ -1460,7 +1460,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"high\")",
@@ -1474,7 +1474,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"long\")",
@@ -1488,7 +1488,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"indirect\")",
@@ -1502,7 +1502,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"corner-ground\")",
@@ -1516,7 +1516,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"corner-high\")",
@@ -1530,7 +1530,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"move\")",
@@ -1544,7 +1544,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"clearance\")",
@@ -1558,7 +1558,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"ground\")",
@@ -1572,7 +1572,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"high\")",
@@ -1586,7 +1586,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"long\")",
@@ -1600,7 +1600,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"indirect\")",
@@ -1614,7 +1614,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"corner-ground\")",
@@ -1628,7 +1628,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"corner-high\")",
@@ -1642,7 +1642,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"move\")",
@@ -1656,7 +1656,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"clearance\")",
@@ -1670,7 +1670,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"shot\")",
@@ -1684,7 +1684,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(1,\"hold\")",
@@ -1698,7 +1698,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"shot\")",
@@ -1712,7 +1712,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineSetPiecePlayModeTests.SetPieceContinues(-1,\"hold\")",
@@ -1726,7 +1726,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153040613Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass(1)",
@@ -1739,7 +1739,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153309128Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass(-1)",
@@ -1752,7 +1752,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153309128Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     },
     {
       "id": "OnlineRosterPresentationPlayModeTests.RosterVisibility(False,False)",
@@ -1809,6 +1809,32 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T153651364Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomSetPiecePlayModeTests.RoomFreeKickRetiresCommittedRestart(1)",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineRoomSetPiecePlayModeTests",
+      "method": "RoomFreeKickRetiresCommittedRestart",
+      "parameters": [
+        1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomSetPiecePlayModeTests.RoomFreeKickRetiresCommittedRestart(-1)",
+      "feature": "OnlineSetPieces",
+      "mode": "playmode",
+      "fixture": "OnlineRoomSetPiecePlayModeTests",
+      "method": "RoomFreeKickRetiresCommittedRestart",
+      "parameters": [
+        -1
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T154013072Z/results.xml"
     }
   ]
 }

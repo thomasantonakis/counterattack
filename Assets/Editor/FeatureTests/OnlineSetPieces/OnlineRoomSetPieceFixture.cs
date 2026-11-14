@@ -49,5 +49,8 @@ public sealed partial class OnlineRoomActionSceneFixture
         yield return Wait(()=>!board.match.groundBallManager.isActivated && board.match.LastTokenToTouchTheBallOnPurpose==board.tokens.Single(t=>t.isHomeTeam && t.jerseyNumber==10),"Room awarded restart completes pass");
         var final=authority.Capture();Assert.That(final.tokens.Single(t=>t.id=="home:9").passesCompleted,Is.EqualTo(1));
         Assert.That(final.ballZ,Is.EqualTo(6));
+        Assert.That(fk.isActivated,Is.False,"committed restart must release normal live action ownership even with disabled proof Update");
+        Assert.That(fk.isWaitingForExecution,Is.False);
+        Assert.That(final.stage,Does.Not.StartWith("set-piece."));
     }
 }

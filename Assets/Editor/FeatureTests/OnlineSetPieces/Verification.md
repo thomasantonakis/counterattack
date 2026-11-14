@@ -33,3 +33,11 @@ keeper replacements remain separate work. For broader user-run verification,
 use `Assets/Tests/PlayMode/LegacyFreeKickShotPlayModeTests.cs` fixture
 `LegacyFreeKickShotPlayModeTests` (all shot outcomes), and
 `Assets/Tests/PlayMode/Features/OnlineFouls/` category `OnlineFouls` (restart entry).
+
+Continuation audit: disabled proof Update left free-kick ownership active after a
+completed pass. Two new independently selectable `RoomFreeKickRetiresCommittedRestart`
+cases reproduced it at `Runs/20261114T153902920Z/results.xml`. Online live-action
+commit now retires that restart synchronously. The full focused feature category
+then passed **24/0/0** at `Runs/20261114T154013072Z/results.xml` (20 isolated +
+4 actual Room cases), compilation separately clean. These replace the earlier
+22-case verdict; do not add overlapping run counts. New cases registered for Mac.

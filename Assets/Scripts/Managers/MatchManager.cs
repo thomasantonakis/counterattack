@@ -5452,6 +5452,9 @@ public partial class MatchManager : MonoBehaviour
         RefreshAerialTargetPrecomputations();
         RegisterCommittedAction(actionKind);
         RecordActionCommitted(actionKind, commitSource, commitReason);
+        // Online proof managers intentionally suppress Update; retire the restart
+        // when its live child commits rather than waiting for a disabled callback.
+        if(IsOnlineAuthorityControlled)freeKickManager?.CompleteOnlineSetPieceExecutionIfCommitted();
         if (!isHalfExpired && !isMatchComplete)
         {
             isClockRunning = true;

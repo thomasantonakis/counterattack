@@ -13,4 +13,6 @@ public sealed class OnlineRoomSetPiecePlayModeTests
     {if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest] public IEnumerator RoomFreeKickCompletesPass([Values(1,-1)]int side)
         =>(IEnumerator)Bridge.GetMethod("RunRoomSetPiece").Invoke(fixture,new object[]{side});
+    [UnityTest] public IEnumerator RoomFreeKickRetiresCommittedRestart([Values(1,-1)]int side)
+        =>(IEnumerator)Bridge.GetMethod("RunRoomSetPiece").Invoke(fixture,new object[]{side});
 }

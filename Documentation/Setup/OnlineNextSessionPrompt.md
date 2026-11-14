@@ -366,3 +366,8 @@ Online set pieces: 20 isolated and 2 actual serialized Room-proof passes, plus
 See OnlineSetPieces/Verification.md. Typed setup, restrictions and execution
 choices now connect to existing pass/cross/long/shot managers. Each new case
 has a deferred Mac manifest entry. Full normal Room remains future work.
+
+Latest: online set-piece continuation audit reproduced and fixed disabled-Update
+restart ownership leak. All 24 own-feature cases passed at
+20261114T154013072Z; roster replica visibility 4 passed at153651364Z.
+Next refresh exports, then penalties/throw-ins, substitutions and normal Room.

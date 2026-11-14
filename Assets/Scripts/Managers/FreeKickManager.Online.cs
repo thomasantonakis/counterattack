@@ -39,6 +39,11 @@ public partial class FreeKickManager
             default:return false;
         }
     }
+    public void CompleteOnlineSetPieceExecutionIfCommitted()
+    {
+        if(matchManager?.IsOnlineAuthorityControlled==true && isWaitingForExecution
+            && matchManager.currentState!=MatchManager.GameState.FreeKickExecution)FinishExecutionSelection();
+    }
     private static OnlineSetPieceIntent SetPieceChoice(UnityEngine.KeyCode key)=>key switch
     {UnityEngine.KeyCode.P=>OnlineSetPieceIntent.Ground,UnityEngine.KeyCode.C=>OnlineSetPieceIntent.High,
      UnityEngine.KeyCode.L=>OnlineSetPieceIntent.Long,UnityEngine.KeyCode.S=>OnlineSetPieceIntent.Shot,_=>OnlineSetPieceIntent.None};
