@@ -6,6 +6,7 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    private OnlineGroundPassState onlineFtpPrecedingPass;
     public IEnumerator RunOnlineFirstTimePass(int side,string branch)
     {
         var authority=OnlineGroundBoard(side,true,false,out var protocol,out var passer);
@@ -15,6 +16,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             protocol.LastAcceptedSequence(connection=="home"?OnlineTeam.Home:OnlineTeam.Away)+1,action);
         Submit("home","ground.start");Submit("home","ground.target:0:6");Submit("home","ground.target:0:6");
         yield return Until(()=>!ground.isActivated && match.LastTokenToTouchTheBallOnPurpose==passer,"real pass offers First Time Pass continuation");
+        onlineFtpPrecedingPass=authority.Capture();
         Assert.That(ftp.isAvailable,Is.True);
         bool danger=branch is "miss" or "hit" or "automatic" or "cancel" or "hold";
         if(danger)Place(defender,Hex(side,3));

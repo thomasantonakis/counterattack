@@ -30,6 +30,8 @@ namespace CounterAttack.Online
         private readonly Action pollOverride;
         private readonly Func<double> recoveryClock;
         private bool manualTransport, transportUnavailable, peerLeft;
+        private bool ContinuousManualSession=>board.continuousManualSession || Environment.GetCommandLineArgs().Contains("-ca-online-continuous");
+        private string SessionCatalog=>OnlineManualSessionPolicy.Catalog(ContinuousManualSession);
 
         private void MarkTransportUnavailable()
         { transportUnavailable = true; if (board.controls != null) board.controls.SetConnected(false); }
@@ -155,7 +157,7 @@ namespace CounterAttack.Online
         internal IEnumerator Local()
         {
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", SessionCatalog);
             var protocol = new OnlineMatchProtocol("local-ground", "home", "away", "away", version);
             protocol.BindAuthenticatedAccount("home", "guest", version); protocol.BindAuthenticatedAccount("away", "host", version);
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
@@ -215,7 +217,7 @@ namespace CounterAttack.Online
         {
             SetPeer(session, remote, socket, lobby);
             board.InitializeAuthority();
-            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", "prepared-board-v1");
+            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", SessionCatalog);
             var protocol = new OnlineMatchProtocol(matchId, remote.ToString(), session.UserId.ToString(), session.UserId.ToString(), version);
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(remote.ToString(), "guest-home", version), "Binding guest Home identity");
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");
@@ -300,7 +302,7 @@ namespace CounterAttack.Online
         {
             SetPeer(session, remote, socket, lobby);
             EOSProofCheck.Require(!board.authorityRoot.activeSelf, "Guest gameplay managers must remain inactive");
-            var replica = new OnlineGroundPassReplica(matchId, board.tokens.Select(token => (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber), "prepared-board-v1");
+            var replica = new OnlineGroundPassReplica(matchId, board.tokens.Select(token => (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber), SessionCatalog);
             if (Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
             {
                 var manual = ManualGuest(replica);

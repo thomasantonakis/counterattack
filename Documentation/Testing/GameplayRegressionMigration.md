@@ -1,5 +1,15 @@
 # Gameplay regression migration
 
+Online continuous-session completion adds 8 EditMode cases in
+`Assets/Editor/FeatureTests/OnlineContinuousSession/` and 2 real multi-pass
+PlayMode cases in `Assets/Tests/PlayMode/Features/OnlineContinuousSession/`,
+category `OnlineContinuousSession`, all passed with zero failed/skipped.
+Evidence: `Runs/20261114T104313622Z/results.xml` and
+`Runs/20261114T134834652Z/results.xml`. Affected manual transport 7 passed in
+`Runs/20261114T134924791Z/results.xml`; compilation separately clean.
+No legacy cases retired or whole suites run. See feature Verification.md for
+fixture corrections, packaged evidence and the remaining full-Room boundary.
+
 Online First Time Pass adds 16 independently selectable PlayMode cases in
 `Assets/Tests/PlayMode/Features/OnlineFirstTimePass/`, category
 `OnlineFirstTimePass`: 14 isolated cases in `Runs/20261114T103218502Z/results.xml`

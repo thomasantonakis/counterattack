@@ -42,7 +42,7 @@ namespace CounterAttack.Online
             {
                 bool ready = false, done = false;
                 long sent = -1;
-                var deadline = RecoveryNow + 900;
+                var deadline = RecoveryNow + (ContinuousManualSession?7200:900);
                 while (!done && RecoveryNow < deadline)
                 {
                     Poll();
@@ -144,7 +144,7 @@ namespace CounterAttack.Online
             {
                 SendCurrent(new OnlineGroundPassMessage { kind = "hello" });
                 bool doneSent = false, finished = false;
-                var deadline = RecoveryNow + 900;
+                var deadline = RecoveryNow + (ContinuousManualSession?7200:900);
                 while (!finished && RecoveryNow < deadline)
                 {
                     Poll();
@@ -199,8 +199,6 @@ namespace CounterAttack.Online
             finally { board.controls.Requested -= Local; board.controls.SetConnected(false); }
         }
 
-        private static bool CompletedManualAction(OnlineGroundPassState state) => !state.passActive && !state.ballMoving
-            && !state.isSharedPaused && !state.connectionHeld && (state.stage == "continuation" || state.stage == "action")
-            && state.tokens.Any(token => token.passesAttempted == 1);
+        private bool CompletedManualAction(OnlineGroundPassState state)=>OnlineManualSessionPolicy.CanFinish(state,ContinuousManualSession);
     }
 }

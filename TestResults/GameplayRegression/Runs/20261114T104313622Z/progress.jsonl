@@ -1,0 +1,8 @@
+{"name":"OnlineContinuousSessionEditorTests.CompletedPassEndsProofButKeepsContinuousSessionOpen","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.MatchEndCanFinishContinuousWithoutAPass","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(\"pass\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(\"ball\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(\"player\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(\"connection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContinuousSessionEditorTests.ProfilesCannotAcceptEachOthersSnapshotCatalog","status":"Passed","message":"","stackTrace":""}

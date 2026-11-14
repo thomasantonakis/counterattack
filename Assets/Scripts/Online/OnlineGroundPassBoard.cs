@@ -13,6 +13,8 @@ namespace CounterAttack.Online
         public HexGrid grid;
         public HexCell[] cells;
         public PlayerToken[] tokens;
+        [Tooltip("Keep a manual session alive across actions. This does not replace the prepared roster with a normal Room match.")]
+        public bool continuousManualSession;
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
