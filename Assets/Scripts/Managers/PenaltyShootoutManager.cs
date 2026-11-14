@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public partial class PenaltyShootoutManager : MonoBehaviour
 {
+    private readonly string shootoutAudioEventId = System.Guid.NewGuid().ToString("N");
     private bool UseRightGoal => matchManager?.gameData?.penaltyShootoutSetup?.useRightGoal ?? false;
     private int GoalSign => UseRightGoal ? 1 : -1;
     private Vector3Int PenaltySpotCoordinates => new(14 * GoalSign, 0, 0);
@@ -397,6 +398,8 @@ public partial class PenaltyShootoutManager : MonoBehaviour
         }
 
         Debug.Log($"[Shootout] {(shooterWasHome ? "Home" : "Away")} {(scored ? "score" : "miss")}. Shootout score {homeShootoutScore}-{awayShootoutScore}.");
+        FindFirstObjectByType<GameplayAudioDirector>()?.PlayPenaltyShootoutOutcome(
+            $"shootout_{shootoutAudioEventId}_{homeAttempts + awayAttempts}", shooterWasHome, scored);
         previousShooter = currentShooter;
         previousDefendingGoalkeeper = currentDefendingGoalkeeper;
         currentShooter = null;

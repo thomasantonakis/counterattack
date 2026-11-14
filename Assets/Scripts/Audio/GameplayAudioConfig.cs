@@ -8,7 +8,7 @@ public enum GameplayAudioPool
     DuelWon, DuelLost, DefensiveShotRelief, OpponentError, FoulReaction,
     KickOff, HalfTime, FullTime, HomeSubstitution, AwaySubstitution,
     DoubleAwaySubstitution, InjurySubstitution, SnapshotAvailable, SetPiecePreparation,
-    MenuSelect, MenuAdvance, MenuBack,
+    MenuSelect, MenuAdvance, MenuBack, DiceWiggle,
     None = -1
 }
 
@@ -26,15 +26,15 @@ public static class GameplayAudioConfig
     public const float SnapshotClipGainDb = 6f;
     public const float SnapshotRepeatCooldownSeconds = 15f;
     public const float GoalIntensity = 1f;
-    public const float ChantIntensity = 0.3f;
+    public const float ChantIntensity = 0.45f;
     public const float SetPieceIntensity = 0.5f;
     public const float ChatterCrossfadeSeconds = 2f;
     public const float ChatterFadeSeconds = 0.35f;
     public const float ChantFadeSeconds = 0.35f;
     // Uniform output trim preserves stand/layer ratios and leaves room for fade overlaps.
     public const float CrowdOutputGain = 0.75f;
-    public const float ChantMinIntervalSeconds = 45f;
-    public const float ChantMaxIntervalSeconds = 90f;
+    public const float ChantMinIntervalSeconds = 25f;
+    public const float ChantMaxIntervalSeconds = 45f;
     public const int ChantPriority = 0;
     public const int IncidentPriority = 10;
     public const int SnapshotPriority = 5;
@@ -89,6 +89,15 @@ public static class GameplayAudioConfig
         new StandReaction(homeScored ? GameplayAudioPool.Groan : GameplayAudioPool.Cheer,
             GoalIntensity), GoalPriority, fillRemaining: true);
 
+    public static CrowdReaction PenaltyShootoutOutcome(bool shooterHome, bool scored)
+    {
+        if (scored) return Goal(shooterHome);
+        GameplayAudioPool home = shooterHome ? GameplayAudioPool.Groan : GameplayAudioPool.Cheer;
+        GameplayAudioPool away = shooterHome ? GameplayAudioPool.Cheer : GameplayAudioPool.Groan;
+        return new CrowdReaction(new StandReaction(home, GoalIntensity),
+            new StandReaction(away, GoalIntensity), GoalPriority, fillRemaining: true);
+    }
+
     public static CrowdReaction Incident(GameplayAudioEvents.IncidentKind kind, bool homeTeam)
     {
         GameplayAudioPool team = GameplayAudioPool.None, opponent = GameplayAudioPool.None;
@@ -138,8 +147,9 @@ public static class GameplayAudioConfig
         GameplayAudioPool.MenuSelect => 0.35f,
         GameplayAudioPool.MenuAdvance => 0.45f,
         GameplayAudioPool.MenuBack => 0.4f,
+        GameplayAudioPool.DiceWiggle => 0.9f,
         GameplayAudioPool.Invalid => 0.5f,
-        GameplayAudioPool.Dice => 0.65f,
+        GameplayAudioPool.Dice => 0.95f,
         GameplayAudioPool.StatsShow or GameplayAudioPool.StatsHide => 0.45f,
         GameplayAudioPool.Pause or GameplayAudioPool.Resume => 0.5f,
         GameplayAudioPool.PauseMusic => 0.5f,
@@ -151,6 +161,7 @@ public static class GameplayAudioConfig
         GameplayAudioPool.MenuHover => 0.12f,
         GameplayAudioPool.Invalid => 0.2f,
         GameplayAudioPool.Dice => 0.1f,
+        GameplayAudioPool.DiceWiggle => 0f,
         _ => 0.08f
     };
 }

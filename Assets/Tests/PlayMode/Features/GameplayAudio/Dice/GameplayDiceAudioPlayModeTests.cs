@@ -16,4 +16,7 @@ public sealed class GameplayDiceAudioPlayModeTests
     [UnityTest] public IEnumerator RequestedRollUsesGameAudioWithoutChangingOutcome(
         [Values(false, true)] bool rigged, [Values("normal", "muted", "paused", "missing")] string boundary) =>
         (IEnumerator)Bridge.GetMethod("RunDiceAudio").Invoke(fixture, new object[] { rigged, boundary });
+
+    [UnityTest] public IEnumerator WigglePlaysOncePerActiveRollWaitAndStopsWhenItEnds() =>
+        (IEnumerator)Bridge.GetMethod("RunDiceWiggleWait").Invoke(fixture, null);
 }

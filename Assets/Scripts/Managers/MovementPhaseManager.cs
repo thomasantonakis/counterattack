@@ -584,6 +584,7 @@ public partial class MovementPhaseManager : MonoBehaviour
     {
         if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
+        if (TryForfeitWaitingReposition(keyData)) return;
         if (isPlayerMoving && !isGkWallDiveSequenceActive) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
@@ -923,38 +924,27 @@ public partial class MovementPhaseManager : MonoBehaviour
                 return;
             }
         }
-        if (isWaitingForReposition && keyData.key == KeyCode.X)
+    }
+
+    private bool TryForfeitWaitingReposition(KeyPressData keyData)
+    {
+        if (!isWaitingForReposition || IsResolvingReposition || keyData.key != KeyCode.X
+            || (isNutmegInProgress && !isSuccessfulTackleRepositionPending)) return false;
+
+        ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
+        if (isSuccessfulTackleRepositionPending)
         {
-            if (isNutmegInProgress && !isSuccessfulTackleRepositionPending)
-            {
-                Debug.Log($"{repositionWinner.name} just nutmegged {repositionLoser.name}, they have to reposition.");
-            }
-            else if (isSuccessfulTackleRepositionPending)
-            {
-                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
-                Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position after the successful tackle.");
-                isWaitingForReposition = false;
-                hexGrid.ClearHighlightedHexes();
-                return;
-            }
-            else if (isMovementPhaseDef)
-            {
-                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
-                Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
-                isWaitingForReposition = false;
-                hexGrid.ClearHighlightedHexes();
-                AdvanceMovementPhase();
-                return;
-            }
-            else
-            {
-                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
-                isWaitingForReposition = false;
-                hexGrid.ClearHighlightedHexes();
-                AdvanceMovementPhase();
-                return;
-            }
+            Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position after the successful tackle.");
+            isWaitingForReposition = false;
+            hexGrid.ClearHighlightedHexes();
+            return true;
         }
+
+        Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
+        isWaitingForReposition = false;
+        hexGrid.ClearHighlightedHexes();
+        AdvanceMovementPhase();
+        return true;
     }
 
     private void ConsumeMovementKey(KeyPressData keyData, bool? consumedByHomeTeam = null)

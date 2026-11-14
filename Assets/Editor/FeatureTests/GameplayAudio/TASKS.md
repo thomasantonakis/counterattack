@@ -3,7 +3,7 @@
 ## Foundation batch
 
 - [x] Create branch and save agreed specification before implementation.
-- [x] Code configuration: 70/30 stands; Walla 40–50%; chants 30%; ordinary reactions 50%; goals fill remaining stand gain.
+- [x] Code configuration: 70/30 stands; Walla 40–50%; chants 45%; ordinary reactions 50%; goals fill remaining stand gain.
 - [x] Three independent local On/Off preferences; code-configured volumes, no sliders or match-save changes.
 - [x] Independent RNG, random pools, bounded duplicate history and cue cooldowns.
 - [x] Authored-source playback, priorities, chatter fades and pause/resume API.
@@ -35,7 +35,7 @@ verification or evidence that pending gameplay event integrations work.
 - [x] Choose 40–50% intensity per new clip; exclude outgoing clip when possible.
 - [x] Prefer avoiding the other stand's active clips; relax for small pools.
 - [x] Preserve bed gain across a crossfade; no new runtime GameObjects.
-- [x] Separate one-shot chant channels at 30%; per-stand slots 45–90 s after finish.
+- [x] Separate one-shot chant channels at 45%; per-stand slots 25–45 s after finish.
 - [x] On an accepted event, fade active chants over 0.35 s, discard them, schedule
   new slots; keep Walla playing underneath. Event gain is 50% for both stands.
 - [x] Apply a uniform code-configured 0.75 crowd output trim for fade headroom.
@@ -46,6 +46,18 @@ verification or evidence that pending gameplay event integrations work.
 - [x] Connect the selected gameplay goal/foul/duel/shot/transition events and test
   real notification entry points. Injury/pass/anticipation and remaining
   trim decisions stay in the selection plan.
+
+## Chant audibility and retry correction (2026-11-12)
+
+- [x] Increase chant gain from 30% to 45% on both stand sources, preserving goal-reaction headroom.
+- [x] Shorten independent chant intervals from 45–90s to 25–45s.
+- [x] Keep a due chant eligible while a temporary reaction or set-piece preparation blocks playback; retry when the stand is clear.
+- [x] Confirm Room's home/away chant source bindings and the 12-clip shared Chant pool through the live Editor.
+- [x] Focused PlayMode checks passed 3/3: home/away mix and goal-reaction headroom (2), due-chant retry after a temporary reaction (1).
+- [ ] Listen in a live match; automated playback tests use muted sources.
+
+Native results: `TestResults/GameplayRegression/Runs/20261112T180115578Z/`
+and `TestResults/GameplayRegression/Runs/20261112T180215053Z/`.
 
 Compilation is clean in the live Editor; active `Logs/Editor.log` was inspected.
 Focused results, retained with native XML and per-case progress:

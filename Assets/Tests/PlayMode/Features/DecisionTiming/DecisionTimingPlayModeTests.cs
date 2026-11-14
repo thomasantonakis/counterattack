@@ -31,6 +31,8 @@ public sealed class DecisionTimingPlayModeTests
         => (IEnumerator)Bridge.GetMethod("RunAdditionalTimingDecision").Invoke(board, new object[] { side, family });
     [UnityTest] public IEnumerator DuelInterruption([Values(1,-1)] int side, [Values(false,true)] bool nutmeg, [Values(false,true)] bool expired)
         => (IEnumerator)Bridge.GetMethod("RunTimingDuelInterruption").Invoke(board, new object[] {side,nutmeg,expired,false,false});
+    [UnityTest] public IEnumerator RepositionForfeitXIsHandledBeforeMovementGuard()
+        => (IEnumerator)Bridge.GetMethod("RunTimingDuelForfeitDuringMovementGuard").Invoke(board, null);
     [UnityTest] public IEnumerator DuelDecline([Values(1,-1)] int side, [Values(false,true)] bool nutmeg)
         => (IEnumerator)Bridge.GetMethod("RunTimingDuelInterruption").Invoke(board, new object[] {side,nutmeg,false,true,false});
     [UnityTest] public IEnumerator DuelTurnoverKeepsExpiredPhase([Values(1,-1)] int side, [Values(false,true)] bool nutmeg)

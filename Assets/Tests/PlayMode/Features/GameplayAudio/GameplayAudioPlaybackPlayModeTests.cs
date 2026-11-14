@@ -17,6 +17,15 @@ public sealed class GameplayAudioPlaybackPlayModeTests
     }
 
     [UnityTest]
+    public IEnumerator DueChantsRetryWhenTemporaryCrowdReactionsFinish()
+    {
+        var fixture = AppDomain.CurrentDomain.GetAssemblies()
+            .Single(a => a.GetName().Name == "Assembly-CSharp-Editor")
+            .GetType("GameplayAudioPlaybackFixture", true);
+        return (IEnumerator)fixture.GetMethod("RunChantDeadlineRetry").Invoke(null, null);
+    }
+
+    [UnityTest]
     public IEnumerator ContinuousWallaCrossfadesSmallPoolsWithoutGainDoubling([Values(0, 1, 2, 3)] int clipCount)
     {
         var fixture = AppDomain.CurrentDomain.GetAssemblies()

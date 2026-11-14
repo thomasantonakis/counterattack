@@ -14,6 +14,10 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     private float resultUntil;
     private bool coinToss;
     private string coinTossChoices;
+    private float rollDeadline;
+    private float wiggleDeadline;
+    private bool wigglePlayed;
+    private GameplayAudioDirector roomAudioDirector;
     public bool externalInput;
     public MatchManager roomMatch;
     public bool IsOpen => stage != Stage.Closed;
@@ -26,6 +30,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     private void Awake() { if (visuals != null) visuals.SetActive(false); }
     private void OnDisable()
     {
+        StopWaitAudio();
         stage = Stage.Closed;
         HomeWon = null;
         if (visuals != null) visuals.SetActive(false);
@@ -44,6 +49,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         if (!HasSceneBindings || settings == null || IsOpen) return false;
         HomeWon = null;
         coinToss = forCoinToss;
+        roomAudioDirector = roomMatch != null ? FindFirstObjectByType<GameplayAudioDirector>() : null;
         coinTossChoices = choicesCopy;
         title.text = coinToss ? tossTitle : "ROLL FOR FIRST DRAFT PICK";
         homeTeam.text = TeamName(settings, true);
@@ -69,6 +75,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         homeDie.Begin(false);
         awayDie.Clear();
         stage = Stage.Home;
+        BeginRollWait();
         footer.text = $"{homeTeam.text} manager · Press [R] to roll";
     }
 
@@ -86,6 +93,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     public void Roll(RollInputOverride? rollOverride = null)
     {
         if (stage is not (Stage.Home or Stage.Away)) return;
+        StopWaitAudio();
         if (roomMatch == null) MenuAudioPlayer.Play(GameplayAudioPool.Dice);
         int roll = roomMatch != null
             ? roomMatch.ResolveGameplayDiceRoll("coin_toss", rollOverride, jackpotEnabled: false,
@@ -105,6 +113,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
             awayResult.text = "";
             awayDie.Begin(false);
             stage = Stage.Away;
+            BeginRollWait();
             footer.text = $"{awayTeam.text} manager · Press [R] to roll";
             return;
         }
@@ -128,14 +137,42 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         Close();
     }
 
+    public void AdvanceRollWait(float unscaledTime)
+    {
+        if (stage is not (Stage.Home or Stage.Away)) { StopWaitAudio(); return; }
+        if (!wigglePlayed && unscaledTime >= wiggleDeadline)
+        {
+            wigglePlayed = roomMatch != null
+                ? roomAudioDirector != null && roomAudioDirector.PlayDiceWiggle()
+                : MenuAudioPlayer.Play(GameplayAudioPool.DiceWiggle);
+        }
+        if (unscaledTime >= rollDeadline) Roll();
+    }
+
+    private void BeginRollWait()
+    {
+        rollDeadline = Time.unscaledTime + DecisionTimingConfig.AutomaticRollSeconds;
+        wiggleDeadline = Time.unscaledTime + .25f;
+        wigglePlayed = false;
+    }
+
+    private void StopWaitAudio()
+    {
+        MenuAudioPlayer.StopDiceWiggle();
+        roomAudioDirector?.StopDiceWiggle();
+        wigglePlayed = false;
+    }
+
     public void Close()
     {
         stage = Stage.Closed;
+        StopWaitAudio();
         visuals.SetActive(false);
     }
 
     private void Update()
     {
+        AdvanceRollWait(Time.unscaledTime);
         AdvanceResult(Time.unscaledTime);
         if (!IsOpen) return;
         Fit();

@@ -56,8 +56,8 @@ public static class GameplayAudioPlaybackFixture
             Assert.That(director.TryPlayChant(false), Is.True);
             Assert.That(director.TryPlayChant(true), Is.False, "No same-stand chant stacking.");
             Assert.That(director.homeChant.loop, Is.False);
-            Assert.That(director.homeChant.volume, Is.EqualTo(0.7f * 0.3f * GameplayAudioConfig.CrowdOutputGain).Within(0.0001f));
-            Assert.That(director.awayChant.volume, Is.EqualTo(0.3f * 0.3f * GameplayAudioConfig.CrowdOutputGain).Within(0.0001f));
+            Assert.That(director.homeChant.volume, Is.EqualTo(0.7f * GameplayAudioConfig.ChantIntensity * GameplayAudioConfig.CrowdOutputGain).Within(0.0001f));
+            Assert.That(director.awayChant.volume, Is.EqualTo(0.3f * GameplayAudioConfig.ChantIntensity * GameplayAudioConfig.CrowdOutputGain).Within(0.0001f));
             Assert.That(director.PlayGoal("owned-run:1", homeScored), Is.True);
             Assert.That(director.PlayGoal("owned-run:1", homeScored), Is.False);
             Assert.That(director.PlayWhistle("owned-run:1"), Is.True, "Whistles and crowd have independent delivery lanes.");
@@ -65,7 +65,7 @@ public static class GameplayAudioPlaybackFixture
             Assert.That(director.awayReaction.volume, Is.EqualTo(0.3f * GameplayAudioConfig.CrowdOutputGain - awayBed - director.awayChant.volume).Within(0.0001f));
             Assert.That(director.homeChant.isPlaying, Is.True, "A chant must fade, not stop abruptly.");
             director.AdvanceAudio(GameplayAudioConfig.ChantFadeSeconds * 0.5f);
-            Assert.That(director.homeChant.volume, Is.EqualTo(0.7f * 0.3f * GameplayAudioConfig.CrowdOutputGain * 0.5f).Within(0.0001f));
+            Assert.That(director.homeChant.volume, Is.EqualTo(0.7f * GameplayAudioConfig.ChantIntensity * GameplayAudioConfig.CrowdOutputGain * 0.5f).Within(0.0001f));
             Assert.That(director.homeChatter.volume + director.homeChatterNext.volume, Is.EqualTo(homeBed).Within(0.0001f));
             Assert.That(director.awayChatter.volume + director.awayChatterNext.volume, Is.EqualTo(awayBed).Within(0.0001f));
             director.AdvanceAudio(GameplayAudioConfig.ChantFadeSeconds);
@@ -98,6 +98,64 @@ public static class GameplayAudioPlaybackFixture
             Assert.That(director.homeChatterNext.volume, Is.Zero);
             Assert.That(director.awayChatterNext.volume, Is.Zero);
             Assert.That(director.whistle.volume, Is.Zero);
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(root);
+            UnityEngine.Object.DestroyImmediate(clip);
+            UnityEngine.Object.DestroyImmediate(library);
+            MatchManager.Instance = previousMatch;
+            preferences.SetEnabled(GameplayAudioCategory.Stadium, previousEnabled);
+            if (!hadEnabled) PlayerPrefs.DeleteKey(stadiumEnabledKey);
+            PlayerPrefs.Save();
+        }
+    }
+
+    public static IEnumerator RunChantDeadlineRetry()
+    {
+        var previousMatch = MatchManager.Instance;
+        var preferences = GameplayAudioPreferences.Local;
+        const string stadiumEnabledKey = "CounterAttack.Audio.Stadium.Enabled";
+        bool hadEnabled = PlayerPrefs.HasKey(stadiumEnabledKey);
+        bool previousEnabled = preferences.Enabled(GameplayAudioCategory.Stadium);
+        var root = new GameObject("Isolated silent chant retry"); root.SetActive(false);
+        var clip = AudioClip.Create("Silent chant retry", 48000 * 8, 1, 48000, false);
+        var library = ScriptableObject.CreateInstance<GameplayAudioLibrary>();
+        library.pools = new[] {
+            new GameplayAudioLibrary.Pool { kind = GameplayAudioPool.Chatter, clips = new[] { clip } },
+            new GameplayAudioLibrary.Pool { kind = GameplayAudioPool.Chant, clips = new[] { clip } },
+            new GameplayAudioLibrary.Pool { kind = GameplayAudioPool.Cheer, clips = new[] { clip } },
+            new GameplayAudioLibrary.Pool { kind = GameplayAudioPool.Groan, clips = new[] { clip } }
+        };
+        try
+        {
+            MatchManager.Instance = null;
+            preferences.SetEnabled(GameplayAudioCategory.Stadium, true);
+            var director = root.AddComponent<GameplayAudioDirector>(); director.library = library;
+            director.homeChatter = Source(root, "Home chatter");
+            director.awayChatter = Source(root, "Away chatter");
+            director.homeChatterNext = Source(root, "Home chatter incoming");
+            director.awayChatterNext = Source(root, "Away chatter incoming");
+            director.homeChant = Source(root, "Home chant");
+            director.awayChant = Source(root, "Away chant");
+            director.homeReaction = Source(root, "Home reaction");
+            director.awayReaction = Source(root, "Away reaction");
+            root.SetActive(true);
+            yield return null;
+
+            var stateField = typeof(GameplayAudioDirector).GetField("homeChantState",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            object chantState = stateField.GetValue(director);
+            chantState.GetType().GetField("NextAt").SetValue(chantState, Time.unscaledTime - 1f);
+            Assert.That(director.PlayGoal("temporary chant blocker", true), Is.True);
+            director.AdvanceAudio(0f);
+            Assert.That(director.SecondsUntilNextChant(true), Is.Zero,
+                "A temporary crowd reaction must not reset a chant that is already due.");
+
+            director.homeReaction.Stop(); director.awayReaction.Stop();
+            director.AdvanceAudio(.01f);
+            Assert.That(director.homeChant.isPlaying, Is.True,
+                "The due home chant should play as soon as the temporary reaction clears.");
         }
         finally
         {

@@ -52,7 +52,12 @@ MonoBehaviour:
     clips: []
   - kind: 5
     clips:
-    - {fileID: 8300000, guid: 1efa3b7267fe34edbb89d3d60037e483, type: 3}
+    - {fileID: 8300000, guid: 3b0ae80afdd3c4e05a134913e229483e, type: 3}
+    - {fileID: 8300000, guid: 6b93e7a4a12c64688b34ef2625da94cd, type: 3}
+    - {fileID: 8300000, guid: 4b2bca0b1def9406bb27082cb6323800, type: 3}
+    - {fileID: 8300000, guid: 9812da5f83d9145108fdeacdd7eb6223, type: 3}
+    - {fileID: 8300000, guid: 033f2498e58124ce0a00e694ecbbf582, type: 3}
+    - {fileID: 8300000, guid: 582068b8426094d63b2123a7c5f98360, type: 3}
   - kind: 6
     clips: []
   - kind: 7
@@ -128,3 +133,6 @@ MonoBehaviour:
   - kind: 29
     clips:
     - {fileID: 8300000, guid: 4eb9ba82f21ea43718f8d71e14285d5e, type: 3}
+  - kind: 30
+    clips:
+    - {fileID: 8300000, guid: d2ea6027ad72c42419ef9b12f9f2c209, type: 3}

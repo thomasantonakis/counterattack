@@ -34,7 +34,8 @@ public sealed class MenuAudioPlaybackFixture
         GameplayAudioPreferences.Local.SetEnabled(GameplayAudioCategory.Game, true);
         root = Owned("Owned silent menu audio"); root.SetActive(false);
         var source = root.AddComponent<AudioSource>(); source.playOnAwake = false; source.mute = true;
-        player = root.AddComponent<MenuAudioPlayer>(); player.voice = source;
+        var wiggleSource = root.AddComponent<AudioSource>(); wiggleSource.playOnAwake = false; wiggleSource.mute = true;
+        player = root.AddComponent<MenuAudioPlayer>(); player.voice = source; player.wiggleVoice = wiggleSource;
         player.library = AssetDatabase.LoadAssetAtPath<GameplayAudioLibrary>(GameplayAudioEditorTools.LibraryPath);
         root.SetActive(true);
     }
@@ -50,6 +51,24 @@ public sealed class MenuAudioPlaybackFixture
         Assert.That(player.voice.isPlaying, Is.True);
         Assert.That(player.voice.clip, Is.SameAs(player.library.Get(cues[index])[0]));
         Assert.That(player.voice.volume, Is.EqualTo(GameplayAudioConfig.PoolGain(cues[index])).Within(.0001f));
+        yield return null;
+    }
+
+    public IEnumerator RunIndependentDiceWiggle()
+    {
+        Assert.That(player.TryPlay(GameplayAudioPool.Dice), Is.True);
+        AudioClip rollClip = player.voice.clip;
+        yield return new WaitForSecondsRealtime(.11f);
+        Assert.That(player.TryPlay(GameplayAudioPool.DiceWiggle), Is.True);
+        Assert.That(player.voice.clip, Is.SameAs(rollClip), "Starting a wait wiggle must not interrupt the roll voice.");
+        Assert.That(player.wiggleVoice.isPlaying, Is.True);
+        Assert.That(player.wiggleVoice.clip, Is.SameAs(player.library.Get(GameplayAudioPool.DiceWiggle)[0]));
+        Assert.That(player.TryPlay(GameplayAudioPool.Dice), Is.True, "The actual roll cue must play immediately when the player presses R.");
+        Assert.That(player.library.Get(GameplayAudioPool.Dice), Does.Contain(player.voice.clip));
+        AudioClip currentRollClip = player.voice.clip;
+        MenuAudioPlayer.StopDiceWiggle();
+        Assert.That(player.wiggleVoice.isPlaying, Is.False);
+        Assert.That(player.voice.clip, Is.SameAs(currentRollClip), "Stopping a wait wiggle must leave the roll voice untouched.");
         yield return null;
     }
 
@@ -127,9 +146,41 @@ public sealed class MenuAudioPlaybackFixture
             Assert.That(UnityEngine.Random.state, Is.EqualTo(rigged ? before : after));
             Assert.That(panel.IsAwaitingAwayRoll, Is.True);
             Assert.That(player.voice.isPlaying, Is.True);
-            Assert.That(player.voice.clip, Is.SameAs(player.library.Get(GameplayAudioPool.Dice)[0]));
+            Assert.That(player.library.Get(GameplayAudioPool.Dice), Does.Contain(player.voice.clip));
         }
         finally { UnityEngine.Random.state = rng; }
+        yield return null;
+    }
+
+    public IEnumerator RunPreMatchAutoRoll()
+    {
+        var go = Owned("Owned automatic draft roll-off"); go.AddComponent<RectTransform>();
+        var panel = go.AddComponent<DraftOrderPanelController>();
+        panel.visuals = Owned("Owned automatic roll-off visuals"); panel.visuals.transform.SetParent(go.transform);
+        var body = Owned("Owned automatic roll-off panel"); body.transform.SetParent(go.transform); panel.panel = body.AddComponent<RectTransform>();
+        TMP_Text Label(string name)
+        {
+            var label = Owned(name); label.transform.SetParent(go.transform);
+            return label.AddComponent<TextMeshProUGUI>();
+        }
+        panel.title = Label("Title"); panel.homeTeam = Label("Home"); panel.awayTeam = Label("Away");
+        panel.homeResult = Label("Home roll"); panel.awayResult = Label("Away roll");
+        panel.outcome = Label("Outcome"); panel.footer = Label("Footer");
+        panel.homeDie = Owned("Home die").AddComponent<DuelDieView>();
+        panel.awayDie = Owned("Away die").AddComponent<DuelDieView>();
+        Assert.That(panel.Open(new GameSettings()), Is.True);
+        float now = Time.unscaledTime;
+        panel.AdvanceRollWait(now + DecisionTimingConfig.AutomaticRollSeconds - .01f);
+        Assert.That(panel.IsAwaitingHomeRoll, Is.True, "Home keeps the full five-second decision window.");
+        Assert.That(player.wiggleVoice.clip, Is.SameAs(player.library.Get(GameplayAudioPool.DiceWiggle)[0]));
+        panel.AdvanceRollWait(now + DecisionTimingConfig.AutomaticRollSeconds + .01f);
+        Assert.That(panel.IsAwaitingAwayRoll, Is.True, "Home rolls automatically after five seconds.");
+        Assert.That(player.wiggleVoice.isPlaying, Is.False, "The wait wiggle stops when its roll resolves.");
+        float awayStart = Time.unscaledTime;
+        panel.AdvanceRollWait(awayStart + DecisionTimingConfig.AutomaticRollSeconds - .01f);
+        Assert.That(panel.IsAwaitingAwayRoll, Is.True, "Away also gets a full five-second window.");
+        panel.AdvanceRollWait(awayStart + DecisionTimingConfig.AutomaticRollSeconds + .01f);
+        Assert.That(panel.IsAwaitingAwayRoll, Is.False, "Away rolls automatically after five seconds.");
         yield return null;
     }
 

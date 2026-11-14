@@ -5,6 +5,8 @@ public sealed class MenuAudioPolicy
 {
     private readonly Dictionary<GameplayAudioPool, double> last = new Dictionary<GameplayAudioPool, double>();
     private double lastNavigation = double.NegativeInfinity;
+    private readonly System.Random diceRandom = new System.Random();
+    private int previousDiceIndex = -1;
     public static bool IsMenuCue(GameplayAudioPool cue) => cue == GameplayAudioPool.MenuHover
         || cue == GameplayAudioPool.MenuSelect || cue == GameplayAudioPool.MenuAdvance || cue == GameplayAudioPool.MenuBack;
     public static int Priority(GameplayAudioPool cue) => cue == GameplayAudioPool.MenuHover ? 0
@@ -29,5 +31,16 @@ public sealed class MenuAudioPolicy
         if (last.TryGetValue(GameplayAudioPool.Dice, out double previous) && now - previous < GameplayAudioConfig.Cooldown(GameplayAudioPool.Dice)) return false;
         last[GameplayAudioPool.Dice] = now;
         return true;
+    }
+
+    public bool AcceptDiceWiggle(double now) => !double.IsNaN(now) && !double.IsInfinity(now);
+
+    public int PickDiceIndex(int clipCount)
+    {
+        if (clipCount <= 1) return 0;
+        int index = diceRandom.Next(clipCount - 1);
+        if (index >= previousDiceIndex) index++;
+        previousDiceIndex = index;
+        return index;
     }
 }

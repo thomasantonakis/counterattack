@@ -1,8 +1,11 @@
 # Menu interaction audio
 
-Generate four original procedural mono PCM WAVs: quiet 65 ms hover swish,
-neutral 85 ms selection tick, soft rising 180 ms advance and descending 160 ms
-back cue. No purchased samples, services, middleware or music.
+Use four mono PCM WAVs captured from the user's selected YouTube sound sources:
+hover from `PUPfx-oxm3M` (2.10s, 240 ms); advance/success from `4ealu9Ojkvg`
+(11.65s, 420 ms); selection from the same source (14.00s, 140 ms); and back
+from the same source (14.19s, 250 ms). Short fades are applied at clip
+boundaries. The AAC streams are used because the initially downloaded Opus
+streams decoded to silence. Preserve the existing asset paths and bindings.
 
 Use existing device-local Game sounds preference. Code gains live in
 GameplayAudioConfig; hover .18, select .35, advance .45, back .4. Hover has a
@@ -35,12 +38,45 @@ test artifacts; report listening acceptance separately from silent playback test
 | Accepted advance/confirmation | MenuAdvance.wav | 180 ms | .45 |
 | Accepted back/return | MenuBack.wav | 160 ms | .40 |
 
-All clips are original, deterministically generated 48 kHz, 16-bit mono PCM.
-Raw peaks are .20/.24/.30/.27 respectively, before source gain. Generation and
-explicit scene authoring live in Assets/Editor/MenuAudioAuthoring.cs; playback
+Clips are 48 kHz, 16-bit mono PCM, trimmed from the source videos above; signal
+levels were checked after export and all contain nonzero audio samples.
+Explicit scene authoring lives in Assets/Editor/MenuAudioAuthoring.cs; playback
 uses Assets/Audio/UI/MenuAudio.prefab and the shared GameplayAudioLibrary.asset.
 Runtime gains/cooldowns are in Assets/Scripts/Audio/GameplayAudioConfig.cs.
 Unity does not serialize ignoreListenerPause; MenuAudioPlayer sets it in Awake.
+
+## Reusing this YouTube-to-game-audio workflow
+
+Use this workflow when a user supplies a YouTube sound and asks to crop it into
+the game. Keep the source URL/ID, selected start and duration, and output asset
+path in the relevant feature notes. Check available formats first, then prefer
+the AAC audio stream: the Opus versions of the sources above decoded to silent
+WAVs. `yt-dlp -F 'https://www.youtube.com/watch?v=VIDEO_ID'` lists formats. With
+the AAC format ID from that listing, download it without transcoding:
+
+```sh
+yt-dlp -f FORMAT_ID -o '/tmp/youtube-source.%(ext)s' 'https://www.youtube.com/watch?v=VIDEO_ID'
+```
+
+Crop from the requested offset and encode a Unity-friendly 48 kHz, mono,
+16-bit PCM WAV. Set the fade durations no longer than the crop; omit either
+fade when the sound needs a hard boundary. Example for a 420 ms cue starting at
+11.65 seconds, with short edge fades:
+
+```sh
+ffmpeg -ss 11.65 -i /tmp/youtube-source.m4a -t 0.42 \
+  -af 'afade=t=in:st=0:d=0.01,afade=t=out:st=0.39:d=0.03' \
+  -ar 48000 -ac 1 -c:a pcm_s16le Assets/Audio/UI/MenuAdvance.wav
+```
+
+Use the actual downloaded extension in the input path. Inspect the result with
+`ffprobe` (duration, sample rate, channels and PCM codec) and confirm it contains
+nonzero samples before importing. Preserve the downloaded source outside the
+Unity assets and leave existing source assets intact. Add the prepared WAV to
+the appropriate editable audio library/prefab/scene binding so designers can
+inspect it and the game can play it; retain the intended asset path and test
+the feature's playback behavior. Do not create visual or audio objects only at
+runtime.
 
 Implementation batches completed: synthesize/import assets and library; persistent
 voice and feedback policy; accepted navigation hooks; six-scene authoring; focused
@@ -60,11 +96,11 @@ disabled buttons, rejected draft start and persistent scene lifetime. Earlier
 failures remain in native artifacts: nonserialized pause flag fixed in playback,
 and TMP fixture corrected to wait for Start before opening its popup.
 
-Listening acceptance is pending. In MainMenu and Room pause/submenus, check rapid
-hover sweeps stay subtle, dropdowns tick on actual choices, forward/back cues are
-distinct and finish across scene changes, and Game sounds Off silences them.
-No ordinary gameplay or whole gameplay suite was started. No additional gameplay
-regression scope is warranted for these presentation-only hooks.
+Listen in MainMenu and Room pause/submenus to confirm hover loudness, dropdown
+selection tick, navigation distinction and sound through scene changes. The
+open Unity Pipeline was unavailable during replacement, so assets still require
+Unity import and focused playback checks after the Editor reconnects. No ordinary
+gameplay or whole gameplay suite was started.
 
 Checkbox/dice follow-up: all authored Toggle controls now select on real left click
 or keyboard submit, including Pause and Game Settings. Right clicks, disabled

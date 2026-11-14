@@ -17,6 +17,7 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
     public AudioSource awayReaction;
     public AudioSource whistle;
     public AudioSource gameEffects;
+    public AudioSource diceWiggleEffects;
     public AudioSource music;
     public bool stadiumActive = true;
 
@@ -44,6 +45,7 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
     private readonly ChantState awayChantState = new ChantState();
     private bool paused;
     private GameplayAudioPool gamePool;
+    private string diceWiggleRollId;
 
     private void Awake() => policy = new GameplayAudioPolicy(System.Environment.TickCount);
     private void OnEnable()
@@ -59,6 +61,7 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         GameplayAudioEvents.IncidentConfirmed -= OnIncidentConfirmed;
         ClearPendingSubstitutions();
         StopAll();
+        diceWiggleRollId = null;
     }
 
     private void OnGoalConfirmed(GameplayAudioEvents.GoalCue cue)
@@ -79,7 +82,27 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         if (stadiumActive && MatchManager.Instance != null)
             SetPaused(MatchManager.Instance.IsPauseMenuOpen);
         ObserveMatchAudioState();
+        SyncDiceWiggleWaitAudio();
         AdvanceAudio(Time.unscaledDeltaTime);
+    }
+
+    public void SyncDiceWiggleWaitAudio()
+    {
+        MatchManager match = stadiumActive ? MatchManager.Instance : null;
+        bool waiting = match != null && match.DecisionTiming.HasRollWait;
+        string rollId = waiting ? match.DecisionTiming.RollId : null;
+        if (!waiting) diceWiggleRollId = null;
+
+        bool shouldPlay = waiting && !paused && !match.IsPauseMenuOpen;
+        if (!shouldPlay)
+        {
+            StopDiceWiggle();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(rollId) || rollId == diceWiggleRollId) return;
+        diceWiggleRollId = rollId;
+        PlayDiceWiggle();
     }
 
     public void AdvanceAudio(float unscaledDeltaTime)
@@ -95,13 +118,22 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         TickPreparation(delta, gain);
         PlayPendingSubstitutions();
         RefreshReactionVolumes(gain);
-        if (Time.unscaledTime >= homeChantState.NextAt && !TryPlayChant(true))
-            homeChantState.NextAt = Time.unscaledTime + Policy.NextChantDelay();
-        if (Time.unscaledTime >= awayChantState.NextAt && !TryPlayChant(false))
-            awayChantState.NextAt = Time.unscaledTime + Policy.NextChantDelay();
+        if (Time.unscaledTime >= homeChantState.NextAt)
+        {
+            if (HasChantPlayback(true)) TryPlayChant(true);
+            else homeChantState.NextAt = Time.unscaledTime + Policy.NextChantDelay();
+        }
+        if (Time.unscaledTime >= awayChantState.NextAt)
+        {
+            if (HasChantPlayback(false)) TryPlayChant(false);
+            else awayChantState.NextAt = Time.unscaledTime + Policy.NextChantDelay();
+        }
     }
 
     public bool PlayGoal(string incidentId, bool homeScored) => PlayReaction(incidentId, GameplayAudioConfig.Goal(homeScored));
+
+    public bool PlayPenaltyShootoutOutcome(string incidentId, bool shooterHome, bool scored) =>
+        PlayReaction(incidentId, GameplayAudioConfig.PenaltyShootoutOutcome(shooterHome, scored));
 
     public bool PlayReaction(string incidentId, GameplayAudioConfig.CrowdReaction reaction)
     {
@@ -140,6 +172,15 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         return true;
     }
 
+    private bool HasChantPlayback(bool home)
+    {
+        if ((home ? homeChant : awayChant) == null || library == null) return false;
+        AudioClip[] clips = library.Get(GameplayAudioPool.Chant);
+        if (clips == null) return false;
+        foreach (AudioClip clip in clips) if (clip != null) return true;
+        return false;
+    }
+
     public float SecondsUntilNextChant(bool home) =>
         Mathf.Max(0f, (home ? homeChantState : awayChantState).NextAt - Time.unscaledTime);
 
@@ -153,6 +194,26 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         gamePool = pool;
         return Play(gameEffects, pool, false, GameplayAudioConfig.PoolGain(pool) *
             GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Game));
+    }
+
+    public bool PlayDiceWiggle()
+    {
+        if (paused || diceWiggleEffects == null || library == null
+            || !Policy.AcceptCue(GameplayAudioPool.DiceWiggle, Time.unscaledTimeAsDouble)) return false;
+        AudioClip clip = Policy.Pick(GameplayAudioPool.DiceWiggle, library.Get(GameplayAudioPool.DiceWiggle));
+        if (clip == null) return false;
+        diceWiggleEffects.Stop();
+        diceWiggleEffects.clip = clip;
+        diceWiggleEffects.loop = false;
+        diceWiggleEffects.volume = GameplayAudioConfig.PoolGain(GameplayAudioPool.DiceWiggle)
+            * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Game);
+        diceWiggleEffects.Play();
+        return true;
+    }
+
+    public void StopDiceWiggle()
+    {
+        if (diceWiggleEffects != null && diceWiggleEffects.isPlaying) diceWiggleEffects.Stop();
     }
 
     public void SetPaused(bool value)
@@ -276,6 +337,12 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         if (announcements != null) announcements.volume = GameplayAudioConfig.ReactionIntensity * stadium * GameplayAudioConfig.CrowdOutputGain;
         if (whistle != null) whistle.volume = whistleIntensity * stadium * GameplayAudioConfig.CrowdOutputGain;
         if (gameEffects != null) gameEffects.volume = GameplayAudioConfig.PoolGain(gamePool) * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Game);
+        if (diceWiggleEffects != null)
+        {
+            float gameGain = GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Game);
+            diceWiggleEffects.volume = GameplayAudioConfig.PoolGain(GameplayAudioPool.DiceWiggle) * gameGain;
+            if (gameGain <= 0f) diceWiggleEffects.Stop();
+        }
         if (music != null) music.volume = GameplayAudioConfig.PoolGain(GameplayAudioPool.PauseMusic) * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music);
         if (paused && music != null && !music.isPlaying && GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music) > 0f)
             Play(music, GameplayAudioPool.PauseMusic, true, music.volume);
@@ -291,12 +358,13 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         Stop(homeChatter); Stop(awayChatter); Stop(homeReaction); Stop(awayReaction);
         StopPreparation();
         Stop(announcements);
-        Stop(whistle); Stop(gameEffects); Stop(music);
+        Stop(whistle); Stop(gameEffects); Stop(diceWiggleEffects); Stop(music);
     }
 
     private static void Stop(AudioSource source) { if (source != null) source.Stop(); }
     private static bool IsPlaying(AudioSource source) => source != null && source.isPlaying;
     private static bool IsGameCue(GameplayAudioPool pool) => pool is GameplayAudioPool.Dice or
+        GameplayAudioPool.DiceWiggle or
         GameplayAudioPool.Invalid or GameplayAudioPool.Pause or GameplayAudioPool.Resume or
         GameplayAudioPool.MenuHover or GameplayAudioPool.StatsShow or GameplayAudioPool.StatsHide;
 }
