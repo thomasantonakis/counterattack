@@ -28,6 +28,7 @@ $deadline=[DateTime]::UtcNow.AddHours($Hours)
 $heartbeat=[DateTime]::MinValue
 
 function Read-Github([string]$endpoint) {
+ $local:ErrorActionPreference='Continue'
  $raw=& gh api $endpoint 2>$null
  if($LASTEXITCODE -ne 0){return $null}
  return ($raw -join "`n")|ConvertFrom-Json
