@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:17:32Z" end-time="2026-11-14 10:17:34Z" duration="1.8499546">
+  <test-suite type="TestSuite" id="2353" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1111" result="Passed" start-time="2026-11-14 10:17:32Z" end-time="2026-11-14 10:17:34Z" duration="1.849955" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2350" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1111" result="Passed" start-time="2026-11-14 10:17:32Z" end-time="2026-11-14 10:17:34Z" duration="1.791341" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2166" name="LegacyKickoffPlayModeTests" fullname="LegacyKickoffPlayModeTests" classname="LegacyKickoffPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 10:17:32Z" end-time="2026-11-14 10:17:34Z" duration="1.783856" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2169" name="Kickoff" fullname="LegacyKickoffPlayModeTests.Kickoff" classname="LegacyKickoffPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 10:17:33Z" end-time="2026-11-14 10:17:34Z" duration="1.740034" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2167" name="Kickoff(&quot;basic&quot;)" fullname="LegacyKickoffPlayModeTests.Kickoff(&quot;basic&quot;)" methodname="Kickoff" classname="LegacyKickoffPlayModeTests" runstate="Runnable" seed="1602662480" result="Passed" start-time="2026-11-14 10:17:33Z" end-time="2026-11-14 10:17:33Z" duration="0.848702" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Legacy migration key press -> Alpha2
+Legacy migration key press -> Return
+Home confirmed setup (1/2)
+Legacy migration key press -> Return
+Away confirmed setup (2/2)
+Kick-off confirmed! The match begins.
+Movement phase has been reset.
+Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2168" name="Kickoff(&quot;ignored_input&quot;)" fullname="LegacyKickoffPlayModeTests.Kickoff(&quot;ignored_input&quot;)" methodname="Kickoff" classname="LegacyKickoffPlayModeTests" runstate="Runnable" seed="1465039261" result="Passed" start-time="2026-11-14 10:17:33Z" end-time="2026-11-14 10:17:34Z" duration="0.849778" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Legacy migration key press -> Alpha2
+Legacy migration key press -> Return
+Home confirmed setup (1/2)
+Legacy migration key press -> Return
+Away confirmed setup (2/2)
+Kick-off confirmed! The match begins.
+Movement phase has been reset.
+Match Kicked Off. Awaiting for Attacking Team Press [P] to start the Standard Pass Attempt, and the timer.
+Legacy migration key press -> P
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Legacy migration click -> hex: Hex 37,13 @ (12, 0, -6), token: None
+Legacy migration click -> hex: Hex 36,13 @ (11, 0, -6), token: None
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Legacy migration click -> hex: Hex 35,13 @ (10, 0, -6), token: None
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Saving results to: TestResults\GameplayRegression\Runs\20261114T101732849Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

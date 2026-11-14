@@ -6,16 +6,14 @@ User resumed independent work after the shot-block break (2026-11-14).
 The block extension has 10 focused passes; the preceding shot category has 30.
 Goal/reset and typed kickoff integration is pushed as 4668d13: six focused
 OnlineGoals PlayMode passes, zero failed/skipped, compilation separately clean.
-See OnlineGoals/Verification.md for native evidence. The next general goalkeeper
-batch is prepared but unverified/uncommitted; see OnlineGoalkeeper/Verification.md.
-Unity restored Room after the six passes, then main-thread commands timed out
-while Pipeline discovery stayed reachable. A user dialog check is pending.
-Do not kill/restart Unity, dismiss dialogs through automation or upgrade Pipeline.
-Once the user resolves any dialog, recheck status, scene dirtiness and pending
-tests; recompile, then run category OnlineGoalkeeper (eight prepared cases).
-Rerun fixture LegacyKickoffPlayModeTests (two cases); it never started because
-its preflight editor_status timed out. Both Windows exports still need rebuilding.
-Next: general goalkeeper moves, then First Time Pass,
+See OnlineGoals/Verification.md for native evidence. General goalkeeper free
+moves/stay and deferred pickup/feet now have ten focused PlayMode passes,
+zero failed/skipped; compilation separately clean. Deferred offline kickoff
+checks also passed (two cases). See OnlineGoalkeeper/Verification.md.
+The Editor timeout was the low-disk-space dialog. The user closed it and freed
+space; C: now has approximately 129 GiB free and Unity is ready again.
+Windows export refresh is underway; consult the latest feature verification
+before claiming packaged evidence. Next: First Time Pass,
 dribbling/duels, set pieces and full-match lifecycle.
 Current Windows exports precede the block extension and must rebuild before
 packaged acceptance. Paired/manual sessions remain deferred. Exact Mac commands

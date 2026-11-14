@@ -79,6 +79,7 @@ namespace CounterAttack.Online
             "shot.start"=>"Select shot / snapshot", "shot.confirm"=>"Commit shot", "shot.cancel"=>"Cancel shot preview", "shot.roll"=>"Roll shooter",
             "shot.block"=>"Roll shot block",
             "kickoff.confirm"=>"Confirm kick-off setup",
+            "keeper.stay"=>"Keep goalkeeper in position", "keeper.pickup.hands"=>"Pick up the ball", "keeper.pickup.feet"=>"Keep the ball at feet",
             "final-third.forfeit"=>"Finish this team's Final Third moves", "final-third.drop"=>"Drop the ball and move",
             "final-third.kick"=>"Take goalkeeper kick", "final-third.pass"=>"Take goal kick ground pass",
             _=>action.Replace("long.target:","Preview / confirm long pass to ")
@@ -97,6 +98,7 @@ namespace CounterAttack.Online
                 .Replace("kickoff.player:home:","Arrange Home #").Replace("kickoff.player:away:","Arrange Away #")
                 .Replace("kickoff.taker:home:","Kick off with Home #").Replace("kickoff.taker:away:","Kick off with Away #")
                 .Replace("kickoff.move:","Kick-off setup move to ")
+                .Replace("keeper.move:","Free goalkeeper move to ")
                 .Replace("ground.roll","Interception roll").Replace(':',',')
         };
         public void ExecuteSelectedCommand()

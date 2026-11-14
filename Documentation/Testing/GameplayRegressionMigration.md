@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Online goalkeeper interruptions add ten independently selectable PlayMode
+cases in category `OnlineGoalkeeper`, fixture `OnlineGoalkeeperPlayModeTests`,
+under `Assets/Tests/PlayMode/Features/OnlineGoalkeeper/`. All ten passed,
+zero failed/skipped, in `Runs/20261114T101909890Z/results.xml`; compilation
+separately clean. Deferred offline `LegacyKickoffPlayModeTests` also passed
+two cases in `Runs/20261114T101732849Z/results.xml`. No legacy case was retired
+and no whole suite ran. The earlier Editor block was a low-space dialog,
+resolved manually by the user; subsequent C: free space was about 129 GiB.
+
 Online goals/kickoff add six independently selectable cases in category
 `OnlineGoals`, fixture `OnlineGoalPlayModeTests`, under
 `Assets/Tests/PlayMode/Features/OnlineGoals/`. All six passed (0 failed/skipped)

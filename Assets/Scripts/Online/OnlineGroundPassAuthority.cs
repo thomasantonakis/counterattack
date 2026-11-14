@@ -201,7 +201,8 @@ namespace CounterAttack.Online
                 movementAvailable = match.movementPhaseManager?.isAvailable == true,
                 movementActive = match.movementPhaseManager?.isActivated == true,
                 playerMoving = match.movementPhaseManager?.isPlayerMoving == true
-                    || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true,
+                    || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true
+                    || KeeperRules?.IsResolvingMove == true,
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
@@ -216,6 +217,8 @@ namespace CounterAttack.Online
             else if (match.goalFlowManager?.isActivated == true)
             { state.stage="goal.resolving";state.owner="None";state.awaitingRoll=false;state.awaitingTarget=false; }
             else if (match.kickoffManager?.OnlineActive == true) ReadKickoffDecision(state,actions);
+            else if (KeeperRules?.isActivated == true || KeeperRules?.IsWaitingForPickupChoice == true || KeeperRules?.IsResolvingMove == true)
+                ReadGoalkeeperDecision(state,actions);
             else if (match.longBallManager != null && match.longBallManager.isActivated)
                 ReadLongPassDecision(state, actions, attacking);
             else if(match.highPassManager?.isActivated==true) ReadHighPassDecision(state,actions);

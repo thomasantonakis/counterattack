@@ -13,7 +13,7 @@ case "$mode" in
 esac
 pipeline() { unity command "$@" --project-path "$repo_root" --caller codex --skill unity-cli --format json; }
 unity status --project-path "$repo_root" --format json | jq -e '.success and any(.data.instances[]?; .state == "ready")' >/dev/null
-unity recompile --project-path "$repo_root" --format json | jq -e '.success and .data.compilationFailed == false' >/dev/null
+unity recompile --project-path "$repo_root" --format json | jq -e '.success and (.data.failed != true) and (.data.compilationFailed != true) and ((.data.summary.errors // 0) == 0)' >/dev/null
 ready_deadline=$((SECONDS + 90))
 while :; do
     if editor="$(pipeline editor_status)" && printf '%s\n' "$editor" | jq -e '.success and .data.result.playMode == "stopped" and (.data.result.compiling | not) and (.data.result.domainReloadInProgress | not)' >/dev/null; then break; fi

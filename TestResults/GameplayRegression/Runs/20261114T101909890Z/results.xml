@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:19:09Z" end-time="2026-11-14 10:19:30Z" duration="20.186222">
+  <test-suite type="TestSuite" id="2355" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1113" result="Passed" start-time="2026-11-14 10:19:09Z" end-time="2026-11-14 10:19:30Z" duration="20.186222" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2352" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1113" result="Passed" start-time="2026-11-14 10:19:09Z" end-time="2026-11-14 10:19:30Z" duration="20.154175" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1529" name="OnlineGoalkeeperPlayModeTests" fullname="OnlineGoalkeeperPlayModeTests" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-14 10:19:09Z" end-time="2026-11-14 10:19:30Z" duration="20.144085" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGoalkeeper" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1534" name="BoxEntryOwnsFreeMove" fullname="OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 10:19:10Z" end-time="2026-11-14 10:19:19Z" duration="9.885220" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1530" name="BoxEntryOwnsFreeMove(1,False)" fullname="OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(1,False)" methodname="BoxEntryOwnsFreeMove" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="1396281889" result="Passed" start-time="2026-11-14 10:19:10Z" end-time="2026-11-14 10:19:12Z" duration="2.744945" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (11, 0, 3) -> (11, 0, 4) -> (12, 0, 4) -> (13, 0, 3) -> (13, 0, 4) -> (14, 0, 4)
+Defending GK free box move will be offered when the pass reaches (12, 0, 4).
+Pass enters the box and will offer the defending GK free move before continuing.
+Ball path interactions: 1
+Starting ball path interaction sequence...
+⚽ Ball has entered the opponent's penalty box (1) at (12, 0, 4). 🧤 GK gets a free move.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+Pass successful! No more path interactions to resolve.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (14, 0, 4)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1531" name="BoxEntryOwnsFreeMove(1,True)" fullname="OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(1,True)" methodname="BoxEntryOwnsFreeMove" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="1465151647" result="Passed" start-time="2026-11-14 10:19:12Z" end-time="2026-11-14 10:19:15Z" duration="2.456416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (11, 0, 3) -> (11, 0, 4) -> (12, 0, 4) -> (13, 0, 3) -> (13, 0, 4) -> (14, 0, 4)
+Defending GK free box move will be offered when the pass reaches (12, 0, 4).
+Pass enters the box and will offer the defending GK free move before continuing.
+Ball path interactions: 1
+Starting ball path interaction sequence...
+⚽ Ball has entered the opponent's penalty box (1) at (12, 0, 4). 🧤 GK gets a free move.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 41,18
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+🧤 Away keeper moved to Hex 41,18
+Pass successful! No more path interactions to resolve.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (14, 0, 4)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1532" name="BoxEntryOwnsFreeMove(-1,False)" fullname="OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(-1,False)" methodname="BoxEntryOwnsFreeMove" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="278948597" result="Passed" start-time="2026-11-14 10:19:15Z" end-time="2026-11-14 10:19:17Z" duration="2.244866" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (-11, 0, 3) -> (-11, 0, 4) -> (-12, 0, 4) -> (-13, 0, 3) -> (-13, 0, 4) -> (-14, 0, 4)
+Defending GK free box move will be offered when the pass reaches (-12, 0, 4).
+Pass enters the box and will offer the defending GK free move before continuing.
+Ball path interactions: 1
+Starting ball path interaction sequence...
+⚽ Ball has entered the opponent's penalty box (-1) at (-12, 0, 4). 🧤 GK gets a free move.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+Pass successful! No more path interactions to resolve.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-14, 0, 4)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1533" name="BoxEntryOwnsFreeMove(-1,True)" fullname="OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(-1,True)" methodname="BoxEntryOwnsFreeMove" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="68127656" result="Passed" start-time="2026-11-14 10:19:17Z" end-time="2026-11-14 10:19:19Z" duration="2.404734" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (-11, 0, 3) -> (-11, 0, 4) -> (-12, 0, 4) -> (-13, 0, 3) -> (-13, 0, 4) -> (-14, 0, 4)
+Defending GK free box move will be offered when the pass reaches (-12, 0, 4).
+Pass enters the box and will offer the defending GK free move before continuing.
+Ball path interactions: 1
+Starting ball path interaction sequence...
+⚽ Ball has entered the opponent's penalty box (-1) at (-12, 0, 4). 🧤 GK gets a free move.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 9,18
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+🧤 Away keeper moved to Hex 9,18
+Pass successful! No more path interactions to resolve.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-14, 0, 4)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1541" name="HeadedFeetContinuationOwnsPickup" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-14 10:19:19Z" end-time="2026-11-14 10:19:30Z" duration="10.240234" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1535" name="HeadedFeetContinuationOwnsPickup(1,&quot;hands&quot;)" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(1,&quot;hands&quot;)" methodname="HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="673926445" result="Passed" start-time="2026-11-14 10:19:19Z" end-time="2026-11-14 10:19:21Z" duration="1.864744" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Eligible to head: Home carrier at (-13, 0, 0)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Automatically selected attacker: Home carrier
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+Offside assessment cleared: high_pass_free_header_won.
+Offside assessed (high_pass_free_header_won): line x=8, tokens=none.
+Attackers win the header. Highlighting target hexes.
+Highlighting hexes for header from (-13, 0, 0) with range 6
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Ball moved to (-16, 0, 0)
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home keeper
+Offside assessment cleared: header_pass_completed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+goalkeeper pickup Final Thirds key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Home keeper recovered the ball in their own penalty box. Save and hold scenario.
+]]></output>
+          </test-case>
+          <test-case id="1536" name="HeadedFeetContinuationOwnsPickup(1,&quot;feet&quot;)" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(1,&quot;feet&quot;)" methodname="HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="889518406" result="Passed" start-time="2026-11-14 10:19:21Z" end-time="2026-11-14 10:19:23Z" duration="1.630136" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Eligible to head: Home carrier at (-13, 0, 0)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Automatically selected attacker: Home carrier
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+Offside assessment cleared: high_pass_free_header_won.
+Offside assessed (high_pass_free_header_won): line x=8, tokens=none.
+Attackers win the header. Highlighting target hexes.
+Highlighting hexes for header from (-13, 0, 0) with range 6
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Ball moved to (-16, 0, 0)
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home keeper
+Offside assessment cleared: header_pass_completed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+goalkeeper pickup Final Thirds key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1537" name="HeadedFeetContinuationOwnsPickup(1,&quot;interrupt&quot;)" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(1,&quot;interrupt&quot;)" methodname="HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="1389059790" result="Passed" start-time="2026-11-14 10:19:23Z" end-time="2026-11-14 10:19:25Z" duration="1.650031" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Eligible to head: Home carrier at (-13, 0, 0)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Automatically selected attacker: Home carrier
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+Offside assessment cleared: high_pass_free_header_won.
+Offside assessed (high_pass_free_header_won): line x=8, tokens=none.
+Attackers win the header. Highlighting target hexes.
+Highlighting hexes for header from (-13, 0, 0) with range 6
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Ball moved to (-16, 0, 0)
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home keeper
+Offside assessment cleared: header_pass_completed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+goalkeeper pickup Final Thirds key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="1538" name="HeadedFeetContinuationOwnsPickup(-1,&quot;hands&quot;)" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(-1,&quot;hands&quot;)" methodname="HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="249549556" result="Passed" start-time="2026-11-14 10:19:25Z" end-time="2026-11-14 10:19:26Z" duration="1.805046" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Eligible to head: Home carrier at (13, 0, 0)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Automatically selected attacker: Home carrier
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+Offside assessment cleared: high_pass_free_header_won.
+Offside assessed (high_pass_free_header_won): line x=-8, tokens=none.
+Attackers win the header. Highlighting target hexes.
+Highlighting hexes for header from (13, 0, 0) with range 6
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Ball moved to (16, 0, 0)
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home keeper
+Offside assessment cleared: header_pass_completed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+goalkeeper pickup Final Thirds key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Home keeper recovered the ball in their own penalty box. Save and hold scenario.
+]]></output>
+          </test-case>
+          <test-case id="1539" name="HeadedFeetContinuationOwnsPickup(-1,&quot;feet&quot;)" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(-1,&quot;feet&quot;)" methodname="HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="436361242" result="Passed" start-time="2026-11-14 10:19:26Z" end-time="2026-11-14 10:19:28Z" duration="1.652125" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Eligible to head: Home carrier at (13, 0, 0)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Automatically selected attacker: Home carrier
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+Offside assessment cleared: high_pass_free_header_won.
+Offside assessed (high_pass_free_header_won): line x=-8, tokens=none.
+Attackers win the header. Highlighting target hexes.
+Highlighting hexes for header from (13, 0, 0) with range 6
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Ball moved to (16, 0, 0)
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home keeper
+Offside assessment cleared: header_pass_completed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+goalkeeper pickup Final Thirds key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1540" name="HeadedFeetContinuationOwnsPickup(-1,&quot;interrupt&quot;)" fullname="OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(-1,&quot;interrupt&quot;)" methodname="HeadedFeetContinuationOwnsPickup" classname="OnlineGoalkeeperPlayModeTests" runstate="Runnable" seed="1025309564" result="Passed" start-time="2026-11-14 10:19:28Z" end-time="2026-11-14 10:19:30Z" duration="1.621115" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Eligible to head: Home carrier at (13, 0, 0)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+Automatically selected attacker: Home carrier
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+Offside assessment cleared: high_pass_free_header_won.
+Offside assessed (high_pass_free_header_won): line x=-8, tokens=none.
+Attackers win the header. Highlighting target hexes.
+Highlighting hexes for header from (13, 0, 0) with range 6
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Ball moved to (16, 0, 0)
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home keeper
+Offside assessment cleared: header_pass_completed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+No movable tokens for attack. Skipping...
+goalkeeper pickup Final Thirds key press -> Return
+Forfeiting Current F3 Moves.
+Forfeit detected during F3 movement. Exiting movement phase.
+defense Final Third Movement Phase Done.
+Final Third Phase Completed. Resuming gameplay.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Saving results to: TestResults\GameplayRegression\Runs\20261114T101909890Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

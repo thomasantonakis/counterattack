@@ -81,7 +81,11 @@ both directions and overlapping holds. Existing presentation frames stream
 goal/player reset and ball return; normal commands stay unavailable throughout.
 Home then Away confirmation serializes setup ownership. See OnlineGoals
 verification for evidence and remaining setup swap/full-match boundaries.
-General keeper moves and other restart outcomes remain next.
+General goalkeeper free move/stay and deferred pickup/feet now have ten focused
+passing cases, including pass continuation, real headed-feet eligibility,
+ownership, interruption and holds. Existing status text displays published
+team goals. See OnlineGoalkeeper verification. First Time Pass and the remaining
+duel/restart families are next.
 
 ## Ordered implementation batches
 

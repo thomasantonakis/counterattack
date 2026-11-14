@@ -83,6 +83,7 @@ namespace CounterAttack.Online
             }
             if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * 1.2f;
             if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
+                + " | Score " + (state.homeStats?.totalGoals ?? 0) + " - " + (state.awayStats?.totalGoals ?? 0)
                 + "\nState " + state.publicationSequence + " | Rolls " + state.rollSequence
                 + " | Clock " + state.regulationSeconds.ToString("F1")
                 + (state.connectionHeld ? "\nConnection interrupted - waiting for player" : state.isSharedPaused ? "\nPaused by " + state.pauseRequester : "")
