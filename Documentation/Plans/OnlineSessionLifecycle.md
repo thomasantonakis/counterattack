@@ -45,3 +45,11 @@ stays deferred. Each new test/parameter case needs an explicit Mac manifest row.
 Focused feature fixtures must exercise actual source entry points and scene
 wiring where needed. Keep native evidence; do not claim complete internet play
 from isolated protocol, local login/build or six-token Room proofs.
+
+Setup agreement/capture slice: 44 distinct EditMode passes plus 27 affected
+protocol passes, compilation separately clean. See OnlineSetupAgreement/Verification.md.
+Team-owned names/kits, shared configuration, both ready, edit/rebind invalidation
+and host start are implemented. The existing Create New Game button can bind
+confirmation to its session; unbound online guests cannot save/load Draft locally.
+Actual lobby UI/transport, session persistence, Draft and Room menu integration
+remain next. Do not claim the frontend is connected yet. All Mac cases registered.

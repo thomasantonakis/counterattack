@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+public partial class CreateNewGameManager
+{
+    private Action<GameSettings> onlineSetupConfirmation;
+    public void BindOnlineSetupConfirmation(Action<GameSettings> submit)
+        =>onlineSetupConfirmation=submit??throw new ArgumentNullException(nameof(submit));
+    public void UnbindOnlineSetupConfirmation()=>onlineSetupConfirmation=null;
+    private bool RouteOnlineSetupConfirmation()
+    {
+        if(onlineSetupConfirmation==null)return false;
+        if(TryCaptureOnlineSetupSettings(out var settings,out var error))onlineSetupConfirmation(settings);
+        else Debug.LogWarning("Online setup confirmation blocked: "+error);
+        return true;
+    }
+    // Snapshot only: no save paths, scene changes or guest referee randomization.
+    public bool TryCaptureOnlineSetupSettings(out GameSettings settings,out string error)
+    {
+        settings=null;
+        if(!TryGetValidatedTeamNames(out var home,out var away,out error))return false;
+        error=GetKitValidationMessage(TokenKitCatalog.GetSimilarityBreakdown(GetSelectedKitPresetId(homeKitDropdown),GetSelectedKitPresetId(awayKitDropdown)));
+        if(!string.IsNullOrEmpty(error))return false;
+        settings=CaptureSettingsFromUi(home,away,false);return true;
+    }
+    private GameSettings CaptureSettingsFromUi(string homeTeamName,string awayTeamName,bool resolveRandomReferee)
+    {
+        // Create a GameSettings object and populate it from the UI input fields
+        GameSettings settings = new GameSettings();
+        settings.gameMode = GetSelectedGameModeForSettings();
+        settings.halfDuration = (int)halfDurationSlider.value;
+        settings.numberOfHalfs = int.Parse(numberOfHalvesDropdown.options[numberOfHalvesDropdown.value].text);
+        RefreshTiebreakerOptions();
+        settings.tiebreaker = tiebreakerDropdown.options[tiebreakerDropdown.value].text;
+        settings.matchType = matchTypeDropdown.options[matchTypeDropdown.value].text;
+        settings.squadSize = squadSizeDropdown.options[squadSizeDropdown.value].text;
+        settings.draft = draftDropdown.options[draftDropdown.value].text;
+        settings.gkDraft = gkDraftDropdown.options[gkDraftDropdown.value].text;
+        string selectedReferee = refereeDropdown.options[refereeDropdown.value].text;
+        // Check if the selected referee is "Random"
+        if (selectedReferee == "Random" && resolveRandomReferee)
+        {
+            // Create a list of referees excluding "Random"
+            List<string> nonRandomReferees = new List<string> { "Webster - 2", "Castolo - 3", "Bakker - 4", "Read - 5" };
+            // Randomly select one of the non-random referees
+            System.Random rng = new System.Random();
+            selectedReferee = nonRandomReferees[rng.Next(nonRandomReferees.Count)];
+            Debug.Log($"Random referee chosen: {selectedReferee}");
+        }
+        settings.referee = selectedReferee;
+        settings.playerAssistance = GetSelectedPlayerAssistanceValue();
+        settings.aiDifficulty = aiDifficultyDropdown != null && aiDifficultyDropdown.options.Count > 0
+            ? aiDifficultyDropdown.options[aiDifficultyDropdown.value].text
+            : AIDifficultyUltraHardLabel;
+        settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
+        settings.fixtureLighting = FixtureLightingOptions.FromIndex(fixtureLightingDropdown != null ? fixtureLightingDropdown.value : 0);
+        settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
+        settings.homeTeamName = homeTeamName;
+        settings.awayTeamName = awayTeamName;
+        RefreshTeamControlValidity(null);
+        bool homeCpuControlled = IsSinglePlayerCreateMode() && IsCpuControlled(homeTeamControlDropdown);
+        bool awayCpuControlled = IsSinglePlayerCreateMode() && IsCpuControlled(awayTeamControlDropdown);
+        settings.homeTeamControl = IsSinglePlayerCreateMode() ? GetTeamControlText(homeTeamControlDropdown) : TeamControlHumanLabel;
+        settings.awayTeamControl = IsSinglePlayerCreateMode() ? GetTeamControlText(awayTeamControlDropdown) : TeamControlHumanLabel;
+        bool usesRegularDraft = string.Equals(settings.draft, "Regular", StringComparison.OrdinalIgnoreCase);
+        settings.homeDraftPersona = ShouldApplyCpuDraftPersona(homeCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
+        settings.awayDraftPersona = ShouldApplyCpuDraftPersona(awayCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
+        settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
+        settings.homeRoomPersona = IsSinglePlayerCreateMode() ? ResolveRoomPersonaFromTeamControl(homeTeamControlDropdown) : RoomPersonaAskHuman;
+        settings.awayRoomPersona = IsSinglePlayerCreateMode() ? ResolveRoomPersonaFromTeamControl(awayTeamControlDropdown) : RoomPersonaAskHuman;
+        settings.defaultRoomPersona = homeCpuControlled && awayCpuControlled
+            ? RoomPersonaCodexTacticianUltraHard
+            : RoomPersonaAskHuman;
+        settings.includeTabletopia = includeTabletopiaToggle.isOn;
+        settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
+        settings.includeInternationals = includeInternationalsToggle.isOn;
+        settings.includeTabletopiaGK = includeTabletopiaGKToggle.isOn;
+        settings.includeNonTabletopiaGK = includeNonTabletopiaGKToggle.isOn;
+        settings.includeInternationalsGK = includeInternationalsGKToggle.isOn;
+        TokenKitPreset selectedHomeKit = GetSelectedKitPreset(homeKitDropdown);
+        TokenKitPreset selectedAwayKit = GetSelectedKitPreset(awayKitDropdown);
+        TokenKitPreset selectedHomeGKKit = GetSelectedKitPreset(homeGKKitDropdown);
+        TokenKitPreset selectedAwayGKKit = GetSelectedKitPreset(awayGKKitDropdown);
+        settings.homeKit = selectedHomeKit?.DisplayName ?? GetSelectedKitPresetId(homeKitDropdown);
+        settings.awayKit = selectedAwayKit?.DisplayName ?? GetSelectedKitPresetId(awayKitDropdown);
+        settings.homeGKKit = selectedHomeGKKit?.DisplayName ?? GetSelectedKitPresetId(homeGKKitDropdown);
+        settings.awayGKKit = selectedAwayGKKit?.DisplayName ?? GetSelectedKitPresetId(awayGKKitDropdown);
+        Debug.Log($"[CreateNewGameManager] Selected kits: Home '{settings.homeKit}' (id '{selectedHomeKit?.Id ?? string.Empty}'), Away '{settings.awayKit}' (id '{selectedAwayKit?.Id ?? string.Empty}'), Home GK '{settings.homeGKKit}' (id '{selectedHomeGKKit?.Id ?? string.Empty}'), Away GK '{settings.awayGKKit}' (id '{selectedAwayGKKit?.Id ?? string.Empty}').");
+
+        return settings;
+    }
+}

@@ -101,6 +101,8 @@ namespace CounterAttack.Online
         public string HostAccountId { get; }
         public OnlineCompatibility Compatibility { get; }
         public long Revision { get; private set; }
+        public long ConnectionRevision { get; private set; }
+        public OnlineTeam HostTeam => accounts[HostAccountId].Team;
         public bool HasPendingDecision => decisionId != null;
         public bool BothConnected
         {
@@ -138,6 +140,7 @@ namespace CounterAttack.Online
             RetireConnection(participant);
             participant.Connection = connectionId;
             connections.Add(connectionId, participant);
+            ConnectionRevision=checked(ConnectionRevision+1);
             return true;
         }
 
@@ -236,6 +239,7 @@ namespace CounterAttack.Online
             connections.Remove(participant.Connection);
             retiredConnections.Add(participant.Connection);
             participant.Connection = null;
+            ConnectionRevision=checked(ConnectionRevision+1);
         }
     }
 

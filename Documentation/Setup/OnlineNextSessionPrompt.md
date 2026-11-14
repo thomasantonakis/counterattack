@@ -387,3 +387,11 @@ New user priority: complete Create New Game guest joining/team names/jerseys/bot
 ready, Draft owned rolls/picks/slot moves/start, and Room pause/settings,
 substitutions and shootout ordering. See OnlineSessionLifecycle.md. Paired Mac
 execution remains deferred; each new case still requires its own manifest row.
+
+Setup agreement/capture slice: 44 distinct EditMode passes plus 27 affected
+protocol passes, compilation separately clean. See OnlineSetupAgreement/Verification.md.
+Team-owned names/kits, shared configuration, both ready, edit/rebind invalidation
+and host start are implemented. The existing Create New Game button can bind
+confirmation to its session; unbound online guests cannot save/load Draft locally.
+Actual lobby UI/transport, session persistence, Draft and Room menu integration
+remain next. Do not claim the frontend is connected yet. All Mac cases registered.

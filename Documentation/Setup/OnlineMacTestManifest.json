@@ -154,6 +154,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "categories": [
+        "OnlineSetupAgreement"
+      ],
+      "definition_sha256": "12d30ac6a9226106cda6028b407869e293defafc54d0c62894cf51a1e1d79db8",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSetupAgreement/OnlineSetupAgreementEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineSharedPauseEditorTests",
       "categories": [
         "OnlineSharedPause"
@@ -2291,6 +2301,602 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T224255780Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"start\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "start"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"one-ready\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "one-ready"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"team-edit\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "team-edit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"settings-edit\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "settings-edit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"unready\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "unready"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"duplicate\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "duplicate"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"conflict\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "conflict"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"snapshot\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "snapshot"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"rebind\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "rebind"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"disconnect\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "disconnect"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"guest-settings\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "guest-settings"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(False,\"bad-payload\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        false,
+        "bad-payload"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"start\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "start"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"one-ready\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "one-ready"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"team-edit\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "team-edit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"settings-edit\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "settings-edit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"unready\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "unready"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"duplicate\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "duplicate"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"conflict\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "conflict"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"snapshot\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "snapshot"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"rebind\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "rebind"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"disconnect\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "disconnect"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"guest-settings\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "guest-settings"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.Agreement(True,\"bad-payload\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "Agreement",
+      "parameters": [
+        true,
+        "bad-payload"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"unknown\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "unknown"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"wrong-match\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "wrong-match"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"stale\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "stale"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"bad-kit\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "bad-kit"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"same-name\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "same-name"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"long-name\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "long-name"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsBoundary(\"frozen\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsBoundary",
+      "parameters": [
+        "frozen"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"duration\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "duration"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"halves\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "halves"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"assistance\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "assistance"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"extra-time\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "extra-time"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"pool\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "pool"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"snow\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "snow"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"draft\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "draft"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.RejectsInvalidSharedSetting(\"referee\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "RejectsInvalidSharedSetting",
+      "parameters": [
+        "referee"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225451692Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"capture\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "AuthoredCreateGameSnapshot",
+      "parameters": [
+        "capture"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225819650Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"blank\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "AuthoredCreateGameSnapshot",
+      "parameters": [
+        "blank"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225819650Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"same-name\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "AuthoredCreateGameSnapshot",
+      "parameters": [
+        "same-name"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225819650Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"bound-confirm\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "AuthoredCreateGameSnapshot",
+      "parameters": [
+        "bound-confirm"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225819650Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupAgreementEditorTests.AuthoredCreateGameSnapshot(\"guest-unbound\")",
+      "feature": "OnlineSetupAgreement",
+      "mode": "editor",
+      "fixture": "OnlineSetupAgreementEditorTests",
+      "method": "AuthoredCreateGameSnapshot",
+      "parameters": [
+        "guest-unbound"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T225819650Z/results.xml"
     }
   ]
 }
