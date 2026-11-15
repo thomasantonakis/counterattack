@@ -407,3 +407,13 @@ inventory records which originals have actually passed before retirement.
 Review [MorningReview.md](MorningReview.md) for expectation drift decisions and any
 unresolved rules questions. These tests currently target Unity Editor EditMode/PlayMode,
 not standalone player test builds.
+
+## Online Draft focused filters
+
+Regular Draft: EditMode `OnlineDraftAuthorityEditorTests` (40) and
+`OnlineDraftChannelEditorTests` (16); PlayMode `OnlineDraftScenePlayModeTests` (20).
+Variants: EditMode `OnlineDraftVariantEditorTests` (38),
+`OnlineDraftCatalogEditorTests` (2); PlayMode
+`OnlineDraftVariantScenePlayModeTests` (10). Use explicit fixture/testName filters,
+not whole suites. Each folder's Verification.md records native run evidence and
+remaining boundaries. Mac/paired execution remains explicitly deferred.

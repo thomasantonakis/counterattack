@@ -18,11 +18,15 @@ namespace CounterAttack.Online
         public PlayerSlotDropHandler[] homeSlots,awaySlots;
         public PlayerCard[] cards;
         public Button actionButton,leaveButton;
+        public Button previousPageButton,nextPageButton;
         private OnlineDraftClient client;
         private OnlineFrontendSession session;
         private bool online;
         private string selected;
         private int selectedSlot;
+        private int page;
+        private string poolSelection;
+        private Dictionary<string,OnlineDraftCard> localCatalog;
         public OnlineDraftClient Client=>client;
         private void Awake()
         {
@@ -41,6 +45,8 @@ namespace CounterAttack.Online
         {
             if(!online)return;
             actionButton.onClick.AddListener(Act);leaveButton.onClick.AddListener(Leave);
+            if(previousPageButton!=null)previousPageButton.onClick.AddListener(()=>ChangePage(-1));
+            if(nextPageButton!=null)nextPageButton.onClick.AddListener(()=>ChangePage(1));
             session=OnlineFrontendSession.Current;
             if(session!=null){session.DraftAvailable+=Configure;if(session.Draft!=null)Configure(session.Draft);}
             Render();
@@ -52,8 +58,18 @@ namespace CounterAttack.Online
         }
         public void SelectCard(int index)
         {
-            var s=client?.Capture();if(s?.phase!="pick" || !client.Connected || client.Pending || s.turn!=client.Team || index<0 || index>=s.cards.Length)return;
-            selected=s.cards[index].id;selectedSlot=0;Render();
+            var s=client?.Capture();if(s?.phase!="pick" || !client.Connected || client.Pending || !s.repeatable && s.turn!=client.Team)return;
+            var displayed=DisplayedCards(s);if(index<0 || index>=displayed.Length)return;
+            selected=displayed[index].id;selectedSlot=0;Render();
+        }
+        public void ChangePage(int delta){page=Mathf.Max(0,page+delta);selected=null;Render();}
+        private OnlineDraftCard[] DisplayedCards(OnlineDraftState s)
+        {
+            if(!s.freeSelection)return s.cards;
+            if(s.phase!="pick")return Array.Empty<OnlineDraftCard>();
+            localCatalog??=OnlineDraftCatalog.Load().ToDictionary(c=>c.id);
+            page=Mathf.Clamp(page,0,Mathf.Max(0,(s.available.Length-1)/4));
+            return s.available.Skip(page*4).Take(4).Where(localCatalog.ContainsKey).Select(id=>localCatalog[id]).ToArray();
         }
         public void SelectSlot(OnlineTeam team,int slot)
         {
@@ -90,6 +106,7 @@ namespace CounterAttack.Online
             var s=client?.Capture();
             actionButton.interactable=false;
             if(s==null){sourceUi.draftTurnText.text="Connecting to Draft...";sourceUi.draftMetaText.text="Waiting for the shared draft state.";return;}
+            if(poolSelection!=s.selection){poolSelection=s.selection;page=0;selected=null;selectedSlot=0;}
             source.currentSettings=OnlineSetupRules.Copy(s.settings);
             source.homeTeamName.text=s.settings.homeTeamName;source.awayTeamName.text=s.settings.awayTeamName;source.refereeText.text=s.settings.referee;
             void Roster(PlayerSlotDropHandler[] slots,OnlineDraftCard[] roster)
@@ -102,8 +119,11 @@ namespace CounterAttack.Online
                 }
             }
             Roster(homeSlots,s.home);Roster(awaySlots,s.away);
+            var displayedCards=DisplayedCards(s);
             for(int i=0;i<cards.Length;i++)
-            {cards[i].gameObject.SetActive(i<s.cards.Length);if(i<s.cards.Length)cards[i].UpdatePlayerCard(Player(s.cards[i]));}
+            {cards[i].gameObject.SetActive(i<displayedCards.Length);if(i<displayedCards.Length){cards[i].UpdatePlayerCard(Player(displayedCards[i]));if(displayedCards[i].goalkeeper)cards[i].playerNameText.text="GK · "+displayedCards[i].name;}}
+            if(previousPageButton!=null){previousPageButton.gameObject.SetActive(s.freeSelection && s.phase=="pick");previousPageButton.interactable=page>0;}
+            if(nextPageButton!=null){nextPageButton.gameObject.SetActive(s.freeSelection && s.phase=="pick");nextPageButton.interactable=(page+1)*4<s.available.Length;}
             var dice=source.draftOrderPanel;
             if(dice!=null)
             {
@@ -119,8 +139,8 @@ namespace CounterAttack.Online
                 }
             }
             string team=s.turn==OnlineTeam.Home?s.settings.homeTeamName:s.settings.awayTeamName;
-            sourceUi.draftTurnText.text=s.phase=="roll"?team+" rolls":s.phase=="pick"?team+" picks":"Draft complete";
-            sourceUi.draftBatchText.text="Batch "+s.batch+" / "+s.totalBatches+" · Home roll "+s.homeRoll+" · Away roll "+s.awayRoll;
+            sourceUi.draftTurnText.text=s.phase=="roll"?team+" rolls":s.phase=="pick"?s.repeatable?"Choose your "+s.selection:team+" picks":"Draft complete";
+            sourceUi.draftBatchText.text=s.freeSelection? s.selection+" · Page "+(page+1)+" / "+Mathf.Max(1,(s.available.Length+3)/4):"Batch "+s.batch+" / "+s.totalBatches+" · Home roll "+s.homeRoll+" · Away roll "+s.awayRoll;
             bool localReady=client.Team==OnlineTeam.Home?s.homeReady:s.awayReady;
             string label=s.phase=="roll"?"Roll":client.IsHost && s.homeReady && s.awayReady?"Start match":localReady?"Waiting for other manager":"Confirm roster";
             actionButton.GetComponentInChildren<TMP_Text>(true).text=label;
@@ -130,8 +150,8 @@ namespace CounterAttack.Online
                 :s.phase=="pick"?"Select a card, then your preferred slot. Select two own slots to swap.":s.phase=="review"?"Review your roster and confirm. Changes clear both confirmations.":"Each manager rolls for their own team.";
         }
         private static Dictionary<string,string> Fields(OnlineDraftCard c)=>new()
-        {{"Name",c.name},{"Nationality",c.country},{"Type",c.type},{"sqno",c.squadNumber.ToString()},{"Pace",c.pace.ToString()},{"Dribbling",c.dribbling.ToString()},{"Heading",c.heading.ToString()},
-            {"HighPass",c.highPass.ToString()},{"Resilience",c.resilience.ToString()},{"Shooting",c.shooting.ToString()},{"Tackling",c.tackling.ToString()},{"Aerial",c.aerial.ToString()},{"Saving",c.saving.ToString()},{"Handling",c.handling.ToString()}};
+        {{"Name",c.name},{"Nationality",c.country},{"Type",c.type},{"sqno",c.squadNumber.ToString()},{"Pace",c.pace.ToString()},{"Dribbling",c.dribbling.ToString()},{"Heading",(c.goalkeeper?c.aerial:c.heading).ToString()},
+            {"HighPass",c.highPass.ToString()},{"Resilience",c.resilience.ToString()},{"Shooting",(c.goalkeeper?c.saving:c.shooting).ToString()},{"Tackling",(c.goalkeeper?c.handling:c.tackling).ToString()},{"Aerial",c.aerial.ToString()},{"Saving",c.saving.ToString()},{"Handling",c.handling.ToString()}};
         private static Player Player(OnlineDraftCard c)=>new(Fields(c));
         private static Goalkeeper Goalkeeper(OnlineDraftCard c)=>new(Fields(c));
         private void OnDestroy(){if(client!=null)client.Changed-=Render;if(session!=null)session.DraftAvailable-=Configure;}

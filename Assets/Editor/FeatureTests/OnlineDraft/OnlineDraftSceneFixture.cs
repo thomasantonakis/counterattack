@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public sealed class OnlineDraftSceneFixture
+public sealed partial class OnlineDraftSceneFixture
 {
     private OnlineSetupHostChannel host;
     private OnlineSetupGuestChannel guest;

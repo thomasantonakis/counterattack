@@ -487,3 +487,12 @@ Mac. See OnlineDraft/Verification.md. Frontend rules version is now v2.
 Next: Free/international variants, opening coin toss, full Room roster/save-free
 handoff and menus/substitutions/shootouts. Regular Draft currently ends at agreed
 room-ready state; no full match start is claimed. Exports predate this slice.
+
+Online Draft variants now support all nine Regular/Free Regular/Arcade and
+Deal/Free/Arcade combinations, plus international prefilled rosters, in the normal
+authored Draft scene. 50 new cases passed (38 mode/national,10 actual UI including
+full mixed drafts,2 comparisons with legacy CSV loaders); affected regular40,
+transport16 and scene20 also passed. Compilation separately clean. Mac manifest
+has separate entries and refreshed hashes. See OnlineDraftVariants/Verification.md.
+Frontend rules v3. Next opening coin toss, full Room initialization/roster and
+normal menus; online Arcade returns remain outstanding. Exports predate Draft.

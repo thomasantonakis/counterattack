@@ -105,7 +105,7 @@ namespace CounterAttack.Online
                 var protocol=new OnlineMatchProtocol(match,remote.ToString(),session.UserId.ToString(),session.UserId.ToString(),compatibility);
                 protocol.BindAuthenticatedAccount(session.UserId.ToString(),"frontend-host",compatibility);
                 var hostChannel=new OnlineSetupHostChannel(protocol,"frontend-host",remote.ToString(),initial,()=>Time.realtimeSinceStartupAsDouble);
-                hostChannel.EnableDraft(s=>s.matchType=="Regular" && s.draft=="Regular" && s.gkDraft=="Deal"?new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load()):null);
+                hostChannel.EnableDraft(s=>new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load()));
                 channel=hostChannel;
             }
             else channel=new OnlineSetupGuestChannel(match,remote.ToString(),compatibility,OnlineTeam.Away,()=>Time.realtimeSinceStartupAsDouble);

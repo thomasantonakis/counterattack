@@ -34,6 +34,26 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineDraftCatalogEditorTests",
+      "categories": [
+        "OnlineDraftCatalog"
+      ],
+      "definition_sha256": "b06f36f087de6ceba66425f2f1a0c0251ae544a3d08657db38e879fc78cd46f9",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineDraftVariants/OnlineDraftCatalogEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "categories": [
+        "OnlineDraftVariants"
+      ],
+      "definition_sha256": "299eb7f4d46524ada54928ca04669495a2633281ae6973c00d3164a7e0feb3c7",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineDraftVariants/OnlineDraftVariantEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "EOSConnectLoginEditorTests",
       "categories": [
         "OnlineEOSConnectivity"
@@ -291,6 +311,16 @@
       "definition_sha256": "2ecc97ede43957f07187e813dece4e0522453cdaac3849cc2a7d083bd34256eb",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineDraft/OnlineDraftScenePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "categories": [
+        "OnlineDraftVariantScene"
+      ],
+      "definition_sha256": "445d87e32e9f3a107f1ff2066786ebf5ac6d588a678a54c2ae4250e9d253fe03",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineDraftVariants/OnlineDraftVariantScenePlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -5892,6 +5922,656 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Free Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Free Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Free Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Arcade\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Arcade\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,16,\"Arcade\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Free Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Free Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Free Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Arcade\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Arcade\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "False,18,\"Arcade\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Free Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Free Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Free Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Arcade\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Arcade\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,16,\"Arcade\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Free Regular\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Free Regular\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Free Regular\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Deal\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Arcade\",\"Deal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Free\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Arcade\",\"Free\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Arcade\")",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "AllRegularModeCombinations",
+      "parameters": [
+        "True,18,\"Arcade\",\"Arcade\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "InternationalRostersUseRealNationalCards",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftVariantEditorTests",
+      "method": "InternationalRostersUseRealNationalCards",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"Free Regular\",False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"Free Regular\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"Free Regular\",True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"Free Regular\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"Arcade\",False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"Arcade\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"Arcade\",True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"Arcade\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"FreeGK\",False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"FreeGK\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"FreeGK\",True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"FreeGK\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"International\",False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"International\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"International\",True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"International\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061953536Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftCatalogEditorTests.CatalogAgreesWithExistingLoader(False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftCatalogEditorTests",
+      "method": "CatalogAgreesWithExistingLoader",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T062152557Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftCatalogEditorTests.CatalogAgreesWithExistingLoader(True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "editor",
+      "fixture": "OnlineDraftCatalogEditorTests",
+      "method": "CatalogAgreesWithExistingLoader",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T062152557Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"FullMixed\",False)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"FullMixed\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T062212546Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"FullMixed\",True)",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "AuthoredPoolSelection",
+      "parameters": [
+        "\"FullMixed\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T062212546Z/results.xml"
     }
   ]
 }

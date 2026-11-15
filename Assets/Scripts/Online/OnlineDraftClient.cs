@@ -28,7 +28,9 @@ namespace CounterAttack.Online
                 || !new[]{"roll","pick","review","room-ready"}.Contains(s.phase) || !string.IsNullOrEmpty(OnlineSetupRules.Validate(s.settings)))return false;
             if(!int.TryParse(s.settings.squadSize,out int size) || s.home?.Length!=size || s.away?.Length!=size || s.cards==null)return false;
             var all=s.home.Concat(s.away).Concat(s.cards).Where(c=>c!=null).ToArray();
-            if(all.Any(c=>!OnlineProtocolIds.IsValid(c.id) || string.IsNullOrWhiteSpace(c.name)) || all.Select(c=>c.id).Distinct().Count()!=all.Length)return false;
+            if(all.Any(c=>!OnlineProtocolIds.IsValid(c.id) || string.IsNullOrWhiteSpace(c.name)))return false;
+            if(all.GroupBy(c=>c.id).Any(g=>g.Count()>1 && (g.First().goalkeeper?s.settings.gkDraft!="Arcade":s.settings.draft!="Arcade")))return false;
+            if(s.available==null || s.available.Any(id=>!OnlineProtocolIds.IsValid(id)) || s.available.Distinct().Count()!=s.available.Length)return false;
             foreach(var roster in new[]{s.home,s.away})for(int i=0;i<roster.Length;i++)if(roster[i]!=null && roster[i].goalkeeper!=(i is 0 or 11))return false;
             if(s.homeRoll is <0 or >6 || s.awayRoll is <0 or >6 || s.rollRound<1 || s.batch<0 || s.cards.Length>4)return false;
             return state==null || s.revision>state.revision || s.revision==state.revision && JsonConvert.SerializeObject(s)==JsonConvert.SerializeObject(state);

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.1316599">
+  <test-suite type="TestSuite" id="2843" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1557" result="Passed" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.131660" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2837" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1557" result="Passed" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.101825" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1690" name="OnlineDraftCatalogEditorTests" fullname="OnlineDraftCatalogEditorTests" classname="OnlineDraftCatalogEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.098199" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineDraftCatalog" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1693" name="CatalogAgreesWithExistingLoader" fullname="OnlineDraftCatalogEditorTests.CatalogAgreesWithExistingLoader" classname="OnlineDraftCatalogEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.071377" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1691" name="CatalogAgreesWithExistingLoader(False)" fullname="OnlineDraftCatalogEditorTests.CatalogAgreesWithExistingLoader(False)" methodname="CatalogAgreesWithExistingLoader" classname="OnlineDraftCatalogEditorTests" runstate="Runnable" seed="1076383736" result="Passed" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.045017" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Total players in allPlayers: 469
+]]></output>
+          </test-case>
+          <test-case id="1692" name="CatalogAgreesWithExistingLoader(True)" fullname="OnlineDraftCatalogEditorTests.CatalogAgreesWithExistingLoader(True)" methodname="CatalogAgreesWithExistingLoader" classname="OnlineDraftCatalogEditorTests" runstate="Runnable" seed="376065130" result="Passed" start-time="2026-11-15 06:21:52Z" end-time="2026-11-15 06:21:52Z" duration="0.008192" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T062152557Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

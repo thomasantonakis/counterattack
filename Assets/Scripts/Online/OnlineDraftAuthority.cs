@@ -20,9 +20,10 @@ namespace CounterAttack.Online
     }
     [Serializable] public sealed class OnlineDraftState
     {
-        public string matchId,phase;public long revision,connectionRevision,homeSequence,awaySequence;
+        public string matchId,phase,selection;public long revision,connectionRevision,homeSequence,awaySequence;
         public OnlineTeam turn,hostTeam,firstPicker;public bool connected,homeReady,awayReady;
         public int homeRoll,awayRoll,rollRound,batch,totalBatches;
+        public bool freeSelection,repeatable;public string[] available;
         public GameSettings settings;
         public OnlineDraftCard[] cards,home,away;
     }
@@ -53,7 +54,7 @@ namespace CounterAttack.Online
     }
     // Host-only rules/state. Random sources are injected by the host; commands
     // contain neither random outcomes nor client-supplied player attributes.
-    public sealed class OnlineDraftAuthority
+    public sealed partial class OnlineDraftAuthority
     {
         private readonly OnlineMatchProtocol protocol;
         private readonly Func<int> die;
@@ -72,21 +73,25 @@ namespace CounterAttack.Online
             this.protocol=protocol??throw new ArgumentNullException(nameof(protocol));
             settings=OnlineSetupRules.Normalize(agreed);string error=OnlineSetupRules.Validate(settings);
             if(!string.IsNullOrEmpty(error))throw new ArgumentException(error,nameof(agreed));
-            if(settings.matchType!="Regular" || settings.draft!="Regular" || settings.gkDraft!="Deal")throw new NotSupportedException("This draft authority currently requires Regular draft with dealt goalkeepers");
             var all=Copy(catalog??throw new ArgumentNullException(nameof(catalog)));
             if(all.Any(c=>c==null || string.IsNullOrEmpty(c.id)) || all.Select(c=>c.id).Distinct().Count()!=all.Length)throw new ArgumentException("Draft cards require unique IDs");
             int size=int.Parse(settings.squadSize);home=new OnlineDraftCard[size];away=new OnlineDraftCard[size];
             die=roll??(()=>UnityEngine.Random.Range(1,7));nextIndex??=max=>UnityEngine.Random.Range(0,max);
             var players=all.Where(c=>!c.goalkeeper && Allowed(c,false)).ToList();var keepers=all.Where(c=>c.goalkeeper && Allowed(c,true)).ToList();
-            if(players.Count<(size-2)*2 || keepers.Count<4)throw new ArgumentException("Selected pools do not contain enough players");
+            if(settings.matchType=="International"){InitializeInternational(all);connections=protocol.ConnectionRevision;return;}
+            if(players.Count<(settings.draft=="Arcade"?1:(size-2)*2) || keepers.Count<(settings.gkDraft=="Arcade"?1:4))throw new ArgumentException("Selected pools do not contain enough players");
             void Shuffle(List<OnlineDraftCard> cards)
             {for(int i=0;i<cards.Count;i++){int offset=nextIndex(cards.Count-i);if(offset<0 || offset>=cards.Count-i)throw new InvalidOperationException("Invalid host shuffle result");int index=i+offset;(cards[i],cards[index])=(cards[index],cards[i]);}}
-            Shuffle(players);Shuffle(keepers);deck.AddRange(players.Take((size-2)*2));
-            for(int side=0;side<2;side++)
+            if(settings.draft=="Regular"){Shuffle(players);deck.AddRange(players.Take((size-2)*2));}
+            else outfieldPool=RankOutfield(players).ToList();
+            if(settings.gkDraft=="Deal")Shuffle(keepers);
+            else{goalkeeperPhase=true;pool=RankKeepers(keepers).ToList();phase=settings.gkDraft=="Arcade"?"pick":"roll";}
+            for(int side=0;settings.gkDraft=="Deal" && side<2;side++)
             {
                 var pair=keepers.Skip(side*2).Take(2).OrderByDescending(c=>c.saving).ThenByDescending(c=>c.handling).ThenByDescending(c=>c.pace).ThenByDescending(c=>c.aerial).ThenByDescending(c=>c.name).ToArray();
                 var roster=side==0?home:away;roster[0]=pair[0];roster[11]=pair[1];
             }
+            if(settings.gkDraft=="Deal" && settings.draft!="Regular"){pool=outfieldPool;phase=settings.draft=="Arcade"?"pick":"roll";}
             connections=protocol.ConnectionRevision;
         }
         public static T Copy<T>(T value)=>JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(value));
@@ -98,7 +103,8 @@ namespace CounterAttack.Online
         {
             Observe();return Copy(new OnlineDraftState{matchId=protocol.MatchId,revision=revision,connectionRevision=connections,homeSequence=homeSequence,awaySequence=awaySequence,
                 phase=phase,turn=turn,hostTeam=protocol.HostTeam,firstPicker=first,connected=protocol.BothConnected,homeReady=homeReady,awayReady=awayReady,
-                homeRoll=homeRoll,awayRoll=awayRoll,rollRound=round,batch=batch,totalBatches=(home.Length-2)/2,settings=settings,cards=visible.ToArray(),home=home,away=away});
+                homeRoll=homeRoll,awayRoll=awayRoll,rollRound=round,batch=batch,totalBatches=(home.Length-2)/2,settings=settings,cards=visible.ToArray(),home=home,away=away,
+                selection=goalkeeperPhase?"goalkeepers":"outfielders",freeSelection=FreeSelection,repeatable=Repeatable,available=FreeSelection && phase is "pick" or "roll"?pool.Select(c=>c.id).ToArray():Array.Empty<string>()});
         }
         public OnlineCommandReply Submit(string connection,OnlineDraftRequest request)
         {
@@ -124,19 +130,28 @@ namespace CounterAttack.Online
                     {
                         awayRoll=result;
                         if(homeRoll==awayRoll){homeRoll=awayRoll=0;round++;turn=OnlineTeam.Home;}
-                        else{first=turn=homeRoll>awayRoll?OnlineTeam.Home:OnlineTeam.Away;phase="pick";Deal();}
+                        else{first=turn=homeRoll>awayRoll?OnlineTeam.Home:OnlineTeam.Away;phase="pick";if(!FreeSelection)Deal();}
                     }
                     break;
                 case OnlineDraftIntent.Pick:
                     if(phase!="pick")return Reply(OnlineCommandStatus.NotReady);
-                    if(actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
+                    if(!Repeatable && actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
                     int index=request.slot-1;
-                    if(index<0 || index>=roster.Length || index is 0 or 11)return Reply(OnlineCommandStatus.IllegalAction);
-                    var card=visible.FirstOrDefault(c=>c.id==request.cardId);if(card==null)return Reply(OnlineCommandStatus.IllegalAction);
+                    if(index<0 || index>=roster.Length || !goalkeeperPhase && index is 0 or 11)return Reply(OnlineCommandStatus.IllegalAction);
+                    var card=(FreeSelection?pool:visible).FirstOrDefault(c=>c.id==request.cardId);if(card==null)return Reply(OnlineCommandStatus.IllegalAction);
+                    if(goalkeeperPhase && index is not (0 or 11))index=roster[0]==null?0:11;
                     if(roster[index]!=null)
-                    {int destination=-1;for(int n=1;n<=roster.Length;n++){int candidate=(index+n)%roster.Length;if(candidate is not (0 or 11) && roster[candidate]==null){destination=candidate;break;}}index=destination;}
+                    {int destination=-1;for(int n=1;n<=roster.Length;n++){int candidate=(index+n)%roster.Length;if((candidate is 0 or 11)==goalkeeperPhase && roster[candidate]==null){destination=candidate;break;}}index=destination;}
                     if(index<0)return Reply(OnlineCommandStatus.IllegalAction);
-                    roster[index]=card;visible.Remove(card);picks++;turn=Other(turn);
+                    roster[index]=card;
+                    if(FreeSelection)
+                    {
+                        if(!Repeatable)pool.Remove(card);
+                        if(StageFull(home) && StageFull(away)){if(goalkeeperPhase)BeginOutfield();else phase="review";}
+                        else if(!Repeatable)turn=Other(turn);
+                        break;
+                    }
+                    visible.Remove(card);picks++;turn=Other(turn);
                     if(visible.Count==0)
                     {if(deck.Count==0)phase="review";else{Deal();turn=batch%2==1?first:Other(first);}}
                     break;
