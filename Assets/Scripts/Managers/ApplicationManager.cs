@@ -4,6 +4,7 @@ using System.IO; // For file operations
 
 public class ApplicationManager : MonoBehaviour
 {
+    public const string OnlineGameMode = "Online";
     public const string HotSeatGameMode = "Hot Seat";
     public const string SinglePlayerGameMode = "Single Player";
 

@@ -2002,6 +2002,9 @@ public partial class CreateNewGameManager : MonoBehaviour
 
     public void BackToCreateLoadRoomMenu()
     {
+        if(string.Equals(GetRequestedCreateLoadGameMode(),ApplicationManager.OnlineGameMode,StringComparison.OrdinalIgnoreCase))
+        {CounterAttack.Online.OnlineFrontendSession.Current?.Close();SceneManager.LoadScene("MainMenu");return;}
+
         PlayerPrefs.DeleteKey(CreateNewGameReturnSourcePlayerPrefsKey);
         PlayerPrefs.Save();
         ApplicationManager.EnsureInstanceExists();
@@ -2079,7 +2082,7 @@ public partial class CreateNewGameManager : MonoBehaviour
         TMP_Text label = backButton.GetComponentInChildren<TMP_Text>(true);
         if (label != null)
         {
-            label.text = $"Back to {GetSelectedCreateMenuGameMode()} Menu";
+            label.text = GetRequestedCreateLoadGameMode()==ApplicationManager.OnlineGameMode?"Back to Main Menu":$"Back to {GetSelectedCreateMenuGameMode()} Menu";
         }
     }
 
@@ -2102,6 +2105,7 @@ public partial class CreateNewGameManager : MonoBehaviour
 
     private void TryRestoreExistingSettingsFromDraftReturn()
     {
+        if(GetRequestedCreateLoadGameMode()==ApplicationManager.OnlineGameMode)return;
         string returnSource = PlayerPrefs.GetString(CreateNewGameReturnSourcePlayerPrefsKey, string.Empty);
         if (!IsDraftReturnSource(returnSource))
         {

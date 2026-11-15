@@ -91,3 +91,17 @@ peer identity, compatibility, nonce/rejoin, agreement and monotonic RTT; no actu
 internet RTT is claimed. Native persistent EOS lifetime and host/join controls
 remain next. See OnlineSessionTransport/Verification.md. All cases registered
 for deferred Mac execution; keep full setup/Draft/Room and low latency as target.
+
+Normal multiplayer entry now opens authored Host/Join/Copy/Leave controls in
+CreateNewGameScene and owns a persistent native EOS session prefab. Direct-first
+routing falls back to relay; proof defaults remain forced-relay. Focused native
+coverage: 18 distinct own-feature passes (12 EditMode, 6 PlayMode), plus one
+existing offline countdown case; compilation separately clean. Initial offline
+fixture expectation was corrected without changing gameplay. See
+Assets/Editor/FeatureTests/OnlineFrontendEntry/Verification.md. Every case has
+its own deferred Mac manifest row. Actual paired Host/Join/RTT remains untested.
+DraftAgreed currently captures agreed settings but does not yet launch Draft:
+continue authoritative Draft bootstrap/rolls/decks/picks/slots and full Room,
+then normal pause/substitution/shootout UI. Native frontend currently fails after
+15 seconds without packets; reconnect preservation still needs implementation.
+Exports predate this slice; refresh before paired use. Normal Room restored clean.

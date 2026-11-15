@@ -32,6 +32,7 @@ namespace CounterAttack.Online
                 if(field!=null){UnityAction<bool> listener=_=>Edited();field.onValueChanged.AddListener(listener);release.Add(()=>field.onValueChanged.RemoveListener(listener));}
             Render();
         }
+        public void RefreshSelections(){renderedRevision=-1;Render();}
         private void Confirm(GameSettings selections)
         {if(!client.Confirm(selections) && status!=null)status.text="Review your selections before confirming.";}
         private void Edited()

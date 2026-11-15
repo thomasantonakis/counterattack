@@ -1,0 +1,12 @@
+{"name":"OnlineFrontendEntryEditorTests.AuthoredControlsHavePersistentTransportAndNoOfflineOverlay","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.CompatibilityIncludesBundledCatalog","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(null,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"short\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"0123456789012345678901234567890-\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"01234567890123456789012345678901\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"ABCDEFabcdef01234567890123456789\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"012345678901234567890123456789012\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"0123456789012345678901234567890é\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback(False,AllowRelays)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback(True,ForceRelays)","status":"Passed","message":"","stackTrace":""}

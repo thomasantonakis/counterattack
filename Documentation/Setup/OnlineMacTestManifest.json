@@ -64,6 +64,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "categories": [
+        "OnlineFrontendEntry"
+      ],
+      "definition_sha256": "3b9b8509959523951b728486b34d03b7c6cf233cc3f3b4ea596a3c9e60bf763c",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineFrontendEntry/OnlineFrontendEntryEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineGroundPassBoundaryEditorTests",
       "categories": [
         "OnlineGroundPass"
@@ -301,6 +311,16 @@
       "definition_sha256": "d5f19f2d74e711cb1b22c08af22a910225ca153c40b84490112b9a7a59c9b2c4",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineFouls/OnlineFoulPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "categories": [
+        "OnlineFrontendEntry"
+      ],
+      "definition_sha256": "960c9df2f96bfa23f5e0d367db025a3ea318cb5d4a9d8887ab75a49eef145b84",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFrontendEntry/OnlineFrontendEntryPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -4374,6 +4394,236 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261114T234645532Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.AuthoredControlsHavePersistentTransportAndNoOfflineOverlay",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "AuthoredControlsHavePersistentTransportAndNoOfflineOverlay",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.CompatibilityIncludesBundledCatalog",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "CompatibilityIncludesBundledCatalog",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(null,False)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "null,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"\",False)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"short\",False)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"short\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"0123456789012345678901234567890-\",False)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"0123456789012345678901234567890-\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"01234567890123456789012345678901\",True)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"01234567890123456789012345678901\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"ABCDEFabcdef01234567890123456789\",True)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"ABCDEFabcdef01234567890123456789\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"012345678901234567890123456789012\",False)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"012345678901234567890123456789012\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(\"0123456789012345678901234567890\u00e9\",False)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "LobbyCodeIsValidatedBeforeNativeLogin",
+      "parameters": [
+        "\"0123456789012345678901234567890\u00e9\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback(False,AllowRelays)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "RoutingUsesDirectFirstWithRelayFallback",
+      "parameters": [
+        "False,AllowRelays"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback(True,ForceRelays)",
+      "feature": "OnlineFrontendEntry",
+      "mode": "editor",
+      "fixture": "OnlineFrontendEntryEditorTests",
+      "method": "RoutingUsesDirectFirstWithRelayFallback",
+      "parameters": [
+        "True,ForceRelays"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052747505Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"entry\")",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "method": "NormalMenuEntry",
+      "parameters": [
+        "\"entry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052811003Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"invalid-join\")",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "method": "NormalMenuEntry",
+      "parameters": [
+        "\"invalid-join\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052811003Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"save-guard\")",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "method": "NormalMenuEntry",
+      "parameters": [
+        "\"save-guard\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052811003Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"persistent-lifetime\")",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "method": "NormalMenuEntry",
+      "parameters": [
+        "\"persistent-lifetime\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052811003Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"back\")",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "method": "NormalMenuEntry",
+      "parameters": [
+        "\"back\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052811003Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"offline\")",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendEntryPlayModeTests",
+      "method": "NormalMenuEntry",
+      "parameters": [
+        "\"offline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052930597Z/results.xml"
     }
   ]
 }

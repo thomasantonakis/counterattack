@@ -17,7 +17,9 @@ public class MainMenuManager : MonoBehaviour
 
     public void PlayMultiPlayerGame()
     {
-        Debug.Log("Starting Multi Player Game!");
+        ApplicationManager.EnsureInstanceExists();
+        ApplicationManager.Instance.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);
+        SceneManager.LoadScene("CreateNewGameScene");
     }
 
     public void PlayCampaignMode()

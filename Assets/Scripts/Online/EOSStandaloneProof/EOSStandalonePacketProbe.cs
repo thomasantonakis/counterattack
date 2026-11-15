@@ -24,17 +24,17 @@ internal sealed class EOSStandalonePacketProbe
     private static byte[] ProbeBytes(string prefix, string lobbyId) =>
         Encoding.ASCII.GetBytes(prefix + lobbyId);
 
-    private static void RequireForcedRelays(P2PInterface p2p)
+    private static void RequireRelayControl(P2PInterface p2p,RelayControl policy)
     {
-        var set = new SetRelayControlOptions { RelayControl = RelayControl.ForceRelays };
-        EOSProofCheck.Require(p2p.SetRelayControl(ref set) == Result.Success, "Forcing EOS relay routing");
+        var set = new SetRelayControlOptions { RelayControl = policy };
+        EOSProofCheck.Require(p2p.SetRelayControl(ref set) == Result.Success, "Setting EOS relay routing");
         var get = new GetRelayControlOptions();
         EOSProofCheck.Require(p2p.GetRelayControl(ref get, out var configured) == Result.Success, "Reading EOS relay control");
-        EOSProofCheck.Require(configured == RelayControl.ForceRelays, "EOS relay control setting");
+        EOSProofCheck.Require(configured == policy, "EOS relay control setting");
     }
 
     internal static IEnumerator HostProbe(string outputDirectory,
-        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null)
+        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays)
     {
         var lobbyIdFile = Path.Combine(outputDirectory, "lobby-id.txt");
 
@@ -56,7 +56,7 @@ internal sealed class EOSStandalonePacketProbe
             p2p = session.Platform.GetP2PInterface();
             EOSProofCheck.Require(lobby != null, "EOS Lobby interface");
             EOSProofCheck.Require(p2p != null, "EOS P2P interface");
-            RequireForcedRelays(p2p);
+            RequireRelayControl(p2p,relayControl);
 
             Result? createResult = null;
             var create = new CreateLobbyOptions
@@ -271,7 +271,7 @@ internal sealed class EOSStandalonePacketProbe
     }
 
     internal static IEnumerator GuestProbe(string inputLobbyId,
-        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null)
+        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays)
     {
         var lobbyId = inputLobbyId;
         EOSProofCheck.Require(lobbyId != null && lobbyId.Length == 32, "Expected a 32-character lobby ID");
@@ -293,7 +293,7 @@ internal sealed class EOSStandalonePacketProbe
             p2p = session.Platform.GetP2PInterface();
             EOSProofCheck.Require(lobby != null, "EOS Lobby interface");
             EOSProofCheck.Require(p2p != null, "EOS P2P interface");
-            RequireForcedRelays(p2p);
+            RequireRelayControl(p2p,relayControl);
             var createSearch = new CreateLobbySearchOptions { MaxResults = 1 };
             EOSProofCheck.Require(lobby.CreateLobbySearch(ref createSearch, out search) == Result.Success, "Creating a P2P lobby-ID search");
             var setId = new LobbySearchSetLobbyIdOptions { LobbyId = lobbyId };

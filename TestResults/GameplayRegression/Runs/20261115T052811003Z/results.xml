@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Failed(Child)" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 05:28:11Z" end-time="2026-11-15 05:28:19Z" duration="8.6072011">
+  <test-suite type="TestSuite" id="2533" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1259" result="Failed" site="Child" start-time="2026-11-15 05:28:11Z" end-time="2026-11-15 05:28:19Z" duration="8.607201" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2530" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1259" result="Failed" site="Child" start-time="2026-11-15 05:28:11Z" end-time="2026-11-15 05:28:19Z" duration="8.580936" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1588" name="OnlineFrontendEntryPlayModeTests" fullname="OnlineFrontendEntryPlayModeTests" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-11-15 05:28:11Z" end-time="2026-11-15 05:28:19Z" duration="8.574225" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFrontendEntry" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1595" name="NormalMenuEntry" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-11-15 05:28:11Z" end-time="2026-11-15 05:28:19Z" duration="8.566545" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1589" name="NormalMenuEntry(&quot;entry&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;entry&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="981245980" result="Passed" start-time="2026-11-15 05:28:11Z" end-time="2026-11-15 05:28:12Z" duration="1.858431" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1590" name="NormalMenuEntry(&quot;offline&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;offline&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="216188291" result="Failed" start-time="2026-11-15 05:28:12Z" end-time="2026-11-15 05:28:14Z" duration="1.107492" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFrontendEntrySceneFixture+<Run>d__10.MoveNext () [0x00251] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFrontendEntry\OnlineFrontendEntrySceneFixture.cs:42
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1591" name="NormalMenuEntry(&quot;invalid-join&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;invalid-join&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="2032486096" result="Passed" start-time="2026-11-15 05:28:14Z" end-time="2026-11-15 05:28:15Z" duration="1.020799" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1592" name="NormalMenuEntry(&quot;save-guard&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;save-guard&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="804423239" result="Passed" start-time="2026-11-15 05:28:15Z" end-time="2026-11-15 05:28:16Z" duration="1.083717" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+[CreateNewGameManager] Selected kits: Home 'Juventus' (id 'juve'), Away 'Red' (id '021'), Home GK 'Green' (id 'gk2'), Away GK 'Orange' (id 'gk3').
+]]></output>
+          </test-case>
+          <test-case id="1593" name="NormalMenuEntry(&quot;persistent-lifetime&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;persistent-lifetime&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="1468747518" result="Passed" start-time="2026-11-15 05:28:16Z" end-time="2026-11-15 05:28:17Z" duration="1.683448" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+          <test-case id="1594" name="NormalMenuEntry(&quot;back&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;back&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="1555496454" result="Passed" start-time="2026-11-15 05:28:17Z" end-time="2026-11-15 05:28:19Z" duration="1.778506" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Match type is Regular or other. Reset checkboxes.
+Saving results to: TestResults\GameplayRegression\Runs\20261115T052811003Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
