@@ -55,7 +55,7 @@ public class MatchEventBannerController : MonoBehaviour
 
     private void Update()
     {
-        SetTimingStatus(MatchManager.Instance?.DecisionTiming);
+        SetTimingStatus(CounterAttack.Online.OnlineRoomSession.IsGuest?null:MatchManager.Instance?.DecisionTiming);
         Advance(Time.unscaledDeltaTime);
     }
 

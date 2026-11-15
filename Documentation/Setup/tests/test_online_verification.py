@@ -20,7 +20,7 @@ class VerificationTests(unittest.TestCase):
         self.assertEqual(verification.mac_build_modes(), ("room", "gameplay", "game"))
         script=(MODULE.parent / "BuildEOSStandaloneMac.sh").read_text()
         self.assertIn("Build/OnlineGame/Mac/Counterattack.app", script)
-        for scene in ("MainMenu", "CreateNewGameScene", "Draft", "FreeDraft", "Room"):
+        for scene in ("MainMenu", "CreateNewGameScene", "Draft", "FreeDraft", "Room", "OnlineRoom"):
             self.assertIn("Assets/Scenes/" + scene + ".unity", script)
 
     def test_credential_redaction_preserves_gameplay_token_identity(self):

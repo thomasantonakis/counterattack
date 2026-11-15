@@ -425,3 +425,5 @@ now lead into opening-roll; the opening fixture verifies room-ready continuation
 Room launch: `OnlineRoomLaunchEditorTests` / category `OnlineRoomLaunch`
 (36 EditMode cases) exercises real data loading, stat graph linkage and persistence
 isolation without live save fixtures. Full Room runtime acceptance is separate.
+
+Full authored online Room: `Assets/Tests/PlayMode/Features/OnlineFullRoom/`, fixture `OnlineFullRoomPlayModeTests`, category `OnlineFullRoom` (16 cases). Covers actual pitch/roster startup, real kickoff and inert guest score/time/hex projection. Broader affected offline Room/startup and gameplay checks remain selectable independently; no complete suite was run.

@@ -208,7 +208,7 @@ namespace CounterAttack.Online
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
-                tokens = match.playerTokenManager.allTokens.Where(t => t != null).Select(ReadToken)
+                tokens = (protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.playerTokenManager.allTokens.Concat(match.playerTokenManager.benchTokens):match.playerTokenManager.allTokens).Where(t => t != null).Distinct().Select(ReadToken)
                     .OrderBy(t => t.id, StringComparer.Ordinal).ToArray()
             };
             var actions = new List<string>();

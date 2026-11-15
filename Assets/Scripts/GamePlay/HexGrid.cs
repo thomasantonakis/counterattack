@@ -201,6 +201,20 @@ public class HexGrid : MonoBehaviour
         return gridInitialized;
     }
 
+    public void BindAuthoredOnlineCells(IEnumerable<HexCell> authored)
+    {
+        var bound=new HexCell[width,height];int count=0;
+        foreach(var cell in authored)
+        {
+            if(cell==null)throw new ArgumentException("An authored online cell is missing");
+            int x=cell.coordinates.x+width/2,z=cell.coordinates.z+height/2;
+            if(x<0 || x>=width || z<0 || z>=height || bound[x,z]!=null)throw new ArgumentException("Authored online cells must cover unique in-range coordinates");
+            bound[x,z]=cell;cell.occupyingToken=null;cell.isAttackOccupied=cell.isDefenseOccupied=false;count++;
+        }
+        if(count!=width*height)throw new ArgumentException("Authored online pitch is incomplete");
+        cells=bound;gridInitialized=true;BindMatchManager();ApplyWeatherPaletteFromLoadedSettings();InitializePrecomputedGameplayCaches();
+    }
+
     void CreateCell(int x, int z, List<GameObject> createdObjects = null)
     {
         Vector3 position = GetHexCenterForCoordinates(new Vector3Int(x, 0, z));

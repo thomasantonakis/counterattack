@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using TMPro;  // Import TextMeshPro namespace
 
-public class PlayerTokenManager : MonoBehaviour
+public partial class PlayerTokenManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public GameObject redKitPrefab;

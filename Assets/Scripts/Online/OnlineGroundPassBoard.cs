@@ -15,6 +15,8 @@ namespace CounterAttack.Online
         public PlayerToken[] tokens;
         [Tooltip("Keep a manual session alive across actions. This does not replace the prepared roster with a normal Room match.")]
         public bool continuousManualSession;
+        public bool liveFullRoom;
+        public ScoreboardManager liveScoreboard;
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
@@ -74,19 +76,24 @@ namespace CounterAttack.Online
         public void Display(OnlineGroundPassState state, string role)
         {
             if (controls != null) controls.Display(state);
+            if(liveFullRoom && OnlineRoomSession.IsGuest){match.ApplyOnlineReplicaMatchState(state);liveScoreboard?.RefreshPublishedOnlineState();}
             if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused);
             var requester = state.isSharedPaused && state.pauseRequester == localTeam.ToString();
             if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
             if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);
             foreach (var token in state.tokens)
             {
+                if(liveFullRoom && !OnlineRoomSession.IsGuest)break;
                 var index = Array.FindIndex(tokens, t => (t.isHomeTeam ? "home:" : "away:") + t.jerseyNumber == token.id);
                 EOSProofCheck.Require(index >= 0, "Published roster must match the authored board");
                 displayedTokens[index].gameObject.SetActive(token.onBoard);
-                if (token.onBoard) displayedTokens[index].position = Center(token.x, token.z) + Vector3.up * .5f;
+                if (token.onBoard) displayedTokens[index].position = Center(token.x, token.z) + Vector3.up * (liveFullRoom?.2f:.5f);
             }
+            if(!liveFullRoom || OnlineRoomSession.IsGuest)
+            {
             displayedBall.gameObject.SetActive(state.ballOnBoard);
-            if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * 1.2f;
+            if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * (liveFullRoom?match.ball.transform.position.y:1.2f);
+            }
             if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
                 + " | Score " + (state.homeStats?.totalGoals ?? 0) + " - " + (state.awayStats?.totalGoals ?? 0)
                 + "\nState " + state.publicationSequence + " | Rolls " + state.rollSequence

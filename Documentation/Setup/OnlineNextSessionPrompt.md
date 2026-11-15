@@ -2,12 +2,15 @@
 
 ## Start here
 
-Current priority (2026-11-15): normal menu entry, authored Host/Join controls,
-persistent native frontend session and bounded recovery are implemented with
-focused local evidence. Full authoritative Draft (rolls/decks/picks/slots), full
-Room roster handoff, normal pause/substitutions and shootout ordering remain.
-Do not claim full online play or measured internet latency. Paired Mac is deferred.
-See OnlineFrontendEntry/Verification.md and OnlineFrontendRecovery/Verification.md.
+Current priority (2026-11-15): normal Host/Join, persistent native setup, all Draft
+variants, opening coin toss and complete roster launch data are implemented.
+The authored OnlineRoom now uses the actual 1,900-hex pitch, 32/36 drafted actors,
+real kickoff managers and guest score/time/position projection. Sixteen focused
+actual-scene cases passed; final isolation verification is in progress.
+Next connect native frontend transport to this scene, then integrate normal
+pause/substitution/shootout controls. Full-match internet acceptance and measured
+latency remain unverified. Paired Mac testing is deferred.
+See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.
 
 
 Latest steering: the son's Mac verification is deferred until the user explicitly

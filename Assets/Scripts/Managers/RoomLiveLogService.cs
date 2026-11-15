@@ -38,7 +38,7 @@ public static class RoomLiveLogService
         out string message)
     {
         writtenPath = string.Empty;
-        if (!TryResolveWritableActiveSavePath(out string savePath, out message))
+        if (!TryResolveWritableActiveSavePath(matchManager,out string savePath, out message))
         {
             return false;
         }
@@ -123,7 +123,7 @@ public static class RoomLiveLogService
     public static bool PatchActiveLiveLog(MatchManager matchManager, out string patchedPath, out string message)
     {
         patchedPath = string.Empty;
-        if (!TryResolveWritableActiveSavePath(out string filePath, out message))
+        if (!TryResolveWritableActiveSavePath(matchManager,out string filePath, out message))
         {
             return false;
         }
@@ -200,7 +200,7 @@ public static class RoomLiveLogService
         }
     }
 
-    private static bool TryResolveWritableActiveSavePath(out string filePath, out string message)
+    private static bool TryResolveWritableActiveSavePath(MatchManager matchManager,out string filePath, out string message)
     {
         filePath = string.Empty;
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match logs."; return false; }
@@ -208,7 +208,16 @@ public static class RoomLiveLogService
         // MatchManager.OnDestroy / Play Mode shutdown.
         var application = ApplicationManager.Instance;
         var online=CounterAttack.Online.OnlineRoomSession.Current;
-        filePath = online?.HasInitialData==true?online.AuthoritySavePath:application != null ? application.GetLastSavedFilePath() : string.Empty;
+        if(online?.HasInitialData==true)
+        {
+            if(matchManager?.gameData?.playSessionId!=online.InitialPlaySessionId){message="The match does not belong to the active online session.";return false;}
+            filePath=online.AuthoritySavePath;
+        }
+        else
+        {
+            if(matchManager?.gameData?.gameSettings?.gameMode==ApplicationManager.OnlineGameMode){message="The online session is no longer active.";return false;}
+            filePath=application!=null?application.GetLastSavedFilePath():string.Empty;
+        }
         if (string.IsNullOrWhiteSpace(filePath))
         {
             message = "No active save file is selected for this match.";

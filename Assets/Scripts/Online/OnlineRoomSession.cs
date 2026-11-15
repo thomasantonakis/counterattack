@@ -11,6 +11,7 @@ namespace CounterAttack.Online
         public bool GuestReplica { get; }
         public string MatchId { get; }
         public bool HasInitialData=>initialData!=null;
+        public string InitialPlaySessionId=>initialData?.playSessionId;
         public string AuthoritySavePath {get;}
         private readonly MatchManager.GameData initialData;
         private bool disposed;

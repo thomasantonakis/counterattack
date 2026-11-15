@@ -424,6 +424,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "categories": [
+        "OnlineFullRoom"
+      ],
+      "definition_sha256": "2f00019739d76a6dac504f8df42574e1f65ab6f7f7240e3c34a3d7e751fdca1e",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFullRoom/OnlineFullRoomPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineGoalkeeperPlayModeTests",
       "categories": [
         "OnlineGoalkeeper"
@@ -7496,6 +7506,214 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "False,16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "False,16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "False,18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "False,18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "True,16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "True,16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "True,18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "ActualFullRoom",
+      "parameters": [
+        "True,18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(16,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "AuthoredKickoff",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(16,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "AuthoredKickoff",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(18,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "AuthoredKickoff",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(18,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "AuthoredKickoff",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(16,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "FullGuestProjection",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(16,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "FullGuestProjection",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(18,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "FullGuestProjection",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(18,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "FullGuestProjection",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
     }
   ]
 }
