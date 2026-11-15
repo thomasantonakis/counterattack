@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="38" result="Passed" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:58Z" duration="8.1462061">
+  <test-suite type="TestSuite" id="4444" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1577" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:58Z" duration="8.146206" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4436" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1577" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:58Z" duration="8.125509" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3270" name="OnlineDraftVariantEditorTests" fullname="OnlineDraftVariantEditorTests" classname="OnlineDraftVariantEditorTests" runstate="Runnable" testcasecount="38" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:58Z" duration="8.083156" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineDraftVariants" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3307" name="AllRegularModeCombinations" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:58Z" duration="7.948491" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3271" name="AllRegularModeCombinations(False,16,&quot;Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="498442958" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:50Z" duration="0.173722" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3272" name="AllRegularModeCombinations(False,16,&quot;Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="721895173" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:50Z" duration="0.158381" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3273" name="AllRegularModeCombinations(False,16,&quot;Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1303960154" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:50Z" duration="0.169556" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3274" name="AllRegularModeCombinations(False,16,&quot;Free Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Free Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1200264542" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:50Z" duration="0.161387" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3275" name="AllRegularModeCombinations(False,16,&quot;Free Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Free Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1674414913" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:50Z" duration="0.194354" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3276" name="AllRegularModeCombinations(False,16,&quot;Free Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Free Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="709808883" result="Passed" start-time="2026-11-15 06:34:50Z" end-time="2026-11-15 06:34:51Z" duration="0.239895" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3277" name="AllRegularModeCombinations(False,16,&quot;Arcade&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Arcade&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="902422837" result="Passed" start-time="2026-11-15 06:34:51Z" end-time="2026-11-15 06:34:51Z" duration="0.164566" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3278" name="AllRegularModeCombinations(False,16,&quot;Arcade&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Arcade&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1043035314" result="Passed" start-time="2026-11-15 06:34:51Z" end-time="2026-11-15 06:34:51Z" duration="0.177049" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3279" name="AllRegularModeCombinations(False,16,&quot;Arcade&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,&quot;Arcade&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1709687408" result="Passed" start-time="2026-11-15 06:34:51Z" end-time="2026-11-15 06:34:51Z" duration="0.267368" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3280" name="AllRegularModeCombinations(False,18,&quot;Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="800049346" result="Passed" start-time="2026-11-15 06:34:51Z" end-time="2026-11-15 06:34:51Z" duration="0.202179" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3281" name="AllRegularModeCombinations(False,18,&quot;Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="884312389" result="Passed" start-time="2026-11-15 06:34:51Z" end-time="2026-11-15 06:34:52Z" duration="0.215937" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3282" name="AllRegularModeCombinations(False,18,&quot;Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="889406591" result="Passed" start-time="2026-11-15 06:34:52Z" end-time="2026-11-15 06:34:52Z" duration="0.201726" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3283" name="AllRegularModeCombinations(False,18,&quot;Free Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Free Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="2042913565" result="Passed" start-time="2026-11-15 06:34:52Z" end-time="2026-11-15 06:34:52Z" duration="0.222407" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3284" name="AllRegularModeCombinations(False,18,&quot;Free Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Free Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1473924100" result="Passed" start-time="2026-11-15 06:34:52Z" end-time="2026-11-15 06:34:52Z" duration="0.280787" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3285" name="AllRegularModeCombinations(False,18,&quot;Free Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Free Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1661855057" result="Passed" start-time="2026-11-15 06:34:52Z" end-time="2026-11-15 06:34:53Z" duration="0.237767" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3286" name="AllRegularModeCombinations(False,18,&quot;Arcade&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Arcade&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1136997249" result="Passed" start-time="2026-11-15 06:34:53Z" end-time="2026-11-15 06:34:53Z" duration="0.262419" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3287" name="AllRegularModeCombinations(False,18,&quot;Arcade&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Arcade&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="187858430" result="Passed" start-time="2026-11-15 06:34:53Z" end-time="2026-11-15 06:34:53Z" duration="0.248017" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3288" name="AllRegularModeCombinations(False,18,&quot;Arcade&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,&quot;Arcade&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1477110377" result="Passed" start-time="2026-11-15 06:34:53Z" end-time="2026-11-15 06:34:53Z" duration="0.267269" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3289" name="AllRegularModeCombinations(True,16,&quot;Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="142780662" result="Passed" start-time="2026-11-15 06:34:53Z" end-time="2026-11-15 06:34:54Z" duration="0.168770" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3290" name="AllRegularModeCombinations(True,16,&quot;Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1697816284" result="Passed" start-time="2026-11-15 06:34:54Z" end-time="2026-11-15 06:34:54Z" duration="0.195225" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3291" name="AllRegularModeCombinations(True,16,&quot;Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1151208169" result="Passed" start-time="2026-11-15 06:34:54Z" end-time="2026-11-15 06:34:54Z" duration="0.148280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3292" name="AllRegularModeCombinations(True,16,&quot;Free Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Free Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1409924055" result="Passed" start-time="2026-11-15 06:34:54Z" end-time="2026-11-15 06:34:54Z" duration="0.210550" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3293" name="AllRegularModeCombinations(True,16,&quot;Free Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Free Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1756232579" result="Passed" start-time="2026-11-15 06:34:54Z" end-time="2026-11-15 06:34:54Z" duration="0.250583" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3294" name="AllRegularModeCombinations(True,16,&quot;Free Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Free Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1345309856" result="Passed" start-time="2026-11-15 06:34:54Z" end-time="2026-11-15 06:34:55Z" duration="0.234413" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3295" name="AllRegularModeCombinations(True,16,&quot;Arcade&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Arcade&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1390750455" result="Passed" start-time="2026-11-15 06:34:55Z" end-time="2026-11-15 06:34:55Z" duration="0.202886" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3296" name="AllRegularModeCombinations(True,16,&quot;Arcade&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Arcade&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="393514253" result="Passed" start-time="2026-11-15 06:34:55Z" end-time="2026-11-15 06:34:55Z" duration="0.207335" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3297" name="AllRegularModeCombinations(True,16,&quot;Arcade&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,&quot;Arcade&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1921301709" result="Passed" start-time="2026-11-15 06:34:55Z" end-time="2026-11-15 06:34:55Z" duration="0.193998" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3298" name="AllRegularModeCombinations(True,18,&quot;Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1706111592" result="Passed" start-time="2026-11-15 06:34:55Z" end-time="2026-11-15 06:34:56Z" duration="0.238833" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3299" name="AllRegularModeCombinations(True,18,&quot;Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="2141075874" result="Passed" start-time="2026-11-15 06:34:56Z" end-time="2026-11-15 06:34:56Z" duration="0.201712" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3300" name="AllRegularModeCombinations(True,18,&quot;Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="7362490" result="Passed" start-time="2026-11-15 06:34:56Z" end-time="2026-11-15 06:34:56Z" duration="0.185956" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3301" name="AllRegularModeCombinations(True,18,&quot;Free Regular&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Free Regular&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1558793854" result="Passed" start-time="2026-11-15 06:34:56Z" end-time="2026-11-15 06:34:56Z" duration="0.284577" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3302" name="AllRegularModeCombinations(True,18,&quot;Free Regular&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Free Regular&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="567338297" result="Passed" start-time="2026-11-15 06:34:56Z" end-time="2026-11-15 06:34:56Z" duration="0.289905" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3303" name="AllRegularModeCombinations(True,18,&quot;Free Regular&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Free Regular&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1868781763" result="Passed" start-time="2026-11-15 06:34:56Z" end-time="2026-11-15 06:34:57Z" duration="0.284502" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3304" name="AllRegularModeCombinations(True,18,&quot;Arcade&quot;,&quot;Deal&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Arcade&quot;,&quot;Deal&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1050092438" result="Passed" start-time="2026-11-15 06:34:57Z" end-time="2026-11-15 06:34:57Z" duration="0.228513" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3305" name="AllRegularModeCombinations(True,18,&quot;Arcade&quot;,&quot;Free&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Arcade&quot;,&quot;Free&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1390518196" result="Passed" start-time="2026-11-15 06:34:57Z" end-time="2026-11-15 06:34:57Z" duration="0.248554" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3306" name="AllRegularModeCombinations(True,18,&quot;Arcade&quot;,&quot;Arcade&quot;)" fullname="OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,&quot;Arcade&quot;,&quot;Arcade&quot;)" methodname="AllRegularModeCombinations" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="755699849" result="Passed" start-time="2026-11-15 06:34:57Z" end-time="2026-11-15 06:34:58Z" duration="0.265073" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="3310" name="InternationalRostersUseRealNationalCards" fullname="OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards" classname="OnlineDraftVariantEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 06:34:58Z" end-time="2026-11-15 06:34:58Z" duration="0.113362" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3308" name="InternationalRostersUseRealNationalCards(False)" fullname="OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(False)" methodname="InternationalRostersUseRealNationalCards" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="1858581992" result="Passed" start-time="2026-11-15 06:34:58Z" end-time="2026-11-15 06:34:58Z" duration="0.034784" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3309" name="InternationalRostersUseRealNationalCards(True)" fullname="OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(True)" methodname="InternationalRostersUseRealNationalCards" classname="OnlineDraftVariantEditorTests" runstate="Runnable" seed="777516159" result="Passed" start-time="2026-11-15 06:34:58Z" end-time="2026-11-15 06:34:58Z" duration="0.069155" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T063449987Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

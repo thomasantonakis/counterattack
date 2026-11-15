@@ -91,6 +91,6 @@ public sealed class OnlineDraftAuthorityEditorTests
         }
         var host=protocol.HostTeam;var guest=host==OnlineTeam.Home?OnlineTeam.Away:OnlineTeam.Home;
         Assert.That(Submit(guest,OnlineDraftIntent.Start),Is.EqualTo(OnlineCommandStatus.WrongTeam));
-        Assert.That(Submit(host,OnlineDraftIntent.Start),Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(draft.Capture().phase,Is.EqualTo("room-ready"));
+        Assert.That(Submit(host,OnlineDraftIntent.Start),Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(draft.Capture().phase,Is.EqualTo("opening-roll"));
     }
 }

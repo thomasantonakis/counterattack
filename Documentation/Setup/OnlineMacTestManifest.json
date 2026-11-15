@@ -18,7 +18,7 @@
       "categories": [
         "OnlineDraft"
       ],
-      "definition_sha256": "8b60a0960e8c390ede38c9559694dc3b7e712fe32630bad2840c2624c8cdbdf1",
+      "definition_sha256": "90da816090364d6364a0178b3651fb771cc63addc6ab2ebe1d2be23a62a727e6",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineDraft/OnlineDraftAuthorityEditorTests.cs"
     },
@@ -28,7 +28,7 @@
       "categories": [
         "OnlineDraftTransport"
       ],
-      "definition_sha256": "d36ee465a1f20584716b76dbbd716ba7fcfc00212ad0769af99333f897c0fe95",
+      "definition_sha256": "78c8ffbe30c221f6f372ef2d29578e199e4cc9148d538744122a6bee63322849",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineDraft/OnlineDraftChannelEditorTests.cs"
     },
@@ -48,7 +48,7 @@
       "categories": [
         "OnlineDraftVariants"
       ],
-      "definition_sha256": "299eb7f4d46524ada54928ca04669495a2633281ae6973c00d3164a7e0feb3c7",
+      "definition_sha256": "c00f8cb6e783a74861959f7e84b2259587f4aba2e42e8fe17d4f523aaa75366e",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineDraftVariants/OnlineDraftVariantEditorTests.cs"
     },
@@ -171,6 +171,16 @@
       "definition_sha256": "2eb5ff1d311a8d8301f0803b8616811100d630530e9a11514fce30bda5614ac8",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineMovement/OnlineMovementPresentationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "categories": [
+        "OnlineOpeningSetup"
+      ],
+      "definition_sha256": "3861b9b606023dc6d8fa613bbb9f57a7582f291859a943f2786ae49e11d9ca32",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineOpeningSetup/OnlineOpeningEditorTests.cs"
     },
     {
       "mode": "editor",
@@ -561,6 +571,16 @@
       "definition_sha256": "2a67022698a6748663b056e0c6f9ce86be2483200e5072b0bed0a79e0fab3782",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineMovement/OnlineMovementPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineOpeningScenePlayModeTests",
+      "categories": [
+        "OnlineOpeningScene"
+      ],
+      "definition_sha256": "7d66be6ad10bc33363ed2c80c3c0671da04add8e329dcb3d32ae711f35acfd2a",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineOpeningSetup/OnlineOpeningScenePlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -4946,7 +4966,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"ties\")",
@@ -4959,7 +4980,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"batch\")",
@@ -4972,7 +4994,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"boundaries\")",
@@ -4985,7 +5008,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"identity\")",
@@ -4998,7 +5022,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"duplicate\")",
@@ -5011,7 +5036,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"snapshot\")",
@@ -5024,7 +5050,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"swap\")",
@@ -5037,7 +5064,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"recovery\")",
@@ -5050,7 +5078,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,\"complete\")",
@@ -5063,7 +5092,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"roll\")",
@@ -5076,7 +5106,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"ties\")",
@@ -5089,7 +5120,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"batch\")",
@@ -5102,7 +5134,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"boundaries\")",
@@ -5115,7 +5148,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"identity\")",
@@ -5128,7 +5162,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"duplicate\")",
@@ -5141,7 +5176,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"snapshot\")",
@@ -5154,7 +5190,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"swap\")",
@@ -5167,7 +5204,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"recovery\")",
@@ -5180,7 +5218,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,\"complete\")",
@@ -5193,7 +5232,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"roll\")",
@@ -5206,7 +5246,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"ties\")",
@@ -5219,7 +5260,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"batch\")",
@@ -5232,7 +5274,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"boundaries\")",
@@ -5245,7 +5288,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"identity\")",
@@ -5258,7 +5302,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"duplicate\")",
@@ -5271,7 +5316,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"snapshot\")",
@@ -5284,7 +5330,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"swap\")",
@@ -5297,7 +5344,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"recovery\")",
@@ -5310,7 +5358,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,\"complete\")",
@@ -5323,7 +5372,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"roll\")",
@@ -5336,7 +5386,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"ties\")",
@@ -5349,7 +5400,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"batch\")",
@@ -5362,7 +5414,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"boundaries\")",
@@ -5375,7 +5428,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"identity\")",
@@ -5388,7 +5442,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"duplicate\")",
@@ -5401,7 +5456,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"snapshot\")",
@@ -5414,7 +5470,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"swap\")",
@@ -5427,7 +5484,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"recovery\")",
@@ -5440,7 +5498,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,\"complete\")",
@@ -5453,7 +5512,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T055816884Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063432294Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"arrival\")",
@@ -5466,7 +5526,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"roll\")",
@@ -5479,7 +5540,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"pick\")",
@@ -5492,7 +5554,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"complete\")",
@@ -5505,7 +5568,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"rejoin\")",
@@ -5518,7 +5582,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"lost-reply\")",
@@ -5531,7 +5596,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"malformed\")",
@@ -5544,7 +5610,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(False,\"local-loss\")",
@@ -5557,7 +5624,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"arrival\")",
@@ -5570,7 +5638,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"roll\")",
@@ -5583,7 +5652,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"pick\")",
@@ -5596,7 +5666,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"complete\")",
@@ -5609,7 +5680,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"rejoin\")",
@@ -5622,7 +5694,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"lost-reply\")",
@@ -5635,7 +5708,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"malformed\")",
@@ -5648,7 +5722,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftChannelEditorTests.SerializedDraft(True,\"local-loss\")",
@@ -5661,7 +5736,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060056922Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063440855Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,False,\"pick\")",
@@ -5674,7 +5750,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,False,\"ownership\")",
@@ -5687,7 +5764,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,False,\"swap\")",
@@ -5700,7 +5778,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,False,\"recovery\")",
@@ -5713,7 +5792,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,False,\"complete\")",
@@ -5726,7 +5806,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,True,\"pick\")",
@@ -5739,7 +5820,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,True,\"ownership\")",
@@ -5752,7 +5834,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,True,\"swap\")",
@@ -5765,7 +5848,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,True,\"recovery\")",
@@ -5778,7 +5862,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(False,True,\"complete\")",
@@ -5791,7 +5876,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,False,\"pick\")",
@@ -5804,7 +5890,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,False,\"ownership\")",
@@ -5817,7 +5904,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,False,\"swap\")",
@@ -5830,7 +5918,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,False,\"recovery\")",
@@ -5843,7 +5932,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,False,\"complete\")",
@@ -5856,7 +5946,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,True,\"pick\")",
@@ -5869,7 +5960,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,True,\"ownership\")",
@@ -5882,7 +5974,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,True,\"swap\")",
@@ -5895,7 +5988,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,True,\"recovery\")",
@@ -5908,7 +6002,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftScenePlayModeTests.AuthoredDraft(True,True,\"complete\")",
@@ -5921,7 +6016,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T060647585Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063511578Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Deal\")",
@@ -5934,7 +6030,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Free\")",
@@ -5947,7 +6044,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Arcade\")",
@@ -5960,7 +6058,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Deal\")",
@@ -5973,7 +6072,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Free\")",
@@ -5986,7 +6086,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Arcade\")",
@@ -5999,7 +6100,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Deal\")",
@@ -6012,7 +6114,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Free\")",
@@ -6025,7 +6128,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Arcade\")",
@@ -6038,7 +6142,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Deal\")",
@@ -6051,7 +6156,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Free\")",
@@ -6064,7 +6170,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Arcade\")",
@@ -6077,7 +6184,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Deal\")",
@@ -6090,7 +6198,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Free\")",
@@ -6103,7 +6212,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Arcade\")",
@@ -6116,7 +6226,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Deal\")",
@@ -6129,7 +6240,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Free\")",
@@ -6142,7 +6254,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Arcade\")",
@@ -6155,7 +6268,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Deal\")",
@@ -6168,7 +6282,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Free\")",
@@ -6181,7 +6296,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Arcade\")",
@@ -6194,7 +6310,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Deal\")",
@@ -6207,7 +6324,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Free\")",
@@ -6220,7 +6338,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Arcade\")",
@@ -6233,7 +6352,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Deal\")",
@@ -6246,7 +6366,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Free\")",
@@ -6259,7 +6380,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Arcade\")",
@@ -6272,7 +6394,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Deal\")",
@@ -6285,7 +6408,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Free\")",
@@ -6298,7 +6422,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Arcade\")",
@@ -6311,7 +6436,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Deal\")",
@@ -6324,7 +6450,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Free\")",
@@ -6337,7 +6464,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Arcade\")",
@@ -6350,7 +6478,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Deal\")",
@@ -6363,7 +6492,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Free\")",
@@ -6376,7 +6506,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Arcade\")",
@@ -6389,7 +6520,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(False)",
@@ -6402,7 +6534,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(True)",
@@ -6415,7 +6548,8 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T061621399Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063449987Z/results.xml",
+      "verification_note": "Start now enters the authoritative opening toss before room-ready."
     },
     {
       "id": "OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(\"Free Regular\",False)",
@@ -6572,6 +6706,318 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T062212546Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,\"invalid\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "False,\"invalid\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,\"rejoin\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "False,\"rejoin\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,\"duplicate\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "False,\"duplicate\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,\"ties\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "False,\"ties\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,\"invalid\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "True,\"invalid\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,\"rejoin\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "True,\"rejoin\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,\"duplicate\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "True,\"duplicate\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,\"ties\")",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningIsOwnedAndRecoverable",
+      "parameters": [
+        "True,\"ties\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,False,Kickoff)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "False,False,Kickoff"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,False,LeftToRight)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "False,False,LeftToRight"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,False,RightToLeft)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "False,False,RightToLeft"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,True,Kickoff)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "False,True,Kickoff"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,True,LeftToRight)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "False,True,LeftToRight"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,True,RightToLeft)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "False,True,RightToLeft"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,False,Kickoff)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "True,False,Kickoff"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,False,LeftToRight)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "True,False,LeftToRight"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,False,RightToLeft)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "True,False,RightToLeft"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,True,Kickoff)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "True,True,Kickoff"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,True,LeftToRight)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "True,True,LeftToRight"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,True,RightToLeft)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "editor",
+      "fixture": "OnlineOpeningEditorTests",
+      "method": "OpeningUsesExistingKickoffAndDirectionRules",
+      "parameters": [
+        "True,True,RightToLeft"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063139379Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningScenePlayModeTests.AuthoredOpeningChoices(False,False)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "playmode",
+      "fixture": "OnlineOpeningScenePlayModeTests",
+      "method": "AuthoredOpeningChoices",
+      "parameters": [
+        "False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063248358Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningScenePlayModeTests.AuthoredOpeningChoices(False,True)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "playmode",
+      "fixture": "OnlineOpeningScenePlayModeTests",
+      "method": "AuthoredOpeningChoices",
+      "parameters": [
+        "False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063248358Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningScenePlayModeTests.AuthoredOpeningChoices(True,False)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "playmode",
+      "fixture": "OnlineOpeningScenePlayModeTests",
+      "method": "AuthoredOpeningChoices",
+      "parameters": [
+        "True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063248358Z/results.xml"
+    },
+    {
+      "id": "OnlineOpeningScenePlayModeTests.AuthoredOpeningChoices(True,True)",
+      "feature": "OnlineOpeningSetup",
+      "mode": "playmode",
+      "fixture": "OnlineOpeningScenePlayModeTests",
+      "method": "AuthoredOpeningChoices",
+      "parameters": [
+        "True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063248358Z/results.xml"
     }
   ]
 }

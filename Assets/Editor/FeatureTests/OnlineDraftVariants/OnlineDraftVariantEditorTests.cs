@@ -43,7 +43,7 @@ public sealed class OnlineDraftVariantEditorTests
         Assert.That(gks.Select(c=>c.id).Distinct().Count(),Is.EqualTo(keepers=="Arcade"?1:4));
         var players=final.home.Concat(final.away).Where(c=>!c.goalkeeper).ToArray();Assert.That(players.Select(c=>c.id).Distinct().Count(),Is.EqualTo(mode=="Arcade"?1:players.Length));
         Submit(OnlineTeam.Home,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Ready);Submit(protocol.HostTeam,OnlineDraftIntent.Start);
-        Assert.That(authority.Capture().phase,Is.EqualTo("room-ready"));
+        Assert.That(authority.Capture().phase,Is.EqualTo("opening-roll"));
         var wire=new OnlineSessionWire();OnlineSessionMessage decoded=null;
         foreach(var packet in OnlineSessionWire.Encode(new OnlineSessionMessage{matchId=protocol.MatchId,kind="draft-state",draftState=authority.Capture()}))decoded=wire.Receive(packet,packet.Length)??decoded;
         Assert.That(decoded.draftState.home.Length,Is.EqualTo(size));

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CounterAttack.Online
 {
-    public enum OnlineDraftIntent { Roll, Pick, Swap, Ready, Unready, Start }
+    public enum OnlineDraftIntent { Roll, Pick, Swap, Ready, Unready, Start, Choose }
     [Serializable] public sealed class OnlineDraftCard
     {
         public string id,name,country,type;
@@ -17,6 +17,7 @@ namespace CounterAttack.Online
     {
         public string matchId,cardId;public long sequence,revision;
         public OnlineDraftIntent intent;public int slot,otherSlot;
+        public CoinTossChoice choice;
     }
     [Serializable] public sealed class OnlineDraftState
     {
@@ -24,6 +25,8 @@ namespace CounterAttack.Online
         public OnlineTeam turn,hostTeam,firstPicker;public bool connected,homeReady,awayReady;
         public int homeRoll,awayRoll,rollRound,batch,totalBatches;
         public bool freeSelection,repeatable;public string[] available;
+        public bool openingCanChooseKickoff,openingWinnerIsHome;
+        public MatchOpeningSetup openingSetup;
         public GameSettings settings;
         public OnlineDraftCard[] cards,home,away;
     }
@@ -98,13 +101,14 @@ namespace CounterAttack.Online
         private bool Allowed(OnlineDraftCard c,bool keeper)=>c.type?.Trim() switch
         {"TableTopia"=>keeper?settings.includeTabletopiaGK:settings.includeTabletopia,"Not TableTopia"=>keeper?settings.includeNonTabletopiaGK:settings.includeNonTabletopia,"World Cup"=>keeper?settings.includeInternationalsGK:settings.includeInternationals,_=>true};
         private void Observe()
-        {if(connections==protocol.ConnectionRevision)return;connections=protocol.ConnectionRevision;if(phase!="room-ready")homeReady=awayReady=false;revision++;}
+        {if(connections==protocol.ConnectionRevision)return;connections=protocol.ConnectionRevision;if(phase is "roll" or "pick" or "review")homeReady=awayReady=false;revision++;}
         public OnlineDraftState Capture()
         {
             Observe();return Copy(new OnlineDraftState{matchId=protocol.MatchId,revision=revision,connectionRevision=connections,homeSequence=homeSequence,awaySequence=awaySequence,
                 phase=phase,turn=turn,hostTeam=protocol.HostTeam,firstPicker=first,connected=protocol.BothConnected,homeReady=homeReady,awayReady=awayReady,
                 homeRoll=homeRoll,awayRoll=awayRoll,rollRound=round,batch=batch,totalBatches=(home.Length-2)/2,settings=settings,cards=visible.ToArray(),home=home,away=away,
-                selection=goalkeeperPhase?"goalkeepers":"outfielders",freeSelection=FreeSelection,repeatable=Repeatable,available=FreeSelection && phase is "pick" or "roll"?pool.Select(c=>c.id).ToArray():Array.Empty<string>()});
+                selection=goalkeeperPhase?"goalkeepers":"outfielders",freeSelection=FreeSelection,repeatable=Repeatable,available=FreeSelection && phase is "pick" or "roll"?pool.Select(c=>c.id).ToArray():Array.Empty<string>(),
+                openingCanChooseKickoff=opening?.CanChooseKickoff==true,openingWinnerIsHome=opening?.WinnerIsHome==true,openingSetup=opening?.Result});
         }
         public OnlineCommandReply Submit(string connection,OnlineDraftRequest request)
         {
@@ -122,7 +126,7 @@ namespace CounterAttack.Online
             switch(request.intent)
             {
                 case OnlineDraftIntent.Roll:
-                    if(phase!="roll")return Reply(OnlineCommandStatus.NotReady);
+                    if(phase is not ("roll" or "opening-roll"))return Reply(OnlineCommandStatus.NotReady);
                     if(actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
                     int result=die();if(result<1 || result>6)throw new InvalidOperationException("Invalid host die result");
                     if(actor==OnlineTeam.Home){homeRoll=result;turn=OnlineTeam.Away;}
@@ -130,6 +134,7 @@ namespace CounterAttack.Online
                     {
                         awayRoll=result;
                         if(homeRoll==awayRoll){homeRoll=awayRoll=0;round++;turn=OnlineTeam.Home;}
+                        else if(phase=="opening-roll"){opening=new CoinTossDecision(homeRoll>awayRoll);turn=opening.WinnerIsHome?OnlineTeam.Home:OnlineTeam.Away;phase="opening-choice";}
                         else{first=turn=homeRoll>awayRoll?OnlineTeam.Home:OnlineTeam.Away;phase="pick";if(!FreeSelection)Deal();}
                     }
                     break;
@@ -157,15 +162,23 @@ namespace CounterAttack.Online
                     break;
                 case OnlineDraftIntent.Swap:
                     int from=request.slot-1,to=request.otherSlot-1;
-                    if(phase=="roll" || from<0 || to<0 || from>=roster.Length || to>=roster.Length || from==to || ((from is 0 or 11)!=(to is 0 or 11)) || roster[from]==null)return Reply(OnlineCommandStatus.IllegalAction);
+                    if(phase is not ("pick" or "review") || from<0 || to<0 || from>=roster.Length || to>=roster.Length || from==to || ((from is 0 or 11)!=(to is 0 or 11)) || roster[from]==null)return Reply(OnlineCommandStatus.IllegalAction);
                     (roster[from],roster[to])=(roster[to],roster[from]);homeReady=awayReady=false;break;
                 case OnlineDraftIntent.Ready:
                     if(phase!="review" || home.Any(c=>c==null) || away.Any(c=>c==null))return Reply(OnlineCommandStatus.NotReady);
                     if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;break;
-                case OnlineDraftIntent.Unready:if(actor==OnlineTeam.Home)homeReady=false;else awayReady=false;break;
+                case OnlineDraftIntent.Unready:
+                    if(phase is "opening-roll" or "opening-choice")return Reply(OnlineCommandStatus.NotReady);
+                    if(actor==OnlineTeam.Home)homeReady=false;else awayReady=false;break;
                 case OnlineDraftIntent.Start:
                     if(actor!=protocol.HostTeam)return Reply(OnlineCommandStatus.WrongTeam);
-                    if(phase!="review" || !homeReady || !awayReady)return Reply(OnlineCommandStatus.NotReady);phase="room-ready";break;
+                    if(phase!="review" || !homeReady || !awayReady)return Reply(OnlineCommandStatus.NotReady);
+                    phase="opening-roll";homeRoll=awayRoll=0;round=1;turn=OnlineTeam.Home;break;
+                case OnlineDraftIntent.Choose:
+                    if(phase!="opening-choice" || opening==null)return Reply(OnlineCommandStatus.NotReady);
+                    if(actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
+                    if(!opening.Choose(request.choice))return Reply(OnlineCommandStatus.IllegalAction);
+                    turn=opening.ChoosingHome?OnlineTeam.Home:OnlineTeam.Away;if(opening.IsComplete)phase="room-ready";break;
             }
             revision++;if(actor==OnlineTeam.Home)homeSequence=request.sequence;else awaySequence=request.sequence;
             receipts.Add(key,(body,revision));receiptOrder.Enqueue(key);while(receiptOrder.Count>128)receipts.Remove(receiptOrder.Dequeue());return Reply(OnlineCommandStatus.Accepted);

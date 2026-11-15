@@ -417,3 +417,7 @@ Variants: EditMode `OnlineDraftVariantEditorTests` (38),
 `OnlineDraftVariantScenePlayModeTests` (10). Use explicit fixture/testName filters,
 not whole suites. Each folder's Verification.md records native run evidence and
 remaining boundaries. Mac/paired execution remains explicitly deferred.
+
+Opening toss filters: `OnlineOpeningEditorTests` (20 EditMode),
+`OnlineOpeningScenePlayModeTests` (4 PlayMode). Regular/variant Start assertions
+now lead into opening-roll; the opening fixture verifies room-ready continuation.

@@ -1,0 +1,38 @@
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Free Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,16,\"Arcade\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Free Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(False,18,\"Arcade\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Free Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,16,\"Arcade\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Free Regular\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Deal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Free\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.AllRegularModeCombinations(True,18,\"Arcade\",\"Arcade\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftVariantEditorTests.InternationalRostersUseRealNationalCards(True)","status":"Passed","message":"","stackTrace":""}

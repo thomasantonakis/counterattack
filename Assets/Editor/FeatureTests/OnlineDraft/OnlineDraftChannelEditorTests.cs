@@ -69,7 +69,7 @@ public sealed class OnlineDraftChannelEditorTests
         if(branch=="pick"){Assert.That(before.home[1],Is.Not.Null);Assert.That(before.cards.Length,Is.EqualTo(3));Assert.That(host.Draft.Capture().revision,Is.EqualTo(before.revision));return;}
         while(host.Draft.Capture().phase=="pick")Pick();
         Assert.That(host.Draft.Request(OnlineDraftIntent.Ready),Is.True);Flush();Assert.That(guest.Draft.Request(OnlineDraftIntent.Ready),Is.True);Flush();
-        Assert.That(host.Draft.Request(OnlineDraftIntent.Start),Is.True);Flush();Assert.That(guest.Draft.Capture().phase,Is.EqualTo("room-ready"));
+        Assert.That(host.Draft.Request(OnlineDraftIntent.Start),Is.True);Flush();Assert.That(guest.Draft.Capture().phase,Is.EqualTo("opening-roll"));
         Assert.That(guest.Draft.Capture().home.Concat(guest.Draft.Capture().away).Select(c=>c.id).Distinct().Count(),Is.EqualTo(32));
     }
 }

@@ -25,7 +25,8 @@ namespace CounterAttack.Online
         {
             if(s==null || s.matchId!=matchId || s.revision<0 || s.connectionRevision<0 || s.homeSequence<0 || s.awaySequence<0
                 || !Enum.IsDefined(typeof(OnlineTeam),s.hostTeam) || !Enum.IsDefined(typeof(OnlineTeam),s.turn)
-                || !new[]{"roll","pick","review","room-ready"}.Contains(s.phase) || !string.IsNullOrEmpty(OnlineSetupRules.Validate(s.settings)))return false;
+                || !new[]{"roll","pick","review","opening-roll","opening-choice","room-ready"}.Contains(s.phase) || !string.IsNullOrEmpty(OnlineSetupRules.Validate(s.settings)))return false;
+            if(s.phase=="room-ready" && s.openingSetup==null)return false;
             if(!int.TryParse(s.settings.squadSize,out int size) || s.home?.Length!=size || s.away?.Length!=size || s.cards==null)return false;
             var all=s.home.Concat(s.away).Concat(s.cards).Where(c=>c!=null).ToArray();
             if(all.Any(c=>!OnlineProtocolIds.IsValid(c.id) || string.IsNullOrWhiteSpace(c.name)))return false;
@@ -41,10 +42,10 @@ namespace CounterAttack.Online
             if(state!=null && state.connectionRevision!=snapshot.connectionRevision)Pending=false;
             state=OnlineDraftAuthority.Copy(snapshot);sequence=Math.Max(sequence,Team==OnlineTeam.Home?state.homeSequence:state.awaySequence);Changed?.Invoke();return true;
         }
-        public bool Request(OnlineDraftIntent intent,string cardId=null,int slot=0,int otherSlot=0)
+        public bool Request(OnlineDraftIntent intent,string cardId=null,int slot=0,int otherSlot=0,CoinTossChoice choice=CoinTossChoice.Kickoff)
         {
             if(!Connected || Pending || state.phase=="room-ready" || Requested==null || !Enum.IsDefined(typeof(OnlineDraftIntent),intent))return false;
-            var request=new OnlineDraftRequest{matchId=matchId,revision=state.revision,sequence=checked(++sequence),intent=intent,cardId=cardId,slot=slot,otherSlot=otherSlot};
+            var request=new OnlineDraftRequest{matchId=matchId,revision=state.revision,sequence=checked(++sequence),intent=intent,cardId=cardId,slot=slot,otherSlot=otherSlot,choice=choice};
             pendingSequence=request.sequence;Pending=true;Changed?.Invoke();Requested(request);return true;
         }
         public bool Receive(long replySequence,OnlineCommandStatus status,OnlineDraftState snapshot)

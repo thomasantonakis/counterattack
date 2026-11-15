@@ -78,7 +78,7 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(host.Draft.Capture().phase,Is.EqualTo("review"));Assert.That(view.actionButton.interactable,Is.True);
             view.actionButton.onClick.Invoke();Flush();var other=localHost?guest.Draft:host.Draft;other.Request(OnlineDraftIntent.Ready);Flush();
             if(localHost)view.actionButton.onClick.Invoke();else host.Draft.Request(OnlineDraftIntent.Start);Flush();
-            Assert.That(client.Capture().phase,Is.EqualTo("room-ready"));Assert.That(view.actionButton.interactable,Is.False);
+            Assert.That(client.Capture().phase,Is.EqualTo("opening-roll"));Assert.That(view.actionButton.interactable,Is.EqualTo(client.Team==OnlineTeam.Home));
         }
         Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(explicitSave));
         Assert.That(Object.FindObjectsByType<OnlineDraftClickTarget>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length,Is.EqualTo(40),"Projection uses authored controls only");

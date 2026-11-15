@@ -496,3 +496,13 @@ transport16 and scene20 also passed. Compilation separately clean. Mac manifest
 has separate entries and refreshed hashes. See OnlineDraftVariants/Verification.md.
 Frontend rules v3. Next opening coin toss, full Room initialization/roster and
 normal menus; online Arcade returns remain outstanding. Exports predate Draft.
+
+Opening coin toss now follows roster confirmation: owned host-resolved rolls,
+re-roll ties, real CoinTossDecision kickoff/direction choices and opponent
+continuation, frozen rosters and recovery preservation. 24 new cases passed
+(20 rules,4 actual scene); affected Draft40/transport16/variants38/scene20 passed.
+Compilation separately clean. Mac cases registered individually; older definition
+hashes/evidence refreshed for changed Start expectations. Frontend rules v4.
+See OnlineOpeningSetup/Verification.md. Next full Room initialization/roster and
+runtime transport, normal pause/substitution/shootout UI; Arcade returns remain.
+No full remote match start is claimed. Windows exports predate Draft/opening.
