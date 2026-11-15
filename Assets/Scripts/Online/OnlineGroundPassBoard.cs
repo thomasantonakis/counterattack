@@ -86,7 +86,7 @@ namespace CounterAttack.Online
                 if(liveFullRoom && !OnlineRoomSession.IsGuest)break;
                 var index = Array.FindIndex(tokens, t => (t.isHomeTeam ? "home:" : "away:") + t.jerseyNumber == token.id);
                 EOSProofCheck.Require(index >= 0, "Published roster must match the authored board");
-                displayedTokens[index].gameObject.SetActive(token.onBoard);
+                displayedTokens[index].gameObject.SetActive(liveFullRoom?token.visible:token.onBoard);
                 if (token.onBoard) displayedTokens[index].position = Center(token.x, token.z) + Vector3.up * (liveFullRoom?.2f:.5f);
             }
             if(!liveFullRoom || OnlineRoomSession.IsGuest)

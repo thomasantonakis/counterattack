@@ -4,6 +4,7 @@ using CounterAttack.Online;
 using UnityEngine;
 public partial class MatchManager
 {
+    public RoomTokenSnapshot CaptureOnlineRosterToken(PlayerToken token)=>CreateTokenSnapshot(token);
     public void InitializeAuthoredOnlineMatch(GameData initial)
     {
         if(initial?.openingSetup==null || initial.gameSettings?.gameMode!=ApplicationManager.OnlineGameMode)throw new ArgumentException("An agreed online opening is required",nameof(initial));
@@ -25,24 +26,46 @@ public partial class MatchManager
         attackHasPossession=state.attackHasPossession;currentHalf=state.half;currentHalfRegulationSeconds=state.regulationSeconds;isClockRunning=state.clockRunning;
         gameData.stats.homeTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.homeStats));
         gameData.stats.awayTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.awayStats));
+        if(state.catalogId==OnlineFullRoomBootstrap.Catalog)
+        {
+            homeTeamDirection=Enum.Parse<TeamAttackingDirection>(state.homeDirection);awayTeamDirection=Enum.Parse<TeamAttackingDirection>(state.awayDirection);
+            areSubstitutionsAvailable=state.substitutionsAvailable;substitutionsAvailabilityReason=state.substitutionsReason;
+            InitializeSubstitutionCountsFromStats();
+        }
         BeginGameplayEventLoggingSuppression();
         try
         {
             foreach(var cell in hexGrid.cells){cell.occupyingToken=null;cell.isAttackOccupied=cell.isDefenseOccupied=false;}
-            var tokens=playerTokenManager.allTokens.Concat(playerTokenManager.benchTokens).ToArray();
+            var tokens=playerTokenManager.AuthoredOnlineRoster??playerTokenManager.allTokens.Concat(playerTokenManager.benchTokens).ToArray();
             foreach(var token in tokens)token.SetCurrentHex(null);
             foreach(var item in state.tokens)
             {
-                var token=tokens.FirstOrDefault(t=>OnlineRollPublication.ActorId(t)==item.id);if(token==null || !item.onBoard)continue;
+                var token=tokens.FirstOrDefault(t=>OnlineRollPublication.ActorId(t)==item.id);if(token==null)continue;
+                if(item.runtime!=null)
+                {
+                    var current=item.onBoard?hexGrid.GetHexCellAt(new Vector3Int(item.x,0,item.z)):null;
+                    if(current!=null){current.isAttackOccupied=item.runtime.isAttacker;current.isDefenseOccupied=!item.runtime.isAttacker;}
+                    token.RestoreRuntimeState(item.runtime,current,new Vector3(item.inactiveX,item.inactiveY,item.inactiveZ));
+                    token.gameObject.SetActive(item.visible);gameData.stats.GetPlayerStats(token);
+                    gameData.stats.playerStats.First(entry=>entry.playerKey==GetStableTokenKey(token)).stats=JsonUtility.FromJson<PlayerStats>(JsonUtility.ToJson(item.playerStats));
+                    continue;
+                }
+                if(!item.onBoard)continue;
                 var hex=hexGrid.GetHexCellAt(new Vector3Int(item.x,0,item.z));if(hex==null)continue;
                 token.isAttacker=token.isHomeTeam==(teamInAttack==TeamInAttack.Home);hex.isAttackOccupied=token.isAttacker;hex.isDefenseOccupied=!token.isAttacker;token.SetCurrentHex(hex);
             }
             if(state.ballOnBoard)ball.PlaceAtCell(hexGrid.GetHexCellAt(new Vector3Int(state.ballX,0,state.ballZ)));
             LastTokenToTouchTheBallOnPurpose=tokens.FirstOrDefault(t=>OnlineRollPublication.ActorId(t)==state.lastTouch);
+            if(playerTokenManager.AuthoredOnlineRoster!=null)
+            {
+                playerTokenManager.allTokens=tokens.Where(t=>t.isPlaying && !t.isSentOff).ToList();
+                playerTokenManager.benchTokens=tokens.Where(t=>!t.isPlaying && !t.isSentOff).ToList();
+            }
         }
         finally{EndGameplayEventLoggingSuppression();}
         foreach(var item in state.tokens)
         {
+            if(item.runtime!=null)continue;
             var token=playerTokenManager.allTokens.Concat(playerTokenManager.benchTokens).FirstOrDefault(t=>OnlineRollPublication.ActorId(t)==item.id);
             if(token==null)continue;
             var stats=gameData.stats.GetPlayerStats(token);stats.passesAttempted=item.passesAttempted;stats.passesCompleted=item.passesCompleted;

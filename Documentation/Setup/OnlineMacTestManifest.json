@@ -244,6 +244,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "categories": [
+        "OnlineRosterReplication"
+      ],
+      "definition_sha256": "548a6b6bb0c62f97da16ed90d38b2e082acc85ac66518efc44473654448efc91",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRosterReplication/OnlineRosterReplicationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRoundTripStatisticsEditorTests",
       "categories": [
         "OnlineSessionTransport"
@@ -682,6 +692,16 @@
       "definition_sha256": "bac55f01fbea201313d87806e4d8d351faf29178ec4b7389184a7244348578ab",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineRosterPresentation/OnlineRosterPresentationPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRosterReplicationPlayModeTests",
+      "categories": [
+        "OnlineRosterReplication"
+      ],
+      "definition_sha256": "444050caa65c3836596db50d7c81b8c36316c97b796a1bef578d8e236eed163a",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRosterReplication/OnlineRosterReplicationPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -7944,6 +7964,227 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"missing-runtime\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"missing-runtime\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"identity\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"identity\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"duplicate-hex\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"duplicate-hex\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"inconsistent-hex\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"inconsistent-hex\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"sent-off-visible\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"sent-off-visible\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"direction\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"direction\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"non-finite-world\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"non-finite-world\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"non-finite-stat\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"non-finite-stat\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"attribute\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"attribute\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"roster\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"roster\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"team-stats\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"team-stats\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"ball-bounds\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"ball-bounds\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"clock\")",
+      "feature": "OnlineRosterReplication",
+      "mode": "editor",
+      "fixture": "OnlineRosterReplicationEditorTests",
+      "method": "RejectsMalformedRosterWithoutAdvancingReplica",
+      "parameters": [
+        "\"clock\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(16,False)",
+      "feature": "OnlineRosterReplication",
+      "mode": "playmode",
+      "fixture": "OnlineRosterReplicationPlayModeTests",
+      "method": "FullRosterChangesReachInertGuest",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T183246669Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(16,True)",
+      "feature": "OnlineRosterReplication",
+      "mode": "playmode",
+      "fixture": "OnlineRosterReplicationPlayModeTests",
+      "method": "FullRosterChangesReachInertGuest",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T183246669Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(18,False)",
+      "feature": "OnlineRosterReplication",
+      "mode": "playmode",
+      "fixture": "OnlineRosterReplicationPlayModeTests",
+      "method": "FullRosterChangesReachInertGuest",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T183246669Z/results.xml"
+    },
+    {
+      "id": "OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(18,True)",
+      "feature": "OnlineRosterReplication",
+      "mode": "playmode",
+      "fixture": "OnlineRosterReplicationPlayModeTests",
+      "method": "FullRosterChangesReachInertGuest",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T183246669Z/results.xml"
     }
   ]
 }

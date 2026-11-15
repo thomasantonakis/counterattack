@@ -72,7 +72,7 @@ public sealed class OnlineFullRoomSceneFixture
         app=ApplicationManager.Instance;created=app==null;if(created){ApplicationManager.EnsureInstanceExists();app=ApplicationManager.Instance;}
         CaptureGlobals();previousPath=app.LastSavedFileName;previousExplicit=app.HasExplicitSaveContext;previousMode=app.SelectedRoomGameMode;app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);Time.timeScale=1;
         directory=Path.Combine(Path.GetTempPath(),"CounterattackFullRoom",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
-        var data=Data(size,mirror);yield return Load(data,branch=="replica"?false:guest);
+        var data=Data(size,mirror);yield return Load(data,branch is "replica" or "status"?false:guest);
         var bootstrap=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>();Assert.That(bootstrap.Ready,Is.True);var board=bootstrap.board;
         Assert.That(board.cells.Length,Is.EqualTo(1900));Assert.That(board.cells.All(c=>c.GetComponent<MeshFilter>()?.sharedMesh!=null),Is.True);
         Assert.That(board.grid.IsGridInitialized(),Is.True);Assert.That(board.tokens.Length,Is.EqualTo(size*2));
@@ -88,12 +88,14 @@ public sealed class OnlineFullRoomSceneFixture
         var version=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);var protocol=new OnlineMatchProtocol("full-room-scene","home","away","away",version);
         protocol.BindAuthenticatedAccount("home","h",version);protocol.BindAuthenticatedAccount("away","a",version);
         if(!OnlineRoomSession.IsGuest)pause=new OnlineSharedPause(protocol,board.match);
-        if(branch=="replica")
+        if(branch is "replica" or "status")
         {
+            if(branch=="status")PrepareRosterStatus(board);
             var authority=new OnlineGroundPassAuthority(board.match,protocol);var published=authority.Capture();
             Assert.That(published.tokens.Length,Is.EqualTo(size*2));
             published.homeStats.totalGoals=2;published.awayStats.totalGoals=1;published.regulationSeconds=123;published.half=1;
             var moved=published.tokens.First(t=>t.id=="home:2");moved.x=mirror?12:-12;moved.z=4;
+            if(moved.runtime!=null){moved.runtime.currentHex.x=moved.x;moved.runtime.currentHex.z=moved.z;}
             pause.Dispose();pause=null;
             yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));session.Dispose();session=null;MatchManager.Instance=null;
             yield return Load(data,true);board=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
@@ -105,6 +107,15 @@ public sealed class OnlineFullRoomSceneFixture
             Assert.That(board.liveScoreboard.homeScoreText.text,Is.EqualTo("2"));Assert.That(board.liveScoreboard.awayScoreText.text,Is.EqualTo("1"));
             Assert.That(board.authorityRoot.activeSelf,Is.False);Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.TimingRollSequence,Is.Zero);
             Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null,"Replica projection must not create an authority clock");
+            if(branch=="status")
+            {
+                AssertRosterStatus(board,data,mirror);
+                session.Dispose();session=null;
+                var banner=Object.FindAnyObjectByType<MatchEventBannerController>();
+                Assert.That(banner,Is.Not.Null);
+                typeof(MatchEventBannerController).GetMethod("Update",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(banner,null);
+                Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null,"Closing a replica must not turn its presentation into an authority clock");
+            }
             yield break;
         }
         Assert.That(board.authorityRoot.activeSelf,Is.EqualTo(!guest));
@@ -123,6 +134,32 @@ public sealed class OnlineFullRoomSceneFixture
             Assert.That(hostAuthority.Capture().passActive,Is.True);Assert.That(hostAuthority.Capture().awaitingTarget,Is.True,"Kickoff automatically commits its required standard pass");
             Assert.That(board.match.ball.GetCurrentHex().GetOccupyingToken(),Is.Not.Null);
         }
+    }
+    private static void PrepareRosterStatus(OnlineGroundPassBoard board)
+    {
+        PlayerToken Token(bool home,int number)=>board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==number);
+        Token(true,2).ReceiveYellowCard();Token(true,2).ReceiveInjury();Token(true,4).MarkSentOff();
+        board.match.playerTokenManager.RemoveActiveToken(Token(true,4));Token(false,5).ConvertToGK();
+        var outgoing=Token(true,6);var incoming=Token(true,13);var hex=outgoing.GetCurrentHex();var bench=incoming.transform.position;
+        board.match.SetSubstitutionsAvailable(true,"Owned goal-boundary fixture");Assert.That(board.match.RegisterSubstitution(outgoing,incoming,out var reason),Is.True,reason);
+        board.match.playerTokenManager.MoveActiveTokenToBenchSlot(outgoing,bench);board.match.playerTokenManager.MoveBenchTokenToActive(incoming);
+        incoming.isAttacker=outgoing.isAttacker;hex.occupyingToken=null;hex.isAttackOccupied=incoming.isAttacker;hex.isDefenseOccupied=!incoming.isAttacker;incoming.SetCurrentHex(hex);incoming.transform.position=hex.GetHexCenter()+Vector3.up*.2f;
+        var stats=board.match.gameData.stats.GetPlayerStats(Token(true,2));stats.goals=2;stats.shotsAttempted=3;stats.shotsOnTarget=2;stats.pacesRan=7;
+        (board.match.homeTeamDirection,board.match.awayTeamDirection)=(board.match.awayTeamDirection,board.match.homeTeamDirection);
+    }
+    private static void AssertRosterStatus(OnlineGroundPassBoard board,MatchManager.GameData initial,bool mirror)
+    {
+        PlayerToken Token(bool home,int number)=>board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==number);
+        var injured=Token(true,2);Assert.That(injured.isBooked,Is.True);Assert.That(injured.isInjured,Is.True);
+        Assert.That(injured.pace,Is.EqualTo(Mathf.Max(0,initial.rosters.home["2"].pace-1)));
+        Assert.That(Token(true,4).isSentOff,Is.True);Assert.That(Token(true,4).gameObject.activeSelf,Is.False);
+        Assert.That(Token(false,5).IsGoalKeeper,Is.True);Assert.That(Token(false,5).saving,Is.Zero);
+        Assert.That(Token(true,6).wasSubbedOff,Is.True);Assert.That(Token(true,6).isPlaying,Is.False);Assert.That(Token(true,6).gameObject.activeSelf,Is.True,"An authored bench remains visible to both managers");
+        Assert.That(Token(true,13).wasSubbedOn,Is.True);Assert.That(Token(true,13).isPlaying,Is.True);Assert.That(Token(true,13).GetCurrentHex().occupyingToken,Is.SameAs(Token(true,13)));
+        Assert.That(board.match.playerTokenManager.allTokens.Contains(Token(true,13)),Is.True);Assert.That(board.match.playerTokenManager.benchTokens.Contains(Token(true,6)),Is.True);
+        Assert.That(board.match.GetSubstitutionsUsed(true),Is.EqualTo(1));
+        Assert.That(board.match.homeTeamDirection,Is.EqualTo(mirror?MatchManager.TeamAttackingDirection.LeftToRight:MatchManager.TeamAttackingDirection.RightToLeft));
+        var stats=board.match.gameData.stats.GetPlayerStats(injured);Assert.That(stats.goals,Is.EqualTo(2));Assert.That(stats.shotsAttempted,Is.EqualTo(3));Assert.That(stats.shotsOnTarget,Is.EqualTo(2));Assert.That(stats.pacesRan,Is.EqualTo(7));
     }
     private IEnumerator RunTransport(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,int size)
     {

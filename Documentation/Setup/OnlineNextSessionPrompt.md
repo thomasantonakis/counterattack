@@ -10,7 +10,10 @@ actual-scene cases passed, including final isolation verification. Native
 frontend ? full Room handoff has 13 lifecycle and four encoded kickoff passes;
 seven affected manual-control and 12 frontend-entry cases also passed. All three
 Windows exports and packaged proof local/login checks succeeded.
-Next integrate normal pause/substitution/shootout controls. Full-match internet acceptance and measured
+Roster status contract v2 has 13 validation and four real-scene projection passes:
+bookings/injuries, bench changes, converted keepers, directions and player stats.
+Next integrate normal pause/substitution/shootout controls and preserve in-flight
+visual poses across timed snapshots. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.
 

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public partial class PlayerTokenManager
 {
+    public PlayerToken[] AuthoredOnlineRoster {get;private set;}
     public PlayerToken[] BindAuthoredOnlineRoster(PlayerToken[] authored,MatchManager.GameData data)
     {
         var active=new List<PlayerToken>();allTokens.Clear();benchTokens.Clear();
@@ -32,6 +33,7 @@ public partial class PlayerTokenManager
                 active.Add(token);
             }
         }
-        return active.ToArray();
+        AuthoredOnlineRoster=active.ToArray();
+        return AuthoredOnlineRoster;
     }
 }

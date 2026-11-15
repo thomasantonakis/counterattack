@@ -16,6 +16,7 @@ namespace CounterAttack.Online
         public static OnlineCompatibility Compatibility()
         {
             using var hash=SHA256.Create();var text=new StringBuilder();
+            text.Append("Room contract:").Append(OnlineFullRoomBootstrap.Catalog).Append('\n');
             foreach(string resource in new[]{"outfield_players","goalkeepers","Kits/kit-picker-v1-11-supported"})
             {
                 var asset=Resources.Load<TextAsset>(resource);

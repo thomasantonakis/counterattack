@@ -1,0 +1,10 @@
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"missing-runtime\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"identity\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"duplicate-hex\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"inconsistent-hex\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"sent-off-visible\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"direction\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"non-finite-world\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"non-finite-stat\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"attribute\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"roster\")","status":"Passed","message":"","stackTrace":""}

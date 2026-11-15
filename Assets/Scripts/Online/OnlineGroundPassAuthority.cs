@@ -11,6 +11,10 @@ namespace CounterAttack.Online
         public string id;
         public int x, z;
         public bool onBoard;
+        public RoomTokenSnapshot runtime;
+        public MatchManager.PlayerStats playerStats;
+        public bool visible;
+        public float inactiveX,inactiveY,inactiveZ;
         public int passesAttempted, passesCompleted, interceptionsAttempted, interceptionsMade, possessionWon, possessionLost;
         public int aerialPassesAttempted, aerialPassesTargeted, aerialPassesCompleted;
     }
@@ -20,6 +24,8 @@ namespace CounterAttack.Online
     public sealed class OnlineGroundPassState
     {
         public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester, catalogId;
+        public string homeDirection,awayDirection,substitutionsReason;
+        public bool substitutionsAvailable;
         public long revision, publicationSequence, rollSequence, sharedPauseRevision;
         public long homeAcceptedSequence, awayAcceptedSequence, homePauseSequence, awayPauseSequence;
         public bool isSharedPaused, connectionHeld;
@@ -63,6 +69,7 @@ namespace CounterAttack.Online
         [Serializable] private sealed class Boundary
         {
             public string stage, owner, gameState, possession, lastTouch;
+            public string homeDirection,awayDirection;
             public bool ballOnBoard, ballMoving, selected, interceptor, paused, connectionHeld;
             public bool movementActive, playerMoving;
             public string selectedPlayer;
@@ -95,6 +102,7 @@ namespace CounterAttack.Online
             var next = JsonUtility.ToJson(state);
             var boundary = JsonUtility.ToJson(new Boundary { stage=state.stage, owner=state.owner, gameState=state.gameState,
                 possession=state.possessionTeam, lastTouch=state.lastTouch, ballOnBoard=state.ballOnBoard, ballMoving=state.ballMoving,
+                homeDirection=state.homeDirection,awayDirection=state.awayDirection,
                 ballX=state.ballX, ballZ=state.ballZ, selected=state.hasSelectedTarget, selectedX=state.selectedX, selectedZ=state.selectedZ,
                 interceptor=state.hasInterceptor, interceptorX=state.interceptorX, interceptorZ=state.interceptorZ,
                 paused=state.isSharedPaused, pauseRevision=state.sharedPauseRevision, connectionHeld=state.connectionHeld,
@@ -170,6 +178,10 @@ namespace CounterAttack.Online
             var state = new OnlineGroundPassState
             {
                 catalogId = protocol.Compatibility.Catalog,
+                homeDirection=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.homeTeamDirection.ToString():null,
+                awayDirection=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.awayTeamDirection.ToString():null,
+                substitutionsAvailable=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.AreSubstitutionsAvailable,
+                substitutionsReason=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.SubstitutionsAvailabilityReason:null,
                 rolls = match.CaptureOnlineRolls(),
                 header = CaptureHeaderObservation(),
                 homeAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Home),
@@ -208,7 +220,7 @@ namespace CounterAttack.Online
                 selectedPlayer = TokenId(match.movementPhaseManager?.selectedToken),
                 firstTimePassAvailable = match.firstTimePassManager?.isAvailable == true,
                 groundPassAvailable = ground.isAvailable,
-                tokens = (protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.playerTokenManager.allTokens.Concat(match.playerTokenManager.benchTokens):match.playerTokenManager.allTokens).Where(t => t != null).Distinct().Select(ReadToken)
+                tokens = RosterForPublication().Where(t => t != null).Distinct().Select(ReadToken)
                     .OrderBy(t => t.id, StringComparer.Ordinal).ToArray()
             };
             var actions = new List<string>();
@@ -283,6 +295,12 @@ namespace CounterAttack.Online
             return state;
         }
 
+        private IEnumerable<PlayerToken> RosterForPublication()
+        {
+            if(protocol.Compatibility.Catalog!=OnlineFullRoomBootstrap.Catalog)return match.playerTokenManager.allTokens;
+            return match.playerTokenManager.AuthoredOnlineRoster!=null?match.playerTokenManager.AuthoredOnlineRoster
+                :match.playerTokenManager.allTokens.Concat(match.playerTokenManager.benchTokens);
+        }
         private OnlineGroundPassTokenState ReadToken(PlayerToken token)
         {
             var hex = token.GetCurrentHex();
@@ -293,6 +311,10 @@ namespace CounterAttack.Online
             {
                 id = TokenId(token), onBoard = hex != null, x = hex == null ? 0 : hex.coordinates.x,
                 z = hex == null ? 0 : hex.coordinates.z,
+                runtime=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.CaptureOnlineRosterToken(token):null,
+                playerStats=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?JsonUtility.FromJson<MatchManager.PlayerStats>(JsonUtility.ToJson(stats??new MatchManager.PlayerStats())):null,
+                visible=token.gameObject.activeSelf,
+                inactiveX=hex==null?token.transform.position.x:0,inactiveY=hex==null?token.transform.position.y:0,inactiveZ=hex==null?token.transform.position.z:0,
                 passesAttempted = stats?.passesAttempted ?? 0, passesCompleted = stats?.passesCompleted ?? 0,
                 interceptionsAttempted = stats?.interceptionsAttempted ?? 0, interceptionsMade = stats?.interceptionsMade ?? 0,
                 possessionWon = stats?.possessionWon ?? 0, possessionLost = stats?.possessionLost ?? 0
