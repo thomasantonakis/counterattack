@@ -85,6 +85,7 @@ public sealed class OnlineFullRoomSceneFixture
             Assert.That(token.playerName,Is.EqualTo(entry.name));Assert.That(token.pace,Is.EqualTo(entry.pace));Assert.That(token.IsGoalKeeper,Is.EqualTo(token.jerseyNumber is 1 or 12));
             if(token.jerseyNumber<=11){Assert.That(token.GetCurrentHex()?.occupyingToken,Is.SameAs(token));Assert.That(token.GetCurrentHex().isAttackOccupied,Is.EqualTo(token.isAttacker));}
         }
+        if(branch.StartsWith("menu")){yield return RunMenu(board,guest,mirror,branch);yield break;}
         var version=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);var protocol=new OnlineMatchProtocol("full-room-scene","home","away","away",version);
         protocol.BindAuthenticatedAccount("home","h",version);protocol.BindAuthenticatedAccount("away","a",version);
         if(!OnlineRoomSession.IsGuest)pause=new OnlineSharedPause(protocol,board.match);
@@ -134,6 +135,42 @@ public sealed class OnlineFullRoomSceneFixture
             Assert.That(hostAuthority.Capture().passActive,Is.True);Assert.That(hostAuthority.Capture().awaitingTarget,Is.True,"Kickoff automatically commits its required standard pass");
             Assert.That(board.match.ball.GetCurrentHex().GetOccupyingToken(),Is.Not.Null);
         }
+    }
+    private IEnumerator RunMenu(OnlineGroundPassBoard board,bool guest,bool own,string branch)
+    {
+        Assert.That(board.menu,Is.Not.Null,"Menu controls must exist in the authored scene");var menu=board.menu;
+        var scaler=menu.GetComponentInParent<UnityEngine.UI.CanvasScaler>();Assert.That(scaler.uiScaleMode,Is.EqualTo(UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize));
+        if(branch=="menu-leave")
+        {
+            string path=app.GetLastSavedFilePath();var sentinel=File.ReadAllBytes(path);
+            menu.leaveButton.onClick.Invoke();yield return null;
+            Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("MainMenu"));Assert.That(OnlineRoomSession.Current,Is.Null);
+            Assert.That(File.ReadAllBytes(path),Is.EqualTo(sentinel),"Leaving an injected online Room cannot flush into the previous local save");yield break;
+        }
+        var compatibility=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);
+        var protocol=new OnlineMatchProtocol("full-room-scene","home","away","away",compatibility);
+        protocol.BindAuthenticatedAccount("home","h",compatibility);protocol.BindAuthenticatedAccount("away","a",compatibility);
+        var state=new OnlineGroundPassAuthority(board.match,protocol).Capture();var sent=new List<OnlineGroundPassMessage>();
+        void Requested(OnlineGroundPassMessage message)=>sent.Add(message);
+        board.controls.Configure(board.localTeam);board.controls.Requested+=Requested;
+        try
+        {
+            board.Display(state,"Owned menu fixture");Assert.That(menu.pauseButton.interactable,Is.True);
+            menu.pauseButton.onClick.Invoke();Assert.That(sent.Count,Is.EqualTo(1));Assert.That(sent[0].actionId,Is.EqualTo(OnlineSharedPause.RequestAction));
+            board.controls.Reply(new OnlineGroundPassMessage{status="Accepted"});state.isSharedPaused=true;state.sharedPauseRevision=1;
+            state.pauseRequester=(own?board.localTeam:board.localTeam==OnlineTeam.Home?OnlineTeam.Away:OnlineTeam.Home).ToString();
+            board.Display(state,"Owned menu fixture");Assert.That(board.sharedPausePanel.activeSelf,Is.True);Assert.That(menu.resumeButton.interactable,Is.EqualTo(own));
+            Assert.That(board.requesterPauseMessage.activeSelf,Is.EqualTo(own));Assert.That(board.passivePauseMessage.activeSelf,Is.EqualTo(!own));
+            Assert.That(menu.settings.text,Does.Contain(board.match.gameData.gameSettings.homeTeamName));Assert.That(menu.settings.text,Does.Contain(board.match.gameData.gameSettings.weatherConditions));
+            Canvas.ForceUpdateCanvases();Assert.That(menu.settings.preferredHeight,Is.LessThanOrEqualTo(menu.settings.rectTransform.rect.height),"Settings must fit their authored text area");
+            menu.resumeButton.onClick.Invoke();Assert.That(sent.Count,Is.EqualTo(own?2:1));if(own)Assert.That(sent[1].actionId,Is.EqualTo(OnlineSharedPause.ResumeAction));
+            board.controls.Reply(new OnlineGroundPassMessage{status="Accepted"});state.connectionHeld=true;board.Display(state,"Reconnecting");
+            Assert.That(menu.resumeButton.interactable,Is.False);Assert.That(menu.pauseButton.interactable,Is.False);Assert.That(menu.leaveButton.interactable,Is.True);Assert.That(menu.status.text,Does.Contain("Reconnecting"));
+            Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.TimingRollSequence,Is.Zero);
+            if(guest)Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);
+        }
+        finally{board.controls.Requested-=Requested;}
+        yield return null;
     }
     private static void PrepareRosterStatus(OnlineGroundPassBoard board)
     {

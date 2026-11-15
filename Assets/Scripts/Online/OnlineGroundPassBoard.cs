@@ -17,6 +17,7 @@ namespace CounterAttack.Online
         public bool continuousManualSession;
         public bool liveFullRoom;
         public ScoreboardManager liveScoreboard;
+        public OnlineRoomMenu menu;
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
@@ -77,10 +78,11 @@ namespace CounterAttack.Online
         {
             if (controls != null) controls.Display(state);
             if(liveFullRoom && OnlineRoomSession.IsGuest){match.ApplyOnlineReplicaMatchState(state);liveScoreboard?.RefreshPublishedOnlineState();}
-            if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused);
+            if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused || liveFullRoom && state.connectionHeld);
             var requester = state.isSharedPaused && state.pauseRequester == localTeam.ToString();
             if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
             if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);
+            menu?.Display(state);
             foreach (var token in state.tokens)
             {
                 if(liveFullRoom && !OnlineRoomSession.IsGuest)break;

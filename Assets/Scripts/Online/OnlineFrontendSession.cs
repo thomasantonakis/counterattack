@@ -268,6 +268,9 @@ namespace CounterAttack.Online
         {
             if(stop)return;stop=true;Status="Closing the online session...";
             try{channel?.Leave();if(native?.Platform!=null && outgoing.Count>0)Flush();}catch(Exception error){Debug.LogWarning("Online leave: "+error.Message);}
+            // A menu may unload Room in this same call stack. Release subscriptions,
+            // holds and coroutines before any scene-owned controls are destroyed.
+            try{StopRoom();}catch(Exception error){Debug.LogWarning("Online Room cleanup: "+error.Message);}
             if(!Busy)Destroy(gameObject);
         }
         [Serializable] private sealed class Report

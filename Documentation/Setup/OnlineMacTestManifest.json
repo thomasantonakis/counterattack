@@ -234,6 +234,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineRoomMenuEditorTests",
+      "categories": [
+        "OnlineRoomMenu"
+      ],
+      "definition_sha256": "82f74aabef80c3478e5289d222afc8babcf3a9f3b1eed4214a579598897f18ea",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRoomMenu/OnlineRoomMenuEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRoomStartupEditorTests",
       "categories": [
         "OnlineRoomStartup"
@@ -672,6 +682,16 @@
       "definition_sha256": "8da6b020c973ef607c4066e4a6cf91edf9a63f4e25b7e54b9d18ee47a3766499",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineRoomAction/OnlineRoomActionPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "categories": [
+        "OnlineRoomMenu"
+      ],
+      "definition_sha256": "70783b2a988f056b2a9c9283630c2b4e29414b2cb73362e14c5fb3418e2105c6",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRoomMenu/OnlineRoomMenuPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -8185,6 +8205,110 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T183246669Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuEditorTests.CloseRestoresContextBeforeSceneUnload(False)",
+      "feature": "OnlineRoomMenu",
+      "mode": "editor",
+      "fixture": "OnlineRoomMenuEditorTests",
+      "method": "CloseRestoresContextBeforeSceneUnload",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T184750954Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuEditorTests.CloseRestoresContextBeforeSceneUnload(True)",
+      "feature": "OnlineRoomMenu",
+      "mode": "editor",
+      "fixture": "OnlineRoomMenuEditorTests",
+      "method": "CloseRestoresContextBeforeSceneUnload",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T184750954Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(False,False)",
+      "feature": "OnlineRoomMenu",
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "method": "AuthoredMenuRespectsPauseOwnership",
+      "parameters": [
+        "False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(False,True)",
+      "feature": "OnlineRoomMenu",
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "method": "AuthoredMenuRespectsPauseOwnership",
+      "parameters": [
+        "False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(True,False)",
+      "feature": "OnlineRoomMenu",
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "method": "AuthoredMenuRespectsPauseOwnership",
+      "parameters": [
+        "True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(True,True)",
+      "feature": "OnlineRoomMenu",
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "method": "AuthoredMenuRespectsPauseOwnership",
+      "parameters": [
+        "True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch(False)",
+      "feature": "OnlineRoomMenu",
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "method": "LeaveReturnsToMenuWithoutWritingMatch",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch(True)",
+      "feature": "OnlineRoomMenu",
+      "mode": "playmode",
+      "fixture": "OnlineRoomMenuPlayModeTests",
+      "method": "LeaveReturnsToMenuWithoutWritingMatch",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
     }
   ]
 }
