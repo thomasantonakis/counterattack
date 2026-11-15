@@ -15,8 +15,8 @@ bookings/injuries, bench changes, converted keepers, directions and player stats
 Online pause/menu and safe Leave have eight focused cases. Authoritative
 substitutions and normal goalkeeper swaps now have 18 passing cases, including
 allowance/rebind boundaries. Bounded full-snapshot compression has 15 passes and
-fixes a real 36-actor wire-size failure without dropping fields. Next: forced
-keeper replacement/emergency nomination, shootout ordering, shared settings
+fixes a real 36-actor wire-size failure without dropping fields. Required keeper replacement/emergency nomination now has 33 focused passes,
+including opponent-owned pauses and guest kit/state projection. Next: shootout ordering, shared settings
 commands and preserving in-flight visual poses across timed snapshots. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.

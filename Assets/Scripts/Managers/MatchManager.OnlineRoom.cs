@@ -32,6 +32,9 @@ public partial class MatchManager
             homeTeamDirection=Enum.Parse<TeamAttackingDirection>(state.homeDirection);awayTeamDirection=Enum.Parse<TeamAttackingDirection>(state.awayDirection);
             areSubstitutionsAvailable=state.substitutionsAvailable;substitutionsAvailabilityReason=state.substitutionsReason;
             extraTimeSubstitutionCreditGranted=state.extraTimeSubstitutionCredit;
+            goalkeeperReplacementRequired=state.homeKeeperReplacement || state.awayKeeperReplacement;goalkeeperReplacementTeamIsHome=state.homeKeeperReplacement;
+            emergencyGoalkeeperNominationRequired=state.homeEmergencyKeeper || state.awayEmergencyKeeper;emergencyGoalkeeperNominationTeamIsHome=state.homeEmergencyKeeper;
+            emergencyGoalkeeperNominationReason=state.keeperActionReason;
             InitializeSubstitutionCountsFromStats();
         }
         BeginGameplayEventLoggingSuppression();
@@ -47,7 +50,9 @@ public partial class MatchManager
                 {
                     var current=item.onBoard?hexGrid.GetHexCellAt(new Vector3Int(item.x,0,item.z)):null;
                     if(current!=null){current.isAttackOccupied=item.runtime.isAttacker;current.isDefenseOccupied=!item.runtime.isAttacker;}
+                    bool wasKeeper=token.IsGoalKeeper;
                     token.RestoreRuntimeState(item.runtime,current,new Vector3(item.inactiveX,item.inactiveY,item.inactiveZ));
+                    if(item.runtime.isGoalKeeper && !wasKeeper)ApplyTeamGoalkeeperKit(token);
                     token.gameObject.SetActive(item.visible);gameData.stats.GetPlayerStats(token);
                     gameData.stats.playerStats.First(entry=>entry.playerKey==GetStableTokenKey(token)).stats=JsonUtility.FromJson<PlayerStats>(JsonUtility.ToJson(item.playerStats));
                     continue;

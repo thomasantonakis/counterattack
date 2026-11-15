@@ -1,5 +1,15 @@
 # Gameplay regression migration
 
+Required online goalkeeper decisions add 33 independently selectable PlayMode
+cases in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`, category
+`OnlineRequiredKeeper`: 1 + 16 + 16 passed, zero failed/skipped, in
+`Runs/20261115T204309481Z/results.xml`, `Runs/20261115T204419565Z/results.xml`
+and `Runs/20261115T204750695Z/results.xml`. Compilation separately clean.
+The real-scene fixtures cover forced substitutions/emergency nomination,
+requester-owned pauses, actual authored controls and inert guest projection.
+Each case is registered for the deferred Mac run; no legacy cases retired and
+no complete suite or internet pairing executed. See feature Verification.md.
+
 Online dribble continuation adds 12 independently selectable PlayMode cases
 under `Assets/Tests/PlayMode/Features/OnlineDribble/`, category `OnlineDribble`:
 12 passed, zero failed/skipped, in `Runs/20261114T144142718Z/results.xml`.

@@ -1,5 +1,14 @@
 # Continuous online gameplay integration
 
+Current checkpoint (2026-11-15): normal native frontend/Draft handoff loads the
+actual authored OnlineRoom, with full drafted rosters, real grid/managers,
+replicated match/roster state, shared pause, normal substitutions and required
+keeper decisions. The original six-token proof descriptions below record older
+checkpoints. Required keeper replacement/emergency nomination has 33 focused
+passes; see OnlineRequiredKeeper/Verification.md. Remaining priorities include
+shootout ordering/lifecycle, shared settings, presentation continuity and actual
+paired internet acceptance/latency measurement. Mac execution remains deferred.
+
 User scope expanded on 2026-11-13: prepare the full game for internet play.
 Continue independent Windows implementation and focused automated testing;
 defer paired/manual acceptance to sessions with the user. Keep the son's Mac

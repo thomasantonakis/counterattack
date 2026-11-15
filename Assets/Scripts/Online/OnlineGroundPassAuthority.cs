@@ -27,6 +27,8 @@ namespace CounterAttack.Online
         public string homeDirection,awayDirection,substitutionsReason;
         public bool substitutionsAvailable;
         public bool extraTimeSubstitutionCredit;
+        public bool keeperActionBlocked,homeKeeperReplacement,awayKeeperReplacement,homeForcedKeeperSubstitution,awayForcedKeeperSubstitution,homeEmergencyKeeper,awayEmergencyKeeper;
+        public string keeperActionReason;
         public long revision, publicationSequence, rollSequence, sharedPauseRevision;
         public long homeAcceptedSequence, awayAcceptedSequence, homePauseSequence, awayPauseSequence;
         public bool isSharedPaused, connectionHeld;
@@ -183,6 +185,14 @@ namespace CounterAttack.Online
                 awayDirection=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.awayTeamDirection.ToString():null,
                 substitutionsAvailable=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.AreSubstitutionsAvailable,
                 extraTimeSubstitutionCredit=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.OnlineExtraTimeSubstitutionCredit,
+                keeperActionBlocked=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.HasGoalkeeperActionBlockingResume(),
+                keeperActionReason=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.GetGoalkeeperActionBlockReason():null,
+                homeKeeperReplacement=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsGoalkeeperReplacementRequired(true),
+                awayKeeperReplacement=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsGoalkeeperReplacementRequired(false),
+                homeForcedKeeperSubstitution=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsForcedGoalkeeperSubstitutionRequired(true),
+                awayForcedKeeperSubstitution=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsForcedGoalkeeperSubstitutionRequired(false),
+                homeEmergencyKeeper=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsEmergencyGoalkeeperNominationRequiredForTeam(true),
+                awayEmergencyKeeper=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsEmergencyGoalkeeperNominationRequiredForTeam(false),
                 substitutionsReason=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.SubstitutionsAvailabilityReason:null,
                 rolls = match.CaptureOnlineRolls(),
                 header = CaptureHeaderObservation(),

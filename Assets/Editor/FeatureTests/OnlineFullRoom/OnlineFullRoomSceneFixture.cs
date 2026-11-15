@@ -11,7 +11,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object=UnityEngine.Object;
-public sealed class OnlineFullRoomSceneFixture
+public sealed partial class OnlineFullRoomSceneFixture
 {
     private OnlineRoomSession session;private string directory;
     private OnlineSharedPause pause;
@@ -123,6 +123,7 @@ public sealed class OnlineFullRoomSceneFixture
         if(guest){board.match.AdvanceOnlineAuthorityTime(5);Assert.That(board.match.OnlineRegulationSeconds,Is.Zero);Assert.That(board.match.TimingRollSequence,Is.Zero);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);yield break;}
         var hostAuthority=new OnlineGroundPassAuthority(board.match,protocol);var state=hostAuthority.Capture();Assert.That(state.stage,Is.EqualTo("kickoff.setup"));Assert.That(state.tokens.Length,Is.EqualTo(size*2));
         if(branch=="transport"){yield return RunTransport(board,protocol,size);yield break;}
+        if(branch.StartsWith("required-keeper:")){var parts=branch.Split(':');yield return RunRequiredKeeper(board,protocol,data,bool.Parse(parts[1]),parts[2],bool.Parse(parts[3]));yield break;}
         if(branch.StartsWith("substitution-limit-")){yield return RunSubstitutionLimit(board,protocol,data,branch.EndsWith("home"));yield break;}
         if(branch.StartsWith("substitution-")){yield return RunSubstitution(board,protocol,data,branch.EndsWith("home"),branch.Contains("-ui-"),branch.Contains("-keeper-"));yield break;}
         if(branch=="kickoff")

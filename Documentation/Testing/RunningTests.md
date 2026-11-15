@@ -1,5 +1,14 @@
 # Running gameplay regressions
 
+For required online goalkeeper decisions, use PlayMode fixture
+`OnlineRequiredKeeperPlayModeTests` (category `OnlineRequiredKeeper`, 33 cases)
+in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`. Its three methods are
+independently selectable. The existing pause/substitution features are
+`OnlineRoomMenuPlayModeTests` and `OnlineSubstitutionsPlayModeTests` in their
+same-named feature folders. Save dirty loaded scenes and wait for compilation
+before starting each focused run. Native results remain under
+`TestResults/GameplayRegression/Runs/`. Paired Mac acceptance is deferred.
+
 Shots use PlayMode category `OnlineShots`: 30 passed, zero failed/skipped,
 compilation separately clean. Fixtures are `OnlineHeaderShotPlayModeTests` (16)
 and `OnlineGroundShotPlayModeTests` (14).

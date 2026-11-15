@@ -19,6 +19,13 @@ namespace CounterAttack.Online
         private string[] targetOptions = Array.Empty<string>();
         public event Action<OnlineGroundPassMessage> Requested;
         public Func<bool> LocalEscapeHandler {get;set;}
+        public bool CanManageOwnPause=>connected && !pending && state?.isSharedPaused==true && !state.connectionHeld && state.pauseRequester==team.ToString();
+        private bool OwnRequiredKeeper=>state!=null && (team==OnlineTeam.Home
+            ?state.homeKeeperReplacement || state.homeForcedKeeperSubstitution || state.homeEmergencyKeeper
+            :state.awayKeeperReplacement || state.awayForcedKeeperSubstitution || state.awayEmergencyKeeper);
+        public bool CanManageRequiredKeeper=>connected && !pending && state?.isSharedPaused==true && !state.connectionHeld && OwnRequiredKeeper;
+        public bool CanManageSubstitutions=>state?.keeperActionBlocked==true?CanManageRequiredKeeper && !(team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper):CanManageOwnPause;
+        public bool CanNominateKeeper=>CanManageRequiredKeeper && (team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper);
         private OnlineGroundPassState state;
         private OnlineTeam team;
         private long sequence, controlSequence;
@@ -155,7 +162,7 @@ namespace CounterAttack.Online
             targetButton.interactable = CanAct && state.stage == "target";
             if (legalTargets != null) legalTargets.interactable = connected && !pending && targetOptions.Length > 0;
             pauseButton.interactable = connected && !pending && state != null && !state.isSharedPaused;
-            resumeButton.interactable = connected && !pending && state?.isSharedPaused == true && state.pauseRequester == team.ToString();
+            resumeButton.interactable = CanManageOwnPause && !state.keeperActionBlocked;
         }
 
         public void StartPass() => Gameplay(OnlineGroundPassAuthority.StartAction);
@@ -181,6 +188,8 @@ namespace CounterAttack.Online
             if(outgoing is >=1 and <=18 && incoming is >=1 and <=18 && outgoing!=incoming)
                 Control(OnlineSharedPause.SubstitutionAction(outgoing,incoming));
         }
+        public void NominateKeeper(int jersey)
+        {if(jersey is >=1 and <=18)Control(OnlineSharedPause.EmergencyKeeperAction(jersey));}
         public void Escape()
         { if(LocalEscapeHandler?.Invoke()==true)return; if (state?.isSharedPaused == true) Resume(); else Pause(); }
         private void Update()
@@ -199,7 +208,9 @@ namespace CounterAttack.Online
                 && (!state.isSharedPaused || state.pauseRequester != team.ToString())
                 || action == OnlineSharedPause.RequestAction && state.isSharedPaused) return;
             if(action.StartsWith("roster.substitute:",StringComparison.Ordinal)
-                && (!state.isSharedPaused || state.pauseRequester!=team.ToString() || state.connectionHeld || !state.substitutionsAvailable))return;
+                && (!CanManageSubstitutions || !state.substitutionsAvailable))return;
+            if(action.StartsWith("keeper.nominate:",StringComparison.Ordinal) && !CanNominateKeeper)return;
+            if(action==OnlineSharedPause.ResumeAction && state.keeperActionBlocked)return;
             Emit(new OnlineGroundPassMessage { kind = "control", matchId = state.matchId, sequence = checked(++controlSequence),
                 revision = state.sharedPauseRevision, decisionId = "shared-pause", actionId = action });
         }

@@ -1,0 +1,16 @@
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",True,True)","status":"Passed","message":"","stackTrace":""}

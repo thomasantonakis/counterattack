@@ -310,6 +310,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if(CounterAttack.Online.OnlineRoomSession.Current!=null)return;
         // Debug to see if the panel is being set active
         // Debug.Log("Pausing game and showing pause panel");
         // Display the pause menu

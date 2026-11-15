@@ -675,6 +675,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "categories": [
+        "OnlineRequiredKeeper"
+      ],
+      "definition_sha256": "b09a27a9ce2e6926ffda59d74b05a74284fd17a7b8fe14c6a46c1d3e337a3892",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/OnlineRequiredKeeperPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineResultHoldPlayModeTests",
       "categories": [
         "OnlineResultHold"
@@ -8754,6 +8764,433 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.SentOffKeeperPausesAffectedTeam",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "SentOffKeeperPausesAffectedTeam",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204309481Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"bench\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"bench\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"bench\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"bench\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"double\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"double\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"double\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "False,\"double\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"bench\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"bench\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"bench\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"bench\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"double\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"double\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"double\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "ForcedBenchKeeperReplacement",
+      "parameters": [
+        "True,\"double\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204419565Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-bench\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-bench\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-bench\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-bench\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-bench\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-subs\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-subs\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-subs\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,\"no-subs\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "False,\"no-subs\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-bench\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-bench\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-bench\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-bench\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-bench\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",False,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-subs\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",False,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-subs\",False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",True,False)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-subs\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,\"no-subs\",True,True)",
+      "feature": "OnlineRequiredKeeper",
+      "mode": "playmode",
+      "fixture": "OnlineRequiredKeeperPlayModeTests",
+      "method": "EmergencyKeeperNomination",
+      "parameters": [
+        "True,\"no-subs\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
     }
   ]
 }

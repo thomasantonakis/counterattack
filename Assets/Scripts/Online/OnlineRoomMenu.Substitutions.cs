@@ -40,15 +40,19 @@ namespace CounterAttack.Online
             if(rosterPublication==state.publicationSequence && rosterTeam==board.localTeam)return;
             rosterPublication=state.publicationSequence;rosterTeam=board.localTeam;
             string previous=Selected(outgoingPlayer,outgoingOptions)?.id;
+            bool sentOffReplacement=board.localTeam==OnlineTeam.Home?state.homeKeeperReplacement:state.awayKeeperReplacement;
+            bool forcedKeeper=board.localTeam==OnlineTeam.Home?state.homeForcedKeeperSubstitution:state.awayForcedKeeperSubstitution;
             outgoingOptions=state.tokens.Where(t=>t.runtime!=null && t.runtime.teamSide==board.localTeam.ToString() && t.runtime.isPlaying && t.onBoard && !t.runtime.isSentOff)
+                .Where(t=>sentOffReplacement?!t.runtime.isGoalKeeper:!forcedKeeper || t.runtime.isGoalKeeper && t.runtime.requiresSubstitution)
                 .OrderBy(t=>t.runtime.jerseyNumber).ToArray();
             Options(outgoingPlayer,outgoingOptions,previous);RefreshIncoming();
         }
         private void RefreshIncoming()
         {
             if(rosterState==null)return;var selected=Selected(outgoingPlayer,outgoingOptions);string previous=Selected(incomingPlayer,incomingOptions)?.id;
+            bool replacement=board.localTeam==OnlineTeam.Home?rosterState.homeKeeperReplacement:rosterState.awayKeeperReplacement;
             incomingOptions=rosterState.tokens.Where(t=>selected!=null && t.runtime!=null && t.runtime.teamSide==board.localTeam.ToString()
-                && !t.runtime.isPlaying && !t.runtime.wasSubbedOff && !t.runtime.isSentOff && t.runtime.isGoalKeeper==selected.runtime.isGoalKeeper)
+                && !t.runtime.isPlaying && !t.runtime.wasSubbedOff && !t.runtime.isSentOff && (replacement?t.runtime.isGoalKeeper:t.runtime.isGoalKeeper==selected.runtime.isGoalKeeper))
                 .OrderBy(t=>t.runtime.jerseyNumber).ToArray();
             Options(incomingPlayer,incomingOptions,previous);RefreshSubstitutionButtons();
         }
@@ -56,7 +60,7 @@ namespace CounterAttack.Online
         {
             if(substitutionPanel==null)return;
             int remaining=board.match.GetSubstitutionsRemaining(board.localTeam==OnlineTeam.Home);
-            bool ready=remaining>0 && rosterState?.substitutionsAvailable==true && !rosterState.connectionHeld && board.controls.resumeButton.interactable;
+            bool ready=remaining>0 && rosterState?.substitutionsAvailable==true && !rosterState.connectionHeld && board.controls.CanManageSubstitutions;
             if(substitutionCaption!=null && captionRemaining!=remaining){captionRemaining=remaining;substitutionCaption.text=$"Substitutions ({remaining} left)";}
             substitutionButton.interactable=ready;substitutionCommitButton.interactable=ready && outgoingOptions.Length>0 && incomingOptions.Length>0;
             outgoingPlayer.interactable=outgoingOptions.Length>0;incomingPlayer.interactable=incomingOptions.Length>0;

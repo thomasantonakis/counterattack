@@ -2,6 +2,19 @@ using CounterAttack.Online;
 using UnityEngine;
 public partial class MatchManager
 {
+    public bool TryGetOnlineRequiredKeeperTeam(out OnlineTeam team)
+    {
+        foreach(bool home in new[]{true,false})
+            if(IsGoalkeeperReplacementRequired(home) || IsForcedGoalkeeperSubstitutionRequired(home) || IsEmergencyGoalkeeperNominationRequiredForTeam(home))
+            {team=home?OnlineTeam.Home:OnlineTeam.Away;return true;}
+        team=default;return false;
+    }
+    public bool TryNominateOnlineEmergencyKeeper(PlayerToken token,out string reason)
+    {
+        reason="An active paused online authority is required.";
+        if(OnlineRoomSession.IsGuest || OnlineRoomSession.Current?.HasInitialData!=true || !IsOnlineAuthorityControlled || !IsPauseMenuOpen)return false;
+        return NominateEmergencyGoalkeeper(token,out reason);
+    }
     public bool TryApplyOnlineSubstitution(PlayerToken outgoing,PlayerToken incoming,out string reason)
     {
         reason="An active paused online authority is required.";

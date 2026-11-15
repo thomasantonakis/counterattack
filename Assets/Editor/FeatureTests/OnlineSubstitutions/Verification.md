@@ -44,8 +44,8 @@ suppressed. `20261115T192144085Z` retains the earlier 16-case clean pass.
 
 All 18 new cases are registered individually for deferred Mac verification.
 The normal/forced keeper distinction matters: healthy keeper swaps are covered;
-automatic forced replacement, emergency nomination and shootout ordering remain
-independent work. The prepared legacy proof profiles do not advertise these
+forced replacement and emergency nomination are now covered separately by
+OnlineRequiredKeeper; shootout ordering remains independent work. The prepared legacy proof profiles do not advertise these
 full Room commands; full Room contract v3 gates mixed-version entry.
 
 Windows export refresh succeeded:

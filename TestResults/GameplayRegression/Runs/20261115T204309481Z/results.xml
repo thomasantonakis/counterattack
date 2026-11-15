@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 20:43:09Z" end-time="2026-11-15 20:43:22Z" duration="12.6519984">
+  <test-suite type="TestSuite" id="2674" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1375" result="Passed" start-time="2026-11-15 20:43:09Z" end-time="2026-11-15 20:43:22Z" duration="12.651998" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2671" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1375" result="Passed" start-time="2026-11-15 20:43:09Z" end-time="2026-11-15 20:43:22Z" duration="12.619026" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1932" name="OnlineRequiredKeeperPlayModeTests" fullname="OnlineRequiredKeeperPlayModeTests" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-15 20:43:09Z" end-time="2026-11-15 20:43:22Z" duration="12.611980" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRequiredKeeper" />
+        </properties>
+        <test-case id="1933" name="SentOffKeeperPausesAffectedTeam" fullname="OnlineRequiredKeeperPlayModeTests.SentOffKeeperPausesAffectedTeam" methodname="SentOffKeeperPausesAffectedTeam" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="204188024" result="Passed" start-time="2026-11-15 20:43:09Z" end-time="2026-11-15 20:43:22Z" duration="12.582650" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584934988630
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Aziz has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T204309481Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
