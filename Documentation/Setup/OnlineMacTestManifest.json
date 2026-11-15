@@ -74,6 +74,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "categories": [
+        "OnlineFrontendRecovery"
+      ],
+      "definition_sha256": "90d1fc1476d9248c53b185c600c9599268c855bd153ae74673c7fa2bd57b2248",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineFrontendRecovery/OnlineFrontendRecoveryEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineGroundPassBoundaryEditorTests",
       "categories": [
         "OnlineGroundPass"
@@ -4624,6 +4634,225 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T052930597Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"initial-retry\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"initial-retry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"silence\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"silence\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"pending\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"pending\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"agreed\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"agreed\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"bounded-retry\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"bounded-retry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"expiry\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"expiry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"untrusted\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"untrusted\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"closed\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "False,\"closed\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"initial-retry\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"initial-retry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"silence\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"silence\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"pending\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"pending\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"agreed\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"agreed\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"bounded-retry\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"bounded-retry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"expiry\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"expiry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"untrusted\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"untrusted\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"closed\")",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "editor",
+      "fixture": "OnlineFrontendRecoveryEditorTests",
+      "method": "SerializedRecovery",
+      "parameters": [
+        "True,\"closed\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T053435028Z/results.xml"
+    },
+    {
+      "id": "VerificationTests.test_mac_build_plan_includes_normal_game_scenes",
+      "feature": "OnlineFrontendRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_mac_build_plan_includes_normal_game_scenes",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Assets/Editor/FeatureTests/OnlineFrontendRecovery/Verification.md"
     }
   ]
 }

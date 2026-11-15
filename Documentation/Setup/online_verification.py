@@ -87,6 +87,12 @@ def checked(args, root, **kwargs):
     return result["output"].strip()
 
 
+def mac_build_modes():
+    # Build the real menu/setup scenes as well as the paired proof exports.
+    # The normal game is not automatically launched against personal save state.
+    return ("room", "gameplay", "game")
+
+
 def discover_fixtures(root):
     plan = []
     for mode, folder in (("editor", "Assets/Editor/FeatureTests"), ("playmode", "Assets/Tests/PlayMode")):
@@ -431,7 +437,7 @@ class Runner:
                 result = self.stage(fixture["mode"] + ":" + fixture["fixture"], lambda f=fixture: self.fixture(f))
                 usable = not result.get("unity_unavailable", False)
             builds = {}
-            for mode in ("room", "gameplay"):
+            for mode in mac_build_modes():
                 if not usable:
                     builds[mode] = False
                     self.report["stages"].append({"name": "build:" + mode, "status": "skipped", "reason": "Editor unavailable or run pending"})

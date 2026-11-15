@@ -92,6 +92,8 @@ namespace CounterAttack.Online
             remoteConnection=null;Nonce=Guid.NewGuid().ToString("N");wire=new();Fault=null;RestartLiveness();
             Client.Apply(Authority.Capture());Send(Hello(Authority.Capture()));
         }
+        public void ResendHello()
+        {if(!Ready && ValidNonce(Nonce) && Fault==null && !PeerLeft)Send(Hello(Authority.Capture()));}
         protected override bool ReceiveHello(OnlineSessionMessage message)
         {
             if(message.nonce!=Nonce || !ValidNonce(Nonce))return false;

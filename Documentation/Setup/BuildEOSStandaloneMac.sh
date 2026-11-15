@@ -9,7 +9,8 @@ case "$mode" in
     packets) ;;
     gameplay) scene=Assets/Scenes/OnlineGroundPassProof.unity; output=Build/OnlineGroundPass/Mac/CounterattackOnlineGroundPass.app ;;
     room) scene=Assets/Scenes/OnlineRoomProof.unity; output=Build/OnlineRoom/Mac/CounterattackOnlineRoom.app ;;
-    *) printf 'Usage: %s [packets|gameplay|room]\n' "$0" >&2; exit 2 ;;
+    game) scene=; output=Build/OnlineGame/Mac/Counterattack.app ;;
+    *) printf 'Usage: %s [packets|gameplay|room|game]\n' "$0" >&2; exit 2 ;;
 esac
 pipeline() { unity command "$@" --project-path "$repo_root" --caller codex --skill unity-cli --format json; }
 unity status --project-path "$repo_root" --format json | jq -e '.success and any(.data.instances[]?; .state == "ready")' >/dev/null
@@ -22,8 +23,12 @@ while :; do
 done
 pipeline list_open_scenes | jq -e '.success and all(.data.result.scenes[]; .isDirty == false)' >/dev/null
 pipeline test_status | jq -e '.success and (.data.result.status == "completed" or .data.result.status == "no_tests")' >/dev/null
-printf 'Building only the standalone EOS proof scene through the open Editor...\n'
-scenes="$(jq -cn --arg scene "$scene" '[$scene]')"
+printf 'Building %s through the open Editor...\n' "$mode"
+if [ "$mode" = game ]; then
+    scenes='["Assets/Scenes/SplashScreen.unity","Assets/Scenes/MainMenu.unity","Assets/Scenes/CreateLoadRoom.unity","Assets/Scenes/CreateNewGameScene.unity","Assets/Scenes/Draft.unity","Assets/Scenes/FreeDraft.unity","Assets/Scenes/Room.unity"]'
+else
+    scenes="$(jq -cn --arg scene "$scene" '[$scene]')"
+fi
 queued="$(pipeline build --target StandaloneOSX --outputPath "$output" --scenes "$scenes" --confirm true)"
 printf '%s\n' "$queued" | jq -e '.success and .data.result.status == "queued"' >/dev/null
 build_id="$(printf '%s\n' "$queued" | jq -r '.data.result.buildId')"
@@ -37,7 +42,12 @@ for ((i=0; i<600; i++)); do
         printf 'Retained build report: %s/build-report.json\n' "$report_dir"
         printf '%s\n' "$status" | jq '.data.result | {status, result, totalErrors, totalWarnings, errors, warnings}'
         printf '%s\n' "$status" | jq -e '.data.result.result == "Succeeded"' >/dev/null
-        printf 'Mac proof build ready. Run: bash Documentation/Setup/RunEOSStandaloneMac.sh login %s\n' "$mode"
+        if [ "$mode" = game ]; then
+            printf 'Normal-scene Mac build ready. Manual launch: open Build/OnlineGame/Mac/Counterattack.app\n'
+            printf 'Online setup is implemented; full Draft/Room multiplayer handoff is still in development.\n'
+        else
+            printf 'Mac proof build ready. Run: bash Documentation/Setup/RunEOSStandaloneMac.sh login %s\n' "$mode"
+        fi
         exit 0
     fi
     sleep 2

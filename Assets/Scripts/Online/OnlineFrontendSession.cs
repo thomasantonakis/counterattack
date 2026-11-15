@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Epic.OnlineServices;
 using Epic.OnlineServices.P2P;
+using Epic.OnlineServices.Lobby;
 using UnityEngine;
 namespace CounterAttack.Online
 {
@@ -24,6 +25,9 @@ namespace CounterAttack.Online
         public OnlineLatencySummary Latency=>channel?.Latency.Capture()??new OnlineLatencySummary();
         public int QueuedPackets=>outgoing.Count;
         private OnlineSessionChannel channel;
+        private OnlineFrontendRecovery recovery;
+        private ulong requestNotification,closedNotification;
+        private bool connectionLost;
         private readonly Queue<byte[]> outgoing=new();
         private readonly byte[] receiveBuffer=new byte[1170];
         private IEnumerator probe;
@@ -104,19 +108,77 @@ namespace CounterAttack.Online
             channel.Client.DraftAgreed+=OnAgreed;
             ClientAvailable?.Invoke(channel.Client);
             if(channel is OnlineSetupHostChannel host)host.Begin();
+            recovery=new OnlineFrontendRecovery(channel,()=>Time.realtimeSinceStartupAsDouble,()=>outgoing.Clear(),()=>outgoing.Count==0);
+            RegisterConnectionNotifications();
             Status="Checking game versions and settings...";
-            while(!disposed)
+            try
             {
-                session.Platform.Tick();Flush();Poll();channel.Tick();Flush();
-                if(channel.Fault!=null)throw new InvalidOperationException(channel.Fault);
-                if(channel.PeerLeft){Status="The other manager left the session.";break;}
-                if(stop)break;
-                if(Time.realtimeSinceStartupAsDouble-channel.LastReceived>OnlineFrontendSessionPolicy.PeerTimeoutSeconds)
-                {channel.TransportLost();throw new TimeoutException("The other manager stopped responding.");}
-                if(channel.Ready && agreedSettings==null)Status="Connected. Review your selections.";
-                yield return null;
+                while(!disposed)
+                {
+                    session.Platform.Tick();
+                    if(connectionLost){connectionLost=false;recovery.ConnectionLost();}
+                    Flush();Poll();PollReturningGuest();recovery.Tick();channel.Tick();Flush();
+                    if(channel.Fault!=null)throw new InvalidOperationException(channel.Fault);
+                    if(channel.PeerLeft){Status="The other manager left the session.";break;}
+                    if(stop)break;
+                    if(recovery.Expired)throw new TimeoutException("The other manager did not reconnect within five minutes.");
+                    if(recovery.Recovering)Status="Connection interrupted. Waiting for the other manager to reconnect...";
+                    else if(channel.Ready)Status=agreedSettings==null?"Connected. Review your selections.":"Both managers agreed. Preparing Draft...";
+                    yield return null;
+                }
             }
+            finally{RemoveConnectionNotifications();}
             channel.TransportLost();
+        }
+        private bool SamePeer(ProductUserId remote,SocketId? remoteSocket)=>remote?.ToString()==peer?.ToString() && remoteSocket?.SocketName==socket.SocketName;
+        private bool ReservedPeerIsMember()
+        {
+            var lobby=native.Platform.GetLobbyInterface();var copy=new CopyLobbyDetailsHandleOptions{LocalUserId=native.UserId,LobbyId=LobbyCode};
+            if(lobby.CopyLobbyDetailsHandle(ref copy,out var details)!=Result.Success || details==null)return false;
+            try
+            {
+                var countOptions=new LobbyDetailsGetMemberCountOptions();uint count=details.GetMemberCount(ref countOptions);
+                for(uint i=0;i<count;i++){var index=new LobbyDetailsGetMemberByIndexOptions{MemberIndex=i};if(details.GetMemberByIndex(ref index)?.ToString()==peer.ToString())return true;}
+                return false;
+            }
+            finally{details.Release();}
+        }
+        private void RegisterConnectionNotifications()
+        {
+            var p2p=native.Platform.GetP2PInterface();
+            var request=new AddNotifyPeerConnectionRequestOptions{LocalUserId=native.UserId,SocketId=socket};
+            requestNotification=p2p.AddNotifyPeerConnectionRequest(ref request,null,(ref OnIncomingConnectionRequestInfo info)=>
+            {
+                if(!SamePeer(info.RemoteUserId,info.SocketId) || !ReservedPeerIsMember())return;
+                var accept=new AcceptConnectionOptions{LocalUserId=native.UserId,RemoteUserId=peer,SocketId=socket};p2p.AcceptConnection(ref accept);
+            });
+            var closed=new AddNotifyPeerConnectionClosedOptions{LocalUserId=native.UserId,SocketId=socket};
+            closedNotification=p2p.AddNotifyPeerConnectionClosed(ref closed,null,(ref OnRemoteConnectionClosedInfo info)=>
+            {if(SamePeer(info.RemoteUserId,info.SocketId))connectionLost=true;});
+            if(requestNotification==0 || closedNotification==0){RemoveConnectionNotifications();throw new InvalidOperationException("Could not observe online connection recovery");}
+        }
+        private void RemoveConnectionNotifications()
+        {
+            var p2p=native?.Platform?.GetP2PInterface();if(p2p==null)return;
+            if(requestNotification!=0)p2p.RemoveNotifyPeerConnectionRequest(requestNotification);
+            if(closedNotification!=0)p2p.RemoveNotifyPeerConnectionClosed(closedNotification);
+            requestNotification=closedNotification=0;
+        }
+        private void PollReturningGuest()
+        {
+            if(!Hosting)return;
+            var p2p=native.Platform.GetP2PInterface();var receive=new ReceivePacketOptions{LocalUserId=native.UserId,MaxDataSizeBytes=(uint)receiveBuffer.Length,RequestedChannel=7};
+            for(int i=0;i<8;i++)
+            {
+                ProductUserId sender=null;var receivedSocket=new SocketId();
+                var result=p2p.ReceivePacket(ref receive,ref sender,ref receivedSocket,out var channelId,new ArraySegment<byte>(receiveBuffer),out var size);
+                if(result==Result.NotFound)return;
+                if(result!=Result.Success)throw new IOException("Receiving reconnect handshake failed: "+result);
+                if(!SamePeer(sender,receivedSocket) || channelId!=7 || System.Text.Encoding.ASCII.GetString(receiveBuffer,0,(int)size)!="ca-m0-hello:"+LobbyCode || !ReservedPeerIsMember())continue;
+                recovery.ConnectionLost();var ack=System.Text.Encoding.ASCII.GetBytes("ca-m0-ack:"+LobbyCode);
+                var send=new SendPacketOptions{LocalUserId=native.UserId,RemoteUserId=peer,SocketId=socket,Channel=7,Data=new ArraySegment<byte>(ack),AllowDelayedDelivery=false,Reliability=PacketReliability.ReliableOrdered};
+                p2p.SendPacket(ref send);
+            }
         }
         private void Queue(byte[] packet)
         {
@@ -129,7 +191,7 @@ namespace CounterAttack.Online
             for(int i=0;i<128 && outgoing.Count>0;i++)
             {
                 var packet=outgoing.Peek();var options=new SendPacketOptions{LocalUserId=native.UserId,RemoteUserId=peer,SocketId=socket,
-                    Channel=OnlineFrontendSessionPolicy.Channel,Data=new ArraySegment<byte>(packet),AllowDelayedDelivery=true,Reliability=PacketReliability.ReliableOrdered};
+                    Channel=OnlineFrontendSessionPolicy.Channel,Data=new ArraySegment<byte>(packet),AllowDelayedDelivery=false,Reliability=PacketReliability.ReliableOrdered};
                 var result=p2p.SendPacket(ref options);
                 if(result==Result.LimitExceeded || result==Result.NoConnection || result==Result.TimedOut)return;
                 if(result!=Result.Success)throw new IOException("Sending online session data failed: "+result);

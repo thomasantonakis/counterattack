@@ -17,12 +17,15 @@ git pull --ff-only origin codex/online-foundation-personal-mac && bash Documenta
 
 The verifier does not launch Unity, reset edits, change branches or run all
 gameplay suites. It discovers implemented `Online*` fixtures, runs each fixture
-serially through the open Editor, builds both Mac exports, checks packaged login
+serially through the open Editor, builds both proof exports and the normal game
+scenes (including multiplayer entry), checks packaged login
 and local gameplay, then requests automatic Windows-hosted Room and prepared-board
 probes. Legacy one-use Editor EOS probes are covered by the packaged login/lobby/
 relay stages instead; their opt-in markers are never changed. Compilation is
 reported separately from test results. Dirty scenes are saved through Pipeline
 before native runs. Source-code edits must be committed before comparing builds.
+The normal game export is retained at `Build/OnlineGame/Mac/Counterattack.app`;
+it is not automatically launched. Online Draft/Room handoff is still unfinished.
 
 Every stage records pass/fail/skipped status. Native XML, per-case progress,
 build reports, local/guest evidence and both sides' paired reports are embedded

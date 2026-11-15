@@ -45,3 +45,12 @@ For broader user-run checks: `Assets/Editor/FeatureTests/OnlineSetupClient/`
 (`OnlineSetupView` category), `OnlineSetupAgreement/` (`OnlineSetupAgreement`),
 and `OnlineSessionTransport/` (`OnlineSessionTransport`) cover agreement/view and
 wire behavior affected by future entry/lifetime changes. No full suite was run.
+
+Normal-scene Windows export `build_06972049607d` succeeded at
+`20261115T053740Z-normal-Windows-build/build-summary.json` (9 warnings,
+one known nonfatal EOS post-build vswhere.exe diagnostic, zero C# errors).
+Output: `Build/OnlineGame/Windows/Counterattack.exe`; no ordinary match was
+launched and no full multiplayer acceptance is claimed. The Mac one-command
+verifier now also builds the normal game scenes through
+`BuildEOSStandaloneMac.sh game`. Its 13 tooling tests and Bash syntax check
+passed on Windows; actual macOS export remains deferred.

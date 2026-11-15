@@ -2,6 +2,14 @@
 
 ## Start here
 
+Current priority (2026-11-15): normal menu entry, authored Host/Join controls,
+persistent native frontend session and bounded recovery are implemented with
+focused local evidence. Full authoritative Draft (rolls/decks/picks/slots), full
+Room roster handoff, normal pause/substitutions and shootout ordering remain.
+Do not claim full online play or measured internet latency. Paired Mac is deferred.
+See OnlineFrontendEntry/Verification.md and OnlineFrontendRecovery/Verification.md.
+
+
 Latest steering: the son's Mac verification is deferred until the user explicitly
 requests it. The waiting supervisor was stopped; do not host or await reports
 now. Continue implementing gameplay and normal Room integration. Maintain
@@ -431,3 +439,20 @@ continue authoritative Draft bootstrap/rolls/decks/picks/slots and full Room,
 then normal pause/substitution/shootout UI. Native frontend currently fails after
 15 seconds without packets; reconnect preservation still needs implementation.
 Exports predate this slice; refresh before paired use. Normal Room restored clean.
+
+Frontend recovery supersedes the previous 15-second fatal disconnect: a silence
+or EOS closure now holds state and blocks interaction, rotates the host nonce
+once, retries bounded hellos and expires after five minutes. Same reserved peer
+must still belong to the lobby before native reacceptance. Own-feature 16 passes,
+affected channels 26 passes and entry scenes 6 passes; compilation separately
+clean. See OnlineFrontendRecovery/Verification.md. Actual native reconnect/RTT
+requires the deferred paired run. Continue authoritative Draft then full Room.
+
+Normal-scene Windows export `build_06972049607d` succeeded at
+`20261115T053740Z-normal-Windows-build/build-summary.json` (9 warnings,
+one known nonfatal EOS post-build vswhere.exe diagnostic, zero C# errors).
+Output: `Build/OnlineGame/Windows/Counterattack.exe`; no ordinary match was
+launched and no full multiplayer acceptance is claimed. The Mac one-command
+verifier now also builds the normal game scenes through
+`BuildEOSStandaloneMac.sh game`. Its 13 tooling tests and Bash syntax check
+passed on Windows; actual macOS export remains deferred.

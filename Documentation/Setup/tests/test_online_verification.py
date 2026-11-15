@@ -16,6 +16,13 @@ spec.loader.exec_module(verification)
 
 
 class VerificationTests(unittest.TestCase):
+    def test_mac_build_plan_includes_normal_game_scenes(self):
+        self.assertEqual(verification.mac_build_modes(), ("room", "gameplay", "game"))
+        script=(MODULE.parent / "BuildEOSStandaloneMac.sh").read_text()
+        self.assertIn("Build/OnlineGame/Mac/Counterattack.app", script)
+        for scene in ("MainMenu", "CreateNewGameScene", "Draft", "FreeDraft", "Room"):
+            self.assertIn("Assets/Scenes/" + scene + ".unity", script)
+
     def test_credential_redaction_preserves_gameplay_token_identity(self):
         redacted = verification.clean({"clientSecret": "secret", "access_token": "private",
                                        "actorId": "home:9", "log": 'Bearer abc.def\n"clientSecret": "secret"\n[Licensing::Client] private'})

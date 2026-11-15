@@ -105,3 +105,11 @@ continue authoritative Draft bootstrap/rolls/decks/picks/slots and full Room,
 then normal pause/substitution/shootout UI. Native frontend currently fails after
 15 seconds without packets; reconnect preservation still needs implementation.
 Exports predate this slice; refresh before paired use. Normal Room restored clean.
+
+Frontend recovery supersedes the previous 15-second fatal disconnect: a silence
+or EOS closure now holds state and blocks interaction, rotates the host nonce
+once, retries bounded hellos and expires after five minutes. Same reserved peer
+must still belong to the lobby before native reacceptance. Own-feature 16 passes,
+affected channels 26 passes and entry scenes 6 passes; compilation separately
+clean. See OnlineFrontendRecovery/Verification.md. Actual native reconnect/RTT
+requires the deferred paired run. Continue authoritative Draft then full Room.
